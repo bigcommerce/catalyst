@@ -7,16 +7,17 @@ export const createCustomerAccount = async (payload: {
   company: string;
   email: string;
   phone: string;
-  referrerId: string;
+  referralId: string;
 }) => {
   try {
     console.log('createCustomerAccount called4');
 
-    const { first_name, last_name,company, email, phone, referrerId } = payload;
+    const { first_name, last_name, company, email, phone, referralId } = payload;
     const postData = JSON.stringify({
       email: email,
       first_name: first_name, // Assuming first name is the first part of fullname
       last_name: last_name, // Assuming last name is the rest of the fullname
+      referral_id:referralId,
       access_id: process.env.SALES_BUDDY_ACCESS_ID,
     });
 
@@ -40,7 +41,7 @@ export const createCustomerAccount = async (payload: {
         console.log(jsonData);
       })
       .catch((error) => {
-        //        return { status: 500, error: error.message };
+               return { status: 500, error: error.message };
       });
 
     return { status: 200, data: data };

@@ -77,7 +77,7 @@ export default function AgentLogin({ isOpen, toggleModal }) {
                     required=""
                   />
                 </div>
-                <div className="flex justify-between">
+                {/* <div className="flex justify-between">
                   <div className="flex items-start">
                     <div className="flex h-5 items-center">
                       <input
@@ -98,7 +98,7 @@ export default function AgentLogin({ isOpen, toggleModal }) {
                   <a href="#" className="text-sm text-blue-700 hover:underline dark:text-blue-500">
                     Lost Password?
                   </a>
-                </div>
+                </div> */}
                 <button
                   type="submit"
                   className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -106,12 +106,12 @@ export default function AgentLogin({ isOpen, toggleModal }) {
                 >
                   Login to your account
                 </button>
-                <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
+                {/* <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
                   Not registered?{' '}
                   <a href="#" className="text-blue-700 hover:underline dark:text-blue-500">
                     Create account
                   </a>
-                </div>
+                </div> */}
               </form>
             </div>
           </div>

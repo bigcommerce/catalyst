@@ -155,9 +155,14 @@ export default async function Trade() {
     states: selectedCountry.statesOrProvinces || [],
   };
 
+  const filteredCountries = countries.filter(
+    (country) => country.code === 'CA' || country.code === 'US'
+  );
+  console.log(filteredCountries, "FIlter countries============");
+
   return (
     <div className="trade-register-section min-h-screen bg-white pb-8">
-      <div className="registeration-breadcrumbs-heading">
+      <div className="registeration-breadcrumbs-heading [&_.network-for-tab]:mt-0">
         {/* Breadcrumbs */}
 
         {/* Main Content */}
@@ -182,7 +187,7 @@ export default async function Trade() {
               <RegisterForm2
                 TradeAddress1={TradeAddress1}
                 addressFields={addressFields as FormField[]}
-                countries={countries}
+                countries={filteredCountries}
                 customerFields={customerFields as FormField[]}
                 defaultCountry={defaultCountry}
               />

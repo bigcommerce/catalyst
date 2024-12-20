@@ -6,6 +6,7 @@ import { Header, HeaderSkeleton } from '~/components/header';
 import { Cart } from '~/components/header/cart';
 import { LocaleType } from '~/i18n/routing';
 import SalesBuddyPage from './sales-buddy/page';
+const flagSalesBuddy = Number(process.env.SALES_BUDDY_FLAG);
 
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
@@ -28,7 +29,10 @@ export default async function DefaultLayout({ params, children }: Props) {
       </main>
       <Suspense>
         <Footer />
-        <SalesBuddyPage/>
+        {flagSalesBuddy
+          ? <SalesBuddyPage/>
+          : ''
+        }
       </Suspense>
     </>
   );
