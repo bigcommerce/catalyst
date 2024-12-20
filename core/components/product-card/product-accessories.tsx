@@ -84,7 +84,7 @@ export const ProductAccessories = ({
         currency: currencyCode,
       });
       setBaseImage('');
-      setProductLabel(accessoriesData?.name);
+      setProductLabel(accessoriesData?.name?.replace('-', ''));
       setProductPrice(formatPrice);
       setProductImage(accessoriesData?.image);
       setProductSalePrice(formatSalePrice);
