@@ -39,8 +39,8 @@ importers:
         specifier: ^10.2.0
         version: 10.2.0(react@19.0.0)
       '@makeswift/runtime':
-        specifier: 0.0.0-snapshot-20241217195602
-        version: 0.0.0-snapshot-20241217195602(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(next@15.2.0-canary.8(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 0.0.0-snapshot-20241220223738
+        version: 0.0.0-snapshot-20241220223738(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(next@15.2.0-canary.8(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@radix-ui/react-accordion':
         specifier: ^1.2.2
         version: 1.2.2(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -196,7 +196,7 @@ importers:
         version: 1.7.1(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       swr:
         specifier: ^2.2.5
-        version: 2.2.5(react@19.0.0)
+        version: 2.3.0(react@19.0.0)
       tailwind-merge:
         specifier: ^2.5.5
         version: 2.5.5
@@ -1379,19 +1379,19 @@ packages:
     resolution: {integrity: sha512-qC72D4+CDdjGqJvkFMMEAtancHUQ7/d/tAiHf64z8MopFDmcrtbcJuerDtFceuAfQJ2pDSfCKCtbqoGBNnwg0w==}
     engines: {node: '>=8'}
 
-  '@makeswift/controls@0.0.0-snapshot-20241217195602':
-    resolution: {integrity: sha512-Q1Y+kSsa09+7eys8zScPMnb70YH9aiI7ZGTFF6HTXJL/+xtKATCsUFNmCPiN/Er+2Ms+K+gefBE68YIZSJdVQw==}
+  '@makeswift/controls@0.0.0-snapshot-20241220223738':
+    resolution: {integrity: sha512-0GW8/nx6iFkentz8dbOqD7JzFXX/kRu4Xc+IUXFyXDngiEDwVHtljpQ+OdUmNKhNPI8VUr4V/lzK44BCDRZ0kg==}
 
   '@makeswift/next-plugin@0.3.0':
     resolution: {integrity: sha512-pGe0D6KrVxZcyaM8hFCIK806yNV6YJtRcjjD+2Wpn5qkFStIMTlACkGRVHVLftFyfi8/E3lGkbR05Jo3aTecwQ==}
     peerDependencies:
       next: ^13.4.0 || ^14.0.0
 
-  '@makeswift/prop-controllers@0.0.0-snapshot-20241217195602':
-    resolution: {integrity: sha512-w0ZicsgyGqlXntpdo0LqRrXE3iP/3vs/inWx3lv+7XYOn/p+nIYPbGLXZCf/4IEJzLmOdE14vOGH3f/uxhN40A==}
+  '@makeswift/prop-controllers@0.0.0-snapshot-20241220223738':
+    resolution: {integrity: sha512-9VPcc6CUA18QiiPQ3LPX4MfDNcZDj/3pybY/XInCFHgAk46F/QlJs3xWzIf09dRGIH2js7DBvlcVh/XljuKqww==}
 
-  '@makeswift/runtime@0.0.0-snapshot-20241217195602':
-    resolution: {integrity: sha512-4CvJWFjkk2bes1+CzuDnWsFcKTpYY/RQz2ROkd+T1E5SofGbalN1iGEcpS+nHHYcnGF2rb+Vt6jRbZqt8XlrMw==}
+  '@makeswift/runtime@0.0.0-snapshot-20241220223738':
+    resolution: {integrity: sha512-YzAAxBeX5QK6wBLI50s3wZboCVOJekoaxiC+MpXq/XdU1njSlaMY3wNUkT4BcfTEQ1JcZTa4CbDqJgcn7hVb8w==}
     peerDependencies:
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
@@ -3118,6 +3118,10 @@ packages:
 
   defu@6.1.4:
     resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
+
+  dequal@2.0.3:
+    resolution: {integrity: sha512-0je+qPKHEMohvfRTCEo3CrPG6cAzAYgmzKyxRiYSSDkS6eGJdyVJm7WaYA5ECaAD9wLB2T4EEeymA5aFVcYXCA==}
+    engines: {node: '>=6'}
 
   detect-indent@6.1.0:
     resolution: {integrity: sha512-reYkTUJAZb9gUuZ2RvVCNhVHdg62RHnJ7WJl8ftMi4diZ6NWlciOzQN88pUhSELEwflJht4oQDv0F0BMlwaYtA==}
@@ -5598,10 +5602,10 @@ packages:
     resolution: {integrity: sha512-cs2JYADrEorRCB4AUCHMvwperwAKcn/mz7w1xzVOv3fG6TmAS2n13JYHH8/uDCFbqVyRSXXlL+vA5RDwGUXEZg==}
     engines: {node: '>=18'}
 
-  swr@2.2.5:
-    resolution: {integrity: sha512-QtxqyclFeAsxEUeZIYmsaQ0UjimSq1RZ9Un7I68/0ClKK/U3LoyQunwkQfJZr2fc22DfIXLNDc2wFyTEikCUpg==}
+  swr@2.3.0:
+    resolution: {integrity: sha512-NyZ76wA4yElZWBHzSgEJc28a0u6QZvhb6w0azeL2k7+Q1gAzVK+IqQYXhVOC/mzi+HZIozrZvBVeSeOZNR2bqA==}
     peerDependencies:
-      react: ^16.11.0 || ^17.0.0 || ^18.0.0
+      react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
 
   synckit@0.9.1:
     resolution: {integrity: sha512-7gr8p9TQP6RAHusBOSLs46F4564ZrjV8xFmw5zCmgmhGUcw2hxsShhJ6CEiHQMgPDwAQ1fWHPM0ypc4RMAig4A==}
@@ -6302,40 +6306,6 @@ snapshots:
   '@bcoe/v8-coverage@0.2.3': {}
 
   '@bigcommerce/eslint-config@2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0(@types/node@20.17.10)(babel-plugin-macros@3.1.0))(typescript@5.7.2)':
-    dependencies:
-      '@bigcommerce/eslint-plugin': 1.3.1(@typescript-eslint/parser@8.14.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)
-      '@rushstack/eslint-patch': 1.10.4
-      '@stylistic/eslint-plugin': 2.7.2(eslint@8.57.1)(typescript@5.7.2)
-      '@typescript-eslint/eslint-plugin': 8.14.0(@typescript-eslint/parser@8.14.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)
-      '@typescript-eslint/parser': 8.14.0(eslint@8.57.1)(typescript@5.7.2)
-      eslint: 8.57.1
-      eslint-config-prettier: 9.1.0(eslint@8.57.1)
-      eslint-import-resolver-typescript: 3.6.3(@typescript-eslint/parser@8.14.0(eslint@8.57.1)(typescript@5.7.2))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.14.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-gettext: 1.2.0
-      eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.14.0(eslint@8.57.1)(typescript@5.7.2))(eslint-import-resolver-typescript@3.6.3(@typescript-eslint/parser@8.14.0(eslint@8.57.1)(typescript@5.7.2))(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.14.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
-      eslint-plugin-jest: 28.8.3(@typescript-eslint/eslint-plugin@8.14.0(@typescript-eslint/parser@8.14.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(jest@29.7.0(babel-plugin-macros@3.1.0))(typescript@5.7.2)
-      eslint-plugin-jest-dom: 5.5.0(eslint@8.57.1)
-      eslint-plugin-jest-formatting: 3.1.0(eslint@8.57.1)
-      eslint-plugin-jsdoc: 50.2.2(eslint@8.57.1)
-      eslint-plugin-jsx-a11y: 6.10.2(eslint@8.57.1)
-      eslint-plugin-prettier: 5.2.1(@types/eslint@9.6.1)(eslint-config-prettier@9.1.0(eslint@8.57.1))(eslint@8.57.1)(prettier@3.4.2)
-      eslint-plugin-react: 7.37.2(eslint@8.57.1)
-      eslint-plugin-react-hooks: 5.0.0(eslint@8.57.1)
-      eslint-plugin-switch-case: 1.1.2
-      eslint-plugin-testing-library: 7.1.1(eslint@8.57.1)(typescript@5.7.2)
-      prettier: 3.4.2
-    optionalDependencies:
-      typescript: 5.7.2
-    transitivePeerDependencies:
-      - '@testing-library/dom'
-      - '@types/eslint'
-      - eslint-import-resolver-node
-      - eslint-import-resolver-webpack
-      - eslint-plugin-import-x
-      - jest
-      - supports-color
-
-  '@bigcommerce/eslint-config@2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0(babel-plugin-macros@3.1.0))(typescript@5.7.2)':
     dependencies:
       '@bigcommerce/eslint-plugin': 1.3.1(@typescript-eslint/parser@8.14.0(eslint@8.57.1)(typescript@5.7.2))(eslint@8.57.1)(typescript@5.7.2)
       '@rushstack/eslint-patch': 1.10.4
@@ -7250,7 +7220,7 @@ snapshots:
     dependencies:
       '@lukeed/csprng': 1.1.0
 
-  '@makeswift/controls@0.0.0-snapshot-20241217195602':
+  '@makeswift/controls@0.0.0-snapshot-20241220223738':
     dependencies:
       color: 3.2.1
       css-box-model: 1.2.1
@@ -7266,13 +7236,13 @@ snapshots:
       next: 15.2.0-canary.8(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       semver: 7.6.3
 
-  '@makeswift/prop-controllers@0.0.0-snapshot-20241217195602':
+  '@makeswift/prop-controllers@0.0.0-snapshot-20241220223738':
     dependencies:
-      '@makeswift/controls': 0.0.0-snapshot-20241217195602
+      '@makeswift/controls': 0.0.0-snapshot-20241220223738
       ts-pattern: 5.5.0
       zod: 3.24.1
 
-  '@makeswift/runtime@0.0.0-snapshot-20241217195602(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(next@15.2.0-canary.8(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@makeswift/runtime@0.0.0-snapshot-20241220223738(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(next@15.2.0-canary.8(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@emotion/cache': 11.14.0
       '@emotion/css': 11.13.5
@@ -7280,9 +7250,9 @@ snapshots:
       '@emotion/server': 11.11.0(@emotion/css@11.13.5)
       '@emotion/sheet': 1.4.0
       '@emotion/utils': 1.4.2
-      '@makeswift/controls': 0.0.0-snapshot-20241217195602
+      '@makeswift/controls': 0.0.0-snapshot-20241220223738
       '@makeswift/next-plugin': 0.3.0(next@15.2.0-canary.8(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
-      '@makeswift/prop-controllers': 0.0.0-snapshot-20241217195602
+      '@makeswift/prop-controllers': 0.0.0-snapshot-20241220223738
       '@popmotion/popcorn': 0.4.4
       '@redux-devtools/extension': 3.3.0(redux@4.2.1)
       '@types/is-hotkey': 0.1.10
@@ -9031,6 +9001,8 @@ snapshots:
       object-keys: 1.1.1
 
   defu@6.1.4: {}
+
+  dequal@2.0.3: {}
 
   detect-indent@6.1.0: {}
 
@@ -11932,9 +11904,9 @@ snapshots:
       zimmerframe: 1.1.2
     optional: true
 
-  swr@2.2.5(react@19.0.0):
+  swr@2.3.0(react@19.0.0):
     dependencies:
-      client-only: 0.0.1
+      dequal: 2.0.3
       react: 19.0.0
       use-sync-external-store: 1.4.0(react@19.0.0)
 
