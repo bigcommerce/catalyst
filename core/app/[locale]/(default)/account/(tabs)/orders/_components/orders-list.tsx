@@ -12,53 +12,6 @@ interface OrdersListProps {
   ordersCount?: number;
 }
 
-enum VisibleListItemsPerDevice {
-  xs = 1,
-  md = 3,
-  lg = 4,
-  xl = 5,
-}
-
-const TruncatedCard = ({ itemsQuantity }: { itemsQuantity: number }) => {
-  const smItems = itemsQuantity - VisibleListItemsPerDevice.xs;
-  const mdItems = itemsQuantity - VisibleListItemsPerDevice.md;
-  const lgItems = itemsQuantity - VisibleListItemsPerDevice.lg;
-  const xlItems = itemsQuantity - VisibleListItemsPerDevice.xl;
-
-  return (
-    <>
-      {smItems > 0 && (
-        <div className="list-item w-36 md:!hidden">
-          <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
-            +{smItems}
-          </div>
-        </div>
-      )}
-      {mdItems > 0 && (
-        <div className="hidden w-36 md:list-item lg:hidden">
-          <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
-            +{mdItems}
-          </div>
-        </div>
-      )}
-      {lgItems > 0 && (
-        <div className="hidden w-36 lg:list-item xl:hidden">
-          <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
-            +{lgItems}
-          </div>
-        </div>
-      )}
-      {xlItems > 0 && (
-        <div className="hidden w-36 xl:list-item">
-          <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
-            +{xlItems}
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
-
 interface ManageOrderButtonsProps {
   className: string;
   orderId: number;
@@ -253,12 +206,6 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
                   )
                 })}
               </div>
-              <TruncatedCard
-                itemsQuantity={(shippingConsignments ?? []).reduce(
-                  (orderItems, shipment) => orderItems + shipment.lineItems.length,
-                  0,
-                )}
-              />
               <ManageOrderButtons
                 className=""
                 orderId={entityId}
