@@ -3,7 +3,6 @@ import { getTranslations } from 'next-intl/server';
 import PLazy from 'p-lazy';
 import { cache } from 'react';
 
-import { HeaderSection } from '@/vibes/soul/sections/header-section';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -11,6 +10,7 @@ import { graphql, readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
+import { SiteHeader as HeaderSection } from '~/lib/makeswift/components/site-header/site-header';
 
 import { search } from './_actions/search';
 import { HeaderFragment } from './fragment';
