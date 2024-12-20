@@ -1,8 +1,6 @@
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql } from '~/client/graphql';
 
-import { AddToCartFragment } from './add-to-cart/fragment';
-
 export const ProductCardFragment = graphql(
   `
     fragment ProductCardFragment on Product {
@@ -21,9 +19,8 @@ export const ProductCardFragment = graphql(
         numberOfReviews
         averageRating
       }
-      ...AddToCartFragment
       ...PricingFragment
     }
   `,
-  [AddToCartFragment, PricingFragment],
+  [PricingFragment],
 );
