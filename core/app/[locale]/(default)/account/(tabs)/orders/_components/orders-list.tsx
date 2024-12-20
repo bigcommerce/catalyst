@@ -28,30 +28,30 @@ const ManageOrderButtons = ({
   const t = useTranslations('Account.Orders');
 
   return (
-    <div className="flex-[0.44]">
+    <div className="flex-[0.5] flex flex-col gap-[5px]">
+      {Boolean(orderTrackingUrl) && (
+        <Button
+          aria-label={t('trackOrder')}
+          asChild
+          className="flex w-full min-h-[42px] uppercase flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium leading-[32px] tracking-[1.25px] text-[#fff]"
+          variant="secondary"
+        >
+          <Link href={{ pathname: orderTrackingUrl }}>{t('trackOrder')}</Link>
+        </Button>
+      )}
       <Button
-        className="flex w-full min-h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium leading-[32px] tracking-[1.25px] text-[#002A37]"
+        className="flex w-full min-h-[42px] uppercase flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium leading-[32px] tracking-[1.25px] text-[#002A37]"
         aria-label={t('viewOrderDetails')}
         variant="secondary"
         asChild
       >
         <Link href={`/account/order/${orderId}`} className='hover:text-black'>{t('viewOrderDetails')}</Link>
       </Button>
-      {Boolean(orderTrackingUrl) && (
-        <Button
-          aria-label={t('trackOrder')}
-          asChild
-          className="w-full md:w-fit"
-          variant="secondary"
-        >
-          <Link href={{ pathname: orderTrackingUrl }}>{t('trackOrder')}</Link>
-        </Button>
-      )}
       {Boolean(orderStatus) && orderStatus === 'SHIPPED' && (
         <Button
           aria-label={t('returnOrder')}
           asChild
-          className="w-full md:w-fit"
+          className="flex w-full min-h-[42px] uppercase flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium leading-[32px] tracking-[1.25px] text-[#002A37]"
           variant="secondary"
         >
           <Link href={{ pathname: '' }}>{t('returnOrder')}</Link>
@@ -84,7 +84,7 @@ const OrderDetails = ({
           {orderStatus}
         </button>
       </div>
-      <div className="flex w-full flex-col items-start gap-[15px] p-[0px_20px_20px]">
+      <div className="flex w-full flex-col items-start gap-[15px] p-[0px_20px]">
         <div className="flex w-full flex-row justify-between">
           <div className="flex flex-row items-center gap-[5px] text-[16px] font-normal leading-[32px] tracking-[0.15px]">
             <span>
@@ -145,7 +145,7 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
               orderPrice={totalIncTax}
               orderStatus={status.label}
             />
-            <div className="flex w-full flex-row items-center justify-between p-0">
+            <div className="flex w-full flex-row items-center justify-between p-[0px_20px_20px_20px]">
               <div className="flex flex-1 flex-row items-center gap-[40px] p-0" key={`order-${entityId}`}>
                 {(shippingConsignments ?? []).map(({ lineItems }) => {
                   let itemsCount = lineItems?.length;
@@ -159,10 +159,10 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
                     height = 65
                     productCount = 4;
                   } else if (itemsCount == 2) {
-                    className = 'flex h-[150px] w-[310px] flex-row gap-[10px] py-[5px]';
+                    className = 'flex h-[150px] w-[310px] flex-row gap-[10px]';
                     width = 150;
                   } else if (itemsCount == 1) {
-                    className = 'flex h-[150px] w-[150px] flex-row gap-[10px] py-[5px]';
+                    className = 'flex h-[150px] w-[150px] flex-row gap-[10px] ';
                     width = 150;
                   }
                   return (
@@ -187,7 +187,7 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
                           {itemsCount} Item{(itemsCount > 1) ? 's' : ''}
                         </div>
                       ) : (
-                        <div className="flex flex-col justify-center items-start p-0 gap-[5px] flex-[0.6]">
+                        <div className="flex flex-col justify-center items-start p-0 gap-[5px] flex-[0.7]">
                           <div className="font-normal text-[16px] tracking-[0.15px] leading-[32px] text-black">
                             {lineItems?.[0]?.name}
                           </div>
