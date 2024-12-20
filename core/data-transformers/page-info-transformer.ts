@@ -15,8 +15,8 @@ export function pageInfoTransformer(
 ): CursorPaginationInfo {
   return {
     startCursorParamName: 'before',
-    startCursor: pageInfo.startCursor,
+    startCursor: pageInfo.hasPreviousPage ? pageInfo.startCursor : null,
     endCursorParamName: 'after',
-    endCursor: pageInfo.endCursor,
+    endCursor: pageInfo.hasNextPage ? pageInfo.endCursor : null,
   };
 }
