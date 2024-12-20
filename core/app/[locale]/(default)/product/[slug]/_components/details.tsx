@@ -247,23 +247,25 @@ export const Details = ({
                     <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-black">
                       {product.name}
                     </h2>
+
                     <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px]">
                       by <span className="underline">{product.brand?.name}</span>
                     </div>
-                    <div className="mt-3 flex items-center text-[#7F7F7F]">
+
+                    <div className="mt-3 block flex-wrap items-center text-[#7F7F7F]">
                       {product.mpn && (
-                        <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px]">
+                        <span className="text-[14px] font-bold leading-[24px] tracking-[0.25px]">
                           SKU: {product.mpn}
-                        </div>
+                        </span>
                       )}
                       {product.mpn &&
                         productOptions.filter(
                           (option) => option.__typename === 'MultipleChoiceOption',
-                        ).length > 0 && <span className="mx-2 text-[14px] font-normal">|</span>}
+                        ).length > 0 && <span className="mx-1 text-[14px] font-normal">|</span>}
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
-                        <div className="text-[14px] font-normal">
+                        <div className="inline text-[14px] font-normal">
                           {productOptions
                             .filter((option) => option.__typename === 'MultipleChoiceOption')
                             .map((option, index, filteredArray) => {
@@ -273,10 +275,10 @@ export const Details = ({
                                 );
                                 return (
                                   <span key={option.entityId}>
-                                    <span className="font-bold">{option.displayName}:</span>{' '}
+                                    <span className="font-bold">{option.displayName}:</span>
                                     <span className="text-[15px]">{selectedValue}</span>
                                     {index < filteredArray.length - 1 && (
-                                      <span className="mx-2">|</span>
+                                      <span className="mx-1">|</span>
                                     )}
                                   </span>
                                 );
@@ -362,15 +364,26 @@ export const Details = ({
             SKU: <span>{product.mpn}</span>
           </span>
           <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-            by <Link href={product.brand?.path ?? ''} className="products-underline border-b border-black">{product.brand?.name}</Link>
+            by{' '}
+            <Link
+              href={product.brand?.path ?? ''}
+              className="products-underline border-b border-black"
+            >
+              {product.brand?.name}
+            </Link>
           </span>
-          {collectionValue &&
+          {collectionValue && (
             <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-              from the <Link href={`/search?brand_name[0]=${encodeURIComponent(product.brand?.name ?? '')}&collection[0]=${encodeURIComponent(collectionValue)}`} className="products-underline border-b border-black">
+              from the{' '}
+              <Link
+                href={`/search?brand_name[0]=${encodeURIComponent(product.brand?.name ?? '')}&collection[0]=${encodeURIComponent(collectionValue)}`}
+                className="products-underline border-b border-black"
+              >
                 {collectionValue}
-              </Link> Family
+              </Link>{' '}
+              Family
             </span>
-          }
+          )}
         </div>
 
         <ReviewSummary data={product} />

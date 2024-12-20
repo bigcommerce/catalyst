@@ -6,6 +6,7 @@ import { cn } from '~/lib/utils';
 import { Locale } from './locale';
 import AgentFooter from '~/app/[locale]/(default)/sales-buddy/pages/footer';
 import CookieConsent from '../cookie-consent/cookieConsent';
+const flagSalesBuddy = Number(process.env.SALES_BUDDY_FLAG);
 
 interface Image {
   altText: string;
@@ -56,7 +57,10 @@ const Footer = ({
   <footer className={cn('px-18  2xl:container 2xl:mx-auto !max-w-[100%] bg-[#002a37] text-white', className)} {...props}>
     <div className='absolute w-[370px] h-[130px] right-0 mt-[370px]'>
       <div className=' flex flex-col  gap-[10px] '>
-        <AgentFooter />
+        {flagSalesBuddy
+          ? <AgentFooter/>
+          : ''
+        }
       </div>
       </div>
 

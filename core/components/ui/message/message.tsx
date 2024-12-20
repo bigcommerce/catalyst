@@ -16,14 +16,14 @@ const Message = ({ className, children, variant = 'info', ...props }: Props) => 
       'flex w-full justify-start gap-x-2.5 p-3 text-base',
       variant === 'info' && 'bg-secondary/[.15] [&>svg]:text-primary',
       variant === 'success' && 'bg-success-secondary/[.15] [&>svg]:text-success',
-      variant === 'error' && 'bg-error-secondary/[.15] [&>svg]:text-error border border-[#ff4500] w-[80%] mx-auto items-center',
+      variant === 'error' && 'bg-error-secondary/[.15] [&>svg]:text-error border border-[#A71F23] w-[80%] mx-auto items-center',
       className,
     )}
     role="region"
     {...props}
   >
     {variant === 'info' && <Info className="flex-none" />}
-    {variant === 'error' && <AlertCircle className="flex-none !text-[#ff4500]" />}
+    {variant === 'error' && <AlertCircle className="flex-none !text-[#A71F23]" />}
     {variant === 'success' && <Check className="flex-none" />}
     {children}
   </div>

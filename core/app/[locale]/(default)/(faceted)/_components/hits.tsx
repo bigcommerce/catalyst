@@ -1,3 +1,5 @@
+// product-card-plp
+
 import React from 'react';
 import { useState, useMemo, useEffect } from 'react';
 import { useHits, UseHitsProps } from 'react-instantsearch';
@@ -68,7 +70,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...prop
 
   return (
     ((!useDefaultPrices && hits) || (useDefaultPrices && items)) && (
-      <div className="ais-Hits mt-4">
+      <div className="ais-Hits product-card-plp mt-4">
         <ol
           className={
             view == 'list'

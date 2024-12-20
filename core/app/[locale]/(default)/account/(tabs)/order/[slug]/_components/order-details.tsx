@@ -11,6 +11,9 @@ import {
   ProductSnippetSkeleton,
 } from '../../../orders/_components/product-snippet';
 import { OrderDataType } from '../page';
+import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
+import { BcImage } from '~/components/bc-image';
+import { PrintInvoice } from '../print-invoice';
 
 const OrderState = async ({ orderState }: { orderState: OrderDataType['orderState'] }) => {
   const t = await getTranslations('Account.Orders');
@@ -42,78 +45,111 @@ const OrderState = async ({ orderState }: { orderState: OrderDataType['orderStat
 const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['summaryInfo'] }) => {
   const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
-  const { subtotal, shipping, tax, discounts, grandTotal } = summaryInfo;
+  const { subtotal, shipping, tax, discounts, grandTotal, handlingCost } = summaryInfo;
   const { nonCouponDiscountTotal, couponDiscounts } = discounts;
+  let regSubTotal = subtotal?.value;
+  if(nonCouponDiscountTotal?.value > 0) {
+    regSubTotal -= nonCouponDiscountTotal.value;
+  }
+  couponDiscounts.map(({ discountedAmount }) => {
+    regSubTotal -= discountedAmount.value;
+  });
 
   return (
-    <div className="border border-gray-200 p-6">
-      <p className="pb-4 text-lg font-semibold">{t('orderSummary')}</p>
-      <div className="flex border-collapse flex-col gap-2 border-y border-gray-200 py-4">
-        <p className="flex justify-between">
-          <span>{t('orderSubtotal')}</span>
-          <span>
-            {format.number(subtotal.value, {
-              style: 'currency',
-              currency: subtotal.currencyCode,
-            })}
-          </span>
-        </p>
-        {nonCouponDiscountTotal.value > 0 && (
-          <p className="flex justify-between">
-            <span>{t('orderDiscount')}</span>
-            <span>
-              -
-              {format.number(nonCouponDiscountTotal.value, {
+    <>
+      <div className="flex w-1/2 flex-col gap-[3px] text-[16px] font-normal leading-[32px] tracking-[0.5px]">
+        <div className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#002A37]">
+          {t('orderTotal')}: {format.number(grandTotal.value, {
+            style: 'currency',
+            currency: grandTotal.currencyCode,
+          })}
+        </div>
+        <div>
+          <div className="flex justify-between border-b border-b-[#E8E7E7]">
+            <div>{t('subTotalReg')}</div>
+            <div>
+              {format.number(subtotal.value, {
                 style: 'currency',
-                currency: nonCouponDiscountTotal.currencyCode,
-              })}
-            </span>
-          </p>
-        )}
-        {couponDiscounts.map(({ couponCode, discountedAmount }, index) => (
-          <p className="flex justify-between" key={index}>
-            <span>{t('orderAppliedCoupon', { code: couponCode })}</span>
-            <span>
-              -
-              {format.number(discountedAmount.value, {
+                currency: subtotal.currencyCode,
+              })}</div>
+          </div>
+          {nonCouponDiscountTotal.value > 0 && (
+            <div className="flex justify-between border-b border-b-[#E8E7E7]">
+              <div>{t('orderDiscount')}</div>
+              <div className="text-[#008BB7]">
+                -
+                {format.number(nonCouponDiscountTotal.value, {
+                  style: 'currency',
+                  currency: nonCouponDiscountTotal.currencyCode,
+                })}
+              </div>
+            </div>
+          )}
+          {couponDiscounts.map(({ couponCode, discountedAmount }, index) => (
+            <div className="flex justify-between border-b border-b-[#E8E7E7]" key={index}>
+              <div>{t('orderAppliedCoupon', { code: couponCode })}</div>
+              <div>
+                -
+                {format.number(discountedAmount.value, {
+                  style: 'currency',
+                  currency: discountedAmount.currencyCode,
+                })}
+              </div>
+            </div>
+          ))}
+          {/*<div className="flex justify-between border-b border-b-[#E8E7E7]">
+            <div>You Save</div>
+            <div className="text-[#008BB7]">$165.00</div>
+          </div>*/}
+          <div className="flex justify-between border-b border-b-[#E8E7E7]">
+            <div>{t('orderSubtotal')}</div>
+            <div>
+              {format.number(regSubTotal, {
                 style: 'currency',
-                currency: discountedAmount.currencyCode,
+                currency: subtotal.currencyCode,
               })}
-            </span>
-          </p>
-        ))}
-        <p className="flex justify-between">
-          <span>{t('orderShipping')}</span>
-          <span>
-            {format.number(shipping.value, {
+            </div>
+          </div>
+          <div className="flex justify-between border-b border-b-[#E8E7E7]">
+            <div>{t('orderShipping')}</div>
+            <div>{shipping.value > 0 ? format.number(shipping.value, {
               style: 'currency',
               currency: shipping.currencyCode,
-            })}
-          </span>
-        </p>
-        <p className="flex justify-between">
-          <span>{t('orderTax')}</span>
-          <span>
-            {format.number(tax.value, {
+            }) : 'FREE'}
+            </div>
+          </div>
+          { handlingCost.value > 0 && (
+          <div className="flex justify-between border-b border-b-[#E8E7E7]">
+            <div>{t('surcharge')}</div>
+            <div>
+            {format.number(handlingCost.value, {
               style: 'currency',
-              currency: tax.currencyCode,
+              currency: handlingCost.currencyCode,
             })}
-          </span>
-        </p>
+            </div>
+          </div>
+          )}
+          <div className="flex justify-between border-b border-b-[#E8E7E7]">
+            <div>{t('orderTax')}</div>
+            <div>
+              {format.number(tax.value, {
+                style: 'currency',
+                currency: tax.currencyCode,
+              })}
+            </div>
+          </div>
+          <div className="flex justify-between border-b border-b-[#E8E7E7]">
+            <div>{t('orderGrandtotal')}</div>
+            <div>
+              {format.number(grandTotal.value, {
+                style: 'currency',
+                currency: grandTotal.currencyCode,
+              })}
+            </div>
+          </div>
+        </div>
       </div>
-      <div className="pt-4 text-base font-semibold">
-        <p className="flex justify-between">
-          <span>{t('orderGrandtotal')}</span>
-          <span>
-            {format.number(grandTotal.value, {
-              style: 'currency',
-              currency: grandTotal.currencyCode,
-            })}
-          </span>
-        </p>
-      </div>
-      {/* TODO: add manage-order buttons */}
-    </div>
+    </>
   );
 };
 const combineAddressInfo = (
@@ -234,60 +270,143 @@ const ShippingInfo = async ({
 
 export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
   const t = await getTranslations('Account.Orders');
-  const { orderState, summaryInfo, consignments } = data;
+  const format = await getFormatter();
+  const { orderState, summaryInfo, consignments, paymentInfo } = data;
   const shippingConsignments = consignments.shipping;
   const isMultiShippingConsignments = shippingConsignments && shippingConsignments.length > 1;
-
-  return (
-    <div className="mb-14">
-      <OrderState orderState={orderState} />
-      <div className="flex flex-col gap-8 lg:flex-row">
-        <div className="flex flex-col gap-8 lg:w-2/3">
-          {shippingConsignments?.map((consignment, idx) => {
-            const { lineItems } = consignment;
-
-            return (
-              <div className="w-full border border-gray-200 p-6" key={idx}>
-                <p className="border-b border-gray-200 pb-4 text-xl font-semibold lg:text-2xl">
-                  {isMultiShippingConsignments
-                    ? `${t('shipmentTitle')} ${idx + 1}/${shippingConsignments.length}`
-                    : t('orderContents')}
-                </p>
-                {isMultiShippingConsignments && (
-                  <ShippingInfo
-                    consignments={consignments}
-                    isMultiConsignments={true}
-                    shippingNumber={idx}
-                  />
-                )}
-                <ul className="my-4 flex flex-col gap-4">
-                  {lineItems.map((shipment) => {
-                    return (
-                      <li key={shipment.entityId}>
-                        <Suspense fallback={<ProductSnippetSkeleton isExtended={true} />}>
-                          <ProductSnippet
-                            imagePriority={true}
-                            imageSize="square"
-                            isExtended={true}
-                            product={assembleProductData(shipment)}
-                          />
-                        </Suspense>
-                      </li>
-                    );
-                  })}
-                </ul>
+  const noOfItems: number = shippingConsignments?.[0]?.lineItems?.length || 0;
+  const breadcrumbs: any = [{
+    label: "Orders",
+    href: '/account/orders'
+  }, {
+    label: "Order #" + orderState?.orderId,
+    href: "#"
+  }];
+  let shippingAddressData = shippingConsignments?.[0]?.shippingAddress;
+    return(
+      <div className="my-[1rem] flex justify-center text-[#353535]">
+        <div className="flex w-[70%] flex-col gap-[20px]">
+          <div>
+            <ComponentsBreadcrumbs breadcrumbs={breadcrumbs} />
+          </div>
+          <div className="flex flex-col gap-[30px]">
+            <div className="flex items-center justify-between">
+              <div className="text-[24px] font-normal leading-[32px]">Order #{orderState?.orderId}</div>
+              <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#008BB7]">
+                <PrintInvoice />
               </div>
-            );
-          })}
-        </div>
-        <div className="flex grow flex-col gap-8">
-          <OrderSummaryInfo summaryInfo={summaryInfo} />
-          {!isMultiShippingConsignments && (
-            <ShippingInfo consignments={consignments} isMultiConsignments={false} />
-          )}
-          {/* TODO: add PaymentInfo component later */}
+            </div>
+            <div className="flex items-center gap-[5px]">
+              <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px]">
+                {t('stillNeedHelp')}{' '}
+              </div>
+              <div className="text-[16px] font-[500] leading-[32px] tracking-[0.15px] text-[#008BB7]">
+                <Link href="#">{t('contact')}</Link>
+              </div>
+            </div>
+            <div className="flex flex-col gap-[30px]">
+              <div>
+                <p className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#000000]">
+                  Items In This Order ({noOfItems})
+                </p>
+              </div>
+              <div className="flex flex-col gap-[30px]">
+                {shippingConsignments?.map((consignment, idx) => {
+                  const { lineItems } = consignment;
+                  return (
+                    <>
+                      {isMultiShippingConsignments && (
+                        <ShippingInfo
+                          consignments={consignments}
+                          isMultiConsignments={true}
+                          shippingNumber={idx}
+                        />
+                      )}
+                      <ul className="my-4 flex flex-col gap-4">
+                        {lineItems.map((shipment) => {
+                          return (
+                            <li key={shipment.entityId}>
+                              <Suspense fallback={<ProductSnippetSkeleton isExtended={true} />}>
+                                <ProductSnippet
+                                  imagePriority={true}
+                                  imageSize="square"
+                                  isExtended={true}
+                                  product={assembleProductData(shipment)}
+                                />
+                              </Suspense>
+                            </li>
+                          );
+                        })}
+                      </ul>
+                    </>
+                  )
+                })}
+              </div>
+            </div>
+            <div className="border-b border-b-[#E8E7E7]">
+              <div className="pb-1 text-[24px] font-normal leading-[32px] text-black">
+                {t('orderSummary')}
+              </div>
+            </div>
+            <div className="flex justify-between gap-[30px]">
+              <div className="flex w-1/2 flex-col gap-[30px]">
+                <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
+                  <div>
+                    {t('confirmationNumber')}: <span className="font-[700]">{orderState?.orderId}</span>
+                  </div>
+                  <div>
+                    Order Date: <span className="font-[700]">
+                      {format.dateTime(new Date(orderState?.orderDate?.utc), {
+                        year: 'numeric',
+                        month: 'numeric',
+                        day: 'numeric',
+                      })}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex flex-col gap-[20px]">
+                  <div>
+                    <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
+                      Customer Contact
+                    </div>
+                    <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
+                    {paymentInfo?.billingAddress?.email} 
+                    </div>
+                  </div>
+                  <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
+                    <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
+                      {t('shippingAddress')}
+                    </div>
+                    <div>
+                      <div>{shippingAddressData?.firstName} {shippingAddressData?.lastName}</div>
+                      <div>{shippingAddressData?.address1}</div>
+                      <div>{shippingAddressData?.city}</div>
+                      <div>{shippingAddressData?.stateOrProvince}, {shippingAddressData?.countryCode} {shippingAddressData?.postalCode}</div>
+                    </div>
+                  </div>
+                  <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
+                    <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
+                      {t('billingAddress')}
+                    </div>
+                    <div>
+                      <div>{paymentInfo?.billingAddress?.firstName} {paymentInfo?.billingAddress?.lastName}</div>
+                      <div>{paymentInfo?.billingAddress?.address1}</div>
+                      <div>{paymentInfo?.billingAddress?.city}</div>
+                      <div>{paymentInfo?.billingAddress?.stateOrProvince}, {paymentInfo?.billingAddress?.countryCode} {paymentInfo?.billingAddress?.postalCode}</div>
+                    </div>
+                  </div>
+                  {/*<div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
+                  <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
+                    Payment
+                  </div>
+                  <div>*** *** *** 1234</div>
+                </div> */}
+                </div>
+              </div>
+              <OrderSummaryInfo summaryInfo={summaryInfo} />
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    );
 };

@@ -71,13 +71,14 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
           }}
         />
       </FieldControl>
+      <FieldMessage className='font-normal text-[14px] leading-[24px] tracking-[0.25px] mt-0 text-[#353535]'>Password Requirements Go Here.</FieldMessage>
       {passwordError && 
-      <div className='w-full text-xs font-normal text-[#ff4500] absolute bottom-[7%]'>{passwordError}</div>
+      <div className='w-full text-xs font-normal text-[#A71F23] absolute bottom-[7%]'>{passwordError}</div>
       }
       <div className="pass1 relative h-7">
         {field.isRequired && (
           <FieldMessage
-            className="text-error-secondary relative inline-flex w-full text-xs font-normal text-[#ff4500]"
+            className="text-error-secondary relative inline-flex w-full text-xs font-normal text-[#A71F23]"
             match="valueMissing"
           >
             {t('password')}
@@ -85,7 +86,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
         )}
         {fieldName === 'confirmPassword' && (
           <FieldMessage
-            className="inline-flex w-full text-xs font-normal text-[#ff4500] text-error"
+            className="inline-flex w-full text-xs font-normal text-[#A71F23] text-error"
             match={() => {
               return !isValid;
             }}

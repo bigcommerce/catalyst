@@ -1,24 +1,21 @@
 'use client';
 
+import React, { PropsWithChildren, SetStateAction, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useFormatter, useTranslations } from 'next-intl';
-import { PropsWithChildren, SetStateAction, useEffect, useState } from 'react';
+import { useTranslations } from 'next-intl';
+import { Trash2 } from 'lucide-react';
 
 import { createWishlist } from '~/client/mutations/create-wishlist';
-import { BcImage } from '~/components/bc-image';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { Message } from '~/components/ui/message/message';
-
 import { useAccountStatusContext } from '../../_components/account-status-provider';
 import { Modal } from '../../_components/modal';
-
-import { CreateWishlistForm } from './create-wishlist-form';
+import { CreateWishlistDialog } from './create-wishlist-form';
 import { DeleteWishlistForm } from './delete-wishlist-form';
-import { Wishlists, WISHLISTS_PER_PAGE } from './wishlist-content';
+import { Wishlists } from './wishlist-content';
 
 type NewWishlist = NonNullable<Awaited<ReturnType<typeof createWishlist>>>;
-
 type WishlistArray = Array<NewWishlist | Wishlists[number]>;
 
 interface WishlistProps {
@@ -26,228 +23,150 @@ interface WishlistProps {
   wishlist: WishlistArray[number];
 }
 
-interface WishlistBookProps {
-  hasPreviousPage: boolean;
-  wishlists: Wishlists;
+interface FavoritesSectionProps {
+  itemsCount?: number;
+  saveCartCount?: number;
 }
 
-interface HiddenQuantityProps {
-  itemsQuantity: number;
-}
+const FavoritesSection = ({ itemsCount = 0, saveCartCount = 0 }: FavoritesSectionProps) => {
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const { setAccountState } = useAccountStatusContext();
+  const t = useTranslations('Account.Wishlist');
 
-enum VisibleWishlistItemsPerDevice {
-  xs = 1,
-  md = 3,
-  lg = 4,
-  xl = 5,
-}
-
-const HiddenQuantity = ({ itemsQuantity }: HiddenQuantityProps) => {
-  const smItems = itemsQuantity - VisibleWishlistItemsPerDevice.xs;
-  const mdItems = itemsQuantity - VisibleWishlistItemsPerDevice.md;
-  const lgItems = itemsQuantity - VisibleWishlistItemsPerDevice.lg;
-  const xlItems = itemsQuantity - VisibleWishlistItemsPerDevice.xl;
+  const handleFavoritesDeleted = () => {
+    setAccountState({
+      status: 'success',
+      message: t('messages.deleted', { name: 'Favorites' }),
+    });
+    setDeleteModalOpen(false);
+  };
 
   return (
-    <>
-      {smItems > 0 && (
-        <div className="list-item w-32 sm:w-40 md:!hidden">
-          <div className="flex h-32 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500 sm:h-40">
-            +{smItems}
+    <div className="mb-[22px] border-b-2 border-[#4EAECC] pb-6">
+      <div className="flex items-start gap-[4em]">
+        <div className="flex h-[130px] w-[130px] justify-center bg-[#87CEEB]">
+          <svg className="text-white" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+          </svg>
+        </div>
+
+        <div className="flex-1">
+          <div className="flex justify-between">
+            <div>
+              <div className="mb-[4px] text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#000000]">
+                Your Favorites
+              </div>
+              <p className="mb-[6px] text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#000000]">
+                {saveCartCount} {saveCartCount === 1 ? 'item' : 'items'} Items
+              </p>
+              <div className="flex gap-4">
+                <button className="rounded-[3px] border border-[#4EAECC] p-[7px] text-[14px] font-medium">
+                  EDIT DETAILS
+                </button>
+                <Link
+                  className="rounded-[3px] bg-[#008BB7] px-[30px] py-[7px] text-[14px] font-medium text-white"
+                  href="/account/wishlists/wishlist-product/"
+                >
+                  SHARE
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
-      )}
-      {mdItems > 0 && (
-        <div className="hidden w-36 md:list-item lg:hidden">
-          <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
-            +{mdItems}
-          </div>
-        </div>
-      )}
-      {lgItems > 0 && (
-        <div className="hidden w-36 lg:list-item xl:hidden">
-          <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500 md:h-36">
-            +{lgItems}
-          </div>
-        </div>
-      )}
-      {xlItems > 0 && (
-        <div className="hidden w-36 xl:list-item">
-          <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500 md:h-36">
-            +{xlItems}
-          </div>
-        </div>
-      )}
-    </>
+
+        <Modal
+          open={deleteModalOpen}
+          setOpen={setDeleteModalOpen}
+          showCancelButton={false}
+          title={t('deleteTitle', { name: 'Favorites' })}
+        >
+          <DeleteWishlistForm
+            id={'favorites'}
+            name="Favorites"
+            onWishistDeleted={handleFavoritesDeleted}
+          />
+        </Modal>
+      </div>
+    </div>
   );
 };
 
 const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
   const [deleteWishlistModalOpen, setDeleteWishlistModalOpen] = useState(false);
   const { setAccountState } = useAccountStatusContext();
-
-  const format = useFormatter();
   const t = useTranslations('Account.Wishlist');
   const { entityId, name } = wishlist;
-  const items = 'items' in wishlist ? wishlist.items : [];
 
   const handleWishlistDeleted = () => {
     setWishlistBook((prevWishlistBook) =>
       prevWishlistBook.filter((wishlistItem) => wishlistItem.entityId !== entityId),
     );
-
-    const message = t('messages.deleted', { name });
-
-    setAccountState({ status: 'success', message });
+    setAccountState({ status: 'success', message: t('messages.deleted', { name }) });
     setDeleteWishlistModalOpen(false);
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
   };
 
+  if (name.startsWith('Save Cart -')) {
+    return null;
+  }
+
+  const itemsCount = 'items' in wishlist ? wishlist.items.length : 0;
+
   return (
-    <>
-      <h3 className="mb-2 text-[#353535] font-normal text-[16px] leading-[32px] tracking-[0.5px]">{name}</h3>
-      <div className="flex flex-col gap-[20px] mb-[20px]">
-        {items.length === 0 ? (
-          <p className="flex-1 py-4 text-center">{t('noItems')}</p>
-        ) : (
-          <div className="">
-            <ul className="grid grid-cols-[auto_auto] lg:grid-cols-[32%_32%_32%] justify-start gap-[20px] [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
-              {items.slice(0, VisibleWishlistItemsPerDevice.xl).map((item) => {
-                const { entityId: productId, product } = item;
-                const defaultImage = product.images.find(({ isDefault }) => isDefault);
-                const showPriceRange =
-                  product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
-
-                return (
-                  <li className="border border-[#CCCBCB]" key={productId}>
-                    <Link className="flex justify-center items-center" href={product.path}>
-                      <div className="mzx-w-[344px] w-[344px] max-h-[360px] h-[360px]">
-                        {defaultImage ? (
-                          <BcImage
-                            alt={defaultImage.altText}
-                            className="object-contain w-full h-full"
-                            height={300}
-                            src={defaultImage.url}
-                            width={300}
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
-                            {t('noGalleryText')}
-                          </div>
-                        )}
-                      </div>
-                    </Link>
-
-                    {product.brand && (
-                      <Link href={product.brand.path}>
-                        <p className="text-gray-500">{product.brand.name}</p>
-                      </Link>
-                    )}
-                    <Link href={product.path}>
-                      <h4 className="font-semibold text-center w-[80%]">{product.name}</h4>
-                    </Link>
-                    {product.prices && (
-                      <p className="text-center shrink-0">
-                        {showPriceRange ? (
-                          <>
-                            {format.number(product.prices.priceRange.min.value, {
-                              style: 'currency',
-                              currency: product.prices.price.currencyCode,
-                            })}{' '}
-                            -{' '}
-                            {format.number(product.prices.priceRange.max.value, {
-                              style: 'currency',
-                              currency: product.prices.price.currencyCode,
-                            })}
-                          </>
-                        ) : (
-                          <>
-                            {product.prices.retailPrice?.value !== undefined && (
-                              <>
-                                {t('Table.Prices.msrp')}:{' '}
-                                <span className="line-through">
-                                  {format.number(product.prices.retailPrice.value, {
-                                    style: 'currency',
-                                    currency: product.prices.price.currencyCode,
-                                  })}
-                                </span>
-                                <br />
-                              </>
-                            )}
-                            {product.prices.salePrice?.value !== undefined &&
-                            product.prices.basePrice?.value !== undefined ? (
-                              <>
-                                {t('Table.Prices.was')}:{' '}
-                                <span className="line-through">
-                                  {format.number(product.prices.basePrice.value, {
-                                    style: 'currency',
-                                    currency: product.prices.price.currencyCode,
-                                  })}
-                                </span>
-                                <br />
-                                <>
-                                  {t('Table.Prices.now')}:{' '}
-                                  {format.number(product.prices.price.value, {
-                                    style: 'currency',
-                                    currency: product.prices.price.currencyCode,
-                                  })}
-                                </>
-                              </>
-                            ) : (
-                              product.prices.price.value && (
-                                <>
-                                  {format.number(product.prices.price.value, {
-                                    style: 'currency',
-                                    currency: product.prices.price.currencyCode,
-                                  })}
-                                </>
-                              )
-                            )}
-                          </>
-                        )}
-                      </p>
-                    )}
-                  </li>
-                );
-              })}
-            </ul>
-            <HiddenQuantity itemsQuantity={items.length} />
+    <div className="mb-4">
+      <div className="mb-[22px] border-b-2 border-[#4EAECC] pb-6">
+        <div className="flex items-start gap-[4em]">
+          <div className="flex h-[130px] w-[130px] justify-center bg-[#87CEEB]">
+            <svg className="text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+            </svg>
           </div>
-        )}
-        {name === t('favorites') ? (
-          <Button className="invisible w-auto" variant="secondary">
-            {t('delete')}
-          </Button>
-        ) : (
-          <div>
-            <Modal
-              confirmationText={t('delete')}
-              open={deleteWishlistModalOpen}
-              setOpen={setDeleteWishlistModalOpen}
-              showCancelButton={false}
-              title={t('deleteTitle', { name })}
-              trigger={
-                <Button className="w-auto" variant="secondary">
-                  {t('delete')}
-                </Button>
-              }
-            >
-              <DeleteWishlistForm
-                id={entityId}
-                name={name}
-                onWishistDeleted={handleWishlistDeleted}
-              />
-            </Modal>
+
+          <div className="flex-1">
+            <div className="flex justify-between">
+              <div>
+                <div className="mb-[4px] text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#000000]">
+                  {name}
+                </div>
+                <p className="mb-[6px] text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#000000]">
+                  {itemsCount} Items
+                </p>
+                <div className="flex gap-4">
+                  <button className="rounded-[3px] border border-[#4EAECC] p-[7px] text-[14px] font-medium">
+                    EDIT DETAILS
+                  </button>
+                  <Link
+                    className="rounded-[3px] bg-[#008BB7] px-[30px] py-[7px] text-[14px] font-medium text-white"
+                    href="/account/wishlists/wishlist-product/"
+                  >
+                    SHARE
+                  </Link>
+                </div>
+              </div>
+            </div>
           </div>
-        )}
+
+          <Modal
+            open={deleteWishlistModalOpen}
+            setOpen={setDeleteWishlistModalOpen}
+            showCancelButton={false}
+            title={t('deleteTitle', { name })}
+          >
+            <DeleteWishlistForm
+              id={entityId}
+              name={name}
+              onWishistDeleted={handleWishlistDeleted}
+            />
+          </Modal>
+        </div>
       </div>
-    </>
+    </div>
   );
 };
+
+interface WishlistBookProps {
+  hasPreviousPage?: boolean;
+  wishlists: Wishlists;
+}
 
 export const WishlistBook = ({
   children,
@@ -255,15 +174,33 @@ export const WishlistBook = ({
   wishlists,
 }: PropsWithChildren<WishlistBookProps>) => {
   const t = useTranslations('Account.Wishlist');
-
-  const [wishlistBook, setWishlistBook] = useState<WishlistArray>(wishlists);
+  const [saveCartCount, setSaveCartCount] = useState(0);
+  const [wishlistBook, setWishlistBook] = useState<WishlistArray>(
+    wishlists.filter((wishlist: { name: string }) => !wishlist.name.startsWith('Save Cart -')),
+  );
   const { accountState } = useAccountStatusContext();
-  const [ceateWishlistModalOpen, setCreateWishlistModalOpen] = useState(false);
-
+  const [createWishlistModalOpen, setCreateWishlistModalOpen] = useState(false);
   const router = useRouter();
 
+  const getAllItems = () => {
+    return wishlistBook.flatMap((wishlist) => ('items' in wishlist ? wishlist.items : [])).length;
+  };
+
   useEffect(() => {
-    setWishlistBook(wishlists);
+    const saveCartWishlists = wishlists.filter((wishlist: { name: string }) =>
+      wishlist.name.startsWith('Save Cart -'),
+    );
+
+    const totalSaveCartItems = saveCartWishlists.reduce((total, wishlist) => {
+      return total + ('items' in wishlist ? wishlist.items.length : 0);
+    }, 0);
+
+    setSaveCartCount(totalSaveCartItems);
+
+    const filteredWishlists = wishlists.filter(
+      (wishlist: { name: string }) => !wishlist.name.startsWith('Save Cart -'),
+    );
+    setWishlistBook(filteredWishlists);
   }, [wishlists]);
 
   useEffect(() => {
@@ -271,25 +208,14 @@ export const WishlistBook = ({
       const timer = setTimeout(() => {
         router.back();
       }, 3000);
-
       return () => clearTimeout(timer);
     }
   }, [hasPreviousPage, router, wishlistBook]);
 
   const handleWishlistCreated = (newWishlist: NewWishlist) => {
-    setWishlistBook((prevWishlistBook) => {
-      if (prevWishlistBook.length < WISHLISTS_PER_PAGE) {
-        return [...prevWishlistBook, newWishlist];
-      }
-
-      return prevWishlistBook;
-    });
+    setWishlistBook((prevWishlistBook) => [...prevWishlistBook, newWishlist]);
     setCreateWishlistModalOpen(false);
-
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth',
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -300,21 +226,19 @@ export const WishlistBook = ({
         </Message>
       )}
 
-      <ul className="mb-8">
-        {wishlistBook.map((wishlist) => {
-          return (
-            <li
-              className=""
-              key={wishlist.entityId}
-            >
-              <Wishlist setWishlistBook={setWishlistBook} wishlist={wishlist} />
-            </li>
-          );
-        })}
-      </ul>
-      <div className="mb-16 flex justify-between">
+      <div className="mb-[0.8em] border-b-2 border-[#4EAECC] pb-[1em] text-left text-[24px] font-normal leading-8">
+        Favorites and Lists
+      </div>
+
+      <FavoritesSection saveCartCount={saveCartCount} />
+
+      {wishlistBook.map((wishlist) => (
+        <Wishlist key={wishlist.entityId} setWishlistBook={setWishlistBook} wishlist={wishlist} />
+      ))}
+
+      <div className="mb-16 mt-[45px] flex flex-row-reverse justify-between">
         <Modal
-          open={ceateWishlistModalOpen}
+          open={createWishlistModalOpen}
           setOpen={setCreateWishlistModalOpen}
           showCancelButton={false}
           title={t('new')}
@@ -324,7 +248,7 @@ export const WishlistBook = ({
             </Button>
           }
         >
-          <CreateWishlistForm onWishlistCreated={handleWishlistCreated} />
+          <CreateWishlistDialog onWishlistCreated={handleWishlistCreated} />
         </Modal>
         {children}
       </div>

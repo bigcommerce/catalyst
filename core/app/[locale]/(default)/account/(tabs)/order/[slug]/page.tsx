@@ -36,6 +36,7 @@ const mapOrderData = (order: OrderDetailsType) => {
       shipping: order.shippingCostTotal,
       tax: order.taxTotal,
       grandTotal: order.totalIncTax,
+      handlingCost: order.handlingCostTotal
     },
     paymentInfo: {
       billingAddress: order.billingAddress,
