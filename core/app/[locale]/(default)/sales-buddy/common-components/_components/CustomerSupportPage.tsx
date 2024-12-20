@@ -35,7 +35,7 @@ function CustomerSupportPage() {
     company: '',
     email: '',
     phone: '',
-    referrerId: '',
+    referralId: '',
   });
   const [loading, setLoading] = useState({
     show1: false,
@@ -101,31 +101,38 @@ function CustomerSupportPage() {
 
   const handleCreateAccountSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(createAccountData);
+    
     setLoading((prev) => ({ ...prev, show3: true }));
-    if (!createAccountData.first_name || !createAccountData.last_name || !createAccountData.email) {
-      console.error('First name, last name, and email are required fields.');
+    if (
+      !createAccountData.first_name ||
+      !createAccountData.last_name ||
+      !createAccountData.email ||
+      !createAccountData.referralId
+    ) {
+      console.error('First name, last name, email and refferal id are required fields.');
       setCreateAccountErrorMessage(
-        'Please provide a first name, last name, and a valid email address.',
+        'Please provide a first name, last name,  valid email address and Refferal ID.',
       );
       setCreateAccountSuccessMessage(null);
-        setLoading((prev) => ({ ...prev, show3: false }));
+      setLoading((prev) => ({ ...prev, show3: false }));
       return 0;
     } else {
       try {
         const response = await createCustomerAccount(createAccountData);
         if (response.status == 200) {
-        setLoading((prev) => ({ ...prev, show3: false }));
+          setLoading((prev) => ({ ...prev, show3: false }));
           setCreateAccountSuccessMessage('Account created successfully!');
           setCreateAccountErrorMessage(null);
         } else {
-        setLoading((prev) => ({ ...prev, show3: false }));
+          setLoading((prev) => ({ ...prev, show3: false }));
           setCreateAccountErrorMessage('Error during account creation');
         }
       } catch (error: any) {
         setLoading((prev) => ({ ...prev, show3: false }));
         setCreateAccountErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
         setCreateAccountSuccessMessage(null);
-      } 
+      }
     }
   };
 
@@ -183,8 +190,8 @@ function CustomerSupportPage() {
       case 'create_phone':
         setCreateAccountData({ ...createAccountData, phone: value });
         break;
-      case 'create_referrerId':
-        setCreateAccountData({ ...createAccountData, referrerId: value });
+      case 'create_referralId':
+        setCreateAccountData({ ...createAccountData, referralId: value });
         break;
       default:
         break;
