@@ -15,6 +15,7 @@ const BlogQuery = graphql(`
         blog {
           name
           description
+          path
         }
       }
     }
@@ -52,14 +53,14 @@ const BlogPostsPageQuery = graphql(
   [BlogPostCardFragment, PaginationFragment],
 );
 
-interface BlogPostsFiltersInput {
-  tagId?: string;
+export interface BlogPostsFiltersInput {
+  tag: string | null;
 }
 
 interface Pagination {
-  limit?: number;
-  before?: string;
-  after?: string;
+  limit: number;
+  before: string | null;
+  after: string | null;
 }
 
 export const getBlog = cache(async () => {
@@ -72,8 +73,8 @@ export const getBlog = cache(async () => {
 });
 
 export const getBlogPosts = cache(
-  async ({ tagId, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
-    const filterArgs = tagId ? { filters: { tags: [tagId] } } : {};
+  async ({ tag, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
+    const filterArgs = tag ? { filters: { tags: [tag] } } : {};
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
@@ -103,7 +104,7 @@ export const getBlogPosts = cache(
               alt: post.thumbnailImage.altText,
             }
           : undefined,
-        href: `/blog/${post.entityId}`,
+        href: post.path,
         title: post.name,
       })),
     };
