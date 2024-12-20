@@ -13,6 +13,7 @@ import {
 import { OrderDataType } from '../page';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import { PrintInvoice } from '../print-invoice';
+import { StillNeedContactUs } from '../../../orders/_components/stillneed-contactus';
 
 const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['summaryInfo'] }) => {
   const t = await getTranslations('Account.Orders');
@@ -249,7 +250,7 @@ const ShippingInfo = async ({
   );
 };
 
-export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
+export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:any }) => {
   const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { orderState, summaryInfo, consignments, paymentInfo } = data;
@@ -265,26 +266,19 @@ export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
   }];
   let shippingAddressData = shippingConsignments?.[0]?.shippingAddress;
   return (
-    <div className="my-[1rem] flex justify-center text-[#353535]">
-      <div className="flex w-[70%] flex-col gap-[20px]">
+    <div className="mt-[1rem] mb-[2rem] w-[100%] flex justify-center text-[#353535]">
+      <div className="flex w-[88%] flex-col gap-[20px]">
         <div>
           <ComponentsBreadcrumbs breadcrumbs={breadcrumbs} />
         </div>
         <div className="flex flex-col gap-[30px]">
           <div className="flex items-center justify-between">
             <div className="text-[24px] font-normal leading-[32px]">Order #{orderState?.orderId}</div>
-            <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#008BB7]">
+            <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#008BB7] flex gap-[10px] items-center">
               <PrintInvoice />
             </div>
           </div>
-          <div className="flex items-center gap-[5px]">
-            <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px]">
-              {t('stillNeedHelp')}{' '}
-            </div>
-            <div className="text-[16px] font-[500] leading-[32px] tracking-[0.15px] text-[#008BB7]">
-              <Link href="#">{t('contact')}</Link>
-            </div>
-          </div>
+          <StillNeedContactUs icon={icon} />
           <div className="flex flex-col gap-[30px]">
             <div>
               <p className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#000000]">
@@ -303,7 +297,7 @@ export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
                         shippingNumber={idx}
                       />
                     )}
-                    <ul className="my-4 flex flex-col gap-4">
+                    <ul className="flex flex-col gap-[30px]">
                       {lineItems.map((shipment) => {
                         return (
                           <li key={shipment.entityId}>
