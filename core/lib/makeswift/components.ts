@@ -9,6 +9,8 @@ import './components/site-header/site-header.makeswift';
 import './components/slideshow/slideshow.makeswift';
 import './components/sticky-sidebar/sticky-sidebar.makeswift';
 
+import './components/site-theme/register';
+
 import { MakeswiftComponentType } from '@makeswift/runtime';
 
 import { runtime } from './runtime';
