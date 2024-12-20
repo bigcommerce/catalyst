@@ -47,6 +47,9 @@ const GetRouteQuery = graphql(`
           ... on Brand {
             entityId
           }
+          ... on BlogPost {
+            entityId
+          }
         }
       }
     }
@@ -152,6 +155,8 @@ const NodeSchema = z.union([
   z.object({ __typename: z.literal('ContactPage'), id: z.string() }),
   z.object({ __typename: z.literal('NormalPage'), id: z.string() }),
   z.object({ __typename: z.literal('RawHtmlPage'), id: z.string() }),
+  z.object({ __typename: z.literal('Blog'), id: z.string() }),
+  z.object({ __typename: z.literal('BlogPost'), entityId: z.number() }),
 ]);
 
 const RouteSchema = z.object({
@@ -328,6 +333,16 @@ export const withRoutes: MiddlewareFactory = () => {
         return new NextResponse(htmlBody, {
           headers: { 'content-type': 'text/html' },
         });
+      }
+
+      case 'Blog': {
+        url = `/${locale}/blog`;
+        break;
+      }
+
+      case 'BlogPost': {
+        url = `/${locale}/blog/${node.entityId}`;
+        break;
       }
 
       default: {

@@ -5,6 +5,7 @@ export const BlogPostCardFragment = graphql(`
     author
     entityId
     name
+    path
     plainTextSummary
     publishedDate {
       utc
