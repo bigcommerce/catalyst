@@ -2,11 +2,10 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { Accordions } from '~/components/ui/accordions';
+import { Accordions } from '../Accordin/index';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/form';
 import NotesIcons from '../../assets/add_notes.png';
-
 // Utility for styles
 const TailwindCustomCssValues = {
   font: 'font-open-sans',
@@ -37,7 +36,9 @@ const ACCORDION_DATA = {
     ),
   },
   costPricing: {
-    title: <h4 className="text-[20px] font-normal">Cost and Pricing - United States</h4>,
+    title: (
+      <h4 className="text-[20px] font-normal text-[#353535]">Cost and Pricing - United States</h4>
+    ),
     content: (
       <div className="bg-white">
         <table className="w-full border-collapse border-b border-gray-300 text-sm">
@@ -66,7 +67,7 @@ const ACCORDION_DATA = {
     ),
   },
   inventory: {
-    title: <h4 className="text-[20px] font-normal">Inventory</h4>,
+    title: <h4 className="text-[20px] font-normal text-[#353535]">Inventory</h4>,
     content: (
       <div className="w-[460px] bg-white p-[20px]">
         {[
@@ -117,6 +118,7 @@ const ACCORDION_DATA = {
 };
 
 export default function SalesBuddyProductPage() {
+  const retrievedProductData = JSON.parse(localStorage.getItem('productInfo') || '{}');
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
   const [quoteNumber, setQuoteNumber] = useState('');
 
@@ -130,29 +132,28 @@ export default function SalesBuddyProductPage() {
     <div className="space-y-[10px] overflow-x-hidden">
       {/* Product Info */}
       <div className="h-[64px] w-[460px]">
-        <h2 className="text-[24px] font-normal">Product ID: #12345678</h2>
-        <p className="text-[16px] font-bold underline">by Manufacturer Name</p>
+        <h2 className="text-[24px] font-normal">Product ID: {retrievedProductData.mpn}</h2>
+        <p className="text-[16px] font-bold underline">by {retrievedProductData.brand}</p>
       </div>
 
       {/* Accordions */}
       <div className="w-full bg-[#FFFFFF]">
         <Accordions
-          styles="border-t w-[460px] border-b py-[10px] px-[20px] text-[16px]"
-          accordinParent="bg-[#FFFFFF]"
+          styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.existingQuote]}
-          type="multiple"
+          // type="multiple"
         />
       </div>
       <div className="w-full">
         <Accordions
-          styles=" py-[10px]  text-[16px]"
+          styles="  py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.costPricing, ACCORDION_DATA.inventory]}
-          type="multiple"
+          // type="multiple"
         />
       </div>
 
       {/* Quick Links */}
-      <div className="w-[460px] space-y-[10px]">
+      {/* <div className="w-[460px] space-y-[10px]">
         <h3 className="text-[20px] font-normal">Quick Links</h3>
         <div className="mt-2 flex flex-col space-y-2">
           {[
@@ -168,7 +169,7 @@ export default function SalesBuddyProductPage() {
             </Button>
           ))}
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -13,8 +13,10 @@ export type TabType = (typeof tabList)[number];
 export const TabNavigation = () => {
   const t = useTranslations('Account.Home');
   const pathname = usePathname();
-  const activeTab = pathname.slice(0, -1).split('/').pop();
-
+  let activeTab: any = pathname.slice(0, -1).split('/').pop();
+  if(!isNaN(activeTab)) {
+    activeTab = 'orders';
+  }
   const tabsTitles = {
     addresses: t('addresses'),
     settings: t('settings'),
@@ -26,10 +28,10 @@ export const TabNavigation = () => {
     <nav aria-label={t('accountTabsLabel')}>
       <ul className="mb-8 flex items-start overflow-x-auto">
         {tabList.map((tab) => (
-          <li key={tab}>
+          <li key={tab} className='mr-[3em]'>
             <Link
-              className={cn('block whitespace-nowrap px-4 pb-2 font-semibold', {
-                'border-b-4 border-primary text-primary': activeTab === tab,
+              className={cn('block whitespace-nowrap font-semibold', {
+                'border-b-2 border-[#03465C] text-[#03465C]': activeTab === tab,
               })}
               href={`/account/${tab}`}
               prefetch="viewport"

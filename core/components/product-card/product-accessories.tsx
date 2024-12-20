@@ -52,7 +52,7 @@ export const ProductAccessories = ({
       sale_price: any;
     }) => ({
       value: id,
-      label: `(+$${sale_price}) ${sku}-  ${name}`,
+      label: `(+$${sale_price}) ${sku}  ${name}`,
     }),
   );
   const [isPending, startTransition] = useTransition();
