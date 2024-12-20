@@ -1,21 +1,9 @@
 import { useFormatter } from 'next-intl';
 import { Product as ProductSchemaType, WithContext } from 'schema-dts';
 
-import { FragmentOf, graphql } from '~/client/graphql';
+import { FragmentOf } from '~/client/graphql';
 
-export const ProductReviewSchemaFragment = graphql(`
-  fragment ProductReviewSchemaFragment on Review {
-    author {
-      name
-    }
-    title
-    text
-    rating
-    createdAt {
-      utc
-    }
-  }
-`);
+import { ProductReviewSchemaFragment } from './fragment';
 
 interface Props {
   productId: number;

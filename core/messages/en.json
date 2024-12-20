@@ -448,10 +448,11 @@
     },
     "Reviews": {
       "heading": "Reviews",
-      "reviewsCount": "Count:",
-      "unreviewed": "This product hasn't been reviewed yet.",
-      "reviewRating": "Rating: {rating} out of 5 stars",
-      "reviewAuthor": "Posted by {author} on"
+      "empty": "No reviews have been added for this product.",
+      "Pagination": {
+        "previous": "Previous reviews",
+        "next": "Next reviews"
+      }
     },
     "Details": {
       "additionalDetails": "Additional details",
