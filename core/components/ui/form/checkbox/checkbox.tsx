@@ -9,7 +9,7 @@ interface Props extends ComponentPropsWithRef<typeof CheckboxPrimitive.Root> {
 }
 
 const Checkbox = forwardRef<ElementRef<typeof CheckboxPrimitive.Root>, Props>(
-  ({ className, defaultChecked, error = false, onCheckedChange, ...props }, ref) => {
+  ({ className, defaultChecked=true , error = false, onCheckedChange, ...props }, ref) => {
     return (
       <CheckboxPrimitive.Root
         className={cn(
