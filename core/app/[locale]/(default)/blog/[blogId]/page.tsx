@@ -37,9 +37,10 @@ export default async function Blog({ params }: Props) {
   const format = await getFormatter();
 
   const data = await getBlogPageData({ entityId: Number(blogId) });
+  const blog = data?.content.blog;
   const blogPost = data?.content.blog?.post;
 
-  if (!blogPost) {
+  if (!blogPost || !blog) {
     return notFound();
   }
 
@@ -52,8 +53,8 @@ export default async function Blog({ params }: Props) {
           href: '/',
         },
         {
-          label: 'Blog',
-          href: '/blog',
+          label: blog.name,
+          href: blog.path,
         },
         {
           label: blogPost.name,
@@ -70,7 +71,7 @@ export default async function Blog({ params }: Props) {
       tags={blogPost.tags.map((tag) => ({
         label: tag,
         link: {
-          href: `/blog/tag/${tag}`,
+          href: `${blog.path}?tag=${tag}`,
         },
       }))}
       title={blogPost.name}
