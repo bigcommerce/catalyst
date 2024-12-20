@@ -1,134 +1,140 @@
-import React, { useRef, useState } from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
-import { Accordions } from '../Accordin'; // Replace with your accordion library
-import ShoppingCartIcon from '../../assets/shopping_cart_checkout.png'; // Update paths
+import { Accordions } from '../Accordin';
+import ShoppingCartIcon from '../../assets/shopping_cart_checkout.png';
 import DataLossIcon from '../../assets/data_loss_prevention.png';
 import PersonIcon from '../../assets/person_add.png';
 import { Input } from '../Input';
 import { createCustomerAccount } from '../../_actions/create-customer-account';
-
+import { findCustomerDetails } from '../../_actions/find-customer';
+import DynamicTable from '../table/CustomTable';
+import { getCustomerCart } from '../../_actions/get-customer-cart';
+import Loader from './Spinner';
 function CustomerSupportPage() {
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+  const [customerDetails, setCustomerDetails] = useState({});
+  const [cartErrorMessage, setCartErrorMessage] = useState<string | null>(null);
+  const [cartSuccessMessage, setCartSuccessMessage] = useState<string | null>(null);
+  const [findCustomerErrorMessage, setFindCustomerErrorMessage] = useState<string | null>(null);
+  const [findCustomerSuccessMessage, setFindCustomerSuccessMessage] = useState<string | null>(null);
+  const [createAccountErrorMessage, setCreateAccountErrorMessage] = useState<string | null>(null);
+  const [createAccountSuccessMessage, setCreateAccountSuccessMessage] = useState<string | null>(
+    null,
+  );
+  const [tableData, setTableData] = useState<any[]>([]);
+  const [cartId, setCartId] = useState('');
+  const [findCustomerData, setFindCustomerData] = useState({
+    email: '',
+    phone: '',
+    first_name: '',
+    last_name: '',
+    company: '',
+  });
+  const [createAccountData, setCreateAccountData] = useState({
+    first_name: '',
+    last_name: '',
+    company: '',
+    email: '',
+    phone: '',
+    referralId: '',
+  });
+  const [loading, setLoading] = useState({
+    show1: false,
+    show2: false,
+    show3: false,
+  });
 
-  const cartIdRef = useRef<HTMLInputElement>(null);
-  const findCustomerRefs = {
-    email: useRef<HTMLInputElement>(null),
-    phone: useRef<HTMLInputElement>(null),
-    name: useRef<HTMLInputElement>(null),
-    company: useRef<HTMLInputElement>(null),
-  };
-  const createAccountRefs = {
-    fullname: useRef<HTMLInputElement>(null),
-    company: useRef<HTMLInputElement>(null),
-    email: useRef<HTMLInputElement>(null),
-    phone: useRef<HTMLInputElement>(null),
-    referrerId: useRef<HTMLInputElement>(null),
-  };
-
-  const handleCartLookupSubmit = (e: React.FormEvent) => {
+  const handleCartLookupSubmit = async (e: React.FormEvent) => {
+    setLoading((prev) => ({ ...prev, show1: true }));
     e.preventDefault();
-    const cartId = cartIdRef.current?.value;
-    console.log('Cart ID:', cartId); // Process cartId as needed
+    try {
+      const response = await getCustomerCart(cartId);
+      setLoading((prev) => ({ ...prev, show1: false }));
+    } catch (error: any) {
+      setLoading((prev) => ({ ...prev, show1: false }));
+    } 
   };
 
-  const handleFindCustomerSubmit = (e: React.FormEvent) => {
+  const handleFindCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const findCustomerData = {
-      email: findCustomerRefs.email.current?.value,
-      phone: findCustomerRefs.phone.current?.value,
-      name: findCustomerRefs.name.current?.value,
-      company: findCustomerRefs.company.current?.value,
-    };
-    console.log('Find Customer Data:', findCustomerData); // Process findCustomerData as needed
-  };
-
-  // const handleCreateAccountSubmit = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-
-  //   // Construct account data with validation
-  //   const createAccountData = {
-  //     fullname: createAccountRefs.fullname.current?.value?.trim() || '',
-  //     company: createAccountRefs.company.current?.value?.trim() || '',
-  //     email: createAccountRefs.email.current?.value?.trim() || '',
-  //     phone: createAccountRefs.phone.current?.value?.trim() || '',
-  //     referrerId: createAccountRefs.referrerId.current?.value?.trim() || '',
-  //     access_id: process.env.SALES_BUDDY_ACCESS_ID,
-  //   };
-
-  //   console.log('Create Account Data:', createAccountData);
-
-  //   // Validate required fields
-  //   if (!createAccountData.fullname || !createAccountData.email) {
-  //     console.error('Full name and email are required fields.');
-  //     alert('Please provide a full name and a valid email address.');
-  //     return;
-  //   }
-
-  //   try {
-  //     // Call the createCustomerAccount API function
-  //     alert('fdsjfsahkjfkfd')
-  //     const response = await createCustomerAccount(createAccountData);
-
-  //     // Handle API response
-  //     if (response.status === 200) {
-  //       console.log('Account created successfully:', response.data);
-  //       alert('Account created successfully!');
-  //     } else {
-  //       const errorMessage = response.error || 'An unknown error occurred';
-  //       console.error('Error creating account:', errorMessage);
-  //       alert(`Failed to create account: ${errorMessage}`);
-  //     }
-  //   } catch (error: any) {
-  //     console.error('Error during account creation:', error);
-  //     alert(`An error occurred: ${error.message || 'Unknown error'}`);
-  //   }
-  // };
-const handleCreateAccountSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-
-  // Construct account data with validation
-  const createAccountData = {
-    fullname: createAccountRefs.fullname.current?.value?.trim() || '',
-    company: createAccountRefs.company.current?.value?.trim() || '',
-    email: createAccountRefs.email.current?.value?.trim() || '',
-    phone: createAccountRefs.phone.current?.value?.trim() || '',
-    referrerId: createAccountRefs.referrerId.current?.value?.trim() || '',
-    access_id: process.env.SALES_BUDDY_ACCESS_ID,
-  };
-
-  console.log('Create Account Data:', createAccountData);
-
-  // Validate required fields
-  if (!createAccountData.fullname || !createAccountData.email) {
-    console.error('Full name and email are required fields.');
-    // Set an error message in the state to display in the UI
-    setErrorMessage('Please provide a full name and a valid email address.');
-    return;
-  }
-
-  try {
-    // Call the createCustomerAccount API function
-    const response = await createCustomerAccount(createAccountData);
-
-    // Handle API response
-    if (response.status === 200) {
-      console.log('Account created successfully:', response.data);
-      // Set a success message in the state to display in the UI
-      setSuccessMessage('Account created successfully!');
+    setLoading((prev) => ({ ...prev, show2: true }));
+    if (
+      findCustomerData.email !== '' ||
+      findCustomerData.company !== '' ||
+      findCustomerData.phone !== '' ||
+      findCustomerData.first_name !== '' ||
+      findCustomerData.last_name !== ''
+    ) {
+      try {
+        const response = await findCustomerDetails(findCustomerData);
+        setCustomerDetails(findCustomerData);
+        if (response.status === 200) {
+          setLoading((prev) => ({ ...prev, show2: false }));
+          let data = response.data.output;
+          const extractedData = data.map(
+            (item: { first_name: any; last_name: any; email: any }) => ({
+              first_name: item.first_name,
+              last_name: item.last_name,
+              email: item.email,
+              // phone: item.phone,
+              // company: item.company,
+            }),
+          );
+          setTableData(extractedData);
+          setFindCustomerSuccessMessage('Account retrieved successfully!');
+          setFindCustomerErrorMessage(null);
+        } else {
+        setLoading((prev) => ({ ...prev, show2: false }));
+          const errorMessage = response.error || 'An unknown error occurred';
+          setFindCustomerErrorMessage(`Failed to retrieve account: ${errorMessage}`);
+          setFindCustomerSuccessMessage(null);
+        }
+      } catch (error: any) {
+        setLoading((prev) => ({ ...prev, show2: false }));
+        setFindCustomerErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
+        setFindCustomerSuccessMessage(null);
+      } 
     } else {
-      const errorMessage = response.error || 'An unknown error occurred';
-      console.error('Error creating account:', errorMessage);
-      // Set an error message in the state to display in the UI
-      setErrorMessage(`Failed to create account: ${errorMessage}`);
+        setLoading((prev) => ({ ...prev, show2: false }));
+      setFindCustomerErrorMessage('Required at least one field');
     }
-  } catch (error: any) {
-    console.error('Error during account creation:', error);
-    // Set an error message in the state to display in the UI
-    setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
-  }
-};
+  };
 
+  const handleCreateAccountSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    console.log(createAccountData);
+    
+    setLoading((prev) => ({ ...prev, show3: true }));
+    if (
+      !createAccountData.first_name ||
+      !createAccountData.last_name ||
+      !createAccountData.email ||
+      !createAccountData.referralId
+    ) {
+      console.error('First name, last name, email and refferal id are required fields.');
+      setCreateAccountErrorMessage(
+        'Please provide a first name, last name,  valid email address and Refferal ID.',
+      );
+      setCreateAccountSuccessMessage(null);
+      setLoading((prev) => ({ ...prev, show3: false }));
+      return 0;
+    } else {
+      try {
+        const response = await createCustomerAccount(createAccountData);
+        if (response.status == 200) {
+          setLoading((prev) => ({ ...prev, show3: false }));
+          setCreateAccountSuccessMessage('Account created successfully!');
+          setCreateAccountErrorMessage(null);
+        } else {
+          setLoading((prev) => ({ ...prev, show3: false }));
+          setCreateAccountErrorMessage('Error during account creation');
+        }
+      } catch (error: any) {
+        setLoading((prev) => ({ ...prev, show3: false }));
+        setCreateAccountErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
+        setCreateAccountSuccessMessage(null);
+      }
+    }
+  };
 
   const renderInputFields = (fields: Array<{ id: string; label: string }>, refs: any) => {
     return fields.map((item) => (
@@ -139,9 +145,57 @@ const handleCreateAccountSubmit = async (e: React.FormEvent) => {
         >
           {item.label}
         </label>
-        <Input ref={refs[item.id]} id={item.id} className="w-[225px]" />
+        <Input
+          value={refs[item.id]}
+          onChange={(e) => handleInputChange(item.id, e.target.value)}
+          id={item.id}
+          className="w-[225px]"
+        />
       </div>
     ));
+  };
+
+  const handleInputChange = (id: string, value: string) => {
+    switch (id) {
+      case 'cart-id':
+        setCartId(value);
+        break;
+      case 'email':
+        setFindCustomerData({ ...findCustomerData, email: value });
+        break;
+      case 'phone':
+        setFindCustomerData({ ...findCustomerData, phone: value });
+        break;
+      case 'first_name':
+        setFindCustomerData({ ...findCustomerData, first_name: value });
+        break;
+      case 'last_name':
+        setFindCustomerData({ ...findCustomerData, last_name: value });
+        break;
+      case 'company':
+        setFindCustomerData({ ...findCustomerData, company: value });
+        break;
+      case 'create_first_name':
+        setCreateAccountData({ ...createAccountData, first_name: value });
+        break;
+      case 'create_last_name':
+        setCreateAccountData({ ...createAccountData, last_name: value });
+        break;
+      case 'create_company':
+        setCreateAccountData({ ...createAccountData, company: value });
+        break;
+      case 'create_email':
+        setCreateAccountData({ ...createAccountData, email: value });
+        break;
+      case 'create_phone':
+        setCreateAccountData({ ...createAccountData, phone: value });
+        break;
+      case 'create_referralId':
+        setCreateAccountData({ ...createAccountData, referralId: value });
+        break;
+      default:
+        break;
+    }
   };
 
   const accordions = [
@@ -155,52 +209,69 @@ const handleCreateAccountSubmit = async (e: React.FormEvent) => {
         </div>
       ),
       content: (
-        <form onSubmit={handleCartLookupSubmit}>
+        <form onSubmit={(e) => handleCartLookupSubmit(e)}>
           <Input
-            ref={cartIdRef}
+            value={cartId}
+            onChange={(e) => handleInputChange('cart-id', e.target.value)}
             id="cart-id"
             placeholder="Cart ID"
             className="font-open-sans w-[225px]"
           />
+          {cartErrorMessage && <p className="text-red-800">{cartErrorMessage}</p>}
+          {cartSuccessMessage && <p className="text-green-600">{cartSuccessMessage}</p>}
           <button
             type="submit"
-            className="mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
+            className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
           >
-            <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH CART</p>
+            <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH CART </p>
+            <div className="absolute inset-0 flex items-center justify-center">
+              {loading.show1 && <Loader />}
+            </div>
           </button>
         </form>
       ),
     },
     {
       title: (
-        <div className="flex items-center gap-[10px] text-base font-normal">
-          <Image src={DataLossIcon} alt="Find Customer Icon" />
-          <span className="font-open-sans tracking-[0.15px] text-[#353535]">Find Customer</span>
+        <div className="flex items-center gap-[10px] bg-[#FFFFFF] text-base font-normal">
+          <Image src={DataLossIcon} width={24} alt="Find Customer Icon" />
+          <span className="font-open-sans tracking-[0.15px] text-[#353535]">Find Customer </span>
         </div>
       ),
       content: (
-        <form
-          onSubmit={handleFindCustomerSubmit}
-          className="mt-[10px] flex w-[420px] flex-col justify-center bg-white pb-[10px]"
-        >
-          {renderInputFields(
-            [
-              { id: 'email', label: 'Email' },
-              { id: 'phone', label: 'Phone' },
-              { id: 'name', label: 'Full Name' },
-              { id: 'company', label: 'Company' },
-            ],
-            findCustomerRefs,
-          )}
-          <button
-            type="submit"
-            className="mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
+        <>
+          <form
+            onSubmit={(e) => handleFindCustomerSubmit(e)}
+            className="mt-[10px] flex flex-col justify-center bg-white pb-[10px]"
           >
-            <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">
-              FIND CUSTOMER
-            </p>
-          </button>
-        </form>
+            {renderInputFields(
+              [
+                { id: 'email', label: 'Email' },
+                { id: 'phone', label: 'Phone' },
+                { id: 'first_name', label: 'First Name' },
+                { id: 'last_name', label: 'Last Name' },
+                { id: 'company', label: 'Company' },
+              ],
+              findCustomerData,
+            )}
+            {findCustomerErrorMessage && <p className="text-red-800">{findCustomerErrorMessage}</p>}
+            {findCustomerSuccessMessage && (
+              <p className="text-green-600">{findCustomerSuccessMessage}</p>
+            )}
+            <button
+              type="submit"
+              className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
+            >
+              <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">
+                FIND CUSTOMER
+              </p>
+              <div className="absolute inset-0 flex items-center justify-center">
+                {loading.show2 && <Loader />}
+              </div>
+            </button>
+          </form>
+          {tableData.length > 0 && <DynamicTable data={tableData} />}
+        </>
       ),
     },
     {
@@ -213,22 +284,30 @@ const handleCreateAccountSubmit = async (e: React.FormEvent) => {
         </div>
       ),
       content: (
-        <form onSubmit={handleCreateAccountSubmit} className="space-y-[10px]">
+        <form onSubmit={(e) => handleCreateAccountSubmit(e)} className="space-y-[10px]">
           {renderInputFields(
             [
-              { id: 'fullname', label: 'Full Name*' },
-              { id: 'company', label: 'Company (Optional)' },
-              { id: 'email', label: 'Email*' },
-              { id: 'phone', label: 'Phone (Optional)' },
-              { id: 'referrerId', label: 'Referrer ID*' },
+              { id: 'create_first_name', label: 'First Name*' },
+              { id: 'create_last_name', label: 'Last Name*' },
+              { id: 'create_company', label: 'Company (Optional)' },
+              { id: 'create_email', label: 'Email*' },
+              { id: 'create_phone', label: 'Phone (Optional)' },
+              { id: 'create_referralId', label: 'Referral ID*' },
             ],
-            createAccountRefs,
+            createAccountData,
+          )}
+          {createAccountErrorMessage && <p className="text-red-800">{createAccountErrorMessage}</p>}
+          {createAccountSuccessMessage && (
+            <p className="text-green-600">{createAccountSuccessMessage}</p>
           )}
           <button
             type="submit"
-            className="mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
+            className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
           >
             <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">CREATE</p>
+            <div className="absolute inset-0 flex items-center justify-center">
+              {loading.show3 && <Loader />}
+            </div>
           </button>
         </form>
       ),
@@ -237,15 +316,13 @@ const handleCreateAccountSubmit = async (e: React.FormEvent) => {
 
   return (
     <div className="w-[460px]">
-      <h2 className="h-[32px] content-center text-2xl font-normal text-[#353535]">
+      <h2 className="h-[52px] content-center text-2xl font-normal text-[#353535]">
         Customer Information
       </h2>
       <div className="mt-[20px]">
         <Accordions
-          styles="border-y-[1px] border-x-0 -my-[1px] border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
+          styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={accordions}
-          titlestyle=""
-          type="multiple"
         />
       </div>
     </div>

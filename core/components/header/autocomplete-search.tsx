@@ -17,6 +17,8 @@ import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query
 import '@algolia/autocomplete-theme-classic';
 import insightsClient from 'search-insights';
 
+import { ReviewSummary } from '~/belami/components/reviews';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import noImage from '~/public/no-image.svg';
@@ -91,6 +93,8 @@ export type ProductRecord = {
   newPrice: number;
   description: string;
   objectID: number;
+  reviews_rating_sum: number;
+  reviews_count: number;
   metafields: any;
   variants: any;
 
@@ -282,76 +286,9 @@ function ProductItem({
             </div>
           ) : null}
 
-          <div className="aa-ItemContentDescription flex items-center space-x-2">
-            <span className="flex space-x-0.5 text-yellow-500">
-              <svg
-                key={1}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={2}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={3}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={4}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={5}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-            </span>
-            <span>(10)</span>
-          </div>
+          {hit.reviews_count > 0 &&
+            <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="aa-ItemContentDescription" />
+          }
         </div>
       </div>
       {/*

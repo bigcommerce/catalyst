@@ -45,7 +45,8 @@ export function CardCarousel({
 
             return cards.map((card) => (
               <CarouselItem
-                className={clsx('basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6', classNames?.item)}
+                //className={clsx('basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6', classNames?.item)}
+                className={clsx('basis-1/2 md:basis-1/3 lg:basis-1/4 xl:basis-1/5 2xl:basis-1/6', classNames?.item)}
                 key={card.id}
               >
                 <Card {...card} />

@@ -1,70 +1,16 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getFormatter, getTranslations } from 'next-intl/server';
-import { Suspense } from 'react';
-
-import { ExistingResultType } from '~/client/util';
+import { useTranslations, useFormatter } from 'next-intl';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
-
-import { getCustomerOrders } from '../page-data';
-
-import { assembleProductData, ProductSnippet, ProductSnippetSkeleton } from './product-snippet';
 import { PrinterIcon } from 'lucide-react';
 import { BcImage } from '~/components/bc-image';
-
-export type Orders = ExistingResultType<typeof getCustomerOrders>['orders'];
+import { Orders } from '../page';
+import { PrintInvoice } from '../../order/[slug]/print-invoice';
 
 interface OrdersListProps {
   customerOrders: Orders;
   ordersCount?: number;
 }
-
-enum VisibleListItemsPerDevice {
-  xs = 1,
-  md = 3,
-  lg = 4,
-  xl = 5,
-}
-
-const TruncatedCard = ({ itemsQuantity }: { itemsQuantity: number }) => {
-  const smItems = itemsQuantity - VisibleListItemsPerDevice.xs;
-  const mdItems = itemsQuantity - VisibleListItemsPerDevice.md;
-  const lgItems = itemsQuantity - VisibleListItemsPerDevice.lg;
-  const xlItems = itemsQuantity - VisibleListItemsPerDevice.xl;
-
-  return (
-    <>
-      {smItems > 0 && (
-        <div className="list-item w-36 md:!hidden">
-          <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
-            +{smItems}
-          </div>
-        </div>
-      )}
-      {mdItems > 0 && (
-        <div className="hidden w-36 md:list-item lg:hidden">
-          <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
-            +{mdItems}
-          </div>
-        </div>
-      )}
-      {lgItems > 0 && (
-        <div className="hidden w-36 lg:list-item xl:hidden">
-          <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
-            +{lgItems}
-          </div>
-        </div>
-      )}
-      {xlItems > 0 && (
-        <div className="hidden w-36 xl:list-item">
-          <div className="flex h-36 w-full items-center justify-center bg-gray-200 font-semibold text-gray-500">
-            +{xlItems}
-          </div>
-        </div>
-      )}
-    </>
-  );
-};
 
 interface ManageOrderButtonsProps {
   className: string;
@@ -73,20 +19,23 @@ interface ManageOrderButtonsProps {
   orderStatus: string | null;
 }
 
-const ManageOrderButtons = async ({
+const ManageOrderButtons = ({
   className,
   orderId,
   orderStatus,
   orderTrackingUrl,
 }: ManageOrderButtonsProps) => {
-  const t = await getTranslations('Account.Orders');
+  const t = useTranslations('Account.Orders');
 
   return (
-    <div className={className}>
-      <Button aria-label={t('viewOrderDetails')} asChild className="w-full font-normal  md:w-fit" variant="secondary">
-        <Link href={`/account/order/${orderId}`} className='hover:text-black'>
-          {t('viewOrderDetails')}
-        </Link>
+    <div className="flex-[0.44]">
+      <Button
+        className="flex w-full min-h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium leading-[32px] tracking-[1.25px] text-[#002A37]"
+        aria-label={t('viewOrderDetails')}
+        variant="secondary"
+        asChild
+      >
+        <Link href={`/account/order/${orderId}`} className='hover:text-black'>{t('viewOrderDetails')}</Link>
       </Button>
       {Boolean(orderTrackingUrl) && (
         <Button
@@ -111,7 +60,7 @@ const ManageOrderButtons = async ({
     </div>
   );
 };
-const OrderDetails = async ({
+const OrderDetails = ({
   orderId,
   orderDate,
   orderPrice,
@@ -125,48 +74,35 @@ const OrderDetails = async ({
   };
   orderStatus: string;
 }) => {
-  const t = await getTranslations('Account.Orders');
-  const format = await getFormatter();
+  const t = useTranslations('Account.Orders');
+  const format = useFormatter();
 
   return (
     <>
-      <div className="w-full bg-[#03465C] h-[52px] flex flex-row items-center">
-        <p className="max-w-max h-[32px] content-center px-2 ml-2 rounded-3xl bg-[#E7F5F8] font-normal text-[#03465C]">
+      <div className="w-full bg-[#03465C] p-[10px]">
+        <button className="flex h-[32px] flex-row items-center justify-center gap-[10px] rounded-full bg-[#E7F5F8] p-[0px_10px] text-[16px] font-normal leading-[32px]">
           {orderStatus}
-        </p>
+        </button>
       </div>
-      <div className="flex flex-row justify-between gap-2 pb-[20px] px-[20px] text-base md:flex-row md:gap-12">
-        <div className='flex flex-row gap-[10px]'>
-          <p className="flex justify-between md:flex-col">
-            {/* <span>{t('placedDate')}</span> */}
-            <span className="font-normal">
+      <div className="flex w-full flex-col items-start gap-[15px] p-[0px_20px_20px]">
+        <div className="flex w-full flex-row justify-between">
+          <div className="flex flex-row items-center gap-[5px] text-[16px] font-normal leading-[32px] tracking-[0.15px]">
+            <span>
               {format.dateTime(new Date(orderDate), {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric',
               })}
             </span>
-          </p>
-          <span> | </span>
-          <Link href={{ pathname: '/account/orders', query: { order: orderId } }}>
-            <p className="flex justify-between leading-[24px] md:flex-col">
-              <span className="text-base font-normal">{t('orderNumber')} {orderId}</span>
-            </p>
-          </Link>
-        </div>
-        <div className='flex flex-row gap-[10px]'>
-          <p className="flex justify-between md:flex-col">
-            <span className="font-normal">{t('orderTotal')}
+            <span> | {t('orderNumber')}{orderId}</span>
+          </div>
+          <div className="flex flex-row items-center gap-[5px] text-[16px] font-normal leading-[32px] tracking-[0.15px]">
+            <span>{t('orderTotal')}:
               {format.number(orderPrice.value, {
                 style: 'currency',
                 currency: orderPrice.currencyCode,
-              })}
-            </span>
-          </p>
-          <div className='flex flex-row '>
-            <span className='mr-[10px]'> | </span>
-            <PrinterIcon className='stroke-[#008bb7]' />
-            <span className='text-[#008bb7] ml-[10px]'>{t('printInvoice')}</span>
+              })} |</span>
+            <PrintInvoice />
           </div>
         </div>
       </div>
@@ -176,77 +112,110 @@ const OrderDetails = async ({
 
 export const OrdersList = ({ customerOrders }: OrdersListProps) => {
   return (
-    <ul className="flex w-full flex-col mt-[20px]">
+    <>
       {customerOrders.map(({ entityId, orderedAt, status, totalIncTax, consignments }) => {
-        const shippingConsignments = consignments.shipping
-          ? consignments.shipping.map(({ lineItems, shipments }) => ({
-              lineItems: removeEdgesAndNodes(lineItems),
-              shipments: removeEdgesAndNodes(shipments),
-            }))
+        const shippingConsignments = consignments?.shipping
+          ? consignments?.shipping.map(({ lineItems, shipments }) => ({
+            lineItems: removeEdgesAndNodes(lineItems),
+            shipments: removeEdgesAndNodes(shipments),
+          }))
           : undefined;
         // NOTE: tracking url will be supported later
         const trackingUrl = shippingConsignments
           ? shippingConsignments
-              .flatMap(({ shipments }) =>
-                shipments.map((shipment) => {
-                  if (
-                    shipment.tracking?.__typename === 'OrderShipmentNumberAndUrlTracking' ||
-                    shipment.tracking?.__typename === 'OrderShipmentUrlOnlyTracking'
-                  ) {
-                    return shipment.tracking.url;
-                  }
+            .flatMap(({ shipments }) =>
+              shipments.map((shipment) => {
+                if (
+                  shipment.tracking?.__typename === 'OrderShipmentNumberAndUrlTracking' ||
+                  shipment.tracking?.__typename === 'OrderShipmentUrlOnlyTracking'
+                ) {
+                  return shipment.tracking.url;
+                }
 
-                  return null;
-                }),
-              )
-              .find((url) => url !== null)
+                return null;
+              }),
+            )
+            .find((url) => url !== null)
           : undefined;
-
         return (
-          <li
-            className="inline-flex border-collapse flex-col gap-y-6 border border-[#CCCBCB] mb-[20px]"
-            key={entityId}
-          >
+          <div className="flex flex-col items-start gap-[15px] border border-[#CCCBCB] p-0" key={entityId}>
             <OrderDetails
               orderDate={orderedAt.utc}
               orderId={entityId}
               orderPrice={totalIncTax}
               orderStatus={status.label}
             />
-            <div className="flex items-center gap-4 pb-[20px] px-[20px]">
-              <ul className="inline-flex gap-4 [&>*:nth-child(n+2)]:hidden md:[&>*:nth-child(n+2)]:list-item md:[&>*:nth-child(n+4)]:hidden lg:[&>*:nth-child(n+4)]:list-item lg:[&>*:nth-child(n+5)]:hidden xl:[&>*:nth-child(n+5)]:list-item lg:[&>*:nth-child(n+7)]:hidden">
+            <div className="flex w-full flex-row items-center justify-between p-0">
+              <div className="flex flex-1 flex-row items-center gap-[40px] p-0" key={`order-${entityId}`}>
                 {(shippingConsignments ?? []).map(({ lineItems }) => {
-                  return lineItems.slice(0, VisibleListItemsPerDevice.xl).map((shippedProduct) => {
-                    return (
-                      <li className="w-36" key={shippedProduct.entityId}>
-                        <Suspense fallback={<ProductSnippetSkeleton />}>
-                          <ProductSnippet
-                            imagePriority={true}
-                            imageSize="square"
-                            product={assembleProductData({ ...shippedProduct, productOptions: [] })}
-                          />
-                        </Suspense>
-                      </li>
-                    );
-                  });
+                  let itemsCount = lineItems?.length;
+                  let className = '', imageClass = '';
+                  let productCount = 1;
+                  let width = 150, height = 150;
+                  if (itemsCount >= 3) {
+                    className = 'flex h-[150px] w-[150px] flex-row flex-wrap gap-[10px] py-[5px]';
+                    imageClass = 'h-[65px] w-[70px]';
+                    width = 70;
+                    height = 65
+                    productCount = 4;
+                  } else if (itemsCount == 2) {
+                    className = 'flex h-[150px] w-[310px] flex-row gap-[10px] py-[5px]';
+                    width = 150;
+                  } else if (itemsCount == 1) {
+                    className = 'flex h-[150px] w-[150px] flex-row gap-[10px] py-[5px]';
+                    width = 150;
+                  }
+                  return (
+                    <>
+                      <div className={className}>
+                        {lineItems?.slice(0, productCount).map((shippedProduct) => {
+                          return (
+                            <BcImage
+                              className={imageClass}
+                              width={width}
+                              height={height}
+                              src={shippedProduct?.image?.url || undefined}
+                              unoptimized={true}
+                              alt={shippedProduct?.name}
+                              key={`order-${entityId}-${shippedProduct?.entityId}`}
+                            />
+                          )
+                        })}
+                      </div>
+                      {itemsCount > 1 ? (
+                        <div className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#000000]">
+                          {itemsCount} Item{(itemsCount > 1) ? 's' : ''}
+                        </div>
+                      ) : (
+                        <div className="flex flex-col justify-center items-start p-0 gap-[5px] flex-[0.6]">
+                          <div className="font-normal text-[16px] tracking-[0.15px] leading-[32px] text-black">
+                            {lineItems?.[0]?.name}
+                          </div>
+                          <div className="font-bold text-[14px] tracking-[0.25px] leading-[24px] text-[#7f7f7f]">
+                            <span>SKU: {lineItems?.[0]?.sku}</span>{' '}
+                            {lineItems?.[0]?.productOptions?.length > 0 && lineItems?.[0]?.productOptions?.map((lineData) => (
+                              <span>
+                                | {lineData?.name}: <span className="font-[400]">{lineData?.value}</span>
+                              </span>
+                            ))}
+                          </div>
+                          <div className="font-bold text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]">QTY: {lineItems?.[0]?.quantity}</div>
+                        </div>
+                      )}
+                    </>
+                  )
                 })}
-              </ul>
-              <TruncatedCard
-                itemsQuantity={(shippingConsignments ?? []).reduce(
-                  (orderItems, shipment) => orderItems + shipment.lineItems.length,
-                  0,
-                )}
-              />
+              </div>
               <ManageOrderButtons
-                className="ms-auto inline-flex flex-col gap-2 w-[320px] h-[42px] border border-[#B4DDE9] rounded-[3px] items-center hover:cursor-pointer hover:border-[2px] hover:border-[#008BB7] hover:bg-[#e7f5f8]"
+                className=""
                 orderId={entityId}
                 orderStatus={status.value}
                 orderTrackingUrl={trackingUrl}
               />
             </div>
-          </li>
+          </div>
         );
       })}
-    </ul>
+    </>
   );
 };

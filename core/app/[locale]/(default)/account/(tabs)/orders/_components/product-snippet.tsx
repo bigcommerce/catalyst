@@ -30,7 +30,7 @@ export const OrderItemFragment = graphql(`
     name
     quantity
     image {
-      url: urlTemplate(lossy: true)
+      url(width: 150, height: 150, lossy: true)
       altText
     }
     subTotalListPrice {
@@ -77,9 +77,9 @@ export const assembleProductData = (orderItem: ResultOf<typeof OrderItemFragment
     brand,
     defaultImage: image
       ? {
-          url: image.url,
-          altText: image.altText,
-        }
+        url: image.url,
+        altText: image.altText,
+      }
       : null,
     productOptions,
     quantity: orderItem.quantity,
@@ -106,26 +106,30 @@ const Price = async ({ price }: { price?: PricesType }) => {
   return (
     Boolean(price) &&
     (typeof price === 'object' ? (
-      <p className="flex flex-col gap-1">
+      <>
         {price.type === 'range' && (
-          <span>
+          <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px]">
             {price.minValue} - {price.maxValue}
-          </span>
+          </div>
         )}
+        <div className="flex items-center justify-end gap-[2px]">
+          {price.type === 'sale' && (
+            <>
+              <span className="text-[14px] font-normal leading-[24px] tracking-[0.25px] line-through">
+                {price.previousValue}
+              </span>
+              <span className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                {price.currentValue}
+              </span>
+            </>
+          )}
+        </div>
+      </>
 
-        {price.type === 'sale' && (
-          <>
-            <span>
-              {t('was')}: <span className="line-through">{price.previousValue}</span>
-            </span>
-            <span>
-              {t('now')}: {price.currentValue}
-            </span>
-          </>
-        )}
-      </p>
     ) : (
-      <span>{price}</span>
+      <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px]">
+        {price}
+      </div>
     ))
   );
 };
@@ -162,85 +166,83 @@ export const ProductSnippet = async ({
   const { path = '' } = data.site.product ?? {};
 
   return (
-    <div className={cn('relative flex flex-row gap-[20px] overflow-visible', isExtended && 'flex-row')}>
-      <div className={cn('relative flex justify-center w-[150px]', isImageAvailable && 'w-1/4')}>
-        {isImageAvailable && (
-          <div
-            className={cn('relative flex-auto', {
-              'aspect-square': imageSize === 'square',
-              'aspect-[4/5]': imageSize === 'tall',
-              'aspect-[7/5]': imageSize === 'wide',
-            })}
-          >
-            <BcImage
-              alt={defaultImage.altText || name}
-              className="object-contain"
-              fill
-              priority={imagePriority}
-              sizes="(max-width: 768px) 50vw, (max-width: 1536px) 25vw, 500px"
-              src={defaultImage.url}
-            />
-          </div>
-        )}
-        {!isImageAvailable && (
-          <div className={cn('relative aspect-square flex-auto', isExtended && 'h-20 md:h-36')}>
-            <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
-              <span className="text-center text-sm md:text-base">{t('comingSoon')}</span>
-            </div>
-          </div>
-        )}
-        
+    <div className="flex flex-col items-start gap-[15px] border border-[#CCCBCB] p-0">
+      <div className="flex w-full flex-row items-start gap-[10px] bg-[#03465C] p-[10px]">
+        <button className="flex flex-row items-center justify-center gap-[10px] rounded-[50px] bg-[#F3F4F5] px-[10px] text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#353535]">
+          PROCESSING
+        </button>
       </div>
-      <div className={cn('flex flex-1 flex-col gap-1 w-[332px] py-[20px]', isExtended && 'w-3/4')}>
-        {brand ? <p className={cn('text-base text-gray-500', brandSize)}>{brand.name}</p> : null}
-        {isExtended ? (
-          <div className="flex flex-col items-start justify-between md:flex-row">
-            <div>
-              <h3 className={cn('text-base font-normal', productSize)}>
-                <Link
-                  className="focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
-                  href={path}
-                >
-                  <span aria-hidden="true" className="absolute inset-0 bottom-20" />
-                  {name}
-                </Link>
-              </h3>
-              <div className="mb-2 mt-2 lg:mb-0">
-                {product.productOptions?.map(({ name: optionName, value }, idx) => {
-                  return (
-                    <p className="flex gap-1 text-xs" key={idx}>
-                      <span>{optionName}:</span>
-                      <span className="font-semibold">{value}</span>
-                    </p>
-                  );
-                })}
-                <p className="flex gap-1 text-xs">
-                  <span>{t('qty')}:</span>
-                  <span className="font-semibold">{product.quantity}</span>
-                </p>
+      <div className="flex w-full flex-row items-center justify-between p-0 px-[20px] pb-[20px]">
+        <div className="flex w-2/3 flex-row items-center gap-[20px] p-0 pr-[20px]">
+          <div>
+            {isImageAvailable && (
+              <BcImage
+                alt={defaultImage.altText || name}
+                className="h-[150px] w-[150px]"
+                width={150}
+                height={150}
+                priority={imagePriority}
+                src={defaultImage.url}
+              />
+            )}
+            {!isImageAvailable && (
+              <div className="h-[150px] w-[150px]">
+                <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
+                  <span className="text-center text-sm md:text-base">{t('comingSoon')}</span>
+                </div>
               </div>
-            </div>
-            <div className="flex flex-wrap items-end justify-between font-semibold">
-              <Price price={price} />
-            </div>
+            )}
           </div>
-        ) : (
-          <h3 className={cn('text-base font-normal', productSize)}>
-            <Link
-              className="focus-visible:outline focus-visible:outline-4 focus-visible:outline-offset-2 focus-visible:outline-primary/20 focus-visible:ring-0"
-              href={path}
-            >
-              <span aria-hidden="true" className="absolute inset-0 bottom-20" />
+          <div className="flex-shrink-[100]">
+            <div className="items-center text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
               {name}
-            </Link>
-          </h3>
-        )}
-        {!isExtended && (
-          <div className="flex flex-wrap items-end justify-between">
-            {/* <Price price={price} /> */}
-           <span className='text-base font-semi'>{t('qty')}: {product.quantity}</span> 
+            </div>
+            <div>
+              <span className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                SKU:
+              </span>
+              <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                {' '}
+                |{' '}
+              </span>
+              {product.productOptions?.map(({ name: optionName, value }, idx) => {
+                return (
+                  <>
+                    <span className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7F7F7F]" key={idx}>
+                      {optionName}
+                    </span>
+                    <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                      {' '}
+                      {value}
+                    </span>
+                  </>
+                );
+              })}
+            </div>
+            <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#353535]">
+              {t('qty')}: {product.quantity}
+            </div>
           </div>
-        )}
+          <div className="flex min-w-[25%] flex-col justify-center text-right">
+            <Price price={price} />
+          </div>
+        </div>
+        <div className="w-1/3">
+          <div className="flex flex-col gap-[5px]">
+            {/*<button className="flex w-full flex-row items-center justify-center gap-[5px] rounded-[3px] bg-[#008BB7] p-[5px] px-[10px] text-[14px] font-medium leading-[32px] tracking-[1.25px] text-white">
+              CANCEL ORDER
+            </button>
+            <div className="h-[42px] self-center text-center text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#000000]">
+              Eligible Through mm/dd/yy
+            </div>
+            <button className="flex h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-[#ffffff] p-[5px_10px] text-[14px] font-[500] leading-[32px] tracking-[1.25px] text-[#002A37]">
+              LEAVE A REVIEW
+            </button>*/}
+            <button className="flex h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-[#ffffff] p-[5px_10px] text-[14px] font-[500] leading-[32px] tracking-[1.25px] text-[#002A37]">
+              REPLACE ITEMS
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

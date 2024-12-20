@@ -123,7 +123,7 @@ export const LoginForm = ({
 
       {isFormInvalid && (
         <Message
-          className="mb-8 flex items-center rounded-[3px] border border-[#ff4500] lg:col-span-2"
+          className="mb-8 flex items-center rounded-[3px] border border-[#A71F23] lg:col-span-2"
           variant="error"
         >
           <p>{t('Form.error')}</p>
@@ -176,14 +176,14 @@ export const LoginForm = ({
             className={
               cookieIsSet
                 ? 'hidden'
-                : 'relative inset-x-0 bottom-0 inline-flex w-full text-sm text-[#ff4500]'
+                : 'relative inset-x-0 bottom-0 inline-flex w-full text-sm text-[#A71F23]'
             }
             match="valueMissing"
           >
             {t('Form.enterEmailMessage')}
           </FieldMessage>
         </Field>
-        {emailError && <div className="text-[#ff4500] text-sm font-normal">{emailError}</div>}
+        {emailError && <div className="text-[#A71F23] text-sm font-normal">{emailError}</div>}
         <Field className="pb- relative flex flex-col items-start gap-2 space-y-2" name="password">
           <FieldLabel
             className="login-label flex items-center tracking-[0.15px]"
@@ -205,7 +205,7 @@ export const LoginForm = ({
             />
           </FieldControl>
           <FieldMessage
-            className="relative inset-x-0 bottom-0 inline-flex w-full text-sm text-[#ff4500]"
+            className="relative inset-x-0 bottom-0 inline-flex w-full text-sm text-[#A71F23]"
             match="valueMissing"
           >
             {t('Form.entePasswordMessage')}

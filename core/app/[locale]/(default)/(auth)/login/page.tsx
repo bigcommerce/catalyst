@@ -132,7 +132,7 @@ export default async function Login({ params }: Props) {
         />
         <div className="login-div login-div-one mx-auto mt-3 flex w-full flex-col justify-between gap-0 px-[1px] text-center md:mt-6 lg:mt-0 xl:w-[80%] xl:flex-row xl:gap-24 xl:text-left">
           <h2 className="text-[24px] font-normal text-[#353535] md:text-[34px]">Rewards Program</h2>
-          <div className="flex flex-row flex-wrap content-center items-center justify-center gap-[10px] px-0 pb-0 pt-[10px]">
+          <div className="flex flex-col xl:flex-row flex-wrap content-center items-center justify-center gap-[10px] px-0 pb-0 pt-[10px]">
             <p className="flex items-center text-center text-[20px] font-medium tracking-[0.15px] text-[#002A37]">
               Shopping for a Business?
             </p>

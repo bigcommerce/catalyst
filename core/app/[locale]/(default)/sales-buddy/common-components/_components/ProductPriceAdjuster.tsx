@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { Input } from '../Input';
 import { useRouter } from 'next/navigation';
 
-import {updateProductPrice} from '../../_actions/price-update-in-cart'
+import {updateProductPrice} from '../../_actions/update-price'
 import Spinner from './Spinner';
 interface ProductPriceAdjusterProps {
   parentSku: string;

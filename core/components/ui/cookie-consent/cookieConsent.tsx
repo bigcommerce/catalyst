@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect } from 'react';
-
 interface CookieConsentProps {
   url: string;
 }

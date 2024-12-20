@@ -185,8 +185,12 @@
       "lookupAnOrder": "Lookup an Order",
       "stillNeedHelp": "Stil need help?",
       "contact": "Contact Us",
+      "accountTabsLabel": "Order Tabs",
       "viewOrderDetails": "VIEW ORDER DETAILS",
       "orderTotal": "Order Total",
+      "all": "All",
+      "inprogress": "Inprogress",
+      "delivered": "Delivered",
       "noOrders": "No orders yet",
       "orderNumber": "Order #",
       "placedDate": "Order placed",
@@ -195,6 +199,7 @@
       "trackOrder": "Track order",
       "returnOrder": "Return items",
       "orderSummary": "Order Summary",
+      "confirmationNumber": "Confirmation Number",
       "orderContents": "Order contents",
       "orderSubtotal": "Subtotal:",
       "orderGrandtotal": "Grand total:",
@@ -212,7 +217,9 @@
       "shippingTitle": "Shipping",
       "shippingPayment": "Payment",
       "shippingPaymentMethod": "Payment method",
-      "billingAddress": "Billing address"
+      "billingAddress": "Billing address",
+      "subTotalReg": "Reg. Subtotal",
+      "surcharge": "Handling & Surcharge"
     },
     "Wishlist": {
       "noItems": "No items added",

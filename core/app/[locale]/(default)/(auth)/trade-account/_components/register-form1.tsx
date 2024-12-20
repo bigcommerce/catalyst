@@ -100,32 +100,6 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
     return true;
   };
 
-  const validatePassword = (password: string) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
-    if (!password.trim()) {
-      setPasswordValid((prev) => ({
-        ...prev,
-        [FieldNameToFieldId.password]: true,
-      }));
-      return true;
-    }
-
-    if (!passwordRegex.test(password)) {
-      setPasswordValid((prev) => ({
-        ...prev,
-        [FieldNameToFieldId.password]: false,
-      }));
-      return false;
-    }
-
-    setPasswordValid((prev) => ({
-      ...prev,
-      [FieldNameToFieldId.password]: true,
-    }));
-    return true;
-  };
-
   const handleTextInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
     // Remove validation status to prevent red border
@@ -255,7 +229,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
           isValid={!emailError || !field.label.toLowerCase().includes('email')}
         />
         {field.label.toLowerCase().includes('email') && emailError && (
-          <div className="absolute bottom-[5%] inline-flex w-full text-xs font-normal text-[#ff4500]">
+          <div className="absolute bottom-[8%] inline-flex w-full text-xs font-normal text-[#A71F23]">
             {emailError}
           </div>
         )}
@@ -265,24 +239,14 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
 
   const renderPasswordField = (field: PasswordFormField, fieldName: string) => (
     <FieldWrapper fieldId={field.entityId} key={field.entityId}>
-      <div
-        onBlur={(e) => {
-          validatePassword((e.target as HTMLInputElement).value);
-        }}
-        className="relative"
-      >
+      
         <Password
           field={field}
           isValid={passwordValid[FieldNameToFieldId.password]}
           name={fieldName}
           onChange={handlePasswordValidation}
         />
-        {!passwordValid[field.entityId] && (
-          <div className="absolute bottom-[5%] inline-flex w-full text-xs font-normal text-[#ff4500]">
-            Include uppercase, lowercase, number, symbol (8+ chars).
-          </div>
-        )}
-      </div>
+        
     </FieldWrapper>
   );
 
@@ -308,7 +272,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
         </div>
 
         <Button
-          className="relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2 disabled:cursor-not-allowed [&>button:hover]:!bg-[rgb(75,200,240)] [&>button]:!transition-colors [&>button]:!duration-500"
+          className="relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2 disabled:cursor-not-allowed hover:!bg-[rgb(75,200,240)] !transition-colors !duration-500"
           variant="primary"
           type="submit"
           disabled={!!emailError || !passwordValid[FieldNameToFieldId.password]}

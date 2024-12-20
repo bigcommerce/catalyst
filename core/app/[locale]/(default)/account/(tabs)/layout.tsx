@@ -28,8 +28,6 @@ export default async function AccountTabLayout({ children, params }: Props) {
   return (
     <>
       <div className="div-My-account-page m-auto w-[82%] mt-[40px]">
-        {/* <h1 className="text-[24px] font-semibold leading-[32px] text-[#353535] mb-[20px]">{t('heading')}</h1> */}
-        {/* <TabNavigation /> */}
         {children}
       </div>
     </>
