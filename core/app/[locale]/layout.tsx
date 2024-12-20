@@ -3,6 +3,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
 import type { Metadata } from 'next';
+import { draftMode } from 'next/headers';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
@@ -15,9 +16,13 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { routing } from '~/i18n/routing';
+import { SiteTheme } from '~/lib/makeswift/components/site-theme';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
+
+import '~/lib/makeswift/components';
 
 const RootLayoutMetadataQuery = graphql(`
   query RootLayoutMetadataQuery {
@@ -92,20 +97,23 @@ export default async function RootLayout({ params, children }: Props) {
   const messages = await getMessages();
 
   return (
-    <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
-      <head>
-        <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
-      </head>
-      <body>
-        <Notifications />
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <NuqsAdapter>
-            <Providers>{children}</Providers>
-          </NuqsAdapter>
-        </NextIntlClientProvider>
-        <VercelComponents />
-      </body>
-    </html>
+    <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
+      <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+        <head>
+          <SiteTheme />
+          <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
+        </head>
+        <body>
+          <Notifications />
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <NuqsAdapter>
+              <Providers>{children}</Providers>
+            </NuqsAdapter>
+          </NextIntlClientProvider>
+          <VercelComponents />
+        </body>
+      </html>
+    </MakeswiftProvider>
   );
 }
 
