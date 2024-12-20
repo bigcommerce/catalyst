@@ -29,6 +29,8 @@ const getOptionValueIds = ({ searchParams }: { searchParams: Awaited<Props['sear
 };
 
 const getProduct = async (productPromise: ReturnType<typeof getProductData>) => {
+  const t = await getTranslations('Product.ProductDetails.Accordions');
+
   const format = await getFormatter();
   const product = await productPromise;
 
@@ -37,11 +39,65 @@ const getProduct = async (productPromise: ReturnType<typeof getProductData>) => 
     alt: image.altText,
   }));
 
+  const customFields = removeEdgesAndNodes(product.customFields);
+
+  const specifications = [
+    {
+      name: t('sku'),
+      value: product.sku,
+    },
+    {
+      name: t('weight'),
+      value: `${product.weight?.value} ${product.weight?.unit}`,
+    },
+    {
+      name: t('condition'),
+      value: product.condition,
+    },
+    ...customFields.map((field) => ({
+      name: field.name,
+      value: field.value,
+    })),
+  ];
+
+  const accordions = [
+    ...(specifications.length
+      ? [
+          {
+            title: t('specifications'),
+            content: (
+              <div className="prose">
+                <ul className="flex flex-col gap-4">
+                  {specifications.map((field, index) => (
+                    <li className="flex gap-2" key={index}>
+                      <strong>{field.name}</strong>
+                      {field.value}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ),
+          },
+        ]
+      : []),
+    ...(product.warranty
+      ? [
+          {
+            title: t('warranty'),
+            content: (
+              <div className="prose" dangerouslySetInnerHTML={{ __html: product.warranty }} />
+            ),
+          },
+        ]
+      : []),
+  ];
+
   return {
     id: product.entityId.toString(),
     title: product.name,
-    description: product.description,
-    plainTextDescription: product.plainTextDescription,
+    description: (
+      <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />
+    ),
     href: product.path,
     images: product.defaultImage
       ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
@@ -49,6 +105,7 @@ const getProduct = async (productPromise: ReturnType<typeof getProductData>) => 
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name,
     rating: product.reviewSummary.averageRating,
+    accordions,
   };
 };
 
@@ -174,6 +231,7 @@ export default async function Product(props: Props) {
         prefetch={true}
         product={getProduct(productPromise)}
         quantityLabel={t('ProductDetails.quantity')}
+        thumbnailLabel={t('ProductDetails.thumbnail')}
       />
 
       <FeaturedProductsCarousel
@@ -192,8 +250,8 @@ export default async function Product(props: Props) {
       <Stream fallback={null} value={productPromise}>
         {(product) => (
           <>
-            <ProductViewed product={product} />
             <ProductSchema product={product} />
+            <ProductViewed product={product} />
           </>
         )}
       </Stream>

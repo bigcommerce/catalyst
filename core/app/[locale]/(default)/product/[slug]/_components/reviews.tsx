@@ -131,7 +131,7 @@ export const Reviews = ({ productId }: Props) => {
         emptyStateMessage={t('empty')}
         paginationInfo={getPaginationInfo(productId)}
         reviews={getFormattedReviews(productId)}
-        reviewsLabel={t('heading')}
+        reviewsLabel={t('title')}
       />
       <Stream fallback={null} value={getReviews(productId)}>
         {(reviews) =>

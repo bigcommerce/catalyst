@@ -405,7 +405,6 @@
     }
   },
   "Product": {
-    "loading": "Loading...",
     "ProductDetails": {
       "quantity": "Quantity",
       "increaseQuantity": "Increase quantity",
@@ -413,29 +412,20 @@
       "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>",
       "missingCart": "Cart not found. Please try again later!",
       "unknownError": "Unknown error. Please try again later.",
+      "thumbnail": "View image number",
       "Submit": {
         "addToCart": "Add to cart",
         "outOfStock": "Out of stock",
         "preorder": "Preorder",
         "unavailable": "Unavailable"
+      },
+      "Accordions": {
+        "specifications": "Specifications",
+        "warranty": "Warranty",
+        "sku": "SKU",
+        "weight": "Weight",
+        "condition": "Condition"
       }
-    },
-    "Gallery": {
-      "previous": "Previous product image",
-      "next": "Next product image",
-      "thumbnailNavigation": "Thumbnail navigation",
-      "enlarge": "Enlarge product image"
-    },
-    "Form": {
-      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-      "saveToWishlist": "Save to wishlist",
-      "quantityLabel": "Quantity"
-    },
-    "Description": {
-      "heading": "Description"
-    },
-    "Warranty": {
-      "heading": "Warranty"
     },
     "RelatedProducts": {
       "title": "Related products",
@@ -447,33 +437,11 @@
       "scrollbar": "Related products scrollbar"
     },
     "Reviews": {
-      "heading": "Reviews",
+      "title": "Reviews",
       "empty": "No reviews have been added for this product.",
       "Pagination": {
         "previous": "Previous reviews",
         "next": "Next reviews"
-      }
-    },
-    "Details": {
-      "additionalDetails": "Additional details",
-      "sku": "SKU",
-      "upc": "UPC",
-      "minPurchase": "Minimum purchase",
-      "maxPurchase": "Maximum purchase",
-      "availability": "Availability",
-      "condition": "Condition",
-      "comingSoon": "Coming Soon",
-      "qty": "Qty",
-      "weight": "Weight",
-      "Prices": {
-        "msrp": "MSRP",
-        "was": "Was",
-        "now": "Now"
-      },
-      "ReviewSummary": {
-        "rating": "Rating:",
-        "ratingRange": "out of 5 stars.",
-        "reviewsNumber": "Number of reviews:"
       }
     }
   },
