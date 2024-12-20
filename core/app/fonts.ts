@@ -1,22 +1,22 @@
 import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
 
-const inter = Inter({
+export const inter = Inter({
   display: 'swap',
   subsets: ['latin'],
-  variable: '--font-family-body',
+  variable: '--font-family-inter',
 });
 
-const dmSerifText = DM_Serif_Text({
+export const dmSerifText = DM_Serif_Text({
   display: 'swap',
   subsets: ['latin'],
   weight: '400',
-  variable: '--font-family-heading',
+  variable: '--font-family-dm-serif-text',
 });
 
-const robotoMono = Roboto_Mono({
+export const robotoMono = Roboto_Mono({
   subsets: ['latin'],
   display: 'swap',
-  variable: '--font-family-mono',
+  variable: '--font-family-roboto-mono',
 });
 
 export const fonts = [inter, dmSerifText, robotoMono];
