@@ -187,7 +187,7 @@ export default async function Product(props: Props) {
         title={t('RelatedProducts.title')}
       />
 
-      <Reviews productId={Number(slug)} />
+      <Reviews productId={productId} />
 
       <Stream fallback={null} value={productPromise}>
         {(product) => (
