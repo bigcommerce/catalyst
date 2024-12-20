@@ -4,7 +4,7 @@ export const ProductSchemaFragment = graphql(`
   fragment ProductSchemaFragment on Product {
     name
     path
-    plainTextDescription
+    plainTextDescription(characterLimit: 1200)
     sku
     gtin
     mpn

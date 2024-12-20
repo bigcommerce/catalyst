@@ -120,7 +120,7 @@ export function ProductDetailForm<F extends Field>({
   return (
     <FormProvider context={form.context}>
       <FormStateInput />
-      <form {...getFormProps(form)} action={formAction}>
+      <form {...getFormProps(form)} action={formAction} className="py-8">
         <input name="id" type="hidden" value={productId} />
         <div className="space-y-6">
           {fields.map((field) => {
@@ -210,7 +210,9 @@ function FormField({
     case 'number':
       return (
         <NumberInput
+          decrementLabel={field.decrementLabel}
           errors={formField.errors}
+          incrementLabel={field.incrementLabel}
           key={formField.id}
           label={field.label}
           name={formField.name}
