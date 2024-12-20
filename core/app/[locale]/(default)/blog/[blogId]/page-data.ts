@@ -12,6 +12,8 @@ const BlogPageQuery = graphql(
       site {
         content {
           blog {
+            name
+            path
             post(entityId: $entityId) {
               author
               htmlBody
