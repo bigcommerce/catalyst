@@ -105,8 +105,8 @@ export default function CartInterface() {
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading((prev) => ({ ...prev, comments: true }));
-    setIsCommentSaved(true);
-    setIsCommentVisible(false);
+    
+    
     const createCommentData = {
       comment: comment.trim() || '',
       action: '',
@@ -115,6 +115,8 @@ export default function CartInterface() {
       const response = await addComment(createCommentData);
       if (response.status === 200) {
         setLoading((prev) => ({ ...prev, comments: false }));
+        setIsCommentVisible(false);
+        setIsCommentSaved(true);
         setSuccessMessage('commented successfully!');
         // setIsCommentSaved(true);// Mark the comment as saved
         setIsCommentVisible(false);
@@ -287,6 +289,9 @@ export default function CartInterface() {
                   onClick={handleCommentSubmit} // Save the comment
                   className="font-open-sans mt-[10px] w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white"
                 >
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {loading.comments && <Loader />}
+                  </div>
                   SAVE COMMENT
                 </Button>
               </div>
