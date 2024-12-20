@@ -49,6 +49,16 @@ export const BOTH_CUSTOMER_ADDRESS_FIELDS = [
 
 export const FULL_NAME_FIELDS = [FieldNameToFieldId.firstName, FieldNameToFieldId.lastName];
 
+export const ADDRESS_FORM_LAYOUT = [
+  [FieldNameToFieldId.firstName, FieldNameToFieldId.lastName],
+  FieldNameToFieldId.company,
+  FieldNameToFieldId.phone,
+  FieldNameToFieldId.address1,
+  FieldNameToFieldId.address2,
+  [FieldNameToFieldId.city, FieldNameToFieldId.stateOrProvince],
+  [FieldNameToFieldId.postalCode, FieldNameToFieldId.countryCode],
+];
+
 export const createFieldName = (
   field: FragmentOf<typeof FormFieldsFragment>,
   fieldOrigin: 'customer' | 'address',

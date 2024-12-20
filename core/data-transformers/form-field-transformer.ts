@@ -56,6 +56,15 @@ export const formFieldTransformer = (
       };
 
     case 'PicklistFormField':
+      if (field.entityId === FieldNameToFieldId.countryCode) {
+        return {
+          type: 'text',
+          name: String(field.entityId),
+          label: field.label,
+          required: field.isRequired,
+        };
+      }
+
       return {
         type: 'button-radio-group',
         name: String(field.entityId),
@@ -79,6 +88,7 @@ export const formFieldTransformer = (
         })),
       };
 
+    case 'PicklistOrTextFormField':
     case 'TextFormField':
       return {
         type: field.entityId === FieldNameToFieldId.email ? 'email' : 'text',

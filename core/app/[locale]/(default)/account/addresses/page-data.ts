@@ -8,6 +8,8 @@ import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 
+import { FormFieldsFragment } from '../../../../../components/form-fields/fragment';
+
 const GetCustomerAddressesQuery = graphql(
   `
     query GetCustomerAddressesQuery($after: String, $before: String, $first: Int, $last: Int) {
@@ -40,9 +42,18 @@ const GetCustomerAddressesQuery = graphql(
           }
         }
       }
+      site {
+        settings {
+          formFields {
+            shippingAddress {
+              ...FormFieldsFragment
+            }
+          }
+        }
+      }
     }
   `,
-  [PaginationFragment, FormFieldValuesFragment],
+  [PaginationFragment, FormFieldValuesFragment, FormFieldsFragment],
 );
 
 interface Pagination {
@@ -73,6 +84,7 @@ export const getCustomerAddresses = cache(
       pageInfo: addresses.pageInfo,
       totalAddresses: addresses.collectionInfo?.totalItems ?? 0,
       addresses: removeEdgesAndNodes({ edges: addresses.edges }),
+      shippingAddressFields: response.data.site.settings?.formFields.shippingAddress,
     };
   },
 );

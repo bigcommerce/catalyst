@@ -106,10 +106,12 @@ type ButtonRadioField = {
 
 type PasswordField = {
   type: 'password';
+  defaultValue?: string;
 } & FormField;
 
 type ConfirmPasswordField = {
   type: 'confirm-password';
+  defaultValue?: string;
 } & FormField;
 
 export type Field =

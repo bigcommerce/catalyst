@@ -1,4 +1,6 @@
-import { graphql } from '~/client/graphql';
+import { FragmentOf, graphql } from '~/client/graphql';
+
+export type FormField = NonNullable<FragmentOf<typeof FormFieldsFragment>>;
 
 export const FormFieldsFragment = graphql(`
   fragment FormFieldsFragment on FormField {
