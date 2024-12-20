@@ -229,7 +229,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
           isValid={!emailError || !field.label.toLowerCase().includes('email')}
         />
         {field.label.toLowerCase().includes('email') && emailError && (
-          <div className="absolute bottom-[5%] inline-flex w-full text-xs font-normal text-[#A71F23]">
+          <div className="absolute bottom-[8%] inline-flex w-full text-xs font-normal text-[#A71F23]">
             {emailError}
           </div>
         )}
