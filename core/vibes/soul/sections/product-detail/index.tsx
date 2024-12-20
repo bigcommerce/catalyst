@@ -1,4 +1,5 @@
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Accordion, Accordions } from '@/vibes/soul/primitives/accordions';
 import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
 import { Rating } from '@/vibes/soul/primitives/rating';
@@ -16,7 +17,14 @@ interface ProductDetailProduct {
   subtitle?: string;
   badge?: string;
   rating?: Streamable<number | null>;
+  summary?: Streamable<string>;
   description?: Streamable<string | React.ReactNode | null>;
+  accordions?: Streamable<
+    Array<{
+      title: string;
+      content: React.ReactNode;
+    }>
+  >;
 }
 
 interface Props<F extends Field> {
@@ -30,6 +38,7 @@ interface Props<F extends Field> {
   ctaLabel?: Streamable<string | null>;
   ctaDisabled?: Streamable<boolean | null>;
   prefetch?: boolean;
+  thumbnailLabel?: string;
 }
 
 export function ProductDetail<F extends Field>({
@@ -43,10 +52,11 @@ export function ProductDetail<F extends Field>({
   ctaLabel: streamableCtaLabel,
   ctaDisabled: streamableCtaDisabled,
   prefetch,
+  thumbnailLabel,
 }: Props<F>) {
   return (
     <section className="@container">
-      <div className="mx-auto w-full max-w-screen-lg px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
+      <div className="mx-auto w-full max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
         {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} className="mb-6" />}
 
         <Stream fallback={<ProductDetailSkeleton />} value={streamableProduct}>
@@ -81,19 +91,16 @@ export function ProductDetail<F extends Field>({
 
                   <div className="mb-8 @2xl:hidden">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
-                      {(images) => <ProductGallery images={images} />}
+                      {(images) => (
+                        <ProductGallery images={images} thumbnailLabel={thumbnailLabel} />
+                      )}
                     </Stream>
                   </div>
 
-                  <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
-                    {(description) =>
-                      description != null &&
-                      description !== '' &&
-                      (typeof product.description === 'string' ? (
-                        <p className="mb-6 text-contrast-500">{description}</p>
-                      ) : (
-                        <div className="mb-6 text-contrast-500">{description}</div>
-                      ))
+                  <Stream fallback={<ProductSummarySkeleton />} value={product.summary}>
+                    {(summary) =>
+                      summary !== undefined &&
+                      summary !== '' && <p className="text-contrast-500">{summary}</p>
                     }
                   </Stream>
 
@@ -118,6 +125,31 @@ export function ProductDetail<F extends Field>({
                         quantityLabel={quantityLabel}
                       />
                     )}
+                  </Stream>
+
+                  <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
+                    {(description) =>
+                      description !== null &&
+                      description !== undefined && (
+                        <div className="border-t border-contrast-100 py-8 text-contrast-500">
+                          {description}
+                        </div>
+                      )
+                    }
+                  </Stream>
+
+                  <Stream fallback={<ProductAccordionsSkeleton />} value={product.accordions}>
+                    {(accordions) =>
+                      accordions && (
+                        <Accordions className="border-t border-contrast-100 pt-4" type="multiple">
+                          {accordions.map((accordion, index) => (
+                            <Accordion key={index} title={accordion.title} value={index.toString()}>
+                              {accordion.content}
+                            </Accordion>
+                          ))}
+                        </Accordions>
+                      )
+                    }
                   </Stream>
                 </div>
               </div>
@@ -175,6 +207,16 @@ function RatingSkeleton() {
   );
 }
 
+function ProductSummarySkeleton() {
+  return (
+    <div className="flex w-full animate-pulse flex-col gap-3.5 pb-6">
+      <div className="h-2.5 w-full bg-contrast-100" />
+      <div className="h-2.5 w-full bg-contrast-100" />
+      <div className="h-2.5 w-3/4 bg-contrast-100" />
+    </div>
+  );
+}
+
 function ProductDescriptionSkeleton() {
   return (
     <div className="flex w-full animate-pulse flex-col gap-3.5 pb-6">
@@ -187,7 +229,7 @@ function ProductDescriptionSkeleton() {
 
 function ProductDetailFormSkeleton() {
   return (
-    <div className="flex animate-pulse flex-col gap-8">
+    <div className="flex animate-pulse flex-col gap-8 py-8">
       <div className="flex flex-col gap-5">
         <div className="h-2 w-10 rounded-md bg-contrast-100" />
         <div className="flex gap-2">
@@ -214,6 +256,34 @@ function ProductDetailFormSkeleton() {
   );
 }
 
+function ProductAccordionsSkeleton() {
+  return (
+    <div className="flex h-[600px] w-full animate-pulse flex-col gap-8 pt-4">
+      <div className="flex items-center justify-between">
+        <div className="h-2 w-20 rounded-sm bg-contrast-100" />
+        <div className="h-3 w-3 rounded-full bg-contrast-100" />
+      </div>
+      <div className="mb-1 flex flex-col gap-4">
+        <div className="h-3 w-full rounded-sm bg-contrast-100" />
+        <div className="h-3 w-full rounded-sm bg-contrast-100" />
+        <div className="h-3 w-3/5 rounded-sm bg-contrast-100" />
+      </div>
+      <div className="flex items-center justify-between">
+        <div className="h-2 w-24 rounded-sm bg-contrast-100" />
+        <div className="h-3 w-3 rounded-full bg-contrast-100" />
+      </div>
+      <div className="flex items-center justify-between">
+        <div className="h-2 w-20 rounded-sm bg-contrast-100" />
+        <div className="h-3 w-3 rounded-full bg-contrast-100" />
+      </div>
+      <div className="flex items-center justify-between">
+        <div className="h-2 w-32 rounded-sm bg-contrast-100" />
+        <div className="h-3 w-3 rounded-full bg-contrast-100" />
+      </div>
+    </div>
+  );
+}
+
 function ProductDetailSkeleton() {
   return (
     <div className="grid animate-pulse grid-cols-1 items-stretch gap-x-6 gap-y-8 @2xl:grid-cols-2 @5xl:gap-x-12">
@@ -229,6 +299,8 @@ function ProductDetailSkeleton() {
         <RatingSkeleton />
 
         <PriceLabelSkeleton />
+
+        <ProductSummarySkeleton />
 
         <div className="mb-8 @2xl:hidden">
           <ProductGallerySkeleton />

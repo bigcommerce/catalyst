@@ -11,7 +11,7 @@ export const ProductViewedFragment = graphql(
       }
       sku
       description
-      plainTextDescription
+      plainTextDescription(characterLimit: 1200)
       path
       variants {
         edges {
