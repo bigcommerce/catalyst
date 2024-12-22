@@ -2,7 +2,6 @@
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
 
 import { FragmentOf, graphql } from '~/client/graphql';
 import {
@@ -12,6 +11,7 @@ import {
 import { assertCreateCartErrors, createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
 import { TAGS } from '~/client/tags';
+import { getCartId, setCartId } from '~/lib/cookies/cart';
 
 import { ProductFormFragment } from '../fragment';
 import { ProductFormData } from '../use-product-form';
@@ -25,8 +25,7 @@ export async function handleAddToCart(
   const productEntityId = Number(data.product_id);
   const quantity = Number(data.quantity);
 
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value;
+  const cartId = await getCartId();
 
   let cart;
 
@@ -180,14 +179,7 @@ export async function handleAddToCart(
       return { status: 'error', error: 'Failed to add product to cart.' };
     }
 
-    cookieStore.set({
-      name: 'cartId',
-      value: cart.entityId,
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: true,
-      path: '/',
-    });
+    await setCartId(cart.entityId);
 
     revalidateTag(TAGS.cart);
 

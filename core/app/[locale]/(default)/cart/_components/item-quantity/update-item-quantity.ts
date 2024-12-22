@@ -1,11 +1,11 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
-import { cookies } from 'next/headers';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
+import { getCartId } from '~/lib/cookies/cart';
 
 import { removeItem } from '../../_actions/remove-item';
 
@@ -39,8 +39,7 @@ export async function updateItemQuantity({
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
-    const cookieStore = await cookies();
-    const cartId = cookieStore.get('cartId')?.value;
+    const cartId = await getCartId();
 
     if (!cartId) {
       return { status: 'error', error: 'No cartId cookie found' };

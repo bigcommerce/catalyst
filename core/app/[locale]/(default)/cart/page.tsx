@@ -5,6 +5,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
+import { getCartId } from '~/lib/cookies/cart';
 
 import { CartItem, CartItemFragment } from './_components/cart-item';
 import { CartViewed } from './_components/cart-viewed';
@@ -45,9 +46,7 @@ export async function generateMetadata() {
 }
 
 export default async function Cart() {
-  const cookieStore = await cookies();
-
-  const cartId = cookieStore.get('cartId')?.value;
+  const cartId = await getCartId();
 
   if (!cartId) {
     return <EmptyCart />;
