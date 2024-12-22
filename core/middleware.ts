@@ -13,13 +13,15 @@ export const config = {
      * - api (API routes)
      * - _next/static (static files)
      * - _next/image (image optimization files)
-     * - _vercel (vercel internals, eg: web vitals)
+     * - _vercel (vercel internals)
      * - favicon.ico (favicon file)
      * - admin (admin panel)
      * - sitemap.xml (sitemap route)
      * - xmlsitemap.php (legacy sitemap route)
      * - robots.txt (robots route)
+     * - login/token
+     * - session-sync
      */
-    '/((?!api|admin|_next/static|_next/image|_vercel|favicon.ico|xmlsitemap.php|sitemap.xml|robots.txt|login/token).*)',
+    '/((?!api|admin|_next/static|_next/image|_vercel|favicon.ico|xmlsitemap.php|sitemap.xml|robots.txt|login/token|session-sync).*)',
   ],
 };
