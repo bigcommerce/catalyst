@@ -127,7 +127,9 @@ interface Props {
   paywithGoogle?: string;
   payPal?: string;
   requestQuote?: string;
-  closeIcon?:string;
+  closeIcon?: string;
+  blankAddImg?: string;
+  productImages?: string;
 }
 
 export const Details = ({
@@ -138,8 +140,10 @@ export const Details = ({
   couponIcon,
   paywithGoogle,
   payPal,
-  requestQuote ,
+  requestQuote,
   closeIcon,
+  blankAddImg,
+  productImages,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -153,11 +157,11 @@ export const Details = ({
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
-  const productImages = removeEdgesAndNodes(product.images);
+  // const productImages = removeEdgesAndNodes(product.images);
   const variants = removeEdgesAndNodes(product.variants);
 
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
-  const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
+  // const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
   const productMpn = product.mpn;
@@ -281,7 +285,7 @@ export const Details = ({
                                 return (
                                   <span key={option.entityId}>
                                     <span className="font-bold">{option.displayName}:</span>
-                                    <span className="text-[15px]">{selectedValue}</span>
+                                    <span className="text-[15px]"> {selectedValue}</span>
                                     {index < filteredArray.length - 1 && (
                                       <span className="mx-1">|</span>
                                     )}
@@ -457,6 +461,7 @@ export const Details = ({
           productMpn={product.mpn || ''}
           multipleOptionIcon={multipleOptionIcon}
           blankAddImg={blankAddImg}
+          productImages={productImages}
           fanPopup={fanPopup}
           closeIcon={closeIcon}
         />
@@ -534,7 +539,7 @@ export const Details = ({
         </button>
       </div>
 
-      <Payment  payPal={payPal} />
+      <Payment payPal={payPal} />
       <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
