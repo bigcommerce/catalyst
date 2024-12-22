@@ -1,12 +1,12 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
+import { getCartId, removeCartId } from '~/lib/cookies/cart';
 
 const DeleteCartLineItemMutation = graphql(`
   mutation DeleteCartLineItemMutation($input: DeleteCartLineItemInput!) {
@@ -29,8 +29,7 @@ export async function removeItem({
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
-    const cookieStore = await cookies();
-    const cartId = cookieStore.get('cartId')?.value;
+    const cartId = await getCartId();
 
     if (!cartId) {
       return { status: 'error', error: 'No cartId cookie found' };
@@ -56,9 +55,8 @@ export async function removeItem({
 
     // If we remove the last item in a cart the cart is deleted
     // so we need to remove the cartId cookie
-    // TODO: We need to figure out if it actually failed.
     if (!cart) {
-      cookieStore.delete('cartId');
+      await removeCartId();
     }
 
     revalidateTag(TAGS.cart);

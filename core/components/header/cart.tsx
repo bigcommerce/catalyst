@@ -1,8 +1,7 @@
-import { cookies } from 'next/headers';
 import { ReactNode } from 'react';
 
-import { getCart } from '~/client/queries/get-cart';
 import { Link } from '~/components/link';
+import { getCartId } from '~/lib/cookies/cart';
 
 import { CartIcon } from './cart-icon';
 
@@ -13,8 +12,7 @@ export const CartLink = ({ children }: { children: ReactNode }) => (
 );
 
 export const Cart = async () => {
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value;
+  const cartId = await getCartId();
 
   if (!cartId) {
     return (
