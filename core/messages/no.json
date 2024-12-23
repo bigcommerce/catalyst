@@ -26,7 +26,7 @@
         "heading": "Logg inn",
         "Form": {
             "error": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
-            "successful": "You have successfully logged in.",
+            "successful": "Du har logget inn.",
             "emailLabel": "E-post",
             "enterEmailMessage": "Skriv inn epostadressen din",
             "passwordLabel": "Passord",
@@ -70,7 +70,7 @@
             "submitting": "Oppretter konto …",
             "recaptchaText": "Bestå reCAPTCHA-sjekk",
             "confirmPassword": "Passordene samsvarer ikke",
-            "successMessage": "Account was successfully created."
+            "successMessage": "Kontoen ble opprettet."
         },
         "Errors": {
             "inputError": "Noe gikk galt under behandlingen av brukerinndata.",
