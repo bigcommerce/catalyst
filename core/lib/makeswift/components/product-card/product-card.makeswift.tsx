@@ -2,7 +2,6 @@
 
 import { Checkbox, Combobox, Select, Shape, Style, TextInput } from '@makeswift/runtime/controls';
 import useSWR from 'swr';
-import { z } from 'zod';
 
 import { runtime } from '~/lib/makeswift/runtime';
 import {
@@ -10,6 +9,8 @@ import {
   useBcProductToVibesProduct,
 } from '~/lib/makeswift/utils/use-bc-product-to-vibes-product/use-bc-product-to-vibes-product';
 import { ProductCard, ProductCardSkeleton } from '~/vibes/soul/primitives/product-card';
+
+import { searchProducts } from '../../utils/search-products';
 
 interface Props {
   className?: string;
@@ -22,11 +23,11 @@ interface Props {
 
 function MakeswiftProductCard({ className, entityId, badge, ...props }: Props) {
   const bcProductToVibesProduct = useBcProductToVibesProduct();
-  const { data, isLoading } = useSWR(entityId ? `/api/products/${entityId}` : null, async (url) => {
-    const response = await fetch(url);
-
-    return BcProductSchema.parse(await response.json());
-  });
+  const { data, isLoading } = useSWR(entityId ? `/api/products/${entityId}` : null, async (url) =>
+    fetch(url)
+      .then((r) => r.json())
+      .then(BcProductSchema.parse),
+  );
 
   if (entityId == null || isLoading || data == null) {
     return <ProductCardSkeleton className={className} />;
@@ -46,14 +47,6 @@ function MakeswiftProductCard({ className, entityId, badge, ...props }: Props) {
   );
 }
 
-const SearchResponseSchema = z.object({
-  data: z
-    .object({
-      products: z.array(z.object({ entityId: z.number(), name: z.string() })),
-    })
-    .nullable(),
-});
-
 runtime.registerComponent(MakeswiftProductCard, {
   type: 'catalog-product-card',
   label: 'Catalog / Product Card',
@@ -62,13 +55,9 @@ runtime.registerComponent(MakeswiftProductCard, {
     entityId: Combobox({
       label: 'Product',
       async getOptions(query) {
-        const res = await fetch(`/api/products?search=${query}`).then(async (r) =>
-          SearchResponseSchema.parse(await r.json()),
-        );
+        const products = await searchProducts(query);
 
-        if (res.data == null) return [];
-
-        return res.data.products.map((product) => ({
+        return products.map((product) => ({
           id: product.entityId.toString(),
           label: product.name,
           value: product.entityId.toString(),
