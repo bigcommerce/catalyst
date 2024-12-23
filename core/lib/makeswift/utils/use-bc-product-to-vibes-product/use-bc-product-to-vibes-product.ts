@@ -29,7 +29,7 @@ export const BcProductSchema = z.object({
   prices: PricesSchema,
 });
 
-type BcProductSchema = z.infer<typeof BcProductSchema>;
+export type BcProductSchema = z.infer<typeof BcProductSchema>;
 
 export function useBcProductToVibesProduct(): (product: BcProductSchema) => CardProduct {
   const format = useFormatter();
