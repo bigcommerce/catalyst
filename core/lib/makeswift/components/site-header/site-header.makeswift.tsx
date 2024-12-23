@@ -23,6 +23,7 @@ runtime.registerComponent(MakeswiftHeader, {
   props: {
     banner: Shape({
       type: {
+        id: TextInput({ label: 'Banner ID', defaultValue: 'black_friday_2025' }),
         show: Checkbox({ label: 'Show banner', defaultValue: false }),
         allowClose: Checkbox({ label: 'Allow banner to close', defaultValue: true }),
         children: Slot(),
