@@ -94,10 +94,12 @@ interface Props<S extends SearchResult> {
   localeAction?: LocaleAction;
   logo?: Streamable<string | { src: string; alt: string } | null>;
   logoWidth?: number;
+  logoHeight?: number;
   logoHref?: string;
   logoLabel?: string;
   mobileLogo?: Streamable<string | { src: string; alt: string } | null>;
   mobileLogoWidth?: number;
+  mobileLogoHeight?: number;
   searchHref: string;
   searchParamName?: string;
   searchAction?: SearchAction<S>;
@@ -255,8 +257,10 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     logoHref = '/',
     logoLabel = 'Home',
     logoWidth = 200,
+    logoHeight = 40,
     mobileLogo: streamableMobileLogo,
     mobileLogoWidth = 100,
+    mobileLogoHeight = 40,
     linksPosition = 'center',
     activeLocaleId,
     localeAction,
@@ -304,7 +308,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     >
       <div
         className={clsx(
-          'flex h-14 items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5',
+          'flex items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-2 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5',
           isFloating
             ? 'shadow-xl ring-1 ring-[var(--nav-floating-border,hsl(var(--foreground)/10%))]'
             : 'shadow-none ring-0',
@@ -386,6 +390,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           <Logo
             className={clsx(streamableMobileLogo != null ? 'hidden @4xl:flex' : 'flex')}
+            height={logoHeight}
             href={logoHref}
             label={logoLabel}
             logo={streamableLogo}
@@ -394,6 +399,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           {streamableMobileLogo != null && (
             <Logo
               className="flex @4xl:hidden"
+              height={mobileLogoHeight}
               href={logoHref}
               label={logoLabel}
               logo={streamableMobileLogo}
@@ -405,7 +411,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         {/* Top Level Nav Links */}
         <ul
           className={clsx(
-            'hidden @4xl:flex @4xl:flex-1',
+            'hidden gap-1 @4xl:flex @4xl:flex-1',
             {
               left: '@4xl:justify-start',
               center: '@4xl:justify-center',
@@ -437,7 +443,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 <NavigationMenu.Item key={i} value={i.toString()}>
                   <NavigationMenu.Trigger asChild>
                     <Link
-                      className="mx-0.5 my-2.5 hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
+                      className="hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
                       href={item.href}
                     >
                       {item.label}
