@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 
+import { getCartQuantity } from '~/client/queries/get-cart-quantity';
 import { Link } from '~/components/link';
 import { getCartId } from '~/lib/cookies/cart';
 
@@ -22,9 +23,7 @@ export const Cart = async () => {
     );
   }
 
-  const cart = await getCart(cartId);
-
-  const count = cart?.lineItems.totalQuantity ?? 0;
+  const count = await getCartQuantity(cartId);
 
   return (
     <CartLink>
