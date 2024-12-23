@@ -311,6 +311,10 @@
   },
   "Blog": {
     "title": "Blog",
+    "Empty": {
+      "title": "No blog posts found",
+      "subtitle": "Check back later for more content"
+    },
     "SharingLinks": {
       "share": "Share",
       "email": "Email",
