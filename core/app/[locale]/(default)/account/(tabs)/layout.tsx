@@ -27,9 +27,7 @@ export default async function AccountTabLayout({ children, params }: Props) {
 
   return (
     <>
-      <div className="div-My-account-page m-auto w-[82%] mt-[40px]">
-        {children}
-      </div>
+      <div className="div-My-account-page m-auto mt-[25px] w-[82%]">{children}</div>
     </>
   );
 }

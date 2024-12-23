@@ -280,18 +280,19 @@ const Wishlist = ({
           {items.length} {items.length === 1 ? 'item' : 'items'}
         </p>
         <div className="flex w-[30%] gap-2">
-          <Button
-            variant="secondary"
-            className="border border-[#B4DDE9] px-2 text-left text-[14px] font-medium uppercase !leading-5 tracking-wider text-[#002A37]"
+          <Link
+            href="/account/wishlists/wishlist-product"
+            onClick={handleWishlistClick}
+            className="rounded-[3px] border border-[#B4DDE9] p-[10px] text-left text-[14px] font-medium uppercase !leading-5 tracking-wider text-[#002A37]"
           >
             EDIT DETAILS
-          </Button>
-          <Button
-            variant="secondary"
-            className="bg-[#008BB7] px-2 text-left text-[14px] font-medium uppercase !leading-5 tracking-wider text-white"
-          >
+          </Link>
+
+          {/* <Link
+          
+            className="rounded-[3px] bg-[#008BB7] px-[38px] py-[10px] text-left text-[14px] font-medium uppercase !leading-5 tracking-wider text-white" href={''}          >
             SHARE
-          </Button>
+          </Link> */}
         </div>
       </div>
 

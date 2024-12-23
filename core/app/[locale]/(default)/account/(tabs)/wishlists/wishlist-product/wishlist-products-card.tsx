@@ -1,10 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Hit } from '~/app/[locale]/(default)/(faceted)/_components/hit';
-import { Hit as AlgoliaHit, HitAttributeHighlightResult } from 'instantsearch.js';
+import { Hit as AlgoliaHit } from 'instantsearch.js';
 import { Button } from '~/components/ui/button';
+import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 
 interface HitPrice {
   USD: number;
@@ -50,7 +51,14 @@ interface WishlistItem {
   };
 }
 
+interface WishlistData {
+  entityId: number;
+  name: string;
+  items: WishlistItem[];
+}
+
 interface ProductHit {
+  objectID: number;
   name: string;
   brand: string;
   brand_id: number;
@@ -81,112 +89,10 @@ interface ProductHit {
   sku?: string;
   __position: number;
   __queryID: string;
-  _highlightResult?: {
-    [key: string]: HitAttributeHighlightResult | HitAttributeHighlightResult[];
-  };
 }
 
-const transformToProductData = (item: WishlistItem): AlgoliaHit<ProductHit> => {
-  const defaultImage = item.product.images.find((img: ProductImage) => img.isDefault);
-  const basePrice = item.product.prices?.price.value || 0;
-
-  const getFormattedImageUrl = (url: string) => {
-    return url.replace('{:size}', '386x513');
-  };
-
-  const priceObject: HitPrice = {
-    USD: basePrice,
-    CAD: basePrice,
-  };
-
-  const variants = (item.product.variants || []).map((variant: ProductVariant, index: number) => ({
-    variant_id: `${item.entityId}_${index}`,
-    options: {
-      'Finish Color': variant.name || 'Default',
-    },
-    image_url: variant.imageUrl
-      ? getFormattedImageUrl(variant.imageUrl)
-      : defaultImage?.url
-        ? getFormattedImageUrl(defaultImage.url)
-        : '',
-    image: variant.imageUrl
-      ? getFormattedImageUrl(variant.imageUrl)
-      : defaultImage?.url
-        ? getFormattedImageUrl(defaultImage.url)
-        : '',
-    hex: variant.hex || '#000000',
-    url: item.product.path || '#',
-    price: basePrice,
-    prices: priceObject,
-    sales_prices: { USD: 0, CAD: 0 },
-    retail_prices: priceObject,
-  }));
-
-  if (variants.length === 0) {
-    variants.push({
-      variant_id: `${item.entityId}_default`,
-      options: {
-        'Finish Color': 'Default',
-      },
-      image_url: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-      image: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-      hex: '#000000',
-      url: item.product.path || '#',
-      price: basePrice,
-      prices: priceObject,
-      sales_prices: { USD: 0, CAD: 0 },
-      retail_prices: priceObject,
-    });
-  }
-
-  return {
-    objectID: item.entityId.toString(), // Convert to string as required by AlgoliaHit
-    name: item.product.name,
-    brand: item.product.brand?.name || '',
-    brand_id: item.entityId,
-    brand_name: item.product.brand?.name || '',
-    category_ids: [],
-    image: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-    image_url: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-    url: item.product.path || '#',
-    product_images: item.product.images.map((img) => ({
-      ...img,
-      url: getFormattedImageUrl(img.url),
-    })),
-    price: basePrice,
-    prices: priceObject,
-    sales_prices: { USD: 0, CAD: 0 },
-    retail_prices: priceObject,
-    rating: item.product.rating || 0,
-    on_sale: false,
-    on_clearance: false,
-    newPrice: 0,
-    description: '',
-    reviews_rating_sum: 0,
-    reviews_count: item.product.reviewCount || 0,
-    metafields: {
-      Details: {
-        ratings_certifications: [],
-      },
-    },
-    variants,
-    has_variants: true,
-    sku: item.entityId.toString(),
-    __position: 0,
-    __queryID: '',
-    _highlightResult: {
-      name: {
-        value: item.product.name,
-        matchLevel: 'none' as const,
-        matchedWords: [],
-        fullyHighlighted: false,
-      },
-    },
-  };
-};
-
 export function WishlistProductCard() {
-  const [wishlistData, setWishlistData] = useState<any>(null);
+  const [wishlistData, setWishlistData] = useState<WishlistData | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -198,19 +104,127 @@ export function WishlistProductCard() {
     }
   }, [router]);
 
+  const breadcrumbs = [
+    {
+      label: 'Favorites and Lists',
+      href: '/account/wishlists',
+    },
+    {
+      label: wishlistData?.name || 'Loading...',
+      href: '#',
+    },
+  ];
+
   if (!wishlistData) {
     return <div>Loading...</div>;
   }
 
-  const items = 'items' in wishlistData ? wishlistData.items : [];
+  const items = wishlistData.items || [];
+
+  const transformToProductData = (item: WishlistItem): AlgoliaHit<ProductHit> => {
+    const defaultImage = item.product.images.find((img: ProductImage) => img.isDefault);
+    const basePrice = item.product.prices?.price.value || 0;
+
+    const getFormattedImageUrl = (url: string) => {
+      return url.replace('{:size}', '386x513');
+    };
+
+    const priceObject: HitPrice = {
+      USD: basePrice,
+      CAD: basePrice,
+    };
+
+    const variants = (item.product.variants || []).map(
+      (variant: ProductVariant, index: number) => ({
+        variant_id: `${item.entityId}_${index}`,
+        options: {
+          'Finish Color': variant.name || 'Default',
+        },
+        image_url: variant.imageUrl
+          ? getFormattedImageUrl(variant.imageUrl)
+          : defaultImage?.url
+            ? getFormattedImageUrl(defaultImage.url)
+            : '',
+        image: variant.imageUrl
+          ? getFormattedImageUrl(variant.imageUrl)
+          : defaultImage?.url
+            ? getFormattedImageUrl(defaultImage.url)
+            : '',
+        hex: variant.hex || '#000000',
+        url: item.product.path || '#',
+        price: basePrice,
+        prices: priceObject,
+        sales_prices: { USD: 0, CAD: 0 },
+        retail_prices: priceObject,
+      }),
+    );
+
+    if (variants.length === 0) {
+      variants.push({
+        variant_id: `${item.entityId}_default`,
+        options: {
+          'Finish Color': 'Default',
+        },
+        image_url: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
+        image: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
+        hex: '#000000',
+        url: item.product.path || '#',
+        price: basePrice,
+        prices: priceObject,
+        sales_prices: { USD: 0, CAD: 0 },
+        retail_prices: priceObject,
+      });
+    }
+
+    return {
+      objectID: item.entityId,
+      name: item.product.name,
+      brand: item.product.brand?.name || '',
+      brand_id: item.entityId,
+      brand_name: item.product.brand?.name || '',
+      category_ids: [],
+      image: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
+      image_url: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
+      url: item.product.path || '#',
+      product_images: item.product.images.map((img) => ({
+        ...img,
+        url: getFormattedImageUrl(img.url),
+      })),
+      price: basePrice,
+      prices: priceObject,
+      sales_prices: { USD: 0, CAD: 0 },
+      retail_prices: priceObject,
+      rating: item.product.rating || 0,
+      on_sale: false,
+      on_clearance: false,
+      newPrice: 0,
+      description: '',
+      reviews_rating_sum: 0,
+      reviews_count: item.product.reviewCount || 0,
+      metafields: {
+        Details: {
+          ratings_certifications: [],
+        },
+      },
+      variants,
+      has_variants: true,
+      sku: item.entityId.toString(),
+      __position: 0,
+      __queryID: '',
+    };
+  };
 
   return (
     <div className="container mx-auto mb-[50px] px-4">
-      {/* <h1 className="mb-6 text-2xl font-bold">{wishlistData.name}</h1> */}
+      <ComponentsBreadcrumbs
+        className="login-div login-breadcrumb mx-auto mb-[10px] mt-[0.5rem] hidden px-[1px] lg:block"
+        breadcrumbs={breadcrumbs}
+      />
+
       <div className="flex justify-between">
         <div>
-          <h1 className="mb-[4px] text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#000000]">
-            Your Favourites
+          <h1 className="mb-[10px] text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#000000]">
+            {wishlistData.name}
           </h1>
           <p className="mb-[30px] text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#000000]">
             {items.length} {items.length === 1 ? 'item' : 'items'}
