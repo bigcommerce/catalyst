@@ -26,7 +26,7 @@
         "heading": "Inloggen",
         "Form": {
             "error": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
-            "successful": "You have successfully logged in.",
+            "successful": "Je aanmelding is gelukt.",
             "emailLabel": "E-mailadres",
             "enterEmailMessage": "Voer uw e-mail in",
             "passwordLabel": "Wachtwoord",
@@ -70,7 +70,7 @@
             "submitting": "Account aanmaken...",
             "recaptchaText": "reCAPTCHA-check doorstaan",
             "confirmPassword": "Wachtwoorden komen niet overeen",
-            "successMessage": "Account was successfully created."
+            "successMessage": "Account aanmaken gelukt."
         },
         "Errors": {
             "inputError": "Er is iets misgegaan bij het verwerken van de gebruikersinvoer.",
