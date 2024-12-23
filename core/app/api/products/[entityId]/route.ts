@@ -22,10 +22,10 @@ export type GetProductResponse = ResultOf<typeof GetProduct>['site']['product'];
 
 export const GET = async (
   _request: NextRequest,
-  { params }: { params: { entityId: string } },
+  { params }: { params: Promise<{ entityId: string }> },
 ): Promise<NextResponse<GetProductResponse>> => {
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const { entityId } = params;
+  const { entityId } = await params;
 
   const { data } = await client.fetch({
     document: GetProduct,
