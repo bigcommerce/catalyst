@@ -68,6 +68,7 @@
     "set-cookie-parser": "^2.6.0",
     "sharp": "^0.33.5",
     "sonner": "^1.7.1",
+    "swr": "^2.2.5",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-radix": "^3.0.5",
     "uuid": "^11.0.3",

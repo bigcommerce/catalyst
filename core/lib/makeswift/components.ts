@@ -3,6 +3,7 @@ import './components/button-link/button-link.makeswift';
 import './components/card-carousel/card-carousel.makeswift';
 import './components/card/card.makeswift';
 import './components/carousel/carousel.makeswift';
+import './components/product-card/product-card.makeswift';
 import './components/section/section.makeswift';
 import './components/site-footer/site-footer.makeswift';
 import './components/site-header/site-header.makeswift';
