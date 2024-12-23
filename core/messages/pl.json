@@ -26,7 +26,7 @@
         "heading": "Zaloguj",
         "Form": {
             "error": "Twój adres e-mail lub hasło są nieprawidłowe. Spróbuj zalogować się ponownie lub zresetuj hasło",
-            "successful": "You have successfully logged in.",
+            "successful": "Zalogowano pomyślnie.",
             "emailLabel": "Email",
             "enterEmailMessage": "Wpisz swój adres e-mail",
             "passwordLabel": "Hasło",
@@ -70,7 +70,7 @@
             "submitting": "Tworzenie konta...",
             "recaptchaText": "Zdaj test ReCAPTCHA",
             "confirmPassword": "Hasła nie są zgodne",
-            "successMessage": "Account was successfully created."
+            "successMessage": "Konto zostało pomyślnie utworzone."
         },
         "Errors": {
             "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
