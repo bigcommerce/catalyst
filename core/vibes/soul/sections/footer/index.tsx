@@ -43,6 +43,7 @@ interface Props {
   logoHref?: string;
   logoLabel?: string;
   logoWidth?: number;
+  logoHeight?: number;
 }
 
 /**
@@ -79,6 +80,7 @@ export const Footer = forwardRef(function Footer(
     logoHref = '#',
     logoLabel = 'Home',
     logoWidth = 200,
+    logoHeight = 40,
   }: Props,
   ref: Ref<HTMLDivElement>,
 ) {
@@ -92,9 +94,15 @@ export const Footer = forwardRef(function Footer(
     >
       <div className="mx-auto max-w-screen-2xl px-4 py-6 @xl:px-6 @xl:py-10 @4xl:px-8 @4xl:py-12">
         <div className="flex flex-col justify-between gap-x-8 gap-y-12 @3xl:flex-row">
-          <div className="@3xl:w-1/3">
+          <div className="flex flex-col @3xl:w-1/3">
             {/* Logo Information */}
-            <Logo href={logoHref} label={logoLabel} logo={logo} width={logoWidth} />
+            <Logo
+              height={logoHeight}
+              href={logoHref}
+              label={logoLabel}
+              logo={logo}
+              width={logoWidth}
+            />
 
             {/* Contact Information */}
             <Stream
