@@ -12,8 +12,6 @@ import {
 
 import { HeaderSection } from '@/vibes/soul/sections/header-section';
 
-const MAKESWIFT_SITE_BANNER_ID = 'MAKESWIFT_SITE_BANNER';
-
 type HeaderSectionProps = ComponentPropsWithoutRef<typeof HeaderSection>;
 
 type NavigationProps = HeaderSectionProps['navigation'];
@@ -43,6 +41,7 @@ export const PropsContextProvider = ({
 
 interface Props {
   banner?: {
+    id: string;
     show: boolean;
     allowClose: boolean;
     children?: ReactNode;
@@ -95,7 +94,7 @@ export const MakeswiftHeader = forwardRef(
     const combinedBanner = banner?.show
       ? {
           ...passedBanner,
-          id: passedBanner?.id ?? MAKESWIFT_SITE_BANNER_ID, // Update this when we allow users to add multiple MakeswiftHeader
+          id: banner.id,
           hideDismiss: !banner.allowClose,
           children: banner.children ?? passedBanner?.children,
         }
