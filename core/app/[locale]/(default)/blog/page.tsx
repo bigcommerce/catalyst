@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { getTranslations } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
@@ -34,6 +35,18 @@ async function listBlogPosts(searchParamsPromise: Promise<SearchParams>) {
   return posts;
 }
 
+async function getEmptyStateTitle(): Promise<string | null> {
+  const t = await getTranslations('Blog.Empty');
+
+  return t('title');
+}
+
+async function getEmptyStateSubtitle(): Promise<string | null> {
+  const t = await getTranslations('Blog.Empty');
+
+  return t('subtitle');
+}
+
 async function getPaginationInfo(searchParamsPromise: Promise<SearchParams>) {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
   const blogPosts = await getBlogPosts(searchParamsParsed);
@@ -66,7 +79,10 @@ export default async function Blog(props: Props) {
         ...tagCrumb,
       ]}
       description={blog.description}
+      emptyStateSubtitle={getEmptyStateSubtitle()}
+      emptyStateTitle={getEmptyStateTitle()}
       paginationInfo={getPaginationInfo(props.searchParams)}
+      placeholderCount={6}
       posts={listBlogPosts(props.searchParams)}
       title={blog.name}
     />

@@ -10,6 +10,9 @@ interface Props {
   posts: Streamable<BlogPost[]>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
   breadcrumbs?: Streamable<Breadcrumb[]>;
+  emptyStateSubtitle?: Streamable<string | null>;
+  emptyStateTitle?: Streamable<string | null>;
+  placeholderCount?: number;
 }
 
 export function FeaturedBlogPostList({
@@ -18,6 +21,9 @@ export function FeaturedBlogPostList({
   posts,
   paginationInfo,
   breadcrumbs,
+  emptyStateSubtitle,
+  emptyStateTitle,
+  placeholderCount,
 }: Props) {
   return (
     <section className="@container">
@@ -33,7 +39,13 @@ export function FeaturedBlogPostList({
             <p className="max-w-lg text-lg text-contrast-500">{description}</p>
           )}
 
-          <BlogPostList className="mb-8 mt-8 @4xl:mb-10 @4xl:mt-10" posts={posts} />
+          <BlogPostList
+            className="mb-8 mt-8 @4xl:mb-10 @4xl:mt-10"
+            emptyStateSubtitle={emptyStateSubtitle}
+            emptyStateTitle={emptyStateTitle}
+            placeholderCount={placeholderCount}
+            posts={posts}
+          />
 
           {paginationInfo && <CursorPagination info={paginationInfo} />}
         </div>
