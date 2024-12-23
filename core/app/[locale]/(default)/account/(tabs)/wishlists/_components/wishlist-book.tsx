@@ -127,9 +127,7 @@ const Wishlist = ({ setWishlistBook, wishlist }: WishlistProps) => {
                 <div className="mb-[4px] text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#000000]">
                   {name}
                 </div>
-                <p className="mb-[6px] text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#000000]">
-                  {itemsCount} Items
-                </p>
+
                 <div className="flex gap-4">
                   <button className="rounded-[3px] border border-[#4EAECC] p-[7px] text-[14px] font-medium">
                     EDIT DETAILS

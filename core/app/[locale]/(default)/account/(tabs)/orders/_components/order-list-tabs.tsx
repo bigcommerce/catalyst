@@ -10,6 +10,8 @@ import { ChangeEvent, useState } from 'react';
 import { Input } from '~/components/ui/form';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { any } from 'zod';
+import { SearchIcon } from 'lucide-react';
+import { StillNeedContactUs } from './stillneed-contactus';
 
 const tabList = ['all', 'inprogress', 'delivered'] as const;
 
@@ -60,33 +62,28 @@ export const OrderListTabs = ({ orders, pageInfo, icon }: { orders: any, pageInf
     <>
       <div className="text-[24px] font-normal leading-[32px] text-[#008BB7]">{t('lookupAnOrder')}</div>
       <div>
-        <div>
+        <div className='relative flex items-center'>
           <input
             type="text"
             placeholder="Search by Keyword or Order Number"
-            className="h-[44px] w-full rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_20px]"
+            className="h-[44px] w-full rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_20px] placeholder:text-[#5C5C5C]"
             onChange={() => handleOrderFilter(event)}
           />
+          <SearchIcon className='absolute right-[20px]'/>
         </div>
       </div>
-      <div className="flex items-center gap-[5px] text-[16px] font-normal leading-[32px] tracking-[0.15px]">
-        <div className="flex items-center">
-          <img src="" alt="Hand Icon" className="h-[24px] w-[24px]" />
-        </div>
-        <div>{t('stillNeedHelp')} </div>
-        <Link href="#" className="text-base font-semibold text-[#008BB7]">{t('contact')}</Link>
-      </div>
+      <StillNeedContactUs icon={icon}/>
       <div className="my-[10px]">
         <div className="flex h-[32px] flex-row items-center gap-[30px] p-0">
           <button className="flex flex-row items-center justify-center rounded-full bg-[#002A37] p-[0px_10px] text-[16px] font-normal leading-[32px] tracking-[0.5px] text-white">
             All Orders
           </button>
-          <button className="flex h-[32px] flex-row items-center justify-center rounded-full bg-[#E7F5F8] p-[0px_10px] text-[16px] font-normal leading-[32px] tracking-[0.5px] text-[#002A37]">
+          {/* <button className="flex h-[32px] flex-row items-center justify-center rounded-full bg-[#E7F5F8] p-[0px_10px] text-[16px] font-normal leading-[32px] tracking-[0.5px] text-[#002A37]">
             In Progress
           </button>
           <button className="flex h-[32px] flex-row items-center justify-center rounded-full bg-[#E7F5F8] p-[0px_10px] text-[16px] font-normal leading-[32px] tracking-[0.5px] text-[#002A37]">
             Delivered
-          </button>
+          </button> */}
         </div>
       </div>
       <div className="flex flex-col gap-[55px]">
@@ -96,7 +93,7 @@ export const OrderListTabs = ({ orders, pageInfo, icon }: { orders: any, pageInf
           <>
             <OrdersList customerOrders={orderData} key={endCursor} />
             <Pagination
-              className="my-0 flex inline-flex justify-center text-center"
+              className="my-0 flex justify-center text-center"
               endCursor={endCursor ?? undefined}
               hasNextPage={hasNextPage}
               hasPreviousPage={hasPreviousPage}
