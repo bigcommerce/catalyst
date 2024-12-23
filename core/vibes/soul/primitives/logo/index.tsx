@@ -10,6 +10,7 @@ interface Props {
   label?: string;
   href: string;
   width: number;
+  height: number;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -25,7 +26,7 @@ interface Props {
  * }
  * ```
  */
-export function Logo({ className, logo: streamableLogo, href, width, label }: Props) {
+export function Logo({ className, logo: streamableLogo, href, width, height, label }: Props) {
   return (
     <Stream
       fallback={<div className="h-6 w-16 animate-pulse rounded-md bg-contrast-100" />}
@@ -35,11 +36,11 @@ export function Logo({ className, logo: streamableLogo, href, width, label }: Pr
         <Link
           aria-label={label}
           className={clsx(
-            'relative h-full items-center outline-0 ring-[var(--logo-focus,hsl(var(--primary)))] ring-offset-4 focus-visible:ring-2',
+            'relative outline-0 ring-[var(--logo-focus,hsl(var(--primary)))] ring-offset-4 focus-visible:ring-2',
             className,
           )}
           href={href}
-          style={typeof logo === 'string' ? {} : { width }}
+          style={typeof logo === 'string' ? {} : { width, height }}
         >
           {typeof logo === 'object' && logo !== null && logo.src !== '' ? (
             <Image
