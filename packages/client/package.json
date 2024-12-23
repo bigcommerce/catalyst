@@ -23,7 +23,7 @@
     "@bigcommerce/eslint-config": "^2.10.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@types/node": "^20.17.10",
-    "dotenv-cli": "^7.4.4",
+    "dotenv-cli": "^8.0.0",
     "eslint": "^8.57.1",
     "prettier": "^3.4.2",
     "tsup": "^8.3.5",
