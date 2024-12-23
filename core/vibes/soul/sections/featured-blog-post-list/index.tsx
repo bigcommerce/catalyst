@@ -1,5 +1,5 @@
 import { Streamable } from '@/vibes/soul/lib/streamable';
-import { BlogPost } from '@/vibes/soul/primitives/blog-post-card';
+import { BlogPostCardBlogPost } from '@/vibes/soul/primitives/blog-post-card';
 import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { BlogPostList } from '@/vibes/soul/sections/blog-post-list';
@@ -7,7 +7,7 @@ import { BlogPostList } from '@/vibes/soul/sections/blog-post-list';
 interface Props {
   title: string;
   description?: string;
-  posts: Streamable<BlogPost[]>;
+  posts: Streamable<BlogPostCardBlogPost[]>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
   breadcrumbs?: Streamable<Breadcrumb[]>;
   emptyStateSubtitle?: Streamable<string | null>;
