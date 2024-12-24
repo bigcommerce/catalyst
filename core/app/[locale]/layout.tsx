@@ -2,7 +2,6 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
 import type { Metadata } from 'next';
-import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
@@ -10,6 +9,7 @@ import { PropsWithChildren } from 'react';
 
 import '../globals.css';
 
+import { fonts } from '~/app/fonts';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -17,25 +17,6 @@ import { routing } from '~/i18n/routing';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
-
-const inter = Inter({
-  display: 'swap',
-  subsets: ['latin'],
-  variable: '--font-family-body',
-});
-
-const dm_serif_text = DM_Serif_Text({
-  display: 'swap',
-  subsets: ['latin'],
-  weight: '400',
-  variable: '--font-family-heading',
-});
-
-const roboto_mono = Roboto_Mono({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-family-mono',
-});
 
 const RootLayoutMetadataQuery = graphql(`
   query RootLayoutMetadataQuery {
@@ -110,10 +91,7 @@ export default async function RootLayout({ params, children }: Props) {
   const messages = await getMessages();
 
   return (
-    <html
-      className={clsx(inter.variable, dm_serif_text.variable, roboto_mono.variable)}
-      lang={locale}
-    >
+    <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
       <body>
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
