@@ -210,7 +210,7 @@ export default function CartInterface() {
       title: (
         <AccordionTitle
           icon={CategoryIcon}
-          text="Add Item to Cart"
+          text="Add Custom Item"
           onClick={() => toggleAccordion(1)}
         />
       ),
