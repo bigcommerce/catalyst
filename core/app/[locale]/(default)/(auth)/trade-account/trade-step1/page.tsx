@@ -1,10 +1,12 @@
+// export const runtime = 'edge';
+
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { RegisterForm1 } from '../_components/register-form1'; // Correct import path
 import { getRegisterCustomerQuerys } from '../page-data';
 import { BcImage } from '~/components/bc-image';
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
+// import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import ImageCarousel from '../trade-carousel';
 import TradeForm from './trade-form-section';
 import NetworkSection from './trade-our-network';
@@ -65,27 +67,6 @@ export interface RegisterForm1Props {
   };
   reCaptchaSettings: any;
 }
-
-const breadcrumbs = [
-  {
-    label: 'Apply',
-    href: '/trade-account/trade-step1',
-    color: '#008BB7',
-    fontWeight: '600', 
-  },
-  {
-    label: 'Business Details',
-    href: '/trade-account/trade-step2',
-    color: '#000000',
-    fontWeight: '400',
-  },
-  {
-    label: 'Confirmation',
-    href: '/trade-account/trade-step3',
-    color: '#000000',
-    fontWeight: '400',
-  },
-];
 
 // Define image URLs
 const imageUrls = {
@@ -243,13 +224,13 @@ export default async function Trade() {
           </div>
         </div>
 
-        <ComponentsBreadcrumbs
+        {/* <ComponentsBreadcrumbs
           className="trade2-div-breadcrumb m-auto hidden w-[92%] pb-[10px] pt-[0px] lg:flex lg:pt-[30px]"
           breadcrumbs={breadcrumbs}
-        />
+        /> */}
 
         {/* Form Section */}
-        <div className="m-auto flex w-[88%] flex-col-reverse lg:m-[unset] lg:w-[96.5%] lg:flex-row lg:justify-between lg:space-x-8">
+        <div className="m-auto flex w-[88%] flex-col-reverse lg:m-[unset] lg:w-[96.5%] lg:flex-row lg:justify-between lg:space-x-8 xl:mt-[100px]">
           {/* Left Side Content */}
           <TradeForm tradeCircleCircle={imageUrls.tradeCircleCircle} />
 
@@ -268,7 +249,7 @@ export default async function Trade() {
           </div>
         </div>
 
-        <h2 className="mb-[40px] mt-[0px] text-center text-[24px] font-normal leading-[32px] text-[#353535] xl:mt-[40px] hidden xl:block">
+        <h2 className="mb-[40px] mt-[0px] hidden text-center text-[24px] font-normal leading-[32px] text-[#353535] xl:mt-[40px] xl:block">
           Our Network
         </h2>
 
@@ -281,7 +262,7 @@ export default async function Trade() {
         {/* Project Carousel Section */}
         <div className="w-full">
           <h2 className="mb-[40px] mt-[10px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
-          Our Partner Projects in Action
+            Our Partner Projects in Action
           </h2>
           <div className="m-auto w-[95%] px-4">
             <ImageCarousel images={images} height="520px" />
