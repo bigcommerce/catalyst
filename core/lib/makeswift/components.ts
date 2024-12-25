@@ -11,6 +11,7 @@ import './components/site-footer/site-footer.makeswift';
 import './components/site-header/site-header.makeswift';
 import './components/slideshow/slideshow.makeswift';
 import './components/sticky-sidebar/sticky-sidebar.makeswift';
+import './components/product-detail/register';
 
 import './components/site-theme/register';
 
