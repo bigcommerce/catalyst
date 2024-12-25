@@ -46,6 +46,7 @@ interface Props extends ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.
   logo?: string | Image;
   search?: ReactNode;
   homeLogoMobile? : string | Image;
+  homeLogoMobileFirst ? : string;
 }
 
 const Header = ({
@@ -58,6 +59,7 @@ const Header = ({
   logo,
   search,
   homeLogoMobile,
+  homeLogoMobileFirst
 }: Props) => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
@@ -116,7 +118,8 @@ const Header = ({
                   className="max-h-16 object-contain"
                   height={30}
                   priority
-                  src={imageIconList.homeLogo}
+                  // src={imageIconList.homeLogo} 
+                  src={homeLogoMobileFirst}
                   width={30}
                   unoptimized={true}
                 />

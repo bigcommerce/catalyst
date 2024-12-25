@@ -644,7 +644,7 @@ export const RegisterForm2 = ({
             </div>
           )}
           <Button
-            className="relative w-full items-center !bg-[#008BB7] px-8 py-2 xl:mt-[10px] disabled:cursor-not-allowed hover:!bg-[rgb(75,200,240)] !transition-colors !duration-500"
+            className="relative w-full items-center !bg-[#008BB7] px-8 py-2 !transition-colors !duration-500 hover:!bg-[rgb(75,200,240)] disabled:cursor-not-allowed xl:mt-[10px]"
             variant="primary"
             type="submit"
             disabled={isSubmitting}

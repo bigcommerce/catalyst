@@ -5,7 +5,6 @@ import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 import { RegisterForm2 } from '../_components/register-form2';
 import { getRegisterCustomerQuerys } from '../page-data';
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import ImageCarousel from '../trade-carousel';
 import NetworkSection from '../trade-step1/trade-our-network';
 import { FormField } from '../_components/register-form1';
@@ -82,27 +81,6 @@ export async function generateMetadata() {
   };
 }
 
-const breadcrumbs = [
-  {
-    label: 'Apply',
-    href: '/trade-account/trade-step1',
-    color: '#000000',
-    fontWeight: '400', // Changed to string
-  },
-  {
-    label: 'Business Details',
-    href: '/trade-account/trade-step2',
-    color: '#008BB7',
-    fontWeight: '600', // Changed to string
-  },
-  {
-    label: 'Confirmation',
-    href: '/trade-account/trade-step3',
-    color: '#000000',
-    fontWeight: '400', // Changed to string
-  },
-];
-
 type CarouselImage = {
   src: string;
   alt: string;
@@ -156,9 +134,9 @@ export default async function Trade() {
   };
 
   const filteredCountries = countries.filter(
-    (country) => country.code === 'CA' || country.code === 'US'
+    (country) => country.code === 'CA' || country.code === 'US',
   );
-  console.log(filteredCountries, "FIlter countries============");
+  console.log(filteredCountries, 'FIlter countries============');
 
   return (
     <div className="trade-register-section min-h-screen bg-white pb-8">
@@ -166,24 +144,41 @@ export default async function Trade() {
         {/* Breadcrumbs */}
 
         {/* Main Content */}
-        <div className="mx-auto flex w-[92%] lg:w-[94%] flex-col-reverse gap-6 lg:flex-row lg:gap-8">
+        <div className="mx-auto flex w-[92%] flex-col-reverse gap-6 lg:w-[94%] lg:flex-row lg:gap-[4.5em]">
           {/* Left Side Carousel */}
-          <div className="xl:mt-[2.8em] mt-[1em] w-full lg:w-1/2">
+          <div className="mt-[1em] w-full lg:w-1/2 xl:mt-[2.8em]">
             <ImageCarousel images={images} height="800px" />
           </div>
 
           {/* Right Side Registration Form */}
           <div className="w-full lg:w-1/2">
-            <div className="trade2-breadcrumbs">
-              <ComponentsBreadcrumbs
-                className="trade2-div-breadcrumb flex w-[100%] lg:pb-[10px] lg:pt-[30px]"
-                breadcrumbs={breadcrumbs}
-              />
+            <div className="mt-[35px] flex items-center space-x-2">
+              <a
+                href="/trade-account/trade-step1/"
+                className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-black"
+              >
+                Apply
+              </a>
+              <span className="text-[#353535]">&gt;</span>
+              <a
+                href="#"
+                className="text-left text-[16px] font-[700] leading-8 tracking-[0.15px] text-[#008BB7]"
+              >
+                Business Details
+              </a>
+              <span className="text-[#7F7F7F]">&gt;</span>
+              <a
+                href="/trade-account/trade-step3/"
+                className="text-left text-[16px] font-[400] leading-8 tracking-[0.15px] text-[#7F7F7F]"
+              >
+                Confirmation
+              </a>
             </div>
-            <h2 className="m-auto mb-[30px] lg:mb-[40px] mt-[10px] text-center lg:text-left text-[20px] font-[500] leading-[32px] text-[#353535]">
+
+            <h2 className="m-auto mb-[30px] mt-[20px] text-center text-[20px] font-[500] leading-[32px] text-[#353535] lg:mb-[40px] lg:text-left">
               Quickly tell us about what you do.
             </h2>
-            <div className="rounded-lg bg-white px-5 xl:px-0  xl:pb-[3.5em] pb-[2.5em] pt-[2em] shadow-[0_0_30px_5px_rgba(0,0,0,0.06)]">
+            <div className="rounded-lg bg-white px-5 pb-[2.5em] pt-[2em] shadow-[0_0_30px_5px_rgba(0,0,0,0.06)] xl:px-0 xl:pb-[3.5em]">
               <RegisterForm2
                 TradeAddress1={TradeAddress1}
                 addressFields={addressFields as FormField[]}
@@ -196,7 +191,7 @@ export default async function Trade() {
         </div>
 
         {/* Network Section */}
-        <div className="mt-[30px] lg:mt-[60px] px-[20px] lg:px-0">
+        <div className="mt-[30px] px-[20px] lg:mt-[60px] lg:px-0">
           <NetworkSection networkImages={networkImages} />
         </div>
       </div>
