@@ -104,9 +104,7 @@ export default function CartInterface() {
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading((prev) => ({ ...prev, comments: true }));
-    
-    
+    setLoading((prev) => ({ ...prev, comments: true }));    
     const createCommentData = {
       comment: comment.trim() || '',
       action: '',
@@ -115,11 +113,11 @@ export default function CartInterface() {
       const response = await addComment(createCommentData);
       if (response.status === 200) {
         setLoading((prev) => ({ ...prev, comments: false }));
-        setIsCommentVisible(false);
+        // setIsCommentVisible(false);
         setIsCommentSaved(true);
         setSuccessMessage('commented successfully!');
         // setIsCommentSaved(true);// Mark the comment as saved
-        setIsCommentVisible(false);
+        // setIsCommentVisible(true);
       } else {
         setLoading((prev) => ({ ...prev, comments: false }));
         setErrorMessage(`Failed to comment: ${response.error || 'Unknown error'}`);
