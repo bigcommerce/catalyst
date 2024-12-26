@@ -54,5 +54,5 @@ export const getBlogPageData = cache(async ({ entityId }: { entityId: number }) 
     return null;
   }
 
-  return response.data.site;
+  return blog;
 });
