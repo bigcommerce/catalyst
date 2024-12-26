@@ -41,8 +41,13 @@ const AddressChangeButtons = ({ addressId, isAddressRemovable, onDelete }: Addre
   };
 
   return (
-    <div className="flex w-fit gap-x-2 divide-y-0">
-      <Button aria-label={t('editButton')} asChild variant="secondary">
+    <div className="flex items-center gap-[22px] p-0">
+      <Button
+        className="flex min-w-[174px] items-center justify-center gap-[5px] rounded-[3px] bg-[#03465c] hover:bg-[#03465c]/90 p-[5px_10px] text-[14px] font-[500] uppercase leading-[32px] tracking-[1.25px] text-white"
+        aria-label={t('editButton')}
+        asChild
+        variant="secondary"
+      >
         <Link href={`/account/addresses/edit/${addressId}`}>{t('editButton')}</Link>
       </Button>
       <Modal
@@ -50,7 +55,12 @@ const AddressChangeButtons = ({ addressId, isAddressRemovable, onDelete }: Addre
         confirmationText={t('confirmDeleteAddress')}
         title={t('deleteModalTitle')}
       >
-        <Button aria-label={t('deleteButton')} disabled={!isAddressRemovable} variant="subtle">
+        <Button
+          className="flex min-w-[174px] items-center justify-center gap-[5px] rounded-[3px] bg-[#03465c] hover:bg-[#03465c]/90 p-[5px_10px] text-[14px] font-[500] uppercase leading-[32px] tracking-[1.25px] text-white"
+          aria-label={t('deleteButton')}
+          disabled={!isAddressRemovable}
+          variant="subtle"
+        >
           {t('deleteButton')}
         </Button>
       </Modal>
@@ -80,7 +90,7 @@ export const AddressBook = ({
         </Message>
       )}
       {!addressesCount && <p className="border-t py-12 text-center">{t('emptyAddresses')}</p>}
-      <ul className="mb-12">
+      <ul className="flex flex-wrap gap-5">
         {addressBook.map(
           ({
             entityId,
@@ -93,40 +103,35 @@ export const AddressBook = ({
             postalCode,
             countryCode,
           }) => (
-            <li
-              className="flex w-full border-collapse flex-col justify-start gap-3 border-t border-gray-200 py-6"
-              key={entityId}
-            >
-              <div className="inline-flex flex-col justify-start text-base">
-                <p>
+            <li className="flex w-fit items-start gap-[10px] bg-[#E8E7E7] p-10" key={entityId}>
+              <div className="flex flex-col items-start gap-[30px] p-0 h-full">
+                <p className="text-xl font-[500] leading-[32px] tracking-[0.15px] text-black">
                   {firstName} {lastName}
                 </p>
-                <p>{address1}</p>
-                {Boolean(address2) && <p>{address2}</p>}
-                <p>
-                  {city}, {stateOrProvince} {postalCode}
-                </p>
-                <p>{countryCode}</p>
+                <div className="text-[16px] font-normal leading-[32px] tracking-[0.5px] text-black flex-grow">
+                  <p>{address1}</p>
+                  {Boolean(address2) && <p>{address2}</p>}
+                  <p>
+                    {city}, {stateOrProvince} {postalCode}
+                  </p>
+                  <p>{countryCode}</p>
+                </div>
+                <AddressChangeButtons
+                  addressId={entityId}
+                  isAddressRemovable={addressesCount > 1}
+                  onDelete={setAddressBook}
+                />
               </div>
-              <AddressChangeButtons
-                addressId={entityId}
-                isAddressRemovable={addressesCount > 1}
-                onDelete={setAddressBook}
-              />
             </li>
           ),
         )}
-        <li className="align-center flex w-full border-collapse flex-col justify-center gap-2 border-t border-gray-200 pt-8 md:flex-row md:justify-between">
-          <Button
-            aria-label={t('addNewAddress')}
-            asChild
-            className="w-full hover:text-white md:w-fit"
-          >
-            <Link href="/account/addresses/add">{t('addNewAddress')}</Link>
-          </Button>
-          {children}
-        </li>
       </ul>
+      <div className="">
+        <Button aria-label={t('addNewAddress')} asChild className="w-fit">
+          <Link href="/account/addresses/add">{t('addNewAddress')}</Link>
+        </Button>
+        {children}
+      </div>
     </>
   );
 };

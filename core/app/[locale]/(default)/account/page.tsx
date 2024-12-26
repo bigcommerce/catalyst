@@ -2,7 +2,6 @@ import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { logout } from '~/components/header/_actions/logout';
 import { Link } from '~/components/link';
 
 import { AccountNotification } from './(tabs)/_components/account-notification';
@@ -12,7 +11,6 @@ import Image from 'next/image';
 
 import ordersIcon from "~/public/accountIcons/orders.svg"
 import AddressesIcon from "~/public/accountIcons/addresses.svg"
-import paymentsIcon from "~/public/accountIcons/payments.svg"
 import requiestQuoteIcon from "~/public/accountIcons/requestQuote.svg"
 import detailsIcon from "~/public/accountIcons/details.svg"
 import favouriteIcon from "~/public/accountIcons/favourite.svg"
@@ -75,9 +73,6 @@ export default function Account() {
           <AccountItem href="/account/addresses" title={t('addresses')} description={t('addressesMsg')}>
           <Image src={AddressesIcon} alt={t('addresses')}  width={70} height={70}/>
           </AccountItem>
-          <AccountItem href="/account/wishlists" title={t('payments')} description={t('paymentsMsg')}>
-            <Image src={paymentsIcon} alt={t('payments')}  width={70} height={70}/>
-          </AccountItem>
           <AccountItem href="/account/wishlists" title={t('requestAQuote')} description={t('requestAQuoteMsg')}>
             <Image src={requiestQuoteIcon} alt={t('requestAQuote')}  width={70} height={70}/>
           </AccountItem>
@@ -90,9 +85,6 @@ export default function Account() {
           <AccountItem href="/account/settings" title={t('emailPreferences')} description={t('emailPreferencesMsg')}>
             <Image src={emailPrefIcon} alt={t('emailPreferences')}  width={70} height={70}/>
           </AccountItem>
-          <form action={logout}>
-            <button>Logout</button>
-          </form>
         </div>
         <div className="flex w-max flex-col gap-[10px]">
           <div className="text-[20px] font-[500] leading-[32px] tracking-[0.15px]">
