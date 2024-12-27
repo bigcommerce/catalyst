@@ -161,7 +161,9 @@
   },
   "Brand": {
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-    "products": "Products"
+    "products": "Products",
+    "emptyStateTitle": "No products in this brand.",
+    "emptyStateSubtitle": "Try using different filters."
   },
   "Category": {
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
