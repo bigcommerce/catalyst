@@ -2,19 +2,21 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { createSearchParamsCache } from 'nuqs/server';
+import { cache } from 'react';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { ListProduct } from '@/vibes/soul/primitives/products-list';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
+import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import { Option as SortOption } from '@/vibes/soul/sections/products-list-section/sorting';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
-import { createFiltersSearchParamCache } from '../../create-filters-search-params-cache';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { CategoryViewed } from './_components/category-viewed';
@@ -22,7 +24,17 @@ import { getCategoryPageData } from './page-data';
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
-async function getCategory(categoryId: number) {
+interface Props {
+  params: Promise<{
+    slug: string;
+    locale: string;
+  }>;
+  searchParams: Promise<SearchParams>;
+}
+
+async function getCategory(props: Props) {
+  const { slug } = await props.params;
+  const categoryId = Number(slug);
   const data = await getCategoryPageData({ categoryId });
 
   const category = data.category;
@@ -32,8 +44,8 @@ async function getCategory(categoryId: number) {
   return category;
 }
 
-async function getBreadcrumbs(categoryId: number): Promise<Breadcrumb[]> {
-  const category = await getCategory(categoryId);
+async function getBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
+  const category = await getCategory(props);
 
   return removeEdgesAndNodes(category.breadcrumbs).map(({ name, path }) => ({
     label: name,
@@ -41,15 +53,33 @@ async function getBreadcrumbs(categoryId: number): Promise<Breadcrumb[]> {
   }));
 }
 
-async function getTitle(categoryId: number): Promise<string | null> {
-  const category = await getCategory(categoryId);
+async function getTitle(props: Props): Promise<string | null> {
+  const category = await getCategory(props);
 
   return category.name;
 }
 
-async function getSearch(categoryId: number, searchParamsPromise: Promise<SearchParams>) {
-  const searchParams = await searchParamsPromise;
-  const searchParamsCache = await createFiltersSearchParamCache({ category: categoryId });
+const createCategorySearchParamsCache = cache(async (props: Props) => {
+  const { slug } = await props.params;
+  const categorySearch = await fetchFacetedSearch({ category: Number(slug) });
+  const categoryFacets = categorySearch.facets.items.filter(
+    (facet) => facet.__typename !== 'CategorySearchFilter',
+  );
+  const transformedCategoryFacets = await facetsTransformer({
+    refinedFacets: categoryFacets,
+    allFacets: categoryFacets,
+    searchParams: {},
+  });
+  const categoryFilters = transformedCategoryFacets.filter((facet) => facet != null);
+
+  return createSearchParamsCache(getFilterParsers(categoryFilters));
+});
+
+async function getSearch(props: Props) {
+  const { slug } = await props.params;
+  const categoryId = Number(slug);
+  const searchParams = await props.searchParams;
+  const searchParamsCache = await createCategorySearchParamsCache(props);
   const parsedSearchParams = searchParamsCache.parse(searchParams);
   const search = await fetchFacetedSearch({
     ...searchParams,
@@ -60,26 +90,20 @@ async function getSearch(categoryId: number, searchParamsPromise: Promise<Search
   return search;
 }
 
-async function getTotalCount(
-  categoryId: number,
-  searchParamsPromise: Promise<SearchParams>,
-): Promise<number> {
-  const search = await getSearch(categoryId, searchParamsPromise);
+async function getTotalCount(props: Props): Promise<number> {
+  const search = await getSearch(props);
 
   return search.products.collectionInfo?.totalItems ?? 0;
 }
 
-async function getProducts(categoryId: number, searchParamsPromise: Promise<SearchParams>) {
-  const search = await getSearch(categoryId, searchParamsPromise);
+async function getProducts(props: Props) {
+  const search = await getSearch(props);
 
   return search.products.items;
 }
 
-async function getListProducts(
-  categoryId: number,
-  searchParamsPromise: Promise<SearchParams>,
-): Promise<ListProduct[]> {
-  const products = await getProducts(categoryId, searchParamsPromise);
+async function getListProducts(props: Props): Promise<ListProduct[]> {
+  const products = await getProducts(props);
   const format = await getFormatter();
 
   return products.map((product) => ({
@@ -94,12 +118,11 @@ async function getListProducts(
   }));
 }
 
-async function getFilters(
-  categoryId: number,
-  searchParamsPromise: Promise<SearchParams>,
-): Promise<Filter[]> {
-  const searchParams = await searchParamsPromise;
-  const searchParamsCache = await createFiltersSearchParamCache({ category: categoryId });
+async function getFilters(props: Props): Promise<Filter[]> {
+  const { slug } = await props.params;
+  const categoryId = Number(slug);
+  const searchParams = await props.searchParams;
+  const searchParamsCache = await createCategorySearchParamsCache(props);
   const parsedSearchParams = searchParamsCache.parse(searchParams);
   const categorySearch = await fetchFacetedSearch({ category: categoryId });
   const refinedSearch = await fetchFacetedSearch({
@@ -145,12 +168,11 @@ async function getSortOptions(): Promise<SortOption[]> {
   ];
 }
 
-async function getPaginationInfo(
-  categoryId: number,
-  searchParamsPromise: Promise<SearchParams>,
-): Promise<CursorPaginationInfo> {
-  const searchParams = await searchParamsPromise;
-  const searchParamsCache = await createFiltersSearchParamCache({ category: categoryId });
+async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
+  const { slug } = await props.params;
+  const categoryId = Number(slug);
+  const searchParams = await props.searchParams;
+  const searchParamsCache = await createCategorySearchParamsCache(props);
   const parsedSearchParams = searchParamsCache.parse(searchParams);
   const search = await fetchFacetedSearch({
     ...searchParams,
@@ -179,18 +201,8 @@ async function getEmptyStateSubtitle(): Promise<string | null> {
   return t('subtitle');
 }
 
-interface Props {
-  params: Promise<{
-    slug: string;
-    locale: string;
-  }>;
-  searchParams: Promise<SearchParams>;
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params;
-  const categoryId = Number(slug);
-  const category = await getCategory(categoryId);
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  const category = await getCategory(props);
 
   const { pageTitle, metaDescription, metaKeywords } = category.seo;
 
@@ -201,33 +213,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Category({ params, searchParams }: Props) {
-  const { locale, slug } = await params;
+export default async function Category(props: Props) {
+  const { locale } = await props.params;
 
   setRequestLocale(locale);
-
-  const categoryId = Number(slug);
 
   return (
     <>
       <ProductsListSection
-        breadcrumbs={getBreadcrumbs(categoryId)}
+        breadcrumbs={getBreadcrumbs(props)}
         emptyStateSubtitle={getEmptyStateSubtitle()}
         emptyStateTitle={getEmptyStateTitle()}
         filterLabel={await getFilterLabel()}
-        filters={getFilters(categoryId, searchParams)}
-        paginationInfo={getPaginationInfo(categoryId, searchParams)}
-        products={getListProducts(categoryId, searchParams)}
+        filters={getFilters(props)}
+        paginationInfo={getPaginationInfo(props)}
+        products={getListProducts(props)}
         sortDefaultValue="featured"
         sortLabel={getSortLabel()}
         sortOptions={getSortOptions()}
         sortParamName="sort"
-        title={getTitle(categoryId)}
-        totalCount={getTotalCount(categoryId, searchParams)}
+        title={getTitle(props)}
+        totalCount={getTotalCount(props)}
       />
-      <Stream value={Promise.all([getCategory(categoryId), getProducts(categoryId, searchParams)])}>
+      <Stream value={Promise.all([getCategory(props), getProducts(props)])}>
         {([category, products]) => (
-          <CategoryViewed category={category} categoryId={categoryId} products={products} />
+          <CategoryViewed category={category} categoryId={category.entityId} products={products} />
         )}
       </Stream>
     </>

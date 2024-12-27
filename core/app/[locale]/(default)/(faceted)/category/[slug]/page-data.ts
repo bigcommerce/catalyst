@@ -13,6 +13,7 @@ const CategoryPageQuery = graphql(
     query CategoryPageQuery($categoryId: Int!) {
       site {
         category(entityId: $categoryId) {
+          entityId
           name
           ...BreadcrumbsFragment
           seo {
