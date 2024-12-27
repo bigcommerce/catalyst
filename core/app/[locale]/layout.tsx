@@ -122,7 +122,7 @@ const VercelComponents = () => {
 };
 
 interface Props extends PropsWithChildren {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
 export default async function RootLayout({ params, children }: Props) {
@@ -144,13 +144,11 @@ export default async function RootLayout({ params, children }: Props) {
       </head>
       <body className="flex h-screen min-w-[375px] flex-col">
         <Notifications />
-        <MakeswiftProvider>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <NuqsAdapter>
-              <Providers>{children}</Providers>
-            </NuqsAdapter>
-          </NextIntlClientProvider>
-        </MakeswiftProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <NuqsAdapter>
+            <Providers>{children}</Providers>
+          </NuqsAdapter>
+        </NextIntlClientProvider>
         <VercelComponents />
       </body>
     </html>
