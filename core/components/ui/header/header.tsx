@@ -45,8 +45,8 @@ interface Props extends ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.
   locale?: ReactNode;
   logo?: string | Image;
   search?: ReactNode;
-  homeLogoMobile? : string | Image;
-  homeLogoMobileFirst ? : string;
+  homeLogoMobile?: string | Image;
+  homeLogoMobileFirst?: string;
 }
 
 const Header = ({
@@ -59,7 +59,7 @@ const Header = ({
   logo,
   search,
   homeLogoMobile,
-  homeLogoMobileFirst
+  homeLogoMobileFirst,
 }: Props) => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>();
@@ -118,7 +118,7 @@ const Header = ({
                   className="max-h-16 object-contain"
                   height={30}
                   priority
-                  // src={imageIconList.homeLogo} 
+                  // src={imageIconList.homeLogo}
                   src={homeLogoMobileFirst}
                   width={30}
                   unoptimized={true}
@@ -177,7 +177,7 @@ const Header = ({
                       onMouseLeave={handleMenuLeave}
                     >
                       <div
-                        className={`header-sub-menu-${menuIndex} relative mx-auto grid max-w-[90em] md:grid-cols-[repeat(2,auto)] lg:grid-cols-[repeat(2,auto)] xl:grid-cols-[repeat(6,auto)] gap-6 px-12`}
+                        className={`header-sub-menu-${menuIndex} relative mx-auto grid max-w-[90em] gap-6 px-12 md:grid-cols-[repeat(2,auto)] lg:grid-cols-[repeat(2,auto)] xl:grid-cols-[repeat(6,auto)]`}
                       >
                         <button
                           className="absolute -top-[1em] right-[1em] text-gray-600 hover:text-gray-800 focus:outline-none"

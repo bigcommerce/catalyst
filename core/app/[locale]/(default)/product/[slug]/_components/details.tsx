@@ -8,7 +8,7 @@ import { PricingFragment } from '~/client/fragments/pricing';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf, graphql } from '~/client/graphql';
 import CertificationsAndRatings from '~/components/ui/pdp/belami-certification-rating-pdp';
-import { Payment } from '~/components/ui/pdp/belami-payment-pdp';
+import { Payment, PayPalPayLater } from '~/components/ui/pdp/belami-payment-pdp';
 import { RequestQuote } from '~/components/ui/pdp/belami-request-a-quote-pdp';
 import { ShippingReturns } from '~/components/ui/pdp/belami-shipping-returns-pdp';
 import { imageManagerImageUrl } from '~/lib/store-assets';
@@ -127,7 +127,7 @@ interface Props {
   paywithGoogle?: string;
   payPal?: string;
   requestQuote?: string;
-  closeIcon?:string;
+  closeIcon?: string;
 }
 
 export const Details = ({
@@ -138,7 +138,7 @@ export const Details = ({
   couponIcon,
   paywithGoogle,
   payPal,
-  requestQuote ,
+  requestQuote,
   closeIcon,
 }: Props) => {
   const t = useTranslations('Product.Details');
@@ -534,7 +534,8 @@ export const Details = ({
         </button>
       </div>
 
-      <Payment  payPal={payPal} />
+      <PayPalPayLater amount="99.99" currency="USD" />
+
       <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
