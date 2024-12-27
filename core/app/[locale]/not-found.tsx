@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getTranslations } from 'next-intl/server';
 
+import { NotFound as NotFoundSection } from '@/vibes/soul/sections/not-found';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -41,11 +42,9 @@ export default async function NotFound() {
     <>
       <Header />
 
+      <NotFoundSection subtitle={t('message')} title={t('heading')} />
+
       <main className="mx-auto mb-10 max-w-[835px] space-y-8 px-4 sm:px-10 lg:px-0">
-        <div className="flex flex-col gap-8 px-0 py-16">
-          <h2 className="text-4xl font-black lg:text-5xl">{t('heading')}</h2>
-          <p className="text-lg">{t('message')}</p>
-        </div>
         <SearchForm />
         <ProductCardCarousel
           products={featuredProducts}
