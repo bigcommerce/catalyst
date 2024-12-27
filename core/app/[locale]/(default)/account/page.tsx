@@ -15,6 +15,7 @@ import requiestQuoteIcon from "~/public/accountIcons/requestQuote.svg"
 import detailsIcon from "~/public/accountIcons/details.svg"
 import favouriteIcon from "~/public/accountIcons/favourite.svg"
 import emailPrefIcon from "~/public/accountIcons/emailPref.svg"
+import { WelcomeMessage } from './welcome-message';
 
 interface AccountItem {
   children: ReactNode;
@@ -46,7 +47,6 @@ export async function generateMetadata() {
 export default function Account() {
   const t = useTranslations('Account.Home');
   const ts = useTranslations('Account.SalesHours');
-
   const breadcrumbs: any = [
     {
       label: 'Account Center',
@@ -60,10 +60,7 @@ export default function Account() {
       <div className="flex flex-col gap-[40px]">
         <div>
           <ComponentsBreadcrumbs className="" breadcrumbs={breadcrumbs} />
-          <h1 className="mt-1 text-[24px] font-normal leading-[32px]">
-            <span>{t('welcomeMessage')},</span>
-            <span className="text-[#008BB7]">{' '}username/email!</span>
-          </h1>
+          <WelcomeMessage />
         </div>
 
         <div className="grid grid-cols-3 gap-5">
