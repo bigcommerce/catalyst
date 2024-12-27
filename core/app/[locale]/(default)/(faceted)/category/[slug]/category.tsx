@@ -10,20 +10,22 @@ import {
   ToggleRefinement,
   DynamicWidgets,
   RangeInput,
-  HitsPerPage,
+  //HitsPerPage,
   //Pagination,
-  SortBy,
+  //SortBy,
   Stats
 } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import type { RefinementListProps } from 'react-instantsearch';
 
-import { Panel } from '../../_components/panel';
+import { SortBy, HitsPerPage, Pagination } from '~/belami/components/search';
+
+import { Panel } from '~/belami/components/panel';
+//import { Panel } from '../../_components/panel';
 import { RatingMenu } from '../../_components/rating-menu';
 import { Hits, HitsAsync } from '../../_components/hits';
 import { ClearRefinements } from '../../_components/clear-refinements';
 import { CurrentRefinements } from '../../_components/current-refinements';
-import { Pagination } from '../../_components/pagination';
 
 import { Facet } from '../../_components/facet';
 import { FacetDropdown } from '../../_components/facet-dropdown';
@@ -377,14 +379,14 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               </Panel>
             </DynamicWidgets>
           </div>
-          <SortBy items={[
+          <SortBy label="Sort By" items={[
             { label: 'Relevance', value: indexName },
             { label: 'Price (Low to High)', value: `${indexName}_sort_prices_USD_asc` },
             { label: 'Price (High to Low)', value: `${indexName}_sort_prices_USD_desc` },
             { label: 'Avg. Customer Rating', value: `${indexName}_reviews_rating_sum_desc` },
             { label: 'Number of Reviews', value: `${indexName}_reviews_count_desc` },
             { label: 'Best Sellers', value: `${indexName}_total_sold_desc` }
-          ]} classNames={{ root: 'order-1' }} />
+          ]} classNames={{ root: 'order-1', button: 'w-full !shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2', buttonText: 'text-brand-300', item: 'text-sm py-1', active: 'text-brand-300' }} />
         </div>
       </aside>
 
@@ -419,15 +421,14 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.05882 0V5.71429H24V0M7.05882 20H24V14.2857H7.05882M7.05882 12.8571H24V7.14286H7.05882M0 5.71429H5.64706V0H0M0 20H5.64706V14.2857H0M0 12.8571H5.64706V7.14286H0V12.8571Z" fill="black" /></svg>
               }
             </button>
-
-            <SortBy items={[
+            <SortBy label="Sort By" items={[
               { label: 'Relevance', value: indexName },
               { label: 'Price (Low to High)', value: `${indexName}_sort_prices_USD_asc` },
               { label: 'Price (High to Low)', value: `${indexName}_sort_prices_USD_desc` },
               { label: 'Avg. Customer Rating', value: `${indexName}_reviews_rating_sum_desc` },
               { label: 'Number of Reviews', value: `${indexName}_reviews_count_desc` },
               { label: 'Best Sellers', value: `${indexName}_total_sold_desc` }
-            ]} classNames={{ root: 'flex-none', select: '!shadow-none !border-gray-300' }} />
+            ]} classNames={{ root: 'flex-none', button: '!shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2', buttonText: 'text-brand-300', item: 'text-sm py-1', active: 'text-brand-300' }} />
           </div>
         </div>
 
@@ -536,7 +537,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               { label: '10 per page', value: 10 },
               { label: '20 per page', value: 20, default: true },
               { label: '50 per page', value: 50 }
-            ]} classNames={{ root: 'flex-none ml-auto lg:ml-0 order-1 md:order-2', select: '!shadow-none !border-gray-300' }} />
+            ]} classNames={{ root: 'flex-none ml-auto lg:ml-0 order-1 md:order-2', button: 'w-full !shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2', buttonText: 'text-brand-300', item: 'text-sm py-1', active: 'text-brand-300' }} />
           </div>
         </div>
 

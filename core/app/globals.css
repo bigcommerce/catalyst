@@ -671,10 +671,10 @@ button.show-all {
   display: flex;
   align-items: center;
 }
-.facets .ais-Panel-header span:first-child {
+.facets .ais-Panel-header > span:first-child {
   flex-grow: 1;
 }
-.facets .ais-Panel-header span:last-child {
+.facets .ais-Panel-header > span:last-child {
   font-size: 1.25rem;
   flex: none;
 }

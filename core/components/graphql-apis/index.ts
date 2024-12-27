@@ -1,8 +1,12 @@
 'use server';
 import { client } from '~/client';
-import { graphql } from '~/client/graphql';
+import { graphql, VariablesOf } from '~/client/graphql';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { revalidate } from '~/client/revalidate-target';
+import { OrderItemFragment } from '~/app/[locale]/(default)/account/(tabs)/orders/_components/product-snippet';
+import { cache } from 'react';
+import { OrderDetailsType } from '~/app/[locale]/(default)/account/(tabs)/order/[slug]/page-data';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 const ProductMetaFieldsQuery = graphql(
     `
@@ -109,3 +113,180 @@ export const GetVariantsByProductSKU = async (skuArray: any) => {
   }
   return productVariantData;
 }
+
+
+const OrderShipmentFragment = graphql(`
+  fragment OrderShipmentFragment on OrderShipment {
+    shippingMethodName
+    shippingProviderName
+    tracking {
+      __typename
+      ... on OrderShipmentNumberAndUrlTracking {
+        number
+        url
+      }
+      ... on OrderShipmentUrlOnlyTracking {
+        url
+      }
+      ... on OrderShipmentNumberOnlyTracking {
+        number
+      }
+    }
+  }
+`);
+
+const mapOrderData = (order: OrderDetailsType) => {
+  const shipping = order.consignments?.shipping
+    ? removeEdgesAndNodes(order.consignments.shipping).map(
+        ({ shipments, lineItems, ...otherItems }) => ({
+          ...otherItems,
+          lineItems: removeEdgesAndNodes(lineItems),
+          shipments: removeEdgesAndNodes(shipments),
+        }),
+      )
+    : undefined;
+
+  return {
+    orderState: {
+      orderId: order.entityId,
+      status: order.status,
+      orderDate: order.orderedAt,
+    },
+    summaryInfo: {
+      subtotal: order.subTotal,
+      discounts: order.discounts,
+      shipping: order.shippingCostTotal,
+      tax: order.taxTotal,
+      grandTotal: order.totalIncTax,
+      handlingCost: order.handlingCostTotal
+    },
+    paymentInfo: {
+      billingAddress: order.billingAddress,
+      // TODO: add payments data
+    },
+    consignments: {
+      shipping,
+    },
+  };
+};
+
+const CustomerOrderDetails = graphql(
+  `
+    query CustomerOrderDetails($filter: OrderFilterInput) {
+      site {
+        order(filter: $filter) {
+          entityId
+          orderedAt {
+            utc
+          }
+          status {
+            label
+            value
+          }
+          totalIncTax {
+            value
+            currencyCode
+          }
+          subTotal {
+            value
+            currencyCode
+          }
+          discounts {
+            nonCouponDiscountTotal {
+              value
+              currencyCode
+            }
+            couponDiscounts {
+              couponCode
+              discountedAmount {
+                value
+                currencyCode
+              }
+            }
+          }
+          handlingCostTotal {
+            currencyCode
+            value
+          }
+          shippingCostTotal {
+            value
+            currencyCode
+          }
+          taxTotal {
+            value
+            currencyCode
+          }
+          billingAddress {
+            firstName
+            lastName
+            address1
+            city
+            email
+            stateOrProvince
+            postalCode
+            country
+            countryCode
+          }
+          consignments {
+            shipping {
+              edges {
+                node {
+                  entityId
+                  shippingAddress {
+                    firstName
+                    lastName
+                    address1
+                    city
+                    stateOrProvince
+                    postalCode
+                    country
+                    countryCode
+                  }
+                  shipments {
+                    edges {
+                      node {
+                        entityId
+                        shippedAt {
+                          utc
+                        }
+                        ...OrderShipmentFragment
+                      }
+                    }
+                  }
+                  lineItems {
+                    edges {
+                      node {
+                        ...OrderItemFragment
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  [OrderItemFragment, OrderShipmentFragment],
+);
+
+export const getOrderDetails = cache(
+  async (variables: VariablesOf<typeof CustomerOrderDetails>) => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+
+    const response = await client.fetch({
+      document: CustomerOrderDetails,
+      variables,
+      fetchOptions: { cache: 'no-store' },
+      customerAccessToken,
+    });
+    const order = response.data.site.order;
+
+    if (!order) {
+      return undefined;
+    }
+    const data = mapOrderData(order);
+    return data;
+  },
+);

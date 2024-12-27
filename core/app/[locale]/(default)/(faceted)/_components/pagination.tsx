@@ -41,6 +41,7 @@ export function Pagination({ classNames, ...props }: UsePaginationProps) {
         }}
         ariaLabel="First Page"
       >‹‹</PaginationItem>
+      {/*
       <PaginationItem
         isDisabled={isFirstPage}
         href={fixCreateURL(previousPageIndex)}
@@ -51,6 +52,7 @@ export function Pagination({ classNames, ...props }: UsePaginationProps) {
         }}
         ariaLabel="Previous Page"
       >‹</PaginationItem>
+      */}      
       {pages.map((page: number) => {
         const label = page + 1;
         
@@ -71,6 +73,7 @@ export function Pagination({ classNames, ...props }: UsePaginationProps) {
           </PaginationItem>
         );
       })}
+      {/*
       <PaginationItem
         isDisabled={isLastPage}
         href={fixCreateURL(nextPageIndex)}
@@ -81,6 +84,7 @@ export function Pagination({ classNames, ...props }: UsePaginationProps) {
         }}
         ariaLabel="Next Page"
       >›</PaginationItem>
+      */}
       <PaginationItem
         isDisabled={isLastPage}
         href={fixCreateURL(lastPageIndex)}

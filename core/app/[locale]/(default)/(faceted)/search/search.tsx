@@ -391,7 +391,7 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
               </Panel>
             </DynamicWidgets>
           </div>
-          <SortBy items={[
+          <SortBy label="Sort By" items={[
             { label: 'Relevance', value: indexName },
             { label: 'Price (Low to High)', value: `${indexName}_sort_prices_USD_asc` },
             { label: 'Price (High to Low)', value: `${indexName}_sort_prices_USD_desc` },
@@ -434,7 +434,7 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
               }
             </button>
 
-            <SortBy items={[
+            <SortBy label="Sort By" items={[
               { label: 'Relevance', value: indexName },
               { label: 'Price (Low to High)', value: `${indexName}_sort_prices_USD_asc` },
               { label: 'Price (High to Low)', value: `${indexName}_sort_prices_USD_desc` },
