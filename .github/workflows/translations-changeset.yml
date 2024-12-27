@@ -9,7 +9,6 @@ on:
 
 jobs:
   create-translations-patch:
-    if: github.actor == 'bc-svc-local'
     runs-on: ubuntu-latest
 
     steps:
