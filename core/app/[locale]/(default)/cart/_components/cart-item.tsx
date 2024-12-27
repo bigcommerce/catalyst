@@ -9,6 +9,7 @@ import { RemoveItem } from './remove-item';
 import { RemoveAccessoryItem } from '../../../../../components/product-card/remove-accessory-item';
 import { cookies } from 'next/headers';
 import ProductPriceAdjuster from '../../sales-buddy/common-components/_components/ProductPriceAdjuster';
+import { Button } from '~/components/ui/button';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -176,6 +177,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
   if (discountedPrice > 0) {
     discountPriceText = discountedPrice + '% Off';
   }
+
   return (
     <li className="mb-[24px] border border-gray-200">
       <div className="">
@@ -363,7 +365,12 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
           </div>
         </div>
       </div>
-      <div>
+      {!product?.accessories ? (
+        <div>
+        <Button className='flex items-center justify-center p-[5px_10px] bg-white border border-[#B4DDE9] rounded-[3px] font-500 text-[16px] leading-[32px] tracking-[1.25px] uppercase text-[#002A37] mx-5 mb-5 w-[-webkit-fill-available] xl:w-fit'>+ ADD ACCESSORIES</Button>
+      </div>
+      ) : (
+        <div>
         {product?.accessories &&
           product?.accessories?.map((item: any, index: number) => {
             let oldPriceAccess = item?.originalPrice?.value;
@@ -411,10 +418,13 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                       </div>
                     </div>
                   </div>
+                  <div className='bg-blue-800'>
+                  </div>
                   <div className="cart-deleteIcon mt-[5px] flex w-full flex-row items-center justify-between gap-[20px] p-0 md:mt-0 md:w-auto md:justify-start">
-                    <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535]">
+                    {/* <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535]">
                       QTY: {item.prodQuantity}
-                    </div>
+                    </div> */}
+                    <ItemQuantity product={product}  />
                     <RemoveAccessoryItem
                       currency={currencyCode}
                       cartId={cartId}
@@ -428,6 +438,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
             );
           })}
       </div>
+      )}
     </li>
   );
 };
