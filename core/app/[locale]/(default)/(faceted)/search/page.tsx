@@ -1,64 +1,76 @@
 import { getFormatter, getTranslations } from 'next-intl/server';
+import { createSearchParamsCache } from 'nuqs/server';
+import { cache } from 'react';
 
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { ListProduct } from '@/vibes/soul/primitives/products-list';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
+import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import { Option as SortOption } from '@/vibes/soul/sections/products-list-section/sorting';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
-import { createFiltersSearchParamCache } from '../create-filters-search-params-cache';
 import { fetchFacetedSearch } from '../fetch-faceted-search';
 
-type SearchParams = Promise<Record<string, string | string[] | undefined>>;
+interface Props {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
 
-async function getSearchTerm(searchParamsPromise: SearchParams): Promise<string> {
-  const searchParams = await searchParamsPromise;
+const createSearchSearchParamsCache = cache(async (props: Props) => {
+  const searchParams = await props.searchParams;
+  const search = await fetchFacetedSearch(searchParams);
+  const searchFacets = search.facets.items;
+  const transformedSearchFacets = await facetsTransformer({
+    refinedFacets: searchFacets,
+    allFacets: searchFacets,
+    searchParams: {},
+  });
+  const searchFilters = transformedSearchFacets.filter((facet) => facet != null);
+
+  return createSearchParamsCache(getFilterParsers(searchFilters));
+});
+
+async function getSearchTerm(props: Props): Promise<string> {
+  const searchParams = await props.searchParams;
   const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : '';
 
   return searchTerm;
 }
 
-async function getSearch(
-  searchParamsPromise: Promise<Record<string, string | string[] | undefined>>,
-) {
-  const searchParams = await searchParamsPromise;
-  const searchParamsCache = await createFiltersSearchParamCache(await searchParamsPromise);
+async function getSearch(props: Props) {
+  const searchParams = await props.searchParams;
+  const searchParamsCache = await createSearchSearchParamsCache(props);
   const parsedSearchParams = searchParamsCache.parse(searchParams);
   const search = await fetchFacetedSearch({ ...searchParams, ...parsedSearchParams });
 
   return search;
 }
 
-async function getProducts(
-  searchParamsPromise: Promise<Record<string, string | string[] | undefined>>,
-) {
-  const searchTerm = await getSearchTerm(searchParamsPromise);
+async function getProducts(props: Props) {
+  const searchTerm = await getSearchTerm(props);
 
   if (searchTerm === '') {
     return [];
   }
 
-  const search = await getSearch(searchParamsPromise);
+  const search = await getSearch(props);
 
   return search.products.items;
 }
 
-async function getTitle(searchParamsPromise: SearchParams): Promise<string> {
-  const searchTerm = await getSearchTerm(searchParamsPromise);
+async function getTitle(props: Props): Promise<string> {
+  const searchTerm = await getSearchTerm(props);
   const t = await getTranslations('Search');
 
   return `${t('searchResults')} "${searchTerm}"`;
 }
 
-async function getFilters(
-  searchParamsPromise: Promise<Record<string, string | string[] | undefined>>,
-): Promise<Filter[]> {
-  const searchParams = await searchParamsPromise;
-  const searchTerm = await getSearchTerm(searchParamsPromise);
-  const searchParamsCache = await createFiltersSearchParamCache(searchParams);
+async function getFilters(props: Props): Promise<Filter[]> {
+  const searchParams = await props.searchParams;
+  const searchTerm = await getSearchTerm(props);
+  const searchParamsCache = await createSearchSearchParamsCache(props);
   const parsedSearchParams = searchParamsCache.parse(searchParams);
 
   let refinedSearch: Awaited<ReturnType<typeof fetchFacetedSearch>> | null = null;
@@ -87,10 +99,8 @@ async function getFilters(
   return transformedFacets.filter((facet) => facet != null);
 }
 
-async function getListProducts(
-  searchParamsPromise: Promise<Record<string, string | string[] | undefined>>,
-): Promise<ListProduct[]> {
-  const products = await getProducts(searchParamsPromise);
+async function getListProducts(props: Props): Promise<ListProduct[]> {
+  const products = await getProducts(props);
   const format = await getFormatter();
 
   return products.map((product) => ({
@@ -105,16 +115,14 @@ async function getListProducts(
   }));
 }
 
-async function getTotalCount(
-  searchParamsPromise: Promise<Record<string, string | string[] | undefined>>,
-): Promise<number> {
-  const searchTerm = await getSearchTerm(searchParamsPromise);
+async function getTotalCount(props: Props): Promise<number> {
+  const searchTerm = await getSearchTerm(props);
 
   if (searchTerm === '') {
     return 0;
   }
 
-  const search = await getSearch(searchParamsPromise);
+  const search = await getSearch(props);
 
   return search.products.collectionInfo?.totalItems ?? 0;
 }
@@ -141,10 +149,8 @@ async function getSortOptions(): Promise<SortOption[]> {
   ];
 }
 
-async function getPaginationInfo(
-  searchParamsPromise: Promise<Record<string, string | string[] | undefined>>,
-): Promise<CursorPaginationInfo> {
-  const searchTerm = await getSearchTerm(searchParamsPromise);
+async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
+  const searchTerm = await getSearchTerm(props);
 
   if (searchTerm === '') {
     return {
@@ -155,7 +161,7 @@ async function getPaginationInfo(
     };
   }
 
-  const search = await getSearch(searchParamsPromise);
+  const search = await getSearch(props);
   const { hasNextPage, hasPreviousPage, endCursor, startCursor } = search.products.pageInfo;
 
   return {
@@ -172,8 +178,8 @@ async function getFilterLabel(): Promise<string> {
   return t('filters');
 }
 
-async function getEmptyStateTitle(searchParamsPromise: SearchParams): Promise<string> {
-  const searchTerm = await getSearchTerm(searchParamsPromise);
+async function getEmptyStateTitle(props: Props): Promise<string> {
+  const searchTerm = await getSearchTerm(props);
   const t = await getTranslations('Search');
 
   return t('emptyStateTitle', { term: searchTerm });
@@ -202,26 +208,22 @@ export async function generateMetadata() {
   };
 }
 
-export default async function Search({
-  searchParams,
-}: {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}) {
+export default async function Search(props: Props) {
   return (
     <ProductsListSection
       breadcrumbs={getBreadcrumbs()}
       emptyStateSubtitle={getEmptyStateSubtitle()}
-      emptyStateTitle={getEmptyStateTitle(searchParams)}
+      emptyStateTitle={getEmptyStateTitle(props)}
       filterLabel={await getFilterLabel()}
-      filters={getFilters(searchParams)}
-      paginationInfo={getPaginationInfo(searchParams)}
-      products={getListProducts(searchParams)}
+      filters={getFilters(props)}
+      paginationInfo={getPaginationInfo(props)}
+      products={getListProducts(props)}
       sortDefaultValue="featured"
       sortLabel={getSortLabel()}
       sortOptions={getSortOptions()}
       sortParamName="sort"
-      title={getTitle(searchParams)}
-      totalCount={getTotalCount(searchParams)}
+      title={getTitle(props)}
+      totalCount={getTotalCount(props)}
     />
   );
 }
