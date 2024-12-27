@@ -537,7 +537,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               { label: '10 per page', value: 10 },
               { label: '20 per page', value: 20, default: true },
               { label: '50 per page', value: 50 }
-            ]} classNames={{ root: 'flex-none ml-auto lg:ml-0 order-1 md:order-2', button: 'w-full !shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2', buttonText: 'text-brand-300', item: 'text-sm py-1', active: 'text-brand-300' }} />
+            ]} classNames={{ root: 'flex-none ml-auto lg:ml-0 order-1 md:order-2', button: 'w-full !shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2', item: 'text-sm py-1', active: 'text-brand-300' }} />
           </div>
         </div>
 
