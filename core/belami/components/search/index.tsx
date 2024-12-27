@@ -146,7 +146,7 @@ export function HitsPerPage(props: UseHitsPerPageProps & { label?: string }) {
           isOpened && 'ais-Dropdown--opened',
           props.classNames.root
         ),
-        body: 'overflow-y-auto min-w-[200px] max-h-[320px]'
+        body: 'overflow-y-auto max-h-[320px]'
       }}
       ref={panelRef}
     >
