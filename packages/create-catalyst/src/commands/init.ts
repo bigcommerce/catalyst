@@ -1,9 +1,9 @@
 import { Command, Option } from '@commander-js/extra-typings';
-import { input, select } from '@inquirer/prompts';
+import { select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import * as z from 'zod';
 
-import { Https } from '../utils/https';
+import { type Channel, type ChannelsResponse, Https, type InitResponse } from '../utils/https';
 import { login } from '../utils/login';
 import { parse } from '../utils/parse';
 import { Telemetry } from '../utils/telemetry/telemetry';
@@ -11,35 +11,53 @@ import { writeEnv } from '../utils/write-env';
 
 const telemetry = new Telemetry();
 
+/**
+ * The `init` command connects your local Catalyst project to an existing BigCommerce channel.
+ * It helps you:
+ * 1. Connect to a BigCommerce store (via CLI args or interactive login)
+ * 2. Select an existing channel (via CLI args or interactive selection)
+ * 3. Configure your local environment variables with:
+ *    - Channel ID
+ *    - Store Hash
+ *    - Storefront Token
+ *    - Makeswift API Key (if available)
+ *
+ * To create a new channel, use the `create` command instead.
+ *
+ * Usage:
+ *   - Interactive: `create-catalyst init`
+ *   - With args: `create-catalyst init --store-hash <hash> --access-token <token> --channel-id <id>`
+ */
 export const init = new Command('init')
-  .description('Connect a BigCommerce store with an existing Catalyst project')
+  .description('Connect your Catalyst project to an existing BigCommerce channel')
   .option('--store-hash <hash>', 'BigCommerce store hash')
   .option('--access-token <token>', 'BigCommerce access token')
+  .option('--channel-id <id>', 'Existing BigCommerce channel ID to connect to')
   .addOption(
     new Option('--bigcommerce-hostname <hostname>', 'BigCommerce hostname')
       .default('bigcommerce.com')
       .hideHelp(),
   )
   .addOption(
-    new Option('--sample-data-api-url <url>', 'BigCommerce sample data API URL')
-      .default('https://api.bc-sample.store')
+    new Option('--cli-api-hostname <hostname>', 'BigCommerce CLI API hostname')
+      .default('cxm-prd.bigcommerceapp.com')
       .hideHelp(),
   )
   .action(async (options) => {
     const projectDir = process.cwd();
 
     const URLSchema = z.string().url();
-    const sampleDataApiUrl = parse(options.sampleDataApiUrl, URLSchema);
-    const bigCommerceApiUrl = `https://api.${options.bigcommerceHostname}`;
-    const bigCommerceAuthUrl = `https://login.${options.bigcommerceHostname}`;
+    const cliApiUrl = parse(`https://${options.cliApiHostname}`, URLSchema);
+    const bigcommerceAuthUrl = parse(`https://login.${options.bigcommerceHostname}`, URLSchema);
 
     let storeHash = options.storeHash;
     let accessToken = options.accessToken;
-    let channelId;
+    let channelId = options.channelId ? parseInt(options.channelId, 10) : undefined;
     let storefrontToken;
+    let makeswiftApiKey;
 
-    if (!options.storeHash || !options.accessToken) {
-      const credentials = await login(bigCommerceAuthUrl);
+    if (!storeHash || !accessToken) {
+      const credentials = await login(bigcommerceAuthUrl);
 
       storeHash = credentials.storeHash;
       accessToken = credentials.accessToken;
@@ -47,68 +65,33 @@ export const init = new Command('init')
 
     if (!storeHash || !accessToken) {
       console.log(
-        chalk.yellow('\nYou must authenticate with a store to overwrite your local environment.\n'),
+        chalk.yellow('\nYou must authenticate with a store to configure your local environment.\n'),
       );
-
       process.exit(1);
     }
 
     await telemetry.identify(storeHash);
 
-    const bc = new Https({ bigCommerceApiUrl, storeHash, accessToken });
-    const sampleDataApi = new Https({
-      sampleDataApiUrl,
+    const cliApi = new Https({
+      bigCommerceApiUrl: `${cliApiUrl}/stores/${storeHash}/cli-api/v3`,
       storeHash,
       accessToken,
     });
 
-    const eligibilityResponse = await sampleDataApi.checkEligibility();
-
-    if (!eligibilityResponse.data.eligible) {
-      console.warn(chalk.yellow(eligibilityResponse.data.message));
-    }
-
-    let shouldCreateChannel;
-
-    if (eligibilityResponse.data.eligible) {
-      shouldCreateChannel = await select({
-        message: 'Would you like to create a new channel?',
-        choices: [
-          { name: 'Yes', value: true },
-          { name: 'No', value: false },
-        ],
-      });
-    }
-
-    if (shouldCreateChannel) {
-      const newChannelName = await input({
-        message: 'What would you like to name your new channel?',
-      });
-
-      const {
-        data: { id: createdChannelId, storefront_api_token: storefrontApiToken },
-      } = await sampleDataApi.createChannel(newChannelName);
-
-      channelId = createdChannelId;
-      storefrontToken = storefrontApiToken;
-
-      /**
-       * @todo prompt sample data API
-       */
-    }
-
-    if (!shouldCreateChannel) {
+    if (!channelId) {
       const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
-
-      const availableChannels = await bc.channels('?available=true&type=storefront');
+      const availableChannels = await cliApi.get<ChannelsResponse>(
+        '/channels?available=true&type=storefront',
+      );
 
       const existingChannel = await select({
         message: 'Which channel would you like to use?',
         choices: availableChannels.data
           .sort(
-            (a, b) => channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
+            (a: Channel, b: Channel) =>
+              channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
           )
-          .map((ch) => ({
+          .map((ch: Channel) => ({
             name: ch.name,
             value: ch,
             description: `Channel Platform: ${
@@ -120,20 +103,33 @@ export const init = new Command('init')
       });
 
       channelId = existingChannel.id;
-
-      const {
-        data: { token: sfToken },
-      } = await bc.storefrontToken();
-
-      storefrontToken = sfToken;
+      storefrontToken = existingChannel.storefront_api_token;
     }
 
     if (!channelId) throw new Error('Something went wrong, channelId is not defined');
     if (!storefrontToken) throw new Error('Something went wrong, storefrontToken is not defined');
 
+    try {
+      const initResponse = await cliApi.get<InitResponse>(`/channels/${channelId}/init`);
+
+      makeswiftApiKey = initResponse.data.makeswift_dev_api_key;
+    } catch {
+      console.warn(
+        chalk.yellow(
+          '\nWarning: Could not fetch Makeswift API key. If you need Makeswift integration, please configure it manually.\n',
+        ),
+      );
+    }
+
     writeEnv(projectDir, {
       channelId: channelId.toString(),
       storeHash,
       storefrontToken,
+      ...(makeswiftApiKey && { MAKESWIFT_SITE_API_KEY: makeswiftApiKey }),
     });
+
+    console.log(
+      chalk.green('\nSuccess!'),
+      'Your local environment has been configured with the selected channel.\n',
+    );
   });

@@ -8,7 +8,13 @@ import { join } from 'path';
 import { z } from 'zod';
 
 import { cloneCatalyst } from '../utils/clone-catalyst';
-import { Https } from '../utils/https';
+import {
+  type Channel,
+  type ChannelsResponse,
+  type CreateChannelResponse,
+  type EligibilityResponse,
+  Https,
+} from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
 import { login } from '../utils/login';
 import { parse } from '../utils/parse';
@@ -41,8 +47,8 @@ export const create = new Command('create')
       .hideHelp(),
   )
   .addOption(
-    new Option('--sample-data-api-url <url>', 'BigCommerce sample data API URL')
-      .default('https://api.bc-sample.store')
+    new Option('--cli-api-hostname <hostname>', 'BigCommerce CLI API hostname')
+      .default('cxm-prd.bigcommerceapp.com')
       .hideHelp(),
   )
   // eslint-disable-next-line complexity
@@ -65,8 +71,7 @@ export const create = new Command('create')
     }
 
     const URLSchema = z.string().url();
-    const sampleDataApiUrl = parse(options.sampleDataApiUrl, URLSchema);
-    const bigcommerceApiUrl = parse(`https://api.${options.bigcommerceHostname}`, URLSchema);
+    const cliApiUrl = parse(`https://${options.cliApiHostname}`, URLSchema);
     const bigcommerceAuthUrl = parse(`https://login.${options.bigcommerceHostname}`, URLSchema);
     const resetMain = options.resetMain;
 
@@ -175,14 +180,15 @@ export const create = new Command('create')
     await telemetry.identify(storeHash);
 
     if (!channelId || !storefrontToken) {
-      const bc = new Https({ bigCommerceApiUrl: bigcommerceApiUrl, storeHash, accessToken });
-      const sampleDataApi = new Https({
-        sampleDataApiUrl,
+      const cliApi = new Https({
+        bigCommerceApiUrl: `${cliApiUrl}/stores/${storeHash}/cli-api/v3`,
         storeHash,
         accessToken,
       });
 
-      const eligibilityResponse = await sampleDataApi.checkEligibility();
+      const eligibilityResponse = await cliApi.get<EligibilityResponse>(
+        '/channels/catalyst/eligibility',
+      );
 
       if (!eligibilityResponse.data.eligible) {
         console.warn(chalk.yellow(eligibilityResponse.data.message));
@@ -207,30 +213,31 @@ export const create = new Command('create')
 
         const {
           data: { id: createdChannelId, storefront_api_token: storefrontApiToken },
-        } = await sampleDataApi.createChannel(newChannelName);
-
-        await bc.createChannelMenus(createdChannelId);
+        } = await cliApi.post<CreateChannelResponse>('/channels/catalyst', {
+          name: newChannelName,
+          initialData: { type: 'sample', scenario: 1 },
+          deployStorefront: false,
+        });
 
         channelId = createdChannelId;
         storefrontToken = storefrontApiToken;
-
-        /**
-         * @todo prompt sample data API
-         */
       }
 
       if (!shouldCreateChannel) {
         const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
 
-        const availableChannels = await bc.channels('?available=true&type=storefront');
+        const availableChannels = await cliApi.get<ChannelsResponse>(
+          '/channels?available=true&type=storefront',
+        );
 
         const existingChannel = await select({
           message: 'Which channel would you like to use?',
           choices: availableChannels.data
             .sort(
-              (a, b) => channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
+              (a: Channel, b: Channel) =>
+                channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
             )
-            .map((ch) => ({
+            .map((ch: Channel) => ({
               name: ch.name,
               value: ch,
               description: `Channel Platform: ${
@@ -242,12 +249,7 @@ export const create = new Command('create')
         });
 
         channelId = existingChannel.id;
-
-        const {
-          data: { token: sfToken },
-        } = await bc.storefrontToken();
-
-        storefrontToken = sfToken;
+        storefrontToken = existingChannel.storefront_api_token;
       }
     }
 

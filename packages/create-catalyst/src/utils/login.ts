@@ -46,7 +46,7 @@ export const login = async (
     return { storeHash, accessToken };
   }
 
-  const auth = new Https({ bigCommerceAuthUrl });
+  const auth = new Https({ bigCommerceApiUrl: bigCommerceAuthUrl });
 
   const deviceCode = await auth.getDeviceCode();
 
