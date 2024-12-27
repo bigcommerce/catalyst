@@ -4,7 +4,11 @@ import { useTranslations } from 'next-intl';
 import { BcImage } from '~/components/bc-image';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
-export const RequestQuote = () => {
+interface requestQuote {
+  requestQuote : string;
+}
+
+export const RequestQuote = ({requestQuote} : requestQuote) => {
   const t = useTranslations('requestQuote');
 
   return (
@@ -28,7 +32,7 @@ export const RequestQuote = () => {
       <div className="flex-shrink-0 items-start request-quote-hands-icon">
         <BcImage
           alt="request-quote"
-          src={imageManagerImageUrl('vector-6-.png', '30w')}
+          src={requestQuote}
           height={10}
           priority={true}
           width={25}

@@ -110,7 +110,9 @@ export default async function ProductPage(props: Props) {
   const cartHeader = imageManagerImageUrl('cartheader.png', '20w');
   const couponIcon = imageManagerImageUrl('vector-2-.png', '20w');
   const paywithGoogle = imageManagerImageUrl('apple-xxl.png', '20w');
-
+  const payPal = imageManagerImageUrl('fill-11.png', '20w');
+  const requestQuote = imageManagerImageUrl('vector-6-.png', '30w');
+  const closeIcon = imageManagerImageUrl('close.png', '14w');
   setRequestLocale(locale);
 
   const t = await getTranslations('Product');
@@ -248,6 +250,9 @@ export default async function ProductPage(props: Props) {
               cartHeader={cartHeader}
               couponIcon={couponIcon}
               paywithGoogle={paywithGoogle}
+              payPal={payPal}
+              requestQuote={requestQuote}
+              closeIcon={closeIcon}
             />
             <div className="lg:col-span-2">
               <Description product={product} />
