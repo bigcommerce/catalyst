@@ -1,6 +1,8 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 
+import { CarouselProduct } from '@/vibes/soul/primitives/products-carousel';
+import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
 import { NotFound as NotFoundSection } from '@/vibes/soul/sections/not-found';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -8,14 +10,13 @@ import { revalidate } from '~/client/revalidate-target';
 import { Footer } from '~/components/footer/footer';
 import { Header } from '~/components/header';
 import { ProductCardFragment } from '~/components/product-card/fragment';
-import { ProductCardCarousel } from '~/components/product-card-carousel';
-import { SearchForm } from '~/components/search-form';
+import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 
 const NotFoundQuery = graphql(
   `
     query NotFoundQuery {
       site {
-        featuredProducts(first: 4) {
+        featuredProducts(first: 10) {
           edges {
             node {
               ...ProductCardFragment
@@ -28,9 +29,8 @@ const NotFoundQuery = graphql(
   [ProductCardFragment],
 );
 
-export default async function NotFound() {
-  const t = await getTranslations('NotFound');
-
+async function getFeaturedProducts(): Promise<CarouselProduct[]> {
+  const format = await getFormatter();
   const { data } = await client.fetch({
     document: NotFoundQuery,
     fetchOptions: { next: { revalidate } },
@@ -38,21 +38,19 @@ export default async function NotFound() {
 
   const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
 
+  return productCardTransformer(featuredProducts, format);
+}
+
+export default async function NotFound() {
+  const t = await getTranslations('NotFound');
+
   return (
     <>
       <Header />
 
       <NotFoundSection subtitle={t('message')} title={t('heading')} />
 
-      <main className="mx-auto mb-10 max-w-[835px] space-y-8 px-4 sm:px-10 lg:px-0">
-        <SearchForm />
-        <ProductCardCarousel
-          products={featuredProducts}
-          showCart={false}
-          showCompare={false}
-          title={t('Carousel.featuredProducts')}
-        />
-      </main>
+      <FeaturedProductsCarousel products={getFeaturedProducts()} />
 
       <Footer />
     </>
