@@ -1,3 +1,4 @@
+/*
 import '~/makeswift/components/product-card/product-card.makeswift';
 // import '~/makeswift/components/featured-products-carousel/featured-products-carousel.makeswift';
 // import '~/makeswift/components/featured-products-list/featured-products-list.makeswift';
@@ -22,7 +23,7 @@ import '~/makeswift/components/css-theme/register';
 import '~/makeswift/components/not-found/register';
 
 import '~/belami/components/card-carousel/card-carousel.makeswift';
-
+*/
 import { MakeswiftComponentType } from '@makeswift/runtime';
 
 import { runtime } from './runtime';
