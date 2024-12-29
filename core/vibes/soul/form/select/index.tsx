@@ -11,6 +11,7 @@ import { Label } from '@/vibes/soul/form/label';
 type Props = {
   id?: string;
   name: string;
+  pending?: boolean;
   placeholder?: string;
   label?: string;
   hideLabel?: boolean;
@@ -27,6 +28,7 @@ export function Select({
   label,
   hideLabel = false,
   name,
+  pending = false,
   placeholder = 'Select an item',
   variant = 'rectangle',
   options,
@@ -34,8 +36,8 @@ export function Select({
   errors,
   onFocus,
   onBlur,
-  value,
   onOptionMouseEnter,
+  value,
   ...rest
 }: Props) {
   const id = React.useId();
@@ -55,6 +57,7 @@ export function Select({
             variant === 'rectangle' ? 'rounded-lg' : 'rounded-full',
             errors && errors.length > 0 ? 'border-error' : 'border-contrast-100',
           )}
+          data-pending={pending ? true : null}
           id={id}
           name={name}
           onBlur={onBlur}
@@ -73,12 +76,10 @@ export function Select({
             <SelectPrimitive.Viewport>
               {options.map((option) => (
                 <SelectPrimitive.Item
-                  className="w-full cursor-default select-none rounded-xl px-3 py-2 text-sm font-medium text-contrast-400 outline-none transition-colors hover:bg-contrast-100 hover:text-foreground data-[state=checked]:text-foreground @4xl:text-base"
+                  className="w-full cursor-default select-none rounded-xl px-3 py-2 text-sm font-medium text-contrast-400 outline-none transition-colors hover:bg-contrast-100 hover:text-foreground focus-visible:bg-contrast-100 focus-visible:text-foreground data-[state=checked]:text-foreground @4xl:text-base"
                   key={option.value}
                   onMouseEnter={() => {
-                    if (typeof onOptionMouseEnter === 'function') {
-                      onOptionMouseEnter(option.value);
-                    }
+                    onOptionMouseEnter?.(option.value);
                   }}
                   value={option.value}
                 >
