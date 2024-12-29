@@ -1,12 +1,10 @@
 'use client';
 
 import { parseAsString, useQueryState } from 'nuqs';
-import { Suspense, use, useOptimistic } from 'react';
+import { useOptimistic, useTransition } from 'react';
 
 import { Select } from '@/vibes/soul/form/select';
 import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
-
-import { ProductListTransitionContext } from './context';
 
 export interface Option {
   label: string;
@@ -14,11 +12,11 @@ export interface Option {
 }
 
 export function Sorting({
-  label,
-  options,
+  label: streamableLabel,
+  options: streamableOptions,
   paramName = 'sort',
   defaultValue = '',
-  placeholder,
+  placeholder: streamablePlaceholder,
 }: {
   label?: Streamable<string | null>;
   options: Streamable<Option[]>;
@@ -26,38 +24,12 @@ export function Sorting({
   defaultValue?: string;
   placeholder?: Streamable<string | null>;
 }) {
-  return (
-    <Suspense fallback={<SortingSkeleton />}>
-      <SortingInner
-        defaultValue={defaultValue}
-        label={label}
-        options={options}
-        paramName={paramName}
-        placeholder={placeholder}
-      />
-    </Suspense>
-  );
-}
-
-function SortingInner({
-  paramName,
-  defaultValue,
-  options: streamableOptions,
-  label: streamableLabel,
-  placeholder: streamablePlaceholder,
-}: {
-  paramName: string;
-  defaultValue: string;
-  options: Streamable<Option[]>;
-  label?: Streamable<string | null>;
-  placeholder?: Streamable<string | null>;
-}) {
   const [param, setParam] = useQueryState(
     paramName,
     parseAsString.withDefault(defaultValue).withOptions({ shallow: false, history: 'push' }),
   );
   const [optimisticParam, setOptimisticParam] = useOptimistic(param);
-  const [, startTransition] = use(ProductListTransitionContext);
+  const [isPending, startTransition] = useTransition();
   const options = useStreamable(streamableOptions);
   const label = useStreamable(streamableLabel) ?? 'Sort';
   const placeholder = useStreamable(streamablePlaceholder) ?? 'Sort by';
@@ -74,6 +46,7 @@ function SortingInner({
         });
       }}
       options={options}
+      pending={isPending}
       placeholder={placeholder}
       value={optimisticParam}
       variant="round"
@@ -81,6 +54,6 @@ function SortingInner({
   );
 }
 
-function SortingSkeleton() {
+export function SortingSkeleton() {
   return <div className="h-[50px] w-[12ch] animate-pulse rounded-full bg-contrast-100" />;
 }

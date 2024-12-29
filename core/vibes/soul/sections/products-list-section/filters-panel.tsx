@@ -7,7 +7,7 @@
 import { clsx } from 'clsx';
 import { ArrowRight } from 'lucide-react';
 import { parseAsString, useQueryStates } from 'nuqs';
-import { Suspense, use, useOptimistic } from 'react';
+import { Suspense, useOptimistic, useTransition } from 'react';
 
 import { Checkbox } from '@/vibes/soul/form/checkbox';
 import { RangeInput } from '@/vibes/soul/form/range-input';
@@ -18,7 +18,6 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Rating } from '@/vibes/soul/primitives/rating';
 
-import { ProductListTransitionContext } from './context';
 import { getFilterParsers } from './filter-parsers';
 
 export interface ToggleGroupFilter {
@@ -99,13 +98,13 @@ export function FiltersPanelInner({
       history: 'push',
     },
   );
-  const [, startTransition] = use(ProductListTransitionContext);
+  const [isPending, startTransition] = useTransition();
   const [optimisticParams, setOptimisticParams] = useOptimistic(params);
 
   if (filters.length === 0) return null;
 
   return (
-    <div className={clsx('space-y-5', className)}>
+    <div className={clsx('space-y-5', className)} data-pending={isPending ? true : null}>
       <Accordions defaultValue={filters.map((_, i) => i.toString())} type="multiple">
         {filters.map((filter, index) => {
           switch (filter.type) {

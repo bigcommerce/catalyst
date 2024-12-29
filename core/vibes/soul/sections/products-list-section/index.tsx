@@ -7,11 +7,12 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
-
-import { ProductListTransitionProvider } from './context';
-import { Filter, FiltersPanel } from './filters-panel';
-import { ProductListContainer } from './product-list-container';
-import { Sorting, Option as SortOption } from './sorting';
+import { Filter, FiltersPanel } from '@/vibes/soul/sections/products-list-section/filters-panel';
+import {
+  Sorting,
+  SortingSkeleton,
+  Option as SortOption,
+} from '@/vibes/soul/sections/products-list-section/sorting';
 
 interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;
@@ -42,7 +43,7 @@ export function ProductsListSection({
   totalCount,
   products,
   compareProducts,
-  sortOptions,
+  sortOptions: streamableSortOptions,
   sortDefaultValue,
   filters,
   compareAction,
@@ -50,8 +51,8 @@ export function ProductsListSection({
   paginationInfo,
   filterLabel = 'Filters',
   resetFiltersLabel,
-  sortLabel,
-  sortPlaceholder,
+  sortLabel: streamableSortLabel,
+  sortPlaceholder: streamableSortPlaceholder,
   sortParamName,
   compareParamName,
   emptyStateSubtitle,
@@ -59,92 +60,101 @@ export function ProductsListSection({
   placeholderCount = 8,
 }: Props) {
   return (
-    <ProductListTransitionProvider>
-      <div className="@container">
-        <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
-          <div>
-            <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
-              {(breadcrumbs) =>
-                breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
-              }
-            </Stream>
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
-              <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
-                <Suspense
-                  fallback={
-                    <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
-                  }
-                >
-                  {title}
-                </Suspense>
-                <Suspense
-                  fallback={
-                    <span className="inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg bg-contrast-100" />
-                  }
-                >
-                  <span className="text-contrast-300">{totalCount}</span>
-                </Suspense>
-              </h1>
-              <div className="flex gap-2">
-                <Sorting
-                  defaultValue={sortDefaultValue}
-                  label={sortLabel}
-                  options={sortOptions}
-                  paramName={sortParamName}
-                  placeholder={sortPlaceholder}
-                />
-                <div className="block @3xl:hidden">
-                  <SidePanel.Root>
-                    <SidePanel.Trigger asChild>
-                      <Button size="medium" variant="secondary">
-                        {filterLabel}
-                        <span className="hidden @xl:block">
-                          <Sliders size={20} />
-                        </span>
-                      </Button>
-                    </SidePanel.Trigger>
-                    <SidePanel.Content title={filterLabel}>
-                      <Suspense>
-                        <FiltersPanel
-                          filters={filters}
-                          paginationInfo={paginationInfo}
-                          resetFiltersLabel={resetFiltersLabel}
-                        />
-                      </Suspense>
-                    </SidePanel.Content>
-                  </SidePanel.Root>
-                </div>
+    <div className="group/products-list-section @container">
+      <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
+        <div>
+          <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
+            {(breadcrumbs) =>
+              breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
+            }
+          </Stream>
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
+            <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
+              <Suspense
+                fallback={
+                  <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
+                }
+              >
+                {title}
+              </Suspense>
+              <Suspense
+                fallback={
+                  <span className="inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg bg-contrast-100" />
+                }
+              >
+                <span className="text-contrast-300">{totalCount}</span>
+              </Suspense>
+            </h1>
+            <div className="flex gap-2">
+              <Stream
+                fallback={<SortingSkeleton />}
+                value={Promise.all([
+                  streamableSortLabel,
+                  streamableSortOptions,
+                  streamableSortPlaceholder,
+                ])}
+              >
+                {([label, options, placeholder]) => (
+                  <Sorting
+                    defaultValue={sortDefaultValue}
+                    label={label}
+                    options={options}
+                    paramName={sortParamName}
+                    placeholder={placeholder}
+                  />
+                )}
+              </Stream>
+              <div className="block @3xl:hidden">
+                <SidePanel.Root>
+                  <SidePanel.Trigger asChild>
+                    <Button size="medium" variant="secondary">
+                      {filterLabel}
+                      <span className="hidden @xl:block">
+                        <Sliders size={20} />
+                      </span>
+                    </Button>
+                  </SidePanel.Trigger>
+                  <SidePanel.Content title={filterLabel}>
+                    <Suspense>
+                      <FiltersPanel
+                        filters={filters}
+                        paginationInfo={paginationInfo}
+                        resetFiltersLabel={resetFiltersLabel}
+                      />
+                    </Suspense>
+                  </SidePanel.Content>
+                </SidePanel.Root>
               </div>
             </div>
           </div>
-          <div className="flex items-stretch gap-8 @4xl:gap-10">
-            <div className="hidden w-52 @3xl:block @4xl:w-60">
-              <FiltersPanel
-                className="sticky top-4"
-                filters={filters}
-                paginationInfo={paginationInfo}
-                resetFiltersLabel={resetFiltersLabel}
-              />
-            </div>
+        </div>
+        <div className="flex items-stretch gap-8 @4xl:gap-10">
+          <div className="hidden w-52 @3xl:block @4xl:w-60">
+            <FiltersPanel
+              className="sticky top-4"
+              filters={filters}
+              paginationInfo={paginationInfo}
+              resetFiltersLabel={resetFiltersLabel}
+            />
+          </div>
 
-            <ProductListContainer className="flex-1">
-              <ProductsList
-                compareAction={compareAction}
-                compareLabel={compareLabel}
-                compareParamName={compareParamName}
-                compareProducts={compareProducts}
-                emptyStateSubtitle={emptyStateSubtitle}
-                emptyStateTitle={emptyStateTitle}
-                placeholderCount={placeholderCount}
-                products={products}
-                showCompare
-              />
+          <div className="flex-1 group-has-[[data-pending]]/products-list-section:animate-pulse">
+            <ProductsList
+              compareAction={compareAction}
+              compareLabel={compareLabel}
+              compareParamName={compareParamName}
+              compareProducts={compareProducts}
+              emptyStateSubtitle={emptyStateSubtitle}
+              emptyStateTitle={emptyStateTitle}
+              placeholderCount={placeholderCount}
+              products={products}
+              showCompare
+            />
 
-              {paginationInfo && <CursorPagination info={paginationInfo} />}
-            </ProductListContainer>
+            {paginationInfo && <CursorPagination info={paginationInfo} />}
           </div>
         </div>
       </div>
-    </ProductListTransitionProvider>
+    </div>
   );
 }
