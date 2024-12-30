@@ -49,11 +49,12 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
     if (isBot)
       return middleware(request, event); // Do not track bots
 
-    const referrerId = Number(refId) == 0 ? await getReferrerID(ua, ip) : Number(refId);
+    const referrerId = Number(refId) == 0 ? await getReferrerID(ua, ip, Number(sessId), 0, log) : Number(refId);
 
-    if (referrerId && Number.isInteger(referrerId)) {
+    if (referrerId && Number.isInteger(referrerId) && referrerId > 0) {
       cookieStore.set('referrerId', referrerId);
-      storeReferrerLog(referrerId, source, keywords, clickId, referrer, ip, request.nextUrl.pathname);
+      if (log === 1)
+        storeReferrerLog(referrerId, source, keywords, clickId, referrer, ip, request.nextUrl.pathname);
     }
 
     return middleware(request, event);
