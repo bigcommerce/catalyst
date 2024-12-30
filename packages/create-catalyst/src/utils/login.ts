@@ -1,8 +1,10 @@
 import chalk from 'chalk';
 import open from 'open';
+import { createInterface } from 'readline';
 
 import { Auth } from './auth';
 import { Config } from './config';
+import { spinner } from './spinner';
 
 interface LoginResult {
   storeHash: string;
@@ -44,6 +46,37 @@ async function waitForCredentials(
   return waitForCredentials(auth, deviceCode, interval);
 }
 
+async function waitForKeyPress(prompt: string): Promise<boolean> {
+  const rl = createInterface({
+    input: process.stdin,
+    output: process.stdout,
+  });
+
+  // Enable raw mode to get individual keystrokes
+  process.stdin.setRawMode(true);
+  process.stdin.resume();
+
+  return new Promise((resolve) => {
+    process.stdin.once('data', (data) => {
+      // Restore normal stdin mode
+      process.stdin.setRawMode(false);
+      process.stdin.pause();
+      rl.close();
+
+      // Check if escape key was pressed (27 is the ASCII code for escape)
+      const shouldProceed = data[0] !== 27;
+
+      // Add a newline since we're in raw mode
+      process.stdout.write('\n');
+
+      resolve(shouldProceed);
+    });
+
+    // Display the prompt
+    rl.write(prompt);
+  });
+}
+
 export async function login(baseUrl: string): Promise<LoginResult> {
   const auth = new Auth({ baseUrl });
 
@@ -55,9 +88,18 @@ export async function login(baseUrl: string): Promise<LoginResult> {
   console.log(chalk.yellow(`\n${deviceCode.verification_uri}\n`));
   console.log(chalk.cyan(`Enter code: `) + chalk.yellow(`${deviceCode.user_code}\n`));
 
-  await open(deviceCode.verification_uri);
+  const shouldOpenUrl = await waitForKeyPress(
+    'Press any key to open the URL in your browser (or ESC to skip)...',
+  );
 
-  const credentials = await waitForCredentials(auth, deviceCode.device_code, deviceCode.interval);
+  if (shouldOpenUrl) {
+    await open(deviceCode.verification_uri);
+  }
+
+  const credentials = await spinner(
+    () => waitForCredentials(auth, deviceCode.device_code, deviceCode.interval),
+    { text: 'Waiting for authentication...', successText: 'Authentication successful!' },
+  );
 
   return {
     storeHash: credentials.store_hash,
