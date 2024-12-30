@@ -3,11 +3,22 @@ import { select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import * as z from 'zod';
 
+import { CliApi } from '../utils/cli-api';
 import { Https } from '../utils/https';
 import { login } from '../utils/login';
 import { parse } from '../utils/parse';
 import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
+
+interface Channel {
+  id: number;
+  name: string;
+  platform: string;
+}
+
+interface ChannelsResponse {
+  data: Channel[];
+}
 
 interface InitResponse {
   data: {
@@ -30,23 +41,18 @@ export const init = new Command('init')
       .hideHelp(),
   )
   .addOption(
-    new Option('--cli-api-hostname <hostname>', 'Catalyst CLI API hostname')
-      .default('cxm-prd.bigcommerceapp.com')
+    new Option('--cli-api-origin <origin>', 'Catalyst CLI API origin')
+      .default('https://cxm-prd.bigcommerceapp.com')
       .hideHelp(),
   )
   .action(async (options) => {
     const projectDir = process.cwd();
 
-    const URLSchema = z.string().url();
-    const bigCommerceApiUrl = `https://api.${options.bigcommerceHostname}`;
-    const bigCommerceAuthUrl = `https://login.${options.bigcommerceHostname}`;
-    const cliApiUrl = parse(`https://${options.cliApiHostname}`, URLSchema);
-
     let storeHash = options.storeHash;
     let accessToken = options.accessToken;
 
     if (!options.storeHash || !options.accessToken) {
-      const credentials = await login(bigCommerceAuthUrl);
+      const credentials = await login(`https://login.${options.bigcommerceHostname}`);
 
       storeHash = credentials.storeHash;
       accessToken = credentials.accessToken;
@@ -62,23 +68,36 @@ export const init = new Command('init')
 
     await telemetry.identify(storeHash);
 
-    const bc = new Https({ bigCommerceApiUrl, storeHash, accessToken });
-    const cliApi = new Https({
-      bigCommerceApiUrl: `${cliApiUrl}/stores/${storeHash}/cli-api/v3`,
+    const bc = new Https({
+      baseUrl: `https://api.${options.bigcommerceHostname}/stores/${storeHash}`,
+      accessToken,
+    });
+
+    const cliApi = new CliApi({
+      origin: options.cliApiOrigin,
       storeHash,
       accessToken,
     });
 
     const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
-    const availableChannels = await bc.channels('?available=true&type=storefront');
+    const channelsResponse = await bc.fetch('/v3/channels?available=true&type=storefront');
+
+    if (!channelsResponse.ok) {
+      console.error(
+        chalk.red(`\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`),
+      );
+      process.exit(1);
+    }
+
+    const availableChannels = (await channelsResponse.json()) as ChannelsResponse;
 
     const existingChannel = await select({
       message: 'Which channel would you like to use?',
       choices: availableChannels.data
         .sort(
-          (a, b) => channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
+          (a: Channel, b: Channel) => channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
         )
-        .map((ch) => ({
+        .map((ch: Channel) => ({
           name: ch.name,
           value: ch,
           description: `Channel Platform: ${
@@ -89,12 +108,10 @@ export const init = new Command('init')
         })),
     });
 
-    const channelId = existingChannel.id;
+    const channelId = (existingChannel as Channel).id;
 
     // Get channel init data
-    const initResponse = await cliApi.api(`/channels/${channelId}/init`, {
-      method: 'GET',
-    });
+    const initResponse = await cliApi.getChannelInit(channelId);
 
     if (!initResponse.ok) {
       console.error(

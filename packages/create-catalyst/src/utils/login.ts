@@ -3,10 +3,10 @@
 import { select } from '@inquirer/prompts';
 import chalk from 'chalk';
 
-import { Https } from './https';
+import { Auth } from './auth';
 import { spinner } from './spinner';
 
-const poll = async (auth: Https, deviceCode: string, interval: number, expiresIn: number) => {
+const poll = async (auth: Auth, deviceCode: string, interval: number, expiresIn: number) => {
   const intervalMs = interval * 1000;
   const expiresAtMs = expiresIn * 1000;
   const retries = expiresAtMs / intervalMs;
@@ -46,7 +46,7 @@ export const login = async (
     return { storeHash, accessToken };
   }
 
-  const auth = new Https({ bigCommerceAuthUrl });
+  const auth = new Auth({ baseUrl: bigCommerceAuthUrl });
 
   const deviceCode = await auth.getDeviceCode();
 

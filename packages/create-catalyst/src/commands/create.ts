@@ -8,12 +8,23 @@ import { join } from 'path';
 import { z } from 'zod';
 
 import { cloneCatalyst } from '../utils/clone-catalyst';
+import { CliApi } from '../utils/cli-api';
 import { Https } from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
 import { login } from '../utils/login';
 import { parse } from '../utils/parse';
 import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
+
+interface Channel {
+  id: number;
+  name: string;
+  platform: string;
+}
+
+interface ChannelsResponse {
+  data: Channel[];
+}
 
 interface InitResponse {
   data: {
@@ -64,11 +75,10 @@ export const create = new Command('create')
       .hideHelp(),
   )
   .addOption(
-    new Option('--cli-api-hostname <hostname>', 'Catalyst CLI API hostname')
-      .default('cxm-prd.bigcommerceapp.com')
+    new Option('--cli-api-origin <origin>', 'Catalyst CLI API origin')
+      .default('https://cxm-prd.bigcommerceapp.com')
       .hideHelp(),
   )
-  // eslint-disable-next-line complexity
   .action(async (options) => {
     const { ghRef, repository } = options;
 
@@ -87,10 +97,6 @@ export const create = new Command('create')
       process.exit(1);
     }
 
-    const URLSchema = z.string().url();
-    const bigcommerceApiUrl = parse(`https://api.${options.bigcommerceHostname}`, URLSchema);
-    const bigcommerceAuthUrl = parse(`https://login.${options.bigcommerceHostname}`, URLSchema);
-    const cliApiUrl = parse(`https://${options.cliApiHostname}`, URLSchema);
     const resetMain = options.resetMain;
 
     let projectName;
@@ -145,62 +151,8 @@ export const create = new Command('create')
     if (!projectName) throw new Error('Something went wrong, projectName is not defined');
     if (!projectDir) throw new Error('Something went wrong, projectDir is not defined');
 
-    if (storeHash && channelId && storefrontToken && accessToken) {
-      console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
-
-      cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
-
-      const cliApi = new Https({
-        bigCommerceApiUrl: `${cliApiUrl}/stores/${storeHash}/cli-api/v3`,
-        storeHash,
-        accessToken,
-      });
-
-      // Get channel init data for existing channel
-      const initResponse = await cliApi.api(`/channels/${channelId}/init`, {
-        method: 'GET',
-      });
-
-      if (!initResponse.ok) {
-        console.error(
-          chalk.red(
-            `\nGET /channels/${channelId}/init failed: ${initResponse.status} ${initResponse.statusText}\n`,
-          ),
-        );
-        process.exit(1);
-      }
-
-      const initData = (await initResponse.json()) as InitResponse;
-      const envVars = { ...initData.data.envVars };
-
-      // Add any CLI-provided env vars as overrides
-      if (options.env) {
-        const cliEnvVars = options.env.reduce((acc, env) => {
-          const [key, value] = env.split('=');
-          if (key && value) {
-            acc[key] = value;
-          }
-          return acc;
-        }, {} as Record<string, string>);
-
-        Object.assign(envVars, cliEnvVars);
-      }
-
-      writeEnv(projectDir, envVars);
-
-      await installDependencies(projectDir);
-
-      console.log(
-        `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
-        '\nNext steps:\n',
-        chalk.yellow(`\ncd ${projectName} && pnpm run dev\n`),
-      );
-
-      process.exit(0);
-    }
-
     if (!options.storeHash || !options.accessToken) {
-      const credentials = await login(bigcommerceAuthUrl);
+      const credentials = await login(`https://login.${options.bigcommerceHostname}`);
 
       storeHash = credentials.storeHash;
       accessToken = credentials.accessToken;
@@ -229,16 +181,18 @@ export const create = new Command('create')
     await telemetry.identify(storeHash);
 
     if (!channelId || !storefrontToken) {
-      const bc = new Https({ bigCommerceApiUrl: bigcommerceApiUrl, storeHash, accessToken });
-      const cliApi = new Https({
-        bigCommerceApiUrl: `${cliApiUrl}/stores/${storeHash}/cli-api/v3`,
+      const bc = new Https({
+        baseUrl: `https://api.${options.bigcommerceHostname}/stores/${storeHash}`,
+        accessToken,
+      });
+
+      const cliApi = new CliApi({
+        origin: options.cliApiOrigin,
         storeHash,
         accessToken,
       });
 
-      const eligibilityResponse = await cliApi.api('/channels/catalyst/eligibility', {
-        method: 'GET',
-      });
+      const eligibilityResponse = await cliApi.checkEligibility();
 
       if (!eligibilityResponse.ok) {
         console.error(
@@ -272,16 +226,7 @@ export const create = new Command('create')
           message: 'What would you like to name your new channel?',
         });
 
-        const response = await cliApi.api('/channels/catalyst', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name: newChannelName,
-            initialData: { type: 'none' },
-            deployStorefront: false,
-            devOrigin: 'http://localhost:4000',
-          }),
-        });
+        const response = await cliApi.createChannel(newChannelName);
 
         if (!response.ok) {
           console.error(
@@ -317,15 +262,25 @@ export const create = new Command('create')
       if (!shouldCreateChannel) {
         const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
 
-        const availableChannels = await bc.channels('?available=true&type=storefront');
+        const channelsResponse = await bc.fetch('/v3/channels?available=true&type=storefront');
+
+        if (!channelsResponse.ok) {
+          console.error(
+            chalk.red(`\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`),
+          );
+          process.exit(1);
+        }
+
+        const availableChannels = (await channelsResponse.json()) as ChannelsResponse;
 
         const existingChannel = await select({
           message: 'Which channel would you like to use?',
           choices: availableChannels.data
             .sort(
-              (a, b) => channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
+              (a: Channel, b: Channel) =>
+                channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
             )
-            .map((ch) => ({
+            .map((ch: Channel) => ({
               name: ch.name,
               value: ch,
               description: `Channel Platform: ${
@@ -336,12 +291,10 @@ export const create = new Command('create')
             })),
         });
 
-        channelId = existingChannel.id;
+        channelId = (existingChannel as Channel).id;
 
         // Get channel init data for existing channel
-        const initResponse = await cliApi.api(`/channels/${channelId}/init`, {
-          method: 'GET',
-        });
+        const initResponse = await cliApi.getChannelInit(channelId);
 
         if (!initResponse.ok) {
           console.error(
