@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { useAccountStatusContext } from '../../_components/account-status-provider';
-import { Hit } from '~/belami/components/search';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Hit as AlgoliaHit } from 'instantsearch.js';
 import { Button } from '~/components/ui/button';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
+import { Hit } from '~/belami/components/search/hit';
 
 interface HitPrice {
   USD: number;
