@@ -3,22 +3,12 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
-import { ProductCard } from '~/components/product-card';
-import { Pagination } from '~/components/ui/pagination';
-
-import { FacetedSearch } from '../../_components/faceted-search';
-import { MobileSideNav } from '../../_components/mobile-side-nav';
-import { SortBy } from '../../_components/sort-by';
-import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 
-import { CategoryViewed } from './_components/category-viewed';
-import { EmptyState } from './_components/empty-state';
-import { SubCategories } from './_components/sub-categories';
 import { getCategoryPageData } from './page-data';
 
-import { getPromotions } from '../../fetch-promotions';
+import { getPromotions } from '~/belami/lib/fetch-promotions';
 
 import { Category } from './category';
 

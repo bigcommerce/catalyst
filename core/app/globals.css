@@ -699,7 +699,7 @@ button.show-all {
   background-size: 180%;
   border-radius: 3px;
   box-shadow: none !important;
-  border: 1px solid var(--gray-500) !important;
+  border: 2px solid var(--gray-500) !important;
   color: #d6d6e7;
   cursor: inherit;
   height: 1rem;
@@ -712,7 +712,7 @@ button.show-all {
   background-size: 14px;
   color: var(--brand-400) !important;
   box-shadow: none !important;
-  border: 1px solid var(--brand-400) !important;
+  border: 2px solid var(--brand-400) !important;
 }
 
 /* Button */

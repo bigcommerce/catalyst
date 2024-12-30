@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 //import { BcImage } from '~/components/bc-image';
 
-import searchColors from './search-colors.json';
+import searchColors from '~/belami/include/search-colors.json';
 
 import noImage from '~/public/no-image.svg';
 
@@ -162,22 +162,6 @@ function ColorSwatches({ variants, onImageClick }: any) {
       : null;
 
   const imageUrls = {} as any;
-  const items2 =
-    items && items.length > 0
-      ? variants
-          .filter(
-            (item: any) =>
-              item.image_url &&
-              item.image_url.length > 0 &&
-              Object.hasOwn(item.options, 'Finish Color'),
-          )
-          .map((item: any) => {
-            imageUrls[item.options['Finish Color']] = item.image_url.replace(
-              '.220.290.',
-              '.386.513.',
-            );
-          })
-      : null;
 
   return (
     //items && items.length > 0 &&
