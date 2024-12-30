@@ -66,15 +66,17 @@ const getProduct = async (productPromise: ReturnType<typeof getProductData>) => 
           {
             title: t('specifications'),
             content: (
-              <div className="prose">
-                <ul className="flex flex-col gap-4">
+              <div className="prose @container">
+                <dl className="flex flex-col gap-4">
                   {specifications.map((field, index) => (
-                    <li className="flex gap-2" key={index}>
-                      <strong>{field.name}</strong>
-                      {field.value}
-                    </li>
+                    <div className="grid grid-cols-1 gap-2 @lg:grid-cols-2" key={index}>
+                      <dt>
+                        <strong>{field.name}</strong>
+                      </dt>
+                      <dd>{field.value}</dd>
+                    </div>
                   ))}
-                </ul>
+                </dl>
               </div>
             ),
           },
