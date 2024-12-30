@@ -193,9 +193,6 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
               <Facet title="Brand">
                 <RefinementList attribute="brand_name" searchable={false} />
               </Facet>
-              <Panel header="Brand">
-                <RefinementList attribute="brand_name" />
-              </Panel>
               <Facet title="Collection">
                 <RefinementList attribute="metafields.Details.Collection" />
               </Facet>
