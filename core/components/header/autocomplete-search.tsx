@@ -149,8 +149,8 @@ function ProductItem({
 
   return (
     <Link href={hit.url} className="aa-ItemLink py-1">
-      <div className="aa-ItemContent items-start">
-        <div className="h-24 w-24">
+      <div className="aa-ItemContent !items-start">
+        <div className="h-40 w-40">
           <div className="p-2">
             <div className="pb-full relative mx-auto my-0 flex h-auto w-full overflow-hidden pb-[100%]">
               <div className="absolute left-0 top-0 h-full w-full">
@@ -175,10 +175,15 @@ function ProductItem({
         </div>
 
         <div className="aa-ItemContentBody">
-          <h2 className="aa-ItemContentTitle text-md font-medium">
+          <h2 className="aa-ItemContentTitle mt-2 text-md font-medium">
             <components.Highlight hit={hit} attribute="name" />
           </h2>
 
+          {hit.categories && hit.categories.lvl0 ? (
+            <div className="aa-ItemContentDescription">In <strong>{hit.categories.lvl0}</strong></div>
+          ) : null}
+
+          {/*
           <div className="aa-ItemContentDescription">
             By <strong>{hit.brand_name}</strong>{' '}
             {hit.categories && hit.categories.lvl0 ? (
@@ -187,6 +192,7 @@ function ProductItem({
               </>
             ) : null}
           </div>
+          */}
 
           {!useDefaultPrices ? (
             <div className="flex items-center space-x-2">
@@ -379,6 +385,43 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
       categoryAttribute: ['instant_search', 'facets', 'exact_matches', 'categories'],
       itemsWithCategories: 1,
       categoriesPerItem: 2,
+      transformSource({ source }) {
+        return {
+          ...source,
+          /*
+          onSelect({ item }) {
+            // Assuming the `setSearchState` function updates the search page state.
+            setSearchState({ query: item.query });
+          },
+          */
+          getItemUrl({ item }: any) {
+            return `/search?query=${item.query}`;
+          },
+          templates: {
+            header({ items }: any) {
+              if (items.length === 0) {
+                return null;
+              }
+  
+              return (
+                <>
+                  <span className="aa-SourceHeaderTitle">Popular Searches</span>
+                  <div className="aa-SourceHeaderLine" />
+                </>
+              );
+            },
+            item(params: any) {
+              const { item } = params;
+    
+              return (
+                <a className="aa-ItemLink" href={`/search?query=${item.query}`}>
+                  {source.templates.item(params).props.children}
+                </a>
+              );
+            },
+          },
+        };
+      },
     });
 
     const search = autocomplete({
@@ -391,6 +434,7 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
         Fragment,
         render: () => {},
       },
+      /*
       render({ children }: any, root: any) {
         if (!panelRoot.current) {
           panelRoot.current = createRoot(root) as any;
@@ -398,6 +442,30 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
 
         (panelRoot.current! as any).render(children);
       },
+      */
+      render({ state, elements }: any, root: any) {
+        const { querySuggestionsPlugin, productsCategories, products } = elements;
+
+        if (!panelRoot.current) {
+          panelRoot.current = createRoot(root) as any;
+        }
+
+        (panelRoot.current! as any).render(
+          <div className="aa-PanelLayout aa-Panel--scrollable !h-auto !max-h-none">
+            <div className="aa-PanelSections flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
+              <div className="aa-PanelSection--left md:flex-none md:max-w-72 flex-col space-y-8">
+                {querySuggestionsPlugin}
+                {productsCategories}
+              </div>
+              <div className="aa-PanelSection--right md:flex-1">
+                {products}
+              </div>
+            </div>
+            <a className="mt-4 mb-4 md:mb-0 flex items-center justify-center w-full text-center space-x-2 px-4 h-10 bg-white hover:bg-gray-50 uppercase rounded border border-brand-400" href={`/search?query=${state.query}`}>View All Results</a>
+          </div>
+        );
+      },
+
       openOnFocus: false,
       autoFocus: true,
 
@@ -493,7 +561,7 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
               header() {
                 return (
                   <Fragment>
-                    <span className="aa-SourceHeaderTitle">Products</span>
+                    <span className="aa-SourceHeaderTitle">Top Product Matches</span>
                     <div className="aa-SourceHeaderLine" />
                   </Fragment>
                 );
@@ -542,11 +610,26 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                 queries: [
                   {
                     indexName: indexName,
-                    //facet: 'hierarchicalCategories.lvl1',
+                    facet: 'categories.lvl0',
+                    params: {
+                      facetQuery: query,
+                      maxFacetHits: 3,
+                    },
+                  } as any,
+                  {
+                    indexName: indexName,
                     facet: 'categories.lvl1',
                     params: {
                       facetQuery: query,
-                      maxFacetHits: 2,
+                      maxFacetHits: 3,
+                    },
+                  } as any,
+                  {
+                    indexName: indexName,
+                    facet: 'categories.lvl2',
+                    params: {
+                      facetQuery: query,
+                      maxFacetHits: 3,
                     },
                   } as any,
                 ],
@@ -558,7 +641,7 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                 return (
                   // Show 'Product Categories' before the actual categories
                   <Fragment>
-                    <span className="aa-SourceHeaderTitle">Products Categories</span>
+                    <span className="aa-SourceHeaderTitle">Top Category Results</span>
                     <div className="aa-SourceHeaderLine" />
                   </Fragment>
                 );

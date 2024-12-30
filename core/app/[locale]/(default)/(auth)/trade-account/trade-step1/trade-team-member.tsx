@@ -91,7 +91,7 @@ const TeamMembersSection: React.FC = () => {
   return (
     <div className="m-auto w-[94%] bg-white">
       <h2 className="mb-[20px] mt-[40px] pt-[30px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
-        Meet Our Amazing Team Members
+      Meet some of Our Amazing Team Members
       </h2>
       <div className="m-auto grid w-[95%] grid-cols-1 gap-6 pb-[40px] sm:grid-cols-2 lg:grid-cols-3">
         {teamMembers.map((member, index) => (

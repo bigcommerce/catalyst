@@ -43,6 +43,13 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
     return true;
   };
 
+  const getPlaceholder = () => {
+    if (type === 'email') {
+      return 'Enter your email address';
+    }
+    return field.placeholder || `Enter ${field.label.toLowerCase()}`;
+  };
+
   return (
     <Field className="relative space-y-2" name={name}>
       <FieldLabel
@@ -62,6 +69,7 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
           onInvalid={field.isRequired ? onChange : undefined}
           required={field.isRequired}
           type={type === 'email' ? 'email' : 'text'}
+          placeholder={field.label === 'Address Line 1*' ? 'Start typing your address.' : ''}
           onBlur={(e) => {
             if (type === 'email') {
               validateEmail((e.target as HTMLInputElement).value);

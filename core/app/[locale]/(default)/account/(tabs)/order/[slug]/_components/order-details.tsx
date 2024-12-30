@@ -12,7 +12,7 @@ import {
 } from '../../../orders/_components/product-snippet';
 import { OrderDataType } from '../page';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
-import { PrintInvoice } from '../print-invoice';
+import { PrintInvoice } from '../../../print-invoice/print-invoice';
 import { StillNeedContactUs } from '../../../orders/_components/stillneed-contactus';
 
 const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['summaryInfo'] }) => {
@@ -265,6 +265,7 @@ export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:a
     href: "#"
   }];
   let shippingAddressData = shippingConsignments?.[0]?.shippingAddress;
+
   return (
     <div className="mt-[1rem] mb-[2rem] w-[100%] flex justify-center text-[#353535]">
       <div className="flex w-[88%] flex-col gap-[20px]">
@@ -275,7 +276,7 @@ export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:a
           <div className="flex items-center justify-between">
             <div className="text-[24px] font-normal leading-[32px]">Order #{orderState?.orderId}</div>
             <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#008BB7] flex gap-[10px] items-center">
-              <PrintInvoice />
+              <PrintInvoice orderId={orderState?.orderId} key={orderState?.orderId} />
             </div>
           </div>
           <StillNeedContactUs icon={icon} />
