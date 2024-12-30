@@ -130,7 +130,7 @@ const Header = ({
           </CustomLink>
         </div>
 
-        <div className="header-search-bar flex items-center gap-2 lg:gap-4">
+        <div className="header-search-bar flex flex-grow items-center gap-2 lg:gap-4">
           {search}
           <nav className="header-nav-support flex gap-2 lg:gap-4">{account}</nav>
           <nav className="header-cart flex gap-2 lg:gap-9">{cart}</nav>

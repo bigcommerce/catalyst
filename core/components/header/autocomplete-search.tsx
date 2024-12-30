@@ -451,8 +451,8 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
         }
 
         (panelRoot.current! as any).render(
-          <div className="aa-PanelLayout aa-Panel--scrollable">
-            <div className="aa-PanelSections flex flex-col md:flex-row md:space-x-8 space-y-8">
+          <div className="aa-PanelLayout aa-Panel--scrollable !h-auto !max-h-none">
+            <div className="aa-PanelSections flex flex-col md:flex-row md:space-x-8 space-y-8 md:space-y-0">
               <div className="aa-PanelSection--left md:flex-none md:max-w-72 flex-col space-y-8">
                 {querySuggestionsPlugin}
                 {productsCategories}
@@ -461,7 +461,7 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                 {products}
               </div>
             </div>
-            <a className="mt-4 flex items-center justify-center w-full text-center space-x-2 px-4 h-10 bg-white hover:bg-gray-50 uppercase rounded border border-brand-400" href={`/search?query=${state.query}`}>View All Results</a>
+            <a className="mt-4 mb-4 md:mb-0 flex items-center justify-center w-full text-center space-x-2 px-4 h-10 bg-white hover:bg-gray-50 uppercase rounded border border-brand-400" href={`/search?query=${state.query}`}>View All Results</a>
           </div>
         );
       },

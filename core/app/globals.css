@@ -836,11 +836,11 @@ button.show-all {
   }
 }
 
-.aa-Panel--scrollable {
+.aa-PanelLayout, .aa-Panel--scrollable {
   padding: 1rem !important;
 }
 /*
-.aa-Panel .aa-Panel--scrollable > button {
+.aa-Panel .aa-PanelLayout > button {
   margin-top: 1rem;
   padding: 0 1rem;
   border: 1px solid var(--brand-400);
