@@ -28,13 +28,15 @@ export class CliApi {
     });
   }
 
-  async createChannel(name: string) {
+  async createChannel(name: string, installSampleData: boolean = false) {
     return this.client.fetch('/channels/catalyst', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         name,
-        initialData: { type: 'none' },
+        initialData: { 
+          type: installSampleData ? 'sample' : 'none'
+        },
         deployStorefront: false,
         devOrigin: 'http://localhost:3000',
       }),

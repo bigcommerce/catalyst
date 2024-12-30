@@ -245,7 +245,15 @@ export const create = new Command('create')
             message: 'What would you like to name your new channel?',
           });
 
-          const response = await cliApi.createChannel(newChannelName);
+          const shouldInstallSampleData = await select({
+            message: 'Would you like to install sample data?',
+            choices: [
+              { name: 'Yes', value: true },
+              { name: 'No', value: false },
+            ],
+          });
+
+          const response = await cliApi.createChannel(newChannelName, shouldInstallSampleData);
 
           if (!response.ok) {
             console.error(
