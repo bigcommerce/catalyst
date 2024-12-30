@@ -17,7 +17,7 @@ type CurrentRefinementsProps = UseCurrentRefinementsProps & {
   classNames?: Partial<CurrentRefinementsClassNames>;
 };
 
-import attributeLabels from './attribute-labels.json';
+import attributeLabels from '~/belami/include/attribute-labels.json';
 
 type DynamicObject = {
   [key: string]: string;
@@ -38,7 +38,7 @@ function isModifierClick(event: React.MouseEvent) {
 }
 
 export function CurrentRefinements({ includedAttributes, excludedAttributes, transformItems, classNames, ...props }: CurrentRefinementsProps) {
-  const { items, canRefine, refine, createURL } = useCurrentRefinements(props);
+  const { items, canRefine, refine, createURL } = useCurrentRefinements(props, {});
 
   return (items &&
     <div className={cn(
@@ -49,7 +49,7 @@ export function CurrentRefinements({ includedAttributes, excludedAttributes, tra
         'ais-CurrentRefinements-list',
         classNames?.list,
       )}>
-        {items.map((item) => (
+        {items.map((item: any) => (
           <li key={[item.indexName, item.label].join('/')} className={cn(
             'ais-CurrentRefinements-item',
             classNames?.item,
@@ -58,7 +58,7 @@ export function CurrentRefinements({ includedAttributes, excludedAttributes, tra
               'ais-CurrentRefinements-label',
               classNames?.label,
             )}>{labels[item.attribute] ?? item.label}:</span>
-            {item.refinements.map((refinement) => (
+            {item.refinements.map((refinement: any) => (
               <span key={refinement.label} className={cn(
                 'ais-CurrentRefinements-category',
                 classNames?.category,

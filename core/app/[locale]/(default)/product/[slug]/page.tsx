@@ -21,7 +21,7 @@ import { ProductProvider } from '~/components/common-context/product-provider';
 import { RelatedProducts } from './related-products';
 import { CollectionProducts } from './collection-products';
 import { SitevibesReviews } from './sitevibes-reviews';
-import { getRelatedProducts, getCollectionProducts } from './fetch-algolia-products';
+import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-algolia-products';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;

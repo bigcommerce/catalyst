@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { Hit } from '~/app/[locale]/(default)/(faceted)/_components/hit';
+import React, { useState, useEffect } from 'react';
+import { useAccountStatusContext } from '../../_components/account-status-provider';
+import { Hit } from '~/belami/components/search';
 import { Hit as AlgoliaHit } from 'instantsearch.js';
 import { Button } from '~/components/ui/button';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
