@@ -40,7 +40,7 @@ export const PropsContextProvider = ({
 );
 
 interface Props {
-  banner?: {
+  banner: {
     id: string;
     show: boolean;
     allowClose: boolean;
@@ -58,13 +58,15 @@ interface Props {
       }>;
     }>;
   }>;
-  logo?: {
+  logo: {
     desktopSrc?: string;
     desktopAlt: string;
-    desktopWidth?: number;
+    desktopWidth: number;
+    desktopHeight: number;
     mobileSrc?: string;
     mobileAlt: string;
-    mobileWidth?: number;
+    mobileWidth: number;
+    mobileHeight: number;
     link?: { href: string };
   };
   linksPosition: 'center' | 'left' | 'right';
@@ -91,7 +93,7 @@ function combineLinks(
 export const MakeswiftHeader = forwardRef(
   ({ banner, links, logo, linksPosition }: Props, ref: Ref<HTMLDivElement>) => {
     const { navigation: passedProps, banner: passedBanner } = useContext(PropsContext);
-    const combinedBanner = banner?.show
+    const combinedBanner = banner.show
       ? {
           ...passedBanner,
           id: banner.id,
@@ -106,16 +108,16 @@ export const MakeswiftHeader = forwardRef(
         navigation={{
           ...passedProps,
           links: combineLinks(passedProps.links, links),
-          logo: logo?.desktopSrc
-            ? { src: logo.desktopSrc, alt: logo.desktopAlt }
-            : passedProps.logo,
-          logoWidth: logo?.desktopWidth,
-          mobileLogo: logo?.mobileSrc
+          logo: logo.desktopSrc ? { src: logo.desktopSrc, alt: logo.desktopAlt } : passedProps.logo,
+          logoWidth: logo.desktopWidth,
+          logoHeight: logo.desktopHeight,
+          mobileLogo: logo.mobileSrc
             ? { src: logo.mobileSrc, alt: logo.mobileAlt }
             : passedProps.mobileLogo,
-          mobileLogoWidth: logo?.mobileWidth,
+          mobileLogoWidth: logo.mobileWidth,
+          mobileLogoHeight: logo.mobileHeight,
           linksPosition,
-          logoHref: logo?.link?.href ?? passedProps.logoHref,
+          logoHref: logo.link?.href ?? passedProps.logoHref,
         }}
         ref={ref}
       />
