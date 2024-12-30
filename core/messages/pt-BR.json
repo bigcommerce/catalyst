@@ -26,7 +26,7 @@
         "heading": "Credencial de acesso",
         "Form": {
             "error": "O endereço de email ou a senha está incorreto. Tente fazer login novamente ou redefinir sua senha",
-            "successful": "You have successfully logged in.",
+            "successful": "Você fez login com sucesso.",
             "emailLabel": "Email",
             "enterEmailMessage": "Digite seu email",
             "passwordLabel": "Senha",
@@ -70,7 +70,7 @@
             "submitting": "Criando conta...",
             "recaptchaText": "Passar na verificação ReCAPTCHA",
             "confirmPassword": "As senhas não conferem.",
-            "successMessage": "Account was successfully created."
+            "successMessage": "A conta foi criada com sucesso."
         },
         "Errors": {
             "inputError": "Houve um erro no processamento da entrada do usuário.",
