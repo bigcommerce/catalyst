@@ -27,7 +27,7 @@ const WishlistsQuery = graphql(
             node {
               entityId
               name
-              items {
+              items(first: 50) {
                 edges {
                   node {
                     entityId
