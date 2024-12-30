@@ -2,6 +2,8 @@ import { NextRequest } from 'next/server';
 import { MiddlewareFactory } from './compose-middlewares';
 import { cookies } from 'next/headers';
 import { userAgent } from 'next/server';
+import { getReferrerID, storeReferrerLog } from '~/belami/lib/fetch-referrer-id';
+import { cli } from 'webpack';
 
 export const withReferrerId: MiddlewareFactory = (middleware) => {
   return async (request, event) => {
@@ -10,85 +12,50 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
     const cookieStore = await cookies();
     const referrerIdCookie = cookieStore.get('referrerId');
 
-    // If referrerId exists then return...
-    // if (referrerIdCookie && referrerIdCookie.value)
-    //   return middleware(request, event);
+    const sessId = request.nextUrl.searchParams.get('sessid') || 0;
+    //const refId = request.nextUrl.searchParams.get('rid') || 0;
+    const refId = referrerIdCookie?.value || request.nextUrl.searchParams.get('rid') || 0;
+    //const referrer = request.nextUrl.searchParams.get('ref') || '';
+    const referrer = request.headers.get('referer') || ''
+    const logRef = request.nextUrl.searchParams.get('log') || 0;
+    const abTest = request.nextUrl.searchParams.get('abtest') || 0;
 
-    const trigger = request.nextUrl.searchParams.get('t') || null;
+    const source = request.nextUrl.searchParams.get('utm_source') || '';
+    const medium = request.nextUrl.searchParams.get('utm_medium') || '';
+    const campaign = request.nextUrl.searchParams.get('utm_campaign') || '';
+    const keywords = request.nextUrl.searchParams.get('keywords') || request.nextUrl.searchParams.get('kw') || '';
+    const clickId = request.nextUrl.searchParams.get('glcid') || request.nextUrl.searchParams.get('clickid') || '';
 
-    // If no trigger then return...
-    if (!trigger)
-      return middleware(request, event);
+    let log = 1;
+    if (referrer.length == 0) {
+      log = 0;
+    }
+    if (keywords.length > 0 || source.length > 0) {
+      if (referrer.length > 0 || ['test', 'email', 'gan', 'motivano', 'socialfree', 'socialpaid'].includes(source.toLowerCase())) {
+        log = 1;
+      }
+    }
+    if (clickId.length > 0) {
+      log = 1;
+    }
+    if (Number(logRef) === 0) {
+      log = 0;
+    }
 
     const { isBot, browser, device, os } = userAgent(request);
-
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
     const ua = request.headers.get('user-agent') || '';
 
-    const referrerId = await getReferrerID(ua, ip);
+    if (isBot)
+      return middleware(request, event); // Do not track bots
+
+    const referrerId = Number(refId) == 0 ? await getReferrerID(ua, ip) : Number(refId);
 
     if (referrerId && Number.isInteger(referrerId)) {
       cookieStore.set('referrerId', referrerId);
-      storeReferrerLog(referrerId, '', '', '', request.headers.get('referer') || '', ip, request.nextUrl.pathname);
+      storeReferrerLog(referrerId, source, keywords, clickId, referrer, ip, request.nextUrl.pathname);
     }
 
     return middleware(request, event);
   };
-};
-
-const getReferrerID = async (ua: string, ip: string, sid: number = 0, scid: number = 0, log: number = 1) => {
-  const response = await fetch(`https://as-nc-inf-referrerid-live.azurewebsites.net/referrerid`, {
-    method: "POST",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-      "UserHostAddress": ip,
-      "UserAgent": ua,
-      "SessionID": sid,
-      "SiteConfigID": scid,
-      "LogRecord": log
-    }),
-    cache: 'no-cache',
-    //next: { revalidate: 3600 }
-  });
-
-  const data = await response.json();
-
-  return data?.isSuccess ? data.data : null;
-};
-
-const storeReferrerLog = async (referrerID: number, source: string, keywords: string, cid: string, referrer: string, ip: string, page: string) => {
-  const response = await fetch(`https://as-nc-inf-referrerid-live.azurewebsites.net/referrerlog`, {
-    method: "POST",
-    credentials: "same-origin",
-    headers: {
-      "Content-Type": "application/json",
-      "Accept": "application/json"
-    },
-    body: JSON.stringify({
-      "ReferrerID": referrerID,
-      "SearchSource": source,
-      "SearchKW": keywords,
-      "ClickID": cid,
-      "ClientReferrer": referrer,
-      "IPLog": ip,
-      "LandingPage": page,
-      "CategoryTypeID": 0,
-      "CategoryID": 0,
-      "SubCategoryID": 0,
-      "MfgID": 0,
-      "ProductID": 0,
-      "InTest": 0,
-      "LogType": 0
-    }),
-    cache: 'no-cache',
-    //next: { revalidate: 3600 }
-  });
-
-  const data = await response.json();
-
-  return data?.isSuccess ? data.data : null;
 };
