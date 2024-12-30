@@ -37,7 +37,7 @@ export class CliApi {
         initialData: {
           type: installSampleData ? 'sample' : 'none',
         },
-        deployStorefront: false,
+        deployStorefront: true,
         devOrigin: 'http://localhost:3000',
       }),
     });
