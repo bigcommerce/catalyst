@@ -267,7 +267,8 @@ export const create = new Command('create')
 
     let envVars: Record<string, string> = {};
 
-    if (!options.storeHash || !options.accessToken) {
+    // Skip login if we have all necessary credentials
+    if ((!storeHash || !accessToken) && (!channelId || !storefrontToken)) {
       const credentials = await login(`https://login.${options.bigcommerceHostname}`);
 
       storeHash = credentials.storeHash;
