@@ -15,7 +15,8 @@ runtime.registerComponent(MakeswiftFooter, {
       type: {
         show: Checkbox({ label: 'Show logo', defaultValue: true }),
         src: Image({ label: 'Logo' }),
-        width: Number({ label: 'Logo width', suffix: 'px' }),
+        width: Number({ label: 'Logo width', suffix: 'px', defaultValue: 200 }),
+        height: Number({ label: 'Logo height', suffix: 'px', defaultValue: 40 }),
         alt: TextInput({ label: 'Alt text', defaultValue: 'Logo alt' }),
       },
     }),
