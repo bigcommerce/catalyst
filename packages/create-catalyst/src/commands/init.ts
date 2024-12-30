@@ -3,8 +3,9 @@ import { select } from '@inquirer/prompts';
 import chalk from 'chalk';
 
 import { CliApi } from '../utils/cli-api';
+import { Config } from '../utils/config';
 import { Https } from '../utils/https';
-import { login } from '../utils/login';
+import { login, storeCredentials } from '../utils/login';
 import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
 
@@ -78,19 +79,23 @@ export const init = new Command('init')
     let storeHash = options.storeHash;
     let accessToken = options.accessToken;
 
-    if (!options.storeHash || !options.accessToken) {
+    // Check for stored credentials
+    if (!storeHash || !accessToken) {
+      const config = new Config(projectDir);
+      const storedAuth = config.getAuth();
+
+      storeHash = storeHash ?? storedAuth.storeHash;
+      accessToken = accessToken ?? storedAuth.accessToken;
+    }
+
+    if (!storeHash || !accessToken) {
       const credentials = await login(`https://login.${options.bigcommerceHostname}`);
 
       storeHash = credentials.storeHash;
       accessToken = credentials.accessToken;
-    }
 
-    if (!storeHash || !accessToken) {
-      console.log(
-        chalk.yellow('\nYou must authenticate with a store to overwrite your local environment.\n'),
-      );
-
-      process.exit(1);
+      // Store credentials after successful authentication
+      storeCredentials(projectDir, credentials);
     }
 
     await telemetry.identify(storeHash);

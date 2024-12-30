@@ -19,6 +19,7 @@
   },
   "dependencies": {
     "@commander-js/extra-typings": "^12.1.0",
+    "@iarna/toml": "^2.2.5",
     "@inquirer/prompts": "^7.2.0",
     "@segment/analytics-node": "^2.2.0",
     "chalk": "^5.3.0",
@@ -29,6 +30,7 @@
     "giget": "^1.2.3",
     "lodash.kebabcase": "^4.1.1",
     "nypm": "^0.4.1",
+    "open": "^10.1.0",
     "ora": "^8.1.1",
     "semver": "^7.6.3",
     "std-env": "^3.8.0",

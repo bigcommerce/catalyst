@@ -10,7 +10,7 @@ import { CliApi } from '../utils/cli-api';
 import { cloneCatalyst } from '../utils/clone-catalyst';
 import { Https } from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
-import { login } from '../utils/login';
+import { login, storeCredentials } from '../utils/login';
 import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
 
@@ -261,6 +261,7 @@ export const create = new Command('create')
     let accessToken = options.accessToken;
     let channelId;
     let storefrontToken = options.storefrontToken;
+    let credentials;
 
     if (options.channelId) {
       channelId = parseInt(options.channelId, 10);
@@ -268,19 +269,17 @@ export const create = new Command('create')
 
     let envVars: Record<string, string> = {};
 
-    // Skip login if we have all necessary credentials
+    // Get credentials if needed
     if ((!storeHash || !accessToken) && (!channelId || !storefrontToken)) {
-      const credentials = await login(`https://login.${options.bigcommerceHostname}`);
-
+      credentials = await login(`https://login.${options.bigcommerceHostname}`);
       storeHash = credentials.storeHash;
       accessToken = credentials.accessToken;
     }
 
     if (!storeHash || !accessToken) {
+      // Create project without credentials
       console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
-
       cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain: options.resetMain });
-
       await installDependencies(projectDir);
 
       // Add any CLI-provided env vars
@@ -379,6 +378,8 @@ export const create = new Command('create')
           channelId = channelData.channelId;
           storefrontToken = channelData.storefrontToken;
           envVars = { ...channelData.envVars };
+
+          console.log(chalk.green(`Channel created successfully`));
         }
 
         if (!shouldCreateChannel) {
@@ -410,15 +411,18 @@ export const create = new Command('create')
     if (!channelId) throw new Error('Something went wrong, channelId is not defined');
     if (!storefrontToken) throw new Error('Something went wrong, storefrontToken is not defined');
 
-    // All inputs gathered, now start the git operations
+    // Create the project with all necessary configuration
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
-
     cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain: options.resetMain });
-
     await installDependencies(projectDir);
 
-    // Write env vars after git operations are complete
+    // Write env vars
     writeEnv(projectDir, envVars);
+
+    // Store credentials after successful project creation
+    if (credentials) {
+      storeCredentials(projectDir, credentials);
+    }
 
     console.log(
       `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
