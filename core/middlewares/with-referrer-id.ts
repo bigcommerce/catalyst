@@ -51,10 +51,9 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
 
     const referrerId = Number(refId) == 0 ? await getReferrerID(ua, ip, Number(sessId), 0, log) : Number(refId);
 
-    if (referrerId && Number.isInteger(referrerId) && referrerId > 0) {
+    if (referrerId && Number.isInteger(referrerId) && referrerId > 0 && log === 1) {
       cookieStore.set('referrerId', referrerId);
-      if (log === 1)
-        storeReferrerLog(referrerId, source, keywords, clickId, referrer, ip, request.nextUrl.pathname);
+      storeReferrerLog(referrerId, source, keywords, clickId, referrer, ip, request.nextUrl.pathname);
     }
 
     return middleware(request, event);
