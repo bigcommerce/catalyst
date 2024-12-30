@@ -8,6 +8,8 @@ import { TabHeading } from '../_components/tab-heading';
 import { AddressBook } from './_components/address-book';
 import { getCustomerAddresses } from './page-data';
 
+import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
+
 interface Props {
   searchParams: Promise<{
     [key: string]: string | string[] | undefined;
@@ -25,6 +27,17 @@ export async function generateMetadata() {
 }
 
 export default async function Addresses({ searchParams }: Props) {
+  const breadcrumbs: any = [
+    {
+      label: 'Account Center',
+      href: '/account',
+    },
+    {
+      label: 'Addresses',
+      href: '',
+    },
+  ];
+
   const { before, after } = await searchParams;
 
   const data = await getCustomerAddresses({
@@ -41,8 +54,11 @@ export default async function Addresses({ searchParams }: Props) {
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
 
   return (
-    <>
+    <div className='flex flex-col gap-[30px]'>
+      <div>
+      <ComponentsBreadcrumbs className="" breadcrumbs={breadcrumbs} />
       <TabHeading heading="addresses" />
+      </div>
       <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor}>
         <Pagination
           className="my-0 inline-flex justify-center text-center"
@@ -52,7 +68,7 @@ export default async function Addresses({ searchParams }: Props) {
           startCursor={startCursor ?? undefined}
         />
       </AddressBook>
-    </>
+    </div>
   );
 }
 

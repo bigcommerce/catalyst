@@ -35,7 +35,7 @@ function CustomerSupportPage() {
     company: '',
     email: '',
     phone: '',
-    referralId: '',
+    referral_id: '',
   });
   const [loading, setLoading] = useState({
     show1: false,
@@ -108,7 +108,7 @@ function CustomerSupportPage() {
       !createAccountData.first_name ||
       !createAccountData.last_name ||
       !createAccountData.email ||
-      !createAccountData.referralId
+      !createAccountData.referral_id
     ) {
       console.error('First name, last name, email and refferal id are required fields.');
       setCreateAccountErrorMessage(
@@ -191,7 +191,7 @@ function CustomerSupportPage() {
         setCreateAccountData({ ...createAccountData, phone: value });
         break;
       case 'create_referralId':
-        setCreateAccountData({ ...createAccountData, referralId: value });
+        setCreateAccountData({ ...createAccountData, referral_id: value });
         break;
       default:
         break;

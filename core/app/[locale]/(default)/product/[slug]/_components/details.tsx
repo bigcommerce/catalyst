@@ -8,7 +8,7 @@ import { PricingFragment } from '~/client/fragments/pricing';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf, graphql } from '~/client/graphql';
 import CertificationsAndRatings from '~/components/ui/pdp/belami-certification-rating-pdp';
-import { Payment } from '~/components/ui/pdp/belami-payment-pdp';
+import { PayPalPayLater } from '~/components/ui/pdp/belami-payment-pdp';
 import { RequestQuote } from '~/components/ui/pdp/belami-request-a-quote-pdp';
 import { ShippingReturns } from '~/components/ui/pdp/belami-shipping-returns-pdp';
 import { imageManagerImageUrl } from '~/lib/store-assets';
@@ -267,6 +267,7 @@ export const Details = ({
                           SKU: {product.mpn}
                         </span>
                       )}
+
                       {product.mpn &&
                         productOptions.filter(
                           (option) => option.__typename === 'MultipleChoiceOption',
@@ -301,14 +302,34 @@ export const Details = ({
                 </div>
 
                 <div className="flex items-center gap-4">
-                  {product.prices?.price?.value !== undefined && (
-                    <div className="text-right">
-                      <div className="text-lg font-medium text-[#008bb7]">
-                        {format.number(product.prices.price.value, {
-                          style: 'currency',
-                          currency: product.prices.price.currencyCode,
-                        })}
-                      </div>
+                  {product.prices && (
+                    <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
+                      {product.prices.basePrice?.value !== undefined &&
+                        product.prices.price?.value !== undefined && (
+                          <>
+                            <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
+                              {format.number(product.prices.basePrice.value, {
+                                style: 'currency',
+                                currency: product.prices.price.currencyCode,
+                              })}
+                            </span>
+                            <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
+                              Save{' '}
+                              {Math.floor(
+                                ((product.prices.basePrice.value - product.prices.price.value) /
+                                  product.prices.basePrice.value) *
+                                  100,
+                              )}
+                              %
+                            </span>
+                            <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
+                              {format.number(product.prices.price.value, {
+                                style: 'currency',
+                                currency: product.prices.price.currencyCode,
+                              })}
+                            </span>
+                          </>
+                        )}
                     </div>
                   )}
 
@@ -398,57 +419,36 @@ export const Details = ({
         <ReviewSummary data={product} />
       </div>
 
+      {/* product-price */}
+
       {product.prices && (
-        <div className="product-price mt-2 flex gap-2 text-center text-2xl font-bold lg:mt-6 lg:text-left lg:text-3xl">
-          {showPriceRange ? (
-            <span className="span1-product-price">
-              {format.number(product.prices.priceRange.min.value, {
-                style: 'currency',
-                currency: product.prices.price.currencyCode,
-              })}{' '}
-              -{' '}
-              {format.number(product.prices.priceRange.max.value, {
-                style: 'currency',
-                currency: product.prices.price.currencyCode,
-              })}
-            </span>
-          ) : (
-            <>
-              {product.prices.price?.value !== undefined && (
-                <span className="span2-product-price text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] text-[#008bb7]">
-                  <span>
-                    {format.number(product.prices.price.value, {
-                      style: 'currency',
-                      currency: product.prices.price.currencyCode,
-                    })}
-                  </span>
-                  <br />
+        <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:mt-6 lg:text-left">
+          {product.prices.basePrice?.value !== undefined &&
+            product.prices.price?.value !== undefined && (
+              <>
+                <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
+                  {format.number(product.prices.basePrice.value, {
+                    style: 'currency',
+                    currency: product.prices.price.currencyCode,
+                  })}
                 </span>
-              )}
-              {product.prices.saved?.value !== undefined &&
-              product.prices.basePrice?.value !== undefined ? (
-                <>
-                  <span className="span3-product-price text-[1rem] font-normal leading-[2rem] tracking-[0.15px] text-[#002a37]">
-                    <span className="line-through">
-                      {format.number(product.prices.basePrice.value, {
-                        style: 'currency',
-                        currency: product.prices.price.currencyCode,
-                      })}
-                    </span>
-                  </span>
-                  <span className="span4-product-price text-[1rem] font-normal leading-[2rem] tracking-[0.15px]">
-                    {t('Prices.now')}{' '}
-                    {format.number(product.prices.saved.value, {
-                      style: 'currency',
-                      currency: product.prices.price.currencyCode,
-                    })}
-                  </span>
-                </>
-              ) : (
-                product.prices.price.value && <span className="span5-product-price"></span>
-              )}
-            </>
-          )}
+                <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
+                  Save{' '}
+                  {Math.floor(
+                    ((product.prices.basePrice.value - product.prices.price.value) /
+                      product.prices.basePrice.value) *
+                      100,
+                  )}
+                  %
+                </span>
+                <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
+                  {format.number(product.prices.price.value, {
+                    style: 'currency',
+                    currency: product.prices.price.currencyCode,
+                  })}
+                </span>
+              </>
+            )}
         </div>
       )}
 
@@ -538,8 +538,7 @@ export const Details = ({
           Pay with Google
         </button>
       </div>
-
-      <Payment payPal={payPal} />
+      <PayPalPayLater amount={''} currency={''} />
       <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />

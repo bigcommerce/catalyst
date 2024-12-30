@@ -23,14 +23,14 @@ const Testimonial: React.FC<TestimonialData> = ({
   name,
   position,
 }) => (
-  <div className="flex h-full flex-col items-center bg-white p-6 shadow-lg">
+  <div className="block h-full flex-col items-center bg-white p-6 shadow-lg">
     <BcImage
       alt={imageAlt}
       width={150}
       height={150}
       unoptimized={true}
       src={imageSrc}
-      className="mb-3"
+      className="!m-auto mb-3"
     />
     <h3 className="text-center text-base font-bold leading-8 tracking-wider text-[#008BB7]">
       Our partner since 2008

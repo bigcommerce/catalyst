@@ -28,6 +28,7 @@ interface Props {
 }
 
 const homeLogoMobile = imageManagerImageUrl('logo-mark.png', '150w');
+const homeLogoMobileFirst = imageManagerImageUrl('logo-mark.png', '150w');
 
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
@@ -65,6 +66,7 @@ export const Header = async ({ cart }: Props) => {
   return (
     <ComponentsHeader
     homeLogoMobile = {homeLogoMobile} 
+    homeLogoMobileFirst = {homeLogoMobileFirst}
       account={
         <div className="flex items-center">
           {/* Support Dropdown */}

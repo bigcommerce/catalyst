@@ -27,7 +27,7 @@ const StarRating: React.FC = () => (
 );
 
 const Testimonial: React.FC<TestimonialProps> = ({ title, content, name, position }) => (
-  <div className="flex h-full flex-col p-6">
+  <div className="display-contents h-full flex-col p-6">
     <h3 className="mb-3 px-3 text-center text-[16px] font-bold leading-[32px] tracking-[0.5px] text-[#008BB7]">
       {title}
     </h3>

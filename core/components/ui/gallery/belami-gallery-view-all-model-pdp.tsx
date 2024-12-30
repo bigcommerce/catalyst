@@ -230,7 +230,6 @@ const GalleryModel = ({
     );
   };
 
-
   return (
     <div className="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
       <div className="modal-content relative flex h-full w-full flex-col bg-white p-[30px] xl:flex-row">

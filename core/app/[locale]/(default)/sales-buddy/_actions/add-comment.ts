@@ -31,8 +31,8 @@ export const addComment = async (payload: {
                 body: postData,
             },
         ).then(res => res.json())
-            .then(jsonData => {
-                return jsonData;
+        .then(jsonData => {
+                return { status: 200, data: jsonData };
             }).catch((error) => {
                 return ({ status: 500, error: error.message });
             });

@@ -25,10 +25,10 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
         {' '}
         <input
           className={cn(
-            'peer w-full rounded-sm border-2 border-gray-200 px-4 py-2.5 text-base placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
+            'peer w-full rounded-sm border-2 border-gray-200 px-4 focus-visible:border-2 focus-visible:border-[#008bb7] hover:border-[#008bb7] py-2.5 text-base placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
             (error || isPassword) && 'pe-12',
             error &&
-              'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 hover:border-error disabled:border-gray-200',
+             'border-error-secondary focus-visible:border-2 focus-visible:border-[#A71F23] hover:border-[#A71F23] disabled:border-gray-20',
           )}
           ref={ref}
           type={effectiveType}

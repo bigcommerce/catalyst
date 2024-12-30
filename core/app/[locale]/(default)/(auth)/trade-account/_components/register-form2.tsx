@@ -17,7 +17,6 @@ import {
   RadioButtons,
   Checkboxes,
   Password,
-  CUSTOMER_FIELDS_TO_EXCLUDE,
 } from '~/components/form-fields';
 import { Button } from '~/components/ui/button';
 import { Form } from '~/components/ui/form';
@@ -74,14 +73,10 @@ const ALLOWED_ADDRESS_FIELDS = [
 // Interfaces
 interface BaseField {
   entityId: number;
-  label: string;
+  label: string | JSX.Element; // Updated to allow JSX.Element
   sortOrder: number;
   isBuiltIn: boolean;
   isRequired: boolean;
-}
-
-interface TradeAddress1 {
-  TradeAddress1: string;
 }
 
 interface TextFormField extends BaseField {
@@ -112,7 +107,7 @@ interface DateFormField extends BaseField {
 }
 
 interface PicklistOption {
-  entityId: number;
+  entityId: string | number;
   label: string;
 }
 
@@ -165,7 +160,14 @@ interface RegisterForm2Props {
   TradeAddress1: string;
   addressFields: FormField[];
   customerFields: FormField[];
-  countries: Array<{ name: string; code: string; states?: Array<{ name: string }> }>;
+  countries: Array<{
+    name: string;
+    code: string;
+    statesOrProvinces?: Array<{
+      name: string;
+      abbreviation: string;
+    }>;
+  }>;
   defaultCountry: {
     code: string;
     states: Array<{ name: string }>;
@@ -175,7 +177,7 @@ interface RegisterForm2Props {
 export const RegisterForm2 = ({
   addressFields,
   customerFields,
-  countries = [],
+  countries,
   defaultCountry,
   TradeAddress1,
 }: RegisterForm2Props) => {
@@ -217,7 +219,6 @@ export const RegisterForm2 = ({
   const processFormData = (formData: FormData): FormData => {
     const combinedFormData = new FormData();
 
-    // Process first step data
     if (typeof window !== 'undefined') {
       const firstStepData = JSON.parse(localStorage.getItem('registrationFormData') || '{}');
       Object.entries(firstStepData).forEach(([key, value]) => {
@@ -227,7 +228,6 @@ export const RegisterForm2 = ({
       });
     }
 
-    // Process current form data
     for (const [key, value] of formData.entries()) {
       if (isValidFormValue(value)) {
         combinedFormData.append(key, String(value));
@@ -238,7 +238,7 @@ export const RegisterForm2 = ({
   };
 
   // Validation Handlers
-  const validateStateInput = (value: string) => {
+  const validateStateInput = (value: string): boolean => {
     if (!value) {
       setStateInputValid(false);
       return false;
@@ -280,18 +280,49 @@ export const RegisterForm2 = ({
   };
 
   const handleCountryChange = (value: string) => {
-    const states = countries.find(({ code }) => code === value)?.states ?? [];
-    setCountryStates(states);
+    const selectedCountry = countries.find(({ code }) => code === value);
+    if (selectedCountry && selectedCountry.statesOrProvinces) {
+      setCountryStates(
+        selectedCountry.statesOrProvinces.map((state) => ({
+          name: state.name,
+        })),
+      );
+    } else {
+      setCountryStates([]);
+    }
+    setStateInputValid(false);
   };
 
-  useEffect(() => {
-    router.prefetch('/trade-account/trade-step3');
-  }, [router]);
+  // Label Modifier
+  const getModifiedLabel = (originalLabel: string): string => {
+    switch (originalLabel) {
+      case 'I am a':
+        return 'I am a*';
+      case 'Tax ID / Licence#':
+        return 'Tax ID/License#*';
+      case 'Company Name':
+        return 'Business Name*';
+      case 'Country':
+        return 'Country*';
+      case 'State/Province':
+        return 'State*';
+      case 'Address Line 1':
+        return 'Address Line 1*';
+      case 'Address Line 2':
+        return 'Address Line 2 (Optional)';
+      case 'Suburb/City':
+        return 'City*';
+      case 'Zip/Postcode':
+        return 'Zipcode*';
+      default:
+        return originalLabel;
+    }
+  };
 
+  // Form submission handler
   const onSubmit = async (formData: FormData) => {
     if (isSubmitting) return;
 
-    // Validate state field
     const stateValue = formData.get('address-stateOrProvince');
     if (!stateValue) {
       setFormStatus({
@@ -326,18 +357,14 @@ export const RegisterForm2 = ({
           ]);
 
           setSubmitProgress(100);
-
-          // Simple navigation without try/catch since router.push returns void
           router.push('/trade-account/trade-step3');
 
-          // Fallback navigation after a delay if needed
           setTimeout(() => {
             if (document.location.pathname !== '/trade-account/trade-step3') {
               window.location.href = '/trade-account/trade-step3';
             }
           }, 1000);
         } catch (loginError) {
-          // Even if login fails, still try to navigate
           router.push('/trade-account/trade-step3');
         }
       } else {
@@ -359,71 +386,107 @@ export const RegisterForm2 = ({
     }
   };
 
-  // Label Modifier
-  const getModifiedLabel = (originalLabel: string): string => {
-    switch (originalLabel) {
-      case 'Tax ID / Licence#':
-        return 'Tax ID/License#*';
-      case 'I am a':
-        return 'I am a*';
-      case 'Company Name':
-        return 'Business Name*';
-      case 'Country':
-        return 'Country*';
-      case 'State/Province':
-        return 'State*';
-      case 'Address Line 1':
-        return 'Address Line 1*';
-      case 'Address Line 2':
-        return 'Address Line 2 (Optional)';
-      case 'Suburb/City':
-        return 'City*';
-      case 'Zip/Postcode':
-        return 'Zipcode*';
-      default:
-        return originalLabel;
-    }
-  };
-
   // Field Renderer
   const renderField = (field: FormField, isCustomerField: boolean = false) => {
     const fieldId = field.entityId;
     const fieldName = createFieldName(field, isCustomerField ? 'customer' : 'address');
     const isCountrySelector = fieldId === FieldNameToFieldId.countryCode;
     const isStateField = fieldId === FieldNameToFieldId.stateOrProvince;
+    const fieldLabel = getModifiedLabel(field.label);
 
     const modifiedField = {
       ...field,
-      label:
-        field.label === 'Address Line 2' ? (
-          <div
-            className="flex w-full cursor-pointer"
-            onClick={(e) => {
-              e.preventDefault();
-              setShowAddressLine2(false);
-            }}
-          >
-            Address Line 2 (Optional)
-          </div>
-        ) : (
-          getModifiedLabel(field.label)
-        ),
+      label: fieldLabel,
       isRequired: field.label !== 'Address Line 2',
     };
 
     switch (field.__typename) {
       case 'TextFormField':
+        if (field.label === 'Address Line 2') {
+          return (
+            <FieldWrapper fieldId={fieldId} key={fieldId}>
+              <div className="relative">
+                <Text
+                  field={{
+                    ...modifiedField,
+                    __typename: 'TextFormField',
+                    label: (
+                      <div
+                        className="cursor-pointer"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setShowAddressLine2(false);
+                        }}
+                      >
+                        Address Line 2 (Optional)
+                      </div>
+                    ),
+                  }}
+                  isValid={true}
+                  name={fieldName}
+                  onChange={handleTextInputValidation}
+                />
+              </div>
+            </FieldWrapper>
+          );
+        }
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
             <Text
-              field={modifiedField}
+              field={{
+                ...modifiedField,
+                __typename: 'TextFormField',
+                label: fieldLabel,
+              }}
               isValid={textInputValid[fieldId]}
               name={fieldName}
               onChange={handleTextInputValidation}
-              type={FieldNameToFieldId[fieldId]}
-              onClick={(e: { stopPropagation: () => void }) => {
-                e.stopPropagation();
-              }}
+            />
+          </FieldWrapper>
+        );
+
+      case 'PicklistFormField':
+        if (isCountrySelector) {
+          const filteredCountries = countries.filter((country) =>
+            ['US', 'CA'].includes(country.code),
+          );
+
+          const countryField: PicklistFormField = {
+            ...modifiedField,
+            __typename: 'PicklistFormField',
+            choosePrefix: 'Select a country',
+            options: filteredCountries.map((country) => ({
+              label: country.name,
+              entityId: country.code,
+            })),
+            label: fieldLabel,
+          };
+
+          return (
+            <FieldWrapper fieldId={fieldId} key={fieldId}>
+              <Picklist
+                defaultValue={defaultCountry.code}
+                field={countryField}
+                isValid={picklistValid[fieldId]}
+                name={fieldName}
+                onChange={(value: string) => {
+                  handleCountryChange(value);
+                }}
+                onValidate={setPicklistValid}
+                options={countryField.options}
+              />
+            </FieldWrapper>
+          );
+        }
+
+        return (
+          <FieldWrapper fieldId={fieldId} key={fieldId}>
+            <Picklist
+              field={modifiedField as PicklistFormField}
+              isValid={picklistValid[fieldId]}
+              name={fieldName}
+              onValidate={setPicklistValid}
+              options={field.options}
             />
           </FieldWrapper>
         );
@@ -432,7 +495,11 @@ export const RegisterForm2 = ({
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
             <MultilineText
-              field={field}
+              field={{
+                ...modifiedField,
+                __typename: 'MultilineTextFormField',
+                label: fieldLabel,
+              }}
               isValid={multiTextValid[fieldId]}
               name={fieldName}
               onChange={handleMultiTextValidation}
@@ -444,7 +511,11 @@ export const RegisterForm2 = ({
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
             <NumbersOnly
-              field={field}
+              field={{
+                ...modifiedField,
+                __typename: 'NumberFormField',
+                label: fieldLabel,
+              }}
               isValid={numbersInputValid[fieldId]}
               name={fieldName}
               onChange={handleNumbersInputValidation}
@@ -456,11 +527,14 @@ export const RegisterForm2 = ({
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
             <DateField
-              field={field}
+              field={{
+                ...modifiedField,
+                __typename: 'DateFormField',
+                label: fieldLabel,
+              }}
               isValid={datesValid[fieldId]}
               name={fieldName}
               onChange={handleDatesValidation}
-              onValidate={setDatesValid}
             />
           </FieldWrapper>
         );
@@ -469,42 +543,14 @@ export const RegisterForm2 = ({
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
             <RadioButtons
-              field={field}
+              field={{
+                ...modifiedField,
+                __typename: 'RadioButtonsFormField',
+                label: fieldLabel,
+              }}
               isValid={radioButtonsValid[fieldId]}
               name={fieldName}
               onChange={handleRadioButtonsChange}
-            />
-          </FieldWrapper>
-        );
-
-      case 'PicklistFormField':
-        if (isCountrySelector) {
-          return (
-            <FieldWrapper fieldId={fieldId} key={fieldId}>
-              <Picklist
-                defaultValue={defaultCountry.code}
-                field={modifiedField}
-                isValid={picklistValid[fieldId]}
-                name={fieldName}
-                onChange={handleCountryChange}
-                onValidate={setPicklistValid}
-                options={countries.map(({ name, code }) => ({
-                  label: name,
-                  entityId: code,
-                }))}
-              />
-            </FieldWrapper>
-          );
-        }
-
-        return (
-          <FieldWrapper fieldId={fieldId} key={fieldId}>
-            <Picklist
-              field={modifiedField}
-              isValid={picklistValid[fieldId]}
-              name={fieldName}
-              onValidate={setPicklistValid}
-              options={field.options}
             />
           </FieldWrapper>
         );
@@ -513,7 +559,11 @@ export const RegisterForm2 = ({
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
             <Checkboxes
-              field={field}
+              field={{
+                ...modifiedField,
+                __typename: 'CheckboxesFormField',
+                label: fieldLabel,
+              }}
               isValid={checkboxesValid[fieldId]}
               name={fieldName}
               onValidate={setCheckboxesValid}
@@ -524,23 +574,26 @@ export const RegisterForm2 = ({
 
       case 'PicklistOrTextFormField':
         if (isStateField) {
+          const stateOptions = countryStates.map((state) => ({
+            entityId: state.name,
+            label: state.name,
+          }));
+
+          const stateField: PicklistOrTextFormField = {
+            ...modifiedField,
+            __typename: 'PicklistOrTextFormField',
+            options: stateOptions,
+            label: fieldLabel,
+          };
+
           return (
             <FieldWrapper fieldId={fieldId} key={fieldId}>
               <PicklistOrText
                 defaultValue={countryStates[0]?.name}
-                field={{
-                  ...modifiedField,
-                  isRequired: true, // Make state field required
-                }}
+                field={stateField}
                 name={fieldName}
-                options={countryStates.map(({ name }) => ({
-                  entityId: name,
-                  label: name,
-                }))}
-                onChange={(value: string) => {
-                  validateStateInput(value);
-                }}
-                onValidate={(isValid: boolean | ((prevState: boolean) => boolean)) => {
+                options={stateOptions}
+                onValidate={(isValid: boolean) => {
                   setStateInputValid(isValid);
                 }}
                 isValid={stateInputValid}
@@ -548,9 +601,18 @@ export const RegisterForm2 = ({
             </FieldWrapper>
           );
         }
+
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
-            <PicklistOrText field={field} name={fieldName} options={field.options} />
+            <PicklistOrText
+              field={{
+                ...modifiedField,
+                __typename: 'PicklistOrTextFormField',
+                label: fieldLabel,
+              }}
+              name={fieldName}
+              options={field.options}
+            />
           </FieldWrapper>
         );
 
@@ -558,7 +620,11 @@ export const RegisterForm2 = ({
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
             <Password
-              field={field}
+              field={{
+                ...modifiedField,
+                __typename: 'PasswordFormField',
+                label: fieldLabel,
+              }}
               isValid={passwordValid[fieldId]}
               name={fieldName}
               onChange={handlePasswordValidation}
@@ -571,7 +637,6 @@ export const RegisterForm2 = ({
     }
   };
 
-  // Render Component
   return (
     <>
       {formStatus && (
@@ -618,7 +683,7 @@ export const RegisterForm2 = ({
                       {!showAddressLine2 && (
                         <button
                           type="button"
-                          className="relative top-[-1em] flex items-center gap-2 text-left text-[14px] font-normal leading-6 tracking-wide text-[#353535]"
+                          className="relative top-[-1em] flex cursor-pointer items-center gap-2 text-left text-[14px] font-normal leading-6 tracking-wide text-[#353535] transition-colors duration-200"
                           onClick={() => setShowAddressLine2(true)}
                         >
                           <img src={TradeAddress1} className="w-[20px]" alt="" />
@@ -644,7 +709,7 @@ export const RegisterForm2 = ({
             </div>
           )}
           <Button
-            className="relative w-full items-center !bg-[#008BB7] px-8 py-2 xl:mt-[10px] disabled:cursor-not-allowed hover:!bg-[rgb(75,200,240)] !transition-colors !duration-500"
+            className="relative w-full items-center !bg-[#008BB7] px-8 py-2 !transition-colors !duration-500 hover:!bg-[rgb(75,200,240)] disabled:cursor-not-allowed xl:mt-[10px]"
             variant="primary"
             type="submit"
             disabled={isSubmitting}

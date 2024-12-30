@@ -10,10 +10,10 @@ function Accordion({
 }: React.ComponentPropsWithoutRef<typeof AccordionsPrimitive.Item>) {
   return (
     <AccordionsPrimitive.Item {...rest}>
-      <AccordionsPrimitive.Header>
+      <AccordionsPrimitive.Header className='bg-[#F3F4F5] p-[10px_20px] min-h-[50px] flex items-center'>
         <AccordionsPrimitive.Trigger asChild>
-          <div className="group w-full cursor-pointer items-start gap-8 py-3 last:flex @md:py-4">
-            <div className="flex-1 select-none font-mono text-sm uppercase text-contrast-400 transition-colors duration-300 ease-out group-hover:text-foreground">
+          <div className="group w-full cursor-pointer items-center gap-8 last:flex @md:py-4">
+            <div className="flex-1 select-none font-['Open_Sans'] text-[16px] leading-[32px] tracking-[0.15px] text-[#353535] font-bold transition-colors duration-300 ease-out group-hover:text-foreground">
               {title}
             </div>
             <AnimatedChevron />
@@ -21,7 +21,7 @@ function Accordion({
         </AccordionsPrimitive.Trigger>
       </AccordionsPrimitive.Header>
       <AccordionsPrimitive.Content className="data-[state=closed]:animate-collapse data-[state=open]:animate-expand w-full overflow-hidden">
-        <div className="w-full pb-5 font-body font-medium leading-normal text-foreground">
+        <div className="w-full pb-5 pt-5 font-body font-normal text-[16px] leading-[32px] tracking-[0.5px] text-[#353535]">
           {children}
         </div>
       </AccordionsPrimitive.Content>
@@ -32,9 +32,9 @@ function Accordion({
 function AnimatedChevron(props: React.JSX.IntrinsicAttributes & React.SVGProps<SVGSVGElement>) {
   return (
     <svg
-      className="mt-1 shrink-0 [&>line]:origin-center [&>line]:stroke-contrast-500 [&>line]:transition [&>line]:duration-300 [&>line]:ease-out [&>line]:group-hover:stroke-foreground"
+      className="mt-1 shrink-0 [&>line]:origin-center [&>line]:transition [&>line]:duration-300 [&>line]:ease-out [&>line]:group-hover:stroke-foreground"
       viewBox="0 0 10 10"
-      width={16}
+      width={17}
       {...props}
     >
       {/* Left Line of Chevron */}

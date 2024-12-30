@@ -1,8 +1,10 @@
+import { draftMode } from 'next/headers';
 import { setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren, Suspense } from 'react';
 
 import { Footer } from '~/components/footer/footer';
 import { Header, HeaderSkeleton } from '~/components/header';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
 import { Cart } from '~/components/header/cart';
 import { LocaleType } from '~/i18n/routing';
 import SalesBuddyPage from './sales-buddy/page';
@@ -18,7 +20,7 @@ export default async function DefaultLayout({ params, children }: Props) {
   setRequestLocale(locale);
 
   return (
-    <>
+    <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
       <Suspense fallback={<HeaderSkeleton />}>
         <Header cart={<Cart />} />
       </Suspense>
@@ -34,6 +36,6 @@ export default async function DefaultLayout({ params, children }: Props) {
           : ''
         }
       </Suspense>
-    </>
+    </MakeswiftProvider>
   );
 }

@@ -1,10 +1,11 @@
+// export const runtime = 'edge';
+
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-import { RegisterForm1 } from '../_components/register-form1'; // Correct import path
+import { RegisterForm1 } from '../_components/register-form1';
 import { getRegisterCustomerQuerys } from '../page-data';
 import { BcImage } from '~/components/bc-image';
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import ImageCarousel from '../trade-carousel';
 import TradeForm from './trade-form-section';
 import NetworkSection from './trade-our-network';
@@ -13,7 +14,6 @@ import TeamMembersSection from './trade-team-member';
 import HappyProsSection from './trade-testimonial';
 import type { FormField } from '../_components/register-form1';
 
-// Updated FALLBACK_COUNTRY with all required properties
 const FALLBACK_COUNTRY = {
   entityId: 226,
   name: 'United States',
@@ -32,7 +32,7 @@ export async function generateMetadata() {
     title: t('title'),
   };
 }
-// Import needed type
+
 interface AddressFormField {
   __typename: 'TextFormField';
   entityId: number;
@@ -66,28 +66,6 @@ export interface RegisterForm1Props {
   reCaptchaSettings: any;
 }
 
-const breadcrumbs = [
-  {
-    label: 'Apply',
-    href: '/trade-account/trade-step1',
-    color: '#008BB7',
-    fontWeight: '600', 
-  },
-  {
-    label: 'Business Details',
-    href: '/trade-account/trade-step2',
-    color: '#000000',
-    fontWeight: '400',
-  },
-  {
-    label: 'Confirmation',
-    href: '/trade-account/trade-step3',
-    color: '#000000',
-    fontWeight: '400',
-  },
-];
-
-// Define image URLs
 const imageUrls = {
   tradeAccountHeader: imageManagerImageUrl('trade-account-header.png', 'original'),
   tradeCircleCircle: imageManagerImageUrl('trade-check-circle.jpg', 'original'),
@@ -126,7 +104,6 @@ const testimonials: TestimonialData[] = [
   },
 ];
 
-// Network images configuration
 const networkImages = [
   {
     src: imageUrls.patjoheatAndShade,
@@ -203,7 +180,6 @@ export default async function Trade() {
     notFound();
   }
 
-  // Destructure and properly handle all the data
   const {
     addressFields,
     customerFields,
@@ -212,14 +188,11 @@ export default async function Trade() {
     reCaptchaSettings: reCaptchaPromise,
   } = registerCustomerData;
 
-  // Await the reCaptcha settings
   const reCaptchaSettings = await reCaptchaPromise;
 
-  // Find the selected country and its data
   const selectedCountry =
     countries.find(({ name }) => name === defaultCountryName) || FALLBACK_COUNTRY;
 
-  // Construct the proper defaultCountry object with the correct type
   const defaultCountry = {
     entityId: selectedCountry.entityId,
     code: selectedCountry.code,
@@ -243,17 +216,9 @@ export default async function Trade() {
           </div>
         </div>
 
-        <ComponentsBreadcrumbs
-          className="trade2-div-breadcrumb m-auto hidden w-[92%] pb-[10px] pt-[0px] lg:flex lg:pt-[30px]"
-          breadcrumbs={breadcrumbs}
-        />
-
-        {/* Form Section */}
-        <div className="m-auto flex w-[88%] flex-col-reverse lg:m-[unset] lg:w-[96.5%] lg:flex-row lg:justify-between lg:space-x-8">
-          {/* Left Side Content */}
+        <div className="m-auto flex w-[88%] flex-col-reverse lg:m-[unset] lg:w-[96.5%] lg:flex-row lg:justify-between lg:space-x-8 xl:mt-[100px]">
           <TradeForm tradeCircleCircle={imageUrls.tradeCircleCircle} />
 
-          {/* Right Side Registration Form */}
           <div className="mb-5 rounded-lg bg-white p-[20px] shadow-md md:pb-[3em] md:pt-[3em] lg:mb-0 lg:w-1/2">
             <h2 className="mb-[15px] text-center text-[25px] font-normal leading-[32px] text-[#353535] lg:text-[34px]">
               Apply Today
@@ -268,30 +233,25 @@ export default async function Trade() {
           </div>
         </div>
 
-        <h2 className="mb-[40px] mt-[0px] text-center text-[24px] font-normal leading-[32px] text-[#353535] xl:mt-[40px] hidden xl:block">
+        <h2 className="mb-[40px] mt-[0px] hidden text-center text-[24px] font-normal leading-[32px] text-[#353535] xl:mt-[40px] xl:block">
           Our Network
         </h2>
 
-        {/* Full-Width Network Section */}
         <NetworkSection networkImages={networkImages} />
 
-        {/* Brand Partners Section */}
         <BrandPartnersSection testimonials={testimonials} />
 
-        {/* Project Carousel Section */}
         <div className="w-full">
           <h2 className="mb-[40px] mt-[10px] text-center text-[24px] font-normal leading-[32px] text-[#353535]">
-          Our Partner Projects in Action
+            Our Partner Projects in Action
           </h2>
           <div className="m-auto w-[95%] px-4">
             <ImageCarousel images={images} height="520px" />
           </div>
         </div>
 
-        {/* Team Members Section */}
         <TeamMembersSection />
 
-        {/* Happy Pros Section */}
         <HappyProsSection />
       </div>
     </div>
