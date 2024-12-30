@@ -647,7 +647,10 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                 );
               },
               item({ item }: { item: any }) {
-                return <div>{(item as any).label}</div>;
+                const labelParts = item.label ? item.label.split(' > ') : null;
+                return labelParts 
+                  ? <a className="aa-ItemLink" href={`/c/${labelParts[labelParts.length - 1].replace(' ', '-').toLowerCase()}`}>{item.label}</a> 
+                  : <div>{item.label}</div>;
               },
             },
           },
