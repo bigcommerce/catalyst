@@ -167,12 +167,9 @@ export default async function Trade() {
                 Business Details
               </a>
               <span className="text-[#7F7F7F]">&gt;</span>
-              <a
-                href="/trade-account/trade-step3/"
-                className="text-left text-[16px] font-[400] leading-8 tracking-[0.15px] text-[#7F7F7F]"
-              >
+              <div className="text-left text-[16px] font-[400] leading-8 tracking-[0.15px] text-[#7F7F7F]">
                 Confirmation
-              </a>
+              </div>
             </div>
 
             <h2 className="m-auto mb-[30px] mt-[20px] text-center text-[20px] font-[500] leading-[32px] text-[#353535] lg:mb-[40px] lg:text-left">

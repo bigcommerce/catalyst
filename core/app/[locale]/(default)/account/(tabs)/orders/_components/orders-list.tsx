@@ -2,10 +2,9 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useTranslations, useFormatter } from 'next-intl';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
-import { PrinterIcon } from 'lucide-react';
 import { BcImage } from '~/components/bc-image';
 import { Orders } from '../page';
-import { PrintInvoice } from '../../order/[slug]/print-invoice';
+import { PrintInvoice } from '../../print-invoice/print-invoice';
 
 interface OrdersListProps {
   customerOrders: Orders;
@@ -102,7 +101,7 @@ const OrderDetails = ({
                 style: 'currency',
                 currency: orderPrice.currencyCode,
               })} |</span>
-            <PrintInvoice />
+            <PrintInvoice orderId={orderId} key={orderId} />
           </div>
         </div>
       </div>

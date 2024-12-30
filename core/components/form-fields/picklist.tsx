@@ -52,7 +52,7 @@ export const Picklist = ({
       : undefined;
 
   return (
-    <Field className="relative space-y-2 mm4" name={name}>
+    <Field className="mm4 relative space-y-2" name={name}>
       <FieldLabel
         className="font-semibold"
         htmlFor={`field-${field.entityId}`}
@@ -85,7 +85,7 @@ export const Picklist = ({
       </FieldControl>
       <div className="relative h-7">
         {validationError && (
-          <FieldMessage className="inline-flex w-full text-xs font-normal text-error text-[#A71F23]">
+          <FieldMessage className="inline-flex w-full text-xs font-normal text-[#A71F23] text-error">
             {t('empty')}
           </FieldMessage>
         )}

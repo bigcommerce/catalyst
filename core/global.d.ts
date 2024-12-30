@@ -11,6 +11,8 @@ declare module 'react-instantsearch' {
   export type UseClearRefinementsProps = UseClearRefinementsProps;
   export type UseCurrentRefinementsProps = UseCurrentRefinementsProps;
   export type UseHitsProps = UseHitsProps;
+  export type UseSortByProps = UseSortByProps;
+  export type UseHitsPerPageProps = UseHitsPerPageProps;
   export function RefinementList(props: RefinementListProps): ReactNode;
   export function ToggleRefinement(props: ToggleRefinementProps): ReactNode;
   export function RangeInput(props: RangeInputProps): ReactNode;
@@ -34,6 +36,8 @@ declare module 'react-instantsearch' {
   export function useCurrentRefinements(props: useCurrentRefinementsProps, props2: useCurrentRefinementsProps2): ReactNode;
   export function useHits(props: useHitsProps): ReactNode;
   export function useConnector<RatingMenuConnectorParams, RatingMenuWidgetDescription>(props: useConnectorProps, props2: useConnectorProps2): ReactNode;
+  export function useSortBy(props: useSortByProps): ReactNode;
+  export function useHitsPerPage(props: UseHitsPerPageProps): ReactNode;
 
 }
 

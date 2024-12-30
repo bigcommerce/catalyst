@@ -160,14 +160,22 @@ const { handlers, auth, signIn, signOut } = NextAuth(config);
 const getSessionCustomerAccessToken = async () => {
   try {
     const session = await auth();
-
     return session?.customerAccessToken;
   } catch {
     // No empty
   }
 };
 
-export { handlers, auth, signIn, signOut, getSessionCustomerAccessToken };
+const getSessionUserDetails = async () => {
+  try {
+    const session = await auth();
+    return session;
+  } catch {
+    // No empty
+  }
+};
+
+export { handlers, auth, signIn, signOut, getSessionCustomerAccessToken, getSessionUserDetails };
 
 declare module 'next-auth' {
   interface Session {
