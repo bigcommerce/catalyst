@@ -350,7 +350,7 @@ function ProductItem({
 }
 
 function getDiscount(price: number, salePrice: number): number | null {
-  return price > 0 ? Math.floor(((price - salePrice) * 100) / price) : 0;
+  return price > 0 ? Math.round(((price - salePrice) * 100) / price) : 0;
 }
 
 export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPrices?: boolean }) {
