@@ -276,119 +276,126 @@ export const create = new Command('create')
       accessToken = credentials.accessToken;
     }
 
-    if (!storeHash || !accessToken) {
-      // Create project without credentials
-      console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
-      cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain: options.resetMain });
-      await installDependencies(projectDir);
+    // If store hash, channel ID, and storefront token are all provided, skip channel selection/creation
+    if (storeHash && channelId && storefrontToken) {
+      envVars.BIGCOMMERCE_STORE_HASH = storeHash;
+      envVars.BIGCOMMERCE_CHANNEL_ID = channelId.toString();
+      envVars.BIGCOMMERCE_STOREFRONT_API_TOKEN = storefrontToken;
+    } else {
+      if (!storeHash || !accessToken) {
+        // Create project without credentials
+        console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
+        cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain: options.resetMain });
+        await installDependencies(projectDir);
 
-      // Add any CLI-provided env vars
-      if (options.env) {
-        const cliEnvVars = options.env.reduce<Record<string, string>>((acc, env) => {
-          const [key, value] = env.split('=');
+        // Add any CLI-provided env vars
+        if (options.env) {
+          const cliEnvVars = options.env.reduce<Record<string, string>>((acc, env) => {
+            const [key, value] = env.split('=');
 
-          if (key && value) {
-            acc[key] = value;
-          }
+            if (key && value) {
+              acc[key] = value;
+            }
 
-          return acc;
-        }, {});
+            return acc;
+          }, {});
 
-        Object.assign(envVars, cliEnvVars);
+          Object.assign(envVars, cliEnvVars);
+        }
+
+        // Write env vars even if we don't have store credentials
+        writeEnv(projectDir, envVars);
+
+        console.log(
+          [
+            `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
+            `Next steps:`,
+            Object.keys(envVars).length > 0
+              ? chalk.yellow(`\n- cd ${projectName} && pnpm run dev\n`)
+              : [
+                  chalk.yellow(`\n- cd ${projectName} && cp .env.example .env.local`),
+                  chalk.yellow(`\n- Populate .env.local with your BigCommerce API credentials\n`),
+                ].join(''),
+          ].join('\n'),
+        );
+
+        process.exit(0);
       }
 
-      // Write env vars even if we don't have store credentials
-      writeEnv(projectDir, envVars);
+      // At this point we should have a storeHash and can identify the account
+      await telemetry.identify(storeHash);
 
-      console.log(
-        [
-          `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
-          `Next steps:`,
-          Object.keys(envVars).length > 0
-            ? chalk.yellow(`\n- cd ${projectName} && pnpm run dev\n`)
-            : [
-                chalk.yellow(`\n- cd ${projectName} && cp .env.example .env.local`),
-                chalk.yellow(`\n- Populate .env.local with your BigCommerce API credentials\n`),
-              ].join(''),
-        ].join('\n'),
-      );
+      if (!channelId || !storefrontToken) {
+        const bc = new Https({
+          baseUrl: `https://api.${options.bigcommerceHostname}/stores/${storeHash}`,
+          accessToken,
+        });
 
-      process.exit(0);
-    }
+        const cliApi = new CliApi({
+          origin: options.cliApiOrigin,
+          storeHash,
+          accessToken,
+        });
 
-    // At this point we should have a storeHash and can identify the account
-    await telemetry.identify(storeHash);
-
-    if (!channelId || !storefrontToken) {
-      const bc = new Https({
-        baseUrl: `https://api.${options.bigcommerceHostname}/stores/${storeHash}`,
-        accessToken,
-      });
-
-      const cliApi = new CliApi({
-        origin: options.cliApiOrigin,
-        storeHash,
-        accessToken,
-      });
-
-      // If we have channelId but no storefrontToken, just get the init data
-      if (channelId && !storefrontToken) {
-        const initData = await getChannelInit(cliApi, channelId);
-
-        envVars = { ...initData.envVars };
-        storefrontToken = initData.storefrontToken;
-      } else if (!channelId) {
-        const eligibilityResponse = await cliApi.checkEligibility();
-
-        if (!eligibilityResponse.ok) {
-          console.error(
-            chalk.red(
-              `\nGET /channels/catalyst/eligibility failed: ${eligibilityResponse.status} ${eligibilityResponse.statusText}\n`,
-            ),
-          );
-          process.exit(1);
-        }
-
-        const eligibilityData: unknown = await eligibilityResponse.json();
-
-        if (!isEligibilityResponse(eligibilityData)) {
-          console.error(chalk.red('\nUnexpected response format from eligibility endpoint\n'));
-          process.exit(1);
-        }
-
-        if (!eligibilityData.data.eligible) {
-          console.warn(chalk.yellow(eligibilityData.data.message));
-        }
-
-        let shouldCreateChannel;
-
-        if (eligibilityData.data.eligible) {
-          shouldCreateChannel = await select({
-            message: 'Would you like to create a new channel?',
-            choices: [
-              { name: 'Yes', value: true },
-              { name: 'No', value: false },
-            ],
-          });
-        }
-
-        if (shouldCreateChannel) {
-          const channelData = await handleChannelCreation(cliApi);
-
-          channelId = channelData.channelId;
-          storefrontToken = channelData.storefrontToken;
-          envVars = { ...channelData.envVars };
-
-          console.log(chalk.green(`Channel created successfully`));
-        }
-
-        if (!shouldCreateChannel) {
-          channelId = await handleChannelSelection(bc);
-
+        // If we have channelId but no storefrontToken, just get the init data
+        if (channelId && !storefrontToken) {
           const initData = await getChannelInit(cliApi, channelId);
 
           envVars = { ...initData.envVars };
           storefrontToken = initData.storefrontToken;
+        } else if (!channelId) {
+          const eligibilityResponse = await cliApi.checkEligibility();
+
+          if (!eligibilityResponse.ok) {
+            console.error(
+              chalk.red(
+                `\nGET /channels/catalyst/eligibility failed: ${eligibilityResponse.status} ${eligibilityResponse.statusText}\n`,
+              ),
+            );
+            process.exit(1);
+          }
+
+          const eligibilityData: unknown = await eligibilityResponse.json();
+
+          if (!isEligibilityResponse(eligibilityData)) {
+            console.error(chalk.red('\nUnexpected response format from eligibility endpoint\n'));
+            process.exit(1);
+          }
+
+          if (!eligibilityData.data.eligible) {
+            console.warn(chalk.yellow(eligibilityData.data.message));
+          }
+
+          let shouldCreateChannel;
+
+          if (eligibilityData.data.eligible) {
+            shouldCreateChannel = await select({
+              message: 'Would you like to create a new channel?',
+              choices: [
+                { name: 'Yes', value: true },
+                { name: 'No', value: false },
+              ],
+            });
+          }
+
+          if (shouldCreateChannel) {
+            const channelData = await handleChannelCreation(cliApi);
+
+            channelId = channelData.channelId;
+            storefrontToken = channelData.storefrontToken;
+            envVars = { ...channelData.envVars };
+
+            console.log(chalk.green(`Channel created successfully`));
+          }
+
+          if (!shouldCreateChannel) {
+            channelId = await handleChannelSelection(bc);
+
+            const initData = await getChannelInit(cliApi, channelId);
+
+            envVars = { ...initData.envVars };
+            storefrontToken = initData.storefrontToken;
+          }
         }
       }
     }
@@ -406,6 +413,19 @@ export const create = new Command('create')
       }, {});
 
       Object.assign(envVars, cliEnvVars);
+    }
+
+    // Add store hash, channel ID, and storefront token to envVars if provided
+    if (options.storeHash) {
+      envVars.BIGCOMMERCE_STORE_HASH = options.storeHash;
+    }
+
+    if (options.channelId) {
+      envVars.BIGCOMMERCE_CHANNEL_ID = options.channelId;
+    }
+
+    if (options.storefrontToken) {
+      envVars.BIGCOMMERCE_STOREFRONT_TOKEN = options.storefrontToken;
     }
 
     if (!channelId) throw new Error('Something went wrong, channelId is not defined');
