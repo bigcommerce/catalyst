@@ -15,11 +15,11 @@ type Props = ComponentPropsWithoutRef<typeof VibesFooter> & {
 export const SiteFooter = async ({
   snapshotId = 'site-footer',
   label = 'Site Footer',
-  sections: _sections,
+  sections: streamableSections,
   ...props
 }: Props) => {
   const snapshot = await getComponentSnapshot(snapshotId);
-  const sections = await _sections;
+  const sections = await streamableSections;
 
   return (
     <PropsContextProvider value={{ ...props, sections }}>
