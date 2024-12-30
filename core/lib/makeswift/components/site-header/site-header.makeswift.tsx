@@ -23,9 +23,9 @@ runtime.registerComponent(MakeswiftHeader, {
   props: {
     banner: Shape({
       type: {
-        id: TextInput({ label: 'Banner ID', defaultValue: 'black_friday_2025' }),
         show: Checkbox({ label: 'Show banner', defaultValue: false }),
         allowClose: Checkbox({ label: 'Allow banner to close', defaultValue: true }),
+        id: TextInput({ label: 'Banner ID', defaultValue: 'black_friday_2025' }),
         children: Slot(),
       },
     }),
@@ -33,10 +33,12 @@ runtime.registerComponent(MakeswiftHeader, {
       type: {
         desktopSrc: Image({ label: 'Desktop logo' }),
         desktopAlt: TextInput({ label: 'Desktop logo alt', defaultValue: 'Desktop logo alt' }),
-        desktopWidth: Number({ label: 'Desktop logo width', suffix: 'px' }),
+        desktopWidth: Number({ label: 'Desktop logo width', suffix: 'px', defaultValue: 200 }),
+        desktopHeight: Number({ label: 'Desktop logo height', suffix: 'px', defaultValue: 40 }),
         mobileSrc: Image({ label: 'Mobile logo' }),
         mobileAlt: TextInput({ label: 'Mobile logo alt', defaultValue: 'Mobile logo alt' }),
-        mobileWidth: Number({ label: 'Mobile logo width', suffix: 'px' }),
+        mobileWidth: Number({ label: 'Mobile logo width', suffix: 'px', defaultValue: 100 }),
+        mobileHeight: Number({ label: 'Mobile logo height', suffix: 'px', defaultValue: 40 }),
         link: Link({ label: 'Logo link' }),
       },
     }),
