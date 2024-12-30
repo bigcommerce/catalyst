@@ -161,7 +161,6 @@ export const Details = ({
   const variants = removeEdgesAndNodes(product.variants);
 
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
-  // const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
   const productMpn = product.mpn;

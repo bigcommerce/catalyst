@@ -181,8 +181,8 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
   return (
     <li className="mb-[24px] border border-gray-200">
       <div className="">
-        <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
-          <div className="cart-main-img mx-auto h-[295px] w-[295px] flex-none border border-gray-300 md:mx-0 md:h-fit md:w-[200px]">
+        <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
+          <div className="cart-main-img mx-auto flex-none border border-gray-300 md:mx-0 w-[295px] h-[295px] sm:w-[200px] sm:h-fit">
             {product.image?.url ? (
               <BcImage
                 alt={product.name}
@@ -198,7 +198,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
 
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product.brand}</p>
-            <div className="grid gap-1 sm:grid-cols-[auto,auto] xl:grid-cols-[40%_20%_40%]">
+            <div className="grid gap-1 grid-cols-1 sm:grid-cols-[auto,auto] xl:grid-cols-[40%_20%_40%]">
               <div className="">
                 <Link href={product.url}>
                   <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -215,9 +215,9 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                   </div>
                 )}
                 {changeTheProtectedPosition?.length > 0 && (
-                  <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
-                    <div className="cart-options flex flex-wrap gap-2">
-                      <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
+                  <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 ">
+                    <div className="cart-options">
+                      <p className="text-left inline text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
                         SKU: {product.sku}
                         {changeTheProtectedPosition.length > 0 && (
                           <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
@@ -234,7 +234,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                         switch (selectedOption.__typename) {
                           case 'CartSelectedMultipleChoiceOption':
                             return (
-                              <div key={selectedOption.entityId} className="flex items-center">
+                              <div key={selectedOption.entityId} className="inline">
                                 <span className="text-left text-[0.875rem] font-bold leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
                                   {selectedOption.name}:
                                 </span>
@@ -252,7 +252,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                             );
                           case 'CartSelectedCheckboxOption':
                             return (
-                              <div key={selectedOption.entityId} className="flex items-center">
+                              <div key={selectedOption.entityId} className="inline">
                                 <span className="text-left text-[0.875rem] font-bold leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
                                   {selectedOption.name}:
                                 </span>
@@ -271,7 +271,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
 
                           case 'CartSelectedNumberFieldOption':
                             return (
-                              <div key={selectedOption.entityId} className="flex items-center">
+                              <div key={selectedOption.entityId} className="inline">
                                 <span className="font-semibold">{selectedOption.name}:</span>
                                 <span>{selectedOption.number}</span>
                                 {pipeLineData && (
@@ -322,9 +322,9 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
               </div>
               <div className="">
                 {/* Desktop layout (unchanged) */}
-                <div className="cart-deleteIcon relative flex flex-col gap-0 text-right md:items-end md:gap-2">
+                <div className="cart-deleteIcon relative flex flex-col gap-0 [&_.cart-item-delete]:absolute [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:sm:static text-right md:items-end sm:gap-2">
                   <RemoveItem currency={currencyCode} product={product} deleteIcon={deleteIcon} />
-                  <div className="mb-[20px] md:mb-0">
+                  <div className="mb-0">
                     <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
                       {product.originalPrice.value &&
                       product.originalPrice.value !== product.listPrice.value ? (
@@ -339,7 +339,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                         {discountPriceText}
                       </p>
                     </div>
-                    <p className="text-left md:text-right">
+                    <p className="text-left sm:text-right">
                       {format.number(product.extendedSalePrice.value, {
                         style: 'currency',
                         currency: currencyCode,
