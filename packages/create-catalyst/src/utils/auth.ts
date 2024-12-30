@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { Https } from './https';
 import { parse } from './parse';
 
@@ -66,4 +67,4 @@ export class Auth {
 
     return parse(await response.json(), DeviceCodeSuccessSchema);
   }
-} 
+}

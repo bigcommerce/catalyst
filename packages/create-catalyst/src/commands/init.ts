@@ -1,12 +1,10 @@
 import { Command, Option } from '@commander-js/extra-typings';
 import { select } from '@inquirer/prompts';
 import chalk from 'chalk';
-import * as z from 'zod';
 
 import { CliApi } from '../utils/cli-api';
 import { Https } from '../utils/https';
 import { login } from '../utils/login';
-import { parse } from '../utils/parse';
 import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
 
@@ -26,6 +24,35 @@ interface InitResponse {
     storefront_api_token: string;
     envVars: Record<string, string>;
   };
+}
+
+function isChannelsResponse(response: unknown): response is ChannelsResponse {
+  return (
+    typeof response === 'object' &&
+    response !== null &&
+    'data' in response &&
+    Array.isArray(response.data) &&
+    response.data.every(
+      (item) =>
+        typeof item === 'object' &&
+        item !== null &&
+        'id' in item &&
+        'name' in item &&
+        'platform' in item,
+    )
+  );
+}
+
+function isInitResponse(response: unknown): response is InitResponse {
+  return (
+    typeof response === 'object' &&
+    response !== null &&
+    'data' in response &&
+    typeof response.data === 'object' &&
+    response.data !== null &&
+    'storefront_api_token' in response.data &&
+    'envVars' in response.data
+  );
 }
 
 const telemetry = new Telemetry();
@@ -84,18 +111,26 @@ export const init = new Command('init')
 
     if (!channelsResponse.ok) {
       console.error(
-        chalk.red(`\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`),
+        chalk.red(
+          `\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`,
+        ),
       );
       process.exit(1);
     }
 
-    const availableChannels = (await channelsResponse.json()) as ChannelsResponse;
+    const availableChannels: unknown = await channelsResponse.json();
+
+    if (!isChannelsResponse(availableChannels)) {
+      console.error(chalk.red('\nUnexpected response format from channels endpoint\n'));
+      process.exit(1);
+    }
 
     const existingChannel = await select({
       message: 'Which channel would you like to use?',
       choices: availableChannels.data
         .sort(
-          (a: Channel, b: Channel) => channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
+          (a: Channel, b: Channel) =>
+            channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
         )
         .map((ch: Channel) => ({
           name: ch.name,
@@ -108,7 +143,7 @@ export const init = new Command('init')
         })),
     });
 
-    const channelId = (existingChannel as Channel).id;
+    const channelId = existingChannel.id;
 
     // Get channel init data
     const initResponse = await cliApi.getChannelInit(channelId);
@@ -122,18 +157,26 @@ export const init = new Command('init')
       process.exit(1);
     }
 
-    const initData = (await initResponse.json()) as InitResponse;
+    const initData: unknown = await initResponse.json();
+
+    if (!isInitResponse(initData)) {
+      console.error(chalk.red('\nUnexpected response format from init endpoint\n'));
+      process.exit(1);
+    }
+
     const envVars = { ...initData.data.envVars };
 
     // Add any CLI-provided env vars as overrides
     if (options.env) {
-      const cliEnvVars = options.env.reduce((acc, env) => {
+      const cliEnvVars = options.env.reduce<Record<string, string>>((acc, env) => {
         const [key, value] = env.split('=');
+
         if (key && value) {
           acc[key] = value;
         }
+
         return acc;
-      }, {} as Record<string, string>);
+      }, {});
 
       Object.assign(envVars, cliEnvVars);
     }

@@ -5,14 +5,12 @@ import { execSync } from 'child_process';
 import { pathExistsSync } from 'fs-extra/esm';
 import kebabCase from 'lodash.kebabcase';
 import { join } from 'path';
-import { z } from 'zod';
 
-import { cloneCatalyst } from '../utils/clone-catalyst';
 import { CliApi } from '../utils/cli-api';
+import { cloneCatalyst } from '../utils/clone-catalyst';
 import { Https } from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
 import { login } from '../utils/login';
-import { parse } from '../utils/parse';
 import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
 
@@ -57,6 +55,175 @@ function getPlatformCheckCommand(command: string): string {
 
 const telemetry = new Telemetry();
 
+async function handleChannelCreation(cliApi: CliApi) {
+  const newChannelName = await input({
+    message: 'What would you like to name your new channel?',
+  });
+
+  const shouldInstallSampleData = await select({
+    message: 'Would you like to install sample data?',
+    choices: [
+      { name: 'Yes', value: true },
+      { name: 'No', value: false },
+    ],
+  });
+
+  const response = await cliApi.createChannel(newChannelName, shouldInstallSampleData);
+
+  if (!response.ok) {
+    console.error(
+      chalk.red(`\nPOST /channels/catalyst failed: ${response.status} ${response.statusText}\n`),
+    );
+    process.exit(1);
+  }
+
+  const channelData: unknown = await response.json();
+
+  if (!isCreateChannelResponse(channelData)) {
+    console.error(chalk.red('\nUnexpected response format from create channel endpoint\n'));
+    process.exit(1);
+  }
+
+  return {
+    channelId: channelData.data.id,
+    storefrontToken: channelData.data.storefront_api_token,
+    envVars: channelData.data.envVars,
+  };
+}
+
+async function handleChannelSelection(bc: Https) {
+  const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
+  const channelsResponse = await bc.fetch('/v3/channels?available=true&type=storefront');
+
+  if (!channelsResponse.ok) {
+    console.error(
+      chalk.red(
+        `\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`,
+      ),
+    );
+    process.exit(1);
+  }
+
+  const availableChannels: unknown = await channelsResponse.json();
+
+  if (!isChannelsResponse(availableChannels)) {
+    console.error(chalk.red('\nUnexpected response format from channels endpoint\n'));
+    process.exit(1);
+  }
+
+  const existingChannel = await select({
+    message: 'Which channel would you like to use?',
+    choices: availableChannels.data
+      .sort(
+        (a: Channel, b: Channel) =>
+          channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
+      )
+      .map((ch: Channel) => ({
+        name: ch.name,
+        value: ch,
+        description: `Channel Platform: ${
+          ch.platform === 'bigcommerce'
+            ? 'Stencil'
+            : ch.platform.charAt(0).toUpperCase() + ch.platform.slice(1)
+        }`,
+      })),
+  });
+
+  return existingChannel.id;
+}
+
+async function getChannelInit(cliApi: CliApi, channelId: number) {
+  const initResponse = await cliApi.getChannelInit(channelId);
+
+  if (!initResponse.ok) {
+    console.error(
+      chalk.red(
+        `\nGET /channels/${channelId}/init failed: ${initResponse.status} ${initResponse.statusText}\n`,
+      ),
+    );
+    process.exit(1);
+  }
+
+  const initData: unknown = await initResponse.json();
+
+  if (!isInitResponse(initData)) {
+    console.error(chalk.red('\nUnexpected response format from init endpoint\n'));
+    process.exit(1);
+  }
+
+  return {
+    storefrontToken: initData.data.storefront_api_token,
+    envVars: initData.data.envVars,
+  };
+}
+
+async function setupProject(options: {
+  projectName?: string;
+  projectDir: string;
+}): Promise<{ projectName: string; projectDir: string }> {
+  let { projectName, projectDir } = options;
+
+  if (!pathExistsSync(projectDir)) {
+    console.error(chalk.red(`Error: --projectDir ${projectDir} is not a valid path\n`));
+    process.exit(1);
+  }
+
+  if (projectName) {
+    projectName = kebabCase(projectName);
+    projectDir = join(options.projectDir, projectName);
+
+    if (pathExistsSync(projectDir)) {
+      console.error(chalk.red(`Error: ${projectDir} already exists\n`));
+      process.exit(1);
+    }
+  }
+
+  if (!projectName) {
+    const validateProjectName = (i: string) => {
+      const formatted = kebabCase(i);
+
+      if (!formatted) return 'Project name is required';
+
+      const targetDir = join(options.projectDir, formatted);
+
+      if (pathExistsSync(targetDir)) return `Destination '${targetDir}' already exists`;
+
+      projectName = formatted;
+      projectDir = targetDir;
+
+      return true;
+    };
+
+    await input({
+      message: 'What is the name of your project?',
+      default: 'my-catalyst-app',
+      validate: validateProjectName,
+    });
+  }
+
+  if (!projectName) throw new Error('Something went wrong, projectName is not defined');
+  if (!projectDir) throw new Error('Something went wrong, projectDir is not defined');
+
+  return { projectName, projectDir };
+}
+
+function checkRequiredTools() {
+  try {
+    execSync(getPlatformCheckCommand('git'), { stdio: 'ignore' });
+  } catch {
+    console.error(chalk.red('Error: git is required to create a Catalyst project\n'));
+    process.exit(1);
+  }
+
+  try {
+    execSync(getPlatformCheckCommand('pnpm'), { stdio: 'ignore' });
+  } catch {
+    console.error(chalk.red('Error: pnpm is required to create a Catalyst project\n'));
+    console.error(chalk.yellow('Tip: Enable it by running `corepack enable pnpm`\n'));
+    process.exit(1);
+  }
+}
+
 export const create = new Command('create')
   .description('Command to scaffold and connect a Catalyst storefront to your BigCommerce store')
   .option('--project-name <name>', 'Name of your Catalyst project')
@@ -82,25 +249,13 @@ export const create = new Command('create')
   .action(async (options) => {
     const { ghRef, repository } = options;
 
-    try {
-      execSync(getPlatformCheckCommand('git'), { stdio: 'ignore' });
-    } catch {
-      console.error(chalk.red('Error: git is required to create a Catalyst project\n'));
-      process.exit(1);
-    }
+    checkRequiredTools();
 
-    try {
-      execSync(getPlatformCheckCommand('pnpm'), { stdio: 'ignore' });
-    } catch {
-      console.error(chalk.red('Error: pnpm is required to create a Catalyst project\n'));
-      console.error(chalk.yellow('Tip: Enable it by running `corepack enable pnpm`\n'));
-      process.exit(1);
-    }
+    const { projectName, projectDir } = await setupProject({
+      projectName: options.projectName,
+      projectDir: options.projectDir,
+    });
 
-    const resetMain = options.resetMain;
-
-    let projectName;
-    let projectDir;
     let storeHash = options.storeHash;
     let accessToken = options.accessToken;
     let channelId;
@@ -109,47 +264,6 @@ export const create = new Command('create')
     if (options.channelId) {
       channelId = parseInt(options.channelId, 10);
     }
-
-    if (!pathExistsSync(options.projectDir)) {
-      console.error(chalk.red(`Error: --projectDir ${options.projectDir} is not a valid path\n`));
-      process.exit(1);
-    }
-
-    if (options.projectName) {
-      projectName = kebabCase(options.projectName);
-      projectDir = join(options.projectDir, projectName);
-
-      if (pathExistsSync(projectDir)) {
-        console.error(chalk.red(`Error: ${projectDir} already exists\n`));
-        process.exit(1);
-      }
-    }
-
-    if (!options.projectName) {
-      const validateProjectName = (i: string) => {
-        const formatted = kebabCase(i);
-
-        if (!formatted) return 'Project name is required';
-
-        const targetDir = join(options.projectDir, formatted);
-
-        if (pathExistsSync(targetDir)) return `Destination '${targetDir}' already exists`;
-
-        projectName = formatted;
-        projectDir = targetDir;
-
-        return true;
-      };
-
-      await input({
-        message: 'What is the name of your project?',
-        default: 'my-catalyst-app',
-        validate: validateProjectName,
-      });
-    }
-
-    if (!projectName) throw new Error('Something went wrong, projectName is not defined');
-    if (!projectDir) throw new Error('Something went wrong, projectDir is not defined');
 
     let envVars: Record<string, string> = {};
 
@@ -163,7 +277,7 @@ export const create = new Command('create')
     if (!storeHash || !accessToken) {
       console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-      cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
+      cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain: options.resetMain });
 
       await installDependencies(projectDir);
 
@@ -196,20 +310,10 @@ export const create = new Command('create')
 
       // If we have channelId but no storefrontToken, just get the init data
       if (channelId && !storefrontToken) {
-        const initResponse = await cliApi.getChannelInit(channelId);
+        const initData = await getChannelInit(cliApi, channelId);
 
-        if (!initResponse.ok) {
-          console.error(
-            chalk.red(
-              `\nGET /channels/${channelId}/init failed: ${initResponse.status} ${initResponse.statusText}\n`,
-            ),
-          );
-          process.exit(1);
-        }
-
-        const initData = (await initResponse.json()) as InitResponse;
-        envVars = { ...initData.data.envVars };
-        storefrontToken = initData.data.storefront_api_token;
+        envVars = { ...initData.envVars };
+        storefrontToken = initData.storefrontToken;
       } else if (!channelId) {
         const eligibilityResponse = await cliApi.checkEligibility();
 
@@ -222,7 +326,12 @@ export const create = new Command('create')
           process.exit(1);
         }
 
-        const eligibilityData = (await eligibilityResponse.json()) as EligibilityResponse;
+        const eligibilityData: unknown = await eligibilityResponse.json();
+
+        if (!isEligibilityResponse(eligibilityData)) {
+          console.error(chalk.red('\nUnexpected response format from eligibility endpoint\n'));
+          process.exit(1);
+        }
 
         if (!eligibilityData.data.eligible) {
           console.warn(chalk.yellow(eligibilityData.data.message));
@@ -241,96 +350,35 @@ export const create = new Command('create')
         }
 
         if (shouldCreateChannel) {
-          const newChannelName = await input({
-            message: 'What would you like to name your new channel?',
-          });
+          const channelData = await handleChannelCreation(cliApi);
 
-          const shouldInstallSampleData = await select({
-            message: 'Would you like to install sample data?',
-            choices: [
-              { name: 'Yes', value: true },
-              { name: 'No', value: false },
-            ],
-          });
-
-          const response = await cliApi.createChannel(newChannelName, shouldInstallSampleData);
-
-          if (!response.ok) {
-            console.error(
-              chalk.red(
-                `\nPOST /channels/catalyst failed: ${response.status} ${response.statusText}\n`,
-              ),
-            );
-            process.exit(1);
-          }
-
-          const channelData = (await response.json()) as CreateChannelResponse;
-          channelId = channelData.data.id;
-          storefrontToken = channelData.data.storefront_api_token;
-          envVars = { ...channelData.data.envVars };
+          channelId = channelData.channelId;
+          storefrontToken = channelData.storefrontToken;
+          envVars = { ...channelData.envVars };
         }
 
         if (!shouldCreateChannel) {
-          const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
+          channelId = await handleChannelSelection(bc);
 
-          const channelsResponse = await bc.fetch('/v3/channels?available=true&type=storefront');
+          const initData = await getChannelInit(cliApi, channelId);
 
-          if (!channelsResponse.ok) {
-            console.error(
-              chalk.red(`\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`),
-            );
-            process.exit(1);
-          }
-
-          const availableChannels = (await channelsResponse.json()) as ChannelsResponse;
-
-          const existingChannel = await select({
-            message: 'Which channel would you like to use?',
-            choices: availableChannels.data
-              .sort(
-                (a: Channel, b: Channel) =>
-                  channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
-              )
-              .map((ch: Channel) => ({
-                name: ch.name,
-                value: ch,
-                description: `Channel Platform: ${
-                  ch.platform === 'bigcommerce'
-                    ? 'Stencil'
-                    : ch.platform.charAt(0).toUpperCase() + ch.platform.slice(1)
-                }`,
-              })),
-          });
-
-          channelId = (existingChannel as Channel).id;
-
-          // Get channel init data for existing channel
-          const initResponse = await cliApi.getChannelInit(channelId);
-
-          if (!initResponse.ok) {
-            console.error(
-              chalk.red(
-                `\nGET /channels/${channelId}/init failed: ${initResponse.status} ${initResponse.statusText}\n`,
-              ),
-            );
-            process.exit(1);
-          }
-
-          const initData = (await initResponse.json()) as InitResponse;
-          envVars = { ...initData.data.envVars };
+          envVars = { ...initData.envVars };
+          storefrontToken = initData.storefrontToken;
         }
       }
     }
 
     // Add any CLI-provided env vars as overrides
     if (options.env) {
-      const cliEnvVars = options.env.reduce((acc, env) => {
+      const cliEnvVars = options.env.reduce<Record<string, string>>((acc, env) => {
         const [key, value] = env.split('=');
+
         if (key && value) {
           acc[key] = value;
         }
+
         return acc;
-      }, {} as Record<string, string>);
+      }, {});
 
       Object.assign(envVars, cliEnvVars);
     }
@@ -341,7 +389,7 @@ export const create = new Command('create')
     // All inputs gathered, now start the git operations
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
-    cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
+    cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain: options.resetMain });
 
     await installDependencies(projectDir);
 
@@ -354,3 +402,57 @@ export const create = new Command('create')
       chalk.yellow(`\ncd ${projectName} && pnpm run dev\n`),
     );
   });
+
+function isInitResponse(response: unknown): response is InitResponse {
+  return (
+    typeof response === 'object' &&
+    response !== null &&
+    'data' in response &&
+    typeof response.data === 'object' &&
+    response.data !== null &&
+    'storefront_api_token' in response.data &&
+    'envVars' in response.data
+  );
+}
+
+function isEligibilityResponse(response: unknown): response is EligibilityResponse {
+  return (
+    typeof response === 'object' &&
+    response !== null &&
+    'data' in response &&
+    typeof response.data === 'object' &&
+    response.data !== null &&
+    'eligible' in response.data &&
+    'message' in response.data
+  );
+}
+
+function isCreateChannelResponse(response: unknown): response is CreateChannelResponse {
+  return (
+    typeof response === 'object' &&
+    response !== null &&
+    'data' in response &&
+    typeof response.data === 'object' &&
+    response.data !== null &&
+    'id' in response.data &&
+    'storefront_api_token' in response.data &&
+    'envVars' in response.data
+  );
+}
+
+function isChannelsResponse(response: unknown): response is ChannelsResponse {
+  return (
+    typeof response === 'object' &&
+    response !== null &&
+    'data' in response &&
+    Array.isArray(response.data) &&
+    response.data.every(
+      (item) =>
+        typeof item === 'object' &&
+        item !== null &&
+        'id' in item &&
+        'name' in item &&
+        'platform' in item,
+    )
+  );
+}
