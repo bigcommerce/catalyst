@@ -511,7 +511,7 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false }: any) => {
             label: '!my-1',
             category: '!inline-block !mx-0 !my-1 !px-2 !py-1 !rounded-full !bg-gray-100 !border-gray-100 whitespace-nowrap max-w-full' 
           }} />
-          <ClearRefinements title="Applied Filters" buttonText="Clear All Filters" classNames={{ root: 'mt-2 flex items-center space-x-4 justify-center order-3 lg:mt-0 lg:order-2 lg:justify-start lg:ml-4', title: 'whitespace-nowrap text-center order-1 lg:flex-none lg:order-1', button: '!inline !px-0 !w-auto !text-base !bg-none !border-none !shadow-none !text-brand-300 !underline !hover:text-brand-600' }} />
+          <ClearRefinements title="Applied Filters" buttonText="Remove All Filters" classNames={{ root: 'mt-2 flex items-center space-x-4 justify-center order-3 lg:mt-0 lg:order-2 lg:justify-start lg:ml-4', title: 'whitespace-nowrap text-center order-1 lg:flex-none lg:order-1', button: '!inline !px-0 !w-auto !text-base !bg-none !border-none !shadow-none !text-brand-300 !underline !hover:text-brand-600' }} />
           <div className="lg:order-3 lg:basis-full lg:h-0"></div>
         </div>
 
