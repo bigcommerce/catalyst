@@ -182,4 +182,8 @@ export const init = new Command('init')
     }
 
     writeEnv(projectDir, envVars);
+
+    console.log(chalk.green(`\n.env.local file created for channel ${existingChannel.name}!\n`));
+    console.log(chalk.green(`\nNext steps:\n`));
+    console.log(chalk.yellow(`\npnpm run dev\n`));
   });
