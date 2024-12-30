@@ -8,7 +8,7 @@ interface AuthConfig {
 
 export class Auth {
   private client: Https;
-  private readonly DEVICE_OAUTH_CLIENT_ID = 'acse0vvawm9r1n0evag4b8e1ea1fo90';
+  private readonly DEVICE_OAUTH_CLIENT_ID = 's1q4io7mah2lm1i6uwp9yl1eit80n3b';
 
   constructor({ baseUrl }: AuthConfig) {
     this.client = new Https({ baseUrl });
