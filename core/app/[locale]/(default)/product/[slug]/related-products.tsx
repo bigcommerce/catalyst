@@ -60,7 +60,7 @@ const searchClient = algoliasearch(
 const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
 
 function getDiscount(price: number, sale: number): number | null {
-  return price > 0 ? Math.floor(((price - sale) * 100) / price) : 0;
+  return price > 0 ? Math.round(((price - sale) * 100) / price) : 0;
 }
 
 function ColorSwatches({ variants, onImageClick }: any) {
@@ -158,7 +158,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
             <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="mx-auto mt-2 justify-center" />
           }
         </div>
-        <div className="mt-4 p-4">
+        <div className="mt-4 p-4 hidden md:block">
           <button type="button" className="flex items-center justify-center space-x-2 px-4 w-full h-10 rounded border border-gray-300 cursor-pointer uppercase" onClick={(e) => alert('Coming Soon!')}>
             <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M13 12H12.565L11.9575 11.3925C12.625 10.5 13 9.375 13 8.25C13 5.3475 10.6525 3 7.75 3C6.625 3 5.5 3.375 4.5925 4.05C2.275 5.79 1.8025 9.0825 3.5425 11.4C5.2825 13.7175 8.575 14.19 10.8925 12.45L11.5 13.0575V13.5L15.25 17.25L16.75 15.75L13 12ZM7.75 12C5.68 12 4 10.32 4 8.25C4 6.18 5.68 4.5 7.75 4.5C9.82 4.5 11.5 6.18 11.5 8.25C11.5 10.32 9.82 12 7.75 12ZM1.75 4.5L0.25 6V0.75H5.5L4 2.25H1.75V4.5ZM15.25 0.75V6L13.75 4.5V2.25H11.5L10 0.75H15.25ZM4 14.25L5.5 15.75H0.25V10.5L1.75 12V14.25H4Z" fill="#353535"/>
