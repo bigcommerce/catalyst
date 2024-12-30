@@ -33,7 +33,7 @@ import { useFormatter } from 'next-intl';
 
 import { ReviewSummary } from '~/belami/components/reviews';
 
-import searchColors from './search-colors.json';
+import searchColors from '~/belami/include/search-colors.json';
 
 type DynamicObject = {
   [key: string]: string;

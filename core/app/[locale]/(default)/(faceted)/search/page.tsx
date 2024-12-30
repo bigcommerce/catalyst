@@ -1,18 +1,8 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
-
-import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
-import { EmptySearch } from '~/components/empty-search';
-import { facetsTransformer } from '~/data-transformers/facets-transformer';
-import { pricesTransformer } from '~/data-transformers/prices-transformer';
-
-import { redirectToCompare } from '../_actions/redirect-to-compare';
-import { fetchFacetedSearch } from '../fetch-faceted-search';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 
-import { getCompareProducts } from './page-data';
-import { getPromotions } from '../fetch-promotions';
+import { getPromotions } from '~/belami/lib/fetch-promotions';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import { Search } from './search';

@@ -1,9 +1,6 @@
 import {
   PropsWithChildren,
-  useCallback,
-  useEffect,
   useRef,
-  useState,
 } from 'react';
 import { Children, isValidElement, ReactNode } from 'react';
 import type { SearchResults } from 'algoliasearch-helper';
@@ -13,12 +10,8 @@ import type {
 } from 'instantsearch.js/es/connectors/current-refinements/connectCurrentRefinements';
 import type { UiState } from 'instantsearch.js';
 import { useCurrentRefinements, useInstantSearch } from 'react-instantsearch';
-import { useRefinementList } from 'react-instantsearch';
 
-import { Panel } from './panel';
-import { useCloseDropdown } from '../_hooks/use-close-dropdown';
-import { useLockedBody } from '../_hooks/use-locked-body';
-import { useMediaQuery } from '../_hooks/use-media-query';
+import { Panel } from '~/belami/components/panel';
 
 export type FacetProps = PropsWithChildren<{
   title?: string,

@@ -1,8 +1,7 @@
-import React from 'react';
-import {
-  usePagination,
-  UsePaginationProps,
+import { 
+  usePagination, UsePaginationProps
 } from 'react-instantsearch';
+
 import { cn } from '~/lib/utils';
 
 export function Pagination({ classNames, ...props }: UsePaginationProps) {
@@ -158,3 +157,4 @@ function isModifierClick(event: React.MouseEvent) {
       event.shiftKey
   );
 }
+

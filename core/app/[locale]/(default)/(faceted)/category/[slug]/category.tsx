@@ -18,17 +18,8 @@ import {
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import type { RefinementListProps } from 'react-instantsearch';
 
-import { SortBy, HitsPerPage, Pagination } from '~/belami/components/search';
-
 import { Panel } from '~/belami/components/panel';
-//import { Panel } from '../../_components/panel';
-import { RatingMenu } from '../../_components/rating-menu';
-import { Hits, HitsAsync } from '../../_components/hits';
-import { ClearRefinements } from '../../_components/clear-refinements';
-import { CurrentRefinements } from '../../_components/current-refinements';
-
-import { Facet } from '../../_components/facet';
-import { FacetDropdown } from '../../_components/facet-dropdown';
+import { ClearRefinements, CurrentRefinements, SortBy, HitsPerPage, Pagination, Hits, HitsAsync, Facet, FacetDropdown, RatingMenu } from '~/belami/components/search';
 
 import { createFallbackableCache } from "@algolia/cache-common";
 import { createInMemoryCache } from "@algolia/cache-in-memory";
@@ -104,12 +95,14 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               query: indexUiState.query,
               categories: indexUiState.hierarchicalMenu?.['categories.lvl0'],
               brand_name: indexUiState.refinementList?.brand_name,
-              collection: indexUiState.refinementList?.['metafields.Akeneo.collection'],
+              collection: indexUiState.refinementList?.['metafields.Details.Collection'],
               finish_color: indexUiState.refinementList?.['variants.options.Finish Color'],
-              number_of_bulbs: indexUiState.refinementList?.['metafields.Akeneo.number_of_bulbs'],
-              product_style: indexUiState.refinementList?.['metafields.Akeneo.product_style'],
+              number_of_bulbs: indexUiState.refinementList?.['metafields.Details.Number of Bulbs'],
+              product_style: indexUiState.refinementList?.['metafields.Details.Product Style'],
               on_sale: indexUiState.toggle?.['on_sale'] === null || indexUiState.toggle?.['on_sale'] === undefined ? undefined : indexUiState.toggle?.['on_sale'] as any,
+              on_clearance: indexUiState.toggle?.['on_clearance'] === null || indexUiState.toggle?.['on_clearance'] === undefined ? undefined : indexUiState.toggle?.['on_clearance'] as any,
               is_new: indexUiState.toggle?.['is_new'] === null || indexUiState.toggle?.['is_new'] === undefined ? undefined : indexUiState.toggle?.['is_new'] as any,
+              in_stock: indexUiState.toggle?.['in_stock'] === null || indexUiState.toggle?.['in_stock'] === undefined ? undefined : indexUiState.toggle?.['in_stock'] as any,
               page: indexUiState.page,
               hitsPerPage: indexUiState.hitsPerPage,
               sortBy: indexUiState.sortBy,
@@ -125,14 +118,16 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
                 },
                 refinementList: {
                   'brand_name': routeState?.brand_name,
-                  'metafields.Akeneo.collection': routeState?.collection,
+                  'metafields.Details.Collection': routeState?.collection,
                   'variants.options.Finish Color': routeState?.finish_color,
-                  'metafields.Akeneo.number_of_bulbs': routeState?.number_of_bulbs,
-                  'metafields.Akeneo.product_style': routeState?.product_style
+                  'metafields.Details.Number of Bulbs': routeState?.number_of_bulbs,
+                  'metafields.Details.Product Style': routeState?.product_style
                 },
                 toggle: {
                   'on_sale': routeState?.on_sale == null || routeState?.on_sale == undefined ? undefined : (routeState?.on_sale === 'true' || routeState?.on_sale === true),
+                  'on_clearance': routeState?.on_clearance == null || routeState?.on_clearance == undefined ? undefined : (routeState?.on_clearance === 'true' || routeState?.on_clearance === true),
                   'is_new': routeState?.is_new == null || routeState?.is_new == undefined ? undefined : (routeState?.is_new === 'true' || routeState?.is_new === true),
+                  'in_stock': routeState?.in_stock == null || routeState?.in_stock == undefined ? undefined : (routeState?.in_stock === 'true' || routeState?.in_stock === true),
                 },
                 page: routeState?.page,
                 hitsPerPage: routeState?.hitsPerPage,
@@ -157,9 +152,6 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
       future={{ preserveSharedStateOnUnmount: true }}
       insights={true}
     >
-      {/*
-      <Configure filters="categories_without_path:'Indoor Lighting'" maxFacetHits={100} />
-      */}
       {breadcrumbs && breadcrumbs.length > 0 &&
         <Configure filters={breadcrumbs.map((item: any) => `categories_without_path:"${item.name}"`).join(' AND ')} maxFacetHits={100} />
       }
@@ -383,7 +375,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
             { label: 'Relevance', value: indexName },
             { label: 'Price (Low to High)', value: `${indexName}_sort_prices_USD_asc` },
             { label: 'Price (High to Low)', value: `${indexName}_sort_prices_USD_desc` },
-            { label: 'Avg. Customer Rating', value: `${indexName}_reviews_rating_sum_desc` },
+            { label: 'Avg. Customer Review', value: `${indexName}_reviews_rating_sum_desc` },
             { label: 'Number of Reviews', value: `${indexName}_reviews_count_desc` },
             { label: 'Best Sellers', value: `${indexName}_total_sold_desc` }
           ]} classNames={{ root: 'order-1', button: 'w-full !shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2', buttonText: 'text-brand-300', item: 'text-sm py-1', active: 'text-brand-300' }} />
@@ -425,7 +417,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               { label: 'Relevance', value: indexName },
               { label: 'Price (Low to High)', value: `${indexName}_sort_prices_USD_asc` },
               { label: 'Price (High to Low)', value: `${indexName}_sort_prices_USD_desc` },
-              { label: 'Avg. Customer Rating', value: `${indexName}_reviews_rating_sum_desc` },
+              { label: 'Avg. Customer Review', value: `${indexName}_reviews_rating_sum_desc` },
               { label: 'Number of Reviews', value: `${indexName}_reviews_count_desc` },
               { label: 'Best Sellers', value: `${indexName}_total_sold_desc` }
             ]} classNames={{ root: 'flex-none', button: '!shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2', buttonText: 'text-brand-300', item: 'text-sm py-1', active: 'text-brand-300' }} />

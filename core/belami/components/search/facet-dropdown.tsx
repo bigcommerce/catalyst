@@ -15,10 +15,10 @@ import type { UiState } from 'instantsearch.js';
 import { useCurrentRefinements, useInstantSearch } from 'react-instantsearch';
 import { useRefinementList } from 'react-instantsearch';
 
-import { Panel } from './panel';
-import { useCloseDropdown } from '../_hooks/use-close-dropdown';
-import { useLockedBody } from '../_hooks/use-locked-body';
-import { useMediaQuery } from '../_hooks/use-media-query';
+import { Panel } from '~/belami/components/panel';
+import { useCloseDropdown } from '~/belami/hooks/use-close-dropdown';
+import { useLockedBody } from '~/belami/hooks/use-locked-body';
+import { useMediaQuery } from '~/belami/hooks/use-media-query';
 
 import { cn } from '~/lib/utils';
 
@@ -36,8 +36,8 @@ export function getFirstChildPropValue(
   Children.forEach(children, (element) => {
     if (!isValidElement(element)) return;
     const propName = propNameCb(element.props);
-    if (propName in element.props) {
-      propValue = element.props[propName];
+    if (typeof element.props === 'object' && element.props !== null && propName in element.props) {
+      propValue = (element.props as { [key: string]: any })[propName];
       return;
     }
   });
