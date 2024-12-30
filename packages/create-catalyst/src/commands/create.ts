@@ -282,12 +282,34 @@ export const create = new Command('create')
 
       await installDependencies(projectDir);
 
+      // Add any CLI-provided env vars
+      if (options.env) {
+        const cliEnvVars = options.env.reduce<Record<string, string>>((acc, env) => {
+          const [key, value] = env.split('=');
+
+          if (key && value) {
+            acc[key] = value;
+          }
+
+          return acc;
+        }, {});
+
+        Object.assign(envVars, cliEnvVars);
+      }
+
+      // Write env vars even if we don't have store credentials
+      writeEnv(projectDir, envVars);
+
       console.log(
         [
           `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
           `Next steps:`,
-          chalk.yellow(`\n- cd ${projectName} && cp .env.example .env.local`),
-          chalk.yellow(`\n- Populate .env.local with your BigCommerce API credentials\n`),
+          Object.keys(envVars).length > 0
+            ? chalk.yellow(`\n- cd ${projectName} && pnpm run dev\n`)
+            : [
+                chalk.yellow(`\n- cd ${projectName} && cp .env.example .env.local`),
+                chalk.yellow(`\n- Populate .env.local with your BigCommerce API credentials\n`),
+              ].join(''),
         ].join('\n'),
       );
 
