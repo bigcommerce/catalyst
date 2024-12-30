@@ -182,13 +182,13 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
     <li className="mb-[24px] border border-gray-200">
       <div className="">
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
-          <div className="cart-main-img mx-auto w-full flex-none border border-gray-300 md:mx-0 md:w-[144px]">
+          <div className="cart-main-img mx-auto h-[295px] w-[295px] flex-none border border-gray-300 md:mx-0 md:h-fit md:w-[200px]">
             {product.image?.url ? (
               <BcImage
                 alt={product.name}
-                height={144}
+                height={200}
                 src={product.image.url}
-                width={144}
+                width={200}
                 className="h-full min-h-[9em] w-full object-contain"
               />
             ) : (
@@ -198,7 +198,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
 
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product.brand}</p>
-            <div className="grid gap-1 lg:grid-cols-[40%_20%_40%]">
+            <div className="grid gap-1 sm:grid-cols-[auto,auto] xl:grid-cols-[40%_20%_40%]">
               <div className="">
                 <Link href={product.url}>
                   <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -349,7 +349,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                   <ItemQuantity product={product} />
                 </div>
               </div>
-              <div className="overflow-x-hidden pl-[10px]">
+              <div className="overflow-x-hidden xl:pl-[10px]">
                 <ProductPriceAdjuster
                   parentSku={product.sku}
                   sku={product.sku}
@@ -367,77 +367,79 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
       </div>
       {!product?.accessories ? (
         <div>
-        <Button className='flex items-center justify-center p-[5px_10px] bg-white border border-[#B4DDE9] rounded-[3px] font-500 text-[16px] leading-[32px] tracking-[1.25px] uppercase text-[#002A37] mx-5 mb-5 w-[-webkit-fill-available] xl:w-fit'>+ ADD ACCESSORIES</Button>
-      </div>
+          <Button className="font-500 mx-5 mb-5 flex w-[-webkit-fill-available] items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[16px] uppercase leading-[32px] tracking-[1.25px] text-[#002A37] xl:w-fit">
+            + ADD ACCESSORIES
+          </Button>
+        </div>
       ) : (
         <div>
-        {product?.accessories &&
-          product?.accessories?.map((item: any, index: number) => {
-            let oldPriceAccess = item?.originalPrice?.value;
-            let salePriceAccess = item?.extendedSalePrice?.value;
-            let discountedPrice: any = Number(
-              100 - (salePriceAccess * 100) / oldPriceAccess,
-            )?.toFixed(2);
-            let discountPriceText: string = '';
-            if (discountedPrice > 0) {
-              discountPriceText = discountedPrice + '% Off';
-            }
-            return (
-              <div
-                className="cart-accessories m-5 flex gap-4 bg-[#F3F4F5] p-[15px_20px]"
-                key={`${index}-${item?.entityId}`}
-              >
-                <div className="flex w-full flex-col items-center md:flex-row">
-                  <div className="g-[17px] flex w-full flex-shrink-[100] flex-row items-center p-0 md:w-[90%]">
-                    <BcImage
-                      alt={item.name}
-                      height={75}
-                      src={item?.image?.url}
-                      width={75}
-                      className="mr-[20px] h-[75px] w-[75px]"
-                    />
-                    <div className="flex flex-col items-start p-0">
-                      <div>{item.name}</div>
-                      <div className="flex flex-wrap items-center gap-[0px_10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
-                        {item.originalPrice.value &&
-                        item.originalPrice.value !== item.listPrice.value ? (
-                          <p className="flex items-center tracking-[0.25px] line-through">
-                            {format.number(item.originalPrice.value * item.quantity, {
+          {product?.accessories &&
+            product?.accessories?.map((item: any, index: number) => {
+              let oldPriceAccess = item?.originalPrice?.value;
+              let salePriceAccess = item?.extendedSalePrice?.value;
+              let discountedPrice: any = Number(
+                100 - (salePriceAccess * 100) / oldPriceAccess,
+              )?.toFixed(2);
+              let discountPriceText: string = '';
+              if (discountedPrice > 0) {
+                discountPriceText = discountedPrice + '% Off';
+              }
+              return (
+                <div
+                  className="cart-accessories m-5 flex gap-4 bg-[#F3F4F5] p-[15px_20px]"
+                  key={`${index}-${item?.entityId}`}
+                >
+                  <div className="flex w-full flex-col items-center md:flex-row">
+                    <div className="g-[17px] flex w-full flex-shrink-[100] flex-row items-center p-0 md:w-[90%]">
+                      <BcImage
+                        alt={item.name}
+                        height={75}
+                        src={item?.image?.url}
+                        width={75}
+                        className="mr-[20px] h-[75px] w-[75px]"
+                      />
+                      <div className="flex flex-col items-start p-0">
+                        <div>{item.name}</div>
+                        <div className="flex flex-wrap items-center gap-[0px_10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                          {item.originalPrice.value &&
+                          item.originalPrice.value !== item.listPrice.value ? (
+                            <p className="flex items-center tracking-[0.25px] line-through">
+                              {format.number(item.originalPrice.value * item.quantity, {
+                                style: 'currency',
+                                currency: currencyCode,
+                              })}
+                            </p>
+                          ) : null}
+                          <p className="text-[#353535]">
+                            {format.number(item.extendedSalePrice.value, {
                               style: 'currency',
                               currency: currencyCode,
                             })}
                           </p>
-                        ) : null}
-                        <p className="text-[#353535]">
-                          {format.number(item.extendedSalePrice.value, {
-                            style: 'currency',
-                            currency: currencyCode,
-                          })}
-                        </p>
-                        <p>{discountPriceText}</p>
+                          <p>{discountPriceText}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="cart-deleteIcon mt-[5px] flex w-full flex-row items-center justify-between gap-[20px] p-0 md:mt-0 md:w-auto md:justify-start [&_.cart-item-quantity]:static [&_.cart-item-quantity]:order-[0]">
+                      <ItemQuantity product={product} />
+                      <div className="flex items-center">
+                        <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535] sm:hidden">
+                          QTY: {item.prodQuantity}
+                        </div>
+                        <RemoveAccessoryItem
+                          currency={currencyCode}
+                          cartId={cartId}
+                          lineItemId={product?.entityId}
+                          product={item}
+                          deleteIcon={deleteIcon}
+                        />
                       </div>
                     </div>
                   </div>
-                  <div className='bg-blue-800'>
-                  </div>
-                  <div className="cart-deleteIcon mt-[5px] flex w-full flex-row items-center justify-between gap-[20px] p-0 md:mt-0 md:w-auto md:justify-start">
-                    {/* <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535]">
-                      QTY: {item.prodQuantity}
-                    </div> */}
-                    <ItemQuantity product={product}  />
-                    <RemoveAccessoryItem
-                      currency={currencyCode}
-                      cartId={cartId}
-                      lineItemId={product?.entityId}
-                      product={item}
-                      deleteIcon={deleteIcon}
-                    />
-                  </div>
                 </div>
-              </div>
-            );
-          })}
-      </div>
+              );
+            })}
+        </div>
       )}
     </li>
   );
