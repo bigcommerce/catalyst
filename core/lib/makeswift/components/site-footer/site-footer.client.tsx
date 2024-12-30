@@ -32,10 +32,11 @@ export const PropsContextProvider = ({
 );
 
 interface Props {
-  logo?: {
+  logo: {
     show: boolean;
     src?: string;
-    width?: number;
+    width: number;
+    height: number;
     alt: string;
   };
   sections: Array<{
@@ -63,17 +64,17 @@ function combineSections(
 }
 
 export const MakeswiftFooter = forwardRef(
-  ({ logo: _logo, sections, copyright }: Props, ref: Ref<HTMLDivElement>) => {
+  ({ logo, sections, copyright }: Props, ref: Ref<HTMLDivElement>) => {
     const passedProps = useContext(PropsContext);
-    const logoObject = _logo?.src ? { src: _logo.src, alt: _logo.alt } : passedProps.logo;
-    const logo = _logo?.show ? logoObject : undefined;
+    const logoObject = logo.src ? { src: logo.src, alt: logo.alt } : passedProps.logo;
 
     return (
       <Footer
         {...passedProps}
         copyright={copyright ?? passedProps.copyright}
-        logo={logo}
-        logoWidth={_logo?.width ?? passedProps.logoWidth}
+        logo={logo.show ? logoObject : undefined}
+        logoHeight={logo.show ? logo.height : 0}
+        logoWidth={logo.show ? logo.width : 0}
         ref={ref}
         sections={combineSections(passedProps.sections, sections)}
       />
