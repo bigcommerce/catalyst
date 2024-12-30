@@ -194,92 +194,8 @@ export const create = new Command('create')
         accessToken,
       });
 
-      const eligibilityResponse = await cliApi.checkEligibility();
-
-      if (!eligibilityResponse.ok) {
-        console.error(
-          chalk.red(
-            `\nGET /channels/catalyst/eligibility failed: ${eligibilityResponse.status} ${eligibilityResponse.statusText}\n`,
-          ),
-        );
-        process.exit(1);
-      }
-
-      const eligibilityData = (await eligibilityResponse.json()) as EligibilityResponse;
-
-      if (!eligibilityData.data.eligible) {
-        console.warn(chalk.yellow(eligibilityData.data.message));
-      }
-
-      let shouldCreateChannel;
-
-      if (eligibilityData.data.eligible) {
-        shouldCreateChannel = await select({
-          message: 'Would you like to create a new channel?',
-          choices: [
-            { name: 'Yes', value: true },
-            { name: 'No', value: false },
-          ],
-        });
-      }
-
-      if (shouldCreateChannel) {
-        const newChannelName = await input({
-          message: 'What would you like to name your new channel?',
-        });
-
-        const response = await cliApi.createChannel(newChannelName);
-
-        if (!response.ok) {
-          console.error(
-            chalk.red(
-              `\nPOST /channels/catalyst failed: ${response.status} ${response.statusText}\n`,
-            ),
-          );
-          process.exit(1);
-        }
-
-        const channelData = (await response.json()) as CreateChannelResponse;
-        channelId = channelData.data.id;
-        storefrontToken = channelData.data.storefront_api_token;
-        envVars = { ...channelData.data.envVars };
-      }
-
-      if (!shouldCreateChannel) {
-        const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
-
-        const channelsResponse = await bc.fetch('/v3/channels?available=true&type=storefront');
-
-        if (!channelsResponse.ok) {
-          console.error(
-            chalk.red(`\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`),
-          );
-          process.exit(1);
-        }
-
-        const availableChannels = (await channelsResponse.json()) as ChannelsResponse;
-
-        const existingChannel = await select({
-          message: 'Which channel would you like to use?',
-          choices: availableChannels.data
-            .sort(
-              (a: Channel, b: Channel) =>
-                channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
-            )
-            .map((ch: Channel) => ({
-              name: ch.name,
-              value: ch,
-              description: `Channel Platform: ${
-                ch.platform === 'bigcommerce'
-                  ? 'Stencil'
-                  : ch.platform.charAt(0).toUpperCase() + ch.platform.slice(1)
-              }`,
-            })),
-        });
-
-        channelId = (existingChannel as Channel).id;
-
-        // Get channel init data for existing channel
+      // If we have channelId but no storefrontToken, just get the init data
+      if (channelId && !storefrontToken) {
         const initResponse = await cliApi.getChannelInit(channelId);
 
         if (!initResponse.ok) {
@@ -293,6 +209,108 @@ export const create = new Command('create')
 
         const initData = (await initResponse.json()) as InitResponse;
         envVars = { ...initData.data.envVars };
+        storefrontToken = initData.data.storefront_api_token;
+      } else if (!channelId) {
+        const eligibilityResponse = await cliApi.checkEligibility();
+
+        if (!eligibilityResponse.ok) {
+          console.error(
+            chalk.red(
+              `\nGET /channels/catalyst/eligibility failed: ${eligibilityResponse.status} ${eligibilityResponse.statusText}\n`,
+            ),
+          );
+          process.exit(1);
+        }
+
+        const eligibilityData = (await eligibilityResponse.json()) as EligibilityResponse;
+
+        if (!eligibilityData.data.eligible) {
+          console.warn(chalk.yellow(eligibilityData.data.message));
+        }
+
+        let shouldCreateChannel;
+
+        if (eligibilityData.data.eligible) {
+          shouldCreateChannel = await select({
+            message: 'Would you like to create a new channel?',
+            choices: [
+              { name: 'Yes', value: true },
+              { name: 'No', value: false },
+            ],
+          });
+        }
+
+        if (shouldCreateChannel) {
+          const newChannelName = await input({
+            message: 'What would you like to name your new channel?',
+          });
+
+          const response = await cliApi.createChannel(newChannelName);
+
+          if (!response.ok) {
+            console.error(
+              chalk.red(
+                `\nPOST /channels/catalyst failed: ${response.status} ${response.statusText}\n`,
+              ),
+            );
+            process.exit(1);
+          }
+
+          const channelData = (await response.json()) as CreateChannelResponse;
+          channelId = channelData.data.id;
+          storefrontToken = channelData.data.storefront_api_token;
+          envVars = { ...channelData.data.envVars };
+        }
+
+        if (!shouldCreateChannel) {
+          const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
+
+          const channelsResponse = await bc.fetch('/v3/channels?available=true&type=storefront');
+
+          if (!channelsResponse.ok) {
+            console.error(
+              chalk.red(`\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`),
+            );
+            process.exit(1);
+          }
+
+          const availableChannels = (await channelsResponse.json()) as ChannelsResponse;
+
+          const existingChannel = await select({
+            message: 'Which channel would you like to use?',
+            choices: availableChannels.data
+              .sort(
+                (a: Channel, b: Channel) =>
+                  channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
+              )
+              .map((ch: Channel) => ({
+                name: ch.name,
+                value: ch,
+                description: `Channel Platform: ${
+                  ch.platform === 'bigcommerce'
+                    ? 'Stencil'
+                    : ch.platform.charAt(0).toUpperCase() + ch.platform.slice(1)
+                }`,
+              })),
+          });
+
+          channelId = (existingChannel as Channel).id;
+
+          // Get channel init data for existing channel
+          const initResponse = await cliApi.getChannelInit(channelId);
+
+          if (!initResponse.ok) {
+            console.error(
+              chalk.red(
+                `\nGET /channels/${channelId}/init failed: ${initResponse.status} ${initResponse.statusText}\n`,
+              ),
+            );
+            process.exit(1);
+          }
+
+          const initData = (await initResponse.json()) as InitResponse;
+          envVars = { ...initData.data.envVars };
+        }
       }
     }
 
