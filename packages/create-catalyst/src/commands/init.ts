@@ -1,5 +1,5 @@
 import { Command, Option } from '@commander-js/extra-typings';
-import { input, select } from '@inquirer/prompts';
+import { select } from '@inquirer/prompts';
 import chalk from 'chalk';
 import * as z from 'zod';
 
@@ -20,23 +20,15 @@ export const init = new Command('init')
       .default('bigcommerce.com')
       .hideHelp(),
   )
-  .addOption(
-    new Option('--sample-data-api-url <url>', 'BigCommerce sample data API URL')
-      .default('https://api.bc-sample.store')
-      .hideHelp(),
-  )
   .action(async (options) => {
     const projectDir = process.cwd();
 
     const URLSchema = z.string().url();
-    const sampleDataApiUrl = parse(options.sampleDataApiUrl, URLSchema);
     const bigCommerceApiUrl = `https://api.${options.bigcommerceHostname}`;
     const bigCommerceAuthUrl = `https://login.${options.bigcommerceHostname}`;
 
     let storeHash = options.storeHash;
     let accessToken = options.accessToken;
-    let channelId;
-    let storefrontToken;
 
     if (!options.storeHash || !options.accessToken) {
       const credentials = await login(bigCommerceAuthUrl);
@@ -56,77 +48,32 @@ export const init = new Command('init')
     await telemetry.identify(storeHash);
 
     const bc = new Https({ bigCommerceApiUrl, storeHash, accessToken });
-    const sampleDataApi = new Https({
-      sampleDataApiUrl,
-      storeHash,
-      accessToken,
+
+    const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
+    const availableChannels = await bc.channels('?available=true&type=storefront');
+
+    const existingChannel = await select({
+      message: 'Which channel would you like to use?',
+      choices: availableChannels.data
+        .sort(
+          (a, b) => channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
+        )
+        .map((ch) => ({
+          name: ch.name,
+          value: ch,
+          description: `Channel Platform: ${
+            ch.platform === 'bigcommerce'
+              ? 'Stencil'
+              : ch.platform.charAt(0).toUpperCase() + ch.platform.slice(1)
+          }`,
+        })),
     });
 
-    const eligibilityResponse = await sampleDataApi.checkEligibility();
+    const channelId = existingChannel.id;
 
-    if (!eligibilityResponse.data.eligible) {
-      console.warn(chalk.yellow(eligibilityResponse.data.message));
-    }
-
-    let shouldCreateChannel;
-
-    if (eligibilityResponse.data.eligible) {
-      shouldCreateChannel = await select({
-        message: 'Would you like to create a new channel?',
-        choices: [
-          { name: 'Yes', value: true },
-          { name: 'No', value: false },
-        ],
-      });
-    }
-
-    if (shouldCreateChannel) {
-      const newChannelName = await input({
-        message: 'What would you like to name your new channel?',
-      });
-
-      const {
-        data: { id: createdChannelId, storefront_api_token: storefrontApiToken },
-      } = await sampleDataApi.createChannel(newChannelName);
-
-      channelId = createdChannelId;
-      storefrontToken = storefrontApiToken;
-
-      /**
-       * @todo prompt sample data API
-       */
-    }
-
-    if (!shouldCreateChannel) {
-      const channelSortOrder = ['catalyst', 'next', 'bigcommerce'];
-
-      const availableChannels = await bc.channels('?available=true&type=storefront');
-
-      const existingChannel = await select({
-        message: 'Which channel would you like to use?',
-        choices: availableChannels.data
-          .sort(
-            (a, b) => channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
-          )
-          .map((ch) => ({
-            name: ch.name,
-            value: ch,
-            description: `Channel Platform: ${
-              ch.platform === 'bigcommerce'
-                ? 'Stencil'
-                : ch.platform.charAt(0).toUpperCase() + ch.platform.slice(1)
-            }`,
-          })),
-      });
-
-      channelId = existingChannel.id;
-
-      const {
-        data: { token: sfToken },
-      } = await bc.storefrontToken();
-
-      storefrontToken = sfToken;
-    }
+    const {
+      data: { token: storefrontToken },
+    } = await bc.storefrontToken();
 
     if (!channelId) throw new Error('Something went wrong, channelId is not defined');
     if (!storefrontToken) throw new Error('Something went wrong, storefrontToken is not defined');
