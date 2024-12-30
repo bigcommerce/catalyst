@@ -151,6 +151,8 @@ export const create = new Command('create')
     if (!projectName) throw new Error('Something went wrong, projectName is not defined');
     if (!projectDir) throw new Error('Something went wrong, projectDir is not defined');
 
+    let envVars: Record<string, string> = {};
+
     if (!options.storeHash || !options.accessToken) {
       const credentials = await login(`https://login.${options.bigcommerceHostname}`);
 
@@ -240,23 +242,7 @@ export const create = new Command('create')
         const channelData = (await response.json()) as CreateChannelResponse;
         channelId = channelData.data.id;
         storefrontToken = channelData.data.storefront_api_token;
-
-        const envVars = { ...channelData.data.envVars };
-
-        // Add any CLI-provided env vars as overrides
-        if (options.env) {
-          const cliEnvVars = options.env.reduce((acc, env) => {
-            const [key, value] = env.split('=');
-            if (key && value) {
-              acc[key] = value;
-            }
-            return acc;
-          }, {} as Record<string, string>);
-
-          Object.assign(envVars, cliEnvVars);
-        }
-
-        writeEnv(projectDir, envVars);
+        envVars = { ...channelData.data.envVars };
       }
 
       if (!shouldCreateChannel) {
@@ -306,33 +292,35 @@ export const create = new Command('create')
         }
 
         const initData = (await initResponse.json()) as InitResponse;
-        const envVars = { ...initData.data.envVars };
-
-        // Add any CLI-provided env vars as overrides
-        if (options.env) {
-          const cliEnvVars = options.env.reduce((acc, env) => {
-            const [key, value] = env.split('=');
-            if (key && value) {
-              acc[key] = value;
-            }
-            return acc;
-          }, {} as Record<string, string>);
-
-          Object.assign(envVars, cliEnvVars);
-        }
-
-        writeEnv(projectDir, envVars);
+        envVars = { ...initData.data.envVars };
       }
+    }
+
+    // Add any CLI-provided env vars as overrides
+    if (options.env) {
+      const cliEnvVars = options.env.reduce((acc, env) => {
+        const [key, value] = env.split('=');
+        if (key && value) {
+          acc[key] = value;
+        }
+        return acc;
+      }, {} as Record<string, string>);
+
+      Object.assign(envVars, cliEnvVars);
     }
 
     if (!channelId) throw new Error('Something went wrong, channelId is not defined');
     if (!storefrontToken) throw new Error('Something went wrong, storefrontToken is not defined');
 
+    // All inputs gathered, now start the git operations
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
     cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
 
     await installDependencies(projectDir);
+
+    // Write env vars after git operations are complete
+    writeEnv(projectDir, envVars);
 
     console.log(
       `\n${chalk.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
