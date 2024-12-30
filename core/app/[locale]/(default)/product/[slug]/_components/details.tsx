@@ -298,14 +298,34 @@ export const Details = ({
                 </div>
 
                 <div className="flex items-center gap-4">
-                  {product.prices?.price?.value !== undefined && (
-                    <div className="text-right">
-                      <div className="text-lg font-medium text-[#008bb7]">
-                        {format.number(product.prices.price.value, {
-                          style: 'currency',
-                          currency: product.prices.price.currencyCode,
-                        })}
-                      </div>
+                  {product.prices && (
+                    <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
+                      {product.prices.basePrice?.value !== undefined &&
+                        product.prices.price?.value !== undefined && (
+                          <>
+                            <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
+                              {format.number(product.prices.basePrice.value, {
+                                style: 'currency',
+                                currency: product.prices.price.currencyCode,
+                              })}
+                            </span>
+                            <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
+                              Save{' '}
+                              {Math.floor(
+                                ((product.prices.basePrice.value - product.prices.price.value) /
+                                  product.prices.basePrice.value) *
+                                  100,
+                              )}
+                              %
+                            </span>
+                            <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
+                              {format.number(product.prices.price.value, {
+                                style: 'currency',
+                                currency: product.prices.price.currencyCode,
+                              })}
+                            </span>
+                          </>
+                        )}
                     </div>
                   )}
 
@@ -396,48 +416,35 @@ export const Details = ({
       </div>
 
       {/* product-price */}
+
       {product.prices && (
-        <div className="product-price mt-2 flex items-center gap-[0.8em] text-center lg:mt-6 lg:text-left">
-          {showPriceRange ? (
-            <span className="text-2xl font-bold">
-              {format.number(product.prices.priceRange.min.value, {
-                style: 'currency',
-                currency: product.prices.price.currencyCode,
-              })}{' '}
-              -{' '}
-              {format.number(product.prices.priceRange.max.value, {
-                style: 'currency',
-                currency: product.prices.price.currencyCode,
-              })}
-            </span>
-          ) : (
-            <>
-              {product.prices.basePrice?.value !== undefined &&
-                product.prices.price?.value !== undefined && (
-                  <>
-                    <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                      {format.number(product.prices.price.value, {
-                        style: 'currency',
-                        currency: product.prices.price.currencyCode,
-                      })}
-                    </span>
-                    <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#002A37] line-through">
-                      {format.number(product.prices.basePrice.value, {
-                        style: 'currency',
-                        currency: product.prices.price.currencyCode,
-                      })}
-                    </span>
-                    <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#353535]">
-                      Save{' '}
-                      {format.number(product.prices.basePrice.value - product.prices.price.value, {
-                        style: 'currency',
-                        currency: product.prices.price.currencyCode,
-                      })}
-                    </span>
-                  </>
-                )}
-            </>
-          )}
+        <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:mt-6 lg:text-left">
+          {product.prices.basePrice?.value !== undefined &&
+            product.prices.price?.value !== undefined && (
+              <>
+                <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
+                  {format.number(product.prices.basePrice.value, {
+                    style: 'currency',
+                    currency: product.prices.price.currencyCode,
+                  })}
+                </span>
+                <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
+                  Save{' '}
+                  {Math.floor(
+                    ((product.prices.basePrice.value - product.prices.price.value) /
+                      product.prices.basePrice.value) *
+                      100,
+                  )}
+                  %
+                </span>
+                <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
+                  {format.number(product.prices.price.value, {
+                    style: 'currency',
+                    currency: product.prices.price.currencyCode,
+                  })}
+                </span>
+              </>
+            )}
         </div>
       )}
 
@@ -527,7 +534,7 @@ export const Details = ({
         </button>
       </div>
 
-      <PayPalPayLater amount="99.99" currency="USD" />
+      <PayPalPayLater amount={''} currency={''} />
       <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
