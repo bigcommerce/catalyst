@@ -26,7 +26,7 @@
         "heading": "Iniciar sesión",
         "Form": {
             "error": "Tu dirección de correo electrónico o contraseña son incorrectas. Intenta iniciar sesión de nuevo o restablece tu contraseña",
-            "successful": "You have successfully logged in.",
+            "successful": "Has iniciado sesión correctamente.",
             "emailLabel": "Correo electrónico",
             "enterEmailMessage": "Introduzca su correo electrónico",
             "passwordLabel": "Contraseña",
@@ -70,7 +70,7 @@
             "submitting": "Creando cuenta...",
             "recaptchaText": "Pasar la verificación ReCAPTCHA",
             "confirmPassword": "Las contraseñas no coinciden.",
-            "successMessage": "Account was successfully created."
+            "successMessage": "La cuenta se ha creado correctamente."
         },
         "Errors": {
             "inputError": "Algo salió mal al procesar los datos del usuario.",
