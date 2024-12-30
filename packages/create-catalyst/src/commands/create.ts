@@ -15,6 +15,29 @@ import { parse } from '../utils/parse';
 import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
 
+interface InitResponse {
+  data: {
+    makeswift_dev_api_key: string;
+    storefront_api_token: string;
+    envVars: Record<string, string>;
+  };
+}
+
+interface CreateChannelResponse {
+  data: {
+    id: number;
+    storefront_api_token: string;
+    envVars: Record<string, string>;
+  };
+}
+
+interface EligibilityResponse {
+  data: {
+    eligible: boolean;
+    message: string;
+  };
+}
+
 function getPlatformCheckCommand(command: string): string {
   const isWindows = process.platform === 'win32';
 
@@ -122,17 +145,48 @@ export const create = new Command('create')
     if (!projectName) throw new Error('Something went wrong, projectName is not defined');
     if (!projectDir) throw new Error('Something went wrong, projectDir is not defined');
 
-    if (storeHash && channelId && storefrontToken) {
+    if (storeHash && channelId && storefrontToken && accessToken) {
       console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
       cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
 
-      writeEnv(projectDir, {
-        channelId: channelId.toString(),
+      const cliApi = new Https({
+        bigCommerceApiUrl: `${cliApiUrl}/stores/${storeHash}/cli-api/v3`,
         storeHash,
-        storefrontToken,
-        arbitraryEnv: options.env,
+        accessToken,
       });
+
+      // Get channel init data for existing channel
+      const initResponse = await cliApi.api(`/channels/${channelId}/init`, {
+        method: 'GET',
+      });
+
+      if (!initResponse.ok) {
+        console.error(
+          chalk.red(
+            `\nGET /channels/${channelId}/init failed: ${initResponse.status} ${initResponse.statusText}\n`,
+          ),
+        );
+        process.exit(1);
+      }
+
+      const initData = (await initResponse.json()) as InitResponse;
+      const envVars = { ...initData.data.envVars };
+
+      // Add any CLI-provided env vars as overrides
+      if (options.env) {
+        const cliEnvVars = options.env.reduce((acc, env) => {
+          const [key, value] = env.split('=');
+          if (key && value) {
+            acc[key] = value;
+          }
+          return acc;
+        }, {} as Record<string, string>);
+
+        Object.assign(envVars, cliEnvVars);
+      }
+
+      writeEnv(projectDir, envVars);
 
       await installDependencies(projectDir);
 
@@ -195,7 +249,7 @@ export const create = new Command('create')
         process.exit(1);
       }
 
-      const eligibilityData = await eligibilityResponse.json();
+      const eligibilityData = (await eligibilityResponse.json()) as EligibilityResponse;
 
       if (!eligibilityData.data.eligible) {
         console.warn(chalk.yellow(eligibilityData.data.message));
@@ -231,14 +285,33 @@ export const create = new Command('create')
 
         if (!response.ok) {
           console.error(
-            chalk.red(`\nPOST /channels/catalyst failed: ${response.status} ${response.statusText}\n`),
+            chalk.red(
+              `\nPOST /channels/catalyst failed: ${response.status} ${response.statusText}\n`,
+            ),
           );
           process.exit(1);
         }
 
-        const channelData = await response.json();
+        const channelData = (await response.json()) as CreateChannelResponse;
         channelId = channelData.data.id;
         storefrontToken = channelData.data.storefront_api_token;
+
+        const envVars = { ...channelData.data.envVars };
+
+        // Add any CLI-provided env vars as overrides
+        if (options.env) {
+          const cliEnvVars = options.env.reduce((acc, env) => {
+            const [key, value] = env.split('=');
+            if (key && value) {
+              acc[key] = value;
+            }
+            return acc;
+          }, {} as Record<string, string>);
+
+          Object.assign(envVars, cliEnvVars);
+        }
+
+        writeEnv(projectDir, envVars);
       }
 
       if (!shouldCreateChannel) {
@@ -265,11 +338,37 @@ export const create = new Command('create')
 
         channelId = existingChannel.id;
 
-        const {
-          data: { token: sfToken },
-        } = await bc.storefrontToken();
+        // Get channel init data for existing channel
+        const initResponse = await cliApi.api(`/channels/${channelId}/init`, {
+          method: 'GET',
+        });
 
-        storefrontToken = sfToken;
+        if (!initResponse.ok) {
+          console.error(
+            chalk.red(
+              `\nGET /channels/${channelId}/init failed: ${initResponse.status} ${initResponse.statusText}\n`,
+            ),
+          );
+          process.exit(1);
+        }
+
+        const initData = (await initResponse.json()) as InitResponse;
+        const envVars = { ...initData.data.envVars };
+
+        // Add any CLI-provided env vars as overrides
+        if (options.env) {
+          const cliEnvVars = options.env.reduce((acc, env) => {
+            const [key, value] = env.split('=');
+            if (key && value) {
+              acc[key] = value;
+            }
+            return acc;
+          }, {} as Record<string, string>);
+
+          Object.assign(envVars, cliEnvVars);
+        }
+
+        writeEnv(projectDir, envVars);
       }
     }
 
@@ -279,13 +378,6 @@ export const create = new Command('create')
     console.log(`\nCreating '${projectName}' at '${projectDir}'\n`);
 
     cloneCatalyst({ repository, projectName, projectDir, ghRef, resetMain });
-
-    writeEnv(projectDir, {
-      channelId: channelId.toString(),
-      storeHash,
-      storefrontToken,
-      arbitraryEnv: options.env,
-    });
 
     await installDependencies(projectDir);
 
