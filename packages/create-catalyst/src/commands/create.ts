@@ -41,8 +41,8 @@ export const create = new Command('create')
       .hideHelp(),
   )
   .addOption(
-    new Option('--sample-data-api-url <url>', 'BigCommerce sample data API URL')
-      .default('https://api.bc-sample.store')
+    new Option('--cli-api-hostname <hostname>', 'Catalyst CLI API hostname')
+      .default('cxm-prd.bigcommerceapp.com')
       .hideHelp(),
   )
   // eslint-disable-next-line complexity
@@ -65,9 +65,9 @@ export const create = new Command('create')
     }
 
     const URLSchema = z.string().url();
-    const sampleDataApiUrl = parse(options.sampleDataApiUrl, URLSchema);
     const bigcommerceApiUrl = parse(`https://api.${options.bigcommerceHostname}`, URLSchema);
     const bigcommerceAuthUrl = parse(`https://login.${options.bigcommerceHostname}`, URLSchema);
+    const cliApiUrl = parse(`https://${options.cliApiHostname}`, URLSchema);
     const resetMain = options.resetMain;
 
     let projectName;
@@ -176,21 +176,34 @@ export const create = new Command('create')
 
     if (!channelId || !storefrontToken) {
       const bc = new Https({ bigCommerceApiUrl: bigcommerceApiUrl, storeHash, accessToken });
-      const sampleDataApi = new Https({
-        sampleDataApiUrl,
+      const cliApi = new Https({
+        bigCommerceApiUrl: `${cliApiUrl}/stores/${storeHash}/cli-api/v3`,
         storeHash,
         accessToken,
       });
 
-      const eligibilityResponse = await sampleDataApi.checkEligibility();
+      const eligibilityResponse = await cliApi.api('/channels/catalyst/eligibility', {
+        method: 'GET',
+      });
 
-      if (!eligibilityResponse.data.eligible) {
-        console.warn(chalk.yellow(eligibilityResponse.data.message));
+      if (!eligibilityResponse.ok) {
+        console.error(
+          chalk.red(
+            `\nGET /channels/catalyst/eligibility failed: ${eligibilityResponse.status} ${eligibilityResponse.statusText}\n`,
+          ),
+        );
+        process.exit(1);
+      }
+
+      const eligibilityData = await eligibilityResponse.json();
+
+      if (!eligibilityData.data.eligible) {
+        console.warn(chalk.yellow(eligibilityData.data.message));
       }
 
       let shouldCreateChannel;
 
-      if (eligibilityResponse.data.eligible) {
+      if (eligibilityData.data.eligible) {
         shouldCreateChannel = await select({
           message: 'Would you like to create a new channel?',
           choices: [
@@ -205,18 +218,27 @@ export const create = new Command('create')
           message: 'What would you like to name your new channel?',
         });
 
-        const {
-          data: { id: createdChannelId, storefront_api_token: storefrontApiToken },
-        } = await sampleDataApi.createChannel(newChannelName);
+        const response = await cliApi.api('/channels/catalyst', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: newChannelName,
+            initialData: { type: 'none' },
+            deployStorefront: false,
+            devOrigin: 'http://localhost:4000',
+          }),
+        });
 
-        await bc.createChannelMenus(createdChannelId);
+        if (!response.ok) {
+          console.error(
+            chalk.red(`\nPOST /channels/catalyst failed: ${response.status} ${response.statusText}\n`),
+          );
+          process.exit(1);
+        }
 
-        channelId = createdChannelId;
-        storefrontToken = storefrontApiToken;
-
-        /**
-         * @todo prompt sample data API
-         */
+        const channelData = await response.json();
+        channelId = channelData.data.id;
+        storefrontToken = channelData.data.storefront_api_token;
       }
 
       if (!shouldCreateChannel) {
