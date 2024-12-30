@@ -246,6 +246,7 @@ export const create = new Command('create')
       .default('https://cxm-prd.bigcommerceapp.com')
       .hideHelp(),
   )
+  // eslint-disable-next-line complexity
   .action(async (options) => {
     const { ghRef, repository } = options;
 
