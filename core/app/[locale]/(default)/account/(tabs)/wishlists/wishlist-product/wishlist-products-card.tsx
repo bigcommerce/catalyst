@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAccountStatusContext } from '../../_components/account-status-provider';
-import { Hit } from '~/app/[locale]/(default)/(faceted)/_components/hit';
+import { Hit } from '~/belami/components/search';
 import { Hit as AlgoliaHit } from 'instantsearch.js';
 
 interface HitPrice {
