@@ -121,7 +121,7 @@ export const facetsTransformer = async ({
         minParamName: 'minPrice',
         maxParamName: 'maxPrice',
         label: facet.name,
-        min: refinedPriceSearchFilter?.selected?.minPrice ?? undefined,
+        min: facet.selected?.minPrice ?? undefined,
         max: facet.selected?.maxPrice ?? undefined,
         disabled: refinedPriceSearchFilter == null && !isSelected,
       };
