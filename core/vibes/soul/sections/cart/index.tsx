@@ -4,13 +4,13 @@ import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform
 import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
 import { ArrowRight, Minus, Plus, Trash2 } from 'lucide-react';
-import Image from 'next/image';
 import { startTransition, Suspense, use, useActionState, useEffect, useOptimistic } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
+import { Image } from '~/components/image';
 
 import { cartLineItemActionFormDataSchema } from './schema';
 

@@ -2,12 +2,13 @@
 
 import { expirePath } from 'next/cache';
 import { cookies } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 
-import { removeItem } from '../../_actions/remove-item';
+import { removeItem } from './remove-item';
 
 const UpdateCartLineItemMutation = graphql(`
   mutation UpdateCartLineItem($input: UpdateCartLineItemInput!) {
@@ -22,20 +23,25 @@ const UpdateCartLineItemMutation = graphql(`
 `);
 
 type CartLineItemInput = ReturnType<typeof graphql.scalar<'CartLineItemInput'>>;
+export type CartSelectedOptionsInput = ReturnType<
+  typeof graphql.scalar<'CartSelectedOptionsInput'>
+>;
 type Variables = VariablesOf<typeof UpdateCartLineItemMutation>;
 type UpdateCartLineItemInput = Variables['input'];
 
-interface UpdateProductQuantityParams extends CartLineItemInput {
+export interface UpdateProductQuantityParams extends CartLineItemInput {
   lineItemEntityId: UpdateCartLineItemInput['lineItemEntityId'];
 }
 
-export async function updateItemQuantity({
+export const updateQuantity = async ({
   lineItemEntityId,
   productEntityId,
   quantity,
   variantEntityId,
   selectedOptions,
-}: UpdateProductQuantityParams) {
+}: UpdateProductQuantityParams) => {
+  const t = await getTranslations('Cart.Errors');
+
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
@@ -43,11 +49,11 @@ export async function updateItemQuantity({
     const cartId = cookieStore.get('cartId')?.value;
 
     if (!cartId) {
-      return { status: 'error', error: 'No cartId cookie found' };
+      throw new Error(t('cartNotFound'));
     }
 
     if (!lineItemEntityId) {
-      return { status: 'error', error: 'No lineItemEntityId found' };
+      throw new Error(t('lineItemNotFound'));
     }
 
     if (quantity === 0) {
@@ -80,17 +86,17 @@ export async function updateItemQuantity({
     const cart = response.data.cart.updateCartLineItem?.cart;
 
     if (!cart) {
-      return { status: 'error', error: 'Failed to change product quantity in Cart' };
+      throw new Error(t('failedToUpdateQuantity'));
     }
 
     expirePath('/cart');
 
-    return { status: 'success', data: cart };
+    return cart;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      return { status: 'error', error: error.message };
+      throw new Error(error.message);
     }
 
-    return { status: 'error' };
+    throw new Error(t('somethingWentWrong'));
   }
-}
+};
