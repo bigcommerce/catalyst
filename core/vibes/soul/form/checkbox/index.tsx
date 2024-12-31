@@ -47,12 +47,14 @@ type Props = Omit<React.ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root>,
  */
 export function Checkbox({ label, errors, className, colorScheme = 'light', ...rest }: Props) {
   const id = React.useId();
+  const labelId = `${id}-label`;
 
   return (
     <div className="space-y-2">
       <div className={clsx('flex items-center gap-3', className)}>
         <CheckboxPrimitive.Root
           {...rest}
+          aria-labelledby={labelId}
           className={clsx(
             'flex h-5 w-5 items-center justify-center rounded-md border transition-colors duration-150 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--checkbox-focus,hsl(var(--primary)))]',
             {
@@ -66,7 +68,6 @@ export function Checkbox({ label, errors, className, colorScheme = 'light', ...r
                   : 'data-[state=checked]:border-[var(--checkbox-dark-checked-border,hsl(var(--background)))] data-[state=unchecked]:border-[var(--checkbox-dark-unchecked-border,hsl(var(--contrast-400)))] data-[state=checked]:bg-[var(--checkbox-dark-checked-background,hsl(var(--foreground)))] data-[state=unchecked]:bg-[var(--checkbox-dark-unchecked-background,hsl(var(--foreground)))] data-[state=checked]:text-[var(--checkbox-dark-checked-text,hsl(var(--background)))] data-[state=unchecked]:text-[var(--checkbox-dark-unchecked-text,hsl(var(--background)))] data-[state=checked]:hover:border-[var(--checkbox-dark-checked-border-hover,hsl(var(--background)))] data-[state=unchecked]:hover:border-[var(--checkbox-dark-unchecked-border-hover,hsl(var(--contrast-300)))]',
             }[colorScheme],
           )}
-          id={id}
         >
           <CheckboxPrimitive.Indicator>
             <Check className="h-4 w-4" color="currentColor" />
@@ -82,7 +83,7 @@ export function Checkbox({ label, errors, className, colorScheme = 'light', ...r
                 dark: 'text-[var(--checkbox-dark-label,hsl(var(--background)))]',
               }[colorScheme],
             )}
-            htmlFor={id}
+            id={labelId}
           >
             {label}
           </LabelPrimitive.Root>
