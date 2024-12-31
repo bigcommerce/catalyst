@@ -3,7 +3,6 @@ import { MiddlewareFactory } from './compose-middlewares';
 import { cookies } from 'next/headers';
 import { userAgent } from 'next/server';
 import { getReferrerID, storeReferrerLog } from '~/belami/lib/fetch-referrer-id';
-import { cli } from 'webpack';
 
 export const withReferrerId: MiddlewareFactory = (middleware) => {
   return async (request, event) => {
@@ -18,11 +17,11 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
     //const referrer = request.nextUrl.searchParams.get('ref') || '';
     const referrer = request.headers.get('referer') || ''
     const logRef = request.nextUrl.searchParams.get('log') || 0;
-    const abTest = request.nextUrl.searchParams.get('abtest') || 0;
+    //const abTest = request.nextUrl.searchParams.get('abtest') || 0;
 
     const source = request.nextUrl.searchParams.get('utm_source') || '';
-    const medium = request.nextUrl.searchParams.get('utm_medium') || '';
-    const campaign = request.nextUrl.searchParams.get('utm_campaign') || '';
+    //const medium = request.nextUrl.searchParams.get('utm_medium') || '';
+    //const campaign = request.nextUrl.searchParams.get('utm_campaign') || '';
     const keywords = request.nextUrl.searchParams.get('keywords') || request.nextUrl.searchParams.get('kw') || '';
     const clickId = request.nextUrl.searchParams.get('glcid') || request.nextUrl.searchParams.get('clickid') || '';
 
@@ -46,10 +45,14 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
     const ua = request.headers.get('user-agent') || '';
 
-    if (isBot)
-      return middleware(request, event); // Do not track bots
+    if (isBot || process.env.LOCAL_IPS?.includes(ip) || process.env.NO_REFERRER_IPS?.includes(ip) || referrer.includes(request.nextUrl.hostname))
+      return middleware(request, event); // Skip bots and local IPs and same domain referrers
 
-    const referrerId = Number(refId) == 0 ? await getReferrerID(ua, ip, Number(sessId), 0, log) : Number(refId);
+    const referrerId = log === 1 
+      ? Number(refId) == 0 
+        ? await getReferrerID(ua, ip, Number(sessId), 0, log) 
+        : Number(refId) 
+      : 0;
 
     if (referrerId && Number.isInteger(referrerId) && referrerId > 0 && log === 1) {
       cookieStore.set('referrerId', referrerId);
