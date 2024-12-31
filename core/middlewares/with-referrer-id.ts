@@ -16,7 +16,7 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
     const sessId = request.nextUrl.searchParams.get('sessid') || 0;
     const refId = referrerIdCookie?.value || request.nextUrl.searchParams.get('rid') || 0;
     const referrer = request.headers.get('referer') || '';
-    const logRef = request.nextUrl.searchParams.get('log') || 0;
+    const logRef = request.nextUrl.searchParams.get('log') || 1;
 
     const source = request.nextUrl.searchParams.get('utm_source') || '';
     const keywords = request.nextUrl.searchParams.get('keywords') || request.nextUrl.searchParams.get('kw') || '';
