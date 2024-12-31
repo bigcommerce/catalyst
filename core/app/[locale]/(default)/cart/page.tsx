@@ -23,7 +23,8 @@ import { SaveCart } from './_components/save-cart';
 import { RemoveCart } from './_components/remove-cart';
 import { GetCartMetaFields } from '~/components/management-apis';
 import CartProductComponent from '../sales-buddy/common-components/_components/CartComponent/CartProductComponent';
-import { get_product_by_entity_id_in_cart } from './_actions/get-product-by-entityid';
+import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
+// import { get_product_price_data_in_cart } from '../sales-buddy/common-components/common-functions';
 
 const CartPageQuery = graphql(
   `
@@ -87,20 +88,17 @@ export default async function Cart() {
   if (!cart) {
     return <EmptyCart />;
   }
-  const CustomItems = cart?.lineItems.customItems  
-  var ProductIdArray = CustomItems.map((d) => {
-  return d.entityId
-});
-const get_product_data_in_cart = async (ProductIdArray: any) => {
-  const result = await get_product_by_entity_id_in_cart(ProductIdArray);
-  if (result.status === 200) {
-    return result;
-  } else {
+ 
+  const CustomItems = cart?.lineItems.customItems
+  const get_product_price_data_in_cart = async (cartId: any) => {
+  const result = await get_cart_price_adjuster_data(cartId);
+    if (result.status === 200) {
+      return result.data.output;
+    } else {
     return [{ error: 'Failed to retrive data' }];
-  }
-};
-const product_data_in_cart = await get_product_data_in_cart(ProductIdArray);
-  
+    }
+  };
+const product_data_in_cart = await get_product_price_data_in_cart(cartId);
 
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
@@ -212,13 +210,14 @@ const product_data_in_cart = await get_product_data_in_cart(ProductIdArray);
       </div>
       <div className="cart-right-side-details px-18 w-full pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
         <ul className="cart-details-item col-span-2 lg:w-full">
-          {updatedLineItemWithoutAccessories.map((product: any) => (
+          {updatedLineItemWithoutAccessories.map((product: any ) => (
             <CartItem
               currencyCode={cart.currencyCode}
               key={product.entityId}
               product={product}
               deleteIcon={deleteIcon}
               cartId={cart.entityId}
+              priceAdjustData={product_data_in_cart.physical_items[product.entityId]}
             />
           ))}
           {
@@ -231,6 +230,8 @@ const product_data_in_cart = await get_product_data_in_cart(ProductIdArray);
                 product={data}
                 deleteIcon={deleteIcon}
                 cartId={cart.entityId}
+                priceAdjustData={product_data_in_cart.custom_items[data.entityId]}
+
               />
               )
             })

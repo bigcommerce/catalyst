@@ -171,6 +171,7 @@ interface Props {
   currencyCode: string;
   deleteIcon: string;
   cartId: string;
+  priceAdjustData:string;
 }
 function moveToTheEnd(arr: any, word: string) {
   arr?.map((elem: any, index: number) => {
@@ -181,7 +182,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) => {
+export const CartItem = ({ currencyCode, product, deleteIcon, cartId,priceAdjustData }: Props) => {
   const changeTheProtectedPosition = moveToTheEnd(
     product?.selectedOptions,
     'Protect Your Purchase',
@@ -195,7 +196,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
     discountPriceText = discountedPrice + '% Off';
   }
    
-  console.log(product);
+  
   
   return (
     <li className="mb-[24px] border border-gray-200">
@@ -370,15 +371,17 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
               </div>
               <div className="overflow-x-hidden pl-[10px]">
                 <ProductPriceAdjuster
-                  parentSku={product?.sku}
-                  sku={product?.sku}
+                  parentSku={priceAdjustData?.parent_sku}
+                  sku={priceAdjustData?.sku}
+                  oem_sku={priceAdjustData?.oem_sku}
                   productPrice={Number(product?.listPrice?.value)}
-                  initialCost={Number(product?.listPrice?.value)}
-                  initialFloor={Number(product?.listPrice?.value)}
+                  initialCost={Number(priceAdjustData?.cost)}
+                  initialFloor={Number(priceAdjustData?.floor_percentage)}
                   initialMarkup={Number(product?.listPrice?.value)}
                   productId={product?.productEntityId}
                   cartId={cartId}
                 />
+                {/* priceAdjustData.parent_sku */}
               </div>
             </div>
           </div>

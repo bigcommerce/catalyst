@@ -30,14 +30,14 @@ function CustomerSupportPage() {
     email: '',
     phone: '',
     first_name: '',
-    last_name: '',
+    // last_name: '',
     company: '',
   });
   const [findCustomerDataError, setFindCustomerDataError] = useState({
     email: '',
     phone: '',
     first_name: '',
-    last_name: '',
+    // last_name: '',
     company: '',
   });
   const [createAccountData, setCreateAccountData] = useState({
@@ -82,15 +82,15 @@ function CustomerSupportPage() {
       findCustomerData.email !== '' ||
       findCustomerData.company !== '' ||
       findCustomerData.phone !== '' ||
-      findCustomerData.first_name !== '' ||
-      findCustomerData.last_name !== ''
+      findCustomerData.first_name !== '' 
+      // findCustomerData.last_name !== ''
     ) {
       try {
         const response = await findCustomerDetails(findCustomerData);
         setCustomerDetails(findCustomerData);
         if (response.status === 200) {
           setLoading((prev) => ({ ...prev, show2: false }));
-          let data = response.data.output;
+          let data = response.data.output.data;          
           const extractedData = data.map(
             (item: { first_name: any; last_name: any; email: any }) => ({
               first_name: item.first_name,
@@ -99,17 +99,14 @@ function CustomerSupportPage() {
               // phone: item.phone,
               // company: item.company,
             }),
-          );
-          if (response.data.count > 0) {
+          );          
+          if (extractedData.length > 0) {
             setTableData(extractedData);
-            setFindCustomerSuccessMessage(`${response.data.count} Account retrieved successfully!`);
+            setFindCustomerSuccessMessage(`${extractedData.length} Account retrieved successfully!`);
             setFindCustomerErrorMessage(null);
           } else {
             setFindCustomerSuccessMessage(`No account found with the given details!`);
-
-            // setFindCustomerErrorMessage('No account found with the given details.');
           }
-          console.log(extractedData.length);
         } else {
           setLoading((prev) => ({ ...prev, show2: false }));
           const errorMessage = response.error || 'An unknown error occurred';
@@ -129,7 +126,6 @@ function CustomerSupportPage() {
 
   const handleCreateAccountSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(createAccountData);
 
     setLoading((prev) => ({ ...prev, show3: true }));
     if (
@@ -164,7 +160,6 @@ function CustomerSupportPage() {
     }
   };
   useEffect(() => {
-    console.log('fdssssssss');
     if (updatedCartId !== '') {
       UpdateCartIdCookie(cartId)
     }
@@ -191,7 +186,6 @@ function CustomerSupportPage() {
       </div>
     ));
   };
-  console.log(createAccountData_errors);
   const handleInputChange = (id: string, value: string) => {
     switch (id) {
       case 'cart-id': {
@@ -357,8 +351,8 @@ function CustomerSupportPage() {
               [
                 { id: 'email', label: 'Email' },
                 { id: 'phone', label: 'Phone' },
-                { id: 'first_name', label: 'First Name' },
-                { id: 'last_name', label: 'Last Name' },
+                { id: 'first_name', label: 'Full Name' },
+                // { id: 'last_name', label: 'Last Name' },
                 { id: 'company', label: 'Company' },
               ],
               findCustomerData,
@@ -380,6 +374,7 @@ function CustomerSupportPage() {
             </button>
           </form>
           {tableData.length > 0 && <DynamicTable data={tableData} />}
+          {/* <DynamicTable data={tableData}/> */}
         </>
       ),
     },

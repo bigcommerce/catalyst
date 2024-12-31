@@ -1,4 +1,4 @@
-import { get_product_by_entity_id } from '../_actions/get-product-by-entityid';
+import { get_cart_price_adjuster_data, get_product_by_entity_id } from '../_actions/get-product-by-entityid';
 
 let overAllProductData: never[] = [];
 export const PdpProduct = overAllProductData;
@@ -87,6 +87,7 @@ export function getArrayFromLocalStorage(key) {
 export function saveArrayToLocalStorage(key, array) {
   localStorage.setItem(key, JSON.stringify(array));
 }
+
 
 
 // -------- onclick session id get all available data of user and machine-----------------
