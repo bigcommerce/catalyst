@@ -28,7 +28,7 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
   });
 
   return (
-    <div className="flex justify-center pagebreak" ref={innerRef}>
+    <div className="flex justify-center pagebreak print-page-container" ref={innerRef}>
       <div className="flex w-[90%] flex-col gap-[30px]">
         <div className="flex flex-col gap-[30px]">
           <div className="border-b border-b-[#E8E7E7]">
@@ -201,7 +201,7 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
                     {lineItems.map((shipment) => {
                       const isImageAvailable = shipment?.defaultImage !== null;
                       return (
-                        <div className="border border-[#cccbcb] p-[20px]" key={shipment?.entityId}>
+                        <div className="border border-[#cccbcb] p-[20px] [@media_print]:break-inside-avoid [@media_print]:[page-break-inside:avoid] " key={shipment?.entityId}>
                           <div className="flex gap-[20px] justify-between items-center">
                             <div className="flex gap-[20px] items-center flex-1">
                               <div className="bg-[#d9d9d9]">
