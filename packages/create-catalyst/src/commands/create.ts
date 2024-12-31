@@ -114,10 +114,22 @@ async function handleChannelSelection(bc: Https) {
   const existingChannel = await select({
     message: 'Which channel would you like to use?',
     choices: availableChannels.data
-      .sort(
-        (a: Channel, b: Channel) =>
-          channelSortOrder.indexOf(a.platform) - channelSortOrder.indexOf(b.platform),
-      )
+      .sort((a: Channel, b: Channel) => {
+        const aIndex = channelSortOrder.indexOf(a.platform);
+        const bIndex = channelSortOrder.indexOf(b.platform);
+
+        // If both platforms are not in the sort order, maintain their original order
+        if (aIndex === -1 && bIndex === -1) {
+          return 0;
+        }
+
+        // If one platform is not in the sort order, it should go to the end
+        if (aIndex === -1) return 1;
+        if (bIndex === -1) return -1;
+
+        // If both platforms are in the sort order, use their relative positions
+        return aIndex - bIndex;
+      })
       .map((ch: Channel) => ({
         name: ch.name,
         value: ch,
