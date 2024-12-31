@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.19.0
+
+### Minor Changes
+
+- [#1820](https://github.com/bigcommerce/catalyst/pull/1820) [`401417d`](https://github.com/bigcommerce/catalyst/commit/401417dfebcf9f9fd3e24a6808205b2563380f1a) Thanks [@bookernath](https://github.com/bookernath)! - Update CLI to use new APIs for consistency with One-Click Catalyst in the control panel
+
 ## 0.18.0
 
 ### Minor Changes
