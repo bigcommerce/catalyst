@@ -257,7 +257,7 @@ export const Details = ({
                     </h2>
 
                     <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px]">
-                      by <span className="underline">{product.brand?.name}</span>
+                      by <Link href={product.brand?.path ?? ''} className="underline">{product.brand?.name}</Link>
                     </div>
 
                     <div className="mt-3 block flex-wrap items-center text-[#7F7F7F]">
@@ -315,7 +315,7 @@ export const Details = ({
                           </span>
                           <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
                             Save{' '}
-                            {Math.floor(
+                            {Math.round(
                               ((product.prices.basePrice.value - product.prices.price.value) /
                                 product.prices.basePrice.value) *
                                 100,
@@ -442,7 +442,7 @@ export const Details = ({
               </span>
               <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
                 Save{' '}
-                {Math.floor(
+                {Math.round(
                   ((product.prices.basePrice.value - product.prices.price.value) /
                     product.prices.basePrice.value) *
                     100,
