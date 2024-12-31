@@ -189,6 +189,30 @@ async function getFilterLabel(): Promise<string> {
   return t('filters');
 }
 
+async function getCompareLabel(): Promise<string> {
+  const t = await getTranslations('Components.ProductCard.Compare');
+
+  return t('compare');
+}
+
+async function getFiltersPanelTitle(): Promise<string> {
+  const t = await getTranslations('FacetedGroup.FacetedSearch');
+
+  return t('filters');
+}
+
+async function getRangeFilterApplyLabel(): Promise<string> {
+  const t = await getTranslations('FacetedGroup.FacetedSearch.Range');
+
+  return t('apply');
+}
+
+async function getResetFiltersLabel(): Promise<string> {
+  const t = await getTranslations('FacetedGroup.FacetedSearch');
+
+  return t('resetFilters');
+}
+
 async function getEmptyStateTitle(): Promise<string | null> {
   const t = await getTranslations('Category.Empty');
 
@@ -222,12 +246,16 @@ export default async function Category(props: Props) {
     <>
       <ProductsListSection
         breadcrumbs={getBreadcrumbs(props)}
+        compareLabel={getCompareLabel()}
         emptyStateSubtitle={getEmptyStateSubtitle()}
         emptyStateTitle={getEmptyStateTitle()}
         filterLabel={await getFilterLabel()}
         filters={getFilters(props)}
+        filtersPanelTitle={getFiltersPanelTitle()}
         paginationInfo={getPaginationInfo(props)}
         products={getListProducts(props)}
+        rangeFilterApplyLabel={getRangeFilterApplyLabel()}
+        resetFiltersLabel={getResetFiltersLabel()}
         sortDefaultValue="featured"
         sortLabel={getSortLabel()}
         sortOptions={getSortOptions()}
