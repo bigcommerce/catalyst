@@ -4,6 +4,8 @@ import { cookies } from 'next/headers';
 import { userAgent } from 'next/server';
 import { getReferrerID, storeReferrerLog } from '~/belami/lib/fetch-referrer-id';
 
+const BAD_UA_KEYWORDS = ["bot", "agent", "crawl", "spider", "slurp", "rpt-httpclient", "msnptc", "ktxn", "netcraft", "postman", "curl", "python", "go-http-client", "java", "okhttp", "node-fetch", "axios", "http-client", "httpurlconnection", "okhttp"];
+
 export const withReferrerId: MiddlewareFactory = (middleware) => {
   return async (request, event) => {
 
@@ -29,7 +31,12 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
     const ua = request.headers.get('user-agent') || '';
 
-    if (isBot || process.env.LOCAL_IPS?.includes(ip) || process.env.NO_REFERRER_IPS?.includes(ip) || referrer.includes(request.nextUrl.hostname))
+    if (isBot 
+      || BAD_UA_KEYWORDS.some(keyword => browser?.name?.toLowerCase().includes(keyword)) 
+      || BAD_UA_KEYWORDS.some(keyword => ua.toLowerCase().includes(keyword)) 
+      || process.env.LOCAL_IPS?.includes(ip) 
+      || process.env.NO_REFERRER_IPS?.includes(ip) 
+      || referrer.includes(request.nextUrl.hostname))
       return middleware(request, event); // Skip bots and local IPs and same domain referrers
 
     const referrerId = log === 1 
