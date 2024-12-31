@@ -12,31 +12,15 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
     const referrerIdCookie = cookieStore.get('referrerId');
 
     const sessId = request.nextUrl.searchParams.get('sessid') || 0;
-    //const refId = request.nextUrl.searchParams.get('rid') || 0;
     const refId = referrerIdCookie?.value || request.nextUrl.searchParams.get('rid') || 0;
-    //const referrer = request.nextUrl.searchParams.get('ref') || '';
-    const referrer = request.headers.get('referer') || ''
+    const referrer = request.headers.get('referer') || '';
     const logRef = request.nextUrl.searchParams.get('log') || 0;
-    //const abTest = request.nextUrl.searchParams.get('abtest') || 0;
 
     const source = request.nextUrl.searchParams.get('utm_source') || '';
-    //const medium = request.nextUrl.searchParams.get('utm_medium') || '';
-    //const campaign = request.nextUrl.searchParams.get('utm_campaign') || '';
     const keywords = request.nextUrl.searchParams.get('keywords') || request.nextUrl.searchParams.get('kw') || '';
     const clickId = request.nextUrl.searchParams.get('glcid') || request.nextUrl.searchParams.get('clickid') || '';
 
     let log = 1;
-    if (referrer.length == 0) {
-      log = 0;
-    }
-    if (keywords.length > 0 || source.length > 0) {
-      if (referrer.length > 0 || ['test', 'email', 'gan', 'motivano', 'socialfree', 'socialpaid'].includes(source.toLowerCase())) {
-        log = 1;
-      }
-    }
-    if (clickId.length > 0) {
-      log = 1;
-    }
     if (Number(logRef) === 0) {
       log = 0;
     }
@@ -50,13 +34,13 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
 
     const referrerId = log === 1 
       ? Number(refId) == 0 
-        ? await getReferrerID(ua, ip, Number(sessId), 0, log) 
+        ? await getReferrerID(ua, ip, Number(sessId), Number(process.env.SITE_CONFIG_ID ?? 0), log) 
         : Number(refId) 
       : 0;
 
     if (referrerId && Number.isInteger(referrerId) && referrerId > 0 && log === 1) {
       cookieStore.set('referrerId', referrerId);
-      storeReferrerLog(referrerId, source, keywords, clickId, referrer, ip, request.nextUrl.pathname);
+      storeReferrerLog(referrerId, source, keywords, clickId, referrer && referrer.length > 0 ? referrer : 'Direct', ip, request.nextUrl.pathname);
     }
 
     return middleware(request, event);
