@@ -1,11 +1,13 @@
+// wishlist-product.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Hit as AlgoliaHit } from 'instantsearch.js';
+import { Hit as AlgoliaHit, HitHighlightResult } from 'instantsearch.js';
 import { Button } from '~/components/ui/button';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import { Hit } from '~/belami/components/search/hit';
+import { AddToCart } from '~/app/[locale]/(default)/compare/_components/add-to-cart';
 
 interface HitPrice {
   USD: number;
@@ -24,6 +26,8 @@ interface ProductVariant {
   imageUrl?: string;
   variant_id?: string;
 }
+
+type AvailabilityStatus = 'Available' | 'Preorder' | 'Unavailable';
 
 interface WishlistItem {
   entityId: number;
@@ -48,6 +52,12 @@ interface WishlistItem {
     } | null;
     rating?: number;
     variants?: ProductVariant[];
+    availabilityV2?: {
+      status: AvailabilityStatus;
+    };
+    inventory?: {
+      isInStock: boolean;
+    };
   };
 }
 
@@ -58,7 +68,7 @@ interface WishlistData {
 }
 
 interface ProductHit {
-  objectID: number;
+  objectID: string;
   name: string;
   brand: string;
   brand_id: number;
@@ -89,37 +99,32 @@ interface ProductHit {
   sku?: string;
   __position: number;
   __queryID: string;
+  _highlightResult?: HitHighlightResult;
 }
 
 export function WishlistProductCard() {
   const [wishlistData, setWishlistData] = useState<WishlistData | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
   const router = useRouter();
 
   useEffect(() => {
-    const savedWishlist = localStorage.getItem('selectedWishlist');
-    if (savedWishlist) {
-      setWishlistData(JSON.parse(savedWishlist));
-    } else {
-      router.push('/account/wishlists');
-    }
+    const loadWishlist = async () => {
+      try {
+        const savedWishlist = localStorage.getItem('selectedWishlist');
+        if (savedWishlist) {
+          setWishlistData(JSON.parse(savedWishlist));
+        } else {
+          router.push('/account/wishlists');
+        }
+      } catch (error) {
+        console.error('Error loading wishlist:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadWishlist();
   }, [router]);
-
-  const breadcrumbs = [
-    {
-      label: 'Favorites and Lists',
-      href: '/account/wishlists',
-    },
-    {
-      label: wishlistData?.name || 'Loading...',
-      href: '#',
-    },
-  ];
-
-  if (!wishlistData) {
-    return <div>Loading...</div>;
-  }
-
-  const items = wishlistData.items || [];
 
   const transformToProductData = (item: WishlistItem): AlgoliaHit<ProductHit> => {
     const defaultImage = item.product.images.find((img: ProductImage) => img.isDefault);
@@ -177,7 +182,7 @@ export function WishlistProductCard() {
     }
 
     return {
-      objectID: item.entityId,
+      objectID: item.entityId.toString(),
       name: item.product.name,
       brand: item.product.brand?.name || '',
       brand_id: item.entityId,
@@ -199,7 +204,7 @@ export function WishlistProductCard() {
       on_clearance: false,
       newPrice: 0,
       description: '',
-      reviews_rating_sum: 0,
+      reviews_rating_sum: item.product.rating || 0,
       reviews_count: item.product.reviewCount || 0,
       metafields: {
         Details: {
@@ -207,12 +212,78 @@ export function WishlistProductCard() {
         },
       },
       variants,
-      has_variants: true,
+      has_variants: variants.length > 0,
       sku: item.entityId.toString(),
       __position: 0,
       __queryID: '',
+      _highlightResult: {
+        name: {
+          value: item.product.name,
+          matchLevel: 'none',
+          matchedWords: [],
+          fullyHighlighted: false,
+        },
+      } as HitHighlightResult,
     };
   };
+
+  const breadcrumbs = [
+    {
+      label: 'Favorites and Lists',
+      href: '/account/wishlists',
+    },
+    {
+      label: wishlistData?.name || 'Loading...',
+      href: '#',
+    },
+  ];
+
+  const WishlistItem = ({
+    item,
+    productData,
+  }: {
+    item: WishlistItem;
+    productData: AlgoliaHit<ProductHit>;
+  }) => {
+    const [showForm, setShowForm] = useState(false);
+
+    return (
+      <div className="relative h-full">
+        {/* Remove form wrapper here */}
+        <div className="product-form h-full w-full">
+          {' '}
+          {/* Add product-form class here */}
+          <Hit hit={productData} view="grid" promotions={[]} useDefaultPrices={true} />
+          {/* This button will be hidden and clicked programmatically */}
+          <button type="submit" className="hidden" id={`add-to-cart-${item.entityId}`}>
+            Submit
+          </button>
+        </div>
+
+        <AddToCart
+          data={{
+            entityId: item.entityId,
+            availabilityV2: {
+              status: (item.product.availabilityV2?.status || 'Available') as AvailabilityStatus,
+            },
+            inventory: {
+              isInStock: item.product.inventory?.isInStock ?? true,
+            },
+          }}
+        />
+      </div>
+    );
+  };
+
+  if (isLoading) {
+    return <div className="flex items-center justify-center p-8">Loading...</div>;
+  }
+
+  if (!wishlistData) {
+    return null;
+  }
+
+  const items = wishlistData.items || [];
 
   return (
     <div className="container mx-auto mb-[50px] px-4">
@@ -257,13 +328,7 @@ export function WishlistProductCard() {
               const productData = transformToProductData(item);
               return (
                 <li key={item.entityId} className="ais-Hits-item !radius-none !p-0 !shadow-none">
-                  <Hit
-                    hit={productData}
-                    view="grid"
-                    promotions={[]}
-                    onCompareChange={(checked: boolean) => {}}
-                    onColorSelect={(variant: ProductVariant) => {}}
-                  />
+                  <WishlistItem item={item} productData={productData} />
                 </li>
               );
             })}
