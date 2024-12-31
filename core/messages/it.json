@@ -26,7 +26,7 @@
         "heading": "Accedi",
         "Form": {
             "error": "L'indirizzo e-mail o la password non sono corretti. Prova ad accedere di nuovo o reimposta la password",
-            "successful": "You have successfully logged in.",
+            "successful": "Hai effettuato l'accesso correttamente.",
             "emailLabel": "E-mail",
             "enterEmailMessage": "Inserisci la tua e-mail",
             "passwordLabel": "Password",
@@ -70,7 +70,7 @@
             "submitting": "Creazione dell'account...",
             "recaptchaText": "Supera il controllo ReCAPTCHA",
             "confirmPassword": "Le password non corrispondono.",
-            "successMessage": "Account was successfully created."
+            "successMessage": "Account creato."
         },
         "Errors": {
             "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",

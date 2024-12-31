@@ -26,7 +26,7 @@
         "heading": "Logga in",
         "Form": {
             "error": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
-            "successful": "You have successfully logged in.",
+            "successful": "Du har nu loggat in.",
             "emailLabel": "E-post",
             "enterEmailMessage": "Ange din e-postadress",
             "passwordLabel": "Lösenord",
@@ -70,7 +70,7 @@
             "submitting": "Skapar konto...",
             "recaptchaText": "Godkänd ReCAPTCHA-kontroll",
             "confirmPassword": "Lösenorden stämmer inte överens",
-            "successMessage": "Account was successfully created."
+            "successMessage": "Konto skapades."
         },
         "Errors": {
             "inputError": "Något gick fel när användarens inmatning skulle bearbetas.",
