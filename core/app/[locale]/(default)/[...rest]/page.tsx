@@ -40,3 +40,4 @@ export default async function CatchAllPage({ params }: { params: Promise<CatchAl
 }
 
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
