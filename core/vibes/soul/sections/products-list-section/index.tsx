@@ -24,9 +24,11 @@ interface Props {
   compareProducts?: Streamable<ListProduct[] | null>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
   compareAction?: React.ComponentProps<'form'>['action'];
-  compareLabel?: string;
+  compareLabel?: Streamable<string>;
   filterLabel?: string;
-  resetFiltersLabel?: string;
+  filtersPanelTitle?: Streamable<string>;
+  resetFiltersLabel?: Streamable<string>;
+  rangeFilterApplyLabel?: Streamable<string>;
   sortLabel?: Streamable<string | null>;
   sortPlaceholder?: Streamable<string | null>;
   sortParamName?: string;
@@ -50,7 +52,9 @@ export function ProductsListSection({
   compareLabel,
   paginationInfo,
   filterLabel = 'Filters',
+  filtersPanelTitle: streamableFiltersPanelTitle,
   resetFiltersLabel,
+  rangeFilterApplyLabel,
   sortLabel: streamableSortLabel,
   sortPlaceholder: streamableSortPlaceholder,
   sortParamName,
@@ -104,7 +108,7 @@ export function ProductsListSection({
                   />
                 )}
               </Stream>
-              <div className="block @3xl:hidden">
+              <aside className="block @3xl:hidden">
                 <SidePanel.Root>
                   <SidePanel.Trigger asChild>
                     <Button size="medium" variant="secondary">
@@ -114,29 +118,36 @@ export function ProductsListSection({
                       </span>
                     </Button>
                   </SidePanel.Trigger>
-                  <SidePanel.Content title={filterLabel}>
-                    <Suspense>
-                      <FiltersPanel
-                        filters={filters}
-                        paginationInfo={paginationInfo}
-                        resetFiltersLabel={resetFiltersLabel}
-                      />
-                    </Suspense>
-                  </SidePanel.Content>
+                  <Stream value={streamableFiltersPanelTitle}>
+                    {(filtersPanelTitle) => (
+                      <SidePanel.Content title={<h2>{filtersPanelTitle}</h2>}>
+                        <FiltersPanel
+                          filters={filters}
+                          paginationInfo={paginationInfo}
+                          rangeFilterApplyLabel={rangeFilterApplyLabel}
+                          resetFiltersLabel={resetFiltersLabel}
+                        />
+                      </SidePanel.Content>
+                    )}
+                  </Stream>
                 </SidePanel.Root>
-              </div>
+              </aside>
             </div>
           </div>
         </div>
         <div className="flex items-stretch gap-8 @4xl:gap-10">
-          <div className="hidden w-52 @3xl:block @4xl:w-60">
+          <aside className="hidden w-52 @3xl:block @4xl:w-60">
+            <Stream value={streamableFiltersPanelTitle}>
+              {(filtersPanelTitle) => <h2 className="sr-only">{filtersPanelTitle}</h2>}
+            </Stream>
             <FiltersPanel
               className="sticky top-4"
               filters={filters}
               paginationInfo={paginationInfo}
+              rangeFilterApplyLabel={rangeFilterApplyLabel}
               resetFiltersLabel={resetFiltersLabel}
             />
-          </div>
+          </aside>
 
           <div className="flex-1 group-has-[[data-pending]]/products-list-section:animate-pulse">
             <ProductsList
