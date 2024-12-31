@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState, useRef, MouseEvent } from 'react';
 import { Accordions } from '../Accordin/index';
-import { Button } from '~/components/ui/button';
+import { Button } from '../Button';
 import { Input } from '~/components/ui/form';
 import ShopIcon from '../../assets/badge.png';
 import ChatIcon from '../../assets/chat.png';
@@ -15,6 +15,7 @@ import { addComment } from '../../_actions/add-comment';
 import { ChevronDown } from 'lucide-react';
 import { getBrand } from '../../_actions/brand';
 import Loader from './Spinner';
+import { useRouter } from 'next/navigation';
 export default function CartInterface() {
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
   const [comment, setComment] = useState<string>(''); // Comment state
@@ -45,6 +46,7 @@ export default function CartInterface() {
     productName: useRef<HTMLInputElement>(null),
   };
 
+  const router=useRouter()
   const handleCustomProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading((prev) => ({ ...prev, customItem: true }));
@@ -61,6 +63,7 @@ export default function CartInterface() {
       if (response.status === 200) {
         setLoading((prev) => ({ ...prev, customItem: false }));
         setSuccessMessage('Product added successfully!');
+        router.refresh()
       } else {
         setLoading((prev) => ({ ...prev, customItem: false }));
         setErrorMessage(`Failed to add product: ${response.error || 'Unknown error'}`);
@@ -191,6 +194,7 @@ export default function CartInterface() {
             className="mb-[10px]"
           />
           <Button
+          
             className="font-open-sans w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white"
             onClick={(e) => {
               handleAddAccountSubmit(e);

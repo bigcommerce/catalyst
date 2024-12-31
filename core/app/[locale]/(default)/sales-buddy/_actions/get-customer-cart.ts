@@ -1,5 +1,6 @@
 'use server';
 
+
 export const getCustomerCart = async (cartId: any) => {
   try {
     let postData = JSON.stringify({
@@ -21,7 +22,7 @@ export const getCustomerCart = async (cartId: any) => {
     })
       .then((res) => res.json())
       .then((jsonData) => {
-        return jsonData;
+        return cartId;
       })
       .catch((error) => {
         return { status: 500, error: error.message };

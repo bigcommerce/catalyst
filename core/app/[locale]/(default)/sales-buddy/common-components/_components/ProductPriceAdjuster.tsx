@@ -89,6 +89,10 @@ if (isSave) {
         <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">SKU</p>
         <p className="text-[14px] font-normal tracking-[0.25px]">{sku}</p>
       </div>
+      <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
+        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">OEM SKU</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{sku}</p>
+      </div>
       {/* <hr className="border-white-600 m-2" /> */}
 
       {/* Cost */}
