@@ -229,7 +229,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
           isValid={!emailError || !field.label.toLowerCase().includes('email')}
         />
         {field.label.toLowerCase().includes('email') && emailError && (
-          <div className="absolute bottom-[5%] inline-flex w-full text-xs font-normal text-[#A71F23]">
+          <div className="absolute bottom-[8%] inline-flex w-full text-xs font-normal text-[#A71F23]">
             {emailError}
           </div>
         )}
@@ -239,14 +239,12 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
 
   const renderPasswordField = (field: PasswordFormField, fieldName: string) => (
     <FieldWrapper fieldId={field.entityId} key={field.entityId}>
-      
-        <Password
-          field={field}
-          isValid={passwordValid[FieldNameToFieldId.password]}
-          name={fieldName}
-          onChange={handlePasswordValidation}
-        />
-        
+      <Password
+        field={field}
+        isValid={passwordValid[FieldNameToFieldId.password]}
+        name={fieldName}
+        onChange={handlePasswordValidation}
+      />
     </FieldWrapper>
   );
 
@@ -272,7 +270,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
         </div>
 
         <Button
-          className="relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2 disabled:cursor-not-allowed hover:!bg-[rgb(75,200,240)] !transition-colors !duration-500"
+          className="relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2 !transition-colors !duration-500 hover:!bg-[rgb(75,200,240)] disabled:cursor-not-allowed"
           variant="primary"
           type="submit"
           disabled={!!emailError || !passwordValid[FieldNameToFieldId.password]}

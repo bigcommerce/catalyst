@@ -5,6 +5,7 @@ import { ExistingResultType } from '~/client/util';
 
 import { OrderDetails } from './_components/order-details';
 import { getOrderDetails, OrderDetailsType } from './page-data';
+import { imageManagerImageUrl } from '~/lib/store-assets';
 
 interface Props {
   params: Promise<{
@@ -51,6 +52,9 @@ const mapOrderData = (order: OrderDetailsType) => {
 export type OrderDataType = ExistingResultType<typeof mapOrderData>;
 
 export default async function Order(props: Props) {
+
+  const icon = imageManagerImageUrl("waving-hand-1-.png", '24w');
+
   const { slug } = await props.params;
   const entityId = Number(slug);
 
@@ -66,7 +70,7 @@ export default async function Order(props: Props) {
 
   const data = mapOrderData(order);
 
-  return <OrderDetails data={data} />;
+  return <OrderDetails data={data} icon={icon} />;
 }
 
 export const runtime = 'edge';

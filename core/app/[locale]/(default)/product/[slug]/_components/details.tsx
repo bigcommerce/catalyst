@@ -126,6 +126,9 @@ interface Props {
   cartHeader?: string;
   couponIcon?: string;
   paywithGoogle?: string;
+  payPal?: string;
+  requestQuote?: string;
+  closeIcon?:string;
 }
 
 export const Details = ({
@@ -135,6 +138,9 @@ export const Details = ({
   cartHeader,
   couponIcon,
   paywithGoogle,
+  payPal,
+  requestQuote ,
+  closeIcon,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -151,7 +157,6 @@ export const Details = ({
   const productImages = removeEdgesAndNodes(product.images);
   const variants = removeEdgesAndNodes(product.variants);
 
-  const closeIcon = imageManagerImageUrl('close.png', '14w');
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
@@ -535,8 +540,8 @@ export const Details = ({
         </button>
       </div>
 
-      <Payment />
-      <RequestQuote />
+      <Payment  payPal={payPal} />
+      <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
       <ShippingReturns />

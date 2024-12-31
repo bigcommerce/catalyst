@@ -19,6 +19,7 @@ import coastalBadge from '~/public/badges/coastal.svg';
 
 import { useFormatter } from 'next-intl';
 
+import { ReviewSummary } from '~/belami/components/reviews';
 import { Compare } from '~/components/ui/product-card/compare';
 
 const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
@@ -55,6 +56,8 @@ type HitProps = {
     newPrice: number;
     description: string;
     objectID: number;
+    reviews_rating_sum: number;
+    reviews_count: number;
     metafields: any;
     variants: any;
   }>;
@@ -236,7 +239,7 @@ export function Hit({
       data-id={hit.objectID}
       className="product flex h-full w-full flex-col rounded-none border border-gray-300"
     >
-      <div className="flex items-start overflow-x-hidden p-4">
+      <div className="flex items-start overflow-x-hidden p-4 min-h-[60px]">
         <div className="compare-product mr-4">
           <Compare
             id={hit.objectID}
@@ -435,79 +438,9 @@ export function Hit({
               </div>
             </div>
           ) : null}
-          {/* hit.rating && hit.rating > 0 &&
-            <p>{Array.from(Array(hit.rating)).map(() => '⭐️').join('')}</p>
-          */}
-          <div className="mx-auto mt-2 flex items-center justify-center space-x-2">
-            <span className="flex space-x-0.5 text-yellow-500">
-              <svg
-                key={1}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={2}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={3}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={4}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={5}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-            </span>
-            <span>(10)</span>
-          </div>
+          {hit.reviews_count > 0 &&
+            <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="mx-auto mt-2 justify-center" />
+          }
         </div>
         <Promotion
           promotions={promotions}
@@ -711,79 +644,9 @@ export function Hit({
               </div>
             </div>
           ) : null}
-          {/* hit.rating && hit.rating > 0 &&
-          <p>{Array.from(Array(hit.rating)).map(() => '⭐️').join('')}</p>
-        */}
-          <div className="mx-auto mt-2 flex items-center space-x-2">
-            <span className="flex space-x-0.5 text-yellow-500">
-              <svg
-                key={1}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={2}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={3}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={4}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-              <svg
-                key={5}
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-              </svg>
-            </span>
-            <span>(10)</span>
-          </div>
+          {hit.reviews_count > 0 &&
+            <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="mt-2" />
+          }
           <Promotion
             promotions={promotions}
             brand_id={hit.brand_id}

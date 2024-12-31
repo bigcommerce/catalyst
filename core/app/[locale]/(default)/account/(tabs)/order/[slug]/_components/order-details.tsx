@@ -12,35 +12,8 @@ import {
 } from '../../../orders/_components/product-snippet';
 import { OrderDataType } from '../page';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
-import { BcImage } from '~/components/bc-image';
 import { PrintInvoice } from '../print-invoice';
-
-const OrderState = async ({ orderState }: { orderState: OrderDataType['orderState'] }) => {
-  const t = await getTranslations('Account.Orders');
-  const format = await getFormatter();
-  const { orderId, orderDate, status } = orderState;
-
-  return (
-    <div className="mb-6 flex flex-col gap-6 md:flex-row">
-      <div>
-        <h2 className="mb-2 text-3xl font-bold lg:text-4xl">
-          {t('orderNumber')}
-          {orderId}
-        </h2>
-        <p>
-          {format.dateTime(new Date(orderDate.utc), {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </p>
-      </div>
-      <p className="align-center flex h-fit justify-center gap-2.5 rounded-3xl bg-secondary/10 px-4 py-1.5 font-semibold text-primary">
-        {status.label}
-      </p>
-    </div>
-  );
-};
+import { StillNeedContactUs } from '../../../orders/_components/stillneed-contactus';
 
 const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['summaryInfo'] }) => {
   const t = await getTranslations('Account.Orders');
@@ -48,11 +21,14 @@ const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['s
   const { subtotal, shipping, tax, discounts, grandTotal, handlingCost } = summaryInfo;
   const { nonCouponDiscountTotal, couponDiscounts } = discounts;
   let regSubTotal = subtotal?.value;
-  if(nonCouponDiscountTotal?.value > 0) {
+  let youSave = 0;
+  if (nonCouponDiscountTotal?.value > 0) {
     regSubTotal -= nonCouponDiscountTotal.value;
+    youSave += nonCouponDiscountTotal.value;
   }
   couponDiscounts.map(({ discountedAmount }) => {
     regSubTotal -= discountedAmount.value;
+    youSave += discountedAmount.value;
   });
 
   return (
@@ -97,10 +73,16 @@ const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['s
               </div>
             </div>
           ))}
-          {/*<div className="flex justify-between border-b border-b-[#E8E7E7]">
+          {youSave > 0 && (
+          <div className="flex justify-between border-b border-b-[#E8E7E7]">
             <div>You Save</div>
-            <div className="text-[#008BB7]">$165.00</div>
-          </div>*/}
+            <div className="text-[#008BB7]">
+              {format.number(youSave, {
+                style: 'currency',
+                currency: subtotal.currencyCode,
+              })}
+            </div>
+          </div>)}
           <div className="flex justify-between border-b border-b-[#E8E7E7]">
             <div>{t('orderSubtotal')}</div>
             <div>
@@ -118,16 +100,16 @@ const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['s
             }) : 'FREE'}
             </div>
           </div>
-          { handlingCost.value > 0 && (
-          <div className="flex justify-between border-b border-b-[#E8E7E7]">
-            <div>{t('surcharge')}</div>
-            <div>
-            {format.number(handlingCost.value, {
-              style: 'currency',
-              currency: handlingCost.currencyCode,
-            })}
+          {handlingCost.value > 0 && (
+            <div className="flex justify-between border-b border-b-[#E8E7E7]">
+              <div>{t('surcharge')}</div>
+              <div>
+                {format.number(handlingCost.value, {
+                  style: 'currency',
+                  currency: handlingCost.currencyCode,
+                })}
+              </div>
             </div>
-          </div>
           )}
           <div className="flex justify-between border-b border-b-[#E8E7E7]">
             <div>{t('orderTax')}</div>
@@ -268,7 +250,7 @@ const ShippingInfo = async ({
   );
 };
 
-export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
+export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:any }) => {
   const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { orderState, summaryInfo, consignments, paymentInfo } = data;
@@ -283,130 +265,123 @@ export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
     href: "#"
   }];
   let shippingAddressData = shippingConsignments?.[0]?.shippingAddress;
-    return(
-      <div className="my-[1rem] flex justify-center text-[#353535]">
-        <div className="flex w-[70%] flex-col gap-[20px]">
-          <div>
-            <ComponentsBreadcrumbs breadcrumbs={breadcrumbs} />
-          </div>
-          <div className="flex flex-col gap-[30px]">
-            <div className="flex items-center justify-between">
-              <div className="text-[24px] font-normal leading-[32px]">Order #{orderState?.orderId}</div>
-              <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#008BB7]">
-                <PrintInvoice />
-              </div>
+  return (
+    <div className="mt-[1rem] mb-[2rem] w-[100%] flex justify-center text-[#353535]">
+      <div className="flex w-[88%] flex-col gap-[20px]">
+        <div>
+          <ComponentsBreadcrumbs breadcrumbs={breadcrumbs} />
+        </div>
+        <div className="flex flex-col gap-[30px]">
+          <div className="flex items-center justify-between">
+            <div className="text-[24px] font-normal leading-[32px]">Order #{orderState?.orderId}</div>
+            <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#008BB7] flex gap-[10px] items-center">
+              <PrintInvoice />
             </div>
-            <div className="flex items-center gap-[5px]">
-              <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px]">
-                {t('stillNeedHelp')}{' '}
-              </div>
-              <div className="text-[16px] font-[500] leading-[32px] tracking-[0.15px] text-[#008BB7]">
-                <Link href="#">{t('contact')}</Link>
-              </div>
+          </div>
+          <StillNeedContactUs icon={icon} />
+          <div className="flex flex-col gap-[30px]">
+            <div>
+              <p className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#000000]">
+                Items In This Order ({noOfItems})
+              </p>
             </div>
             <div className="flex flex-col gap-[30px]">
-              <div>
-                <p className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#000000]">
-                  Items In This Order ({noOfItems})
-                </p>
-              </div>
-              <div className="flex flex-col gap-[30px]">
-                {shippingConsignments?.map((consignment, idx) => {
-                  const { lineItems } = consignment;
-                  return (
-                    <>
-                      {isMultiShippingConsignments && (
-                        <ShippingInfo
-                          consignments={consignments}
-                          isMultiConsignments={true}
-                          shippingNumber={idx}
-                        />
-                      )}
-                      <ul className="my-4 flex flex-col gap-4">
-                        {lineItems.map((shipment) => {
-                          return (
-                            <li key={shipment.entityId}>
-                              <Suspense fallback={<ProductSnippetSkeleton isExtended={true} />}>
-                                <ProductSnippet
-                                  imagePriority={true}
-                                  imageSize="square"
-                                  isExtended={true}
-                                  product={assembleProductData(shipment)}
-                                />
-                              </Suspense>
-                            </li>
-                          );
-                        })}
-                      </ul>
-                    </>
-                  )
-                })}
-              </div>
-            </div>
-            <div className="border-b border-b-[#E8E7E7]">
-              <div className="pb-1 text-[24px] font-normal leading-[32px] text-black">
-                {t('orderSummary')}
-              </div>
-            </div>
-            <div className="flex justify-between gap-[30px]">
-              <div className="flex w-1/2 flex-col gap-[30px]">
-                <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
-                  <div>
-                    {t('confirmationNumber')}: <span className="font-[700]">{orderState?.orderId}</span>
-                  </div>
-                  <div>
-                    Order Date: <span className="font-[700]">
-                      {format.dateTime(new Date(orderState?.orderDate?.utc), {
-                        year: 'numeric',
-                        month: 'numeric',
-                        day: 'numeric',
+              {shippingConsignments?.map((consignment, idx) => {
+                const { lineItems } = consignment;
+                return (
+                  <>
+                    {isMultiShippingConsignments && (
+                      <ShippingInfo
+                        consignments={consignments}
+                        isMultiConsignments={true}
+                        shippingNumber={idx}
+                      />
+                    )}
+                    <ul className="flex flex-col gap-[30px]">
+                      {lineItems.map((shipment) => {
+                        return (
+                          <li key={shipment.entityId}>
+                            <Suspense fallback={<ProductSnippetSkeleton isExtended={true} />}>
+                              <ProductSnippet
+                                imagePriority={true}
+                                imageSize="square"
+                                isExtended={true}
+                                product={assembleProductData(shipment)}
+                              />
+                            </Suspense>
+                          </li>
+                        );
                       })}
-                    </span>
+                    </ul>
+                  </>
+                )
+              })}
+            </div>
+          </div>
+          <div className="border-b border-b-[#E8E7E7]">
+            <div className="pb-1 text-[24px] font-normal leading-[32px] text-black">
+              {t('orderSummary')}
+            </div>
+          </div>
+          <div className="flex justify-between gap-[30px]">
+            <div className="flex w-1/2 flex-col gap-[30px]">
+              <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
+                <div>
+                  {t('confirmationNumber')}: <span className="font-[700]">{orderState?.orderId}</span>
+                </div>
+                <div>
+                  Order Date: <span className="font-[700]">
+                    {format.dateTime(new Date(orderState?.orderDate?.utc), {
+                      year: 'numeric',
+                      month: 'numeric',
+                      day: 'numeric',
+                    })}
+                  </span>
+                </div>
+              </div>
+              <div className="flex flex-col gap-[20px]">
+                <div>
+                  <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
+                    Customer Contact
+                  </div>
+                  <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
+                    {paymentInfo?.billingAddress?.email}
                   </div>
                 </div>
-                <div className="flex flex-col gap-[20px]">
+                <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
+                  <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
+                    {t('shippingAddress')}
+                  </div>
                   <div>
-                    <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
-                      Customer Contact
-                    </div>
-                    <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
-                    {paymentInfo?.billingAddress?.email} 
-                    </div>
+                    <div>{shippingAddressData?.firstName} {shippingAddressData?.lastName}</div>
+                    <div>{shippingAddressData?.address1}</div>
+                    <div>{shippingAddressData?.city}</div>
+                    <div>{shippingAddressData?.stateOrProvince}, {shippingAddressData?.countryCode} {shippingAddressData?.postalCode}</div>
                   </div>
-                  <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
-                    <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
-                      {t('shippingAddress')}
-                    </div>
-                    <div>
-                      <div>{shippingAddressData?.firstName} {shippingAddressData?.lastName}</div>
-                      <div>{shippingAddressData?.address1}</div>
-                      <div>{shippingAddressData?.city}</div>
-                      <div>{shippingAddressData?.stateOrProvince}, {shippingAddressData?.countryCode} {shippingAddressData?.postalCode}</div>
-                    </div>
+                </div>
+                <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
+                  <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
+                    {t('billingAddress')}
                   </div>
-                  <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
-                    <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
-                      {t('billingAddress')}
-                    </div>
-                    <div>
-                      <div>{paymentInfo?.billingAddress?.firstName} {paymentInfo?.billingAddress?.lastName}</div>
-                      <div>{paymentInfo?.billingAddress?.address1}</div>
-                      <div>{paymentInfo?.billingAddress?.city}</div>
-                      <div>{paymentInfo?.billingAddress?.stateOrProvince}, {paymentInfo?.billingAddress?.countryCode} {paymentInfo?.billingAddress?.postalCode}</div>
-                    </div>
+                  <div>
+                    <div>{paymentInfo?.billingAddress?.firstName} {paymentInfo?.billingAddress?.lastName}</div>
+                    <div>{paymentInfo?.billingAddress?.address1}</div>
+                    <div>{paymentInfo?.billingAddress?.city}</div>
+                    <div>{paymentInfo?.billingAddress?.stateOrProvince}, {paymentInfo?.billingAddress?.countryCode} {paymentInfo?.billingAddress?.postalCode}</div>
                   </div>
-                  {/*<div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
+                </div>
+                {/*<div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
                   <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
                     Payment
                   </div>
                   <div>*** *** *** 1234</div>
                 </div> */}
-                </div>
               </div>
-              <OrderSummaryInfo summaryInfo={summaryInfo} />
             </div>
+            <OrderSummaryInfo summaryInfo={summaryInfo} />
           </div>
         </div>
       </div>
-    );
+    </div>
+  );
 };
