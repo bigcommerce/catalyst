@@ -335,7 +335,11 @@
     "proceedToCheckout": "Proceed to checkout",
     "loading": "Loading...",
     "spinnerText": "Updating...",
+    "increment": "Increase quantity",
+    "decrement": "Decrease quantity",
+    "removeItem": "Remove item",
     "CheckoutSummary": {
+      "title": "Summary",
       "subTotal": "Subtotal",
       "discounts": "Discounts",
       "coupon": "Coupon",
@@ -396,6 +400,18 @@
       "remove": "Remove",
       "spinnerText": "Removing...",
       "errorMessage": "Something went wrong while removing item, please try again."
+    },
+    "Empty": {
+      "title": "Your cart is empty.",
+      "subtitle": "Add some products to get started.",
+      "cta": "Continue shopping"
+    },
+    "Errors": {
+      "cartNotFound": "No cartId cookie found.",
+      "lineItemNotFound": "Line item not found.",
+      "failedToRedirectToCheckout": "Failed to redirect to checkout.",
+      "failedToUpdateQuantity": "Failed to update quantity.",
+      "somethingWentWrong": "Something went wrong. Please try again later."
     }
   },
   "Compare": {

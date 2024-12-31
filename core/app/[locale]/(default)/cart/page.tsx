@@ -1,40 +1,12 @@
 import { cookies } from 'next/headers';
-import { getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 
-import { getSessionCustomerAccessToken } from '~/auth';
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
+import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
 
-import { CartItem, CartItemFragment } from './_components/cart-item';
+import { redirectToCheckout } from './_actions/redirect-to-checkout';
+import { updateLineItem } from './_actions/update-line-item';
 import { CartViewed } from './_components/cart-viewed';
-import { CheckoutButton } from './_components/checkout-button';
-import { CheckoutSummary, CheckoutSummaryFragment } from './_components/checkout-summary';
-import { EmptyCart } from './_components/empty-cart';
-import { GeographyFragment } from './_components/shipping-estimator/fragment';
-
-const CartPageQuery = graphql(
-  `
-    query CartPageQuery($cartId: String) {
-      site {
-        cart(entityId: $cartId) {
-          entityId
-          currencyCode
-          lineItems {
-            ...CartItemFragment
-          }
-        }
-        checkout(entityId: $cartId) {
-          ...CheckoutSummaryFragment
-        }
-      }
-      geography {
-        ...GeographyFragment
-      }
-    }
-  `,
-  [CartItemFragment, CheckoutSummaryFragment, GeographyFragment],
-);
+import { getCart } from './page-data';
 
 export async function generateMetadata() {
   const t = await getTranslations('Cart');
@@ -45,57 +17,116 @@ export async function generateMetadata() {
 }
 
 export default async function Cart() {
-  const cookieStore = await cookies();
-
-  const cartId = cookieStore.get('cartId')?.value;
+  const t = await getTranslations('Cart');
+  const format = await getFormatter();
+  const cartId = (await cookies()).get('cartId')?.value;
 
   if (!cartId) {
-    return <EmptyCart />;
+    return (
+      <CartEmptyState
+        cta={{ label: t('Empty.cta'), href: '/shop-all' }}
+        subtitle={t('Empty.subtitle')}
+        title={t('Empty.title')}
+      />
+    );
   }
 
-  const t = await getTranslations('Cart');
-
-  const customerAccessToken = await getSessionCustomerAccessToken();
-
-  const { data } = await client.fetch({
-    document: CartPageQuery,
-    variables: { cartId },
-    customerAccessToken,
-    fetchOptions: {
-      cache: 'no-store',
-      next: {
-        tags: [TAGS.cart, TAGS.checkout],
-      },
-    },
-  });
+  const data = await getCart(cartId);
 
   const cart = data.site.cart;
   const checkout = data.site.checkout;
-  const geography = data.geography;
 
   if (!cart) {
-    return <EmptyCart />;
+    return (
+      <CartEmptyState
+        cta={{ label: t('Empty.cta'), href: '/shop-all' }}
+        subtitle={t('Empty.subtitle')}
+        title={t('Empty.title')}
+      />
+    );
   }
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
 
+  const formattedLineItems = lineItems.map((item) => ({
+    id: item.entityId,
+    quantity: item.quantity,
+    price: format.number(item.listPrice.value, {
+      style: 'currency',
+      currency: item.listPrice.currencyCode,
+    }),
+    subtitle: item.selectedOptions
+      .map((option) => {
+        switch (option.__typename) {
+          case 'CartSelectedMultipleChoiceOption':
+          case 'CartSelectedCheckboxOption':
+            return `${option.name}: ${option.value}`;
+
+          case 'CartSelectedNumberFieldOption':
+            return `${option.name}: ${option.number}`;
+
+          case 'CartSelectedMultiLineTextFieldOption':
+          case 'CartSelectedTextFieldOption':
+            return `${option.name}: ${option.text}`;
+
+          case 'CartSelectedDateFieldOption':
+            return `${option.name}: ${format.dateTime(new Date(option.date.utc))}`;
+
+          default:
+            return '';
+        }
+      })
+      .join(', '),
+    title: item.name,
+    image: { src: item.image?.url || '', alt: item.name },
+    href: new URL(item.url).pathname,
+    selectedOptions: item.selectedOptions,
+    productEntityId: item.productEntityId,
+    variantEntityId: item.variantEntityId,
+  }));
+
   return (
-    <div>
-      <h1 className="pb-6 text-4xl font-black lg:pb-10 lg:text-5xl">{t('heading')}</h1>
-      <div className="pb-12 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-3">
-        <ul className="col-span-2">
-          {lineItems.map((product) => (
-            <CartItem currencyCode={cart.currencyCode} key={product.entityId} product={product} />
-          ))}
-        </ul>
-
-        <div className="col-span-1 col-start-2 lg:col-start-3">
-          {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
-
-          <CheckoutButton cartId={cartId} />
-        </div>
-      </div>
-      <CartViewed checkout={checkout} currencyCode={cart.currencyCode} lineItems={lineItems} />
-    </div>
+    <>
+      <CartComponent
+        checkoutAction={redirectToCheckout}
+        decrementLineItemLabel={t('decrement')}
+        deleteLineItemLabel={t('removeItem')}
+        emptyState={{
+          title: t('Empty.title'),
+          subtitle: t('Empty.subtitle'),
+          cta: { label: t('Empty.cta'), href: '/shop-all' },
+        }}
+        incrementLineItemLabel={t('increment')}
+        lineItemAction={updateLineItem}
+        lineItems={formattedLineItems}
+        summary={{
+          title: t('CheckoutSummary.title'),
+          taxLabel: t('CheckoutSummary.tax'),
+          tax: checkout?.taxTotal
+            ? format.number(checkout.taxTotal.value, {
+                style: 'currency',
+                currency: cart.currencyCode,
+              })
+            : '',
+          subtotalLabel: t('CheckoutSummary.subTotal'),
+          subtotal: format.number(checkout?.subtotal?.value ?? 0, {
+            style: 'currency',
+            currency: cart.currencyCode,
+          }),
+          grandTotalLabel: t('CheckoutSummary.grandTotal'),
+          grandTotal: format.number(checkout?.grandTotal?.value || 0, {
+            style: 'currency',
+            currency: cart.currencyCode,
+          }),
+          ctaLabel: t('proceedToCheckout'),
+        }}
+        title={t('title')}
+      />
+      <CartViewed
+        currencyCode={cart.currencyCode}
+        lineItems={lineItems}
+        subtotal={checkout?.subtotal?.value}
+      />
+    </>
   );
 }
