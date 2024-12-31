@@ -223,7 +223,7 @@ export function Hit({
       data-id={hit.objectID}
       className="product flex h-full w-full flex-col rounded-none border border-gray-300"
     >
-      <div className="flex items-start overflow-x-hidden p-4 min-h-[60px]">
+      <div className="flex min-h-[60px] items-start overflow-x-hidden p-4">
         <div className="compare-product mr-4">
           <Compare
             id={hit.objectID}
@@ -422,9 +422,13 @@ export function Hit({
               </div>
             </div>
           ) : null}
-          {hit.reviews_count > 0 &&
-            <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="mx-auto mt-2 justify-center" />
-          }
+          {hit.reviews_count > 0 && (
+            <ReviewSummary
+              numberOfReviews={hit.reviews_count}
+              averageRating={hit.reviews_rating_sum}
+              className="mx-auto mt-2 justify-center"
+            />
+          )}
         </div>
         <Promotion
           promotions={promotions}
@@ -628,9 +632,13 @@ export function Hit({
               </div>
             </div>
           ) : null}
-          {hit.reviews_count > 0 &&
-            <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="mt-2" />
-          }
+          {hit.reviews_count > 0 && (
+            <ReviewSummary
+              numberOfReviews={hit.reviews_count}
+              averageRating={hit.reviews_rating_sum}
+              className="mt-2"
+            />
+          )}
           <Promotion
             promotions={promotions}
             brand_id={hit.brand_id}
