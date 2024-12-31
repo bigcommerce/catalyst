@@ -382,7 +382,7 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false }: any) => {
         </div>
       </aside>
 
-      <div className={showSidebar ? 'overflow-hidden h-0 sm:overflow-auto sm:h-auto' : ''}>
+      <div id="catalog" className={showSidebar ? 'overflow-hidden h-0 sm:overflow-auto sm:h-auto' : ''}>
 
         <div className="mt-2 lg:flex md:space-x-4 items-center">
           <div className="flex-1">
