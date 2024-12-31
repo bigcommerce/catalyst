@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@page{
+  margin-block: 2cm;
+}
+
 .header-sub-menu {
   gap: 20px;
   grid-template-columns: auto auto auto auto auto auto;
