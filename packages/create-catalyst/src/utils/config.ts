@@ -72,7 +72,14 @@ export class Config {
       mkdirSync(dir, { recursive: true });
     }
 
-    writeFileSync(this.configPath, stringifyTOML(configObj));
+    const preamble = `# DO NOT commit this file to your repository!
+# This file contains sensitive configuration specific to your local CLI setup.
+# It includes authentication tokens and store-specific information.
+# If using version control, make sure to add .catalyst to your .gitignore file.
+
+`;
+
+    writeFileSync(this.configPath, preamble + stringifyTOML(configObj));
   }
 
   private read(): CatalystConfig {
