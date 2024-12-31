@@ -128,6 +128,10 @@
     },
     "FacetedSearch": {
       "filters": "Filters",
+      "resetFilters": "Reset filters",
+      "Range": {
+        "apply": "Apply"
+      },
       "RefineBy": {
         "refineBy": "Refine by",
         "clearAllRefinements": "Clear all"
