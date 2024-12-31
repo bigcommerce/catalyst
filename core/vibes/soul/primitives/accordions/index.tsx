@@ -2,7 +2,7 @@
 
 import * as AccordionsPrimitive from '@radix-ui/react-accordion';
 import { clsx } from 'clsx';
-import React from 'react';
+import { useEffect, useState } from 'react';
 
 // eslint-disable-next-line valid-jsdoc
 /**
@@ -34,36 +34,47 @@ function Accordion({
 }: React.ComponentPropsWithoutRef<typeof AccordionsPrimitive.Item> & {
   colorScheme?: 'light' | 'dark';
 }) {
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
   return (
     <AccordionsPrimitive.Item {...rest}>
       <AccordionsPrimitive.Header>
-        <AccordionsPrimitive.Trigger asChild>
-          <div className="group cursor-pointer items-start gap-8 py-3 last:flex @md:py-4">
-            <div
-              className={clsx(
-                'flex-1 select-none font-[family-name:var(--accordion-title-font-family,var(--font-family-mono))] text-sm uppercase transition-colors duration-300 ease-out',
-                {
-                  light:
-                    'text-[var(--accordion-light-title-text,hsl(var(--contrast-400)))] group-hover:text-[var(--accordion-light-title-text-hover,hsl(var(--foreground)))]',
-                  dark: 'text-[var(--accordion-dark-title-text,hsl(var(--contrast-200)))] group-hover:text-[var(--accordion-dark-title-text-hover,hsl(var(--background)))]',
-                }[colorScheme],
-              )}
-            >
-              {title}
-            </div>
-            <AnimatedChevron
-              className={clsx(
-                {
-                  light:
-                    'stroke-[var(--accordion-light-title-icon,hsl(var(--contrast-500)))] group-hover:stroke-[var(--accordion-light-title-icon-hover,hsl(var(--foreground)))]',
-                  dark: 'stroke-[var(--accordion-dark-title-icon,hsl(var(--contrast-200)))] group-hover:stroke-[var(--accordion-dark-title-icon-hover,hsl(var(--background)))]',
-                }[colorScheme],
-              )}
-            />
+        <AccordionsPrimitive.Trigger className="group flex w-full cursor-pointer items-start gap-8 py-3 text-start @md:py-4">
+          <div
+            className={clsx(
+              'flex-1 select-none font-[family-name:var(--accordion-title-font-family,var(--font-family-mono))] text-sm uppercase transition-colors duration-300 ease-out',
+              {
+                light:
+                  'text-[var(--accordion-light-title-text,hsl(var(--contrast-400)))] group-hover:text-[var(--accordion-light-title-text-hover,hsl(var(--foreground)))]',
+                dark: 'text-[var(--accordion-dark-title-text,hsl(var(--contrast-200)))] group-hover:text-[var(--accordion-dark-title-text-hover,hsl(var(--background)))]',
+              }[colorScheme],
+            )}
+          >
+            {title}
           </div>
+          <AnimatedChevron
+            className={clsx(
+              {
+                light:
+                  'stroke-[var(--accordion-light-title-icon,hsl(var(--contrast-500)))] group-hover:stroke-[var(--accordion-light-title-icon-hover,hsl(var(--foreground)))]',
+                dark: 'stroke-[var(--accordion-dark-title-icon,hsl(var(--contrast-200)))] group-hover:stroke-[var(--accordion-dark-title-icon-hover,hsl(var(--background)))]',
+              }[colorScheme],
+            )}
+          />
         </AccordionsPrimitive.Trigger>
       </AccordionsPrimitive.Header>
-      <AccordionsPrimitive.Content className="overflow-hidden data-[state=closed]:animate-collapse data-[state=open]:animate-expand">
+      <AccordionsPrimitive.Content
+        className={clsx(
+          'overflow-hidden',
+          // We need to delay the animation until the component is mounted to avoid the animation
+          // from being triggered when the component is first rendered.
+          isMounted && 'data-[state=closed]:animate-collapse data-[state=open]:animate-expand',
+        )}
+      >
         <div
           className={clsx(
             'pb-5 font-[family-name:var(--accordion-content-font-family)] font-medium leading-normal',

@@ -19,7 +19,7 @@ interface Props {
   aspectRatio?: '5:6' | '3:4' | '1:1';
   showCompare?: boolean;
   compareAction?: React.ComponentProps<'form'>['action'];
-  compareLabel?: string;
+  compareLabel?: Streamable<string>;
   compareParamName?: string;
   emptyStateTitle?: Streamable<string | null>;
   emptyStateSubtitle?: Streamable<string | null>;
@@ -34,7 +34,7 @@ export function ProductsList({
   showCompare,
   compareAction,
   compareProducts: streamableCompareProducts,
-  compareLabel,
+  compareLabel: streamableCompareLabel,
   compareParamName,
   emptyStateTitle,
   emptyStateSubtitle,
@@ -44,9 +44,9 @@ export function ProductsList({
     <>
       <Stream
         fallback={<ProductsListSkeleton pending placeholderCount={placeholderCount} />}
-        value={streamableProducts}
+        value={Promise.all([streamableProducts, streamableCompareLabel])}
       >
-        {(products) => {
+        {([products, compareLabel]) => {
           if (products.length === 0) {
             return (
               <ProductsListEmptyState
@@ -76,8 +76,8 @@ export function ProductsList({
           );
         }}
       </Stream>
-      <Stream value={streamableCompareProducts}>
-        {(compareProducts) =>
+      <Stream value={Promise.all([streamableCompareProducts, streamableCompareLabel])}>
+        {([compareProducts, compareLabel]) =>
           compareProducts && (
             <CompareDrawer
               action={compareAction}

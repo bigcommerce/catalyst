@@ -5,9 +5,8 @@
 'use client';
 
 import { clsx } from 'clsx';
-import { ArrowRight } from 'lucide-react';
 import { parseAsString, useQueryStates } from 'nuqs';
-import { Suspense, useOptimistic, useTransition } from 'react';
+import { Suspense, useOptimistic, useState, useTransition } from 'react';
 
 import { Checkbox } from '@/vibes/soul/form/checkbox';
 import { RangeInput } from '@/vibes/soul/form/range-input';
@@ -54,9 +53,10 @@ export type Filter = ToggleGroupFilter | RangeFilter | RatingFilter;
 
 interface Props {
   className?: string;
-  filters: Filter[] | Promise<Filter[]>;
-  resetFiltersLabel?: string;
+  filters: Streamable<Filter[]>;
+  resetFiltersLabel?: Streamable<string>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
+  rangeFilterApplyLabel?: Streamable<string>;
 }
 
 function getParamCountLabel(params: Record<string, string | null | string[]>, key: string) {
@@ -65,12 +65,18 @@ function getParamCountLabel(params: Record<string, string | null | string[]>, ke
   return '';
 }
 
-export function FiltersPanel({ className, filters, resetFiltersLabel }: Props) {
+export function FiltersPanel({
+  className,
+  filters,
+  resetFiltersLabel,
+  rangeFilterApplyLabel,
+}: Props) {
   return (
     <Suspense fallback={<FiltersSkeleton />}>
       <FiltersPanelInner
         className={className}
         filters={filters}
+        rangeFilterApplyLabel={rangeFilterApplyLabel}
         resetFiltersLabel={resetFiltersLabel}
       />
     </Suspense>
@@ -80,10 +86,13 @@ export function FiltersPanel({ className, filters, resetFiltersLabel }: Props) {
 export function FiltersPanelInner({
   className,
   filters: streamableFilters,
-  resetFiltersLabel = 'Reset filters',
+  resetFiltersLabel: streamableResetFiltersLabel,
+  rangeFilterApplyLabel: streamableRangeFilterApplyLabel,
   paginationInfo: streamablePaginationInfo,
 }: Props) {
   const filters = useStreamable(streamableFilters);
+  const resetFiltersLabel = useStreamable(streamableResetFiltersLabel) ?? 'Reset filters';
+  const rangeFilterApplyLabel = useStreamable(streamableRangeFilterApplyLabel);
   const paginationInfo = useStreamable(streamablePaginationInfo);
   const startCursorParamName = paginationInfo?.startCursorParamName ?? 'before';
   const endCursorParamName = paginationInfo?.endCursorParamName ?? 'after';
@@ -100,29 +109,51 @@ export function FiltersPanelInner({
   );
   const [isPending, startTransition] = useTransition();
   const [optimisticParams, setOptimisticParams] = useOptimistic(params);
+  const [accordionItems, setAccordionItems] = useState(() =>
+    filters.map((filter, index) => ({
+      key: index.toString(),
+      value: index.toString(),
+      filter,
+      expanded: index < 3,
+    })),
+  );
 
   if (filters.length === 0) return null;
 
   return (
     <div className={clsx('space-y-5', className)} data-pending={isPending ? true : null}>
-      <Accordions defaultValue={filters.map((_, i) => i.toString())} type="multiple">
-        {filters.map((filter, index) => {
+      <Accordions
+        onValueChange={(items) =>
+          setAccordionItems((prevItems) =>
+            prevItems.map((prevItem) => ({
+              ...prevItem,
+              expanded: items.includes(prevItem.value),
+            })),
+          )
+        }
+        type="multiple"
+        value={accordionItems.filter((item) => item.expanded).map((item) => item.value)}
+      >
+        {accordionItems.map((accordionItem) => {
+          const { key, value, filter } = accordionItem;
+
           switch (filter.type) {
             case 'toggle-group':
               return (
                 <Accordion
-                  key={index}
+                  key={key}
                   title={`${filter.label}${getParamCountLabel(optimisticParams, filter.paramName)}`}
-                  value={index.toString()}
+                  value={value}
                 >
                   <ToggleGroup
-                    onValueChange={(value) => {
+                    onValueChange={(toggleGroupValues) => {
                       startTransition(async () => {
                         const nextParams = {
                           ...optimisticParams,
                           [startCursorParamName]: null,
                           [endCursorParamName]: null,
-                          [filter.paramName]: value.length === 0 ? null : value,
+                          [filter.paramName]:
+                            toggleGroupValues.length === 0 ? null : toggleGroupValues,
                         };
 
                         setOptimisticParams(nextParams);
@@ -138,85 +169,45 @@ export function FiltersPanelInner({
 
             case 'range':
               return (
-                <Accordion key={index} title={filter.label} value={index.toString()}>
-                  <div className="flex items-center gap-2">
-                    <RangeInput
-                      disabled={filter.disabled}
-                      max={filter.max}
-                      maxLabel={filter.maxLabel}
-                      maxName={filter.minParamName}
-                      maxPlaceholder={filter.maxPlaceholder}
-                      maxPrepend={filter.maxPrepend}
-                      maxValue={optimisticParams[filter.maxParamName] ?? null}
-                      min={filter.min}
-                      minLabel={filter.minLabel}
-                      minName={filter.minParamName}
-                      minPlaceholder={filter.minPlaceholder}
-                      minPrepend={filter.minPrepend}
-                      minValue={optimisticParams[filter.minParamName] ?? null}
-                      onMaxValueChange={(value) => {
-                        startTransition(async () => {
-                          const nextParams = {
-                            ...optimisticParams,
-                            [filter.maxParamName]: value,
-                            [startCursorParamName]: null,
-                            [endCursorParamName]: null,
-                          };
+                <Accordion key={key} title={filter.label} value={value}>
+                  <RangeInput
+                    applyLabel={rangeFilterApplyLabel}
+                    disabled={filter.disabled}
+                    max={filter.max}
+                    maxLabel={filter.maxLabel}
+                    maxName={filter.maxParamName}
+                    maxPlaceholder={filter.maxPlaceholder}
+                    maxPrepend={filter.maxPrepend}
+                    min={filter.min}
+                    minLabel={filter.minLabel}
+                    minName={filter.minParamName}
+                    minPlaceholder={filter.minPlaceholder}
+                    minPrepend={filter.minPrepend}
+                    onChange={({ min, max }) => {
+                      startTransition(async () => {
+                        const nextParams = {
+                          ...optimisticParams,
+                          [filter.minParamName]: min,
+                          [filter.maxParamName]: max,
+                          [startCursorParamName]: null,
+                          [endCursorParamName]: null,
+                        };
 
-                          setOptimisticParams(nextParams);
-                          await setParams(nextParams);
-                        });
-                      }}
-                      onMinValueChange={(value) => {
-                        startTransition(async () => {
-                          const nextParams = {
-                            ...optimisticParams,
-                            [filter.minParamName]: value,
-                            [startCursorParamName]: null,
-                            [endCursorParamName]: null,
-                          };
-
-                          setOptimisticParams(nextParams);
-                          await setParams(nextParams);
-                        });
-                      }}
-                    />
-                    <Button
-                      className="shrink-0"
-                      disabled={
-                        filter.disabled === true ||
-                        !(
-                          optimisticParams[filter.minParamName] !==
-                          optimisticParams[filter.maxParamName]
-                        )
-                      }
-                      onClick={() => {
-                        startTransition(async () => {
-                          const nextParams = {
-                            ...optimisticParams,
-                            [filter.minParamName]: optimisticParams[filter.minParamName],
-                            [filter.maxParamName]: optimisticParams[filter.maxParamName],
-                            [startCursorParamName]: null,
-                            [endCursorParamName]: null,
-                          };
-
-                          setOptimisticParams(nextParams);
-                          await setParams(nextParams);
-                        });
-                      }}
-                      shape="circle"
-                      size="small"
-                      variant="secondary"
-                    >
-                      <ArrowRight size={20} strokeWidth={1} />
-                    </Button>
-                  </div>
+                        setOptimisticParams(nextParams);
+                        await setParams(nextParams);
+                      });
+                    }}
+                    value={{
+                      min: optimisticParams[filter.minParamName] ?? null,
+                      max: optimisticParams[filter.maxParamName] ?? null,
+                    }}
+                  />
                 </Accordion>
               );
 
             case 'rating':
               return (
-                <Accordion key={index} title={filter.label} value={index.toString()}>
+                <Accordion key={key} title={filter.label} value={value}>
                   <div className="space-y-3">
                     {[5, 4, 3, 2, 1].map((rating) => (
                       <Checkbox
@@ -226,11 +217,11 @@ export function FiltersPanelInner({
                         disabled={filter.disabled}
                         key={rating}
                         label={<Rating rating={rating} showRating={false} />}
-                        onCheckedChange={(value) =>
+                        onCheckedChange={(checked) =>
                           startTransition(async () => {
                             const ratings = new Set(optimisticParams[filter.paramName]);
 
-                            if (value === true) ratings.add(rating.toString());
+                            if (checked === true) ratings.add(rating.toString());
                             else ratings.delete(rating.toString());
 
                             const nextParams = {
