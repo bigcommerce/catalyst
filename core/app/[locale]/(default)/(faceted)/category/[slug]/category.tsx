@@ -10,23 +10,16 @@ import {
   ToggleRefinement,
   DynamicWidgets,
   RangeInput,
-  HitsPerPage,
+  //HitsPerPage,
   //Pagination,
-  SortBy,
+  //SortBy,
   Stats
 } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import type { RefinementListProps } from 'react-instantsearch';
 
-import { Panel } from '../../_components/panel';
-import { RatingMenu } from '../../_components/rating-menu';
-import { Hits, HitsAsync } from '../../_components/hits';
-import { ClearRefinements } from '../../_components/clear-refinements';
-import { CurrentRefinements } from '../../_components/current-refinements';
-import { Pagination } from '../../_components/pagination';
-
-import { Facet } from '../../_components/facet';
-import { FacetDropdown } from '../../_components/facet-dropdown';
+import { Panel } from '~/belami/components/panel';
+import { ClearRefinements, CurrentRefinements, SortBy, HitsPerPage, Pagination, Hits, HitsAsync, Facet, FacetDropdown, RatingMenu } from '~/belami/components/search';
 
 import { createFallbackableCache } from "@algolia/cache-common";
 import { createInMemoryCache } from "@algolia/cache-in-memory";
@@ -102,12 +95,14 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               query: indexUiState.query,
               categories: indexUiState.hierarchicalMenu?.['categories.lvl0'],
               brand_name: indexUiState.refinementList?.brand_name,
-              collection: indexUiState.refinementList?.['metafields.Akeneo.collection'],
+              collection: indexUiState.refinementList?.['metafields.Details.Collection'],
               finish_color: indexUiState.refinementList?.['variants.options.Finish Color'],
-              number_of_bulbs: indexUiState.refinementList?.['metafields.Akeneo.number_of_bulbs'],
-              product_style: indexUiState.refinementList?.['metafields.Akeneo.product_style'],
+              number_of_bulbs: indexUiState.refinementList?.['metafields.Details.Number of Bulbs'],
+              product_style: indexUiState.refinementList?.['metafields.Details.Product Style'],
               on_sale: indexUiState.toggle?.['on_sale'] === null || indexUiState.toggle?.['on_sale'] === undefined ? undefined : indexUiState.toggle?.['on_sale'] as any,
+              on_clearance: indexUiState.toggle?.['on_clearance'] === null || indexUiState.toggle?.['on_clearance'] === undefined ? undefined : indexUiState.toggle?.['on_clearance'] as any,
               is_new: indexUiState.toggle?.['is_new'] === null || indexUiState.toggle?.['is_new'] === undefined ? undefined : indexUiState.toggle?.['is_new'] as any,
+              in_stock: indexUiState.toggle?.['in_stock'] === null || indexUiState.toggle?.['in_stock'] === undefined ? undefined : indexUiState.toggle?.['in_stock'] as any,
               page: indexUiState.page,
               hitsPerPage: indexUiState.hitsPerPage,
               sortBy: indexUiState.sortBy,
@@ -123,14 +118,16 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
                 },
                 refinementList: {
                   'brand_name': routeState?.brand_name,
-                  'metafields.Akeneo.collection': routeState?.collection,
+                  'metafields.Details.Collection': routeState?.collection,
                   'variants.options.Finish Color': routeState?.finish_color,
-                  'metafields.Akeneo.number_of_bulbs': routeState?.number_of_bulbs,
-                  'metafields.Akeneo.product_style': routeState?.product_style
+                  'metafields.Details.Number of Bulbs': routeState?.number_of_bulbs,
+                  'metafields.Details.Product Style': routeState?.product_style
                 },
                 toggle: {
                   'on_sale': routeState?.on_sale == null || routeState?.on_sale == undefined ? undefined : (routeState?.on_sale === 'true' || routeState?.on_sale === true),
+                  'on_clearance': routeState?.on_clearance == null || routeState?.on_clearance == undefined ? undefined : (routeState?.on_clearance === 'true' || routeState?.on_clearance === true),
                   'is_new': routeState?.is_new == null || routeState?.is_new == undefined ? undefined : (routeState?.is_new === 'true' || routeState?.is_new === true),
+                  'in_stock': routeState?.in_stock == null || routeState?.in_stock == undefined ? undefined : (routeState?.in_stock === 'true' || routeState?.in_stock === true),
                 },
                 page: routeState?.page,
                 hitsPerPage: routeState?.hitsPerPage,
@@ -155,9 +152,6 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
       future={{ preserveSharedStateOnUnmount: true }}
       insights={true}
     >
-      {/*
-      <Configure filters="categories_without_path:'Indoor Lighting'" maxFacetHits={100} />
-      */}
       {breadcrumbs && breadcrumbs.length > 0 &&
         <Configure filters={breadcrumbs.map((item: any) => `categories_without_path:"${item.name}"`).join(' AND ')} maxFacetHits={100} />
       }
@@ -182,9 +176,6 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               <Facet title="Brand">
                 <RefinementList attribute="brand_name" searchable={false} />
               </Facet>
-              <Panel header="Brand">
-                <RefinementList attribute="brand_name" />
-              </Panel>
               <Facet title="Collection">
                 <RefinementList attribute="metafields.Details.Collection" />
               </Facet>
@@ -377,18 +368,18 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               </Panel>
             </DynamicWidgets>
           </div>
-          <SortBy items={[
+          <SortBy label="Sort By" items={[
             { label: 'Relevance', value: indexName },
             { label: 'Price (Low to High)', value: `${indexName}_sort_prices_USD_asc` },
             { label: 'Price (High to Low)', value: `${indexName}_sort_prices_USD_desc` },
-            { label: 'Avg. Customer Rating', value: `${indexName}_reviews_rating_sum_desc` },
+            { label: 'Avg. Customer Review', value: `${indexName}_reviews_rating_sum_desc` },
             { label: 'Number of Reviews', value: `${indexName}_reviews_count_desc` },
             { label: 'Best Sellers', value: `${indexName}_total_sold_desc` }
-          ]} classNames={{ root: 'order-1' }} />
+          ]} classNames={{ root: 'order-1', button: 'w-full !shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2', buttonText: 'text-brand-300', item: 'text-sm py-1', active: 'text-brand-300' }} />
         </div>
       </aside>
 
-      <div className={showSidebar ? 'overflow-hidden h-0 sm:overflow-auto sm:h-auto' : ''}>
+      <div id="catalog" className={showSidebar ? 'overflow-hidden h-0 sm:overflow-auto sm:h-auto' : ''}>
 
         <div className="mt-2 lg:flex md:space-x-4 items-center">
           <div className="flex-1">
@@ -419,15 +410,14 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
                 <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7.05882 0V5.71429H24V0M7.05882 20H24V14.2857H7.05882M7.05882 12.8571H24V7.14286H7.05882M0 5.71429H5.64706V0H0M0 20H5.64706V14.2857H0M0 12.8571H5.64706V7.14286H0V12.8571Z" fill="black" /></svg>
               }
             </button>
-
-            <SortBy items={[
+            <SortBy label="Sort By" items={[
               { label: 'Relevance', value: indexName },
               { label: 'Price (Low to High)', value: `${indexName}_sort_prices_USD_asc` },
               { label: 'Price (High to Low)', value: `${indexName}_sort_prices_USD_desc` },
-              { label: 'Avg. Customer Rating', value: `${indexName}_reviews_rating_sum_desc` },
+              { label: 'Avg. Customer Review', value: `${indexName}_reviews_rating_sum_desc` },
               { label: 'Number of Reviews', value: `${indexName}_reviews_count_desc` },
               { label: 'Best Sellers', value: `${indexName}_total_sold_desc` }
-            ]} classNames={{ root: 'flex-none', select: '!shadow-none !border-gray-300' }} />
+            ]} classNames={{ root: 'flex-none', button: '!shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2', buttonText: 'text-brand-300', item: 'text-sm py-1', active: 'text-brand-300' }} />
           </div>
         </div>
 
@@ -516,7 +506,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
             label: '!my-1',
             category: '!inline-block !mx-0 !my-1 !px-2 !py-1 !rounded-full !bg-gray-100 !border-gray-100 whitespace-nowrap max-w-full' 
           }} />
-          <ClearRefinements title="Applied Filters" buttonText="Clear All Filters" classNames={{ root: 'mt-2 flex items-center space-x-4 justify-center order-3 lg:mt-0 lg:order-2 lg:justify-start lg:ml-4', title: 'whitespace-nowrap text-center order-1 lg:flex-none lg:order-1', button: '!inline !px-0 !w-auto !text-base !bg-none !border-none !shadow-none !text-brand-300 !underline !hover:text-brand-600' }} />
+          <ClearRefinements title="Applied Filters" buttonText="Remove All Filters" classNames={{ root: 'mt-2 flex items-center space-x-4 justify-center order-3 lg:mt-0 lg:order-2 lg:justify-start lg:ml-4', title: 'whitespace-nowrap text-center order-1 lg:flex-none lg:order-1', button: '!inline !px-0 !w-auto !text-base !bg-none !border-none !shadow-none !text-brand-300 !underline !hover:text-brand-600' }} />
           <div className="lg:order-3 lg:basis-full lg:h-0"></div>
         </div>
 
@@ -536,7 +526,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               { label: '10 per page', value: 10 },
               { label: '20 per page', value: 20, default: true },
               { label: '50 per page', value: 50 }
-            ]} classNames={{ root: 'flex-none ml-auto lg:ml-0 order-1 md:order-2', select: '!shadow-none !border-gray-300' }} />
+            ]} classNames={{ root: 'flex-none ml-auto lg:ml-0 order-1 md:order-2', button: 'w-full !shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2', item: 'text-sm py-1', active: 'text-brand-300' }} />
           </div>
         </div>
 

@@ -93,7 +93,7 @@ export const ProductAccessories = ({
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     setIsLoading(true);
     event.preventDefault();
-    
+
     const formData = new FormData(event.currentTarget);
     const quantity = Number(formData.get('quantity'));
     if (variantId == 0) {
@@ -102,7 +102,6 @@ export const ProductAccessories = ({
     }
     cart.increment(quantity);
     startTransition(async () => {
-      
       const result = await addToCart(formData);
       if (result?.items) {
         productFlyout.setCartDataFn(result?.items);

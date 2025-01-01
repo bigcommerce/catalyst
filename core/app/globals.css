@@ -2,10 +2,18 @@
 @tailwind components;
 @tailwind utilities;
 
+@page{
+  margin-block: 2cm;
+}
+
 .header-sub-menu {
   gap: 20px;
   grid-template-columns: auto auto auto auto auto auto;
   display: grid;
+}
+input#field-8 {
+  color: #7f7f7f !important;
+  font-size: 14px;
 }
 .header-sub-menu-0 .submenu-div:nth-child(4) {
   grid-row: span 2;
@@ -667,10 +675,10 @@ button.show-all {
   display: flex;
   align-items: center;
 }
-.facets .ais-Panel-header span:first-child {
+.facets .ais-Panel-header > span:first-child {
   flex-grow: 1;
 }
-.facets .ais-Panel-header span:last-child {
+.facets .ais-Panel-header > span:last-child {
   font-size: 1.25rem;
   flex: none;
 }
@@ -695,7 +703,7 @@ button.show-all {
   background-size: 180%;
   border-radius: 3px;
   box-shadow: none !important;
-  border: 1px solid var(--gray-500) !important;
+  border: 2px solid var(--gray-500) !important;
   color: #d6d6e7;
   cursor: inherit;
   height: 1rem;
@@ -708,7 +716,7 @@ button.show-all {
   background-size: 14px;
   color: var(--brand-400) !important;
   box-shadow: none !important;
-  border: 1px solid var(--brand-400) !important;
+  border: 2px solid var(--brand-400) !important;
 }
 
 /* Button */
@@ -830,4 +838,57 @@ button.show-all {
   .ais-Dropdown-mobileTitle {
     display: block;
   }
+}
+
+.aa-PanelLayout, .aa-Panel--scrollable {
+  padding: 1rem !important;
+}
+/*
+.aa-Panel .aa-PanelLayout > button {
+  margin-top: 1rem;
+  padding: 0 1rem;
+  border: 1px solid var(--brand-400);
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  height: 2.5rem;
+  border-radius: 0.25rem;
+  cursor: pointer;
+}
+*/
+.aa-PanelSection--left .aa-Item {
+  line-height: 1.15rem;
+  font-size: .925rem;
+}
+@media (min-width: 768px) {
+.aa-PanelSection--right .aa-List {
+  max-height: 33rem;
+  overflow-y: auto;
+  /*
+  scrollbar-color: rgba(255, 255, 255, 1) rgba(234, 234, 234, 1);
+  scrollbar-color: rgba(var(--aa-scrollbar-thumb-background-color-rgb), var(--aa-scrollbar-thumb-background-color-alpha)) rgba(var(--aa-scrollbar-track-background-color-rgb), var(--aa-scrollbar-track-background-color-alpha));
+  scrollbar-width: thin;
+  */
+}
+}
+.aa-PanelSection--right .aa-ItemContentTitle {
+  margin: .5em 0 0 0;
+  overflow: visible;
+  padding: 0;
+  text-overflow: clip;
+  white-space: normal;
+  line-height: 1.5rem;
+}
+
+.aa-SourceHeader {
+  margin: 0 0 1rem !important;
+}
+.aa-SourceHeaderTitle {
+  background: none !important;
+  font-size: 1.2rem !important;
+  font-weight: normal !important;
+  padding: 0;
+}
+.aa-SourceHeaderLine {
+  display: none !important;
 }

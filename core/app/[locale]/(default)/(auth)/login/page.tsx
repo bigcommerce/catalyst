@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-
+ 
 // import Link as NxtLink from 'next/link';
-
+ 
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -10,20 +10,20 @@ import { imageIconList } from '../fragments';
 import { LoginForm } from './_components/login-form';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { BcImage } from '~/components/bc-image';
-
+ 
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
-
+ 
   setRequestLocale(locale);
-
+ 
   const t = await getTranslations('Login');
-
+ 
   return {
     title: t('title'),
   };
-
+ 
 }
-
+ 
 const patjoheatAndShade = imageManagerImageUrl('patjoheat-and-shade.png', '95w');
 const baileyStreet = imageManagerImageUrl('bailey-street.png', '138w');
 const OneStopLightning = imageManagerImageUrl('1stop-lightning.png', '194w');
@@ -31,28 +31,28 @@ const lunaWarehouse = imageManagerImageUrl('luna-warehouse.png', '298w');
 const canadaLightning = imageManagerImageUrl('canada-lightning.png', '228w');
 const homeclickBlack = imageManagerImageUrl('homeclick-black.png', '150w');
 const passwordHide = imageManagerImageUrl('eye-password-hide.png', '150w');
-
+ 
 interface Props {
   params: Promise<{ locale: string }>;
 }
-
+ 
 const person = imageManagerImageUrl('person.png', '16w');
 const checkCircle = imageManagerImageUrl('check-circle.png', '20w');
-
+ 
 export default async function Login({ params }: Props) {
   const { locale } = await params;
-
+ 
   setRequestLocale(locale);
-
+ 
   const t = await getTranslations('Login');
-
+ 
   const breadcrumbs: any = [
     {
       label: 'Rewards Program',
       href: '#',
     },
   ];
-
+ 
   return (
     <>
       <div>
@@ -124,7 +124,7 @@ export default async function Login({ params }: Props) {
           </div>
         </div>
       </div>
-
+ 
       <div className="m-auto mt-[20px] flex w-[92%] flex-col gap-[20px] px-0 xl:px-12 2xl:mx-auto 2xl:px-0">
         <ComponentsBreadcrumbs
           className="login-div login-breadcrumb mx-auto mt-[0.5rem] hidden w-[80%] px-[1px] xl:block"
@@ -136,7 +136,7 @@ export default async function Login({ params }: Props) {
             <p className="flex items-center text-center text-[16px] xl:text-[20px] font-medium tracking-[0.15px] text-[#002A37]">
               Shopping for a Business?
             </p>
-
+ 
             <button className="box-border flex max-w-[258px] flex-row items-center justify-center gap-1 px-[10px] py-[2px] rounded border border-[#4EAECC] bg-white xl:px-6 xl:py-2 xl:border-[#B4DDE9]">
               <div className="flex items-center text-[14px] font-medium tracking-wide text-[#002A37]">
                 <Link className="text-[16px]" href="/trade-account/trade-step1/">
@@ -149,18 +149,18 @@ export default async function Login({ params }: Props) {
         <div className="login-div font-weight-[500] mx-auto w-[80%] px-[1px] text-center text-[20px] tracking-[0.15px] xl:text-left">
           Log In
         </div>
-
+ 
         <div className="login-div mx-auto mb-6 flex w-full flex-col justify-center lg:gap-[4.5rem] xl:w-[80%] xl:flex-row">
           <div className="login-first-child login-logo mx-[1px] flex w-[calc(90vw)] flex-grow flex-col self-center xl:w-[calc(35.28vw)] xl:self-auto">
             <LoginForm {...imageIconList} passwordHide={passwordHide} />
           </div>
-
+ 
           <div className="login-sec-child mx-[1px] flex w-[calc(90vw)] flex-grow flex-col gap-[20px] self-center rounded-[5px] p-0 mt-[7rem] sm:mt-[-2rem] md:mt-[7rem] lg:mt-[2.5rem] xl:mt-0 xl:w-[calc(35.28vw)] xl:items-center xl:self-auto">
             <div className="flex w-full flex-col gap-[20px] rounded-[5px] bg-[#008BB7] p-[40px] text-white">
               <h3 className="flex items-center justify-center text-center text-[34px] font-bold tracking-[0.25px]">
                 {t('CreateAccount.heading')}
               </h3>
-
+ 
               <div className="item-center flex flex-row justify-center">
                 <Button
                   asChild
@@ -226,9 +226,9 @@ export default async function Login({ params }: Props) {
     </>
   );
 }
-
+ 
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
-
+ 
 export const dynamic = 'force-static';

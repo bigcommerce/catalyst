@@ -1,6 +1,6 @@
 import { Image, Link, List, Shape, TextInput } from '@makeswift/runtime/controls';
 
-import { CardCarousel } from '../card-carousel';
+import { CardCarousel } from '.';
 import { runtime } from '~/lib/makeswift/runtime';
 
 interface Card {

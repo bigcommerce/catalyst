@@ -1,8 +1,6 @@
-// product-card-plp
-
 import React from 'react';
-import { useState, useMemo, useEffect } from 'react';
-import { useHits, UseHitsProps } from 'react-instantsearch';
+import { useState, useEffect } from 'react';
+import { useHits } from 'react-instantsearch';
 import { Hit } from './hit';
 
 export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...props }: any) {
@@ -24,10 +22,10 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...prop
           try {
             setIsLoaded(false);
             setIsLoading(true);
-            console.log(skus.join(','));
+            //console.log(skus.join(','));
             const response = await fetch('/api/prices/?skus=' + skus.join(','));
             const data = await response.json();
-            console.log(data);
+            //console.log(data);
             setCachedPrices({
               ...cachedPrices,
               [skus.join(',')]: data.data,
@@ -111,10 +109,10 @@ export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, ..
           try {
             setIsLoaded(false);
             setIsLoading(true);
-            console.log(skus.join(','));
+            //console.log(skus.join(','));
             const response = await fetch('/api/prices/?skus=' + skus.join(','));
             const data = await response.json();
-            console.log(data);
+            //console.log(data);
             setCachedPrices({
               ...cachedPrices,
               [skus.join(',')]: data.data,

@@ -7,7 +7,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 //import { BcImage } from '~/components/bc-image';
 
-import searchColors from './search-colors.json';
+import searchColors from '~/belami/include/search-colors.json';
 
 import noImage from '~/public/no-image.svg';
 
@@ -162,22 +162,6 @@ function ColorSwatches({ variants, onImageClick }: any) {
       : null;
 
   const imageUrls = {} as any;
-  const items2 =
-    items && items.length > 0
-      ? variants
-          .filter(
-            (item: any) =>
-              item.image_url &&
-              item.image_url.length > 0 &&
-              Object.hasOwn(item.options, 'Finish Color'),
-          )
-          .map((item: any) => {
-            imageUrls[item.options['Finish Color']] = item.image_url.replace(
-              '.220.290.',
-              '.386.513.',
-            );
-          })
-      : null;
 
   return (
     //items && items.length > 0 &&
@@ -208,7 +192,7 @@ function ColorSwatches({ variants, onImageClick }: any) {
 }
 
 function getDiscount(price: number, salePrice: number): number | null {
-  return price > 0 ? Math.floor(((price - salePrice) * 100) / price) : 0;
+  return price > 0 ? Math.round(((price - salePrice) * 100) / price) : 0;
 }
 
 export function Hit({
@@ -239,7 +223,7 @@ export function Hit({
       data-id={hit.objectID}
       className="product flex h-full w-full flex-col rounded-none border border-gray-300"
     >
-      <div className="flex items-start overflow-x-hidden p-4 min-h-[60px]">
+      <div className="flex min-h-[60px] items-start overflow-x-hidden p-4">
         <div className="compare-product mr-4">
           <Compare
             id={hit.objectID}
@@ -438,9 +422,13 @@ export function Hit({
               </div>
             </div>
           ) : null}
-          {hit.reviews_count > 0 &&
-            <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="mx-auto mt-2 justify-center" />
-          }
+          {hit.reviews_count > 0 && (
+            <ReviewSummary
+              numberOfReviews={hit.reviews_count}
+              averageRating={hit.reviews_rating_sum}
+              className="mx-auto mt-2 justify-center"
+            />
+          )}
         </div>
         <Promotion
           promotions={promotions}
@@ -644,9 +632,13 @@ export function Hit({
               </div>
             </div>
           ) : null}
-          {hit.reviews_count > 0 &&
-            <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="mt-2" />
-          }
+          {hit.reviews_count > 0 && (
+            <ReviewSummary
+              numberOfReviews={hit.reviews_count}
+              averageRating={hit.reviews_rating_sum}
+              className="mt-2"
+            />
+          )}
           <Promotion
             promotions={promotions}
             brand_id={hit.brand_id}

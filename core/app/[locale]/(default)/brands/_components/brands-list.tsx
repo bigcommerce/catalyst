@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { Link as CustomLink } from '~/components/link';
 
-import searchKeywords from './search-keywords.json';
+import searchKeywords from '~/belami/include/search-keywords.json';
 
 type DynamicObject = {
   [key: string]: number;

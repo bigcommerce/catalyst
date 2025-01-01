@@ -45,8 +45,8 @@ interface Props extends ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.
   locale?: ReactNode;
   logo?: string | Image;
   search?: ReactNode;
-  homeLogoMobile? : string | Image;
-  homeLogoMobileFirst ? : string;
+  homeLogoMobile?: string | Image;
+  homeLogoMobileFirst?: string;
 }
 
 const Header = ({
@@ -59,10 +59,10 @@ const Header = ({
   logo,
   search,
   homeLogoMobile,
-  homeLogoMobileFirst
+  homeLogoMobileFirst,
 }: Props) => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout>(null);
 
   const handleMenuEnter = (linkHref: string) => {
     if (timeoutRef.current) {
@@ -111,15 +111,15 @@ const Header = ({
           </CustomLink>
 
           <CustomLink className="home-logo-two overflow-hidden text-ellipsis pt-3 md:pl-5" href="/">
-            {typeof logo === 'object' ? (
+            {typeof logo === 'object' && homeLogoMobileFirst ? (
               <div className="second-home-logo block lg:hidden">
                 <BcImage
                   alt="homeLogo"
                   className="max-h-16 object-contain"
                   height={30}
                   priority
-                  // src={imageIconList.homeLogo} 
-                  src={homeLogoMobileFirst}
+                  // src={imageIconList.homeLogo}
+                  src={homeLogoMobileFirst || ''}
                   width={30}
                   unoptimized={true}
                 />
@@ -130,7 +130,7 @@ const Header = ({
           </CustomLink>
         </div>
 
-        <div className="header-search-bar flex items-center gap-2 lg:gap-4">
+        <div className="header-search-bar flex flex-grow items-center gap-2 lg:gap-4">
           {search}
           <nav className="header-nav-support flex gap-2 lg:gap-4">{account}</nav>
           <nav className="header-cart flex gap-2 lg:gap-9">{cart}</nav>
@@ -177,9 +177,10 @@ const Header = ({
                       onMouseLeave={handleMenuLeave}
                     >
                       <div
-                        className={`header-sub-menu-${menuIndex} relative mx-auto grid max-w-[90em] md:grid-cols-[repeat(2,auto)] lg:grid-cols-[repeat(2,auto)] xl:grid-cols-[repeat(6,auto)] gap-6 px-12`}
+                        className={`header-sub-menu-${menuIndex} relative mx-auto grid max-w-[90em] gap-6 px-12 md:grid-cols-[repeat(2,auto)] lg:grid-cols-[repeat(2,auto)] xl:grid-cols-[repeat(6,auto)]`}
                       >
                         <button
+                          title="Close menu"
                           className="absolute -top-[1em] right-[1em] text-gray-600 hover:text-gray-800 focus:outline-none"
                           onClick={handleMenuClose}
                         >

@@ -1,12 +1,21 @@
-import { BookUser, Settings, Gift, Package } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { logout } from '~/components/header/_actions/logout';
 import { Link } from '~/components/link';
 
 import { AccountNotification } from './(tabs)/_components/account-notification';
+import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
+
+import Image from 'next/image';
+
+import ordersIcon from "~/public/accountIcons/orders.svg"
+import AddressesIcon from "~/public/accountIcons/addresses.svg"
+import requiestQuoteIcon from "~/public/accountIcons/requestQuote.svg"
+import detailsIcon from "~/public/accountIcons/details.svg"
+import favouriteIcon from "~/public/accountIcons/favourite.svg"
+import emailPrefIcon from "~/public/accountIcons/emailPref.svg"
+import { WelcomeMessage } from './welcome-message';
 
 interface AccountItem {
   children: ReactNode;
@@ -17,15 +26,12 @@ interface AccountItem {
 
 const AccountItem = ({ children, title, description, href }: AccountItem) => {
   return (
-    <Link
-      className="flex items-center border border-gray-200 p-6 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-      href={href}
-    >
+    <Link className="flex items-center gap-[23px] bg-[#f3f4f5] rounded-[3px] p-[10px]" href={href}>
       {children}
-      <span>
-        <h3 className="text-xl font-bold lg:text-2xl">{title}</h3>
-        {description ? <p>{description}</p> : null}
-      </span>
+      <div>
+        <h3 className="font-medium text-[20px] leading-[32px] tracking-[0.15px]">{title}</h3>
+        {description && <p className='font-normal text-[16px] leading-[32px] tracking-[0.5px]'>{description}</p>}
+      </div>
     </Link>
   );
 };
@@ -40,29 +46,61 @@ export async function generateMetadata() {
 
 export default function Account() {
   const t = useTranslations('Account.Home');
+  const ts = useTranslations('Account.SalesHours');
+  const breadcrumbs: any = [
+    {
+      label: 'Account Center',
+      href: '',
+    },
+  ];
 
   return (
-    <div className="my-account-page m-auto mx-auto w-[94%]">
-      <h1 className="my-8 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
-
+    <div className="my-account-page m-auto mx-auto mt-[24px] mb-[40px] w-[70%] font-['Open_Sans'] text-[#353535]">
       <AccountNotification message={t('successMessage')} />
+      <div className="flex flex-col gap-[40px]">
+        <div>
+          <ComponentsBreadcrumbs className="" breadcrumbs={breadcrumbs} />
+          <WelcomeMessage />
+        </div>
 
-      <div className="mb-14 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-        <AccountItem href="/account/orders" title={t('orders')}>
-          <Package className="me-8" size={48} strokeWidth={1.5} />
-        </AccountItem>
-        <AccountItem href="/account/addresses" title={t('addresses')}>
-          <BookUser className="me-8" size={48} strokeWidth={1.5} />
-        </AccountItem>
-        <AccountItem href="/account/wishlists" title={t('wishlists')}>
-          <Gift className="me-8" size={48} strokeWidth={1.5} />
-        </AccountItem>
-        <AccountItem href="/account/settings" title={t('settings')}>
-          <Settings className="me-8" size={48} strokeWidth={1.5} />
-        </AccountItem>
-        <form action={logout}>
-          <button>Logout</button>
-        </form>
+        <div className="grid grid-cols-3 gap-5">
+          <AccountItem href="/account/orders" title={t('orders')} description={t('ordersMsg')}>
+            <Image src={ordersIcon} alt={t('orders')}  width={70} height={70}/>
+          </AccountItem>
+          <AccountItem href="/account/addresses" title={t('addresses')} description={t('addressesMsg')}>
+          <Image src={AddressesIcon} alt={t('addresses')}  width={70} height={70}/>
+          </AccountItem>
+          <AccountItem href="/account/wishlists" title={t('requestAQuote')} description={t('requestAQuoteMsg')}>
+            <Image src={requiestQuoteIcon} alt={t('requestAQuote')}  width={70} height={70}/>
+          </AccountItem>
+          <AccountItem href="/account/settings" title={t('accountDetails')} description={t('accountMsg')}>
+            <Image src={detailsIcon} alt={t('accountDetails')}  width={70} height={70}/>
+          </AccountItem>
+          <AccountItem href="/account/wishlists" title={t('favoritesAndLists')} description={t('favListMsg')}>
+            <Image src={favouriteIcon} alt={t('favoritesAndLists')}  width={70} height={70}/>
+          </AccountItem>
+          <AccountItem href="/account/settings" title={t('emailPreferences')} description={t('emailPreferencesMsg')}>
+            <Image src={emailPrefIcon} alt={t('emailPreferences')}  width={70} height={70}/>
+          </AccountItem>
+        </div>
+        <div className="flex w-max flex-col gap-[10px]">
+          <div className="text-[20px] font-[500] leading-[32px] tracking-[0.15px]">
+            {ts('salesHours')}
+          </div>
+          <div className="text-[16px] font-normal leading-[32px] tracking-[0.5px]">
+            <div>{ts('phoneHours')}</div>
+            <div>{ts('phoneMondayToFriday')}</div>
+            <div>{ts('phoneMobNo')}</div>
+          </div>
+          <div className="text-[16px] font-normal leading-[32px] tracking-[0.5px]">
+            <div>{ts('chatHours')}</div>
+            <div>{ts('chatMondayToFriday')}</div>
+            <div>{ts('chatSatToSun')}</div>
+          </div>
+          <div className="w-[53%] bg-[#fbf4e9] px-[10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#2a2010]">
+            {ts('currentEstimated')}
+          </div>
+        </div>
       </div>
     </div>
   );
