@@ -10,12 +10,14 @@ import CartInterface from './common-components/_components/CartInterfacePage';
 import ReferalId from './common-components/_components/CartReferralPage';
 import SalesBuddyProductPage from './common-components/_components/PDPPage';
 import PLPPageInterface from './common-components/_components/PLPPageInterface';
+import { getEnhancedSystemInfo } from './common-components/common-functions';
 
 export default function SalesBuddyAppIndex() {
   const [isOpen, setIsOpen] = useState(false); 
   const path = usePathname();
   // Extract last segment of the path
   const toggleDrawer = () => setIsOpen(!isOpen);
+  console.log(getEnhancedSystemInfo());
   
   const renderDrawerContent = () => {
     if (path.indexOf('/cart/') > -1) {

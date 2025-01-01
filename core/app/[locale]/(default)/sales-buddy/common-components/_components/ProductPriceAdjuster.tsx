@@ -8,6 +8,7 @@ import Spinner from './Spinner';
 interface ProductPriceAdjusterProps {
   parentSku: string;
   sku: string;
+  oem_sku:String;
   productPrice: number;
   initialCost: number;
   initialFloor: number;
@@ -30,12 +31,14 @@ const EditIcon =()=>{
 const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   parentSku,
   sku,
+  oem_sku,
   productPrice,
   initialCost,
   initialFloor,
   initialMarkup,
   productId,
-  cartId
+  cartId,
+  
 }) => {
   const [cost, setCost] = useState<number>(initialCost);
   const [floor] = useState<number>(initialFloor);
@@ -75,6 +78,8 @@ if (isSave) {
   setIsEditing(false);
   setLoading(false);
 }
+
+
   return (
     <div className="w-full bg-[#353535] p-[10px] text-white">
       {/* Parent SKU */}
@@ -89,26 +94,30 @@ if (isSave) {
         <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">SKU</p>
         <p className="text-[14px] font-normal tracking-[0.25px]">{sku}</p>
       </div>
+      <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
+        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">OEM SKU</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{oem_sku}</p>
+      </div>
       {/* <hr className="border-white-600 m-2" /> */}
 
       {/* Cost */}
       <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
         <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Cost</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{cost}</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{initialCost}</p>
       </div>
       {/* <hr className="border-white-600 m-2" /> */}
 
       {/* Floor */}
       <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
         <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Floor ($)</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{floor?.toFixed(2)}</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{floor}</p>
       </div>
       {/* <hr className="border-white-600 m-2" /> */}
 
       {/* Markup */}
       <div className="my-0 mx-auto h-[24px] flex items-center justify-between">
         <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Markup</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{markup?.toFixed(1)}</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{floor ? initialCost * floor : initialCost}</p>
       </div>
       {/* <hr className="border-white-600 m-2" /> */}
 
