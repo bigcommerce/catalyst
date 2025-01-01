@@ -24,6 +24,7 @@ import { useCommonContext } from '~/components/common-context/common-provider';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
+import {  store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 
 interface ProductOptionValue {
   entityId: number;
@@ -218,6 +219,12 @@ export const Details = ({
     updateImageFromVariant();
   }, [searchParams, product, variants, productOptions, currentMainMedia]);
 
+  useEffect(() => {
+    // store product id in local storage for Salesbuddy
+    store_pdp_product_in_localstorage(product);
+    
+  }, [product]);
+  
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
     if (selectedId) {
@@ -232,7 +239,6 @@ export const Details = ({
     const defaultValue = values.find((value) => value.isDefault);
     return defaultValue?.label || 'Select';
   };
-
   return (
     <div>
       {showStickyHeader && (
