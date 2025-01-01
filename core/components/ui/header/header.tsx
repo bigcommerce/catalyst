@@ -142,7 +142,7 @@ const Header = ({
         </div>
       </header>
 
-      <div className="header-bottom mx-auto flex max-w-full items-center justify-between border-b border-t border-[#cccbcb] bg-white px-4 pb-4 pt-4 lg:mt-[30px] lg:px-10 xl:mt-0">
+      <div className="header-bottom mx-auto flex max-w-full items-center justify-between border-b border-t border-[#cccbcb] bg-white px-4 lg:mt-[30px] lg:px-10 xl:mt-0">
         <NavigationMenuPrimitive.Root id="nav-menu-root" className="hidden lg:block">
           <NavigationMenuPrimitive.List
             id="nav-menu-list"
