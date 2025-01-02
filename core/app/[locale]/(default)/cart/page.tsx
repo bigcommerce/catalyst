@@ -89,16 +89,16 @@ export default async function Cart() {
     return <EmptyCart />;
   }
  
-  const CustomItems = cart?.lineItems.customItems
-  const get_product_price_data_in_cart = async (cartId: any) => {
-  const result = await get_cart_price_adjuster_data(cartId);
-    if (result.status === 200) {
-      return result.data.output;
-    } else {
-    return [{ error: 'Failed to retrive data' }];
-    }
-  };
-const product_data_in_cart = await get_product_price_data_in_cart(cartId);
+//   const CustomItems = cart?.lineItems.customItems
+//   const get_product_price_data_in_cart = async (cartId: any) => {
+//   const result = await get_cart_price_adjuster_data(cartId);
+//     if (result.status === 200) {
+//       return result.data.output;
+//     } else {
+//     return [{ error: 'Failed to retrive data' }];
+//     }
+//   };
+// const product_data_in_cart = await get_product_price_data_in_cart(cartId);
 
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
@@ -217,10 +217,10 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
               product={product}
               deleteIcon={deleteIcon}
               cartId={cart.entityId}
-              priceAdjustData={product_data_in_cart.physical_items[product.entityId]}
+              //priceAdjustData={product_data_in_cart.physical_items[product.entityId]}
             />
           ))}
-          {
+          {/* {
             CustomItems.map((data)=>{
               return (
                 // <p>{data.entityId}</p>
@@ -235,7 +235,7 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
               />
               )
             })
-          }
+          } */}
         </ul>
 
         <div className="cart-right-side sticky top-0 col-span-1 col-start-2 -mt-[9em] h-[100px] min-h-[800px] border-t border-[#CCCBCB] py-[1.4em] lg:col-start-3">
