@@ -65,7 +65,7 @@ export default function SalesBuddyProductPage() {
       try {
         const data = await get_product_data(retrievedProductData.productId);
         if (data.status === 200) {
-          costPricingTableData(data.data.output);
+          costPricingTableData(data?.data?.output);
         }
       } catch (error) {
         console.error('Error fetching product data:', error);
@@ -73,6 +73,8 @@ export default function SalesBuddyProductPage() {
     };
     fetchData(); // Call the async function
   }, []);
+  
+  // console.log(childSku);
   
   const ACCORDION_DATA = {
     existingQuote: {
@@ -138,9 +140,14 @@ export default function SalesBuddyProductPage() {
       content: (
         <div className="w-[460px] bg-white p-[20px]">
           {childSku?.map((skuNum, index) => {
+                // Step 1: Split the stockPlace details by double pipe
+            const entries = skuNum?.stockPlace?.split('||').map(entry => entry?.trim());
+            // Step 2: Split each entry by single pipe
+            const stockDetails = entries?.map(entry => entry?.split('|').map(item => item?.trim()));
+            
             const item = {
-              id: skuNum.sku, // Use skuNum.sku instead of hardcoded id
-              status:skuNum.stockPlace,
+              id: skuNum?.sku, // Use skuNum.sku instead of hardcoded id
+              status:stockDetails,
                 // index === 0
                 //   ? '## In Stock | Distribution Center Inventory'
                 //   : index === 1
@@ -160,7 +167,32 @@ export default function SalesBuddyProductPage() {
               
                 <div key={index} className="space-y-[5px] border-b pb-[10px] pt-[10px]">
                   <p className="font-bold">{item.id}</p>
-                 {item.status ?  <p className="text-[14px] text-[#353535]">{item.status}</p> :  <div className="space-y-[5px]  pb-[10px] pt-[10px]">No Inventory Available </div> }
+                {
+                 item.status ? <>
+                  {item?.status?.map((details, detailIndex) => (
+                    <div key={detailIndex} className=' w-full mb-2'> {/* Added margin-bottom for spacing */}
+                      <div className=" justify-between w-full">
+                        <p className="text-[14px] open-sans text-[#353535]">{details[0]} | {details[1]}</p> {/* Assuming the first item is the location */}
+                        <div className='flex justify-between items-center'>
+                          <p className="mr-2">{details[2]}</p> {/* Added margin-right for spacing */}
+                          <p
+                            className={`p-[5px] text-sm ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
+                            style={{ backgroundColor: details[3] }} // Assuming the fourth item is the updatedColor
+                          >
+                            <span
+                              className={`font-bold ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
+                            >
+                              {details[3]} {/* Assuming the fourth item is the updated value */}
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                  </> :<div className="space-y-[5px]  pb-[10px] pt-[10px]">No Inventory Available </div> 
+                }
+                
+                
                   {/* <div className="flex justify-between">
                     <p className="text-sm text-[#353535]">{item.location}</p>
                     <p

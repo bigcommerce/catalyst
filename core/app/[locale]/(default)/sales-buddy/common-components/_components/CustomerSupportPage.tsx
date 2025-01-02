@@ -12,6 +12,8 @@ import { getCustomerCart } from '../../_actions/get-customer-cart';
 import Loader from './Spinner';
 import {  validateInput } from '../common-functions';
 import { UpdateCartIdCookie } from '../../_actions/update-cart-id-cookies';
+import { getShopperUrls } from '../../_actions/get-shopper-urls';
+import Link from 'next/link';
 function CustomerSupportPage() {
   const [customerDetails, setCustomerDetails] = useState({});
   const [cartErrorMessage, setCartErrorMessage] = useState<string | null>(null);
@@ -25,6 +27,9 @@ function CustomerSupportPage() {
   const [tableData, setTableData] = useState<any[]>([]);
   const [cartId, setCartId] = useState('');
 
+  const [sessionId, setSessionId] = useState('');
+  const [shoppersUrl, setShoppersUrl] = useState([]);
+  const [customerVisitedUrl,setCustomerVisitedUrl]=useState([])
   const [updatedCartId, setUpdatedCCartId] = useState('');
   const [findCustomerData, setFindCustomerData] = useState({
     email: '',
@@ -74,6 +79,23 @@ function CustomerSupportPage() {
       setLoading((prev) => ({ ...prev, show1: false }));
     }
   };
+  const handleGetShoppersUrlsData = async (e: React.FormEvent) => {
+    setLoading((prev) => ({ ...prev, show1: true }));
+    e.preventDefault();
+    try {
+      console.log('session id  --- ',sessionId);
+      
+      const response = await getShopperUrls(sessionId);
+      // setShoppersUrl(response.data.output)
+      console.log("response.data.output----",response.output);
+      setCustomerVisitedUrl(response.output.urls)
+      setLoading((prev) => ({ ...prev, show1: false }));
+    } catch (error: any) {
+      setLoading((prev) => ({ ...prev, show1: false }));
+    }
+  };
+  // 
+
 
   const handleFindCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -166,6 +188,24 @@ function CustomerSupportPage() {
     }
   }, [updatedCartId,findCustomerSuccessMessage])
   
+  const UrlList = ({ urls }) => {
+    return (
+        <div className='m-4'>
+            <h2 className='text-lg font-bold mb-2'>URLs</h2>
+            <ul className='list-disc pl-5'>
+                {urls.map((item) => (
+                    <li key={item.id} className='mb-2'>
+                        <Link href={item.url} className='text-blue-600 hover:underline'>
+                            {/* <a className='text-blue-600 hover:underline'> */}
+                                {item.url}
+                            {/* </a> */}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
 
   const renderInputFields = (fields: Array<{ id: string; label: string }>, refs: any) => {
     return fields.map((item) => (
@@ -193,6 +233,11 @@ function CustomerSupportPage() {
         setCartId(value);
         break;
       }
+        case 'session-id': {
+        setSessionId(value);
+        break;
+      }
+
       case 'email': {
         setFindCustomerData({ ...findCustomerData, email: value });
         const emailError = validateInput('email', value, 'find');
@@ -427,17 +472,21 @@ function CustomerSupportPage() {
         </div>
       ),
       content: (
-        <>
-         <Input
-            value={cartId}
-            onChange={(e) => handleInputChange('cart-id', e.target.value)}
-            id="cart-id"
-            placeholder="Cart ID"
+        <form
+            onSubmit={(e) => handleGetShoppersUrlsData(e)}
+            className="mt-[10px] flex flex-col justify-center bg-white pb-[10px]"
+          >
+             <Input
+            value={sessionId}
+            onChange={(e) => handleInputChange('session-id', e.target.value)}
+            id="session-id"
+            placeholder="Session ID"
             className="font-open-sans w-[225px]"
           />
            <button
             type="submit"
             className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
+            
           >
             <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH URL's </p>
             <div className="absolute inset-0 flex items-center justify-center">
@@ -445,9 +494,12 @@ function CustomerSupportPage() {
             </div>
           </button>
        <div className='m-2'>
-        <p>URL's</p>
+        <UrlList urls={customerVisitedUrl}/>
        </div>
-        </>
+
+          </form>
+        
+        
       ),
     },
   ];

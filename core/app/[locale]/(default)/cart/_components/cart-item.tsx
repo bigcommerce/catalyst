@@ -174,6 +174,7 @@ interface Props {
   currencyCode: string;
   deleteIcon: string;
   cartId: string;
+  priceAdjustData:string;
 }
 function moveToTheEnd(arr: any, word: string) {
   arr?.map((elem: any, index: number) => {
@@ -184,7 +185,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) => {
+export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjustData}: Props) => {
 
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
@@ -375,7 +376,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                 </div>
               </div>
               <div className="overflow-x-hidden xl:pl-[10px]">
-                {/* <ProductPriceAdjuster
+                <ProductPriceAdjuster
                   parentSku={priceAdjustData?.parent_sku}
                   sku={priceAdjustData?.sku}
                   oem_sku={priceAdjustData?.oem_sku}
@@ -385,7 +386,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                   initialMarkup={Number(product?.listPrice?.value)}
                   productId={product?.productEntityId}
                   cartId={cartId}
-                /> */}
+                />
                 {/* priceAdjustData.parent_sku */}
               </div>
             </div>

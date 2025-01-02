@@ -207,7 +207,7 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
                   sku={priceAdjustData?.sku}
                   oem_sku={priceAdjustData?.oem_sku}
                   productPrice={Number(product?.listPrice?.value)}
-                  initialCost={Number(priceAdjustData.cost)}
+                  initialCost={Number(priceAdjustData?.cost)}
                   initialFloor={Number(priceAdjustData?.floor_percentage)}
                   initialMarkup={Number(product?.listPrice?.value)}
                   productId={product?.productEntityId}
