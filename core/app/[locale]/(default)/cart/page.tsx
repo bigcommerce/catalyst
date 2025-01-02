@@ -22,7 +22,9 @@ import { GeographyFragment } from './_components/shipping-estimator/fragment';
 import { SaveCart } from './_components/save-cart';
 import { RemoveCart } from './_components/remove-cart';
 import { GetCartMetaFields } from '~/components/management-apis';
-import { access } from 'fs';
+import CartProductComponent from '../sales-buddy/common-components/_components/CartComponent/CartProductComponent';
+import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
+// import { get_product_price_data_in_cart } from '../sales-buddy/common-components/common-functions';
 
 const CartPageQuery = graphql(
   `
@@ -83,12 +85,26 @@ export default async function Cart() {
   const cart = data.site.cart;
   const checkout = data.site.checkout;
   const geography = data.geography;
-
   if (!cart) {
     return <EmptyCart />;
   }
+ 
+//   const CustomItems = cart?.lineItems.customItems
+//   const get_product_price_data_in_cart = async (cartId: any) => {
+//   const result = await get_cart_price_adjuster_data(cartId);
+//     if (result.status === 200) {
+//       return result.data.output;
+//     } else {
+//     return [{ error: 'Failed to retrive data' }];
+//     }
+//   };
+// const product_data_in_cart = await get_product_price_data_in_cart(cartId);
 
-  const lineItems: any = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
+  const lineItems: any = [
+    ...cart.lineItems.physicalItems,
+    ...cart.lineItems.digitalItems,
+    // ...cart.lineItems.customItems,
+  ];
   let cartQty = lineItems?.reduce(function (total: number, cartItems: any) {
     return total + cartItems?.quantity;
   }, 0);
@@ -146,7 +162,7 @@ export default async function Cart() {
     href: '#'
   }];
   return (
-    <div className="cart-page mx-auto max-w-[93.5%] mb-[2rem] pt-8">
+    <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
       <ContinuetocheckoutButton cartId={cartId} />
 
       <div className="pt-6 text-center lg:hidden">
@@ -194,17 +210,34 @@ export default async function Cart() {
           </div>
         </div>
       </div>
-      <div className="cart-right-side-details w-full px-18 pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
-        <ul className="col-span-2 cart-details-item lg:w-full">
-          {updatedLineItemWithoutAccessories.map((product: any) => (
+      <div className="cart-right-side-details px-18 w-full pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
+        <ul className="cart-details-item col-span-2 lg:w-full">
+          {updatedLineItemWithoutAccessories.map((product: any ) => (
             <CartItem
               currencyCode={cart.currencyCode}
               key={product.entityId}
               product={product}
               deleteIcon={deleteIcon}
               cartId={cart.entityId}
+              //priceAdjustData={product_data_in_cart.physical_items[product.entityId]}
             />
           ))}
+          {/* {
+            CustomItems.map((data)=>{
+              return (
+                // <p>{data.entityId}</p>
+              <CartProductComponent
+                currencyCode={cart.currencyCode}
+                key={data.entityId}
+                product={data}
+                deleteIcon={deleteIcon}
+                cartId={cart.entityId}
+                priceAdjustData={product_data_in_cart.custom_items[data.entityId]}
+
+              />
+              )
+            })
+          } */}
         </ul>
 
         <div className="cart-right-side sticky top-0 col-span-1 col-start-2 -mt-[9em] h-[100px] min-h-[800px] border-t border-[#CCCBCB] py-[1.4em] lg:col-start-3">

@@ -33,7 +33,7 @@ const searchClient = algoliasearch(
 const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
 
 function getDiscount(price: number, sale: number): number | null {
-  return price > 0 ? Math.floor(((price - sale) * 100) / price) : 0;
+  return price > 0 ? Math.round(((price - sale) * 100) / price) : 0;
 }
 
 function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = null, isLoading = false, isLoaded = false }: any) {

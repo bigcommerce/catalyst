@@ -1,11 +1,12 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Accordions } from '../Accordin/index';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/form';
 import NotesIcons from '../../assets/add_notes.png';
+import {  get_product_data, PdpProduct } from '../common-functions';
 // Utility for styles
 const TailwindCustomCssValues = {
   font: 'font-open-sans',
@@ -14,110 +15,9 @@ const TailwindCustomCssValues = {
   buttonBgSecondary: 'bg-[#353535]',
 };
 
-const ACCORDION_DATA = {
-  existingQuote: {
-    title: (
-      <div className="flex items-center gap-[5px] text-base font-normal">
-        <Image src={NotesIcons} alt="Add Notes Icon" />
-        <span className={`${TailwindCustomCssValues.font} text-[#353535]`}>
-          Add to Existing Quote
-        </span>
-      </div>
-    ),
-    content: (
-      <div className="mt-3 w-full bg-white">
-        <Input id="quote" placeholder="Quote#" className="mb-4" />
-        <Button
-          className={`${TailwindCustomCssValues.font} w-full bg-[#1DB14B] font-normal text-white`}
-        >
-          ADD TO QUOTE
-        </Button>
-      </div>
-    ),
-  },
-  costPricing: {
-    title: (
-      <h4 className="text-[20px] font-normal text-[#353535]">Cost and Pricing - United States</h4>
-    ),
-    content: (
-      <div className="bg-white">
-        <table className="w-full border-collapse border-b border-gray-300 text-sm">
-          <thead>
-            <tr className="text-left">
-              {['SKU', 'Cost', 'IMAP', 'Floor (%)', 'Floor ($)'].map((header) => (
-                <th key={header} className="p-1">
-                  {header}
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {[...Array(4)].map((_, i) => (
-              <tr key={i}>
-                {['ABCDE-123-FG', '$0000.00', '$0000.00', '00%', '$0000.00'].map((data, j) => (
-                  <td key={j} className="border-b px-[5px] py-[5px]">
-                    {data}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    ),
-  },
-  inventory: {
-    title: <h4 className="text-[20px] font-normal text-[#353535]">Inventory</h4>,
-    content: (
-      <div className="w-[460px] bg-white p-[20px]">
-        {[
-          {
-            id: 'ABCDE-123-FG',
-            status: '## In Stock | Distribution Center Inventory',
-            location: 'Quoizel - Gose Creek, SC (1006)',
-            updated: '5 Days Ago',
-            updatedColor: '#F5E9E8',
-          },
-          {
-            id: 'ABCDE-123-FG',
-            status: '## Back Ordered | 50 Expected MM/DD/YYYY',
-            location: 'Supplier Inventory NSOID #####',
-            updated: 'Today',
-            updatedColor: '#EAF4EC',
-          },
-          {
-            id: 'ABCDE-123-FG',
-            status: '## In Stock | Belami Warehouse Inventory',
-            location: 'Hinkley - Cleveland, OH (1004)',
-            updated: '2 Days Ago',
-            updatedColor: '#FBF4E9',
-          },
-        ].map((item, index) => (
-          <div key={index} className="space-y-[5px] border-b pb-[10px] pt-[10px]">
-            <p className="font-bold">{item.id}</p>
-            <p className="text-[14px] text-[#353535]">{item.status}</p>
-            <div className="flex justify-between">
-              <p className="text-sm text-[#353535]">{item.location}</p>
-              <p
-                className={`p-[5px] text-sm ${index == 0 ? 'text-[#6A4C1E]' : index == 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
-                style={{ backgroundColor: item.updatedColor }}
-              >
-                Updated{' '}
-                <span
-                  className={`font-bold ${index == 0 ? 'text-[#6A4C1E]' : index == 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'} `}
-                >
-                  {item.updated}
-                </span>
-              </p>
-            </div>
-          </div>
-        ))}
-      </div>
-    ),
-  },
-};
 
 export default function SalesBuddyProductPage() {
+  const [childSku, setChildSku] = useState([]);
   const retrievedProductData = JSON.parse(localStorage.getItem('productInfo') || '{}');
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
   const [quoteNumber, setQuoteNumber] = useState('');
@@ -126,6 +26,162 @@ export default function SalesBuddyProductPage() {
     setOpenAccordions((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
     );
+  };
+
+  const costPricingTableData = (data) => {
+    
+    let adjustCostObject = data?.productVariantsMetafields;
+    const floorValues = Object?.keys(data.Metafields)?.flatMap((key) => {
+      const dataArray = data?.Metafields[key]?.data[0]; // Access the entire data array
+      return { 'floor%': dataArray?.value };
+    });
+    
+    let getSkuImap = Object?.values(data?.productVariants).flatMap((variants) => {
+      return variants?.map((variant) => {
+        const resourceId = variant?.variants?.id; 
+        const adjustedCostData = adjustCostObject[resourceId]?.data || [];
+        const adjustedCost = adjustedCostData[0]?.value; 
+        const stockPlace = adjustedCostData[1]?.value; 
+
+        return {
+          id: variant?.variants?.id,
+          productid: variant?.product_id,
+          sku: variant?.variants?.sku,
+          calculated_price: variant?.variants?.calculated_price,
+          AdjustedCost: adjustedCost || variant?.variants?.calculated_price +"*", // Include AdjustedCost
+          stockPlace: stockPlace, // Include stockPlace
+          floorPercentage: floorValues[0]['floor%'] || null, // Include floor% value
+          floorPrice: parseFloat(
+            floorValues[0]['floor%'] * adjustedCost || variant?.variants?.calculated_price,
+          ).toFixed(2),
+        };
+      });
+    });
+    setChildSku(getSkuImap)
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const data = await get_product_data(retrievedProductData.productId);
+        if (data.status === 200) {
+          costPricingTableData(data.data.output);
+        }
+      } catch (error) {
+        console.error('Error fetching product data:', error);
+      }
+    };
+    fetchData(); // Call the async function
+  }, []);
+  
+  const ACCORDION_DATA = {
+    existingQuote: {
+      title: (
+        <div className="flex items-center gap-[5px] text-base font-normal">
+          <Image src={NotesIcons} alt="Add Notes Icon" />
+          <span className={`${TailwindCustomCssValues.font} text-[#353535]`}>
+            Add to Existing Quote
+          </span>
+        </div>
+      ),
+      content: (
+        <div className="mt-3 w-full bg-white">
+          <Input id="quote" placeholder="Quote#" className="mb-4" />
+          <Button
+            className={`${TailwindCustomCssValues.font} w-full bg-[#1DB14B] font-normal text-white`}
+          >
+            ADD TO QUOTE
+          </Button>
+        </div>
+      ),
+    },
+    costPricing: {
+      title: (
+        <h4 className="text-[20px] font-normal text-[#353535]">Cost and Pricing - United States</h4>
+      ),
+      content: (
+        <div className="bg-white">
+          <table className="w-full border-collapse border-b border-gray-300 text-sm">
+            <thead>
+              <tr className="text-left">
+                {['SKU', 'Cost', 'IMAP', 'Floor (%)', 'Floor ($)'].map((header) => (
+                  <th key={header} className="p-1">
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {childSku?.map((skuNum: any, i: any) => (
+                <tr key={i}>
+                  {[
+                    skuNum.sku,
+                    skuNum.AdjustedCost,
+                    skuNum.calculated_price,
+                    skuNum.floorPercentage,
+                    skuNum.floorPrice,
+                  ].map((data, j) => (
+                    <td key={j} className="border-b px-[5px] py-[5px]">
+                      {data}
+                    </td>
+                  ))}
+                </tr>
+                // <tr key={i}>{skuNum.sku}</tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      ),
+    },
+    inventory: {
+      title: <h4 className="text-[20px] font-normal text-[#353535]">Inventory</h4>,
+      content: (
+        <div className="w-[460px] bg-white p-[20px]">
+          {childSku?.map((skuNum, index) => {
+            const item = {
+              id: skuNum.sku, // Use skuNum.sku instead of hardcoded id
+              status:skuNum.stockPlace,
+                // index === 0
+                //   ? '## In Stock | Distribution Center Inventory'
+                //   : index === 1
+                //     ? '## Back Ordered | 50 Expected MM/DD/YYYY'
+                //     : '## In Stock | Belami Warehouse Inventory',
+              // location:
+              //   index === 0
+              //     ? 'Quoizel - Gose Creek, SC (1006)'
+              //     : index === 1
+              //       ? 'Supplier Inventory NSOID #####'
+              //       : 'Hinkley - Cleveland, OH (1004)',
+              // updated: index === 0 ? '5 Days Ago' : index === 1 ? 'Today' : '2 Days Ago',
+              // updatedColor: index === 0 ? '#F5E9E8' : index === 1 ? '#EAF4EC' : '#FBF4E9',
+            };
+
+            return (
+              
+                <div key={index} className="space-y-[5px] border-b pb-[10px] pt-[10px]">
+                  <p className="font-bold">{item.id}</p>
+                 {item.status ?  <p className="text-[14px] text-[#353535]">{item.status}</p> :  <div className="space-y-[5px]  pb-[10px] pt-[10px]">No Inventory Available </div> }
+                  {/* <div className="flex justify-between">
+                    <p className="text-sm text-[#353535]">{item.location}</p>
+                    <p
+                      className={`p-[5px] text-sm ${index === 0 ? 'text-[#6A4C1E]' : index === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
+                      style={{ backgroundColor: item.updatedColor }}
+                    >
+                      Updated{' '}
+                      <span
+                        className={`font-bold ${index === 0 ? 'text-[#6A4C1E]' : index === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
+                      >
+                        {item.updated}
+                      </span>
+                    </p>
+                  </div> */}
+                </div>
+              
+            );
+          })}
+        </div>
+      ),
+    },
   };
 
   return (

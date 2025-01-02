@@ -1,73 +1,60 @@
+
 import React from 'react';
 import Link from 'next/link';
 
-export default function DynamicTable({ data }) {
+export default function DynamicList({ data }) {
   if (!data || !data.length) {
     return <p>No data available to display.</p>;
   }
 
-  // Calculate the width for each column based on the number of columns
-  const columnCount = Object.keys(data[0]).length;
-  const columnWidth = `${100 / columnCount}%`; // Each column will take an equal percentage of the table width
-
   return (
-    <div style={{ padding: '1px', margin: 'auto' }}>
-      <table
-        style={{
-          width: '100%',
-          borderCollapse: 'collapse',
-          textAlign: 'center',
-          border: '1px solid #ccc',
-          tableLayout: 'fixed', // Ensures fixed layout for equal column widths
-        }}
-      >
-        <thead>
-          <tr>
-            {Object.keys(data[0]).map((key) => (
-              <th
-                key={key}
-                style={{
-                  padding: '10px',
-                  border: '1px solid #ccc',
-                  backgroundColor: '#f4f4f4',
-                  width: columnWidth, // Set the width for each column
-                }}
-              >
-                {key.replace(/_/g, ' ')}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {data.map((row: { [s: string]: unknown; } | ArrayLike<unknown>, rowIndex: React.Key | null | undefined) => (
-            <tr key={rowIndex}>
-              {Object.entries(row).map(([key, value], cellIndex) => (
-                <td
-                  key={cellIndex}
-                  style={{
-                    padding: '10px',
-                    border: '1px solid #ccc',
-                    width: columnWidth, // Set the width for each cell
-                    wordWrap: 'break-word', // Allow text to wrap
-                    overflowWrap: 'break-word', // Ensure long words break
-                    whiteSpace: 'normal', // Allow normal wrapping
-                  }}
-                >
-                  <Link href={`/cart`}>
-                    {' '}
-                    {/* Adjust the path as needed */}
-                    <span style={{ textDecoration: 'none', color: 'inherit' }}>
-                      {typeof value === 'object' && value !== null
-                        ? JSON.stringify(value) // Converts objects to string
-                        : value?.toString() || 'N/A'}{' '}
-                    </span>
-                  </Link>
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div style={{ padding: '10px', margin: 'auto' }}>
+      {data.map((item, index) => (
+        <div
+          key={index}
+          style={{
+            border: '1px solid #ccc',
+            borderRadius: '8px',
+            padding: '15px',
+            marginBottom: '10px',
+            backgroundColor: '#f9f9f9',
+          }}
+        >
+          <div style={{ marginBottom: '8px' }}>
+            <strong>Name:</strong>{' '}
+            {/* <Link href={`/cart`}> */}
+              <span style={{ textDecoration: 'none', color: 'inherit' }}>
+                {item.first_name +" " +item.last_name  || 'N/A'}
+              </span>
+            {/* </Link> */}
+          </div>
+          <div style={{ marginBottom: '8px' }}>
+            
+            {/* <Link href={`/cart`}> */}
+             <div className='flex justify-between'>
+               <span style={{ textDecoration: 'none', color: 'inherit' }}>
+                <strong>Email ID:</strong>{item.email || 'N/A'}
+              </span>
+              <Link href={`/`}>
+              <span className=''>Login</span>
+              </Link>
+              </div>
+            {/* </Link> */}
+          </div>
+        </div>
+      ))}
     </div>
   );
 }
+
+// Example usage with dummy data
+const dummyData = [
+  {
+    name: 'John Doe',
+    email: 'john.doe@example.com',
+  },
+  {
+    name: 'Jane Smith',
+    email: 'jane.smith@example.com',
+  },
+];
