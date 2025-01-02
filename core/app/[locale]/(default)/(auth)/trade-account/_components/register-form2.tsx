@@ -297,23 +297,23 @@ export const RegisterForm2 = ({
   const getModifiedLabel = (originalLabel: string): string => {
     switch (originalLabel) {
       case 'I am a':
-        return 'I am a*';
+        return 'I am a:*'
       case 'Tax ID / Licence#':
-        return 'Tax ID/License#*';
+        return 'Tax ID/License#';
       case 'Company Name':
-        return 'Business Name*';
+        return 'Business Name';
       case 'Country':
-        return 'Country*';
+        return 'Country';
       case 'State/Province':
-        return 'State*';
+        return 'State';
       case 'Address Line 1':
-        return 'Address Line 1*';
+        return 'Address Line 1';
       case 'Address Line 2':
         return 'Address Line 2 (Optional)';
       case 'Suburb/City':
-        return 'City*';
+        return 'City';
       case 'Zip/Postcode':
-        return 'Zipcode*';
+        return 'Zipcode';
       default:
         return originalLabel;
     }

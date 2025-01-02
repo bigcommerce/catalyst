@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Accordions } from '../Accordin';
 import ShoppingCartIcon from '../../assets/shopping_cart_checkout.png';
@@ -10,6 +10,10 @@ import { findCustomerDetails } from '../../_actions/find-customer';
 import DynamicTable from '../table/CustomTable';
 import { getCustomerCart } from '../../_actions/get-customer-cart';
 import Loader from './Spinner';
+import {  validateInput } from '../common-functions';
+import { UpdateCartIdCookie } from '../../_actions/update-cart-id-cookies';
+import { getShopperUrls } from '../../_actions/get-shopper-urls';
+import Link from 'next/link';
 function CustomerSupportPage() {
   const [customerDetails, setCustomerDetails] = useState({});
   const [cartErrorMessage, setCartErrorMessage] = useState<string | null>(null);
@@ -22,11 +26,23 @@ function CustomerSupportPage() {
   );
   const [tableData, setTableData] = useState<any[]>([]);
   const [cartId, setCartId] = useState('');
+
+  const [sessionId, setSessionId] = useState('');
+  const [shoppersUrl, setShoppersUrl] = useState([]);
+  const [customerVisitedUrl,setCustomerVisitedUrl]=useState([])
+  const [updatedCartId, setUpdatedCCartId] = useState('');
   const [findCustomerData, setFindCustomerData] = useState({
     email: '',
     phone: '',
     first_name: '',
-    last_name: '',
+    // last_name: '',
+    company: '',
+  });
+  const [findCustomerDataError, setFindCustomerDataError] = useState({
+    email: '',
+    phone: '',
+    first_name: '',
+    // last_name: '',
     company: '',
   });
   const [createAccountData, setCreateAccountData] = useState({
@@ -37,6 +53,14 @@ function CustomerSupportPage() {
     phone: '',
     referral_id: '',
   });
+  const [createAccountData_errors, setCreateAccountData_errors] = useState({
+    create_first_name: '',
+    create_last_name: '',
+    create_company: '',
+    create_email: '',
+    create_phone: '',
+    create_referral_id: '',
+  });
   const [loading, setLoading] = useState({
     show1: false,
     show2: false,
@@ -46,13 +70,32 @@ function CustomerSupportPage() {
   const handleCartLookupSubmit = async (e: React.FormEvent) => {
     setLoading((prev) => ({ ...prev, show1: true }));
     e.preventDefault();
+
     try {
       const response = await getCustomerCart(cartId);
+      setUpdatedCCartId(cartId)
       setLoading((prev) => ({ ...prev, show1: false }));
     } catch (error: any) {
       setLoading((prev) => ({ ...prev, show1: false }));
-    } 
+    }
   };
+  const handleGetShoppersUrlsData = async (e: React.FormEvent) => {
+    setLoading((prev) => ({ ...prev, show1: true }));
+    e.preventDefault();
+    try {
+      console.log('session id  --- ',sessionId);
+      
+      const response = await getShopperUrls(sessionId);
+      // setShoppersUrl(response.data.output)
+      console.log("response.data.output----",response.output);
+      setCustomerVisitedUrl(response.output.urls)
+      setLoading((prev) => ({ ...prev, show1: false }));
+    } catch (error: any) {
+      setLoading((prev) => ({ ...prev, show1: false }));
+    }
+  };
+  // 
+
 
   const handleFindCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -61,15 +104,15 @@ function CustomerSupportPage() {
       findCustomerData.email !== '' ||
       findCustomerData.company !== '' ||
       findCustomerData.phone !== '' ||
-      findCustomerData.first_name !== '' ||
-      findCustomerData.last_name !== ''
+      findCustomerData.first_name !== '' 
+      // findCustomerData.last_name !== ''
     ) {
       try {
         const response = await findCustomerDetails(findCustomerData);
         setCustomerDetails(findCustomerData);
         if (response.status === 200) {
           setLoading((prev) => ({ ...prev, show2: false }));
-          let data = response.data.output;
+          let data = response.data.output.data;          
           const extractedData = data.map(
             (item: { first_name: any; last_name: any; email: any }) => ({
               first_name: item.first_name,
@@ -78,12 +121,17 @@ function CustomerSupportPage() {
               // phone: item.phone,
               // company: item.company,
             }),
-          );
-          setTableData(extractedData);
-          setFindCustomerSuccessMessage('Account retrieved successfully!');
-          setFindCustomerErrorMessage(null);
+          );          
+          if (extractedData.length > 0) {
+            setTableData(extractedData);
+            setFindCustomerSuccessMessage(`${extractedData.length} Account retrieved successfully!`);
+            setFindCustomerErrorMessage(null);
+          } else {
+            setTableData([])
+            setFindCustomerSuccessMessage(`No account found with the given details!`);
+          }
         } else {
-        setLoading((prev) => ({ ...prev, show2: false }));
+          setLoading((prev) => ({ ...prev, show2: false }));
           const errorMessage = response.error || 'An unknown error occurred';
           setFindCustomerErrorMessage(`Failed to retrieve account: ${errorMessage}`);
           setFindCustomerSuccessMessage(null);
@@ -92,17 +140,16 @@ function CustomerSupportPage() {
         setLoading((prev) => ({ ...prev, show2: false }));
         setFindCustomerErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
         setFindCustomerSuccessMessage(null);
-      } 
+      }
     } else {
-        setLoading((prev) => ({ ...prev, show2: false }));
+      setLoading((prev) => ({ ...prev, show2: false }));
       setFindCustomerErrorMessage('Required at least one field');
     }
   };
 
   const handleCreateAccountSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(createAccountData);
-    
+
     setLoading((prev) => ({ ...prev, show3: true }));
     if (
       !createAccountData.first_name ||
@@ -135,6 +182,30 @@ function CustomerSupportPage() {
       }
     }
   };
+  useEffect(() => {
+    if (updatedCartId !== '') {
+      UpdateCartIdCookie(cartId)
+    }
+  }, [updatedCartId,findCustomerSuccessMessage])
+  
+  const UrlList = ({ urls }) => {
+    return (
+        <div className='m-4'>
+            <h2 className='text-lg font-bold mb-2'>URLs</h2>
+            <ul className='list-disc pl-5'>
+                {urls.map((item) => (
+                    <li key={item.id} className='mb-2'>
+                        <Link href={item.url} className='text-blue-600 hover:underline'>
+                            {/* <a className='text-blue-600 hover:underline'> */}
+                                {item.url}
+                            {/* </a> */}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
 
   const renderInputFields = (fields: Array<{ id: string; label: string }>, refs: any) => {
     return fields.map((item) => (
@@ -151,53 +222,131 @@ function CustomerSupportPage() {
           id={item.id}
           className="w-[225px]"
         />
+        <p className="text-red-800">{findCustomerDataError[item.id]}</p>
+        <p className="text-red-800">{createAccountData_errors[item.id]}</p>
       </div>
     ));
   };
-
   const handleInputChange = (id: string, value: string) => {
     switch (id) {
-      case 'cart-id':
+      case 'cart-id': {
         setCartId(value);
         break;
-      case 'email':
+      }
+        case 'session-id': {
+        setSessionId(value);
+        break;
+      }
+
+      case 'email': {
         setFindCustomerData({ ...findCustomerData, email: value });
+        const emailError = validateInput('email', value, 'find');
+        setFindCustomerDataError((prev) => ({
+          ...prev,
+          email: emailError,
+        }));
+        // setFindCustomerDataError({ email: emailError });
         break;
-      case 'phone':
+      }
+      case 'phone': {
         setFindCustomerData({ ...findCustomerData, phone: value });
+        const phoneError = validateInput('phone', value, 'find');
+        setFindCustomerDataError((prev) => ({
+          ...prev,
+          phone: phoneError,
+        }));
+        // setFindCustomerDataError({ phone: phoneError });
         break;
-      case 'first_name':
+      }
+      case 'first_name': {
         setFindCustomerData({ ...findCustomerData, first_name: value });
+        const firstNameError = validateInput('firstname', value, 'find');
+        setFindCustomerDataError((prev) => ({
+          ...prev,
+          first_name: firstNameError,
+        }));
+        // setFindCustomerDataError({ first_name: firstNameError });
+
         break;
-      case 'last_name':
+      }
+      case 'last_name': {
         setFindCustomerData({ ...findCustomerData, last_name: value });
+        const lastNameError = validateInput('lastname', value, 'find');
+        setFindCustomerDataError((prev) => ({
+          ...prev,
+          last_name: lastNameError,
+        }));
+        // setFindCustomerDataError({ last_name: lastNameError });
+
         break;
-      case 'company':
+      }
+      case 'company': {
         setFindCustomerData({ ...findCustomerData, company: value });
+        const companyError = validateInput('company', value, 'find');
+        setFindCustomerDataError((prev) => ({
+          ...prev,
+          company: companyError,
+        }));
+        // setFindCustomerDataError({ company: companyError });
+
         break;
-      case 'create_first_name':
+      }
+      case 'create_first_name': {
         setCreateAccountData({ ...createAccountData, first_name: value });
+        const createFirstNameError = validateInput('firstname', value, 'create');
+        setCreateAccountData_errors((prev) => ({
+          ...prev,
+          create_first_name: createFirstNameError,
+        }));
         break;
-      case 'create_last_name':
+      }
+      case 'create_last_name': {
         setCreateAccountData({ ...createAccountData, last_name: value });
+        const createLastNameError = validateInput('lastname', value, 'create');
+        setCreateAccountData_errors((prev) => ({
+          ...prev,
+          create_last_name: createLastNameError,
+        }));
         break;
-      case 'create_company':
+      }
+      case 'create_company': {
         setCreateAccountData({ ...createAccountData, company: value });
+        const createCompanyError = validateInput('company', value, 'create');
+        setCreateAccountData_errors((prev) => ({
+          ...prev,
+          create_company: createCompanyError,
+        }));
         break;
-      case 'create_email':
+      }
+
+      case 'create_email': {
         setCreateAccountData({ ...createAccountData, email: value });
+        const createEmailError = validateInput('email', value, 'create');
+        setCreateAccountData_errors((prev) => ({
+          ...prev,
+          create_email: createEmailError,
+        }));
         break;
-      case 'create_phone':
-        setCreateAccountData({ ...createAccountData, phone: value });
+      }
+      case 'create_phone': {
+        const createPhoneError = validateInput('phone', value, 'create');
+        if (createPhoneError === '') {
+          setCreateAccountData({ ...createAccountData, phone: value });
+        }
+        setCreateAccountData_errors((prev) => ({
+          ...prev,
+          create_phone: createPhoneError,
+        }));
         break;
-      case 'create_referralId':
+      }
+      case 'create_referralId': {
         setCreateAccountData({ ...createAccountData, referral_id: value });
         break;
+      }
       default:
         break;
     }
   };
-
   const accordions = [
     {
       title: (
@@ -214,7 +363,7 @@ function CustomerSupportPage() {
             value={cartId}
             onChange={(e) => handleInputChange('cart-id', e.target.value)}
             id="cart-id"
-            placeholder="Cart ID"
+            placeholder="Session ID"
             className="font-open-sans w-[225px]"
           />
           {cartErrorMessage && <p className="text-red-800">{cartErrorMessage}</p>}
@@ -248,8 +397,8 @@ function CustomerSupportPage() {
               [
                 { id: 'email', label: 'Email' },
                 { id: 'phone', label: 'Phone' },
-                { id: 'first_name', label: 'First Name' },
-                { id: 'last_name', label: 'Last Name' },
+                { id: 'first_name', label: 'Full Name' },
+                // { id: 'last_name', label: 'Last Name' },
                 { id: 'company', label: 'Company' },
               ],
               findCustomerData,
@@ -271,6 +420,7 @@ function CustomerSupportPage() {
             </button>
           </form>
           {tableData.length > 0 && <DynamicTable data={tableData} />}
+          {/* <DynamicTable data={tableData}/> */}
         </>
       ),
     },
@@ -310,6 +460,46 @@ function CustomerSupportPage() {
             </div>
           </button>
         </form>
+      ),
+    },
+     {
+      title: (
+        <div className="flex items-center gap-[5px] text-base font-normal">
+          <Image src={PersonIcon} alt="Create Account Icon" />
+          <span className="font-open-sans tracking-[0.15px] text-[#353535]">
+            Shopper Visited URL's
+          </span>
+        </div>
+      ),
+      content: (
+        <form
+            onSubmit={(e) => handleGetShoppersUrlsData(e)}
+            className="mt-[10px] flex flex-col justify-center bg-white pb-[10px]"
+          >
+             <Input
+            value={sessionId}
+            onChange={(e) => handleInputChange('session-id', e.target.value)}
+            id="session-id"
+            placeholder="Session ID"
+            className="font-open-sans w-[225px]"
+          />
+           <button
+            type="submit"
+            className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
+            
+          >
+            <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH URL's </p>
+            <div className="absolute inset-0 flex items-center justify-center">
+              {loading.show1 && <Loader />}
+            </div>
+          </button>
+       <div className='m-2'>
+        <UrlList urls={customerVisitedUrl}/>
+       </div>
+
+          </form>
+        
+        
       ),
     },
   ];

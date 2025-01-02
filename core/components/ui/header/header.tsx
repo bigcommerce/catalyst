@@ -91,7 +91,7 @@ const Header = ({
 
   return (
     <div className={cn('relative', className)}>
-      <header className="main-header flex h-[92px] !max-w-[100%] items-center justify-between gap-1 overflow-y-visible bg-white p-[0px_4em] !px-[40px] 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
+      <header className="main-header flex h-[92px] !max-w-[100%] items-center justify-between gap-1 overflow-y-visible bg-white p-[0px_4em] !px-[40px] 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0 mb-[10px] lg:mb-[33px] md:mb-[46px] sm:mb-[10px] xl:mb-0">
         <div className="flex items-center space-x-4">
           <CustomLink className="home-logo-one overflow-hidden text-ellipsis py-3" href="/">
             {typeof logo === 'object' ? (
@@ -142,7 +142,7 @@ const Header = ({
         </div>
       </header>
 
-      <div className="header-bottom mx-auto flex max-w-full items-center justify-between border-b border-t border-[#cccbcb] bg-white px-4 pb-4 pt-4 lg:mt-[30px] lg:px-10 xl:mt-0">
+      <div className="header-bottom mx-auto flex max-w-full items-center justify-between border-b border-t border-[#cccbcb] bg-white px-4 lg:mt-[30px] lg:px-10 xl:mt-0">
         <NavigationMenuPrimitive.Root id="nav-menu-root" className="hidden lg:block">
           <NavigationMenuPrimitive.List
             id="nav-menu-list"

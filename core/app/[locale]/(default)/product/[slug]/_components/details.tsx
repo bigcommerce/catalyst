@@ -24,6 +24,7 @@ import { useCommonContext } from '~/components/common-context/common-provider';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
+import {  store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 
 interface ProductOptionValue {
   entityId: number;
@@ -218,6 +219,12 @@ export const Details = ({
     updateImageFromVariant();
   }, [searchParams, product, variants, productOptions, currentMainMedia]);
 
+  useEffect(() => {
+    // store product id in local storage for Salesbuddy
+    store_pdp_product_in_localstorage(product);
+    
+  }, [product]);
+  
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
     if (selectedId) {
@@ -232,7 +239,6 @@ export const Details = ({
     const defaultValue = values.find((value) => value.isDefault);
     return defaultValue?.label || 'Select';
   };
-
   return (
     <div>
       {showStickyHeader && (
@@ -540,20 +546,7 @@ export const Details = ({
       </div>
 
       <ProductSchema product={product} />
-
-      <div className="apple-pay mt-4 xl:hidden">
-        <button className="flex w-[100%] items-center justify-center rounded bg-[#353535] p-4 text-white">
-          <BcImage
-            alt="GPay icon"
-            src={paywithGoogle}
-            height={20}
-            width={20}
-            className="mr-4 inline"
-          />
-          Pay with Google
-        </button>
-      </div>
-      <PayPalPayLater amount={''} currency={''} />
+      <PayPalPayLater amount="99.99" currency="USD" />
       <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />

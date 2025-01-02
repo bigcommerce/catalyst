@@ -10,11 +10,7 @@ export const findCustomerDetails = async (payload: {
 }) => {
   try {
     const { first_name, last_name, company, email, phone, referrerId } = payload;
-    const fullname=first_name+last_name
-    const nameParts = fullname.trim().split(' ');
-    const firstName = nameParts[0] || ''; // First part as first name
-    const lastName = nameParts.slice(1).join(' ') || ''; // Remaining parts as last name
-
+    const fullname=first_name
     const postData = JSON.stringify({
       email: email,
       full_name: fullname,

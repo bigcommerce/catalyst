@@ -1,10 +1,10 @@
 'use server';
 
 
-export const getCustomerCart = async (cartId: any) => {
+export const getShopperUrls = async (sessionId: any) => {
   try {
     let postData = JSON.stringify({
-      cart_id: cartId,
+      session_id: sessionId,
       access_id: process.env.SALES_BUDDY_ACCESS_ID,
     });
 
@@ -12,8 +12,8 @@ export const getCustomerCart = async (cartId: any) => {
     const apiEnv = process.env.SALES_BUDDY_API_ENV!;
     const apiPath = process.env.SALES_BUDDY_API_PATH!;
     console.log(postData);
-    // return;    
-    let data = await fetch(apiUrl + apiEnv + apiPath +'get-cart', {
+    // return;
+    let data = await fetch(apiUrl + apiEnv + apiPath + 'get-session', {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
@@ -22,14 +22,14 @@ export const getCustomerCart = async (cartId: any) => {
     })
       .then((res) => res.json())
       .then((jsonData) => {
-        return cartId;
+        return jsonData;
       })
       .catch((error) => {
         return { status: 500, error: error.message };
       });
 
-      console.log('getCsutomercartData----', data);
-      
+    console.log('getCsutomercartData----', data);
+
     return data;
   } catch (error) {
     return { status: 500, error: JSON.stringify(error) };
