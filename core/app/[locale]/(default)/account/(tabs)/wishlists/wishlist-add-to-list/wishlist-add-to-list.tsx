@@ -1,8 +1,7 @@
-// wishlist-add-to-list.tsx
 'use client';
 
 import React, { useState, ChangeEvent, useEffect } from 'react';
-import { X } from 'lucide-react';
+import { Heart, X } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -117,7 +116,7 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
         onClick={() => setIsOpen(true)}
         className="inline-flex items-center justify-center rounded-[3px] bg-[#008BB7] px-4 py-2 text-sm font-medium text-white hover:bg-[#007da6] focus:outline-none"
       >
-        Add to List
+        <Heart className="h-6 w-6" />
       </button>
 
       {isOpen && (
