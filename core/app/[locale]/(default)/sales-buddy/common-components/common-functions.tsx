@@ -6,7 +6,9 @@ export const validateInput = (type: string, value: string | any[], action: strin
   switch (type) {
     case 'phone': {
       // Phone number validation: not empty, length between 7 and 25, only digits
-      const phoneRegex = /^\d{7,25}$/;
+      let min_length=action=='find' ? 0 : 7
+      let  max_length= 25
+      const phoneRegex = new RegExp(`^\\d{${min_length},${max_length}}$`);
       if (!value && action != 'find') return 'Phone number cannot be empty.';
       return phoneRegex.test(value)
         ? ''
@@ -15,11 +17,14 @@ export const validateInput = (type: string, value: string | any[], action: strin
 
     case 'firstname': {
       // First name validation: not empty, length between 1 and 25, only letters
-      const firstNameRegex = /^[A-Za-zÀ-ÿ '-]{3,255}$/;
-      if (!value) return 'First name cannot be empty.';
-      return firstNameRegex.test(value)
-        ? ''
-        : 'First name must be between 3 and 255 characters and contain only letters.';
+    //   const firstNameRegex = /^[A-Za-zÀ-ÿ '-]{3,255}$/;
+        let min_length = action=='find' ?0 : 3 ; // Minimum length for first name
+        let max_length = 255; // Maximum length for first name
+        const firstNameRegex = new RegExp(`^[A-Za-zÀ-ÿ '-]{${min_length},${max_length}}$`);
+        if (!value && action != 'find' ) return 'First name cannot be empty.';
+        return firstNameRegex.test(value)
+            ? ''
+            : 'First name must be between 3 and 255 characters and contain only letters.';
     }
     case 'lastname': {
       // Last name validation: not empty, length between 1 and 50, only letters
@@ -185,12 +190,12 @@ export async function getEnhancedSystemInfo() {
         },
         
         // Connection information
-        connection: navigator.connection ? {
-            effectiveType: navigator.connection.effectiveType,
-            downlink: navigator.connection.downlink,
-            rtt: navigator.connection.rtt,
-            saveData: navigator.connection.saveData
-        } : 'Network Information API not supported'
+        // connection: navigator.connection ? {
+        //     effectiveType: navigator.connection.effectiveType,
+        //     downlink: navigator.connection.downlink,
+        //     rtt: navigator.connection.rtt,
+        //     saveData: navigator.connection.saveData
+        // } : 'Network Information API not supported'
     };
 
     // Get IP and Location data
@@ -217,24 +222,24 @@ export async function getEnhancedSystemInfo() {
     }
 
     // Get precise geolocation if user allows
-    if (navigator.geolocation) {
-        try {
-            const position = await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject);
-            });
+    // if (navigator.geolocation) {
+    //     try {
+    //         const position = await new Promise((resolve, reject) => {
+    //             navigator.geolocation.getCurrentPosition(resolve, reject);
+    //         });
             
-            systemInfo.geolocation = {
-                latitude: position.coords.latitude,
-                longitude: position.coords.longitude,
-                accuracy: position.coords.accuracy,
-                altitude: position.coords.altitude,
-                heading: position.coords.heading,
-                speed: position.coords.speed
-            };
-        } catch (error) {
-            systemInfo.geolocation = 'Geolocation permission denied or unavailable';
-        }
-    }
+    //         systemInfo.geolocation = {
+    //             latitude: position.coords.latitude,
+    //             longitude: position.coords.longitude,
+    //             accuracy: position.coords.accuracy,
+    //             altitude: position.coords.altitude,
+    //             heading: position.coords.heading,
+    //             speed: position.coords.speed
+    //         };
+    //     } catch (error) {
+    //         systemInfo.geolocation = 'Geolocation permission denied or unavailable';
+    //     }
+    // }
 
     return systemInfo;
 }
