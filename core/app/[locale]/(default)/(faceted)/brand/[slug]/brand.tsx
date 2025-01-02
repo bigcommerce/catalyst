@@ -623,12 +623,16 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false }: any) => {
           : <Hits view={view} useDefaultPrices={useDefaultPrices} promotions={promotions} />
         }
 
-        <div className="mt-4 flex flex-col lg:flex-row lg:space-x-4 items-center">
+        <div className="mt-4 flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0 items-center">
           <Pagination classNames={{ 
-            root: 'mt-4 lg:mt-0 mx-auto lg:mx-0 flex-auto order-2 lg:order-1 justify-center !shadow-none', 
+            //root: 'mt-4 lg:mt-0 mx-auto lg:mx-0 flex-auto order-2 lg:order-1 justify-center !shadow-none', 
+            root: 'mt-4 lg:mt-0 mx-auto lg:mx-0 flex-auto justify-center !shadow-none', 
             link: '!px-2 md:!px-3 lg:!px-4 !shadow-none !border-gray-300'
           }} />
+          {/*
           <div className="lg:ml-auto flex-none flex flex-col md:flex-row space-x-4 items-center order-1 lg:order-2 justify-center">
+          */}
+          <div className="lg:ml-auto flex-none flex flex-col md:flex-row space-x-4 items-center justify-center">
             <Stats classNames={{ root: 'mt-2 md:mt-0 flex-none order-2 md:order-1' }} />
             <HitsPerPage items={[
               { label: '10 per page', value: 10 },
