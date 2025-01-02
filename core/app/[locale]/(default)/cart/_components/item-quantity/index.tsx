@@ -150,7 +150,7 @@ const Quantity = ({ value }: { value: number }) => {
   );
 };
 
-export const ItemQuantity = ({ product }: { product: Product }) => {
+export const ItemQuantity = ({ product, accessories }: { product: Product, accessories?: any }) => {
   const t = useTranslations('Cart.SubmitItemQuantity');
 
   const { quantity, entityId, productEntityId, variantEntityId, selectedOptions } = product;

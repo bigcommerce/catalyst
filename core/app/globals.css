@@ -459,9 +459,6 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
     position: absolute;
     top: 2em;
   }
-  .main-slider {
-    margin-top: 1em;
-  }
   .header-bottom {
     border: unset !important;
   }

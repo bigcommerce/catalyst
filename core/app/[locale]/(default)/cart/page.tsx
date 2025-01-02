@@ -137,6 +137,8 @@ export default async function Cart() {
             );
             if (accessoriesInfo) {
               accessoriesInfo.prodQuantity = getInfo.quantity;
+              accessoriesInfo.cartId = cartId;
+              accessoriesInfo.lineItemId = item?.entityId;
               accessoriesData.push(accessoriesInfo);
             }
           });

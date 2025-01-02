@@ -1,15 +1,13 @@
 'use client';
 
 import { useFormatter } from 'next-intl';
-import { FragmentOf } from 'gql.tada';
 import * as Dialog from '@radix-ui/react-dialog';
 import { useEffect, useState } from 'react';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { ProductItemFragment } from '~/client/fragments/product-item';
 import { BcImage } from '~/components/bc-image';
 import { useCommonContext } from '~/components/common-context/common-provider';
-import { Minus, Plus, LoaderCircle, Loader2 as Spinner } from 'lucide-react';
+import { Loader2 as Spinner } from 'lucide-react';
 import {
   GetProductMetaFields,
   GetProductVariantMetaFields,
@@ -20,10 +18,6 @@ import Link from 'next/link';
 import { CheckoutButton } from '~/app/[locale]/(default)/cart/_components/checkout-button';
 import { GetVariantsByProductSKU } from '~/components/graphql-apis';
 import { InputPlusMinus } from '../form-fields/input-plus-minus';
-
-interface Props {
-  data: FragmentOf<typeof ProductItemFragment>;
-}
 
 const getVariantProductInfo = async (metaData: any) => {
   let variantProductInfo: any = [],
@@ -103,29 +97,53 @@ export const ProductFlyout = ({
   closeIcon,
   fanPopup,
   blankAddImg,
+  from,
+  showFlyout,
+  showFlyoutFn,
 }: {
-  data: Props['data'];
+  data: any;
   closeIcon: string;
   fanPopup: string;
   blankAddImg: string;
+  from: string;
+  showFlyout?: Boolean;
+  showFlyoutFn?: any;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const format = useFormatter();
   const productFlyout = useCommonContext();
   let productData = productFlyout.productData;
   let cartItemsData = productFlyout.cartData;
-  let open = productFlyout.open;
-  let setOpen = productFlyout.handlePopup;
+  let open;
+  let setOpen;
+  let currencyCode: any;
   const [productQty, setProductQty] = useState<number>(1);
-  let variantData: any = removeEdgesAndNodes(product?.variants);
-  let optionsData: any = removeEdgesAndNodes(product?.productOptions);
+  let variantData: any = [], optionsData: any = []; 
+  if(from == 'pdp') {
+    variantData = removeEdgesAndNodes(product?.variants);
+    optionsData = removeEdgesAndNodes(product?.productOptions);
+    open = productFlyout.open;
+    setOpen = productFlyout.handlePopup;
+    currencyCode = productData?.extendedSalePrice?.currencyCode
+  } else {
+    variantData = [{
+      entityId: product?.variantEntityId,
+      sku: product?.sku
+    }];
+    optionsData = product?.selectedOptions;
+    open = showFlyout;
+    setOpen = showFlyoutFn;
+    currencyCode = product?.extendedSalePrice?.currencyCode
+  }
   const [variantProductData, setVariantProductData] = useState<any>([]);
+  let productId = (from == 'pdp') ? product?.entityId: product?.productEntityId;
+  let productQtyData = (from == 'pdp') ? productData?.quantity: product?.quantity;
   if (variantData && optionsData && optionsData?.length > 0) {
     let variantProduct: any = variantData?.find((item: any) => item?.sku == product?.sku);
     useEffect(() => {
       const getProductMetaData = async () => {
         let metaData = await GetProductVariantMetaFields(
-          product?.entityId,
+          productId,
           variantProduct?.entityId,
           'Accessories',
         );
@@ -135,18 +153,18 @@ export const ProductFlyout = ({
       if (variantProduct) {
         getProductMetaData();
       }
-      setProductQty(productData?.quantity);
-    }, [variantProduct?.entityId, product?.entityId, productData?.quantity]);
+      setProductQty(productQtyData);
+    }, [variantProduct?.entityId, productId, productQtyData]);
   } else {
     useEffect(() => {
       const getProductMetaData = async () => {
-        let metaData = await GetProductMetaFields(product?.entityId, 'Accessories');
+        let metaData = await GetProductMetaFields(productId, 'Accessories');
         let productData = await getVariantProductInfo(metaData);
         setVariantProductData([...productData]);
       };
       getProductMetaData();
-      setProductQty(productData?.quantity);
-    }, [product?.entityId, productData?.quantity]);
+      setProductQty(productQtyData);
+    }, [productId, productQtyData]);
   }
 
   return (
@@ -180,11 +198,12 @@ export const ProductFlyout = ({
                 </Dialog.Close>
                 <div className="gap-1.25 flex w-full flex-row items-center justify-center bg-[#EAF4EC] px-2.5">
                   <Dialog.Title className="text-mauve12 m-0 text-[20px] font-medium tracking-[0.15px] text-[#167E3F]">
-                    Added to Cart!
+                    {from == 'pdp' ? 'Added to Cart!' : 'Add Accessories' }
                   </Dialog.Title>
                 </div>
               </div>
               <Dialog.Description></Dialog.Description>
+              {from == 'pdp' && (
               <Dialog.Content className="popup-box1 !pointer-events-auto flex flex-col items-center gap-[30px] ssm:flex-row ssm:items-start">
                 <div className="popup-box1-div1 relative flex h-[200px] w-[200px] border border-[#cccbcb] ssm:h-[160px] ssm:w-[140px]">
                   <BcImage
@@ -256,6 +275,7 @@ export const ProductFlyout = ({
                   />
                 </div>
               </Dialog.Content>
+              )}
               {variantProductData && variantProductData?.length > 0 && (
                 <>
                   <hr className="my-[20px] border-[#93cfa1]" />
@@ -278,7 +298,9 @@ export const ProductFlyout = ({
                                 fanPopup={fanPopup}
                                 blankAddImg={blankAddImg}
                                 index={index}
-                                currencyCode={productData?.extendedSalePrice?.currencyCode}
+                                from={from}
+                                currencyCode={currencyCode}
+                                data={product}
                               />
                             </div>
                           ))}
@@ -287,7 +309,7 @@ export const ProductFlyout = ({
                   </div>
                 </>
               )}
-              {cartItemsData && (
+              {from == 'pdp' && cartItemsData && (
                 <>
                   <hr className="" />
                   <div className="footer-section flex flex-col gap-[20px]">
@@ -309,6 +331,7 @@ export const ProductFlyout = ({
                         </div>
                       </div>
                     </div>
+                    
                     <div className="cart-buttons flex flex-col items-start gap-[10px] ssm:flex-row">
                       <Dialog.Close asChild>
                         <Link

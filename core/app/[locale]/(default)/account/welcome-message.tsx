@@ -8,7 +8,7 @@ export async function WelcomeMessage() {
   return (
     <h1 className="mt-1 text-[24px] font-normal leading-[32px]">
       <span>{t('welcomeMessage')},</span>
-      <span className="text-[#008BB7]">{' '}{getCustomerData?.user?.name}!</span>
+      <span className="text-[#008BB7]">{' '}{getCustomerData?.user?.name || 'Guest'}!</span>
     </h1>
   )
 }

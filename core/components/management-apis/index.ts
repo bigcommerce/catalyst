@@ -221,7 +221,7 @@ export const RemoveCartMetaFields = async (entityId: string, metaId: number) => 
         cache: 'no-store',
       },
     )
-      .then((res) => res.json())
+      .then((res) => res?.json())
       .then((jsonData) => {
         return jsonData;
       });
