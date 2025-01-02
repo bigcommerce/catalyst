@@ -216,8 +216,8 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
               key={product.entityId}
               product={product}
               deleteIcon={deleteIcon}
-              cartId={cart.entityId}
-              priceAdjustData={product_data_in_cart.physical_items[product.entityId]}
+              cartId={cart?.entityId}
+              priceAdjustData={product_data_in_cart?.physical_items[product.entityId]}
             />
           ))}
           {
@@ -230,7 +230,7 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
                 product={data}
                 deleteIcon={deleteIcon}
                 cartId={cart.entityId}
-                priceAdjustData={product_data_in_cart.custom_items[data.entityId]}
+                priceAdjustData={product_data_in_cart?.custom_items[data.entityId]}
 
               />
               )
