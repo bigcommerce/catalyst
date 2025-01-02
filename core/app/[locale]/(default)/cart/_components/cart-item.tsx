@@ -405,7 +405,6 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
               if (discountedPrice > 0) {
                 discountPriceText = discountedPrice + '% Off';
               }
-              console.log('========item=======', item);
               return (
                 <div
                   className="cart-accessories m-5 flex gap-4 bg-[#F3F4F5] p-[15px_20px]"
@@ -443,7 +442,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                       </div>
                     </div>
                     <div className="cart-deleteIcon mt-[5px] flex w-full flex-row items-center justify-between gap-[20px] p-0 md:mt-0 md:w-auto md:justify-start [&_.cart-item-quantity]:static [&_.cart-item-quantity]:order-[0]">
-                      <AccessoriesInputPlusMinus product={product} accessories={item} />
+                      <AccessoriesInputPlusMinus key={item?.variantEntityId} accessories={item} />
                       <div className="flex items-center">
                         <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535] sm:hidden">
                           QTY: {item.prodQuantity}
