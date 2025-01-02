@@ -146,23 +146,22 @@ export default function SalesBuddyProductPage() {
                 //   : index === 1
                 //     ? '## Back Ordered | 50 Expected MM/DD/YYYY'
                 //     : '## In Stock | Belami Warehouse Inventory',
-              location:
-                index === 0
-                  ? 'Quoizel - Gose Creek, SC (1006)'
-                  : index === 1
-                    ? 'Supplier Inventory NSOID #####'
-                    : 'Hinkley - Cleveland, OH (1004)',
-              updated: index === 0 ? '5 Days Ago' : index === 1 ? 'Today' : '2 Days Ago',
-              updatedColor: index === 0 ? '#F5E9E8' : index === 1 ? '#EAF4EC' : '#FBF4E9',
+              // location:
+              //   index === 0
+              //     ? 'Quoizel - Gose Creek, SC (1006)'
+              //     : index === 1
+              //       ? 'Supplier Inventory NSOID #####'
+              //       : 'Hinkley - Cleveland, OH (1004)',
+              // updated: index === 0 ? '5 Days Ago' : index === 1 ? 'Today' : '2 Days Ago',
+              // updatedColor: index === 0 ? '#F5E9E8' : index === 1 ? '#EAF4EC' : '#FBF4E9',
             };
 
             return (
-              <>
-                {!childSku ? <div className="space-y-[5px] border-b pb-[10px] pt-[10px]">No Inventory Available </div> :''}
+              
                 <div key={index} className="space-y-[5px] border-b pb-[10px] pt-[10px]">
                   <p className="font-bold">{item.id}</p>
-                  <p className="text-[14px] text-[#353535]">{item.status}</p>
-                  <div className="flex justify-between">
+                 {item.status ?  <p className="text-[14px] text-[#353535]">{item.status}</p> :  <div className="space-y-[5px]  pb-[10px] pt-[10px]">No Inventory Available </div> }
+                  {/* <div className="flex justify-between">
                     <p className="text-sm text-[#353535]">{item.location}</p>
                     <p
                       className={`p-[5px] text-sm ${index === 0 ? 'text-[#6A4C1E]' : index === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
@@ -175,9 +174,9 @@ export default function SalesBuddyProductPage() {
                         {item.updated}
                       </span>
                     </p>
-                  </div>
+                  </div> */}
                 </div>
-              </>
+              
             );
           })}
         </div>

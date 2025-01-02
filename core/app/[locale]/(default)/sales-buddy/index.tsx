@@ -17,7 +17,7 @@ export default function SalesBuddyAppIndex() {
   const path = usePathname();
   // Extract last segment of the path
   const toggleDrawer = () => setIsOpen(!isOpen);
-  console.log(getEnhancedSystemInfo());
+  // console.log(getEnhancedSystemInfo());
   
   const renderDrawerContent = () => {
     if (path.indexOf('/cart/') > -1) {
