@@ -7,9 +7,10 @@ import { BcImage } from '~/components/bc-image';
 import { ItemQuantity } from './item-quantity';
 import { RemoveItem } from './remove-item';
 import { RemoveAccessoryItem } from '../../../../../components/product-card/remove-accessory-item';
-import { cookies } from 'next/headers';
 import ProductPriceAdjuster from '../../sales-buddy/common-components/_components/ProductPriceAdjuster';
-import { Button } from '~/components/ui/button';
+import { AccessoriesButton } from './accessories-button';
+import { imageManagerImageUrl } from '~/lib/store-assets';
+import { AccessoriesInputPlusMinus } from '~/components/form-fields/accessories-input-plus-minus';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -165,6 +166,11 @@ function moveToTheEnd(arr: any, word: string) {
   return arr;
 }
 export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) => {
+
+  const closeIcon = imageManagerImageUrl('close.png', '14w');
+  const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
+  const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
+
   const changeTheProtectedPosition = moveToTheEnd(
     product?.selectedOptions,
     'Protect Your Purchase',
@@ -327,7 +333,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                   <div className="mb-0">
                     <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
                       {product.originalPrice.value &&
-                      product.originalPrice.value !== product.listPrice.value ? (
+                        product.originalPrice.value !== product.listPrice.value ? (
                         <p className="line-through">
                           {format.number(product.originalPrice.value * product.quantity, {
                             style: 'currency',
@@ -365,13 +371,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
           </div>
         </div>
       </div>
-      {!product?.accessories ? (
-        <div>
-          <Button className="font-500 mx-5 mb-5 flex w-[-webkit-fill-available] items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[16px] uppercase leading-[32px] tracking-[1.25px] text-[#002A37] xl:w-fit">
-            + ADD ACCESSORIES
-          </Button>
-        </div>
-      ) : (
+      {product?.accessories?.length > 0 ? (
         <div>
           {product?.accessories &&
             product?.accessories?.map((item: any, index: number) => {
@@ -384,6 +384,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
               if (discountedPrice > 0) {
                 discountPriceText = discountedPrice + '% Off';
               }
+              console.log('========item=======', item);
               return (
                 <div
                   className="cart-accessories m-5 flex gap-4 bg-[#F3F4F5] p-[15px_20px]"
@@ -421,7 +422,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                       </div>
                     </div>
                     <div className="cart-deleteIcon mt-[5px] flex w-full flex-row items-center justify-between gap-[20px] p-0 md:mt-0 md:w-auto md:justify-start [&_.cart-item-quantity]:static [&_.cart-item-quantity]:order-[0]">
-                      <ItemQuantity product={product} />
+                      <AccessoriesInputPlusMinus product={product} accessories={item} />
                       <div className="flex items-center">
                         <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535] sm:hidden">
                           QTY: {item.prodQuantity}
@@ -440,7 +441,14 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
               );
             })}
         </div>
-      )}
+      ) : (
+      <AccessoriesButton 
+        key={product?.entityId}
+        closeIcon={closeIcon}
+        blankAddImg={blankAddImg}
+        fanPopup={fanPopup}
+        product={product} />
+        )}
     </li>
   );
 };

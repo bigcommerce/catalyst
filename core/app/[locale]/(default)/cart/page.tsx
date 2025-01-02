@@ -22,6 +22,7 @@ import { GeographyFragment } from './_components/shipping-estimator/fragment';
 import { SaveCart } from './_components/save-cart';
 import { RemoveCart } from './_components/remove-cart';
 import { GetCartMetaFields } from '~/components/management-apis';
+import { access } from 'fs';
 
 const CartPageQuery = graphql(
   `
@@ -120,6 +121,8 @@ export default async function Cart() {
             );
             if (accessoriesInfo) {
               accessoriesInfo.prodQuantity = getInfo.quantity;
+              accessoriesInfo.cartId = cartId;
+              accessoriesInfo.lineItemId = item?.entityId;
               accessoriesData.push(accessoriesInfo);
             }
           });
