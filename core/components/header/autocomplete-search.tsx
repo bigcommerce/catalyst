@@ -350,7 +350,7 @@ function ProductItem({
 }
 
 function getDiscount(price: number, salePrice: number): number | null {
-  return price > 0 ? Math.floor(((price - salePrice) * 100) / price) : 0;
+  return price > 0 ? Math.round(((price - salePrice) * 100) / price) : 0;
 }
 
 export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPrices?: boolean }) {
@@ -647,7 +647,10 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                 );
               },
               item({ item }: { item: any }) {
-                return <div>{(item as any).label}</div>;
+                const labelParts = item.label ? item.label.split(' > ') : null;
+                return labelParts 
+                  ? <a className="aa-ItemLink" href={`/c/${labelParts[labelParts.length - 1].replace(' ', '-').toLowerCase()}`}>{item.label}</a> 
+                  : <div>{item.label}</div>;
               },
             },
           },

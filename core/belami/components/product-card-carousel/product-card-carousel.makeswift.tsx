@@ -1,9 +1,9 @@
 import { Image, Link, List, Shape, TextInput } from '@makeswift/runtime/controls';
 
-import { CardCarousel } from '.';
+import { ProductCardCarousel } from '.';
 import { runtime } from '~/lib/makeswift/runtime';
 
-interface Card {
+interface ProductCard {
   title?: string;
   imageSrc?: string;
   imageAlt?: string;
@@ -17,25 +17,25 @@ interface Card {
   }
 }
 
-interface MSCardCarouselProps {
+interface MSProductCardCarouselProps {
   classNames?: {
     root?: string,
     content?: string,
     item?: string
   };
-  cards: Card[];
+  productCards: ProductCard[];
 }
 
 runtime.registerComponent(
-  function MSCardCarousel({ classNames, cards }: MSCardCarouselProps) {
+  function MSProductCardCarousel({ classNames, productCards }: MSProductCardCarouselProps) {
     return (
-      <CardCarousel
-        cards={cards.map(({ title, imageSrc, imageAlt, link }, index) => {
+      <ProductCardCarousel
+        productCards={productCards.map(({ title, imageSrc, imageAlt, link }, index) => {
           return {
             id: title ?? index.toString(),
             title: title ?? '',
             image: imageSrc ? { src: imageSrc, alt: imageAlt ?? '' } : undefined,
-            href: link?.href ?? '',
+            url: link?.href ?? '',
           };
         })}
         classNames={classNames}
@@ -43,8 +43,8 @@ runtime.registerComponent(
     );
   },
   {
-    type: 'primitive-card-carousel',
-    label: 'Belami / Card Carousel',
+    type: 'primitive-product-card-carousel',
+    label: 'Belami / Product Card Carousel',
     icon: 'carousel',
     props: {
       /*
@@ -56,13 +56,13 @@ runtime.registerComponent(
         }
       }),
       */
-      cards: List({
-        label: 'Cards',
+      productCards: List({
+        label: 'Product Cards',
         type: Shape({
           type: {
-            title: TextInput({ label: 'Title', defaultValue: 'Card title' }),
+            title: TextInput({ label: 'Title', defaultValue: 'Product title' }),
             imageSrc: Image({ label: 'Image' }),
-            imageAlt: TextInput({ label: 'Image alt', defaultValue: 'Card image' }),
+            imageAlt: TextInput({ label: 'Image alt', defaultValue: 'Product image' }),
             link: Link({ label: 'Link' }),
             /*
             classNames: Shape({
@@ -77,8 +77,8 @@ runtime.registerComponent(
             */
           },
         }),
-        getItemLabel(card) {
-          return card?.title || 'Card';
+        getItemLabel(productCard) {
+          return productCard?.title || 'Product';
         },
       }),
     },

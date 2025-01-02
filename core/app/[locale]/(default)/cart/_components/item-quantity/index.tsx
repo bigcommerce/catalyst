@@ -150,7 +150,7 @@ const Quantity = ({ value }: { value: number }) => {
   );
 };
 
-export const ItemQuantity = ({ product }: { product: Product }) => {
+export const ItemQuantity = ({ product, accessories }: { product: Product, accessories?: any }) => {
   const t = useTranslations('Cart.SubmitItemQuantity');
 
   const { quantity, entityId, productEntityId, variantEntityId, selectedOptions } = product;
@@ -192,7 +192,7 @@ export const ItemQuantity = ({ product }: { product: Product }) => {
   };
 
   return (
-    <div className="cart-add-to-cart w-[105px] rounded-3xl border-gray-200 p-2.5 !border-[1px] md:static absolute bottom-[-18px] order-1 md:order-[0]">
+    <div className="cart-add-to-cart cart-item-quantity w-[105px] rounded-3xl border-gray-200 p-2.5 !border-[1px] md:static order-1 md:order-[0]">
       <form action={onSubmit} className="flex items-center">
         <SubmitButton onClick={() => setProductQuantity(productQuantity - 1)}>
           <Minus className="h-[1rem] w-[1rem] text-[#7F7F7F] mr-[8px]">
@@ -209,7 +209,7 @@ export const ItemQuantity = ({ product }: { product: Product }) => {
           value={productQuantity}
           onBlur={handleBlur}  // Sync with backend on blur
           onChange={handleQuantityChange} // Use the new function
-          className="border w-[50%] [&::-webkit-outer-spin-button]:margin-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:margin-0 border-y-0 text-center focus:border-y-0 focus:outline-none"
+          className="border w-[50%] [&::-webkit-outer-spin-button]:margin-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:margin-0 border-y-0 text-center focus:border-y-0 focus:outline-none bg-transparent"
           min="1"
         />
 

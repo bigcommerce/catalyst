@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { BcImage } from '~/components/bc-image';
 import { getMetaFieldsByProduct } from '~/components/common-functions';
-import { store_pdp_product_in_localstorage } from '~/app/[locale]/(default)/sales-buddy/common-components/common-functions';
 
 interface Certification {
   code: string;
@@ -98,7 +97,6 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
     };
 
     if (product) {
-      store_pdp_product_in_localstorage(product)
       fetchData();
     }
   }, [product, selectedVariant]);

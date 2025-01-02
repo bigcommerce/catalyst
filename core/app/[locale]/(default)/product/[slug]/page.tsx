@@ -110,7 +110,7 @@ export default async function ProductPage(props: Props) {
   const couponIcon = imageManagerImageUrl('vector-2-.png', '20w');
   const paywithGoogle = imageManagerImageUrl('apple-xxl.png', '20w');
   const payPal = imageManagerImageUrl('fill-11.png', '20w');
-  const requestQuote = imageManagerImageUrl('vector-6-.png', '30w');
+  const requestQuote = imageManagerImageUrl('waving-hand-1-.png', '30w');
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
 

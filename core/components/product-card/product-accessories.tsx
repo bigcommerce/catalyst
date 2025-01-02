@@ -21,7 +21,9 @@ interface Props {
   currencyCode: string;
   blankAddImg: string;
   isLoading: boolean;
+  from: string;
   setIsLoading: (loading: boolean) => void;
+  data: any;
 }
 
 export const ProductAccessories = ({
@@ -32,6 +34,8 @@ export const ProductAccessories = ({
   blankAddImg,
   isLoading,
   setIsLoading,
+  from,
+  data
 }: Props) => {
   const format = useFormatter();
   const productFlyout = useCommonContext();
@@ -119,8 +123,8 @@ export const ProductAccessories = ({
         let cartId: string = result?.data?.entityId || '';
         //update the cart metafields
         if (cartId) {
-          let lineItemId = productFlyout?.productData?.entityId;
-          let productId = productFlyout?.productData?.productEntityId;
+          let lineItemId = (from == 'pdp') ? productFlyout?.productData?.entityId : data?.entityId;
+          let productId = (from == 'pdp') ? productFlyout?.productData?.productEntityId : data?.productEntityId;
           let optionValue = {
             productId: productId,
             variantId: variantId,

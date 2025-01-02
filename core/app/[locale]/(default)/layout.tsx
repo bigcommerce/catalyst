@@ -24,9 +24,7 @@ export default async function DefaultLayout({ params, children }: Props) {
       <Suspense fallback={<HeaderSkeleton />}>
         <Header cart={<Cart />} />
       </Suspense>
-      {/* //I want to add some components here if it was login page  */}
-      {/* Can you make it */}
-      <main className="main-slider">
+      <main className="main-slider mt-[2em] md:mt-0">
         {children}
       </main>
       <Suspense>

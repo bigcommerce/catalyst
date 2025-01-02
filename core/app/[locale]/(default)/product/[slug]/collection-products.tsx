@@ -41,7 +41,7 @@ interface Props {
 }
 
 function getDiscount(price: number, sale: number): number | null {
-  return price > 0 ? Math.floor(((price - sale) * 100) / price) : 0;
+  return price > 0 ? Math.round(((price - sale) * 100) / price) : 0;
 }
 
 function ColorSwatches({ variants, onImageClick }: any) {

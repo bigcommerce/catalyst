@@ -24,6 +24,7 @@ import { useCommonContext } from '~/components/common-context/common-provider';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
+import {  store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 
 interface ProductOptionValue {
   entityId: number;
@@ -161,7 +162,6 @@ export const Details = ({
   const variants = removeEdgesAndNodes(product.variants);
 
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
-  // const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
   const productMpn = product.mpn;
@@ -219,6 +219,12 @@ export const Details = ({
     updateImageFromVariant();
   }, [searchParams, product, variants, productOptions, currentMainMedia]);
 
+  useEffect(() => {
+    // store product id in local storage for Salesbuddy
+    store_pdp_product_in_localstorage(product);
+    
+  }, [product]);
+  
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
     if (selectedId) {
@@ -233,7 +239,6 @@ export const Details = ({
     const defaultValue = values.find((value) => value.isDefault);
     return defaultValue?.label || 'Select';
   };
-
   return (
     <div>
       {showStickyHeader && (
@@ -258,7 +263,7 @@ export const Details = ({
                     </h2>
 
                     <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px]">
-                      by <span className="underline">{product.brand?.name}</span>
+                      by <Link href={product.brand?.path ?? ''} className="underline">{product.brand?.name}</Link>
                     </div>
 
                     <div className="mt-3 block flex-wrap items-center text-[#7F7F7F]">
@@ -316,7 +321,7 @@ export const Details = ({
                           </span>
                           <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
                             Save{' '}
-                            {Math.floor(
+                            {Math.round(
                               ((product.prices.basePrice.value - product.prices.price.value) /
                                 product.prices.basePrice.value) *
                                 100,
@@ -443,7 +448,7 @@ export const Details = ({
               </span>
               <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
                 Save{' '}
-                {Math.floor(
+                {Math.round(
                   ((product.prices.basePrice.value - product.prices.price.value) /
                     product.prices.basePrice.value) *
                     100,
@@ -541,7 +546,6 @@ export const Details = ({
       </div>
 
       <ProductSchema product={product} />
-
       <PayPalPayLater amount="99.99" currency="USD" />
       <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
