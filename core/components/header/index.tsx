@@ -23,6 +23,8 @@ import { AutocompleteSearch } from './autocomplete-search';
 import { BcImage } from '../bc-image';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
+import { getSessionUserDetails } from '~/auth';
+import { get } from 'http';
 interface Props {
   cart: ReactNode;
 }
@@ -63,6 +65,7 @@ export const Header = async ({ cart }: Props) => {
     })),
   }));
 
+  const getCustomerData = await getSessionUserDetails();
   return (
     <ComponentsHeader
     homeLogoMobile = {homeLogoMobile} 
@@ -105,14 +108,15 @@ export const Header = async ({ cart }: Props) => {
 
           {/* Account Dropdown */}
           <Dropdown
+          getCustomerData={getCustomerData}
             items={
-              customerAccessToken
+              customerAccessToken 
                 ? [
                     { href: '/account', label: 'My Account' },
                     { href: '/account/favorites', label: 'Favorites' },
                     { href: '/account/purchase-history', label: 'Purchase History' },
                     { href: '/account/finance', label: 'Finance' },
-                    { action: logout, name: 'Logout' },
+                    { action: logout, name: 'Sign Out' },
                   ]
                 : [
                     { href: '/login', label: 'Account' },
