@@ -18,7 +18,7 @@ export interface FormStatus {
   message: string;
 }
 
-export const WISHLISTS_PER_PAGE = 4;
+export const WISHLISTS_PER_PAGE = 10;
 
 export const WishlistContent = ({ pageInfo, wishlists }: WishlistContentProps) => {
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
