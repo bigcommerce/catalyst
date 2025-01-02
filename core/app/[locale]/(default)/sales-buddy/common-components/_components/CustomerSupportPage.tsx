@@ -105,6 +105,7 @@ function CustomerSupportPage() {
             setFindCustomerSuccessMessage(`${extractedData.length} Account retrieved successfully!`);
             setFindCustomerErrorMessage(null);
           } else {
+            setTableData([])
             setFindCustomerSuccessMessage(`No account found with the given details!`);
           }
         } else {
@@ -163,7 +164,7 @@ function CustomerSupportPage() {
     if (updatedCartId !== '') {
       UpdateCartIdCookie(cartId)
     }
-  }, [updatedCartId])
+  }, [updatedCartId,findCustomerSuccessMessage])
   
 
   const renderInputFields = (fields: Array<{ id: string; label: string }>, refs: any) => {
