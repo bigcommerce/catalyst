@@ -559,7 +559,7 @@ export const Details = ({
           Pay with Google
         </button>
       </div>
-      <PayPalPayLater amount={''} currency={''} />
+      <PayPalPayLater amount="99.99" currency="USD" />
       <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />

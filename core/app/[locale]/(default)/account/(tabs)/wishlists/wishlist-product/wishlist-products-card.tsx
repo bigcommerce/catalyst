@@ -1,4 +1,3 @@
-// wishlist-product.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -250,7 +249,7 @@ export function WishlistProductCard() {
     return (
       <div className="relative h-full">
         {/* Remove form wrapper here */}
-        <div className="product-form h-full w-full">
+        <div className="product-form mb-[1em] h-full w-full">
           {' '}
           {/* Add product-form class here */}
           <Hit hit={productData} view="grid" promotions={[]} useDefaultPrices={true} />

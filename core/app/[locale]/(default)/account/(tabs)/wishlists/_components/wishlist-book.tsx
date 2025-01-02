@@ -1,3 +1,5 @@
+// wishlist-book.tsx
+
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -287,12 +289,6 @@ const Wishlist = ({
           >
             EDIT DETAILS
           </Link>
-
-          {/* <Link
-          
-            className="rounded-[3px] bg-[#008BB7] px-[38px] py-[10px] text-left text-[14px] font-medium uppercase !leading-5 tracking-wider text-white" href={''}          >
-            SHARE
-          </Link> */}
         </div>
       </div>
 
