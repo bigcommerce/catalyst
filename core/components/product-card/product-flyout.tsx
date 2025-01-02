@@ -154,7 +154,7 @@ export const ProductFlyout = ({
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
-          <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow animate-slideInFromLeft fixed right-[0] top-[50%] flex max-h-[85vh] w-[90vw] max-w-[610px] translate-y-[-50%] flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+          <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow fixed right-[0] top-[50%] z-[100] flex max-h-[100vh] w-[90vw] max-w-[610px] translate-y-[-50%] animate-slideInFromLeft flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <div
               className={`flyout-loading ${isLoading ? 'flex' : 'hidden'} fixed left-0 top-0 z-50 h-full w-full items-center justify-center`}
             >

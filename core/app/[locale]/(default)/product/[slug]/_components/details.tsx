@@ -547,7 +547,7 @@ export const Details = ({
 
       <ProductSchema product={product} />
 
-      <div className="apple-pay mt-4 xl:hidden">
+      <div className="apple-pay mt-4 hidden xl:block">
         <button className="flex w-[100%] items-center justify-center rounded bg-[#353535] p-4 text-white">
           <BcImage
             alt="GPay icon"

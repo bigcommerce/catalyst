@@ -57,8 +57,7 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
         htmlFor={`field-${field.entityId}`}
         isRequired={field.isRequired}
       >
-        {field.label}
-      </FieldLabel>
+        {field.label == "Email Address" ? "Email Address (Login ID)" : field.label}{field.isRequired ? "*":""}</FieldLabel>
       <FieldControl asChild>
         <Input
           defaultValue={defaultValue || field.defaultText || ''}
