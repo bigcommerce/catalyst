@@ -50,6 +50,12 @@ const sortByNumericName: RefinementListProps['sortBy'] = (a: any, b: any) => {
   return parseInt(a.name) < parseInt(b.name) ? -1 : 1;
 };
 
+const sortByNumericRangeName: RefinementListProps['sortBy'] = (a: any, b: any) => {
+  const a1 = a.name.split(' ')[0];
+  const b1 = b.name.split(' ')[0];
+  return parseInt(a1.replace(/\D/g,'')) < parseInt(b1.replace(/\D/g,'')) ? -1 : 1;
+};
+
 const closeOnChange = () => window.innerWidth > 375;
 
 export const Category = ({ category, promotions, useDefaultPrices = false }: any) => {
@@ -95,6 +101,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               categories: indexUiState.hierarchicalMenu?.['categories.lvl0'],
               brand_name: indexUiState.refinementList?.['brand_name'],
               prices: indexUiState.refinementList?.['prices.USD'],
+              price_range: indexUiState.refinementList?.['price_range'],
               reviews_rating_sum: indexUiState.refinementList?.['reviews_rating_sum'],
               finish_color: indexUiState.refinementList?.['variants.options.Finish Color'],
               glass_color: indexUiState.refinementList?.['variants.options.Glass Color'],
@@ -168,6 +175,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
                 refinementList: {
                   'brand_name': routeState?.brand_name,
                   'prices.USD': routeState?.prices,
+                  'price_range': routeState?.price_range,
                   'reviews_rating_sum': routeState?.reviews_rating_sum,
                   'variants.options.Finish Color': routeState?.finish_color,
                   'variants.options.Glass Color': routeState?.glass_color,
@@ -321,6 +329,9 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               <Panel header="Price">
                 <RangeInput attribute="prices.USD" classNames={{ input: 'max-w-[80px]' }} />
               </Panel>
+              <Facet title="Price">
+                <RefinementList attribute="price_range" sortBy={sortByNumericRangeName} searchable={false} />
+              </Facet>
               <Facet title="Length">
                 <RefinementList attribute="metafields.Details.Length" searchable={false} />
               </Facet>
