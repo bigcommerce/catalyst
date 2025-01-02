@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@page{
+  margin-block: 2cm;
+}
+
 .header-sub-menu {
   gap: 20px;
   grid-template-columns: auto auto auto auto auto auto;
@@ -454,9 +458,6 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
     right: 0em;
     position: absolute;
     top: 2em;
-  }
-  .main-slider {
-    margin-top: 1em;
   }
   .header-bottom {
     border: unset !important;

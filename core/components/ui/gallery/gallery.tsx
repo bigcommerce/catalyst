@@ -420,7 +420,7 @@ const Gallery = ({
                     width={94}
                   />
                 )}
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white uppercase">
                   <span className="text-[0.625rem] xl:text-lg">View All</span>
                   <span className="mt-1 text-[0.625rem] xl:text-sm">{`(+${remainingItemsCount})`}</span>
                 </div>

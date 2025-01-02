@@ -54,7 +54,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
         htmlFor={`field-${field.entityId}`}
         isRequired={field.isRequired}
       >
-        {field.label}
+        {field.label}{field.isRequired?"*":""}
       </FieldLabel>
       <FieldControl asChild>
         <Input
