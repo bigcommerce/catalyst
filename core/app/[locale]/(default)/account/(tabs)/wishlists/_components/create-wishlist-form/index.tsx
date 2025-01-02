@@ -115,3 +115,5 @@ export const CreateWishlistDialog = () => {
     </DialogPrimitive.Root>
   );
 };
+
+export { createWishlist };

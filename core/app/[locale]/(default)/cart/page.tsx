@@ -137,6 +137,8 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
             );
             if (accessoriesInfo) {
               accessoriesInfo.prodQuantity = getInfo.quantity;
+              accessoriesInfo.cartId = cartId;
+              accessoriesInfo.lineItemId = item?.entityId;
               accessoriesData.push(accessoriesInfo);
             }
           });
@@ -221,7 +223,7 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
             />
           ))}
           {
-            CustomItems.map((data)=>{
+            CustomItems?.map((data)=>{
               return (
                 // <p>{data.entityId}</p>
               <CartProductComponent

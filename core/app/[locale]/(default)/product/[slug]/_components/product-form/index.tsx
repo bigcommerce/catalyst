@@ -235,6 +235,7 @@ export const ProductForm = ({
         closeIcon={closeIcon}
         blankAddImg={blankAddImg}
         fanPopup={fanPopup}
+        from="pdp"
       />
       <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
         <form
