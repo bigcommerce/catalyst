@@ -542,18 +542,6 @@ export const Details = ({
 
       <ProductSchema product={product} />
 
-      <div className="apple-pay mt-4 xl:hidden">
-        <button className="flex w-[100%] items-center justify-center rounded bg-[#353535] p-4 text-white">
-          <BcImage
-            alt="GPay icon"
-            src={paywithGoogle}
-            height={20}
-            width={20}
-            className="mr-4 inline"
-          />
-          Pay with Google
-        </button>
-      </div>
       <PayPalPayLater amount="99.99" currency="USD" />
       <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
