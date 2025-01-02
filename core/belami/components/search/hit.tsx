@@ -320,7 +320,7 @@ export function Hit({
               )}
 
               {!isLoading && (price || salePrice) ? (
-                <div className="mt-2 flex flex-wrap items-center space-x-2">
+                <div className="mt-2 flex flex-wrap justify-center md:justify-start items-center space-x-2">
                   {salePrice && salePrice > 0 ? (
                     <s className="order-1">{format.number(price || 0, { style: 'currency', currency: currency })}</s>
                   ) : (
@@ -341,7 +341,7 @@ export function Hit({
                 </div>
               ) : !isLoading && isLoaded ? (
                 hit.prices ? (
-                  <div className="mt-2 flex flex-wrap items-center space-x-2">
+                  <div className="mt-2 flex flex-wrap justify-center md:justify-start items-center space-x-2">
                     {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
                     hit.on_sale ? (
                       <s className="order-1">
@@ -391,7 +391,7 @@ export function Hit({
                   Clearance
                 </span>
               )}
-              <div className="mt-2 flex flex-wrap items-center space-x-2">
+              <div className="mt-2 flex flex-wrap justify-center md:justify-start items-center space-x-2">
                 {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
                 hit.on_sale ? (
                   <s className="order-1">
@@ -435,7 +435,7 @@ export function Hit({
           brand_id={hit.brand_id}
           category_ids={hit.category_ids}
         />
-        <div className="compare-product flex md:hidden items-center justify-center">
+        <div className="compare-product p-4 pt-2 flex md:hidden items-center justify-center">
           <Compare
             id={hit.objectID}
             image={hit.image_url ? { src: hit.image_url, altText: hit.name } : noImage}
@@ -537,7 +537,7 @@ export function Hit({
                 </span>
               )}
               {!isLoading && (price || salePrice) ? (
-                <div className="mt-2 flex flex-wrap items-center space-x-2">
+                <div className="mt-2 flex flex-wrap justify-center md:justify-start items-center space-x-2">
                   {salePrice && salePrice > 0 ? (
                     <s className="order-1">{format.number(price || 0, { style: 'currency', currency: currency })}</s>
                   ) : (
@@ -558,7 +558,7 @@ export function Hit({
                 </div>
               ) : !isLoading && isLoaded ? (
                 hit.prices ? (
-                  <div className="mt-2 flex flex-wrap items-center space-x-2">
+                  <div className="mt-2 flex flex-wrap justify-center md:justify-start items-center space-x-2">
                     {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
                     hit.on_sale ? (
                       <s className="order-1">
@@ -608,7 +608,7 @@ export function Hit({
                   Clearance
                 </span>
               )}
-              <div className="mt-2 flex flex-wrap items-center space-x-2">
+              <div className="mt-2 flex flex-wrap justify-center md:justify-start items-center space-x-2">
                 {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
                 hit.on_sale ? (
                   <s className="order-1">
