@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.24.1
+
+### Patch Changes
+
+- [`632a645`](https://github.com/bigcommerce/catalyst/commit/632a645850c500be9ea478490e1df4b98d9b3543) Thanks [@bookernath](https://github.com/bookernath)! - Add stub for generating Customer Login API tokens for SSO integrations
+
+- [`632a645`](https://github.com/bigcommerce/catalyst/commit/632a645850c500be9ea478490e1df4b98d9b3543) Thanks [@bookernath](https://github.com/bookernath)! - Add /login/token endpoint to power Customer Login API
+
+- [#1816](https://github.com/bigcommerce/catalyst/pull/1816) [`6eb30ac`](https://github.com/bigcommerce/catalyst/commit/6eb30ac1745e2dcc37aef892fb001f218d9b8ddb) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
 ## 0.24.0
 
 ### Minor Changes
