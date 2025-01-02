@@ -125,7 +125,7 @@ export default async function Login({ params }: Props) {
         </div>
       </div>
  
-      <div className="m-auto mt-[20px] flex w-[92%] flex-col gap-[20px] px-0 xl:px-12 2xl:mx-auto 2xl:px-0">
+      <div className="m-auto mt-[20px] flex w-[92%] flex-col gap-[20px] px-0 xl:px-12 2xl:mx-auto 2xl:px-0 [&_.main-breadcrumbs]:py-0">
         <ComponentsBreadcrumbs
           className="login-div login-breadcrumb mx-auto mt-[0.5rem] hidden w-[80%] px-[1px] xl:block"
           breadcrumbs={breadcrumbs}
