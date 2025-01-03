@@ -6,38 +6,46 @@ import { MakeswiftFooter } from './site-footer.client';
 
 export const COMPONENT_TYPE = 'catalyst-makeswift-footer';
 
+const logo = Shape({
+  label: 'Logo',
+  layout: Shape.Layout.Popover,
+  type: {
+    show: Checkbox({ label: 'Show logo', defaultValue: true }),
+    src: Image({ label: 'Logo' }),
+    alt: TextInput({ label: 'Alt text', defaultValue: 'Logo alt' }),
+    width: Number({ label: 'Max width', suffix: 'px', defaultValue: 200 }),
+    height: Number({ label: 'Max height', suffix: 'px', defaultValue: 40 }),
+  },
+});
+
+const links = List({
+  label: 'Links',
+  type: Shape({
+    label: 'Link',
+    type: {
+      label: TextInput({ label: 'Text', defaultValue: 'Text' }),
+      link: Link({ label: 'URL' }),
+    },
+  }),
+  getItemLabel: (item) => item?.label ?? 'Text',
+});
+
 runtime.registerComponent(MakeswiftFooter, {
   type: COMPONENT_TYPE,
   label: 'Site Footer',
   hidden: true,
   props: {
-    logo: Shape({
-      type: {
-        show: Checkbox({ label: 'Show logo', defaultValue: true }),
-        src: Image({ label: 'Logo' }),
-        width: Number({ label: 'Logo width', suffix: 'px', defaultValue: 200 }),
-        height: Number({ label: 'Logo height', suffix: 'px', defaultValue: 40 }),
-        alt: TextInput({ label: 'Alt text', defaultValue: 'Logo alt' }),
-      },
-    }),
+    logo,
     sections: List({
-      label: 'Footer group',
+      label: 'Sections',
       type: Shape({
+        label: 'Section',
         type: {
-          title: TextInput({ label: 'Heading', defaultValue: 'Heading' }),
-          links: List({
-            label: 'Links',
-            type: Shape({
-              type: {
-                label: TextInput({ label: 'Text', defaultValue: 'Text' }),
-                link: Link({ label: 'URL' }),
-              },
-            }),
-            getItemLabel: (item) => item?.label ?? 'Text',
-          }),
+          title: TextInput({ label: 'Title', defaultValue: 'Section' }),
+          links,
         },
       }),
-      getItemLabel: (item) => item?.title ?? 'Heading',
+      getItemLabel: (item) => item?.title ?? 'Section',
     }),
     copyright: TextInput({ label: 'Copyright text' }),
   },
