@@ -56,7 +56,7 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   };
 
   const handleSubmit = async () => {
-  
+    
     setLoading(true);
     let res = await updateProductPrice(newCost, cartId, productId,ProductType);
     console.log('res');
