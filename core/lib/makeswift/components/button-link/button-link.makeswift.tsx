@@ -50,7 +50,7 @@ runtime.registerComponent(
         options: [
           { value: 'pill', label: 'Pill' },
           { value: 'rounded', label: 'Rounded' },
-          { value: 'square', label: 'Square' },
+          { value: 'square', label: 'Rectangle' },
           { value: 'circle', label: 'Circle' },
         ],
         defaultValue: 'pill',
