@@ -11,7 +11,7 @@ export const Input = React.forwardRef<
     label?: string;
     errors?: string[];
   }
->(({ prepend, label, className, required, errors, value, ...rest }, ref) => {
+>(({ prepend, label, className, required, errors, ...rest }, ref) => {
   const id = React.useId();
 
   return (
@@ -36,7 +36,6 @@ export const Input = React.forwardRef<
           )}
           id={id}
           ref={ref}
-          value={value ?? ''}
         />
       </div>
       {errors?.map((error) => <FieldError key={error}>{error}</FieldError>)}
