@@ -16,6 +16,8 @@ export default async function CatchAllPage({ params }: { params: Promise<PagePar
   const { rest, locale } = await params;
   const path = `/${rest.join('/')}`;
 
+  console.log('rerender', path);
+
   return <Page locale={locale} path={path} />;
 }
 
