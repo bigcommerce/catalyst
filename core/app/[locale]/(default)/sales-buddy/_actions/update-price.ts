@@ -1,6 +1,6 @@
 'use server';
 
-export const updateProductPrice = async (newCost: any, cartId: any, productId: number) => {
+export const updateProductPrice = async (newCost: any, cartId: any, productId: number,productType) => {
     try {
         const apiUrl = process.env.SALES_BUDDY_API_URL!;
         const apiEnv = process.env.SALES_BUDDY_API_ENV!;
@@ -12,7 +12,8 @@ export const updateProductPrice = async (newCost: any, cartId: any, productId: n
             "product_id": productId,
             "price": newCost,
             "cart_id": cartId,
-            "access_id": accessId
+            "access_id": accessId,
+            "type":productType
         });
 
         let data = await fetch(

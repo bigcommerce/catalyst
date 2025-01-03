@@ -17,7 +17,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export default function CartProductComponent({ currencyCode, product, deleteIcon, cartId,priceAdjustData }: Props) {
+export default function CartProductComponent({ currencyCode, product, deleteIcon, cartId,priceAdjustData,ProductType }: Props) {
   const changeTheProtectedPosition = moveToTheEnd(
     product?.selectedOptions,
     'Protect Your Purchase',
@@ -210,8 +210,9 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
                   initialCost={Number(priceAdjustData?.cost)}
                   initialFloor={Number(priceAdjustData?.floor_percentage)}
                   initialMarkup={Number(product?.listPrice?.value)}
-                  productId={product?.productEntityId}
+                  productId={priceAdjustData?.sku}
                   cartId={cartId}
+                  ProductType={ProductType}
               />
             </div>
           </div>
