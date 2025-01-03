@@ -88,7 +88,7 @@ export const getCustomerOrders = cache(
     after = '',
     filterByStatus,
     filterByDateRange,
-    limit = 2,
+    limit = 5,
   }: CustomerOrdersArgs) => {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
