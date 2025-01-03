@@ -91,6 +91,60 @@ function findPromotionWithBrand(promotions: any[], brandId: number): any | null 
 }
 */
 
+interface Promotion {
+  rules: {
+    action: {
+      cart_items?: {
+        discount?: {
+          percentage_amount?: string;
+          fixed_amount?: string;
+        };
+      };
+      cart_value?: {
+        discount?: {
+          percentage_amount?: string;
+          fixed_amount?: string;
+        };
+      };
+    };
+  }[];
+}
+
+function sortPromotions(promotions: Promotion[]): Promotion[] {
+  return promotions.sort((a, b) => {
+    const getDiscountValue = (promotion: Promotion, type: string, discountType: string): number => {
+      for (const rule of promotion.rules) {
+        if (rule.action[type]?.discount?.[discountType]) {
+          return parseFloat(rule.action[type].discount[discountType]);
+        }
+      }
+      return -1;
+    };
+
+    const aCartItemsPercentage = getDiscountValue(a, 'cart_items', 'percentage_amount');
+    const bCartItemsPercentage = getDiscountValue(b, 'cart_items', 'percentage_amount');
+    if (aCartItemsPercentage !== bCartItemsPercentage) {
+      return bCartItemsPercentage - aCartItemsPercentage;
+    }
+
+    const aCartValuePercentage = getDiscountValue(a, 'cart_value', 'percentage_amount');
+    const bCartValuePercentage = getDiscountValue(b, 'cart_value', 'percentage_amount');
+    if (aCartValuePercentage !== bCartValuePercentage) {
+      return bCartValuePercentage - aCartValuePercentage;
+    }
+
+    const aCartItemsFixed = getDiscountValue(a, 'cart_items', 'fixed_amount');
+    const bCartItemsFixed = getDiscountValue(b, 'cart_items', 'fixed_amount');
+    if (aCartItemsFixed !== bCartItemsFixed) {
+      return bCartItemsFixed - aCartItemsFixed;
+    }
+
+    const aCartValueFixed = getDiscountValue(a, 'cart_value', 'fixed_amount');
+    const bCartValueFixed = getDiscountValue(b, 'cart_value', 'fixed_amount');
+    return bCartValueFixed - aCartValueFixed;
+  });
+}
+
 function findApplicablePromotion(promotions: any[], productId: number, brandId: number, categoryIds: number[]): any | null {
 
   const applicablePromotions = promotions.filter((promotion: any) => {
@@ -170,7 +224,7 @@ function findApplicablePromotion(promotions: any[], productId: number, brandId: 
     return true;
   });
 
-  return applicablePromotions && applicablePromotions.length > 0 ? applicablePromotions[0] : null;
+  return applicablePromotions && applicablePromotions.length > 0 ? sortPromotions(applicablePromotions)[0] : null;
 }
 
 function Promotion({ promotions, product_id, brand_id, category_ids }: any) {
