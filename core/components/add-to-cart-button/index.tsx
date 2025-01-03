@@ -5,6 +5,8 @@ import { FragmentOf } from '~/client/graphql';
 import { Button } from '~/components/ui/button';
 import { AddToCartButtonFragment } from './fragment';
 import { ShoppingCart } from 'lucide-react';
+import addToCart from '~/public/add-to-cart/addToCart.svg'
+import Image from 'next/image';
 
 export const AddToCartButton = ({
   children,
@@ -52,7 +54,7 @@ export const AddToCartButton = ({
         {buttonText()}
       </span>
       <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[4em]">
-        <ShoppingCart className="h-5 w-0 transform opacity-0 transition-all duration-300 group-hover:w-5 group-hover:opacity-100" />
+        <Image src={addToCart} className='' alt='Add to Cart' unoptimized={true} width={44} height={44} />
       </div>
     </Button>
   );

@@ -25,6 +25,8 @@ import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import {  store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
+import addToCart from '~/public/add-to-cart/addToCart.svg'
+import Image from 'next/image';
 
 interface ProductOptionValue {
   entityId: number;
@@ -361,7 +363,7 @@ export const Details = ({
                       ADD TO CART
                     </span>
                     <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
-                      <ShoppingCart className="h-5 w-0 transform opacity-0 transition-all duration-300 group-hover:w-5 group-hover:opacity-100" />
+                      <Image src={addToCart} className='' alt='Add to Cart' unoptimized={true} width={44} height={44} />
                     </div>
                   </button>
                 </div>
@@ -390,7 +392,7 @@ export const Details = ({
                 ADD TO CART
               </span>
               <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
-                <ShoppingCart className="h-5 w-0 transform opacity-0 transition-all duration-300 group-hover:w-5 group-hover:opacity-100" />
+                <Image src={addToCart} className='' alt='Add to Cart' unoptimized={true} width={44} height={44} />
               </div>
             </button>
           </div>
