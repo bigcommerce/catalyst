@@ -108,7 +108,7 @@ runtime.registerComponent(
         defaultValue: '5:6',
       }),
       colorScheme: Select({
-        label: 'Text Color Scheme',
+        label: 'Text color scheme',
         options: [
           { value: 'light', label: 'Light' },
           { value: 'dark', label: 'Dark' },
@@ -116,11 +116,11 @@ runtime.registerComponent(
         defaultValue: 'light',
       }),
       showScrollbar: Checkbox({
-        label: 'Show Scrollbar',
+        label: 'Show scrollbar',
         defaultValue: true,
       }),
       showButtons: Checkbox({
-        label: 'Show Buttons',
+        label: 'Show buttons',
         defaultValue: true,
       }),
     },
