@@ -244,7 +244,11 @@ export const create = new Command('create')
   .option('--access-token <token>', 'BigCommerce access token')
   .option('--channel-id <id>', 'BigCommerce channel ID')
   .option('--storefront-token <token>', 'BigCommerce storefront token')
-  .option('--gh-ref <ref>', 'Clone a specific ref from the source repository')
+  .option(
+    '--gh-ref <ref>',
+    'Clone a specific ref from the source repository',
+    '@bigcommerce/catalyst-core@latest',
+  )
   .option('--reset-main', 'Reset the main branch to the gh-ref')
   .option('--repository <repository>', 'GitHub repository to clone from', 'bigcommerce/catalyst')
   .option('--env <vars...>', 'Arbitrary environment variables to set in .env.local')
