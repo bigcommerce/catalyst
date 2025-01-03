@@ -17,7 +17,7 @@
     "@conform-to/react": "^1.2.2",
     "@conform-to/zod": "^1.2.2",
     "@icons-pack/react-simple-icons": "^10.2.0",
-    "@makeswift/runtime": "0.0.0-snapshot-20241220223738",
+    "@makeswift/runtime": "0.0.0-snapshot-20241227210524",
     "@radix-ui/react-accordion": "^1.2.1",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-checkbox": "^1.1.2",
