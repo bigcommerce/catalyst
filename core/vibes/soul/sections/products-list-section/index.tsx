@@ -108,7 +108,7 @@ export function ProductsListSection({
                   />
                 )}
               </Stream>
-              <aside className="block @3xl:hidden">
+              <div className="block @3xl:hidden">
                 <SidePanel.Root>
                   <SidePanel.Trigger asChild>
                     <Button size="medium" variant="secondary">
@@ -131,7 +131,7 @@ export function ProductsListSection({
                     )}
                   </Stream>
                 </SidePanel.Root>
-              </aside>
+              </div>
             </div>
           </div>
         </div>
