@@ -8,7 +8,6 @@ export const updateProductPrice = async (newCost: any, cartId: any, productId: n
         const accessId = process.env.SALES_BUDDY_ACCESS_ID;
 
         let postData = JSON.stringify({
-
             "product_id": productId,
             "price": newCost,
             "cart_id": cartId,

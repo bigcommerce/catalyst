@@ -12,8 +12,8 @@ import {
 
 import { Panel } from '../panel';
 import { useCloseDropdown } from '../../hooks/use-close-dropdown';
-import { useLockedBody } from '../../hooks/use-locked-body';
-import { useMediaQuery } from '../../hooks/use-media-query';
+//import { useLockedBody } from '../../hooks/use-locked-body';
+//import { useMediaQuery } from '../../hooks/use-media-query';
 
 import { cn } from '~/lib/utils';
 
@@ -52,8 +52,8 @@ export function SortBy(props: UseSortByProps & { label?: string }) {
   useCloseDropdown(panelRef, close, isOpened);
 
   // Prevent scrolling on mobile when the dropdown is opened
-  const isMobile = useMediaQuery('(max-width: 375px)');
-  useLockedBody(isOpened && isMobile);
+  //const isMobile = useMediaQuery('(max-width: 375px)');
+  //useLockedBody(isOpened && isMobile);
 
   const text = options.find((option: { label: string; value: string }) => option.value === currentRefinement)?.label || 'Select';
 

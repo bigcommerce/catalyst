@@ -92,7 +92,6 @@ export default async function Cart() {
   const CustomItems = cart?.lineItems?.customItems
   const get_product_price_data_in_cart = async (cartId: any) => {
   const result = await get_cart_price_adjuster_data(cartId);
-  console.log(result);
     if (result.status === 200) {
       
       return result?.data?.output;
@@ -101,7 +100,6 @@ export default async function Cart() {
     }
   };
 const product_data_in_cart = await get_product_price_data_in_cart(cartId);
-console.log("product_data_in_cart----------",product_data_in_cart);
 
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
@@ -122,7 +120,8 @@ console.log("product_data_in_cart----------",product_data_in_cart);
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
   let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
-  let updatedLineItemInfo: any = [], updatedLineItemWithoutAccessories: any = [];
+  let updatedLineItemInfo: any = [];
+  let updatedLineItemWithoutAccessories: any = [];
   let accessoriesSkuArray: any = [];
   if (getCartMetaFields?.length > 0) {
     lineItems?.forEach((item: any) => {
@@ -138,16 +137,21 @@ console.log("product_data_in_cart----------",product_data_in_cart);
             let accessoriesInfo = lineItems?.find(
               (line: any) => line?.variantEntityId == getInfo?.variantId,
             );
-            if (accessoriesInfo) {
-              accessoriesInfo.prodQuantity = getInfo.quantity;
-              accessoriesInfo.cartId = cartId;
-              accessoriesInfo.lineItemId = item?.entityId;
-              accessoriesData.push(accessoriesInfo);
+            if(accessoriesInfo) {
+              let accessSpreadData: any = {...accessoriesInfo};
+              if (accessSpreadData) {
+                accessSpreadData.prodQuantity = getInfo.quantity;
+                accessSpreadData.cartId = cartId;
+                accessSpreadData.lineItemId = item?.entityId;
+                accessoriesData.push(accessSpreadData);
+              }
             }
           });
         }
       }
-      item.accessories = accessoriesData;
+      if(accessoriesData?.length > 0) {
+        item['accessories'] = accessoriesData;
+      }
       if (!accessoriesSkuArray?.includes(item?.variantEntityId)) {
         updatedLineItemInfo.push(item);
       }
