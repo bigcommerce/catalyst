@@ -38,8 +38,9 @@ export const validateInput = (type: string, value: string | any[], action: strin
     case 'email': {
       // Email validation: basic format check
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!value) return 'Email cannot be empty.';
-      return emailRegex.test(value) ? '' : 'Enter a valid email address.';
+      if (!value && action != 'find') return 'Email cannot be empty.';
+      
+      return  value=='' && action == 'find' ? " " : emailRegex.test(value) ? '' : 'Enter a valid email address.';
     }
 
     case 'company': {
