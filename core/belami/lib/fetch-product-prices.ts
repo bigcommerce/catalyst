@@ -5,22 +5,22 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
 interface Price {
-  sku: string,
+  sku: string;
   prices: {
-    basePrice?: { 
-      value?: number
-    },
-    salePrice?: { 
-      value?: number
-    },
-  }
+    basePrice?: {
+      value?: number;
+    };
+    salePrice?: {
+      value?: number;
+    };
+  };
 }
 
-type SitePrices = { 
-  [key: string]: Price
+type SitePrices = {
+  [key: string]: Price;
 };
 
-const ProductPricesQuery = function(searchFragments: string | null) {
+const ProductPricesQuery = function (searchFragments: string | null) {
   return graphql(`query ProductPrices {
       site {
         ${searchFragments}
@@ -48,60 +48,24 @@ const ProductPricesQuery = function(searchFragments: string | null) {
           currencyCode
         }
       }
-    }`
-  );
-}
-
-const BrandsPageQuery = function(cursor: string | null) {
-  return graphql(`
-    query Brands {
-      site {
-        brands (first: 50${cursor ? ', after: "' + cursor + '"' : ''}) {
-          pageInfo {
-            startCursor
-            endCursor
-            hasNextPage
-          }
-          edges {
-            cursor
-            node {
-              id
-              entityId
-              name
-              defaultImage {
-                urlOriginal
-              }
-              searchKeywords
-              path
-              metafields(namespace: "Search") {
-                edges {
-                  node {
-                    id
-                    entityId
-                    key
-                    value
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  `);
-}
+    }`);
+};
 
 export async function getProductPrices(skus: string[], customerAccessToken: string | undefined) {
   //const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const searchFragments = skus.map((sku, key) => `SKU${key}: product(sku: "${sku}") {...ProductFields}`);
+  const searchFragments = skus.map(
+    (sku, key) => `SKU${key}: product(sku: "${sku}") {...ProductFields}`,
+  );
 
-  const { data }: any = searchFragments ? await client.fetch({
-    document: ProductPricesQuery(searchFragments?.join("\n")),
-    //customerId,
-    customerAccessToken,
-    fetchOptions: { cache: 'force-cache' },
-  }) : null;
+  const { data }: any = searchFragments
+    ? await client.fetch({
+        document: ProductPricesQuery(searchFragments?.join('\n')),
+        //customerId,
+        customerAccessToken,
+        fetchOptions: { cache: 'force-cache' },
+      })
+    : null;
 
   let new_prices: any = {};
   if (data && data.site) {
@@ -111,9 +75,9 @@ export async function getProductPrices(skus: string[], customerAccessToken: stri
           ...new_prices,
           [value.sku]: {
             price: value.prices.basePrice?.value ?? null,
-            salePrice: value.prices.salePrice?.value ?? null
-          }
-        }
+            salePrice: value.prices.salePrice?.value ?? null,
+          },
+        };
       }
     });
   }

@@ -6,7 +6,7 @@ const tokenRest = process.env.BIGCOMMERCE_ACCESS_TOKEN || '';
 const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
 
 export async function getPromotions() {
-  const response = await fetch(`https://api.bigcommerce.com/stores/${storeHash}/v3/promotions?channels=${channelId}&sort=priority&status=ENABLED&redemption_type=AUTOMATIC`, {
+  const response = await fetch(`https://api.bigcommerce.com/stores/${storeHash}/v3/promotions?channels=${channelId}&sort=priority&status=ENABLED`, {
     method: "GET",
     credentials: "same-origin",
     headers: {

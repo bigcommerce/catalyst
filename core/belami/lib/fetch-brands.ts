@@ -75,3 +75,16 @@ export async function getBrands(customerAccessToken: string | undefined) {
     metafields: removeEdgesAndNodes(brand?.metafields),
   }));
 }
+
+export async function getBrandsMap(customerAccessToken: string | undefined): Promise<{ [key: number]: string }> {
+
+  const brands = await getBrands(customerAccessToken);
+
+  const result: { [key: number]: string } = {};
+
+  for (const brand of brands) {
+    result[brand.entityId] = brand.name;
+  }
+
+  return result;
+}
