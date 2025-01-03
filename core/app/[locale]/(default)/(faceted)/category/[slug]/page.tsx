@@ -8,9 +8,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 
 import { getCategoryPageData } from './page-data';
 
-import { getBrands, getBrandsMap } from '~/belami/lib/fetch-brands';
-import { getPromotions } from '~/belami/lib/fetch-promotions';
-import { getCategoryTree, getCategoriesMap } from '~/belami/lib/fetch-category-tree';
+import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 
 import { Category } from './category';
 
@@ -77,9 +75,7 @@ export default async function CategoryPage(props: Props) {
     locale: locale === defaultLocale ? undefined : locale,
   });
 
-  const promotions = await getPromotions();
-  const brands = await getBrandsMap(customerAccessToken);
-  const categories = await getCategoriesMap(customerAccessToken);
+  const promotions = await getActivePromotions();
   
   return (
     <div className="group py-4 px-4 xl:px-12">

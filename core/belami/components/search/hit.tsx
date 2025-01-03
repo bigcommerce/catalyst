@@ -72,6 +72,7 @@ type HitProps = {
   view?: string;
 };
 
+/*
 function findPromotionWithBrand(promotions: any[], brandId: number): any | null {
   for (const promotion of promotions) {
     const hasItemConditions = promotion.rules.some(
@@ -88,9 +89,94 @@ function findPromotionWithBrand(promotions: any[], brandId: number): any | null 
 
   return null;
 }
+*/
 
-function Promotion({ promotions, brand_id, category_ids }: any) {
-  const promotion = findPromotionWithBrand(promotions, brand_id);
+function findApplicablePromotion(promotions: any[], productId: number, brandId: number, categoryIds: number[]): any | null {
+
+  const applicablePromotions = promotions.filter((promotion: any) => {
+
+    // 1. CHECKING STRICT RULES FIRST (without "and" or "or")
+
+    const hasNotConditions = promotion.rules.some(
+      (rule: any) =>
+        rule.condition?.cart &&
+        rule.condition?.cart.items &&
+        rule.condition?.cart.items.not &&
+        rule.condition?.cart.items.not.some((notRule: any) => 
+          (notRule.brands && notRule.brands.includes(brandId)) || 
+          (notRule.categories && notRule.categories.some((category: number) => categoryIds.includes(category))) || 
+          (notRule.products && notRule.products.includes(productId))
+      )
+    );
+    if (hasNotConditions) return false;
+
+    const hasConditions = promotion.rules.some(
+      (rule: any) =>
+        rule.condition?.cart &&
+        (
+          !rule.condition?.cart.items || 
+          (rule.condition?.cart.items &&
+            (!rule.condition?.cart.items.brands || 
+              (rule.condition?.cart.items.brands &&
+              rule.condition?.cart.items.brands.includes(brandId))) && 
+            (!rule.condition?.cart.items.categories || 
+              (rule.condition?.cart.items.categories &&
+              rule.condition?.cart.items.categories.some((category: number) => categoryIds.includes(category)))) &&
+            (!rule.condition?.cart.items.products || 
+              (rule.condition?.cart.items.products &&
+              rule.condition?.cart.items.products.includes(productId)))
+          )
+        )
+    );
+    if (!hasConditions) return false;
+
+    // 2. CHECKING AND RULES SECOND
+
+    // Checking if brand / category / product is in Not Brands / Categories / Products condition
+    const hasAndNotConditions = promotion.rules.some(
+      (rule: any) =>
+        rule.condition?.cart &&
+        rule.condition?.cart.items &&
+        rule.condition?.cart.items.and &&
+        rule.condition?.cart.items.and.some((andRule: any) => andRule.not && 
+          (
+            (andRule.not.brands && andRule.not.brands.includes(brandId)) || 
+            (andRule.not.categories && andRule.not.categories.some((category: number) => categoryIds.includes(category))) || 
+            (andRule.not.products && andRule.not.products.includes(productId))
+          )
+        )
+    );
+    if (hasAndNotConditions) return false;
+
+    const hasAndConditions = promotion.rules.some(
+      (rule: any) =>
+        rule.condition?.cart &&
+        rule.condition?.cart.items &&
+        rule.condition?.cart.items.and &&
+        rule.condition?.cart.items.and.some((andRule: any) => 
+          (!andRule.brands || 
+            (andRule.brands &&
+            andRule.brands.includes(brandId))) && 
+          (!andRule.categories || 
+            (andRule.categories &&
+            andRule.categories.some((category: number) => categoryIds.includes(category)))) &&
+          (!andRule.products || 
+            (andRule.products &&
+            andRule.products.includes(productId)))
+        )
+    );
+    if (!hasAndConditions) return false;
+
+    return true;
+  });
+
+  return applicablePromotions && applicablePromotions.length > 0 ? applicablePromotions[0] : null;
+}
+
+function Promotion({ promotions, product_id, brand_id, category_ids }: any) {
+  //const promotion = findPromotionWithBrand(promotions, brand_id);
+  const promotion = findApplicablePromotion(promotions, product_id, brand_id, category_ids);
+
   return (
     <>
       {promotion ? <div className="mt-4 bg-gray-100 p-2 text-center">{promotion.name}</div> : null}
@@ -432,6 +518,7 @@ export function Hit({
         </div>
         <Promotion
           promotions={promotions}
+          product_id={hit.objectID}
           brand_id={hit.brand_id}
           category_ids={hit.category_ids}
         />
@@ -648,6 +735,7 @@ export function Hit({
           )}
           <Promotion
             promotions={promotions}
+            product_id={hit.objectID}
             brand_id={hit.brand_id}
             category_ids={hit.category_ids}
           />

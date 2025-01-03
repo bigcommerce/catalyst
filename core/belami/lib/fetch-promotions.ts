@@ -23,3 +23,12 @@ export async function getPromotions() {
 
   return data.data;
 }
+
+export async function getActivePromotions() {
+  const promotions = await getPromotions();
+  return promotions.filter((promotion: any) => promotion.status === 'ENABLED' 
+    && ['COUPON', 'AUTOMATIC'].includes(promotion.redemption_type)
+    && !promotion.name.toLowerCase().includes('passive') 
+    && (promotion.start_date === null || new Date(promotion.start_date) < new Date())
+    && (promotion.end_date === null || new Date(promotion.end_date) > new Date()));
+}
