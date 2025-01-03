@@ -16,58 +16,84 @@ import { MakeswiftHeader } from './site-header.client';
 
 export const COMPONENT_TYPE = 'catalyst-makeswift-header';
 
+const banner = Shape({
+  label: 'Banner',
+  layout: Shape.Layout.Popover,
+  type: {
+    show: Checkbox({ label: 'Show banner', defaultValue: false }),
+    allowClose: Checkbox({ label: 'Allow banner to close', defaultValue: true }),
+    id: TextInput({ label: 'Banner ID', defaultValue: 'black_friday_2025' }),
+    children: Slot(),
+  },
+});
+
+const logoGroup = (
+  label: string,
+  defaults: {
+    width: number;
+    height: number;
+  },
+) =>
+  Shape({
+    label,
+    type: {
+      src: Image({ label: 'Logo' }),
+      alt: TextInput({ label: 'Alt text', defaultValue: 'Logo alt' }),
+      width: Number({ label: 'Max width', suffix: 'px', defaultValue: defaults.width }),
+      height: Number({ label: 'Max height', suffix: 'px', defaultValue: defaults.height }),
+    },
+  });
+
+const logo = Shape({
+  label: 'Logo',
+  layout: Shape.Layout.Popover,
+  type: {
+    desktop: logoGroup('Desktop', { width: 200, height: 40 }),
+    mobile: logoGroup('Mobile', { width: 100, height: 40 }),
+    link: Link({ label: 'Logo link' }),
+  },
+});
+
+const links = List({
+  label: 'Links',
+  type: Shape({
+    label: 'Link',
+    type: {
+      label: TextInput({ label: 'Text', defaultValue: 'Text' }),
+      link: Link({ label: 'URL' }),
+    },
+  }),
+  getItemLabel: (item) => item?.label ?? 'Text',
+});
+
+const groups = List({
+  label: 'Groups',
+  type: Shape({
+    label: 'Link group',
+    type: {
+      label: TextInput({ label: 'Text', defaultValue: 'Text' }),
+      link: Link({ label: 'URL' }),
+      links,
+    },
+  }),
+  getItemLabel: (item) => item?.label ?? 'Text',
+});
+
 runtime.registerComponent(MakeswiftHeader, {
   type: COMPONENT_TYPE,
   label: 'Site Header',
   hidden: true,
   props: {
-    banner: Shape({
-      type: {
-        show: Checkbox({ label: 'Show banner', defaultValue: false }),
-        allowClose: Checkbox({ label: 'Allow banner to close', defaultValue: true }),
-        id: TextInput({ label: 'Banner ID', defaultValue: 'black_friday_2025' }),
-        children: Slot(),
-      },
-    }),
-    logo: Shape({
-      type: {
-        desktopSrc: Image({ label: 'Desktop logo' }),
-        desktopAlt: TextInput({ label: 'Desktop logo alt', defaultValue: 'Desktop logo alt' }),
-        desktopWidth: Number({ label: 'Desktop logo width', suffix: 'px', defaultValue: 200 }),
-        desktopHeight: Number({ label: 'Desktop logo height', suffix: 'px', defaultValue: 40 }),
-        mobileSrc: Image({ label: 'Mobile logo' }),
-        mobileAlt: TextInput({ label: 'Mobile logo alt', defaultValue: 'Mobile logo alt' }),
-        mobileWidth: Number({ label: 'Mobile logo width', suffix: 'px', defaultValue: 100 }),
-        mobileHeight: Number({ label: 'Mobile logo height', suffix: 'px', defaultValue: 40 }),
-        link: Link({ label: 'Logo link' }),
-      },
-    }),
+    banner,
+    logo,
     links: List({
       label: 'Additional links',
       type: Shape({
+        label: 'Link',
         type: {
           label: TextInput({ label: 'Text', defaultValue: 'Text' }),
           link: Link({ label: 'URL' }),
-          groups: List({
-            label: 'Groups',
-            type: Shape({
-              type: {
-                label: TextInput({ label: 'Text', defaultValue: 'Text' }),
-                link: Link({ label: 'URL' }),
-                links: List({
-                  label: 'Links',
-                  type: Shape({
-                    type: {
-                      label: TextInput({ label: 'Text', defaultValue: 'Text' }),
-                      link: Link({ label: 'URL' }),
-                    },
-                  }),
-                  getItemLabel: (item) => item?.label ?? 'Text',
-                }),
-              },
-            }),
-            getItemLabel: (item) => item?.label ?? 'Text',
-          }),
+          groups,
         },
       }),
       getItemLabel: (item) => item?.label ?? 'Text',
