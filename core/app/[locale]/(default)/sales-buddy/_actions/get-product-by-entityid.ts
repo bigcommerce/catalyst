@@ -52,6 +52,8 @@ export const get_cart_price_adjuster_data=async(cartId: any)=>{
     })
       .then((res) => res.json())
       .then((jsonData) => {
+        console.log("jsonData-----",jsonData);
+        
         return { status: 200, data: jsonData };
       })
       .catch((error) => {
