@@ -315,13 +315,19 @@ export const Details = ({
                       product.prices.price?.value !== undefined &&
                       product.prices.basePrice.value > product.prices.price.value ? (
                         <>
+                          <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                            {format.number(product.prices.price.value, {
+                              style: 'currency',
+                              currency: product.prices.price.currencyCode,
+                            })}
+                          </span>
                           <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                             {format.number(product.prices.basePrice.value, {
                               style: 'currency',
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
-                          <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
+                          <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                             Save{' '}
                             {Math.round(
                               ((product.prices.basePrice.value - product.prices.price.value) /
@@ -330,15 +336,9 @@ export const Details = ({
                             )}
                             %
                           </span>
-                          <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
-                            {format.number(product.prices.price.value, {
-                              style: 'currency',
-                              currency: product.prices.price.currencyCode,
-                            })}
-                          </span>
                         </>
                       ) : (
-                        <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
+                        <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                           {format.number(product.prices.price?.value || 0, {
                             style: 'currency',
                             currency: product.prices.price?.currencyCode || 'USD',
@@ -434,21 +434,25 @@ export const Details = ({
         <ReviewSummary data={product} />
       </div>
 
-      {/* product-price */}
-
       {product.prices && (
-        <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:mt-6 lg:text-left">
+        <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
           {product.prices.basePrice?.value !== undefined &&
           product.prices.price?.value !== undefined &&
           product.prices.basePrice.value > product.prices.price.value ? (
             <>
+              <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                {format.number(product.prices.price.value, {
+                  style: 'currency',
+                  currency: product.prices.price.currencyCode,
+                })}
+              </span>
               <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                 {format.number(product.prices.basePrice.value, {
                   style: 'currency',
                   currency: product.prices.price.currencyCode,
                 })}
               </span>
-              <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
+              <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                 Save{' '}
                 {Math.round(
                   ((product.prices.basePrice.value - product.prices.price.value) /
@@ -457,15 +461,9 @@ export const Details = ({
                 )}
                 %
               </span>
-              <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
-                {format.number(product.prices.price.value, {
-                  style: 'currency',
-                  currency: product.prices.price.currencyCode,
-                })}
-              </span>
             </>
           ) : (
-            <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
+            <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
               {format.number(product.prices.price?.value || 0, {
                 style: 'currency',
                 currency: product.prices.price?.currencyCode || 'USD',
