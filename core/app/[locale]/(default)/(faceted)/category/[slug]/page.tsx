@@ -53,6 +53,28 @@ async function getBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
   }));
 }
 
+async function getSubCategoriesFilters(props: Props): Promise<Filter[]> {
+  const { slug } = await props.params;
+  const categoryId = Number(slug);
+  const data = await getCategoryPageData({ categoryId });
+  const t = await getTranslations('FacetedGroup.MobileSideNav');
+
+  const categoryTree = data.categoryTree[0];
+
+  if (categoryTree == null || categoryTree.children.length === 0) return [];
+
+  return [
+    {
+      type: 'link-group',
+      label: t('subCategories'),
+      links: categoryTree.children.map((category) => ({
+        label: category.name,
+        href: category.path,
+      })),
+    },
+  ];
+}
+
 async function getTitle(props: Props): Promise<string | null> {
   const category = await getCategory(props);
 
@@ -143,7 +165,10 @@ async function getFilters(props: Props): Promise<Filter[]> {
     searchParams: { ...searchParams, ...parsedSearchParams },
   });
 
-  return transformedFacets.filter((facet) => facet != null);
+  const filters = transformedFacets.filter((facet) => facet != null);
+  const subCategoriesFilters = await getSubCategoriesFilters(props);
+
+  return [...subCategoriesFilters, ...filters];
 }
 
 async function getSortLabel(): Promise<string> {
