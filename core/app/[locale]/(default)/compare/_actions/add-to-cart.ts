@@ -1,6 +1,6 @@
 'use server';
 
-import { expireTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 
 import {
@@ -40,7 +40,7 @@ export const addToCart = async (data: FormData) => {
         return { status: 'error', error: 'Failed to add product to cart.' };
       }
 
-      expireTag(TAGS.cart);
+      revalidateTag(TAGS.cart);
 
       return { status: 'success', data: cart };
     }
@@ -64,7 +64,7 @@ export const addToCart = async (data: FormData) => {
       path: '/',
     });
 
-    expireTag(TAGS.cart);
+    revalidateTag(TAGS.cart);
 
     return { status: 'success', data: cart };
   } catch (error: unknown) {

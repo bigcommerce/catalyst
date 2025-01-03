@@ -2,7 +2,7 @@
 
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { expireTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
@@ -187,7 +187,7 @@ export const addToCart = async (
         };
       }
 
-      expireTag(TAGS.cart);
+      revalidateTag(TAGS.cart);
 
       return {
         lastResult: submission.reply(),
@@ -232,7 +232,7 @@ export const addToCart = async (
       path: '/',
     });
 
-    expireTag(TAGS.cart);
+    revalidateTag(TAGS.cart);
 
     return {
       lastResult: submission.reply(),

@@ -1,6 +1,6 @@
 'use server';
 
-import { expireTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 
@@ -64,7 +64,7 @@ export async function removeItem({
       cookieStore.delete('cartId');
     }
 
-    expireTag(TAGS.cart);
+    revalidateTag(TAGS.cart);
 
     return cart;
   } catch (error: unknown) {
