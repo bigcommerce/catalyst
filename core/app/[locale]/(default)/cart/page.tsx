@@ -278,4 +278,4 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
   );
 }
 
-//export const runtime = 'edge';
+export const runtime = 'edge';
