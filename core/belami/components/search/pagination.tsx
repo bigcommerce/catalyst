@@ -32,17 +32,6 @@ export function Pagination({ classNames, ...props }: UsePaginationProps) {
     <ul className={cn('ais-Pagination-list', classNames?.list)}>
       <PaginationItem
         isDisabled={isFirstPage}
-        href={fixCreateURL(firstPageIndex)}
-        onClick={() => refine(firstPageIndex)}
-        classNames={{
-          item: cn('ais-Pagination-item--firstPage', classNames?.item),
-          link: classNames?.link,
-        }}
-        ariaLabel="First Page"
-      >‹‹</PaginationItem>
-      {/*
-      <PaginationItem
-        isDisabled={isFirstPage}
         href={fixCreateURL(previousPageIndex)}
         onClick={() => refine(previousPageIndex)}
         classNames={{
@@ -50,8 +39,31 @@ export function Pagination({ classNames, ...props }: UsePaginationProps) {
           link: classNames?.link,
         }}
         ariaLabel="Previous Page"
-      >‹</PaginationItem>
-      */}      
+      ><span>‹</span></PaginationItem>
+      {/*
+      <PaginationItem
+        isDisabled={isFirstPage}
+        href={fixCreateURL(firstPageIndex)}
+        onClick={() => refine(firstPageIndex)}
+        classNames={{
+          item: cn('ais-Pagination-item--firstPage', classNames?.item),
+          link: classNames?.link,
+        }}
+        ariaLabel="First Page"
+      ><span>‹‹</span></PaginationItem>
+      */}
+      {nbPages > 5 && currentRefinement + 1 > 3 && <PaginationItem
+        isDisabled={isFirstPage}
+        href={fixCreateURL(firstPageIndex)}
+        onClick={() => refine(firstPageIndex)}
+        classNames={{
+          item: cn('ais-Pagination-item--firstPage', classNames?.item),
+          link: classNames?.link,
+        }}
+        ariaLabel="First Page"
+      ><span>1</span></PaginationItem>}
+      {nbPages > 5 && currentRefinement + 1 > 3 && <li key="dots-1" className={cn('ais-Pagination-item', classNames?.item)}><span className={classNames?.link}>…</span></li>}
+
       {pages.map((page: number) => {
         const label = page + 1;
         
@@ -72,18 +84,19 @@ export function Pagination({ classNames, ...props }: UsePaginationProps) {
           </PaginationItem>
         );
       })}
-      {/*
-      <PaginationItem
+      {nbPages > 5 && currentRefinement + 1 < nbPages - 3 && <li key="dots-2" className={cn('ais-Pagination-item', classNames?.item)}><span className={classNames?.link}>…</span></li>}
+      {nbPages > 5 && currentRefinement + 1 < nbPages - 3 && <PaginationItem
         isDisabled={isLastPage}
-        href={fixCreateURL(nextPageIndex)}
-        onClick={() => refine(nextPageIndex)}
+        href={fixCreateURL(lastPageIndex)}
+        onClick={() => refine(lastPageIndex)}
         classNames={{
-          item: cn('ais-Pagination-item--nextPage', classNames?.item),
+          item: cn('ais-Pagination-item--lastPage', classNames?.item),
           link: classNames?.link,
         }}
-        ariaLabel="Next Page"
-      >›</PaginationItem>
-      */}
+        ariaLabel="Last Page"
+      ><span>{lastPageIndex + 1}</span></PaginationItem>
+      }
+      {/*
       <PaginationItem
         isDisabled={isLastPage}
         href={fixCreateURL(lastPageIndex)}
@@ -93,7 +106,18 @@ export function Pagination({ classNames, ...props }: UsePaginationProps) {
           link: classNames?.link,
         }}
         ariaLabel="Last Page"
-      >››</PaginationItem>
+      ><span>››</span></PaginationItem>
+      */}
+      <PaginationItem
+        isDisabled={isLastPage}
+        href={fixCreateURL(nextPageIndex)}
+        onClick={() => refine(nextPageIndex)}
+        classNames={{
+          item: cn('ais-Pagination-item--nextPage', classNames?.item),
+          link: classNames?.link,
+        }}
+        ariaLabel="Next Page"
+      ><span>›</span></PaginationItem>
     </ul>
     </div>
   );

@@ -6,7 +6,8 @@ export const updateProductPrice = async (price: any, cartId : any, productId:num
             "price": price,
             "product_id": productId,
             "cart_id": cartId,
-            "access_id": process.env.SALES_BUDDY_ACCESS_ID
+            "access_id": process.env.SALES_BUDDY_ACCESS_ID,
+            "type":"product"
         });
         const apiUrl = process.env.SALES_BUDDY_API_URL!;
         const apiEnv = process.env.SALES_BUDDY_API_ENV!;
