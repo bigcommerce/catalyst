@@ -67,7 +67,7 @@ export function store_pdp_product_in_localstorage(product: any) {
 }
 
 export const get_product_data = async (entityId: any) => {
-  const result = await get_product_by_entity_id([entityId]);
+  const result = await get_product_by_entity_id(entityId);
   if (result.status === 200) {
     return result;
   } else {

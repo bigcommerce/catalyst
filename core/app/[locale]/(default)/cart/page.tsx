@@ -24,6 +24,7 @@ import { RemoveCart } from './_components/remove-cart';
 import { GetCartMetaFields } from '~/components/management-apis';
 import CartProductComponent from '../sales-buddy/common-components/_components/CartComponent/CartProductComponent';
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
+import { revalidateTag } from 'next/cache';
 // import { get_product_price_data_in_cart } from '../sales-buddy/common-components/common-functions';
 
 const CartPageQuery = graphql(
@@ -99,6 +100,7 @@ export default async function Cart() {
     return [{ error: 'Failed to retrive data' }];
     }
   };
+  // revalidateTag(TAGS.cart);
 const product_data_in_cart = await get_product_price_data_in_cart(cartId);
 
   const lineItems: any = [

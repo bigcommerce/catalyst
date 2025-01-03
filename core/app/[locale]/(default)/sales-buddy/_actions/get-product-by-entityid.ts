@@ -6,7 +6,7 @@ export const get_product_by_entity_id = async (entityId: any) => {
     const apiPath = process.env.SALES_BUDDY_API_PATH!;
     const accessId = process.env.SALES_BUDDY_ACCESS_ID;
     let postData = JSON.stringify({
-      product_ids: entityId,
+      product_id: entityId,
       access_id: accessId,
     });
     let data = await fetch(

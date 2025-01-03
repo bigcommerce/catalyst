@@ -30,41 +30,46 @@ export default function SalesBuddyProductPage() {
 
   const costPricingTableData = (data) => {
     
-    let adjustCostObject = data?.productVariantsMetafields;
-    const floorValues = Object?.keys(data.Metafields)?.flatMap((key) => {
-      const dataArray = data?.Metafields[key]?.data[0]; // Access the entire data array
-      return { 'floor%': dataArray?.value };
-    });
+    // let adjustCostObject = data?.productVariantsMetafields;
+    // const floorValues = Object?.keys(data.Metafields)?.flatMap((key) => {
+    //   const dataArray = data?.Metafields[key]?.data[0]; // Access the entire data array
+    //   return { 'floor%': dataArray?.value };
+    // });
     
-    let getSkuImap = Object?.values(data?.productVariants).flatMap((variants) => {
-      return variants?.map((variant) => {
-        const resourceId = variant?.variants?.id; 
-        const adjustedCostData = adjustCostObject[resourceId]?.data || [];
-        const adjustedCost = adjustedCostData[0]?.value; 
-        const stockPlace = adjustedCostData[1]?.value; 
+    // let getSkuImap = Object?.values(data?.productVariants).flatMap((variants) => {
+    //   return variants?.map((variant) => {
+    //     const resourceId = variant?.variants?.id; 
+    //     const adjustedCostData = adjustCostObject[resourceId]?.data || [];
+    //     const adjustedCost = adjustedCostData[0]?.value; 
+    //     const stockPlace = adjustedCostData[1]?.value; 
 
-        return {
-          id: variant?.variants?.id,
-          productid: variant?.product_id,
-          sku: variant?.variants?.sku,
-          calculated_price: variant?.variants?.calculated_price,
-          AdjustedCost: adjustedCost || variant?.variants?.calculated_price +"*", // Include AdjustedCost
-          stockPlace: stockPlace, // Include stockPlace
-          floorPercentage: floorValues[0]['floor%'] || null, // Include floor% value
-          floorPrice: parseFloat(
-            floorValues[0]['floor%'] * adjustedCost || variant?.variants?.calculated_price,
-          ).toFixed(2),
-        };
-      });
-    });
-    setChildSku(getSkuImap)
+    //     return {
+    //       id: variant?.variants?.id,
+    //       productid: variant?.product_id,
+    //       sku: variant?.variants?.sku,
+    //       calculated_price: variant?.variants?.calculated_price,
+    //       AdjustedCost: adjustedCost || variant?.variants?.calculated_price +"*", // Include AdjustedCost
+    //       stockPlace: stockPlace, // Include stockPlace
+    //       floorPercentage: floorValues[0]['floor%'] || null, // Include floor% value
+    //       floorPrice: parseFloat(
+    //         floorValues[0]['floor%'] * adjustedCost || variant?.variants?.calculated_price,
+    //       ).toFixed(2),
+    //     };
+    //   });
+    // });
+    console.log(data.child_sku);
+    
+    setChildSku(data.child_sku)
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await get_product_data(retrievedProductData.productId);
+        
         if (data.status === 200) {
+          console.log(data);
+          
           costPricingTableData(data?.data?.output);
         }
       } catch (error) {
@@ -117,11 +122,12 @@ export default function SalesBuddyProductPage() {
               {childSku?.map((skuNum: any, i: any) => (
                 <tr key={i}>
                   {[
-                    skuNum.sku,
-                    skuNum.AdjustedCost,
-                    skuNum.calculated_price,
-                    skuNum.floorPercentage,
-                    skuNum.floorPrice,
+                    skuNum?.variants_sku,
+                    skuNum?.adjusted_cost ? skuNum.adjusted_cost :"0000.00",
+                    skuNum?.variant_price,
+                    skuNum?.floor_percentage ? skuNum?.floor_percentage :'00%',
+                    skuNum?.floor_percentage ? (skuNum?.floor_percentage * skuNum?.adjusted_cost).toFixed(2) : '0.00',
+                    // skuNum.floor_percentage ? skuNum.floor_percentage*skuNum.adjusted_cost:0,
                   ].map((data, j) => (
                     <td key={j} className="border-b px-[5px] py-[5px]">
                       {data}
@@ -141,7 +147,7 @@ export default function SalesBuddyProductPage() {
         <div className="w-[460px] bg-white p-[20px]">
           {childSku?.map((skuNum, index) => {
                 // Step 1: Split the stockPlace details by double pipe
-            const entries = skuNum?.stockPlace?.split('||').map(entry => entry?.trim());
+            const entries = skuNum?.stock_information?.split('||').map(entry => entry?.trim());
             // Step 2: Split each entry by single pipe
             const stockDetails = entries?.map(entry => entry?.split('|').map(item => item?.trim()));
             
