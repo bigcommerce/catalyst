@@ -93,7 +93,7 @@ export default async function Cart() {
   const get_product_price_data_in_cart = async (cartId: any) => {
   const result = await get_cart_price_adjuster_data(cartId);
     if (result.status === 200) {
-      return result.data.output;
+      return result?.data?.output;
     } else {
     return [{ error: 'Failed to retrive data' }];
     }
@@ -225,7 +225,7 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
               product={product}
               deleteIcon={deleteIcon}
               cartId={cart?.entityId}
-              priceAdjustData={product_data_in_cart?.physical_items[product.entityId]}
+              priceAdjustData={product_data_in_cart?.physical_items?.[product?.entityId]}
             />
           ))}
           {
@@ -238,7 +238,7 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
                 product={data}
                 deleteIcon={deleteIcon}
                 cartId={cart.entityId}
-                priceAdjustData={product_data_in_cart?.custom_items[data.entityId]}
+                priceAdjustData={product_data_in_cart?.custom_items?.[data?.entityId]}
 
               />
               )
@@ -278,4 +278,4 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
   );
 }
 
-export const runtime = 'edge';
+//export const runtime = 'edge';
