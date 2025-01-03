@@ -31,6 +31,7 @@ export default function CartInterface() {
     cost: '',
     retailPrice: '',
     productName: '',
+    quantity: '',
     comment: '',
   });
   const [loading, setLoading] = useState({
@@ -44,6 +45,7 @@ export default function CartInterface() {
     cost: useRef<HTMLInputElement>(null),
     retailPrice: useRef<HTMLInputElement>(null),
     productName: useRef<HTMLInputElement>(null),
+    quantity: useRef<HTMLInputElement>(null),
   };
 
   const router=useRouter()
@@ -56,6 +58,7 @@ export default function CartInterface() {
       cost: parseFloat(customProductRefs.cost.current?.value?.trim() || ''),
       retailPrice: parseFloat(customProductRefs.retailPrice.current?.value?.trim() || ''),
       productName: customProductRefs.productName.current?.value?.trim() || '',
+      quantity: Number(customProductRefs.quantity.current?.value?.trim() || 1),
       // access_id: process.env.SALES_BUDDY_ACCESS_ID
     };
     try {
@@ -225,6 +228,7 @@ export default function CartInterface() {
               { id: 'cost', label: 'Our Cost*' },
               { id: 'retailPrice', label: 'Retail Price*' },
               { id: 'productName', label: 'Product Name (Optional)' },
+              { id: 'quantity', label: 'Quantity' },
             ],
             customProductRefs,
           )}
