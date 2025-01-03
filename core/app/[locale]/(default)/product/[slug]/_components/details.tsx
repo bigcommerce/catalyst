@@ -25,6 +25,8 @@ import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import {  store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
+import addToCart from '~/public/add-to-cart/addToCart.svg'
+import Image from 'next/image';
 
 interface ProductOptionValue {
   entityId: number;
@@ -313,13 +315,19 @@ export const Details = ({
                       product.prices.price?.value !== undefined &&
                       product.prices.basePrice.value > product.prices.price.value ? (
                         <>
+                          <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                            {format.number(product.prices.price.value, {
+                              style: 'currency',
+                              currency: product.prices.price.currencyCode,
+                            })}
+                          </span>
                           <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                             {format.number(product.prices.basePrice.value, {
                               style: 'currency',
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
-                          <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
+                          <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                             Save{' '}
                             {Math.round(
                               ((product.prices.basePrice.value - product.prices.price.value) /
@@ -328,15 +336,9 @@ export const Details = ({
                             )}
                             %
                           </span>
-                          <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
-                            {format.number(product.prices.price.value, {
-                              style: 'currency',
-                              currency: product.prices.price.currencyCode,
-                            })}
-                          </span>
                         </>
                       ) : (
-                        <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
+                        <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                           {format.number(product.prices.price?.value || 0, {
                             style: 'currency',
                             currency: product.prices.price?.currencyCode || 'USD',
@@ -361,7 +363,7 @@ export const Details = ({
                       ADD TO CART
                     </span>
                     <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
-                      <ShoppingCart className="h-5 w-0 transform opacity-0 transition-all duration-300 group-hover:w-5 group-hover:opacity-100" />
+                      <Image src={addToCart} className='' alt='Add to Cart' unoptimized={true} width={44} height={44} />
                     </div>
                   </button>
                 </div>
@@ -390,7 +392,7 @@ export const Details = ({
                 ADD TO CART
               </span>
               <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
-                <ShoppingCart className="h-5 w-0 transform opacity-0 transition-all duration-300 group-hover:w-5 group-hover:opacity-100" />
+                <Image src={addToCart} className='' alt='Add to Cart' unoptimized={true} width={44} height={44} />
               </div>
             </button>
           </div>
@@ -432,21 +434,25 @@ export const Details = ({
         <ReviewSummary data={product} />
       </div>
 
-      {/* product-price */}
-
       {product.prices && (
-        <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:mt-6 lg:text-left">
+        <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
           {product.prices.basePrice?.value !== undefined &&
           product.prices.price?.value !== undefined &&
           product.prices.basePrice.value > product.prices.price.value ? (
             <>
+              <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                {format.number(product.prices.price.value, {
+                  style: 'currency',
+                  currency: product.prices.price.currencyCode,
+                })}
+              </span>
               <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                 {format.number(product.prices.basePrice.value, {
                   style: 'currency',
                   currency: product.prices.price.currencyCode,
                 })}
               </span>
-              <span className="text-left text-[16px] font-bold leading-8 tracking-[0.15px] text-brand-400">
+              <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                 Save{' '}
                 {Math.round(
                   ((product.prices.basePrice.value - product.prices.price.value) /
@@ -455,15 +461,9 @@ export const Details = ({
                 )}
                 %
               </span>
-              <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
-                {format.number(product.prices.price.value, {
-                  style: 'currency',
-                  currency: product.prices.price.currencyCode,
-                })}
-              </span>
             </>
           ) : (
-            <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-[#002A37]">
+            <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
               {format.number(product.prices.price?.value || 0, {
                 style: 'currency',
                 currency: product.prices.price?.currencyCode || 'USD',

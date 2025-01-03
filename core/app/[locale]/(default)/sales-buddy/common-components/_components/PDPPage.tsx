@@ -119,7 +119,7 @@ export default function SalesBuddyProductPage() {
             const stockDetails = entries?.map(entry => entry?.split('|').map(item => item?.trim()));
             
             const item = {
-              id: skuNum?.sku, // Use skuNum.sku instead of hardcoded id
+              id: skuNum?.variants_sku, // Use skuNum.sku instead of hardcoded id
               status:stockDetails,
             };
 

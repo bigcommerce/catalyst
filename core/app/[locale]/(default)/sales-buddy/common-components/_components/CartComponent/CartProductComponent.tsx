@@ -58,15 +58,15 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
               <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
                 {product?.name}
               </p>
-              {changeTheProtectedPosition?.length == 0 && (
+              {/* {changeTheProtectedPosition?.length == 0 && ( */}
                 <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
                   <div className="cart-options flex flex-wrap gap-2">
                     <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                      SKU: {product?.sku}
+                      SKU: {priceAdjustData?.sku}
                     </p>
                   </div>
                 </div>
-              )}
+              {/* )} */}
               {changeTheProtectedPosition?.length > 0 && (
                 <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
                   <div className="cart-options flex flex-wrap gap-2">
@@ -201,7 +201,7 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
                     }
                   </p>
                 </div>
-                {/* <ItemQuantity product={product} /> */}
+                <ItemQuantity product={product} />
               </div>
             </div>
               {console.log('|||priceAdjustData|||',priceAdjustData)}
@@ -214,7 +214,7 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
                   initialCost={Number(priceAdjustData?.cost)}
                   initialFloor={Number(priceAdjustData?.floor_percentage)}
                   initialMarkup={Number(product?.listPrice?.value)}
-                  productId={priceAdjustData?.sku}
+                  productId={priceAdjustData?.id}
                   cartId={cartId}
                   ProductType={ProductType}
               />
