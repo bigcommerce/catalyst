@@ -16,8 +16,15 @@ import { Accordion, Accordions } from '@/vibes/soul/primitives/accordions';
 import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Rating } from '@/vibes/soul/primitives/rating';
+import { Link } from '~/components/link';
 
 import { getFilterParsers } from './filter-parsers';
+
+export interface LinkGroupFilter {
+  type: 'link-group';
+  label: string;
+  links: Array<{ label: string; href: string }>;
+}
 
 export interface ToggleGroupFilter {
   type: 'toggle-group';
@@ -49,7 +56,7 @@ export interface RangeFilter {
   disabled?: boolean;
 }
 
-export type Filter = ToggleGroupFilter | RangeFilter | RatingFilter;
+export type Filter = ToggleGroupFilter | RangeFilter | RatingFilter | LinkGroupFilter;
 
 interface Props {
   className?: string;
@@ -110,18 +117,39 @@ export function FiltersPanelInner({
   const [isPending, startTransition] = useTransition();
   const [optimisticParams, setOptimisticParams] = useOptimistic(params);
   const [accordionItems, setAccordionItems] = useState(() =>
-    filters.map((filter, index) => ({
-      key: index.toString(),
-      value: index.toString(),
-      filter,
-      expanded: index < 3,
-    })),
+    filters
+      .filter((filter) => filter.type !== 'link-group')
+      .map((filter, index) => ({
+        key: index.toString(),
+        value: index.toString(),
+        filter,
+        expanded: index < 3,
+      })),
   );
 
   if (filters.length === 0) return null;
 
+  const linkGroupFilters = filters.filter((filter) => filter.type === 'link-group');
+
   return (
     <div className={clsx('space-y-5', className)} data-pending={isPending ? true : null}>
+      {linkGroupFilters.map((linkGroup, index) => (
+        <div key={index.toString()}>
+          <h3 className="py-4 font-mono text-sm uppercase text-contrast-400">{linkGroup.label}</h3>
+          <ul>
+            {linkGroup.links.map((link, linkIndex) => (
+              <li className="py-2" key={linkIndex.toString()}>
+                <Link
+                  className="font-body text-base font-medium text-contrast-500 transition-colors duration-300 ease-out hover:text-foreground"
+                  href={link.href}
+                >
+                  {link.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
       <Accordions
         onValueChange={(items) =>
           setAccordionItems((prevItems) =>
