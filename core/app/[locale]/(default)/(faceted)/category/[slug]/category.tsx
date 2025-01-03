@@ -326,9 +326,11 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               <Facet title="Shape">
                 <RefinementList attribute="metafields.Details.Product Shape" />
               </Facet>
+              {/*
               <Panel header="Price">
                 <RangeInput attribute="prices.USD" classNames={{ input: 'max-w-[80px]' }} />
               </Panel>
+              */}
               <Facet title="Price">
                 <RefinementList attribute="price_range" sortBy={sortByNumericRangeName} searchable={false} />
               </Facet>
@@ -455,9 +457,11 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               <Panel header="Can be Recessed">
                 <ToggleRefinement attribute="metafields.Details.Can be Recessed" label="Can be Recessed" />
               </Panel>
+              {/*
               <Panel header="Rating">
                 <RatingMenu attribute="reviews_rating_sum" />
               </Panel>
+              */}
               <Panel header="Free Shipping">
                 <ToggleRefinement attribute="free_shipping" label="Free Shipping" />
               </Panel>
@@ -623,7 +627,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
         }
 
         <div className="mt-4 flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0 items-center">
-          <Pagination classNames={{ 
+          <Pagination padding={2} classNames={{ 
             //root: 'mt-4 lg:mt-0 mx-auto lg:mx-0 flex-auto order-2 lg:order-1 justify-center !shadow-none', 
             root: 'mt-4 lg:mt-0 mx-auto lg:mx-0 flex-auto justify-center !shadow-none', 
             link: '!px-2 md:!px-3 lg:!px-4 !shadow-none !border-gray-300'

@@ -898,9 +898,7 @@ border: 0px solid !important;
 background: none !important;
 }
 .ais-Pagination-item--previousPage .ais-Pagination-link > span, 
-.ais-Pagination-item--nextPage .ais-Pagination-link > span, 
-.ais-Pagination-item--firstPage .ais-Pagination-link > span, 
-.ais-Pagination-item--lastPage .ais-Pagination-link > span
+.ais-Pagination-item--nextPage .ais-Pagination-link > span 
 {
 display: none;
 }
@@ -911,6 +909,11 @@ content: '<';
 content: '>';
 }
 /*
+.ais-Pagination-item--firstPage .ais-Pagination-link > span, 
+.ais-Pagination-item--lastPage .ais-Pagination-link > span
+{
+display: none;
+}
 .ais-Pagination-item--firstPage .ais-Pagination-link::before {
 content: 'First';
 }
@@ -918,10 +921,12 @@ content: 'First';
 content: 'Last';
 }
 */
+/*
 .ais-Pagination-item--firstPage, .ais-Pagination-item--lastPage {
 display: none !important;
 }
-.ais-Pagination-item--selected {
+*/
+.ais-Pagination-item--selected .ais-Pagination-link {
 font-weight: bold;
 text-decoration: underline;
 }
