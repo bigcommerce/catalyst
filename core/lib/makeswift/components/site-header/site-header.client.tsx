@@ -39,6 +39,13 @@ export const PropsContextProvider = ({
   <PropsContext.Provider value={value}>{children}</PropsContext.Provider>
 );
 
+interface ImageProps {
+  src?: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
 interface Props {
   banner: {
     id: string;
@@ -59,14 +66,8 @@ interface Props {
     }>;
   }>;
   logo: {
-    desktopSrc?: string;
-    desktopAlt: string;
-    desktopWidth: number;
-    desktopHeight: number;
-    mobileSrc?: string;
-    mobileAlt: string;
-    mobileWidth: number;
-    mobileHeight: number;
+    desktop: ImageProps;
+    mobile: ImageProps;
     link?: { href: string };
   };
   linksPosition: 'center' | 'left' | 'right';
@@ -108,14 +109,16 @@ export const MakeswiftHeader = forwardRef(
         navigation={{
           ...passedProps,
           links: combineLinks(passedProps.links, links),
-          logo: logo.desktopSrc ? { src: logo.desktopSrc, alt: logo.desktopAlt } : passedProps.logo,
-          logoWidth: logo.desktopWidth,
-          logoHeight: logo.desktopHeight,
-          mobileLogo: logo.mobileSrc
-            ? { src: logo.mobileSrc, alt: logo.mobileAlt }
+          logo: logo.desktop.src
+            ? { src: logo.desktop.src, alt: logo.desktop.alt }
+            : passedProps.logo,
+          logoWidth: logo.desktop.width,
+          logoHeight: logo.desktop.height,
+          mobileLogo: logo.mobile.src
+            ? { src: logo.mobile.src, alt: logo.mobile.alt }
             : passedProps.mobileLogo,
-          mobileLogoWidth: logo.mobileWidth,
-          mobileLogoHeight: logo.mobileHeight,
+          mobileLogoWidth: logo.mobile.width,
+          mobileLogoHeight: logo.mobile.height,
           linksPosition,
           logoHref: logo.link?.href ?? passedProps.logoHref,
         }}
