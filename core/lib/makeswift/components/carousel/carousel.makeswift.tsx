@@ -46,7 +46,7 @@ runtime.registerComponent(
           <div className="p-4 text-center text-lg text-gray-400">Add items to the carousel</div>
         ) : (
           <Carousel>
-            <CarouselContent className="mb-20">
+            <CarouselContent className="mb-10">
               {slides.map(({ link, children }, index) => (
                 <CarouselItem
                   className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4"
@@ -59,7 +59,7 @@ runtime.registerComponent(
               ))}
             </CarouselContent>
             {(showScrollbar || showArrows) && (
-              <div className="flex w-full items-center justify-between">
+              <div className="mt-10 flex w-full items-center justify-between">
                 {showScrollbar && <CarouselScrollbar colorScheme={colorScheme} />}
                 {showArrows && <CarouselButtons colorScheme={colorScheme} />}
               </div>
@@ -76,7 +76,7 @@ runtime.registerComponent(
     props: {
       className: Style(),
       slides: List({
-        label: 'Slides',
+        label: 'Items',
         type: Shape({
           type: {
             name: TextInput({ label: 'Name', defaultValue: '' }),
@@ -85,7 +85,7 @@ runtime.registerComponent(
           },
         }),
         getItemLabel(slide) {
-          return slide?.name || 'Slide';
+          return slide?.name || 'Item';
         },
       }),
       showScrollbar: Checkbox({
