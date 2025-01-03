@@ -202,13 +202,15 @@
       "recentlyViewed": "Recently viewed"
     },
     "Orders": {
-      "noOrders": "No orders yet",
+      "title": "Orders",
       "orderNumber": "Order #",
-      "placedDate": "Order placed",
       "totalPrice": "Total",
       "viewDetails": "View Details",
+      "noOrders": "No orders yet"
+    },
+    "OrderDetails": {
+      "orderNumber": "Order #",
       "trackOrder": "Track order",
-      "returnOrder": "Return items",
       "orderSummary": "Order Summary",
       "orderContents": "Order contents",
       "orderSubtotal": "Subtotal:",
@@ -217,17 +219,11 @@
       "orderAppliedCoupon": "Coupon code ({code}):",
       "orderShipping": "Shipping:",
       "orderTax": "Tax:",
-      "printInvoice": "Print Invoice",
-      "repurchaseOrder": "Repurchase",
-      "return": "Return",
       "shippedDate": "Shipped on",
       "shippingAddress": "Shipping address",
       "shippingMethod": "Shipping method",
       "shipmentTitle": "Shipment",
-      "shippingTitle": "Shipping",
-      "shippingPayment": "Payment",
-      "shippingPaymentMethod": "Payment method",
-      "billingAddress": "Billing address"
+      "shippingTitle": "Shipping"
     },
     "Addresses": {
       "title": "Addresses",
@@ -457,6 +453,11 @@
         "sku": "SKU",
         "weight": "Weight",
         "condition": "Condition"
+      },
+      "Prices": {
+        "msrp": "MSRP",
+        "was": "Was",
+        "now": "Now"
       }
     },
     "RelatedProducts": {
