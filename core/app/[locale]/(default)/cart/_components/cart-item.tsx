@@ -175,6 +175,7 @@ interface Props {
   deleteIcon: string;
   cartId: string;
   priceAdjustData:string;
+  ProductType:string;
 }
 function moveToTheEnd(arr: any, word: string) {
   arr?.map((elem: any, index: number) => {
@@ -185,7 +186,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjustData}: Props) => {
+export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjustData,ProductType}: Props) => {
 
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
@@ -385,8 +386,9 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjus
                   initialFloor={Number(priceAdjustData?.floor_percentage)}
                   initialMarkup={Number(product?.listPrice?.value)}
                   productId={product?.productEntityId}
-                  cartId={cartId}
-                />
+                  cartId={cartId} 
+                  ProductType={"product"}
+                   />
                 {/* priceAdjustData.parent_sku */}
               </div>
             </div>

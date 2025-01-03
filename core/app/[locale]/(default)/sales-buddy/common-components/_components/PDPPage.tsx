@@ -216,6 +216,8 @@ export default function SalesBuddyProductPage() {
     },
   };
 
+  console.log(childSku);
+  
   return (
     <div className="space-y-[10px] overflow-x-hidden">
       {/* Product Info */}

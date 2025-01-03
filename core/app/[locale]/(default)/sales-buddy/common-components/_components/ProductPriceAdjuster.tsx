@@ -8,13 +8,14 @@ import Spinner from './Spinner';
 interface ProductPriceAdjusterProps {
   parentSku: string;
   sku: string;
-  oem_sku:String;
+  oem_sku:string;
   productPrice: number;
   initialCost: number;
   initialFloor: number;
   initialMarkup: number;
   productId: number;
   cartId:any;
+  ProductType:string
 }
 const EditIcon =()=>{
   return (
@@ -38,6 +39,7 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   initialMarkup,
   productId,
   cartId,
+  ProductType
   
 }) => {
   const [cost, setCost] = useState<number>(initialCost);
@@ -54,9 +56,9 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   };
 
   const handleSubmit = async () => {
-  
+    
     setLoading(true);
-    let res = await updateProductPrice(newCost, cartId, productId);
+    let res = await updateProductPrice(newCost, cartId, productId,ProductType);
     console.log('res');
     console.log(res)
     if(res.status == 200){
