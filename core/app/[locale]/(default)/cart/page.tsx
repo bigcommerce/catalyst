@@ -92,16 +92,13 @@ export default async function Cart() {
   const CustomItems = cart?.lineItems.customItems
   const get_product_price_data_in_cart = async (cartId: any) => {
   const result = await get_cart_price_adjuster_data(cartId);
-  console.log(result);
     if (result.status === 200) {
-      
       return result.data.output;
     } else {
     return [{ error: 'Failed to retrive data' }];
     }
   };
 const product_data_in_cart = await get_product_price_data_in_cart(cartId);
-console.log("product_data_in_cart----------",product_data_in_cart);
 
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
