@@ -16,6 +16,13 @@ interface DeviceCodeCredentials {
   access_token: string;
 }
 
+interface DeviceCodeResponse {
+  device_code: string;
+  user_code: string;
+  verification_uri: string;
+  interval: number;
+}
+
 async function pollDeviceCode(
   auth: Auth,
   deviceCode: string,
@@ -46,55 +53,32 @@ async function waitForCredentials(
   return waitForCredentials(auth, deviceCode, interval);
 }
 
-async function waitForKeyPress(prompt: string): Promise<boolean> {
+async function waitForEnterKey(prompt: string): Promise<void> {
   const rl = createInterface({
     input: process.stdin,
     output: process.stdout,
   });
 
-  // Enable raw mode to get individual keystrokes
-  process.stdin.setRawMode(true);
-  process.stdin.resume();
-
   return new Promise((resolve) => {
-    process.stdin.once('data', (data) => {
-      // Restore normal stdin mode
-      process.stdin.setRawMode(false);
-      process.stdin.pause();
+    rl.question(prompt, () => {
       rl.close();
-
-      // Check if escape key was pressed (27 is the ASCII code for escape)
-      const shouldProceed = data[0] !== 27;
-
-      // Add a newline since we're in raw mode
-      process.stdout.write('\n');
-
-      resolve(shouldProceed);
+      resolve();
     });
-
-    // Display the prompt
-    rl.write(prompt);
   });
 }
 
 export async function login(baseUrl: string): Promise<LoginResult> {
   const auth = new Auth({ baseUrl });
+  const deviceCode = (await auth.getDeviceCode()) as DeviceCodeResponse;
 
-  const deviceCode = await auth.getDeviceCode();
-
-  console.log(
-    chalk.cyan('\nPlease visit the following URL to authenticate with your BigCommerce store:'),
-  );
-  console.log(chalk.yellow(`\n${deviceCode.verification_uri}\n`));
-  console.log(chalk.cyan(`Enter code: `) + chalk.yellow(`${deviceCode.user_code}\n`));
-
-  const shouldOpenUrl = await waitForKeyPress(
-    'Press any key to open the URL in your browser (or ESC to skip)...',
+  console.log(chalk.cyan('\n! First copy your one-time code: ') + 
+    chalk.bold.yellow(deviceCode.user_code));
+    
+  await waitForEnterKey(
+    chalk.cyan(`\nPress Enter to open ${deviceCode.verification_uri} in your browser...`)
   );
 
-  if (shouldOpenUrl) {
-    await open(deviceCode.verification_uri);
-  }
+  await open(deviceCode.verification_uri);
 
   const credentials = await spinner(
     () => waitForCredentials(auth, deviceCode.device_code, deviceCode.interval),
