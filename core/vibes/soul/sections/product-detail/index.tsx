@@ -1,4 +1,4 @@
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { all, Stream, type Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, Accordions } from '@/vibes/soul/primitives/accordions';
 import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
@@ -8,7 +8,7 @@ import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gal
 import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
 import { Field } from './schema';
 
-interface ProductDetailProduct {
+export interface ProductDetailProduct {
   id: string;
   title: string;
   href: string;
@@ -106,11 +106,7 @@ export function ProductDetail<F extends Field>({
 
                   <Stream
                     fallback={<ProductDetailFormSkeleton />}
-                    value={Promise.all([
-                      streamableFields,
-                      streamableCtaLabel,
-                      streamableCtaDisabled,
-                    ])}
+                    value={all([streamableFields, streamableCtaLabel, streamableCtaDisabled])}
                   >
                     {([fields, ctaLabel, ctaDisabled]) => (
                       <ProductDetailForm
