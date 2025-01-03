@@ -11,7 +11,7 @@ runtime.registerComponent(SectionLayout, {
     className: Style({ properties: [...Style.Default, Style.Border] }),
     children: Slot(),
     containerSize: Select({
-      label: 'Container Size',
+      label: 'Container size',
       options: [
         { value: 'md', label: 'Medium' },
         { value: 'lg', label: 'Large' },
