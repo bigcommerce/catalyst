@@ -24,7 +24,6 @@ import { RemoveCart } from './_components/remove-cart';
 import { GetCartMetaFields } from '~/components/management-apis';
 import CartProductComponent from '../sales-buddy/common-components/_components/CartComponent/CartProductComponent';
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
-// import { get_product_price_data_in_cart } from '../sales-buddy/common-components/common-functions';
 
 const CartPageQuery = graphql(
   `

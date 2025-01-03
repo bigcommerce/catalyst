@@ -28,43 +28,17 @@ export default function SalesBuddyProductPage() {
     );
   };
 
-  const costPricingTableData = (data) => {
-    
-    let adjustCostObject = data?.productVariantsMetafields;
-    const floorValues = Object?.keys(data.Metafields)?.flatMap((key) => {
-      const dataArray = data?.Metafields[key]?.data[0]; // Access the entire data array
-      return { 'floor%': dataArray?.value };
-    });
-    
-    let getSkuImap = Object?.values(data?.productVariants).flatMap((variants) => {
-      return variants?.map((variant) => {
-        const resourceId = variant?.variants?.id; 
-        const adjustedCostData = adjustCostObject[resourceId]?.data || [];
-        const adjustedCost = adjustedCostData[0]?.value; 
-        const stockPlace = adjustedCostData[1]?.value; 
-
-        return {
-          id: variant?.variants?.id,
-          productid: variant?.product_id,
-          sku: variant?.variants?.sku,
-          calculated_price: variant?.variants?.calculated_price,
-          AdjustedCost: adjustedCost || variant?.variants?.calculated_price +"*", // Include AdjustedCost
-          stockPlace: stockPlace, // Include stockPlace
-          floorPercentage: floorValues[0]['floor%'] || null, // Include floor% value
-          floorPrice: parseFloat(
-            floorValues[0]['floor%'] * adjustedCost || variant?.variants?.calculated_price,
-          ).toFixed(2),
-        };
-      });
-    });
-    setChildSku(getSkuImap)
+  const costPricingTableData = (data) => { 
+    setChildSku(data.child_sku)
   };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const data = await get_product_data(retrievedProductData.productId);
+        
         if (data.status === 200) {
+          
           costPricingTableData(data?.data?.output);
         }
       } catch (error) {
@@ -117,18 +91,17 @@ export default function SalesBuddyProductPage() {
               {childSku?.map((skuNum: any, i: any) => (
                 <tr key={i}>
                   {[
-                    skuNum.sku,
-                    skuNum.AdjustedCost,
-                    skuNum.calculated_price,
-                    skuNum.floorPercentage,
-                    skuNum.floorPrice,
+                    skuNum?.variants_sku,
+                    skuNum?.adjusted_cost ? skuNum.adjusted_cost :"0000.00",
+                    skuNum?.variant_price,
+                    skuNum?.floor_percentage ? skuNum?.floor_percentage :'00%',
+                    skuNum?.floor_percentage ? (skuNum?.floor_percentage * skuNum?.adjusted_cost).toFixed(2) : '0.00',
                   ].map((data, j) => (
                     <td key={j} className="border-b px-[5px] py-[5px]">
                       {data}
                     </td>
                   ))}
                 </tr>
-                // <tr key={i}>{skuNum.sku}</tr>
               ))}
             </tbody>
           </table>
@@ -141,26 +114,13 @@ export default function SalesBuddyProductPage() {
         <div className="w-[460px] bg-white p-[20px]">
           {childSku?.map((skuNum, index) => {
                 // Step 1: Split the stockPlace details by double pipe
-            const entries = skuNum?.stockPlace?.split('||').map(entry => entry?.trim());
+            const entries = skuNum?.stock_information?.split('||').map(entry => entry?.trim());
             // Step 2: Split each entry by single pipe
             const stockDetails = entries?.map(entry => entry?.split('|').map(item => item?.trim()));
             
             const item = {
               id: skuNum?.sku, // Use skuNum.sku instead of hardcoded id
               status:stockDetails,
-                // index === 0
-                //   ? '## In Stock | Distribution Center Inventory'
-                //   : index === 1
-                //     ? '## Back Ordered | 50 Expected MM/DD/YYYY'
-                //     : '## In Stock | Belami Warehouse Inventory',
-              // location:
-              //   index === 0
-              //     ? 'Quoizel - Gose Creek, SC (1006)'
-              //     : index === 1
-              //       ? 'Supplier Inventory NSOID #####'
-              //       : 'Hinkley - Cleveland, OH (1004)',
-              // updated: index === 0 ? '5 Days Ago' : index === 1 ? 'Today' : '2 Days Ago',
-              // updatedColor: index === 0 ? '#F5E9E8' : index === 1 ? '#EAF4EC' : '#FBF4E9',
             };
 
             return (
@@ -191,22 +151,6 @@ export default function SalesBuddyProductPage() {
                   ))}
                   </> :<div className="space-y-[5px]  pb-[10px] pt-[10px]">No Inventory Available </div> 
                 }
-                
-                
-                  {/* <div className="flex justify-between">
-                    <p className="text-sm text-[#353535]">{item.location}</p>
-                    <p
-                      className={`p-[5px] text-sm ${index === 0 ? 'text-[#6A4C1E]' : index === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
-                      style={{ backgroundColor: item.updatedColor }}
-                    >
-                      Updated{' '}
-                      <span
-                        className={`font-bold ${index === 0 ? 'text-[#6A4C1E]' : index === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
-                      >
-                        {item.updated}
-                      </span>
-                    </p>
-                  </div> */}
                 </div>
               
             );
@@ -216,7 +160,6 @@ export default function SalesBuddyProductPage() {
     },
   };
 
-  console.log(childSku);
   
   return (
     <div className="space-y-[10px] overflow-x-hidden">
