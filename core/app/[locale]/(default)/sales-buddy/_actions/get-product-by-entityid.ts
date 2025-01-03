@@ -17,6 +17,7 @@ export const get_product_by_entity_id = async (entityId: any) => {
           'Content-Type': 'application/json',
         },
         body: postData,
+        cache: 'no-store',
       },
     )
       .then((res) => res.json())
@@ -49,11 +50,10 @@ export const get_cart_price_adjuster_data=async(cartId: any)=>{
         'Content-Type': 'application/json',
       },
       body: postData,
+      cache: 'no-store',
     })
       .then((res) => res.json())
       .then((jsonData) => {
-        console.log("jsonData-----",jsonData);
-        
         return { status: 200, data: jsonData };
       })
       .catch((error) => {
