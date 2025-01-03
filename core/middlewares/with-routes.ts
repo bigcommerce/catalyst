@@ -6,8 +6,9 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
+import { KvAdapter } from '~/lib/kv/types';
 
-import { kv } from '../lib/kv';
+import { createKV, KV } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
@@ -169,6 +170,7 @@ const updateRouteCache = async (
   pathname: string,
   channelId: string,
   event: NextFetchEvent,
+  kv: KV<KvAdapter>,
 ): Promise<RouteCache> => {
   const routeCache: RouteCache = {
     route: await getRoute(pathname, channelId),
@@ -183,6 +185,7 @@ const updateRouteCache = async (
 const updateStatusCache = async (
   channelId: string,
   event: NextFetchEvent,
+  kv: KV<KvAdapter>,
 ): Promise<StorefrontStatusCache> => {
   const status = await getStoreStatus(channelId);
 
@@ -208,7 +211,7 @@ const clearLocaleFromPath = (path: string, locale: string) => {
   return path;
 };
 
-const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
+const getRouteInfo = async (request: NextRequest, event: NextFetchEvent, kv: KV<KvAdapter>) => {
   const locale = request.headers.get('x-bc-locale') ?? '';
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
 
@@ -223,15 +226,15 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
     // If caches are old, update them in the background and return the old data (SWR-like behavior)
     // If cache is missing, update it and return the new data, but write to KV in the background
     if (statusCache && statusCache.expiryTime < Date.now()) {
-      event.waitUntil(updateStatusCache(channelId, event));
+      event.waitUntil(updateStatusCache(channelId, event, kv));
     } else if (!statusCache) {
-      statusCache = await updateStatusCache(channelId, event);
+      statusCache = await updateStatusCache(channelId, event, kv);
     }
 
     if (routeCache && routeCache.expiryTime < Date.now()) {
-      event.waitUntil(updateRouteCache(pathname, channelId, event));
+      event.waitUntil(updateRouteCache(pathname, channelId, event, kv));
     } else if (!routeCache) {
-      routeCache = await updateRouteCache(pathname, channelId, event);
+      routeCache = await updateRouteCache(pathname, channelId, event, kv);
     }
 
     const parsedRoute = RouteCacheSchema.safeParse(routeCache);
@@ -254,9 +257,10 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
 
 export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
+    const kv = createKV(request);
     const locale = request.headers.get('x-bc-locale') ?? '';
 
-    const { route, status } = await getRouteInfo(request, event);
+    const { route, status } = await getRouteInfo(request, event, kv);
 
     if (status === 'MAINTENANCE') {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
