@@ -1,6 +1,7 @@
+"use client"
 import { useFormatter } from 'next-intl';
 import Link from 'next/link';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ItemQuantity } from '~/app/[locale]/(default)/cart/_components/item-quantity';
 import { RemoveItem } from '~/app/[locale]/(default)/cart/_components/remove-item';
 import { BcImage } from '~/components/bc-image';
@@ -17,7 +18,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export default function CartProductComponent({ currencyCode, product, deleteIcon, cartId,priceAdjustData }: Props) {
+export default function CartProductComponent({ currencyCode, product, deleteIcon, cartId,priceAdjustData,ProductType }: Props) {
   const changeTheProtectedPosition = moveToTheEnd(
     product?.selectedOptions,
     'Protect Your Purchase',
@@ -30,7 +31,9 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
     if (discountedPrice > 0) {
       discountPriceText = discountedPrice + '% Off';
     }
-    
+    useEffect(()=>{
+
+    },[priceAdjustData])
   return (
     <div className="">
       <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
@@ -39,7 +42,7 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
             <BcImage
               alt={product?.name}
               height={144}
-              src={product?.image.url}
+              src={product?.image_url}
               width={144}
               className="h-full min-h-[9em] w-full object-contain"
             />
@@ -198,9 +201,10 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
                     }
                   </p>
                 </div>
-                <ItemQuantity product={product} />
+                {/* <ItemQuantity product={product} /> */}
               </div>
             </div>
+              {console.log('|||priceAdjustData|||',priceAdjustData)}
             <div className="overflow-x-hidden pl-[10px]">
               <ProductPriceAdjuster
                  parentSku={priceAdjustData?.parent_sku}
@@ -210,8 +214,9 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
                   initialCost={Number(priceAdjustData?.cost)}
                   initialFloor={Number(priceAdjustData?.floor_percentage)}
                   initialMarkup={Number(product?.listPrice?.value)}
-                  productId={product?.productEntityId}
+                  productId={priceAdjustData?.sku}
                   cartId={cartId}
+                  ProductType={ProductType}
               />
             </div>
           </div>
