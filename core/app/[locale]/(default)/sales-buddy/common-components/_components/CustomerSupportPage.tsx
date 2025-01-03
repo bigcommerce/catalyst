@@ -333,10 +333,10 @@ function CustomerSupportPage() {
         if (createPhoneError === '') {
           setCreateAccountData({ ...createAccountData, phone: value });
         }
-        setCreateAccountData_errors((prev) => ({
-          ...prev,
-          create_phone: createPhoneError,
-        }));
+        // setCreateAccountData_errors((prev) => ({
+        //   ...prev,
+        //   create_phone: createPhoneError,
+        // }));
         break;
       }
       case 'create_referralId': {

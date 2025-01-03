@@ -24,8 +24,8 @@ import { RelatedProducts } from './related-products';
 import { CollectionProducts } from './collection-products';
 import { SitevibesReviews } from './sitevibes-reviews';
 import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-algolia-products';
-import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
-import WishlistAddToList from '../../account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
+// import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
+// import WishlistAddToList from '../../account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -118,12 +118,12 @@ export default async function ProductPage(props: Props) {
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
 
-  const data = await getWishlists({
-    cursor: null,
-    limit: 50,
-  });
+  // const data = await getWishlists({
+  //   cursor: null,
+  //   limit: 50,
+  // });
 
-  if (!data?.wishlists) return null;
+  // if (!data?.wishlists) return null;
 
   setRequestLocale(locale);
   const t = await getTranslations('Product');
@@ -276,26 +276,10 @@ export default async function ProductPage(props: Props) {
               requestQuote={requestQuote}
               closeIcon={closeIcon}
               blankAddImg={blankAddImg}
-              productImages={productImages}
+              //productImages={productImages}
             />
 
-            <div className="w-full">
-              <WishlistAddToList
-                wishlists={data.wishlists}
-                hasPreviousPage={false}
-                product={{
-                  entityId: product.entityId,
-                  variantEntityId: product.variants.edges?.[0]?.node.entityId,
-                  name: product.name,
-                  path: product.path,
-                  images: removeEdgesAndNodes(product.images),
-                  brand: product.brand,
-                  prices: product.prices,
-                  rating: product.reviewSummary?.averageRating,
-                  reviewCount: product.reviewSummary?.numberOfReviews,
-                }}
-              />
-            </div>
+
 
             <div className="lg:col-span-2">
               <Description product={product} />

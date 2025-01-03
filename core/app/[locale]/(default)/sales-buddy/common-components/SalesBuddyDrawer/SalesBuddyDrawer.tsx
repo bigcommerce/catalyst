@@ -25,7 +25,7 @@ export default function DrawerModal({
   return (
     <div
       className={`fixed inset-0 flex ${position === 'left' ? 'justify-start' : 'justify-end'}`}
-      onClick={onClose}
+      onClick={ (e) => onClose(e)}
     >
       <div
         className="relative h-full overflow-auto scrollbar-hide bg-[#f3f4f5] shadow-lg"
