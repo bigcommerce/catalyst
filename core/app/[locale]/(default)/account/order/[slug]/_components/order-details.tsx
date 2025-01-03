@@ -13,7 +13,7 @@ import {
 import { OrderDataType } from '../page';
 
 const OrderState = async ({ orderState }: { orderState: OrderDataType['orderState'] }) => {
-  const t = await getTranslations('Account.Orders');
+  const t = await getTranslations('Account.OrderDetails');
   const format = await getFormatter();
   const { orderId, orderDate, status } = orderState;
 
@@ -40,7 +40,7 @@ const OrderState = async ({ orderState }: { orderState: OrderDataType['orderStat
 };
 
 const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['summaryInfo'] }) => {
-  const t = await getTranslations('Account.Orders');
+  const t = await getTranslations('Account.OrderDetails');
   const format = await getFormatter();
   const { subtotal, shipping, tax, discounts, grandTotal } = summaryInfo;
   const { nonCouponDiscountTotal, couponDiscounts } = discounts;
@@ -136,7 +136,7 @@ const combineShippingMethodInfo = async (
     return [];
   }
 
-  const t = await getTranslations('Account.Orders');
+  const t = await getTranslations('Account.OrderDetails');
   const format = await getFormatter();
   const { shippingProviderName, shippingMethodName, shippedAt } = shipment;
   const providerWithMethod = `${shippingProviderName} - ${shippingMethodName}`;
@@ -158,7 +158,7 @@ const ShippingInfo = async ({
   isMultiConsignments: boolean;
   shippingNumber?: number;
 }) => {
-  const t = await getTranslations('Account.Orders');
+  const t = await getTranslations('Account.OrderDetails');
   const shippingConsignments = consignments.shipping;
 
   if (!shippingConsignments) {
@@ -233,7 +233,7 @@ const ShippingInfo = async ({
 };
 
 export const OrderDetails = async ({ data }: { data: OrderDataType }) => {
-  const t = await getTranslations('Account.Orders');
+  const t = await getTranslations('Account.OrderDetails');
   const { orderState, summaryInfo, consignments } = data;
   const shippingConsignments = consignments.shipping;
   const isMultiShippingConsignments = shippingConsignments && shippingConsignments.length > 1;
