@@ -1,3 +1,5 @@
+import { NextRequest } from 'next/server';
+
 import { MemoryKvAdapter } from './adapters/memory';
 import { KvAdapter, SetCommandOptions } from './types';
 
@@ -7,14 +9,23 @@ interface Config {
 
 const memoryKv = new MemoryKvAdapter();
 
-class KV<Adapter extends KvAdapter> implements KvAdapter {
+export class KV<Adapter extends KvAdapter> implements KvAdapter {
   private kv?: Adapter;
   private memoryKv = memoryKv;
 
   constructor(
     private createAdapter: () => Promise<Adapter>,
     private config: Config = {},
-  ) {}
+    private request?: NextRequest,
+  ) {
+    this.request = request;
+  }
+
+  setRequest(request: NextRequest) {
+    this.request = request;
+
+    return this;
+  }
 
   async get<Data>(key: string) {
     const [value] = await this.mget<Data>(key);
@@ -70,6 +81,10 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
       this.kv = await this.createAdapter();
     }
 
+    if (this.kv.setRequest && this.request) {
+      this.kv.setRequest(this.request);
+    }
+
     return this.kv;
   }
 
@@ -94,6 +109,12 @@ async function createKVAdapter() {
     return new VercelKvAdapter();
   }
 
+  if (process.env.ENABLE_VERCEL_DATA_CACHE_MIDDLEWARE === 'true') {
+    const { VercelDataCacheAdapter } = await import('./adapters/vercel-data-cache');
+
+    return new VercelDataCacheAdapter();
+  }
+
   if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
     const { UpstashKvAdapter } = await import('./adapters/upstash');
 
@@ -103,10 +124,16 @@ async function createKVAdapter() {
   return new MemoryKvAdapter();
 }
 
-const adapterInstance = new KV(createKVAdapter, {
+const loggerConfig: Config = {
   logger:
     (process.env.NODE_ENV !== 'production' && process.env.KV_LOGGER !== 'false') ||
     process.env.KV_LOGGER === 'true',
-});
+};
 
-export { adapterInstance as kv };
+const adapterInstance = new KV(createKVAdapter, loggerConfig);
+
+const createKV = (request: NextRequest) => {
+  return new KV(createKVAdapter, loggerConfig, request);
+};
+
+export { adapterInstance as kv, createKV };
