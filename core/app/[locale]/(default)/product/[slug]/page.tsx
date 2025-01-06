@@ -22,8 +22,8 @@ import { RelatedProducts } from './related-products';
 import { CollectionProducts } from './collection-products';
 import { SitevibesReviews } from './sitevibes-reviews';
 import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-algolia-products';
-import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
-import WishlistAddToList from '../../account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
+// import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
+// import WishlistAddToList from '../../account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -133,18 +133,6 @@ export default async function ProductPage(props: Props) {
     }).catch((error) => {
       console.error('Error fetching wishlists:', error);
       return { wishlists: [] };
-    });
-
-    // Add detailed console logging
-    console.log('Wishlist Data===============================================================:', {
-      complete: wishlistData,
-      wishlists: wishlistData?.wishlists,
-      totalCount: wishlistData?.wishlists?.length,
-      structure: wishlistData?.wishlists?.map((list) => ({
-        id: list.id,
-        name: list.name,
-        itemCount: list.items?.length,
-      })),
     });
 
     // Asset URLs
@@ -286,7 +274,6 @@ export default async function ProductPage(props: Props) {
               blankAddImg={assets.blankAddImg}
               productImages={productImages}
             />
-
             <div className="lg:col-span-2">
               <Description product={product} />
               <CollectionProducts

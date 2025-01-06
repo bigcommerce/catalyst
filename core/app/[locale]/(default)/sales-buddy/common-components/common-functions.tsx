@@ -1,4 +1,5 @@
 import { get_cart_price_adjuster_data, get_product_by_entity_id } from '../_actions/get-product-by-entityid';
+import { updateProductQuantity } from '../_actions/update-quantity';
 
 let overAllProductData: never[] = [];
 export const PdpProduct = overAllProductData;
@@ -38,8 +39,9 @@ export const validateInput = (type: string, value: string | any[], action: strin
     case 'email': {
       // Email validation: basic format check
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!value) return 'Email cannot be empty.';
-      return emailRegex.test(value) ? '' : 'Enter a valid email address.';
+      if (!value && action != 'find') return 'Email cannot be empty.';
+      
+      return  value=='' && action == 'find' ? " " : emailRegex.test(value) ? '' : 'Enter a valid email address.';
     }
 
     case 'company': {
@@ -67,7 +69,7 @@ export function store_pdp_product_in_localstorage(product: any) {
 }
 
 export const get_product_data = async (entityId: any) => {
-  const result = await get_product_by_entity_id([entityId]);
+  const result = await get_product_by_entity_id(entityId);
   if (result.status === 200) {
     return result;
   } else {
@@ -75,65 +77,9 @@ export const get_product_data = async (entityId: any) => {
   }
 };
 
-// -----------cart Page localstorage functions-------
-
-export function addItemToArray(key, item) {
-  const array = getArrayFromLocalStorage(key);
-  array.push(item); // Add the new item
-  saveArrayToLocalStorage(key, array); // Save the updated array
-}
-
-export function getArrayFromLocalStorage(key) {
-  const storedArray = localStorage.getItem(key);
-  return storedArray ? JSON.parse(storedArray) : [];
-}
-
-// Function to save the array to localStorage
-export function saveArrayToLocalStorage(key, array) {
-  localStorage.setItem(key, JSON.stringify(array));
-}
-
-
 
 // -------- onclick session id get all available data of user and machine-----------------
 
-export function getBrowserInfo() {
-    const browserInfo = {
-        userAgent: navigator.userAgent,
-        appName: navigator.appName,
-        appVersion: navigator.appVersion,
-        platform: navigator.platform,
-        language: navigator.language,
-    };
-    console.log(browserInfo);
-}
-export async function getIPAddress() {
-    try {
-        const response = await fetch('https://api.ipify.org?format=json');
-        const data = await response.json();
-        console.log('IP Address:', data.ip);
-    } catch (error) {
-        console.error('Error fetching IP address:', error);
-    }
-}
-export function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-            (position) => {
-                const locationInfo = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                };
-                console.log('Location:', locationInfo);
-            },
-            (error) => {
-                console.error('Error getting location:', error);
-            }
-        );
-    } else {
-        console.log('Geolocation is not supported by this browser.');
-    }
-}
 
 export async function getEnhancedSystemInfo() {
     const systemInfo = {
@@ -244,14 +190,16 @@ export async function getEnhancedSystemInfo() {
     return systemInfo;
 }
 
-// Example usage with button click event
-// document.getElementById('getSystemInfo').addEventListener('click', () => {
-//     const info = getSystemInfo();
-//     console.log('System Information:', info);
-    
-//     // To display in the page (optional)
-//     const display = document.getElementById('systemInfoDisplay');
-//     if (display) {
-//         display.innerHTML = '<pre>' + JSON.stringify(info, null, 2) + '</pre>';
-//     }
-// });
+export const updateCustomProductQuantity=async(cartId: any,productQuantity: any,sku: any)=>{
+   const  status  = await updateProductQuantity(cartId, productQuantity ,sku)
+        
+       console.log(status.output?.data?.line_items?.custom_items);
+       let result = status?.output?.data?.line_items?.custom_items;
+       let updatedCustomQuantity=result?.find((data: { sku: any; quantity: any; })=>{
+        if(data?.sku == sku){
+          return data?.quantity
+        }
+       })
+       
+       return updatedCustomQuantity
+}

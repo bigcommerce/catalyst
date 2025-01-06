@@ -562,7 +562,7 @@ export const Details = ({
       </div>
 
       <ProductSchema product={product} />
-      <PayPalPayLater amount="99.99" currency="USD" />
+      <PayPalPayLater amount={product?.prices?.price?.value?.toString()} currency={product?.prices?.price?.currencyCode} />
       <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />

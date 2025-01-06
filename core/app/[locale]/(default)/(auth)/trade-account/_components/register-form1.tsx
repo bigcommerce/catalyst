@@ -136,7 +136,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
       orderedFields.push({
         field: {
           ...firstNameField,
-          label: 'First Name*',
+          label: 'First Name',
           isRequired: true,
           isBuiltIn: false, // Set to false to prevent default red styling
         },
@@ -151,7 +151,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
       orderedFields.push({
         field: {
           ...lastNameField,
-          label: 'Last Name*',
+          label: 'Last Name',
           isRequired: true,
           isBuiltIn: false,
         },
@@ -184,7 +184,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
       orderedFields.push({
         field: {
           ...emailField,
-          label: 'Email Address (Login ID)*',
+          label: 'Email Address (Login ID)',
           isRequired: true,
           isBuiltIn: false,
         },
@@ -201,7 +201,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
       orderedFields.push({
         field: {
           ...passwordField,
-          label: 'Password*',
+          label: 'Password',
           isRequired: true,
           isBuiltIn: false,
         },

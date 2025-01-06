@@ -174,6 +174,8 @@ interface Props {
   currencyCode: string;
   deleteIcon: string;
   cartId: string;
+  priceAdjustData:string;
+  ProductType:string;
 }
 function moveToTheEnd(arr: any, word: string) {
   arr?.map((elem: any, index: number) => {
@@ -184,7 +186,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) => {
+export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjustData,ProductType}: Props) => {
 
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
@@ -375,7 +377,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                 </div>
               </div>
               <div className="overflow-x-hidden xl:pl-[10px]">
-                {/* <ProductPriceAdjuster
+                <ProductPriceAdjuster
                   parentSku={priceAdjustData?.parent_sku}
                   sku={priceAdjustData?.sku}
                   oem_sku={priceAdjustData?.oem_sku}
@@ -384,8 +386,9 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                   initialFloor={Number(priceAdjustData?.floor_percentage)}
                   initialMarkup={Number(product?.listPrice?.value)}
                   productId={product?.productEntityId}
-                  cartId={cartId}
-                /> */}
+                  cartId={cartId} 
+                  ProductType={"product"}
+                   />
                 {/* priceAdjustData.parent_sku */}
               </div>
             </div>
@@ -405,7 +408,6 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
               if (discountedPrice > 0) {
                 discountPriceText = discountedPrice + '% Off';
               }
-              console.log('========item=======', item);
               return (
                 <div
                   className="cart-accessories m-5 flex gap-4 bg-[#F3F4F5] p-[15px_20px]"
@@ -443,7 +445,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId }: Props) =
                       </div>
                     </div>
                     <div className="cart-deleteIcon mt-[5px] flex w-full flex-row items-center justify-between gap-[20px] p-0 md:mt-0 md:w-auto md:justify-start [&_.cart-item-quantity]:static [&_.cart-item-quantity]:order-[0]">
-                      <AccessoriesInputPlusMinus product={product} accessories={item} />
+                      <AccessoriesInputPlusMinus key={item?.variantEntityId} accessories={item} />
                       <div className="flex items-center">
                         <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535] sm:hidden">
                           QTY: {item.prodQuantity}

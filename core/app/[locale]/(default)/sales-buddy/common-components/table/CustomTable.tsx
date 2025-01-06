@@ -21,7 +21,7 @@ export default function DynamicList({ data }) {
           }}
         >
           <div style={{ marginBottom: '8px' }}>
-            <strong>Name:</strong>{' '}
+            <strong>Name :</strong>{' '}
             {/* <Link href={`/cart`}> */}
               <span style={{ textDecoration: 'none', color: 'inherit' }}>
                 {item.first_name +" " +item.last_name  || 'N/A'}
@@ -33,7 +33,7 @@ export default function DynamicList({ data }) {
             {/* <Link href={`/cart`}> */}
              <div className='flex justify-between'>
                <span style={{ textDecoration: 'none', color: 'inherit' }}>
-                <strong>Email ID:</strong>{item.email || 'N/A'}
+                <strong>Email ID : </strong>{item.email || 'N/A'}
               </span>
               <Link href={`/`}>
               <span className=''>Login</span>
@@ -46,15 +46,3 @@ export default function DynamicList({ data }) {
     </div>
   );
 }
-
-// Example usage with dummy data
-const dummyData = [
-  {
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-  },
-  {
-    name: 'Jane Smith',
-    email: 'jane.smith@example.com',
-  },
-];

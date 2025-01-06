@@ -70,7 +70,7 @@ const TeamMembersSection: React.FC = () => {
       name: 'Erik Anderson',
       startYear: '2018',
       quote:
-        "'I enjoy providing maximum comfort for my clients while we meticulously resolve project challenges. I believe in measuring twice and ordering once.'",
+        '"I enjoy providing maximum comfort for my clients while we meticulously resolve project challenges. I believe in measuring twice and ordering once."',
     },
     {
       imageSrc: imageManagerImageUrl('team-member2-trade.jpg', 'original'),

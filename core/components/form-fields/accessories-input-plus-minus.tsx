@@ -20,8 +20,10 @@ export const AccessoriesInputPlusMinus = ({ accessories }: { accessories: any })
   const changeInput = async (param: any) => {
     let quanty = quantity;
     let zeroQty = 0;
+    let totalQty = accessories?.quantity || 0;
     if (param == 'minus') {
       quanty = quantity - 1;
+      totalQty -= 1;
       if (quanty <= 0) {
         zeroQty = 1;
         quanty = 1;
@@ -29,9 +31,13 @@ export const AccessoriesInputPlusMinus = ({ accessories }: { accessories: any })
       setQuantity(quanty);
     } else {
       quanty = quantity + 1;
+      totalQty += 1;
       setQuantity(quanty);
     }
     if(zeroQty == 1) {
+      return;
+    }
+    if(totalQty == 0) {
       return;
     }
     setLoader(true);
@@ -39,7 +45,7 @@ export const AccessoriesInputPlusMinus = ({ accessories }: { accessories: any })
       let postData = {
         line_item: {
           product_id: accessories?.productEntityId,
-          quantity: quanty,
+          quantity: totalQty,
           variant_id: accessories?.variantEntityId
         }
       };

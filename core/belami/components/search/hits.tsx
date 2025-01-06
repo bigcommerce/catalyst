@@ -73,7 +73,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...prop
           className={
             view == 'list'
               ? 'ais-Hits-list grid grid-cols-1 gap-4'
-              : 'ais-Hits-list grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
+              : 'ais-Hits-list grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
           }
         >
           {(!useDefaultPrices ? hits : items).map((hit: any) => (
@@ -140,7 +140,7 @@ export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, ..
         className={
           view == 'list'
             ? 'ais-Hits-list grid grid-cols-1 gap-4'
-            : 'ais-Hits-list grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
+            : 'ais-Hits-list grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
         }
       >
         {items.map((hit: any) => (

@@ -11,6 +11,7 @@ import { graphql } from '~/client/graphql';
 import { Product } from '../cart-item';
 
 import { updateItemQuantity } from './update-item-quantity';
+import { updateProductQuantity } from '../../../sales-buddy/_actions/update-quantity';
 
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
 
@@ -161,6 +162,9 @@ export const ItemQuantity = ({ product, accessories }: { product: Product, acces
   }, [quantity]);
 
   const onSubmit = async () => {
+     if(product?.ProductType=='custom'){
+     const  status  = await updateProductQuantity(product?.cartId, productQuantity , product?.sku)     
+    }else{
     const { status } = await updateItemQuantity({
       lineItemEntityId: entityId,
       productEntityId,
@@ -168,7 +172,7 @@ export const ItemQuantity = ({ product, accessories }: { product: Product, acces
       selectedOptions: parseSelectedOptions(selectedOptions),
       variantEntityId,
     });
-
+  }
     if (status === 'error') {
       toast.error(t('errorMessage'), {
         icon: <AlertCircle className="text-error-secondary" />,

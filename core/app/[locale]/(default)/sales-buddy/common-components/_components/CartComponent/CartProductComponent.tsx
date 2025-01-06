@@ -1,6 +1,7 @@
+"use client"
 import { useFormatter } from 'next-intl';
 import Link from 'next/link';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { ItemQuantity } from '~/app/[locale]/(default)/cart/_components/item-quantity';
 import { RemoveItem } from '~/app/[locale]/(default)/cart/_components/remove-item';
 import { BcImage } from '~/components/bc-image';
@@ -17,7 +18,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export default function CartProductComponent({ currencyCode, product, deleteIcon, cartId,priceAdjustData }: Props) {
+export default function CartProductComponent({ currencyCode, product, deleteIcon, cartId,priceAdjustData,ProductType }: Props) {
   const changeTheProtectedPosition = moveToTheEnd(
     product?.selectedOptions,
     'Protect Your Purchase',
@@ -30,16 +31,21 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
     if (discountedPrice > 0) {
       discountPriceText = discountedPrice + '% Off';
     }
-    
+    useEffect(()=>{
+     
+    },[priceAdjustData])
+     product.ProductType='custom'
+      product.cartId=cartId
   return (
-    <div className="">
+    <li className="mb-[24px] border border-gray-200">
+      <div className="">
       <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
         <div className="cart-main-img mx-auto w-full flex-none border border-gray-300 md:mx-0 md:w-[144px]">
           {product?.image?.url ? (
             <BcImage
               alt={product?.name}
               height={144}
-              src={product?.image.url}
+              src={product?.image_url}
               width={144}
               className="h-full min-h-[9em] w-full object-contain"
             />
@@ -55,15 +61,15 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
               <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
                 {product?.name}
               </p>
-              {changeTheProtectedPosition?.length == 0 && (
+              {/* {changeTheProtectedPosition?.length == 0 && ( */}
                 <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
                   <div className="cart-options flex flex-wrap gap-2">
                     <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                      SKU: {product?.sku}
+                      SKU: {priceAdjustData?.sku}
                     </p>
                   </div>
                 </div>
-              )}
+              {/* )} */}
               {changeTheProtectedPosition?.length > 0 && (
                 <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
                   <div className="cart-options flex flex-wrap gap-2">
@@ -207,16 +213,19 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
                   sku={priceAdjustData?.sku}
                   oem_sku={priceAdjustData?.oem_sku}
                   productPrice={Number(product?.listPrice?.value)}
-                  initialCost={Number(priceAdjustData.cost)}
+                  initialCost={Number(priceAdjustData?.cost)}
                   initialFloor={Number(priceAdjustData?.floor_percentage)}
                   initialMarkup={Number(product?.listPrice?.value)}
-                  productId={product?.productEntityId}
+                  productId={priceAdjustData?.id}
                   cartId={cartId}
+                  ProductType={ProductType}
               />
             </div>
           </div>
         </div>
       </div>
     </div>
+    </li>
+    
   );
 }

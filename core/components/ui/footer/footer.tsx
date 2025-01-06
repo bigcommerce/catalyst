@@ -136,7 +136,7 @@ const Footer = ({
       <p className="text-white-400 text-[14px] flex justify-center font-normal leading-[24px] tracking-[0.25px] text-left sm:order-first">{copyright}</p>
       <div className="flex gap-8 justify-center py-[10px]" id="icon">
         <Locale />
-        <div className="flex gap-[10px]">{paymentIcons}</div>
+        <div className="flex gap-[10px] overflow-x-auto">{paymentIcons}</div>
       </div>
     </section>
     <CookieConsent url={cookieConsentUrl} />

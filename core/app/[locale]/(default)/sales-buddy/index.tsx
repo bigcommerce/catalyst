@@ -15,9 +15,18 @@ import { getEnhancedSystemInfo } from './common-components/common-functions';
 export default function SalesBuddyAppIndex() {
   const [isOpen, setIsOpen] = useState(false); 
   const path = usePathname();
-  // Extract last segment of the path
-  const toggleDrawer = () => setIsOpen(!isOpen);
-  // console.log(getEnhancedSystemInfo());
+   const toggleDrawer = (event) => {
+    // If it's a direct click on the toggle button or a close button click
+    if (event?.target?.closest('button') || event?.currentTarget?.closest('button')) {
+      setIsOpen(!isOpen);
+    }
+    else if (event?.target === event?.currentTarget) {
+      return;
+    }
+    else if (!event) {
+      setIsOpen(!isOpen);
+    }
+  };
   
   const renderDrawerContent = () => {
     if (path.indexOf('/cart/') > -1) {
@@ -57,7 +66,7 @@ export default function SalesBuddyAppIndex() {
     <>
       {/* Chat Button */}
       <div className="no-scrollbar h-full justify-start bg-[#F3F4F5]">
-        <button onClick={toggleDrawer} className="fixed bottom-[1vh] left-[1vh] flex">
+        <button onClick={toggleDrawer} className=" fixed bottom-[1vh] left-[1vh] flex ">
           <Image src={ChatIcon} alt="Chat Icon" className="h-[164px] w-[164px] object-cover" />
         </button>
       </div>

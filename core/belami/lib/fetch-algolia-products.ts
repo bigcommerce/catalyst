@@ -44,7 +44,7 @@ export async function getCollectionProducts(objectId: number, brand: string, col
     },
     body: JSON.stringify({
       //"filters": `metafields.Akeneo.collection:${encodeURIComponent(collection)}`,
-      "filters": `brand_name:"${brand}" AND metafields.Akeneo.collection:"${collection}"`,
+      "filters": `brand_name:"${brand}" AND metafields.Details.Collection:"${collection}"`,
       "length": 10,
       "offset": 0
     }),

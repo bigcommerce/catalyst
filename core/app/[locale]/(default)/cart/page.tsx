@@ -24,7 +24,6 @@ import { RemoveCart } from './_components/remove-cart';
 import { GetCartMetaFields } from '~/components/management-apis';
 import CartProductComponent from '../sales-buddy/common-components/_components/CartComponent/CartProductComponent';
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
-// import { get_product_price_data_in_cart } from '../sales-buddy/common-components/common-functions';
 
 const CartPageQuery = graphql(
   `
@@ -89,16 +88,16 @@ export default async function Cart() {
     return <EmptyCart />;
   }
  
-//   const CustomItems = cart?.lineItems.customItems
-//   const get_product_price_data_in_cart = async (cartId: any) => {
-//   const result = await get_cart_price_adjuster_data(cartId);
-//     if (result.status === 200) {
-//       return result.data.output;
-//     } else {
-//     return [{ error: 'Failed to retrive data' }];
-//     }
-//   };
-// const product_data_in_cart = await get_product_price_data_in_cart(cartId);
+  const CustomItems = cart?.lineItems?.customItems
+  const get_product_price_data_in_cart = async (cartId: any) => {
+  const result = await get_cart_price_adjuster_data(cartId);
+    if (result.status === 200) {      
+      return result?.data?.output;
+    } else {
+    return [{ error: 'Failed to retrive data' }];
+    }
+  };
+const product_data_in_cart = await get_product_price_data_in_cart(cartId);
 
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
@@ -119,7 +118,8 @@ export default async function Cart() {
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
   let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
-  let updatedLineItemInfo: any = [], updatedLineItemWithoutAccessories: any = [];
+  let updatedLineItemInfo: any = [];
+  let updatedLineItemWithoutAccessories: any = [];
   let accessoriesSkuArray: any = [];
   if (getCartMetaFields?.length > 0) {
     lineItems?.forEach((item: any) => {
@@ -135,16 +135,21 @@ export default async function Cart() {
             let accessoriesInfo = lineItems?.find(
               (line: any) => line?.variantEntityId == getInfo?.variantId,
             );
-            if (accessoriesInfo) {
-              accessoriesInfo.prodQuantity = getInfo.quantity;
-              accessoriesInfo.cartId = cartId;
-              accessoriesInfo.lineItemId = item?.entityId;
-              accessoriesData.push(accessoriesInfo);
+            if(accessoriesInfo) {
+              let accessSpreadData: any = {...accessoriesInfo};
+              if (accessSpreadData) {
+                accessSpreadData.prodQuantity = getInfo.quantity;
+                accessSpreadData.cartId = cartId;
+                accessSpreadData.lineItemId = item?.entityId;
+                accessoriesData.push(accessSpreadData);
+              }
             }
           });
         }
       }
-      item.accessories = accessoriesData;
+      if(accessoriesData?.length > 0) {
+        item['accessories'] = accessoriesData;
+      }
       if (!accessoriesSkuArray?.includes(item?.variantEntityId)) {
         updatedLineItemInfo.push(item);
       }
@@ -161,6 +166,8 @@ export default async function Cart() {
     label: "Your Cart",
     href: '#'
   }];
+  console.log("CustomItems------",CustomItems);
+  
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
       <ContinuetocheckoutButton cartId={cartId} />
@@ -218,26 +225,27 @@ export default async function Cart() {
               key={product.entityId}
               product={product}
               deleteIcon={deleteIcon}
-              cartId={cart.entityId}
-              //priceAdjustData={product_data_in_cart.physical_items[product.entityId]}
+              cartId={cart?.entityId}
+              priceAdjustData={product_data_in_cart?.physical_items?.[product?.entityId]}
+              ProductType={"product"}
             />
           ))}
-          {/* {
-            CustomItems.map((data)=>{
+          {
+          
+           CustomItems.length > 0 && CustomItems?.map((data)=>{
               return (
-                // <p>{data.entityId}</p>
               <CartProductComponent
-                currencyCode={cart.currencyCode}
                 key={data.entityId}
+                cartId={cart.entityId}
+                currencyCode={cart.currencyCode}
                 product={data}
                 deleteIcon={deleteIcon}
-                cartId={cart.entityId}
-                priceAdjustData={product_data_in_cart.custom_items[data.entityId]}
-
+                priceAdjustData={product_data_in_cart?.custom_items &&  product_data_in_cart?.custom_items[data?.entityId]}
+                ProductType={"custom"}
               />
               )
             })
-          } */}
+          }
         </ul>
 
         <div className="cart-right-side sticky top-0 col-span-1 col-start-2 -mt-[9em] h-[100px] min-h-[800px] border-t border-[#CCCBCB] py-[1.4em] lg:col-start-3">

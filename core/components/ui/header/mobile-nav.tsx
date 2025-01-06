@@ -213,7 +213,7 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                         </div>
 
                         <CustomLink
-                          href="/Order Status"
+                          href="/account"
                           className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
                         >
                           My Account

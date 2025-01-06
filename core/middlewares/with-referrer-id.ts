@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 import { userAgent } from 'next/server';
 import { getReferrerID, storeReferrerLog } from '~/belami/lib/fetch-referrer-id';
 
-const BAD_UA_KEYWORDS = ["bot", "agent", "crawl", "spider", "slurp", "rpt-httpclient", "msnptc", "ktxn", "netcraft", "postman", "curl", "python", "go-http-client", "java", "okhttp", "node-fetch", "axios", "http-client", "httpurlconnection", "okhttp"];
+const BAD_UA_KEYWORDS = ["bot", "agent", "crawl", "spider", "slurp", "rpt-httpclient", "msnptc", "ktxn", "netcraft", "postman", "curl", "python", "go-http-client", "java", "okhttp", "node-fetch", "axios", "http-client", "httpurlconnection", "okhttp", "vercel", "iframely", "alittle", "scrapy", "dummy", "censys", "researchscan"];
 
 export const withReferrerId: MiddlewareFactory = (middleware) => {
   return async (request, event) => {
@@ -23,9 +23,8 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
     const clickId = request.nextUrl.searchParams.get('glcid') || request.nextUrl.searchParams.get('clickid') || '';
 
     let log = 1;
-    if (Number(logRef) === 0) {
+    if (Number(logRef) === 0)
       log = 0;
-    }
 
     const { isBot, browser, device, os } = userAgent(request);
     const ip = request.headers.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
@@ -44,6 +43,8 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
         ? await getReferrerID(ua, ip, Number(sessId), Number(process.env.SITE_CONFIG_ID ?? 0), log) 
         : Number(refId) 
       : 0;
+
+    console.log(`Referrer ID: ${referrerId}`);
 
     if (referrerId && Number.isInteger(referrerId) && referrerId > 0 && log === 1) {
       cookieStore.set('referrerId', referrerId);

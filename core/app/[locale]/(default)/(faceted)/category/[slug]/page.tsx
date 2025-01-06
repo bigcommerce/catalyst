@@ -8,7 +8,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 
 import { getCategoryPageData } from './page-data';
 
-import { getPromotions } from '~/belami/lib/fetch-promotions';
+import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 
 import { Category } from './category';
 
@@ -75,8 +75,8 @@ export default async function CategoryPage(props: Props) {
     locale: locale === defaultLocale ? undefined : locale,
   });
 
-  const promotions = await getPromotions();
-
+  const promotions = await getActivePromotions();
+  
   return (
     <div className="group py-4 px-4 xl:px-12">
       <Breadcrumbs category={category} />

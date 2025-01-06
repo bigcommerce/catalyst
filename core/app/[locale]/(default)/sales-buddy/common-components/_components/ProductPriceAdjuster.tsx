@@ -8,13 +8,14 @@ import Spinner from './Spinner';
 interface ProductPriceAdjusterProps {
   parentSku: string;
   sku: string;
-  oem_sku:String;
+  oem_sku:string;
   productPrice: number;
   initialCost: number;
   initialFloor: number;
   initialMarkup: number;
   productId: number;
   cartId:any;
+  ProductType:string
 }
 const EditIcon =()=>{
   return (
@@ -38,6 +39,7 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   initialMarkup,
   productId,
   cartId,
+  ProductType
   
 }) => {
   const [cost, setCost] = useState<number>(initialCost);
@@ -54,9 +56,9 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   };
 
   const handleSubmit = async () => {
-  
+    
     setLoading(true);
-    let res = await updateProductPrice(newCost, cartId, productId);
+    let res = await updateProductPrice(newCost, cartId, productId,ProductType,sku);
     console.log('res');
     console.log(res)
     if(res.status == 200){
@@ -78,6 +80,7 @@ if (isSave) {
   setIsEditing(false);
   setLoading(false);
 }
+
 
 
   return (
@@ -103,21 +106,21 @@ if (isSave) {
       {/* Cost */}
       <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
         <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Cost</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{initialCost}</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{initialCost ? initialCost :'0000.00' }</p>
       </div>
       {/* <hr className="border-white-600 m-2" /> */}
 
       {/* Floor */}
       <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
         <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Floor ($)</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{floor}</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{floor ? floor : '0000.00'}</p>
       </div>
       {/* <hr className="border-white-600 m-2" /> */}
 
       {/* Markup */}
       <div className="my-0 mx-auto h-[24px] flex items-center justify-between">
         <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Markup</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{floor ? initialCost * floor : initialCost}</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{floor ? initialCost * floor : '#.#'}</p>
       </div>
       {/* <hr className="border-white-600 m-2" /> */}
 

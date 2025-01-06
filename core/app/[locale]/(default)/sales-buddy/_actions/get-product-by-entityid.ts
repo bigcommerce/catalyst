@@ -6,7 +6,7 @@ export const get_product_by_entity_id = async (entityId: any) => {
     const apiPath = process.env.SALES_BUDDY_API_PATH!;
     const accessId = process.env.SALES_BUDDY_ACCESS_ID;
     let postData = JSON.stringify({
-      product_ids: entityId,
+      product_id: entityId,
       access_id: accessId,
     });
     let data = await fetch(
@@ -17,6 +17,7 @@ export const get_product_by_entity_id = async (entityId: any) => {
           'Content-Type': 'application/json',
         },
         body: postData,
+        cache: 'no-store',
       },
     )
       .then((res) => res.json())
@@ -49,6 +50,7 @@ export const get_cart_price_adjuster_data=async(cartId: any)=>{
         'Content-Type': 'application/json',
       },
       body: postData,
+      cache: 'no-store',
     })
       .then((res) => res.json())
       .then((jsonData) => {
