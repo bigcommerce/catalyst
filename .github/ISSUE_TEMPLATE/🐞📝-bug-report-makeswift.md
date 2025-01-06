@@ -24,6 +24,9 @@ Please link to a repo that can be used to reproduce this issue, if possible. It'
 **Previously working?**
 Was this fucntionality previously working? If so, please link to a commit or PR that caused it to stop working.
 
+**Any Errors?**
+Were there any errors that surfaced when merging the above PR?
+
 **Expected behavior**
 A clear and concise description of what you expected to happen.
 
