@@ -140,6 +140,7 @@ export default async function RootLayout({ params, children }: Props) {
           id="sv-pixel-script"
           src="https://app.sitevibes.com/js/pixel.js?key=e0feae51-26fd-453a-8e67-f9a1a74c8d69"
           async
+          strategy="beforeInteractive"
         />
       </head>
       <body className="flex h-screen min-w-[375px] flex-col">

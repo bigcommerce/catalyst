@@ -1,12 +1,11 @@
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { useEffect } from 'react';
+//import { useEffect } from 'react';
 //import { useRouter } from 'next/navigation';
 import Script from 'next/script';
 
 export function SitevibesReviews({ product, category }: { product: any, category: any }) {
-
 
   const breadcrumbs = (category?.breadcrumbs)?(removeEdgesAndNodes(category?.breadcrumbs) as any[]).map(({ name, path }) => ({
     label: name,
@@ -25,6 +24,16 @@ export function SitevibesReviews({ product, category }: { product: any, category
     quantity: 1,
     price: product.prices?.price.value,
   }
+
+  /*
+  useEffect(() => {
+    var SiteVibesProduct = productData;
+    if (typeof window !== 'undefined' && window.SiteVibesEvents && typeof window.SiteVibesEvents.pageRefresh === 'function') {
+      SiteVibesProduct.url = window.location.href;
+      window.SiteVibesEvents.pageRefresh();
+    }
+  }, []);
+  */
 
   return (
     <div>
