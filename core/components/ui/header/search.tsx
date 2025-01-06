@@ -16,6 +16,9 @@ import { Price } from '../product-card';
 
 import { Input } from './input';
 
+// Klevu Quick Search Component
+import KlevuQuicksearch from '~/components/ui/klevu/quick-search';
+
 interface Image {
   src: string;
   altText: string;
@@ -137,7 +140,11 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                   )}
                 </CustomLink>
               </div>
-              <Form.Root
+              {/* Klevu Quick Search Component */}
+              <KlevuQuicksearch />
+
+              {/* Default Catalyst Quick Search Form has been commented out */}
+              {/* <Form.Root
                 action="/search"
                 className="col-span-4 flex lg:col-span-3"
                 method="get"
@@ -159,7 +166,7 @@ const Search = ({ initialTerm = '', logo, onSearch }: Props) => {
                     />
                   </Form.Control>
                 </Form.Field>
-              </Form.Root>
+              </Form.Root> */}
               <SheetPrimitive.Close asChild>
                 <Button
                   aria-label={t('closeSearchPopup')}

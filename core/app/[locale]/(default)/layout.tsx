@@ -5,6 +5,9 @@ import { Footer } from '~/components/footer/footer';
 import { Header, HeaderSkeleton } from '~/components/header';
 import { Cart } from '~/components/header/cart';
 
+// Klevu Web Component Libray Styles added
+import '@klevu/ui/dist/klevu-ui/klevu-ui.css';
+
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
 }
