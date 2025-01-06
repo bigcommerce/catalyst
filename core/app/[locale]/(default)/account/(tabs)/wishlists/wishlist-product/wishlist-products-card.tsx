@@ -244,32 +244,33 @@ export function WishlistProductCard() {
     item: WishlistItem;
     productData: AlgoliaHit<ProductHit>;
   }) => {
-    const [showForm, setShowForm] = useState(false);
-
     return (
-      <div className="relative h-full">
-        {/* Remove form wrapper here */}
-        <div className="product-form mb-[1em] h-full w-full">
-          {' '}
-          {/* Add product-form class here */}
-          <Hit hit={productData} view="grid" promotions={[]} useDefaultPrices={true} />
-          {/* This button will be hidden and clicked programmatically */}
+      <div className="relative flex h-full flex-col">
+        <div className="product-form mb-[1.4em] flex-grow">
+          <Hit
+            hit={productData}
+            view="grid"
+            promotions={[]}
+            useDefaultPrices={true}
+            classname="wishlist-product-card"
+          />
           <button type="submit" className="hidden" id={`add-to-cart-${item.entityId}`}>
             Submit
           </button>
         </div>
-
-        <AddToCart
-          data={{
-            entityId: item.entityId,
-            availabilityV2: {
-              status: (item.product.availabilityV2?.status || 'Available') as AvailabilityStatus,
-            },
-            inventory: {
-              isInStock: item.product.inventory?.isInStock ?? true,
-            },
-          }}
-        />
+        <div className="mt-auto">
+          <AddToCart
+            data={{
+              entityId: item.entityId,
+              availabilityV2: {
+                status: (item.product.availabilityV2?.status || 'Available') as AvailabilityStatus,
+              },
+              inventory: {
+                isInStock: item.product.inventory?.isInStock ?? true,
+              },
+            }}
+          />
+        </div>
       </div>
     );
   };
@@ -285,29 +286,27 @@ export function WishlistProductCard() {
   const items = wishlistData.items || [];
 
   return (
-    <div className="container mx-auto mb-[50px] px-4">
+    <div className="container mx-auto mb-12 px-4">
       <ComponentsBreadcrumbs
-        className="login-div login-breadcrumb mx-auto mb-[10px] mt-[0.5rem] hidden px-[1px] lg:block"
+        className="login-div login-breadcrumb mx-auto mb-2 mt-2 hidden px-[1px] lg:block"
         breadcrumbs={breadcrumbs}
       />
 
-      <div className="flex justify-between">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="mb-[10px] text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#000000]">
-            {wishlistData.name}
+          <h1 className="mb-2 text-left text-xl font-medium leading-8 tracking-[0.15px] text-black">
+            {wishlistData?.name}
           </h1>
-          <p className="mb-[30px] text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#000000]">
+          <p className="text-left text-base leading-8 tracking-[0.15px] text-black">
             {items.length} {items.length === 1 ? 'item' : 'items'}
           </p>
         </div>
-        <div>
-          <Button
-            variant="secondary"
-            className="bg-[#008BB7] px-2 text-left text-[14px] font-medium uppercase !leading-5 tracking-wider text-white"
-          >
-            SHARE FAVORITES
-          </Button>
-        </div>
+        <Button
+          variant="secondary"
+          className="h-10 !w-auto bg-[#008BB7] px-6 text-[14px] font-medium uppercase tracking-wider text-white hover:bg-[#007a9e]"
+        >
+          SHARE FAVORITES
+        </Button>
       </div>
 
       <div className="ais-Hits product-card-plp">
@@ -322,15 +321,12 @@ export function WishlistProductCard() {
             </button>
           </div>
         ) : (
-          <ol className="ais-Hits-list grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {items.map((item: WishlistItem) => {
-              const productData = transformToProductData(item);
-              return (
-                <li key={item.entityId} className="ais-Hits-item !radius-none !p-0 !shadow-none">
-                  <WishlistItem item={item} productData={productData} />
-                </li>
-              );
-            })}
+          <ol className="ais-Hits-list grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {items.map((item) => (
+              <li key={item.entityId} className="ais-Hits-item !radius-none !p-0 !shadow-none">
+                <WishlistItem item={item} productData={transformToProductData(item)} />
+              </li>
+            ))}
           </ol>
         )}
       </div>

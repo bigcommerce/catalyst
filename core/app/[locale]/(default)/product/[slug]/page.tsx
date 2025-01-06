@@ -1,5 +1,3 @@
-// pdp-page
-
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -98,120 +96,137 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
       : null,
   };
 }
-
 export default async function ProductPage(props: Props) {
-  const searchParams = await props.searchParams;
-  const params = await props.params;
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  const useDefaultPrices = !customerAccessToken;
-  const { locale, slug } = params;
+  try {
+    const searchParams = await props.searchParams;
+    const params = await props.params;
+    const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const bannerIcon = imageManagerImageUrl('example-1.png', '50w');
-  const relatedProductArrow = imageManagerImageUrl('vector-8-.png', '30w');
-  const galleryExpandIcon = imageManagerImageUrl('vector.jpg', '20w');
-  const dropdownSheetIcon = imageManagerImageUrl('icons8-download-symbol-16.png', '20w');
-  const cartHeader = imageManagerImageUrl('cartheader.png', '20w');
-  const couponIcon = imageManagerImageUrl('vector-2-.png', '20w');
-  const paywithGoogle = imageManagerImageUrl('apple-xxl.png', '20w');
-  const payPal = imageManagerImageUrl('fill-11.png', '20w');
-  const requestQuote = imageManagerImageUrl('waving-hand-1-.png', '30w');
-  const closeIcon = imageManagerImageUrl('close.png', '14w');
-  const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
+    if (!params || !searchParams) {
+      console.error('Missing required params:', { params, searchParams });
+      return null;
+    }
 
-  // const data = await getWishlists({
-  //   cursor: null,
-  //   limit: 50,
-  // });
+    const useDefaultPrices = !customerAccessToken;
+    const { locale, slug } = params;
 
-  // if (!data?.wishlists) return null;
+    setRequestLocale(locale);
+    const t = await getTranslations('Product');
 
-  setRequestLocale(locale);
-  const t = await getTranslations('Product');
+    const productId = Number(slug);
+    const optionValueIds = getOptionValueIds({ searchParams });
 
-  const productId = Number(slug);
-  const optionValueIds = getOptionValueIds({ searchParams });
+    const product = await getProduct({
+      entityId: productId,
+      optionValueIds,
+      useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
+    });
 
-  const product = await getProduct({
-    entityId: productId,
-    optionValueIds,
-    useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
-  });
+    if (!product) {
+      return notFound();
+    }
 
-  if (!product) {
-    return notFound();
-  }
+    // Add this after the wishlist fetch
+    const wishlistData = await getWishlists({
+      cursor: null,
+      limit: 50,
+    }).catch((error) => {
+      console.error('Error fetching wishlists:', error);
+      return { wishlists: [] };
+    });
 
-  let productMetaFields = await GetProductMetaFields(product.entityId, '');
-  let variantMetaFields: MetaField[] = [];
+    // Asset URLs
+    const assets = {
+      bannerIcon: imageManagerImageUrl('example-1.png', '50w'),
+      galleryExpandIcon: imageManagerImageUrl('vector.jpg', '20w'),
+      dropdownSheetIcon: imageManagerImageUrl('icons8-download-symbol-16.png', '20w'),
+      cartHeader: imageManagerImageUrl('cartheader.png', '20w'),
+      couponIcon: imageManagerImageUrl('vector-2-.png', '20w'),
+      paywithGoogle: imageManagerImageUrl('apple-xxl.png', '20w'),
+      payPal: imageManagerImageUrl('fill-11.png', '20w'),
+      requestQuote: imageManagerImageUrl('waving-hand-1-.png', '30w'),
+      closeIcon: imageManagerImageUrl('close.png', '14w'),
+      blankAddImg: imageManagerImageUrl('notneeded-1.jpg', '150w'),
+    };
 
-  const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
-  if (selectedVariantId) {
-    variantMetaFields = await GetProductVariantMetaFields(product.entityId, selectedVariantId, '');
-  }
+    // Get MetaFields
+    const productMetaFields = await GetProductMetaFields(product.entityId, '');
+    let variantMetaFields: MetaField[] = [];
 
-  let collectionValue = '';
-  let collectionMetaField = variantMetaFields?.find(
-    (field: MetaField) => field?.key?.toLowerCase() === 'collection',
-  );
+    const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
+    if (selectedVariantId) {
+      variantMetaFields = await GetProductVariantMetaFields(
+        product.entityId,
+        selectedVariantId,
+        '',
+      );
+    }
 
-  if (!collectionMetaField?.value) {
-    collectionMetaField = productMetaFields?.find(
+    // Process Collection Value
+    let collectionValue = '';
+    let collectionMetaField = variantMetaFields?.find(
       (field: MetaField) => field?.key?.toLowerCase() === 'collection',
     );
-  }
 
-  if (collectionMetaField?.value) {
-    collectionValue = collectionMetaField.value;
-  }
+    if (!collectionMetaField?.value) {
+      collectionMetaField = productMetaFields?.find(
+        (field: MetaField) => field?.key?.toLowerCase() === 'collection',
+      );
+    }
 
-  const averageRatingMetaField = productMetaFields?.find(
-    (field: MetaField) => field?.key === 'sv-average-rating',
-  );
+    if (collectionMetaField?.value) {
+      collectionValue = collectionMetaField.value;
+    }
 
-  const totalReviewsMetaField = productMetaFields?.find(
-    (field: MetaField) => field?.key === 'sv-total-reviews',
-  );
+    // Process Review Ratings
+    const averageRatingMetaField = productMetaFields?.find(
+      (field: MetaField) => field?.key === 'sv-average-rating',
+    );
+    const totalReviewsMetaField = productMetaFields?.find(
+      (field: MetaField) => field?.key === 'sv-total-reviews',
+    );
 
-  if (averageRatingMetaField && totalReviewsMetaField) {
-    product.reviewSummary.numberOfReviews = totalReviewsMetaField.value ?? 0;
-    product.reviewSummary.averageRating = averageRatingMetaField.value ?? 0;
-  }
+    if (averageRatingMetaField && totalReviewsMetaField) {
+      product.reviewSummary.numberOfReviews = totalReviewsMetaField.value ?? 0;
+      product.reviewSummary.averageRating = averageRatingMetaField.value ?? 0;
+    }
 
-  const relatedProducts = await getRelatedProducts(product.entityId);
-  const collectionProducts = await getCollectionProducts(
-    product.entityId,
-    product.brand?.name ?? '',
-    collectionValue,
-  );
+    // Get Related Products
+    const relatedProducts = await getRelatedProducts(product.entityId);
+    const collectionProducts = await getCollectionProducts(
+      product.entityId,
+      product.brand?.name ?? '',
+      collectionValue,
+    );
 
-  const categories = removeEdgesAndNodes(product.categories) as CategoryNode[];
-  const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
-    const longestLength = longest?.breadcrumbs?.edges?.length || 0;
-    const currentLength = current?.breadcrumbs?.edges?.length || 0;
-    return currentLength > longestLength ? current : longest;
-  }, categories[0]);
+    // Process Categories
+    const categories = removeEdgesAndNodes(product.categories) as CategoryNode[];
+    const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
+      const longestLength = longest?.breadcrumbs?.edges?.length || 0;
+      const currentLength = current?.breadcrumbs?.edges?.length || 0;
+      return currentLength > longestLength ? current : longest;
+    }, categories[0]);
 
-  const categoryWithBreadcrumbs = categoryWithMostBreadcrumbs
-    ? {
-        ...categoryWithMostBreadcrumbs,
-        breadcrumbs: {
-          edges: [
-            ...(categoryWithMostBreadcrumbs?.breadcrumbs?.edges || []),
-            {
-              node: {
-                name: product.mpn || '',
-                path: '#',
+    const categoryWithBreadcrumbs = categoryWithMostBreadcrumbs
+      ? {
+          ...categoryWithMostBreadcrumbs,
+          breadcrumbs: {
+            edges: [
+              ...(categoryWithMostBreadcrumbs?.breadcrumbs?.edges || []),
+              {
+                node: {
+                  name: product.mpn || '',
+                  path: '#',
+                },
               },
-            },
-          ].filter(Boolean),
-        },
-      }
-    : null;
+            ].filter(Boolean),
+          },
+        }
+      : null;
 
-  const productImages = removeEdgesAndNodes(product.images);
+    const productImages = removeEdgesAndNodes(product.images);
 
-  return (
-    <>
+    return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-8">
         <ProductProvider getMetaFields={productMetaFields}>
           <div className="breadcrumbs-container">
@@ -222,65 +237,43 @@ export default async function ProductPage(props: Props) {
             )}
           </div>
 
-          <div className="main-product-details hidden">
-            <h2 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
-              {product.name}
-            </h2>
-
-            <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
-              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-                SKU: <span>{product.mpn}</span>
-              </span>
-              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-                by{' '}
-                <Link
-                  href={product.brand?.path ?? ''}
-                  className="products-underline border-b border-black"
-                >
-                  {product.brand?.name}
-                </Link>
-              </span>
-
-              {collectionValue ? (
-                <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-                  from the{' '}
-                  <Link
-                    href={`/search?brand_name[0]=${encodeURIComponent(product.brand?.name ?? '')}&collection[0]=${encodeURIComponent(collectionValue)}`}
-                    className="products-underline border-b border-black"
-                  >
-                    {collectionValue}
-                  </Link>{' '}
-                  Family
-                </span>
-              ) : null}
-            </div>
-
-            <ReviewSummary data={product} />
-          </div>
-
           <div className="mb-4 mt-4 lg:grid lg:grid-cols-2 lg:gap-8 xl:mb-12">
-            <Gallery
-              productMpn={product.mpn}
-              product={product}
-              bannerIcon={bannerIcon}
-              galleryExpandIcon={galleryExpandIcon}
-            />
+            <Suspense fallback={<div>Loading gallery...</div>}>
+              <Gallery
+                product={product}
+                bannerIcon={assets.bannerIcon}
+                galleryExpandIcon={assets.galleryExpandIcon}
+                productMpn={product.mpn}
+                wishlistData={{
+                  wishlists: wishlistData?.wishlists || [],
+                  product: {
+                    entityId: product.entityId,
+                    variantEntityId: product.variants.edges?.[0]?.node.entityId,
+                    name: product.name,
+                    path: product.path,
+                    images: productImages,
+                    brand: product.brand,
+                    prices: product.prices,
+                    rating: product.reviewSummary?.averageRating,
+                    reviewCount: product.reviewSummary?.numberOfReviews,
+                  },
+                }}
+              />
+            </Suspense>
+
             <Details
               product={product}
               collectionValue={collectionValue}
-              dropdownSheetIcon={dropdownSheetIcon}
-              cartHeader={cartHeader}
-              couponIcon={couponIcon}
-              paywithGoogle={paywithGoogle}
-              payPal={payPal}
-              requestQuote={requestQuote}
-              closeIcon={closeIcon}
-              blankAddImg={blankAddImg}
-              //productImages={productImages}
+              dropdownSheetIcon={assets.dropdownSheetIcon}
+              cartHeader={assets.cartHeader}
+              couponIcon={assets.couponIcon}
+              paywithGoogle={assets.paywithGoogle}
+              payPal={assets.payPal}
+              requestQuote={assets.requestQuote}
+              closeIcon={assets.closeIcon}
+              blankAddImg={assets.blankAddImg}
+              productImages={productImages}
             />
-
-
-
             <div className="lg:col-span-2">
               <Description product={product} />
               <CollectionProducts
@@ -307,6 +300,14 @@ export default async function ProductPage(props: Props) {
           <ProductViewed product={product} />
         </ProductProvider>
       </div>
-    </>
-  );
+    );
+  } catch (error) {
+    console.error('Error in ProductPage:', error);
+    return (
+      <div className="p-4 text-center">
+        <h2>Error loading product</h2>
+        <p>Please try refreshing the page</p>
+      </div>
+    );
+  }
 }
