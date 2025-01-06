@@ -32,10 +32,13 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
       discountPriceText = discountedPrice + '% Off';
     }
     useEffect(()=>{
-
+     
     },[priceAdjustData])
+     product.ProductType='custom'
+      product.cartId=cartId
   return (
-    <div className="">
+    <li className="mb-[24px] border border-gray-200">
+      <div className="">
       <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
         <div className="cart-main-img mx-auto w-full flex-none border border-gray-300 md:mx-0 md:w-[144px]">
           {product?.image?.url ? (
@@ -204,7 +207,6 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
                 <ItemQuantity product={product} />
               </div>
             </div>
-              {console.log('|||priceAdjustData|||',priceAdjustData)}
             <div className="overflow-x-hidden pl-[10px]">
               <ProductPriceAdjuster
                  parentSku={priceAdjustData?.parent_sku}
@@ -223,5 +225,7 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
         </div>
       </div>
     </div>
+    </li>
+    
   );
 }

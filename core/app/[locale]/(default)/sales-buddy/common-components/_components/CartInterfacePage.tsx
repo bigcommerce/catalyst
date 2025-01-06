@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useRef, MouseEvent } from 'react';
+import { useState, useRef, MouseEvent, useEffect } from 'react';
 import { Accordions } from '../Accordin/index';
 import { Button } from '../Button';
 import { Input } from '~/components/ui/form';
@@ -11,7 +11,7 @@ import CategoryIcon from '../../assets/category.png';
 import editIcon from '~/app/[locale]/(default)/sales-buddy/assets/edit_square.png';
 import deleteIcon from '~/app/[locale]/(default)/sales-buddy/assets/delete.png';
 import { addCustomProduct } from '../../_actions/add-custom-product';
-import { addComment } from '../../_actions/add-comment';
+import { addComment, GetComment } from '../../_actions/add-comment';
 import { ChevronDown } from 'lucide-react';
 import { getBrand } from '../../_actions/brand';
 import Loader from './Spinner';
@@ -24,6 +24,7 @@ export default function CartInterface() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isCommentVisible, setIsCommentVisible] = useState(false); // Toggle visibility of comment form
   const [isCommentSaved, setIsCommentSaved] = useState(false);
+  const [prevComments,setPrevComments]=useState('')
   const [formData, setFormData] = useState({
     accountId: '',
     supplier: '',
@@ -49,6 +50,21 @@ export default function CartInterface() {
   };
 
   const router=useRouter()
+
+  useEffect(() => {
+  //  GetComment
+    const getComment = async () => {
+      try {
+      const response = await GetComment();
+      setPrevComments(response?.data?.output)
+    } catch (error: any) {
+      setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
+    }
+    }
+    getComment()
+
+  }, [])
+  
   const handleCustomProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading((prev) => ({ ...prev, customItem: true }));
@@ -85,6 +101,7 @@ export default function CartInterface() {
 
   // Handle delete comment functionality
   const handleDeleteComment = async () => {
+    setPrevComments('')
     setComment(''); // Clear the comment
     setAction('delete');
     setIsCommentSaved(false); // Set saved status to false
@@ -106,6 +123,7 @@ export default function CartInterface() {
   };
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
+    
   };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
@@ -115,10 +133,14 @@ export default function CartInterface() {
       comment: comment.trim() || '',
       action: '',
     };
+
+    
     try {
       const response = await addComment(createCommentData);
       if (response.status === 200) {
+
         setLoading((prev) => ({ ...prev, comments: false }));
+        setPrevComments(comment)
         // setIsCommentVisible(false);
         setIsCommentSaved(true);
         setSuccessMessage('commented successfully!');
@@ -253,6 +275,7 @@ export default function CartInterface() {
 
         <div>
           <div className="items-center border-x-0 border-y-[1px] border-[#CCCBCB] bg-white px-[20px] py-[10px]">
+           
             <button
               onClick={() => setIsCommentVisible(!isCommentVisible)} // Toggle visibility of comment form
               className="font-open-sans flex h-[32px] w-full flex-1 items-center justify-between gap-[5px] font-normal tracking-[1.25px] text-[#353535]"
@@ -281,7 +304,20 @@ export default function CartInterface() {
                 />
               </svg>
             </button>
-
+            <div className="space-y-3">
+              {/* Comment container with better styling */}
+              <div className="bg-white shadow-sm rounded-lg p-3">
+                <p className="text-gray-800 leading-relaxed">
+                  {prevComments}
+                </p>
+                {prevComments && <div className="flex items-center mt-2">
+                  <span className="text-xs text-gray-500 mr-2">
+                    {/* Optional: Add timestamp or user info */}
+                    Posted on: 2025-01-03 {/* Date */}
+                  </span>
+                </div>}
+              </div>
+            </div>
             {/* If the form is visible, show the comment input field */}
             {isCommentVisible && !isCommentSaved && (
               <div className="mt-4 space-y-[10px]">
@@ -302,11 +338,12 @@ export default function CartInterface() {
                 </Button>
               </div>
             )}
+            
 
             {/* If the comment is saved, show Edit and Delete buttons */}
             {isCommentSaved && (
               <div className="mt-4 space-y-[10px]">
-                <p>{comment}</p>
+                {/* <p>{comment}</p> */}
                 <div className="flex justify-between">
                   <button
                     onClick={handleEditComment} // Edit the comment
@@ -324,7 +361,7 @@ export default function CartInterface() {
                   </button>
                 </div>
               </div>
-            )}
+             )} 
           </div>
         </div>
       </div>

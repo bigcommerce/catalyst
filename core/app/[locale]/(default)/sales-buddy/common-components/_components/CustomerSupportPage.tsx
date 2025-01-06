@@ -8,7 +8,7 @@ import { Input } from '../Input';
 import { createCustomerAccount } from '../../_actions/create-customer-account';
 import { findCustomerDetails } from '../../_actions/find-customer';
 import DynamicTable from '../table/CustomTable';
-import { getCustomerCart } from '../../_actions/get-customer-cart';
+import { getCustomerCart, getCustomerUrlSession_id } from '../../_actions/get-customer-cart';
 import Loader from './Spinner';
 import {  validateInput } from '../common-functions';
 import { UpdateCartIdCookie } from '../../_actions/update-cart-id-cookies';
@@ -65,6 +65,7 @@ function CustomerSupportPage() {
     show1: false,
     show2: false,
     show3: false,
+    show4:false
   });
 
   const handleCartLookupSubmit = async (e: React.FormEvent) => {
@@ -72,7 +73,11 @@ function CustomerSupportPage() {
     e.preventDefault();
 
     try {
-      const response = await getCustomerCart(cartId);
+      const response = await getCustomerUrlSession_id(cartId);
+      localStorage.setItem("referral_id",response.output.data[0]['referral_id'])
+      localStorage.setItem("session_id",response.output.data[0]['session_id'])
+      
+      UpdateCartIdCookie(response.output.data[0]['cart_id'])
       setUpdatedCCartId(cartId)
       setLoading((prev) => ({ ...prev, show1: false }));
     } catch (error: any) {
@@ -80,18 +85,15 @@ function CustomerSupportPage() {
     }
   };
   const handleGetShoppersUrlsData = async (e: React.FormEvent) => {
-    setLoading((prev) => ({ ...prev, show1: true }));
+    setLoading((prev) => ({ ...prev, show4: true }));
     e.preventDefault();
     try {
-      console.log('session id  --- ',sessionId);
-      
       const response = await getShopperUrls(sessionId);
-      // setShoppersUrl(response.data.output)
-      console.log("response.data.output----",response.output);
+      UpdateCartIdCookie(response.output.data[0]['cart_id'])
       setCustomerVisitedUrl(response.output.urls)
-      setLoading((prev) => ({ ...prev, show1: false }));
+      setLoading((prev) => ({ ...prev, show4: false }));
     } catch (error: any) {
-      setLoading((prev) => ({ ...prev, show1: false }));
+      setLoading((prev) => ({ ...prev, show4: false }));
     }
   };
   // 
@@ -132,13 +134,16 @@ function CustomerSupportPage() {
           }
         } else {
           setLoading((prev) => ({ ...prev, show2: false }));
+            setTableData([])
           const errorMessage = response.error || 'An unknown error occurred';
-          setFindCustomerErrorMessage(`Failed to retrieve account: ${errorMessage}`);
+          setFindCustomerErrorMessage(`Failed to retrieve account`);
           setFindCustomerSuccessMessage(null);
         }
       } catch (error: any) {
         setLoading((prev) => ({ ...prev, show2: false }));
-        setFindCustomerErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
+        setTableData([])
+        setFindCustomerErrorMessage(`Failed to retrieve account`);
+        // setFindCustomerErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
         setFindCustomerSuccessMessage(null);
       }
     } else {
@@ -157,7 +162,6 @@ function CustomerSupportPage() {
       !createAccountData.email ||
       !createAccountData.referral_id
     ) {
-      console.error('First name, last name, email and refferal id are required fields.');
       setCreateAccountErrorMessage(
         'Please provide a first name, last name,  valid email address and Refferal ID.',
       );
@@ -177,16 +181,15 @@ function CustomerSupportPage() {
         }
       } catch (error: any) {
         setLoading((prev) => ({ ...prev, show3: false }));
-        setCreateAccountErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
+        setCreateAccountErrorMessage('Error during account creation');
+        // setCreateAccountErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
         setCreateAccountSuccessMessage(null);
       }
     }
   };
   useEffect(() => {
-    if (updatedCartId !== '') {
-      UpdateCartIdCookie(cartId)
-    }
-  }, [updatedCartId,findCustomerSuccessMessage])
+   
+  }, [findCustomerSuccessMessage])
   
   const UrlList = ({ urls }) => {
     return (
@@ -490,7 +493,7 @@ function CustomerSupportPage() {
           >
             <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH URL's </p>
             <div className="absolute inset-0 flex items-center justify-center">
-              {loading.show1 && <Loader />}
+              {loading.show4 && <Loader />}
             </div>
           </button>
        <div className='m-2'>
