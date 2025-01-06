@@ -114,7 +114,7 @@ const getProduct = async (productPromise: ReturnType<typeof getProductData>) => 
 const getFields = async (productPromise: ReturnType<typeof getProductData>) => {
   const product = await productPromise;
 
-  return productOptionsTransformer(product.productOptions);
+  return await productOptionsTransformer(product.productOptions);
 };
 
 const getCtaLabel = async (productPromise: ReturnType<typeof getProductData>) => {
