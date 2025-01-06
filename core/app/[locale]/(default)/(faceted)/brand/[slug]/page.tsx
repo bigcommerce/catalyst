@@ -10,7 +10,7 @@ import Link from 'next/link';
 
 import { getBrand } from './page-data';
 
-import { getPromotions } from '~/belami/lib/fetch-promotions';
+import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 
 import { Brand } from './brand';
 
@@ -72,7 +72,7 @@ export default async function BrandPage(props: Props) {
     locale: locale === defaultLocale ? undefined : locale,
   });
 
-  const promotions = await getPromotions();
+  const promotions = await getActivePromotions();
 
   return (
     <div className="group py-4 px-4 xl:px-12">

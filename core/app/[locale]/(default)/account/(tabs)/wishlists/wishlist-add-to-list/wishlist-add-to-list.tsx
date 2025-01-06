@@ -52,24 +52,6 @@ interface WishlistItem {
   product: Product;
 }
 
-interface RawWishlist {
-  entityId: number;
-  name: string;
-  items: Array<{
-    entityId: number;
-    product: {
-      entityId: number;
-      reviewCount?: number;
-      path: string;
-      name: string;
-      images: ProductImage[];
-      brand?: ProductBrand;
-      prices?: ProductPrices | null;
-      rating?: number;
-    };
-  }>;
-}
-
 interface Wishlist {
   entityId: number;
   name: string;
@@ -77,7 +59,7 @@ interface Wishlist {
 }
 
 interface WishlistAddToListProps {
-  wishlists: RawWishlist[];
+  wishlists: Wishlist[];
   hasPreviousPage: boolean;
   product: Product;
 }
@@ -93,39 +75,28 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
   const [isInputValid, setInputValidation] = useState(true);
   const [isPending, setIsPending] = useState(false);
   const [currentWishlists, setCurrentWishlists] = useState<Wishlist[]>([]);
+  const [tempAddedItems, setTempAddedItems] = useState<{ listId: number; product: Product }[]>([]);
+  const [justAddedToList, setJustAddedToList] = useState<number | null>(null);
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Account.Wishlist');
   const router = useRouter();
 
   useEffect(() => {
-    const mappedWishlists: Wishlist[] = wishlists.map((wishlist) => ({
-      entityId: wishlist.entityId,
-      name: wishlist.name,
-      items: wishlist.items.map((item) => ({
-        entityId: item.entityId,
-        product: {
-          entityId: item.product.entityId,
-          name: item.product.name,
-          path: item.product.path,
-          images: item.product.images,
-          reviewCount: item.product.reviewCount || 0,
-          brand: item.product.brand,
-          rating: item.product.rating,
-          prices: item.product.prices,
-        },
-      })),
-    }));
-
-    setCurrentWishlists(mappedWishlists);
+    setCurrentWishlists(wishlists);
   }, [wishlists]);
 
+  const toggleCreateForm = () => {
+    setShowCreateForm(!showCreateForm);
+    if (showCreateForm) {
+      setNewListName(''); // Clear input when closing
+      setInputValidation(true); // Reset validation
+    }
+  };
+
   const handleHeartClick = () => {
-    console.log('Selected product:', {
-      id: product.entityId,
-      name: product.name,
-      variant: product.variantEntityId,
-    });
     setIsOpen(true);
+    setTempAddedItems([]);
+    setJustAddedToList(null);
   };
 
   const handleInputValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -134,55 +105,53 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
   };
 
   const handleWishlistSelect = async (wishlist: Wishlist) => {
+    const isProductInList =
+      wishlist.items.some((item) => item.product?.entityId === product?.entityId) ||
+      tempAddedItems.some((item) => item.listId === wishlist.entityId);
+
+    if (isProductInList) {
+      toast.error('Product already exists in this list');
+      return;
+    }
+
+    setTempAddedItems((prev) => [...prev, { listId: wishlist.entityId, product }]);
+    setJustAddedToList(wishlist.entityId);
+  };
+
+  const handleSave = async () => {
+    setIsPending(true);
     try {
-      setIsPending(true);
-
-      const productExists = wishlist.items.some(
-        (item) => item.product.entityId === product.entityId,
-      );
-
-      if (productExists) {
-        toast.error('Product already exists in this list');
-        return;
-      }
-
-      const result = await addToWishlist(
-        wishlist.entityId,
-        product.entityId,
-        product.variantEntityId,
-      );
-
-      if (result.status === 'success' && result.data) {
-        setCurrentWishlists((prevWishlists) =>
-          prevWishlists.map((list) => {
-            if (list.entityId === wishlist.entityId) {
-              return {
-                ...list,
-                items: [
-                  ...list.items,
-                  {
-                    entityId: Date.now(),
-                    product: product,
-                  },
-                ],
-              };
-            }
-            return list;
-          }),
+      for (const item of tempAddedItems) {
+        const result = await addToWishlist(
+          item.listId,
+          item.product.entityId,
+          item.product.variantEntityId,
         );
 
-        toast.success('Successfully added to your list');
-        setIsOpen(false);
-        router.refresh();
-      } else {
-        toast.error(result.message || 'Failed to add to list');
+        if (result.status !== 'success') {
+          throw new Error(result.message || 'Failed to add item to list');
+        }
       }
+
+      toast.success('Successfully saved all items to lists');
+      router.refresh();
+      setIsOpen(false);
     } catch (error) {
-      console.error('Error adding product:', error);
-      toast.error('Failed to add product to list');
+      console.error('Error saving items:', error);
+      toast.error('Failed to save some items');
     } finally {
       setIsPending(false);
+      setTempAddedItems([]);
+      setJustAddedToList(null);
     }
+  };
+
+  const handleClose = () => {
+    setIsOpen(false);
+    setShowCreateForm(false);
+    setNewListName('');
+    setTempAddedItems([]);
+    setJustAddedToList(null);
   };
 
   const handleCreateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -216,8 +185,6 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
         setCurrentWishlists((prev) => [...prev, newWishlist]);
         setNewListName('');
         setShowCreateForm(false);
-
-        // Add product to the newly created wishlist
         await handleWishlistSelect(newWishlist);
       } else {
         toast.error(result.message || 'Failed to create new list');
@@ -242,11 +209,7 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="relative w-full max-w-md rounded-lg bg-white p-6">
             <button
-              onClick={() => {
-                setIsOpen(false);
-                setShowCreateForm(false);
-                setNewListName('');
-              }}
+              onClick={handleClose}
               className="absolute right-4 top-4 rounded-full p-1 hover:bg-gray-100"
             >
               <X size={20} />
@@ -254,32 +217,66 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
 
             <h2 className="mb-6 text-xl font-semibold">Add to List</h2>
 
-            <div className="space-y-4">
-              <div
-                className={
-                  currentWishlists.length > 5
-                    ? 'max-h-72 space-y-2 overflow-y-auto pr-2'
-                    : 'space-y-2'
-                }
-              >
-                {currentWishlists.map((wishlist) => (
-                  <button
-                    key={wishlist.entityId}
-                    onClick={() => handleWishlistSelect(wishlist)}
-                    disabled={isPending}
-                    className={`group flex w-full items-center text-left ${
-                      isPending ? 'cursor-not-allowed opacity-50' : ''
-                    }`}
-                  >
-                    <span className="mr-2 text-xl text-[#0C89A6] group-hover:text-[#03465C]">
-                      +
-                    </span>
-                    <span className="text-[#4B4B4B] group-hover:text-[#03465C]">
-                      {wishlist.name}
-                      <span className="ml-2 text-gray-500">({wishlist.items.length} items)</span>
-                    </span>
-                  </button>
-                ))}
+            <div className="flex h-[415px] flex-col">
+              <div className="flex-1 overflow-hidden">
+                <div className="h-full overflow-y-auto pr-2">
+                  {currentWishlists.map((wishlist) => {
+                    if (!wishlist.items || !product) return null; // Guard against undefined items and product
+
+                    const isProductInList =
+                      wishlist.items.some((item) => item.product?.entityId === product?.entityId) ||
+                      tempAddedItems.some((item) => item.listId === wishlist.entityId);
+
+                    return (
+                      <button
+                        key={wishlist.entityId}
+                        onClick={() => handleWishlistSelect(wishlist)}
+                        disabled={isPending || isProductInList}
+                        className={`group flex w-full items-center text-left last:mt-[5px] ${
+                          isPending ? 'cursor-not-allowed opacity-50' : ''
+                        }`}
+                      >
+                        <span className="ml-[2px] mr-2 text-[28px] font-[500] text-[#0C89A6] group-hover:text-[#03465C]">
+                          {justAddedToList === wishlist.entityId ? (
+                            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#4CAF50]">
+                              <Check className="h-3 w-3 text-white" />
+                            </div>
+                          ) : (
+                            '+'
+                          )}
+                        </span>
+                        <span className="text-[#4B4B4B] group-hover:text-[#03465C]">
+                          {wishlist.name}
+                          <span className="ml-2 text-gray-500">
+                            (
+                            {wishlist.items.length +
+                              tempAddedItems.filter((item) => item.listId === wishlist.entityId)
+                                .length}{' '}
+                            items)
+                          </span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              <div className="mt-4 bg-white">
+                <button
+                  onClick={toggleCreateForm}
+                  className="group mb-2 flex w-full items-center text-left"
+                >
+                  <span className="ml-[2px] mr-2 text-[28px] font-[500] text-[#0C89A6] group-hover:text-[#03465C]">
+                    {showCreateForm ? (
+                      <span className="text-[#0C89A6] group-hover:text-[#03465C]">NEW LIST</span>
+                    ) : (
+                      <span className="text-[#0C89A6] group-hover:text-[#03465C]">
+                        {' '}
+                        + NEW LIST ...
+                      </span>
+                    )}
+                  </span>
+                </button>
 
                 {showCreateForm && (
                   <form onSubmit={handleCreateSubmit} className="mt-4">
@@ -302,15 +299,7 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
                 )}
               </div>
 
-              <button
-                onClick={() => setShowCreateForm(true)}
-                className="group flex w-full items-center text-left"
-              >
-                <span className="mr-2 text-xl text-[#0C89A6] group-hover:text-[#03465C]">+</span>
-                <span className="text-[#0C89A6] group-hover:text-[#03465C]">NEW LIST ...</span>
-              </button>
-
-              <div className="flex justify-center gap-2 pt-4">
+              <div className="mt-4 flex justify-center gap-2">
                 {showCreateForm && (
                   <Button
                     onClick={() =>
@@ -319,14 +308,15 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
                       } as React.FormEvent<HTMLFormElement>)
                     }
                     disabled={isPending || !newListName}
-                    className="w-32 bg-[#008BB7] text-white hover:bg-[#007da6]"
+                    className="!hover:bg-[#008BB7] w-32 !bg-[#008BB7] text-white"
                   >
                     CREATE AND ADD
                   </Button>
                 )}
                 <Button
-                  className="w-24 bg-[#008BB7] text-white hover:bg-[#007da6]"
-                  onClick={() => setIsOpen(false)}
+                  className="!hover:bg-[#008BB7] w-[9em] !bg-[#008BB7] text-[14px] !font-[400] text-white"
+                  onClick={handleSave}
+                  disabled={isPending || tempAddedItems.length === 0}
                 >
                   SAVE
                 </Button>
