@@ -25,7 +25,7 @@ export const ReviewSummary = ({ data }: Props) => {
 
   const { numberOfReviews, averageRating } = data.reviewSummary;
 
-  const hasNoReviews = !numberOfReviews || numberOfReviews === 0 || !averageRating || averageRating === 0;
+  const hasNoReviews = !numberOfReviews || Number(numberOfReviews) === 0 || !averageRating || Number(averageRating) === 0;
 
   return (
     <div className="ratings-star flex items-center justify-center gap-1 lg:justify-start mt-2">
