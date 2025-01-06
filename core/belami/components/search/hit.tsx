@@ -153,7 +153,6 @@ function sortPromotions(promotions: Promotion[]): Promotion[] {
 }
 
 function findApplicablePromotion(promotions: any[], productId: number, brandId: number, categoryIds: number[]): any | null {
-
   const applicablePromotions = promotions.filter((promotion: any) => {
 
     // 1. CHECKING STRICT RULES FIRST (without "and" or "or")
@@ -213,7 +212,8 @@ function findApplicablePromotion(promotions: any[], productId: number, brandId: 
       (rule: any) =>
         rule.condition?.cart &&
         rule.condition?.cart.items &&
-        rule.condition?.cart.items.and &&
+        (!rule.condition?.cart.items.and ||
+        (rule.condition?.cart.items.and &&
         rule.condition?.cart.items.and.some((andRule: any) => 
           (!andRule.brands || 
             (andRule.brands &&
@@ -224,6 +224,8 @@ function findApplicablePromotion(promotions: any[], productId: number, brandId: 
           (!andRule.products || 
             (andRule.products &&
             andRule.products.includes(productId)))
+        )
+        )
         )
     );
     if (!hasAndConditions) return false;
@@ -275,9 +277,9 @@ function getPromotionDecoration(promotion: Promotion, free_shipping: boolean = f
   return decoration;
 }
 
-function Promotion({ promotions, product_id, brand_id, category_ids, free_shipping }: any) {
+function Promotion({ promotions, product_id, brand_id, category_ids, free_shipping }: { promotions: any[] | null, product_id: number, brand_id: number, category_ids: number[], free_shipping: boolean }) {
   //const promotion = findPromotionWithBrand(promotions, brand_id);
-  const promotion = findApplicablePromotion(promotions, product_id, brand_id, category_ids);
+  const promotion = findApplicablePromotion(promotions || [], product_id, brand_id, category_ids);
 
   return (
     <>
