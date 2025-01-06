@@ -56,10 +56,8 @@ export default function CartInterface() {
     const getComment = async () => {
       try {
       const response = await GetComment();
-      console.log(response.data);
       setPrevComments(response?.data?.output)
     } catch (error: any) {
-      console.error('Error during comment:', error);
       setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
     }
     }
