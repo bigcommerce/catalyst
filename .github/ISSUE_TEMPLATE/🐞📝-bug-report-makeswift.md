@@ -22,7 +22,7 @@ Steps to reproduce the behavior:
 Please link to a repo that can be used to reproduce this issue, if possible. It'll help fix the bug faster.
 
 **Previously working?**
-Was this fucntionality previously working? If so, please link to a commit or PR that caused it to stop working.
+Was this functionality previously working? If so, please link to a commit or PR that caused it to stop working.
 
 **Any Errors?**
 Were there any errors that surfaced when merging the above PR?
