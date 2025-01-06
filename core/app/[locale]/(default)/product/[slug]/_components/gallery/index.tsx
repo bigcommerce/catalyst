@@ -88,7 +88,7 @@ export const Gallery = ({
         images={imagesWithMetadata}
         videos={videosWithMetadata}
         productMpn={productMpn}
-        wishlistData={wishlistData} // Pass the wishlist data here
+        wishlistData={wishlistData}
       />
     </div>
   );

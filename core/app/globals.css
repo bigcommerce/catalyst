@@ -2,10 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* print-invoice-order-page */
 @page{
   margin-block: 2cm;
 }
-
+.pdp-wishlist-input input:hover {
+  border-color: var(--gray-200);
+}
+.pdp-wishlist-input input {
+  border-color: var(--gray-200);
+}
 .header-sub-menu {
   gap: 20px;
   grid-template-columns: auto auto auto auto auto auto;
