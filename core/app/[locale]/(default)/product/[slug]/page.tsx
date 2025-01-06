@@ -126,12 +126,25 @@ export default async function ProductPage(props: Props) {
       return notFound();
     }
 
+    // Add this after the wishlist fetch
     const wishlistData = await getWishlists({
       cursor: null,
       limit: 50,
     }).catch((error) => {
       console.error('Error fetching wishlists:', error);
       return { wishlists: [] };
+    });
+
+    // Add detailed console logging
+    console.log('Wishlist Data===============================================================:', {
+      complete: wishlistData,
+      wishlists: wishlistData?.wishlists,
+      totalCount: wishlistData?.wishlists?.length,
+      structure: wishlistData?.wishlists?.map((list) => ({
+        id: list.id,
+        name: list.name,
+        itemCount: list.items?.length,
+      })),
     });
 
     // Asset URLs
