@@ -21,7 +21,7 @@ export const RequestQuote = ({ requestQuote }: requestQuote) => {
           </span>
           <span className="mx-1">{t('or')}</span>
           <span className="border-b border-[#008BB7] text-[#008BB7]">
-            <a href="#">{t('createTradeAccountLink')}</a>
+            <a href="/trade-account/trade-step1/">{t('createTradeAccountLink')}</a>
           </span>
         </p>
       </div>
