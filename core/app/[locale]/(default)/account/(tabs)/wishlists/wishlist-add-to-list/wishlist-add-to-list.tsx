@@ -106,7 +106,7 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
 
   const handleWishlistSelect = async (wishlist: Wishlist) => {
     const isProductInList =
-      wishlist.items.some((item) => item.product.entityId === product.entityId) ||
+      wishlist.items.some((item) => item.product?.entityId === product?.entityId) ||
       tempAddedItems.some((item) => item.listId === wishlist.entityId);
 
     if (isProductInList) {
@@ -218,12 +218,13 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
             <h2 className="mb-6 text-xl font-semibold">Add to List</h2>
 
             <div className="flex h-[415px] flex-col">
-              {/* Scrollable wishlists container */}
               <div className="flex-1 overflow-hidden">
                 <div className="h-full overflow-y-auto pr-2">
                   {currentWishlists.map((wishlist) => {
+                    if (!wishlist.items || !product) return null; // Guard against undefined items and product
+
                     const isProductInList =
-                      wishlist.items.some((item) => item.product.entityId === product.entityId) ||
+                      wishlist.items.some((item) => item.product?.entityId === product?.entityId) ||
                       tempAddedItems.some((item) => item.listId === wishlist.entityId);
 
                     return (
@@ -231,7 +232,7 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
                         key={wishlist.entityId}
                         onClick={() => handleWishlistSelect(wishlist)}
                         disabled={isPending || isProductInList}
-                        className={`group flex w-full items-center text-left ${
+                        className={`group flex w-full items-center text-left last:mt-[5px] ${
                           isPending ? 'cursor-not-allowed opacity-50' : ''
                         }`}
                       >
@@ -260,19 +261,21 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
                 </div>
               </div>
 
-              {/* Sticky new list section */}
               <div className="mt-4 bg-white">
                 <button
                   onClick={toggleCreateForm}
                   className="group mb-2 flex w-full items-center text-left"
                 >
                   <span className="ml-[2px] mr-2 text-[28px] font-[500] text-[#0C89A6] group-hover:text-[#03465C]">
-                    {showCreateForm
-                      ? // <span className="relative -left-[8px]"></span>
-                        ''
-                      : '+'}
+                    {showCreateForm ? (
+                      <span className="text-[#0C89A6] group-hover:text-[#03465C]">NEW LIST</span>
+                    ) : (
+                      <span className="text-[#0C89A6] group-hover:text-[#03465C]">
+                        {' '}
+                        + NEW LIST ...
+                      </span>
+                    )}
                   </span>
-                  <span className="text-[#0C89A6] group-hover:text-[#03465C]">NEW LIST ...</span>
                 </button>
 
                 {showCreateForm && (
@@ -296,7 +299,6 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
                 )}
               </div>
 
-              {/* Action buttons */}
               <div className="mt-4 flex justify-center gap-2">
                 {showCreateForm && (
                   <Button

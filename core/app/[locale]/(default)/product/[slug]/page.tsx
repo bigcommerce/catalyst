@@ -22,8 +22,7 @@ import { RelatedProducts } from './related-products';
 import { CollectionProducts } from './collection-products';
 import { SitevibesReviews } from './sitevibes-reviews';
 import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-algolia-products';
-// import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
-// import WishlistAddToList from '../../account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
+import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
