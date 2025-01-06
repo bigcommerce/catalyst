@@ -33,7 +33,7 @@ export default async function SearchPage(props: Props) {
 
   const searchTerm = typeof searchParams.query === 'string' ? searchParams.query : undefined;
 
-  const promotions = await getActivePromotions();
+  const promotions = await getActivePromotions(true);
 
   /*
   if (!searchTerm) {

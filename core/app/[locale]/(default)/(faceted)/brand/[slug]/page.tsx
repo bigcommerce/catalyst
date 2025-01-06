@@ -72,7 +72,7 @@ export default async function BrandPage(props: Props) {
     locale: locale === defaultLocale ? undefined : locale,
   });
 
-  const promotions = await getActivePromotions();
+  const promotions = await getActivePromotions(true);
 
   return (
     <div className="group py-4 px-4 xl:px-12">
