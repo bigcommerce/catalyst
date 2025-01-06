@@ -24,7 +24,7 @@ export default function DrawerModal({
 
   return (
     <div
-      className={`fixed inset-0 flex ${position === 'left' ? 'justify-start' : 'justify-end'}`}
+      className={`fixed inset-0 flex w-fit  ${position === 'left' ? 'justify-start' : 'justify-end'}`}
       onClick={ (e) => onClose(e)}
     >
       <div
