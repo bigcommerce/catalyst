@@ -19,6 +19,7 @@ interface Video {
 
 interface WishlistData {
   wishlists: any[];
+  isAuthenticated?: boolean; // Add this field
   product: {
     entityId: number;
     variantEntityId?: number;
@@ -39,7 +40,7 @@ interface Props {
   bannerIcon: string;
   galleryExpandIcon: string;
   productMpn?: string | null;
-  wishlistData: WishlistData;
+  wishlistData?: WishlistData; // Make it optional
 }
 
 export const Gallery = ({

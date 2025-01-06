@@ -61,16 +61,20 @@ interface Wishlist {
 }
 
 interface WishlistAddToListProps {
-  wishlists: Wishlist[];
+  wishlists: any[];
   hasPreviousPage: boolean;
-  product: Product;
+  product: any;
+  isAuthenticated?: boolean;
+  onGuestClick?: () => void;
 }
 
-const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
-  wishlists = [],
-  hasPreviousPage = false,
+const WishlistAddToList = ({
+  wishlists,
+  hasPreviousPage,
   product,
-}) => {
+  isAuthenticated,
+  onGuestClick,
+}: WishlistAddToListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newListName, setNewListName] = useState('');
@@ -82,6 +86,18 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Account.Wishlist');
   const router = useRouter();
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     setCurrentWishlists(wishlists);
@@ -96,6 +112,11 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
   };
 
   const handleHeartClick = () => {
+    if (!isAuthenticated && onGuestClick) {
+      onGuestClick();
+      return;
+    }
+
     setIsOpen(true);
     setTempAddedItems([]);
     setJustAddedToList(null);
