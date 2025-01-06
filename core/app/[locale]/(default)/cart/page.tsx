@@ -234,14 +234,12 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
           
            CustomItems.length > 0 && CustomItems?.map((data)=>{
               return (
-                // <p>{data.entityId}</p>
               <CartProductComponent
-              key={data.entityId}
-              cartId={cart.entityId}
+                key={data.entityId}
+                cartId={cart.entityId}
                 currencyCode={cart.currencyCode}
                 product={data}
                 deleteIcon={deleteIcon}
-                cartId={cart?.entityId}
                 priceAdjustData={product_data_in_cart?.custom_items &&  product_data_in_cart?.custom_items[data?.entityId]}
                 ProductType={"custom"}
               />

@@ -7,6 +7,7 @@ import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/form';
 import NotesIcons from '../../assets/add_notes.png';
 import {  get_product_data, PdpProduct } from '../common-functions';
+import Loader from './Spinner';
 // Utility for styles
 const TailwindCustomCssValues = {
   font: 'font-open-sans',
@@ -21,7 +22,10 @@ export default function SalesBuddyProductPage() {
   const retrievedProductData = JSON.parse(localStorage.getItem('productInfo') || '{}');
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
   const [quoteNumber, setQuoteNumber] = useState('');
-
+const [loading, setLoading] = useState({
+    cost: false,
+    inventory: false,
+  });
   const toggleAccordion = (index: number) => {
     setOpenAccordions((prev) =>
       prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
@@ -34,21 +38,24 @@ export default function SalesBuddyProductPage() {
 
   useEffect(() => {
     const fetchData = async () => {
+       setLoading((prev) => ({ ...prev, cost: true }));
       try {
         const data = await get_product_data(retrievedProductData.productId);
         
         if (data.status === 200) {
           
           costPricingTableData(data?.data?.output);
+          setLoading((prev) => ({ ...prev, cost: false }));
+
         }
       } catch (error) {
+       setLoading((prev) => ({ ...prev, cost: false }));
         console.error('Error fetching product data:', error);
       }
     };
     fetchData(); // Call the async function
   }, []);
   
-  // console.log(childSku);
   
   const ACCORDION_DATA = {
     existingQuote: {
@@ -87,31 +94,53 @@ export default function SalesBuddyProductPage() {
                 ))}
               </tr>
             </thead>
-            <tbody>
-              {childSku?.map((skuNum: any, i: any) => (
-                <tr key={i}>
-                  {[
-                    skuNum?.variants_sku,
-                    skuNum?.adjusted_cost ? skuNum.adjusted_cost :"0000.00",
-                    skuNum?.variant_price,
-                    skuNum?.floor_percentage ? skuNum?.floor_percentage :'00%',
-                    skuNum?.floor_percentage ? (skuNum?.floor_percentage * skuNum?.adjusted_cost).toFixed(2) : '0.00',
-                  ].map((data, j) => (
-                    <td key={j} className="border-b px-[5px] py-[5px]">
-                      {data}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
+                {
+                  loading.cost == false && 
+                  <tbody>
+                    {  
+                      childSku?.map((skuNum: any, i: number) => (
+                        <tr key={i}>
+                          {[
+                            skuNum?.variants_sku ?? 'N/A',
+                            skuNum?.adjusted_cost 
+                              ? Number(skuNum.adjusted_cost).toFixed(2) 
+                              : "0000.00",
+                            skuNum?.variant_price 
+                              ? Number(skuNum.variant_price).toFixed(2) 
+                              : "0000.00",
+                            skuNum?.floor_percentage 
+                              ? `${(skuNum?.floor_percentage * 100).toFixed(2)}%` 
+                              : '00%',
+                            skuNum?.floor_percentage 
+                              ? (skuNum?.floor_percentage * skuNum?.adjusted_cost).toFixed(2) 
+                              : '0.00',
+                          ].map((data, j) => (
+                            <td key={j} className="border-b px-[5px] py-[5px]">
+                              {data}
+                            </td>
+                          ))}
+                        </tr>
+                      ))
+                    }
+                  </tbody>
+                }
+                    
           </table>
+          { loading?.cost== true &&  
+            <div className='flex justify-center w-full p-5'>
+              <Loader />
+            </div> 
+          }
         </div>
       ),
     },
     inventory: {
       title: <h4 className="text-[20px] font-normal text-[#353535]">Inventory</h4>,
       content: (
-        <div className="w-[460px] bg-white p-[20px]">
+
+        <>
+        {loading.cost == false && 
+          <div className="w-[460px] bg-white p-[20px]">
           {childSku?.map((skuNum, index) => {
                 // Step 1: Split the stockPlace details by double pipe
             const entries = skuNum?.stock_information?.split('||').map(entry => entry?.trim());
@@ -155,7 +184,16 @@ export default function SalesBuddyProductPage() {
               
             );
           })}
-        </div>
+          </div>
+        }
+        {
+          loading.cost == true &&
+          <div className='flex justify-center w-full'>
+              <Loader />
+            </div> 
+        }
+        </>
+       
       ),
     },
   };
