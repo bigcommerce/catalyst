@@ -17,14 +17,14 @@ export default function DrawerModal({
   headerTitle,
   headerIcon,
   children,
-  position = 'left',
+  position,
   width = '500px',
 }: DrawerModalProps) {
   if (!isOpen) return null;
 
   return (
     <div
-      className={`fixed inset-0 flex w-fit  ${position === 'left' ? 'justify-start' : 'justify-end'}`}
+      className={`  no-scrollbar fixed inset-0 w-fit  ${position === 'left' ? 'justify-start' : 'left-auto'}`}
       onClick={ (e) => onClose(e)}
     >
       <div
