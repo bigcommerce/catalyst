@@ -7,8 +7,6 @@ export default async function WishlistAddToListPage() {
     limit: 50,
   });
 
-  console.log(data + 'data000000000000000000000000000');
-
   if (!data?.wishlists) return <div>No wishlists found.</div>;
 
   return (
