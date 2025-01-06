@@ -15,6 +15,7 @@
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",
     "@icons-pack/react-simple-icons": "^10.2.0",
+    "@klevu/ui-react": "^2.6.0",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.3",
     "@radix-ui/react-checkbox": "^1.1.3",

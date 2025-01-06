@@ -1,3 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* KLEVU STYLES */
+klevu-init {
+    @apply w-full;
+  }
+  klevu-quicksearch::part(quicksearch-content) {
+    @apply w-full overflow-auto;
+  }
+  klevu-quicksearch::part(textfield-input) {
+    @apply rounded-none h-12 w-full appearance-none border-2 border-gray-200 px-12 py-3 text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200;
+  }
+  
+  klevu-merchandising::part(product-addtocart), klevu-search-landing-page::part(product-addtocart), klevu-quicksearch::part(product-addtocart) {
+    display: none !important;
+    visibility: 0 !important;
+    height: 0 !important;
+  }
+  

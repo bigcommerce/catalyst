@@ -86,3 +86,25 @@ Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 > [!IMPORTANT]
 > If you just want to build a storefront, start with the [CLI](#quickstart) which will install the Next.js application in [/core](/core/).
 > If you wish to contribute back to Catalyst or create a fork of Catalyst, you can check the [docs for this monorepo](https://catalyst.dev/docs/monorepo) to get started.
+
+![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_hr.png)
+
+## Klevu Integration Notes
+
+This branch contains the code modifications necessary to integrate the Klevu React Webcomponents in place of the **Search results page**, **Cateogory pages**, and the **Search-as-you-type input** in the header of all pages. 
+
+You can inspect the commit to find all the changes made to Catalyst, but we will highlight a few changes here for your convenience. 
+
+The most important is found within `core/components/ui/klevu/init.jsx`
+
+This file contains the KlevuInit component which needs two attributes specific to your Klevu account `apiKey` & `url`. 
+
+You can find these values from the Klevu Merchant Center (Klevu admin) within the **Store Settings/Store Into** section. 
+
+### Integration Overview
+
+Although Klevu has a number of integration options, for this integration of Klevu into Catalyst we used the Webcomponents library available through npm. More information can be [found here](https://webcomponents.klevu.com/). 
+
+The webcomponent library is built on top of the Klevu Headless SDK which you can [reference here](https://docs.klevu.com/headless-sdk).
+
+The combination of these two libraries is extremely powerful and offer you a lot of control over the implementation of Klevu into Catalyst. 
