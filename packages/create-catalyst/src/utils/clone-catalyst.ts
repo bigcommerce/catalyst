@@ -33,8 +33,10 @@ export const cloneCatalyst = ({
 
   if (ghRef) {
     if (resetMain) {
-      checkoutRef(projectDir, 'main');
+      // Create and checkout a new main branch
+      execSync('git checkout -b main', { cwd: projectDir, stdio: 'inherit' });
 
+      // Reset it to the specified ref
       resetBranchToRef(projectDir, ghRef);
 
       console.log(`Reset main to ${ghRef} successfully.`);

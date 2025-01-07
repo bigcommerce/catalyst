@@ -63,8 +63,8 @@ async function waitForKeyPress(prompt: string): Promise<boolean> {
       process.stdin.pause();
       rl.close();
 
-      // Check if escape key was pressed (27 is the ASCII code for escape)
-      const shouldProceed = data[0] !== 27;
+      // Only proceed if Enter was pressed (13 or 10 are the ASCII codes for CR and LF)
+      const shouldProceed = data[0] === 13 || data[0] === 10;
 
       // Add a newline since we're in raw mode
       process.stdout.write('\n');
@@ -83,14 +83,11 @@ export async function login(baseUrl: string): Promise<LoginResult> {
   const deviceCode = await auth.getDeviceCode();
 
   console.log(
-    chalk.cyan('\nPlease visit the following URL to authenticate with your BigCommerce store:'),
+    chalk.yellow('\n! First copy your one-time code: ') + chalk.bold(deviceCode.user_code),
   );
-  console.log(chalk.yellow(`\n${deviceCode.verification_uri}\n`));
-  console.log(chalk.cyan(`Enter code: `) + chalk.yellow(`${deviceCode.user_code}\n`));
+  console.log(`Press Enter to open ${deviceCode.verification_uri} in your browser...`);
 
-  const shouldOpenUrl = await waitForKeyPress(
-    'Press any key to open the URL in your browser (or ESC to skip)...',
-  );
+  const shouldOpenUrl = await waitForKeyPress('');
 
   if (shouldOpenUrl) {
     await open(deviceCode.verification_uri);
@@ -98,7 +95,7 @@ export async function login(baseUrl: string): Promise<LoginResult> {
 
   const credentials = await spinner(
     () => waitForCredentials(auth, deviceCode.device_code, deviceCode.interval),
-    { text: 'Waiting for authentication...', successText: 'Authentication successful!' },
+    { text: 'Waiting for authentication...', successText: 'Authentication complete' },
   );
 
   return {
