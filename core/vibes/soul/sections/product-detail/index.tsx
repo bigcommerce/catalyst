@@ -1,4 +1,4 @@
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { all, Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, Accordions } from '@/vibes/soul/primitives/accordions';
 import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
@@ -8,16 +8,16 @@ import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gal
 import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
 import { Field } from './schema';
 
-interface ProductDetailProduct {
-  id: string;
-  title: string;
-  href: string;
-  images: Streamable<Array<{ src: string; alt: string }>>;
-  price?: Streamable<Price | null>;
-  subtitle?: string;
-  badge?: string;
+interface Props<F extends Field> {
+  productId: string;
+  breadcrumbs?: Streamable<Breadcrumb[]>;
+  title: Streamable<string>;
+  subtitle?: Streamable<string | null>;
   rating?: Streamable<number | null>;
+  price?: Streamable<Price | null>;
+  images: Streamable<Array<{ src: string; alt: string }>>;
   summary?: Streamable<string>;
+  fields: Streamable<F[]>;
   description?: Streamable<string | React.ReactNode | null>;
   accordions?: Streamable<
     Array<{
@@ -25,32 +25,34 @@ interface ProductDetailProduct {
       content: React.ReactNode;
     }>
   >;
-}
-
-interface Props<F extends Field> {
-  breadcrumbs?: Streamable<Breadcrumb[]>;
-  product: Streamable<ProductDetailProduct | null>;
-  action: ProductDetailFormAction<F>;
-  fields: Streamable<F[]>;
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;
   ctaLabel?: Streamable<string | null>;
   ctaDisabled?: Streamable<boolean | null>;
+  action: ProductDetailFormAction<F>;
   prefetch?: boolean;
   thumbnailLabel?: string;
 }
 
 export function ProductDetail<F extends Field>({
-  product: streamableProduct,
-  action,
-  fields: streamableFields,
+  productId,
   breadcrumbs,
+  title: streamableTitle,
+  subtitle: streamableSubtitle,
+  rating: streamableRating,
+  price: streamablePrice,
+  images: streamableImages,
+  fields: streamableFields,
+  summary: streamableSummary,
+  description: streamableDescription,
+  accordions: streamableAccordions,
   quantityLabel,
   incrementLabel,
   decrementLabel,
   ctaLabel: streamableCtaLabel,
   ctaDisabled: streamableCtaDisabled,
+  action,
   prefetch,
   thumbnailLabel,
 }: Props<F>) {
@@ -58,104 +60,95 @@ export function ProductDetail<F extends Field>({
     <section className="@container">
       <div className="mx-auto w-full max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
         {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} className="mb-6" />}
+        <div className="grid grid-cols-1 items-stretch gap-x-8 gap-y-8 @2xl:grid-cols-2 @5xl:gap-x-12">
+          <div className="hidden @2xl:block">
+            <Stream fallback={<ProductGallerySkeleton />} value={streamableImages}>
+              {(images) => <ProductGallery images={images} />}
+            </Stream>
+          </div>
 
-        <Stream fallback={<ProductDetailSkeleton />} value={streamableProduct}>
-          {(product) =>
-            product && (
-              <div className="grid grid-cols-1 items-stretch gap-x-8 gap-y-8 @2xl:grid-cols-2 @5xl:gap-x-12">
-                <div className="hidden @2xl:block">
-                  <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
-                    {(images) => <ProductGallery images={images} />}
-                  </Stream>
-                </div>
+          {/* Product Details */}
+          <div className="text-foreground">
+            <Stream fallback={<SubtitleSkeleton />} value={streamableSubtitle}>
+              {(subtitle) =>
+                subtitle != null &&
+                subtitle !== '' && <p className="font-mono text-sm uppercase">{subtitle}</p>
+              }
+            </Stream>
 
-                {/* Product Details */}
-                <div className="text-foreground">
-                  {product.subtitle != null && product.subtitle !== '' && (
-                    <p className="font-mono text-sm uppercase">{product.subtitle}</p>
-                  )}
+            <Stream fallback={<TitleSkeleton />} value={streamableTitle}>
+              {(title) => (
+                <h1 className="mb-3 mt-2 font-heading text-2xl font-medium leading-none @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
+                  {title}
+                </h1>
+              )}
+            </Stream>
 
-                  <h1 className="mb-3 mt-2 font-heading text-2xl font-medium leading-none @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
-                    {product.title}
-                  </h1>
+            <Stream fallback={<RatingSkeleton />} value={streamableRating}>
+              {(rating) => <Rating rating={rating ?? 0} />}
+            </Stream>
 
-                  <Stream fallback={<RatingSkeleton />} value={product.rating}>
-                    {(rating) => <Rating rating={rating ?? 0} />}
-                  </Stream>
+            <Stream fallback={<PriceLabelSkeleton />} value={streamablePrice}>
+              {(price) => <PriceLabel className="my-3 text-xl @xl:text-2xl" price={price ?? ''} />}
+            </Stream>
 
-                  <Stream fallback={<PriceLabelSkeleton />} value={product.price}>
-                    {(price) => (
-                      <PriceLabel className="my-3 text-xl @xl:text-2xl" price={price ?? ''} />
-                    )}
-                  </Stream>
+            <div className="mb-8 @2xl:hidden">
+              <Stream fallback={<ProductGallerySkeleton />} value={streamableImages}>
+                {(images) => <ProductGallery images={images} thumbnailLabel={thumbnailLabel} />}
+              </Stream>
+            </div>
 
-                  <div className="mb-8 @2xl:hidden">
-                    <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
-                      {(images) => (
-                        <ProductGallery images={images} thumbnailLabel={thumbnailLabel} />
-                      )}
-                    </Stream>
+            <Stream fallback={<ProductSummarySkeleton />} value={streamableSummary}>
+              {(summary) =>
+                summary != null && summary !== '' && <p className="text-contrast-500">{summary}</p>
+              }
+            </Stream>
+
+            <Stream
+              fallback={<ProductDetailFormSkeleton />}
+              value={all([streamableFields, streamableCtaLabel, streamableCtaDisabled])}
+            >
+              {([fields, ctaLabel, ctaDisabled]) => (
+                <ProductDetailForm
+                  action={action}
+                  ctaDisabled={ctaDisabled ?? undefined}
+                  ctaLabel={ctaLabel ?? undefined}
+                  decrementLabel={decrementLabel}
+                  fields={fields}
+                  incrementLabel={incrementLabel}
+                  prefetch={prefetch}
+                  productId={productId}
+                  quantityLabel={quantityLabel}
+                />
+              )}
+            </Stream>
+
+            <Stream fallback={<ProductDescriptionSkeleton />} value={streamableDescription}>
+              {(description) =>
+                description != null && (
+                  <div className="border-t border-contrast-100 py-8 text-contrast-500">
+                    {description}
                   </div>
+                )
+              }
+            </Stream>
 
-                  <Stream fallback={<ProductSummarySkeleton />} value={product.summary}>
-                    {(summary) =>
-                      summary !== undefined &&
-                      summary !== '' && <p className="text-contrast-500">{summary}</p>
-                    }
-                  </Stream>
-
-                  <Stream
-                    fallback={<ProductDetailFormSkeleton />}
-                    value={Promise.all([
-                      streamableFields,
-                      streamableCtaLabel,
-                      streamableCtaDisabled,
-                    ])}
-                  >
-                    {([fields, ctaLabel, ctaDisabled]) => (
-                      <ProductDetailForm
-                        action={action}
-                        ctaDisabled={ctaDisabled ?? undefined}
-                        ctaLabel={ctaLabel ?? undefined}
-                        decrementLabel={decrementLabel}
-                        fields={fields}
-                        incrementLabel={incrementLabel}
-                        prefetch={prefetch}
-                        productId={product.id}
-                        quantityLabel={quantityLabel}
-                      />
-                    )}
-                  </Stream>
-
-                  <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
-                    {(description) =>
-                      description !== null &&
-                      description !== undefined && (
-                        <div className="border-t border-contrast-100 py-8 text-contrast-500">
-                          {description}
-                        </div>
-                      )
-                    }
-                  </Stream>
-
-                  <Stream fallback={<ProductAccordionsSkeleton />} value={product.accordions}>
-                    {(accordions) =>
-                      accordions && (
-                        <Accordions className="border-t border-contrast-100 pt-4" type="multiple">
-                          {accordions.map((accordion, index) => (
-                            <Accordion key={index} title={accordion.title} value={index.toString()}>
-                              {accordion.content}
-                            </Accordion>
-                          ))}
-                        </Accordions>
-                      )
-                    }
-                  </Stream>
-                </div>
-              </div>
-            )
-          }
-        </Stream>
+            <Stream fallback={<ProductAccordionsSkeleton />} value={streamableAccordions}>
+              {(accordions) =>
+                accordions && (
+                  <Accordions className="border-t border-contrast-100 pt-4" type="multiple">
+                    {accordions.map((accordion, index) => (
+                      <Accordion key={index} title={accordion.title} value={index.toString()}>
+                        {accordion.content}
+                      </Accordion>
+                    ))}
+                  </Accordions>
+                )
+              }
+            </Stream>
+          </div>
+        </div>
+        )
       </div>
     </section>
   );
@@ -196,6 +189,14 @@ function ProductGallerySkeleton() {
 
 function PriceLabelSkeleton() {
   return <div className="my-4 h-4 w-20 animate-pulse rounded-md bg-contrast-100" />;
+}
+
+function SubtitleSkeleton() {
+  return <div className="mb-6 h-4 w-20 rounded-lg bg-contrast-100" />;
+}
+
+function TitleSkeleton() {
+  return <div className="mb-6 h-6 w-72 rounded-lg bg-contrast-100" />;
 }
 
 function RatingSkeleton() {
@@ -279,34 +280,6 @@ function ProductAccordionsSkeleton() {
       <div className="flex items-center justify-between">
         <div className="h-2 w-32 rounded-sm bg-contrast-100" />
         <div className="h-3 w-3 rounded-full bg-contrast-100" />
-      </div>
-    </div>
-  );
-}
-
-function ProductDetailSkeleton() {
-  return (
-    <div className="grid animate-pulse grid-cols-1 items-stretch gap-x-6 gap-y-8 @2xl:grid-cols-2 @5xl:gap-x-12">
-      <div className="hidden @2xl:block">
-        <ProductGallerySkeleton />
-      </div>
-
-      <div>
-        <div className="mb-6 h-4 w-20 rounded-lg bg-contrast-100" />
-
-        <div className="mb-6 h-6 w-72 rounded-lg bg-contrast-100" />
-
-        <RatingSkeleton />
-
-        <PriceLabelSkeleton />
-
-        <ProductSummarySkeleton />
-
-        <div className="mb-8 @2xl:hidden">
-          <ProductGallerySkeleton />
-        </div>
-
-        <ProductDetailFormSkeleton />
       </div>
     </div>
   );

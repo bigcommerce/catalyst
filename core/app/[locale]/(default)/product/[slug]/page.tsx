@@ -28,16 +28,10 @@ const getOptionValueIds = ({ searchParams }: { searchParams: Awaited<Props['sear
     );
 };
 
-const getProduct = async (productPromise: ReturnType<typeof getProductData>) => {
-  const t = await getTranslations('Product.ProductDetails.Accordions');
-
-  const format = await getFormatter();
+const getAccordions = async (productPromise: ReturnType<typeof getProductData>) => {
   const product = await productPromise;
 
-  const images = removeEdgesAndNodes(product.images).map((image) => ({
-    src: image.url,
-    alt: image.altText,
-  }));
+  const t = await getTranslations('Product.ProductDetails.Accordions');
 
   const customFields = removeEdgesAndNodes(product.customFields);
 
@@ -60,7 +54,7 @@ const getProduct = async (productPromise: ReturnType<typeof getProductData>) => 
     })),
   ];
 
-  const accordions = [
+  return [
     ...(specifications.length
       ? [
           {
@@ -93,22 +87,50 @@ const getProduct = async (productPromise: ReturnType<typeof getProductData>) => 
         ]
       : []),
   ];
+};
 
-  return {
-    id: product.entityId.toString(),
-    title: product.name,
-    description: (
-      <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />
-    ),
-    href: product.path,
-    images: product.defaultImage
-      ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
-      : images,
-    price: pricesTransformer(product.prices, format),
-    subtitle: product.brand?.name,
-    rating: product.reviewSummary.averageRating,
-    accordions,
-  };
+const getTitle = async (productPromise: ReturnType<typeof getProductData>) => {
+  const product = await productPromise;
+
+  return product.name;
+};
+
+const getSubtitle = async (productPromise: ReturnType<typeof getProductData>) => {
+  const product = await productPromise;
+
+  return product.brand?.name ?? null;
+};
+
+const getRating = async (productPromise: ReturnType<typeof getProductData>) => {
+  const product = await productPromise;
+
+  return product.reviewSummary.averageRating;
+};
+
+const getPrice = async (productPromise: ReturnType<typeof getProductData>) => {
+  const product = await productPromise;
+  const format = await getFormatter();
+
+  return pricesTransformer(product.prices, format) ?? null;
+};
+
+const getDescription = async (productPromise: ReturnType<typeof getProductData>) => {
+  const product = await productPromise;
+
+  return <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />;
+};
+
+const getImages = async (productPromise: ReturnType<typeof getProductData>) => {
+  const product = await productPromise;
+
+  const images = removeEdgesAndNodes(product.images).map((image) => ({
+    src: image.url,
+    alt: image.altText,
+  }));
+
+  return product.defaultImage
+    ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
+    : images;
 };
 
 const getFields = async (productPromise: ReturnType<typeof getProductData>) => {
@@ -224,16 +246,23 @@ export default async function Product(props: Props) {
   return (
     <>
       <ProductDetail
+        accordions={getAccordions(productPromise)}
         action={addToCart}
         ctaDisabled={getCtaDisabled(productPromise)}
         ctaLabel={getCtaLabel(productPromise)}
         decrementLabel={t('ProductDetails.decreaseQuantity')}
+        description={getDescription(productPromise)}
         fields={getFields(productPromise)}
+        images={getImages(productPromise)}
         incrementLabel={t('ProductDetails.increaseQuantity')}
         prefetch={true}
-        product={getProduct(productPromise)}
+        price={getPrice(productPromise)}
+        productId={productId.toString()}
         quantityLabel={t('ProductDetails.quantity')}
+        rating={getRating(productPromise)}
+        subtitle={getSubtitle(productPromise)}
         thumbnailLabel={t('ProductDetails.thumbnail')}
+        title={getTitle(productPromise)}
       />
 
       <FeaturedProductsCarousel
