@@ -5,8 +5,11 @@ import { getTranslations } from 'next-intl/server';
 // import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { SignUpSection } from '@/vibes/soul/sections/sign-up-section';
-import { CUSTOMER_FIELDS_TO_EXCLUDE, FULL_NAME_FIELDS } from '~/components/form-fields';
 import { formFieldTransformer } from '~/data-transformers/form-field-transformer';
+import {
+  CUSTOMER_FIELDS_TO_EXCLUDE,
+  FULL_NAME_FIELDS,
+} from '~/data-transformers/form-field-transformer/utils';
 import { exists } from '~/lib/utils';
 
 import { registerCustomer } from './_actions/register-customer';

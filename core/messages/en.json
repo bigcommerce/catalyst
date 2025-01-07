@@ -227,46 +227,15 @@
     },
     "Addresses": {
       "title": "Addresses",
-      "addNewAddress": "Add new address",
-      "editButton": "Edit",
-      "emptyAddresses": "No addresses added",
-      "deleteButton": "Delete",
-      "confirmDeleteAddress": "Delete address",
-      "deleteModalTitle": "Are you sure you want to delete this address?",
-      "Add": {
-        "title": "Add address",
-        "heading": "New address",
-        "Form": {
-          "submit": "Add new address",
-          "submitting": "Saving address...",
-          "cancel": "Cancel",
-          "success": "Address added to your account.",
-          "Errors": {
-            "inputError": "Something went wrong with processing user input.",
-            "error": "Unknown error."
-          }
-        }
-      },
-      "Edit": {
-        "title": "Edit address",
-        "heading": "Edit address",
-        "Form": {
-          "submit": "Edit address",
-          "submitting": "Updating address...",
-          "cancel": "Cancel",
-          "confirmDeleteAddress": "Delete address",
-          "deleteModalTitle": "Are you sure you want to delete this address?",
-          "deleteButton": "Delete",
-          "success": "The address has been successfully updated.",
-          "Errors": {
-            "inputError": "Something went wrong with processing user input.",
-            "notFound": "Address does not exist.",
-            "error": "Unknown error."
-          }
-        }
-      },
-      "Delete": {
-        "success": "Address deleted from your account.",
+      "showAddFormLabel": "Add address",
+      "editLabel": "Edit",
+      "deleteLabel": "Delete",
+      "cancelLabel": "Cancel",
+      "createLabel": "Create",
+      "updateLabel": "Update",
+      "setDefaultLabel": "Set as default",
+      "Errors": {
+        "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
         "error": "Unknown error."
       }
     },

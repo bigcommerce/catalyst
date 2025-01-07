@@ -1,8 +1,6 @@
-import { FragmentOf } from 'gql.tada';
+import { exists } from '~/lib/utils';
 
-import { FormFieldValuesFragment } from '~/client/fragments/form-fields-values';
-
-import { FormFieldsFragment } from './fragment';
+import { FormField, FormFieldValue } from './fragment';
 
 /* This mapping needed for aligning built-in fields names to their ids
  for creating valid register customer request object
@@ -49,10 +47,17 @@ export const BOTH_CUSTOMER_ADDRESS_FIELDS = [
 
 export const FULL_NAME_FIELDS = [FieldNameToFieldId.firstName, FieldNameToFieldId.lastName];
 
-export const createFieldName = (
-  field: FragmentOf<typeof FormFieldsFragment>,
-  fieldOrigin: 'customer' | 'address',
-) => {
+export const ADDRESS_FORM_LAYOUT = [
+  [FieldNameToFieldId.firstName, FieldNameToFieldId.lastName],
+  FieldNameToFieldId.company,
+  FieldNameToFieldId.phone,
+  FieldNameToFieldId.address1,
+  FieldNameToFieldId.address2,
+  [FieldNameToFieldId.city, FieldNameToFieldId.stateOrProvince],
+  [FieldNameToFieldId.postalCode, FieldNameToFieldId.countryCode],
+];
+
+export const createFieldName = (field: FormField, fieldOrigin: 'customer' | 'address') => {
   const { isBuiltIn, entityId: fieldId, __typename: fieldType } = field;
   const isCustomField = !isBuiltIn;
   let secondFieldType = fieldOrigin;
@@ -75,9 +80,7 @@ export const createFieldName = (
   return `${fieldOrigin}-${BOTH_CUSTOMER_ADDRESS_FIELDS.includes(fieldId) ? `${secondFieldType}-` : ''}${FieldNameToFieldId[fieldId] || fieldId}`;
 };
 
-export const getPreviouslySubmittedValue = (
-  fieldValue?: FragmentOf<typeof FormFieldValuesFragment>,
-) => {
+export const getPreviouslySubmittedValue = (fieldValue?: FormFieldValue) => {
   if (!fieldValue) {
     return {};
   }
@@ -104,4 +107,69 @@ export const getPreviouslySubmittedValue = (
     case 'PasswordFormFieldValue':
       return { PasswordFormField: fieldValue.password };
   }
+};
+
+export const mapFormFieldValueToName = (field: FormFieldValue): Record<string, unknown> => {
+  switch (field.__typename) {
+    case 'CheckboxesFormFieldValue':
+      return {
+        [field.name]: field.valueEntityIds,
+      };
+
+    case 'DateFormFieldValue':
+      return {
+        [field.name]: field.date.utc,
+      };
+
+    case 'MultipleChoiceFormFieldValue':
+      return {
+        [field.name]: field.valueEntityId,
+      };
+
+    case 'NumberFormFieldValue':
+      return {
+        [field.name]: field.number,
+      };
+
+    case 'PasswordFormFieldValue':
+      return {
+        [field.name]: field.password,
+      };
+
+    case 'TextFormFieldValue':
+      return {
+        [field.name]: field.text,
+      };
+
+    case 'MultilineTextFormFieldValue':
+      return {
+        [field.name]: field.multilineText,
+      };
+
+    default:
+      return {};
+  }
+};
+
+export const transformFieldsToLayout = (
+  fields: FormField[],
+  layout: Array<FieldNameToFieldId | FieldNameToFieldId[]>,
+): Array<FormField | FormField[]> => {
+  const fieldMap = new Map(fields.map((field) => [field.entityId, field]));
+
+  const presetLayout = layout
+    .map((row) => {
+      if (Array.isArray(row)) {
+        return row.map((fieldId) => fieldMap.get(fieldId)).filter<FormField>(exists);
+      }
+
+      return fieldMap.get(row);
+    })
+    .filter<FormField | FormField[]>(exists);
+
+  const usedFieldIds = new Set(layout.flatMap((row) => (Array.isArray(row) ? row : [row])));
+
+  const remainingLayout: FormField[] = fields.filter((field) => !usedFieldIds.has(field.entityId));
+
+  return [...presetLayout, ...remainingLayout];
 };
