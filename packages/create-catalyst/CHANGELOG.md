@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.20.0
+
+### Minor Changes
+
+- [#1859](https://github.com/bigcommerce/catalyst/pull/1859) [`62d178e`](https://github.com/bigcommerce/catalyst/commit/62d178e61070b4c9be431fe4a02c9344e8b2500c) Thanks [@bookernath](https://github.com/bookernath)! - Set default gh-ref to @bigcommerce/catalyst-core@latest
+
+### Patch Changes
+
+- [#1859](https://github.com/bigcommerce/catalyst/pull/1859) [`62d178e`](https://github.com/bigcommerce/catalyst/commit/62d178e61070b4c9be431fe4a02c9344e8b2500c) Thanks [@bookernath](https://github.com/bookernath)! - Add notice that preview storefront has been deployed
+
+- [#1859](https://github.com/bigcommerce/catalyst/pull/1859) [`62d178e`](https://github.com/bigcommerce/catalyst/commit/62d178e61070b4c9be431fe4a02c9344e8b2500c) Thanks [@bookernath](https://github.com/bookernath)! - Fix --reset-main and improve OTP copying experience
+
 ## 0.19.0
 
 ### Minor Changes
