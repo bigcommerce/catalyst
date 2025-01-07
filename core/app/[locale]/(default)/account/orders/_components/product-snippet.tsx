@@ -1,12 +1,12 @@
 import { getFormatter, getTranslations } from 'next-intl/server';
 
+import { Price as PricesType } from '@/vibes/soul/primitives/price-label';
 import { client } from '~/client';
 import { graphql, ResultOf, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { ProductCardFragment } from '~/components/product-card/fragment';
-import { Price as PricesType } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { cn } from '~/lib/utils';
 
