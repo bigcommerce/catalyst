@@ -1,5 +1,3 @@
-// inputs-for-all
-
 import { AlertCircle, Eye, EyeOff } from 'lucide-react';
 import { ComponentPropsWithRef, ElementRef, forwardRef, ReactNode, useState } from 'react';
 import { cn } from '~/lib/utils';
@@ -19,7 +17,7 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === 'password';
     const effectiveType = isPassword ? (showPassword ? 'text' : 'password') : type;
-    
+
     return (
       <div className={cn('relative', className)}>
         {' '}

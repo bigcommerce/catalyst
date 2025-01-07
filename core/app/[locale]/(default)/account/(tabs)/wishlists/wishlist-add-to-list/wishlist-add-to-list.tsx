@@ -14,6 +14,8 @@ import {
 } from '../_components/create-wishlist-form/_actions/create-wishlist';
 import { BcImage } from '~/components/bc-image';
 import heartIcon from '~/public/wishlistIcons/heartIcon.svg';
+import error from '~/app/[locale]/_components/error';
+import { cn } from '~/lib/utils';
 
 interface ProductImage {
   url: string;
@@ -79,6 +81,7 @@ const WishlistAddToList = ({
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newListName, setNewListName] = useState('');
   const [isInputValid, setInputValidation] = useState(true);
+  const [isDuplicate, setIsDuplicate] = useState(false);
   const [isPending, setIsPending] = useState(false);
   const [currentWishlists, setCurrentWishlists] = useState<Wishlist[]>([]);
   const [tempAddedItems, setTempAddedItems] = useState<{ listId: number; product: Product }[]>([]);
@@ -106,8 +109,9 @@ const WishlistAddToList = ({
   const toggleCreateForm = () => {
     setShowCreateForm(!showCreateForm);
     if (showCreateForm) {
-      setNewListName(''); // Clear input when closing
-      setInputValidation(true); // Reset validation
+      setNewListName('');
+      setInputValidation(true);
+      setIsDuplicate(false);
     }
   };
 
@@ -123,8 +127,27 @@ const WishlistAddToList = ({
   };
 
   const handleInputValidation = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const currentValue = e.target.value.trim();
+
     setInputValidation(!e.target.validity.valueMissing);
+    setIsDuplicate(false);
     setNewListName(e.target.value);
+
+    if (!currentValue) {
+      setInputValidation(false);
+      return;
+    }
+
+    // Check for duplicates
+    const isDuplicateName = currentWishlists.some(
+      (wishlist) => wishlist.name.toLowerCase().trim() === currentValue.toLowerCase(),
+    );
+
+    if (isDuplicateName) {
+      setIsDuplicate(true);
+      setInputValidation(false);
+      return;
+    }
   };
 
   const handleWishlistSelect = async (wishlist: Wishlist) => {
@@ -175,11 +198,29 @@ const WishlistAddToList = ({
     setNewListName('');
     setTempAddedItems([]);
     setJustAddedToList(null);
+    setIsDuplicate(false);
   };
 
   const handleCreateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!newListName) return;
+    const trimmedName = newListName.trim();
+
+    if (!trimmedName) {
+      setInputValidation(false);
+      return;
+    }
+
+    // Check for duplicates again before submission
+    const isDuplicateName = currentWishlists.some(
+      (wishlist) => wishlist.name.toLowerCase().trim() === trimmedName.toLowerCase(),
+    );
+
+    if (isDuplicateName) {
+      setIsDuplicate(true);
+      setInputValidation(false);
+      return;
+    }
+
     setIsPending(true);
 
     try {
@@ -194,20 +235,21 @@ const WishlistAddToList = ({
       }).format(new Date());
 
       const formData = new FormData();
-      formData.append('name', `${newListName} - ${dateTime}`);
+      formData.append('name', `${trimmedName} - ${dateTime}`);
 
       const result = await createWishlist(formData);
 
       if (result.status === 'success') {
         const newWishlist: Wishlist = {
           entityId: result.data.entityId,
-          name: `${newListName} - ${dateTime}`,
+          name: `${trimmedName} - ${dateTime}`,
           items: [],
         };
 
         setCurrentWishlists((prev) => [...prev, newWishlist]);
         setNewListName('');
         setShowCreateForm(false);
+        setIsDuplicate(false);
         await handleWishlistSelect(newWishlist);
       } else {
         toast.error(result.message || 'Failed to create new list');
@@ -218,6 +260,10 @@ const WishlistAddToList = ({
     }
     setIsPending(false);
   };
+
+  function isPassword(): Element {
+    throw new Error('Function not implemented.');
+  }
 
   return (
     <div className="relative">
@@ -267,7 +313,6 @@ const WishlistAddToList = ({
                             isPending ? 'cursor-not-allowed opacity-50' : ''
                           }`}
                         >
-                          {/* Fixed width container for icons to maintain consistent spacing */}
                           <div className="flex h-[30px] w-[30px] items-center justify-center">
                             {justAddedToList === wishlist.entityId ? (
                               <div className="flex h-[30px] w-[30px] items-center justify-center">
@@ -329,10 +374,17 @@ const WishlistAddToList = ({
                         error={!isInputValid}
                         onChange={handleInputValidation}
                         onInvalid={handleInputValidation}
-                        className="!focus:[unset] w-full rounded-md hover:border-[#E5E7EB]"
+                        className="w-full rounded-md border"
                         placeholder="Add a short description..."
                       />
-                      {!isInputValid && <p className="text-xs text-red-500">{t('emptyName')}</p>}
+                      {!isInputValid && !isDuplicate && (
+                        <p className="text-xs text-[#A71F23]">{t('emptyName')}</p>
+                      )}
+                      {isDuplicate && (
+                        <p className="text-xs text-[#A71F23]">
+                          A list with this name already exists
+                        </p>
+                      )}
                     </div>
                   </form>
                 )}
@@ -346,7 +398,7 @@ const WishlistAddToList = ({
                         preventDefault: () => {},
                       } as React.FormEvent<HTMLFormElement>)
                     }
-                    disabled={isPending || !newListName}
+                    disabled={isPending || !newListName || isDuplicate}
                     className="!hover:bg-[#008BB7] mt-[1em] w-[11em] !bg-[#008BB7] px-[10px] py-[10px] !font-[400] text-white"
                   >
                     CREATE AND ADD
