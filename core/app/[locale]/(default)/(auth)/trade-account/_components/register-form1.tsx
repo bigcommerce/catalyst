@@ -82,8 +82,28 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
     [FieldNameToFieldId.password]: true,
   });
   const [emailError, setEmailError] = useState<string>('');
+  const [passwordError, setPasswordError] = useState<string>('');
+
+  const validatePassword = (password: string) => {
+    console.log("password validation",password);
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~])[A-Za-z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{8,}$/;
+
+      if (!password.trim()) {
+        setPasswordError('');
+        return true;
+      }
+
+      if (!passwordRegex.test(password)) {
+        setPasswordError('Include uppercase, lowercase, number, symbol (8+ chars).');
+        return false;
+      }
+
+      setPasswordError('');
+      return true;
+  };
 
   const validateEmail = (email: string) => {
+    console.log("email validation called")
     if (!email.trim()) {
       setEmailError('');
       return true;
@@ -107,6 +127,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
   };
 
   const handlePasswordValidation = (e: ChangeEvent<HTMLInputElement>) => {
+    console.log("HandlepasswordValidation");
     const fieldId = Number(e.target.id.split('-')[1]);
     setPasswordValid((prevState) => ({
       ...prevState,
@@ -239,12 +260,19 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
 
   const renderPasswordField = (field: PasswordFormField, fieldName: string) => (
     <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+      <div onBlur={(e) => {
+         if (field.label.toLowerCase().includes('password')) {
+          validatePassword((e.target as HTMLInputElement).value);
+        }
+        }}
+      >
       <Password
         field={field}
         isValid={passwordValid[FieldNameToFieldId.password]}
         name={fieldName}
         onChange={handlePasswordValidation}
       />
+      </div>
     </FieldWrapper>
   );
 
@@ -273,7 +301,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
           className="relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2 !transition-colors !duration-500 hover:!bg-[rgb(75,200,240)] disabled:cursor-not-allowed"
           variant="primary"
           type="submit"
-          disabled={!!emailError || !passwordValid[FieldNameToFieldId.password]}
+          disabled={!!emailError || !!passwordError}
         >
           CONTINUE
         </Button>
