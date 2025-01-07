@@ -1,27 +1,25 @@
-diff --git a/core/.env.example b/core/.env.example
-index b0425c70..fdb9c408 100644
---- a/core/.env.example
-+++ b/core/.env.example
-@@ -34,3 +34,7 @@ TURBO_REMOTE_CACHE_SIGNATURE_KEY=
+diff --git a/.env.example b/.env.example
+--- a/.env.example	(revision c0c5ae70c84417898731c4cb29d41ba8f792da80)
++++ b/.env.example	(date 1735939086307)
+@@ -30,3 +30,7 @@
  # https://nextjs.org/docs/app/building-your-application/caching#data-cache
  # This sets a sensible revalidation target for cached requests
- NEXT_PUBLIC_DEFAULT_REVALIDATE_TARGET=3600
+ DEFAULT_REVALIDATE_TARGET=3600
 +
 +# WordPress config
 +# Use site url without trailing slash i.e. https://www.mywordpressite.com
 +WORDPRESS_URL=
 diff --git a/core/app/[locale]/(default)/blog/[blogId]/_components/sharing-links.tsx b/core/app/[locale]/(default)/blog/[blogId]/_components/sharing-links.tsx
-index fdbc90f2..02c06147 100644
---- a/core/app/[locale]/(default)/blog/[blogId]/_components/sharing-links.tsx
-+++ b/core/app/[locale]/(default)/blog/[blogId]/_components/sharing-links.tsx
-@@ -1,35 +1,29 @@
- import { SiFacebook, SiLinkedin, SiPinterest, SiX } from '@icons-pack/react-simple-icons';
+--- a/core/app/[locale]/(default)/blog/[blogId]/_components/sharing-links.tsx	(revision c0c5ae70c84417898731c4cb29d41ba8f792da80)
++++ b/core/app/[locale]/(default)/blog/[blogId]/_components/sharing-links.tsx	(date 1736277528034)
+@@ -2,35 +2,29 @@
  import { Mail } from 'lucide-react';
- 
+ import { useTranslations } from 'next-intl';
+
 -import { FragmentOf, graphql } from '~/client/graphql';
 -
  import { PrintButton } from './print-button';
- 
+
 -export const SharingLinksFragment = graphql(`
 -  fragment SharingLinksFragment on Site {
 -    content {
@@ -29,7 +27,7 @@ index fdbc90f2..02c06147 100644
 -        post(entityId: $entityId) {
 -          entityId
 -          thumbnailImage {
--            url: urlTemplate
+-            url: urlTemplate(lossy: true)
 -          }
 -          seo {
 -            pageTitle
@@ -68,26 +66,21 @@ index fdbc90f2..02c06147 100644
 +    } | null;
 +  };
  }
- 
+
  export const SharingLinks = ({ data }: Props) => {
 diff --git a/core/app/[locale]/(default)/blog/[blogId]/page-data.ts b/core/app/[locale]/(default)/blog/[blogId]/page-data.ts
-index 47701103..0eb4e9e1 100644
---- a/core/app/[locale]/(default)/blog/[blogId]/page-data.ts
-+++ b/core/app/[locale]/(default)/blog/[blogId]/page-data.ts
-@@ -1,56 +1,26 @@
+--- a/core/app/[locale]/(default)/blog/[blogId]/page-data.ts	(revision c0c5ae70c84417898731c4cb29d41ba8f792da80)
++++ b/core/app/[locale]/(default)/blog/[blogId]/page-data.ts	(date 1736278075333)
+@@ -1,56 +1,28 @@
  import { cache } from 'react';
-+import { getWordPressPost } from '~/lib/wordpress/data-fetcher';
- 
+
 -import { client } from '~/client';
 -import { graphql } from '~/client/graphql';
 -import { revalidate } from '~/client/revalidate-target';
-+export const getBlogPageData = cache(
-+  async ({ entityId, locale }: { entityId: string; locale: string | undefined }) => {
-+    console.log('entityId', entityId)
-+    const blogPost = await getWordPressPost({ blogId: entityId.toString(), locale });
- 
--import { SharingLinksFragment } from './_components/sharing-links';
 -
+-import { SharingLinksFragment } from './_components/sharing-links';
++import { getWordPressPost } from '~/lib/wordpress/data-fetcher';
+
 -const BlogPageQuery = graphql(
 -  `
 -    query BlogPageQuery($entityId: Int!) {
@@ -104,7 +97,7 @@ index 47701103..0eb4e9e1 100644
 -              tags
 -              thumbnailImage {
 -                altText
--                url: urlTemplate
+-                url: urlTemplate(lossy: true)
 -              }
 -              seo {
 -                pageTitle
@@ -116,26 +109,31 @@ index 47701103..0eb4e9e1 100644
 -        }
 -        ...SharingLinksFragment
 -      }
-+    if (!blogPost) {
-+      return null;
-     }
+-    }
 -  `,
 -  [SharingLinksFragment],
 -);
--
++export const getBlogPageData = cache(
++  async ({ entityId, locale }: { entityId: string; locale: string | undefined }) => {
++    console.log('entityId', entityId);
+
 -export const getBlogPageData = cache(async ({ entityId }: { entityId: number }) => {
 -  const response = await client.fetch({
 -    document: BlogPageQuery,
 -    variables: { entityId },
 -    fetchOptions: { next: { revalidate } },
 -  });
- 
++    const blogPost = await getWordPressPost({ blogId: entityId.toString(), locale });
+
 -  const { blog } = response.data.site.content;
 -
 -  if (!blog?.post) {
 -    return null;
 -  }
--
++    if (!blogPost) {
++      return null;
++    }
+
 -  return response.data.site;
 -});
 +    return {
@@ -153,33 +151,38 @@ index 47701103..0eb4e9e1 100644
 +  },
 +);
 diff --git a/core/app/[locale]/(default)/blog/[blogId]/page.tsx b/core/app/[locale]/(default)/blog/[blogId]/page.tsx
-index 3edd5ac4..e733b1fa 100644
---- a/core/app/[locale]/(default)/blog/[blogId]/page.tsx
-+++ b/core/app/[locale]/(default)/blog/[blogId]/page.tsx
-@@ -17,8 +17,8 @@ interface Props {
-   };
+--- a/core/app/[locale]/(default)/blog/[blogId]/page.tsx	(revision c0c5ae70c84417898731c4cb29d41ba8f792da80)
++++ b/core/app/[locale]/(default)/blog/[blogId]/page.tsx	(date 1736278539952)
+@@ -12,13 +12,14 @@
+ interface Props {
+   params: Promise<{
+     blogId: string;
++    locale: string;
+   }>;
  }
- 
--export async function generateMetadata({ params: { blogId } }: Props): Promise<Metadata> {
--  const data = await getBlogPageData({ entityId: Number(blogId) });
-+export async function generateMetadata({ params: { blogId, locale } }: Props): Promise<Metadata> {
-+  const data = await getBlogPageData({ entityId: blogId, locale });
-   const blogPost = data?.content.blog?.post;
- 
-   if (!blogPost) {
-@@ -37,7 +37,7 @@ export async function generateMetadata({ params: { blogId } }: Props): Promise<M
- export default async function BlogPostPage({ params: { blogId, locale } }: Props) {
-   const format = await getFormatter({ locale });
- 
+
+ export async function generateMetadata({ params }: Props): Promise<Metadata> {
+-  const { blogId } = await params;
++  const { blogId, locale } = await params;
+
 -  const data = await getBlogPageData({ entityId: Number(blogId) });
 +  const data = await getBlogPageData({ entityId: blogId, locale });
    const blogPost = data?.content.blog?.post;
- 
+
    if (!blogPost) {
-@@ -79,11 +79,11 @@ export default async function BlogPostPage({ params: { blogId, locale } }: Props
+@@ -39,7 +40,7 @@
+
+   const format = await getFormatter();
+
+-  const data = await getBlogPageData({ entityId: Number(blogId) });
++  const data = await getBlogPageData({ entityId: blogId, locale });
+   const blogPost = data?.content.blog?.post;
+
+   if (!blogPost) {
+@@ -81,11 +82,11 @@
          </div>
        )}
- 
+
 -      <div className="mb-10 text-base" dangerouslySetInnerHTML={{ __html: blogPost.htmlBody }} />
 +      <div className="mb-10 text-base space-y-4" dangerouslySetInnerHTML={{ __html: blogPost.htmlBody }} />
        <div className="mb-10 flex">
@@ -193,29 +196,18 @@ index 3edd5ac4..e733b1fa 100644
          ))}
        </div>
 diff --git a/core/app/[locale]/(default)/blog/page-data.ts b/core/app/[locale]/(default)/blog/page-data.ts
-index 5ce86f84..32cea561 100644
---- a/core/app/[locale]/(default)/blog/page-data.ts
-+++ b/core/app/[locale]/(default)/blog/page-data.ts
-@@ -1,13 +1,10 @@
+--- a/core/app/[locale]/(default)/blog/page-data.ts	(revision c0c5ae70c84417898731c4cb29d41ba8f792da80)
++++ b/core/app/[locale]/(default)/blog/page-data.ts	(date 1736278930470)
+@@ -1,47 +1,10 @@
 -import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
  import { cache } from 'react';
- 
+
 -import { client } from '~/client';
+-import { PaginationFragment } from '~/client/fragments/pagination';
 -import { graphql } from '~/client/graphql';
 -import { revalidate } from '~/client/revalidate-target';
--import { BlogPostCardFragment } from '~/components/blog-post-card';
-+import { getWordPressPosts } from '~/lib/wordpress/data-fetcher';
- 
- interface BlogPostsFiltersInput {
-   tagId?: string;
-+  locale?: string;
- }
- 
- interface Pagination {
-@@ -16,65 +13,24 @@ interface Pagination {
-   after?: string;
- }
- 
+-import { BlogPostCardFragment } from '~/components/blog-post-card/fragment';
+-
 -const BlogPostsPageQuery = graphql(
 -  `
 -    query BlogPostsPageQuery(
@@ -238,10 +230,7 @@ index 5ce86f84..32cea561 100644
 -                }
 -              }
 -              pageInfo {
--                hasNextPage
--                hasPreviousPage
--                startCursor
--                endCursor
+-                ...PaginationFragment
 -              }
 -            }
 -          }
@@ -249,37 +238,47 @@ index 5ce86f84..32cea561 100644
 -      }
 -    }
 -  `,
--  [BlogPostCardFragment],
+-  [BlogPostCardFragment, PaginationFragment],
 -);
--
++import { getWordPressPosts } from '~/lib/wordpress/data-fetcher';
+
+ interface BlogPostsFiltersInput {
+   tagId?: string;
++  locale?: string;
+ }
+
+ interface Pagination {
+@@ -51,28 +14,23 @@
+ }
+
  export const getBlogPosts = cache(
 -  async ({ tagId, limit = 9, before, after }: BlogPostsFiltersInput & Pagination) => {
 -    const filterArgs = tagId ? { filters: { tags: [tagId] } } : {};
 -    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 +  async ({ tagId, limit = 9, before, after, locale }: BlogPostsFiltersInput & Pagination) => {
 +    let page = 1;
-+    
-+    if (before) {
-+      page = parseInt(before) - 1;
-+    }
- 
+
 -    const response = await client.fetch({
 -      document: BlogPostsPageQuery,
 -      variables: { ...filterArgs, ...paginationArgs },
 -      fetchOptions: { next: { revalidate } },
 -    });
-+    if (after) {
-+      page = parseInt(after);
++    if (before) {
++      page = parseInt(before, 10) - 1;
 +    }
- 
+
 -    const { blog } = response.data.site.content;
-+    const blogPosts = await getWordPressPosts({ tagId, perPage: limit, page, locale })
- 
++    if (after) {
++      page = parseInt(after, 10);
++    }
+
 -    if (!blog) {
++    const blogPosts = await getWordPressPosts({ tagId, perPage: limit, page, locale });
++
 +    if (!blogPosts) {
        return null;
      }
- 
+
 -    return {
 -      ...blog,
 -      posts: {
@@ -289,9 +288,7 @@ index 5ce86f84..32cea561 100644
 -    };
 +    return blogPosts;
    },
--);
-+);
-\ No newline at end of file
+ );
 diff --git a/core/lib/wordpress/data-fetcher.ts b/core/lib/wordpress/data-fetcher.ts
 new file mode 100644
 index 00000000..63c1992e
