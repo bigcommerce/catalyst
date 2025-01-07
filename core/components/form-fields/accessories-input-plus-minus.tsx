@@ -152,7 +152,7 @@ export const AccessoriesInputPlusMinus = ({ accessories }: { accessories: any })
               name="quantity"
               type="number"
               readOnly
-              className="[&::-webkit-outer-spin-button]:margin-0 [&::-webkit-inner-spin-button]:margin-0 w-[35%] border border-y-0 text-center focus:border-y-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              className="[&::-webkit-outer-spin-button]:margin-0 bg-transparent [&::-webkit-inner-spin-button]:margin-0 w-[35%] border border-y-0 text-center focus:border-y-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
               min="1"
               value={quantity}
             />

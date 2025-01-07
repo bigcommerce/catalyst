@@ -151,78 +151,126 @@ const Quantity = ({ value }: { value: number }) => {
   );
 };
 
-export const ItemQuantity = ({ product, accessories }: { product: Product, accessories?: any }) => {
+export const ItemQuantity = ({ product, accessories }: { product: Product; accessories?: any }) => {
   const t = useTranslations('Cart.SubmitItemQuantity');
-
   const { quantity, entityId, productEntityId, variantEntityId, selectedOptions } = product;
   const [productQuantity, setProductQuantity] = useState<number>(quantity);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     setProductQuantity(quantity);
-  }, [quantity]);
 
-  const onSubmit = async () => {
-     if(product?.ProductType=='custom'){
-     const  status  = await updateProductQuantity(product?.cartId, productQuantity , product?.sku)     
-    }else{
-    const { status } = await updateItemQuantity({
-      lineItemEntityId: entityId,
-      productEntityId,
-      quantity: productQuantity,
-      selectedOptions: parseSelectedOptions(selectedOptions),
-      variantEntityId,
-    });
-  }
-    if (status === 'error') {
+    if(isLoading){
+      document.body.style.overflow='hidden';
+    } else {
+      document.body.style.overflow='';
+    }
+
+    return ()=>{
+      document.body.style.overflow='';
+    }
+  }, [quantity, isLoading]);
+
+  const handleQuantityUpdate = async (newQuantity: number) => {
+    if (newQuantity < 1) return;
+
+    setIsLoading(true);
+    setProductQuantity(newQuantity);
+
+    try {
+      if (product?.ProductType === 'custom') {
+        await updateProductQuantity(product?.cartId, newQuantity, product?.sku);
+      } else {
+        const { status } = await updateItemQuantity({
+          lineItemEntityId: entityId,
+          productEntityId,
+          quantity: newQuantity,
+          selectedOptions: parseSelectedOptions(selectedOptions),
+          variantEntityId,
+        });
+
+        if (status === 'error') {
+          toast.error(t('errorMessage'), {
+            icon: <AlertCircle className="text-error-secondary" />,
+          });
+          setProductQuantity(quantity);
+        }
+      }
+    } catch (error) {
       toast.error(t('errorMessage'), {
         icon: <AlertCircle className="text-error-secondary" />,
       });
-
       setProductQuantity(quantity);
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const handleQuantityChange = (e: { target: { value: any; }; }) => {
-    const quantity = Number(e.target.value);
-    if (quantity < 1) {
-      setProductQuantity(1);  // Enforce minimum value of 1
+  const handleInputChange = (e: { target: { value: any } }) => {
+    const newQuantity = Number(e.target.value);
+    if (newQuantity < 1) {
+      setProductQuantity(1);
     } else {
-      setProductQuantity(quantity);  // Set the valid quantity
+      setProductQuantity(newQuantity);
     }
   };
 
-  const handleBlur = () => {
-    onSubmit();  // Call backend update when the input loses focus
+  const handleIncrement = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    await handleQuantityUpdate(productQuantity + 1);
+  };
+
+  const handleDecrement = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (productQuantity > 1) {
+      await handleQuantityUpdate(productQuantity - 1);
+    }
+  };
+
+  const handleBlur = async () => {
+    await handleQuantityUpdate(productQuantity);
   };
 
   return (
-    <div className="cart-add-to-cart cart-item-quantity w-[105px] rounded-3xl border-gray-200 p-2.5 !border-[1px] md:static order-1 md:order-[0]">
-      <form action={onSubmit} className="flex items-center">
-        <SubmitButton onClick={() => setProductQuantity(productQuantity - 1)}>
-          <Minus className="h-[1rem] w-[1rem] text-[#7F7F7F] mr-[8px]">
-            <title>{t('submitReduceText')}</title>
-          </Minus>
-        </SubmitButton>
-
-        {/* <input name="quantity" type="hidden" value={productQuantity} />*/}
-        {/* <Quantity value={productQuantity} /> */}
-        {/* Direct Input for Quantity */}
-        <input
-          name="quantity"
-          type="number"
-          value={productQuantity}
-          onBlur={handleBlur}  // Sync with backend on blur
-          onChange={handleQuantityChange} // Use the new function
-          className="border w-[50%] [&::-webkit-outer-spin-button]:margin-0 [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-inner-spin-button]:margin-0 border-y-0 text-center focus:border-y-0 focus:outline-none bg-transparent"
-          min="1"
-        />
-
-        <SubmitButton onClick={() => setProductQuantity(productQuantity + 1)}>
-          <Plus className="h-[1rem] w-[1rem] text-[#7F7F7F] ml-[8px]">
-            <title>{t('submitIncreaseText')}</title>
-          </Plus>
-        </SubmitButton>
-      </form>
-    </div>
+    <>
+      {isLoading && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-4 rounded-lg p-6">
+            <Spinner className="animate-spin rounded-[50%] bg-[#8b8d8f] text-white shadow-[0_10px_38px_2000px_#0e121659,_0_10px_20px_2000px_#0e121633]" />
+          </div>
+        </div>
+      )}
+      <div className="cart-add-to-cart cart-item-quantity order-1 w-[105px] rounded-3xl !border-[1px] border-gray-200 p-2.5 md:static md:order-[0]">
+        <div className="flex items-center">
+          <button
+            onClick={handleDecrement}
+            disabled={isLoading || productQuantity <= 1}
+            className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-200"
+          >
+            <Minus className="mr-[8px] h-[1rem] w-[1rem] text-[#7F7F7F]">
+              <title>{t('submitReduceText')}</title>
+            </Minus>
+          </button>
+          <input
+            type="number"
+            value={productQuantity}
+            onChange={handleInputChange}
+            onBlur={handleBlur}
+            disabled={isLoading}
+            className="[&::-webkit-outer-spin-button]:margin-0 [&::-webkit-inner-spin-button]:margin-0 w-[50%] border border-y-0 bg-transparent text-center focus:border-y-0 focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            min="1"
+          />
+          <button
+            onClick={handleIncrement}
+            disabled={isLoading}
+            className="hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:text-gray-200"
+          >
+            <Plus className="ml-[8px] h-[1rem] w-[1rem] text-[#7F7F7F]">
+              <title>{t('submitIncreaseText')}</title>
+            </Plus>
+          </button>
+        </div>
+      </div>
+    </>
   );
 };
