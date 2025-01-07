@@ -69,11 +69,11 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                 {typeof logo === 'object' ? (
                   <BcImage
                     alt={logo.altText}
-                    className="w-[45%] truncate text-2xl font-black"
-                    height={32}
+                    className="truncate text-2xl font-black w-[30px] h-[30px]"
+                    height={30}
                     priority
                     src={homeLogoMobile}
-                    width={155}
+                    width={30}
                     unoptimized={true}
                   />
                 ) : (
@@ -238,8 +238,8 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                         </CustomLink>
                       </div>
 
-                      <div className="mb-[16px] text-left text-base font-normal leading-8 tracking-[0.15px] text-[#008BB7] underline decoration-[#008BB7] underline-offset-2">
-                        Log In / Signup
+                      <div className="mb-[16px] text-left text-base font-normal leading-8 tracking-[0.15px] text-[#008BB7] underline decoration-[#008BB7] underline-offset-2 flex gap-1">
+                        <CustomLink href='/login'>Log In</CustomLink> / <CustomLink href='/register'>Signup</CustomLink>
                       </div>
                     </section>
                   </>

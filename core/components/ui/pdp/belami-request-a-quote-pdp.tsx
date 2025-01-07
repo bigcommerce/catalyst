@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { BcImage } from '~/components/bc-image';
 import { imageManagerImageUrl } from '~/lib/store-assets';
+import Link from 'next/link';
 
 interface requestQuote {
   requestQuote: string;
@@ -17,11 +18,11 @@ export const RequestQuote = ({ requestQuote }: requestQuote) => {
         <p className="text-center text-[0.75rem] font-normal leading-[1.125rem] tracking-[0.025rem] text-[#000000]">
           <span className="block xl:contents">{t('heading')}</span>
           <span className="border-b border-[#008BB7] text-[#008BB7]">
-            <a href="#">{t('requestQuoteLink')}</a>
+            <Link href="#">{t('requestQuoteLink')}</Link>
           </span>
           <span className="mx-1">{t('or')}</span>
           <span className="border-b border-[#008BB7] text-[#008BB7]">
-            <a href="#">{t('createTradeAccountLink')}</a>
+            <Link href="/trade-account/trade-step1">{t('createTradeAccountLink')}</Link>
           </span>
         </p>
       </div>
