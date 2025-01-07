@@ -1,6 +1,6 @@
-diff --git a/.env.example b/.env.example
---- a/.env.example	(revision c0c5ae70c84417898731c4cb29d41ba8f792da80)
-+++ b/.env.example	(date 1735939086307)
+diff --git a/core/.env.example b/core/.env.example
+--- a/core/.env.example	(revision 619b9c2acc061189b6150e617a008a9a7283dd8b)
++++ b/core/.env.example	(date 1736280847242)
 @@ -30,3 +30,7 @@
  # https://nextjs.org/docs/app/building-your-application/caching#data-cache
  # This sets a sensible revalidation target for cached requests
@@ -151,13 +151,13 @@ diff --git a/core/app/[locale]/(default)/blog/[blogId]/page-data.ts b/core/app/[
 +  },
 +);
 diff --git a/core/app/[locale]/(default)/blog/[blogId]/page.tsx b/core/app/[locale]/(default)/blog/[blogId]/page.tsx
---- a/core/app/[locale]/(default)/blog/[blogId]/page.tsx	(revision c0c5ae70c84417898731c4cb29d41ba8f792da80)
-+++ b/core/app/[locale]/(default)/blog/[blogId]/page.tsx	(date 1736278539952)
+--- a/core/app/[locale]/(default)/blog/[blogId]/page.tsx	(revision 619b9c2acc061189b6150e617a008a9a7283dd8b)
++++ b/core/app/[locale]/(default)/blog/[blogId]/page.tsx	(date 1736282355906)
 @@ -12,13 +12,14 @@
  interface Props {
    params: Promise<{
      blogId: string;
-+    locale: string;
++    locale: string | undefined;
    }>;
  }
 
@@ -170,7 +170,12 @@ diff --git a/core/app/[locale]/(default)/blog/[blogId]/page.tsx b/core/app/[loca
    const blogPost = data?.content.blog?.post;
 
    if (!blogPost) {
-@@ -39,7 +40,7 @@
+@@ -35,11 +36,11 @@
+ }
+
+ export default async function Blog({ params }: Props) {
+-  const { blogId } = await params;
++  const { blogId, locale } = await params;
 
    const format = await getFormatter();
 
