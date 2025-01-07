@@ -4,7 +4,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
-import { FormFieldsFragment } from '~/components/form-fields/fragment';
+import { FormFieldsFragment } from '~/data-transformers/form-field-transformer/fragment';
 
 const CustomerSettingsQuery = graphql(
   `
