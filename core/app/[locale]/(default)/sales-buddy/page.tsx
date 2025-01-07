@@ -8,6 +8,6 @@ export default function SalesBuddyPage() {
   // getLocation()
   
   return (
-    <div className='hidden md:block lg:block z-[999]'><SalesBuddyAppIndex/></div>
+    <div className='hidden  sm:block md:block lg:block z-[999]'><SalesBuddyAppIndex/></div>
   )
 }

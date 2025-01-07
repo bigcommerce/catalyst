@@ -23,7 +23,7 @@ export default function AgentFooter() {
         <AgentLogin isOpen={isModalOpen} toggleModal={toggleModal} />
 
         {/* Trigger to open the modal */}
-        <div className="hidden md:block lg:block cursor-pointer hover:text-primary flex justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white" onClick={toggleModal}>
+        <div className="hidden  sm:block md:block lg:block cursor-pointer hover:text-primary flex justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white" onClick={toggleModal}>
           Agent Login
         </div>
         <div className="cursor-pointer hover:text-primary flex  focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 text-[14px] font-normal leading-[24px] tracking-[0.25px] !text-white">
