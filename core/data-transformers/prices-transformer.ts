@@ -1,9 +1,9 @@
 import { ResultOf } from 'gql.tada';
 import { getFormatter } from 'next-intl/server';
 
+import { Price } from '@/vibes/soul/primitives/price-label';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { ExistingResultType } from '~/client/util';
-import { Price } from '~/components/ui/product-card';
 
 export const pricesTransformer = (
   prices: ResultOf<typeof PricingFragment>['prices'],
