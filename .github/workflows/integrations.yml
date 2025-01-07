@@ -1,0 +1,22 @@
+name: Apply Integration Patches
+
+push:
+  branches: [canary]
+pull_request:
+  types: [opened, synchronize]
+merge_group:
+  types: [checks_requested]
+
+jobs:
+  apply-patches:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Apply patches
+        run: |
+          for patch in integrations/*.patch; do
+            git apply "$patch" || exit 1
+          done
