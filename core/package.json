@@ -1,7 +1,7 @@
 {
   "name": "@bigcommerce/catalyst-core",
   "description": "BigCommerce Catalyst is a Next.js starter kit for building headless BigCommerce storefronts.",
-  "version": "0.23.0",
+  "version": "0.24.1",
   "private": true,
   "scripts": {
     "dev": "npm run generate && next dev",
@@ -40,6 +40,7 @@
     "focus-trap-react": "^11.0.1",
     "gql.tada": "^1.8.10",
     "graphql": "^16.10.0",
+    "jose": "^5.9.6",
     "lodash.debounce": "^4.0.8",
     "lru-cache": "^11.0.2",
     "lucide-react": "^0.468.0",

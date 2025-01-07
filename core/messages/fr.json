@@ -26,7 +26,7 @@
         "heading": "Connexion",
         "Form": {
             "error": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
-            "successful": "You have successfully logged in.",
+            "successful": "Vous êtes connecté(e).",
             "emailLabel": "E-mail",
             "enterEmailMessage": "Saisissez votre adresse e-mail",
             "passwordLabel": "Mot de passe",
@@ -70,7 +70,7 @@
             "submitting": "Création du compte...",
             "recaptchaText": "Réussir le test ReCAPTCHA",
             "confirmPassword": "Les mots de passe ne correspondent pas",
-            "successMessage": "Account was successfully created."
+            "successMessage": "Le compte a été créé."
         },
         "Errors": {
             "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",

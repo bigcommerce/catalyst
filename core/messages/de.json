@@ -26,7 +26,7 @@
         "heading": "Anmelden",
         "Form": {
             "error": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
-            "successful": "You have successfully logged in.",
+            "successful": "Sie haben sich erfolgreich eingeloggt.",
             "emailLabel": "E-Mail",
             "enterEmailMessage": "Geben Sie Ihre E-Mail-Adresse ein",
             "passwordLabel": "Passwort",
@@ -70,7 +70,7 @@
             "submitting": "Konto erstellen ...",
             "recaptchaText": "Bestehen Sie die ReCAPTCHA-Prüfung",
             "confirmPassword": "Die Passwörter stimmen nicht überein",
-            "successMessage": "Account was successfully created."
+            "successMessage": "Konto wurde erfolgreich erstellt."
         },
         "Errors": {
             "inputError": "Bei der Verarbeitung der Benutzereingabe ist ein Fehler aufgetreten.",
