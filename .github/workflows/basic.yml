@@ -2,7 +2,7 @@ name: Basic
 
 on:
   push:
-    branches: [main]
+    branches: [canary]
   pull_request:
     types: [opened, synchronize]
   merge_group:
