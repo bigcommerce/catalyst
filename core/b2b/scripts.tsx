@@ -76,13 +76,14 @@ export async function B2BScripts() {
   const session = await auth();
   const b2bToken = session?.b2bToken;
 
+  // Uncomment this to use local development scripts
+  // if (process.env.NODE_ENV !== 'production') {
+  //   return <B2BLocalDevelopmentScripts />;
+  // }
+
   return (
     <>
-      {process.env.NODE_ENV === 'production' || process.env.VERCEL ? (
-        <B2BProductionScripts />
-      ) : (
-        <B2BLocalDevelopmentScripts />
-      )}
+      <B2BProductionScripts />
       <B2BLogin b2bToken={b2bToken} />
     </>
   );

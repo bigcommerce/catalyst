@@ -9,10 +9,7 @@ interface GetShippingCountries {
 }
 
 export const getShippingCountries = async ({ geography }: GetShippingCountries) => {
-  // @todo fix this in vercel environment
-  // const hasAccessToken = Boolean(process.env.BIGCOMMERCE_ACCESS_TOKEN);
-  const hasAccessToken = false;
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const hasAccessToken = Boolean(process.env.BIGCOMMERCE_ACCESS_TOKEN);
   const shippingZones = hasAccessToken ? await getShippingZones() : [];
   const countries = geography.countries ?? [];
 
@@ -36,7 +33,6 @@ export const getShippingCountries = async ({ geography }: GetShippingCountries) 
     return zones;
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
   return countries.filter((countryDetails) => {
     const isCountryInTheList = uniqueCountryZones.includes(countryDetails.code);
 
