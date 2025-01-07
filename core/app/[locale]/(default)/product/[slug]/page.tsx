@@ -244,7 +244,8 @@ export default async function ProductPage(props: Props) {
                 galleryExpandIcon={assets.galleryExpandIcon}
                 productMpn={product.mpn}
                 wishlistData={{
-                  wishlists: wishlistData?.wishlists || [],
+                  wishlists: customerAccessToken ? wishlistData?.wishlists || [] : [],
+                  isAuthenticated: !!customerAccessToken,
                   product: {
                     entityId: product.entityId,
                     variantEntityId: product.variants.edges?.[0]?.node.entityId,

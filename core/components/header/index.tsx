@@ -68,8 +68,8 @@ export const Header = async ({ cart }: Props) => {
   const getCustomerData = await getSessionUserDetails();
   return (
     <ComponentsHeader
-    homeLogoMobile = {homeLogoMobile} 
-    homeLogoMobileFirst = {homeLogoMobileFirst}
+      homeLogoMobile={homeLogoMobile}
+      homeLogoMobileFirst={homeLogoMobileFirst}
       account={
         <div className="flex items-center">
           {/* Support Dropdown */}
@@ -108,9 +108,9 @@ export const Header = async ({ cart }: Props) => {
 
           {/* Account Dropdown */}
           <Dropdown
-          getCustomerData={getCustomerData}
+            getCustomerData={getCustomerData}
             items={
-              customerAccessToken 
+              customerAccessToken
                 ? [
                     { href: '/account', label: 'My Account' },
                     { href: '/account/favorites', label: 'Favorites' },
@@ -124,7 +124,7 @@ export const Header = async ({ cart }: Props) => {
                     { href: '/login', label: 'Favorites' },
                     { href: '/login', label: 'Purchase History' },
                     { href: '/login', label: 'Financing' },
-                    { href: '/login', label: 'Login' },         
+                    { href: '/login', label: 'Login' },
                   ]
             }
             trigger={
@@ -154,7 +154,7 @@ export const Header = async ({ cart }: Props) => {
           <Suspense
             fallback={
               <CartLink>
-                <ShoppingCart className="hidden header-cart-link" aria-label="cart" />
+                <ShoppingCart className="header-cart-link hidden" aria-label="cart" />
               </CartLink>
             }
           >
@@ -165,13 +165,13 @@ export const Header = async ({ cart }: Props) => {
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
-      search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} />}     
+      search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} />}
     />
   );
 };
 
 export const HeaderSkeleton = () => (
-  <header className="flex min-h-[92px] !max-w-[100%] p-[0px_4em] animate-pulse items-center justify-between gap-1 overflow-y-visible bg-white 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto !px-[40px] 2xl:px-0">
+  <header className="flex min-h-[92px] !max-w-[100%] animate-pulse items-center justify-between gap-1 overflow-y-visible bg-white p-[0px_4em] !px-[40px] 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0">
     <div className="h-16 w-40 rounded bg-slate-200" />
     <div className="hidden space-x-4 lg:flex">
       <div className="h-6 w-20 rounded bg-slate-200" />
