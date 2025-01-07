@@ -1,8 +1,9 @@
 import { FragmentOf } from 'gql.tada';
 
 import { Field } from '@/vibes/soul/primitives/dynamic-form/schema';
-import { FieldNameToFieldId } from '~/components/form-fields';
-import { FormFieldsFragment } from '~/components/form-fields/fragment';
+
+import { FormFieldsFragment } from './fragment';
+import { FieldNameToFieldId } from './utils';
 
 export const formFieldTransformer = (
   field: FragmentOf<typeof FormFieldsFragment>,
@@ -10,6 +11,7 @@ export const formFieldTransformer = (
   switch (field.__typename) {
     case 'CheckboxesFormField':
       return {
+        id: String(field.entityId),
         type: 'checkbox-group',
         name: String(field.entityId),
         label: field.label,
@@ -22,6 +24,7 @@ export const formFieldTransformer = (
 
     case 'DateFormField':
       return {
+        id: String(field.entityId),
         type: 'date',
         name: String(field.entityId),
         label: field.label,
@@ -32,6 +35,7 @@ export const formFieldTransformer = (
 
     case 'MultilineTextFormField':
       return {
+        id: String(field.entityId),
         type: 'textarea',
         name: String(field.entityId),
         label: field.label,
@@ -40,6 +44,7 @@ export const formFieldTransformer = (
 
     case 'NumberFormField':
       return {
+        id: String(field.entityId),
         type: 'number',
         name: String(field.entityId),
         label: field.label,
@@ -48,6 +53,7 @@ export const formFieldTransformer = (
 
     case 'PasswordFormField':
       return {
+        id: String(field.entityId),
         type:
           field.entityId === FieldNameToFieldId.confirmPassword ? 'confirm-password' : 'password',
         name: String(field.entityId),
@@ -56,7 +62,18 @@ export const formFieldTransformer = (
       };
 
     case 'PicklistFormField':
+      if (field.entityId === FieldNameToFieldId.countryCode) {
+        return {
+          id: String(field.entityId),
+          type: 'text',
+          name: String(field.entityId),
+          label: field.label,
+          required: field.isRequired,
+        };
+      }
+
       return {
+        id: String(field.entityId),
         type: 'button-radio-group',
         name: String(field.entityId),
         label: field.label,
@@ -69,6 +86,7 @@ export const formFieldTransformer = (
 
     case 'RadioButtonsFormField':
       return {
+        id: String(field.entityId),
         type: 'radio-group',
         name: String(field.entityId),
         label: field.label,
@@ -79,8 +97,10 @@ export const formFieldTransformer = (
         })),
       };
 
+    case 'PicklistOrTextFormField':
     case 'TextFormField':
       return {
+        id: String(field.entityId),
         type: field.entityId === FieldNameToFieldId.email ? 'email' : 'text',
         name: String(field.entityId),
         label: field.label,
@@ -90,4 +110,15 @@ export const formFieldTransformer = (
     default:
       return null;
   }
+};
+
+// TODO: See if we can merge this is with the above function
+// Will require testing and refactoring of register customer functionality
+export const fieldToFieldNameTransformer = (field: Field) => {
+  const name = FieldNameToFieldId[Number(field.name)];
+
+  return {
+    ...field,
+    name: name ?? field.label ?? field.name,
+  };
 };
