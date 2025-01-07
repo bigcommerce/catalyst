@@ -402,6 +402,11 @@ export const create = new Command('create')
             envVars = { ...channelData.envVars };
 
             console.log(chalk.green(`Channel created successfully`));
+            console.warn(
+              chalk.yellow(
+                '\nNote: A preview storefront has been deployed in your BigCommerce control panel. This preview may look different from your local environment as it may be running different code.',
+              ),
+            );
           }
 
           if (!shouldCreateChannel) {
