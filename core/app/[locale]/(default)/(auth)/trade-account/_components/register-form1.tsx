@@ -85,7 +85,6 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
   const [passwordError, setPasswordError] = useState<string>('');
 
   const validatePassword = (password: string) => {
-    console.log("password validation",password);
     const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~])[A-Za-z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{8,}$/;
 
       if (!password.trim()) {
@@ -103,7 +102,6 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
   };
 
   const validateEmail = (email: string) => {
-    console.log("email validation called")
     if (!email.trim()) {
       setEmailError('');
       return true;
@@ -127,7 +125,6 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
   };
 
   const handlePasswordValidation = (e: ChangeEvent<HTMLInputElement>) => {
-    console.log("HandlepasswordValidation");
     const fieldId = Number(e.target.id.split('-')[1]);
     setPasswordValid((prevState) => ({
       ...prevState,
