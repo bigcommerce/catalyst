@@ -1,3 +1,6 @@
+⚠️ **IMPORTANT:** As of January 6, 2025, the `main` branch is frozen. The default branch is now `canary`. Please make sure to work with and submit PRs to the `canary` branch.
+
+
 <a href="https://catalyst.dev" target="_blank" rel="noopener norerrer">
   <img src="https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_banner.png" alt="Catalyst for Composable Commerce Image Banner" title="Catalyst">
 </a>
