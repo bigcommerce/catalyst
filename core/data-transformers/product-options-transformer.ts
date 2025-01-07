@@ -1,13 +1,16 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ResultOf } from 'gql.tada';
+import { getTranslations } from 'next-intl/server';
 
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
 import { ProductFormFragment } from '~/app/[locale]/(default)/product/[slug]/page-data';
 
-export const productOptionsTransformer = (
+export const productOptionsTransformer = async (
   productOptions: ResultOf<typeof ProductFormFragment>['productOptions'],
-) =>
-  removeEdgesAndNodes(productOptions)
+) => {
+  const t = await getTranslations('Product.ProductDetails');
+
+  return removeEdgesAndNodes(productOptions)
     .map<Field | null>((option) => {
       if (option.__typename === 'MultipleChoiceOption') {
         const values = removeEdgesAndNodes(option.values);
@@ -143,6 +146,8 @@ export const productOptionsTransformer = (
           defaultValue: option.defaultNumber?.toString(),
           min: option.lowest ?? undefined,
           max: option.highest ?? undefined,
+          incrementLabel: t('increaseNumber'),
+          decrementLabel: t('decreaseNumber'),
           // TODO: should we take into account other properties from API like isIntegerOnly, limitNumberBy?
           // https://developer.bigcommerce.com/graphql-storefront/reference#definition-LimitInputBy
         };
@@ -184,3 +189,4 @@ export const productOptionsTransformer = (
       return null;
     })
     .filter((field) => field !== null);
+};
