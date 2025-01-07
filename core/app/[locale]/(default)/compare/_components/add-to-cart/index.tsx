@@ -7,7 +7,7 @@ import { useId, useTransition } from 'react';
 import { toast } from 'react-hot-toast';
 
 import { AddToCartButton } from '~/components/add-to-cart-button';
-// import { useCart } from '~/components/header/cart-provider';
+import { useCart } from '~/components/header/cart-provider';
 import { Link } from '~/components/link';
 
 import { addToCart } from '../../_actions/add-to-cart';
@@ -16,7 +16,7 @@ import { AddToCartFragment } from './fragment';
 
 export const AddToCart = ({ data: product }: { data: FragmentOf<typeof AddToCartFragment> }) => {
   const t = useTranslations('Compare.AddToCart');
-  // const cart = useCart();
+  const cart = useCart();
   const toastId = useId();
   const [isPending, startTransition] = useTransition();
 
@@ -27,7 +27,7 @@ export const AddToCart = ({ data: product }: { data: FragmentOf<typeof AddToCart
     const quantity = Number(formData.get('quantity'));
 
     // Optimistic update
-    // cart.increment(quantity);
+    cart.increment(quantity);
     toast.success(
       () => (
         <div className="flex items-center gap-3">
@@ -55,7 +55,7 @@ export const AddToCart = ({ data: product }: { data: FragmentOf<typeof AddToCart
       const result = await addToCart(formData);
 
       if (result.error) {
-        // cart.decrement(quantity);
+        cart.decrement(quantity);
 
         toast.error(result.error, {
           icon: <AlertCircle className="text-error-secondary" />,
