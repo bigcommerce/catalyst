@@ -9,3 +9,5 @@ Introduce Soul VIBE UI library to the repository.
 - Fast performance and modern patterns leveraging the latest features of Next.js
 - Easy customization to best represent your brand
 - Utilize @conform-to/react for progressively enhanced HTML forms
+
+Join the discussion [here](https://github.com/bigcommerce/catalyst/discussions/1861) and be part of the future of Catalyst!
