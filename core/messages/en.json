@@ -373,8 +373,8 @@
   "Cart": {
     "title": "Cart",
     "heading": "Your cart",
-    "empty": "Your cart is empty",
-    "emptyDetails": "Looks like you have not added anything to your cart. Go ahead & explore top categories",
+    "empty": "There's Nothing Here Right Now...",
+    "emptyDetails": "Find Something Great to Add",
     "proceedToCheckout": "CHECKOUT",
     "loading": "Loading...",
     "spinnerText": "Updating...",
