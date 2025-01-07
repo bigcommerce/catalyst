@@ -74,7 +74,7 @@ export const InputPlusMinus = ({product, productData, isLoading, setIsLoading}: 
 
   return(
     <>
-    <div className="relative w-max">
+    <div className="relative w-max input-plus-minus-container">
       {/* {loader && <Spinner aria-hidden="true" className="animate-spin text-blue-600 absolute top-[23%] left-[38.1%] "></Spinner>} */}
       <div className="text-[14px] font-normal tracking-[0.25px] text-[#353535]">
         <div className="flex h-[44px] max-w-[105px] items-center justify-center gap-[10px] rounded-[20px] border border-[#d6d6d6]">

@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { CheckoutButton } from '~/app/[locale]/(default)/cart/_components/checkout-button';
 import { GetVariantsByProductSKU } from '~/components/graphql-apis';
 import { InputPlusMinus } from '../form-fields/input-plus-minus';
+import closeIcon from '~/public/add-to-cart/flyoutCloseIcon.svg';
 
 const getVariantProductInfo = async (metaData: any) => {
   let variantProductInfo: any = [],
@@ -94,7 +95,6 @@ const getVariantProductInfo = async (metaData: any) => {
 
 export const ProductFlyout = ({
   data: product,
-  closeIcon,
   fanPopup,
   blankAddImg,
   from,
@@ -102,7 +102,6 @@ export const ProductFlyout = ({
   showFlyoutFn,
 }: {
   data: any;
-  closeIcon: string;
   fanPopup: string;
   blankAddImg: string;
   from: string;
@@ -172,7 +171,7 @@ export const ProductFlyout = ({
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
-          <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow fixed right-[0] top-[50%] z-[100] flex max-h-[100vh] w-[90vw] max-w-[610px] translate-y-[-50%] animate-slideInFromLeft flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+          <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow fixed right-[0] top-[50%] z-[100] flex h-[100vh] w-[90vw] max-w-[610px] translate-y-[-50%] animate-slideInFromLeft flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <div
               className={`flyout-loading ${isLoading ? 'flex' : 'hidden'} fixed left-0 top-0 z-50 h-full w-full items-center justify-center`}
             >
@@ -188,10 +187,10 @@ export const ProductFlyout = ({
                   >
                     <BcImage
                       alt="Close Icon"
-                      width={24}
-                      height={24}
+                      width={14}
+                      height={14}
                       unoptimized={true}
-                      className="h-[25px] w-[25px]"
+                      className=""
                       src={closeIcon}
                     />
                   </button>
@@ -215,7 +214,7 @@ export const ProductFlyout = ({
                     src={productData?.imageUrl}
                   />
                 </div>
-                <div className="popup-box1-div2 relative flex max-w-[360px] flex-shrink-[50] flex-col gap-[3px] text-center ssm:gap-[1px] ssm:text-start">
+                <div className="popup-box1-div2 relative flex max-w-[360px] flex-shrink-[50] flex-col gap-[3px] text-center ssm:gap-[1px] ssm:text-start [&_.input-plus-minus-container]:self-center [&_.input-plus-minus-container]:ssm:[align-self:unset]">
                   <p className="text-center text-[14px] font-normal tracking-[0.25px] text-[#353535] ssm:text-left">
                     {productData?.name}
                   </p>
