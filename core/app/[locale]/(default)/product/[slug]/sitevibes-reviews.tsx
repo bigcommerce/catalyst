@@ -1,11 +1,24 @@
 'use client';
 
+declare global {
+  interface Window {
+    SiteVibesProduct?: any,
+    SiteVibesEvents?: {
+      pageRefresh: () => void;
+    };
+  }
+}
+
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-//import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 //import { useRouter } from 'next/navigation';
+import { usePathname, useSearchParams } from 'next/navigation';
 import Script from 'next/script';
 
 export function SitevibesReviews({ product, category }: { product: any, category: any }) {
+
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
   const breadcrumbs = (category?.breadcrumbs)?(removeEdgesAndNodes(category?.breadcrumbs) as any[]).map(({ name, path }) => ({
     label: name,
@@ -25,28 +38,34 @@ export function SitevibesReviews({ product, category }: { product: any, category
     price: product.prices?.price.value,
   }
 
-  /*
   useEffect(() => {
-    var SiteVibesProduct = productData;
-    if (typeof window !== 'undefined' && window.SiteVibesEvents && typeof window.SiteVibesEvents.pageRefresh === 'function') {
-      SiteVibesProduct.url = window.location.href;
-      window.SiteVibesEvents.pageRefresh();
+    if (typeof window !== 'undefined') {
+      productData.url = window.location.href;      
+      window.SiteVibesProduct = productData;
+      if (window.SiteVibesEvents && typeof window.SiteVibesEvents.pageRefresh === 'function') {
+        window.SiteVibesEvents.pageRefresh();
+      }
     }
-  }, []);
-  */
+  //}, [pathname, searchParams]);
+  }, [product.entityId]);
 
   return (
-    <div>
-      <Script id="sitevibes-product-data">
+    <>
+      <div id="sitevibes-product-reviews"></div>
+      {/*
+      <Script id="sitevibes-product-data" strategy="afterInteractive">
         {`
           var SiteVibesProduct = ${JSON.stringify(productData)};
           if (typeof window !== 'undefined' && window.SiteVibesEvents && typeof window.SiteVibesEvents.pageRefresh === 'function') {
             SiteVibesProduct.url = window.location.href;
             window.SiteVibesEvents.pageRefresh();
+            alert('Here too!');
+          } else {
+            alert('Not loaded!');
           }
         `}
       </Script>
-      <div id="sitevibes-product-reviews"></div>
-    </div>
+      */}
+    </>
   );
 }
