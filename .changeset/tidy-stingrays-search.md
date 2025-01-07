@@ -10,4 +10,4 @@ Introduce Soul VIBE UI library to the repository.
 - Easy customization to best represent your brand
 - Utilize @conform-to/react for progressively enhanced HTML forms
 
-Join the discussion [here](https://github.com/bigcommerce/catalyst/discussions/1861) for more details in this major milestone for Catalyst!
+Join the discussion [here](https://github.com/bigcommerce/catalyst/discussions/1861) for more details of this major milestone for Catalyst!
