@@ -11,7 +11,7 @@
     "version": true,
     "tag": true
   },
-  "baseBranch": "main",
+  "baseBranch": "canary",
   "updateInternalDependencies": "patch",
   "ignore": []
 }

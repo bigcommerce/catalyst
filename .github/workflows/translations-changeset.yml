@@ -5,7 +5,7 @@ on:
     types:
       - opened
     branches:
-      - main
+      - canary
 
 jobs:
   create-translations-patch:

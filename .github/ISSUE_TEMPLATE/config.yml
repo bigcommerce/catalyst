@@ -1,7 +1,7 @@
 blank_issues_enabled: false
 contact_links:
   - name: Have questions?
-    url: https://github.com/bigcommerce/catalyst/blob/main/README.md
+    url: https://github.com/bigcommerce/catalyst/blob/canary/README.md
     about: Explore the Catalyst Docs.
   - name: Need help with Catalyst?
     url: https://github.com/bigcommerce/catalyst/discussions/new?category=q-a
