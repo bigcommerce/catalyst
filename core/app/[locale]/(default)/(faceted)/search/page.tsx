@@ -2,7 +2,7 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 
-import { getPromotions } from '~/belami/lib/fetch-promotions';
+import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import { Search } from './search';
@@ -32,7 +32,8 @@ export default async function SearchPage(props: Props) {
   const format = await getFormatter();
 
   const searchTerm = typeof searchParams.query === 'string' ? searchParams.query : undefined;
-  const promotions = await getPromotions();
+
+  const promotions = await getActivePromotions();
 
   /*
   if (!searchTerm) {

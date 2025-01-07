@@ -7,7 +7,7 @@ export default async function WishlistAddToListPage() {
     limit: 50,
   });
 
-  if (!data?.wishlists) return null;
+  if (!data?.wishlists) return <div>No wishlists found.</div>;
 
   return (
     <div className="w-full">

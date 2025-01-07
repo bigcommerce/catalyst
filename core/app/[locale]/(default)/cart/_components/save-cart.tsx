@@ -15,8 +15,8 @@ export const SaveCart = ({ cartItems, saveCartIcon }: any) => {
       cartItems?.forEach((items: any) => {
         cartItemsData.push({
           variantEntityId: items?.variantEntityId,
-          productEntityId: items?.productEntityId
-        })
+          productEntityId: items?.productEntityId,
+        });
       });
     }
     if (cartItems?.length > 0) {
@@ -45,20 +45,21 @@ export const SaveCart = ({ cartItems, saveCartIcon }: any) => {
   }
 
   return (
-    <button onClick={() => saveCartItems()} className="bg-green4 text-green11 hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] font-medium">
+    <button
+      onClick={() => saveCartItems()}
+      className="bg-green4 text-green11 hover:bg-green5 focus:shadow-green7 inline-flex h-[35px] items-center justify-center rounded-[4px] font-medium"
+    >
       <div className="flex items-center space-x-2">
         <BcImage
           alt={t('saveCartWishlist')}
           width={15}
           height={15}
-          className="w-[15px] h-[15px]"
+          className="h-[15px] w-[15px]"
           src={saveCartIcon}
         />
-    <div className="text-[1rem] font-normal leading-[2rem] tracking-[0.03125rem] text-left text-[#353535] savecart-wishlist-span">
-  {t('saveCartWishlist')} <span>{t('saveCartWishlistSpan')}</span>
-</div>
-
-
+        <div className="savecart-wishlist-span text-left text-[1rem] font-normal leading-[2rem] tracking-[0.03125rem] text-[#353535]">
+          {t('saveCartWishlist')} <span>{t('saveCartWishlistSpan')}</span>
+        </div>
       </div>
     </button>
   );

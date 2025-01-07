@@ -24,8 +24,8 @@ import { useCommonContext } from '~/components/common-context/common-provider';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
 import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
-import {  store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
-import addToCart from '~/public/add-to-cart/addToCart.svg'
+import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
+import addToCart from '~/public/add-to-cart/addToCart.svg';
 import Image from 'next/image';
 
 interface ProductOptionValue {
@@ -224,9 +224,8 @@ export const Details = ({
   useEffect(() => {
     // store product id in local storage for Salesbuddy
     store_pdp_product_in_localstorage(product);
-    
   }, [product]);
-  
+
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
     if (selectedId) {
@@ -265,7 +264,10 @@ export const Details = ({
                     </h2>
 
                     <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px]">
-                      by <Link href={product.brand?.path ?? ''} className="underline">{product.brand?.name}</Link>
+                      by{' '}
+                      <Link href={product.brand?.path ?? ''} className="underline">
+                        {product.brand?.name}
+                      </Link>
                     </div>
 
                     <div className="mt-3 block flex-wrap items-center text-[#7F7F7F]">
@@ -363,7 +365,14 @@ export const Details = ({
                       ADD TO CART
                     </span>
                     <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
-                      <Image src={addToCart} className='' alt='Add to Cart' unoptimized={true} width={44} height={44} />
+                      <Image
+                        src={addToCart}
+                        className=""
+                        alt="Add to Cart"
+                        unoptimized={true}
+                        width={44}
+                        height={44}
+                      />
                     </div>
                   </button>
                 </div>
@@ -392,7 +401,14 @@ export const Details = ({
                 ADD TO CART
               </span>
               <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
-                <Image src={addToCart} className='' alt='Add to Cart' unoptimized={true} width={44} height={44} />
+                <Image
+                  src={addToCart}
+                  className=""
+                  alt="Add to Cart"
+                  unoptimized={true}
+                  width={44}
+                  height={44}
+                />
               </div>
             </button>
           </div>
