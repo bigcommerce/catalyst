@@ -1,6 +1,6 @@
 'use server';
 
-import { expirePath } from 'next/cache';
+import { unstable_expirePath } from 'next/cache';
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 
@@ -89,7 +89,7 @@ export const updateQuantity = async ({
       throw new Error(t('failedToUpdateQuantity'));
     }
 
-    expirePath('/cart');
+    unstable_expirePath('/cart');
 
     return cart;
   } catch (error: unknown) {
