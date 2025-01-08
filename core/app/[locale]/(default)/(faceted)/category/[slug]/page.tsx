@@ -81,12 +81,7 @@ async function getTitle(props: Props): Promise<string | null> {
   return category.name;
 }
 
-const createCategorySearchParamsCache = cache(async (props: Props) => {
-  const { slug } = await props.params;
-  const categorySearch = await fetchFacetedSearch({ category: Number(slug) });
-  const categoryFacets = categorySearch.facets.items.filter(
-    (facet) => facet.__typename !== 'CategorySearchFilter',
-  );
+const createCategorySearchParamsCache = cache(async (slug: string, categoryFacets: any[]) => {
   const transformedCategoryFacets = await facetsTransformer({
     refinedFacets: categoryFacets,
     allFacets: categoryFacets,
@@ -101,8 +96,15 @@ async function getSearch(props: Props) {
   const { slug } = await props.params;
   const categoryId = Number(slug);
   const searchParams = await props.searchParams;
-  const searchParamsCache = await createCategorySearchParamsCache(props);
+  
+  const categorySearch = await fetchFacetedSearch({ category: categoryId });
+  const categoryFacets = categorySearch.facets.items.filter(
+    (facet) => facet.__typename !== 'CategorySearchFilter',
+  );
+
+  const searchParamsCache = await createCategorySearchParamsCache(slug, categoryFacets);
   const parsedSearchParams = searchParamsCache.parse(searchParams);
+
   const search = await fetchFacetedSearch({
     ...searchParams,
     ...parsedSearchParams,
@@ -144,14 +146,21 @@ async function getFilters(props: Props): Promise<Filter[]> {
   const { slug } = await props.params;
   const categoryId = Number(slug);
   const searchParams = await props.searchParams;
-  const searchParamsCache = await createCategorySearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache.parse(searchParams);
+  
   const categorySearch = await fetchFacetedSearch({ category: categoryId });
+  const categoryFacets = categorySearch.facets.items.filter(
+    (facet) => facet.__typename !== 'CategorySearchFilter',
+  );
+  
+  const searchParamsCache = await createCategorySearchParamsCache(slug, categoryFacets);
+  const parsedSearchParams = searchParamsCache.parse(searchParams);
+  
   const refinedSearch = await fetchFacetedSearch({
     ...searchParams,
     ...parsedSearchParams,
     category: categoryId,
   });
+
   const allFacets = categorySearch.facets.items.filter(
     (facet) => facet.__typename !== 'CategorySearchFilter',
   );
