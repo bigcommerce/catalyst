@@ -108,7 +108,13 @@ export const getCustomerOrders = cache(
           ...order,
           consignments: {
             shipping:
-              order.consignments?.shipping && removeEdgesAndNodes(order.consignments.shipping),
+              order.consignments?.shipping &&
+              removeEdgesAndNodes(order.consignments.shipping).map((consignment) => {
+                return {
+                  ...consignment,
+                  lineItems: removeEdgesAndNodes(consignment.lineItems),
+                };
+              }),
           },
         };
       }),
