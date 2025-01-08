@@ -846,7 +846,9 @@ button.show-all {
     display: block;
   }
 }
-
+.aa-Panel {
+  z-index: 999 !important;
+}
 .aa-PanelLayout, .aa-Panel--scrollable {
   padding: 1rem !important;
 }
