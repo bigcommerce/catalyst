@@ -22,6 +22,7 @@ import '~/lib/makeswift/components';
 
 import { ScrollLink } from '~/belami/components/scroll-link';
 import { ScrollableLink } from '~/belami/components/scrollable-link';
+import { SmoothScroll } from '~/belami/components/smooth-scroll';
 
 interface Props {
   params: Promise<{
@@ -91,6 +92,7 @@ export default async function BrandPage(props: Props) {
             className="mx-auto h-16 w-auto"
           />
           <div className="mt-4 inline-flex flex-wrap items-center justify-center gap-4">
+            <SmoothScroll />
             {/* <Link href={`/search?brand_name[0]=${encodeURIComponent(brand?.name ?? '')}`} className="flex space-x-2 rounded bg-brand-700 px-4 py-2 uppercase text-white"> */}
             <Link href={`${brand.path}#catalog`} prefetch={false} className="flex space-x-2 rounded bg-brand-700 px-4 py-2 uppercase text-white">
               <span>Shop All {brand.name}</span>
@@ -170,10 +172,10 @@ export default async function BrandPage(props: Props) {
 
 
 
-            <ScrollLink href={`${brand.path}#catalog`} className="flex space-x-2 rounded bg-brand-700 px-4 py-2 uppercase text-white">
+            <Link href={`${brand.path}#catalog`} scroll={false} className="flex space-x-2 rounded bg-brand-700 px-4 py-2 uppercase text-white">
               <span>Shop All {brand.name}</span>
-            </ScrollLink>
-            <ScrollLink href={`${brand.path}?is_new=true#catalog`} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
+            </Link>
+            <Link href={`${brand.path}?is_new=true#catalog`} scroll={false} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
               <svg
                 width="21"
                 height="20"
@@ -187,8 +189,8 @@ export default async function BrandPage(props: Props) {
                 />
               </svg>
               <span>New Products</span>
-            </ScrollLink>
-            <ScrollLink href={`${brand.path}?on_sale=true#catalog`} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
+            </Link>
+            <Link href={`${brand.path}?on_sale=true#catalog`} scroll={false} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
               <svg
                 width="20"
                 height="21"
@@ -202,7 +204,7 @@ export default async function BrandPage(props: Props) {
                 />
               </svg>
               <span>Sale</span>
-            </ScrollLink>
+            </Link>
 
           </div>
         </section>
