@@ -669,6 +669,9 @@ button.show-all {
   border-top: 1px solid var(--gray-300);
   margin: 0 !important;
 }
+.facets .ais-Panel:has(.ais-RefinementList-list):not(:has(.ais-RefinementList-list li)) {
+  display: none !important;
+}
 .facets .ais-Panel:first-child {
   border-top: 0px solid;
 }
