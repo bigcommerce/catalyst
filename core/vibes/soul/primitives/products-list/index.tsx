@@ -44,7 +44,7 @@ export function ProductsList({
     <>
       <Stream
         fallback={<ProductsListSkeleton pending placeholderCount={placeholderCount} />}
-        value={Promise.all([streamableProducts, streamableCompareLabel])}
+        value={Streamable.all([streamableProducts, streamableCompareLabel])}
       >
         {([products, compareLabel]) => {
           if (products.length === 0) {
@@ -76,7 +76,7 @@ export function ProductsList({
           );
         }}
       </Stream>
-      <Stream value={Promise.all([streamableCompareProducts, streamableCompareLabel])}>
+      <Stream value={Streamable.all([streamableCompareProducts, streamableCompareLabel])}>
         {([compareProducts, compareLabel]) =>
           compareProducts && (
             <CompareDrawer
