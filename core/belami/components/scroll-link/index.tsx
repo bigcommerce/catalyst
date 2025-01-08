@@ -18,26 +18,25 @@ export function ScrollLink({ children, ...props }: ScrollLinkProps) {
   const searchParams = useSearchParams();
 
   const getHash = () =>
-    typeof window !== "undefined"
+    typeof window !== 'undefined'
       ? decodeURIComponent(window.location.hash)
-      : "";
+      : '';
 
   useEffect(() => {
-    const onHashChange = () => {
+    //const onHashChange = () => {
       const targetId = getHash();
       const elem = document.getElementById(targetId);
       window.scrollTo({
         top: elem?.getBoundingClientRect().top,
         behavior: 'smooth',
       });
-    };
-    window.addEventListener('hashchange', onHashChange);
-    return () => window.removeEventListener('hashchange', onHashChange);
+    //};
+    //window.addEventListener('hashchange', onHashChange);
+    //return () => window.removeEventListener('hashchange', onHashChange);
   }, [pathname, searchParams]);
 
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
-
     router.push(e.currentTarget.href, {scroll: false});
 /*
     const targetId = e.currentTarget.href.replace(/.*\#/, '');
