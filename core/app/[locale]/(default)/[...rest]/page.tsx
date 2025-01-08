@@ -1,4 +1,4 @@
-import { locales } from '~/i18n/routing';
+import { defaultLocale, locales } from '~/i18n/routing';
 import { client, Page } from '~/lib/makeswift';
 
 interface PageParams {
@@ -9,7 +9,18 @@ interface PageParams {
 export async function generateStaticParams(): Promise<PageParams[]> {
   const pages = await client.getPages().toArray();
 
-  return pages.filter((page) => page.path !== '/').flatMap((page) => localesFanOut(page.path));
+  const params = pages
+    .filter((page) => page.path !== '/')
+    .flatMap((page) => localesFanOut(page.path));
+
+  // Next.js requires providing at least one value in `generateStaticParams`.
+  //
+  // See https://github.com/vercel/next.js/pull/73933
+  if (params.length === 0) {
+    return [{ rest: ['dev', 'null'], locale: defaultLocale }];
+  }
+
+  return params;
 }
 
 export default async function CatchAllPage({ params }: { params: Promise<PageParams> }) {
