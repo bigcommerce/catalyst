@@ -5,11 +5,11 @@ import { cache } from 'react';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
-import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { ProductDetail } from '~/lib/makeswift/components/product-detail';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
@@ -115,6 +115,7 @@ const getProduct = async (props: Props) => {
     description: (
       <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />
     ),
+    plainTextDescription: product.plainTextDescription,
     href: product.path,
     images: product.defaultImage
       ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
@@ -242,6 +243,7 @@ export default async function Product(props: Props) {
         incrementLabel={t('ProductDetails.increaseQuantity')}
         prefetch={true}
         product={getProduct(props)}
+        productId={productId}
         quantityLabel={t('ProductDetails.quantity')}
         thumbnailLabel={t('ProductDetails.thumbnail')}
       />

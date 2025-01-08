@@ -92,7 +92,7 @@ export function ProductsListSection({
             <div className="flex gap-2">
               <Stream
                 fallback={<SortingSkeleton />}
-                value={Promise.all([
+                value={Streamable.all([
                   streamableSortLabel,
                   streamableSortOptions,
                   streamableSortPlaceholder,
