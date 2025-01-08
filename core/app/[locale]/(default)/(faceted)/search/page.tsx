@@ -28,8 +28,20 @@ const createSearchSearchParamsCache = cache(async (props: Props) => {
     searchParams: {},
   });
   const searchFilters = transformedSearchFacets.filter((facet) => facet != null);
+  const filterParsers = getFilterParsers(searchFilters);
 
-  return createSearchParamsCache(getFilterParsers(searchFilters));
+  // If there are no filters, return `null`, since calling `createSearchParamsCache` with an empty
+  // object will throw the following cryptic error:
+  //
+  // ```
+  // Error: [nuqs] Empty search params cache. Search params can't be accessed in Layouts.
+  //   See https://err.47ng.com/NUQS-500
+  // ```
+  if (Object.keys(filterParsers).length === 0) {
+    return null;
+  }
+
+  return createSearchParamsCache(filterParsers);
 });
 
 async function getSearchTerm(props: Props): Promise<string> {
@@ -42,7 +54,7 @@ async function getSearchTerm(props: Props): Promise<string> {
 async function getSearch(props: Props) {
   const searchParams = await props.searchParams;
   const searchParamsCache = await createSearchSearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache.parse(searchParams);
+  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
   const search = await fetchFacetedSearch({ ...searchParams, ...parsedSearchParams });
 
   return search;
@@ -71,7 +83,7 @@ async function getFilters(props: Props): Promise<Filter[]> {
   const searchParams = await props.searchParams;
   const searchTerm = await getSearchTerm(props);
   const searchParamsCache = await createSearchSearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache.parse(searchParams);
+  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
 
   let refinedSearch: Awaited<ReturnType<typeof fetchFacetedSearch>> | null = null;
 

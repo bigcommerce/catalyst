@@ -64,15 +64,27 @@ const createBrandSearchParamsCache = cache(async (props: Props) => {
     searchParams: {},
   });
   const brandFilters = transformedBrandFacets.filter((facet) => facet != null);
+  const filterParsers = getFilterParsers(brandFilters);
 
-  return createSearchParamsCache(getFilterParsers(brandFilters));
+  // If there are no filters, return `null`, since calling `createSearchParamsCache` with an empty
+  // object will throw the following cryptic error:
+  //
+  // ```
+  // Error: [nuqs] Empty search params cache. Search params can't be accessed in Layouts.
+  //   See https://err.47ng.com/NUQS-500
+  // ```
+  if (Object.keys(filterParsers).length === 0) {
+    return null;
+  }
+
+  return createSearchParamsCache(filterParsers);
 });
 
 async function getRefinedSearch(props: Props) {
   const { slug } = await props.params;
   const searchParams = await props.searchParams;
   const searchParamsCache = await createBrandSearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache.parse(searchParams);
+  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
 
   return await fetchFacetedSearch({
     ...searchParams,
@@ -85,7 +97,7 @@ async function getFilters(props: Props): Promise<Filter[]> {
   const { slug } = await props.params;
   const searchParams = await props.searchParams;
   const searchParamsCache = await createBrandSearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache.parse(searchParams);
+  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
   const brandSearch = await fetchFacetedSearch({ brand: [slug] });
   const brandFacets = brandSearch.facets.items.filter(
     (facet) => facet.__typename !== 'BrandSearchFilter',
@@ -140,7 +152,7 @@ async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
   const { slug } = await props.params;
   const searchParams = await props.searchParams;
   const searchParamsCache = await createBrandSearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache.parse(searchParams);
+  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
   const brandSearch = await fetchFacetedSearch({
     ...searchParams,
     ...parsedSearchParams,

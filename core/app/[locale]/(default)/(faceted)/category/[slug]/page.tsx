@@ -93,8 +93,20 @@ const createCategorySearchParamsCache = cache(async (props: Props) => {
     searchParams: {},
   });
   const categoryFilters = transformedCategoryFacets.filter((facet) => facet != null);
+  const filterParsers = getFilterParsers(categoryFilters);
 
-  return createSearchParamsCache(getFilterParsers(categoryFilters));
+  // If there are no filters, return `null`, since calling `createSearchParamsCache` with an empty
+  // object will throw the following cryptic error:
+  //
+  // ```
+  // Error: [nuqs] Empty search params cache. Search params can't be accessed in Layouts.
+  //   See https://err.47ng.com/NUQS-500
+  // ```
+  if (Object.keys(filterParsers).length === 0) {
+    return null;
+  }
+
+  return createSearchParamsCache(filterParsers);
 });
 
 async function getSearch(props: Props) {
@@ -102,7 +114,7 @@ async function getSearch(props: Props) {
   const categoryId = Number(slug);
   const searchParams = await props.searchParams;
   const searchParamsCache = await createCategorySearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache.parse(searchParams);
+  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
   const search = await fetchFacetedSearch({
     ...searchParams,
     ...parsedSearchParams,
@@ -145,7 +157,7 @@ async function getFilters(props: Props): Promise<Filter[]> {
   const categoryId = Number(slug);
   const searchParams = await props.searchParams;
   const searchParamsCache = await createCategorySearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache.parse(searchParams);
+  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
   const categorySearch = await fetchFacetedSearch({ category: categoryId });
   const refinedSearch = await fetchFacetedSearch({
     ...searchParams,
@@ -198,7 +210,7 @@ async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
   const categoryId = Number(slug);
   const searchParams = await props.searchParams;
   const searchParamsCache = await createCategorySearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache.parse(searchParams);
+  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
   const search = await fetchFacetedSearch({
     ...searchParams,
     ...parsedSearchParams,
