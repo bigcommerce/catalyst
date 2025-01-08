@@ -1,13 +1,4 @@
-import {
-  Checkbox,
-  List,
-  Link as MSLink,
-  Select,
-  Shape,
-  Slot,
-  Style,
-  TextInput,
-} from '@makeswift/runtime/controls';
+import { Checkbox, List, Select, Shape, Slot, Style, TextInput } from '@makeswift/runtime/controls';
 
 import {
   Carousel,
@@ -16,11 +7,9 @@ import {
   CarouselItem,
   CarouselScrollbar,
 } from '@/vibes/soul/primitives/carousel';
-import { Link } from '~/components/link';
 import { runtime } from '~/lib/makeswift/runtime';
 
 interface Slide {
-  link: { href?: string; target?: string };
   children: React.ReactNode;
 }
 
@@ -47,14 +36,12 @@ runtime.registerComponent(
         ) : (
           <Carousel>
             <CarouselContent className="mb-10">
-              {slides.map(({ link, children }, index) => (
+              {slides.map(({ children }, index) => (
                 <CarouselItem
                   className="basis-full @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4"
                   key={index}
                 >
-                  <Link href={link.href ?? '#'} target={link.target}>
-                    {children}
-                  </Link>
+                  {children}
                 </CarouselItem>
               ))}
             </CarouselContent>
@@ -80,7 +67,6 @@ runtime.registerComponent(
         type: Shape({
           type: {
             name: TextInput({ label: 'Name', defaultValue: '' }),
-            link: MSLink({ label: 'Link' }),
             children: Slot(),
           },
         }),
