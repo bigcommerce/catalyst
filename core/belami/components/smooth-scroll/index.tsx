@@ -7,17 +7,10 @@ export function SmoothScroll() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const getHash = () =>
-    typeof window !== 'undefined'
-      ? decodeURIComponent(window.location.hash)
-      : '';
-
   useEffect(() => {
-    alert('OK');
-    const targetId = getHash();
-    alert(targetId);
-    if (targetId) {
-      const elem = document.getElementById(targetId.replace(/.*\#/, ''));
+    const hash = typeof window !== 'undefined' ? decodeURIComponent(window.location.hash) : '';
+    if (hash) {
+      const elem = document.getElementById(hash.replace(/.*\#/, ''));
       window.scrollTo({
           top: elem?.getBoundingClientRect().top,
           behavior: 'smooth',
