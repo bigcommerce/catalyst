@@ -52,6 +52,12 @@ const GetCustomerAddressesQuery = graphql(
           }
         }
       }
+      geography {
+        countries {
+          code
+          name
+        }
+      }
     }
   `,
   [PaginationFragment, FormFieldValuesFragment, FormFieldsFragment],
@@ -86,6 +92,7 @@ export const getCustomerAddresses = cache(
       totalAddresses: addresses.collectionInfo?.totalItems ?? 0,
       addresses: removeEdgesAndNodes({ edges: addresses.edges }),
       shippingAddressFields: response.data.site.settings?.formFields.shippingAddress,
+      countries: response.data.geography.countries,
     };
   },
 );

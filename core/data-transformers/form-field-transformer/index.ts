@@ -65,10 +65,14 @@ export const formFieldTransformer = (
       if (field.entityId === FieldNameToFieldId.countryCode) {
         return {
           id: String(field.entityId),
-          type: 'text',
+          type: 'select',
           name: String(field.entityId),
           label: field.label,
           required: field.isRequired,
+          options: field.options.map((option) => ({
+            label: option.label,
+            value: String(option.entityId),
+          })),
         };
       }
 
@@ -114,11 +118,28 @@ export const formFieldTransformer = (
 
 // TODO: See if we can merge this is with the above function
 // Will require testing and refactoring of register customer functionality
-export const fieldToFieldNameTransformer = (field: Field) => {
+export const fieldToFieldNameTransformer = (field: Field): Field => {
   const name = FieldNameToFieldId[Number(field.name)];
 
   return {
     ...field,
     name: name ?? field.label ?? field.name,
   };
+};
+
+export const injectCountryCodeOptions = (
+  field: Field,
+  countries: Array<{ code: string; name: string }>,
+): Field => {
+  if (field.type === 'select' && field.id === String(FieldNameToFieldId.countryCode)) {
+    return {
+      ...field,
+      options: countries.map((country) => ({
+        label: country.name,
+        value: country.code,
+      })),
+    };
+  }
+
+  return field;
 };
