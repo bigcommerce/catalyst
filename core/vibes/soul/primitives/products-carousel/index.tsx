@@ -64,7 +64,7 @@ export function ProductsCarousel({
         return (
           <Carousel className={className}>
             <CarouselContent className="mb-10">
-              {products.map((product) => (
+              {products.map((product, i) => (
                 <CarouselItem
                   className="basis-[calc(100%-1rem)] @md:basis-[calc(50%-0.75rem)] @lg:basis-[calc(33%-0.5rem)] @2xl:basis-[calc(25%-0.25rem)]"
                   key={product.id}
@@ -72,6 +72,7 @@ export function ProductsCarousel({
                   <ProductCard
                     aspectRatio={aspectRatio}
                     colorScheme={colorScheme}
+                    imagePriority={i === 0}
                     product={product}
                   />
                 </CarouselItem>
