@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import AppIcon from './assets/image.png';
 import DrawerModal from './common-components/SalesBuddyDrawer/SalesBuddyDrawer';
@@ -10,24 +10,33 @@ import CartInterface from './common-components/_components/CartInterfacePage';
 import ReferalId from './common-components/_components/CartReferralPage';
 import SalesBuddyProductPage from './common-components/_components/PDPPage';
 import PLPPageInterface from './common-components/_components/PLPPageInterface';
-import { getEnhancedSystemInfo } from './common-components/common-functions';
+import { InsertShopperVisitedUrl } from './_actions/insert-shopper-url';
 
 export default function SalesBuddyAppIndex() {
-  const [isOpen, setIsOpen] = useState(false); 
+  const [isOpen, setIsOpen] = useState(false);
   const path = usePathname();
-   const toggleDrawer = (event) => {
-    // If it's a direct click on the toggle button or a close button click
-    if (event?.target?.closest('button') || event?.currentTarget?.closest('button')) {
-      setIsOpen(!isOpen);
-    }
-    else if (event?.target === event?.currentTarget) {
-      return;
-    }
-    else if (!event) {
-      setIsOpen(!isOpen);
-    }
+  const toggleDrawer = () => {
+    setIsOpen(!isOpen);
   };
-  
+  useEffect(() => {
+    const fullUrl = `${window.location.protocol}//${window.location.host}${path}`;
+    let getLocalStorageSessionId = localStorage.getItem('session_id');
+    let visitedUrls = JSON.parse(localStorage.getItem('visited_urls') || '[]');
+    if (!Array.isArray(visitedUrls)) {
+      visitedUrls = [];
+    }
+    if (!visitedUrls.includes(fullUrl)) {
+      const insertShopperVisitedUrlFunc = async () => {
+        await InsertShopperVisitedUrl(getLocalStorageSessionId, fullUrl);
+        if (visitedUrls.length >= 20) {
+          visitedUrls.shift(); // Remove the first URL if the array has 10 items
+        }
+        visitedUrls.push(fullUrl);
+        localStorage.setItem('visited_urls', JSON.stringify(visitedUrls));
+      };
+      insertShopperVisitedUrlFunc();
+    }
+  }, [path]);
   const renderDrawerContent = () => {
     if (path.indexOf('/cart/') > -1) {
       return (
@@ -37,7 +46,7 @@ export default function SalesBuddyAppIndex() {
           <CustomerSupportPage />
         </div>
       );
-    }else if (path.indexOf('/c/') > -1 || path.indexOf('/search/') > -1) {
+    } else if (path.indexOf('/c/') > -1 || path.indexOf('/search/') > -1) {
       return (
         <div className="">
           <CustomerSupportPage />
@@ -45,33 +54,38 @@ export default function SalesBuddyAppIndex() {
         </div>
       );
     }
-    else if (path.indexOf('/p/') !==-1) {
+    else if (path.indexOf('/p/') !== -1) {
       return (
         <div className=" space-y-[20px] ">
           <SalesBuddyProductPage />
           <CustomerSupportPage />
         </div>
       );
-    }else{
+    } else {
       return (
         <div className="">
           <CustomerSupportPage />
         </div>
       );
     }
-     return null; 
+    return null;
   };
+
 
   return (
     <>
-      {/* Chat Button */}
-      <div className="no-scrollbar h-full justify-start bg-[#F3F4F5]">
-        <button onClick={toggleDrawer} className=" fixed bottom-[1vh] left-[1vh] flex ">
+      <div className=" no-scrollbar h-full justify-start bg-[#F3F4F5]">
+        <button
+          onClick={(event) => {
+            event.stopPropagation(); // Prevents the click from bubbling up
+            toggleDrawer(event);
+          }}
+          className="fixed bottom-[1vh] left-[1vh] flex"
+        >
           <Image src={ChatIcon} alt="Chat Icon" className="h-[164px] w-[164px] object-cover" />
         </button>
       </div>
 
-      {/* Drawer Modal */}
       <DrawerModal
         isOpen={isOpen}
         onClose={toggleDrawer}

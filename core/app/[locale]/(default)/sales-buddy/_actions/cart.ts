@@ -10,3 +10,9 @@ export const getCartIdCookie = async () => {
     }
     return returnFlag;
 }
+export const getCartIdFromCookie = async () => {
+  const cookieStore = await cookies();
+  const CartId = cookieStore.get('cartId');
+  
+  return CartId;
+};
