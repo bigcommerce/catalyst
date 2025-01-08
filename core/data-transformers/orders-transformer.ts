@@ -60,7 +60,7 @@ export const ordersTransformer = async (
   return orders.map((order) => {
     return {
       id: order.entityId.toString(),
-      href: `/account/order/${order.entityId}`,
+      href: `/account/orders/${order.entityId}`,
       status: order.status.label,
       totalPrice: format.number(order.totalIncTax.value, {
         style: 'currency',

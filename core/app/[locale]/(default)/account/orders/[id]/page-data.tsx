@@ -1,31 +1,12 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql, VariablesOf } from '~/client/graphql';
-import { ExistingResultType } from '~/client/util';
+import { graphql } from '~/client/graphql';
+import { TAGS } from '~/client/tags';
 
-import { OrderItemFragment } from '../../orders/_components/product-snippet';
-
-export const OrderShipmentFragment = graphql(`
-  fragment OrderShipmentFragment on OrderShipment {
-    shippingMethodName
-    shippingProviderName
-    tracking {
-      __typename
-      ... on OrderShipmentNumberAndUrlTracking {
-        number
-        url
-      }
-      ... on OrderShipmentUrlOnlyTracking {
-        url
-      }
-      ... on OrderShipmentNumberOnlyTracking {
-        number
-      }
-    }
-  }
-`);
+import { OrderItemFragment } from '../fragment';
 
 const CustomerOrderDetails = graphql(
   `
@@ -87,6 +68,7 @@ const CustomerOrderDetails = graphql(
                     firstName
                     lastName
                     address1
+                    address2
                     city
                     stateOrProvince
                     postalCode
@@ -99,7 +81,21 @@ const CustomerOrderDetails = graphql(
                         shippedAt {
                           utc
                         }
-                        ...OrderShipmentFragment
+                        shippingMethodName
+                        shippingProviderName
+                        tracking {
+                          __typename
+                          ... on OrderShipmentNumberAndUrlTracking {
+                            number
+                            url
+                          }
+                          ... on OrderShipmentUrlOnlyTracking {
+                            url
+                          }
+                          ... on OrderShipmentNumberOnlyTracking {
+                            number
+                          }
+                        }
                       }
                     }
                   }
@@ -118,27 +114,45 @@ const CustomerOrderDetails = graphql(
       }
     }
   `,
-  [OrderItemFragment, OrderShipmentFragment],
+  [OrderItemFragment],
 );
 
-export const getOrderDetails = cache(
-  async (variables: VariablesOf<typeof CustomerOrderDetails>) => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
+interface CustomerOrderDetailsArgs {
+  id: number;
+}
 
-    const response = await client.fetch({
-      document: CustomerOrderDetails,
-      variables,
-      fetchOptions: { cache: 'no-store' },
-      customerAccessToken,
-    });
-    const order = response.data.site.order;
+export const getCustomerOrderDetails = cache(async ({ id }: CustomerOrderDetailsArgs) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
-    if (!order) {
-      return undefined;
-    }
+  const response = await client.fetch({
+    document: CustomerOrderDetails,
+    variables: {
+      filter: {
+        entityId: id,
+      },
+    },
+    fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
+    customerAccessToken,
+  });
 
-    return order;
-  },
-);
+  const order = response.data.site.order;
 
-export type OrderDetailsType = ExistingResultType<typeof getOrderDetails>;
+  if (!order) {
+    return undefined;
+  }
+
+  return {
+    ...order,
+    consignments: {
+      shipping:
+        order.consignments?.shipping &&
+        removeEdgesAndNodes(order.consignments.shipping).map((consignment) => {
+          return {
+            ...consignment,
+            lineItems: removeEdgesAndNodes(consignment.lineItems),
+            shipments: removeEdgesAndNodes(consignment.shipments),
+          };
+        }),
+    },
+  };
+});

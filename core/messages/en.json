@@ -209,21 +209,15 @@
       "noOrders": "No orders yet"
     },
     "OrderDetails": {
-      "orderNumber": "Order #",
-      "trackOrder": "Track order",
-      "orderSummary": "Order Summary",
-      "orderContents": "Order contents",
-      "orderSubtotal": "Subtotal:",
-      "orderGrandtotal": "Grand total:",
-      "orderDiscount": "Discount:",
-      "orderAppliedCoupon": "Coupon code ({code}):",
-      "orderShipping": "Shipping:",
-      "orderTax": "Tax:",
-      "shippedDate": "Shipped on",
-      "shippingAddress": "Shipping address",
-      "shippingMethod": "Shipping method",
-      "shipmentTitle": "Shipment",
-      "shippingTitle": "Shipping"
+      "title": "Order #{orderNumber}",
+      "shippingAddressLabel": "Shipping address",
+      "shippingMethodLabel": "Shipping method",
+      "summaryTotalLabel": "Total",
+      "destinationTitle": "Destination",
+      "destinationWithCountTitle": "Destination {number}/{total}",
+      "summarySubtotalLabel": "Subtotal",
+      "summaryShippingLabel": "Shipping",
+      "summaryTaxLabel": "Tax"
     },
     "Addresses": {
       "title": "Addresses",

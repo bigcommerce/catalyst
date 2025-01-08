@@ -7,9 +7,7 @@ import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 
-import { OrderShipmentFragment } from '../order/[slug]/page-data';
-
-import { OrderItemFragment } from './_components/product-snippet';
+import { OrderItemFragment } from './fragment';
 
 const CustomerAllOrders = graphql(
   `
@@ -50,13 +48,6 @@ const CustomerAllOrders = graphql(
                           }
                         }
                       }
-                      shipments {
-                        edges {
-                          node {
-                            ...OrderShipmentFragment
-                          }
-                        }
-                      }
                     }
                   }
                 }
@@ -67,7 +58,7 @@ const CustomerAllOrders = graphql(
       }
     }
   `,
-  [OrderItemFragment, OrderShipmentFragment, PaginationFragment],
+  [OrderItemFragment, PaginationFragment],
 );
 
 type OrdersFiltersInput = VariablesOf<typeof CustomerAllOrders>['filters'];
