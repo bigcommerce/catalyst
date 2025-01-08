@@ -89,11 +89,11 @@ export default async function BrandPage(props: Props) {
           />
           <div className="mt-4 inline-flex flex-wrap items-center justify-center gap-4">
             {/* <Link href={`/search?brand_name[0]=${encodeURIComponent(brand?.name ?? '')}`} className="flex space-x-2 rounded bg-brand-700 px-4 py-2 uppercase text-white"> */}
-            <Link href={`${brand.path}#catalog`} className="flex space-x-2 rounded bg-brand-700 px-4 py-2 uppercase text-white">
+            <Link href={`${brand.path}#catalog`} replace prefetch={false} className="flex space-x-2 rounded bg-brand-700 px-4 py-2 uppercase text-white">
               <span>Shop All {brand.name}</span>
             </Link>
             {/* <Link href={`/search?brand_name[0]=${encodeURIComponent(brand?.name ?? '')}&is_new=true`} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white"> */}
-            <Link href={`${brand.path}?is_new=true#catalog`} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
+            <Link href={`${brand.path}?is_new=true#catalog`} replace prefetch={false} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
               <svg
                 width="21"
                 height="20"
@@ -109,7 +109,7 @@ export default async function BrandPage(props: Props) {
               <span>New Products</span>
             </Link>
             {/* <Link href={`/search?brand_name[0]=${encodeURIComponent(brand?.name ?? '')}&on_sale=true`} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white"> */}
-            <Link href={`${brand.path}?on_sale=true#catalog`} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
+            <Link href={`${brand.path}?on_sale=true#catalog`} replace prefetch={false} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
               <svg
                 width="20"
                 height="21"
