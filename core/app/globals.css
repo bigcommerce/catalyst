@@ -104,6 +104,8 @@ input#field-8 {
   --gray-500: #7f7f7f;
   --gray-600: #5c5c5c;
   --gray-700: #353535;
+
+  --aa-search-input-height: 40px;
 }
 
 html,
@@ -610,7 +612,9 @@ button.show-all {
   padding-bottom: 0px !important;
   padding-top: 0px !important;
 }
-
+.aa-Input {
+  height: 40px !important;
+}
 .aa-SourceHeaderTitle {
   color: var(--gray-500) !important;
 }
