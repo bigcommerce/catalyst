@@ -2,7 +2,7 @@
 
 import clsx from 'clsx';
 import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react';
-import { ArrowLeft, ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft,ChevronRight } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import * as React from 'react';
 
@@ -149,10 +149,7 @@ function CarouselButtons({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
         onClick={scrollPrev}
         title="Previous"
       >
-        {/* <ChevronLeft strokeWidth={1.5} /> */}
-        <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path fillRule="evenodd" clipRule="evenodd" d="M10.0606 11.9999L15.5303 17.4696L14.4696 18.5303L7.93928 11.9999L14.4696 5.46961L15.5303 6.53027L10.0606 11.9999Z" fill="currentColor"/>
-        </svg>
+        <ChevronLeft strokeWidth={3} />
       </button>
       <button
         type="button"
@@ -161,10 +158,7 @@ function CarouselButtons({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
         onClick={scrollNext}
         title="Next"
       >
-        {/* <ChevronRight strokeWidth={1.5} /> */}
-        <svg className="w-8 h-8" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-          <path fillRule="evenodd" clipRule="evenodd" d="M13.9394 12.0001L8.46973 6.53039L9.53039 5.46973L16.0607 12.0001L9.53039 18.5304L8.46973 17.4697L13.9394 12.0001Z" fill="currentColor"/>
-        </svg>
+        <ChevronRight strokeWidth={3} />
       </button>
     </div>
   );

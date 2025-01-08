@@ -22,6 +22,28 @@ export const GetCustomerById = async (entityId: Number) => {
   }
 };
 
+export const GetEmailId = async (email: string) => {
+  try {
+    let emailId = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/customers?email:in=${email}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return emailId;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const GetProductMetaFields = async (entityId: number, nameSpace: string) => {
   let metaFieldsArray: any = [];
   let productMetaFields: any = await getMetaFieldsByProduct(entityId, nameSpace, 1);
