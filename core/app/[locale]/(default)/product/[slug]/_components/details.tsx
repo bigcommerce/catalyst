@@ -134,7 +134,6 @@ interface Props {
   blankAddImg?: string;
   productImages?: string;
 }
-
 export const Details = ({
   product,
   collectionValue,

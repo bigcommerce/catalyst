@@ -410,14 +410,16 @@ const Gallery = ({
                       width={94}
                     />
                   )}
-                  <BcImage
-                    alt={item.altText || ''}
-                    className="absolute bottom-2 right-2 m-1 h-4 w-4 rounded-full bg-white object-fill p-1 opacity-70"
-                    height={10}
-                    priority={true}
-                    src={galleryExpandIcon}
-                    width={10}
-                  />
+
+                  <div onClick={() => openPopup()}>
+                    <img
+                      alt="Overlay"
+                      className="absolute bottom-2 right-2 m-1 h-4 w-4 rounded-full bg-white object-fill p-1 opacity-70"
+                      height={24}
+                      src={galleryExpandIcon}
+                      width={24}
+                    />
+                  </div>
                 </button>
               );
             })}
@@ -538,7 +540,6 @@ const Gallery = ({
                 </div>
               )}
 
-              {/* Wishlist button in top right corner */}
               {/* Wishlist button in top right corner */}
               {wishlistData && (
                 <div className="absolute right-4 top-4 z-10">
