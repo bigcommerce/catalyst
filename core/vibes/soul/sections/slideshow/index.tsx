@@ -131,12 +131,32 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
     autoplay.reset();
   }, [emblaApi]);
 
+  const [slidesInView, setSlidesInView] = useState<number[]>([]);
+
+  const updateSlidesInView = useCallback(
+    (_emblaApi: EmblaCarouselType) => {
+      setSlidesInView((_slidesInView) => {
+        if (slidesInView.length === _emblaApi.slideNodes().length) {
+          _emblaApi.off('slidesInView', updateSlidesInView);
+        }
+
+        const inView = [..._emblaApi.slidesInView(), _emblaApi.selectedScrollSnap() + 1].filter(
+          (index) => !_slidesInView.includes(index),
+        );
+
+        return _slidesInView.concat(inView);
+      });
+    },
+    [slidesInView.length],
+  );
+
   useEffect(() => {
     const autoplay = emblaApi?.plugins().autoplay;
 
     if (!autoplay) return;
 
     setIsPlaying(autoplay.isPlaying());
+    updateSlidesInView(emblaApi);
     emblaApi
       .on('autoplay:play', () => {
         setIsPlaying(true);
@@ -145,10 +165,12 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
       .on('autoplay:stop', () => {
         setIsPlaying(false);
       })
+      .on('slidesInView', updateSlidesInView)
       .on('reInit', () => {
         setIsPlaying(autoplay.isPlaying());
+        updateSlidesInView(emblaApi);
       });
-  }, [emblaApi, playCount]);
+  }, [emblaApi, playCount, updateSlidesInView]);
 
   return (
     <section
@@ -190,7 +212,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                     </div>
                   </div>
 
-                  {image?.src != null && image.src !== '' && (
+                  {image?.src != null && image.src !== '' && slidesInView.includes(idx) && (
                     <Image
                       alt={image.alt}
                       blurDataURL={image.blurDataUrl}
