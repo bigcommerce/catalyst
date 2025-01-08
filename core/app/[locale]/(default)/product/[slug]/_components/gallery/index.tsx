@@ -4,6 +4,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { FragmentOf } from '~/client/graphql';
 import { Gallery as ComponentsGallery } from '~/components/ui/gallery';
 import { GalleryFragment } from './fragment';
+import WishlistAddToList from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
 
 interface Image {
   url: string;
@@ -16,14 +17,39 @@ interface Video {
   url: string;
 }
 
+interface WishlistData {
+  wishlists: any[];
+  isAuthenticated?: boolean; // Add this field
+  product: {
+    entityId: number;
+    variantEntityId?: number;
+    name: string;
+    path: string;
+    images: any[];
+    brand?: {
+      name: string;
+    } | null;
+    prices: any;
+    rating?: number;
+    reviewCount?: number;
+  };
+}
+
 interface Props {
   product: FragmentOf<typeof GalleryFragment>;
   bannerIcon: string;
   galleryExpandIcon: string;
   productMpn?: string | null;
+  wishlistData?: WishlistData; // Make it optional
 }
 
-export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: Props) => {
+export const Gallery = ({
+  product,
+  bannerIcon,
+  galleryExpandIcon,
+  productMpn,
+  wishlistData,
+}: Props) => {
   const images: Image[] = removeEdgesAndNodes(product.images) as Image[];
   const videos: Video[] = removeEdgesAndNodes(product.videos) as Video[];
 
@@ -55,17 +81,16 @@ export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: 
   }));
 
   return (
-    <div className="-mx-6 mb-10 sm:-mx-0 md:mb-3">
-      <div className="lg:sticky lg:top-0">
-        <ComponentsGallery
-          bannerIcon={bannerIcon}
-          galleryExpandIcon={galleryExpandIcon}
-          defaultImageIndex={defaultImageIndex}
-          images={imagesWithMetadata}
-          videos={videosWithMetadata}
-          productMpn={productMpn}
-        />
-      </div>
+    <div>
+      <ComponentsGallery
+        bannerIcon={bannerIcon}
+        galleryExpandIcon={galleryExpandIcon}
+        defaultImageIndex={defaultImageIndex}
+        images={imagesWithMetadata}
+        videos={videosWithMetadata}
+        productMpn={productMpn}
+        wishlistData={wishlistData}
+      />
     </div>
   );
 };

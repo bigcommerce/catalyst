@@ -14,7 +14,7 @@ import 'instantsearch.css/themes/satellite-min.css';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { MakeswiftProvider } from '~/lib/makeswift/provider';
+//import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
@@ -26,8 +26,7 @@ import { cn } from '~/lib/utils';
 import { Open_Sans, Roboto_Mono } from 'next/font/google';
 
 import Script from 'next/script';
-
-import '~/lib/makeswift/components';
+import { SiteVibesIntegration } from "~/belami/components/sitevibes";
 
 const dm_serif_text = localFont({
   src: [
@@ -136,13 +135,14 @@ export default async function RootLayout({ params, children }: Props) {
     <html className={cn(openSans.variable, robotoMono.variable, 'font-sans')} lang={locale}>
       <head>
         <DraftModeScript />
+      </head>
+      <body className="flex h-screen min-w-[375px] flex-col">
         <Script
           id="sv-pixel-script"
           src="https://app.sitevibes.com/js/pixel.js?key=e0feae51-26fd-453a-8e67-f9a1a74c8d69"
-          async
+          strategy="afterInteractive"
         />
-      </head>
-      <body className="flex h-screen min-w-[375px] flex-col">
+        <SiteVibesIntegration />
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <NuqsAdapter>

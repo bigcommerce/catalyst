@@ -5,6 +5,7 @@ import { GalleryModel } from './belami-gallery-view-all-model-pdp';
 import { Banner } from './belami-banner-pdp';
 import ProductImage from './product-zoom';
 import { useCommonContext } from '~/components/common-context/common-provider';
+import WishlistAddToList from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
 
 const isYoutubeUrl = (url?: string) => url?.includes('youtube.com') || url?.includes('youtu.be');
 
@@ -55,6 +56,36 @@ interface Props {
   selectedVariantId?: string | null;
 }
 
+interface WishlistData {
+  [x: string]: any;
+  wishlists: any[];
+  product: {
+    entityId: number;
+    variantEntityId?: number;
+    name: string;
+    path: string;
+    images: any[];
+    brand?: {
+      name: string;
+    } | null;
+    prices: any;
+    rating?: number;
+    reviewCount?: number;
+  };
+}
+
+interface Props {
+  className?: string;
+  defaultImageIndex?: number;
+  images: Image[];
+  videos: Video[];
+  bannerIcon: string;
+  galleryExpandIcon: string;
+  productMpn?: string | null;
+  selectedVariantId?: string | null;
+  wishlistData?: WishlistData; // Add new prop
+}
+
 const Gallery = ({
   className,
   images = [],
@@ -64,6 +95,7 @@ const Gallery = ({
   galleryExpandIcon,
   productMpn,
   selectedVariantId,
+  wishlistData, // Add new prop
 }: Props) => {
   const { setCurrentMainMedia } = useCommonContext();
   const [selectedIndex, setSelectedIndex] = useState(defaultImageIndex);
@@ -420,7 +452,7 @@ const Gallery = ({
                     width={94}
                   />
                 )}
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 text-white uppercase">
+                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 uppercase text-white">
                   <span className="text-[0.625rem] xl:text-lg">View All</span>
                   <span className="mt-1 text-[0.625rem] xl:text-sm">{`(+${remainingItemsCount})`}</span>
                 </div>
@@ -506,6 +538,21 @@ const Gallery = ({
                 </div>
               )}
 
+              {/* Wishlist button in top right corner */}
+              {/* Wishlist button in top right corner */}
+              {wishlistData && (
+                <div className="absolute right-4 top-4 z-10">
+                  <WishlistAddToList
+                    wishlists={wishlistData.wishlists}
+                    hasPreviousPage={false}
+                    product={wishlistData.product}
+                    isAuthenticated={wishlistData.isAuthenticated}
+                    onGuestClick={() => {
+                      window.location.href = '/login';
+                    }}
+                  />
+                </div>
+              )}
               <div
                 className="absolute bottom-4 right-4 m-1 h-6 w-6 cursor-pointer rounded-full bg-white object-cover p-1 opacity-70 transition-opacity hover:opacity-100"
                 onClick={() => openPopup()}

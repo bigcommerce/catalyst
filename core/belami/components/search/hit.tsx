@@ -53,6 +53,7 @@ type HitProps = {
     rating: number;
     on_sale: boolean;
     on_clearance: boolean;
+    free_shipping: boolean;
     newPrice: number;
     description: string;
     objectID: number;
@@ -92,6 +93,8 @@ function findPromotionWithBrand(promotions: any[], brandId: number): any | null 
 */
 
 interface Promotion {
+  name: string,
+  redemption_type: string,
   rules: {
     action: {
       cart_items?: {
@@ -108,13 +111,17 @@ interface Promotion {
       };
     };
   }[];
+  coupons: {
+    id: number;
+    code?: string;
+  }[];
 }
 
 function sortPromotions(promotions: Promotion[]): Promotion[] {
   return promotions.sort((a, b) => {
     const getDiscountValue = (promotion: Promotion, type: string, discountType: string): number => {
       for (const rule of promotion.rules) {
-        if (rule.action[type]?.discount?.[discountType]) {
+        if ((type === 'cart_items' || type === 'cart_value') && (discountType === 'percentage_amount' || discountType === 'fixed_amount') && rule.action[type]?.discount?.[discountType]) {
           return parseFloat(rule.action[type].discount[discountType]);
         }
       }
@@ -146,7 +153,6 @@ function sortPromotions(promotions: Promotion[]): Promotion[] {
 }
 
 function findApplicablePromotion(promotions: any[], productId: number, brandId: number, categoryIds: number[]): any | null {
-
   const applicablePromotions = promotions.filter((promotion: any) => {
 
     // 1. CHECKING STRICT RULES FIRST (without "and" or "or")
@@ -206,7 +212,8 @@ function findApplicablePromotion(promotions: any[], productId: number, brandId: 
       (rule: any) =>
         rule.condition?.cart &&
         rule.condition?.cart.items &&
-        rule.condition?.cart.items.and &&
+        (!rule.condition?.cart.items.and ||
+        (rule.condition?.cart.items.and &&
         rule.condition?.cart.items.and.some((andRule: any) => 
           (!andRule.brands || 
             (andRule.brands &&
@@ -218,6 +225,8 @@ function findApplicablePromotion(promotions: any[], productId: number, brandId: 
             (andRule.products &&
             andRule.products.includes(productId)))
         )
+        )
+        )
     );
     if (!hasAndConditions) return false;
 
@@ -227,13 +236,54 @@ function findApplicablePromotion(promotions: any[], productId: number, brandId: 
   return applicablePromotions && applicablePromotions.length > 0 ? sortPromotions(applicablePromotions)[0] : null;
 }
 
-function Promotion({ promotions, product_id, brand_id, category_ids }: any) {
+function getPromotionDecoration(promotion: Promotion, free_shipping: boolean = false): string | null {
+  let decoration: string | null = null;
+
+  if (free_shipping)
+    decoration = 'Free Shipping';
+
+  const rule = promotion.rules.some((rule: any) => rule.action.cart_items && rule.action.cart_items.discount)
+    ? promotion.rules.find((rule: any) => rule.action.cart_items && rule.action.cart_items.discount)
+    : promotion.rules.find((rule: any) => rule.action.cart_value && rule.action.cart_value.discount);
+
+  if (rule) {
+    if (rule.action.cart_items && rule.action.cart_items.discount) {
+      if (promotion.redemption_type === 'AUTOMATIC') {
+        decoration = rule.action.cart_items.discount.percentage_amount && Number(rule.action.cart_items.discount.percentage_amount) > 0
+          ? `${Number(rule.action.cart_items.discount.percentage_amount)}% Off`
+          : `$${Number(rule.action.cart_items.discount.percentage_amount)} Off`
+      } else if (promotion.redemption_type === 'COUPON') {
+        decoration = rule.action.cart_items.discount.percentage_amount && Number(rule.action.cart_items.discount.percentage_amount) > 0
+          ? `${Number(rule.action.cart_items.discount.percentage_amount)}% Off with Code${ promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : '' }`
+          : `$${Number(rule.action.cart_items.discount.percentage_amount)} Off with Code${ promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : '' }`
+      }
+    } else if (rule.action.cart_value && rule.action.cart_value.discount) {
+      if (promotion.redemption_type === 'AUTOMATIC') {
+        decoration = rule.action.cart_value.discount.percentage_amount && Number(rule.action.cart_value.discount.percentage_amount) > 0
+          ? `${Number(rule.action.cart_value.discount.percentage_amount)}% Off in the Cart`
+          : `$${Number(rule.action.cart_value.discount.percentage_amount)} Off in the Cart`
+      } else if (promotion.redemption_type === 'COUPON') {
+        decoration = rule.action.cart_value.discount.percentage_amount && Number(rule.action.cart_value.discount.percentage_amount) > 0
+          ? `${Number(rule.action.cart_value.discount.percentage_amount)}% Off in the Cart with Code${ promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : '' }`
+          : `$${Number(rule.action.cart_value.discount.percentage_amount)} Off in the Cart with Code${ promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : '' }`
+      }
+    }
+  }
+
+  if (['no tax', 'zero tax', 'notax'].some((keyword: string) => promotion.name.toLowerCase().includes(keyword))) {
+    decoration = 'We Pay the Tax';
+  }
+
+  return decoration;
+}
+
+function Promotion({ promotions, product_id, brand_id, category_ids, free_shipping }: { promotions: any[] | null, product_id: number, brand_id: number, category_ids: number[], free_shipping: boolean }) {
   //const promotion = findPromotionWithBrand(promotions, brand_id);
-  const promotion = findApplicablePromotion(promotions, product_id, brand_id, category_ids);
+  const promotion = findApplicablePromotion(promotions || [], product_id, brand_id, category_ids);
 
   return (
     <>
-      {promotion ? <div className="mt-4 bg-gray-100 p-2 text-center">{promotion.name}</div> : null}
+      {promotion ? <div className="mt-4 bg-gray-100 p-2 text-center">{getPromotionDecoration(promotion, free_shipping)}</div> : null}
     </>
   );
 }
@@ -575,6 +625,7 @@ export function Hit({
           product_id={hit.objectID}
           brand_id={hit.brand_id}
           category_ids={hit.category_ids}
+          free_shipping={hit.free_shipping}
         />
         <div className="compare-product p-4 pt-2 flex md:hidden items-center justify-center">
           <Compare
@@ -792,6 +843,7 @@ export function Hit({
             product_id={hit.objectID}
             brand_id={hit.brand_id}
             category_ids={hit.category_ids}
+            free_shipping={hit.free_shipping}
           />
         </div>
         <div className="flex-1 bg-gray-50 px-8 py-4">

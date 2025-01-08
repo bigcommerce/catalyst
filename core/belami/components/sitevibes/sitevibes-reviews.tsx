@@ -1,12 +1,18 @@
 'use client';
 
+declare global {
+  interface Window {
+    SiteVibesProduct?: any,
+    SiteVibesEvents?: {
+      pageRefresh: () => void;
+    };
+  }
+}
+
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useEffect } from 'react';
-//import { useRouter } from 'next/navigation';
-import Script from 'next/script';
 
-export function SitevibesReviews({ product, category }: { product: any, category: any }) {
-
+export function SiteVibesReviews({ product, category }: { product: any, category: any }) {
 
   const breadcrumbs = (category?.breadcrumbs)?(removeEdgesAndNodes(category?.breadcrumbs) as any[]).map(({ name, path }) => ({
     label: name,
@@ -26,18 +32,17 @@ export function SitevibesReviews({ product, category }: { product: any, category
     price: product.prices?.price.value,
   }
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      productData.url = window.location.href;      
+      window.SiteVibesProduct = productData;
+      if (window.SiteVibesEvents && typeof window.SiteVibesEvents.pageRefresh === 'function') {
+        window.SiteVibesEvents.pageRefresh();
+      }
+    }
+  }, [product.entityId]);
+
   return (
-    <div>
-      <Script id="sitevibes-product-data">
-        {`
-          var SiteVibesProduct = ${JSON.stringify(productData)};
-          if (typeof window !== 'undefined' && window.SiteVibesEvents && typeof window.SiteVibesEvents.pageRefresh === 'function') {
-            SiteVibesProduct.url = window.location.href;
-            window.SiteVibesEvents.pageRefresh();
-          }
-        `}
-      </Script>
-      <div id="sitevibes-product-reviews"></div>
-    </div>
+    <div id="sitevibes-product-reviews" />
   );
 }
