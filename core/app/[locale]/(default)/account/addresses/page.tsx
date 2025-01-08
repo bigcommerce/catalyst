@@ -5,6 +5,7 @@ import { Address, AddressListSection } from '@/vibes/soul/sections/address-list-
 import {
   fieldToFieldNameTransformer,
   formFieldTransformer,
+  injectCountryCodeOptions,
 } from '~/data-transformers/form-field-transformer';
 import {
   ADDRESS_FORM_LAYOUT,
@@ -45,7 +46,7 @@ export default async function Addresses({ searchParams }: Props) {
     notFound();
   }
 
-  const { shippingAddressFields = [] } = data;
+  const { shippingAddressFields = [], countries } = data;
 
   const addresses = data.addresses.map<Address>((address) => ({
     id: address.entityId.toString(),
@@ -74,6 +75,14 @@ export default async function Addresses({ searchParams }: Props) {
       }
 
       return formFieldTransformer(field);
+    })
+    .filter(exists)
+    .map((field) => {
+      if (Array.isArray(field)) {
+        return field.map((f) => injectCountryCodeOptions(f, countries ?? []));
+      }
+
+      return injectCountryCodeOptions(field, countries ?? []);
     })
     .filter(exists)
     .map((field) => {

@@ -43,7 +43,7 @@ export function Select({
   const id = React.useId();
 
   return (
-    <div className={className}>
+    <div className={clsx('w-full space-y-2', className)}>
       {label !== undefined && label !== '' && (
         <Label className={clsx(hideLabel && 'sr-only', 'mb-2')} htmlFor={id}>
           {label}
