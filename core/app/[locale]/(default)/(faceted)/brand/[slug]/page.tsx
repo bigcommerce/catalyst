@@ -90,12 +90,12 @@ export default async function BrandPage(props: Props) {
             className="mx-auto h-16 w-auto"
           />
           <div className="mt-4 inline-flex flex-wrap items-center justify-center gap-4">
-            <SmoothScroll />
+            {/* <SmoothScroll /> */}
 
-            <Link href={`${brand.path}#catalog`} scroll={false} className="flex space-x-2 rounded bg-brand-700 px-4 py-2 uppercase text-white">
+            <Link href={`${brand.path}#catalog`} scroll={true} className="flex space-x-2 rounded bg-brand-700 px-4 py-2 uppercase text-white">
               <span>Shop All {brand.name}</span>
             </Link>
-            <Link href={`${brand.path}?is_new=true#catalog`} scroll={false} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
+            <Link href={`${brand.path}?is_new=true#catalog`} scroll={true} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
               <svg
                 width="21"
                 height="20"
@@ -110,7 +110,7 @@ export default async function BrandPage(props: Props) {
               </svg>
               <span>New Products</span>
             </Link>
-            <Link href={`${brand.path}?on_sale=true#catalog`} scroll={false} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
+            <Link href={`${brand.path}?on_sale=true#catalog`} scroll={true} className="flex space-x-2 rounded bg-brand-400 px-4 py-2 uppercase text-white">
               <svg
                 width="20"
                 height="21"
