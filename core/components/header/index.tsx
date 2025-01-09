@@ -95,8 +95,6 @@ const getCartCount = async () => {
 export const Header = async () => {
   const t = await getTranslations('Components.Header');
 
-  void getCartCount();
-
   return (
     <HeaderSection
       navigation={{
@@ -113,7 +111,10 @@ export const Header = async () => {
         mobileMenuTriggerLabel: t('toggleNavigation'),
         openSearchPopupLabel: t('Search.openSearchPopup'),
         logoLabel: t('home'),
-        cartCount: null,
+        cartCount: {
+          // @ts-expect-error: ignoreignoreignore
+          then: getCartCount,
+        },
       }}
     />
   );
