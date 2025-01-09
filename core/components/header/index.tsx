@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
+import PLazy from 'p-lazy';
 import { cache } from 'react';
 
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
@@ -111,10 +112,7 @@ export const Header = async () => {
         mobileMenuTriggerLabel: t('toggleNavigation'),
         openSearchPopupLabel: t('Search.openSearchPopup'),
         logoLabel: t('home'),
-        cartCount: {
-          // @ts-expect-error: ignoreignoreignore
-          then: getCartCount,
-        },
+        cartCount: PLazy.from(getCartCount),
       }}
     />
   );
