@@ -68,6 +68,8 @@ const getLogo = async () => {
 };
 
 const getCartCount = async () => {
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+
   const cookieStore = await cookies();
   const cartId = cookieStore.get('cartId')?.value;
 
