@@ -289,15 +289,15 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               <Facet title="Finish Color">
                 <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} />
               </Facet>
-              <Panel header="Glass Color">
-                <RefinementList attribute="variants.options.Glass Color" searchable={true} searchablePlaceholder="Quick Lookup" />
-              </Panel>
-              <Panel header="Shade Color">
-                <RefinementList attribute="variants.options.Shade Color" searchable={true} searchablePlaceholder="Quick Lookup" />
-              </Panel>
-              <Panel header="Blade Color">
-                <RefinementList attribute="variants.options.Blade Color" searchable={true} searchablePlaceholder="Quick Lookup" />
-              </Panel>
+              <Facet title="Glass Color">
+                <RefinementList attribute="variants.options.Glass Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} />
+              </Facet>
+              <Facet title="Shade Color">
+                <RefinementList attribute="variants.options.Shade Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} />
+              </Facet>
+              <Facet title="Blade Color">
+                <RefinementList attribute="variants.options.Blade Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} />
+              </Facet>
               <Facet title="Number of Lights">
                 <RefinementList attribute="metafields.Details.Number of Bulbs"
                   sortBy={sortByNumericName}

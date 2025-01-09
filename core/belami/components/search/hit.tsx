@@ -899,8 +899,8 @@ export function Hit({
                   Wattage: <AmountUnitValue data={hit.metafields.Details.Wattage} />
                 </p>
               ) : null}
-              {hit.metafields.Details['Number Of Bulbs'] ? (
-                <p className="">Number of Lights: {hit.metafields.Details['Number Of Bulbs']}</p>
+              {hit.metafields.Details['Number of Bulbs'] ? (
+                <p className="">Number of Lights: {hit.metafields.Details['Number of Bulbs']}</p>
               ) : null}
               {hit.metafields.Details.Lift ? (
                 <p className="">Lift: {hit.metafields.Details.Lift}</p>
