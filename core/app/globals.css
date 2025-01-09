@@ -669,6 +669,9 @@ button.show-all {
   border-top: 1px solid var(--gray-300);
   margin: 0 !important;
 }
+.ais-Dropdown.ais-Panel {
+  position: relative;
+}
 .facets .ais-Panel:has(.ais-RefinementList-list):not(:has(.ais-RefinementList-list li)) {
   display: none !important;
 }
@@ -694,6 +697,10 @@ button.show-all {
 }
 .facets .ais-Panel-body {
   padding: 0.5rem 0 1rem;
+}
+.ais-Dropdown .ais-Panel-body {
+  min-width: 100%;
+  max-width: 200px;
 }
 
 .ais-CurrentRefinements-delete {
