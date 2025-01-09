@@ -67,7 +67,10 @@ const getLogo = async () => {
   return data.settings ? logoTransformer(data.settings) : '';
 };
 
-const getCartCount = async (cartId: string | null) => {
+const getCartCount = async () => {
+  const cookieStore = await cookies();
+  const cartId = cookieStore.get('cartId')?.value;
+
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
@@ -91,8 +94,6 @@ const getCartCount = async (cartId: string | null) => {
 
 export const Header = async () => {
   const t = await getTranslations('Components.Header');
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value ?? null;
 
   return (
     <HeaderSection
@@ -110,7 +111,7 @@ export const Header = async () => {
         mobileMenuTriggerLabel: t('toggleNavigation'),
         openSearchPopupLabel: t('Search.openSearchPopup'),
         logoLabel: t('home'),
-        cartCount: getCartCount(cartId),
+        cartCount: getCartCount(),
       }}
     />
   );
