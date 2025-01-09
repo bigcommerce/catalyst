@@ -41,7 +41,8 @@ export default function SalesBuddyProductPage() {
       setLoading((prev) => ({ ...prev, cost: true }));
       try {
         const data = await get_product_data(retrievedProductData.productId);
-
+        console.log(data.data.output);
+        
         if (data.status === 200) {
 
           costPricingTableData(data?.data?.output);

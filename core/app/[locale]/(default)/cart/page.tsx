@@ -60,6 +60,10 @@ export default async function Cart() {
   const cookieStore = await cookies();
 
   const cartId = cookieStore.get('cartId')?.value;
+  const cookie_agent_login_status = cookieStore.get('agent_login')?.value;
+
+  console.log("cookie_agent_login_status",cookie_agent_login_status);
+  
 
   if (!cartId) {
     return <EmptyCart />;
@@ -97,7 +101,7 @@ export default async function Cart() {
     return [{ error: 'Failed to retrive data' }];
     }
   };
-const product_data_in_cart = await get_product_price_data_in_cart(cartId);
+  const product_data_in_cart = await get_product_price_data_in_cart(cartId);
 
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
@@ -228,6 +232,7 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
               cartId={cart?.entityId}
               priceAdjustData={product_data_in_cart?.physical_items?.[product?.entityId]}
               ProductType={"product"}
+              cookie_agent_login_status={cookie_agent_login_status  === 'true' ? true : false}
             />
           ))}
           {
@@ -242,6 +247,7 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
                 deleteIcon={deleteIcon}
                 priceAdjustData={product_data_in_cart?.custom_items &&  product_data_in_cart?.custom_items[data?.entityId]}
                 ProductType={"custom"}
+                  cookie_agent_login_status={cookie_agent_login_status === 'true' ? true : false}
               />
               )
             })

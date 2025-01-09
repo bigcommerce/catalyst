@@ -1,6 +1,42 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { agentLogin } from '../../_actions/agent-login'; // Adjust the import path as necessary
+import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
+import {storeAgentLoginStatusInCookies} from '../../_actions/agent-login';
+interface AgentLoginProps {
+  isOpen: boolean;
+  toggleModal: () => void;
+  setAgentRole: () => void;
+}
 
-export default function AgentLogin({ isOpen, toggleModal }) {
+export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
+  const [email, setEmail] = useState('sha@test.com');
+  const [password, setPassword] = useState('admin@12345');
+  const [error, setError] = useState<string | null>(null);
+  const { agentLoginStatus, setAgentLoginStatus, setAgentRole } = useCompareDrawerContext();
+
+
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setError(null); // Reset error state
+
+    try {
+      const result = await agentLogin(email, password);
+      console.log('result', result);
+      
+      if (result.status === 200) {
+        localStorage.setItem('agent_login', 'true');
+        setAgentRole()
+        setAgentLoginStatus(true);
+        toggleModal();
+        storeAgentLoginStatusInCookies(true);
+      } else {        
+        setError(result.error);
+      }
+    } catch (error) {
+      setError('An unexpected error occurred. Please try again.');
+    }
+  };
+
   return (
     <>
       {/* Backdrop and modal container */}
@@ -44,7 +80,7 @@ export default function AgentLogin({ isOpen, toggleModal }) {
             </div>
             {/* Modal body */}
             <div className="p-4 md:p-5">
-              <form className="space-y-4" action="#">
+              <form className="space-y-4" onSubmit={handleLogin}>
                 <div>
                   <label
                     htmlFor="email"
@@ -56,9 +92,10 @@ export default function AgentLogin({ isOpen, toggleModal }) {
                     type="email"
                     name="email"
                     id="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                    // placeholder="Email"
-                    required=""
+                    required
                   />
                 </div>
                 <div>
@@ -72,33 +109,17 @@ export default function AgentLogin({ isOpen, toggleModal }) {
                     type="password"
                     name="password"
                     id="password"
-                    // placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-500 dark:bg-gray-600 dark:text-white dark:placeholder-gray-400"
-                    required=""
+                    required
                   />
                 </div>
-                {/* <div className="flex justify-between">
-                  <div className="flex items-start">
-                    <div className="flex h-5 items-center">
-                      <input
-                        id="remember"
-                        type="checkbox"
-                        defaultValue=""
-                        className="focus:ring-3 h-4 w-4 rounded border border-gray-300 bg-gray-50 focus:ring-blue-300 dark:border-gray-500 dark:bg-gray-600 dark:ring-offset-gray-800 dark:focus:ring-blue-600 dark:focus:ring-offset-gray-800"
-                        required=""
-                      />
-                    </div>
-                    <label
-                      htmlFor="remember"
-                      className="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300"
-                    >
-                      Remember me
-                    </label>
+                {error && (
+                  <div className="text-sm text-red-600 dark:text-red-400">
+                    {error}
                   </div>
-                  <a href="#" className="text-sm text-blue-700 hover:underline dark:text-blue-500">
-                    Lost Password?
-                  </a>
-                </div> */}
+                )}
                 <button
                   type="submit"
                   className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"

@@ -16,6 +16,8 @@ interface Product {
 const CompareDrawerContext = createContext<{
   products: Product[];
   setProducts: (products: Product[]) => void;
+  agentLoginStatus: boolean; // New context state
+  setAgentLoginStatus: (value: boolean) => void; // Setter for new context state
 } | null>(null);
 
 const isCheckedProducts = (products: unknown): products is Product[] => {
@@ -27,7 +29,8 @@ const isCheckedProducts = (products: unknown): products is Product[] => {
 
 const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   const [products, setProducts] = useState<Product[]>([]);
-
+  const [agentLoginStatus, setAgentLoginStatus] = useState(localStorage.getItem('agent_login') === 'true'); // New state variable
+  const [agentRole, setAgentRole] = useState(localStorage.getItem('agent_role')); // New state variable
   useEffect(() => {
     const stringProducts = sessionStorage.getItem('compareProducts');
 
@@ -49,7 +52,7 @@ const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   }, [products]);
 
   return (
-    <CompareDrawerContext.Provider value={{ products, setProducts }}>
+    <CompareDrawerContext.Provider value={{ products, setProducts,agentLoginStatus, setAgentLoginStatus }}>
       {children}
       <CompareDrawer />
     </CompareDrawerContext.Provider>
