@@ -3,7 +3,7 @@ import { withAuth } from './middlewares/with-auth';
 import { withChannelId } from './middlewares/with-channel-id';
 import { withIntl } from './middlewares/with-intl';
 import { withMakeswift } from './middlewares/with-makeswift';
-import { withReferrerId } from './middlewares/with-referrer-id';
+//import { withReferrerId } from './middlewares/with-referrer-id';
 import { withRoutes } from './middlewares/with-routes';
 
 export const middleware = composeMiddlewares(
@@ -11,7 +11,7 @@ export const middleware = composeMiddlewares(
   withMakeswift,
   withIntl,
   withChannelId,
-  withReferrerId,
+  //withReferrerId,
   withRoutes,
 );
 

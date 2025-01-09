@@ -2,10 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+/* print-invoice-order-page */
 @page{
   margin-block: 2cm;
 }
-
+.pdp-wishlist-input input:hover {
+  border-color: var(--gray-200);
+}
+.pdp-wishlist-input input {
+  border-color: var(--gray-200);
+}
 .header-sub-menu {
   gap: 20px;
   grid-template-columns: auto auto auto auto auto auto;
@@ -98,6 +104,8 @@ input#field-8 {
   --gray-500: #7f7f7f;
   --gray-600: #5c5c5c;
   --gray-700: #353535;
+
+  --aa-search-input-height: 40px;
 }
 
 html,
@@ -604,7 +612,9 @@ button.show-all {
   padding-bottom: 0px !important;
   padding-top: 0px !important;
 }
-
+.aa-Input {
+  height: 40px !important;
+}
 .aa-SourceHeaderTitle {
   color: var(--gray-500) !important;
 }
@@ -658,6 +668,9 @@ button.show-all {
 .facets .ais-Panel {
   border-top: 1px solid var(--gray-300);
   margin: 0 !important;
+}
+.facets .ais-Panel:has(.ais-RefinementList-list):not(:has(.ais-RefinementList-list li)) {
+  display: none !important;
 }
 .facets .ais-Panel:first-child {
   border-top: 0px solid;
@@ -836,7 +849,9 @@ button.show-all {
     display: block;
   }
 }
-
+.aa-Panel {
+  z-index: 999 !important;
+}
 .aa-PanelLayout, .aa-Panel--scrollable {
   padding: 1rem !important;
 }

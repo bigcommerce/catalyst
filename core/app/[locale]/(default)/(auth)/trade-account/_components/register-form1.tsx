@@ -14,6 +14,7 @@ import {
 import { Button } from '~/components/ui/button';
 import { Form } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
+import { GetEmailId } from '~/components/management-apis';
 
 interface BaseFormField {
   entityId: number;
@@ -82,6 +83,25 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
     [FieldNameToFieldId.password]: true,
   });
   const [emailError, setEmailError] = useState<string>('');
+  const [emailExists,setEmailExists] = useState<string>('');
+  const [passwordError, setPasswordError] = useState<string>('');
+
+  const validatePassword = (password: string) => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~])[A-Za-z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{8,}$/;
+
+      if (!password.trim()) {
+        setPasswordError('');
+        return true;
+      }
+
+      if (!passwordRegex.test(password)) {
+        setPasswordError('Include uppercase, lowercase, number, symbol (8+ chars).');
+        return false;
+      }
+
+      setPasswordError('');
+      return true;
+  };
 
   const validateEmail = (email: string) => {
     if (!email.trim()) {
@@ -92,6 +112,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 
     if (!emailRegex.test(email)) {
+      setEmailExists('');
       setEmailError('Please enter a valid email address');
       return false;
     }
@@ -124,6 +145,23 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
         status: 'error',
         message: 'An error occurred. Please try again.',
       });
+    }
+  };
+
+  const checkEmailExisting = async (email: string) => {
+    try {
+      const result = await GetEmailId(email);
+      const isEmailExists = result && result.data.length > 0;
+      if(isEmailExists){
+        setEmailError('');
+        setEmailExists("Email address already in use");
+      return false;
+      } 
+      setEmailExists('');
+      return true;
+
+    } catch (error) {
+      console.error('Error checking email:', error);
     }
   };
 
@@ -219,6 +257,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
         onBlur={(e) => {
           if (field.label.toLowerCase().includes('email')) {
             validateEmail((e.target as HTMLInputElement).value);
+            checkEmailExisting((e.target as HTMLInputElement).value);
           }
         }}
       >
@@ -227,10 +266,16 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
           name={fieldName}
           onChange={handleTextInputValidation}
           isValid={!emailError || !field.label.toLowerCase().includes('email')}
+          emailExists={emailExists}
         />
         {field.label.toLowerCase().includes('email') && emailError && (
           <div className="absolute bottom-[8%] inline-flex w-full text-xs font-normal text-[#A71F23]">
             {emailError}
+          </div>
+        )}
+        {field.label.toLowerCase().includes('email') && emailExists && (
+          <div className="absolute bottom-[8%] inline-flex w-full text-xs font-normal text-[#A71F23]">
+            {emailExists}
           </div>
         )}
       </div>
@@ -239,12 +284,19 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
 
   const renderPasswordField = (field: PasswordFormField, fieldName: string) => (
     <FieldWrapper fieldId={field.entityId} key={field.entityId}>
+      <div onBlur={(e) => {
+         if (field.label.toLowerCase().includes('password')) {
+          validatePassword((e.target as HTMLInputElement).value);
+        }
+        }}
+      >
       <Password
         field={field}
         isValid={passwordValid[FieldNameToFieldId.password]}
         name={fieldName}
         onChange={handlePasswordValidation}
       />
+      </div>
     </FieldWrapper>
   );
 
@@ -273,7 +325,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
           className="relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2 !transition-colors !duration-500 hover:!bg-[rgb(75,200,240)] disabled:cursor-not-allowed"
           variant="primary"
           type="submit"
-          disabled={!!emailError || !passwordValid[FieldNameToFieldId.password]}
+          disabled={!!emailError || !!passwordError || !!emailExists}
         >
           CONTINUE
         </Button>

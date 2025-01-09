@@ -16,9 +16,10 @@ interface TextProps {
   name: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   type?: string;
+  emailExists?: string;
 }
 
-export const Text = ({ defaultValue, field, isValid, name, onChange, type }: TextProps) => {
+export const Text = ({ defaultValue, field, isValid, name, onChange, type, emailExists }: TextProps) => {
   const t = useTranslations('Components.FormFields.Validation');
 
   const fieldName = FieldNameToFieldId[field.entityId];
@@ -74,6 +75,7 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type }: Tex
               validateEmail((e.target as HTMLInputElement).value);
             }
           }}
+          emailExists={emailExists}
         />
       </FieldControl>
       <div className="pass2 relative h-7">

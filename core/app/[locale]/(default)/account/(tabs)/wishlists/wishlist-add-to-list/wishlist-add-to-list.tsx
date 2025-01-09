@@ -12,6 +12,8 @@ import {
   addToWishlist,
   createWishlist,
 } from '../_components/create-wishlist-form/_actions/create-wishlist';
+import { BcImage } from '~/components/bc-image';
+import heartIcon from '~/public/wishlistIcons/heartIcon.svg';
 
 interface ProductImage {
   url: string;
@@ -59,16 +61,20 @@ interface Wishlist {
 }
 
 interface WishlistAddToListProps {
-  wishlists: Wishlist[];
+  wishlists: any[];
   hasPreviousPage: boolean;
-  product: Product;
+  product: any;
+  isAuthenticated?: boolean;
+  onGuestClick?: () => void;
 }
 
-const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
-  wishlists = [],
-  hasPreviousPage = false,
+const WishlistAddToList = ({
+  wishlists,
+  hasPreviousPage,
   product,
-}) => {
+  isAuthenticated,
+  onGuestClick,
+}: WishlistAddToListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
   const [newListName, setNewListName] = useState('');
@@ -80,6 +86,18 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Account.Wishlist');
   const router = useRouter();
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   useEffect(() => {
     setCurrentWishlists(wishlists);
@@ -94,6 +112,11 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
   };
 
   const handleHeartClick = () => {
+    if (!isAuthenticated && onGuestClick) {
+      onGuestClick();
+      return;
+    }
+
     setIsOpen(true);
     setTempAddedItems([]);
     setJustAddedToList(null);
@@ -200,87 +223,103 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
     <div className="relative">
       <button
         onClick={handleHeartClick}
-        className="inline-flex items-center justify-center rounded-[3px] bg-[#008BB7] px-4 py-2 text-sm font-medium text-white hover:bg-[#007da6] focus:outline-none"
+        className="inline-flex items-center justify-center rounded-full bg-[#F3F4F5] p-[10px] text-sm font-medium text-white focus:outline-none"
       >
-        <Heart className="h-6 w-6" />
+        <BcImage
+          alt="wishlist-heart"
+          width={35}
+          height={35}
+          unoptimized={true}
+          src={heartIcon}
+          className="h-[30px] w-[30px]"
+        />
       </button>
 
       {isOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="relative w-full max-w-md rounded-lg bg-white p-6">
+          <div className="relative w-full max-w-[35em] rounded-lg bg-white px-[2.5em] py-[1.5em] pb-[3em] shadow-2xl">
             <button
               onClick={handleClose}
-              className="absolute right-4 top-4 rounded-full p-1 hover:bg-gray-100"
+              className="mb-[1em] mt-[1em] flex w-[100%] justify-center rounded-full p-1"
             >
-              <X size={20} />
+              <X size={16} strokeWidth={3} />
             </button>
 
-            <h2 className="mb-6 text-xl font-semibold">Add to List</h2>
+            <h2 className="mb-1 text-xl font-[500]">Add to List</h2>
+            <div className="flex flex-col">
+              <div className="flex-1">
+                <div className="max-h-[250px] overflow-y-auto pr-2">
+                  <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300">
+                    {currentWishlists.map((wishlist) => {
+                      if (!wishlist.items || !product) return null;
 
-            <div className="flex h-[415px] flex-col">
-              <div className="flex-1 overflow-hidden">
-                <div className="h-full overflow-y-auto pr-2">
-                  {currentWishlists.map((wishlist) => {
-                    if (!wishlist.items || !product) return null; // Guard against undefined items and product
+                      const isProductInList =
+                        wishlist.items.some(
+                          (item) => item.product?.entityId === product?.entityId,
+                        ) || tempAddedItems.some((item) => item.listId === wishlist.entityId);
 
-                    const isProductInList =
-                      wishlist.items.some((item) => item.product?.entityId === product?.entityId) ||
-                      tempAddedItems.some((item) => item.listId === wishlist.entityId);
-
-                    return (
-                      <button
-                        key={wishlist.entityId}
-                        onClick={() => handleWishlistSelect(wishlist)}
-                        disabled={isPending || isProductInList}
-                        className={`group flex w-full items-center text-left last:mt-[5px] ${
-                          isPending ? 'cursor-not-allowed opacity-50' : ''
-                        }`}
-                      >
-                        <span className="ml-[2px] mr-2 text-[28px] font-[500] text-[#0C89A6] group-hover:text-[#03465C]">
-                          {justAddedToList === wishlist.entityId ? (
-                            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#4CAF50]">
-                              <Check className="h-3 w-3 text-white" />
-                            </div>
-                          ) : (
-                            '+'
-                          )}
-                        </span>
-                        <span className="text-[#4B4B4B] group-hover:text-[#03465C]">
-                          {wishlist.name}
-                          <span className="ml-2 text-gray-500">
-                            (
-                            {wishlist.items.length +
-                              tempAddedItems.filter((item) => item.listId === wishlist.entityId)
-                                .length}{' '}
-                            items)
+                      return (
+                        <button
+                          key={wishlist.entityId}
+                          onClick={() => handleWishlistSelect(wishlist)}
+                          disabled={isPending || isProductInList}
+                          className={`group flex w-full items-center py-[0.5em] text-left hover:bg-gray-50 ${
+                            isPending ? 'cursor-not-allowed opacity-50' : ''
+                          }`}
+                        >
+                          {/* Fixed width container for icons to maintain consistent spacing */}
+                          <div className="flex h-[30px] w-[30px] items-center justify-center">
+                            {justAddedToList === wishlist.entityId ? (
+                              <div className="flex h-[30px] w-[30px] items-center justify-center">
+                                <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#4CAF50]">
+                                  <Check className="h-3 w-3 text-white" />
+                                </div>
+                              </div>
+                            ) : (
+                              <span className="text-[30px] leading-none text-[#A9A9A9]">+</span>
+                            )}
+                          </div>
+                          <span className="text-[#4B4B4B]">
+                            {wishlist.name}
+                            <span className="ml-2 text-[#4B4B4B]">
+                              (
+                              {wishlist.items.length +
+                                tempAddedItems.filter((item) => item.listId === wishlist.entityId)
+                                  .length}{' '}
+                              items)
+                            </span>
                           </span>
-                        </span>
-                      </button>
-                    );
-                  })}
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
 
               <div className="mt-4 bg-white">
                 <button
                   onClick={toggleCreateForm}
-                  className="group mb-2 flex w-full items-center text-left"
+                  className="group flex w-full items-center text-left"
                 >
                   <span className="ml-[2px] mr-2 text-[28px] font-[500] text-[#0C89A6] group-hover:text-[#03465C]">
                     {showCreateForm ? (
-                      <span className="text-[#0C89A6] group-hover:text-[#03465C]">NEW LIST</span>
+                      <span className="text-[16px] text-black">NEW LIST</span>
                     ) : (
-                      <span className="text-[#0C89A6] group-hover:text-[#03465C]">
+                      <span className="text-black">
                         {' '}
-                        + NEW LIST ...
+                        <span className="text-[30px]"> + </span>
+                        <span className="relative bottom-[4px] text-[16px] font-bold">
+                          {' '}
+                          New List...
+                        </span>
                       </span>
                     )}
                   </span>
                 </button>
 
                 {showCreateForm && (
-                  <form onSubmit={handleCreateSubmit} className="mt-4">
-                    <div className="space-y-3">
+                  <form onSubmit={handleCreateSubmit} className="mt-[6px]">
+                    <div className="pdp-wishlist-input space-y-3">
                       <Input
                         autoFocus
                         value={newListName}
@@ -290,7 +329,7 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
                         error={!isInputValid}
                         onChange={handleInputValidation}
                         onInvalid={handleInputValidation}
-                        className="w-full rounded-md"
+                        className="!focus:[unset] w-full rounded-md hover:border-[#E5E7EB]"
                         placeholder="Add a short description..."
                       />
                       {!isInputValid && <p className="text-xs text-red-500">{t('emptyName')}</p>}
@@ -299,7 +338,7 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
                 )}
               </div>
 
-              <div className="mt-4 flex justify-center gap-2">
+              <div className="m-auto mt-2 flex flex-col justify-center gap-2">
                 {showCreateForm && (
                   <Button
                     onClick={() =>
@@ -308,13 +347,13 @@ const WishlistAddToList: React.FC<WishlistAddToListProps> = ({
                       } as React.FormEvent<HTMLFormElement>)
                     }
                     disabled={isPending || !newListName}
-                    className="!hover:bg-[#008BB7] w-32 !bg-[#008BB7] text-white"
+                    className="!hover:bg-[#008BB7] mt-[1em] w-[11em] !bg-[#008BB7] px-[10px] py-[10px] !font-[400] text-white"
                   >
                     CREATE AND ADD
                   </Button>
                 )}
                 <Button
-                  className="!hover:bg-[#008BB7] w-[9em] !bg-[#008BB7] text-[14px] !font-[400] text-white"
+                  className="!hover:bg-[#008BB7] m-auto !mt-[1em] w-[9em] !bg-[#008BB7] text-[14px] !font-[400] text-white"
                   onClick={handleSave}
                   disabled={isPending || tempAddedItems.length === 0}
                 >

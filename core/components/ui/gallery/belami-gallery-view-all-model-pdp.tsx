@@ -232,7 +232,7 @@ const GalleryModel = ({
 
   return (
     <div className="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
-      <div className="modal-content relative flex h-full w-full flex-col bg-white p-[30px] xl:flex-row">
+      <div className="modal-content relative flex h-full w-full flex-col bg-white p-0 lg:p-[30px] xl:flex-row">
         <div className="gallery-slider relative flex h-[65%] w-full items-center justify-center overflow-hidden sm:h-[100%] xl:h-full xl:w-[70%] xl:py-[20px]">
           <button
             aria-label="Previous item"
@@ -242,7 +242,7 @@ const GalleryModel = ({
             <ChevronLeft size={36} className="hover:text-gray-300" />
           </button>
 
-          <div className="relative h-full w-[80%]">{renderMediaContent()}</div>
+          <div className="relative h-full flex justify-center items-center w-[65%]">{renderMediaContent()}</div>
 
           <button
             aria-label="Next item"
