@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
+import PLazy from 'p-lazy';
 import { cache } from 'react';
 
 import { HeaderSection } from '@/vibes/soul/sections/header-section';
@@ -111,7 +112,7 @@ export const Header = async () => {
         mobileMenuTriggerLabel: t('toggleNavigation'),
         openSearchPopupLabel: t('Search.openSearchPopup'),
         logoLabel: t('home'),
-        cartCount: getCartCount(),
+        cartCount: PLazy.from(getCartCount),
       }}
     />
   );
