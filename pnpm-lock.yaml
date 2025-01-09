@@ -39,8 +39,8 @@ importers:
         specifier: ^10.2.0
         version: 10.2.0(react@19.0.0)
       '@makeswift/runtime':
-        specifier: 0.0.0-snapshot-20241227210524
-        version: 0.0.0-snapshot-20241227210524(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(next@15.2.0-canary.1(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: 0.0.0-snapshot-20250108161914
+        version: 0.0.0-snapshot-20250108161914(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(next@15.2.0-canary.1(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@radix-ui/react-accordion':
         specifier: ^1.2.2
         version: 1.2.2(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1379,19 +1379,19 @@ packages:
     resolution: {integrity: sha512-qC72D4+CDdjGqJvkFMMEAtancHUQ7/d/tAiHf64z8MopFDmcrtbcJuerDtFceuAfQJ2pDSfCKCtbqoGBNnwg0w==}
     engines: {node: '>=8'}
 
-  '@makeswift/controls@0.0.0-snapshot-20241227210524':
-    resolution: {integrity: sha512-NmICV2WjlAf46T3xpSk0O1o21Fhsynx+GctuxjSyDsbfl33RrorCLSXMyxReswbWbiqY5iVxGkTd4W7BJ/yMzQ==}
+  '@makeswift/controls@0.0.0-snapshot-20250108161914':
+    resolution: {integrity: sha512-bYcV60IenaNLiFbHC9j75y7VVqXx/SM/iUvMggTatK4G7dHI72w0h+mOfbeztZXZYGRFYn4+adSc950QpThL0A==}
 
   '@makeswift/next-plugin@0.3.0':
     resolution: {integrity: sha512-pGe0D6KrVxZcyaM8hFCIK806yNV6YJtRcjjD+2Wpn5qkFStIMTlACkGRVHVLftFyfi8/E3lGkbR05Jo3aTecwQ==}
     peerDependencies:
       next: ^13.4.0 || ^14.0.0
 
-  '@makeswift/prop-controllers@0.0.0-snapshot-20241227210524':
-    resolution: {integrity: sha512-O4+rcvGNoxT+FLEm4zUUUfVtI/6//9W+qfQatM+eK0TDZWwg3GV8HNq7cZ3z0rbfTBtnauCH0ik1qeVZJvxmRA==}
+  '@makeswift/prop-controllers@0.0.0-snapshot-20250108161914':
+    resolution: {integrity: sha512-OpjPnDOgdjGpZrSSGhupBFrwsDjEilIet/Ew6PONXkznXIzBvG3N+lLVEcMv31yHcrwawxuDtFIGTcjtuX0UtQ==}
 
-  '@makeswift/runtime@0.0.0-snapshot-20241227210524':
-    resolution: {integrity: sha512-PJT7V9saNNj0WGXfklTeY/lXZwtPbIHj9q1vQ1DF0E7I7QnbbbGxNP5Nqq+FTzanIrj7DTLOJC243Un52Ur7Ow==}
+  '@makeswift/runtime@0.0.0-snapshot-20250108161914':
+    resolution: {integrity: sha512-ZYhXYeIQCz+qo9JnTnbpfv/Ffh00HapWXt/u2hfHOzdW7MWKtIS66lizsGJt00sYC+h1mkXEAwjQD2o1w0ypSA==}
     peerDependencies:
       '@types/react': ^18.0.0
       '@types/react-dom': ^18.0.0
@@ -7186,7 +7186,7 @@ snapshots:
     dependencies:
       '@lukeed/csprng': 1.1.0
 
-  '@makeswift/controls@0.0.0-snapshot-20241227210524':
+  '@makeswift/controls@0.0.0-snapshot-20250108161914':
     dependencies:
       color: 3.2.1
       css-box-model: 1.2.1
@@ -7202,13 +7202,13 @@ snapshots:
       next: 15.2.0-canary.1(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       semver: 7.6.3
 
-  '@makeswift/prop-controllers@0.0.0-snapshot-20241227210524':
+  '@makeswift/prop-controllers@0.0.0-snapshot-20250108161914':
     dependencies:
-      '@makeswift/controls': 0.0.0-snapshot-20241227210524
+      '@makeswift/controls': 0.0.0-snapshot-20250108161914
       ts-pattern: 5.5.0
       zod: 3.24.1
 
-  '@makeswift/runtime@0.0.0-snapshot-20241227210524(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(next@15.2.0-canary.1(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@makeswift/runtime@0.0.0-snapshot-20250108161914(@types/react-dom@19.0.2(@types/react@19.0.1))(@types/react@19.0.1)(next@15.2.0-canary.1(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@emotion/cache': 11.14.0
       '@emotion/css': 11.13.5
@@ -7216,9 +7216,9 @@ snapshots:
       '@emotion/server': 11.11.0(@emotion/css@11.13.5)
       '@emotion/sheet': 1.4.0
       '@emotion/utils': 1.4.2
-      '@makeswift/controls': 0.0.0-snapshot-20241227210524
+      '@makeswift/controls': 0.0.0-snapshot-20250108161914
       '@makeswift/next-plugin': 0.3.0(next@15.2.0-canary.1(@playwright/test@1.49.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
-      '@makeswift/prop-controllers': 0.0.0-snapshot-20241227210524
+      '@makeswift/prop-controllers': 0.0.0-snapshot-20250108161914
       '@popmotion/popcorn': 0.4.4
       '@redux-devtools/extension': 3.3.0(redux@4.2.1)
       '@types/is-hotkey': 0.1.10
