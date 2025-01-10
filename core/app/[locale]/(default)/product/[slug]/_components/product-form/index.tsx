@@ -16,6 +16,7 @@ import { Button } from '~/components/ui/button';
 import { bodl } from '~/lib/bodl';
 
 import { handleAddToCart } from './_actions/add-to-cart';
+import { AddToQuote } from './add-to-quote';
 import { CheckboxField } from './fields/checkbox-field';
 import { DateField } from './fields/date-field';
 import { MultiLineTextField } from './fields/multi-line-text-field';
@@ -169,6 +170,8 @@ export const ProductForm = ({ data: product }: Props) => {
             </Button>
           </div>
         </div>
+
+        <AddToQuote product={product} />
       </form>
     </FormProvider>
   );
