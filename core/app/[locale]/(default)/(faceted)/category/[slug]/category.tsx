@@ -470,14 +470,18 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               <Facet title="Wattage">
                 <RefinementList attribute="metafields.Details.Wattage" />
               </Facet>
+              {/*
               <Panel header="Can be Recessed">
                 <ToggleRefinement attribute="metafields.Details.Can be Recessed" label="Can be Recessed" />
               </Panel>
+              */}
+              <ToggleRefinement attribute="metafields.Details.Can be Recessed" label="Can be Recessed" />
               {/*
               <Panel header="Rating">
                 <RatingMenu attribute="reviews_rating_sum" />
               </Panel>
               */}
+              {/*
               <Panel header="Free Shipping">
                 <ToggleRefinement attribute="free_shipping" label="Free Shipping" />
               </Panel>
@@ -493,6 +497,12 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               <Panel header="In Stock">
                 <ToggleRefinement attribute="in_stock" label="In Stock" />
               </Panel>
+              */}
+              <ToggleRefinement attribute="free_shipping" label="Free Shipping" />
+              <ToggleRefinement attribute="is_new" label="Is New" />
+              <ToggleRefinement attribute="on_sale" label="On Sale" />
+              <ToggleRefinement attribute="on_clearance" label="On Clearance" />
+              <ToggleRefinement attribute="in_stock" label="In Stock" />
             </DynamicWidgets>
           </div>
           <SortBy label="Sort By" items={[

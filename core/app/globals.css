@@ -669,6 +669,11 @@ button.show-all {
   border-top: 1px solid var(--gray-300);
   margin: 0 !important;
 }
+.facets .ais-ToggleRefinement {
+  border-top: 1px solid var(--gray-300);
+  margin: 0 !important;
+  padding: 1rem 0 !important;
+}
 .ais-Dropdown.ais-Panel {
   position: relative;
 }
@@ -687,6 +692,7 @@ button.show-all {
   margin: 0 !important;
   display: flex;
   align-items: center;
+  text-transform: none !important;
 }
 .facets .ais-Panel-header > span:first-child {
   flex-grow: 1;
@@ -694,6 +700,12 @@ button.show-all {
 .facets .ais-Panel-header > span:last-child {
   font-size: 1.25rem;
   flex: none;
+}
+.facets .ais-ToggleRefinement .ais-ToggleRefinement-label {
+  color: var(--gray-700) !important;
+  font-size: 1rem !important;
+  font-weight: 500 !important;
+  line-height: 1rem !important;
 }
 .facets .ais-Panel-body {
   padding: 0.5rem 0 1rem;
