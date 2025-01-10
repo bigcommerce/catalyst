@@ -58,6 +58,7 @@ function B2BLocalDevelopmentScripts() {
                 channel_id: ${process.env.BIGCOMMERCE_CHANNEL_ID},
                 platform: 'catalyst',
                 cart_url: '/cart',
+                disable_logout_button: true,
               },
             };
         `}
