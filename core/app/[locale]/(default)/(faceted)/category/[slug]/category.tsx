@@ -96,6 +96,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
         router: {
           cleanUrlOnDispose: false
         },
+        /*
         stateMapping: {
           stateToRoute(uiState: any) {
             const indexUiState = uiState[indexName];
@@ -246,6 +247,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
             };
           },
         }
+        */
       }}
       onStateChange={({
         uiState,
@@ -269,7 +271,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
         <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebar(false)}></div>
       }
       <aside className={cn(
-        'fixed p-4 z-[9999] pointer-events-auto bg-white box-border w-full top-0 left-0 facets sm:max-w-[320px] max-h-full h-screen duration-300 ease-in-out overflow-y-auto',
+        'fixed p-8 z-[9999] pointer-events-auto bg-white box-border w-full top-0 left-0 facets sm:max-w-[450px] max-h-full h-screen duration-300 ease-in-out overflow-y-auto',
         showSidebar ? 'shadow-2xl shadow-blue-gray-900/10 translate-x-0' : '-translate-x-full'
       )}>
         <button type="button" onClick={() => setShowSidebar(false)} className="mx-auto flex text-xl justify-center">✕</button>
@@ -566,6 +568,8 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
           </button>
           <div className="hidden lg:flex lg:w-full lg:items-center lg:space-x-4">
             {/* <DynamicWidgets maxValuesPerFacet={1000}> */}
+
+              {/* indoor lighting, outdoor lighting */}
               {/* Lighting: Brand, Collection, Finish, Number of lights, Style */}
               <FacetDropdown buttonText="Brand" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
                 <RefinementList attribute="brand_name" searchable={true} limit={10} showMore={true} showMoreLimit={100} classNames={{
@@ -603,7 +607,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               <FacetDropdown buttonText="Style" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
                 <RefinementList attribute="metafields.Details.Product Style" />
               </FacetDropdown>
-
+              {/* heating */}
               {/* Patio (Heating specific): Fuel Source, Collection, Mounting Option, Voltage Rating */}
               {/*
               <FacetDropdown buttonText="Fuel Source" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
@@ -620,6 +624,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
               </FacetDropdown>
               */}
 
+              {/* cooling, outdoor living, shading */}
               {/* Patio (Shading specific): Collection, Shape, Price, Weight, Finish */}
               {/*
               <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
@@ -638,6 +643,9 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
                 <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" />
               </FacetDropdown>
               */}
+
+              {/* fans */}
+              {/* else */}
             {/* </DynamicWidgets> */}
           </div>
         </div>

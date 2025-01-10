@@ -277,7 +277,7 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
         <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebar(false)}></div>
       }
       <aside className={cn(
-        'fixed p-4 z-[9999] pointer-events-auto bg-white box-border w-full top-0 left-0 facets sm:max-w-[320px] max-h-full h-screen duration-300 ease-in-out overflow-y-auto',
+        'fixed p-8 z-[9999] pointer-events-auto bg-white box-border w-full top-0 left-0 facets sm:max-w-[450px] max-h-full h-screen duration-300 ease-in-out overflow-y-auto',
         showSidebar ? 'shadow-2xl shadow-blue-gray-900/10 translate-x-0' : '-translate-x-full'
       )}>
         <button type="button" onClick={() => setShowSidebar(false)} className="mx-auto flex text-xl justify-center">✕</button>
