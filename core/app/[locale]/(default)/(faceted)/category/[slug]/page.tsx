@@ -16,11 +16,12 @@ import { Option as SortOption } from '@/vibes/soul/sections/products-list-sectio
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
+import { routing } from '~/i18n/routing';
 
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { CategoryViewed } from './_components/category-viewed';
-import { getCategoryPageData } from './page-data';
+import { type Category, getCategoryPageData, getCategoryTree } from './page-data';
 
 type SearchParams = Record<string, string | string[] | undefined>;
 
@@ -307,4 +308,23 @@ export default async function Category(props: Props) {
       </Stream>
     </>
   );
+}
+
+const getEntityIdsOfChildren = (categories: Category[] = []): number[] =>
+  categories.reduce<number[]>(
+    (acc, category) => acc.concat(category.entityId, getEntityIdsOfChildren(category.children)),
+    [],
+  );
+
+export async function generateStaticParams() {
+  const categories = await getCategoryTree();
+
+  const entityIds = getEntityIdsOfChildren(categories);
+
+  return routing.locales.map((locale) => {
+    return entityIds.map((entityId) => ({
+      locale,
+      slug: entityId.toString(),
+    }));
+  });
 }

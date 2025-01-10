@@ -8,12 +8,13 @@ import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
+import { routing } from '~/i18n/routing';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
-import { getProductData } from './page-data';
+import { getFeaturedProducts, getProductData } from './page-data';
 
 const getOptionValueIds = ({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) => {
   const { slug, ...options } = searchParams;
@@ -260,4 +261,15 @@ export default async function Product(props: Props) {
       </Stream>
     </>
   );
+}
+
+export async function generateStaticParams() {
+  const products = await getFeaturedProducts();
+
+  return routing.locales.map((locale) => {
+    return products.map((product) => ({
+      locale,
+      slug: product.entityId.toString(),
+    }));
+  });
 }

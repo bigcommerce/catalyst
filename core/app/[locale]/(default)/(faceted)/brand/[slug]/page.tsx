@@ -14,10 +14,11 @@ import { Option as SortOption } from '@/vibes/soul/sections/products-list-sectio
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
+import { routing } from '~/i18n/routing';
 
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
-import { getBrand as getBrandData } from './page-data';
+import { getBrand as getBrandData, getBrands } from './page-data';
 
 interface Props {
   params: Promise<{
@@ -248,4 +249,15 @@ export default async function Brand(props: Props) {
       totalCount={getTotalCount(props)}
     />
   );
+}
+
+export async function generateStaticParams() {
+  const brands = await getBrands();
+
+  return routing.locales.map((locale) => {
+    return brands.map((brand) => ({
+      locale,
+      slug: brand.entityId.toString(),
+    }));
+  });
 }

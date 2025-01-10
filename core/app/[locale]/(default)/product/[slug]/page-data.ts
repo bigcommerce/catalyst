@@ -1,3 +1,4 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 
@@ -269,4 +270,35 @@ export const getProductData = cache(async (variables: Variables) => {
   }
 
   return product;
+});
+
+const FeaturedProductsQuery = graphql(`
+  query FeaturedProductsQuery($first: Int) {
+    site {
+      featuredProducts(first: $first) {
+        edges {
+          node {
+            entityId
+          }
+        }
+      }
+    }
+  }
+`);
+
+interface Options {
+  first?: number;
+}
+
+export const getFeaturedProducts = cache(async ({ first = 12 }: Options = {}) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const response = await client.fetch({
+    document: FeaturedProductsQuery,
+    variables: { first },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  return removeEdgesAndNodes(response.data.site.featuredProducts);
 });
