@@ -94,6 +94,10 @@ runtime.registerComponent(
         label: 'Show buttons',
         defaultValue: true,
       }),
+      hideOverflow: Checkbox({
+        label: 'Hide overflow',
+        defaultValue: true,
+      }),
     },
   },
 );
