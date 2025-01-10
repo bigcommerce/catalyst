@@ -28,6 +28,7 @@ export interface CardCarouselProps {
   nextLabel?: string;
   showButtons?: boolean;
   showScrollbar?: boolean;
+  hideOverflow?: boolean;
 }
 
 export function CardCarousel({
@@ -43,9 +44,10 @@ export function CardCarousel({
   nextLabel,
   showButtons = true,
   showScrollbar = true,
+  hideOverflow,
 }: CardCarouselProps) {
   return (
-    <Carousel className={className}>
+    <Carousel className={className} hideOverflow={hideOverflow}>
       <CarouselContent>
         <Stream
           fallback={<CardCarouselSkeleton className={className} message={emptyStateMessage} />}
@@ -95,13 +97,15 @@ export function CardCarouselSkeleton({
   className,
   message,
   count = 8,
+  hideOverflow,
 }: {
   className?: string;
   message?: string;
   count?: number;
+  hideOverflow?: boolean;
 }) {
   return (
-    <Carousel className={className}>
+    <Carousel className={className} hideOverflow={hideOverflow}>
       <CarouselContent
         className={clsx(
           'relative mb-10',
