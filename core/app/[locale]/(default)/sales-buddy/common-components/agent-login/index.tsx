@@ -9,7 +9,7 @@ interface AgentLoginProps {
 }
 
 export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
-  const [email, setEmail] = useState('sha@test.com');
+  const [email, setEmail] = useState('mithran1@test.com');
   const [password, setPassword] = useState('admin@12345');
   const [error, setError] = useState<string | null>(null);
   const { agentLoginStatus, setAgentLoginStatus, setAgentRole } = useCompareDrawerContext();
@@ -24,11 +24,19 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
       console.log('result', result);
       
       if (result.status === 200) {
-        localStorage.setItem('agent_login', 'true');
-        setAgentRole()
-        setAgentLoginStatus(true);
-        toggleModal();
-        storeAgentLoginStatusInCookies(true);
+        if (result?.data?.output?.data[0]?.status){
+          localStorage.setItem('agent_login', 'true');
+          setAgentRole(result?.data?.output?.data[0]?.role)
+          localStorage.setItem('agent_role', result?.data?.output?.data[0]?.role);
+          setAgentLoginStatus(true);
+          toggleModal();
+          storeAgentLoginStatusInCookies(true);
+        }else{
+          localStorage.setItem('agent_login', 'false');
+          setAgentLoginStatus(false);
+          toggleModal();
+          storeAgentLoginStatusInCookies(false);
+        }
       } else {        
         setError(result.error);
       }
