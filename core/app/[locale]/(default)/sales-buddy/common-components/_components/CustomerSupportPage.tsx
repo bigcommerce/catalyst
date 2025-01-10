@@ -75,7 +75,6 @@ function CustomerSupportPage() {
 
     try {
       const response = await getCustomerUrlSession_id(cartId);
-      console.log(response.output);
       
       localStorage.setItem("referral_id", response.output.data[0]['referral_id'])
       localStorage.setItem("session_id", response.output.data[0]['session_id'])

@@ -189,7 +189,6 @@ function moveToTheEnd(arr: any, word: string) {
 }
 export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjustData, cookie_agent_login_status }: Props) => {
 
-  console.log('|||||||||||||||||||', cookie_agent_login_status,typeof(cookie_agent_login_status));
   
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');

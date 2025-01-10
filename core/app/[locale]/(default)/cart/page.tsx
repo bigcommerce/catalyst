@@ -62,7 +62,6 @@ export default async function Cart() {
   const cartId = cookieStore.get('cartId')?.value;
   const cookie_agent_login_status = cookieStore.get('agent_login')?.value;
 
-  console.log("cookie_agent_login_status",cookie_agent_login_status);
   
 
   if (!cartId) {
@@ -170,7 +169,6 @@ export default async function Cart() {
     label: "Your Cart",
     href: '#'
   }];
-  console.log("CustomItems------",CustomItems);
   
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">

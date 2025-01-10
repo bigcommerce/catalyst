@@ -36,7 +36,6 @@ export async function agentLogin(emailId: any, password: any) {
 
 export  const storeAgentLoginStatusInCookies = async(status: any) => {
   const cookieStore = await cookies();
-  console.log('--------------------------------',status);
   
     cookieStore.set({
       name: 'agent_login',
