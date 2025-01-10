@@ -23,6 +23,17 @@
         "!.next/cache/**"
       ]
     },
+    "start": {
+      "env": ["*"],
+      "dependsOn": [
+        "^build"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**",
+        "!.next/cache/**"
+      ]
+    },
     "lint": {
       "env": ["*"],
       "dependsOn": [
