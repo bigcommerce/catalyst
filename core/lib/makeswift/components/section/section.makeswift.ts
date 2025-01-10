@@ -1,4 +1,4 @@
-import { Select, Slot, Style } from '@makeswift/runtime/controls';
+import { Checkbox, Select, Slot, Style } from '@makeswift/runtime/controls';
 
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 import { runtime } from '~/lib/makeswift/runtime';
@@ -19,6 +19,10 @@ runtime.registerComponent(SectionLayout, {
         { value: '2xl', label: '2XL' },
       ],
       defaultValue: '2xl',
+    }),
+    hideOverflow: Checkbox({
+      label: 'Hide overflow',
+      defaultValue: false,
     }),
   },
 });
