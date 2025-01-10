@@ -31,7 +31,6 @@ export const ToggleGroup = React.forwardRef<
         aria-labelledby={id}
         className="flex flex-wrap gap-2"
         ref={ref}
-        role="group"
       >
         {options.map((option) => (
           <ToggleGroupPrimitive.Item

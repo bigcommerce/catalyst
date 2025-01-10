@@ -220,7 +220,7 @@ function FormField({
           onChange={(e) => handleChange(e.currentTarget.value)}
           onFocus={controls.focus}
           required={formField.required}
-          value={controls.value}
+          value={controls.value ?? ''}
         />
       );
 
@@ -235,7 +235,7 @@ function FormField({
           onChange={(e) => handleChange(e.currentTarget.value)}
           onFocus={controls.focus}
           required={formField.required}
-          value={controls.value}
+          value={controls.value ?? ''}
         />
       );
 
@@ -250,7 +250,7 @@ function FormField({
           onCheckedChange={(value) => handleChange(String(value))}
           onFocus={controls.focus}
           required={formField.required}
-          value={controls.value}
+          value={controls.value ?? 'false'}
         />
       );
 
@@ -267,7 +267,7 @@ function FormField({
           onValueChange={handleChange}
           options={field.options}
           required={formField.required}
-          value={controls.value}
+          value={controls.value ?? ''}
         />
       );
 
@@ -284,7 +284,7 @@ function FormField({
           onValueChange={handleChange}
           options={field.options}
           required={formField.required}
-          value={controls.value}
+          value={controls.value ?? ''}
         />
       );
 
@@ -301,7 +301,7 @@ function FormField({
           onValueChange={handleChange}
           options={field.options}
           required={formField.required}
-          value={controls.value}
+          value={controls.value ?? ''}
         />
       );
 
@@ -318,7 +318,7 @@ function FormField({
           onValueChange={handleChange}
           options={field.options}
           required={formField.required}
-          value={controls.value}
+          value={controls.value ?? ''}
         />
       );
 
@@ -335,7 +335,7 @@ function FormField({
           onValueChange={handleChange}
           options={field.options}
           required={formField.required}
-          value={controls.value}
+          value={controls.value ?? ''}
         />
       );
   }

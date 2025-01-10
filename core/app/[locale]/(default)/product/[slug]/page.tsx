@@ -225,6 +225,7 @@ export default async function Product(props: Props) {
     <>
       <ProductDetail
         action={addToCart}
+        additionalInformationLabel={t('ProductDetails.additionalInformation')}
         ctaDisabled={getCtaDisabled(productPromise)}
         ctaLabel={getCtaLabel(productPromise)}
         decrementLabel={t('ProductDetails.decreaseQuantity')}
