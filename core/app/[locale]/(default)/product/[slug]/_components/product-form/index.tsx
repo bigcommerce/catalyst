@@ -2,7 +2,7 @@
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { FragmentOf } from 'gql.tada';
-import { AlertCircle, Check, Heart, ShoppingCart } from 'lucide-react';
+import { AlertCircle, Check, ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useId } from 'react';
 import { FormProvider, useFormContext } from 'react-hook-form';
@@ -12,7 +12,6 @@ import { ProductItemFragment } from '~/client/fragments/product-item';
 import { AddToCartButton } from '~/components/add-to-cart-button';
 import { useCart } from '~/components/header/cart-provider';
 import { Link } from '~/components/link';
-import { Button } from '~/components/ui/button';
 import { bodl } from '~/lib/bodl';
 
 import { handleAddToCart } from './_actions/add-to-cart';
@@ -126,7 +125,11 @@ export const ProductForm = ({ data: product }: Props) => {
 
   return (
     <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
-      <form className="flex flex-col gap-6 @container" onSubmit={handleSubmit(productFormSubmit)}>
+      <form
+        className="flex flex-col gap-6 @container"
+        onChange={() => methods.trigger()}
+        onSubmit={handleSubmit(productFormSubmit)}
+      >
         <input type="hidden" value={product.entityId} {...register('product_id')} />
 
         {productOptions.map((option) => {
@@ -164,14 +167,9 @@ export const ProductForm = ({ data: product }: Props) => {
 
           {/* NOT IMPLEMENTED YET */}
           <div className="w-full">
-            <Button disabled type="submit" variant="secondary">
-              <Heart aria-hidden="true" className="mr-2" />
-              <span>{t('saveToWishlist')}</span>
-            </Button>
+            <AddToQuote product={product} />
           </div>
         </div>
-
-        <AddToQuote product={product} />
       </form>
     </FormProvider>
   );

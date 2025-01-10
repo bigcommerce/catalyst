@@ -1,9 +1,11 @@
 'use client';
 
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
 import { FragmentOf } from '~/client/graphql';
+import { Button } from '~/components/ui/button';
 
 import { ProductFormFragment } from './fragment';
 
@@ -24,9 +26,22 @@ interface ProductOption {
 }
 
 export function AddToQuote({ product }: Props) {
-  const { getValues } = useFormContext();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { getValues, trigger } = useFormContext();
 
-  const handleClick = () => {
+  const handleClick = async () => {
+    setIsSubmitting(true);
+
+    // Trigger validation for all fields
+    const isValidForm = await trigger();
+
+    if (!isValidForm) {
+      setIsSubmitting(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      return;
+    }
+
     const formData = getValues();
 
     const productEntityId = Number(formData.product_id);
@@ -100,29 +115,83 @@ export function AddToQuote({ product }: Props) {
       sku: product.sku,
     };
 
-    // @todo should we always assume that the quote utils are available?
-    const tryAddToQuote = (retryCount = 0, maxRetries = 10) => {
+    // eslint-disable-next-line valid-jsdoc
+    /**
+     * @todo instead of retrying, should we just call the B2B API directly?
+     *
+     * fetch("https://api-b2b.bigcommerce.com/graphql", {
+     *   headers: {
+     *     "content-type": "application/json",
+     *     "authorization": "..."
+     *   },
+     *   body: JSON.stringify({
+     *     query: `{
+     *       productsSearch(
+     *         search: ""
+     *         productIds: [111]
+     *         currencyCode: "USD"
+     *         companyId: "7228189"
+     *         storeHash: "cngr5fkoc"
+     *         channelId: 1682982
+     *         customerGroupId: 0
+     *       ) {
+     *         id
+     *         name
+     *         sku
+     *         costPrice
+     *         inventoryLevel
+     *         inventoryTracking
+     *         availability
+     *         orderQuantityMinimum
+     *         orderQuantityMaximum
+     *         variants
+     *         currencyCode
+     *         imageUrl
+     *         modifiers
+     *         options
+     *         optionsV3
+     *         channelId
+     *         productUrl
+     *         taxClassId
+     *         isPriceHidden
+     *       }
+     *     }`
+     *   }),
+     *   method: "POST"
+     * });
+     */
+    const tryAddToQuote = async (retryCount = 0, maxRetries = 10) => {
+      // @todo should we always assume that the quote utils are available?
       if (window.b2b?.utils.quote?.addProducts) {
-        window.b2b.utils.quote.addProducts([transformedProduct]);
+        await window.b2b.utils.quote.addProducts([transformedProduct]);
+
+        setIsSubmitting(false);
 
         return;
       }
 
       if (retryCount < maxRetries) {
         setTimeout(() => {
-          tryAddToQuote(retryCount + 1);
+          void tryAddToQuote(retryCount + 1);
         }, 500); // Retry every 500ms
       } else {
         console.error('Failed to add to quote: b2b quote utils not available');
+        setIsSubmitting(false);
       }
     };
 
-    tryAddToQuote();
+    void tryAddToQuote();
   };
 
   return (
-    <button className="rounded border px-4 py-2 text-sm" onClick={handleClick} type="button">
+    <Button
+      disabled={isSubmitting}
+      loading={isSubmitting}
+      onClick={handleClick}
+      type="button"
+      variant="secondary"
+    >
       Add to Quote
-    </button>
+    </Button>
   );
 }

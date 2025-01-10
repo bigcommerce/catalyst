@@ -105,7 +105,7 @@ declare global {
           logout: (params?: { handleError?: (error: unknown) => unknown }) => Promise<void>;
           getB2BToken: () => string;
         };
-        quote?: { addProducts?: (products: unknown) => void };
+        quote?: { addProducts?: (products: unknown) => Promise<void> };
       };
     };
   }
