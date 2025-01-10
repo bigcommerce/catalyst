@@ -1,6 +1,7 @@
 import { 
   usePagination, UsePaginationProps
 } from 'react-instantsearch';
+import { ChevronLeft,ChevronRight } from 'lucide-react';
 
 import { cn } from '~/lib/utils';
 
@@ -39,7 +40,12 @@ export function Pagination({ classNames, ...props }: UsePaginationProps) {
           link: classNames?.link,
         }}
         ariaLabel="Previous Page"
-      ><span>‹</span></PaginationItem>
+      >
+        <span>
+          {/* <ChevronLeft strokeWidth={2} /> */}
+          <svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M7.91016 10.58L3.33016 6L7.91016 1.41L6.50016 0L0.500156 6L6.50016 12L7.91016 10.58Z" fill="currentColor"/></svg>
+        </span>
+      </PaginationItem>
       {/*
       <PaginationItem
         isDisabled={isFirstPage}
@@ -117,7 +123,12 @@ export function Pagination({ classNames, ...props }: UsePaginationProps) {
           link: classNames?.link,
         }}
         ariaLabel="Next Page"
-      ><span>›</span></PaginationItem>
+      >
+        <span>
+          {/* <ChevronRight strokeWidth={2} /> */}
+          <svg width="8" height="12" viewBox="0 0 8 12" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M0.5 10.58L5.08 6L0.5 1.41L1.91 0L7.91 6L1.91 12L0.5 10.58Z" fill="currentColor"/></svg>
+        </span>
+      </PaginationItem>
     </ul>
     </div>
   );

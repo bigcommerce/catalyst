@@ -921,7 +921,9 @@ display: none !important;
 .ais-Pagination-item .ais-Pagination-link {
 border: 0px solid !important;
 background: none !important;
+height: 2.5rem !important;
 }
+/*
 .ais-Pagination-item--previousPage .ais-Pagination-link > span, 
 .ais-Pagination-item--nextPage .ais-Pagination-link > span 
 {
@@ -933,6 +935,7 @@ content: '<';
 .ais-Pagination-item--nextPage .ais-Pagination-link::before {
 content: '>';
 }
+*/
 /*
 .ais-Pagination-item--firstPage .ais-Pagination-link > span, 
 .ais-Pagination-item--lastPage .ais-Pagination-link > span
@@ -957,4 +960,5 @@ text-decoration: underline;
 }
 .ais-Pagination-item--previousPage .ais-Pagination-link, .ais-Pagination-item--nextPage .ais-Pagination-link {
 border: 1px solid var(--gray-300) !important;
+border-radius: 3px !important;
 }
