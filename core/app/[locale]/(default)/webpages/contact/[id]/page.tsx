@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
@@ -13,7 +13,7 @@ import { submitContactForm } from './_actions/submit-contact-form';
 import { getWebpageData } from './page-data';
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
   searchParams: Promise<{ success?: string }>;
 }
 
@@ -155,8 +155,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function ContactPage({ params, searchParams }: Props) {
-  const { id } = await params;
+  const { id, locale } = await params;
   const { success } = await searchParams;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('WebPages.ContactUs.Form');
 
   // TODO: Use reCaptcha
