@@ -48,7 +48,7 @@ export function StickySidebarLayout({
       >
         <div
           className={clsx(
-            'shrink-0',
+            'min-w-0',
             sidebarPosition === 'after' ? 'order-2' : 'order-1',
             {
               '1/3': '@4xl:w-1/3',
@@ -64,6 +64,7 @@ export function StickySidebarLayout({
         </div>
         <div
           className={clsx(
+            'min-w-0',
             sidebarPosition === 'after' ? 'order-1' : 'order-2',
             {
               '1/3': '@4xl:w-2/3',
