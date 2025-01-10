@@ -58,7 +58,8 @@ const sortByNumericRangeName: RefinementListProps['sortBy'] = (a: any, b: any) =
   return parseInt(a1.replace(/\D/g,'')) < parseInt(b1.replace(/\D/g,'')) ? -1 : 1;
 };
 
-const closeOnChange = () => window.innerWidth > 375;
+//const closeOnChange = () => window.innerWidth > 375;
+const closeOnChange = false;
 
 export const Category = ({ category, promotions, useDefaultPrices = false }: any) => {
 

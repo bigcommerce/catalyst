@@ -95,7 +95,7 @@ export function SortBy(props: UseSortByProps & { label?: string }) {
       <ul>
         {options.map((option: { label: string; value: string }) => (
           <li key={option.value} value={option.value} className={cn(
-            'cursor-pointer', 
+            'cursor-pointer whitespace-nowrap', 
             props.classNames.item, 
             option.value === currentRefinement && props.classNames.active
           )} onClick={() => refine(option.value)}>
