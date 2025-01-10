@@ -206,7 +206,6 @@ const navButtonClassName =
  *   --nav-button-background-hover: hsl(var(--contrast-100));
  *   --nav-menu-background: hsl(var(--background));
  *   --nav-menu-border: hsl(var(--foreground) / 5%);
- *   --nav-menu-divider: hsl(var(--foreground) / 5%);
  *   --nav-mobile-background: hsl(var(--background));
  *   --nav-mobile-divider: hsl(var(--contrast-100));
  *   --nav-mobile-button-icon: hsl(var(--foreground));
@@ -450,10 +449,10 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                     </Link>
                   </NavigationMenu.Trigger>
                   {item.groups != null && item.groups.length > 0 && (
-                    <NavigationMenu.Content className="max-h-96 overflow-y-auto rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
-                      <div className="grid w-full grid-cols-4 divide-x divide-[var(--nav-menu-divider,hsl(var(--contrast-100)))]">
+                    <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
+                      <div className="m-auto grid w-full max-w-screen-lg grid-cols-5 justify-center gap-5 px-5 pb-8 pt-5">
                         {item.groups.map((group, columnIndex) => (
-                          <ul className="flex flex-col gap-1 p-5" key={columnIndex}>
+                          <ul className="flex flex-col" key={columnIndex}>
                             {/* Second Level Links */}
                             {group.label != null && group.label !== '' && (
                               <li>
@@ -471,7 +470,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                               // Third Level Links
                               <li key={idx}>
                                 <Link
-                                  className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
+                                  className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
                                   href={link.href}
                                 >
                                   {link.label}
