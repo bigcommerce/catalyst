@@ -21,6 +21,7 @@ export function StickySidebarLayout({
   sidebarSize = '1/3',
   sidebarPosition = 'before',
   containerSize = '2xl',
+  hideOverflow = false,
 }: {
   className?: string;
   sidebar: React.ReactNode;
@@ -28,9 +29,12 @@ export function StickySidebarLayout({
   containerSize?: 'md' | 'lg' | 'xl' | '2xl';
   sidebarSize?: '1/4' | '1/3' | '1/2' | 'small' | 'medium' | 'large';
   sidebarPosition?: 'before' | 'after';
+  hideOverflow?: boolean;
 }) {
   return (
-    <section className={clsx('group/pending @container', className)}>
+    <section
+      className={clsx('group/pending @container', hideOverflow && 'overflow-hidden', className)}
+    >
       <div
         className={clsx(
           'mx-auto flex flex-col items-stretch gap-x-16 gap-y-10 px-4 py-10 @xl:px-6 @xl:py-14 @4xl:flex-row @4xl:px-8 @4xl:py-20',

@@ -1,5 +1,6 @@
 import { clsx } from 'clsx';
 
+// eslint-disable-next-line valid-jsdoc
 /**
  * This component supports various CSS variables for theming. Here's a comprehensive list, along
  * with their default values:
@@ -17,13 +18,15 @@ export function SectionLayout({
   className,
   children,
   containerSize = '2xl',
+  hideOverflow = false,
 }: {
   className?: string;
   children: React.ReactNode;
   containerSize?: 'md' | 'lg' | 'xl' | '2xl';
+  hideOverflow?: boolean;
 }) {
   return (
-    <section className={clsx('@container', className)}>
+    <section className={clsx('@container', hideOverflow && 'overflow-hidden', className)}>
       <div
         className={clsx(
           'mx-auto px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20',

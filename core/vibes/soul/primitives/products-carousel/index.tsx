@@ -29,6 +29,7 @@ interface Props {
   placeholderCount?: number;
   showButtons?: boolean;
   showScrollbar?: boolean;
+  hideOverflow?: boolean;
 }
 
 export function ProductsCarousel({
@@ -44,10 +45,17 @@ export function ProductsCarousel({
   placeholderCount = 8,
   showButtons = true,
   showScrollbar = true,
+  hideOverflow,
 }: Props) {
   return (
     <Stream
-      fallback={<ProductsCarouselSkeleton pending placeholderCount={placeholderCount} />}
+      fallback={
+        <ProductsCarouselSkeleton
+          hideOverflow={hideOverflow}
+          pending
+          placeholderCount={placeholderCount}
+        />
+      }
       value={streamableProducts}
     >
       {(products) => {
@@ -56,13 +64,14 @@ export function ProductsCarousel({
             <ProductsCarouselEmptyState
               emptyStateSubtitle={emptyStateSubtitle}
               emptyStateTitle={emptyStateTitle}
+              hideOverflow={hideOverflow}
               placeholderCount={placeholderCount}
             />
           );
         }
 
         return (
-          <Carousel className={className}>
+          <Carousel className={className} hideOverflow={hideOverflow}>
             <CarouselContent className="mb-10">
               {products.map((product) => (
                 <CarouselItem
@@ -103,13 +112,19 @@ export function ProductsCarouselSkeleton({
   className,
   placeholderCount = 8,
   pending = false,
+  hideOverflow,
 }: {
   className?: string;
   placeholderCount?: number;
   pending?: boolean;
+  hideOverflow?: boolean;
 }) {
   return (
-    <Carousel className={className} data-pending={pending ? '' : undefined}>
+    <Carousel
+      className={className}
+      data-pending={pending ? '' : undefined}
+      hideOverflow={hideOverflow}
+    >
       <CarouselContent className="mb-10">
         {Array.from({ length: placeholderCount }).map((_, index) => (
           <CarouselItem
@@ -130,14 +145,16 @@ export function ProductsCarouselEmptyState({
   placeholderCount = 8,
   emptyStateTitle,
   emptyStateSubtitle,
+  hideOverflow,
 }: {
   className?: string;
   placeholderCount?: number;
   emptyStateTitle?: Streamable<string | null>;
   emptyStateSubtitle?: Streamable<string | null>;
+  hideOverflow?: boolean;
 }) {
   return (
-    <Carousel className={clsx('relative', className)}>
+    <Carousel className={clsx('relative', className)} hideOverflow={hideOverflow}>
       <CarouselContent
         className={clsx('mb-10 [mask-image:linear-gradient(to_bottom,_black_0%,_transparent_90%)]')}
       >
