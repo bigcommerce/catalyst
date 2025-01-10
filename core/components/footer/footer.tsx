@@ -110,17 +110,17 @@ export const Footer = async () => {
         {
           label: (
             <div className="footer-subscribe !ml-[0em]">
-              <form action="/subscribe" method="POST" className='flex flex-wrap items-center'>
+              <form action="/subscribe" method="POST" className='flex items-center'>
                 <input
                   type="email"
                   name="email"
                   placeholder="Enter your email"
-                  className="subscription-input !placeholder:pl-[8px] h-[40px] w-[14em] pl-[12px] text-left tracking-[0.25px] text-[#6b7280] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] focus:outline-none"
+                  className="subscription-input !placeholder:pl-[8px] w-[243px] h-[40px] pl-[12px] text-left tracking-[0.25px] text-[#6b7280] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] focus:outline-none"
                   required
                 />
                 <button
                   type="submit"
-                  className="subscription-button relative h-[40px] w-[85px] bg-[#008bb7] text-center text-[14px] font-normal uppercase text-white"
+                  className="subscription-button relative h-[40px] bg-[#008bb7] text-center text-[14px] font-normal uppercase text-white w-[80px]"
                 >
                   Sign Up
                 </button>

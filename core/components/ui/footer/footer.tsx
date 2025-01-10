@@ -54,79 +54,206 @@ const Footer = ({
   socialMediaLinks,
   ...props
 }: Props) => (
-  <footer className={cn('px-18  2xl:container 2xl:mx-auto !max-w-[100%] bg-[#002a37] text-white', className)} {...props}>
-    <section className="section-footer flex flex-col gap-8 border-t border-gray-200 px-4 pt-10 pb-0 md:flex-row lg:gap-4 lg:px-12">
-      <nav className="grid flex-auto auto-cols-fr gap-8 sm:grid-flow-col" id="nav-footer-section">
-        {sections.map((section, index) => (
-            
-          <div key={`${section.title}-${index}`}>
-            <h3 className="text-left text-[20px] mb-[10px] font-medium leading-[32px] tracking-[0.15px] text-white">
-              {section.title}
+  <footer
+    className={cn('px-18 !max-w-[100%] bg-[#002a37] p-[40px] text-white 2xl:container', className)}
+    {...props}
+  >
+    <nav className="hidden gap-5 xl:grid xl:grid-cols-4 [&>*]:h-fit" id="nav-footer-section">
+      <div className="hidden flex-col gap-5 xl:flex">
+        <div className="flex flex-col gap-[10px]">
+          {Boolean(logo) && (
+            <h3 className="footer-customer-service text-left font-['Open_Sans'] text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
+              Customer Service
             </h3>
-            <ul className="footer-submenu flex flex-col">
-              {section.links.map((link, index) => (
-                <li key={`${link.label}-${index}`} className='mb-[14px] pt-1 pb-1'>
-                  {link.href != '#' ? <CustomLink className='!justify-start text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white' href={link.href}>{link.label}</CustomLink> : link.label}
-                </li>
-              ))}
-            {index == 2 && flagSalesBuddy &&   <AgentFooter/>}
-            </ul>
-          </div>
-        ))}
-      </nav>
-      <div className="div-footer flex flex-col gap-2.5 md:order-first md:grow w-[35%]">
-        {Boolean(logo) && (
-          <h3 className="footer-customer-service text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
-            Customer Service
-          </h3>
-        )}
-
+          )}
+          {Boolean(contactInformation?.phone) && (
+            <CustomLink
+              className="flex-col gap-[10px] font-['Open_Sans'] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+              href={`tel:${contactInformation?.phone}`}
+            >
+              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+                Start a Return or Replacement
+              </p>
+              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+                View Order Status
+              </p>
+              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+                Visit our Helpdesk
+              </p>
+            </CustomLink>
+          )}
+        </div>
         {Boolean(contactInformation?.phone) && (
           <CustomLink
-            className="flex-col hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+            className="flex flex-col gap-[10px] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
             href={`tel:${contactInformation?.phone}`}
           >
-            <p className="mb-4 text-left font-sans text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
-              Start a Return or Replacement
-            </p>
-            <p className="mb-4 text-left font-sans text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
-              View Order Status
-            </p>
-            <p className="mb-4 text-left font-sans text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
-              Visit our Helpdesk
-            </p>
-
-            <h3 className="footerheading footer-shopping-assistance mb-2.5 mt-5 pt-0.5 text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
+            <h3 className="footerheading footer-shopping-assistance text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
               Shopping Assistance
             </h3>
-            <p className="mb-1.5 text-left text-[14px] font-normal leading-[24px] tracking-[0.25px] text-white">
+            <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
               PHONE HOURS
             </p>
 
-            <p className="Footertxt mb-1.5 text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
               Monday-friday 6am -5pm PST
             </p>
-            <p className="Footertxt mb-1.5 text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
               (####) ###-###
             </p>
-            <h3 className="footerheading mb-1.5 text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+            <h3 className="footerheading text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
               {' '}
               CHAT HOURS{' '}
             </h3>
-            <p className="Footertxt  mb-1.5 text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
               Monday-Friday 6am-4pm PST
             </p>
-            <p className="Footertxt mb-1.5 text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
               Saturday & Sunday 6am-3pm PST
             </p>
           </CustomLink>
         )}
       </div>
-    </section>
+      {sections.map((section, index) => (
+        <div key={`${section.title}-${index}`} className="flex h-fit flex-col gap-[10px]">
+          <h3 className="text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
+            {section.title}
+          </h3>
+          <ul className="footer-submenu flex flex-col gap-[10px] leading-[32px]">
+            {section.links.map((link, index) => (
+              <li key={`${link.label}-${index}`} className="">
+                {link.href != '#' ? (
+                  <CustomLink
+                    className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
+                    href={link.href}
+                  >
+                    {link.label}
+                  </CustomLink>
+                ) : (
+                  link.label
+                )}
+              </li>
+            ))}
+            {index == 2 && flagSalesBuddy && <AgentFooter />}
+          </ul>
+        </div>
+      ))}
+    </nav>
 
-    <section className="copyright">
-      <p className="text-white-400 text-[14px] flex justify-center font-normal leading-[24px] tracking-[0.25px] text-left sm:order-first">{copyright}</p>
-      <div className="flex gap-8 justify-center py-[10px]" id="icon">
+    <nav className="grid grid-cols-1 sm:grid-cols-2 gap-[30px] xl:hidden [&>*]:h-fit" id="nav-footer-section">
+      <div className="flex flex-col gap-[30px] [&>*:first-child]:order-[0] [&>*:nth-child(2)]:order-[2] [&>*:nth-child(3)]:order-[1] [&>*:nth-child(4)]:hidden">
+        <div className="flex flex-col gap-[10px]">
+          {Boolean(logo) && (
+            <h3 className="footer-customer-service text-left font-['Open_Sans'] text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
+              Customer Service
+            </h3>
+          )}
+          {Boolean(contactInformation?.phone) && (
+            <CustomLink
+              className="flex-col gap-[10px] font-['Open_Sans'] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+              href={`tel:${contactInformation?.phone}`}
+            >
+              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+                Start a Return or Replacement
+              </p>
+              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+                View Order Status
+              </p>
+              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+                Visit our Helpdesk
+              </p>
+            </CustomLink>
+          )}
+        </div>
+        {sections.map((section, index) => (
+          
+          <div key={`${section.title}-${index}`} className="flex h-fit flex-col gap-[10px]">
+            <h3 className="text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
+              {section.title}
+            </h3>
+            <ul className="footer-submenu flex flex-col gap-[10px] leading-[32px]">
+              {section.links.map((link, index) => (
+                <li key={`${link.label}-${index}`} className="">
+                  {link.href != '#' ? (
+                    <CustomLink
+                      className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
+                      href={link.href}
+                    >
+                      {link.label}
+                    </CustomLink>
+                  ) : (
+                    link.label
+                  )}
+                </li>
+              ))}
+              {index == 2 && flagSalesBuddy && <AgentFooter />}
+            </ul>
+          </div>
+        ))}
+      </div>
+      <div className='flex flex-col gap-[30px] [&>*:nth-child(2)]:hidden [&>*:nth-child(3)]:hidden'>
+        {Boolean(contactInformation?.phone) && (
+          <CustomLink
+            className="flex flex-col gap-[10px] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+            href={`tel:${contactInformation?.phone}`}
+          >
+            <h3 className="footerheading footer-shopping-assistance text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
+              Shopping Assistance
+            </h3>
+            <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+              PHONE HOURS
+            </p>
+
+            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+              Monday-friday 6am -5pm PST
+            </p>
+            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+              (####) ###-###
+            </p>
+            <h3 className="footerheading text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+              {' '}
+              CHAT HOURS{' '}
+            </h3>
+            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+              Monday-Friday 6am-4pm PST
+            </p>
+            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+              Saturday & Sunday 6am-3pm PST
+            </p>
+          </CustomLink>
+        )}
+        {sections.map((section, index) => (
+          <div key={`${section.title}-${index}`} className="flex h-fit flex-col gap-[10px]">
+            <h3 className="text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
+              {section.title}
+            </h3>
+            <ul className="footer-submenu flex flex-col gap-[10px] leading-[32px]">
+              {section.links.map((link, index) => (
+                <li key={`${link.label}-${index}`} className="">
+                  {link.href != '#' ? (
+                    <CustomLink
+                      className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
+                      href={link.href}
+                    >
+                      {link.label}
+                    </CustomLink>
+                  ) : (
+                    link.label
+                  )}
+                </li>
+              ))}
+              {index == 2 && flagSalesBuddy && <AgentFooter />}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </nav>
+
+    <section className="copyright mt-[10px]">
+      <p className="text-white-400 flex justify-center text-left text-[14px] font-normal leading-[24px] tracking-[0.25px] sm:order-first">
+        {copyright}
+      </p>
+      <div className="flex justify-center gap-8 pt-[10px]" id="icon">
         <Locale />
         <div className="flex gap-[10px] overflow-x-auto">{paymentIcons}</div>
       </div>
