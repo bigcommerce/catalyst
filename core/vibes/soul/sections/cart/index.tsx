@@ -229,7 +229,7 @@ function CartInner<LineItem extends CartLineItem>({
                   alt={lineItem.image.alt}
                   className="object-cover"
                   fill
-                  sizes="(max-width: 400px) 100vw, 144px"
+                  sizes="(min-width: 28rem) 9rem, (min-width: 24rem) 6rem, 100vw"
                   src={lineItem.image.src}
                 />
               </div>

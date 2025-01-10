@@ -34,7 +34,7 @@ export function OrderListLineItem({ className, lineItem }: Props) {
             alt={lineItem.image.alt}
             className="w-full scale-100 select-none bg-contrast-100 object-cover transition-transform duration-500 ease-out group-hover:scale-110"
             fill
-            sizes="(max-width: 768px) 70vw, 33vw"
+            sizes="(min-width: 32rem) 10rem, 8rem"
             src={lineItem.image.src}
           />
         ) : (

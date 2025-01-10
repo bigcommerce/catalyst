@@ -46,8 +46,8 @@ export function ProductGallery({ images, className, thumbnailLabel = 'View image
                 alt={image.alt}
                 className="object-cover"
                 fill
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
+                priority={idx === 0}
+                sizes="(min-width: 42rem) 50vw, 100vw"
                 src={image.src}
               />
             </div>
@@ -67,7 +67,13 @@ export function ProductGallery({ images, className, thumbnailLabel = 'View image
             key={index}
             onClick={() => selectImage(index)}
           >
-            <Image alt={image.alt} className="bg-contrast-100 object-cover" fill src={image.src} />
+            <Image
+              alt={image.alt}
+              className="bg-contrast-100 object-cover"
+              fill
+              sizes="(min-width: 28rem) 4rem, 3rem"
+              src={image.src}
+            />
           </button>
         ))}
       </div>

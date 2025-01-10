@@ -172,7 +172,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                         {title}
                       </h1>
                       {showDescription && (
-                        <p className="max-w-x mt-2 font-[family-name:var(--slideshow-description-font-family,var(--font-family-body))] text-base leading-normal text-[var(--slideshow-description,hsl(var(--background)/80%))] @xl:mt-3 @xl:text-lg">
+                        <p className="mt-2 max-w-xl font-[family-name:var(--slideshow-description-font-family,var(--font-family-body))] text-base leading-normal text-[var(--slideshow-description,hsl(var(--background)/80%))] @xl:mt-3 @xl:text-lg">
                           {description}
                         </p>
                       )}
@@ -199,7 +199,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                       placeholder={
                         image.blurDataUrl != null && image.blurDataUrl !== '' ? 'blur' : 'empty'
                       }
-                      priority
+                      priority={idx === 0}
                       sizes="100vw"
                       src={image.src}
                     />

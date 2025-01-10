@@ -72,6 +72,7 @@ export function ProductsCarousel({
                   <ProductCard
                     aspectRatio={aspectRatio}
                     colorScheme={colorScheme}
+                    imageSizes="(min-width: 42rem) 25vw, (min-width: 32rem) 33vw, (min-width: 28rem) 50vw, 100vw"
                     product={product}
                   />
                 </CarouselItem>
