@@ -41,9 +41,7 @@ export const CardRadioGroup = React.forwardRef<
             id={option.value}
             key={option.value}
             onMouseEnter={() => {
-              if (typeof onOptionMouseEnter === 'function') {
-                onOptionMouseEnter(option.value);
-              }
+              onOptionMouseEnter?.(option.value);
             }}
             value={option.value}
           >
@@ -52,6 +50,7 @@ export const CardRadioGroup = React.forwardRef<
                 alt={option.image.alt}
                 className="bg-background object-fill"
                 fill
+                sizes="3rem"
                 src={option.image.src}
               />
             </div>

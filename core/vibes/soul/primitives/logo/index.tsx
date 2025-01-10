@@ -47,7 +47,7 @@ export function Logo({ className, logo: streamableLogo, href, width, height, lab
               alt={logo.alt}
               className="object-contain object-left"
               fill
-              sizes="25vw"
+              sizes={`${width}px`}
               src={logo.src}
             />
           ) : (

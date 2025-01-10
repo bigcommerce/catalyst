@@ -38,7 +38,7 @@ export function BlogPostCard({ blogPost, className }: Props) {
             alt={image.alt}
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(min-width: 80rem) 25vw, (min-width: 56rem) 33vw, (min-width: 28rem) 50vw, 100vw"
             src={image.src}
           />
         ) : (

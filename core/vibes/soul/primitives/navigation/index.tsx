@@ -780,6 +780,7 @@ function SearchResults({
                   {result.products.map((product) => (
                     <li key={product.id}>
                       <ProductCard
+                        imageSizes="(min-width: 42rem) 25vw, 50vw"
                         product={{
                           id: product.id,
                           title: product.title,

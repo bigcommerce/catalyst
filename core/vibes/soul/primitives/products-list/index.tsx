@@ -44,7 +44,7 @@ export function ProductsList({
     <>
       <Stream
         fallback={<ProductsListSkeleton pending placeholderCount={placeholderCount} />}
-        value={Promise.all([streamableProducts, streamableCompareLabel])}
+        value={Streamable.all([streamableProducts, streamableCompareLabel])}
       >
         {([products, compareLabel]) => {
           if (products.length === 0) {
@@ -66,6 +66,7 @@ export function ProductsList({
                     colorScheme={colorScheme}
                     compareLabel={compareLabel}
                     compareParamName={compareParamName}
+                    imageSizes="(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw"
                     key={product.id}
                     product={product}
                     showCompare={showCompare}
@@ -76,7 +77,7 @@ export function ProductsList({
           );
         }}
       </Stream>
-      <Stream value={Promise.all([streamableCompareProducts, streamableCompareLabel])}>
+      <Stream value={Streamable.all([streamableCompareProducts, streamableCompareLabel])}>
         {([compareProducts, compareLabel]) =>
           compareProducts && (
             <CompareDrawer

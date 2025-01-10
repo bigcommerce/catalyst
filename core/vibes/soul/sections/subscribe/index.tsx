@@ -28,7 +28,7 @@ export function Subscribe({
               alt={image.alt}
               className="object-cover"
               fill
-              sizes="(max-width: 680px) 100vw, 50vw"
+              sizes="(min-width: 56rem) 50vw, 100vw"
               src={image.src}
             />
           </div>
