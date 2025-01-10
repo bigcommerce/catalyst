@@ -90,6 +90,10 @@ runtime.registerComponent(
         ],
         defaultValue: 'light',
       }),
+      hideOverflow: Checkbox({
+        label: 'Hide overflow',
+        defaultValue: true,
+      }),
     },
   },
 );
