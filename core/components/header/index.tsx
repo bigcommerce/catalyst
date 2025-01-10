@@ -70,6 +70,7 @@ export const Header = async ({ cart }: Props) => {
     <ComponentsHeader
       homeLogoMobile={homeLogoMobile}
       homeLogoMobileFirst={homeLogoMobileFirst}
+      customerAccessToken={customerAccessToken}
       account={
         <div className="flex items-center">
           {/* Support Dropdown */}

@@ -9,6 +9,7 @@ import { BcImage } from '~/components/bc-image';
 import { Link as CustomLink } from '~/components/link';
 import { Button } from '../button';
 import { Links } from './header';
+import { logout } from '~/components/header/_actions/logout';
 
 interface Image {
   altText: string;
@@ -20,13 +21,15 @@ interface Props {
   logo?: string | Image;
   homeLogoMobile?: string | Image;
   account: string;
+  customerAccessToken?: string;
 }
 
-export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
+export const MobileNav = ({ links, logo, homeLogoMobile, customerAccessToken }: Props) => {
   const [open, setOpen] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [showMainMenu, setShowMainMenu] = useState(true);
   const [expandedSubMenus, setExpandedSubMenus] = useState<Record<string, boolean>>({});
+  const [isLoading, setIsLoading] = useState<boolean>(false); // State to track loading status
 
   const handleCategoryClick = (href: string) => {
     setSelectedCategory(href);
@@ -69,7 +72,7 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                 {typeof logo === 'object' ? (
                   <BcImage
                     alt={logo.altText}
-                    className="truncate text-2xl font-black w-[30px] h-[30px]"
+                    className="h-[30px] w-[30px] truncate text-2xl font-black"
                     height={30}
                     priority
                     src={homeLogoMobile}
@@ -146,24 +149,36 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                       id="static-menu"
                     >
                       <CustomLink
+                        onClick={() => {
+                          setOpen(false); // Close the sheet/mobile menu
+                        }}
                         href="/new"
                         className="font-semiboldd w-[100%] border-b border-[#CCCBCB] pb-[1.5em] text-[#008BB7] hover:text-primary"
                       >
                         New
                       </CustomLink>
                       <CustomLink
+                        onClick={() => {
+                          setOpen(false); // Close the sheet/mobile menu
+                        }}
                         href="/sale"
                         className="font-semiboldd w-[100%] border-b border-[#CCCBCB] pb-[1.5em] text-[#008BB7] hover:text-primary"
                       >
                         Sale
                       </CustomLink>
                       <CustomLink
+                        onClick={() => {
+                          setOpen(false); // Close the sheet/mobile menu
+                        }}
                         href="/blog"
                         className="font-semiboldd w-[100%] border-b border-[#CCCBCB] pb-[1.5em] text-[#008BB7] hover:text-primary"
                       >
                         Blog
                       </CustomLink>
                       <CustomLink
+                        onClick={() => {
+                          setOpen(false); // Close the sheet/mobile menu
+                        }}
                         href="/blog"
                         className="font-semiboldd w-[100%] border-b border-[#CCCBCB] pb-[1.5em] text-[#008BB7] hover:text-primary"
                       >
@@ -178,24 +193,36 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                         </div>
 
                         <CustomLink
+                          onClick={() => {
+                            setOpen(false); // Close the sheet/mobile menu
+                          }}
                           href="/Order Status"
                           className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
                         >
                           Order Status
                         </CustomLink>
                         <CustomLink
+                          onClick={() => {
+                            setOpen(false); // Close the sheet/mobile menu
+                          }}
                           href="/Return-Replacement"
                           className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
                         >
                           Return / Replacement
                         </CustomLink>
                         <CustomLink
+                          onClick={() => {
+                            setOpen(false); // Close the sheet/mobile menu
+                          }}
                           href="/visit"
                           className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
                         >
                           Visit Our Help Center
                         </CustomLink>
                         <CustomLink
+                          onClick={() => {
+                            setOpen(false); // Close the sheet/mobile menu
+                          }}
                           href="/order"
                           className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
                         >
@@ -213,24 +240,36 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                         </div>
 
                         <CustomLink
+                          onClick={() => {
+                            setOpen(false); // Close the sheet/mobile menu
+                          }}
                           href="/account"
                           className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
                         >
                           My Account
                         </CustomLink>
                         <CustomLink
+                          onClick={() => {
+                            setOpen(false); // Close the sheet/mobile menu
+                          }}
                           href="/Favorites"
                           className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
                         >
                           Favorites
                         </CustomLink>
                         <CustomLink
+                          onClick={() => {
+                            setOpen(false); // Close the sheet/mobile menu
+                          }}
                           href="/visit"
                           className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
                         >
                           Purchase History
                         </CustomLink>
                         <CustomLink
+                          onClick={() => {
+                            setOpen(false); // Close the sheet/mobile menu
+                          }}
                           href="/order"
                           className="mb-[16px] text-[14px] font-normal leading-6 tracking-[0.25px] text-[#000000]"
                         >
@@ -238,8 +277,38 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                         </CustomLink>
                       </div>
 
-                      <div className="mb-[16px] text-left text-base font-normal leading-8 tracking-[0.15px] text-[#008BB7] underline decoration-[#008BB7] underline-offset-2 flex gap-1">
-                        <CustomLink href='/login'>Log In</CustomLink> / <CustomLink href='/register'>Signup</CustomLink>
+                      <div className="mb-[16px] flex gap-1 text-left text-base font-normal leading-8 tracking-[0.15px] text-[#008BB7] underline decoration-[#008BB7] underline-offset-2">
+                        {/* If customerAccessToken exists, show Log Out, otherwise show Log In and Sign Up */}
+                        {customerAccessToken ? (
+                          <button
+                            onClick={() => {
+                              logout();
+                              setOpen(false); // Close the sheet/mobile menu
+                            }}
+                          >
+                            Log Out
+                          </button>
+                        ) : (
+                          <>
+                            <CustomLink
+                              onClick={() => {
+                                setOpen(false); // Close the sheet/mobile menu
+                              }}
+                              href="/login"
+                            >
+                              Log In
+                            </CustomLink>{' '}
+                            /
+                            <CustomLink
+                              onClick={() => {
+                                setOpen(false); // Close the sheet/mobile menu
+                              }}
+                              href="/register"
+                            >
+                              Signup
+                            </CustomLink>
+                          </>
+                        )}
                       </div>
                     </section>
                   </>
@@ -257,8 +326,10 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                               <div className="flex items-center justify-between">
                                 <CustomLink
                                   className="block flex-1 p-3 pb-1 ps-0 font-normal text-[#353535]"
+                                  onClick={() => {
+                                    setOpen(false); // Close the sheet/mobile menu
+                                  }}
                                   href={group.href}
-                                  onClick={() => setOpen(false)}
                                 >
                                   {group.label}
                                 </CustomLink>
@@ -293,8 +364,10 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                                   <li key={nestedLink.href}>
                                     <CustomLink
                                       className="block w-full pb-2 pl-[2em] text-[#353535]"
+                                      onClick={() => {
+                                        setOpen(false); // Close the sheet/mobile menu
+                                      }}
                                       href={nestedLink.href}
-                                      onClick={() => setOpen(false)}
                                     >
                                       {nestedLink.label}
                                     </CustomLink>
@@ -303,8 +376,10 @@ export const MobileNav = ({ links, logo, homeLogoMobile }: Props) => {
                                 <li>
                                   <CustomLink
                                     className="block w-full pb-2 pl-[2em] text-[#008BB7]"
+                                    onClick={() => {
+                                      setOpen(false); // Close the sheet/mobile menu
+                                    }}
                                     href={group.href}
-                                    onClick={() => setOpen(false)}
                                   >
                                     Shop All
                                   </CustomLink>
