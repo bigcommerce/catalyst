@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
  
 // import Link as NxtLink from 'next/link';
- 
+import Image from 'next/image';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -10,6 +10,7 @@ import { imageIconList } from '../fragments';
 import { LoginForm } from './_components/login-form';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { BcImage } from '~/components/bc-image';
+import PERSONICON from '~/public/accountIcons/person.svg';
  
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
@@ -166,10 +167,12 @@ export default async function Login({ params }: Props) {
                   asChild
                   className="flex h-[42px] w-fit items-center justify-center gap-[5px] rounded-[3px] bg-white p-[5px] px-[10px] text-[#03465c] hover:text-[#03465c]"
                 >
-                  <Link href="/register">
-                    {' '}
-                    <img src={person} alt="" /> {t('CreateAccount.createLink')}
-                  </Link>
+<Link href="/register">
+  {' '}
+  <Image src={PERSONICON} alt={t('CreateAccount.createLink')} width={16} height={16} />
+  {t('CreateAccount.createLink')}
+</Link>  
+ 
                 </Button>
               </div>
               <ul className="flex list-disc flex-col gap-[20px]">

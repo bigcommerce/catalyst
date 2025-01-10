@@ -47,6 +47,7 @@ interface Props extends ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.
   search?: ReactNode;
   homeLogoMobile?: string | Image;
   homeLogoMobileFirst?: string;
+  customerAccessToken?: string;
 }
 
 const Header = ({
@@ -60,10 +61,10 @@ const Header = ({
   search,
   homeLogoMobile,
   homeLogoMobileFirst,
+  customerAccessToken,
 }: Props) => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>(null);
-
   const handleMenuEnter = (linkHref: string) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -138,7 +139,7 @@ const Header = ({
             <LocaleSwitcher activeLocale={activeLocale} locales={locales} />
           ) : null}
 
-          <MobileNav links={links} logo={logo} account={''} homeLogoMobile={homeLogoMobile} />
+          <MobileNav links={links} logo={logo} account={''} homeLogoMobile={homeLogoMobile} customerAccessToken={customerAccessToken} />
         </div>
       </header>
 
