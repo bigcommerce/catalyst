@@ -39,6 +39,7 @@ runtime.registerComponent(
     collection,
     limit,
     additionalProducts,
+    hideOverflow,
     ...props
   }: MSProductsCarouselProps) {
     const additionalProductIds = additionalProducts.map(({ entityId }) => entityId ?? '');
@@ -49,14 +50,21 @@ runtime.registerComponent(
     });
 
     if (isLoading) {
-      return <ProductsCarouselSkeleton className={className} />;
+      return <ProductsCarouselSkeleton className={className} hideOverflow={hideOverflow} />;
     }
 
     if (products == null || products.length === 0) {
-      return <ProductsCarouselSkeleton className={className} />;
+      return <ProductsCarouselSkeleton className={className} hideOverflow={hideOverflow} />;
     }
 
-    return <ProductsCarousel {...props} className={className} products={products} />;
+    return (
+      <ProductsCarousel
+        {...props}
+        className={className}
+        hideOverflow={hideOverflow}
+        products={products}
+      />
+    );
   },
   {
     type: 'primitive-products-carousel',
@@ -121,6 +129,10 @@ runtime.registerComponent(
       }),
       showButtons: Checkbox({
         label: 'Show buttons',
+        defaultValue: true,
+      }),
+      hideOverflow: Checkbox({
+        label: 'Hide overflow',
         defaultValue: true,
       }),
     },
