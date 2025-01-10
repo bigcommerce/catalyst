@@ -66,8 +66,8 @@ export const Link = forwardRef<ComponentRef<'a'>, Props>(
             className,
           )}
           onClick={(e) => {
-            e.preventDefault()
-            window?.b2b?.utils?.openPage('', href.slice(3));
+            e.preventDefault();
+            window.b2b?.utils.openPage(href.split('#')[1] ?? '');
           }}
         >
           {children}

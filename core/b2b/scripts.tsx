@@ -78,7 +78,12 @@ export async function B2BScripts() {
 
   // Uncomment this to use local development scripts
   // if (process.env.NODE_ENV !== 'production') {
-  //   return <B2BLocalDevelopmentScripts />;
+  //   return (
+  //     <>
+  //       <B2BLocalDevelopmentScripts />
+  //       <B2BLogin b2bToken={b2bToken} />
+  //     </>
+  //   );
   // }
 
   return (
