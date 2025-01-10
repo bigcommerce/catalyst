@@ -3,7 +3,6 @@ import { forwardRef, ReactNode, type Ref } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Logo } from '@/vibes/soul/primitives/logo';
-import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
 interface Image {
@@ -94,7 +93,7 @@ export const Footer = forwardRef(function Footer(
     >
       <div className="mx-auto max-w-screen-2xl px-4 py-6 @xl:px-6 @xl:py-10 @4xl:px-8 @4xl:py-12">
         <div className="flex flex-col justify-between gap-x-8 gap-y-12 @3xl:flex-row">
-          <div className="flex flex-col @3xl:w-1/3">
+          <div className="flex flex-col gap-4 @3xl:w-1/3 @3xl:gap-6">
             {/* Logo Information */}
             <Logo
               height={logoHeight}
@@ -107,7 +106,7 @@ export const Footer = forwardRef(function Footer(
             {/* Contact Information */}
             <Stream
               fallback={
-                <div className="animate-pulse text-lg @lg:text-xl">
+                <div className="mb-4 animate-pulse text-lg @lg:text-xl">
                   <div className="flex h-[1lh] items-center">
                     <span className="h-[1ex] w-[10ch] rounded bg-contrast-100" />
                   </div>
@@ -124,7 +123,7 @@ export const Footer = forwardRef(function Footer(
               {(contactInformation) => {
                 if (contactInformation?.address != null || contactInformation?.phone != null) {
                   return (
-                    <div className="text-lg font-medium @lg:text-xl">
+                    <div className="mb-4 text-lg font-medium @lg:text-xl">
                       <h3 className="text-[var(--footer-contact-title,hsl(var(--contrast-300)))]">
                         {contactTitle}
                       </h3>
@@ -144,7 +143,7 @@ export const Footer = forwardRef(function Footer(
             {/* Social Media Links */}
             <Stream
               fallback={
-                <div className="flex animate-pulse items-center gap-3 pt-8 @3xl:pt-10">
+                <div className="flex animate-pulse items-center gap-3">
                   <div className="h-8 w-8 rounded-full bg-contrast-100" />
                   <div className="h-8 w-8 rounded-full bg-contrast-100" />
                   <div className="h-8 w-8 rounded-full bg-contrast-100" />
@@ -156,7 +155,7 @@ export const Footer = forwardRef(function Footer(
               {(socialMediaLinks) => {
                 if (socialMediaLinks != null) {
                   return (
-                    <div className="flex items-center gap-3 pt-8 @3xl:pt-10">
+                    <div className="flex items-center gap-3">
                       {socialMediaLinks.map(({ href, icon }, i) => {
                         return (
                           <Link
