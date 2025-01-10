@@ -1,25 +1,22 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { clsx } from 'clsx';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
+import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
 
 import '../globals.css';
 
+import { fonts } from '~/app/fonts';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { routing } from '~/i18n/routing';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
-
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-});
 
 const RootLayoutMetadataQuery = graphql(`
   query RootLayoutMetadataQuery {
@@ -94,16 +91,22 @@ export default async function RootLayout({ params, children }: Props) {
   const messages = await getMessages();
 
   return (
-    <html className={`${inter.variable} font-sans`} lang={locale}>
-      <body className="flex h-screen min-w-[375px] flex-col">
+    <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+      <body>
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <Providers>{children}</Providers>
+          <NuqsAdapter>
+            <Providers>{children}</Providers>
+          </NuqsAdapter>
         </NextIntlClientProvider>
         <VercelComponents />
       </body>
     </html>
   );
+}
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
 }
 
 export const fetchCache = 'default-cache';

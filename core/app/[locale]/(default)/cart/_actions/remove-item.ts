@@ -1,7 +1,8 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
+import { unstable_expireTag } from 'next/cache';
 import { cookies } from 'next/headers';
+import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -26,6 +27,8 @@ type DeleteCartLineItemInput = Variables['input'];
 export async function removeItem({
   lineItemEntityId,
 }: Omit<DeleteCartLineItemInput, 'cartEntityId'>) {
+  const t = await getTranslations('Cart.Errors');
+
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
@@ -33,11 +36,11 @@ export async function removeItem({
     const cartId = cookieStore.get('cartId')?.value;
 
     if (!cartId) {
-      return { status: 'error', error: 'No cartId cookie found' };
+      throw new Error(t('cartNotFound'));
     }
 
     if (!lineItemEntityId) {
-      return { status: 'error', error: 'No lineItemEntityId found' };
+      throw new Error(t('lineItemNotFound'));
     }
 
     const response = await client.fetch({
@@ -61,14 +64,14 @@ export async function removeItem({
       cookieStore.delete('cartId');
     }
 
-    revalidateTag(TAGS.cart);
+    unstable_expireTag(TAGS.cart);
 
-    return { status: 'success', data: cart };
+    return cart;
   } catch (error: unknown) {
     if (error instanceof Error) {
-      return { status: 'error', error: error.message };
+      throw new Error(error.message);
     }
 
-    return { status: 'error' };
+    throw new Error(t('somethingWentWrong'));
   }
 }

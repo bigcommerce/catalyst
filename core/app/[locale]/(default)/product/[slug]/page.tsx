@@ -1,26 +1,21 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { Suspense } from 'react';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { Breadcrumbs } from '~/components/breadcrumbs';
+import { Stream } from '@/vibes/soul/lib/streamable';
+import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
+import { ProductDetail } from '@/vibes/soul/sections/product-detail';
+import { pricesTransformer } from '~/data-transformers/prices-transformer';
+import { productCardTransformer } from '~/data-transformers/product-card-transformer';
+import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 
-import { Description } from './_components/description';
-import { Details } from './_components/details';
-import { Gallery } from './_components/gallery';
+import { addToCart } from './_actions/add-to-cart';
+import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
-import { RelatedProducts } from './_components/related-products';
 import { Reviews } from './_components/reviews';
-import { Warranty } from './_components/warranty';
-import { getProduct } from './page-data';
+import { getProductData } from './page-data';
 
-interface Props {
-  params: Promise<{ slug: string; locale: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) {
+const getOptionValueIds = ({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) => {
   const { slug, ...options } = searchParams;
 
   return Object.keys(options)
@@ -31,6 +26,147 @@ function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['sear
     .filter(
       (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
     );
+};
+
+const getProduct = async (productPromise: ReturnType<typeof getProductData>) => {
+  const t = await getTranslations('Product.ProductDetails.Accordions');
+
+  const format = await getFormatter();
+  const product = await productPromise;
+
+  const images = removeEdgesAndNodes(product.images).map((image) => ({
+    src: image.url,
+    alt: image.altText,
+  }));
+
+  const customFields = removeEdgesAndNodes(product.customFields);
+
+  const specifications = [
+    {
+      name: t('sku'),
+      value: product.sku,
+    },
+    {
+      name: t('weight'),
+      value: `${product.weight?.value} ${product.weight?.unit}`,
+    },
+    {
+      name: t('condition'),
+      value: product.condition,
+    },
+    ...customFields.map((field) => ({
+      name: field.name,
+      value: field.value,
+    })),
+  ];
+
+  const accordions = [
+    ...(specifications.length
+      ? [
+          {
+            title: t('specifications'),
+            content: (
+              <div className="prose @container">
+                <dl className="flex flex-col gap-4">
+                  {specifications.map((field, index) => (
+                    <div className="grid grid-cols-1 gap-2 @lg:grid-cols-2" key={index}>
+                      <dt>
+                        <strong>{field.name}</strong>
+                      </dt>
+                      <dd>{field.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            ),
+          },
+        ]
+      : []),
+    ...(product.warranty
+      ? [
+          {
+            title: t('warranty'),
+            content: (
+              <div className="prose" dangerouslySetInnerHTML={{ __html: product.warranty }} />
+            ),
+          },
+        ]
+      : []),
+  ];
+
+  return {
+    id: product.entityId.toString(),
+    title: product.name,
+    description: (
+      <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />
+    ),
+    href: product.path,
+    images: product.defaultImage
+      ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
+      : images,
+    price: pricesTransformer(product.prices, format),
+    subtitle: product.brand?.name,
+    rating: product.reviewSummary.averageRating,
+    accordions,
+  };
+};
+
+const getFields = async (productPromise: ReturnType<typeof getProductData>) => {
+  const product = await productPromise;
+
+  return await productOptionsTransformer(product.productOptions);
+};
+
+const getCtaLabel = async (productPromise: ReturnType<typeof getProductData>) => {
+  const t = await getTranslations('Product.ProductDetails.Submit');
+
+  const product = await productPromise;
+
+  if (product.availabilityV2.status === 'Unavailable') {
+    return t('unavailable');
+  }
+
+  if (product.availabilityV2.status === 'Preorder') {
+    return t('preorder');
+  }
+
+  if (!product.inventory.isInStock) {
+    return t('outOfStock');
+  }
+
+  return t('addToCart');
+};
+
+const getCtaDisabled = async (productPromise: ReturnType<typeof getProductData>) => {
+  const product = await productPromise;
+
+  if (product.availabilityV2.status === 'Unavailable') {
+    return true;
+  }
+
+  if (product.availabilityV2.status === 'Preorder') {
+    return false;
+  }
+
+  if (!product.inventory.isInStock) {
+    return true;
+  }
+
+  return false;
+};
+
+const getRelatedProducts = async (productPromise: ReturnType<typeof getProductData>) => {
+  const format = await getFormatter();
+  const product = await productPromise;
+
+  const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
+
+  return productCardTransformer(relatedProducts, format);
+};
+
+interface Props {
+  params: Promise<{ slug: string; locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
@@ -39,15 +175,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const productId = Number(params.slug);
   const optionValueIds = getOptionValueIds({ searchParams });
 
-  const product = await getProduct({
+  const product = await getProductData({
     entityId: productId,
     optionValueIds,
     useDefaultOptionSelections: true,
   });
-
-  if (!product) {
-    return {};
-  }
 
   const { pageTitle, metaDescription, metaKeywords } = product.seo;
   const { url, altText: alt } = product.defaultImage || {};
@@ -83,41 +215,49 @@ export default async function Product(props: Props) {
 
   const optionValueIds = getOptionValueIds({ searchParams });
 
-  const product = await getProduct({
+  const productPromise = getProductData({
     entityId: productId,
     optionValueIds,
     useDefaultOptionSelections: true,
   });
 
-  if (!product) {
-    return notFound();
-  }
-
-  const category = removeEdgesAndNodes(product.categories).at(0);
-
   return (
     <>
-      {category && <Breadcrumbs category={category} />}
+      <ProductDetail
+        action={addToCart}
+        additionalInformationLabel={t('ProductDetails.additionalInformation')}
+        ctaDisabled={getCtaDisabled(productPromise)}
+        ctaLabel={getCtaLabel(productPromise)}
+        decrementLabel={t('ProductDetails.decreaseQuantity')}
+        fields={getFields(productPromise)}
+        incrementLabel={t('ProductDetails.increaseQuantity')}
+        prefetch={true}
+        product={getProduct(productPromise)}
+        quantityLabel={t('ProductDetails.quantity')}
+        thumbnailLabel={t('ProductDetails.thumbnail')}
+      />
 
-      <div className="mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
-        <Gallery product={product} />
-        <Details product={product} />
-        <div className="lg:col-span-2">
-          <Description product={product} />
-          <Warranty product={product} />
-          <Suspense fallback={t('loading')}>
-            <Reviews productId={product.entityId} />
-          </Suspense>
-        </div>
-      </div>
+      <FeaturedProductsCarousel
+        cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
+        emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
+        emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
+        nextLabel={t('RelatedProducts.nextProducts')}
+        previousLabel={t('RelatedProducts.previousProducts')}
+        products={getRelatedProducts(productPromise)}
+        scrollbarLabel={t('RelatedProducts.scrollbar')}
+        title={t('RelatedProducts.title')}
+      />
 
-      <Suspense fallback={t('loading')}>
-        <RelatedProducts productId={product.entityId} />
-      </Suspense>
+      <Reviews productId={productId} />
 
-      <ProductViewed product={product} />
+      <Stream fallback={null} value={productPromise}>
+        {(product) => (
+          <>
+            <ProductSchema product={product} />
+            <ProductViewed product={product} />
+          </>
+        )}
+      </Stream>
     </>
   );
 }
-
-export const runtime = 'edge';
