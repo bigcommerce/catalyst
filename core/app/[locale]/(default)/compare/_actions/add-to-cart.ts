@@ -58,7 +58,7 @@ export const addToCart = async (data: FormData) => {
     cookieStore.set({
       name: 'cartId',
       value: cart.entityId,
-      httpOnly: true,
+      httpOnly: false,
       sameSite: 'lax',
       secure: true,
       path: '/',

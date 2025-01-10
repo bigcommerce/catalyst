@@ -183,7 +183,7 @@ export async function handleAddToCart(
     cookieStore.set({
       name: 'cartId',
       value: cart.entityId,
-      httpOnly: true,
+      httpOnly: false,
       sameSite: 'lax',
       secure: true,
       path: '/',
