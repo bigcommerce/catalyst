@@ -48,7 +48,6 @@ const menu = Shape({
   type: {
     background: Color({ label: 'Background', defaultValue: hsl(colors.background) }),
     border: Color({ label: 'Border', defaultValue: hsl(colors.foreground, 0.05) }),
-    divider: Color({ label: 'Divider', defaultValue: hsl(colors.foreground, 0.05) }),
   },
 });
 
