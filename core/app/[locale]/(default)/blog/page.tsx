@@ -1,61 +1,90 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
+import { SearchParams } from 'nuqs';
+import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
-import { BlogPostCard } from '~/components/blog-post-card';
-import { Pagination } from '~/components/ui/pagination';
+import { FeaturedBlogPostList } from '@/vibes/soul/sections/featured-blog-post-list';
+import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
-import { getBlogPosts } from './page-data';
+import { getBlog, getBlogMetaData, getBlogPosts } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Promise<SearchParams>;
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
-  const searchParams = await props.searchParams;
-  const t = await getTranslations('Blog');
-  const blogPosts = await getBlogPosts(searchParams);
+const defaultPostLimit = 9;
 
-  return {
-    title: blogPosts?.name ?? t('title'),
-    description:
-      blogPosts?.description && blogPosts.description.length > 150
-        ? `${blogPosts.description.substring(0, 150)}...`
-        : blogPosts?.description,
-  };
+const searchParamsCache = createSearchParamsCache({
+  tag: parseAsString,
+  before: parseAsString,
+  after: parseAsString,
+  limit: parseAsInteger.withDefault(defaultPostLimit),
+});
+
+export async function generateMetadata(): Promise<Metadata> {
+  return await getBlogMetaData();
+}
+
+async function listBlogPosts(searchParamsPromise: Promise<SearchParams>) {
+  const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
+  const blogPosts = await getBlogPosts(searchParamsParsed);
+  const posts = blogPosts?.posts ?? [];
+
+  return posts;
+}
+
+async function getEmptyStateTitle(): Promise<string | null> {
+  const t = await getTranslations('Blog.Empty');
+
+  return t('title');
+}
+
+async function getEmptyStateSubtitle(): Promise<string | null> {
+  const t = await getTranslations('Blog.Empty');
+
+  return t('subtitle');
+}
+
+async function getPaginationInfo(searchParamsPromise: Promise<SearchParams>) {
+  const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
+  const blogPosts = await getBlogPosts(searchParamsParsed);
+
+  return pageInfoTransformer(blogPosts?.pageInfo ?? defaultPageInfo);
 }
 
 export default async function Blog(props: Props) {
-  const searchParams = await props.searchParams;
-  const blogPosts = await getBlogPosts(searchParams);
+  const searchParamsParsed = searchParamsCache.parse(await props.searchParams);
+  const { tag } = searchParamsParsed;
+  const blog = await getBlog();
 
-  if (!blogPosts) {
+  if (!blog) {
     return notFound();
   }
 
+  const tagCrumb = tag ? [{ label: tag, href: '#' }] : [];
+
   return (
-    <div className="mx-auto max-w-screen-xl">
-      <h1 className="mb-8 text-3xl font-black lg:text-5xl">{blogPosts.name}</h1>
-
-      <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-        {blogPosts.posts.items.map((post) => {
-          return (
-            <li key={post.entityId}>
-              <BlogPostCard data={post} />
-            </li>
-          );
-        })}
-      </ul>
-
-      <Pagination
-        endCursor={blogPosts.posts.pageInfo.endCursor ?? undefined}
-        hasNextPage={blogPosts.posts.pageInfo.hasNextPage}
-        hasPreviousPage={blogPosts.posts.pageInfo.hasPreviousPage}
-        startCursor={blogPosts.posts.pageInfo.startCursor ?? undefined}
-      />
-    </div>
+    <FeaturedBlogPostList
+      breadcrumbs={[
+        {
+          label: 'Home',
+          href: '/',
+        },
+        {
+          label: blog.name,
+          href: tag ? blog.path : '#',
+        },
+        ...tagCrumb,
+      ]}
+      description={blog.description}
+      emptyStateSubtitle={getEmptyStateSubtitle()}
+      emptyStateTitle={getEmptyStateTitle()}
+      paginationInfo={getPaginationInfo(props.searchParams)}
+      placeholderCount={6}
+      posts={listBlogPosts(props.searchParams)}
+      title={blog.name}
+    />
   );
 }
-
-export const runtime = 'edge';

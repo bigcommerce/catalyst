@@ -1,9 +1,18 @@
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
+// TODO: Add recaptcha token
+// import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
-import { RegisterCustomerForm } from './_components/register-customer-form';
+import { SignUpSection } from '@/vibes/soul/sections/sign-up-section';
+import { formFieldTransformer } from '~/data-transformers/form-field-transformer';
+import {
+  CUSTOMER_FIELDS_TO_EXCLUDE,
+  FULL_NAME_FIELDS,
+} from '~/data-transformers/form-field-transformer/utils';
+import { exists } from '~/lib/utils';
+
+import { registerCustomer } from './_actions/register-customer';
 import { getRegisterCustomerQuery } from './page-data';
 
 export async function generateMetadata() {
@@ -26,19 +35,24 @@ export default async function Register() {
     notFound();
   }
 
-  const { addressFields, customerFields, reCaptchaSettings } = registerCustomerData;
-  const reCaptcha = await bypassReCaptcha(reCaptchaSettings);
+  const { addressFields, customerFields } = registerCustomerData;
+  // const reCaptcha = await bypassReCaptcha(reCaptchaSettings);
 
   return (
-    <div className="mx-auto mb-10 mt-8 text-base lg:w-2/3">
-      <h1 className="my-6 text-4xl font-black lg:my-8 lg:text-5xl">{t('heading')}</h1>
-      <RegisterCustomerForm
-        addressFields={addressFields}
-        customerFields={customerFields}
-        reCaptchaSettings={reCaptcha}
-      />
-    </div>
+    <SignUpSection
+      action={registerCustomer}
+      fields={[
+        addressFields
+          .filter((field) => FULL_NAME_FIELDS.includes(field.entityId))
+          .map(formFieldTransformer)
+          .filter(exists),
+        ...customerFields
+          .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
+          .map(formFieldTransformer)
+          .filter(exists),
+      ]}
+      submitLabel={t('Form.submit')}
+      title={t('heading')}
+    />
   );
 }
-
-export const runtime = 'edge';

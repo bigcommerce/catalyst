@@ -1,9 +1,10 @@
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { TabHeading } from '../_components/tab-heading';
+import { AccountSettingsSection } from '../../../../../vibes/soul/sections/account-settings-section';
 
-import { UpdateSettingsForm } from './_components/update-settings-form';
+import { changePassword } from './_actions/change-password';
+import { updateCustomer } from './_actions/update-customer';
 import { getCustomerSettingsQuery } from './page-data';
 
 export async function generateMetadata() {
@@ -15,20 +16,17 @@ export async function generateMetadata() {
 }
 
 export default async function Settings() {
-  const customerSettings = await getCustomerSettingsQuery({
-    address: { filters: { entityIds: [4, 5, 6, 7] } },
-  });
+  const customerSettings = await getCustomerSettingsQuery();
 
   if (!customerSettings) {
     notFound();
   }
 
   return (
-    <div className="mx-auto lg:w-2/3">
-      <TabHeading heading="settings" />
-      <UpdateSettingsForm {...customerSettings} />
-    </div>
+    <AccountSettingsSection
+      account={customerSettings.customerInfo}
+      changePasswordAction={changePassword}
+      updateAccountAction={updateCustomer}
+    />
   );
 }
-
-export const runtime = 'edge';

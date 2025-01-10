@@ -5,16 +5,14 @@ import { useEffect } from 'react';
 import { FragmentOf } from '~/client/graphql';
 import { bodl } from '~/lib/bodl';
 
-import { CartItemFragment } from './cart-item';
-import { CheckoutSummaryFragment } from './checkout-summary';
+import { DigitalItemFragment, PhysicalItemFragment } from '../page-data';
 
-type FragmentResult = FragmentOf<typeof CartItemFragment>;
-type PhysicalItem = FragmentResult['physicalItems'][number];
-type DigitalItem = FragmentResult['digitalItems'][number];
+type PhysicalItem = FragmentOf<typeof PhysicalItemFragment>;
+type DigitalItem = FragmentOf<typeof DigitalItemFragment>;
 type lineItem = PhysicalItem | DigitalItem;
 
 interface Props {
-  checkout: FragmentOf<typeof CheckoutSummaryFragment> | null;
+  subtotal?: number;
   currencyCode: string;
   lineItems: lineItem[];
 }
@@ -35,14 +33,14 @@ const lineItemTransform = (item: lineItem) => {
   };
 };
 
-export const CartViewed = ({ checkout, currencyCode, lineItems }: Props) => {
+export const CartViewed = ({ subtotal, currencyCode, lineItems }: Props) => {
   useEffect(() => {
     bodl.cart.cartViewed({
       currency: currencyCode,
-      cart_value: checkout?.grandTotal?.value ?? 0,
+      cart_value: subtotal ?? 0,
       line_items: lineItems.map(lineItemTransform),
     });
-  }, [currencyCode, lineItems, checkout]);
+  }, [currencyCode, lineItems, subtotal]);
 
   return null;
 };
