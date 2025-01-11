@@ -225,6 +225,41 @@ export const Details = ({
     store_pdp_product_in_localstorage(product);
   }, [product]);
 
+  useEffect(() => {
+    console.log('Product Details:', {
+      basic: {
+        name: product.name,
+        entityId: product.entityId,
+        sku: product.sku,
+        mpn: product.mpn,
+        upc: product.upc,
+        brand: product.brand?.name,
+        variantId: product.variants?.edges?.[0]?.node?.entityId || 0,
+      },
+      pricing: {
+        price: product.prices?.price,
+        basePrice: product.prices?.basePrice,
+        priceRange: product.prices?.priceRange,
+      },
+      inventory: {
+        minPurchaseQuantity: product.minPurchaseQuantity,
+        maxPurchaseQuantity: product.maxPurchaseQuantity,
+        availability: product.availabilityV2?.description,
+      },
+      specs: {
+        condition: product.condition,
+        weight: product.weight,
+        customFields: removeEdgesAndNodes(product.customFields),
+      },
+      images: {
+        defaultImage: product.defaultImage,
+        allImages: removeEdgesAndNodes(product.images),
+      },
+      variants: removeEdgesAndNodes(product.variants),
+      options: removeEdgesAndNodes(product.productOptions),
+    });
+  }, [product]);
+
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
     if (selectedId) {
