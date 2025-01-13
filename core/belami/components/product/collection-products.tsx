@@ -2,21 +2,20 @@
 
 import React from 'react';
 import { useState, useEffect } from 'react';
-
 import Link from 'next/link';
 import Image from 'next/image';
-//import { BcImage } from '~/components/bc-image';
-//import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import noImage from '~/public/no-image.svg';
-import blurredRectangle from '~/public/other/blurred-rectangle.jpg';
 
-//import { Carousel } from '~/components/ui/carousel2';
-//import { ProductCard } from '~/components/product-card';
+import {
+  Carousel,
+  CarouselButtons,
+  CarouselContent,
+  CarouselItem,
+  CarouselScrollbar,
+} from '~/belami/components/carousel';
 
 import { useFormatter } from 'next-intl';
-
-import { cn } from '~/lib/utils';
 
 import { ReviewSummary } from '~/belami/components/reviews';
 
@@ -30,14 +29,11 @@ const searchColorsHEX: DynamicObject = searchColors;
 
 //const useDefaultPrices = process.env.NEXT_PUBLIC_USE_DEFAULT_PRICES === 'true';
 const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
-//const useAsyncMode = false;
 
 interface Props {
   collection: string,
   products: any[],
-  total?: number,
-  useDefaultPrices?: boolean,
-  moreLink?: string | null
+  useDefaultPrices?: boolean
 }
 
 function getDiscount(price: number, sale: number): number | null {
@@ -69,7 +65,7 @@ function ColorSwatches({ variants, onImageClick }: any) {
   )
 }
 
-function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = null, isLoading = false, isLoaded = false, className = {} }: any) {
+function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = null, isLoading = false, isLoaded = false }: any) {
 
   const format = useFormatter();
   const currency = 'USD';
@@ -81,8 +77,8 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
   }
 
   return (
-    <article data-id={hit.objectID} className={cn("w-full product flex flex-col h-full", className)}>
-      <div>
+    <article data-id={hit.objectID} className="w-full product flex flex-col h-full rounded-none">
+      <div className="p-0">
         <div className="flex my-0 mx-auto pb-full w-full h-auto overflow-hidden pb-[100%] relative">
           <figure className="absolute left-0 top-0 w-full h-full">
             <Link href={hit.url} className="w-full h-full flex justify-center items-center align-middle bg-white">
@@ -95,7 +91,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
         </div>
       </div>
       <div className="flex-1 flex flex-col">
-        <div className="flex-1 p-4 text-center">
+        <div className="flex-1 p-0 text-center">
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
           <h2 className="text-lg font-medium mt-2"><Link href={hit.url}>{hit.name}</Link></h2>
           {useAsyncMode && !useDefaultPrices ? (
@@ -144,29 +140,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
   );
 }
 
-
-function MoreItem({ total = 0, moreLink = null, className = {} }: any) {
-  return (total > 0 &&
-    <article className={cn("collection-products-more w-full flex flex-col h-full", className)}>
-      <div>
-        <div className="flex my-0 mx-auto pb-full w-full h-auto overflow-hidden pb-[100%] relative">
-          <figure className="absolute left-0 top-0 w-full h-full">
-            <div className="w-full h-full flex flex-col justify-center items-center align-middle bg-brand-300 bg-no-repeat bg-cover" style={{backgroundImage: `url(${blurredRectangle.src})`}}>
-              <h2 className="flex text-lg font-medium text-white">+ {total} Items</h2>
-              {moreLink && <Link href={moreLink} className="mx-auto mt-1 flex items-center justify-center space-x-2 px-8 h-10 rounded uppercase bg-white text-gray-700">Shop</Link>}
-            </div>
-          </figure>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-
-
-
-export function CollectionProducts({collection, products, total = 0, useDefaultPrices = false, moreLink = null }: Props) {
-  const breakpoints = ["sm:flex", "md:flex", "lg:flex", "xl:flex", "2xl:flex"];
+export function CollectionProducts({ collection, products, useDefaultPrices = false }: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -209,12 +183,16 @@ export function CollectionProducts({collection, products, total = 0, useDefaultP
 
   return (
     products && products.length > 0 &&
-    <div className="carousel-container p-4 xl:p-8 bg-gray-50 mt-8 mb-12">
-      <h2 className="text-3xl font-black text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535]">{`More from ${collection} collection`}</h2>
-      <div className="mt-5 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 xl:gap-8">
-        {products.map((item: any, index: number) => (
+    <div className="p-4 xl:p-8 bg-gray-50 mt-8 mb-12">
+      <div className="md:flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">
+        <h2 className="text-3xl font-black text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535] md:flex-grow md:mr-auto">{`More from ${collection} collection`}</h2>
+        <Link href={`/search?collection[0]=${encodeURIComponent(collection)}`} className="md:flex-none text-brand-500 text-xl">Shop the Collection</Link>
+      </div>
+      <Carousel className="overflow-x-hidden mb-16 mt-5 lg:mt-6">
+        <CarouselContent className="mb-10">
+        {products.map((item: any) => (
+          <CarouselItem className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/5" key={item.objectID}>
           <CustomItem 
-            key={item.objectID} 
             hit={item} 
             useDefaultPrices={useDefaultPrices}
             price={
@@ -229,36 +207,13 @@ export function CollectionProducts({collection, products, total = 0, useDefaultP
             }
             isLoading={isLoading}
             isLoaded={isLoaded}
-            className={cn(
-              index > 0 && `hidden`,
-              index == 1 && total == 0 && `${breakpoints[0]}`,
-              index == 1 && total > 0 && `${breakpoints[1]}`,
-              index == 2 && total == 0 && `${breakpoints[1]}`,
-              index == 2 && total > 0 && `${breakpoints[2]}`,
-              index == 3 && total == 0 && `${breakpoints[2]}`,
-              index == 3 && total > 0 && `${breakpoints[2]}`,
-              index == 4 && total == 0 && `${breakpoints[2]}`,
-              index == 4 && total > 0 && `${breakpoints[2]}`,
-              index == 5 && total == 0 && `${breakpoints[2]}`,
-              index == 5 && total > 0 && `${breakpoints[3]}`,
-              index == 6 && total == 0 && `${breakpoints[3]}`,
-              index == 6 && total > 0 && `${breakpoints[3]}`,
-              index == 7 && total == 0 && `${breakpoints[3]}`,
-              index == 7 && total > 0 && `${breakpoints[4]}`,
-              index == 8 && total == 0 && `${breakpoints[4]}`,
-              index == 8 && total > 0 && `${breakpoints[4]}`,
-              index == 9 && total == 0 && `${breakpoints[4]}`,
-              index == 9 && total > 0 && `${breakpoints[4]}`,
-            )}
-            /*
-            className={cn(
-              index > 0 && index < 6 && `hidden ${breakpoints[index]}` 
-            )}
-            */ 
           />
+          </CarouselItem>
         ))}
-        <MoreItem total={total} moreLink={moreLink} />
-      </div>
+        </CarouselContent>
+        <CarouselScrollbar className="carousel-scrollbar" />
+        <CarouselButtons className="carousel-arrows" />
+      </Carousel>
     </div>
   );
 }

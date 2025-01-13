@@ -1,3 +1,5 @@
+// THIS MIDDLEWARE IS DISABLED IN FAVOR OF CLIENT COMPONENT BECAUSE OF BOTS.
+
 import { NextRequest } from 'next/server';
 import { MiddlewareFactory } from './compose-middlewares';
 import { cookies } from 'next/headers';
@@ -48,7 +50,7 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
 
     if (referrerId && Number.isInteger(referrerId) && referrerId > 0 && log === 1) {
       cookieStore.set('referrerId', referrerId);
-      storeReferrerLog(referrerId, source, keywords, clickId, referrer || 'Direct', ip, request.nextUrl.pathname);
+      await storeReferrerLog(referrerId, source, keywords, clickId, referrer || 'Direct', ip, request.nextUrl.pathname);
     }
 
     return middleware(request, event);

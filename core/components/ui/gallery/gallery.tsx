@@ -57,6 +57,7 @@ interface Props {
 }
 
 interface WishlistData {
+  [x: string]: any;
   wishlists: any[];
   product: {
     entityId: number;
@@ -538,16 +539,20 @@ const Gallery = ({
               )}
 
               {/* Wishlist button in top right corner */}
+              {/* Wishlist button in top right corner */}
               {wishlistData && (
                 <div className="absolute right-4 top-4 z-10">
                   <WishlistAddToList
                     wishlists={wishlistData.wishlists}
                     hasPreviousPage={false}
                     product={wishlistData.product}
+                    isAuthenticated={wishlistData.isAuthenticated}
+                    onGuestClick={() => {
+                      window.location.href = '/login';
+                    }}
                   />
                 </div>
               )}
-
               <div
                 className="absolute bottom-4 right-4 m-1 h-6 w-6 cursor-pointer rounded-full bg-white object-cover p-1 opacity-70 transition-opacity hover:opacity-100"
                 onClick={() => openPopup()}

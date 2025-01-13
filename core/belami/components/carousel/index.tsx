@@ -2,7 +2,7 @@
 
 import clsx from 'clsx';
 import useEmblaCarousel, { type UseEmblaCarouselType } from 'embla-carousel-react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ChevronLeft,ChevronRight } from 'lucide-react';
 import { useCallback, useEffect, useState } from 'react';
 import * as React from 'react';
 
@@ -149,7 +149,7 @@ function CarouselButtons({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
         onClick={scrollPrev}
         title="Previous"
       >
-        <ArrowLeft strokeWidth={1.5} />
+        <ChevronLeft strokeWidth={3} />
       </button>
       <button
         type="button"
@@ -158,7 +158,7 @@ function CarouselButtons({ className, ...rest }: React.HTMLAttributes<HTMLDivEle
         onClick={scrollNext}
         title="Next"
       >
-        <ArrowRight strokeWidth={1.5} />
+        <ChevronRight strokeWidth={3} />
       </button>
     </div>
   );

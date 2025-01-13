@@ -98,7 +98,7 @@ export function HitsPerPage(props: UseHitsPerPageProps & { label?: string }) {
       <ul>
         {items.map((option: { label: string; value: string }) => (
           <li key={option.value} value={option.value} className={cn(
-            'cursor-pointer', 
+            'cursor-pointer whitespace-nowrap', 
             props.classNames.item, 
             option.value === currentValue && props.classNames.active
           )} onClick={() => refine(option.value)}>

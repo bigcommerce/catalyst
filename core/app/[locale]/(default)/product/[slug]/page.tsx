@@ -7,20 +7,18 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import Link from 'next/link';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
-import { SimilarProducts } from '../../../../../components/ui/pdp/belami-similar-products-pdp';
 import { Description } from './_components/description';
 import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';
 import { ProductViewed } from './_components/product-viewed';
 import { Warranty } from './_components/warranty';
 import { getProduct } from './page-data';
-import { ReviewSummary } from './_components/review-summary';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { GetProductMetaFields, GetProductVariantMetaFields } from '~/components/management-apis';
 import { ProductProvider } from '~/components/common-context/product-provider';
-import { RelatedProducts } from './related-products';
-import { CollectionProducts } from './collection-products';
-import { SitevibesReviews } from './sitevibes-reviews';
+import { RelatedProducts } from '~/belami/components/product';
+import { CollectionProducts } from '~/belami/components/product';
+import { SiteVibesReviews } from '~/belami/components/sitevibes';
 import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-algolia-products';
 import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
 
@@ -244,7 +242,8 @@ export default async function ProductPage(props: Props) {
                 galleryExpandIcon={assets.galleryExpandIcon}
                 productMpn={product.mpn}
                 wishlistData={{
-                  wishlists: wishlistData?.wishlists || [],
+                  wishlists: customerAccessToken ? wishlistData?.wishlists || [] : [],
+                  isAuthenticated: !!customerAccessToken,
                   product: {
                     entityId: product.entityId,
                     variantEntityId: product.variants.edges?.[0]?.node.entityId,
@@ -293,7 +292,7 @@ export default async function ProductPage(props: Props) {
                 useDefaultPrices={useDefaultPrices}
               />
               <Warranty product={product} />
-              <SitevibesReviews product={product} category={categoryWithBreadcrumbs} />
+              <SiteVibesReviews product={product} category={categoryWithBreadcrumbs} />
             </div>
           </div>
           <ProductViewed product={product} />

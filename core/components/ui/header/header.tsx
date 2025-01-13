@@ -47,6 +47,7 @@ interface Props extends ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.
   search?: ReactNode;
   homeLogoMobile?: string | Image;
   homeLogoMobileFirst?: string;
+  customerAccessToken?: string;
 }
 
 const Header = ({
@@ -60,10 +61,10 @@ const Header = ({
   search,
   homeLogoMobile,
   homeLogoMobileFirst,
+  customerAccessToken,
 }: Props) => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>(null);
-
   const handleMenuEnter = (linkHref: string) => {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
@@ -91,9 +92,9 @@ const Header = ({
 
   return (
     <div className={cn('relative', className)}>
-      <header className="main-header flex h-[92px] !max-w-[100%] items-center justify-between gap-1 overflow-y-visible bg-white p-[0px_4em] !px-[40px] 2xl:container sm:px-10 lg:gap-8 lg:px-12 2xl:mx-auto 2xl:px-0 mb-[10px] lg:mb-[33px] md:mb-[46px] sm:mb-[10px] xl:mb-0">
+      <header className="main-header flex h-[92px] !max-w-[100%] items-center justify-between gap-1 overflow-y-visible bg-white p-[0px_4em] !px-[40px] 2xl:container sm:px-10 lg:gap-6 lg:px-12 2xl:mx-auto 2xl:px-0 mb-[10px] lg:mb-[33px] md:mb-[46px] sm:mb-[10px] xl:mb-0">
         <div className="flex items-center space-x-4">
-          <CustomLink className="home-logo-one overflow-hidden text-ellipsis py-3" href="/">
+          <CustomLink className="home-logo-one w-[155px] overflow-hidden text-ellipsis py-3 hidden lg:block" href="/">
             {typeof logo === 'object' ? (
               <div className="hidden items-center space-x-2 lg:flex">
                 <BcImage
@@ -110,7 +111,7 @@ const Header = ({
             )}
           </CustomLink>
 
-          <CustomLink className="home-logo-two overflow-hidden text-ellipsis pt-3 md:pl-5" href="/">
+          <CustomLink className="home-logo-two w-[30px] overflow-hidden text-ellipsis pt-3 md:pl-5 block lg:hidden" href="/">
             {typeof logo === 'object' && homeLogoMobileFirst ? (
               <div className="second-home-logo block lg:hidden">
                 <BcImage
@@ -130,7 +131,7 @@ const Header = ({
           </CustomLink>
         </div>
 
-        <div className="header-search-bar flex flex-grow items-center gap-2 lg:gap-4">
+        <div className="header-search-bar flex flex-grow items-center gap-2 lg:gap-4 justify-end">
           {search}
           <nav className="header-nav-support flex gap-2 lg:gap-4">{account}</nav>
           <nav className="header-cart flex gap-2 lg:gap-9">{cart}</nav>
@@ -138,7 +139,7 @@ const Header = ({
             <LocaleSwitcher activeLocale={activeLocale} locales={locales} />
           ) : null}
 
-          <MobileNav links={links} logo={logo} account={''} homeLogoMobile={homeLogoMobile} />
+          <MobileNav links={links} logo={logo} account={''} homeLogoMobile={homeLogoMobile} customerAccessToken={customerAccessToken} />
         </div>
       </header>
 
@@ -172,7 +173,7 @@ const Header = ({
                   {openMenuId === link.href && (
                     <div
                       id={`nav-menu-content-${link.href}`}
-                      className={`parent-menu-${menuIndex} absolute left-0 top-[4.8em] z-50 w-auto bg-white py-8 shadow-xl`}
+                      className={`parent-menu-${menuIndex} absolute left-0 top-[4.8em] z-[199] w-auto bg-white py-8 shadow-xl`}
                       onMouseEnter={() => handleMenuEnter(link.href)}
                       onMouseLeave={handleMenuLeave}
                     >
@@ -254,10 +255,10 @@ const Header = ({
         </NavigationMenuPrimitive.Root>
 
         <nav className="static-menu-class relative right-[1em] hidden items-center gap-10 text-[16px] font-normal text-[#008bb7] lg:flex lg:gap-5">
-          <CustomLink href="/new" className="font-semiboldd hover:text-primary">
+          <CustomLink href="/search?is_new=true" className="font-semiboldd hover:text-primary">
             New
           </CustomLink>
-          <CustomLink href="/sale" className="font-semiboldd hover:text-primary">
+          <CustomLink href="/search?on_sale=true" className="font-semiboldd hover:text-primary">
             Sale
           </CustomLink>
           <CustomLink href="/blog" className="font-semiboldd hover:text-primary">
