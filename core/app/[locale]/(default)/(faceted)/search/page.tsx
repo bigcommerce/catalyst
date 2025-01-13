@@ -1,5 +1,6 @@
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { createSearchParamsCache } from 'nuqs/server';
+import PLazy from 'p-lazy';
 import { cache } from 'react';
 
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
@@ -244,7 +245,10 @@ export async function generateMetadata() {
   };
 }
 
-export default async function Search(props: Props) {
+export default async function Search(pageProps: Props) {
+  const searchParams = PLazy.from(() => pageProps.searchParams);
+  const props = { searchParams };
+
   return (
     <ProductsListSection
       breadcrumbs={getBreadcrumbs()}
