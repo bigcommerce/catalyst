@@ -24,6 +24,11 @@ interface SubSubMenuItem {
   link?: { href?: string; target?: string };
 }
 
+interface SecondaryMenuItem {
+  title?: string;
+  link?: { href?: string; target?: string };
+}
+
 interface MSMegaMenuProps {
   classNames?: {
     root?: string,
@@ -32,10 +37,11 @@ interface MSMegaMenuProps {
   };
   variant?: string;
   menuItems: MenuItem[];
+  secondaryMenuItems: SecondaryMenuItem[];
 }
 
 runtime.registerComponent(
-  function MSMegaMenu({ classNames, variant, menuItems }: MSMegaMenuProps) {
+  function MSMegaMenu({ classNames, variant, menuItems, secondaryMenuItems }: MSMegaMenuProps) {
     return (
       <MegaMenu
         menuItems={menuItems.map(({ title, link }, index) => {
@@ -120,6 +126,18 @@ runtime.registerComponent(
                 return menuItem?.title || 'Menu item';
               },
             }),
+          },
+        }),
+        getItemLabel(menuItem) {
+          return menuItem?.title || 'Menu item';
+        },
+      }),
+      secondaryMenuItems: List({
+        label: 'Secondary Menu Items',
+        type: Shape({
+          type: {
+            title: TextInput({ label: 'Title', defaultValue: 'Text' }),
+            link: Link({ label: 'Link' }),
           },
         }),
         getItemLabel(menuItem) {
