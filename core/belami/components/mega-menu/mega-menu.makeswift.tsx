@@ -11,6 +11,16 @@ interface MenuItem {
 
 interface SubMenuItem {
   title?: string;
+  imageSrc?: string;
+  imageAlt?: string;
+  link?: { href?: string; target?: string };
+  subSubMenuItems: SubSubMenuItem[];
+}
+
+interface SubSubMenuItem {
+  title?: string;
+  imageSrc?: string;
+  imageAlt?: string;
   link?: { href?: string; target?: string };
 }
 
@@ -88,6 +98,22 @@ runtime.registerComponent(
                 type: {
                   title: TextInput({ label: 'Title', defaultValue: 'Text' }),
                   link: Link({ label: 'Link' }),
+                  imageSrc: Image({ label: 'Image' }),
+                  imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
+                  subSubMenuItems: List({
+                    label: 'Menu Items',
+                    type: Shape({
+                      type: {
+                        title: TextInput({ label: 'Title', defaultValue: 'Text' }),
+                        link: Link({ label: 'Link' }),
+                        imageSrc: Image({ label: 'Image' }),
+                        imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
+                      },
+                    }),
+                    getItemLabel(menuItem) {
+                      return menuItem?.title || 'Menu item';
+                    },
+                  }),
                 },
               }),
               getItemLabel(menuItem) {
