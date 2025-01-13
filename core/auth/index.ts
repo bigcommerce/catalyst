@@ -204,7 +204,12 @@ const config = {
   ],
 } satisfies NextAuthConfig;
 
-const { handlers, auth, signIn, signOut } = NextAuth(config);
+const { handlers, auth, signIn: nextAuthSignIn, signOut } = NextAuth(config);
+
+const signIn = (
+  credentials: z.infer<typeof Credentials>,
+  options: { redirect?: boolean | undefined; redirectTo?: string },
+) => nextAuthSignIn('credentials', { ...credentials, ...options });
 
 const getSessionCustomerAccessToken = async () => {
   try {
