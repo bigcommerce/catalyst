@@ -3,6 +3,8 @@ import { strict } from 'assert';
 
 import { runtime } from '~/lib/makeswift/runtime';
 
+import '~/lib/makeswift/components';
+
 strict(process.env.MAKESWIFT_SITE_API_KEY, 'MAKESWIFT_SITE_API_KEY is required');
 
 const defaultVariants: Font['variants'] = [
