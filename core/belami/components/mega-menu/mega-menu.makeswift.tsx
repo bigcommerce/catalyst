@@ -1,9 +1,15 @@
-import { Image, Link, List, Shape, TextInput } from '@makeswift/runtime/controls';
+import { Image, Link, List, Select, Shape, TextInput } from '@makeswift/runtime/controls';
 
 import { MegaMenu } from '.';
 import { runtime } from '~/lib/makeswift/runtime';
 
 interface MenuItem {
+  title?: string;
+  link?: { href?: string; target?: string };
+  subMenuItems: SubMenuItem[];
+}
+
+interface SubMenuItem {
   title?: string;
   link?: { href?: string; target?: string };
 }
@@ -14,11 +20,12 @@ interface MSMegaMenuProps {
     content?: string,
     item?: string
   };
+  variant?: string;
   menuItems: MenuItem[];
 }
 
 runtime.registerComponent(
-  function MSMegaMenu({ classNames, menuItems }: MSMegaMenuProps) {
+  function MSMegaMenu({ classNames, variant, menuItems }: MSMegaMenuProps) {
     return (
       <MegaMenu
         menuItems={menuItems.map(({ title, link }, index) => {
@@ -46,12 +53,47 @@ runtime.registerComponent(
         }
       }),
       */
+      /*
       menuItems: List({
         label: 'Menu Items',
         type: Shape({
           type: {
             title: TextInput({ label: 'Title', defaultValue: 'Text' }),
             link: Link({ label: 'Link' }),
+          },
+        }),
+        getItemLabel(menuItem) {
+          return menuItem?.title || 'Menu item';
+        },
+      }),
+      */
+
+      variant: Select({
+        label: "Style",
+        labelOrientation: "horizontal",
+        options: [
+          { value: "default", label: "Default" },
+        ],
+        defaultValue: "default",
+      }),
+      menuItems: List({
+        label: 'Menu Items',
+        type: Shape({
+          type: {
+            title: TextInput({ label: 'Title', defaultValue: 'Text' }),
+            link: Link({ label: 'Link' }),
+            subMenuItems: List({
+              label: 'Menu Items',
+              type: Shape({
+                type: {
+                  title: TextInput({ label: 'Title', defaultValue: 'Text' }),
+                  link: Link({ label: 'Link' }),
+                },
+              }),
+              getItemLabel(menuItem) {
+                return menuItem?.title || 'Menu item';
+              },
+            }),
           },
         }),
         getItemLabel(menuItem) {

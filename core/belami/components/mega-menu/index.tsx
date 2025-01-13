@@ -61,5 +61,6 @@ export function MegaMenuSkeleton({
   message?: string;
   count?: number;
 }) {
-  return <div>{message}</div>;
+  return <></>;
+  //return <div>{message}</div>;
 }
