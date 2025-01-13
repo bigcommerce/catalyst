@@ -244,7 +244,10 @@ export async function generateMetadata() {
   };
 }
 
-export default async function Search(props: Props) {
+export default async function Search(pageProps: Props) {
+  const searchParams = pageProps.searchParams;
+  const props = { searchParams };
+
   return (
     <ProductsListSection
       breadcrumbs={getBreadcrumbs()}
