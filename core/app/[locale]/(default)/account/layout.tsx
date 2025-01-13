@@ -12,9 +12,10 @@ interface Props extends PropsWithChildren {
 export default async function Layout({ children, params }: Props) {
   const { locale } = await params;
   const session = await auth();
-  const t = await getTranslations('Account.Layout');
 
   setRequestLocale(locale);
+
+  const t = await getTranslations('Account.Layout');
 
   if (!session) {
     redirect({ href: '/login', locale });
