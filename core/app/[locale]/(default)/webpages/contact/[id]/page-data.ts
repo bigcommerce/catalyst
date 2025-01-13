@@ -4,16 +4,16 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
-import { ContactUsFragment } from './contact-us/fragment';
-
-const WebPageQuery = graphql(
+const ContactPageQuery = graphql(
   `
-    query WebPageQuery($id: ID!) {
-      ...ContactUsFragment
+    query ContactPageQuery($id: ID!) {
       node(id: $id) {
         __typename
         ... on ContactPage {
+          entityId
           name
+          path
+          contactFields
           htmlBody
           seo {
             pageTitle
@@ -22,14 +22,22 @@ const WebPageQuery = graphql(
           }
         }
       }
+      site {
+        settings {
+          reCaptcha {
+            isEnabledOnStorefront
+            siteKey
+          }
+        }
+      }
     }
   `,
-  [ContactUsFragment],
+  [],
 );
 
 export const getWebpageData = cache(async (variables: { id: string }) => {
   const { data } = await client.fetch({
-    document: WebPageQuery,
+    document: ContactPageQuery,
     variables,
     fetchOptions: { next: { revalidate } },
   });

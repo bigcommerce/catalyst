@@ -448,6 +448,7 @@
     "ContactUs": {
       "Form": {
         "success": "Thanks for reaching out. We'll get back to you soon.",
+        "successCta": "Continue shopping",
         "error": "Unknown error.",
         "fullNameLabel": "Full name",
         "companyNameLabel": "Company name",
@@ -460,7 +461,12 @@
         "commentsValidationMessage": "Please provide a valid Comments",
         "recaptchaText": "Pass ReCAPTCHA check",
         "onSubmitText": "Submitting...",
-        "submitFormText": "Submit form"
+        "submitFormText": "Submit form",
+        "Errors": {
+          "inputError": "Something went wrong with processing user input.",
+          "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
+          "error": "Something went wrong. Please try again later."
+        }
       }
     }
   },

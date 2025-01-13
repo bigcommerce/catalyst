@@ -1,3 +1,5 @@
+import { clsx } from 'clsx';
+
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
@@ -16,35 +18,40 @@ interface Props {
   webPage: Streamable<WebPage>;
   breadcrumbs?: Streamable<Breadcrumb[]>;
   className?: string;
+  children?: React.ReactNode;
 }
 
-export function WebPageContent({ webPage: streamableWebPage, className = '', breadcrumbs }: Props) {
+export function WebPageContent({
+  webPage: streamableWebPage,
+  className = '',
+  breadcrumbs,
+  children,
+}: Props) {
   return (
-    <SectionLayout className={className}>
-      <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
-        <Stream fallback={<WebPageContentSkeleton />} value={streamableWebPage}>
-          {(webPage) => {
-            const { title, content } = webPage;
+    <SectionLayout className={clsx('mx-auto w-full max-w-4xl', className)}>
+      <Stream fallback={<WebPageContentSkeleton />} value={streamableWebPage}>
+        {(webPage) => {
+          const { title, content } = webPage;
 
-            return (
-              <>
-                <header className="mx-auto w-full max-w-4xl pb-8 @2xl:pb-12 @4xl:pb-16">
-                  {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
+          return (
+            <>
+              <header className="pb-8 @2xl:pb-12 @4xl:pb-16">
+                {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
 
-                  <h1 className="mb-4 mt-8 font-heading text-4xl font-medium leading-none @xl:text-5xl @4xl:text-6xl">
-                    {title}
-                  </h1>
-                </header>
+                <h1 className="mb-4 mt-8 font-heading text-4xl font-medium leading-none @xl:text-5xl @4xl:text-6xl">
+                  {title}
+                </h1>
+              </header>
 
-                <div
-                  className="prose mx-auto w-full max-w-4xl space-y-4 [&_h2]:font-heading [&_h2]:text-3xl [&_h2]:font-normal [&_h2]:leading-none [&_h2]:@xl:text-4xl [&_img]:mx-auto [&_img]:max-h-[600px] [&_img]:w-fit [&_img]:rounded-2xl [&_img]:object-cover"
-                  dangerouslySetInnerHTML={{ __html: content }}
-                />
-              </>
-            );
-          }}
-        </Stream>
-      </div>
+              <div
+                className="prose space-y-4 [&_h2]:font-heading [&_h2]:text-3xl [&_h2]:font-normal [&_h2]:leading-none [&_h2]:@xl:text-4xl [&_img]:mx-auto [&_img]:max-h-[600px] [&_img]:w-fit [&_img]:rounded-2xl [&_img]:object-cover"
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+              {children}
+            </>
+          );
+        }}
+      </Stream>
     </SectionLayout>
   );
 }
