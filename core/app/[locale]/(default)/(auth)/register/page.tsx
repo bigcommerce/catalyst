@@ -4,7 +4,7 @@ import { getTranslations } from 'next-intl/server';
 // TODO: Add recaptcha token
 // import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
-import { SignUpSection } from '@/vibes/soul/sections/sign-up-section';
+import { DynamicFormSection } from '@/vibes/soul/sections/dynamic-form-section';
 import { formFieldTransformer } from '~/data-transformers/form-field-transformer';
 import {
   CUSTOMER_FIELDS_TO_EXCLUDE,
@@ -39,7 +39,7 @@ export default async function Register() {
   // const reCaptcha = await bypassReCaptcha(reCaptchaSettings);
 
   return (
-    <SignUpSection
+    <DynamicFormSection
       action={registerCustomer}
       fields={[
         addressFields
