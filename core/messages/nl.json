@@ -1,8 +1,49 @@
 {
     "Home": {
+        "Slideshow": {
+            "Slide01": {
+                "title": "Fresh finds for every occasion",
+                "description": "Explore our latest arrivals, curated to bring you style, functionality, and inspiration. Shop now and discover your next favorite.",
+                "alt": "Five small potted plants displayed on beige stacked blocks, featuring a variety of green foliage in dark gray pots against a neutral background.",
+                "cta": "Shop Now"
+            },
+            "Slide02": {
+                "title": "Discover what's new",
+                "description": "Shop our latest arrivals and find something fresh and exciting for your home.",
+                "alt": "Hands reaching out to hold a green fern in a woven basket with a decorative bow, against a beige background with soft shadows.",
+                "cta": "Shop Now"
+            },
+            "Slide03": {
+                "title": "Something for everyone",
+                "description": "Don’t miss out on exclusive offers across our best-selling products. Shop today and save big on the items you love.",
+                "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
+                "cta": "Shop Now"
+            }
+        },
         "Carousel": {
             "featuredProducts": "Uitgelichte producten",
             "newestProducts": "Nieuwste producten"
+        },
+        "FeaturedProducts": {
+            "title": "Featured collection",
+            "description": "Explore our top picks in this featured collection. Find the perfect gift or treat yourself!",
+            "cta": "View more",
+            "emptyStateTitle": "No products found",
+            "emptyStateSubtitle": "Try browsing our complete catalog of products."
+        },
+        "NewestProducts": {
+            "title": "New arrivals",
+            "description": "Our latest products are here. Check out what's new in store.",
+            "cta": "See all",
+            "emptyStateTitle": "No products found",
+            "emptyStateSubtitle": "Try browsing our complete catalog of products.",
+            "previousProducts": "Vorige producten",
+            "nextProducts": "Volgende producten"
+        },
+        "BestSellingProducts": {
+            "title": "Our best sellers",
+            "description": "Our best selling products are here. Check out what's popular in store.",
+            "cta": "See all"
         }
     },
     "ChangePassword": {
@@ -65,6 +106,7 @@
     "Register": {
         "title": "Account registreren",
         "heading": "Nieuw account",
+        "successfulUpdate": "Account has been successfully updated.",
         "Form": {
             "submit": "Account aanmaken",
             "submitting": "Account aanmaken...",
@@ -86,6 +128,10 @@
         },
         "FacetedSearch": {
             "filters": "Filters",
+            "resetFilters": "Reset filters",
+            "Range": {
+                "apply": "Toepassen"
+            },
             "RefineBy": {
                 "refineBy": "Verfijnen op",
                 "clearAllRefinements": "Alles wissen"
@@ -119,14 +165,17 @@
     },
     "Brand": {
         "sortBy": "{items, plural, =0 {geen items} =1 {1 item} other {# items}}",
-        "products": "Producten"
+        "products": "Producten",
+        "emptyStateTitle": "No products in this brand.",
+        "emptyStateSubtitle": "Try using different filters."
     },
     "Category": {
         "sortBy": "{items, plural, =0 {geen items} =1 {1 item} other {# items}}",
         "products": "Producten",
         "items": "artikelen",
         "Empty": {
-            "message": "Er zijn geen producten in deze categorie.",
+            "title": "Er zijn geen producten in deze categorie.",
+            "subtitle": "Try using different filters.",
             "cta": "Terug naar Startpagina"
         }
     },
@@ -135,87 +184,52 @@
         "heading": "Zoeken",
         "products": "Producten",
         "sortBy": "{items, plural, =0 {geen items} =1 {1 item} other {# items}}",
-        "searchResults": "Zoekresultaten voor"
+        "searchResults": "Zoekresultaten voor",
+        "emptyStateTitle": "Sorry, geen resultaten voor '{term}'.",
+        "emptyStateSubtitle": "Please try another search.",
+        "Breadcrumbs": {
+            "home": "Home",
+            "search": "Zoeken"
+        }
     },
     "Account": {
         "Layout": {
-            "accountTabsLabel": "Accounttabbladen",
-            "orders": "Bestellingen",
             "addresses": "Adressen",
+            "logout": "Logout",
+            "orders": "Bestellingen",
+            "settings": "Account",
             "wishlists": "Verlanglijstjes",
-            "recentlyViewed": "Recent weergegeven",
-            "settings": "Accountinstellingen"
+            "recentlyViewed": "Recent weergegeven"
         },
         "Orders": {
-            "noOrders": "Nog geen bestellingen",
+            "title": "Bestellingen",
             "orderNumber": "Bestelnr.",
-            "placedDate": "Bestelling geplaatst",
             "totalPrice": "Totaal",
             "viewDetails": "Details weergeven",
-            "trackOrder": "Bestelling volgen",
-            "returnOrder": "Artikelen retourneren",
-            "orderSummary": "Besteloverzicht",
-            "orderContents": "Inhoud bestelling",
-            "orderSubtotal": "Subtotaal:",
-            "orderGrandtotal": "Totaal:",
-            "orderDiscount": "Korting:",
-            "orderAppliedCoupon": "Couponcode ({code}):",
-            "orderShipping": "Verzending:",
-            "orderTax": "Belasting:",
-            "printInvoice": "Factuur afdrukken",
-            "repurchaseOrder": "Terugkoop",
-            "return": "Retourneren",
-            "shippedDate": "Verzonden op",
-            "shippingAddress": "Verzendadres",
-            "shippingMethod": "Verzendmethode",
-            "shipmentTitle": "Verzending",
-            "shippingTitle": "Verzending",
-            "shippingPayment": "Betaling",
-            "shippingPaymentMethod": "Betaalmethode",
-            "billingAddress": "Factuuradres"
+            "noOrders": "Nog geen bestellingen"
+        },
+        "OrderDetails": {
+            "title": "Order #{orderNumber}",
+            "shippingAddressLabel": "Verzendadres",
+            "shippingMethodLabel": "Verzendmethode",
+            "summaryTotalLabel": "Totaal",
+            "destinationTitle": "Destination",
+            "destinationWithCountTitle": "Destination {number}/{total}",
+            "summarySubtotalLabel": "Subtotaal",
+            "summaryShippingLabel": "Verzending",
+            "summaryTaxLabel": "Belasting"
         },
         "Addresses": {
             "title": "Adressen",
-            "addNewAddress": "Nieuw adres toevoegen",
-            "editButton": "Bewerken",
-            "emptyAddresses": "Geen adressen toegevoegd",
-            "deleteButton": "Verwijderen",
-            "confirmDeleteAddress": "Adres verwijderen",
-            "deleteModalTitle": "Weet u zeker dat u dit adres wilt verwijderen?",
-            "Add": {
-                "title": "Voeg adres toe",
-                "heading": "Nieuw adres",
-                "Form": {
-                    "submit": "Nieuw adres toevoegen",
-                    "submitting": "Adres opslaan...",
-                    "cancel": "Annuleren",
-                    "success": "Adres is toegevoegd aan je account.",
-                    "Errors": {
-                        "inputError": "Er is iets misgegaan bij het verwerken van de gebruikersinvoer.",
-                        "error": "Onbekende fout."
-                    }
-                }
-            },
-            "Edit": {
-                "title": "Adres bewerken",
-                "heading": "Adres bewerken",
-                "Form": {
-                    "submit": "Adres bewerken",
-                    "submitting": "Adres bijwerken...",
-                    "cancel": "Annuleren",
-                    "confirmDeleteAddress": "Adres verwijderen",
-                    "deleteModalTitle": "Weet u zeker dat u dit adres wilt verwijderen?",
-                    "deleteButton": "Verwijderen",
-                    "success": "Het adres is bijgewerkt.",
-                    "Errors": {
-                        "inputError": "Er is iets misgegaan bij het verwerken van de gebruikersinvoer.",
-                        "notFound": "Adres bestaat niet.",
-                        "error": "Onbekende fout."
-                    }
-                }
-            },
-            "Delete": {
-                "success": "Adres is verwijderd uit je account.",
+            "showAddFormLabel": "Voeg adres toe",
+            "editLabel": "Bewerken",
+            "deleteLabel": "Verwijderen",
+            "cancelLabel": "Annuleren",
+            "createLabel": "Create",
+            "updateLabel": "Update",
+            "setDefaultLabel": "Set as default",
+            "Errors": {
+                "apiError": "Het lijkt erop dat er een serverfout is opgetreden. Probeer het over een paar minuten opnieuw.",
                 "error": "Onbekende fout."
             }
         },
@@ -262,6 +276,10 @@
     },
     "Blog": {
         "title": "Blog",
+        "Empty": {
+            "title": "No blog posts found",
+            "subtitle": "Check back later for more content"
+        },
         "SharingLinks": {
             "share": "Delen",
             "email": "E-mailadres",
@@ -276,7 +294,11 @@
         "proceedToCheckout": "Doorgaan naar betaalomgeving",
         "loading": "Laden...",
         "spinnerText": "Bijwerken ...",
+        "increment": "Increase quantity",
+        "decrement": "Decrease quantity",
+        "removeItem": "Remove item",
         "CheckoutSummary": {
+            "title": "Summary",
             "subTotal": "Subtotaal",
             "discounts": "Kortingen",
             "coupon": "Coupon",
@@ -337,6 +359,18 @@
             "remove": "Verwijderen",
             "spinnerText": "Verwijderen...",
             "errorMessage": "Er is iets fout gegaan bij het verwijderen van het item, probeer het opnieuw."
+        },
+        "Empty": {
+            "title": "Your cart is empty.",
+            "subtitle": "Add some products to get started.",
+            "cta": "Continue shopping"
+        },
+        "Errors": {
+            "cartNotFound": "No cartId cookie found.",
+            "lineItemNotFound": "Line item not found.",
+            "failedToRedirectToCheckout": "Failed to redirect to checkout.",
+            "failedToUpdateQuantity": "Failed to update quantity.",
+            "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
         }
     },
     "Compare": {
@@ -362,54 +396,51 @@
         }
     },
     "Product": {
-        "loading": "Laden...",
-        "Carousel": {
-            "relatedProducts": "Gerelateerde producten"
-        },
-        "Gallery": {
-            "previous": "Vorige productafbeelding",
-            "next": "Volgende productafbeelding",
-            "thumbnailNavigation": "Navigatie met miniaturen",
-            "enlarge": "Vergroot productafbeelding"
-        },
-        "Form": {
-            "success": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
-            "saveToWishlist": "Opslaan in verlanglijstje",
-            "quantityLabel": "Aantal"
-        },
-        "Description": {
-            "heading": "Description"
-        },
-        "Warranty": {
-            "heading": "Garantie"
-        },
-        "Reviews": {
-            "heading": "Beoordelingen",
-            "reviewsCount": "Aantal:",
-            "unreviewed": "Dit product is nog niet beoordeeld.",
-            "reviewRating": "Beoordeling: {rating} van 5 sterren",
-            "reviewAuthor": "Geplaatst door {author} op"
-        },
-        "Details": {
-            "additionalDetails": "Aanvullende details",
-            "sku": "SKU",
-            "upc": "UPC",
-            "minPurchase": "Minimale aankoop",
-            "maxPurchase": "Maximale aankoop",
-            "availability": "Beschikbaarheid",
-            "condition": "Staat",
-            "comingSoon": "Binnenkort beschikbaar",
-            "qty": "Aantal",
-            "weight": "Gewicht",
+        "ProductDetails": {
+            "quantity": "Aantal",
+            "increaseQuantity": "Increase quantity",
+            "decreaseQuantity": "Decrease quantity",
+            "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>",
+            "missingCart": "Cart not found. Please try again later!",
+            "unknownError": "Unknown error. Please try again later.",
+            "increaseNumber": "Increase number",
+            "decreaseNumber": "Decrease number",
+            "thumbnail": "View image number",
+            "additionalInformation": "Additional information",
+            "Submit": {
+                "addToCart": "Toevoegen aan winkelmandje",
+                "outOfStock": "Niet op voorraad",
+                "preorder": "Vooruitbestellen",
+                "unavailable": "Niet beschikbaar"
+            },
+            "Accordions": {
+                "specifications": "Specifications",
+                "warranty": "Garantie",
+                "sku": "SKU",
+                "weight": "Gewicht",
+                "condition": "Staat"
+            },
             "Prices": {
                 "msrp": "Adviesprijs",
                 "was": "was",
                 "now": "nu"
-            },
-            "ReviewSummary": {
-                "rating": "Beoordeling:",
-                "ratingRange": "van de 5 sterren.",
-                "reviewsNumber": "Aantal beoordelingen:"
+            }
+        },
+        "RelatedProducts": {
+            "title": "Gerelateerde producten",
+            "noRelatedProducts": "No related products found",
+            "browseCatalog": "Try browsing our complete catalog of products.",
+            "cta": "Shop all",
+            "previousProducts": "Vorige producten",
+            "nextProducts": "Volgende producten",
+            "scrollbar": "Related products scrollbar"
+        },
+        "Reviews": {
+            "title": "Beoordelingen",
+            "empty": "No reviews have been added for this product.",
+            "Pagination": {
+                "previous": "Previous reviews",
+                "next": "Next reviews"
             }
         }
     },
@@ -455,6 +486,13 @@
     },
     "Components": {
         "Header": {
+            "home": "Home",
+            "toggleNavigation": "Navigatie in- of uitschakelen",
+            "Icons": {
+                "account": "Profile",
+                "cart": "Winkelmandje",
+                "search": "Zoeken"
+            },
             "Account": {
                 "account": "Account",
                 "orders": "Bestellingen",
@@ -483,14 +521,24 @@
                 "products": "Producten",
                 "categories": "Categorieën",
                 "brands": "Merken",
-                "noSearchResults": "Sorry, geen resultaten voor '{term}'.",
+                "noSearchResultsTitle": "Sorry, geen resultaten voor '{term}'.",
+                "noSearchResultsSubtitle": "Please try another search.",
                 "searchPlaceholder": "Zoeken...",
                 "clearSearch": "Zoekopdracht wissen",
-                "processing": "Verwerken..."
+                "processing": "Verwerken...",
+                "error": "Something went wrong. Please try again."
             }
         },
         "Footer": {
+            "home": "Home",
+            "contact": "Contact Us",
             "socialMediaLinks": "Links naar sociale media"
+        },
+        "Subscribe": {
+            "title": "Sign up for our newsletter",
+            "placeholder": "Voer uw e-mail in",
+            "description": "Stay up to date with the latest news and offers from our store.",
+            "success": "Thank you for your interest! Newsletter feature is coming soon!"
         },
         "Breadcrumb": {
             "breadcrumb": "Breadcrumb"

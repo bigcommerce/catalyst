@@ -1,8 +1,49 @@
 {
     "Home": {
+        "Slideshow": {
+            "Slide01": {
+                "title": "Fresh finds for every occasion",
+                "description": "Explore our latest arrivals, curated to bring you style, functionality, and inspiration. Shop now and discover your next favorite.",
+                "alt": "Five small potted plants displayed on beige stacked blocks, featuring a variety of green foliage in dark gray pots against a neutral background.",
+                "cta": "Shop Now"
+            },
+            "Slide02": {
+                "title": "Discover what's new",
+                "description": "Shop our latest arrivals and find something fresh and exciting for your home.",
+                "alt": "Hands reaching out to hold a green fern in a woven basket with a decorative bow, against a beige background with soft shadows.",
+                "cta": "Shop Now"
+            },
+            "Slide03": {
+                "title": "Something for everyone",
+                "description": "Don’t miss out on exclusive offers across our best-selling products. Shop today and save big on the items you love.",
+                "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
+                "cta": "Shop Now"
+            }
+        },
         "Carousel": {
             "featuredProducts": "Polecane produkty",
             "newestProducts": "Najnowsze produkty"
+        },
+        "FeaturedProducts": {
+            "title": "Featured collection",
+            "description": "Explore our top picks in this featured collection. Find the perfect gift or treat yourself!",
+            "cta": "View more",
+            "emptyStateTitle": "No products found",
+            "emptyStateSubtitle": "Try browsing our complete catalog of products."
+        },
+        "NewestProducts": {
+            "title": "New arrivals",
+            "description": "Our latest products are here. Check out what's new in store.",
+            "cta": "See all",
+            "emptyStateTitle": "No products found",
+            "emptyStateSubtitle": "Try browsing our complete catalog of products.",
+            "previousProducts": "Poprzednie produkty",
+            "nextProducts": "Następne produkty"
+        },
+        "BestSellingProducts": {
+            "title": "Our best sellers",
+            "description": "Our best selling products are here. Check out what's popular in store.",
+            "cta": "See all"
         }
     },
     "ChangePassword": {
@@ -65,6 +106,7 @@
     "Register": {
         "title": "Zarejestruj konto",
         "heading": "Nowe konto",
+        "successfulUpdate": "Account has been successfully updated.",
         "Form": {
             "submit": "Utwórz konto",
             "submitting": "Tworzenie konta...",
@@ -86,6 +128,10 @@
         },
         "FacetedSearch": {
             "filters": "Filtry",
+            "resetFilters": "Reset filters",
+            "Range": {
+                "apply": "Zgłoś się na"
+            },
             "RefineBy": {
                 "refineBy": "Ulepszaj przez",
                 "clearAllRefinements": "Wyczyść wszystko"
@@ -119,14 +165,17 @@
     },
     "Brand": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-        "products": "Produkty"
+        "products": "Produkty",
+        "emptyStateTitle": "No products in this brand.",
+        "emptyStateSubtitle": "Try using different filters."
     },
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
         "products": "Produkty",
         "items": "produkty",
         "Empty": {
-            "message": "Brak produktów w tej kategorii",
+            "title": "Brak produktów w tej kategorii",
+            "subtitle": "Try using different filters.",
             "cta": "Powrót na początek"
         }
     },
@@ -135,87 +184,52 @@
         "heading": "Szukaj na stronie",
         "products": "Produkty",
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-        "searchResults": "Wyniki wyszukiwania dla"
+        "searchResults": "Wyniki wyszukiwania dla",
+        "emptyStateTitle": "Brak wyników dla „{term}”.",
+        "emptyStateSubtitle": "Please try another search.",
+        "Breadcrumbs": {
+            "home": "Home",
+            "search": "Szukaj na stronie"
+        }
     },
     "Account": {
         "Layout": {
-            "accountTabsLabel": "Karty konta",
-            "orders": "Zamówienia",
             "addresses": "Adresy",
+            "logout": "Logout",
+            "orders": "Zamówienia",
+            "settings": "Konto",
             "wishlists": "Listy życzeń",
-            "recentlyViewed": "Ostatnio oglądane",
-            "settings": "Ustawienia konta"
+            "recentlyViewed": "Ostatnio oglądane"
         },
         "Orders": {
-            "noOrders": "Brak zamówień",
+            "title": "Zamówienia",
             "orderNumber": "Zamówienie #",
-            "placedDate": "Złożone zamówienie",
             "totalPrice": "Razem",
             "viewDetails": "Zobacz szczegóły",
-            "trackOrder": "Śledź zamówienie",
-            "returnOrder": "Elementy do zwrotu",
-            "orderSummary": "Podsumowanie zamówienia",
-            "orderContents": "Zawartość zamówienia",
-            "orderSubtotal": "Suma cząstkowa:",
-            "orderGrandtotal": "Suma całkowita:",
-            "orderDiscount": "Rabat:",
-            "orderAppliedCoupon": "Kod kuponu ({code}):",
-            "orderShipping": "Wysyłka:",
-            "orderTax": "Podatek:",
-            "printInvoice": "Drukuj fakturę",
-            "repurchaseOrder": "Odkup",
-            "return": "Wróć",
-            "shippedDate": "Wysłane",
-            "shippingAddress": "Adres dostawy",
-            "shippingMethod": "Metoda wysyłki",
-            "shipmentTitle": "Wysyłka",
-            "shippingTitle": "Wysyłka",
-            "shippingPayment": "Płatność",
-            "shippingPaymentMethod": "Metoda płatności",
-            "billingAddress": "Adres rozliczeniowy"
+            "noOrders": "Brak zamówień"
+        },
+        "OrderDetails": {
+            "title": "Order #{orderNumber}",
+            "shippingAddressLabel": "Adres dostawy",
+            "shippingMethodLabel": "Metoda wysyłki",
+            "summaryTotalLabel": "Razem",
+            "destinationTitle": "Destination",
+            "destinationWithCountTitle": "Destination {number}/{total}",
+            "summarySubtotalLabel": "Suma cząstkowa",
+            "summaryShippingLabel": "Wysyłka",
+            "summaryTaxLabel": "Podatek"
         },
         "Addresses": {
             "title": "Adresy",
-            "addNewAddress": "Dodaj nowy adres",
-            "editButton": "Edytuj",
-            "emptyAddresses": "Brak dodanych adresów",
-            "deleteButton": "Usuń",
-            "confirmDeleteAddress": "Usuń adres",
-            "deleteModalTitle": "Czy na pewno chcesz usunąć ten adres?",
-            "Add": {
-                "title": "Dodaj adres",
-                "heading": "Nowy adres",
-                "Form": {
-                    "submit": "Dodaj nowy adres",
-                    "submitting": "Zapisywanie adresu...",
-                    "cancel": "Anuluj",
-                    "success": "Adres został dodany do Twojego konta.",
-                    "Errors": {
-                        "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
-                        "error": "Nieznany błąd."
-                    }
-                }
-            },
-            "Edit": {
-                "title": "Edytuj adres",
-                "heading": "Edytuj adres",
-                "Form": {
-                    "submit": "Edytuj adres",
-                    "submitting": "Aktualizowanie adresu...",
-                    "cancel": "Anuluj",
-                    "confirmDeleteAddress": "Usuń adres",
-                    "deleteModalTitle": "Czy na pewno chcesz usunąć ten adres?",
-                    "deleteButton": "Usuń",
-                    "success": "Adres został pomyślnie zaktualizowany.",
-                    "Errors": {
-                        "inputError": "Wystąpił błąd podczas przetwarzania danych wprowadzonych przez użytkownika.",
-                        "notFound": "Adres nie istnieje.",
-                        "error": "Nieznany błąd."
-                    }
-                }
-            },
-            "Delete": {
-                "success": "Adres został usunięty z Twojego konta.",
+            "showAddFormLabel": "Dodaj adres",
+            "editLabel": "Edytuj",
+            "deleteLabel": "Usuń",
+            "cancelLabel": "Anuluj",
+            "createLabel": "Create",
+            "updateLabel": "Update",
+            "setDefaultLabel": "Set as default",
+            "Errors": {
+                "apiError": "Wygląda na to, że wystąpił błąd serwera, spróbuj ponownie za kilka minut.",
                 "error": "Nieznany błąd."
             }
         },
@@ -262,6 +276,10 @@
     },
     "Blog": {
         "title": "Blog",
+        "Empty": {
+            "title": "No blog posts found",
+            "subtitle": "Check back later for more content"
+        },
         "SharingLinks": {
             "share": "Udostępnij",
             "email": "Email",
@@ -276,7 +294,11 @@
         "proceedToCheckout": "Przejdź do kasy",
         "loading": "Ładowanie...",
         "spinnerText": "Aktualizowanie...",
+        "increment": "Increase quantity",
+        "decrement": "Decrease quantity",
+        "removeItem": "Remove item",
         "CheckoutSummary": {
+            "title": "Summary",
             "subTotal": "Suma cząstkowa",
             "discounts": "Rabaty",
             "coupon": "Kupon",
@@ -337,6 +359,18 @@
             "remove": "Usuń",
             "spinnerText": "Usuwanie...",
             "errorMessage": "Podczas usuwania produktu wystąpił błąd. Spróbuj ponownie."
+        },
+        "Empty": {
+            "title": "Your cart is empty.",
+            "subtitle": "Add some products to get started.",
+            "cta": "Continue shopping"
+        },
+        "Errors": {
+            "cartNotFound": "No cartId cookie found.",
+            "lineItemNotFound": "Line item not found.",
+            "failedToRedirectToCheckout": "Failed to redirect to checkout.",
+            "failedToUpdateQuantity": "Failed to update quantity.",
+            "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
         }
     },
     "Compare": {
@@ -362,54 +396,51 @@
         }
     },
     "Product": {
-        "loading": "Ładowanie...",
-        "Carousel": {
-            "relatedProducts": "Powiązane produkty"
-        },
-        "Gallery": {
-            "previous": "Poprzednie zdjęcie produktu",
-            "next": "Następny obraz produktu",
-            "thumbnailNavigation": "Nawigacja po miniaturach",
-            "enlarge": "Powiększ zdjęcie produktu"
-        },
-        "Form": {
-            "success": "Dodano {cartItems, plural, =1 {1 produkt} other {# produkty(-ów)}} <cartLink>do koszyka</cartLink>",
-            "saveToWishlist": "Zapisz na liście życzeń",
-            "quantityLabel": "Ilość"
-        },
-        "Description": {
-            "heading": "Opis"
-        },
-        "Warranty": {
-            "heading": "Gwarancja"
-        },
-        "Reviews": {
-            "heading": "Opinie",
-            "reviewsCount": "Liczba:",
-            "unreviewed": "Ten produkt nie został jeszcze oceniony.",
-            "reviewRating": "Ocena: {rating} na 5 gwiazdek",
-            "reviewAuthor": "Opublikował(a) {author} dnia"
-        },
-        "Details": {
-            "additionalDetails": "Dodatkowe szczegóły",
-            "sku": "SKU",
-            "upc": "UPC",
-            "minPurchase": "Minimalny zakup",
-            "maxPurchase": "Maksymalny zakup",
-            "availability": "Dostępność",
-            "condition": "Stan",
-            "comingSoon": "Już wkrótce",
-            "qty": "Ilość",
-            "weight": "Waga",
+        "ProductDetails": {
+            "quantity": "Ilość",
+            "increaseQuantity": "Increase quantity",
+            "decreaseQuantity": "Decrease quantity",
+            "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>",
+            "missingCart": "Cart not found. Please try again later!",
+            "unknownError": "Unknown error. Please try again later.",
+            "increaseNumber": "Increase number",
+            "decreaseNumber": "Decrease number",
+            "thumbnail": "View image number",
+            "additionalInformation": "Additional information",
+            "Submit": {
+                "addToCart": "Dodaj do koszyka",
+                "outOfStock": "Brak w magazynie",
+                "preorder": "Zamówienie wstępne",
+                "unavailable": "Niedostępne"
+            },
+            "Accordions": {
+                "specifications": "Specifications",
+                "warranty": "Gwarancja",
+                "sku": "SKU",
+                "weight": "Waga",
+                "condition": "Stan"
+            },
             "Prices": {
                 "msrp": "SCDP",
                 "was": "Było",
                 "now": "Teraz"
-            },
-            "ReviewSummary": {
-                "rating": "Ocena:",
-                "ratingRange": "na 5 gwiazdek.",
-                "reviewsNumber": "Liczba ocen:"
+            }
+        },
+        "RelatedProducts": {
+            "title": "Powiązane produkty",
+            "noRelatedProducts": "No related products found",
+            "browseCatalog": "Try browsing our complete catalog of products.",
+            "cta": "Shop all",
+            "previousProducts": "Poprzednie produkty",
+            "nextProducts": "Następne produkty",
+            "scrollbar": "Related products scrollbar"
+        },
+        "Reviews": {
+            "title": "Opinie",
+            "empty": "No reviews have been added for this product.",
+            "Pagination": {
+                "previous": "Previous reviews",
+                "next": "Next reviews"
             }
         }
     },
@@ -455,6 +486,13 @@
     },
     "Components": {
         "Header": {
+            "home": "Home",
+            "toggleNavigation": "Przełącz nawigację",
+            "Icons": {
+                "account": "Profile",
+                "cart": "Koszyk",
+                "search": "Szukaj na stronie"
+            },
             "Account": {
                 "account": "Konto",
                 "orders": "Zamówienia",
@@ -483,14 +521,24 @@
                 "products": "Produkty",
                 "categories": "Kategorie",
                 "brands": "Marki",
-                "noSearchResults": "Brak wyników dla „{term}”.",
+                "noSearchResultsTitle": "Brak wyników dla „{term}”.",
+                "noSearchResultsSubtitle": "Please try another search.",
                 "searchPlaceholder": "Szukaj...",
                 "clearSearch": "Wyraźne wyszukiwanie",
-                "processing": "Przetwarzanie..."
+                "processing": "Przetwarzanie...",
+                "error": "Something went wrong. Please try again."
             }
         },
         "Footer": {
+            "home": "Home",
+            "contact": "Contact Us",
             "socialMediaLinks": "Linki do mediów społecznościowych"
+        },
+        "Subscribe": {
+            "title": "Sign up for our newsletter",
+            "placeholder": "Wpisz swój adres e-mail",
+            "description": "Stay up to date with the latest news and offers from our store.",
+            "success": "Thank you for your interest! Newsletter feature is coming soon!"
         },
         "Breadcrumb": {
             "breadcrumb": "Nawigacja okruszkowa"
