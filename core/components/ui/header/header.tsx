@@ -13,6 +13,7 @@ import { MobileNav } from './mobile-nav';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { imageIconList } from '~/app/[locale]/(default)/(auth)/fragments';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import { MegaMenu } from '~/belami/components/mega-menu';
 
 interface Link {
   label: string;
@@ -48,6 +49,7 @@ interface Props extends ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.
   homeLogoMobile?: string | Image;
   homeLogoMobileFirst?: string;
   customerAccessToken?: string;
+  megaMenu?: ReactNode;
 }
 
 const Header = ({
@@ -62,6 +64,7 @@ const Header = ({
   homeLogoMobile,
   homeLogoMobileFirst,
   customerAccessToken,
+  megaMenu
 }: Props) => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>(null);
@@ -269,6 +272,8 @@ const Header = ({
           </CustomLink>
         </nav>
       </div>
+
+      {megaMenu}
     </div>
   );
 };

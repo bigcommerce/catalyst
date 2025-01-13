@@ -33,7 +33,7 @@ runtime.registerComponent(
     );
   },
   {
-    type: 'primitive-mega-menu',
+    type: 'belami-mega-menu',
     label: 'Belami / Mega Menu',
     icon: 'navigation',
     props: {
