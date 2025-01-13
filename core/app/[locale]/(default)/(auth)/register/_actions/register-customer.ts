@@ -214,13 +214,18 @@ export async function registerCustomer<F extends Field>(
       };
     }
 
-    await signIn('credentials', {
-      email: input.email,
-      password: input.password,
-      // We want to use next/navigation for the redirect as it
-      // follows basePath and trailing slash configurations.
-      redirect: false,
-    });
+    await signIn(
+      {
+        type: 'password',
+        email: input.email,
+        password: input.password,
+      },
+      {
+        // We want to use next/navigation for the redirect as it
+        // follows basePath and trailing slash configurations.
+        redirect: false,
+      },
+    );
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -238,5 +243,5 @@ export async function registerCustomer<F extends Field>(
     };
   }
 
-  return redirect({ href: '/account', locale });
+  return redirect({ href: '/account/orders', locale });
 }
