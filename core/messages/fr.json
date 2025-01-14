@@ -1,8 +1,49 @@
 {
     "Home": {
+        "Slideshow": {
+            "Slide01": {
+                "title": "Fresh finds for every occasion",
+                "description": "Explore our latest arrivals, curated to bring you style, functionality, and inspiration. Shop now and discover your next favorite.",
+                "alt": "Five small potted plants displayed on beige stacked blocks, featuring a variety of green foliage in dark gray pots against a neutral background.",
+                "cta": "Shop Now"
+            },
+            "Slide02": {
+                "title": "Discover what's new",
+                "description": "Shop our latest arrivals and find something fresh and exciting for your home.",
+                "alt": "Hands reaching out to hold a green fern in a woven basket with a decorative bow, against a beige background with soft shadows.",
+                "cta": "Shop Now"
+            },
+            "Slide03": {
+                "title": "Something for everyone",
+                "description": "Don’t miss out on exclusive offers across our best-selling products. Shop today and save big on the items you love.",
+                "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
+                "cta": "Shop Now"
+            }
+        },
         "Carousel": {
             "featuredProducts": "Produits en vedette",
             "newestProducts": "Nouveaux produits"
+        },
+        "FeaturedProducts": {
+            "title": "Featured collection",
+            "description": "Explore our top picks in this featured collection. Find the perfect gift or treat yourself!",
+            "cta": "View more",
+            "emptyStateTitle": "No products found",
+            "emptyStateSubtitle": "Try browsing our complete catalog of products."
+        },
+        "NewestProducts": {
+            "title": "New arrivals",
+            "description": "Our latest products are here. Check out what's new in store.",
+            "cta": "See all",
+            "emptyStateTitle": "No products found",
+            "emptyStateSubtitle": "Try browsing our complete catalog of products.",
+            "previousProducts": "Produits précédents",
+            "nextProducts": "Prochains produits"
+        },
+        "BestSellingProducts": {
+            "title": "Our best sellers",
+            "description": "Our best selling products are here. Check out what's popular in store.",
+            "cta": "See all"
         }
     },
     "ChangePassword": {
@@ -65,6 +106,7 @@
     "Register": {
         "title": "Enregistrer un compte",
         "heading": "Nouveau compte",
+        "successfulUpdate": "Account has been successfully updated.",
         "Form": {
             "submit": "Créer un compte",
             "submitting": "Création du compte...",
@@ -86,6 +128,10 @@
         },
         "FacetedSearch": {
             "filters": "Filtres",
+            "resetFilters": "Reset filters",
+            "Range": {
+                "apply": "Appliquer"
+            },
             "RefineBy": {
                 "refineBy": "Affiner par",
                 "clearAllRefinements": "Effacer tout"
@@ -119,14 +165,17 @@
     },
     "Brand": {
         "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
-        "products": "Produits"
+        "products": "Produits",
+        "emptyStateTitle": "No products in this brand.",
+        "emptyStateSubtitle": "Try using different filters."
     },
     "Category": {
         "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
         "products": "Produits",
         "items": "articles",
         "Empty": {
-            "message": "Aucun produit dans cette catégorie",
+            "title": "Aucun produit dans cette catégorie",
+            "subtitle": "Try using different filters.",
             "cta": "Retour à l’accueil"
         }
     },
@@ -135,87 +184,52 @@
         "heading": "Rechercher",
         "products": "Produits",
         "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
-        "searchResults": "Résultats de recherche pour"
+        "searchResults": "Résultats de recherche pour",
+        "emptyStateTitle": "Désolé, aucun résultat pour « {term} ».",
+        "emptyStateSubtitle": "Please try another search.",
+        "Breadcrumbs": {
+            "home": "Home",
+            "search": "Rechercher"
+        }
     },
     "Account": {
         "Layout": {
-            "accountTabsLabel": "Onglets Compte",
-            "orders": "Commandes",
             "addresses": "Adresses",
+            "logout": "Logout",
+            "orders": "Commandes",
+            "settings": "Compte",
             "wishlists": "Listes d'envies",
-            "recentlyViewed": "Consultés récemment",
-            "settings": "Paramètres des comptes"
+            "recentlyViewed": "Consultés récemment"
         },
         "Orders": {
-            "noOrders": "Aucune commande pour l'instant",
+            "title": "Commandes",
             "orderNumber": "Commande n° ",
-            "placedDate": "Commande passée",
             "totalPrice": "Total",
             "viewDetails": "Afficher les détails",
-            "trackOrder": "Suivre la commande",
-            "returnOrder": "Retourner des articles",
-            "orderSummary": "Récapitulatif de la commande",
-            "orderContents": "Contenu de la commande",
-            "orderSubtotal": "Sous-total :",
-            "orderGrandtotal": "Total :",
-            "orderDiscount": "Remise :",
-            "orderAppliedCoupon": "Code promotionnel ({code}) :",
-            "orderShipping": "Expédition :",
-            "orderTax": "Taxes :",
-            "printInvoice": "Imprimer la facture",
-            "repurchaseOrder": "Racheter",
-            "return": "Retour",
-            "shippedDate": "Expédié le",
-            "shippingAddress": "Adresse de livraison",
-            "shippingMethod": "Mode de livraison",
-            "shipmentTitle": "Expédition",
-            "shippingTitle": "Livraison",
-            "shippingPayment": "Paiement",
-            "shippingPaymentMethod": "Mode de paiement",
-            "billingAddress": "Adresse de facturation"
+            "noOrders": "Aucune commande pour l'instant"
+        },
+        "OrderDetails": {
+            "title": "Order #{orderNumber}",
+            "shippingAddressLabel": "Adresse de livraison",
+            "shippingMethodLabel": "Mode de livraison",
+            "summaryTotalLabel": "Total",
+            "destinationTitle": "Destination",
+            "destinationWithCountTitle": "Destination {number}/{total}",
+            "summarySubtotalLabel": "Sous-total",
+            "summaryShippingLabel": "Livraison",
+            "summaryTaxLabel": "Taxes"
         },
         "Addresses": {
             "title": "Adresses",
-            "addNewAddress": "Ajouter une nouvelle adresse",
-            "editButton": "Modifier",
-            "emptyAddresses": "Aucune adresse ajoutée",
-            "deleteButton": "Supprimer",
-            "confirmDeleteAddress": "Supprimer l'adresse",
-            "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?",
-            "Add": {
-                "title": "Ajouter une adresse",
-                "heading": "Nouvelle adresse",
-                "Form": {
-                    "submit": "Ajouter une nouvelle adresse",
-                    "submitting": "Enregistrer l'adresse...",
-                    "cancel": "Annuler",
-                    "success": "Adresse ajoutée à votre compte.",
-                    "Errors": {
-                        "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
-                        "error": "Erreur inconnue."
-                    }
-                }
-            },
-            "Edit": {
-                "title": "Modifier l'adresse",
-                "heading": "Modifier l'adresse",
-                "Form": {
-                    "submit": "Modifier l'adresse",
-                    "submitting": "Mise à jour de l'adresse...",
-                    "cancel": "Annuler",
-                    "confirmDeleteAddress": "Supprimer l'adresse",
-                    "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?",
-                    "deleteButton": "Supprimer",
-                    "success": "L'adresse a bien été mise à jour.",
-                    "Errors": {
-                        "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
-                        "notFound": "L'adresse n'existe pas",
-                        "error": "Erreur inconnue."
-                    }
-                }
-            },
-            "Delete": {
-                "success": "Adresse supprimée de votre compte.",
+            "showAddFormLabel": "Ajouter une adresse",
+            "editLabel": "Modifier",
+            "deleteLabel": "Supprimer",
+            "cancelLabel": "Annuler",
+            "createLabel": "Create",
+            "updateLabel": "Update",
+            "setDefaultLabel": "Set as default",
+            "Errors": {
+                "apiError": "Il semble qu'une erreur de serveur se soit produite, veuillez réessayer dans quelques minutes.",
                 "error": "Erreur inconnue."
             }
         },
@@ -262,6 +276,10 @@
     },
     "Blog": {
         "title": "Blog",
+        "Empty": {
+            "title": "No blog posts found",
+            "subtitle": "Check back later for more content"
+        },
         "SharingLinks": {
             "share": "Partager",
             "email": "E-mail",
@@ -276,7 +294,11 @@
         "proceedToCheckout": "Procéder au paiement",
         "loading": "Chargement...",
         "spinnerText": "Mise à jour en cours…",
+        "increment": "Increase quantity",
+        "decrement": "Decrease quantity",
+        "removeItem": "Remove item",
         "CheckoutSummary": {
+            "title": "Summary",
             "subTotal": "Sous-total",
             "discounts": "Remises",
             "coupon": "Code promotionnel",
@@ -337,6 +359,18 @@
             "remove": "Supprimer",
             "spinnerText": "Retirer...",
             "errorMessage": "Une erreur s'est produite lors de la suppression de l'article. Veuillez réessayer."
+        },
+        "Empty": {
+            "title": "Your cart is empty.",
+            "subtitle": "Add some products to get started.",
+            "cta": "Continue shopping"
+        },
+        "Errors": {
+            "cartNotFound": "No cartId cookie found.",
+            "lineItemNotFound": "Line item not found.",
+            "failedToRedirectToCheckout": "Failed to redirect to checkout.",
+            "failedToUpdateQuantity": "Failed to update quantity.",
+            "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
         }
     },
     "Compare": {
@@ -362,54 +396,51 @@
         }
     },
     "Product": {
-        "loading": "Chargement...",
-        "Carousel": {
-            "relatedProducts": "Produits associés"
-        },
-        "Gallery": {
-            "previous": "Image du produit précédent",
-            "next": "Image du produit suivant",
-            "thumbnailNavigation": "Navigation par vignettes",
-            "enlarge": "Agrandir l'image du produit"
-        },
-        "Form": {
-            "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
-            "saveToWishlist": "Enregistrer dans la liste d'envies",
-            "quantityLabel": "Quantité"
-        },
-        "Description": {
-            "heading": "Description"
-        },
-        "Warranty": {
-            "heading": "Garantie"
-        },
-        "Reviews": {
-            "heading": "Avis",
-            "reviewsCount": "Compte :",
-            "unreviewed": "Ce produit n'a pas encore été évalué.",
-            "reviewRating": "Note : {rating} étoile(s) sur 5",
-            "reviewAuthor": "Publié par {author} le"
-        },
-        "Details": {
-            "additionalDetails": "Informations supplémentaires",
-            "sku": "SKU",
-            "upc": "CUP",
-            "minPurchase": "Quantité minimale d'achat",
-            "maxPurchase": "Quantité maximale d'achat",
-            "availability": "Disponibilité",
-            "condition": "Condition",
-            "comingSoon": "Prochainement disponible·s",
-            "qty": "Qté",
-            "weight": "Poids",
+        "ProductDetails": {
+            "quantity": "Quantité",
+            "increaseQuantity": "Increase quantity",
+            "decreaseQuantity": "Decrease quantity",
+            "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>",
+            "missingCart": "Cart not found. Please try again later!",
+            "unknownError": "Unknown error. Please try again later.",
+            "increaseNumber": "Increase number",
+            "decreaseNumber": "Decrease number",
+            "thumbnail": "View image number",
+            "additionalInformation": "Additional information",
+            "Submit": {
+                "addToCart": "Ajouter au panier",
+                "outOfStock": "En rupture de stock",
+                "preorder": "Précommander",
+                "unavailable": "Indisponible"
+            },
+            "Accordions": {
+                "specifications": "Specifications",
+                "warranty": "Garantie",
+                "sku": "SKU",
+                "weight": "Poids",
+                "condition": "Condition"
+            },
             "Prices": {
                 "msrp": "PDSF",
                 "was": "était",
                 "now": "maintenant"
-            },
-            "ReviewSummary": {
-                "rating": "Note :",
-                "ratingRange": "sur 5 étoiles.",
-                "reviewsNumber": "Nombre d'avis :"
+            }
+        },
+        "RelatedProducts": {
+            "title": "Produits associés",
+            "noRelatedProducts": "No related products found",
+            "browseCatalog": "Try browsing our complete catalog of products.",
+            "cta": "Shop all",
+            "previousProducts": "Produits précédents",
+            "nextProducts": "Prochains produits",
+            "scrollbar": "Related products scrollbar"
+        },
+        "Reviews": {
+            "title": "Avis",
+            "empty": "No reviews have been added for this product.",
+            "Pagination": {
+                "previous": "Previous reviews",
+                "next": "Next reviews"
             }
         }
     },
@@ -455,6 +486,13 @@
     },
     "Components": {
         "Header": {
+            "home": "Home",
+            "toggleNavigation": "Basculer la navigation",
+            "Icons": {
+                "account": "Profile",
+                "cart": "Panier",
+                "search": "Rechercher"
+            },
             "Account": {
                 "account": "Compte",
                 "orders": "Commandes",
@@ -483,14 +521,24 @@
                 "products": "Produits",
                 "categories": "Catégories",
                 "brands": "Marques",
-                "noSearchResults": "Désolé, aucun résultat pour « {term} ».",
+                "noSearchResultsTitle": "Désolé, aucun résultat pour « {term} ».",
+                "noSearchResultsSubtitle": "Please try another search.",
                 "searchPlaceholder": "Recherche...",
                 "clearSearch": "Effacer la recherche",
-                "processing": "Traitement en cours…"
+                "processing": "Traitement en cours…",
+                "error": "Something went wrong. Please try again."
             }
         },
         "Footer": {
+            "home": "Home",
+            "contact": "Contact Us",
             "socialMediaLinks": "Lien vers les médias sociaux"
+        },
+        "Subscribe": {
+            "title": "Sign up for our newsletter",
+            "placeholder": "Saisissez votre adresse e-mail",
+            "description": "Stay up to date with the latest news and offers from our store.",
+            "success": "Thank you for your interest! Newsletter feature is coming soon!"
         },
         "Breadcrumb": {
             "breadcrumb": "Fil d'Ariane"
