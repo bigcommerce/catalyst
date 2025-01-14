@@ -105,7 +105,7 @@ runtime.registerComponent(
                   title: TextInput({ label: 'Title', defaultValue: 'Text' }),
                   link: Link({ label: 'Link' }),
                   imageSrc: Image({ label: 'Image' }),
-                  imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
+                  //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
                   subSubMenuItems: List({
                     label: 'Menu Items',
                     type: Shape({
@@ -113,7 +113,7 @@ runtime.registerComponent(
                         title: TextInput({ label: 'Title', defaultValue: 'Text' }),
                         link: Link({ label: 'Link' }),
                         imageSrc: Image({ label: 'Image' }),
-                        imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
+                        //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
                       },
                     }),
                     getItemLabel(menuItem) {
