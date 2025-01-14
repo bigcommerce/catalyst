@@ -1030,14 +1030,18 @@ display: flex;
 
 .mega-menu .main-menu-item > a, .mega-menu .main-menu-item > span {
 display: flex;
+font-size: 16px;
 line-height: 32px;
+font-weight: 400;
 letter-spacing: .5px;
 text-align: left;
 padding: .75rem;
 }
 .mega-menu .secondary-menu-item > a, .mega-menu .secondary-menu-item > span {
 display: flex;
+font-size: 16px;
 line-height: 32px;
+font-weight: 400;
 letter-spacing: .5px;
 text-align: left;
 }
@@ -1050,4 +1054,29 @@ left: 0;
 top: 4.8em;
 width: auto;
 box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.mega-menu .sub-menu .main-sub-menu-item > a, .mega-menu .sub-menu .main-sub-menu-item > span {
+display: flex;
+font-size: 15px;
+font-weight: 500;
+letter-spacing: .5px;
+text-align: left;
+padding: 0 0 .5rem;
+}
+.mega-menu .sub-menu .main-sub-menu-item > a:hover {
+text-decoration: underline;
+}
+
+.mega-menu .sub-menu .main-sub-sub-menu-item > a, .mega-menu .sub-menu .main-sub-sub-menu-item > span {
+display: flex;
+font-size: 14px;
+font-weight: 400;
+letter-spacing: .5px;
+text-align: left;
+padding: 0 0 .5rem;
+color: var(--gray-600);
+}
+.mega-menu .sub-menu .main-sub-sub-menu-item > a:hover {
+text-decoration: underline;
 }
