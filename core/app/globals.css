@@ -1078,10 +1078,11 @@ grid-template-columns: repeat(6, auto);
 }
 }
 
-@media (min-width: 1280px) {
-.mega-menu .sub-menu .sub-menu-content {
-grid-template-columns: repeat(6, auto);
-}
+.mega-menu .sub-menu .sub-menu-close-button {
+top: -1em;
+right: 1em;
+color: var(--gray-600);
+position: absolute;
 }
 
 .mega-menu .sub-menu .main-sub-menu-item > a, .mega-menu .sub-menu .main-sub-menu-item > span {
