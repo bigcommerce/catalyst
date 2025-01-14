@@ -37,7 +37,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
   }, []);
 
   return (
-    <div className={clsx('header-bottom navigation', variant, classNames?.root)}>
+    <div className={clsx('mega-menu header-bottom navigation', variant, classNames?.root)}>
       {menuItems && menuItems.length > 0 && (
         <nav className={clsx('main-menu', classNames?.mainMenu)}>
           <ul>

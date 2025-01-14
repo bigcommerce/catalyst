@@ -974,3 +974,80 @@ text-decoration: underline;
 border: 1px solid var(--gray-300) !important;
 border-radius: 3px !important;
 }
+
+
+
+
+.mega-menu {
+margin: 0 auto;
+padding: 0 1rem;
+border: 0px solid;
+border-top: 1px solid var(--gray-300);
+display: flex;
+max-width: 100%;
+align-items: center;
+justify-content: space-between;
+background: var(--background);
+}
+
+@media (min-width: 1024px) {
+.mega-menu {
+padding: 0 2.5rem;
+}
+}
+
+.mega-menu .main-menu {
+display: none;
+position: relative;
+}
+@media (min-width: 1024px) {
+.mega-menu .main-menu {
+display: block;
+}
+}
+
+.mega-menu .main-menu > ul {
+margin: 0;
+padding: 0;
+display: flex;
+list-style: none;
+align-items: center;
+gap: 1rem;
+}
+
+.mega-menu .secondary-menu {
+color: var(--brand-400);
+align-items: center;
+gap: 1.25rem;
+display: none;
+position: relative;
+}
+@media (min-width: 1024px) {
+.mega-menu .secondary-menu {
+display: flex;
+}
+}
+
+.mega-menu .main-menu-item > a, .mega-menu .main-menu-item > span {
+display: flex;
+line-height: 32px;
+letter-spacing: .5px;
+text-align: left;
+padding: .75rem;
+}
+.mega-menu .secondary-menu-item > a, .mega-menu .secondary-menu-item > span {
+display: flex;
+line-height: 32px;
+letter-spacing: .5px;
+text-align: left;
+}
+
+.mega-menu .sub-menu {
+padding: 2rem 0;
+position: absolute;
+z-index: 199;
+left: 0;
+top: 4.8em;
+width: auto;
+box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
