@@ -1,5 +1,5 @@
 import { cookies } from 'next/headers';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import PLazy from 'p-lazy';
 import { cache } from 'react';
 
@@ -11,8 +11,10 @@ import { graphql, readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
+import { routing } from '~/i18n/routing';
 
 import { search } from './_actions/search';
+import { switchLocale } from './_actions/switch-locale';
 import { HeaderFragment } from './fragment';
 
 const GetCartCountQuery = graphql(`
@@ -95,6 +97,12 @@ const getCartCount = async () => {
 
 export const Header = async () => {
   const t = await getTranslations('Components.Header');
+  const locale = await getLocale();
+
+  const locales = routing.locales.map((enabledLocales) => ({
+    id: enabledLocales,
+    label: enabledLocales.toLocaleUpperCase(),
+  }));
 
   return (
     <HeaderSection
@@ -113,6 +121,9 @@ export const Header = async () => {
         openSearchPopupLabel: t('Search.openSearchPopup'),
         logoLabel: t('home'),
         cartCount: PLazy.from(getCartCount),
+        activeLocaleId: locale,
+        locales,
+        localeAction: switchLocale,
       }}
     />
   );
