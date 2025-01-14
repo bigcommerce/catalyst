@@ -32,8 +32,16 @@ interface SecondaryMenuItem {
 interface MSMegaMenuProps {
   classNames?: {
     root?: string,
-    content?: string,
-    item?: string
+    mainMenu?: string;
+    secondaryMenu?: string;
+    mainMenuItem?: string;
+    mainSubMenuItem?: string;
+    mainSubSubMenuItem?: string;
+    secondaryMenuItem?: string;
+    mainMenuLink?: string;
+    mainSubMenuLink?: string;
+    mainSubSubMenuLink?: string;
+    secondaryMenuLink?: string;
   };
   variant?: string;
   menuItems: MenuItem[];
@@ -84,6 +92,7 @@ runtime.registerComponent(
         label: "Style",
         labelOrientation: "horizontal",
         options: [
+          { value: "hidden", label: "Hidden" },
           { value: "default", label: "Default" },
         ],
         defaultValue: "default",

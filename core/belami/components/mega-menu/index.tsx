@@ -31,13 +31,7 @@ interface SecondaryMenuItem {
   title?: string;
   link?: { href?: string; target?: string };
 }
-/*
-export type MenuItem = {
-  id: string;
-  title?: string;
-  url?: string;
-};
-*/
+
 type Props = {
   variant?: string;
   /*
@@ -48,16 +42,26 @@ type Props = {
   secondaryMenuItems: SecondaryMenuItem[];
   classNames?: {
     root?: string;
-    content?: string;
-    item?: string;
+    mainMenu?: string;
+    secondaryMenu?: string;
+    mainMenuItem?: string;
+    mainSubMenuItem?: string;
+    mainSubSubMenuItem?: string;
+    secondaryMenuItem?: string;
+    mainMenuLink?: string;
+    mainSubMenuLink?: string;
+    mainSubSubMenuLink?: string;
+    secondaryMenuLink?: string;
   };
   emptyStateMessage?: string;
 };
 
 export function MegaMenu({
   variant,
-  //menuItems: streamableMenuItems,
-  //secondaryMenuItems: streamableSecondaryMenuItems,
+  /*
+  menuItems: streamableMenuItems,
+  secondaryMenuItems: streamableSecondaryMenuItems,
+  */
   menuItems,
   secondaryMenuItems,
   classNames,
@@ -84,21 +88,42 @@ export function MegaMenu({
       */}
 
       <>
-      <div>{variant}</div>
-      <ul>
-      {menuItems.map((menuItem: MenuItem, index: number) => (
-        <li className={clsx(classNames?.item)} key={index}>
-          <Link href={menuItem.link?.href || ''}>{menuItem.title}</Link>
-        </li>
-      ))}
-      </ul>
-      <ul>
-      {secondaryMenuItems.map((menuItem: SecondaryMenuItem, index: number) => (
-        <li className={clsx(classNames?.item)} key={index}>
-          <Link href={menuItem.link?.href || ''}>{menuItem.title}</Link>
-        </li>
-      ))}
-      </ul>
+        {(variant === 'default') &&
+          <div className={clsx('header-bottom navigation', variant, classNames?.root)}>
+            {/* {mapStreamable(streamableMenuItems, (menuItems) => { */}
+            {(menuItems && menuItems.length > 0) &&
+              <nav className={clsx('main-menu', classNames?.mainMenu)}>
+                <ul>
+                {menuItems.map((menuItem: MenuItem, index: number) => (
+                  <li className={clsx('main-menu-item', classNames?.mainMenuItem)} key={index}>
+                    {(menuItem.link?.href)
+                      ? <Link href={menuItem.link.href} className={clsx('main-menu-link', classNames?.mainMenuLink)}>{menuItem.title}</Link>
+                      : <span className={clsx('main-menu-link', classNames?.mainMenuLink)}>{menuItem.title}</span>
+                    }
+                  </li>
+                ))}
+                </ul>
+              </nav>
+            }
+            {/* }})} */}
+            {/* {mapStreamable(streamableSecondaryMenuItems, (secondaryMenuItems) => { */}
+            {(secondaryMenuItems && secondaryMenuItems.length > 0) &&
+              <nav className={clsx('secondary-menu', classNames?.secondaryMenu)}>
+                <ul>
+                {secondaryMenuItems.map((menuItem: SecondaryMenuItem, index: number) => (
+                  <li className={clsx('secondary-menu-item', classNames?.secondaryMenuItem)} key={index}>
+                    {(menuItem.link?.href)
+                      ? <Link href={menuItem.link.href} className={clsx('secondary-menu-link', classNames?.secondaryMenuLink)}>{menuItem.title}</Link>
+                      : <span className={clsx('secondary-menu-link', classNames?.secondaryMenuLink)}>{menuItem.title}</span>
+                    }
+                  </li>
+                ))}
+                </ul>
+              </nav>
+            }
+            {/* }})} */}
+          </div>
+        }
       </>
     </Suspense>
   );
@@ -106,8 +131,7 @@ export function MegaMenu({
 
 export function MegaMenuSkeleton({
   classNames,
-  message,
-  count = 8,
+  message
 }: {
   classNames?: {
     root?: string;
@@ -115,7 +139,6 @@ export function MegaMenuSkeleton({
     item?: string;
   };
   message?: string;
-  count?: number;
 }) {
   return <></>;
   //return <div>{message}</div>;
