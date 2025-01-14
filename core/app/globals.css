@@ -983,6 +983,7 @@ margin: 0 auto;
 padding: 0 1rem;
 border: 0px solid;
 border-top: 1px solid var(--gray-300);
+border-bottom: 1px solid var(--gray-300);
 display: flex;
 max-width: 100%;
 align-items: center;
@@ -1015,7 +1016,7 @@ align-items: center;
 gap: 1rem;
 }
 .mega-menu .secondary-menu > ul {
-margin: 0;
+margin: 0 1rem 0 0;
 padding: 0;
 display: flex;
 list-style: none;
@@ -1043,13 +1044,44 @@ text-align: left;
 }
 
 .mega-menu .sub-menu {
-padding: 2rem 0;
+padding: 2rem 3rem;
 position: absolute;
 z-index: 199;
 left: 0;
 top: 4.8em;
 width: auto;
+background: var(--background);
 box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+.mega-menu .sub-menu .sub-menu-content {
+margin: 0 auto;
+display: grid;
+gap: 1.5rem;
+max-width: 90em;
+position: relative;
+grid-template-columns: repeat(2, auto);
+}
+@media (min-width: 768px) {
+.mega-menu .sub-menu .sub-menu-content {
+grid-template-columns: repeat(2, auto);
+}
+}
+@media (min-width: 1024px) {
+.mega-menu .sub-menu .sub-menu-content {
+grid-template-columns: repeat(4, auto);
+}
+}
+@media (min-width: 1280px) {
+.mega-menu .sub-menu .sub-menu-content {
+grid-template-columns: repeat(6, auto);
+}
+}
+
+@media (min-width: 1280px) {
+.mega-menu .sub-menu .sub-menu-content {
+grid-template-columns: repeat(6, auto);
+}
 }
 
 .mega-menu .sub-menu .main-sub-menu-item > a, .mega-menu .sub-menu .main-sub-menu-item > span {

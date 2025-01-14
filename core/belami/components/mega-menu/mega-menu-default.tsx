@@ -19,11 +19,9 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
   };
 
   const handleMenuLeave = () => {
-    /*
     timeoutRef.current = setTimeout(() => {
       setOpenMenuId(null);
     }, 200);
-    */
   };
 
   const handleMenuClose = () => {
