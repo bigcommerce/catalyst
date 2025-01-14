@@ -44,13 +44,9 @@ runtime.registerComponent(
   function MSMegaMenu({ classNames, variant, menuItems, secondaryMenuItems }: MSMegaMenuProps) {
     return (
       <MegaMenu
-        menuItems={menuItems.map(({ title, link }, index) => {
-          return {
-            id: title ?? index.toString(),
-            title: title ?? '',
-            url: link?.href ?? '',
-          };
-        })}
+        variant={variant}
+        menuItems={menuItems}
+        secondaryMenuItems={secondaryMenuItems}
         classNames={classNames}
       />
     );

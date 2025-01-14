@@ -6,14 +6,46 @@ import { mapStreamable } from '@/vibes/soul/lib/streamable/server';
 
 import { Link } from '~/components/link';
 
+interface MenuItem {
+  title?: string;
+  link?: { href?: string; target?: string };
+  subMenuItems: SubMenuItem[];
+}
+
+interface SubMenuItem {
+  title?: string;
+  imageSrc?: string;
+  imageAlt?: string;
+  link?: { href?: string; target?: string };
+  subSubMenuItems: SubSubMenuItem[];
+}
+
+interface SubSubMenuItem {
+  title?: string;
+  imageSrc?: string;
+  imageAlt?: string;
+  link?: { href?: string; target?: string };
+}
+
+interface SecondaryMenuItem {
+  title?: string;
+  link?: { href?: string; target?: string };
+}
+/*
 export type MenuItem = {
   id: string;
   title?: string;
   url?: string;
 };
-
+*/
 type Props = {
+  variant?: string;
+  /*
   menuItems: Streamable<MenuItem[]>;
+  secondaryMenuItems: Streamable<SecondaryMenuItem[]>;
+  */
+  menuItems: MenuItem[];
+  secondaryMenuItems: SecondaryMenuItem[];
   classNames?: {
     root?: string;
     content?: string;
@@ -23,12 +55,17 @@ type Props = {
 };
 
 export function MegaMenu({
-  menuItems: streamableMenuItems,
+  variant,
+  //menuItems: streamableMenuItems,
+  //secondaryMenuItems: streamableSecondaryMenuItems,
+  menuItems,
+  secondaryMenuItems,
   classNames,
   emptyStateMessage = 'No menu items found',
 }: Props) {
   return (
     <Suspense fallback={<MegaMenuSkeleton classNames={classNames} message={emptyStateMessage} />}>
+      {/*
       {mapStreamable(streamableMenuItems, (menuItems) => {
         if (menuItems.length === 0) {
           return <MegaMenuSkeleton classNames={classNames} message={emptyStateMessage} />;
@@ -44,6 +81,25 @@ export function MegaMenu({
           </ul>
         );
       })}
+      */}
+
+      <>
+      <div>{variant}</div>
+      <ul>
+      {menuItems.map((menuItem: MenuItem, index: number) => (
+        <li className={clsx(classNames?.item)} key={index}>
+          <Link href={menuItem.link?.href || ''}>{menuItem.title}</Link>
+        </li>
+      ))}
+      </ul>
+      <ul>
+      {secondaryMenuItems.map((menuItem: SecondaryMenuItem, index: number) => (
+        <li className={clsx(classNames?.item)} key={index}>
+          <Link href={menuItem.link?.href || ''}>{menuItem.title}</Link>
+        </li>
+      ))}
+      </ul>
+      </>
     </Suspense>
   );
 }
