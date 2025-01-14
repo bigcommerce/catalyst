@@ -1,6 +1,5 @@
 'use client';
 
-import { useLocale } from 'next-intl';
 import { ComponentPropsWithRef, ComponentRef, forwardRef, useReducer } from 'react';
 
 import { cn } from '~/lib/utils';
@@ -27,15 +26,10 @@ type Props = NextLinkProps & PrefetchOptions;
  * page load performance and resource usage. https://nextjs.org/docs/app/api-reference/components/link#prefetch
  */
 export const Link = forwardRef<ComponentRef<'a'>, Props>(
-  (
-    { href, prefetch = 'hover', prefetchKind = 'auto', children, className, locale, ...rest },
-    ref,
-  ) => {
+  ({ href, prefetch = 'hover', prefetchKind = 'auto', children, className, ...rest }, ref) => {
     const router = useRouter();
     const [prefetched, setPrefetched] = useReducer(() => true, false);
     const computedPrefetch = computePrefetchProp({ prefetch, prefetchKind });
-    const defaultLocale = useLocale();
-    const finalLocale = locale || defaultLocale;
 
     const triggerPrefetch = () => {
       if (prefetched) {
@@ -61,7 +55,6 @@ export const Link = forwardRef<ComponentRef<'a'>, Props>(
       <NavLink
         className={cn(className)}
         href={href}
-        locale={finalLocale}
         onMouseEnter={prefetch === 'hover' ? triggerPrefetch : undefined}
         onTouchStart={prefetch === 'hover' ? triggerPrefetch : undefined}
         prefetch={computedPrefetch}
