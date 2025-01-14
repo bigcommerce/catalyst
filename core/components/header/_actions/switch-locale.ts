@@ -21,6 +21,9 @@ export const switchLocale = async (_prevState: SubmissionResult | null, payload:
 
   revalidatePath('/');
 
+  // Since `redirect` doesn't prepend the local to the redirect url
+  // when navigating the a default locale link, we need to prepend
+  // it ourselves to ensure the redirect happens.
   if (submission.value.id === defaultLocale) {
     redirect({
       href: `/${submission.value.id}`,
