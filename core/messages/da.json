@@ -1,8 +1,49 @@
 {
     "Home": {
+        "Slideshow": {
+            "Slide01": {
+                "title": "Fresh finds for every occasion",
+                "description": "Explore our latest arrivals, curated to bring you style, functionality, and inspiration. Shop now and discover your next favorite.",
+                "alt": "Five small potted plants displayed on beige stacked blocks, featuring a variety of green foliage in dark gray pots against a neutral background.",
+                "cta": "Shop Now"
+            },
+            "Slide02": {
+                "title": "Discover what's new",
+                "description": "Shop our latest arrivals and find something fresh and exciting for your home.",
+                "alt": "Hands reaching out to hold a green fern in a woven basket with a decorative bow, against a beige background with soft shadows.",
+                "cta": "Shop Now"
+            },
+            "Slide03": {
+                "title": "Something for everyone",
+                "description": "Don’t miss out on exclusive offers across our best-selling products. Shop today and save big on the items you love.",
+                "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
+                "cta": "Shop Now"
+            }
+        },
         "Carousel": {
             "featuredProducts": "Udvalgte produkter",
             "newestProducts": "Nyeste produkter"
+        },
+        "FeaturedProducts": {
+            "title": "Featured collection",
+            "description": "Explore our top picks in this featured collection. Find the perfect gift or treat yourself!",
+            "cta": "View more",
+            "emptyStateTitle": "No products found",
+            "emptyStateSubtitle": "Try browsing our complete catalog of products."
+        },
+        "NewestProducts": {
+            "title": "New arrivals",
+            "description": "Our latest products are here. Check out what's new in store.",
+            "cta": "See all",
+            "emptyStateTitle": "No products found",
+            "emptyStateSubtitle": "Try browsing our complete catalog of products.",
+            "previousProducts": "Forrige produkter",
+            "nextProducts": "Næste produkter"
+        },
+        "BestSellingProducts": {
+            "title": "Our best sellers",
+            "description": "Our best selling products are here. Check out what's popular in store.",
+            "cta": "See all"
         }
     },
     "ChangePassword": {
@@ -65,6 +106,7 @@
     "Register": {
         "title": "Registrer konto",
         "heading": "Ny konto",
+        "successfulUpdate": "Account has been successfully updated.",
         "Form": {
             "submit": "Opret konto",
             "submitting": "Opretter konto ...",
@@ -86,6 +128,10 @@
         },
         "FacetedSearch": {
             "filters": "Filtre",
+            "resetFilters": "Reset filters",
+            "Range": {
+                "apply": "Anvend"
+            },
             "RefineBy": {
                 "refineBy": "Indsnævr efter",
                 "clearAllRefinements": "Ryd alle"
@@ -119,14 +165,17 @@
     },
     "Brand": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 vare} other {# varer}}",
-        "products": "produkter"
+        "products": "produkter",
+        "emptyStateTitle": "No products in this brand.",
+        "emptyStateSubtitle": "Try using different filters."
     },
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 vare} other {# varer}}",
         "products": "produkter",
         "items": "Varer",
         "Empty": {
-            "message": "Ingen produkter i denne kategori",
+            "title": "Ingen produkter i denne kategori",
+            "subtitle": "Try using different filters.",
             "cta": "Tilbage til start"
         }
     },
@@ -135,87 +184,52 @@
         "heading": "Søg",
         "products": "produkter",
         "sortBy": "{items, plural, =0 {no items} =1 {1 vare} other {# varer}}",
-        "searchResults": "Søgeresultater for"
+        "searchResults": "Søgeresultater for",
+        "emptyStateTitle": "Beklager, der var ingen resultater for “{term}”.",
+        "emptyStateSubtitle": "Please try another search.",
+        "Breadcrumbs": {
+            "home": "Home",
+            "search": "Søg"
+        }
     },
     "Account": {
         "Layout": {
-            "accountTabsLabel": "Konto-faner",
-            "orders": "Ordrer",
             "addresses": "Adresser",
+            "logout": "Logout",
+            "orders": "Ordrer",
+            "settings": "Konto",
             "wishlists": "Ønskelister",
-            "recentlyViewed": "Set for nylig",
-            "settings": "Kontoindstillinger"
+            "recentlyViewed": "Set for nylig"
         },
         "Orders": {
-            "noOrders": "Ingen ordrer endnu",
+            "title": "Ordrer",
             "orderNumber": "Ordrenr.",
-            "placedDate": "Ordre afgivet",
             "totalPrice": "I alt",
             "viewDetails": "Se detaljer",
-            "trackOrder": "Spor ordre",
-            "returnOrder": "Returner varer",
-            "orderSummary": "Ordreoversigt",
-            "orderContents": "Ordreindhold",
-            "orderSubtotal": "Subtotal:",
-            "orderGrandtotal": "Samlet beløb:",
-            "orderDiscount": "Rabat:",
-            "orderAppliedCoupon": "Kuponkode ({code}):",
-            "orderShipping": "Forsendelse:",
-            "orderTax": "Skat:",
-            "printInvoice": "Udskriv faktura",
-            "repurchaseOrder": "Køb igen",
-            "return": "Returnér",
-            "shippedDate": "Sendes på",
-            "shippingAddress": "Leveringsadresse",
-            "shippingMethod": "Forsendelsesmetode",
-            "shipmentTitle": "Forsendelse",
-            "shippingTitle": "Forsendelse",
-            "shippingPayment": "Betaling",
-            "shippingPaymentMethod": "Betalingsmetode",
-            "billingAddress": "Faktureringsadresse"
+            "noOrders": "Ingen ordrer endnu"
+        },
+        "OrderDetails": {
+            "title": "Order #{orderNumber}",
+            "shippingAddressLabel": "Leveringsadresse",
+            "shippingMethodLabel": "Forsendelsesmetode",
+            "summaryTotalLabel": "I alt",
+            "destinationTitle": "Destination",
+            "destinationWithCountTitle": "Destination {number}/{total}",
+            "summarySubtotalLabel": "Subtotal",
+            "summaryShippingLabel": "Forsendelse",
+            "summaryTaxLabel": "Moms"
         },
         "Addresses": {
             "title": "Adresser",
-            "addNewAddress": "Tilføj ny adresse",
-            "editButton": "Rediger",
-            "emptyAddresses": "Der blev ikke tilføjet nogen adresser",
-            "deleteButton": "Slet",
-            "confirmDeleteAddress": "Slet adresse",
-            "deleteModalTitle": "Er du sikker på, at du vil slette denne adresse?",
-            "Add": {
-                "title": "Tilføj adresse",
-                "heading": "Ny adresse",
-                "Form": {
-                    "submit": "Tilføj ny adresse",
-                    "submitting": "Gemmer adresse ...",
-                    "cancel": "Annuller",
-                    "success": "Adressen er tilføjet til din konto.",
-                    "Errors": {
-                        "inputError": "Noget gik galt med behandling af brugerinput.",
-                        "error": "Ukendt fejl."
-                    }
-                }
-            },
-            "Edit": {
-                "title": "Rediger adresse",
-                "heading": "Rediger adresse",
-                "Form": {
-                    "submit": "Rediger adresse",
-                    "submitting": "Opdaterer adresse ...",
-                    "cancel": "Annuller",
-                    "confirmDeleteAddress": "Slet adresse",
-                    "deleteModalTitle": "Er du sikker på, at du vil slette denne adresse?",
-                    "deleteButton": "Slet",
-                    "success": "Adressen er blevet opdateret.",
-                    "Errors": {
-                        "inputError": "Noget gik galt med behandling af brugerinput.",
-                        "notFound": "Adressen findes ikke.",
-                        "error": "Ukendt fejl."
-                    }
-                }
-            },
-            "Delete": {
-                "success": "Adressen er slettet fra din konto.",
+            "showAddFormLabel": "Tilføj adresse",
+            "editLabel": "Rediger",
+            "deleteLabel": "Slet",
+            "cancelLabel": "Annuller",
+            "createLabel": "Create",
+            "updateLabel": "Update",
+            "setDefaultLabel": "Set as default",
+            "Errors": {
+                "apiError": "Det ser ud til, at vi oplever en serverfejl. Prøv igen om et par minutter.",
                 "error": "Ukendt fejl."
             }
         },
@@ -262,6 +276,10 @@
     },
     "Blog": {
         "title": "blog",
+        "Empty": {
+            "title": "No blog posts found",
+            "subtitle": "Check back later for more content"
+        },
         "SharingLinks": {
             "share": "Del",
             "email": "E-mail",
@@ -276,7 +294,11 @@
         "proceedToCheckout": "Gå til kassen",
         "loading": "Indlæser ...",
         "spinnerText": "Opdaterer...",
+        "increment": "Increase quantity",
+        "decrement": "Decrease quantity",
+        "removeItem": "Remove item",
         "CheckoutSummary": {
+            "title": "Summary",
             "subTotal": "Subtotal",
             "discounts": "Rabatter",
             "coupon": "Kupon",
@@ -337,6 +359,18 @@
             "remove": "Fjern",
             "spinnerText": "Fjerner ...",
             "errorMessage": "Der opstod en fejl under fjernelse af varen. Prøv igen."
+        },
+        "Empty": {
+            "title": "Your cart is empty.",
+            "subtitle": "Add some products to get started.",
+            "cta": "Continue shopping"
+        },
+        "Errors": {
+            "cartNotFound": "No cartId cookie found.",
+            "lineItemNotFound": "Line item not found.",
+            "failedToRedirectToCheckout": "Failed to redirect to checkout.",
+            "failedToUpdateQuantity": "Failed to update quantity.",
+            "somethingWentWrong": "Noget gik galt. Prøv igen senere."
         }
     },
     "Compare": {
@@ -362,54 +396,51 @@
         }
     },
     "Product": {
-        "loading": "Indlæser ...",
-        "Carousel": {
-            "relatedProducts": "Relaterede produkter"
-        },
-        "Gallery": {
-            "previous": "Forrige produktbillede",
-            "next": "Næste produktbillede",
-            "thumbnailNavigation": "Navigation med miniaturebilleder",
-            "enlarge": "Forstør produktbilledet"
-        },
-        "Form": {
-            "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
-            "saveToWishlist": "Gem i ønskeliste",
-            "quantityLabel": "Antal"
-        },
-        "Description": {
-            "heading": "Beskrivelse"
-        },
-        "Warranty": {
-            "heading": "Garanti"
-        },
-        "Reviews": {
-            "heading": "Anmeldelser",
-            "reviewsCount": "Tæller:",
-            "unreviewed": "Dette produkt er ikke blevet anmeldt endnu.",
-            "reviewRating": "Bedømmelse: {rating} ud af 5 stjerner",
-            "reviewAuthor": "Indsendt af {author} den"
-        },
-        "Details": {
-            "additionalDetails": "Yderligere oplysninger",
-            "sku": "SKU",
-            "upc": "UPC",
-            "minPurchase": "Minimumskøb",
-            "maxPurchase": "Maksimumkøb",
-            "availability": "Tilgængelighed",
-            "condition": "Tilstand",
-            "comingSoon": "Kommer snart",
-            "qty": "Antal",
-            "weight": "Vægt",
+        "ProductDetails": {
+            "quantity": "Antal",
+            "increaseQuantity": "Increase quantity",
+            "decreaseQuantity": "Decrease quantity",
+            "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>",
+            "missingCart": "Cart not found. Please try again later!",
+            "unknownError": "Unknown error. Please try again later.",
+            "increaseNumber": "Increase number",
+            "decreaseNumber": "Decrease number",
+            "thumbnail": "View image number",
+            "additionalInformation": "Additional information",
+            "Submit": {
+                "addToCart": "Føj til kurv",
+                "outOfStock": "Udsolgt",
+                "preorder": "Forudbestil",
+                "unavailable": "Ikke tilgængelig"
+            },
+            "Accordions": {
+                "specifications": "Specifications",
+                "warranty": "Garanti",
+                "sku": "SKU",
+                "weight": "Vægt",
+                "condition": "Tilstand"
+            },
             "Prices": {
                 "msrp": "Producents anbefalede detailpris",
                 "was": "var",
                 "now": "Nu"
-            },
-            "ReviewSummary": {
-                "rating": "Bedømmelse:",
-                "ratingRange": "ud af 5 stjerner.",
-                "reviewsNumber": "Antal anmeldelser:"
+            }
+        },
+        "RelatedProducts": {
+            "title": "Relaterede produkter",
+            "noRelatedProducts": "No related products found",
+            "browseCatalog": "Try browsing our complete catalog of products.",
+            "cta": "Shop all",
+            "previousProducts": "Forrige produkter",
+            "nextProducts": "Næste produkter",
+            "scrollbar": "Related products scrollbar"
+        },
+        "Reviews": {
+            "title": "Anmeldelser",
+            "empty": "No reviews have been added for this product.",
+            "Pagination": {
+                "previous": "Previous reviews",
+                "next": "Next reviews"
             }
         }
     },
@@ -455,6 +486,13 @@
     },
     "Components": {
         "Header": {
+            "home": "Home",
+            "toggleNavigation": "Skift navigation",
+            "Icons": {
+                "account": "Profile",
+                "cart": "Indkøbskurv",
+                "search": "Søg"
+            },
             "Account": {
                 "account": "Konto",
                 "orders": "Ordrer",
@@ -483,14 +521,24 @@
                 "products": "produkter",
                 "categories": "Kategorier",
                 "brands": "mærker",
-                "noSearchResults": "Beklager, der var ingen resultater for “{term}”.",
+                "noSearchResultsTitle": "Beklager, der var ingen resultater for “{term}”.",
+                "noSearchResultsSubtitle": "Please try another search.",
                 "searchPlaceholder": "Søg ...",
                 "clearSearch": "Ryd søgning",
-                "processing": "Behandler..."
+                "processing": "Behandler...",
+                "error": "Something went wrong. Please try again."
             }
         },
         "Footer": {
+            "home": "Home",
+            "contact": "Contact Us",
             "socialMediaLinks": "Links til sociale medier"
+        },
+        "Subscribe": {
+            "title": "Sign up for our newsletter",
+            "placeholder": "Indtast din e-mailadresse",
+            "description": "Stay up to date with the latest news and offers from our store.",
+            "success": "Thank you for your interest! Newsletter feature is coming soon!"
         },
         "Breadcrumb": {
             "breadcrumb": "Brødkrumme"

@@ -1,8 +1,49 @@
 {
     "Home": {
+        "Slideshow": {
+            "Slide01": {
+                "title": "Fresh finds for every occasion",
+                "description": "Explore our latest arrivals, curated to bring you style, functionality, and inspiration. Shop now and discover your next favorite.",
+                "alt": "Five small potted plants displayed on beige stacked blocks, featuring a variety of green foliage in dark gray pots against a neutral background.",
+                "cta": "Shop Now"
+            },
+            "Slide02": {
+                "title": "Discover what's new",
+                "description": "Shop our latest arrivals and find something fresh and exciting for your home.",
+                "alt": "Hands reaching out to hold a green fern in a woven basket with a decorative bow, against a beige background with soft shadows.",
+                "cta": "Shop Now"
+            },
+            "Slide03": {
+                "title": "Something for everyone",
+                "description": "Don’t miss out on exclusive offers across our best-selling products. Shop today and save big on the items you love.",
+                "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
+                "cta": "Shop Now"
+            }
+        },
         "Carousel": {
             "featuredProducts": "おすすめ商品",
             "newestProducts": "Newest products"
+        },
+        "FeaturedProducts": {
+            "title": "Featured collection",
+            "description": "Explore our top picks in this featured collection. Find the perfect gift or treat yourself!",
+            "cta": "View more",
+            "emptyStateTitle": "No products found",
+            "emptyStateSubtitle": "Try browsing our complete catalog of products."
+        },
+        "NewestProducts": {
+            "title": "New arrivals",
+            "description": "Our latest products are here. Check out what's new in store.",
+            "cta": "See all",
+            "emptyStateTitle": "No products found",
+            "emptyStateSubtitle": "Try browsing our complete catalog of products.",
+            "previousProducts": "Previous products",
+            "nextProducts": "Next products"
+        },
+        "BestSellingProducts": {
+            "title": "Our best sellers",
+            "description": "Our best selling products are here. Check out what's popular in store.",
+            "cta": "See all"
         }
     },
     "ChangePassword": {
@@ -65,6 +106,7 @@
     "Register": {
         "title": "Register account",
         "heading": "New account",
+        "successfulUpdate": "Account has been successfully updated.",
         "Form": {
             "submit": "アカウント作成",
             "submitting": "Creating account...",
@@ -86,6 +128,10 @@
         },
         "FacetedSearch": {
             "filters": "フィルター",
+            "resetFilters": "Reset filters",
+            "Range": {
+                "apply": "適用"
+            },
             "RefineBy": {
                 "refineBy": "絞込条件",
                 "clearAllRefinements": "すべてクリア"
@@ -119,14 +165,17 @@
     },
     "Brand": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-        "products": "商品"
+        "products": "商品",
+        "emptyStateTitle": "No products in this brand.",
+        "emptyStateSubtitle": "Try using different filters."
     },
     "Category": {
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
         "products": "商品",
         "items": "お品物",
         "Empty": {
-            "message": "No products in this category",
+            "title": "No products in this category",
+            "subtitle": "Try using different filters.",
             "cta": "Return to Home"
         }
     },
@@ -135,87 +184,52 @@
         "heading": "検索",
         "products": "商品",
         "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-        "searchResults": "Search results for"
+        "searchResults": "Search results for",
+        "emptyStateTitle": "Sorry, no results for \"{term}\".",
+        "emptyStateSubtitle": "Please try another search.",
+        "Breadcrumbs": {
+            "home": "Home",
+            "search": "検索"
+        }
     },
     "Account": {
         "Layout": {
-            "accountTabsLabel": "Account Tabs",
-            "orders": "注文",
             "addresses": "住所",
+            "logout": "Logout",
+            "orders": "注文",
+            "settings": "アカウント",
             "wishlists": "Wish lists",
-            "recentlyViewed": "Recently viewed",
-            "settings": "アカウント設定"
+            "recentlyViewed": "Recently viewed"
         },
         "Orders": {
-            "noOrders": "No orders yet",
+            "title": "注文",
             "orderNumber": "注文 #",
-            "placedDate": "Order placed",
             "totalPrice": "合計",
             "viewDetails": "詳細一覧",
-            "trackOrder": "Track order",
-            "returnOrder": "返品アイテム",
-            "orderSummary": "注文概要",
-            "orderContents": "Order contents",
-            "orderSubtotal": "小計:",
-            "orderGrandtotal": "Grand total:",
-            "orderDiscount": "割引:",
-            "orderAppliedCoupon": "Coupon code ({code}):",
-            "orderShipping": "送料:",
-            "orderTax": "税金:",
-            "printInvoice": "請求書印刷",
-            "repurchaseOrder": "Repurchase",
-            "return": "返品",
-            "shippedDate": "Shipped on",
-            "shippingAddress": "配送先住所",
-            "shippingMethod": "配送方法",
-            "shipmentTitle": "Shipment",
-            "shippingTitle": "配送",
-            "shippingPayment": "支払い",
-            "shippingPaymentMethod": "支払方法",
-            "billingAddress": "請求先住所"
+            "noOrders": "No orders yet"
+        },
+        "OrderDetails": {
+            "title": "Order #{orderNumber}",
+            "shippingAddressLabel": "配送先住所",
+            "shippingMethodLabel": "配送方法",
+            "summaryTotalLabel": "合計",
+            "destinationTitle": "Destination",
+            "destinationWithCountTitle": "Destination {number}/{total}",
+            "summarySubtotalLabel": "小計",
+            "summaryShippingLabel": "配送",
+            "summaryTaxLabel": "税金"
         },
         "Addresses": {
             "title": "住所",
-            "addNewAddress": "Add new address",
-            "editButton": "編集",
-            "emptyAddresses": "No addresses added",
-            "deleteButton": "削除する",
-            "confirmDeleteAddress": "アドレスの削除",
-            "deleteModalTitle": "このアドレスを削除しますか?",
-            "Add": {
-                "title": "アドレスを追加",
-                "heading": "New address",
-                "Form": {
-                    "submit": "Add new address",
-                    "submitting": "Saving address...",
-                    "cancel": "キャンセル",
-                    "success": "Address added to your account.",
-                    "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
-                        "error": "Unknown error."
-                    }
-                }
-            },
-            "Edit": {
-                "title": "アドレスを編集",
-                "heading": "アドレスを編集",
-                "Form": {
-                    "submit": "アドレスを編集",
-                    "submitting": "Updating address...",
-                    "cancel": "キャンセル",
-                    "confirmDeleteAddress": "アドレスの削除",
-                    "deleteModalTitle": "このアドレスを削除しますか?",
-                    "deleteButton": "削除する",
-                    "success": "The address has been successfully updated.",
-                    "Errors": {
-                        "inputError": "Something went wrong with processing user input.",
-                        "notFound": "Address does not exist.",
-                        "error": "Unknown error."
-                    }
-                }
-            },
-            "Delete": {
-                "success": "Address deleted from your account.",
+            "showAddFormLabel": "アドレスを追加",
+            "editLabel": "編集",
+            "deleteLabel": "削除する",
+            "cancelLabel": "キャンセル",
+            "createLabel": "Create",
+            "updateLabel": "Update",
+            "setDefaultLabel": "Set as default",
+            "Errors": {
+                "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
                 "error": "Unknown error."
             }
         },
@@ -262,6 +276,10 @@
     },
     "Blog": {
         "title": "ブログ",
+        "Empty": {
+            "title": "No blog posts found",
+            "subtitle": "Check back later for more content"
+        },
         "SharingLinks": {
             "share": "共有",
             "email": "Eメール",
@@ -276,7 +294,11 @@
         "proceedToCheckout": "支払いに進む",
         "loading": "ロード中…",
         "spinnerText": "Updating...",
+        "increment": "Increase quantity",
+        "decrement": "Decrease quantity",
+        "removeItem": "Remove item",
         "CheckoutSummary": {
+            "title": "Summary",
             "subTotal": "小計",
             "discounts": "割引",
             "coupon": "クーポン",
@@ -337,6 +359,18 @@
             "remove": "削除",
             "spinnerText": "Removing...",
             "errorMessage": "Something went wrong while removing item, please try again."
+        },
+        "Empty": {
+            "title": "Your cart is empty.",
+            "subtitle": "Add some products to get started.",
+            "cta": "Continue shopping"
+        },
+        "Errors": {
+            "cartNotFound": "No cartId cookie found.",
+            "lineItemNotFound": "Line item not found.",
+            "failedToRedirectToCheckout": "Failed to redirect to checkout.",
+            "failedToUpdateQuantity": "Failed to update quantity.",
+            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
         }
     },
     "Compare": {
@@ -362,54 +396,51 @@
         }
     },
     "Product": {
-        "loading": "ロード中…",
-        "Carousel": {
-            "relatedProducts": "関連商品"
-        },
-        "Gallery": {
-            "previous": "Previous product image",
-            "next": "Next product image",
-            "thumbnailNavigation": "Thumbnail navigation",
-            "enlarge": "Enlarge product image"
-        },
-        "Form": {
-            "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>",
-            "saveToWishlist": "Save to wishlist",
-            "quantityLabel": "数量"
-        },
-        "Description": {
-            "heading": "説明"
-        },
-        "Warranty": {
-            "heading": "保証"
-        },
-        "Reviews": {
-            "heading": "レビュー",
-            "reviewsCount": "Count:",
-            "unreviewed": "This product hasn't been reviewed yet.",
-            "reviewRating": "Rating: {rating} out of 5 stars",
-            "reviewAuthor": "Posted by {author} on"
-        },
-        "Details": {
-            "additionalDetails": "Additional details",
-            "sku": "SKU",
-            "upc": "UPC",
-            "minPurchase": "最小購入額",
-            "maxPurchase": "Maximum purchase",
-            "availability": "販売中",
-            "condition": "条件",
-            "comingSoon": "近日公開",
-            "qty": "数量",
-            "weight": "重さ",
+        "ProductDetails": {
+            "quantity": "数量",
+            "increaseQuantity": "Increase quantity",
+            "decreaseQuantity": "Decrease quantity",
+            "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>",
+            "missingCart": "Cart not found. Please try again later!",
+            "unknownError": "Unknown error. Please try again later.",
+            "increaseNumber": "Increase number",
+            "decreaseNumber": "Decrease number",
+            "thumbnail": "View image number",
+            "additionalInformation": "Additional information",
+            "Submit": {
+                "addToCart": "カートに追加",
+                "outOfStock": "品切れ",
+                "preorder": "Preorder",
+                "unavailable": "利用不可"
+            },
+            "Accordions": {
+                "specifications": "Specifications",
+                "warranty": "保証",
+                "sku": "SKU",
+                "weight": "重さ",
+                "condition": "条件"
+            },
             "Prices": {
                 "msrp": "メーカー希望小売価格",
                 "was": "Was",
                 "now": "Now"
-            },
-            "ReviewSummary": {
-                "rating": "評価:",
-                "ratingRange": "out of 5 stars.",
-                "reviewsNumber": "Number of reviews:"
+            }
+        },
+        "RelatedProducts": {
+            "title": "関連商品",
+            "noRelatedProducts": "No related products found",
+            "browseCatalog": "Try browsing our complete catalog of products.",
+            "cta": "Shop all",
+            "previousProducts": "Previous products",
+            "nextProducts": "Next products",
+            "scrollbar": "Related products scrollbar"
+        },
+        "Reviews": {
+            "title": "レビュー",
+            "empty": "No reviews have been added for this product.",
+            "Pagination": {
+                "previous": "Previous reviews",
+                "next": "Next reviews"
             }
         }
     },
@@ -455,6 +486,13 @@
     },
     "Components": {
         "Header": {
+            "home": "Home",
+            "toggleNavigation": "Toggle navigation",
+            "Icons": {
+                "account": "Profile",
+                "cart": "ショッピングカート",
+                "search": "検索"
+            },
             "Account": {
                 "account": "アカウント",
                 "orders": "注文",
@@ -483,14 +521,24 @@
                 "products": "商品",
                 "categories": "カテゴリー",
                 "brands": "ブランド",
-                "noSearchResults": "Sorry, no results for \"{term}\".",
+                "noSearchResultsTitle": "Sorry, no results for \"{term}\".",
+                "noSearchResultsSubtitle": "Please try another search.",
                 "searchPlaceholder": "検索…",
                 "clearSearch": "検索クリア",
-                "processing": "処理中..."
+                "processing": "処理中...",
+                "error": "Something went wrong. Please try again."
             }
         },
         "Footer": {
+            "home": "Home",
+            "contact": "Contact Us",
             "socialMediaLinks": "ソーシャル·メディア·リンク"
+        },
+        "Subscribe": {
+            "title": "Sign up for our newsletter",
+            "placeholder": "Enter your email",
+            "description": "Stay up to date with the latest news and offers from our store.",
+            "success": "Thank you for your interest! Newsletter feature is coming soon!"
         },
         "Breadcrumb": {
             "breadcrumb": "Breadcrumb"
