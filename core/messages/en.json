@@ -507,9 +507,8 @@
         "login": "Login",
         "logout": "Log out"
       },
-      "LocaleSwitcher": {
-        "chooseCountryAndLanguage": "Choose your country and language",
-        "goToSite": "Go to site"
+      "Locale": {
+        "invalidLocale": "Invalid locale"
       },
       "MiniCart": {
         "cart": "Cart",

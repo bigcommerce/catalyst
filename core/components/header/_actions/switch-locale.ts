@@ -3,15 +3,18 @@
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidatePath } from 'next/cache';
+import { getTranslations } from 'next-intl/server';
 
 import { localeSchema } from '@/vibes/soul/primitives/navigation/schema';
 import { defaultLocale, redirect } from '~/i18n/routing';
 
 export const switchLocale = async (_prevState: SubmissionResult | null, payload: FormData) => {
+  const t = await getTranslations('Components.Header.Locale');
+
   const submission = parseWithZod(payload, { schema: localeSchema });
 
   if (submission.status !== 'success') {
-    return submission.reply({ formErrors: ['Invalid locale'] });
+    return submission.reply({ formErrors: [t('invalidLocale')] });
   }
 
   await Promise.resolve();
