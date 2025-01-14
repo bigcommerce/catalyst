@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { MegaMenuMenuItem, MegaMenuSecondaryMenuItem, MegaMenuProps } from './mega-menu-types';
+import { MegaMenuMenuItem, MegaMenuSubMenuItem, MegaMenuSubSubMenuItem, MegaMenuSecondaryMenuItem, MegaMenuProps } from './mega-menu-types';
 import clsx from 'clsx';
 import { Link } from '~/components/link';
 
@@ -42,7 +42,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
         <nav className={clsx('main-menu', classNames?.mainMenu)}>
           <ul>
             {menuItems.map((menuItem: MegaMenuMenuItem, index: number) => (
-              <li className={clsx('main-menu-item', classNames?.mainMenuItem)} key={index}>
+              <li className={clsx('main-menu-item', classNames?.mainMenuItem)} key={`main-menu-item-${index}`}>
                 {menuItem.link?.href ? (
                   <Link
                     href={menuItem.link.href}
@@ -61,6 +61,67 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                     {menuItem.title}
                   </span>
                 )}
+                {openMenuId === `main-menu-id-${index}` && 
+                  <div
+                    className={clsx('sub-menu', classNames?.subMenuRoot)}
+                    onMouseEnter={() => handleMenuEnter(`main-menu-id-${index}`)}
+                    onMouseLeave={handleMenuLeave}
+                  >
+                    <div className={clsx('sub-menu-content', classNames?.subMenuContent)}>
+                      <button title="Close menu" className={clsx('sub-menu-close-button', classNames?.subMenuCloseButton)} onClick={handleMenuClose}>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                      </button>
+                    </div>
+
+                    {menuItem.subMenuItems && menuItem.subMenuItems.length > 0 && (
+                      <ul>
+                        {menuItem.subMenuItems.map((menuItem: MegaMenuSubMenuItem, index2: number) => (
+                          <li className={clsx('main-sub-menu-item', classNames?.mainSubMenuItem)} key={`main-sub-menu-item-${index2}`}>
+                            {menuItem.link?.href ? (
+                              <Link
+                                href={menuItem.link.href}
+                                className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
+                              >
+                                {menuItem.title}
+                              </Link>
+                            ) : (
+                              <span
+                                className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
+                              >
+                                {menuItem.title}
+                              </span>
+                            )}
+
+                            {menuItem.subSubMenuItems && menuItem.subSubMenuItems.length > 0 && (
+                              <ul>
+                                {menuItem.subSubMenuItems.map((menuItem: MegaMenuSubSubMenuItem, index3: number) => (
+                                  <li className={clsx('main-sub-sub-menu-item', classNames?.mainSubSubMenuItem)} key={`main-sub-sub-menu-item-${index3}`}>
+                                    {menuItem.link?.href ? (
+                                      <Link
+                                        href={menuItem.link.href}
+                                        className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
+                                      >
+                                        {menuItem.title}
+                                      </Link>
+                                    ) : (
+                                      <span
+                                        className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
+                                      >
+                                        {menuItem.title}
+                                      </span>
+                                    )}
+                                  </li>
+                                ))}
+                              </ul>
+                            )}
+
+
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                }
               </li>
             ))}
           </ul>
