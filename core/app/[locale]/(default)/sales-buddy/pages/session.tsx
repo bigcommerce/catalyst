@@ -1,11 +1,16 @@
 'use client';
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getSessionIdCookie, createSessionIdCookie } from '../_actions/session';
 import { getEnhancedSystemInfo } from '../common-components/common-functions';
 
 export default function SessionId() {
+    const [storeSessionID,setStoreSessionId]=useState('');
     useEffect(() => {
-        initializeSessionId()
+        const sessionId = localStorage.getItem('session_id');
+        if (sessionId) {
+            setStoreSessionId(sessionId);
+        }
+        // initializeSessionId()
     }, [])
 
     const fetchSystemInfo = async () => {
@@ -33,6 +38,8 @@ export default function SessionId() {
     const initializeSessionId = async () => {
         const localMachineInformation = await fetchSystemInfo();
         const sessionId = await createSessionIdCookie(localMachineInformation);
+        setStoreSessionId(sessionId.output)
+        
         localStorage.setItem('session_id', sessionId.output)
         fetchMyCookie(); // Fetch the cookie after creating it
     };
@@ -51,10 +58,10 @@ export default function SessionId() {
             <div
                 id="sessionIdMainDiv"
                 className="hover:text-primary flex justify-space focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white cursor-pointer"
-            // onClick={() => initializeSessionId()} // Fetch cookie on click
+                onClick={() => initializeSessionId()} // Fetch cookie on click
             >
                 <span>Session Id:</span>
-                <div id="sessionIdDiv" className='ml-[10px]'>#####</div>
+                <div id="sessionIdDiv" className='ml-[10px]'>{storeSessionID ?  storeSessionID : "######"}</div>
             </div>
         </>
     );

@@ -189,14 +189,21 @@ export async function getEnhancedSystemInfo(): Promise<SystemInfo> {
     } : 'Network Information API not supported'
   };
 
+  const getIpURL = process.env.NEXT_PUBLIC_SALES_BUDDY_API_IP;
+  const getIpURLLocation = process.env.NEXT_PUBLIC_SALES_BUDDY_API_IP_LOCATION;
+
+  if (!getIpURL || !getIpURLLocation) {
+    throw new Error('Environment variables for IP URLs are not defined');
+  }
+
   // Get IP and Location data
   try {
-    const ipResponse = await fetch('https://api.ipify.org?format=json');
+    const ipResponse = await fetch(getIpURL);
     const ipData = await ipResponse.json();
     systemInfo.network.ip = ipData.ip;
 
     // Get detailed location data using ip-api.com (free tier)
-    const locationResponse = await fetch(`http://ip-api.com/json/${ipData.ip}`);
+    const locationResponse = await fetch(`${getIpURLLocation}${ipData.ip}`);
     const locationData = await locationResponse.json();
 
     systemInfo.network.location = {
