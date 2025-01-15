@@ -10,6 +10,7 @@ export const InsertShopperVisitedUrl = async (sessionId: any, url: string) => {
     let postData = JSON.stringify({
       session_id: sessionId,
       url: url,
+      cart_id: CartId?.value,
       access_id: process.env.SALES_BUDDY_ACCESS_ID,
     });
 
