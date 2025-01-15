@@ -863,54 +863,54 @@ export function Hit({
           </div>
           {hit.metafields && hit.metafields.Akeneo ? (
             <div className="mt-2 leading-6">
-              {hit.metafields.Akeneo.depth ? (
+              {hit.metafields.Details.Depth ? (
                 <p className="">
-                  Depth: <AmountUnitValue data={hit.metafields.Akeneo.depth} />
+                  Depth: <AmountUnitValue data={hit.metafields.Details.Depth} />
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.height ? (
+              {hit.metafields.Details.Height ? (
                 <p className="">
-                  Height: <AmountUnitValue data={hit.metafields.Akeneo.height} />
+                  Height: <AmountUnitValue data={hit.metafields.Details.Height} />
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.length ? (
+              {hit.metafields.Details.Length ? (
                 <p className="">
-                  Length: <AmountUnitValue data={hit.metafields.Akeneo.length} />
+                  Length: <AmountUnitValue data={hit.metafields.Details.Length} />
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.width ? (
+              {hit.metafields.Details.Width ? (
                 <p className="">
-                  Width/Diameter: <AmountUnitValue data={hit.metafields.Akeneo.width} />
+                  Width/Diameter: <AmountUnitValue data={hit.metafields.Details.Width} />
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.minimum_mounting_height ? (
+              {hit.metafields.Details['Minimum Mounting Height'] ? (
                 <p className="">
-                  Min. Mounting Height: {hit.metafields.Akeneo.minimum_mounting_height}
+                  Min. Mounting Height: {hit.metafields.Details['Minimum Mounting Height']}
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.fuel_source ? (
-                <p className="">Fuel Source: {hit.metafields.Akeneo.fuel_source}</p>
+              {hit.metafields.Details['Fuel Source'] ? (
+                <p className="">Fuel Source: {hit.metafields.Details['Fuel Source']}</p>
               ) : null}
-              {hit.metafields.Akeneo.heating_area ? (
-                <p className="">Heating Area: {hit.metafields.Akeneo.heating_area}</p>
+              {hit.metafields.Details['Heating Area'] ? (
+                <p className="">Heating Area: {hit.metafields.Details['Heating Area']}</p>
               ) : null}
-              {hit.metafields.Akeneo.wattage ? (
+              {hit.metafields.Details.Wattage ? (
                 <p className="">
-                  Wattage: <AmountUnitValue data={hit.metafields.Akeneo.wattage} />
+                  Wattage: <AmountUnitValue data={hit.metafields.Details.Wattage} />
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.number_of_bulbs ? (
-                <p className="">Number of Lights: {hit.metafields.Akeneo.number_of_bulbs}</p>
+              {hit.metafields.Details['Number of Bulbs'] ? (
+                <p className="">Number of Lights: {hit.metafields.Details['Number of Bulbs']}</p>
               ) : null}
-              {hit.metafields.Akeneo.lift ? (
-                <p className="">Lift: {hit.metafields.Akeneo.lift}</p>
+              {hit.metafields.Details.Lift ? (
+                <p className="">Lift: {hit.metafields.Details.Lift}</p>
               ) : null}
-              {hit.metafields.Akeneo.lamp_base_type ? (
-                <p className="">Lamp Type: {hit.metafields.Akeneo.lamp_base_type}</p>
+              {hit.metafields.Details['Lamp Base Type'] ? (
+                <p className="">Lamp Type: {hit.metafields.Details['Lamp Base Type']}</p>
               ) : null}
-              {hit.metafields.Akeneo.voltage ? (
+              {hit.metafields.Details.Voltage ? (
                 <p className="">
-                  Voltage: <AmountUnitValue data={hit.metafields.Akeneo.voltage} />
+                  Voltage: <AmountUnitValue data={hit.metafields.Details.Voltage} />
                 </p>
               ) : null}
             </div>
@@ -923,15 +923,11 @@ export function Hit({
             )
           )}
           <div className="mt-4 md:flex md:space-x-2">
-            <a
-              href="#"
+            <Link href={hit.url}
               className="flex h-10 w-full cursor-pointer items-center justify-center rounded border border-brand-600 bg-brand-600 px-4 text-center uppercase text-white hover:border-brand-400 hover:bg-brand-400 md:w-auto md:flex-1"
             >
               View Details
-            </a>
-            {/*
-            <a href="#" className="md:flex-1 flex w-full md:w-auto uppercase px-4 h-10 bg-white rounded border border-brand-100 cursor-pointer items-center justify-center text-center hover:bg-brand-50 hover:border-brand-300">View Details</a>
-            */}
+            </Link>
             {/*
           <button type="button" className="mt-1 md:mt-0 md:flex-1 flex w-full md:w-auto uppercase px-4 h-10 bg-cyan-700 text-white rounded border border-cyan-700 cursor-pointer items-center justify-center" onClick={() =>
             sendEvent("conversion", hit, "Added To Cart", {

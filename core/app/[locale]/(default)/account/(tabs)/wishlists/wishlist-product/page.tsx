@@ -1,9 +1,5 @@
 import { WishlistProductCard } from './wishlist-products-card';
 
-export default function Page() {
-  return (
-    <>
-      <WishlistProductCard />;
-    </>
-  );
+export default function WishlistPage() {
+  return <WishlistProductCard />;
 }
