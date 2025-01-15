@@ -76,11 +76,9 @@ const Header = ({
   };
 
   const handleMenuLeave = () => {
-    /*
     timeoutRef.current = setTimeout(() => {
       setOpenMenuId(null);
     }, 200);
-    */
   };
 
   const handleMenuClose = () => {
