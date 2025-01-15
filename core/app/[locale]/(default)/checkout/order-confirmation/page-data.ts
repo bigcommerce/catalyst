@@ -1,29 +1,13 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql } from '~/client/graphql';
+import { graphql, VariablesOf } from '~/client/graphql';
+import { ExistingResultType } from '~/client/util';
 
-const OrderItemFragment = graphql(`
-  fragment OrderItemFragment on OrderPhysicalLineItem {
-    entityId
-    brand
-    name
-    quantity
-    subTotalListPrice {
-      value
-      currencyCode
-    }
-    productOptions {
-      __typename
-      name
-      value
-    }
-  }
-`);
+import { OrderItemFragment } from '../../account/(tabs)/orders/_components/product-snippet';
 
-const OrderShipmentFragment = graphql(`
+export const OrderShipmentFragment = graphql(`
   fragment OrderShipmentFragment on OrderShipment {
     shippingMethodName
     shippingProviderName
@@ -45,9 +29,7 @@ const OrderShipmentFragment = graphql(`
 
 const CustomerOrderDetails = graphql(
   `
-    query CustomerOrderDetails(
-      $filter: OrderFilterInput
-    ) {
+    query CustomerOrderDetails($filter: OrderFilterInput) {
       site {
         order(filter: $filter) {
           entityId
@@ -79,6 +61,10 @@ const CustomerOrderDetails = graphql(
               }
             }
           }
+          handlingCostTotal {
+            currencyCode
+            value
+          }
           shippingCostTotal {
             value
             currencyCode
@@ -92,9 +78,11 @@ const CustomerOrderDetails = graphql(
             lastName
             address1
             city
+            email
             stateOrProvince
             postalCode
             country
+            countryCode
           }
           consignments {
             shipping {
@@ -109,6 +97,7 @@ const CustomerOrderDetails = graphql(
                     stateOrProvince
                     postalCode
                     country
+                    countryCode
                   }
                   shipments {
                     edges {
@@ -139,52 +128,24 @@ const CustomerOrderDetails = graphql(
   [OrderItemFragment, OrderShipmentFragment],
 );
 
-interface OrderDetailsProps {
-  orderId: string;
-}
+export const getOrderDetails = cache(
+  async (variables: VariablesOf<typeof CustomerOrderDetails>) => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
 
-export const getOrderDetails = async ({ orderId}: OrderDetailsProps) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
+    const response = await client.fetch({
+      document: CustomerOrderDetails,
+      variables,
+      fetchOptions: { cache: 'no-store' },
+      customerAccessToken,
+    });
+    const order = response.data.site.order;
 
-  const response = await client.fetch({
-    document: CustomerOrderDetails,
-    variables: {
-      filter: {
-        entityId: +orderId,
-      },
-    },
-    customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
-  });
-  const order = response.data.site.order;
-  console.log('========order==data=====', JSON.stringify(response));
-  if (!order) {
-    return undefined;
-  }
+    if (!order) {
+      return undefined;
+    }
 
-  const data = {
-    orderState: {
-      orderId: order.entityId,
-      status: order.status,
-      orderDate: order.orderedAt,
-    },
-    summaryInfo: {
-      subtotal: order.subTotal,
-      discounts: order.discounts,
-      shipping: order.shippingCostTotal,
-      tax: order.taxTotal,
-      grandTotal: order.totalIncTax,
-    },
-    paymentInfo: {
-      billingAddress: order.billingAddress,
-      // TODO: add payments data
-    },
-    consignments: {
-      ...(order.consignments?.shipping && {
-        shipping: removeEdgesAndNodes(order.consignments.shipping),
-      }),
-    },
-  };
+    return order;
+  },
+);
 
-  return data;
-};
+export type OrderDetailsType = ExistingResultType<typeof getOrderDetails>;

@@ -199,7 +199,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjus
   const format = useFormatter();
   let oldPrice = product?.originalPrice?.value;
   let salePrice = product?.extendedSalePrice?.value;
-  let discountedPrice: any = Number(100 - (salePrice * 100) / oldPrice)?.toFixed(2);
+  let discountedPrice: any = Math.round(100 - (salePrice * 100) / oldPrice);
   let discountPriceText: string = '';
   if (discountedPrice > 0) {
     discountPriceText = discountedPrice + '% Off';
