@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+//import { Suspense } from 'react';
 import { MegaMenuProps } from './mega-menu-types';
 import { MegaMenuDefault } from './mega-menu-default';
 
@@ -12,9 +12,11 @@ export function MegaMenu({
   loadingMessage?: string;
 }) {
   return (
-    <Suspense fallback={<MegaMenuSkeleton classNames={classNames} message={loadingMessage} />}>
+    <>
+    {/* <Suspense fallback={<MegaMenuSkeleton classNames={classNames} message={loadingMessage} />}> */}
       {(variant === 'default') && <MegaMenuDefault menuItems={menuItems} secondaryMenuItems={secondaryMenuItems} classNames={classNames} />}
-    </Suspense>
+    {/* </Suspense> */}
+    </>
   );
 }
 
