@@ -159,7 +159,7 @@ export async function getEnhancedSystemInfo(): Promise<SystemInfo> {
       language: navigator.language,
       cookieEnabled: navigator.cookieEnabled,
       onLine: navigator.onLine,
-      doNotTrack: navigator.doNotTrack,
+      doNotTrack: navigator.doNotTrack || '',
       maxTouchPoints: navigator.maxTouchPoints,
     },
     screen: {
@@ -176,16 +176,16 @@ export async function getEnhancedSystemInfo(): Promise<SystemInfo> {
       timezoneOffset: new Date().getTimezoneOffset()
     },
     hardware: {
-      deviceMemory: navigator.deviceMemory,
+      deviceMemory: (navigator as any).deviceMemory,
       hardwareConcurrency: navigator.hardwareConcurrency,
       platform: navigator.platform,
       deviceType: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop'
     },
-    connection: navigator.connection ? {
-      effectiveType: navigator.connection.effectiveType,
-      downlink: navigator.connection.downlink,
-      rtt: navigator.connection.rtt,
-      saveData: navigator.connection.saveData
+    connection: (navigator as any).connection ? {
+      effectiveType: (navigator as any).connection.effectiveType,
+      downlink: (navigator as any).connection.downlink,
+      rtt: (navigator as any).connection.rtt,
+      saveData: (navigator as any).connection.saveData
     } : 'Network Information API not supported'
   };
 

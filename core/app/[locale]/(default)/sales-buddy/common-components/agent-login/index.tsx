@@ -5,7 +5,6 @@ import {storeAgentLoginStatusInCookies} from '../../_actions/agent-login';
 interface AgentLoginProps {
   isOpen: boolean;
   toggleModal: () => void;
-  setAgentRole: () => void;
 }
 
 export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
@@ -21,7 +20,6 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
 
     try {
       const result = await agentLogin(email, password);
-      console.log('result', result);
       
       if (result.status === 200) {
         if (result?.data?.output?.data[0]?.status){
@@ -38,7 +36,7 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
           storeAgentLoginStatusInCookies(false);
         }
       } else {        
-        setError(result.error);
+        setError(result?.error ?? null);
       }
     } catch (error) {
       setError('An unexpected error occurred. Please try again.');

@@ -4,7 +4,7 @@ import { getSessionIdCookie, createSessionIdCookie } from '../_actions/session';
 import { getEnhancedSystemInfo } from '../common-components/common-functions';
 
 export default function SessionId() {
-    const [storeSessionID,setStoreSessionId]=useState('');
+    const [storeSessionID, setStoreSessionId] = useState('');
     useEffect(() => {
         const sessionId = localStorage.getItem('session_id');
         if (sessionId) {
@@ -17,7 +17,7 @@ export default function SessionId() {
         const info = await getEnhancedSystemInfo();
         let data = {
             browser: info?.browser?.userAgent,
-            connection: info?.connection?.effectiveType,
+            connection: typeof info?.connection === 'object' ? info.connection.effectiveType : undefined,
             latitude: info?.geolocation?.latitude,
             longitude: info?.geolocation?.longitude,
             deviceType: info?.hardware?.deviceType,
@@ -31,6 +31,7 @@ export default function SessionId() {
             screenWidth: info?.screen?.width,
             screenOrientation: info?.screen?.orientation,
             timezone: info?.timezone?.timezone,
+            refferalId: localStorage.getItem('referral_id')
         };
         return data;
     };
@@ -39,9 +40,9 @@ export default function SessionId() {
         const localMachineInformation = await fetchSystemInfo();
         const sessionId = await createSessionIdCookie(localMachineInformation);
         setStoreSessionId(sessionId.output)
-        
         localStorage.setItem('session_id', sessionId.output)
         fetchMyCookie(); // Fetch the cookie after creating it
+
     };
     const fetchMyCookie = async () => {
         let cookieValue = await getSessionIdCookie();
@@ -61,7 +62,10 @@ export default function SessionId() {
                 onClick={() => initializeSessionId()} // Fetch cookie on click
             >
                 <span>Session Id:</span>
-                <div id="sessionIdDiv" className='ml-[10px]'>{storeSessionID ?  storeSessionID : "######"}</div>
+                <div id="sessionIdDiv" className='ml-[10px]'>
+                    {storeSessionID ? storeSessionID : "######"}
+
+                </div>
             </div>
         </>
     );

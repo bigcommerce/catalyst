@@ -1,8 +1,11 @@
 // handlerUpdateSessionUrl;
 
 'use server';
+import { cookies } from 'next/headers';
 
 export const InsertShopperVisitedUrl = async (sessionId: any, url: string) => {
+  const cookieStore = await cookies();
+  const CartId = cookieStore.get('cartId');
   try {
     let postData = JSON.stringify({
       session_id: sessionId,

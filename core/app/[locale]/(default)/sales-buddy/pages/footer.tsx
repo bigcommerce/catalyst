@@ -14,6 +14,7 @@ export default function AgentFooter() {
   const toggleModal = () => {
     if (agentLoginStatus) {
       localStorage.setItem('agent_login', 'false');
+      localStorage.removeItem('agent_role'); // Remove agent_role from localStorage
       setAgentLoginStatus(false);
       storeAgentLoginStatusInCookies(false)
       router.refresh() // Refresh the page
@@ -31,7 +32,6 @@ export default function AgentFooter() {
     setAgentLoginStatus(localStorage.getItem('agent_login') === 'true')
     router.refresh();
   }, [agentLoginStatus]);
-  console.log('from footer', agentLoginStatus);
   
 
   return (
