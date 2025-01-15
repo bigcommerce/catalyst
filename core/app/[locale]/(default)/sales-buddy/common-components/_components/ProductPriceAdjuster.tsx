@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 
 import {updateProductPrice} from '../../_actions/update-price'
 import Spinner from './Spinner';
+import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 interface ProductPriceAdjusterProps {
   parentSku: string;
   sku: string;
@@ -49,16 +50,26 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   const [newCost, setNewCost] = useState<number>(cost);
   const [isSave, setIsSave] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
+  const {  agentRole } = useCompareDrawerContext();
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSave = () => {
+    if ((agentRole === 'agent' || agentRole === null) && newCost < initialCost * floor) {
+      setErrorMessage('Agent cannot adjust price less than floor price');
+      return;
+    }
     setCost(newCost); // Update the cost value
     setIsEditing(false); // Exit editing mode
+    setErrorMessage(null); // Clear error message
   };
 
   const handleSubmit = async () => {
-    
+    if ((agentRole === 'agent' || agentRole === null) && newCost < initialCost * floor) {
+      setErrorMessage('Price cannot be less than floor price');
+      return;
+    }
     setLoading(true);
-    let res = await updateProductPrice(newCost, cartId, productId,ProductType,sku);
+    let res = await updateProductPrice(newCost, cartId, productId, ProductType, sku);
     console.log('res');
     console.log(res)
     if(res.status == 200){
@@ -67,6 +78,16 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
     }else{
       setLoading(false);
       console.log('show error message' + res.error);
+    }
+  };
+
+  const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(e.target.value);
+    setNewCost(value);
+    if ((agentRole === 'agent' || agentRole === null) && value < initialCost * floor) {
+      setErrorMessage('Price cannot be less than floor price');
+    } else {
+      setErrorMessage(null);
     }
   };
 
@@ -113,7 +134,7 @@ if (isSave) {
       {/* Floor */}
       <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
         <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Floor ($)</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{floor ? floor : '0000.00'}</p>
+        <p className="text-[14px] font-normal tracking-[0.25px]">{floor ? initialCost * floor : '0000.00'}</p>
       </div>
       {/* <hr className="border-white-600 m-2" /> */}
 
@@ -125,6 +146,9 @@ if (isSave) {
       {/* <hr className="border-white-600 m-2" /> */}
 
       {/* Adjust Price Button */}
+      {errorMessage && (
+        <div className="text-red-500 text-center mb-4">{errorMessage}</div>
+      )}
       {!isEditing && (
         <button
           onClick={() => setIsEditing(true)}
@@ -147,7 +171,7 @@ if (isSave) {
             // type="number"
             value={newCost}
             style={{ color: 'black' }}
-            onChange={(e) => setNewCost(Number(e.target.value))}
+            onChange={handleCostChange}
             className="text-black-700 mb-4 w-full rounded border-none bg-[#FFFFFF] p-2"
             placeholder="$0.00"
           />
@@ -163,6 +187,7 @@ if (isSave) {
             <button
               className="relative mb-2 w-full rounded bg-[#1DB14B] px-4 py-2 text-white"
               onClick={handleSubmit}
+              disabled={(agentRole === 'agent' || agentRole === null) && newCost < initialCost * floor}
             >
               {loading && (
                 <div className="absolute inset-0 flex items-center justify-center">

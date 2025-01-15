@@ -3,7 +3,7 @@ import { cookies } from 'next/headers';
 
 export const getReferralIdCookie = async () => {
     const cookieStore = await cookies();
-    return cookieStore.get('referralId');
+    return cookieStore.get('referrerId');
 }
 
 export const createReferralIdCookie = async () => {

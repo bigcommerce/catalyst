@@ -176,6 +176,7 @@ interface Props {
   cartId: string;
   priceAdjustData:string;
   ProductType:string;
+  cookie_agent_login_status: boolean;
 }
 function moveToTheEnd(arr: any, word: string) {
   arr?.map((elem: any, index: number) => {
@@ -186,8 +187,9 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjustData,ProductType}: Props) => {
+export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjustData, cookie_agent_login_status }: Props) => {
 
+  
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
@@ -225,7 +227,10 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjus
 
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product?.brand}</p>
-            <div className="grid gap-1 grid-cols-1 sm:grid-cols-[auto,auto] xl:grid-cols-[40%_20%_40%]">
+            <div className={`grid gap-1 grid-cols-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
+                ? "xl:grid-cols-[40%_20%_40%]"
+                : "xl:grid-cols-[60%_40%]"
+              }`}>
               <div className="">
                 <Link href={product?.url}>
                   <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -376,6 +381,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjus
                   <ItemQuantity product={product} />
                 </div>
               </div>
+              {cookie_agent_login_status == true && 
               <div className="overflow-x-hidden xl:pl-[10px]">
                 <ProductPriceAdjuster
                   parentSku={priceAdjustData?.parent_sku}
@@ -391,6 +397,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjus
                    />
                 {/* priceAdjustData.parent_sku */}
               </div>
+               } 
             </div>
           </div>
         </div>

@@ -8,6 +8,7 @@ export default function ReferralId() {
         async function fetchMyCookie() {
             let cookieValue = await getReferralIdCookie();
             if (cookieValue?.value) {
+                localStorage.setItem('referral_id', cookieValue.value);
                 let divReferral = document.getElementById("referralIdDiv");
                 if (divReferral && divReferral instanceof HTMLDivElement) {
                     divReferral.innerText = cookieValue?.value;
