@@ -1,7 +1,7 @@
 import { Image, Link, List, Select, Shape, TextInput } from '@makeswift/runtime/controls';
 
 import { MegaMenu } from '.';
-import { MegaMenuMenuItem, MegaMenuMenuItemColumn, MegaMenuSubMenuItem, MegaMenuSubSubMenuItem, MegaMenuSecondaryMenuItem, MegaMenuProps } from './mega-menu-types';
+import { MegaMenuProps } from './mega-menu-types';
 import { runtime } from '~/lib/makeswift/runtime';
 
 runtime.registerComponent(

@@ -1,4 +1,3 @@
-//import { Suspense } from 'react';
 import { MegaMenuProps } from './mega-menu-types';
 import { MegaMenuDefault } from './mega-menu-default';
 
