@@ -320,9 +320,6 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   body section.section-footer {
     padding-left: 40px;
   }
-  h3.footerheading.footer-shopping-assistance {
-    margin-top: 35px;
-  }
   div
     button.relative.flex.w-full.rounded.items-center.justify-center.text-base.font-semibold.leading-6.group.bg-transparent.p-3.text-black.hover\:bg-transparent.hover\:text-primary.lg\:hidden {
     left: 1em;
@@ -476,9 +473,6 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
     gap: 2em;
     display: grid;
   } */
-  section.copyright {
-    padding: 30px 0px;
-  }
   section.section-footer {
     gap: 1rem !important;
     flex-direction: column-reverse;

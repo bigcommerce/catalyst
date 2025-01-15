@@ -27,14 +27,15 @@ import { VisaIcon } from './payment-icons/visa';
 import { Link as CustomLink } from '~/components/link';
 
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import bbbIcon from '~/public/paymentlogo/bbb.svg';
-import payPalIcon from '~/public/paymentlogo/paypal.svg';
-import visaIcon  from '~/public/paymentlogo/visa.svg';
-import paymentIcon from '~/public/paymentlogo/paymentIcon.svg';
-import discoverIcon from '~/public/paymentlogo/discover.svg';
-import amexIcon from '~/public/paymentlogo/amex.svg';
-import brainTreeIcon from '~/public/paymentlogo/braintree.svg';
 import { BcImage } from '../bc-image';
+
+import bbbIcon from '~/public/footerIcons/bbbIcon.svg'
+import payPalIcon from '~/public/footerIcons/payPalIcon.svg'
+import visaIcon from '~/public/footerIcons/visaIcon.svg'
+import paymentIcon from '~/public/footerIcons/paymentIcon.svg'
+import discoverIcon from '~/public/footerIcons/discoverIcon.svg'
+import amexIcon from '~/public/footerIcons/amexIcon.svg'
+import brainTreeIcon from '~/public/footerIcons/brainTreeIcon.svg'
 
 const socialIcons: Record<string, { icon: JSX.Element; link: string }> = {
   Pinterest: {
@@ -51,13 +52,6 @@ const socialIcons: Record<string, { icon: JSX.Element; link: string }> = {
 };
 
 export const Footer = async () => {
-  // const bbbIcon = imageManagerImageUrl('bbb.png', '63w');
-  // const payPalIcon = imageManagerImageUrl('paypalfooter.png', '34w');
-  // const visaIcon = imageManagerImageUrl('visa.png', '34w');
-  // const paymentIcon = imageManagerImageUrl('payment-icon.png', '34w');
-  // const discoverIcon = imageManagerImageUrl('discover.png', '34w');
-  // const amexIcon = imageManagerImageUrl('amex.png', '34w');
-  // const brainTreeIcon = imageManagerImageUrl('braintree.png', '89w');
 
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -116,17 +110,17 @@ export const Footer = async () => {
         {
           label: (
             <div className="footer-subscribe !ml-[0em]">
-              <form action="/subscribe" method="POST" className='flex flex-wrap items-center'>
+              <form action="/subscribe" method="POST" className='flex items-center'>
                 <input
                   type="email"
                   name="email"
                   placeholder="Enter your email"
-                  className="subscription-input !placeholder:pl-[8px] h-[40px] w-[14em] pl-[12px] text-left tracking-[0.25px] text-[#6b7280] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] focus:outline-none"
+                  className="subscription-input !placeholder:pl-[8px] w-[243px] h-[40px] pl-[12px] text-left tracking-[0.25px] text-[#6b7280] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] focus:outline-none"
                   required
                 />
                 <button
                   type="submit"
-                  className="subscription-button relative h-[40px] w-[85px] bg-[#008bb7] text-center text-[14px] font-normal uppercase text-white"
+                  className="subscription-button relative h-[40px] bg-[#008bb7] text-center text-[14px] font-normal uppercase text-white w-[80px]"
                 >
                   Sign Up
                 </button>
@@ -186,21 +180,15 @@ export const Footer = async () => {
         }
         logo={data.settings ? logoTransformer(data.settings) : undefined}
         paymentIcons={[
-          // <AmazonIcon key="amazon" />,
-          // <AmericanExpressIcon key="americanExpress" />,
-          // <ApplePayIcon key="apple" />,
-          // <MastercardIcon key="mastercard" />,
-          // <PayPalIcon key="paypal" />,
-          // <VisaIcon key="visa" />,
 
           <div className="flex items-center gap-[10px]">
-            <BcImage src={bbbIcon}  alt="payment images" width={63} height={24} />
-            <BcImage src={payPalIcon}  alt="payment images" width={34} height={24}/>
-            <BcImage src={visaIcon}  alt="payment images" width={34} height={24}/>
-            <BcImage src={paymentIcon}  alt="payment images" width={34} height={24}/>
-            <BcImage src={discoverIcon}  alt="payment images"width={34} height={24} />
-            <BcImage src={amexIcon}  alt="payment images" width={34} height={24}/>
-            <BcImage src={brainTreeIcon}  alt="payment images" width={89} height={24} />
+            <BcImage src={bbbIcon} className='w-[63px] h-[24px]' alt="payment images" width={63} height={24} unoptimized={true} />
+            <BcImage src={payPalIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24} unoptimized={true}/>
+            <BcImage src={visaIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24} unoptimized={true}/>
+            <BcImage src={paymentIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24} unoptimized={true}/>
+            <BcImage src={discoverIcon} className='w-[34px] h-[24px]' alt="payment images"width={34} height={24} unoptimized={true} />
+            <BcImage src={amexIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24} unoptimized={true}/>
+            <BcImage src={brainTreeIcon} className='w-[89px] h-[24px]' alt="payment images" width={89} height={24} unoptimized={true} />
           </div>,
         ]}
         sections={sections}
