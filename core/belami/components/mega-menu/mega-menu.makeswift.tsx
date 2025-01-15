@@ -20,30 +20,6 @@ runtime.registerComponent(
     label: 'Belami / Mega Menu',
     icon: 'navigation',
     props: {
-      /*
-      classNames: Shape({
-        type: {
-          root: TextInput({ label: 'Root class', defaultValue: '' }),
-          content: TextInput({ label: 'Content class', defaultValue: '' }),
-          item: TextInput({ label: 'Item class', defaultValue: '' }),
-        }
-      }),
-      */
-      /*
-      menuItems: List({
-        label: 'Menu Items',
-        type: Shape({
-          type: {
-            title: TextInput({ label: 'Title', defaultValue: 'Text' }),
-            link: Link({ label: 'Link' }),
-          },
-        }),
-        getItemLabel(menuItem) {
-          return menuItem?.title || 'Menu item';
-        },
-      }),
-      */
-
       variant: Select({
         label: "Style",
         labelOrientation: "horizontal",
@@ -72,6 +48,7 @@ runtime.registerComponent(
                         link: Link({ label: 'Link' }),
                         imageSrc: Image({ label: 'Image' }),
                         //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
+                        button: TextInput({ label: 'Button', defaultValue: '' }),
                         description: TextInput({ label: 'Description', defaultValue: '' }),
                         subSubMenuItems: List({
                           label: 'Menu Items',
@@ -81,7 +58,8 @@ runtime.registerComponent(
                               link: Link({ label: 'Link' }),
                               imageSrc: Image({ label: 'Image' }),
                               //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
-                              //description: TextInput({ label: 'Description', defaultValue: '' }),
+                              button: TextInput({ label: 'Button', defaultValue: '' }),
+                              description: TextInput({ label: 'Description', defaultValue: '' }),
                             },
                           }),
                           getItemLabel(menuItem) {
@@ -119,6 +97,13 @@ runtime.registerComponent(
           return menuItem?.title || 'Menu item';
         },
       }),
+      /*
+      classNames: Shape({
+        type: {
+          root: TextInput({ label: 'Root class', defaultValue: '' }),
+        },
+      })
+      */
     },
   },
 );

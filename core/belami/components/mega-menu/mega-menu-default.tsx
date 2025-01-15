@@ -70,57 +70,70 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                     onMouseEnter={() => handleMenuEnter(`main-menu-id-${index}`)}
                     onMouseLeave={handleMenuLeave}
                   >
-                    <div className={clsx('sub-menu-content', classNames?.subMenuContent)}>
-                      <button title="Close menu" className={clsx('sub-menu-close-button', classNames?.subMenuCloseButton)} onClick={handleMenuClose}>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-                      </button>
-                      <div className={clsx('sub-menu-columns', classNames?.subMenuColumns)}>
-                        {menuItem.columns.map((menuItemColumn: MegaMenuMenuItemColumn, index2: number) => (
-                          <ul className={clsx('sub-menu-column', classNames?.mainSubMenuColumn)} key={`main-menu-column-${index2}`}>
-                            {menuItemColumn.subMenuItems.map((menuItem: MegaMenuSubMenuItem, index3: number) => (
-                              <li className={clsx('main-sub-menu-item', classNames?.mainSubMenuItem)} key={`main-sub-menu-item-${index3}`}>
-                                {menuItem.link?.href ? (
-                                  <Link
-                                    href={menuItem.link.href}
-                                    className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
-                                  >
-                                    {menuItem.title}
-                                  </Link>
-                                ) : (
-                                  <span
-                                    className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
-                                  >
-                                    {menuItem.title}
-                                  </span>
-                                )}
+                    <button title="Close menu" className={clsx('sub-menu-close-button', classNames?.subMenuCloseButton)} onClick={handleMenuClose}>
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                    </button>
+                    <div className={clsx('sub-menu-columns', classNames?.subMenuColumns)}>
+                      {menuItem.columns.map((menuItemColumn: MegaMenuMenuItemColumn, index2: number) => (
+                        <ul className={clsx('sub-menu-column', classNames?.mainSubMenuColumn)} key={`main-menu-column-${index2}`}>
+                          {menuItemColumn.subMenuItems.map((menuItem: MegaMenuSubMenuItem, index3: number) => (
+                            <li className={clsx('main-sub-menu-item', classNames?.mainSubMenuItem)} key={`main-sub-menu-item-${index3}`}>
 
-                                {menuItem.subSubMenuItems && menuItem.subSubMenuItems.length > 0 && (
-                                  <ul>
-                                    {menuItem.subSubMenuItems.map((menuItem: MegaMenuSubSubMenuItem, index4: number) => (
-                                      <li className={clsx('main-sub-sub-menu-item', classNames?.mainSubSubMenuItem)} key={`main-sub-sub-menu-item-${index4}`}>
-                                        {menuItem.link?.href ? (
-                                          <Link
-                                            href={menuItem.link.href}
-                                            className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
-                                          >
-                                            {menuItem.title}
-                                          </Link>
-                                        ) : (
-                                          <span
-                                            className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
-                                          >
-                                            {menuItem.title}
-                                          </span>
-                                        )}
-                                      </li>
-                                    ))}
-                                  </ul>
-                                )}
-                              </li>
-                            ))}
-                          </ul>
-                        ))}
-                      </div>
+                              {menuItem.link?.href ? (
+                                <Link
+                                  href={menuItem.link.href}
+                                  className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
+                                >
+                                  {menuItem.title}
+                                </Link>
+                              ) : (
+                                <span
+                                  className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
+                                >
+                                  {menuItem.title}
+                                </span>
+                              )}
+
+                              {menuItem.imageSrc &&
+                                <figure>
+                                  {menuItem.link?.href ? (
+                                    <Link href={menuItem.link.href}><img src={menuItem.imageSrc} alt={menuItem.title ?? menuItem.button ?? 'Menu item image'} className={clsx('sub-menu-image', classNames?.mainSubMenuImage)} /></Link>
+                                  ) : (
+                                    <img src={menuItem.imageSrc} alt={menuItem.title} className={clsx('sub-menu-image', classNames?.mainSubMenuImage)} />
+                                  )}
+                                </figure>
+                              }
+
+                              {menuItem.description && <div className={clsx('sub-menu-description', classNames?.mainSubMenuDescription)}>{menuItem.description}</div>}
+
+                              {menuItem.button && menuItem.link?.href && <div className={clsx('sub-menu-button', classNames?.mainSubMenuButton)}>{menuItem.button}</div>}
+
+                              {menuItem.subSubMenuItems && menuItem.subSubMenuItems.length > 0 && (
+                                <ul>
+                                  {menuItem.subSubMenuItems.map((menuItem: MegaMenuSubSubMenuItem, index4: number) => (
+                                    <li className={clsx('main-sub-sub-menu-item', classNames?.mainSubSubMenuItem)} key={`main-sub-sub-menu-item-${index4}`}>
+                                      {menuItem.link?.href ? (
+                                        <Link
+                                          href={menuItem.link.href}
+                                          className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
+                                        >
+                                          {menuItem.title}
+                                        </Link>
+                                      ) : (
+                                        <span
+                                          className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
+                                        >
+                                          {menuItem.title}
+                                        </span>
+                                      )}
+                                    </li>
+                                  ))}
+                                </ul>
+                              )}
+                            </li>
+                          ))}
+                        </ul>
+                      ))}
                     </div>
                   </div>
                 }
