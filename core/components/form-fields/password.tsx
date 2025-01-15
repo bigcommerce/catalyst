@@ -30,8 +30,8 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
 
   const validatePassword = (password: string) => {
     if (fieldName === 'password') {
-      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-
+      const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~])[A-Za-z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{8,}$/;
+      
       if (!password.trim()) {
         setPasswordError('');
         return true;

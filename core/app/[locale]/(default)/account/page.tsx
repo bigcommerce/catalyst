@@ -9,12 +9,12 @@ import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumb
 
 import Image from 'next/image';
 
-import ordersIcon from "~/public/accountIcons/orders.svg"
-import AddressesIcon from "~/public/accountIcons/addresses.svg"
-import requiestQuoteIcon from "~/public/accountIcons/requestQuote.svg"
-import detailsIcon from "~/public/accountIcons/details.svg"
-import favouriteIcon from "~/public/accountIcons/favourite.svg"
-import emailPrefIcon from "~/public/accountIcons/emailPref.svg"
+import ordersIcon from '~/public/accountIcons/orders.svg';
+import AddressesIcon from '~/public/accountIcons/addresses.svg';
+import requiestQuoteIcon from '~/public/accountIcons/requestQuote.svg';
+import detailsIcon from '~/public/accountIcons/details.svg';
+import favouriteIcon from '~/public/accountIcons/favourite.svg';
+import emailPrefIcon from '~/public/accountIcons/emailPref.svg';
 import { WelcomeMessage } from './welcome-message';
 
 interface AccountItem {
@@ -26,11 +26,13 @@ interface AccountItem {
 
 const AccountItem = ({ children, title, description, href }: AccountItem) => {
   return (
-    <Link className="flex items-center gap-[23px] bg-[#f3f4f5] rounded-[3px] p-[10px]" href={href}>
+    <Link className="flex items-center gap-[23px] rounded-[3px] bg-[#f3f4f5] p-[10px]" href={href}>
       {children}
       <div>
-        <h3 className="font-medium text-[20px] leading-[32px] tracking-[0.15px]">{title}</h3>
-        {description && <p className='font-normal text-[16px] leading-[32px] tracking-[0.5px]'>{description}</p>}
+        <h3 className="text-[20px] font-medium leading-[32px] tracking-[0.15px]">{title}</h3>
+        {description && (
+          <p className="text-[16px] font-normal leading-[32px] tracking-[0.5px]">{description}</p>
+        )}
       </div>
     </Link>
   );
@@ -55,32 +57,51 @@ export default function Account() {
   ];
 
   return (
-    <div className="my-account-page m-auto mx-auto mt-[24px] mb-[40px] w-[70%] font-['Open_Sans'] text-[#353535]">
+    <div className="my-account-page m-0 mb-[40px] mt-0 xl:mt-[24px] w-[unset] px-[20px] font-['Open_Sans'] text-[#353535] xl:mx-auto xl:w-[70%] xl:p-0">
       <AccountNotification message={t('successMessage')} />
       <div className="flex flex-col gap-[40px]">
         <div>
-          <ComponentsBreadcrumbs className="" breadcrumbs={breadcrumbs} />
+          <ComponentsBreadcrumbs className="[&_ul.main-breadcrumbs]:xl:justify-start [&_ul.main-breadcrumbs]:justify-center [&_ul.main-breadcrumbs_.breadcrumbs-li-home]:hidden [&_ul.main-breadcrumbs_.breadcrumbs-li-home]:xl:flex [&_ul.main-breadcrumbs_.breadcrumbs-li-slash]:hidden [&_ul.main-breadcrumbs_.breadcrumbs-li-slash]:xl:block" breadcrumbs={breadcrumbs} />
           <WelcomeMessage />
         </div>
-
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 xl:grid-cols-3">
           <AccountItem href="/account/orders" title={t('orders')} description={t('ordersMsg')}>
-            <Image src={ordersIcon} alt={t('orders')}  width={70} height={70}/>
+            <Image src={ordersIcon} alt={t('orders')} width={70} height={70} />
           </AccountItem>
-          <AccountItem href="/account/addresses" title={t('addresses')} description={t('addressesMsg')}>
-          <Image src={AddressesIcon} alt={t('addresses')}  width={70} height={70}/>
+          <AccountItem
+            href="/account/addresses"
+            title={t('addresses')}
+            description={t('addressesMsg')}
+          >
+            <Image src={AddressesIcon} alt={t('addresses')} width={70} height={70} />
           </AccountItem>
-          <AccountItem href="/account/wishlists" title={t('requestAQuote')} description={t('requestAQuoteMsg')}>
-            <Image src={requiestQuoteIcon} alt={t('requestAQuote')}  width={70} height={70}/>
+          <AccountItem
+            href="/account/wishlists"
+            title={t('requestAQuote')}
+            description={t('requestAQuoteMsg')}
+          >
+            <Image src={requiestQuoteIcon} alt={t('requestAQuote')} width={70} height={70} />
           </AccountItem>
-          <AccountItem href="/account/settings" title={t('accountDetails')} description={t('accountMsg')}>
-            <Image src={detailsIcon} alt={t('accountDetails')}  width={70} height={70}/>
+          <AccountItem
+            href="/account/settings"
+            title={t('accountDetails')}
+            description={t('accountMsg')}
+          >
+            <Image src={detailsIcon} alt={t('accountDetails')} width={70} height={70} />
           </AccountItem>
-          <AccountItem href="/account/wishlists" title={t('favoritesAndLists')} description={t('favListMsg')}>
-            <Image src={favouriteIcon} alt={t('favoritesAndLists')}  width={70} height={70}/>
+          <AccountItem
+            href="/account/wishlists"
+            title={t('favoritesAndLists')}
+            description={t('favListMsg')}
+          >
+            <Image src={favouriteIcon} alt={t('favoritesAndLists')} width={70} height={70} />
           </AccountItem>
-          <AccountItem href="/account/settings" title={t('emailPreferences')} description={t('emailPreferencesMsg')}>
-            <Image src={emailPrefIcon} alt={t('emailPreferences')}  width={70} height={70}/>
+          <AccountItem
+            href="/account/settings"
+            title={t('emailPreferences')}
+            description={t('emailPreferencesMsg')}
+          >
+            <Image src={emailPrefIcon} alt={t('emailPreferences')} width={70} height={70} />
           </AccountItem>
         </div>
         <div className="flex w-max flex-col gap-[10px]">
@@ -97,7 +118,7 @@ export default function Account() {
             <div>{ts('chatMondayToFriday')}</div>
             <div>{ts('chatSatToSun')}</div>
           </div>
-          <div className="w-[53%] bg-[#fbf4e9] px-[10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#2a2010]">
+          <div className="w-fit max-w-[288px] bg-[#fbf4e9] px-[10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#2a2010]">
             {ts('currentEstimated')}
           </div>
         </div>

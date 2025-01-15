@@ -75,13 +75,13 @@ export default async function CategoryPage(props: Props) {
     locale: locale === defaultLocale ? undefined : locale,
   });
 
-  const promotions = await getActivePromotions();
+  const promotions = await getActivePromotions(true);
   
   return (
     <div className="group py-4 px-4 xl:px-12">
       <Breadcrumbs category={category} />
-      <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
-        <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{category.name}</h1>
+      <div className="mb-0 lg:flex lg:flex-row lg:items-center lg:justify-between">
+        <h1 className="mb-4 lg:mb-0 text-2xl">{category.name}</h1>
       </div>
 
       {!!snapshot &&
