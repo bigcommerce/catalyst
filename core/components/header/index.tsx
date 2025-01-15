@@ -76,12 +76,12 @@ export const Header = async ({ cart }: Props) => {
           {/* Support Dropdown */}
           <Dropdown
             items={[
-              { href: '/support/faqs', label: 'Existing Purchase' },
-              { href: '/support/contact', label: 'Order Status' },
-              { href: '/support/contact', label: 'Return/Replacement' },
+              { href: '/support/faqs', label: 'Existing Order' },
+              { href: '/support/contact', label: 'Track My Order' },
+              { href: '/support/contact', label: 'Replace Items' },
               { href: '/support/contact', label: 'Gift Certificates' },
               { href: '/support/contact', label: 'Visit Our Help Center' },
-              { href: '/support/contact', label: 'New Purchase' },
+              { href: '/support/contact', label: 'New Orders' },
               { href: '/support/contact', label: 'Contact ' },
             ]}
             trigger={

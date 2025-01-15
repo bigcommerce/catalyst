@@ -17,7 +17,7 @@ interface Props {
 const Breadcrumbs = ({ breadcrumbs, className }: Props) => {
   return (
     <nav aria-label="Breadcrumb" className={className}>
-      <ul className="main-breadcrumbs flex flex-wrap items-center py-4">
+      <ul className="main-breadcrumbs flex flex-wrap items-center">
         {/* Static Home breadcrumb */}
         <li className="flex items-center text-[16px] font-normal breadcrumbs-li-home">
           <CustomLink className="font-normal text-[#7F7F7F]" href="/">
