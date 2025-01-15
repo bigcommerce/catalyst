@@ -1080,7 +1080,7 @@ grid-template-columns: repeat(6, auto);
 
 .mega-menu .sub-menu .sub-menu-close-button {
 top: -1em;
-right: 1em;
+right: -2em;
 color: var(--gray-600);
 position: absolute;
 }
