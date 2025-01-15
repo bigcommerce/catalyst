@@ -17,6 +17,10 @@ import {
 import { useAccountStatusContext } from '../../../_components/account-status-provider';
 import { createWishlist } from './_actions/create-wishlist';
 
+interface CreateWishlistDialogProps {
+  onWishlistCreated?: (wishlist: any) => void;
+}
+
 const SubmitButton = () => {
   const { pending } = useFormStatus();
   const t = useTranslations('Account.Wishlist');
@@ -32,29 +36,74 @@ const SubmitButton = () => {
   );
 };
 
-export const CreateWishlistDialog = () => {
+export const CreateWishlistDialog = ({ onWishlistCreated }: CreateWishlistDialogProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isInputValid, setInputValidation] = useState(true);
+  const [isDuplicate, setIsDuplicate] = useState(false);
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Account.Wishlist');
 
   const handleInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
+    const currentValue = e.target.value.trim();
+
     setInputValidation(!e.target.validity.valueMissing);
+    setIsDuplicate(false);
+
+    if (!currentValue) {
+      setInputValidation(false);
+      return;
+    }
+
+    const wishlistElements = document.querySelectorAll('.wishlist-item');
+    const existingNames = Array.from(wishlistElements)
+      .map((element) => element.querySelector('.wishlist-name')?.textContent?.toLowerCase().trim())
+      .filter(Boolean);
+
+    if (existingNames.includes(currentValue.toLowerCase())) {
+      setIsDuplicate(true);
+      setInputValidation(false);
+    }
   };
 
   const onSubmit = async (formData: FormData) => {
+    const name = (formData.get('name') as string).trim();
+
+    if (!name) {
+      setInputValidation(false);
+      return;
+    }
+
+    const wishlistElements = document.querySelectorAll('.wishlist-item');
+    const existingNames = Array.from(wishlistElements)
+      .map((element) => element.querySelector('.wishlist-name')?.textContent?.toLowerCase().trim())
+      .filter(Boolean);
+
+    if (existingNames.includes(name.toLowerCase())) {
+      setIsDuplicate(true);
+      setInputValidation(false);
+      return;
+    }
+
     const submit = await createWishlist(formData);
 
     if (submit.status === 'success') {
       setIsOpen(false);
-      setAccountState({
+      setAccountState((prevState) => ({
+        ...prevState,
         status: submit.status,
         message: t('messages.created', { name: submit.data.name }),
-      });
+      }));
+      if (onWishlistCreated) {
+        onWishlistCreated(submit.data);
+      }
     }
 
     if (submit.status === 'error') {
-      setAccountState({ status: submit.status, message: submit.message });
+      setAccountState((prevState) => ({
+        ...prevState,
+        status: submit.status,
+        message: submit.message,
+      }));
     }
   };
 
@@ -96,15 +145,21 @@ export const CreateWishlistDialog = () => {
                   placeholder="Name your list"
                 />
               </FieldControl>
-              <FieldMessage
-                className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error"
-                match="valueMissing"
-              >
-                {t('emptyName')}
-              </FieldMessage>
+              {isDuplicate ? (
+                <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-[#A71F23]">
+                  A list with this name already exists
+                </FieldMessage>
+              ) : (
+                <FieldMessage
+                  className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-[#A71F23]"
+                  match="valueMissing"
+                >
+                  {t('emptyName')}
+                </FieldMessage>
+              )}
             </Field>
 
-            <div className="">
+            <div className="mt-[20px]">
               <FormSubmit asChild>
                 <SubmitButton />
               </FormSubmit>
@@ -115,5 +170,3 @@ export const CreateWishlistDialog = () => {
     </DialogPrimitive.Root>
   );
 };
-
-export { createWishlist };

@@ -13,6 +13,7 @@ import { MobileNav } from './mobile-nav';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { imageIconList } from '~/app/[locale]/(default)/(auth)/fragments';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import { MegaMenu } from '~/belami/components/mega-menu';
 
 interface Link {
   label: string;
@@ -48,6 +49,7 @@ interface Props extends ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.
   homeLogoMobile?: string | Image;
   homeLogoMobileFirst?: string;
   customerAccessToken?: string;
+  megaMenu?: ReactNode;
 }
 
 const Header = ({
@@ -62,6 +64,7 @@ const Header = ({
   homeLogoMobile,
   homeLogoMobileFirst,
   customerAccessToken,
+  megaMenu
 }: Props) => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>(null);
@@ -173,7 +176,7 @@ const Header = ({
                   {openMenuId === link.href && (
                     <div
                       id={`nav-menu-content-${link.href}`}
-                      className={`parent-menu-${menuIndex} absolute left-0 top-[4.8em] z-50 w-auto bg-white py-8 shadow-xl`}
+                      className={`parent-menu-${menuIndex} absolute left-0 top-[4.8em] z-[199] w-auto bg-white py-8 shadow-xl`}
                       onMouseEnter={() => handleMenuEnter(link.href)}
                       onMouseLeave={handleMenuLeave}
                     >
@@ -255,10 +258,10 @@ const Header = ({
         </NavigationMenuPrimitive.Root>
 
         <nav className="static-menu-class relative right-[1em] hidden items-center gap-10 text-[16px] font-normal text-[#008bb7] lg:flex lg:gap-5">
-          <CustomLink href="/new" className="font-semiboldd hover:text-primary">
+          <CustomLink href="/search?is_new=true" className="font-semiboldd hover:text-primary">
             New
           </CustomLink>
-          <CustomLink href="/sale" className="font-semiboldd hover:text-primary">
+          <CustomLink href="/search?on_sale=true" className="font-semiboldd hover:text-primary">
             Sale
           </CustomLink>
           <CustomLink href="/blog" className="font-semiboldd hover:text-primary">
@@ -269,6 +272,8 @@ const Header = ({
           </CustomLink>
         </nav>
       </div>
+
+      {megaMenu}
     </div>
   );
 };

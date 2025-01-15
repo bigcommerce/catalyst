@@ -134,7 +134,6 @@ interface Props {
   blankAddImg?: string;
   productImages?: string;
 }
-
 export const Details = ({
   product,
   collectionValue,
@@ -226,6 +225,41 @@ export const Details = ({
     store_pdp_product_in_localstorage(product);
   }, [product]);
 
+  useEffect(() => {
+    console.log('Product Details:', {
+      basic: {
+        name: product.name,
+        entityId: product.entityId,
+        sku: product.sku,
+        mpn: product.mpn,
+        upc: product.upc,
+        brand: product.brand?.name,
+        variantId: product.variants?.edges?.[0]?.node?.entityId || 0,
+      },
+      pricing: {
+        price: product.prices?.price,
+        basePrice: product.prices?.basePrice,
+        priceRange: product.prices?.priceRange,
+      },
+      inventory: {
+        minPurchaseQuantity: product.minPurchaseQuantity,
+        maxPurchaseQuantity: product.maxPurchaseQuantity,
+        availability: product.availabilityV2?.description,
+      },
+      specs: {
+        condition: product.condition,
+        weight: product.weight,
+        customFields: removeEdgesAndNodes(product.customFields),
+      },
+      images: {
+        defaultImage: product.defaultImage,
+        allImages: removeEdgesAndNodes(product.images),
+      },
+      variants: removeEdgesAndNodes(product.variants),
+      options: removeEdgesAndNodes(product.productOptions),
+    });
+  }, [product]);
+
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
     if (selectedId) {
@@ -312,24 +346,24 @@ export const Details = ({
 
                 <div className="flex items-center gap-4">
                   {product.prices && (
-                    <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
+                    <div className="sticky-product-price mt-2 block !w-[16em] items-center gap-[0.5em] text-center lg:text-right">
                       {product.prices.basePrice?.value !== undefined &&
                       product.prices.price?.value !== undefined &&
                       product.prices.basePrice.value > product.prices.price.value ? (
                         <>
-                          <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                          <span className="mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                             {format.number(product.prices.price.value, {
                               style: 'currency',
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
-                          <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
+                          <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                             {format.number(product.prices.basePrice.value, {
                               style: 'currency',
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
-                          <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+                          <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                             Save{' '}
                             {Math.round(
                               ((product.prices.basePrice.value - product.prices.price.value) /
@@ -562,7 +596,10 @@ export const Details = ({
       </div>
 
       <ProductSchema product={product} />
-      <PayPalPayLater amount={product?.prices?.price?.value?.toString()} currency={product?.prices?.price?.currencyCode} />
+      <PayPalPayLater
+        amount={product?.prices?.price?.value?.toString()}
+        currency={product?.prices?.price?.currencyCode}
+      />
       <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />

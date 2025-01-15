@@ -31,6 +31,7 @@ const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
   process.env.NEXT_PUBLIC_ALGOLIA_API_KEY || '',
   {
+    /*
     // Caches responses from Algolia
     responsesCache: createFallbackableCache({
       caches: [
@@ -38,6 +39,7 @@ const searchClient = algoliasearch(
         createInMemoryCache()
       ]
     })
+    */
   }
 );
 const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
@@ -56,7 +58,8 @@ const sortByNumericRangeName: RefinementListProps['sortBy'] = (a: any, b: any) =
   return parseInt(a1.replace(/\D/g,'')) < parseInt(b1.replace(/\D/g,'')) ? -1 : 1;
 };
 
-const closeOnChange = () => window.innerWidth > 375;
+//const closeOnChange = () => window.innerWidth > 375;
+const closeOnChange = false;
 
 export const Search = ({ query, promotions, useDefaultPrices = false }: any) => {
 
@@ -274,7 +277,7 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
         <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebar(false)}></div>
       }
       <aside className={cn(
-        'fixed p-4 z-[9999] pointer-events-auto bg-white box-border w-full top-0 left-0 facets sm:max-w-[320px] max-h-full h-screen duration-300 ease-in-out overflow-y-auto',
+        'fixed p-8 z-[9999] pointer-events-auto bg-white box-border w-full top-0 left-0 facets sm:max-w-[450px] max-h-full h-screen duration-300 ease-in-out overflow-y-auto',
         showSidebar ? 'shadow-2xl shadow-blue-gray-900/10 translate-x-0' : '-translate-x-full'
       )}>
         <button type="button" onClick={() => setShowSidebar(false)} className="mx-auto flex text-xl justify-center">✕</button>
@@ -297,23 +300,35 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
             </Facet>
             <DynamicWidgets maxValuesPerFacet={1000}>
               <Facet title="Brand">
-                <RefinementList attribute="brand_name" searchable={false} />
+                <RefinementList attribute="brand_name" searchable={true} limit={10} showMore={true} showMoreLimit={100} classNames={{
+                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                }} />
               </Facet>
               <Facet title="Collection">
-                <RefinementList attribute="metafields.Details.Collection" />
+                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                }} />
               </Facet>
               <Facet title="Finish Color">
-                <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} />
+                <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                }} />
               </Facet>
-              <Panel header="Glass Color">
-                <RefinementList attribute="variants.options.Glass Color" searchable={true} searchablePlaceholder="Quick Lookup" />
-              </Panel>
-              <Panel header="Shade Color">
-                <RefinementList attribute="variants.options.Shade Color" searchable={true} searchablePlaceholder="Quick Lookup" />
-              </Panel>
-              <Panel header="Blade Color">
-                <RefinementList attribute="variants.options.Blade Color" searchable={true} searchablePlaceholder="Quick Lookup" />
-              </Panel>
+              <Facet title="Glass Color">
+                <RefinementList attribute="variants.options.Glass Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                }} />
+              </Facet>
+              <Facet title="Shade Color">
+                <RefinementList attribute="variants.options.Shade Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                }} />
+              </Facet>
+              <Facet title="Blade Color">
+                <RefinementList attribute="variants.options.Blade Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                }} />
+              </Facet>
               <Facet title="Number of Lights">
                 <RefinementList attribute="metafields.Details.Number of Bulbs"
                   sortBy={sortByNumericName}
@@ -327,7 +342,8 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
                     label: 'flex relative m-0 p-0',
                     checkbox: 'peer left-0 top-0 !m-0 !w-full !h-full absolute appearance-none !rounded-none !bg-transparent !bg-none !shadow-none !border-brand-300',
                     labelText: 'w-full py-1 px-2 inline-flex items-center justify-center text-sm font-medium cursor-pointer text-gray-900 focus:outline-none bg-white border border-brand-300 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 bg-blue-50 text-brand-700 peer-hover:bg-gray-100 peer-hover:text-primary-700 peer-checked:bg-gray-100 peer-checked:text-primary-700',
-                    count: '!hidden'
+                    count: '!hidden',
+                    showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                   }} />
               </Facet>
               <Facet title="Style">
@@ -470,14 +486,18 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
               <Facet title="Wattage">
                 <RefinementList attribute="metafields.Details.Wattage" />
               </Facet>
+              {/*
               <Panel header="Can be Recessed">
                 <ToggleRefinement attribute="metafields.Details.Can be Recessed" label="Can be Recessed" />
               </Panel>
+              */}
+              <ToggleRefinement attribute="metafields.Details.Can be Recessed" label="Can be Recessed" />
               {/*
               <Panel header="Rating">
                 <RatingMenu attribute="reviews_rating_sum" />
               </Panel>
               */}
+              {/*
               <Panel header="Free Shipping">
                 <ToggleRefinement attribute="free_shipping" label="Free Shipping" />
               </Panel>
@@ -493,6 +513,12 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
               <Panel header="In Stock">
                 <ToggleRefinement attribute="in_stock" label="In Stock" />
               </Panel>
+              */}
+              <ToggleRefinement attribute="free_shipping" label="Free Shipping" />
+              <ToggleRefinement attribute="is_new" label="Is New" />
+              <ToggleRefinement attribute="on_sale" label="On Sale" />
+              <ToggleRefinement attribute="on_clearance" label="On Clearance" />
+              <ToggleRefinement attribute="in_stock" label="In Stock" />
             </DynamicWidgets>
           </div>
           <SortBy label="Sort By" items={[
@@ -558,13 +584,19 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
             {/* <DynamicWidgets maxValuesPerFacet={1000}> */}
               {/* Lighting: Brand, Collection, Finish, Number of lights, Style */}
               <FacetDropdown buttonText="Brand" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="brand_name" searchable={true} limit={10} showMore={true} showMoreLimit={100} />
+                <RefinementList attribute="brand_name" searchable={true} limit={10} showMore={true} showMoreLimit={100} classNames={{
+                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                }} />
               </FacetDropdown>
               <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} />
+                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                }} />
               </FacetDropdown>
               <FacetDropdown buttonText="Finish Color" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
-                <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} />
+                <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                }} />
               </FacetDropdown>
               <FacetDropdown buttonText="Number of Lights" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
                 <RefinementList attribute="metafields.Details.Number of Bulbs"
@@ -580,7 +612,8 @@ export const Search = ({ query, promotions, useDefaultPrices = false }: any) => 
                     label: 'flex relative m-0 p-0',
                     checkbox: 'peer left-0 top-0 !m-0 !w-full !h-full absolute appearance-none !rounded-none !bg-transparent !bg-none !shadow-none !border-brand-300',
                     labelText: 'w-full py-1 px-2 inline-flex items-center justify-center text-sm font-medium cursor-pointer text-gray-900 focus:outline-none bg-white border border-brand-300 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 bg-blue-50 text-brand-700 peer-hover:bg-gray-100 peer-hover:text-primary-700 peer-checked:bg-gray-100 peer-checked:text-primary-700',
-                    count: '!hidden'
+                    count: '!hidden',
+                    showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                   }} />
               </FacetDropdown>
               <FacetDropdown buttonText="Style" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none !border-gray-300' }}>
