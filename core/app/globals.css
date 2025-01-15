@@ -1054,7 +1054,7 @@ background: var(--background);
 box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
 }
 
-.mega-menu .sub-menu .sub-menu-content {
+.mega-menu .sub-menu .sub-menu-content > ul {
 margin: 0 auto;
 display: grid;
 gap: 1.5rem;
@@ -1063,17 +1063,17 @@ position: relative;
 grid-template-columns: repeat(2, auto);
 }
 @media (min-width: 768px) {
-.mega-menu .sub-menu .sub-menu-content {
+.mega-menu .sub-menu .sub-menu-content > ul {
 grid-template-columns: repeat(2, auto);
 }
 }
 @media (min-width: 1024px) {
-.mega-menu .sub-menu .sub-menu-content {
+.mega-menu .sub-menu .sub-menu-content > ul {
 grid-template-columns: repeat(4, auto);
 }
 }
 @media (min-width: 1280px) {
-.mega-menu .sub-menu .sub-menu-content {
+.mega-menu .sub-menu .sub-menu-content > ul {
 grid-template-columns: repeat(6, auto);
 }
 }
