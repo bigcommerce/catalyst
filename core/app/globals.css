@@ -1081,6 +1081,7 @@ position: absolute;
 
 .mega-menu .sub-menu .main-sub-menu-item {
 white-space: nowrap;
+min-width: -moz-fit-content;
 min-width: fit-content;
 }
 
@@ -1104,9 +1105,14 @@ padding: 0;
 display: flex;
 flex-direction: column;
 }
-.mega-menu .sub-menu .main-sub-menu-item > ul > :not([hidden]) ~ :not([hidden]) {
+
+/*
+.mega-menu .sub-menu .main-sub-menu-item > ul > li {
+  margin-top: 0.5rem;
+  }
+*/
+.mega-menu .sub-menu .main-sub-sub-menu-item {
 margin-top: 0.5rem;
-margin-bottom: 0.5rem;
 }
 
 .mega-menu .sub-menu .main-sub-sub-menu-item > a, .mega-menu .sub-menu .main-sub-sub-menu-item > span {

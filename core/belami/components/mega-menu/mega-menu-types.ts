@@ -3,7 +3,15 @@
 
 export interface MegaMenuMenuItem {
   title?: string;
+  imageSrc?: string;
+  imageAlt?: string;
   link?: { href?: string; target?: string };
+  description?: string;
+  columns: MegaMenuMenuItemColumn[];
+}
+
+export interface MegaMenuMenuItemColumn {
+  title?: string;
   subMenuItems: MegaMenuSubMenuItem[];
 }
 
@@ -12,6 +20,7 @@ export interface MegaMenuSubMenuItem {
   imageSrc?: string;
   imageAlt?: string;
   link?: { href?: string; target?: string };
+  description?: string;
   subSubMenuItems: MegaMenuSubSubMenuItem[];
 }
 
@@ -20,11 +29,15 @@ export interface MegaMenuSubSubMenuItem {
   imageSrc?: string;
   imageAlt?: string;
   link?: { href?: string; target?: string };
+  description?: string;
 }
 
 export interface MegaMenuSecondaryMenuItem {
   title?: string;
+  imageSrc?: string;
+  imageAlt?: string;
   link?: { href?: string; target?: string };
+  description?: string;
 }
 
 export type MegaMenuProps = {
@@ -41,9 +54,11 @@ export type MegaMenuProps = {
     secondaryMenu?: string;
     subMenuRoot?: string;
     subMenuContent?: string;
+    subMenuColumns?: string;
     subMenuCloseButton?: string;
     mainMenuItem?: string;
     mainSubMenuItem?: string;
+    mainSubMenuColumn?: string;
     mainSubSubMenuItem?: string;
     secondaryMenuItem?: string;
     mainMenuLink?: string;
