@@ -2,7 +2,8 @@
 import { useState, useRef, useEffect } from 'react';
 import { MegaMenuMenuItem, MegaMenuSubMenuItem, MegaMenuSubSubMenuItem, MegaMenuSecondaryMenuItem, MegaMenuProps } from './mega-menu-types';
 import clsx from 'clsx';
-import { Link } from '~/components/link';
+//import { Link } from '~/components/link';
+import Link from 'next/link';
 
 export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: MegaMenuProps) {
 
@@ -36,7 +37,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
     };
   }, []);
 
-  return (
+  return ((menuItems && menuItems.length > 0) || (secondaryMenuItems && secondaryMenuItems.length > 0)) && (
     <div className={clsx('mega-menu header-bottom navigation', variant, classNames?.root)}>
       {menuItems && menuItems.length > 0 && (
         <nav className={clsx('main-menu', classNames?.mainMenu)}>
