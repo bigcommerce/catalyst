@@ -106,7 +106,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
 
                               {menuItem.description && <div className={clsx('sub-menu-description', classNames?.mainSubMenuDescription)}>{menuItem.description}</div>}
 
-                              {menuItem.button && menuItem.link?.href && <div className={clsx('sub-menu-button', classNames?.mainSubMenuButton)}>{menuItem.button}</div>}
+                              {menuItem.button && menuItem.link?.href && <Link href={menuItem.link.href} className={clsx('sub-menu-button', classNames?.mainSubMenuButton)}>{menuItem.button}</Link>}
 
                               {menuItem.subSubMenuItems && menuItem.subSubMenuItems.length > 0 && (
                                 <ul>
