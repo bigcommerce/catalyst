@@ -53,6 +53,7 @@ type HitProps = {
     rating: number;
     on_sale: boolean;
     on_clearance: boolean;
+    free_shipping: boolean;
     newPrice: number;
     description: string;
     objectID: number;
@@ -92,6 +93,8 @@ function findPromotionWithBrand(promotions: any[], brandId: number): any | null 
 */
 
 interface Promotion {
+  name: string,
+  redemption_type: string,
   rules: {
     action: {
       cart_items?: {
@@ -108,13 +111,17 @@ interface Promotion {
       };
     };
   }[];
+  coupons: {
+    id: number;
+    code?: string;
+  }[];
 }
 
 function sortPromotions(promotions: Promotion[]): Promotion[] {
   return promotions.sort((a, b) => {
     const getDiscountValue = (promotion: Promotion, type: string, discountType: string): number => {
       for (const rule of promotion.rules) {
-        if (rule.action[type]?.discount?.[discountType]) {
+        if ((type === 'cart_items' || type === 'cart_value') && (discountType === 'percentage_amount' || discountType === 'fixed_amount') && rule.action[type]?.discount?.[discountType]) {
           return parseFloat(rule.action[type].discount[discountType]);
         }
       }
@@ -146,7 +153,6 @@ function sortPromotions(promotions: Promotion[]): Promotion[] {
 }
 
 function findApplicablePromotion(promotions: any[], productId: number, brandId: number, categoryIds: number[]): any | null {
-
   const applicablePromotions = promotions.filter((promotion: any) => {
 
     // 1. CHECKING STRICT RULES FIRST (without "and" or "or")
@@ -206,7 +212,8 @@ function findApplicablePromotion(promotions: any[], productId: number, brandId: 
       (rule: any) =>
         rule.condition?.cart &&
         rule.condition?.cart.items &&
-        rule.condition?.cart.items.and &&
+        (!rule.condition?.cart.items.and ||
+        (rule.condition?.cart.items.and &&
         rule.condition?.cart.items.and.some((andRule: any) => 
           (!andRule.brands || 
             (andRule.brands &&
@@ -218,6 +225,8 @@ function findApplicablePromotion(promotions: any[], productId: number, brandId: 
             (andRule.products &&
             andRule.products.includes(productId)))
         )
+        )
+        )
     );
     if (!hasAndConditions) return false;
 
@@ -227,13 +236,54 @@ function findApplicablePromotion(promotions: any[], productId: number, brandId: 
   return applicablePromotions && applicablePromotions.length > 0 ? sortPromotions(applicablePromotions)[0] : null;
 }
 
-function Promotion({ promotions, product_id, brand_id, category_ids }: any) {
+function getPromotionDecoration(promotion: Promotion, free_shipping: boolean = false): string | null {
+  let decoration: string | null = null;
+
+  if (free_shipping)
+    decoration = 'Free Shipping';
+
+  const rule = promotion.rules.some((rule: any) => rule.action.cart_items && rule.action.cart_items.discount)
+    ? promotion.rules.find((rule: any) => rule.action.cart_items && rule.action.cart_items.discount)
+    : promotion.rules.find((rule: any) => rule.action.cart_value && rule.action.cart_value.discount);
+
+  if (rule) {
+    if (rule.action.cart_items && rule.action.cart_items.discount) {
+      if (promotion.redemption_type === 'AUTOMATIC') {
+        decoration = rule.action.cart_items.discount.percentage_amount && Number(rule.action.cart_items.discount.percentage_amount) > 0
+          ? `${Number(rule.action.cart_items.discount.percentage_amount)}% Off`
+          : `$${Number(rule.action.cart_items.discount.percentage_amount)} Off`
+      } else if (promotion.redemption_type === 'COUPON') {
+        decoration = rule.action.cart_items.discount.percentage_amount && Number(rule.action.cart_items.discount.percentage_amount) > 0
+          ? `${Number(rule.action.cart_items.discount.percentage_amount)}% Off with Code${ promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : '' }`
+          : `$${Number(rule.action.cart_items.discount.percentage_amount)} Off with Code${ promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : '' }`
+      }
+    } else if (rule.action.cart_value && rule.action.cart_value.discount) {
+      if (promotion.redemption_type === 'AUTOMATIC') {
+        decoration = rule.action.cart_value.discount.percentage_amount && Number(rule.action.cart_value.discount.percentage_amount) > 0
+          ? `${Number(rule.action.cart_value.discount.percentage_amount)}% Off in the Cart`
+          : `$${Number(rule.action.cart_value.discount.percentage_amount)} Off in the Cart`
+      } else if (promotion.redemption_type === 'COUPON') {
+        decoration = rule.action.cart_value.discount.percentage_amount && Number(rule.action.cart_value.discount.percentage_amount) > 0
+          ? `${Number(rule.action.cart_value.discount.percentage_amount)}% Off in the Cart with Code${ promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : '' }`
+          : `$${Number(rule.action.cart_value.discount.percentage_amount)} Off in the Cart with Code${ promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : '' }`
+      }
+    }
+  }
+
+  if (['no tax', 'zero tax', 'notax'].some((keyword: string) => promotion.name.toLowerCase().includes(keyword))) {
+    decoration = 'We Pay the Tax';
+  }
+
+  return decoration;
+}
+
+function Promotion({ promotions, product_id, brand_id, category_ids, free_shipping }: { promotions: any[] | null, product_id: number, brand_id: number, category_ids: number[], free_shipping: boolean }) {
   //const promotion = findPromotionWithBrand(promotions, brand_id);
-  const promotion = findApplicablePromotion(promotions, product_id, brand_id, category_ids);
+  const promotion = findApplicablePromotion(promotions || [], product_id, brand_id, category_ids);
 
   return (
     <>
-      {promotion ? <div className="mt-4 bg-gray-100 p-2 text-center">{promotion.name}</div> : null}
+      {promotion ? <div className="mt-4 bg-gray-100 p-2 text-center">{getPromotionDecoration(promotion, free_shipping)}</div> : null}
     </>
   );
 }
@@ -575,6 +625,7 @@ export function Hit({
           product_id={hit.objectID}
           brand_id={hit.brand_id}
           category_ids={hit.category_ids}
+          free_shipping={hit.free_shipping}
         />
         <div className="compare-product p-4 pt-2 flex md:hidden items-center justify-center">
           <Compare
@@ -792,6 +843,7 @@ export function Hit({
             product_id={hit.objectID}
             brand_id={hit.brand_id}
             category_ids={hit.category_ids}
+            free_shipping={hit.free_shipping}
           />
         </div>
         <div className="flex-1 bg-gray-50 px-8 py-4">
@@ -811,54 +863,54 @@ export function Hit({
           </div>
           {hit.metafields && hit.metafields.Akeneo ? (
             <div className="mt-2 leading-6">
-              {hit.metafields.Akeneo.depth ? (
+              {hit.metafields.Details.Depth ? (
                 <p className="">
-                  Depth: <AmountUnitValue data={hit.metafields.Akeneo.depth} />
+                  Depth: <AmountUnitValue data={hit.metafields.Details.Depth} />
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.height ? (
+              {hit.metafields.Details.Height ? (
                 <p className="">
-                  Height: <AmountUnitValue data={hit.metafields.Akeneo.height} />
+                  Height: <AmountUnitValue data={hit.metafields.Details.Height} />
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.length ? (
+              {hit.metafields.Details.Length ? (
                 <p className="">
-                  Length: <AmountUnitValue data={hit.metafields.Akeneo.length} />
+                  Length: <AmountUnitValue data={hit.metafields.Details.Length} />
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.width ? (
+              {hit.metafields.Details.Width ? (
                 <p className="">
-                  Width/Diameter: <AmountUnitValue data={hit.metafields.Akeneo.width} />
+                  Width/Diameter: <AmountUnitValue data={hit.metafields.Details.Width} />
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.minimum_mounting_height ? (
+              {hit.metafields.Details['Minimum Mounting Height'] ? (
                 <p className="">
-                  Min. Mounting Height: {hit.metafields.Akeneo.minimum_mounting_height}
+                  Min. Mounting Height: {hit.metafields.Details['Minimum Mounting Height']}
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.fuel_source ? (
-                <p className="">Fuel Source: {hit.metafields.Akeneo.fuel_source}</p>
+              {hit.metafields.Details['Fuel Source'] ? (
+                <p className="">Fuel Source: {hit.metafields.Details['Fuel Source']}</p>
               ) : null}
-              {hit.metafields.Akeneo.heating_area ? (
-                <p className="">Heating Area: {hit.metafields.Akeneo.heating_area}</p>
+              {hit.metafields.Details['Heating Area'] ? (
+                <p className="">Heating Area: {hit.metafields.Details['Heating Area']}</p>
               ) : null}
-              {hit.metafields.Akeneo.wattage ? (
+              {hit.metafields.Details.Wattage ? (
                 <p className="">
-                  Wattage: <AmountUnitValue data={hit.metafields.Akeneo.wattage} />
+                  Wattage: <AmountUnitValue data={hit.metafields.Details.Wattage} />
                 </p>
               ) : null}
-              {hit.metafields.Akeneo.number_of_bulbs ? (
-                <p className="">Number of Lights: {hit.metafields.Akeneo.number_of_bulbs}</p>
+              {hit.metafields.Details['Number of Bulbs'] ? (
+                <p className="">Number of Lights: {hit.metafields.Details['Number of Bulbs']}</p>
               ) : null}
-              {hit.metafields.Akeneo.lift ? (
-                <p className="">Lift: {hit.metafields.Akeneo.lift}</p>
+              {hit.metafields.Details.Lift ? (
+                <p className="">Lift: {hit.metafields.Details.Lift}</p>
               ) : null}
-              {hit.metafields.Akeneo.lamp_base_type ? (
-                <p className="">Lamp Type: {hit.metafields.Akeneo.lamp_base_type}</p>
+              {hit.metafields.Details['Lamp Base Type'] ? (
+                <p className="">Lamp Type: {hit.metafields.Details['Lamp Base Type']}</p>
               ) : null}
-              {hit.metafields.Akeneo.voltage ? (
+              {hit.metafields.Details.Voltage ? (
                 <p className="">
-                  Voltage: <AmountUnitValue data={hit.metafields.Akeneo.voltage} />
+                  Voltage: <AmountUnitValue data={hit.metafields.Details.Voltage} />
                 </p>
               ) : null}
             </div>
@@ -871,15 +923,11 @@ export function Hit({
             )
           )}
           <div className="mt-4 md:flex md:space-x-2">
-            <a
-              href="#"
+            <Link href={hit.url}
               className="flex h-10 w-full cursor-pointer items-center justify-center rounded border border-brand-600 bg-brand-600 px-4 text-center uppercase text-white hover:border-brand-400 hover:bg-brand-400 md:w-auto md:flex-1"
             >
               View Details
-            </a>
-            {/*
-            <a href="#" className="md:flex-1 flex w-full md:w-auto uppercase px-4 h-10 bg-white rounded border border-brand-100 cursor-pointer items-center justify-center text-center hover:bg-brand-50 hover:border-brand-300">View Details</a>
-            */}
+            </Link>
             {/*
           <button type="button" className="mt-1 md:mt-0 md:flex-1 flex w-full md:w-auto uppercase px-4 h-10 bg-cyan-700 text-white rounded border border-cyan-700 cursor-pointer items-center justify-center" onClick={() =>
             sendEvent("conversion", hit, "Added To Cart", {

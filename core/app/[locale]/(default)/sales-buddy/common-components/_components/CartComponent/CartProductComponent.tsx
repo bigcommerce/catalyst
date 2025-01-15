@@ -6,7 +6,7 @@ import { ItemQuantity } from '~/app/[locale]/(default)/cart/_components/item-qua
 import { RemoveItem } from '~/app/[locale]/(default)/cart/_components/remove-item';
 import { BcImage } from '~/components/bc-image';
 import ProductPriceAdjuster from '../ProductPriceAdjuster';
-
+import CustomItemImage from '../../../assets/custom-product-image.png'
 
 
 function moveToTheEnd(arr: any, word: string) {
@@ -41,6 +41,7 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
       <div className="">
       <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
         <div className="cart-main-img mx-auto w-full flex-none border border-gray-300 md:mx-0 md:w-[144px]">
+          
           {product?.image?.url ? (
             <BcImage
               alt={product?.name}
@@ -50,7 +51,15 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
               className="h-full min-h-[9em] w-full object-contain"
             />
           ) : (
-            <div className="min-h-[300px] min-w-[300px]" />
+            <div className=" h-fit min-w-[300px]" >
+                  <BcImage
+                    alt={product?.name}
+                    height={144}
+                    src={CustomItemImage}
+                    width={142}
+                    className=" min-h-[9em]  object-contain"
+                  />
+            </div>
           )}
         </div>
 

@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
  
 // import Link as NxtLink from 'next/link';
- 
+import Image from 'next/image';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
@@ -10,6 +10,7 @@ import { imageIconList } from '../fragments';
 import { LoginForm } from './_components/login-form';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { BcImage } from '~/components/bc-image';
+import PERSONICON from '~/public/accountIcons/person.svg';
  
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
@@ -125,12 +126,12 @@ export default async function Login({ params }: Props) {
         </div>
       </div>
  
-      <div className="m-auto mt-[20px] flex w-[92%] flex-col gap-[20px] px-0 xl:px-12 2xl:mx-auto 2xl:px-0 [&_.main-breadcrumbs]:py-0">
+      <div className="m-auto mt-[30px] flex w-[92%] flex-col gap-[20px] px-0 xl:px-12 2xl:mx-auto 2xl:px-0 [&_.main-breadcrumbs]:py-0">
         <ComponentsBreadcrumbs
           className="login-div login-breadcrumb mx-auto mt-[0.5rem] hidden w-[80%] px-[1px] xl:block"
           breadcrumbs={breadcrumbs}
         />
-        <div className="login-div login-div-one mx-auto mt-3 flex w-full flex-col justify-between gap-0 px-[1px] text-center md:mt-6 lg:mt-0 xl:w-[80%] xl:flex-row xl:gap-24 xl:text-left">
+        <div className="login-div login-div-one mx-auto flex w-full flex-col justify-between gap-0 px-[1px] text-center md:mt-6 lg:mt-0 xl:w-[80%] xl:flex-row xl:gap-24 xl:text-left">
           <h2 className="text-[24px] font-normal text-[#353535] xl:text-[34px]">Rewards Program</h2>
           <div className="flex flex-col xl:flex-row flex-wrap content-center items-center justify-center gap-[10px] px-0 pb-0 pt-[10px]">
             <p className="flex items-center text-center text-[16px] xl:text-[20px] font-medium tracking-[0.15px] text-[#002A37]">
@@ -166,10 +167,12 @@ export default async function Login({ params }: Props) {
                   asChild
                   className="flex h-[42px] w-fit items-center justify-center gap-[5px] rounded-[3px] bg-white p-[5px] px-[10px] text-[#03465c] hover:text-[#03465c]"
                 >
-                  <Link href="/register">
-                    {' '}
-                    <img src={person} alt="" /> {t('CreateAccount.createLink')}
-                  </Link>
+<Link href="/register">
+  {' '}
+  <Image src={PERSONICON} alt={t('CreateAccount.createLink')} width={16} height={16} />
+  {t('CreateAccount.createLink')}
+</Link>  
+ 
                 </Button>
               </div>
               <ul className="flex list-disc flex-col gap-[20px]">

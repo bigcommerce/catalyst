@@ -404,19 +404,19 @@ export function CartSkeleton({ title = 'Cart' }: { title?: string }) {
           <div className="mt-3.5 h-4 w-40 rounded-lg bg-contrast-100 @xl:h-7 @xl:w-52" />
 
           {/* Subtotal */}
-          <div className="mt-[66px] flex justify-between border-b border-contrast-100/50 pb-5">
+          <div className="mt-[66px] flex justify-between ">
             <div className="h-4 w-16 rounded-md bg-contrast-100" />
             <div className="h-4 w-9 rounded-md bg-contrast-100" />
           </div>
 
           {/* Shipping */}
-          <div className="mt-5 flex justify-between border-b border-contrast-100/50 pb-5">
+          <div className="mt-5 flex justify-between ">
             <div className="h-4 w-[70px] rounded-md bg-contrast-100" />
             <div className="h-4 w-8 rounded-md bg-contrast-100" />
           </div>
 
           {/* Tax */}
-          <div className="mt-5 flex justify-between border-b border-contrast-100/50 pb-5">
+          <div className="mt-5 flex justify-between ">
             <div className="h-4 w-8 rounded-md bg-contrast-100" />
             <div className="h-4 w-8 rounded-md bg-contrast-100" />
           </div>

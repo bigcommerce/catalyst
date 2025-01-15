@@ -145,7 +145,7 @@ export default async function Register() {
           className="login-div login-breadcrumb mx-auto flex w-full justify-center px-[1px]"
           breadcrumbs={breadcrumbs}
         />
-        <h1 className="font-open-sans mt-2 text-center text-[24px] font-normal leading-[46.3px] tracking-[0.25px] text-[#353535] sm:mb-4 sm:pb-2 md:mb-4 md:text-[34px] xl:mb-8">
+        <h1 className="font-open-sans mt-2 text-center text-[24px] font-normal leading-[46.3px] tracking-[0.25px] text-[#353535] sm:mb-4  md:mb-4 md:text-[34px] xl:mb-8">
           Create a New Account
         </h1>
       </div>

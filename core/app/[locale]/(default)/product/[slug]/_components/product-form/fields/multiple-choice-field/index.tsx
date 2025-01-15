@@ -250,11 +250,11 @@ export const MultipleChoiceField = ({
             className="mb-2 inline-block text-left text-base font-normal leading-8 tracking-wide"
             htmlFor={`label-${option.entityId}`}
           >
-            {option.displayName} :
+            {option.displayName} 
           </Label>
-          <span className="selection ml-[5px] text-[#008BB7]">
+          {/* <span className="selection ml-[5px] text-[#008BB7]">
             {activeOptionRadio ? activeOptionRadio.label : 'Selection'}
-          </span>
+          </span> */}
           <RadioGroup
             aria-labelledby={`label-${option.entityId}`}
             error={Boolean(error)}
