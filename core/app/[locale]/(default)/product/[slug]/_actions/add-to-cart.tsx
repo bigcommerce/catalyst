@@ -245,7 +245,10 @@ export const addToCart = async (
         ),
       }),
     };
-  } catch (error: unknown) {
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
     if (error instanceof BigCommerceGQLError) {
       return {
         lastResult: submission.reply({
