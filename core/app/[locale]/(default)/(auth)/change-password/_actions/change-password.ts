@@ -1,5 +1,6 @@
 'use server';
 
+import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
@@ -63,7 +64,18 @@ export async function changePassword(
       lastResult: submission.reply(),
       successMessage: t('Form.successMessage'),
     };
-  } catch (error: unknown) {
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
+    if (error instanceof BigCommerceGQLError) {
+      return {
+        lastResult: submission.reply({
+          formErrors: error.errors.map(({ message }) => message),
+        }),
+      };
+    }
+
     if (error instanceof Error) {
       return {
         lastResult: submission.reply({ formErrors: [error.message] }),
