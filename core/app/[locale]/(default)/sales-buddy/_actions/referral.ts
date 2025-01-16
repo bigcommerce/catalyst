@@ -8,16 +8,16 @@ export const getReferralIdCookie = async () => {
 
 export const createReferralIdCookie = async () => {
     const cookieStore = await cookies();
-    const hasCookie = cookieStore.has('referralId')
+    const hasCookie = cookieStore.has('referrerId');
     if (!hasCookie) {
         let date = new Date();
         cookieStore.set({
-            name: 'referralId',
-            value: "Ref_" + date.getTime(),
-            httpOnly: true,
-            sameSite: 'lax',
-            secure: true,
-            path: '/',
+          name: 'referrerId',
+          value: 'Ref_' + date.getTime(),
+          httpOnly: true,
+          sameSite: 'lax',
+          secure: true,
+          path: '/',
         });
     }
 }

@@ -18,8 +18,10 @@ const CompareDrawerContext = createContext<{
   setProducts: (products: Product[]) => void;
   agentLoginStatus: boolean;
   setAgentLoginStatus: (value: boolean) => void;
-  agentRole: string | null; // New context state
-  setAgentRole: (value: string | null) => void; // Setter for new context state
+  agentRole: string | null;
+  setAgentRole: (value: string | null) => void;
+  agentName: string | null;
+  setAgentName: (value: string | null) => void;
 } | null>(null);
 
 const isCheckedProducts = (products: unknown): products is Product[] => {
@@ -31,8 +33,15 @@ const isCheckedProducts = (products: unknown): products is Product[] => {
 
 const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [agentLoginStatus, setAgentLoginStatus] = useState(localStorage.getItem('agent_login') === 'true'); // New state variable
-  const [agentRole, setAgentRole] = useState(localStorage.getItem('agent_role')); // New state variable
+  const [agentLoginStatus, setAgentLoginStatus] = useState(false); // Initialize with default value
+  const [agentRole, setAgentRole] = useState<string | null>(null); // Initialize with default value
+  const [agentName, setAgentName] = useState<string | null>(null); // Initialize with default value
+  useEffect(() => {
+    setAgentLoginStatus(localStorage.getItem('agent_login') === 'true');
+    setAgentRole(localStorage.getItem('agent_role'));
+    setAgentName(localStorage.getItem('agent_name'));
+  }, []);
+
   useEffect(() => {
     const stringProducts = sessionStorage.getItem('compareProducts');
 
@@ -53,7 +62,7 @@ const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
     sessionStorage.setItem('compareProducts', JSON.stringify(products));
   }, [products]);
   return (
-    <CompareDrawerContext.Provider value={{ products, setProducts, agentLoginStatus, setAgentLoginStatus, agentRole, setAgentRole }}>
+    <CompareDrawerContext.Provider value={{ products, setProducts, agentLoginStatus, setAgentLoginStatus, agentRole, setAgentRole, setAgentName, agentName }}>
       {children}
       <CompareDrawer />
     </CompareDrawerContext.Provider>

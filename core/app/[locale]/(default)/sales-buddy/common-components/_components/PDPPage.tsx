@@ -43,10 +43,8 @@ export default function SalesBuddyProductPage() {
         const data = await get_product_data(retrievedProductData.productId);
         
         if (data.status === 200) {
-
           costPricingTableData(data?.data?.output);
           setLoading((prev) => ({ ...prev, cost: false }));
-
         }
       } catch (error) {
         setLoading((prev) => ({ ...prev, cost: false }));
@@ -109,8 +107,8 @@ export default function SalesBuddyProductPage() {
                           ? Number(skuNum.variant_price).toFixed(2)
                           : "0000.00",
                         skuNum?.floor_percentage
-                          ? `${(skuNum?.floor_percentage * 100).toFixed(2)}%`
-                          : '00%',
+                          ? `${(skuNum?.floor_percentage)}%`
+                          : '00.00%',
                         skuNum?.floor_percentage
                           ? (skuNum?.floor_percentage * skuNum?.adjusted_cost).toFixed(2)
                           : '0.00',

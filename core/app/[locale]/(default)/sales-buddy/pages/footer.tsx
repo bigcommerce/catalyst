@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'; // Import useRouter
 import { storeAgentLoginStatusInCookies } from '../_actions/agent-login';
 export default function AgentFooter() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { agentLoginStatus, setAgentLoginStatus } = useCompareDrawerContext();
+  const { agentLoginStatus, setAgentLoginStatus,agentName } = useCompareDrawerContext();
   const router = useRouter(); // Initialize useRouter
 
   const toggleModal = () => {
@@ -42,7 +42,7 @@ export default function AgentFooter() {
 
         {/* Trigger to open the modal */}
         <div className="hidden  sm:block md:block lg:block cursor-pointer hover:text-primary flex justify-center focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 text-[14px] font-normal leading-[24px] tracking-[0.25px] text-left !text-white" onClick={toggleModal}>
-          {!agentLoginStatus ? "Agent Login" : "Agent Logout"}
+          {!agentLoginStatus ? "Agent Login" : `${agentName ? agentName :''} Logout`}
         </div>
         <div className="cursor-pointer hover:text-primary flex  focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 text-[14px] font-normal leading-[24px] tracking-[0.25px] !text-white">
           Create Quote
