@@ -256,7 +256,7 @@ export const addToCart = async (
             if (message.includes('Not enough stock:')) {
               // This removes the item id from the message. It's very brittle, but it's the only
               // solution to do it until our API returns a better error message.
-              message.replace('Not enough stock: ', '').replace(/\(\w.+\)\s{1}/, '');
+              return message.replace('Not enough stock: ', '').replace(/\(\w.+\)\s{1}/, '');
             }
 
             return message;
