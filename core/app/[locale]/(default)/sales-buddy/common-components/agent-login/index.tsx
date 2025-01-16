@@ -13,7 +13,7 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
   const [password, setPassword] = useState('admin@12345');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const { agentLoginStatus, setAgentLoginStatus, setAgentRole } = useCompareDrawerContext();
+  const { agentLoginStatus, setAgentLoginStatus, setAgentRole, setAgentName } = useCompareDrawerContext();
 
 
   const handleLogin = async (event: React.FormEvent) => {
@@ -24,15 +24,18 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
       const result = await agentLogin(email, password);
       
       if (result.status === 200) {
+        console.log(result?.data?.output?.data[0]?.name);
+        
         if (result?.data?.output?.data[0]?.status){
           localStorage.setItem('agent_login', 'true');
           setAgentRole(result?.data?.output?.data[0]?.role)
           localStorage.setItem('agent_role', result?.data?.output?.data[0]?.role);
           setAgentLoginStatus(true);
+          localStorage.setItem('agent_name', result?.data?.output?.data[0]?.name);
+          setAgentName(result?.data?.output?.data[0]?.name)
           toggleModal();
           storeAgentLoginStatusInCookies(true);
           setLoading(false); // Set loading state
-
         }else{
           localStorage.setItem('agent_login', 'false');
           setAgentLoginStatus(false);
