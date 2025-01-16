@@ -92,7 +92,7 @@ export async function submitContactForm<F extends Field>(
         fields: prevState.fields,
       };
     }
-  } catch (error: unknown) {
+  } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
 

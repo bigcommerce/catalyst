@@ -233,6 +233,7 @@ export async function registerCustomer<F extends Field>(
         lastResult: submission.reply({
           formErrors: error.errors.map(({ message }) => message),
         }),
+        fields: prevState.fields,
       };
     }
 

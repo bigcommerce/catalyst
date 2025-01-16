@@ -96,10 +96,10 @@ export const updateCustomer: UpdateAccountAction = async (prevState, formData) =
       };
     }
 
-    if (error instanceof BigCommerceAPIError) {
+    if (error instanceof Error) {
       return {
         account: prevState.account,
-        lastResult: submission.reply({ formErrors: [t('Errors.apiError')] }),
+        lastResult: submission.reply({ formErrors: [error.message] }),
       };
     }
 
