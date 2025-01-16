@@ -149,6 +149,10 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
   };
 
   const checkEmailExisting = async (email: string) => {
+    if (!email) {
+      setEmailExists('');
+      return true;
+    }
     try {
       const result = await GetEmailId(email);
       const isEmailExists = result && result.data.length > 0;

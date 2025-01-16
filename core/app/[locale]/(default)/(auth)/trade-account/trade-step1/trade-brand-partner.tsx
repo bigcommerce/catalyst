@@ -23,7 +23,7 @@ const Testimonial: React.FC<TestimonialData> = ({
   name,
   position,
 }) => (
-  <div className="block h-full flex-col items-center bg-white p-6 shadow-lg">
+  <div className="block h-[650px] md:h-[620px] lg:h-full flex-col items-center bg-white p-6 shadow-lg">
     <BcImage
       alt={imageAlt}
       width={150}
