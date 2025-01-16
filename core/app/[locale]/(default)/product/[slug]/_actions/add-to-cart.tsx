@@ -10,10 +10,7 @@ import { ReactNode } from 'react';
 
 import { Field, schema } from '@/vibes/soul/sections/product-detail/schema';
 import { graphql } from '~/client/graphql';
-import {
-  addCartLineItem,
-  assertAddCartLineItemErrors,
-} from '~/client/mutations/add-cart-line-item';
+import { addCartLineItem } from '~/client/mutations/add-cart-line-item';
 import { createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
 import { TAGS } from '~/client/tags';
@@ -176,8 +173,6 @@ export const addToCart = async (
           },
         ],
       });
-
-      assertAddCartLineItemErrors(addCartLineItemResponse);
 
       cart = addCartLineItemResponse.data.cart.addCartLineItems?.cart;
 
