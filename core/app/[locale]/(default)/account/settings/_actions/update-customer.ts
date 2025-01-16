@@ -1,6 +1,6 @@
 'use server';
 
-import { BigCommerceAPIError } from '@bigcommerce/catalyst-client';
+import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { unstable_expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
@@ -86,6 +86,15 @@ export const updateCustomer: UpdateAccountAction = async (prevState, formData) =
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
+
+    if (error instanceof BigCommerceGQLError) {
+      return {
+        account: prevState.account,
+        lastResult: submission.reply({
+          formErrors: error.errors.map(({ message }) => message),
+        }),
+      };
+    }
 
     if (error instanceof BigCommerceAPIError) {
       return {
