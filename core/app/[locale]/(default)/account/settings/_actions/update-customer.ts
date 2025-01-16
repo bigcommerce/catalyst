@@ -1,6 +1,6 @@
 'use server';
 
-import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
+import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { unstable_expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
