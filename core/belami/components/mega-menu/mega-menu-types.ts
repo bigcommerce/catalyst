@@ -65,8 +65,8 @@ export type MegaMenuProps = {
     mainSubMenuButton?: string;
     mainSubSubMenuItem?: string;
     mainSubSubMenuImage?: string;
-    mainSubSubMenuDescription?: string;
-    mainSubSubMenuButton?: string;
+    //mainSubSubMenuDescription?: string;
+    //mainSubSubMenuButton?: string;
     secondaryMenuItem?: string;
     mainMenuLink?: string;
     mainSubMenuLink?: string;

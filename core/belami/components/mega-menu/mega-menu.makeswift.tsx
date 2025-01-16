@@ -9,7 +9,7 @@ runtime.registerComponent(
     return (
       <MegaMenu
         variant={variant}
-        menuItems={[]}
+        menuItems={menuItems}
         secondaryMenuItems={secondaryMenuItems}
         classNames={classNames}
       />
@@ -58,8 +58,8 @@ runtime.registerComponent(
                               link: Link({ label: 'Link' }),
                               imageSrc: Image({ label: 'Image' }),
                               //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
-                              button: TextInput({ label: 'Button', defaultValue: '' }),
-                              description: TextInput({ label: 'Description', defaultValue: '' }),
+                              //button: TextInput({ label: 'Button', defaultValue: '' }),
+                              //description: TextInput({ label: 'Description', defaultValue: '' }),
                             },
                           }),
                           getItemLabel(menuItem) {

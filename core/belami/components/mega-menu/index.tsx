@@ -9,7 +9,7 @@ export function MegaMenu({
 }: MegaMenuProps) {
   return (
     <>
-      {(variant === 'default') && <MegaMenuDefault menuItems={[]} secondaryMenuItems={secondaryMenuItems} classNames={classNames} />}
+      {(variant === 'default') && <MegaMenuDefault menuItems={menuItems} secondaryMenuItems={secondaryMenuItems} classNames={classNames} />}
     </>
   );
 }
