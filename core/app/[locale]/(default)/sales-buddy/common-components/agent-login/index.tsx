@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { agentLogin } from '../../_actions/agent-login'; // Adjust the import path as necessary
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import {storeAgentLoginStatusInCookies} from '../../_actions/agent-login';
+import Loader from '../_components/Spinner';
 interface AgentLoginProps {
   isOpen: boolean;
   toggleModal: () => void;
@@ -11,13 +12,14 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
   const [email, setEmail] = useState('mithran1@test.com');
   const [password, setPassword] = useState('admin@12345');
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const { agentLoginStatus, setAgentLoginStatus, setAgentRole } = useCompareDrawerContext();
 
 
   const handleLogin = async (event: React.FormEvent) => {
     event.preventDefault();
     setError(null); // Reset error state
-
+    setLoading(true); // Set loading state
     try {
       const result = await agentLogin(email, password);
       
@@ -29,14 +31,20 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
           setAgentLoginStatus(true);
           toggleModal();
           storeAgentLoginStatusInCookies(true);
+          setLoading(false); // Set loading state
+
         }else{
           localStorage.setItem('agent_login', 'false');
           setAgentLoginStatus(false);
           toggleModal();
           storeAgentLoginStatusInCookies(false);
+          setLoading(false); // Set loading state
+
         }
+        
       } else {        
         setError(result?.error ?? null);
+        setLoading(false); // Set loading state
       }
     } catch (error) {
       setError('An unexpected error occurred. Please try again.');
@@ -128,10 +136,13 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
                 )}
                 <button
                   type="submit"
-                  className="w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+                  className="relative w-full rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
                   style={{ backgroundColor: 'blue', color: 'white' }} // Temporary debug style
                 >
                   Login to your account
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {loading && <Loader />}
+                  </div>
                 </button>
                 {/* <div className="text-sm font-medium text-gray-500 dark:text-gray-300">
                   Not registered?{' '}

@@ -31,8 +31,14 @@ const isCheckedProducts = (products: unknown): products is Product[] => {
 
 const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [agentLoginStatus, setAgentLoginStatus] = useState(localStorage.getItem('agent_login') === 'true'); // New state variable
-  const [agentRole, setAgentRole] = useState(localStorage.getItem('agent_role')); // New state variable
+  const [agentLoginStatus, setAgentLoginStatus] = useState(false); // Initialize with default value
+  const [agentRole, setAgentRole] = useState<string | null>(null); // Initialize with default value
+
+  useEffect(() => {
+    setAgentLoginStatus(localStorage.getItem('agent_login') === 'true');
+    setAgentRole(localStorage.getItem('agent_role'));
+  }, []);
+
   useEffect(() => {
     const stringProducts = sessionStorage.getItem('compareProducts');
 
