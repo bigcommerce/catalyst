@@ -18,7 +18,7 @@ export async function saveCartData(cartItemsData: any) {
     hourCycle: 'h23'
  }).format(new Date());
   const input = {
-    name: "Save Cart - "+dateTime?.replace(', ', '-'),
+    name: "Saved Cart - "+dateTime?.replace(', ', '-'),
     items: cartItemsData,
     isPublic: true,
   };
