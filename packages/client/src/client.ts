@@ -121,7 +121,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     });
 
     if (!response.ok) {
-      throw new BigCommerceAPIError(response.status);
+      throw await BigCommerceAPIError.createFromResponse(response);
     }
 
     log(response);
