@@ -1,5 +1,6 @@
 'use server';
 
+import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { unstable_expireTag } from 'next/cache';
@@ -13,7 +14,7 @@ import {
   addCartLineItem,
   assertAddCartLineItemErrors,
 } from '~/client/mutations/add-cart-line-item';
-import { assertCreateCartErrors, createCart } from '~/client/mutations/create-cart';
+import { createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
 import { TAGS } from '~/client/tags';
 import { Link } from '~/components/link';
@@ -212,8 +213,6 @@ export const addToCart = async (
       },
     ]);
 
-    assertCreateCartErrors(createCartResponse);
-
     cart = createCartResponse.data.cart.createCart?.cart;
 
     if (!cart?.entityId) {
@@ -247,6 +246,23 @@ export const addToCart = async (
       }),
     };
   } catch (error: unknown) {
+    if (error instanceof BigCommerceGQLError) {
+      return {
+        lastResult: submission.reply({
+          formErrors: error.errors.map(({ message }) => {
+            if (message.includes('Not enough stock:')) {
+              // This removes the item id from the message. It's very brittle, but it's the only
+              // solution to do it until our API returns a better error message.
+              message.replace('Not enough stock: ', '').replace(/\(\w.+\)\s{1}/, '');
+            }
+
+            return message;
+          }),
+        }),
+        fields: prevState.fields,
+      };
+    }
+
     if (error instanceof Error) {
       return {
         lastResult: submission.reply({ formErrors: [error.message] }),
