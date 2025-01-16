@@ -6,7 +6,7 @@ import clsx from 'clsx';
 //import { Link } from '~/components/link';
 import Link from 'next/link';
 
-export function MegaMenuDefault({ logoSrc, menuItems, secondaryMenuItems, classNames }: MegaMenuProps) {
+export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: MegaMenuProps) {
 
   const variant = 'default';
 
@@ -46,7 +46,7 @@ export function MegaMenuDefault({ logoSrc, menuItems, secondaryMenuItems, classN
 
   return ((menuItems && menuItems.length > 0) || (secondaryMenuItems && secondaryMenuItems.length > 0)) && (
     <>
-      <button title="Open menu" type="button" onClick={() => setShowSidebarMenu(true)}><Menu /></button>
+      <button type="button" title="Open menu" className="sidebar-menu-open-button block lg:hidden absolute z-20 top-4 left-3" onClick={() => setShowSidebarMenu(true)}><Menu /></button>
       {showSidebarMenu &&
         <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebarMenu(false)}></div>
       }
@@ -54,12 +54,9 @@ export function MegaMenuDefault({ logoSrc, menuItems, secondaryMenuItems, classN
         'fixed p-8 z-[9999] pointer-events-auto bg-white box-border w-full top-0 left-0 facets sm:max-w-[450px] max-h-full h-screen duration-300 ease-in-out overflow-y-auto',
         showSidebarMenu ? 'shadow-2xl shadow-blue-gray-900/10 translate-x-0' : '-translate-x-full'
       )}>
-        {logoSrc && <img src={logoSrc} alt="Logo" />}
-        <button type="button" title="Close menu" className="sidebar-menu-close-button mx-auto flex text-xl justify-center" onClick={() => setShowSidebarMenu(false)}>
-          <X />
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-        </button>
+        <button type="button" title="Close menu" className="sidebar-menu-close-button mx-auto flex text-xl justify-center" onClick={() => setShowSidebarMenu(false)}><X /></button>
         <h3 className="text-center text-2xl">Sidebar Menu</h3>
+        <p>Coming soon...</p>
       </aside>
 
       <div className={clsx('mega-menu header-bottom navigation', `mega-menu-${variant}`, classNames?.root)}>

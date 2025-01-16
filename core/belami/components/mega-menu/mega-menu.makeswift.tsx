@@ -97,7 +97,6 @@ runtime.registerComponent(
           return menuItem?.title || 'Menu item';
         },
       }),
-      logoSrc: Image({ label: 'Logo' }),
       /*
       classNames: Shape({
         type: {

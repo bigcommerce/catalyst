@@ -41,7 +41,6 @@ export interface MegaMenuSecondaryMenuItem {
 
 export type MegaMenuProps = {
   variant?: string;
-  logoSrc?: string;
   /*
     menuItems: Streamable<MenuItem[]>;
     secondaryMenuItems: Streamable<SecondaryMenuItem[]>;
