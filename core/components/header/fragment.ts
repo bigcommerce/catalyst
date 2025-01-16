@@ -1,4 +1,4 @@
-import { graphql } from '~/client/graphql';
+import { FragmentOf, graphql } from '~/client/graphql';
 
 export const HeaderFragment = graphql(`
   fragment HeaderFragment on Site {
@@ -29,5 +29,17 @@ export const HeaderFragment = graphql(`
         }
       }
     }
+    currencies(first: 10) {
+      edges {
+        node {
+          code
+        }
+      }
+    }
   }
 `);
+
+export type Currency = NonNullable<
+  NonNullable<FragmentOf<typeof HeaderFragment>>['currencies']['edges']
+>[number]['node'];
+export type CurrencyCode = Currency['code'];

@@ -8,6 +8,7 @@ import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { ProductCardFragment } from '~/components/product-card/fragment';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 const GetProductSearchResultsQuery = graphql(
   `
@@ -18,6 +19,7 @@ const GetProductSearchResultsQuery = graphql(
       $before: String
       $filters: SearchProductsFiltersInput!
       $sort: SearchProductsSortInput
+      $currencyCode: currencyCode
     ) {
       site {
         search {
@@ -168,12 +170,13 @@ interface ProductSearch {
 const getProductSearchResults = cache(
   async ({ limit = 9, after, before, sort, filters }: ProductSearch) => {
     const customerAccessToken = await getSessionCustomerAccessToken();
+    const currencyCode = await getPreferredCurrencyCode();
     const filterArgs = { filters, sort };
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
     const response = await client.fetch({
       document: GetProductSearchResultsQuery,
-      variables: { ...filterArgs, ...paginationArgs },
+      variables: { ...filterArgs, ...paginationArgs, currencyCode },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 300 } },
     });
