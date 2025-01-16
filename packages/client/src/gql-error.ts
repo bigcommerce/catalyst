@@ -5,8 +5,8 @@ interface GQLError {
 }
 
 export class BigCommerceGQLError extends Error {
-  constructor(public graphqlErrors: GQLError[] = []) {
-    const message = graphqlErrors.map((error) => error.message).join('\n');
+  constructor(public errors: GQLError[] = []) {
+    const message = 'GQL errors on the response';
 
     super(message);
     this.name = 'BigCommerceGQLError';
