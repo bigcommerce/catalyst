@@ -23,7 +23,7 @@ export const Toaster = ({ ...props }: ToasterProps) => {
       toastOptions={{
         unstyled: true,
         classNames: {
-          toast: 'group focus-visible:ring-0',
+          toast: 'group focus-visible:ring-0 right-0',
         },
       }}
       {...props}
