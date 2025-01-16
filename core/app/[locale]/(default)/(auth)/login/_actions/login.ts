@@ -37,15 +37,13 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
     console.error(error);
 
     if (error instanceof BigCommerceGQLError) {
-      return {
-        lastResult: submission.reply({
-          formErrors: error.errors.map(({ message }) => message),
-        }),
-      };
+      return submission.reply({
+        formErrors: error.errors.map(({ message }) => message),
+      });
     }
 
     if (error instanceof Error) {
-      return { lastResult: submission.reply({ formErrors: [error.message] }) };
+      return submission.reply({ formErrors: [error.message] });
     }
 
     return submission.reply({ formErrors: [t('Form.error')] });
