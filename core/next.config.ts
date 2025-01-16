@@ -32,12 +32,10 @@ export default async (): Promise<NextConfig> => {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
     },
     typescript: {
-      //ignoreBuildErrors: !!process.env.CI,
-      ignoreBuildErrors: true,
+      ignoreBuildErrors: !!process.env.CI,
     },
     eslint: {
-      //ignoreDuringBuilds: !!process.env.CI,
-      ignoreDuringBuilds: true,
+      ignoreDuringBuilds: !!process.env.CI,
       dirs: ['app', 'client', 'components', 'lib', 'middlewares'],
     },
     webpack: (config, { isServer }) => {

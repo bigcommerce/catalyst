@@ -71,11 +71,11 @@ export const Header = async ({ cart }: Props) => {
   }));
 
   const getCustomerData = await getSessionUserDetails();
-
+/*
   const megaMenuSnapshot = await makeswiftClient.getComponentSnapshot('belami-mega-menu', {
     siteVersion: await getSiteVersion()
   });
-
+*/
   return (
     <ComponentsHeader
       homeLogoMobile={homeLogoMobile}
@@ -178,7 +178,8 @@ export const Header = async ({ cart }: Props) => {
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
       search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} />}
-      megaMenu={<MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' />}
+      megaMenu={<></>}
+      //megaMenu={<MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' />}
     />
   );
 };
