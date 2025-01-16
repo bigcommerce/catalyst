@@ -3,6 +3,7 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
 import { getCartId } from '~/lib/cart';
+import { exists } from '~/lib/utils';
 
 import { redirectToCheckout } from './_actions/redirect-to-checkout';
 import { updateLineItem } from './_actions/update-line-item';
@@ -89,7 +90,32 @@ export default async function Cart() {
   return (
     <>
       <CartComponent
+        cart={{
+          lineItems: formattedLineItems,
+          total: format.number(checkout?.grandTotal?.value || 0, {
+            style: 'currency',
+            currency: cart.currencyCode,
+          }),
+          totalLabel: t('CheckoutSummary.grandTotal'),
+          summaryItems: [
+            {
+              label: t('CheckoutSummary.subTotal'),
+              value: format.number(checkout?.subtotal?.value ?? 0, {
+                style: 'currency',
+                currency: cart.currencyCode,
+              }),
+            },
+            checkout?.taxTotal && {
+              label: 'Tax',
+              value: format.number(checkout.taxTotal.value, {
+                style: 'currency',
+                currency: cart.currencyCode,
+              }),
+            },
+          ].filter(exists),
+        }}
         checkoutAction={redirectToCheckout}
+        checkoutLabel={t('proceedToCheckout')}
         decrementLineItemLabel={t('decrement')}
         deleteLineItemLabel={t('removeItem')}
         emptyState={{
@@ -100,28 +126,7 @@ export default async function Cart() {
         incrementLineItemLabel={t('increment')}
         key={`${cart.entityId}-${cart.version}`}
         lineItemAction={updateLineItem}
-        lineItems={formattedLineItems}
-        summary={{
-          title: t('CheckoutSummary.title'),
-          taxLabel: t('CheckoutSummary.tax'),
-          tax: checkout?.taxTotal
-            ? format.number(checkout.taxTotal.value, {
-                style: 'currency',
-                currency: cart.currencyCode,
-              })
-            : '',
-          subtotalLabel: t('CheckoutSummary.subTotal'),
-          subtotal: format.number(checkout?.subtotal?.value ?? 0, {
-            style: 'currency',
-            currency: cart.currencyCode,
-          }),
-          grandTotalLabel: t('CheckoutSummary.grandTotal'),
-          grandTotal: format.number(checkout?.grandTotal?.value || 0, {
-            style: 'currency',
-            currency: cart.currencyCode,
-          }),
-          ctaLabel: t('proceedToCheckout'),
-        }}
+        summaryTitle={t('CheckoutSummary.title')}
         title={t('title')}
       />
       <CartViewed
