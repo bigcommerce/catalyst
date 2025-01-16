@@ -9,7 +9,7 @@ runtime.registerComponent(
     return (
       <MegaMenu
         variant={variant}
-        menuItems={menuItems}
+        menuItems={[]}
         secondaryMenuItems={secondaryMenuItems}
         classNames={classNames}
       />
