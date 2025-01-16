@@ -179,6 +179,10 @@ const config = {
           from: { transform: 'translate(200%, -50%)', opacity: '0' },
           to: { transform: 'translate(0%, -50%)', opacity: '1' },
         },
+        mobSlideInFromLeft: {
+          from: { transform: 'translate(200%, -50%)', opacity: '0' },
+          to: { transform: 'translate(-50%, -50%)', opacity: '1' },
+        },
       },
       animation: {
         collapse: 'collapse 400ms cubic-bezier(1, 0, 0.25, 1)',
@@ -190,6 +194,7 @@ const config = {
         shake: 'shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both',
         slideIn: 'slideIn 800ms cubic-bezier(0.25, 1, 0, 1)',
         slideInFromLeft: 'slideInFromLeft 0.6s ease-in-out',
+        mobSlideInFromLeft: 'mobSlideInFromLeft 0.7s ease-in-out',
       },
     },
   },

@@ -134,7 +134,7 @@ const Footer = ({
                 )}
               </li>
             ))}
-            {index == 2 && flagSalesBuddy && <AgentFooter />}
+            {Boolean(index == 2 && flagSalesBuddy) && <AgentFooter />}
           </ul>
         </div>
       ))}
@@ -186,7 +186,7 @@ const Footer = ({
                   )}
                 </li>
               ))}
-              {index == 2 && flagSalesBuddy && <AgentFooter />}
+            {Boolean(index == 2 && flagSalesBuddy) && <AgentFooter />}
             </ul>
           </div>
         ))}
@@ -242,7 +242,7 @@ const Footer = ({
                   )}
                 </li>
               ))}
-              {index == 2 && flagSalesBuddy && <AgentFooter />}
+            {Boolean(index == 2 && flagSalesBuddy) && <AgentFooter />}
             </ul>
           </div>
         ))}
