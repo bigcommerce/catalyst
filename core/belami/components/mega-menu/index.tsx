@@ -1,5 +1,5 @@
 import { MegaMenuProps } from './mega-menu-types';
-import { MegaMenuDefault } from './mega-menu-default';
+//import { MegaMenuDefault } from './mega-menu-default';
 
 export function MegaMenu({
   variant,
@@ -9,7 +9,9 @@ export function MegaMenu({
 }: MegaMenuProps) {
   return (
     <>
+    {/*
       {(variant === 'default') && <MegaMenuDefault menuItems={menuItems} secondaryMenuItems={secondaryMenuItems} classNames={classNames} />}
+      */}
     </>
   );
 }
