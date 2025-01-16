@@ -1027,6 +1027,7 @@ font-weight: 400;
 letter-spacing: .5px;
 text-align: left;
 padding: .75rem;
+white-space: nowrap;
 }
 .mega-menu .secondary-menu-item > a, .mega-menu .secondary-menu-item > span {
 display: flex;
