@@ -46,20 +46,77 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
 
   return ((menuItems && menuItems.length > 0) || (secondaryMenuItems && secondaryMenuItems.length > 0)) && (
     <>
-      <button type="button" title="Open menu" className="sidebar-menu-open-button block lg:hidden absolute z-20 top-4 left-3" onClick={() => setShowSidebarMenu(true)}><Menu /></button>
+      <button type="button" title="Open menu" className={clsx(
+        'mega-menu-sidebar-open-button',
+        `mega-menu-sidebar-open-button-${variant}`,
+        'block lg:hidden absolute z-20 top-4 left-3'
+      )} onClick={() => setShowSidebarMenu(true)}><Menu /></button>
       {showSidebarMenu &&
         <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebarMenu(false)}></div>
       }
       <aside className={clsx(
+        'mega-menu-sidebar',
+        `mega-menu-sidebar-${variant}`,
         'fixed p-8 z-[9999] pointer-events-auto bg-white box-border w-full top-0 left-0 facets sm:max-w-[450px] max-h-full h-screen duration-300 ease-in-out overflow-y-auto',
         showSidebarMenu ? 'shadow-2xl shadow-blue-gray-900/10 translate-x-0' : '-translate-x-full'
       )}>
-        <button type="button" title="Close menu" className="sidebar-menu-close-button mx-auto flex text-xl justify-center" onClick={() => setShowSidebarMenu(false)}><X /></button>
-        <h3 className="text-center text-2xl">Sidebar Menu</h3>
-        <p>Coming soon...</p>
+        <button type="button" title="Close menu" className="mega-menu-sidebar-close-button mx-auto flex text-xl justify-center" onClick={() => setShowSidebarMenu(false)}><X /></button>
+        {menuItems && menuItems.length > 0 && (
+          <nav className={clsx('main-menu', classNames?.mainMenu)}>
+            <ul>
+              {menuItems.map((menuItem: MegaMenuMenuItem, index: number) => (
+                <li className={clsx('main-menu-item', classNames?.mainMenuItem)} key={`main-menu-item-${index}`}>
+                  {menuItem.link?.href ? (
+                    <Link
+                      href={menuItem.link.href}
+                      className={clsx('main-menu-link', classNames?.mainMenuLink)}
+                    >
+                      <span>{menuItem.title}</span>
+                      <span><ChevronRight /></span>
+                    </Link>
+                  ) : (
+                    <span
+                      className={clsx('main-menu-link', classNames?.mainMenuLink)}
+                    >
+                      <span>{menuItem.title}</span>
+                      <span><ChevronRight /></span>
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+        {secondaryMenuItems && secondaryMenuItems.length > 0 && (
+          <nav className={clsx('secondary-menu', classNames?.secondaryMenu)}>
+            <ul>
+              {secondaryMenuItems.map((menuItem: MegaMenuSecondaryMenuItem, index: number) => (
+                <li
+                  className={clsx('secondary-menu-item', classNames?.secondaryMenuItem)}
+                  key={index}
+                >
+                  {menuItem.link?.href ? (
+                    <Link
+                      href={menuItem.link.href}
+                      className={clsx('secondary-menu-link', classNames?.secondaryMenuLink)}
+                    >
+                      <span>{menuItem.title}</span>
+                      <span><ChevronRight /></span>
+                    </Link>
+                  ) : (
+                    <span className={clsx('secondary-menu-link', classNames?.secondaryMenuLink)}>
+                      <span>{menuItem.title}</span>
+                      <span><ChevronRight /></span>
+                    </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
       </aside>
 
-      <div className={clsx('mega-menu header-bottom navigation', `mega-menu-${variant}`, classNames?.root)}>
+      <div className={clsx('mega-menu', `mega-menu-${variant}`, classNames?.root)}>
         {menuItems && menuItems.length > 0 && (
           <nav className={clsx('main-menu', classNames?.mainMenu)}>
             <ul>

@@ -970,6 +970,47 @@ border-radius: 3px !important;
 }
 
 
+.mega-menu-sidebar .main-menu {
+margin-top: 1rem;
+}
+
+.mega-menu-sidebar .main-menu > ul {
+margin: 0;
+padding: 0;
+display: block;
+list-style: none;
+}
+.mega-menu-sidebar .secondary-menu > ul {
+margin: 0;
+padding: 0;
+display: block;
+list-style: none;
+color: var(--brand-400);
+}
+
+.mega-menu-sidebar .main-menu-item, .mega-menu-sidebar .secondary-menu-item {
+border-top: 1px solid var(--gray-300);
+}
+
+.mega-menu-sidebar .main-menu-item > a, .mega-menu-sidebar .main-menu-item > span, 
+.mega-menu-sidebar .secondary-menu-item > a, .mega-menu-sidebar .secondary-menu-item > span {
+display: flex;
+font-size: 16px;
+line-height: 32px;
+font-weight: 400;
+letter-spacing: .5px;
+text-align: left;
+padding: .75rem 0;
+white-space: nowrap;
+}
+.mega-menu-sidebar .main-menu-item > a > span:first-child, .mega-menu-sidebar .main-menu-item > span > span:first-child, 
+.mega-menu-sidebar .secondary-menu-item > a > span:first-child, .mega-menu-sidebar .secondary-menu-item > span > span:first-child {
+flex-grow: 1;
+}
+.mega-menu-sidebar .main-menu-item > a > span:last-child, .mega-menu-sidebar .main-menu-item > span > span:last-child, 
+.mega-menu-sidebar .secondary-menu-item > a > span:last-child, .mega-menu-sidebar .secondary-menu-item > span > span:last-child {
+flex: none;
+}
 
 
 .mega-menu {
@@ -1036,6 +1077,7 @@ line-height: 32px;
 font-weight: 400;
 letter-spacing: .5px;
 text-align: left;
+white-space: nowrap;
 }
 
 .mega-menu .sub-menu {
