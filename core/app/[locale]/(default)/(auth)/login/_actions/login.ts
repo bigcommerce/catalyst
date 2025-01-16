@@ -1,5 +1,6 @@
 'use server';
 
+import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { getLocale, getTranslations } from 'next-intl/server';
@@ -31,7 +32,20 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
         redirect: false,
       },
     );
-  } catch {
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
+    if (error instanceof BigCommerceGQLError) {
+      return submission.reply({
+        formErrors: error.errors.map(({ message }) => message),
+      });
+    }
+
+    if (error instanceof Error) {
+      return submission.reply({ formErrors: [error.message] });
+    }
+
     return submission.reply({ formErrors: [t('Form.error')] });
   }
 

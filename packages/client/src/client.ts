@@ -1,4 +1,5 @@
-import { BigCommerceAPIError } from './error';
+import { BigCommerceAPIError } from './api-error';
+import { BigCommerceGQLError } from './gql-error';
 import { DocumentDecoration } from './types';
 import { getOperationInfo } from './utils/getOperationName';
 import { normalizeQuery } from './utils/normalizeQuery';
@@ -125,7 +126,15 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     log(response);
 
-    return response.json() as Promise<BigCommerceResponse<TResult>>;
+    const result = (await response.json()) as BigCommerceResponse<TResult>;
+
+    const { errors, ...data } = result;
+
+    if (errors) {
+      throw BigCommerceGQLError.createFromResult(errors);
+    }
+
+    return data;
   }
 
   async fetchShippingZones() {
