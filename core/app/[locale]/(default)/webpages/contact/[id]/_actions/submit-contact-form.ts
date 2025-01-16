@@ -1,6 +1,6 @@
 'use server';
 
-import { BigCommerceAPIError } from '@bigcommerce/catalyst-client';
+import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { getLocale, getTranslations } from 'next-intl/server';
@@ -92,13 +92,22 @@ export async function submitContactForm<F extends Field>(
         fields: prevState.fields,
       };
     }
-  } catch (error) {
+  } catch (error: unknown) {
     // eslint-disable-next-line no-console
     console.error(error);
 
-    if (error instanceof BigCommerceAPIError) {
+    if (error instanceof BigCommerceGQLError) {
       return {
-        lastResult: submission.reply({ formErrors: [t('Errors.apiError')] }),
+        lastResult: submission.reply({
+          formErrors: error.errors.map(({ message }) => message),
+        }),
+        fields: prevState.fields,
+      };
+    }
+
+    if (error instanceof Error) {
+      return {
+        lastResult: submission.reply({ formErrors: [error.message] }),
         fields: prevState.fields,
       };
     }
