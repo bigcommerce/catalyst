@@ -12,8 +12,10 @@ import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { routing } from '~/i18n/routing';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { search } from './_actions/search';
+import { switchCurrency } from './_actions/switch-currency';
 import { switchLocale } from './_actions/switch-locale';
 import { HeaderFragment } from './fragment';
 
@@ -35,6 +37,7 @@ const getLayoutData = cache(async () => {
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
+    customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
@@ -95,14 +98,34 @@ const getCartCount = async () => {
   return response.data.site.cart.lineItems.totalQuantity;
 };
 
+const getCurrencies = async () => {
+  const data = await getLayoutData();
+
+  if (!data.currencies.edges) {
+    return [];
+  }
+
+  const currencies = data.currencies.edges.map(({ node }) => ({
+    id: node.code,
+    label: node.code,
+  }));
+
+  return currencies;
+};
+
 export const Header = async () => {
   const t = await getTranslations('Components.Header');
   const locale = await getLocale();
+  const currencyCode = await getPreferredCurrencyCode();
 
   const locales = routing.locales.map((enabledLocales) => ({
     id: enabledLocales,
     label: enabledLocales.toLocaleUpperCase(),
   }));
+
+  const currencies = await getCurrencies();
+  // TODO: handle default currency properly once added to API
+  const activeCurrencyId = currencyCode ?? currencies[0]?.id;
 
   return (
     <HeaderSection
@@ -124,6 +147,9 @@ export const Header = async () => {
         activeLocaleId: locale,
         locales,
         localeAction: switchLocale,
+        currencies,
+        activeCurrencyId,
+        currencyAction: switchCurrency,
       }}
     />
   );

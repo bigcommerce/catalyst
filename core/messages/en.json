@@ -507,6 +507,9 @@
         "login": "Login",
         "logout": "Log out"
       },
+      "Currency": {
+        "invalidCurrency": "Invalid currency"
+      },
       "Locale": {
         "invalidLocale": "Invalid locale"
       },
