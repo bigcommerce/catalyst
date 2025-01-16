@@ -1,6 +1,3 @@
-//import { Streamable } from '@/vibes/soul/lib/streamable';
-//import { mapStreamable } from '@/vibes/soul/lib/streamable/server';
-
 export interface MegaMenuMenuItem {
   title?: string;
   imageSrc?: string;
@@ -65,8 +62,8 @@ export type MegaMenuProps = {
     mainSubMenuButton?: string;
     mainSubSubMenuItem?: string;
     mainSubSubMenuImage?: string;
-    //mainSubSubMenuDescription?: string;
-    //mainSubSubMenuButton?: string;
+    mainSubSubMenuDescription?: string;
+    mainSubSubMenuButton?: string;
     secondaryMenuItem?: string;
     mainMenuLink?: string;
     mainSubMenuLink?: string;
