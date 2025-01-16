@@ -1,5 +1,6 @@
 'use server';
 
+import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { FragmentOf } from 'gql.tada';
@@ -177,6 +178,18 @@ export const updateLineItem = async (
           quantity: cartLineItem.quantity + 1,
         });
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+
+        if (error instanceof BigCommerceGQLError) {
+          return {
+            ...prevState,
+            lastResult: submission.reply({
+              formErrors: error.errors.map(({ message }) => message),
+            }),
+          };
+        }
+
         if (error instanceof Error) {
           return { ...prevState, lastResult: submission.reply({ formErrors: [error.message] }) };
         }
@@ -319,6 +332,18 @@ export const updateLineItem = async (
           quantity: cartLineItem.quantity - 1,
         });
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+
+        if (error instanceof BigCommerceGQLError) {
+          return {
+            ...prevState,
+            lastResult: submission.reply({
+              formErrors: error.errors.map(({ message }) => message),
+            }),
+          };
+        }
+
         if (error instanceof Error) {
           return { ...prevState, lastResult: submission.reply({ formErrors: [error.message] }) };
         }
@@ -340,6 +365,18 @@ export const updateLineItem = async (
       try {
         await removeItem({ lineItemEntityId: submission.value.id });
       } catch (error) {
+        // eslint-disable-next-line no-console
+        console.error(error);
+
+        if (error instanceof BigCommerceGQLError) {
+          return {
+            ...prevState,
+            lastResult: submission.reply({
+              formErrors: error.errors.map(({ message }) => message),
+            }),
+          };
+        }
+
         if (error instanceof Error) {
           return { ...prevState, lastResult: submission.reply({ formErrors: [error.message] }) };
         }

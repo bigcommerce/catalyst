@@ -68,6 +68,9 @@ export const addToCart = async (data: FormData) => {
 
     return { status: 'success', data: cart };
   } catch (error: unknown) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
     if (error instanceof Error) {
       return { status: 'error', error: error.message };
     }

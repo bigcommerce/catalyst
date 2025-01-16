@@ -1,6 +1,6 @@
 'use server';
 
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { BigCommerceGQLError, removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
@@ -93,7 +93,21 @@ export async function search(
       emptyStateTitle,
       emptyStateSubtitle,
     };
-  } catch (error: unknown) {
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
+    if (error instanceof BigCommerceGQLError) {
+      return {
+        lastResult: submission.reply({
+          formErrors: error.errors.map(({ message }) => message),
+        }),
+        searchResults: prevState.searchResults,
+        emptyStateTitle,
+        emptyStateSubtitle,
+      };
+    }
+
     if (error instanceof Error) {
       return {
         lastResult: submission.reply({ formErrors: [error.message] }),

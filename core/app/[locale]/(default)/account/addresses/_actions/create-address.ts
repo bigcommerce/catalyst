@@ -1,4 +1,4 @@
-import { BigCommerceAPIError } from '@bigcommerce/catalyst-client';
+import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { unstable_expireTag as expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
@@ -248,10 +248,19 @@ export async function createAddress(prevState: Awaited<State>, formData: FormDat
     // eslint-disable-next-line no-console
     console.error(error);
 
+    if (error instanceof BigCommerceGQLError) {
+      return {
+        ...prevState,
+        lastResult: submission.reply({
+          formErrors: error.errors.map(({ message }) => message),
+        }),
+      };
+    }
+
     if (error instanceof BigCommerceAPIError) {
       return {
         ...prevState,
-        lastResult: submission.reply({ formErrors: [t('Errors.apiError')] }),
+        lastResult: submission.reply({ formErrors: [error.message] }),
       };
     }
 

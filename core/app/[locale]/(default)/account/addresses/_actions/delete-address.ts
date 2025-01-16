@@ -1,4 +1,4 @@
-import { BigCommerceAPIError } from '@bigcommerce/catalyst-client';
+import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { unstable_expireTag as expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
@@ -88,14 +88,23 @@ export async function deleteAddress(prevState: Awaited<State>, formData: FormDat
       defaultAddress: prevState.defaultAddress,
       fields: prevState.fields,
     };
-  } catch (error: unknown) {
+  } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
 
-    if (error instanceof BigCommerceAPIError) {
+    if (error instanceof BigCommerceGQLError) {
       return {
         ...prevState,
-        lastResult: submission.reply({ formErrors: [t('Errors.apiError')] }),
+        lastResult: submission.reply({
+          formErrors: error.errors.map(({ message }) => message),
+        }),
+      };
+    }
+
+    if (error instanceof Error) {
+      return {
+        ...prevState,
+        lastResult: submission.reply({ formErrors: [error.message] }),
       };
     }
 
