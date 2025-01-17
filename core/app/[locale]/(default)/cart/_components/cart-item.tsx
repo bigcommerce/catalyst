@@ -395,7 +395,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjus
           </div>
         </div>
       </div>
-      {product?.accessories?.length > 0 ? (
+      {/* {product?.accessories?.length > 0 ? ( */}
         <div>
           {product?.accessories &&
             product?.accessories?.map((item: any, index: number) => {
@@ -464,14 +464,14 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId ,priceAdjus
               );
             })}
         </div>
-      ) : (
+      {/* ) : ( */}
       <AccessoriesButton 
         key={product?.entityId}
         closeIcon={closeIcon}
         blankAddImg={blankAddImg}
         fanPopup={fanPopup}
         product={product} />
-        )}
+        {/* )} */}
     </li>
   );
 };
