@@ -53,14 +53,17 @@ export const Gallery = ({
   const images: Image[] = removeEdgesAndNodes(product.images) as Image[];
   const videos: Video[] = removeEdgesAndNodes(product.videos) as Video[];
 
-  const topLevelDefaultImg = images.find((image) => image.isDefault);
+  let updatedImages = [...images];
+
+  const topLevelDefaultImg = updatedImages.find((image) => image.isDefault);
 
   if (product.defaultImage && topLevelDefaultImg?.url !== product.defaultImage.url) {
-    images.forEach((image) => {
-      image.isDefault = false;
-    });
+    updatedImages = updatedImages.map((image) => ({
+      ...image,
+      isDefault: false,
+    }));
 
-    images.push({
+    updatedImages.push({
       url: product.defaultImage.url,
       altText: product.defaultImage.altText,
       isDefault: true,

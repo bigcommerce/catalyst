@@ -196,7 +196,7 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
       <ComponentsBreadcrumbs className="mt-10" breadcrumbs={breadcrumbs} />
 
       <h1 className="cart-heading pb-6 pt-0 text-center text-[24px] font-normal leading-[32px] lg:pb-4 lg:text-left lg:text-[24px]">
-        {`${t('heading')}(${cartQty}${cartItemsText})`}
+        {`${t('heading')} (${cartQty}${cartItemsText})`}
       </h1>
 
       <div className="hidden lg:flex lg:items-center lg:space-x-8">

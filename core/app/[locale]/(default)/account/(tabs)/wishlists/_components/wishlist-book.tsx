@@ -1,23 +1,21 @@
 // wishlist-book.tsx
-
 'use client';
 
 import { useRouter } from 'next/navigation';
 import { useFormatter, useTranslations } from 'next-intl';
 import { PropsWithChildren, SetStateAction, useEffect, useState } from 'react';
 import { Hit as AlgoliaHit } from 'instantsearch.js';
+import Link from 'next/link';
 
 import { createWishlist } from '~/client/mutations/create-wishlist';
 import { Button } from '~/components/ui/button';
 import { Message } from '~/components/ui/message/message';
+import { BcImage } from '~/components/bc-image';
 
 import { useAccountStatusContext } from '../../_components/account-status-provider';
 import { Modal } from '../../_components/modal';
 import { DeleteWishlistForm } from './delete-wishlist-form';
 import { CreateWishlistDialog } from './create-wishlist-form';
-
-import Link from 'next/link';
-import { BcImage } from '~/components/bc-image';
 
 // Constants
 const WISHLISTS_PER_PAGE = 100;
@@ -74,41 +72,6 @@ interface Wishlist {
 }
 
 type Wishlists = Wishlist[];
-
-interface ProductHit {
-  objectID: string;
-  name: string;
-  brand: string;
-  brand_id: number;
-  brand_name: string;
-  category_ids: number[];
-  image: string;
-  image_url: string;
-  url: string;
-  product_images: any;
-  price: number;
-  prices: HitPrice;
-  sales_prices: HitPrice;
-  retail_prices: HitPrice;
-  rating: number;
-  on_sale: boolean;
-  on_clearance: boolean;
-  newPrice: number;
-  description: string;
-  reviews_rating_sum: number;
-  reviews_count: number;
-  metafields: {
-    Details: {
-      ratings_certifications: any[];
-    };
-  };
-  variants: any[];
-  has_variants: boolean;
-  sku?: string;
-  __position: number;
-  __queryID: string;
-}
-
 type NewWishlist = NonNullable<Awaited<ReturnType<typeof createWishlist>>>;
 type WishlistArray = Array<NewWishlist | Wishlists[number]>;
 
@@ -128,106 +91,6 @@ interface WishlistBookProps {
   onColorSelect?: (variant: ProductVariant) => void;
 }
 
-const transformToProductData = (item: WishlistItem): AlgoliaHit<ProductHit> => {
-  const defaultImage = item.product.images.find((img: ProductImage) => img.isDefault);
-  const basePrice = item.product.prices?.price.value || 0;
-
-  const getFormattedImageUrl = (url: string) => {
-    return url.replace('{:size}', '386x513');
-  };
-
-  const priceObject: HitPrice = {
-    USD: basePrice,
-    CAD: basePrice,
-  };
-
-  // Ensure variants is always an array and properly formatted
-  const variants = (item.product.variants || []).map((variant: ProductVariant, index: number) => ({
-    variant_id: `${item.entityId}_${index}`,
-    options: {
-      'Finish Color': variant.name || 'Default',
-    },
-    image_url: variant.imageUrl
-      ? getFormattedImageUrl(variant.imageUrl)
-      : defaultImage?.url
-        ? getFormattedImageUrl(defaultImage.url)
-        : '',
-    image: variant.imageUrl
-      ? getFormattedImageUrl(variant.imageUrl)
-      : defaultImage?.url
-        ? getFormattedImageUrl(defaultImage.url)
-        : '',
-    hex: variant.hex || '#000000',
-    url: item.product.path || '#',
-    price: basePrice,
-    prices: priceObject,
-    sales_prices: { USD: 0, CAD: 0 },
-    retail_prices: priceObject,
-  }));
-
-  // Add default variant if no variants exist
-  if (variants.length === 0) {
-    variants.push({
-      variant_id: `${item.entityId}_default`,
-      options: {
-        'Finish Color': 'Default',
-      },
-      image_url: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-      image: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-      hex: '#000000',
-      url: item.product.path || '#',
-      price: basePrice,
-      prices: priceObject,
-      sales_prices: { USD: 0, CAD: 0 },
-      retail_prices: priceObject,
-    });
-  }
-
-  return {
-    objectID: item.entityId.toString(),
-    name: item.product.name,
-    brand: item.product.brand?.name || '',
-    brand_id: item.entityId,
-    brand_name: item.product.brand?.name || '',
-    category_ids: [],
-    image: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-    image_url: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-    url: item.product.path || '#',
-    product_images: item.product.images.map((img) => ({
-      ...img,
-      url: getFormattedImageUrl(img.url),
-    })),
-    price: basePrice,
-    prices: priceObject,
-    sales_prices: { USD: 0, CAD: 0 },
-    retail_prices: priceObject,
-    rating: item.product.rating || 0,
-    on_sale: false,
-    on_clearance: false,
-    newPrice: 0,
-    description: '',
-    reviews_rating_sum: 0,
-    reviews_count: item.product.reviewCount || 0,
-    metafields: {
-      Details: {
-        ratings_certifications: [],
-      },
-    },
-    variants,
-    has_variants: true, // Always true since we ensure at least one variant
-    sku: item.entityId.toString(),
-    __position: 0,
-    __queryID: '',
-    _highlightResult: {
-      name: {
-        value: item.product.name,
-        matchLevel: 'none',
-        matchedWords: [],
-      },
-    },
-  };
-};
-
 const Wishlist = ({
   setWishlistBook,
   wishlist,
@@ -243,7 +106,11 @@ const Wishlist = ({
 
   const handleWishlistDeleted = () => {
     setWishlistBook((prev) => prev.filter((item) => item.entityId !== entityId));
-    setAccountState({ status: 'success', message: t('messages.deleted', { name }) });
+    setAccountState((prevState) => ({
+      ...prevState,
+      status: 'success',
+      message: t('messages.deleted', { name }),
+    }));
     setDeleteWishlistModalOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -253,7 +120,7 @@ const Wishlist = ({
   };
 
   return (
-    <div className="flex w-full items-center gap-6 bg-white">
+    <div className="wishlist-item flex w-full items-center gap-6 bg-white">
       {/* Left Column - Image */}
       <div className="flex h-32 w-32 items-center justify-center rounded bg-[#80C5DA]">
         <svg
@@ -273,8 +140,8 @@ const Wishlist = ({
 
       {/* Middle Column - Content */}
       <div className="flex-1">
-        <Link href="/account/wishlists/wishlist-product" onClick={handleWishlistClick} className="">
-          <h3 className="mb-[4px] text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#000000]">
+        <Link href="/account/wishlists/wishlist-product" onClick={handleWishlistClick}>
+          <h3 className="wishlist-name mb-[4px] text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#000000]">
             {name}
           </h3>
         </Link>
@@ -395,8 +262,11 @@ export const WishlistBook = ({
           showCancelButton={false}
           title={t('new')}
           trigger={
-            <Button className="w-auto" variant="secondary">
-              {t('new')}
+            <Button
+              className="h-[45px] w-[12em] rounded-sm bg-[#03465C] text-sm font-medium leading-8 tracking-wide text-white"
+              onClick={() => setCreateWishlistModalOpen(true)}
+            >
+              <span className="mr-[5px] text-[20px]">+</span> CREATE NEW LIST
             </Button>
           }
         >

@@ -34,10 +34,23 @@ const WishlistsQuery = graphql(
                     product {
                       entityId
                       name
+                      sku
                       path
                       brand {
                         name
                         path
+                      }
+                      variants {
+                        edges {
+                          node {
+                            entityId
+                            sku
+                            defaultImage {
+                              url(width: 100)
+                              altText
+                            }
+                          }
+                        }
                       }
                       ...GalleryFragment
                       ...PricingFragment
