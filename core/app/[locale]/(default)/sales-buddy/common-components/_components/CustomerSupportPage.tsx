@@ -15,9 +15,11 @@ import { UpdateCartIdCookie } from '../../_actions/update-cart-id-cookies';
 import { getShopperUrls } from '../../_actions/get-shopper-urls';
 import Link from 'next/link';
 import SystemInfoComponent from './SystemInformationComponent';
+import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 function CustomerSupportPage() {
   const [customerDetails, setCustomerDetails] = useState({});
   const [cartErrorMessage, setCartErrorMessage] = useState<string | null>(null);
+  const [urlinputErrorMessage, setUrlinputErrorMessage] = useState<string | null>(null);
   const [cartSuccessMessage, setCartSuccessMessage] = useState<string | null>(null);
   const [findCustomerErrorMessage, setFindCustomerErrorMessage] = useState<string | null>(null);
   const [findCustomerSuccessMessage, setFindCustomerSuccessMessage] = useState<string | null>(null);
@@ -68,17 +70,25 @@ function CustomerSupportPage() {
     show3: false,
     show4: false
   });
+  const { cart_interface_session_id, setCart_interface_session_id, cart_interface_refferal_id, setCart_interface_Refferal_id } = useCompareDrawerContext();
+
 
   const handleCartLookupSubmit = async (e: React.FormEvent) => {
     setLoading((prev) => ({ ...prev, show1: true }));
     e.preventDefault();
-
+    if(cartId === ''){
+      const cartError = validateInput('cart-id', cartId, "");
+      setCartErrorMessage('Session Id cannot be empty');
+      setLoading((prev) => ({ ...prev, show1: false }));
+      return
+    }
     try {
       const response = await getCustomerUrlSession_id(cartId);
       
-      localStorage.setItem("referrerId", response.output.data[0]['referral_id'])
-      localStorage.setItem("session_id", response.output.data[0]['session_id'])
-
+      // localStorage.setItem("referrerId", response.output.data[0]['referral_id'])
+      // localStorage.setItem("session_id", response.output.data[0]['session_id'])
+      setCart_interface_session_id(response.output.data[0]['session_id'])
+      setCart_interface_Refferal_id(response.output.data[0]['referral_id'])
       UpdateCartIdCookie(response.output.data[0]['cart_id'])
       setUpdatedCCartId(cartId)
       setLoading((prev) => ({ ...prev, show1: false }));
@@ -115,7 +125,12 @@ function CustomerSupportPage() {
   const handleGetShoppersUrlsData = async (e: React.FormEvent) => {
     setLoading((prev) => ({ ...prev, show4: true }));
     e.preventDefault();
-
+    if (sessionId === '') {
+      const cartError = validateInput('session-id', sessionId, "");
+      setUrlinputErrorMessage('Session Id cannot be empty');
+      setLoading((prev) => ({ ...prev, show4: false }));
+      return
+    }
     try {
       // const sessionId = localStorage.getItem('session_id');
       if (!sessionId) {
@@ -133,6 +148,10 @@ function CustomerSupportPage() {
           
       if(response?.output?.count > 0){
         const shopperData = response?.output?.data[0] || {};
+        setCart_interface_session_id(shopperData.session_id)
+        setCart_interface_Refferal_id(shopperData.referral_id)
+        
+        
         const shopperUrls = response?.output?.urls || [];
         const storeShopperInformationInLS = {
           machineInfo: shopperData?.shopper_information || {},
@@ -155,9 +174,7 @@ function CustomerSupportPage() {
           }
           setCustomerVisitedUrl(Array?.isArray(shopperUrls) ? shopperUrls : []);
         }
-        if (shopperData.cart_id) {
-          UpdateCartIdCookie(shopperData.cart_id);
-        }
+
       }
       else{
         setShopperSystemInfo({})
@@ -347,10 +364,14 @@ function CustomerSupportPage() {
     switch (id) {
       case 'cart-id': {
         setCartId(value);
+        const cartError = validateInput('cart-id', value,"");
+        setCartErrorMessage(cartError);
         break;
       }
       case 'session-id': {
         setSessionId(value);
+        const cartError = validateInput('session-id', value, "");        
+        setUrlinputErrorMessage(cartError);
         break;
       }
 
@@ -599,6 +620,8 @@ function CustomerSupportPage() {
             placeholder="Session ID"
             className="font-open-sans w-[225px]"
           />
+          {urlinputErrorMessage && <p className="text-red-800">{urlinputErrorMessage}</p>}
+          {cartSuccessMessage && <p className="text-green-600">{cartSuccessMessage}</p>}
           <button
             type="submit"
             className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
