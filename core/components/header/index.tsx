@@ -114,6 +114,7 @@ const getCurrencies = async () => {
     .map(({ node }) => ({
       id: node.code,
       label: node.code,
+      isDefault: node.isDefault,
     }));
 
   return currencies;
@@ -130,8 +131,8 @@ export const Header = async () => {
   }));
 
   const currencies = await getCurrencies();
-  // TODO: handle default currency properly once added to API
-  const activeCurrencyId = currencyCode ?? currencies[0]?.id;
+  const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
+  const activeCurrencyId = currencyCode ?? defaultCurrency?.id;
 
   return (
     <HeaderSection

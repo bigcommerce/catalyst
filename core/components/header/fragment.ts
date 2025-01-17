@@ -34,6 +34,7 @@ export const HeaderFragment = graphql(`
         node {
           code
           isTransactional
+          isDefault
         }
       }
     }
