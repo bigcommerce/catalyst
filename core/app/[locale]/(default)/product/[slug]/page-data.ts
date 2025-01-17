@@ -255,8 +255,6 @@ type Variables = VariablesOf<typeof ProductPageQuery>;
 export const getProductData = cache(async (variables: Variables) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  console.log('times getProductData is called');
-
   const { data } = await client.fetch({
     document: ProductPageQuery,
     variables,
