@@ -60,6 +60,9 @@ export default async function Cart() {
   const cookieStore = await cookies();
 
   const cartId = cookieStore.get('cartId')?.value;
+  const cookie_agent_login_status = cookieStore.get('agent_login')?.value;
+
+  
 
   if (!cartId) {
     return <EmptyCart />;
@@ -97,7 +100,7 @@ export default async function Cart() {
     return [{ error: 'Failed to retrive data' }];
     }
   };
-const product_data_in_cart = await get_product_price_data_in_cart(cartId);
+  const product_data_in_cart = await get_product_price_data_in_cart(cartId);
 
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
@@ -166,7 +169,6 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
     label: "Your Cart",
     href: '#'
   }];
-  console.log("CustomItems------",CustomItems);
   
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
@@ -228,11 +230,12 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
               cartId={cart?.entityId}
               priceAdjustData={product_data_in_cart?.physical_items?.[product?.entityId]}
               ProductType={"product"}
+              cookie_agent_login_status={cookie_agent_login_status  === 'true' ? true : false}
             />
           ))}
           {
-          
-           CustomItems.length > 0 && CustomItems?.map((data)=>{
+            cookie_agent_login_status === 'true' &&
+            CustomItems.length > 0 && CustomItems?.map((data)=>{
               return (
               <CartProductComponent
                 key={data.entityId}
@@ -242,6 +245,7 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
                 deleteIcon={deleteIcon}
                 priceAdjustData={product_data_in_cart?.custom_items &&  product_data_in_cart?.custom_items[data?.entityId]}
                 ProductType={"custom"}
+                cookie_agent_login_status={cookie_agent_login_status === 'true' ? true : false}
               />
               )
             })

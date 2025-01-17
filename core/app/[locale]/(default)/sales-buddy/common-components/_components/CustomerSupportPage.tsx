@@ -10,10 +10,11 @@ import { findCustomerDetails } from '../../_actions/find-customer';
 import DynamicTable from '../table/CustomTable';
 import { getCustomerCart, getCustomerUrlSession_id } from '../../_actions/get-customer-cart';
 import Loader from './Spinner';
-import {  validateInput } from '../common-functions';
+import { getEnhancedSystemInfo, validateInput } from '../common-functions';
 import { UpdateCartIdCookie } from '../../_actions/update-cart-id-cookies';
 import { getShopperUrls } from '../../_actions/get-shopper-urls';
 import Link from 'next/link';
+import SystemInfoComponent from './SystemInformationComponent';
 function CustomerSupportPage() {
   const [customerDetails, setCustomerDetails] = useState({});
   const [cartErrorMessage, setCartErrorMessage] = useState<string | null>(null);
@@ -28,9 +29,9 @@ function CustomerSupportPage() {
   const [cartId, setCartId] = useState('');
 
   const [sessionId, setSessionId] = useState('');
-  const [shoppersUrl, setShoppersUrl] = useState([]);
-  const [customerVisitedUrl,setCustomerVisitedUrl]=useState([])
+  const [customerVisitedUrl, setCustomerVisitedUrl] = useState<any[]>([])
   const [updatedCartId, setUpdatedCCartId] = useState('');
+  const [shopperSystemInfo, setShopperSystemInfo] = useState({});
   const [findCustomerData, setFindCustomerData] = useState({
     email: '',
     phone: '',
@@ -65,7 +66,7 @@ function CustomerSupportPage() {
     show1: false,
     show2: false,
     show3: false,
-    show4:false
+    show4: false
   });
 
   const handleCartLookupSubmit = async (e: React.FormEvent) => {
@@ -74,9 +75,10 @@ function CustomerSupportPage() {
 
     try {
       const response = await getCustomerUrlSession_id(cartId);
-      localStorage.setItem("referral_id",response.output.data[0]['referral_id'])
-      localStorage.setItem("session_id",response.output.data[0]['session_id'])
       
+      localStorage.setItem("referrerId", response.output.data[0]['referral_id'])
+      localStorage.setItem("session_id", response.output.data[0]['session_id'])
+
       UpdateCartIdCookie(response.output.data[0]['cart_id'])
       setUpdatedCCartId(cartId)
       setLoading((prev) => ({ ...prev, show1: false }));
@@ -84,21 +86,99 @@ function CustomerSupportPage() {
       setLoading((prev) => ({ ...prev, show1: false }));
     }
   };
-  const handleGetShoppersUrlsData = async (e: React.FormEvent) => {
+  const handleGetShoppersUrlsData1 = async (e: React.FormEvent) => {
     setLoading((prev) => ({ ...prev, show4: true }));
     e.preventDefault();
     try {
-      const response = await getShopperUrls(sessionId);
-      UpdateCartIdCookie(response.output.data[0]['cart_id'])
-      setCustomerVisitedUrl(response.output.urls)
-      setLoading((prev) => ({ ...prev, show4: false }));
+      let getShopperDetailFromLS = localStorage.getItem('session_id');
+        const response = await getShopperUrls(sessionId);
+        let storeShopperInformationInLS = {
+          machineInfo: response?.output?.data?.length ? response.output.data[0]['shopper_information'] : {},
+          shopperUrls: response?.output?.urls == '' ? [] : response?.output?.urls 
+        }
+        const shopperInfoString = JSON.stringify(storeShopperInformationInLS);
+        localStorage.setItem('ShopperInformations', shopperInfoString)
+        let getShopperMachineInformation = response?.output?.data[0]['shopper_information']
+        const ShopperMachineInformationJsonToObj = JSON.parse(getShopperMachineInformation);
+        ShopperMachineInformationJsonToObj.session_id = getShopperDetailFromLS
+        setShopperSystemInfo(ShopperMachineInformationJsonToObj)
+        UpdateCartIdCookie(response.output.data[0]['cart_id'])
+        setCustomerVisitedUrl(response.output.urls)
+        setLoading((prev) => ({ ...prev, show4: false }));  
+      // }
+
+      
     } catch (error: any) {
       setLoading((prev) => ({ ...prev, show4: false }));
     }
   };
-  // 
+  const handleGetShoppersUrlsData = async (e: React.FormEvent) => {
+    setLoading((prev) => ({ ...prev, show4: true }));
+    e.preventDefault();
 
+    try {
+      // const sessionId = localStorage.getItem('session_id');
+      if (!sessionId) {
+        console.warn('No session ID found in localStorage');
+        setLoading((prev) => ({ ...prev, show4: false }));
+        return;
+      }
 
+      const response = await getShopperUrls(sessionId);      
+      if (!response?.output?.data) {
+        console.log('No shopper data received from API');
+        setLoading((prev) => ({ ...prev, show4: false }));
+        return;
+      }  
+          
+      if(response?.output?.count > 0){
+        const shopperData = response?.output?.data[0] || {};
+        const shopperUrls = response?.output?.urls || [];
+        const storeShopperInformationInLS = {
+          machineInfo: shopperData?.shopper_information || {},
+          shopperUrls: Array?.isArray(shopperUrls) ? shopperUrls : []
+        };
+        localStorage.setItem(
+          'ShopperInformations',
+          JSON?.stringify(storeShopperInformationInLS)
+        );
+        if (shopperData?.shopper_information) {
+          try {
+            const ShopperMachineInformationJsonToObj = JSON?.parse(
+              shopperData?.shopper_information
+            );
+            ShopperMachineInformationJsonToObj.session_id = sessionId;
+            setShopperSystemInfo(ShopperMachineInformationJsonToObj);
+          } catch (parseError) {
+            console.error('Error parsing shopper information:', parseError);
+            setShopperSystemInfo([]);
+          }
+          setCustomerVisitedUrl(Array?.isArray(shopperUrls) ? shopperUrls : []);
+        }
+        if (shopperData.cart_id) {
+          UpdateCartIdCookie(shopperData.cart_id);
+        }
+      }
+      else{
+        setShopperSystemInfo({})
+        setCustomerVisitedUrl([]);
+        const storeShopperInformationInLS = {
+          machineInfo:  {},
+          shopperUrls:  []
+        };
+        localStorage.setItem(
+          'ShopperInformations',
+          JSON?.stringify(storeShopperInformationInLS)
+        );
+      }
+      
+
+    } catch (error) {
+      console.error('Error fetching shopper data:', error);
+    } finally {
+      setLoading((prev) => ({ ...prev, show4: false }));
+    }
+  };
   const handleFindCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading((prev) => ({ ...prev, show2: true }));
@@ -106,7 +186,7 @@ function CustomerSupportPage() {
       findCustomerData.email !== '' ||
       findCustomerData.company !== '' ||
       findCustomerData.phone !== '' ||
-      findCustomerData.first_name !== '' 
+      findCustomerData.first_name !== ''
       // findCustomerData.last_name !== ''
     ) {
       try {
@@ -114,7 +194,7 @@ function CustomerSupportPage() {
         setCustomerDetails(findCustomerData);
         if (response.status === 200) {
           setLoading((prev) => ({ ...prev, show2: false }));
-          let data = response.data.output.data;          
+          let data = response.data.output.data;
           const extractedData = data.map(
             (item: { first_name: any; last_name: any; email: any }) => ({
               first_name: item.first_name,
@@ -123,7 +203,7 @@ function CustomerSupportPage() {
               // phone: item.phone,
               // company: item.company,
             }),
-          );          
+          );
           if (extractedData.length > 0) {
             setTableData(extractedData);
             setFindCustomerSuccessMessage(`${extractedData.length} Account retrieved successfully!`);
@@ -134,7 +214,7 @@ function CustomerSupportPage() {
           }
         } else {
           setLoading((prev) => ({ ...prev, show2: false }));
-            setTableData([])
+          setTableData([])
           const errorMessage = response.error || 'An unknown error occurred';
           setFindCustomerErrorMessage(`Failed to retrieve account`);
           setFindCustomerSuccessMessage(null);
@@ -188,27 +268,60 @@ function CustomerSupportPage() {
     }
   };
   useEffect(() => {
-   
-  }, [findCustomerSuccessMessage])
-  
-  const UrlList = ({ urls }) => {
+    const getShopperInfoAndLoad = () => {
+      try {
+        const sessionFromLS = localStorage.getItem('session_id');
+        const overAllValue = localStorage.getItem('ShopperInformations');
+       
+        
+        // Check if data exists in localStorage
+        if (!overAllValue) {
+          setShopperSystemInfo([]);
+          setCustomerVisitedUrl([]);
+          return;
+        }
+        const parsedOverallValue = JSON?.parse(overAllValue);
+        if (parsedOverallValue?.machineInfo ) {
+          try {
+            const machineInfo = JSON?.parse(parsedOverallValue?.machineInfo);
+            machineInfo.session_id = sessionFromLS;
+            setShopperSystemInfo(machineInfo);
+          } catch (error) {
+            console.error('Error parsing machine info:', error);
+            setShopperSystemInfo([]);
+          }
+        } else {
+          setShopperSystemInfo([]);
+        }
+        setCustomerVisitedUrl(parsedOverallValue?.shopperUrls || []);
+      } catch (error) {
+        console.error('Error loading shopper info:', error);
+        setShopperSystemInfo([]);
+        setCustomerVisitedUrl([]);
+      }
+    };
+    // getShopperInfoAndLoad()
+
+  }, [])
+
+  const UrlList = ({ urls }: { urls: { id: string; url: string }[] }) => {
     return (
-        <div className='m-4'>
-            <h2 className='text-lg font-bold mb-2'>URLs</h2>
-            <ul className='list-disc pl-5'>
-                {urls.map((item) => (
-                    <li key={item.id} className='mb-2'>
-                        <Link href={item.url} className='text-blue-600 hover:underline'>
-                            {/* <a className='text-blue-600 hover:underline'> */}
-                                {item.url}
-                            {/* </a> */}
-                        </Link>
-                    </li>
-                ))}
-            </ul>
-        </div>
+      <div className='m-4'>
+        <h2 className='text-lg font-bold mb-2'>URLs</h2>
+        <ul className='list-disc pl-5'>
+          {urls.map((item) => (
+            <li key={item.id} className='mb-2'>
+              <Link href={item.url} className='text-blue-600 hover:underline'>
+                {/* <a className='text-blue-600 hover:underline'> */}
+                {item.url}
+                {/* </a> */}
+              </Link>
+            </li>
+          ))}
+        </ul>
+      </div>
     );
-};
+  };
 
   const renderInputFields = (fields: Array<{ id: string; label: string }>, refs: any) => {
     return fields.map((item) => (
@@ -236,7 +349,7 @@ function CustomerSupportPage() {
         setCartId(value);
         break;
       }
-        case 'session-id': {
+      case 'session-id': {
         setSessionId(value);
         break;
       }
@@ -465,7 +578,7 @@ function CustomerSupportPage() {
         </form>
       ),
     },
-     {
+    {
       title: (
         <div className="flex items-center gap-[5px] text-base font-normal">
           <Image src={PersonIcon} alt="Create Account Icon" />
@@ -476,33 +589,45 @@ function CustomerSupportPage() {
       ),
       content: (
         <form
-            onSubmit={(e) => handleGetShoppersUrlsData(e)}
-            className="mt-[10px] flex flex-col justify-center bg-white pb-[10px]"
-          >
-             <Input
+          onSubmit={(e) => handleGetShoppersUrlsData(e)}
+          className="mt-[10px] flex flex-col justify-center bg-white pb-[10px]"
+        >
+          <Input
             value={sessionId}
             onChange={(e) => handleInputChange('session-id', e.target.value)}
             id="session-id"
             placeholder="Session ID"
             className="font-open-sans w-[225px]"
           />
-           <button
+          <button
             type="submit"
             className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
-            
+
           >
             <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH URL's </p>
             <div className="absolute inset-0 flex items-center justify-center">
               {loading.show4 && <Loader />}
             </div>
           </button>
-       <div className='m-2'>
-        <UrlList urls={customerVisitedUrl}/>
-       </div>
+            <div>
+              <div>
+                {Object?.keys(shopperSystemInfo || {})?.length > 0 ? (
+                sessionId !== '' && shopperSystemInfo && <SystemInfoComponent data={shopperSystemInfo} />
+                ) : (
+                  sessionId !== '' && shopperSystemInfo.length > 0 &&  <p className="text-gray-500 text-center py-4">No System Information Found</p>
+                )}
+              </div>
+              <div className="m-2">
+                {Array?.isArray(customerVisitedUrl) && customerVisitedUrl?.length > 0 ? (
+                sessionId !== '' && loading.show4 == false && <UrlList urls={customerVisitedUrl} />
+                ) : (
+                  sessionId !== '' && shopperSystemInfo.length > 0 && <p className="text-gray-500 text-center py-4">No URL Data Found</p>
+                )}
+              </div>
+            </div>
+        </form>
 
-          </form>
-        
-        
+
       ),
     },
   ];

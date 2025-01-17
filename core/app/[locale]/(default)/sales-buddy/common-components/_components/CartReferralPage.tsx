@@ -18,7 +18,7 @@ export default function ReferalId() {
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
   const [remove, setRemove] = useState(false);
-  const [referralId,setReferralId] = useState(localStorage.getItem('referral_id')); // Example referral ID
+  const [referralId, setReferralId] = useState(localStorage.getItem('referrerId')); // Example referral ID
   const [isDisabled, setIsDisabled] = useState(false);
   const [session_id,setSession_id] = useState(localStorage.getItem('session_id'))
   const router = useRouter();
