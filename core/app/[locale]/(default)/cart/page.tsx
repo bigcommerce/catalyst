@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
-import { cookies } from 'next/headers';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
+import { getCartId } from '~/lib/cart';
 
 import { redirectToCheckout } from './_actions/redirect-to-checkout';
 import { updateLineItem } from './_actions/update-line-item';
@@ -20,7 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function Cart() {
   const t = await getTranslations('Cart');
   const format = await getFormatter();
-  const cartId = (await cookies()).get('cartId')?.value;
+  const cartId = await getCartId();
 
   if (!cartId) {
     return (

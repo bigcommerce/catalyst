@@ -1,12 +1,12 @@
 'use server';
 
 import { unstable_expirePath } from 'next/cache';
-import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
+import { getCartId } from '~/lib/cart';
 
 import { removeItem } from './remove-item';
 
@@ -44,8 +44,7 @@ export const updateQuantity = async ({
 
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value;
+  const cartId = await getCartId();
 
   if (!cartId) {
     throw new Error(t('cartNotFound'));
