@@ -29,10 +29,11 @@ export const HeaderFragment = graphql(`
         }
       }
     }
-    currencies(first: 10) {
+    currencies(first: 25) {
       edges {
         node {
           code
+          isTransactional
         }
       }
     }
