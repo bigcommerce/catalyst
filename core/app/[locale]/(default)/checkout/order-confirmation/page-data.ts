@@ -128,15 +128,32 @@ const CustomerOrderDetails = graphql(
   [OrderItemFragment, OrderShipmentFragment],
 );
 
-export const getOrderDetails = cache(
+export const getGuestOrderDetails = cache(
   async (variables: VariablesOf<typeof CustomerOrderDetails>) => {
-    const customerAccessToken = await getSessionCustomerAccessToken();
 
     const response = await client.fetch({
       document: CustomerOrderDetails,
       variables,
       fetchOptions: { cache: 'no-store' },
+    });
+    const order = response.data.site.order;
+
+    if (!order) {
+      return undefined;
+    }
+
+    return order;
+  },
+);
+
+export const getOrderDetails = cache(
+  async (variables: VariablesOf<typeof CustomerOrderDetails>) => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const response = await client.fetch({
+      document: CustomerOrderDetails,
+      variables,
       customerAccessToken,
+      fetchOptions: { cache: 'no-store' },
     });
     const order = response.data.site.order;
 

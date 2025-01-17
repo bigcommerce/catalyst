@@ -4,25 +4,35 @@ import { PrinterIcon } from "lucide-react";
 import { useReactToPrint } from "react-to-print";
 import { useEffect, useRef, useState } from "react";
 import PrintOrderSummary from "./print-order-summary";
-import { getGuestOrderDetails } from "~/components/graphql-apis";
+import { getGuestOrderDetails, getOrderDetails } from "~/components/graphql-apis";
 
 interface OrderDataType {
   orderId: number;
   cartId: string;
+  guestUser: number;
 }
 
-export const PrintOrder = ({ orderId, cartId }: OrderDataType) => {
+export const PrintOrder = ({ orderId, cartId, guestUser }: OrderDataType) => {
   const [orderData, setOrderData] = useState([]);
   const contentRef = useRef(null);
 
   useEffect(() => {
     const getOrderData = async(orderId: number) => {
-      let orderInfo: any = await getGuestOrderDetails({
-        filter: {
-          entityId: orderId,
-          cartEntityId: cartId
-        }
-      });
+      let orderInfo: any = {};
+      if(guestUser == 1) {
+        orderInfo = await getGuestOrderDetails({
+          filter: {
+            entityId: orderId,
+            cartEntityId: cartId
+          }
+        });
+      } else {
+        orderInfo = await getOrderDetails({
+          filter: {
+            entityId: orderId
+          }
+        });
+      }
       setOrderData(orderInfo);
       return orderInfo;
     }

@@ -2,7 +2,7 @@
 
 import { cookies } from 'next/headers';
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import { getOrderDetails } from './page-data';
+import { getGuestOrderDetails, getOrderDetails } from './page-data';
 import { OrderDetailsType } from '../../account/(tabs)/order/[slug]/page-data';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
@@ -16,10 +16,6 @@ const facebookImg = imageManagerImageUrl('facebook.png', '23w');
 const googleImg = imageManagerImageUrl('google-logo.png', '23w');
 const appleImg = imageManagerImageUrl('apple-logo.png', '24w');
 const tikGreenImg = imageManagerImageUrl('tikgreen.png', '20w');
-const deleteImg = imageManagerImageUrl('delete.png', '16w');
-const printIconImg = imageManagerImageUrl('printicon.png', '16w');
-const creditCardImg = imageManagerImageUrl('creditcard.png', '20w');
-const productSampleImg = imageManagerImageUrl('image-2-.png', '150w');
 
 const mapOrderData = (order: OrderDetailsType) => {
   const shipping = order.consignments?.shipping
@@ -56,97 +52,21 @@ const mapOrderData = (order: OrderDetailsType) => {
   };
 };
 
-const ShippingInfo = async ({
-  consignments,
-  isMultiConsignments,
-  shippingNumber,
-}: {
-  consignments: OrderDataType['consignments'];
-  isMultiConsignments: boolean;
-  shippingNumber?: number;
-}) => {
-  const t = await getTranslations('Account.Orders');
-  const shippingConsignments = consignments.shipping;
-
-  if (!shippingConsignments) {
-    return;
-  }
-
-  let customerShippingAddress: string[] = [];
-  let customerShippingMethod: string[] = [];
-  let trackingData;
-
-  if (!isMultiConsignments && shippingConsignments[0]?.shippingAddress) {
-    trackingData = shippingConsignments[0].shipments[0]?.tracking;
-    customerShippingAddress = combineAddressInfo(shippingConsignments[0].shippingAddress);
-    customerShippingMethod = await combineShippingMethodInfo(shippingConsignments[0].shipments[0]);
-  }
-
-  if (isMultiConsignments && shippingNumber !== undefined && shippingConsignments[shippingNumber]) {
-    trackingData = shippingConsignments[shippingNumber].shipments[0]?.tracking;
-    customerShippingAddress = combineAddressInfo(
-      shippingConsignments[shippingNumber].shippingAddress,
-    );
-    customerShippingMethod = await combineShippingMethodInfo(
-      shippingConsignments[shippingNumber].shipments[0],
-    );
-  }
-
-  const trackingNumber =
-    trackingData && trackingData.__typename !== 'OrderShipmentUrlOnlyTracking'
-      ? trackingData.number
-      : null;
-
-  return (
-    <div
-      className={cn(
-        'border border-gray-200 p-6',
-        isMultiConsignments && 'flex flex-col gap-4 border-none md:flex-row md:gap-16',
-      )}
-    >
-      {!isMultiConsignments ? (
-        <p className="border-b border-gray-200 pb-4 text-lg font-semibold">{t('shippingTitle')}</p>
-      ) : null}
-      <div className="flex flex-col gap-2 py-4">
-        <p className="font-semibold">{t('shippingAddress')}</p>
-        {customerShippingAddress.map((line) => (
-          <p key={line}>{line}</p>
-        ))}
-      </div>
-      <div
-        className={cn(
-          'flex flex-col gap-2 border-t border-gray-200 pt-4 text-base',
-          isMultiConsignments && 'border-0',
-        )}
-      >
-        <p className="font-semibold">{t('shippingMethod')}</p>
-        {customerShippingMethod.map((line) => (
-          <p key={line}>{line}</p>
-        ))}
-        {Boolean(trackingNumber) && (
-          <Button
-            aria-label={t('trackOrder')}
-            asChild
-            className="justify-start p-0"
-            variant="subtle"
-          >
-            {/* TODO: add link when tracking url available */}
-            <Link href="#">{trackingNumber}</Link>
-          </Button>
-        )}
-      </div>
-    </div>
-  );
-};
-
 export default async function OrderConfirmation() {
   const cookieStore = await cookies();
   const orderId: number = Number(cookieStore.get('orderId')?.value);
   const cartId: any = cookieStore.get('cartId')?.value;
   const customerAccessToken = await getSessionCustomerAccessToken();
+  let guestUserCheck = 0;
 
   if (orderId) {
-    const data: any = await getOrderDetails({ filter: { entityId: orderId, cartEntityId: cartId } });
+    let data: any = [];
+    if(customerAccessToken) {
+      data = await getOrderDetails({ filter: { entityId: orderId } });
+    } else {
+      data = await getGuestOrderDetails({ filter: { entityId: orderId, cartEntityId: cartId } });
+      guestUserCheck = 1;
+    }
 
     if (!data) {
       return null;
@@ -197,7 +117,7 @@ export default async function OrderConfirmation() {
           <div className="flex w-full mt-[-10px] xsm:mt-[0px] items-center flex-col xsm:flex-row justify-between gap-[20px] border-b border-[#d6d6d6] pb-[8px]">
             <p className="text-[24px] font-[400] leading-[32px] text-[#353535]">Order Summary</p>
             <div className="flex items-center gap-[5px]">
-              <PrintOrder orderId={orderState?.orderId} cartId={cartId} key={orderState?.orderId} />
+              <PrintOrder orderId={orderState?.orderId} guestUser={guestUserCheck} cartId={cartId} key={orderState?.orderId} />
             </div>
           </div>
           <div className="flex flex-col items-start gap-[5px]">
@@ -381,13 +301,6 @@ export default async function OrderConfirmation() {
               const { lineItems } = consignment;
               return (
                 <>
-                  {isMultiShippingConsignments && (
-                    <ShippingInfo
-                      consignments={consignments}
-                      isMultiConsignments={true}
-                      shippingNumber={idx}
-                    />
-                  )}
                   <ul className="flex flex-col gap-[30px]">
                     {lineItems.map((shipment) => {
                       return (
