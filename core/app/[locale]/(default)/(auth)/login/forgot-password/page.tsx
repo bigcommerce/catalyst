@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 // import { client } from '~/client';
@@ -23,7 +24,7 @@ import { resetPassword } from './_actions/reset-password';
 //   }
 // `);
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Login.ForgotPassword');
 
   return {
