@@ -1,5 +1,38 @@
 # Changelog
 
+## 1.0.0
+
+### Major Changes
+
+- [#1852](https://github.com/bigcommerce/catalyst/pull/1852) [`6b17bdb`](https://github.com/bigcommerce/catalyst/commit/6b17bdb7493d8c0b518662dd522ae2ea5d6a65b5) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Introduce Soul VIBE UI library to the repository.
+
+  - Added a collection of reusable primitives with modern styles
+  - Prebuilt sections and page templates that are easy to use
+  - Fast performance and modern patterns leveraging the latest features of Next.js
+  - Easy customization to best represent your brand
+  - Utilize @conform-to/react for progressively enhanced HTML forms
+
+  Join the discussion [here](https://github.com/bigcommerce/catalyst/discussions/1861) for more details of this major milestone for Catalyst!
+
+### Minor Changes
+
+- [#1914](https://github.com/bigcommerce/catalyst/pull/1914) [`f039b2c`](https://github.com/bigcommerce/catalyst/commit/f039b2c7235118626d7a727bff5271ac8982f910) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Properly handle `BigCommerceGQLError` in actions, by returning the error messages from the request.
+
+### Patch Changes
+
+- [#1905](https://github.com/bigcommerce/catalyst/pull/1905) [`d70596e`](https://github.com/bigcommerce/catalyst/commit/d70596ef1e0f1667830652a6cf4c73f042479672) Thanks [@apledger](https://github.com/apledger)! - Fixes types for signIn credentials and improves error handling for registering a customer.
+
+- [#1917](https://github.com/bigcommerce/catalyst/pull/1917) [`83ac205`](https://github.com/bigcommerce/catalyst/commit/83ac20580c3aa138c0048e9cabb3d8ff1ef873a2) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add result type to all `generateMetadata`.
+
+- [#1908](https://github.com/bigcommerce/catalyst/pull/1908) [`aade48a`](https://github.com/bigcommerce/catalyst/commit/aade48af7196aa5e54c6dddb30dd942785392805) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove explicit locale override in Link component that was appending default locale to links even with the 'as-needed' mode.
+
+- [#1884](https://github.com/bigcommerce/catalyst/pull/1884) [`11ecddf`](https://github.com/bigcommerce/catalyst/commit/11ecddf48d77a745f3b46a6343e725624d3dcaea) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Use `setRequestLocale` only where needed
+
+- [#1902](https://github.com/bigcommerce/catalyst/pull/1902) [`775eed6`](https://github.com/bigcommerce/catalyst/commit/775eed6b9fa4f50525f60ec95d37a251d670166f) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- Updated dependencies [[`f039b2c`](https://github.com/bigcommerce/catalyst/commit/f039b2c7235118626d7a727bff5271ac8982f910)]:
+  - @bigcommerce/catalyst-client@0.15.0
+
 ## 0.24.1
 
 ### Patch Changes
