@@ -137,14 +137,12 @@ export default async function RootLayout({ params, children }: Props) {
         <DraftModeScript />
       </head>
       <body className="flex h-screen min-w-[375px] flex-col">
-        {/*
         <Script
           id="sv-pixel-script"
           src="https://app.sitevibes.com/js/pixel.js?key=e0feae51-26fd-453a-8e67-f9a1a74c8d69"
           strategy="afterInteractive"
         />
         <SiteVibesIntegration />
-        */}
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <NuqsAdapter>
