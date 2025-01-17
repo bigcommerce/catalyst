@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
@@ -8,7 +9,7 @@ import { updateLineItem } from './_actions/update-line-item';
 import { CartViewed } from './_components/cart-viewed';
 import { getCart } from './page-data';
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Cart');
 
   return {

@@ -1,13 +1,14 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
-import { AccountSettingsSection } from '../../../../../vibes/soul/sections/account-settings-section';
+import { AccountSettingsSection } from '@/vibes/soul/sections/account-settings-section';
 
 import { changePassword } from './_actions/change-password';
 import { updateCustomer } from './_actions/update-customer';
 import { getCustomerSettingsQuery } from './page-data';
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Account.Settings');
 
   return {

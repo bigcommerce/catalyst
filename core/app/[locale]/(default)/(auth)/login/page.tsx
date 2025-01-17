@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { getTranslations } from 'next-intl/server';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
@@ -5,7 +6,7 @@ import { SignInSection } from '@/vibes/soul/sections/sign-in-section';
 
 import { login } from './_actions/login';
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Login');
 
   return {
