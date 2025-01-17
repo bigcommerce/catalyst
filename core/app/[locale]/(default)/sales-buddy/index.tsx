@@ -14,31 +14,13 @@ import { InsertShopperVisitedUrl } from './_actions/insert-shopper-url';
 
 export default function SalesBuddyAppIndex() {
   const [isOpen, setIsOpen] = useState(false);
-  const path = usePathname();
   const toggleDrawer = () => {
     setIsOpen(!isOpen);
   };
-  useEffect(() => {
-    const fullUrl = `${window.location.protocol}//${window.location.host}${path}`;
-    let getLocalStorageSessionId = localStorage.getItem('session_id');
-    let visitedUrls = JSON.parse(localStorage.getItem('visited_urls') || '[]');
-    if (!Array.isArray(visitedUrls)) {
-      visitedUrls = [];
-    }
-    if (!visitedUrls.includes(fullUrl)) {
-      const insertShopperVisitedUrlFunc = async () => {
-        await InsertShopperVisitedUrl(getLocalStorageSessionId, fullUrl);
-        if (visitedUrls.length >= 20) {
-          visitedUrls.shift(); // Remove the first URL if the array has 10 items
-        }
-        visitedUrls.push(fullUrl);
-        localStorage.setItem('visited_urls', JSON.stringify(visitedUrls));
-      };
-      insertShopperVisitedUrlFunc();
-    }
-  }, [path]);
+  const path = usePathname();
+
   const renderDrawerContent = () => {
-    if (path.indexOf('/cart/') > -1) {
+    if (path.indexOf('/cart/') > -1 || path.indexOf('/cart') > -1) {
       return (
         <div className="space-y-[20px]">
           <ReferalId />
@@ -91,7 +73,7 @@ export default function SalesBuddyAppIndex() {
         onClose={toggleDrawer}
         headerTitle="Agent Tools"
         headerIcon={AppIcon}
-        position={path === '/cart/' ? 'right' : 'left'}
+        position={path === '/cart/' || path==='/cart' ? 'right' : 'left'}
         width="500px"
       >
         <div className="h-full w-[460px] bg-[#F3F4F5]">{renderDrawerContent()}</div>

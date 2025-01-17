@@ -22,6 +22,8 @@ const CompareDrawerContext = createContext<{
   setAgentRole: (value: string | null) => void;
   agentName: string | null;
   setAgentName: (value: string | null) => void;
+  context_session_id: string | null;
+  setContext_Session_id: (value: string | null) => void;
 } | null>(null);
 
 const isCheckedProducts = (products: unknown): products is Product[] => {
@@ -33,9 +35,10 @@ const isCheckedProducts = (products: unknown): products is Product[] => {
 
 const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   const [products, setProducts] = useState<Product[]>([]);
-  const [agentLoginStatus, setAgentLoginStatus] = useState(false); // Initialize with default value
-  const [agentRole, setAgentRole] = useState<string | null>(null); // Initialize with default value
-  const [agentName, setAgentName] = useState<string | null>(null); // Initialize with default value
+  const [agentLoginStatus, setAgentLoginStatus] = useState(false); 
+  const [agentRole, setAgentRole] = useState<string | null>(null); 
+  const [agentName, setAgentName] = useState<string | null>(null); 
+  const [context_session_id, setContext_Session_id] = useState<string | null>(null);
   useEffect(() => {
     setAgentLoginStatus(localStorage.getItem('agent_login') === 'true');
     setAgentRole(localStorage.getItem('agent_role'));
@@ -62,7 +65,7 @@ const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
     sessionStorage.setItem('compareProducts', JSON.stringify(products));
   }, [products]);
   return (
-    <CompareDrawerContext.Provider value={{ products, setProducts, agentLoginStatus, setAgentLoginStatus, agentRole, setAgentRole, setAgentName, agentName }}>
+    <CompareDrawerContext.Provider value={{ products, setProducts, agentLoginStatus, setAgentLoginStatus, agentRole, setAgentRole, setAgentName, agentName, context_session_id, setContext_Session_id }}>
       {children}
       <CompareDrawer />
     </CompareDrawerContext.Provider>

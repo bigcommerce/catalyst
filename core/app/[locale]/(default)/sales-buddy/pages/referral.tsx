@@ -5,20 +5,20 @@ import { getReferralIdCookie, createReferralIdCookie } from '../_actions/referra
 export default function ReferralId() {
     const [referrerId, setReferrerId] = useState('');
     useEffect(() => {
-        setReferrerId(localStorage.getItem('referrerId') || '');
+        // setReferrerId(localStorage.getItem('referrerId') || '');
         // createReferralIdCookie();
         async function fetchMyCookie() {
             let cookieValue = await getReferralIdCookie();
+            localStorage.setItem('referrerId', cookieValue?.value||'');
             setReferrerId(cookieValue?.value || '');
             if (cookieValue?.value) {
-                localStorage.setItem('referrerId', cookieValue.value);
                 let divReferral = document.getElementById("referralIdDiv");
                 if (divReferral && divReferral instanceof HTMLDivElement) {
                     divReferral.innerText = cookieValue?.value;
                 }
             }
         }
-        // fetchMyCookie();
+        fetchMyCookie();
     }, []);
     return (
     <>
