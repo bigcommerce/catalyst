@@ -259,7 +259,7 @@ const GalleryModel = ({
               <div
                 key={index}
                 className={`relative cursor-pointer border-[3px] ${
-                  index === validIndex ? 'border-[#03465C]' : 'border-transparent'
+                  index === validIndex ? 'border-[#008BB7]' : 'border-transparent'
                 }`}
                 onClick={() => onSelectIndex(index)}
               >
