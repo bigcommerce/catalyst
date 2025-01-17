@@ -1,7 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
 import { MegaMenuMenuItem, MegaMenuMenuItemColumn, MegaMenuSubMenuItem, MegaMenuSubSubMenuItem, MegaMenuSecondaryMenuItem, MegaMenuProps } from './mega-menu-types';
-import { ChevronRight, Menu, X } from 'lucide-react';
+import { ChevronRight, Menu, X, Plus, Minus } from 'lucide-react';
 import clsx from 'clsx';
 //import { Link } from '~/components/link';
 import Link from 'next/link';
@@ -66,22 +66,116 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
             <ul>
               {menuItems.map((menuItem: MegaMenuMenuItem, index: number) => (
                 <li className={clsx('main-menu-item', classNames?.mainMenuItem)} key={`main-menu-item-${index}`}>
-                  {menuItem.link?.href ? (
-                    <Link
-                      href={menuItem.link.href}
-                      className={clsx('main-menu-link', classNames?.mainMenuLink)}
-                    >
-                      <span>{menuItem.title}</span>
-                      <span><ChevronRight /></span>
-                    </Link>
+
+                  {menuItem.columns && menuItem.columns.length > 0 ? (
+                    <>
+                      {menuItem.link?.href ? (
+                        <Link
+                          href={menuItem.link.href}
+                          className={clsx('main-menu-link', classNames?.mainMenuLink)}
+                        >
+                          <span>{menuItem.title}</span>
+                          <span><ChevronRight /></span>
+                        </Link>
+                      ) : (
+                        <span
+                          className={clsx('main-menu-link', classNames?.mainMenuLink)}
+                        >
+                          <span>{menuItem.title}</span>
+                          <span><ChevronRight /></span>
+                        </span>
+                      )}
+
+                      {menuItem.columns.map((menuItemColumn: MegaMenuMenuItemColumn, index2: number) => (
+                        <ul className={clsx('sub-menu-column', classNames?.mainSubMenuColumn)} key={`main-menu-column-${index2}`}>
+                          {menuItemColumn.subMenuItems.map((menuItem: MegaMenuSubMenuItem, index3: number) => (
+                            <li className={clsx('main-sub-menu-item', classNames?.mainSubMenuItem)} key={`main-sub-menu-item-${index3}`}>
+
+
+
+                              {menuItem.subSubMenuItems && menuItem.subSubMenuItems.length > 0 ? (
+                                <>
+                                  {menuItem.link?.href ? (
+                                    <Link
+                                      href={menuItem.link.href}
+                                      className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
+                                    >
+                                      <span>{menuItem.title}</span>
+                                      <span><Plus /></span>
+                                    </Link>
+                                  ) : (
+                                    <span
+                                      className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
+                                    >
+                                      <span>{menuItem.title}</span>
+                                      <span><Plus /></span>
+                                    </span>
+                                  )}
+                                  <ul>
+                                    {menuItem.subSubMenuItems.map((menuItem: MegaMenuSubSubMenuItem, index4: number) => (
+                                      <li className={clsx('main-sub-sub-menu-item', classNames?.mainSubSubMenuItem)} key={`main-sub-sub-menu-item-${index4}`}>
+                                        {menuItem.link?.href ? (
+                                          <Link
+                                            href={menuItem.link.href}
+                                            className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
+                                          >
+                                            <span>{menuItem.title}</span>
+                                          </Link>
+                                        ) : (
+                                          <span
+                                            className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
+                                          >
+                                            <span>{menuItem.title}</span>
+                                          </span>
+                                        )}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </>
+                              ) : (
+                                <>
+                                  {menuItem.link?.href ? (
+                                    <Link
+                                      href={menuItem.link.href}
+                                      className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
+                                    >
+                                      <span>{menuItem.title}</span>
+                                    </Link>
+                                  ) : (
+                                    <span
+                                      className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
+                                    >
+                                      <span>{menuItem.title}</span>
+                                    </span>
+                                  )}
+                                </>
+                              )}
+
+                            </li>
+                          ))}
+                        </ul>
+                      ))}
+
+                    </>
                   ) : (
-                    <span
-                      className={clsx('main-menu-link', classNames?.mainMenuLink)}
-                    >
-                      <span>{menuItem.title}</span>
-                      <span><ChevronRight /></span>
-                    </span>
+                    <>
+                    {menuItem.link?.href ? (
+                      <Link
+                        href={menuItem.link.href}
+                        className={clsx('main-menu-link', classNames?.mainMenuLink)}
+                      >
+                        <span>{menuItem.title}</span>
+                      </Link>
+                    ) : (
+                      <span
+                        className={clsx('main-menu-link', classNames?.mainMenuLink)}
+                      >
+                        <span>{menuItem.title}</span>
+                      </span>
+                    )}
+                    </>
                   )}
+
                 </li>
               ))}
             </ul>
@@ -101,12 +195,10 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                       className={clsx('secondary-menu-link', classNames?.secondaryMenuLink)}
                     >
                       <span>{menuItem.title}</span>
-                      <span><ChevronRight /></span>
                     </Link>
                   ) : (
                     <span className={clsx('secondary-menu-link', classNames?.secondaryMenuLink)}>
                       <span>{menuItem.title}</span>
-                      <span><ChevronRight /></span>
                     </span>
                   )}
                 </li>
