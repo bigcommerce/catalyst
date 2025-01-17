@@ -7,7 +7,7 @@ import { Stream } from '@/vibes/soul/lib/streamable';
 import { Reviews as ReviewsSection } from '@/vibes/soul/sections/reviews';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
-import { graphql } from '~/client/graphql';
+import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
 import { ProductReviewSchemaFragment } from './product-review-schema/fragment';
@@ -48,10 +48,12 @@ const ReviewsQuery = graphql(
   [ProductReviewSchemaFragment, PaginationFragment],
 );
 
-const getReviewsData = cache(async (productId: number) => {
+type Variables = VariablesOf<typeof ReviewsQuery>;
+
+const getReviewsData = cache(async (entityId: Variables['entityId']) => {
   const { data } = await client.fetch({
     document: ReviewsQuery,
-    variables: { entityId: productId },
+    variables: { entityId },
     fetchOptions: { next: { revalidate } },
   });
 

@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { cache } from 'react';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
@@ -15,7 +16,7 @@ import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
 import { getProductData } from './page-data';
 
-const getOptionValueIds = ({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) => {
+const getOptionValueIds = cache((searchParams: Awaited<Props['searchParams']>) => {
   const { slug, ...options } = searchParams;
 
   return Object.keys(options)
@@ -26,7 +27,7 @@ const getOptionValueIds = ({ searchParams }: { searchParams: Awaited<Props['sear
     .filter(
       (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
     );
-};
+});
 
 const getProduct = async (productPromise: ReturnType<typeof getProductData>) => {
   const t = await getTranslations('Product.ProductDetails.Accordions');
@@ -173,13 +174,9 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const searchParams = await props.searchParams;
   const params = await props.params;
   const productId = Number(params.slug);
-  const optionValueIds = getOptionValueIds({ searchParams });
+  const optionValueIds = getOptionValueIds(searchParams);
 
-  const product = await getProductData({
-    entityId: productId,
-    optionValueIds,
-    useDefaultOptionSelections: true,
-  });
+  const product = await getProductData(productId, optionValueIds, true);
 
   const { pageTitle, metaDescription, metaKeywords } = product.seo;
   const { url, altText: alt } = product.defaultImage || {};
@@ -213,13 +210,9 @@ export default async function Product(props: Props) {
 
   const productId = Number(slug);
 
-  const optionValueIds = getOptionValueIds({ searchParams });
+  const optionValueIds = getOptionValueIds(searchParams);
 
-  const productPromise = getProductData({
-    entityId: productId,
-    optionValueIds,
-    useDefaultOptionSelections: true,
-  });
+  const productPromise = getProductData(productId, optionValueIds, true);
 
   return (
     <>

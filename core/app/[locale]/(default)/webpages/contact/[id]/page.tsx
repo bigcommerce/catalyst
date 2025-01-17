@@ -38,7 +38,7 @@ const fieldMapping = {
 type ContactField = keyof typeof fieldMapping;
 
 async function getWebPage(id: string): Promise<ContactPage> {
-  const data = await getWebpageData({ id: decodeURIComponent(id) });
+  const data = await getWebpageData(decodeURIComponent(id));
   const reCaptchaSettings = data.site.settings?.reCaptcha ?? null;
   const webpage = data.node?.__typename === 'ContactPage' ? data.node : null;
 

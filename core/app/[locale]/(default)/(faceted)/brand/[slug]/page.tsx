@@ -33,7 +33,8 @@ function getBreadcrumbs(): Breadcrumb[] {
 
 async function getBrand(props: Props) {
   const { slug } = await props.params;
-  const brand = await getBrandData({ entityId: Number(slug) });
+  const entityId = Number(slug);
+  const brand = await getBrandData(entityId);
 
   if (brand == null) notFound();
 

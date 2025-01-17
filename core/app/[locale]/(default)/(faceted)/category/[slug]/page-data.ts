@@ -43,12 +43,12 @@ const CategoryPageQuery = graphql(
 
 type Variables = VariablesOf<typeof CategoryPageQuery>;
 
-export const getCategoryPageData = cache(async (variables: Variables) => {
+export const getCategoryPageData = cache(async (categoryId: Variables['categoryId']) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: CategoryPageQuery,
-    variables,
+    variables: { categoryId },
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });

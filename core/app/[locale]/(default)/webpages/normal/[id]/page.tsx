@@ -12,7 +12,7 @@ interface Props {
 }
 
 async function getWebPage(id: string): Promise<WebPageData> {
-  const data = await getWebpageData({ id: decodeURIComponent(id) });
+  const data = await getWebpageData(decodeURIComponent(id));
   const webpage = data.node?.__typename === 'NormalPage' ? data.node : null;
 
   if (!webpage) {
