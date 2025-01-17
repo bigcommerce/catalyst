@@ -3,9 +3,9 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import { NextIntlClientProvider, useMessages } from 'next-intl';
+import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
+import { draftMode } from 'next/headers';
 import { PropsWithChildren } from 'react';
 
 import '../globals.css';
@@ -27,6 +27,8 @@ import { Open_Sans, Roboto_Mono } from 'next/font/google';
 
 import Script from 'next/script';
 import { SiteVibesIntegration } from "~/belami/components/sitevibes";
+import '~/lib/makeswift/components';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 const dm_serif_text = localFont({
   src: [
@@ -144,11 +146,11 @@ export default async function RootLayout({ params, children }: Props) {
         />
         <SiteVibesIntegration />
         <Notifications />
+        <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <NuqsAdapter>
             <Providers>{children}</Providers>
-          </NuqsAdapter>
         </NextIntlClientProvider>
+        </MakeswiftProvider>
         <VercelComponents />
       </body>
     </html>
