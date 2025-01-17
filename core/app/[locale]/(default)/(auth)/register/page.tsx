@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 
@@ -15,7 +16,7 @@ import { exists } from '~/lib/utils';
 import { registerCustomer } from './_actions/register-customer';
 import { getRegisterCustomerQuery } from './page-data';
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Register');
 
   return {

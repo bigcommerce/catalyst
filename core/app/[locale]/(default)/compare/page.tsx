@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { Metadata } from 'next';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import * as z from 'zod';
 
@@ -81,7 +82,7 @@ const ComparePageQuery = graphql(
   [AddToCartFragment, PricingFragment],
 );
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Compare');
 
   return {

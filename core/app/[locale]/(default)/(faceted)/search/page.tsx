@@ -1,3 +1,4 @@
+import { Metadata } from 'next';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
@@ -236,7 +237,7 @@ async function getBreadcrumbs(): Promise<Breadcrumb[]> {
   ];
 }
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Search');
 
   return {
