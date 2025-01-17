@@ -290,3 +290,21 @@ export const getOrderDetails = cache(
     return data;
   },
 );
+
+export const getGuestOrderDetails = cache(
+  async (variables: VariablesOf<typeof CustomerOrderDetails>) => {
+
+    const response = await client.fetch({
+      document: CustomerOrderDetails,
+      variables,
+      fetchOptions: { cache: 'no-store' },
+    });
+    const order = response.data.site.order;
+
+    if (!order) {
+      return undefined;
+    }
+    const data = mapOrderData(order);
+    return data;
+  },
+);
