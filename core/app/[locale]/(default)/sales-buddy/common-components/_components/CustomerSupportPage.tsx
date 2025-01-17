@@ -76,7 +76,7 @@ function CustomerSupportPage() {
     try {
       const response = await getCustomerUrlSession_id(cartId);
       
-      localStorage.setItem("referral_id", response.output.data[0]['referral_id'])
+      localStorage.setItem("referrerId", response.output.data[0]['referral_id'])
       localStorage.setItem("session_id", response.output.data[0]['session_id'])
 
       UpdateCartIdCookie(response.output.data[0]['cart_id'])
@@ -129,7 +129,8 @@ function CustomerSupportPage() {
         console.log('No shopper data received from API');
         setLoading((prev) => ({ ...prev, show4: false }));
         return;
-      }      
+      }  
+          
       if(response?.output?.count > 0){
         const shopperData = response?.output?.data[0] || {};
         const shopperUrls = response?.output?.urls || [];
@@ -271,6 +272,8 @@ function CustomerSupportPage() {
       try {
         const sessionFromLS = localStorage.getItem('session_id');
         const overAllValue = localStorage.getItem('ShopperInformations');
+       
+        
         // Check if data exists in localStorage
         if (!overAllValue) {
           setShopperSystemInfo([]);
@@ -297,11 +300,11 @@ function CustomerSupportPage() {
         setCustomerVisitedUrl([]);
       }
     };
-    getShopperInfoAndLoad()
+    // getShopperInfoAndLoad()
 
   }, [])
 
-  const UrlList = ({ urls }) => {
+  const UrlList = ({ urls }: { urls: { id: string; url: string }[] }) => {
     return (
       <div className='m-4'>
         <h2 className='text-lg font-bold mb-2'>URLs</h2>
@@ -609,16 +612,16 @@ function CustomerSupportPage() {
             <div>
               <div>
                 {Object?.keys(shopperSystemInfo || {})?.length > 0 ? (
-                  <SystemInfoComponent data={shopperSystemInfo} />
+                sessionId !== '' && shopperSystemInfo && <SystemInfoComponent data={shopperSystemInfo} />
                 ) : (
-                  <p className="text-gray-500 text-center py-4">No System Information Found</p>
+                  sessionId !== '' && shopperSystemInfo.length > 0 &&  <p className="text-gray-500 text-center py-4">No System Information Found</p>
                 )}
               </div>
               <div className="m-2">
                 {Array?.isArray(customerVisitedUrl) && customerVisitedUrl?.length > 0 ? (
-                  <UrlList urls={customerVisitedUrl} />
+                sessionId !== '' && loading.show4 == false && <UrlList urls={customerVisitedUrl} />
                 ) : (
-                  <p className="text-gray-500 text-center py-4">No URL Data Found</p>
+                  sessionId !== '' && shopperSystemInfo.length > 0 && <p className="text-gray-500 text-center py-4">No URL Data Found</p>
                 )}
               </div>
             </div>

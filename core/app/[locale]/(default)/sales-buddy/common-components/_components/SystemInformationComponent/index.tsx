@@ -10,16 +10,16 @@ const SystemInfoComponent = ({ data }) => {
             icon: <Laptop className="w-4 h-4" />,
             items: ['deviceType', 'platform']
         },
-        {
-            title: "Network",
-            icon: <Wifi className="w-4 h-4" />,
-            items: ['connection', "ip"]
-        },
-        {
-            title: "Location",
-            icon: <MapPin className="w-4 h-4" />,
-            items: ['city', 'country', 'latitude', 'longitude']
-        },
+        // {
+        //     title: "Network",
+        //     icon: <Wifi className="w-4 h-4" />,
+        //     items: ['connection', "ip"]
+        // },
+        // {
+        //     title: "Location",
+        //     icon: <MapPin className="w-4 h-4" />,
+        //     items: ['city', 'country', 'latitude', 'longitude']
+        // },
         {
             title: "Display",
             icon: <Monitor className="w-4 h-4" />,
@@ -44,7 +44,7 @@ const SystemInfoComponent = ({ data }) => {
     return (
         <div className=" p-1 bg-white rounded-lg shadow-lg overflow-hidden">
             <div className="px-6 py-4  border-b border-gray-200">
-                <h2 className="text-lg font-semibold text-gray-800">System Information : {data.session_id}</h2>
+                {/* <h2 className="text-lg font-semibold text-gray-800">System Information : {data.session_id}</h2> */}
             </div>
 
             <div className="p-4 space-y-4">

@@ -7,8 +7,12 @@ export const getSessionIdCookie = async () => {
   return cookieStore.get('sessionId');
 };
 
-export const createSession = async (Userdata: any) => {
+export const RemoveSessionIdCookie = async () => {
+  const cookieStore = await cookies();
+  cookieStore.delete('sessionId');
+};
 
+export const createSession = async (Userdata: any) => {
   try {
     let postData = JSON.stringify({
       cart_id: Userdata.cart_id,
@@ -51,26 +55,23 @@ export const createSessionIdCookie = async (localMachineInformation: any) => {
   const cookieStore = await cookies();
   const hasCookie = cookieStore.has('sessionId');
   const CartId = cookieStore.get('cartId');
-  // if (!CartId || !CartId?.value) {
-  //   return {
-  //     status: 400,
-  //     error: 'Your cart is empty, please add a product to the cart and generate a session ID.',
-  //   };
-  // }
-
+  const refferalId = cookieStore.get('referrerId');
   let data = {
     cart_id: CartId?.value,
+    referral_id: refferalId?.value,
     shopper_information: localMachineInformation,
   };
-  let sessioncheck = await createSession(data);
-  cookieStore.set({
-    name: 'sessionId',
-    value: sessioncheck.output,
-    httpOnly: true,
-    sameSite: 'lax',
-    secure: true,
-    path: '/',
-  });
+  if (!hasCookie) {
+    let sessioncheck = await createSession(data);
+    cookieStore.set({
+      name: 'sessionId',
+      value: sessioncheck.output,
+      httpOnly: true,
+      sameSite: 'lax',
+      secure: true,
+      path: '/',
+    });
+    return sessioncheck;
+  }
 
-  return sessioncheck;
 };

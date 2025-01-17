@@ -189,57 +189,57 @@ export async function getEnhancedSystemInfo(): Promise<SystemInfo> {
     } : 'Network Information API not supported'
   };
 
-  const getIpURL = process.env.NEXT_PUBLIC_SALES_BUDDY_API_IP;
-  const getIpURLLocation = process.env.NEXT_PUBLIC_SALES_BUDDY_API_IP_LOCATION;
-
-  if (!getIpURL || !getIpURLLocation) {
-    throw new Error('Environment variables for IP URLs are not defined');
-  }
-
-  // Get IP and Location data
-  try {
-    const ipResponse = await fetch(getIpURL);
-    const ipData = await ipResponse.json();
-    systemInfo.network.ip = ipData.ip;
-
-    // Get detailed location data using ip-api.com (free tier)
-    const locationResponse = await fetch(`${getIpURLLocation}${ipData.ip}`);
-    const locationData = await locationResponse.json();
-
-    systemInfo.network.location = {
-      country: locationData.country,
-      region: locationData.regionName,
-      city: locationData.city,
-      zip: locationData.zip,
-      isp: locationData.isp,
-      org: locationData.org
-    };
-  } catch (error) {
-    systemInfo.network.ip = 'Failed to fetch IP';
-    systemInfo.network.location = {};
-  }
-
-  // Get precise geolocation if user allows
-  if (navigator.geolocation) {
+  if (Number(process.env.NEXT_PUBLIC_SALES_BUDDY_API_IP_LOCATION_PERMISSION) === 1) {
+    const getIpURL = process.env.NEXT_PUBLIC_SALES_BUDDY_API_IP;
+    const getIpURLLocation = process.env.NEXT_PUBLIC_SALES_BUDDY_API_IP_LOCATION;
+    if (!getIpURL || !getIpURLLocation) {
+      throw new Error('Environment variables for IP URLs are not defined');
+    }
+    // Get IP and Location data
     try {
-      const position = await new Promise<GeolocationPosition>((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(resolve, reject);
-      });
+      const ipResponse = await fetch(getIpURL);
+      const ipData = await ipResponse.json();
+      systemInfo.network.ip = ipData.ip;
 
-      systemInfo.geolocation = {
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude,
-        accuracy: position.coords.accuracy,
-        altitude: position.coords.altitude,
-        heading: position.coords.heading,
-        speed: position.coords.speed
+      // Get detailed location data using ip-api.com (free tier)
+      const locationResponse = await fetch(`${getIpURLLocation}${ipData.ip}`);
+      const locationData = await locationResponse.json();
+
+      systemInfo.network.location = {
+        country: locationData.country,
+        region: locationData.regionName,
+        city: locationData.city,
+        zip: locationData.zip,
+        isp: locationData.isp,
+        org: locationData.org
       };
     } catch (error) {
-      systemInfo.geolocation = {
-        latitude: null,
-        longitude: null,
-        accuracy: null
-      };
+      systemInfo.network.ip = 'Failed to fetch IP';
+      systemInfo.network.location = {};
+    }
+
+    // Get precise geolocation if user allows
+    if (navigator.geolocation) {
+      try {
+        const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+          navigator.geolocation.getCurrentPosition(resolve, reject);
+        });
+
+        systemInfo.geolocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          altitude: position.coords.altitude,
+          heading: position.coords.heading,
+          speed: position.coords.speed
+        };
+      } catch (error) {
+        systemInfo.geolocation = {
+          latitude: null,
+          longitude: null,
+          accuracy: null
+        };
+      }
     }
   }
 

@@ -2,19 +2,26 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { getSessionIdCookie, createSessionIdCookie } from '../_actions/session';
 import { getEnhancedSystemInfo } from '../common-components/common-functions';
+import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 
 export default function SessionId() {
     const [storeSessionID, setStoreSessionId] = useState('');
+    const { context_session_id, setContext_Session_id } = useCompareDrawerContext();
+
     useEffect(() => {
-        const sessionId = localStorage.getItem('session_id');
-        if (sessionId) {
-            setStoreSessionId(sessionId);
+        const onloadFetchSessionId = async () => {
+            const sessionId = await getSessionIdCookie()
+            if (sessionId?.value) {
+                setContext_Session_id(sessionId?.value);
+            }
         }
-        // initializeSessionId()
+        onloadFetchSessionId();
     }, [])
 
     const fetchSystemInfo = async () => {
         const info = await getEnhancedSystemInfo();
+        console.log('System Info:', info);
+        
         let data = {
             browser: info?.browser?.userAgent,
             connection: typeof info?.connection === 'object' ? info.connection.effectiveType : undefined,
@@ -31,17 +38,19 @@ export default function SessionId() {
             screenWidth: info?.screen?.width,
             screenOrientation: info?.screen?.orientation,
             timezone: info?.timezone?.timezone,
-            refferalId: localStorage.getItem('referral_id')
+            refferalId: localStorage.getItem('referrerId')
         };
         return data;
     };
-
     const initializeSessionId = async () => {
-        const localMachineInformation = await fetchSystemInfo();
-        const sessionId = await createSessionIdCookie(localMachineInformation);
-        setStoreSessionId(sessionId.output)
-        localStorage.setItem('session_id', sessionId.output)
-        fetchMyCookie(); // Fetch the cookie after creating it
+        if (!context_session_id) {
+            const localMachineInformation = await fetchSystemInfo();
+            const sessionId = await createSessionIdCookie(localMachineInformation);
+            setContext_Session_id(sessionId.output);
+            setStoreSessionId(sessionId.output)
+            localStorage.setItem('session_id', sessionId.output)
+            fetchMyCookie();
+        }
 
     };
     const fetchMyCookie = async () => {
@@ -54,6 +63,8 @@ export default function SessionId() {
         }
     };
 
+
+
     return (
         <>
             <div
@@ -63,7 +74,7 @@ export default function SessionId() {
             >
                 <span>Session Id:</span>
                 <div id="sessionIdDiv" className='ml-[10px]'>
-                    {storeSessionID ? storeSessionID : "######"}
+                    {context_session_id ? context_session_id : "######"}
 
                 </div>
             </div>
