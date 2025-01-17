@@ -176,13 +176,13 @@ export const ProductSnippet = async ({
           </button>
         </div>
       )}
-      <div className="flex w-full flex-row items-center justify-between p-0 px-[20px] pb-[20px]">
-        <div className="flex w-2/3 flex-row items-center gap-[20px] p-0 pr-[20px]">
+      <div className={`flex w-full flex-row items-center justify-between p-0 px-[20px] pb-[20px] ${from == 'order' ? 'mt-[20px]' : ''}`}>
+        <div className={`flex-row items-center gap-[20px] p-0  ${from == 'order' ? 'w-full pr-0 grid [grid-template-columns:88px_auto] sm:flex' : 'w-2/3 pr-[20px] flex'}` }>
           <div>
             {isImageAvailable && (
               <BcImage
                 alt={defaultImage.altText || name}
-                className="h-[150px] w-[150px]"
+                className={`${from == 'order' ? "h-[88px] w-[88px] sm:h-[150px] sm:w-[150px]" : 'h-[150px] w-[150px]'}`}
                 width={150}
                 height={150}
                 priority={imagePriority}
@@ -223,7 +223,7 @@ export const ProductSnippet = async ({
                 );
               })}
             </div>
-            <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#353535]">
+            <div className={`text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] ${from == 'order' ? 'font-normal' : 'font-bold'}`}>
               {t('qty')}: {product.quantity}
             </div>
           </div>
