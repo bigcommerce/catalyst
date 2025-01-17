@@ -108,10 +108,13 @@ const getCurrencies = async () => {
     return [];
   }
 
-  const currencies = data.currencies.edges.map(({ node }) => ({
-    id: node.code,
-    label: node.code,
-  }));
+  const currencies = data.currencies.edges
+    // only show transactional currencies for now until cart prices can be rendered in display currencies
+    .filter(({ node }) => node.isTransactional)
+    .map(({ node }) => ({
+      id: node.code,
+      label: node.code,
+    }));
 
   return currencies;
 };
