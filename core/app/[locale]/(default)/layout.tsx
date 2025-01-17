@@ -1,7 +1,7 @@
 import { setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
 
-import { Footer } from '~/components/footer/footer';
+import { Footer } from '~/components/footer';
 import { Header } from '~/components/header';
 
 interface Props extends PropsWithChildren {

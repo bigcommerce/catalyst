@@ -21,10 +21,10 @@ const BrandQuery = graphql(`
 
 type Variables = VariablesOf<typeof BrandQuery>;
 
-export const getBrand = cache(async (variables: Variables) => {
+export const getBrand = cache(async (entityId: Variables['entityId']) => {
   const response = await client.fetch({
     document: BrandQuery,
-    variables,
+    variables: { entityId },
     fetchOptions: { next: { revalidate } },
   });
 

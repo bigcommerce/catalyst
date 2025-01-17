@@ -18,9 +18,9 @@ export default async function Order(props: Props) {
   const t = await getTranslations('Account.OrderDetails');
   const format = await getFormatter();
 
-  const order = await getCustomerOrderDetails({
-    id: Number(id),
-  });
+  const entityId = Number(id);
+
+  const order = await getCustomerOrderDetails(entityId);
 
   if (!order) {
     notFound();

@@ -13,7 +13,8 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { blogId } = await params;
-  const blog = await getBlogPageData({ entityId: Number(blogId) });
+  const entityId = Number(blogId);
+  const blog = await getBlogPageData(entityId);
   const blogPost = blog?.post;
 
   if (!blogPost) {
@@ -31,7 +32,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 async function getBlogPost(entityId: number): Promise<BlogPostContentBlogPost> {
   const format = await getFormatter();
-  const blog = await getBlogPageData({ entityId });
+  const blog = await getBlogPageData(entityId);
   const blogPost = blog?.post;
 
   if (!blog || !blogPost) {
@@ -56,7 +57,7 @@ async function getBlogPost(entityId: number): Promise<BlogPostContentBlogPost> {
 }
 
 async function getBlogPostBreadcrumbs(entityId: number): Promise<Breadcrumb[]> {
-  const blog = await getBlogPageData({ entityId });
+  const blog = await getBlogPageData(entityId);
   const blogPost = blog?.post;
 
   if (!blog || !blogPost) {

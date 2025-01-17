@@ -3,7 +3,7 @@ import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql } from '~/client/graphql';
+import { graphql, VariablesOf } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 
 import { OrderItemFragment } from '../fragment';
@@ -117,18 +117,16 @@ const CustomerOrderDetails = graphql(
   [OrderItemFragment],
 );
 
-interface CustomerOrderDetailsArgs {
-  id: number;
-}
+type Variables = NonNullable<VariablesOf<typeof CustomerOrderDetails>['filter']>;
 
-export const getCustomerOrderDetails = cache(async ({ id }: CustomerOrderDetailsArgs) => {
+export const getCustomerOrderDetails = cache(async (entityId: Variables['entityId']) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: CustomerOrderDetails,
     variables: {
       filter: {
-        entityId: id,
+        entityId,
       },
     },
     fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },

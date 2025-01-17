@@ -1,7 +1,7 @@
 import { cache } from 'react';
 
 import { client } from '~/client';
-import { graphql } from '~/client/graphql';
+import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
 const NormalPageQuery = graphql(`
@@ -22,10 +22,12 @@ const NormalPageQuery = graphql(`
   }
 `);
 
-export const getWebpageData = cache(async (variables: { id: string }) => {
+type Variables = VariablesOf<typeof NormalPageQuery>;
+
+export const getWebpageData = cache(async (id: Variables['id']) => {
   const { data } = await client.fetch({
     document: NormalPageQuery,
-    variables,
+    variables: { id },
     fetchOptions: { next: { revalidate } },
   });
 

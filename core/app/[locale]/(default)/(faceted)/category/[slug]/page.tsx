@@ -35,7 +35,7 @@ interface Props {
 async function getCategory(props: Props) {
   const { slug } = await props.params;
   const categoryId = Number(slug);
-  const data = await getCategoryPageData({ categoryId });
+  const data = await getCategoryPageData(categoryId);
 
   const category = data.category;
 
@@ -56,7 +56,7 @@ async function getBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
 async function getSubCategoriesFilters(props: Props): Promise<Filter[]> {
   const { slug } = await props.params;
   const categoryId = Number(slug);
-  const data = await getCategoryPageData({ categoryId });
+  const data = await getCategoryPageData(categoryId);
   const t = await getTranslations('FacetedGroup.MobileSideNav');
 
   const categoryTree = data.categoryTree[0];

@@ -252,21 +252,31 @@ const ProductPageQuery = graphql(
 
 type Variables = VariablesOf<typeof ProductPageQuery>;
 
-export const getProductData = cache(async (variables: Variables) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
+export const getProductData = cache(
+  async (
+    entityId: Variables['entityId'],
+    optionValueIds: Variables['optionValueIds'],
+    useDefaultOptionSelections: Variables['useDefaultOptionSelections'],
+  ) => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const { data } = await client.fetch({
-    document: ProductPageQuery,
-    variables,
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+    const { data } = await client.fetch({
+      document: ProductPageQuery,
+      variables: {
+        entityId,
+        optionValueIds,
+        useDefaultOptionSelections,
+      },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
 
-  const product = data.site.product;
+    const product = data.site.product;
 
-  if (!product) {
-    return notFound();
-  }
+    if (!product) {
+      return notFound();
+    }
 
-  return product;
-});
+    return product;
+  },
+);

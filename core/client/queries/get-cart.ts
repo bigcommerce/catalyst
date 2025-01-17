@@ -3,7 +3,7 @@ import { cache } from 'react';
 import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
-import { graphql } from '../graphql';
+import { graphql, VariablesOf } from '../graphql';
 import { TAGS } from '../tags';
 
 const MoneyFieldFragment = graphql(`
@@ -121,7 +121,9 @@ const GetCartQuery = graphql(
   [MoneyFieldFragment],
 );
 
-export const getCart = cache(async (cartId?: string, channelId?: string) => {
+type Variables = VariablesOf<typeof GetCartQuery>;
+
+export const getCart = cache(async (cartId?: Variables['cartId'], channelId?: string) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
