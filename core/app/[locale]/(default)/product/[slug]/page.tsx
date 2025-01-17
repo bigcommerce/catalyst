@@ -8,6 +8,7 @@ import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
@@ -204,6 +205,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function Product(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
+  const currencyCode = await getPreferredCurrencyCode();
 
   const { locale, slug } = params;
 
@@ -219,6 +221,7 @@ export default async function Product(props: Props) {
     entityId: productId,
     optionValueIds,
     useDefaultOptionSelections: true,
+    currencyCode,
   });
 
   return (

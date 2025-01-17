@@ -12,12 +12,13 @@ import { FeaturedProductsCarouselFragment } from '~/components/featured-products
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
 import { Subscribe } from '~/components/subscribe';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { Slideshow } from './_components/slideshow';
 
 const HomePageQuery = graphql(
   `
-    query HomePageQuery {
+    query HomePageQuery($currencyCode: currencyCode) {
       site {
         featuredProducts(first: 12) {
           edges {
@@ -41,10 +42,11 @@ const HomePageQuery = graphql(
 
 const getPageData = cache(async () => {
   const customerAccessToken = await getSessionCustomerAccessToken();
-
+  const currencyCode = await getPreferredCurrencyCode();
   const { data } = await client.fetch({
     document: HomePageQuery,
     customerAccessToken,
+    variables: { currencyCode },
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 

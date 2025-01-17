@@ -11,10 +11,11 @@ import { Footer } from '~/components/footer/footer';
 import { Header } from '~/components/header';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 const NotFoundQuery = graphql(
   `
-    query NotFoundQuery {
+    query NotFoundQuery($currencyCode: currencyCode) {
       site {
         featuredProducts(first: 10) {
           edges {
@@ -31,8 +32,10 @@ const NotFoundQuery = graphql(
 
 async function getFeaturedProducts(): Promise<CarouselProduct[]> {
   const format = await getFormatter();
+  const currencyCode = await getPreferredCurrencyCode();
   const { data } = await client.fetch({
     document: NotFoundQuery,
+    variables: { currencyCode },
     fetchOptions: { next: { revalidate } },
   });
 

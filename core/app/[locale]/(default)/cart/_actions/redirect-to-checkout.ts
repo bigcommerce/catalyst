@@ -3,7 +3,6 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { cookies } from 'next/headers';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -11,6 +10,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
+import { getCartId } from '~/lib/cart';
 
 const CheckoutRedirectMutation = graphql(`
   mutation CheckoutRedirectMutation($cartId: String!) {
@@ -30,13 +30,12 @@ export const redirectToCheckout = async (
 ): Promise<SubmissionResult | null> => {
   const locale = await getLocale();
   const t = await getTranslations('Cart.Errors');
-  const cookieStore = await cookies();
 
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const submission = parseWithZod(formData, { schema: z.object({}) });
 
-  const cartId = cookieStore.get('cartId')?.value;
+  const cartId = await getCartId();
 
   if (!cartId) {
     return submission.reply({ formErrors: [t('cartNotFound')] });
