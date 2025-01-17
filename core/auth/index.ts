@@ -1,5 +1,4 @@
 import { decodeJwt } from 'jose';
-import { cookies } from 'next/headers';
 import NextAuth, { type DefaultSession, type NextAuthConfig, User } from 'next-auth';
 import 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -7,6 +6,7 @@ import { z } from 'zod';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { getCartId } from '~/lib/cart';
 
 const LoginMutation = graphql(`
   mutation Login($email: String!, $password: String!, $cartEntityId: String) {
@@ -124,8 +124,7 @@ async function loginWithJwt(jwt: string, cartEntityId?: string): Promise<User | 
 
 async function authorize(credentials: unknown): Promise<User | null> {
   const parsed = Credentials.parse(credentials);
-  const cookieStore = await cookies();
-  const cartEntityId = cookieStore.get('cartId')?.value;
+  const cartEntityId = await getCartId();
 
   switch (parsed.type) {
     case 'password': {

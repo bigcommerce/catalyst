@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { getLocale, getTranslations } from 'next-intl/server';
 import PLazy from 'p-lazy';
 import { cache } from 'react';
@@ -12,6 +11,7 @@ import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { routing } from '~/i18n/routing';
+import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { search } from './_actions/search';
@@ -74,8 +74,11 @@ const getLogo = async () => {
 };
 
 const getCartCount = async () => {
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value;
+  const cartId = await getCartId();
+
+  if (!cartId) {
+    return null;
+  }
 
   const customerAccessToken = await getSessionCustomerAccessToken();
 

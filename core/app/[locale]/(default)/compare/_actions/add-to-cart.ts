@@ -1,7 +1,6 @@
 'use server';
 
 import { unstable_expireTag } from 'next/cache';
-import { cookies } from 'next/headers';
 
 import {
   addCartLineItem,
@@ -10,12 +9,12 @@ import {
 import { assertCreateCartErrors, createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
 import { TAGS } from '~/client/tags';
+import { getCartId, setCartId } from '~/lib/cart';
 
 export const addToCart = async (data: FormData) => {
   const productEntityId = Number(data.get('product_id'));
 
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value;
+  const cartId = await getCartId();
 
   let cart;
 
@@ -55,14 +54,7 @@ export const addToCart = async (data: FormData) => {
       return { status: 'error', error: 'Failed to add product to cart.' };
     }
 
-    cookieStore.set({
-      name: 'cartId',
-      value: cart.entityId,
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: true,
-      path: '/',
-    });
+    await setCartId(cart.entityId);
 
     unstable_expireTag(TAGS.cart);
 
