@@ -8,10 +8,11 @@ interface Props extends ComponentPropsWithRef<'input'> {
   className?: string;
   storeHash?: string;
   passwordHide?: string;
+  emailExists?:string;
 }
 const Input = forwardRef<ElementRef<'input'>, Props>(
   (
-    { className, children, error = false, icon, type = 'text', storeHash, passwordHide, ...props },
+    { className, children, error = false, icon, type = 'text', storeHash,emailExists, passwordHide, ...props },
     ref,
   ) => {
     const [showPassword, setShowPassword] = useState(false);
@@ -25,7 +26,7 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
           className={cn(
             'peer w-full rounded-sm border-2 border-gray-200 px-4 py-2.5 text-base placeholder:text-gray-500 hover:border-[#008bb7] focus-visible:border-2 focus-visible:border-[#008bb7] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200',
             (error || isPassword) && 'pe-12',
-            error &&
+            (error || emailExists) && 
               'border-error-secondary disabled:border-gray-20 hover:border-[#A71F23] focus-visible:border-2 focus-visible:border-[#A71F23]',
           )}
           ref={ref}

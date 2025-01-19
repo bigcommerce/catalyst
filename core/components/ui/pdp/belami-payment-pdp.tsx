@@ -123,7 +123,7 @@ export function PayPalPayLater({ amount, currency }: PayPalPayLaterProps) {
         src={`https://www.paypal.com/sdk/js?client-id=${process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || 'test'}&components=messages`}
         strategy="lazyOnload"
       />
-      <div className="ml-[10em] mt-[1.4em] min-h-7" ref={paypalRef} />
+      <div className="flex justify-center mt-[1.4em] min-h-7" ref={paypalRef} />
     </>
   );
 }

@@ -17,14 +17,14 @@ interface Props {
 const Breadcrumbs = ({ breadcrumbs, className }: Props) => {
   return (
     <nav aria-label="Breadcrumb" className={className}>
-      <ul className="main-breadcrumbs flex flex-wrap items-center py-4">
+      <ul className="main-breadcrumbs flex flex-wrap items-center">
         {/* Static Home breadcrumb */}
-        <li className="flex items-center text-[16px] font-normal">
+        <li className="flex items-center text-[16px] font-normal breadcrumbs-li-home">
           <CustomLink className="font-normal text-[#7F7F7F]" href="/">
             Home
           </CustomLink>
         </li>
-        <span className="mx-1 font-normal text-[#7F7F7F]">/</span>
+        <span className="mx-1 font-normal text-[#7F7F7F] breadcrumbs-li-slash">/</span>
 
         {/* Dynamic breadcrumbs */}
         {breadcrumbs.map(({ label, href }, i, arr) => {

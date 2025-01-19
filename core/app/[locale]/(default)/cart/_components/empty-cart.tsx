@@ -4,11 +4,10 @@ export const EmptyCart = () => {
   const t = useTranslations('Cart');
 
   return (
-    <div className="flex h-full flex-col">
-      <h1 className="pb-6 text-4xl font-black lg:pb-10 lg:text-5xl">{t('heading')}</h1>
-      <div className="flex grow flex-col items-center justify-center gap-6 border-t border-t-gray-200 py-20">
-        <h2 className="text-xl font-bold lg:text-2xl">{t('empty')}</h2>
-        <p className="text-center">{t('emptyDetails')}</p>
+    <div className="h-[400px] xl:h-[85vh] flex justify-center items-center">
+      <div className="flex flex-col gap-5 p-10 sm:p-0">
+        <h2 className="text-center font-normal text-[24px] leading-[32px] xl:text-[34px] xl:leading-[46px] tracking-[0.25px] text-[#B4B4B5]">{t('empty')}</h2>
+        <p className="text-center font-medium text-[20px] leading-[32px] tracking-[0.15px] text-[#008BB7]">{t('emptyDetails')}</p>
       </div>
     </div>
   );

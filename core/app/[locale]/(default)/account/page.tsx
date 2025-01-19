@@ -61,11 +61,10 @@ export default function Account() {
       <AccountNotification message={t('successMessage')} />
       <div className="flex flex-col gap-[40px]">
         <div>
-          <ComponentsBreadcrumbs className="" breadcrumbs={breadcrumbs} />
+          <ComponentsBreadcrumbs className="[&_ul.main-breadcrumbs]:xl:justify-start [&_ul.main-breadcrumbs]:justify-center [&_ul.main-breadcrumbs_.breadcrumbs-li-home]:hidden [&_ul.main-breadcrumbs_.breadcrumbs-li-home]:xl:flex [&_ul.main-breadcrumbs_.breadcrumbs-li-slash]:hidden [&_ul.main-breadcrumbs_.breadcrumbs-li-slash]:xl:block" breadcrumbs={breadcrumbs} />
           <WelcomeMessage />
         </div>
-
-        <div className="grid grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 xl:grid-cols-3">
           <AccountItem href="/account/orders" title={t('orders')} description={t('ordersMsg')}>
             <Image src={ordersIcon} alt={t('orders')} width={70} height={70} />
           </AccountItem>
@@ -91,7 +90,7 @@ export default function Account() {
             <Image src={detailsIcon} alt={t('accountDetails')} width={70} height={70} />
           </AccountItem>
           <AccountItem
-            href="/account/wishlists/"
+            href="/account/wishlists"
             title={t('favoritesAndLists')}
             description={t('favListMsg')}
           >
@@ -119,7 +118,7 @@ export default function Account() {
             <div>{ts('chatMondayToFriday')}</div>
             <div>{ts('chatSatToSun')}</div>
           </div>
-          <div className="w-[53%] bg-[#fbf4e9] px-[10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#2a2010]">
+          <div className="w-fit max-w-[288px] bg-[#fbf4e9] px-[10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#2a2010]">
             {ts('currentEstimated')}
           </div>
         </div>
