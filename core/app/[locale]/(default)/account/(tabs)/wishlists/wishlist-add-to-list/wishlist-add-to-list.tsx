@@ -6,7 +6,6 @@ import { Button } from '~/components/ui/button';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { Input } from '~/components/ui/form';
-import { useAccountStatusContext } from '../../_components/account-status-provider';
 import {
   addToWishlist,
   createWishlist,
@@ -14,6 +13,7 @@ import {
 import { BcImage } from '~/components/bc-image';
 import heartIcon from '~/public/wishlistIcons/heartIcon.svg';
 import { cn } from '~/lib/utils';
+import { checkAuthStatus } from './auth-client';
 
 interface ProductImage {
   url: string;
@@ -64,7 +64,6 @@ interface WishlistAddToListProps {
   wishlists: Wishlist[];
   hasPreviousPage: boolean;
   product: Product;
-  isAuthenticated?: boolean;
   onGuestClick?: () => void;
 }
 
@@ -72,7 +71,6 @@ const WishlistAddToList = ({
   wishlists,
   hasPreviousPage,
   product,
-  isAuthenticated,
   onGuestClick,
 }: WishlistAddToListProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -81,7 +79,7 @@ const WishlistAddToList = ({
   const [isInputValid, setInputValidation] = useState(true);
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [isPending, setIsPending] = useState(false);
-  const [currentWishlists, setCurrentWishlists] = useState<Wishlist[]>([]);
+  const [currentWishlists, setCurrentWishlists] = useState<Wishlist[]>(wishlists);
   const [tempAddedItems, setTempAddedItems] = useState<{ listId: number; product: Product }[]>([]);
   const [justAddedToList, setJustAddedToList] = useState<number | null>(null);
   const [loadingListId, setLoadingListId] = useState<number | null>(null);
@@ -89,11 +87,17 @@ const WishlistAddToList = ({
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
-  const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Account.Wishlist');
   const router = useRouter();
 
-  // Auto-dismiss message after 3 seconds
+  // Check authentication on component mount
+  useEffect(() => {
+    const verifyAuth = async () => {
+      const authResult = await checkAuthStatus();
+    };
+    verifyAuth();
+  }, []);
+
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
@@ -103,7 +107,6 @@ const WishlistAddToList = ({
     }
   }, [message]);
 
-  // Handle scroll lock
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -119,11 +122,14 @@ const WishlistAddToList = ({
     setCurrentWishlists(wishlists);
   }, [wishlists]);
 
-  const handleHeartClick = () => {
-    if (!isAuthenticated && onGuestClick) {
-      onGuestClick();
+  const handleHeartClick = async () => {
+    const authResult = await checkAuthStatus();
+
+    if (!authResult.isAuthenticated) {
+      window.location.href = '/login'; // Redirect to login page
       return;
     }
+
     setIsOpen(true);
     setTempAddedItems([]);
     setJustAddedToList(null);
@@ -172,8 +178,17 @@ const WishlistAddToList = ({
   };
 
   const handleWishlistSelect = async (wishlist: Wishlist) => {
-    // Check for existing product
-    const isProductInList = wishlist.items.some(
+    const authResult = await checkAuthStatus();
+
+    if (!authResult.isAuthenticated) {
+      console.log('Auth required for wishlist selection');
+      if (onGuestClick) {
+        onGuestClick();
+      }
+      return;
+    }
+
+    const isProductInList = wishlist.items?.some(
       (item) => item.product?.entityId === product?.entityId,
     );
 
@@ -189,8 +204,36 @@ const WishlistAddToList = ({
 
     setLoadingListId(wishlist.entityId);
     try {
-      setTempAddedItems((prev) => [...prev, { listId: wishlist.entityId, product }]);
+      const productToAdd = {
+        listId: wishlist.entityId,
+        product: {
+          entityId: product.entityId,
+          name: product.name,
+          path: product.path,
+          images: product.images,
+          brand: product.brand,
+          prices: product.prices,
+          variantEntityId: product.variantEntityId,
+        },
+      };
+
+      setTempAddedItems((prev) => [...prev, productToAdd]);
       setJustAddedToList(wishlist.entityId);
+
+      setCurrentWishlists((prev) =>
+        prev.map((w) => {
+          if (w.entityId === wishlist.entityId) {
+            return {
+              ...w,
+              items: w.items
+                ? [...w.items, { entityId: Date.now(), product: productToAdd.product }]
+                : [{ entityId: Date.now(), product: productToAdd.product }],
+            };
+          }
+          return w;
+        }),
+      );
+
       setMessage({
         type: 'success',
         text: 'Item added to list. Click SAVE to confirm.',
@@ -205,8 +248,64 @@ const WishlistAddToList = ({
     }
   };
 
+  const handleSave = async () => {
+    const authResult = await checkAuthStatus();
+
+    if (!authResult.isAuthenticated) {
+      console.log('Auth required for saving changes');
+      if (onGuestClick) {
+        onGuestClick();
+      }
+      return;
+    }
+
+    if (tempAddedItems.length === 0) {
+      setMessage({ type: 'error', text: 'Please add items to save' });
+      return;
+    }
+
+    setIsSaving(true);
+    try {
+      for (const item of tempAddedItems) {
+        const result = await addToWishlist(
+          item.listId,
+          item.product.entityId,
+          item.product.variantEntityId,
+        );
+
+        if (result.status !== 'success') {
+          throw new Error(result.message || 'Failed to add item to list');
+        }
+      }
+
+      setMessage({ type: 'success', text: 'All items saved successfully' });
+
+      setTimeout(() => {
+        router.refresh();
+        setIsOpen(false);
+        setTempAddedItems([]);
+        setJustAddedToList(null);
+      }, 1500);
+    } catch (error) {
+      console.error('Error saving items:', error);
+      setMessage({ type: 'error', text: 'Failed to save items. Please try again.' });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   const handleCreateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    const authResult = await checkAuthStatus();
+
+    if (!authResult.isAuthenticated) {
+      console.log('Auth required for creating wishlist');
+      if (onGuestClick) {
+        onGuestClick();
+      }
+      return;
+    }
+
     const trimmedName = newListName.trim();
 
     if (!trimmedName) {
@@ -255,45 +354,9 @@ const WishlistAddToList = ({
         setMessage({ type: 'error', text: result.message || 'Failed to create new list' });
       }
     } catch (error) {
-      console.error('Error creating list:', error);
       setMessage({ type: 'error', text: 'Failed to create new list' });
     } finally {
       setIsCreating(false);
-    }
-  };
-
-  const handleSave = async () => {
-    if (tempAddedItems.length === 0) {
-      setMessage({ type: 'error', text: 'Please add items to save' });
-      return;
-    }
-
-    setIsSaving(true);
-    try {
-      for (const item of tempAddedItems) {
-        const result = await addToWishlist(
-          item.listId,
-          item.product.entityId,
-          item.product.variantEntityId,
-        );
-
-        if (result.status !== 'success') {
-          throw new Error(result.message || 'Failed to add item to list');
-        }
-      }
-
-      setMessage({ type: 'success', text: 'All items saved successfully' });
-      setTimeout(() => {
-        router.refresh();
-        setIsOpen(false);
-      }, 1500);
-    } catch (error) {
-      console.error('Error saving items:', error);
-      setMessage({ type: 'error', text: 'Failed to save items. Please try again.' });
-    } finally {
-      setIsSaving(false);
-      setTempAddedItems([]);
-      setJustAddedToList(null);
     }
   };
 
@@ -352,65 +415,51 @@ const WishlistAddToList = ({
               <div className="flex-1">
                 <div className="max-h-[250px] overflow-y-auto pr-2">
                   <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300">
-                   
-                  {currentWishlists.map((wishlist) => {
-  if (!wishlist.items || !product) return null;
+                    {currentWishlists.map((wishlist) => {
+                      if (!wishlist.items || !product) return null;
 
-  const isProductInList =
-    wishlist.items.some(
-      (item) => item.product?.entityId === product?.entityId
-    ) ||
-    tempAddedItems.some((item) => item.listId === wishlist.entityId);
+                      const isProductInList =
+                        wishlist.items.some(
+                          (item) => item.product?.entityId === product?.entityId,
+                        ) || tempAddedItems.some((item) => item.listId === wishlist.entityId);
 
-  const isLoading = loadingListId === wishlist.entityId;
-  const isAdded = justAddedToList === wishlist.entityId;
+                      const isLoading = loadingListId === wishlist.entityId;
+                      const isAdded = justAddedToList === wishlist.entityId;
 
-  return (
-    <button
-      key={wishlist.entityId}
-      onClick={() => {
-        if (isProductInList) {
-          setMessage({
-            type: 'error',
-            text: `This product already exists in "${wishlist.name}"`
-          });
-        } else {
-          handleWishlistSelect(wishlist);
-        }
-      }}
-      disabled={isPending || isLoading}
-      className={cn(
-        'group flex w-full items-center py-[0.5em] text-left transition-colors',
-        isProductInList 
-          ? 'cursor-not-allowed bg-gray-50'
-          : 'hover:bg-gray-50',
-        (isPending || isLoading) && 'opacity-50'
-      )}
-    >
-      <div className="flex h-[30px] w-[30px] items-center justify-center">
-        {isLoading ? (
-          <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
-        ) : isAdded ? (
-          <div className="flex h-5 w-5 items-center justify-center rounded-full bg-[#4CAF50]">
-            <Check className="h-3 w-3 text-white" />
-          </div>
-        ) : (
-          <span className="text-[30px] leading-none text-[#A9A9A9]">+</span>
-        )}
-      </div>
-      <span className="text-[#4B4B4B]">
-        {wishlist.name}
-        <span className="ml-2 text-[#4B4B4B]">
-          ({wishlist.items.length +
-            tempAddedItems.filter((item) => item.listId === wishlist.entityId)
-              .length}{' '}
-          items)
-        </span>
-      </span>
-    </button>
-  );
-})}
-
+                      return (
+                        <button
+                          key={wishlist.entityId}
+                          onClick={() => {
+                            if (isProductInList) {
+                              setMessage({
+                                type: 'error',
+                                text: `This product already exists in "${wishlist.name}"`,
+                              });
+                            } else {
+                              handleWishlistSelect(wishlist);
+                            }
+                          }}
+                          disabled={isPending || isLoading}
+                          className={cn(
+                            'group flex w-full items-center py-[0.5em] text-left transition-colors',
+                            isProductInList ? 'cursor-not-allowed bg-gray-50' : 'hover:bg-gray-50',
+                            (isPending || isLoading) && 'opacity-50',
+                          )}
+                        >
+                          <span className="text-[#4B4B4B]">
+                            {wishlist.name}
+                            <span className="ml-2 text-[#4B4B4B]">
+                              ({wishlist.items.length} items)
+                            </span>
+                          </span>
+                          {isLoading ? (
+                            <Loader2 className="ml-auto h-4 w-4 animate-spin" />
+                          ) : isAdded ? (
+                            <Check className="ml-auto h-4 w-4 text-green-500" />
+                          ) : null}
+                        </button>
+                      );
+                    })}
                   </div>
                 </div>
               </div>

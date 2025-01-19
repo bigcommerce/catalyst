@@ -27,6 +27,8 @@ import Link from 'next/link';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import addToCart from '~/public/add-to-cart/addToCart.svg';
 import Image from 'next/image';
+import WishlistAddToList from '../../../account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
+import { useWishlists } from '../../../account/(tabs)/wishlists/wishlist-add-to-list/hooks';
 
 interface ProductOptionValue {
   entityId: number;
@@ -49,6 +51,20 @@ interface ProductImage {
   url: string;
   altText: string;
   isDefault: boolean;
+}
+
+interface Props {
+  product: FragmentOf<typeof DetailsFragment>;
+  collectionValue?: string;
+  dropdownSheetIcon?: string;
+  cartHeader?: string;
+  couponIcon?: string;
+  paywithGoogle?: string;
+  payPal?: string;
+  requestQuote?: string;
+  closeIcon?: string;
+  blankAddImg?: string;
+  productImages?: string;
 }
 
 export const DetailsFragment = graphql(
@@ -108,6 +124,7 @@ export const DetailsFragment = graphql(
       }
       brand {
         name
+        path
       }
       ...PricingFragment
     }
@@ -121,19 +138,6 @@ export const DetailsFragment = graphql(
   ],
 );
 
-interface Props {
-  product: FragmentOf<typeof DetailsFragment>;
-  collectionValue?: string;
-  dropdownSheetIcon?: string;
-  cartHeader?: string;
-  couponIcon?: string;
-  paywithGoogle?: string;
-  payPal?: string;
-  requestQuote?: string;
-  closeIcon?: string;
-  blankAddImg?: string;
-  productImages?: string;
-}
 export const Details = ({
   product,
   collectionValue,
@@ -147,6 +151,8 @@ export const Details = ({
   blankAddImg,
   productImages,
 }: Props) => {
+  const { wishlists, isAuthenticated, loading } = useWishlists();
+
   const t = useTranslations('Product.Details');
   const format = useFormatter();
   const productFormRef = useRef<HTMLDivElement>(null);
@@ -159,7 +165,6 @@ export const Details = ({
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
-  // const productImages = removeEdgesAndNodes(product.images);
   const variants = removeEdgesAndNodes(product.variants);
 
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
@@ -221,43 +226,7 @@ export const Details = ({
   }, [searchParams, product, variants, productOptions, currentMainMedia]);
 
   useEffect(() => {
-    // store product id in local storage for Salesbuddy
     store_pdp_product_in_localstorage(product);
-  }, [product]);
-
-  useEffect(() => {
-    console.log('Product Details:', {
-      basic: {
-        name: product.name,
-        entityId: product.entityId,
-        sku: product.sku,
-        mpn: product.mpn,
-        upc: product.upc,
-        brand: product.brand?.name,
-        variantId: product.variants?.edges?.[0]?.node?.entityId || 0,
-      },
-      pricing: {
-        price: product.prices?.price,
-        basePrice: product.prices?.basePrice,
-        priceRange: product.prices?.priceRange,
-      },
-      inventory: {
-        minPurchaseQuantity: product.minPurchaseQuantity,
-        maxPurchaseQuantity: product.maxPurchaseQuantity,
-        availability: product.availabilityV2?.description,
-      },
-      specs: {
-        condition: product.condition,
-        weight: product.weight,
-        customFields: removeEdgesAndNodes(product.customFields),
-      },
-      images: {
-        defaultImage: product.defaultImage,
-        allImages: removeEdgesAndNodes(product.images),
-      },
-      variants: removeEdgesAndNodes(product.variants),
-      options: removeEdgesAndNodes(product.productOptions),
-    });
   }, [product]);
 
   const getSelectedValue = (option: MultipleChoiceOption): string => {
@@ -274,11 +243,11 @@ export const Details = ({
     const defaultValue = values.find((value) => value.isDefault);
     return defaultValue?.label || 'Select';
   };
+
   return (
     <div>
       {showStickyHeader && (
         <>
-          {/* Desktop View - Sticky Top */}
           <div className="fixed left-0 right-0 top-0 z-50 hidden border-b border-gray-200 bg-white shadow-2xl xl:block">
             <div className="container mx-auto px-[3rem] pb-[2rem] pt-[1rem]">
               <div className="flex items-center justify-between gap-4">
@@ -309,36 +278,6 @@ export const Details = ({
                         <span className="text-[14px] font-bold leading-[24px] tracking-[0.25px]">
                           SKU: {product.mpn}
                         </span>
-                      )}
-
-                      {product.mpn &&
-                        productOptions.filter(
-                          (option) => option.__typename === 'MultipleChoiceOption',
-                        ).length > 0 && <span className="mx-1 text-[14px] font-normal">|</span>}
-                      {productOptions.filter(
-                        (option) => option.__typename === 'MultipleChoiceOption',
-                      ).length > 0 && (
-                        <div className="inline text-[14px] font-normal">
-                          {productOptions
-                            .filter((option) => option.__typename === 'MultipleChoiceOption')
-                            .map((option, index, filteredArray) => {
-                              if (option.__typename === 'MultipleChoiceOption') {
-                                const selectedValue = getSelectedValue(
-                                  option as MultipleChoiceOption,
-                                );
-                                return (
-                                  <span key={option.entityId}>
-                                    <span className="font-bold">{option.displayName}:</span>
-                                    <span className="text-[15px]"> {selectedValue}</span>
-                                    {index < filteredArray.length - 1 && (
-                                      <span className="mx-1">|</span>
-                                    )}
-                                  </span>
-                                );
-                              }
-                              return null;
-                            })}
-                        </div>
                       )}
                     </div>
                   </div>
@@ -413,46 +352,34 @@ export const Details = ({
               </div>
             </div>
           </div>
-
-          <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
-              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-            } px-[20px] pt-[20px]`}
-          >
-            {/* Mobile View Button */}
-            <button
-              className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
-              onClick={() => {
-                const addToCartButton = productFormRef.current?.querySelector(
-                  'button[type="submit"]',
-                ) as HTMLButtonElement | null;
-                if (addToCartButton) {
-                  addToCartButton.click();
-                }
-              }}
-            >
-              <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                ADD TO CART
-              </span>
-              <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
-                <Image
-                  src={addToCart}
-                  className=""
-                  alt="Add to Cart"
-                  unoptimized={true}
-                  width={44}
-                  height={44}
-                />
-              </div>
-            </button>
-          </div>
         </>
       )}
 
       <div className="div-product-details">
-        <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
-          {product.name}
-        </h1>
+        {/* Add relative positioning wrapper */}
+        <div className="relative">
+          <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
+            {product.name}
+          </h1>
+
+          {/* Add wishlist button */}
+          {/* Wishlist component */}
+          <div className="mb-4 flex justify-center lg:justify-start">
+            <WishlistAddToList
+              wishlists={wishlists}
+              hasPreviousPage={false}
+              product={{
+                entityId: product.entityId,
+                name: product.name,
+                path: product.path || '',
+                images: removeEdgesAndNodes(product.images),
+                brand: product.brand,
+                prices: product.prices,
+                variantEntityId: product.variants?.edges?.[0]?.node?.entityId,
+              }}
+            />
+          </div>
+        </div>
 
         <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
           <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
@@ -471,7 +398,9 @@ export const Details = ({
             <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
               from the{' '}
               <Link
-                href={`/search?brand_name[0]=${encodeURIComponent(product.brand?.name ?? '')}&collection[0]=${encodeURIComponent(collectionValue)}`}
+                href={`/search?brand_name[0]=${encodeURIComponent(
+                  product.brand?.name ?? '',
+                )}&collection[0]=${encodeURIComponent(collectionValue)}`}
                 className="products-underline border-b border-black"
               >
                 {collectionValue}
