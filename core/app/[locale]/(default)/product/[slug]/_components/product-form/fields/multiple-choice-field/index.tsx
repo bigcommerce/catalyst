@@ -10,6 +10,8 @@ import { useProductFieldController } from '../../use-product-form';
 import { ErrorMessage } from '../shared/error-message';
 
 import { MultipleChoiceFieldFragment } from './fragment';
+import { BcImage } from '~/components/bc-image';
+import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg'
 
 interface InteractionOptions {
   optionId: number;
@@ -193,10 +195,13 @@ export const MultipleChoiceField = ({
       return (
         <div key={option.entityId} className="div-product-rectangleboxes mt-3 xl:mt-0">
           <div className="mb-3 block !gap-0 text-center lg:flex lg:items-center xl:flex xl:items-center">
-            <img
+            <BcImage
               className="variant-img inline-block !h-[20px] !w-[20px] rounded-[50px]"
               alt="headline icon"
-              src={multipleOptionIcon}
+              src={exclamatryIcon}
+              width={15}
+              height={15}
+              unoptimized={true}
               loading="lazy"
             />
             <Label

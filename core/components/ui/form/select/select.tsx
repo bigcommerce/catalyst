@@ -15,10 +15,11 @@ interface Props extends ComponentPropsWithRef<typeof SelectPrimitive.Root> {
   label?: string;
   options: Option[];
   placeholder?: string | ReactNode;
+  selectError?:string
 }
 
 const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
-  ({ children, id: triggerId, label, options, placeholder, error = false, ...props }, ref) => {
+  ({ children,selectError, id: triggerId, label, options, placeholder, error = false, ...props }, ref) => {
     const id = useId();
 
     return (

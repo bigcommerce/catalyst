@@ -5,6 +5,7 @@ import { Field, FieldControl, FieldLabel, FieldMessage, Select } from '~/compone
 
 import { FormFieldsFragment } from './fragment';
 import { FieldNameToFieldId } from './utils';
+import { useState } from 'react';
 
 type PicklistType = Extract<
   FragmentOf<typeof FormFieldsFragment>,
@@ -25,6 +26,10 @@ interface PicklistProps {
       | ((prevState: PicklistValidationState) => PicklistValidationState),
   ) => void;
   options: Array<{ label: string; entityId: string | number }>;
+  selectedOption?: string;
+  setSelectedOption?: any;
+  selectError?: string;
+  setSelectError?: any;
 }
 
 export const Picklist = ({
@@ -35,6 +40,10 @@ export const Picklist = ({
   onChange,
   onValidate,
   options,
+  selectedOption,
+  setSelectedOption,
+  selectError,
+  setSelectError,
 }: PicklistProps) => {
   const t = useTranslations('Components.FormFields.Validation');
 
@@ -51,6 +60,25 @@ export const Picklist = ({
         }
       : undefined;
 
+  const handleValueChange = (value: string) => {
+    if (field.label === 'I am a:*') {
+      setSelectedOption(value);
+        if(selectedOption == '15'){
+          setSelectError('Please select an option.')
+        } else {
+          setSelectError('');
+        }
+    }
+
+    if (field.entityId === FieldNameToFieldId.countryCode) {
+      if (onChange) {
+        onChange(value);
+      }
+    } else if (validateAgainstMissingValue) {
+      validateAgainstMissingValue(value);
+    }
+  };
+
   return (
     <Field className="mm4 relative space-y-2" name={name}>
       <FieldLabel
@@ -62,15 +90,12 @@ export const Picklist = ({
       </FieldLabel>
       <FieldControl asChild>
         <Select
+          selectError={selectError}
           aria-label={field.choosePrefix}
           defaultValue={defaultValue}
           error={isValid === false}
           id={`field-${field.entityId}`}
-          onValueChange={
-            field.entityId === FieldNameToFieldId.countryCode
-              ? onChange
-              : validateAgainstMissingValue
-          }
+          onValueChange={handleValueChange}
           options={options.map(({ label, entityId }) => ({
             label,
             value: entityId.toString(),
@@ -80,12 +105,14 @@ export const Picklist = ({
               {field.choosePrefix}
             </span>
           }
-          required={field.isRequired}
+          // required={field.isRequired}
+          required={field.label === 'I am a:*' ? field.isRequired = false : field.isRequired}
         />
       </FieldControl>
       <div className="relative h-7">
-        {validationError && (
-          <FieldMessage className="inline-flex w-full text-xs font-normal text-[#A71F23] text-error">
+        {/* {(selectError || validationError) && ( */}
+        {(selectError) && (
+          <FieldMessage className="inline-flex w-full text-xs font-normal text-[#A71F23]">
             {t('empty')}
           </FieldMessage>
         )}

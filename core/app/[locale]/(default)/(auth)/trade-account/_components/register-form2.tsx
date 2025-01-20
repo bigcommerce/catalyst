@@ -23,6 +23,7 @@ import { Form } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 import { registerCustomers } from '../_actions/register-customers';
 import { logins } from '../_actions/logins';
+import { selectors } from '@playwright/test';
 
 // Constants
 const REQUIRED_FIELDS = new Set([
@@ -201,6 +202,9 @@ export const RegisterForm2 = ({
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
   const [showAddressLine2, setShowAddressLine2] = useState(false);
 
+  const [selectedOption, setSelectedOption] = useState("15");
+  const [selectError, setSelectError] = useState("");
+
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Register.Form');
 
@@ -321,6 +325,12 @@ export const RegisterForm2 = ({
 
   // Form submission handler
   const onSubmit = async (formData: FormData) => {
+
+    if(selectedOption == '15'){
+      setSelectError("Please select an option.");
+      return;
+    }
+
     if (isSubmitting) return;
 
     const stateValue = formData.get('address-stateOrProvince');
@@ -487,6 +497,10 @@ export const RegisterForm2 = ({
               name={fieldName}
               onValidate={setPicklistValid}
               options={field.options}
+              selectedOption={selectedOption}
+              setSelectedOption={setSelectedOption}
+              selectError={selectError}
+              setSelectError={setSelectError}
             />
           </FieldWrapper>
         );
@@ -649,6 +663,10 @@ export const RegisterForm2 = ({
         className="register-form mx-auto max-w-[600px] sm:pt-3 md:pt-3"
         onSubmit={(e) => {
           e.preventDefault();
+          if(!selectedOption && !selectedOption.trim()){
+            setSelectError("Please select an option.");
+            return;
+          }
           const formData = new FormData(e.currentTarget);
           onSubmit(formData);
         }}
@@ -712,7 +730,7 @@ export const RegisterForm2 = ({
             className="relative w-full items-center !bg-[#008BB7] px-8 py-2 !transition-colors !duration-500 hover:!bg-[rgb(75,200,240)] disabled:cursor-not-allowed xl:mt-[10px]"
             variant="primary"
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || !!selectError}
           >
             {isSubmitting ? 'SUBMITTING...' : 'SUBMIT'}
           </Button>

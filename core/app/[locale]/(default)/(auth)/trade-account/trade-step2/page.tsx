@@ -136,7 +136,6 @@ export default async function Trade() {
   const filteredCountries = countries.filter(
     (country) => country.code === 'CA' || country.code === 'US',
   );
-  console.log(filteredCountries, 'FIlter countries============');
 
   return (
     <div className="trade-register-section min-h-screen bg-white pb-8">
