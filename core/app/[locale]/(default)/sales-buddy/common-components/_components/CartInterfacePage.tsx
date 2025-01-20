@@ -24,16 +24,30 @@ export default function CartInterface() {
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [isCommentVisible, setIsCommentVisible] = useState(false); // Toggle visibility of comment form
   const [isCommentSaved, setIsCommentSaved] = useState(false);
-  const [prevComments,setPrevComments]=useState('')
-  const [formData, setFormData] = useState({
-    accountId: '',
+  const [prevComments, setPrevComments] = useState('')
+  const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
+  const [accountId, setAccountId] = useState<string>('');
+  const [accountIdError, setAccountIdError] = useState<string | null>(null);
+  type FormData = {
+    // accountId: string;
+    supplier: string;
+    sku: string;
+    cost: string;
+    retailPrice: string;
+    productName: string;
+    quantity: string;
+    // comment: string;
+  };
+
+  const [formData, setFormData] = useState<FormData>({
+    // accountId: '',
     supplier: '',
     sku: '',
     cost: '',
     retailPrice: '',
     productName: '',
     quantity: '',
-    comment: '',
+    // comment: '',
   });
   const [loading, setLoading] = useState({
     accountId: false,
@@ -49,48 +63,77 @@ export default function CartInterface() {
     quantity: useRef<HTMLInputElement>(null),
   };
 
-  const router=useRouter()
+  const router = useRouter()
 
   useEffect(() => {
-  //  GetComment
+    //  GetComment
     const getComment = async () => {
       try {
-      const response = await GetComment();
-      setPrevComments(response?.data?.output)
-    } catch (error: any) {
-      setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
-    }
+        const response = await GetComment();
+        setPrevComments(response?.data?.output)
+      } catch (error: any) {
+        setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
+      }
     }
     getComment()
 
   }, [])
+
+
+  const validate = () => {
+    const newErrors: Partial<Record<keyof FormData, string>> = {};
+
+    // Simple validation rules
+    for (const key in formData) {
+      const value = formData[key as keyof FormData];
+
+      // Check for required fields
+      if (!value) {
+        newErrors[key as keyof FormData] = `Feild is required`;
+      }
+
+      // Check for number fields
+      if (['cost', 'retailPrice', 'quantity'].includes(key) && value !== '' && isNaN(Number(value))) {
+        newErrors[key as keyof FormData] = `Feild must be a valid number`;
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Return true if no errors
+  };
+  
   
   const handleCustomProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading((prev) => ({ ...prev, customItem: true }));
-    const createCustomProductData = {
-      supplier: formData.supplier,
-      sku: customProductRefs.sku.current?.value?.trim() || '',
-      cost: parseFloat(customProductRefs.cost.current?.value?.trim() || ''),
-      retailPrice: parseFloat(customProductRefs.retailPrice.current?.value?.trim() || ''),
-      productName: customProductRefs.productName.current?.value?.trim() || '',
-      quantity: Number(customProductRefs.quantity.current?.value?.trim() || 1),
-      // access_id: process.env.SALES_BUDDY_ACCESS_ID
-    };
-    try {
-      const response = await addCustomProduct(createCustomProductData);
-      if (response.status === 200) {
+    const createCustomProductData = formData
+    if (validate()){
+      try {
+        const response = await addCustomProduct(createCustomProductData);
+        // var response={status:200}
+        if (response.status === 200) {
+          setLoading((prev) => ({ ...prev, customItem: false }));
+          setSuccessMessage('Product added successfully!');
+          setFormData({
+            supplier: '',
+            sku: '',
+            cost: '',
+            retailPrice: '',
+            productName: '',
+            quantity: '',
+          })
+          router.refresh()
+        } else {
+          setLoading((prev) => ({ ...prev, customItem: false }));
+          setErrorMessage(`Failed to add product: ${response.error || 'Unknown error'}`);
+        }
+      } catch (error: any) {
         setLoading((prev) => ({ ...prev, customItem: false }));
-        setSuccessMessage('Product added successfully!');
-        router.refresh()
-      } else {
-        setLoading((prev) => ({ ...prev, customItem: false }));
-        setErrorMessage(`Failed to add product: ${response.error || 'Unknown error'}`);
+        console.error('Error during add product:', error);
+        setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
       }
-    } catch (error: any) {
+    }else{
       setLoading((prev) => ({ ...prev, customItem: false }));
-      console.error('Error during add product:', error);
-      setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
     }
   };
   // Handle edit comment functionality
@@ -123,38 +166,44 @@ export default function CartInterface() {
   };
   const handleCommentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setComment(e.target.value);
-    
+    setErrorMessage('');
+
   };
 
   const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading((prev) => ({ ...prev, comments: true }));    
-    const createCommentData = {
-      comment: comment.trim() || '',
-      action: '',
-    };
-
+    setLoading((prev) => ({ ...prev, comments: true }));
     
-    try {
-      const response = await addComment(createCommentData);
-      if (response.status === 200) {
+    if (comment === '') {
+    setErrorMessage('Please enter a comment before submitting');
+    setLoading((prev) => ({ ...prev, comments: false }));
+    return;
+   }else{
+     const createCommentData = {
+       comment: comment.trim() || '',
+       action: '',
+     };
+     try {
+       const response = await addComment(createCommentData);
+       if (response.status === 200) {
 
-        setLoading((prev) => ({ ...prev, comments: false }));
-        setPrevComments(comment)
-        // setIsCommentVisible(false);
-        setIsCommentSaved(true);
-        setSuccessMessage('commented successfully!');
-        // setIsCommentSaved(true);// Mark the comment as saved
-        // setIsCommentVisible(true);
-      } else {
-        setLoading((prev) => ({ ...prev, comments: false }));
-        setErrorMessage(`Failed to comment: ${response.error || 'Unknown error'}`);
-      }
-    } catch (error: any) {
-      setLoading((prev) => ({ ...prev, comments: false }));
-      console.error('Error during comment:', error);
-      setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
-    }
+         setLoading((prev) => ({ ...prev, comments: false }));
+         setPrevComments(comment)
+         // setIsCommentVisible(false);
+         setIsCommentSaved(true);
+         setSuccessMessage('commented successfully!');
+         // setIsCommentSaved(true);// Mark the comment as saved
+         // setIsCommentVisible(true);
+       } else {
+         setLoading((prev) => ({ ...prev, comments: false }));
+         setErrorMessage(`Failed to comment: ${response.error || 'Unknown error'}`);
+       }
+     } catch (error: any) {
+       setLoading((prev) => ({ ...prev, comments: false }));
+       console.error('Error during comment:', error);
+       setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
+     }
+   }
   };
   const toggleAccordion = (index: number) => {
     setOpenAccordions((prev) =>
@@ -166,6 +215,16 @@ export default function CartInterface() {
     fields: Array<{ id: string; label: string; component?: JSX.Element }>,
     refs: any,
   ) => {
+    const handleOnchangeInput=(e:React.ChangeEvent<HTMLInputElement>)=>{
+      const { id, value } = e.target;
+      // console.log(id,"-",value);
+      setErrors((prev) => ({ ...prev, [id]: '' }));
+      setFormData((prev) => ({
+        ...prev,
+        [id]: id === 'cost' || id === 'retailPrice' || id === 'quantity' ? Number(value) : value,
+      }));
+    }
+
     return fields.map((item, component) => (
       <div key={item.id} className="space-y-[10px]">
         <div className="flex flex-col">
@@ -176,7 +235,7 @@ export default function CartInterface() {
             {item.label}
           </label>
           {component ? (
-            <Input id={item.id} ref={refs[item.id]} className="w-full" />
+            <Input id={item.id} onChange={(e) => handleOnchangeInput(e) }  className="w-full" />
           ) : (
             <SelectDropdown
               id="supplier"
@@ -185,17 +244,24 @@ export default function CartInterface() {
               options={[]}
             />
           )}
+        <p className="text-red-800">{errors?.[item.id]}</p>
         </div>
+
       </div>
     ));
   };
 
+  
   const handleAddAccountSubmit = (e: any) => {
     e.preventDefault();
     setLoading((prev) => ({ ...prev, accountId: true }));
-    setInterval(() => {
-      setLoading((prev) => ({ ...prev, accountId: false }));
-    }, 3000);
+    if(accountId === ''){
+      setAccountIdError('Please enter a Account ID before submitting');
+    }else{
+      setInterval(() => {
+        setLoading((prev) => ({ ...prev, accountId: false }));
+      }, 3000);
+    }
   };
 
   const accordions = [
@@ -212,15 +278,17 @@ export default function CartInterface() {
           <Input
             id="accountId"
             placeholder="Account ID"
-            value={formData.accountId}
+            value={accountId}
             onChange={(e) => {
-              setFormData((prev) => ({ ...prev, accountId: e.target.value }));
+              setAccountId(e.target.value);
+              setAccountIdError('');
             }}
             className="mb-[10px]"
           />
+          <p className="text-red-800">{accountIdError}</p>
           <Button
-          
-            className="font-open-sans w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white"
+
+            className="mt-2 font-open-sans w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white"
             onClick={(e) => {
               handleAddAccountSubmit(e);
             }}
@@ -249,10 +317,10 @@ export default function CartInterface() {
               { id: 'sku', label: 'Full SKU*' },
               { id: 'cost', label: 'Our Cost*' },
               { id: 'retailPrice', label: 'Retail Price*' },
-              { id: 'productName', label: 'Product Name (Optional)' },
-              { id: 'quantity', label: 'Quantity' },
+              { id: 'productName', label: 'Product Name*' },
+              { id: 'quantity', label: 'Quantity*' },
             ],
-            customProductRefs,
+            formData,
           )}
           <Button className="font-open-sans mt-[10px] w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white">
             <div className="absolute inset-0 flex items-center justify-center">
@@ -275,7 +343,7 @@ export default function CartInterface() {
 
         <div>
           <div className="items-center border-x-0 border-y-[1px] border-[#CCCBCB] bg-white px-[20px] py-[10px]">
-           
+
             <button
               onClick={() => setIsCommentVisible(!isCommentVisible)} // Toggle visibility of comment form
               className="font-open-sans flex h-[32px] w-full flex-1 items-center justify-between gap-[5px] font-normal tracking-[1.25px] text-[#353535]"
@@ -327,6 +395,8 @@ export default function CartInterface() {
                   value={comment}
                   onChange={handleCommentChange} // Update comment state on change
                 />
+                {errorMessage && <div className="text-red-500">{errorMessage}</div>}
+
                 <Button
                   onClick={handleCommentSubmit} // Save the comment
                   className="font-open-sans mt-[10px] w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white"
@@ -338,7 +408,7 @@ export default function CartInterface() {
                 </Button>
               </div>
             )}
-            
+
 
             {/* If the comment is saved, show Edit and Delete buttons */}
             {isCommentSaved && (
@@ -361,7 +431,7 @@ export default function CartInterface() {
                   </button>
                 </div>
               </div>
-             )} 
+            )}
           </div>
         </div>
       </div>

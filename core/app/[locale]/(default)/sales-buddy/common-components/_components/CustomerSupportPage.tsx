@@ -16,8 +16,10 @@ import { getShopperUrls } from '../../_actions/get-shopper-urls';
 import Link from 'next/link';
 import SystemInfoComponent from './SystemInformationComponent';
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
+import CompactUserCard from './SystemInformationComponent/CustomerDetailUsingSessionId';
 function CustomerSupportPage() {
   const [customerDetails, setCustomerDetails] = useState({});
+  const [customerDetailsBasedOnSessionId, setCustomerDetailsBasedOnSessionId] = useState([]);
   const [cartErrorMessage, setCartErrorMessage] = useState<string | null>(null);
   const [urlinputErrorMessage, setUrlinputErrorMessage] = useState<string | null>(null);
   const [cartSuccessMessage, setCartSuccessMessage] = useState<string | null>(null);
@@ -76,6 +78,7 @@ function CustomerSupportPage() {
   const handleCartLookupSubmit = async (e: React.FormEvent) => {
     setLoading((prev) => ({ ...prev, show1: true }));
     e.preventDefault();
+    
     if(cartId === ''){
       const cartError = validateInput('cart-id', cartId, "");
       setCartErrorMessage('Session Id cannot be empty');
@@ -84,13 +87,17 @@ function CustomerSupportPage() {
     }
     try {
       const response = await getCustomerUrlSession_id(cartId);
+      if (response.output.count > 0){
+        setCart_interface_session_id(response.output.data[0]['session_id'])
+        setCart_interface_Refferal_id(response.output.data[0]['referral_id'])
+
+        setCustomerDetailsBasedOnSessionId(response.output.data[0])
+        UpdateCartIdCookie(response.output.data[0]['cart_id'])
+        setUpdatedCCartId(cartId)
+      }else{
+        setCartErrorMessage('No cart found with the given session id');
+      }
       
-      // localStorage.setItem("referrerId", response.output.data[0]['referral_id'])
-      // localStorage.setItem("session_id", response.output.data[0]['session_id'])
-      setCart_interface_session_id(response.output.data[0]['session_id'])
-      setCart_interface_Refferal_id(response.output.data[0]['referral_id'])
-      UpdateCartIdCookie(response.output.data[0]['cart_id'])
-      setUpdatedCCartId(cartId)
       setLoading((prev) => ({ ...prev, show1: false }));
     } catch (error: any) {
       setLoading((prev) => ({ ...prev, show1: false }));
@@ -177,6 +184,7 @@ function CustomerSupportPage() {
 
       }
       else{
+        setUrlinputErrorMessage('No shopper data found with the given session id');
         setShopperSystemInfo({})
         setCustomerVisitedUrl([]);
         const storeShopperInformationInLS = {
@@ -207,11 +215,11 @@ function CustomerSupportPage() {
       // findCustomerData.last_name !== ''
     ) {
       try {
-        const response = await findCustomerDetails(findCustomerData);
+        const response = await findCustomerDetails(findCustomerData);        
         setCustomerDetails(findCustomerData);
-        if (response.status === 200) {
+        if (response.data.status == 200) {
           setLoading((prev) => ({ ...prev, show2: false }));
-          let data = response.data.output.data;
+          let data = response.data.output;
           const extractedData = data.map(
             (item: { first_name: any; last_name: any; email: any }) => ({
               first_name: item.first_name,
@@ -233,7 +241,7 @@ function CustomerSupportPage() {
           setLoading((prev) => ({ ...prev, show2: false }));
           setTableData([])
           const errorMessage = response.error || 'An unknown error occurred';
-          setFindCustomerErrorMessage(`Failed to retrieve account`);
+          setFindCustomerErrorMessage(`else Failed to retrieve account`);
           setFindCustomerSuccessMessage(null);
         }
       } catch (error: any) {
@@ -260,7 +268,7 @@ function CustomerSupportPage() {
       !createAccountData.referral_id
     ) {
       setCreateAccountErrorMessage(
-        'Please provide a first name, last name,  valid email address and Refferal ID.',
+        'Please provide a first name, last name,  valid email address and Referral ID.',
       );
       setCreateAccountSuccessMessage(null);
       setLoading((prev) => ({ ...prev, show3: false }));
@@ -323,15 +331,13 @@ function CustomerSupportPage() {
 
   const UrlList = ({ urls }: { urls: { id: string; url: string }[] }) => {
     return (
-      <div className='m-4'>
+      <div className='m-4 max-w-md'>
         <h2 className='text-lg font-bold mb-2'>URLs</h2>
         <ul className='list-disc pl-5'>
           {urls.map((item) => (
             <li key={item.id} className='mb-2'>
-              <Link href={item.url} className='text-blue-600 hover:underline'>
-                {/* <a className='text-blue-600 hover:underline'> */}
+              <Link href={item.url} className='text-blue-600 hover:underline break-words block'>
                 {item.url}
-                {/* </a> */}
               </Link>
             </li>
           ))}
@@ -365,6 +371,9 @@ function CustomerSupportPage() {
       case 'cart-id': {
         setCartId(value);
         const cartError = validateInput('cart-id', value,"");
+        if(value.length !== 17){
+          setCustomerDetailsBasedOnSessionId([])
+        }
         setCartErrorMessage(cartError);
         break;
       }
@@ -505,6 +514,7 @@ function CustomerSupportPage() {
           />
           {cartErrorMessage && <p className="text-red-800">{cartErrorMessage}</p>}
           {cartSuccessMessage && <p className="text-green-600">{cartSuccessMessage}</p>}
+          
           <button
             type="submit"
             className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
@@ -514,6 +524,9 @@ function CustomerSupportPage() {
               {loading.show1 && <Loader />}
             </div>
           </button>
+          {Object.keys(customerDetailsBasedOnSessionId).length > 0 && cartErrorMessage =='' && cartId !=='' && <div className='m-2'>
+            <CompactUserCard data={customerDetailsBasedOnSessionId} />
+          </div>}
         </form>
       ),
     },
