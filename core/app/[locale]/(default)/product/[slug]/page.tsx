@@ -273,7 +273,9 @@ export default async function ProductPage(props: Props) {
               productImages={productImages}
             />
             <div className="lg:col-span-2">
+            <hr className="border border-gray-200 mb-4"/>
               <Description product={product} />
+              <hr className="border border-gray-200 my-4"/>
               <CollectionProducts
                 collection={collectionValue}
                 products={collectionProducts.hits}
