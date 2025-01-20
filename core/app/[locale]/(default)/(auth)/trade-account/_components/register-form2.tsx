@@ -201,6 +201,7 @@ export const RegisterForm2 = ({
   const [stateInputValid, setStateInputValid] = useState(false);
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
   const [showAddressLine2, setShowAddressLine2] = useState(false);
+  const [stateSelector, setStateSelector] = useState(false);
 
   const [selectedOption, setSelectedOption] = useState("15");
   const [selectError, setSelectError] = useState("");
@@ -291,8 +292,10 @@ export const RegisterForm2 = ({
           name: state.name,
         })),
       );
+       setStateSelector(true);
     } else {
       setCountryStates([]);
+       setStateSelector(false);
     }
     setStateInputValid(false);
   };
@@ -475,7 +478,6 @@ export const RegisterForm2 = ({
           return (
             <FieldWrapper fieldId={fieldId} key={fieldId}>
               <Picklist
-                defaultValue={defaultCountry.code}
                 field={countryField}
                 isValid={picklistValid[fieldId]}
                 name={fieldName}
@@ -603,7 +605,7 @@ export const RegisterForm2 = ({
           return (
             <FieldWrapper fieldId={fieldId} key={fieldId}>
               <PicklistOrText
-                defaultValue={countryStates[0]?.name}
+                defaultValue={stateSelector ? countryStates[0]?.name : ''}
                 field={stateField}
                 name={fieldName}
                 options={stateOptions}
