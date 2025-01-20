@@ -2,22 +2,22 @@
     "Home": {
         "Slideshow": {
             "Slide01": {
-                "title": "Fresh finds for every occasion",
-                "description": "Explore our latest arrivals, curated to bring you style, functionality, and inspiration. Shop now and discover your next favorite.",
-                "alt": "Five small potted plants displayed on beige stacked blocks, featuring a variety of green foliage in dark gray pots against a neutral background.",
-                "cta": "Shop Now"
+                "title": "Nuove scoperte per ogni occasione",
+                "description": "Scopri i nostri ultimi arrivi, selezionati per offrirti stile, funzionalità e ispirazione. Acquista ora e scopri il tuo prossimo articolo preferito.",
+                "alt": "Cinque piccole piante in vaso esposte su blocchi impilati beige, con una varietà di fogliame verde in vasi grigio scuro su uno sfondo neutro.",
+                "cta": "Acquista ora"
             },
             "Slide02": {
-                "title": "Discover what's new",
-                "description": "Shop our latest arrivals and find something fresh and exciting for your home.",
-                "alt": "Hands reaching out to hold a green fern in a woven basket with a decorative bow, against a beige background with soft shadows.",
-                "cta": "Shop Now"
+                "title": "Scopri le novità",
+                "description": "Acquista i nostri ultimi arrivi e trova qualcosa di nuovo ed entusiasmante per la tua casa.",
+                "alt": "Le mani si allungano per tenere una felce verde in un cesto intrecciato con un fiocco decorativo, su uno sfondo beige con ombre morbide.",
+                "cta": "Acquista ora"
             },
             "Slide03": {
-                "title": "Something for everyone",
-                "description": "Don’t miss out on exclusive offers across our best-selling products. Shop today and save big on the items you love.",
-                "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
-                "cta": "Shop Now"
+                "title": "Qualcosa per tutti",
+                "description": "Non perdere le offerte esclusive sui nostri prodotti più venduti. Acquista oggi e risparmia alla grande sugli articoli che ami.",
+                "alt": "Primo piano di una foglia verde brillante con perforazioni, che mette in risalto la sua struttura liscia e i dettagli naturali.",
+                "cta": "Acquista ora"
             }
         },
         "Carousel": {
@@ -25,25 +25,25 @@
             "newestProducts": "Prodotti più recenti"
         },
         "FeaturedProducts": {
-            "title": "Featured collection",
-            "description": "Explore our top picks in this featured collection. Find the perfect gift or treat yourself!",
-            "cta": "View more",
-            "emptyStateTitle": "No products found",
-            "emptyStateSubtitle": "Try browsing our complete catalog of products."
+            "title": "Collezione in evidenza",
+            "description": "Esplora le nostre migliori scelte in questa collezione in evidenza. Trova il regalo perfetto o fatti un regalo.",
+            "cta": "Visualizza altro",
+            "emptyStateTitle": "Nessun prodotto trovato",
+            "emptyStateSubtitle": "Prova a sfogliare il nostro catalogo completo di prodotti."
         },
         "NewestProducts": {
-            "title": "New arrivals",
-            "description": "Our latest products are here. Check out what's new in store.",
-            "cta": "See all",
-            "emptyStateTitle": "No products found",
-            "emptyStateSubtitle": "Try browsing our complete catalog of products.",
+            "title": "Novità",
+            "description": "I nostri ultimi prodotti sono arrivati. Scopri le novità in negozio.",
+            "cta": "Vedi tutto",
+            "emptyStateTitle": "Nessun prodotto trovato",
+            "emptyStateSubtitle": "Prova a sfogliare il nostro catalogo completo di prodotti.",
             "previousProducts": "Prodotti precedenti",
             "nextProducts": "Prodotti successivi"
         },
         "BestSellingProducts": {
-            "title": "Our best sellers",
-            "description": "Our best selling products are here. Check out what's popular in store.",
-            "cta": "See all"
+            "title": "I nostri best seller",
+            "description": "I nostri prodotti best seller sono arrivati. Scopri cosa è popolare nel negozio.",
+            "cta": "Vedi tutto"
         }
     },
     "ChangePassword": {
@@ -106,7 +106,7 @@
     "Register": {
         "title": "Registra un account",
         "heading": "Nuovo account",
-        "successfulUpdate": "Account has been successfully updated.",
+        "successfulUpdate": "Account aggiornato.",
         "Form": {
             "submit": "Crea account",
             "submitting": "Creazione dell'account...",
@@ -128,7 +128,7 @@
         },
         "FacetedSearch": {
             "filters": "Filtri",
-            "resetFilters": "Reset filters",
+            "resetFilters": "Reimposta filtri",
             "Range": {
                 "apply": "Applica"
             },
@@ -166,8 +166,8 @@
     "Brand": {
         "sortBy": "{items, plural, =0 {nessun articolo} =1 {1 articolo} other {# articoli}}",
         "products": "Prodotti",
-        "emptyStateTitle": "No products in this brand.",
-        "emptyStateSubtitle": "Try using different filters."
+        "emptyStateTitle": "Nessun prodotto in questo marchio.",
+        "emptyStateSubtitle": "Prova a usare filtri diversi."
     },
     "Category": {
         "sortBy": "{items, plural, =0 {nessun articolo} =1 {1 articolo} other {# articoli}}",
@@ -175,7 +175,7 @@
         "items": "articoli",
         "Empty": {
             "title": "Non sono presenti prodotti in questa categoria",
-            "subtitle": "Try using different filters.",
+            "subtitle": "Prova a usare filtri diversi.",
             "cta": "Ritorna alla Homepage"
         }
     },
@@ -186,7 +186,7 @@
         "sortBy": "{items, plural, =0 {nessun articolo} =1 {1 articolo} other {# articoli}}",
         "searchResults": "Risultati di ricerca per",
         "emptyStateTitle": "Spiacenti, nessun risultato per \"{term}\".",
-        "emptyStateSubtitle": "Please try another search.",
+        "emptyStateSubtitle": "Prova un'altra ricerca.",
         "Breadcrumbs": {
             "home": "Home",
             "search": "Cerca"
@@ -195,7 +195,7 @@
     "Account": {
         "Layout": {
             "addresses": "Indirizzi",
-            "logout": "Logout",
+            "logout": "Esci",
             "orders": "Ordini",
             "settings": "Account",
             "wishlists": "Liste desideri",
@@ -209,12 +209,12 @@
             "noOrders": "Non sono ancora presenti ordini"
         },
         "OrderDetails": {
-            "title": "Order #{orderNumber}",
+            "title": "Ordine n. {orderNumber}",
             "shippingAddressLabel": "Indirizzo di spedizione",
             "shippingMethodLabel": "Metodo di spedizione",
             "summaryTotalLabel": "Totale",
-            "destinationTitle": "Destination",
-            "destinationWithCountTitle": "Destination {number}/{total}",
+            "destinationTitle": "Destinazione",
+            "destinationWithCountTitle": "Destinazione {number}/{total}",
             "summarySubtotalLabel": "Subtotale",
             "summaryShippingLabel": "Spedizioni",
             "summaryTaxLabel": "Tasse"
@@ -225,9 +225,9 @@
             "editLabel": "Modifica",
             "deleteLabel": "Elimina",
             "cancelLabel": "Annulla",
-            "createLabel": "Create",
-            "updateLabel": "Update",
-            "setDefaultLabel": "Set as default",
+            "createLabel": "crea",
+            "updateLabel": "Aggiorna",
+            "setDefaultLabel": "Imposta come predefinito",
             "Errors": {
                 "apiError": "Sembra che si sia verificato un errore del server, riprova tra qualche minuto.",
                 "error": "Errore sconosciuto."
@@ -277,8 +277,8 @@
     "Blog": {
         "title": "Blog",
         "Empty": {
-            "title": "No blog posts found",
-            "subtitle": "Check back later for more content"
+            "title": "Nessun articolo del blog trovato",
+            "subtitle": "Controlla più tardi per ulteriori contenuti"
         },
         "SharingLinks": {
             "share": "Condividi",
@@ -294,11 +294,11 @@
         "proceedToCheckout": "Procedi al checkout",
         "loading": "Caricamento in corso...",
         "spinnerText": "Aggiornamento in corso...",
-        "increment": "Increase quantity",
-        "decrement": "Decrease quantity",
-        "removeItem": "Remove item",
+        "increment": "Aumenta quantità",
+        "decrement": "Riduci quantità",
+        "removeItem": "Rimuovi articolo",
         "CheckoutSummary": {
-            "title": "Summary",
+            "title": "Riepilogo",
             "subTotal": "Subtotale",
             "discounts": "Sconti",
             "coupon": "Coupon",
@@ -361,15 +361,15 @@
             "errorMessage": "Si è verificato un errore durante la rimozione dell'elemento, riprova."
         },
         "Empty": {
-            "title": "Your cart is empty.",
-            "subtitle": "Add some products to get started.",
-            "cta": "Continue shopping"
+            "title": "Il tuo carrello è vuoto.",
+            "subtitle": "Aggiungi alcuni prodotti per iniziare.",
+            "cta": "Continua a fare acquisti"
         },
         "Errors": {
-            "cartNotFound": "No cartId cookie found.",
-            "lineItemNotFound": "Line item not found.",
-            "failedToRedirectToCheckout": "Failed to redirect to checkout.",
-            "failedToUpdateQuantity": "Failed to update quantity.",
+            "cartNotFound": "Nessun cookie cartId trovato.",
+            "lineItemNotFound": "Voce di riga non trovata.",
+            "failedToRedirectToCheckout": "Impossibile reindirizzare al checkout.",
+            "failedToUpdateQuantity": "Impossibile aggiornare la quantità.",
             "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
         }
     },
@@ -398,15 +398,15 @@
     "Product": {
         "ProductDetails": {
             "quantity": "Quantità",
-            "increaseQuantity": "Increase quantity",
-            "decreaseQuantity": "Decrease quantity",
-            "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>",
-            "missingCart": "Cart not found. Please try again later!",
-            "unknownError": "Unknown error. Please try again later.",
-            "increaseNumber": "Increase number",
-            "decreaseNumber": "Decrease number",
-            "thumbnail": "View image number",
-            "additionalInformation": "Additional information",
+            "increaseQuantity": "Aumenta quantità",
+            "decreaseQuantity": "Riduci quantità",
+            "successMessage": "{cartItems, plural, =1 {1 articolo} other {# articoli}} aggiunto/i al <cartLink> carrello</cartLink>",
+            "missingCart": "Carrello non trovato. Riprova più tardi.",
+            "unknownError": "Errore sconosciuto. Riprova più tardi.",
+            "increaseNumber": "Aumenta numero",
+            "decreaseNumber": "Diminuisci numero",
+            "thumbnail": "Visualizza numero immagine",
+            "additionalInformation": "Informazioni aggiuntive",
             "Submit": {
                 "addToCart": "Aggiungi al carrello",
                 "outOfStock": "Esaurito",
@@ -414,7 +414,7 @@
                 "unavailable": "Non disponibile"
             },
             "Accordions": {
-                "specifications": "Specifications",
+                "specifications": "Specifiche",
                 "warranty": "Garanzia",
                 "sku": "SKU",
                 "weight": "Peso",
@@ -428,19 +428,19 @@
         },
         "RelatedProducts": {
             "title": "Prodotti simili",
-            "noRelatedProducts": "No related products found",
-            "browseCatalog": "Try browsing our complete catalog of products.",
-            "cta": "Shop all",
+            "noRelatedProducts": "Nessun prodotto correlato trovato",
+            "browseCatalog": "Prova a sfogliare il nostro catalogo completo di prodotti.",
+            "cta": "Acquista tutto",
             "previousProducts": "Prodotti precedenti",
             "nextProducts": "Prodotti successivi",
-            "scrollbar": "Related products scrollbar"
+            "scrollbar": "Barra di scorrimento dei prodotti simili"
         },
         "Reviews": {
             "title": "Recensioni",
-            "empty": "No reviews have been added for this product.",
+            "empty": "Non sono state aggiunte recensioni per questo prodotto.",
             "Pagination": {
-                "previous": "Previous reviews",
-                "next": "Next reviews"
+                "previous": "Recensioni precedenti",
+                "next": "Prossime recensioni"
             }
         }
     },
@@ -448,6 +448,7 @@
         "ContactUs": {
             "Form": {
                 "success": "Grazie per averci contattato. Ti risponderemo al più presto.",
+                "successCta": "Continua a fare acquisti",
                 "error": "Errore sconosciuto.",
                 "fullNameLabel": "Nome completo",
                 "companyNameLabel": "Azienda",
@@ -460,7 +461,12 @@
                 "commentsValidationMessage": "Inserisci un commento valido",
                 "recaptchaText": "Supera il controllo ReCAPTCHA",
                 "onSubmitText": "Invio in corso...",
-                "submitFormText": "Invia modulo"
+                "submitFormText": "Invia modulo",
+                "Errors": {
+                    "inputError": "Si è verificato un errore nell'elaborazione dell'input dell'utente.",
+                    "apiError": "Sembra che si sia verificato un errore del server, riprova tra qualche minuto.",
+                    "error": "Si è verificato un errore. Riprova più tardi."
+                }
             }
         }
     },
@@ -489,7 +495,7 @@
             "home": "Home",
             "toggleNavigation": "Attiva/Disattiva navigazione",
             "Icons": {
-                "account": "Profile",
+                "account": "Profilo",
                 "cart": "Carrello",
                 "search": "Cerca"
             },
@@ -501,9 +507,8 @@
                 "login": "Accedi",
                 "logout": "Esci"
             },
-            "LocaleSwitcher": {
-                "chooseCountryAndLanguage": "Scegli il paese e la lingua",
-                "goToSite": "Vai al sito"
+            "Locale": {
+                "invalidLocale": "Locale non valido"
             },
             "MiniCart": {
                 "cart": "Carrello",
@@ -522,23 +527,23 @@
                 "categories": "Categorie",
                 "brands": "Marchi",
                 "noSearchResultsTitle": "Spiacenti, nessun risultato per \"{term}\".",
-                "noSearchResultsSubtitle": "Please try another search.",
+                "noSearchResultsSubtitle": "Prova un'altra ricerca.",
                 "searchPlaceholder": "Cerca...",
                 "clearSearch": "Cancella ricerca",
                 "processing": "Elaborazione in corso...",
-                "error": "Something went wrong. Please try again."
+                "error": "Si è verificato un errore. Riprova."
             }
         },
         "Footer": {
             "home": "Home",
-            "contact": "Contact Us",
+            "contact": "Contattaci",
             "socialMediaLinks": "Link ai social media"
         },
         "Subscribe": {
-            "title": "Sign up for our newsletter",
+            "title": "Iscriviti alla nostra newsletter",
             "placeholder": "Inserisci la tua e-mail",
-            "description": "Stay up to date with the latest news and offers from our store.",
-            "success": "Thank you for your interest! Newsletter feature is coming soon!"
+            "description": "Ricevi aggiornamenti sulle ultime novità e offerte dal nostro negozio.",
+            "success": "Grazie per il tuo interesse. La funzione Newsletter sarà presto disponibile!"
         },
         "Breadcrumb": {
             "breadcrumb": "Breadcrumb"
