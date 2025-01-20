@@ -52,24 +52,14 @@ const FIELD_ORDER: Record<FieldOrderKeys, number> = {
   'Company Name': 2,
   'Tax ID / Licence#': 3,
   Country: 4,
-  'State/Province': 5,
-  'Address Line 1': 6,
-  'Address Line 2': 7,
-  'Suburb/City': 8,
+  'State/Province': 8,
+  'Address Line 1': 5,
+  'Address Line 2': 6,
+  'Suburb/City': 7,
   'Zip/Postcode': 9,
 };
 
-const ALLOWED_CUSTOMER_FIELDS = ['I am a', 'Tax ID / Licence#'];
-
-const ALLOWED_ADDRESS_FIELDS = [
-  'Company Name',
-  'Country',
-  'Suburb/City',
-  'State/Province',
-  'Zip/Postcode',
-  'Address Line 1',
-  'Address Line 2',
-];
+const ALLOWED_FIELDS = ['I am a', 'Tax ID / Licence#','Company Name','Country','Suburb/City','State/Province','Zip/Postcode','Address Line 1','Address Line 2',]
 
 // Interfaces
 interface BaseField {
@@ -310,9 +300,9 @@ export const RegisterForm2 = ({
       case 'Company Name':
         return 'Business Name';
       case 'Country':
-        return 'Country';
+        return 'Country*';
       case 'State/Province':
-        return 'State';
+        return 'State*';
       case 'Address Line 1':
         return 'Address Line 1';
       case 'Address Line 2':
@@ -653,6 +643,8 @@ export const RegisterForm2 = ({
     }
   };
 
+  const formFields = [...customerFields,...addressFields];
+
   return (
     <>
       {formStatus && (
@@ -675,20 +667,12 @@ export const RegisterForm2 = ({
       >
         <div className="trade2-form">
           {[
-            ...customerFields
-              .filter((field) => ALLOWED_CUSTOMER_FIELDS.includes(field.label))
-              .sort(
-                (a, b) =>
-                  (FIELD_ORDER[a.label as FieldOrderKeys] || 0) -
-                  (FIELD_ORDER[b.label as FieldOrderKeys] || 0),
-              )
-              .map((field) => renderField(field, true)),
-            ...addressFields
+            ...formFields
               .filter((field) => {
                 if (field.label === 'Address Line 2' && !showAddressLine2) {
                   return false;
                 }
-                return ALLOWED_ADDRESS_FIELDS.includes(field.label);
+                return ALLOWED_FIELDS.includes(field.label);
               })
               .sort(
                 (a, b) =>
@@ -711,6 +695,8 @@ export const RegisterForm2 = ({
                         </button>
                       )}
                     </>
+                  ) : field.label === 'I am a' || field.label === 'Tax ID / Licence#' ? (
+                    renderField(field, true)
                   ) : (
                     renderField(field, false)
                   )}
