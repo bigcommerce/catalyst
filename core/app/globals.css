@@ -17,10 +17,6 @@
   grid-template-columns: auto auto auto auto auto auto;
   display: grid;
 }
-input#field-8 {
-  color: #7f7f7f !important;
-  font-size: 14px;
-}
 .header-sub-menu-0 .submenu-div:nth-child(4) {
   grid-row: span 2;
 }

@@ -16,14 +16,15 @@ interface Props extends ComponentPropsWithRef<typeof SelectPrimitive.Root> {
   options: Option[];
   placeholder?: string | ReactNode;
   selectError?:string
+  isRequired?:boolean;
 }
 
 const Select = forwardRef<ElementRef<typeof SelectPrimitive.Trigger>, Props>(
-  ({ children,selectError, id: triggerId, label, options, placeholder, error = false, ...props }, ref) => {
+  ({ children,isRequired, id: triggerId, label, options, placeholder, error = false, ...props }, ref) => {
     const id = useId();
 
     return (
-      <SelectPrimitive.Root {...props}>
+      <SelectPrimitive.Root {...props} required={isRequired}>
         <SelectPrimitive.Trigger
           aria-label={label}
           className={cn(
