@@ -5,19 +5,19 @@
                 "title": "Fresh finds for every occasion",
                 "description": "Explore our latest arrivals, curated to bring you style, functionality, and inspiration. Shop now and discover your next favorite.",
                 "alt": "Five small potted plants displayed on beige stacked blocks, featuring a variety of green foliage in dark gray pots against a neutral background.",
-                "cta": "Shop Now"
+                "cta": "今すぐ購入する"
             },
             "Slide02": {
                 "title": "Discover what's new",
                 "description": "Shop our latest arrivals and find something fresh and exciting for your home.",
                 "alt": "Hands reaching out to hold a green fern in a woven basket with a decorative bow, against a beige background with soft shadows.",
-                "cta": "Shop Now"
+                "cta": "今すぐ購入する"
             },
             "Slide03": {
                 "title": "Something for everyone",
                 "description": "Don’t miss out on exclusive offers across our best-selling products. Shop today and save big on the items you love.",
                 "alt": "Close-up of a vibrant green leaf with perforations, showcasing its smooth texture and natural details.",
-                "cta": "Shop Now"
+                "cta": "今すぐ購入する"
             }
         },
         "Carousel": {
@@ -27,7 +27,7 @@
         "FeaturedProducts": {
             "title": "Featured collection",
             "description": "Explore our top picks in this featured collection. Find the perfect gift or treat yourself!",
-            "cta": "View more",
+            "cta": "もっと見る",
             "emptyStateTitle": "No products found",
             "emptyStateSubtitle": "Try browsing our complete catalog of products."
         },
@@ -188,14 +188,14 @@
         "emptyStateTitle": "Sorry, no results for \"{term}\".",
         "emptyStateSubtitle": "Please try another search.",
         "Breadcrumbs": {
-            "home": "Home",
+            "home": "ホーム",
             "search": "検索"
         }
     },
     "Account": {
         "Layout": {
             "addresses": "住所",
-            "logout": "Logout",
+            "logout": "ログアウト",
             "orders": "注文",
             "settings": "アカウント",
             "wishlists": "Wish lists",
@@ -213,7 +213,7 @@
             "shippingAddressLabel": "配送先住所",
             "shippingMethodLabel": "配送方法",
             "summaryTotalLabel": "合計",
-            "destinationTitle": "Destination",
+            "destinationTitle": "目的地",
             "destinationWithCountTitle": "Destination {number}/{total}",
             "summarySubtotalLabel": "小計",
             "summaryShippingLabel": "配送",
@@ -225,9 +225,9 @@
             "editLabel": "編集",
             "deleteLabel": "削除する",
             "cancelLabel": "キャンセル",
-            "createLabel": "Create",
-            "updateLabel": "Update",
-            "setDefaultLabel": "Set as default",
+            "createLabel": "作成",
+            "updateLabel": "アップデート",
+            "setDefaultLabel": "デフォルトとして設定",
             "Errors": {
                 "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
                 "error": "Unknown error."
@@ -298,7 +298,7 @@
         "decrement": "Decrease quantity",
         "removeItem": "Remove item",
         "CheckoutSummary": {
-            "title": "Summary",
+            "title": "要約",
             "subTotal": "小計",
             "discounts": "割引",
             "coupon": "クーポン",
@@ -406,7 +406,7 @@
             "increaseNumber": "Increase number",
             "decreaseNumber": "Decrease number",
             "thumbnail": "View image number",
-            "additionalInformation": "Additional information",
+            "additionalInformation": "追加情報",
             "Submit": {
                 "addToCart": "カートに追加",
                 "outOfStock": "品切れ",
@@ -448,6 +448,7 @@
         "ContactUs": {
             "Form": {
                 "success": "Thanks for reaching out. We'll get back to you soon.",
+                "successCta": "Continue shopping",
                 "error": "Unknown error.",
                 "fullNameLabel": "Full name",
                 "companyNameLabel": "会社名",
@@ -460,7 +461,12 @@
                 "commentsValidationMessage": "Please provide a valid Comments",
                 "recaptchaText": "Pass ReCAPTCHA check",
                 "onSubmitText": "提出中…",
-                "submitFormText": "Submit form"
+                "submitFormText": "Submit form",
+                "Errors": {
+                    "inputError": "Something went wrong with processing user input.",
+                    "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
+                    "error": "何か問題が発生しました。後でもう一度やり直してください。"
+                }
             }
         }
     },
@@ -486,10 +492,10 @@
     },
     "Components": {
         "Header": {
-            "home": "Home",
+            "home": "ホーム",
             "toggleNavigation": "Toggle navigation",
             "Icons": {
-                "account": "Profile",
+                "account": "プロフィール",
                 "cart": "ショッピングカート",
                 "search": "検索"
             },
@@ -501,9 +507,8 @@
                 "login": "ログイン",
                 "logout": "ログアウト"
             },
-            "LocaleSwitcher": {
-                "chooseCountryAndLanguage": "Choose your country and language",
-                "goToSite": "Go to site"
+            "Locale": {
+                "invalidLocale": "Invalid locale"
             },
             "MiniCart": {
                 "cart": "ショッピングカート",
@@ -526,12 +531,12 @@
                 "searchPlaceholder": "検索…",
                 "clearSearch": "検索クリア",
                 "processing": "処理中...",
-                "error": "Something went wrong. Please try again."
+                "error": "問題が発生しました。 もう一度お試しください。"
             }
         },
         "Footer": {
-            "home": "Home",
-            "contact": "Contact Us",
+            "home": "ホーム",
+            "contact": "問い合わせる",
             "socialMediaLinks": "ソーシャル·メディア·リンク"
         },
         "Subscribe": {
