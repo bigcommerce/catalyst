@@ -17,10 +17,6 @@
   grid-template-columns: auto auto auto auto auto auto;
   display: grid;
 }
-input#field-8 {
-  color: #7f7f7f !important;
-  font-size: 14px;
-}
 .header-sub-menu-0 .submenu-div:nth-child(4) {
   grid-row: span 2;
 }
@@ -1011,6 +1007,43 @@ flex-grow: 1;
 .mega-menu-sidebar .secondary-menu-item > a > span:last-child, .mega-menu-sidebar .secondary-menu-item > span > span:last-child {
 flex: none;
 }
+
+.mega-menu-sidebar .main-sub-menu-item {
+border-top: 1px solid var(--gray-300);
+}
+
+.mega-menu-sidebar .main-sub-menu-item > a, .mega-menu-sidebar .main-sub-menu-item > span {
+display: flex;
+font-size: 15px;
+line-height: 32px;
+font-weight: 400;
+letter-spacing: .5px;
+text-align: left;
+padding: .75rem 0;
+white-space: nowrap;
+}
+.mega-menu-sidebar .main-sub-menu-item > a > span:first-child, .mega-menu-sidebar .main-sub-menu-item > span > span:first-child {
+flex-grow: 1;
+}
+.mega-menu-sidebar .main-sub-menu-item > a > span:last-child, .mega-menu-sidebar .main-sub-menu-item > span > span:last-child {
+flex: none;
+}
+
+.mega-menu-sidebar .main-sub-sub-menu-item {
+border-top: 1px solid var(--gray-300);
+}
+.mega-menu-sidebar .main-sub-sub-menu-item > a, .mega-menu-sidebar .main-sub-sub-menu-item > span {
+display: flex;
+font-size: 14px;
+line-height: 32px;
+font-weight: 400;
+letter-spacing: .5px;
+text-align: left;
+padding: .75rem 0;
+white-space: nowrap;
+}
+
+
 
 
 .mega-menu {

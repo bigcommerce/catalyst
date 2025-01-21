@@ -93,7 +93,7 @@ export default async function OrderConfirmation() {
     });
 
     return (
-      <div className="lg:mt-[3rem] mt-[1rem] flex lg:flex-row justify-around gap-[30px] lg:gap-[50px] px-[20px] flex-col">
+      <div className="lg:mt-[3rem] mt-[1rem] mb-[2rem] flex lg:flex-row justify-around gap-[30px] lg:gap-[50px] px-[20px] flex-col">
         <div className="flex w-full lg:w-[calc((800/1600)*100vw)] flex-col items-start gap-[30px] p-[0px] lg:p-[0px_40px]">
           <div className="flex flex-col items-start gap-[10px] p-[0px]">
             <div className="flex items-center gap-[7px] w-full justify-center xsm:justify-normal xsm:w-[unset]">
@@ -117,7 +117,7 @@ export default async function OrderConfirmation() {
           <div className="flex w-full mt-[-10px] xsm:mt-[0px] items-center flex-col xsm:flex-row justify-between gap-[20px] border-b border-[#d6d6d6] pb-[8px]">
             <p className="text-[24px] font-[400] leading-[32px] text-[#353535]">Order Summary</p>
             <div className="flex items-center gap-[5px]">
-              <PrintOrder orderId={orderState?.orderId} guestUser={guestUserCheck} cartId={cartId} key={orderState?.orderId} />
+              <PrintOrder from='order' orderId={orderState?.orderId} guestUser={guestUserCheck} cartId={cartId} key={orderState?.orderId} />
             </div>
           </div>
           <div className="flex flex-col items-start gap-[5px]">
@@ -296,7 +296,7 @@ export default async function OrderConfirmation() {
               Items In Your Order <span>({noOfItems})</span>
             </p>
           </div>
-          <div className="flex w-full flex-col items-start gap-[10px] border border-[#CCCBCB] p-[10px]">
+          <div className={`flex w-full flex-col items-start gap-[10px]`}>
             {shippingConsignments?.map((consignment, idx) => {
               const { lineItems } = consignment;
               return (
@@ -329,7 +329,7 @@ export default async function OrderConfirmation() {
               <div className='lg:flex flex-row hidden justify-center items-center p-0 gap-[10px] bg-[#F3F4F5] w-full lg:min-h-[400px]'>
                 <p className='font-normal text-[34px] leading-[46px] text-center tracking-[0.25px] text-[#353535]'>Rewards Summary Placeholder</p>
               </div>
-              <div className="flex flex-col">
+              <div className="flex flex-col gap-[3px]">
                 <p className="text-[20px] font-[500] leading-[32px] tracking-[0.15px] text-[#353535]">
                   Something Wrong?
                 </p>

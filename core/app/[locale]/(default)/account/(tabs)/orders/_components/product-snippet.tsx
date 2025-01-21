@@ -4,6 +4,7 @@ import { client } from '~/client';
 import { graphql, ResultOf, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { BcImage } from '~/components/bc-image';
+import { retrieveMpnData } from '~/components/common-functions';
 import { Link } from '~/components/link';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { Price as PricesType } from '~/components/ui/product-card';
@@ -29,6 +30,18 @@ export const OrderItemFragment = graphql(`
     brand
     name
     quantity
+    baseCatalogProduct {
+      variants {
+        edges {
+          node {
+            mpn
+            sku
+            entityId
+            isPurchasable
+          }
+        }
+      }
+    }
     image {
       url(width: 150, height: 150, lossy: true)
       altText
@@ -68,6 +81,7 @@ export const assembleProductData = (orderItem: ResultOf<typeof OrderItemFragment
     image,
     subTotalListPrice,
     productOptions,
+    baseCatalogProduct,
   } = orderItem;
 
   return {
@@ -83,6 +97,7 @@ export const assembleProductData = (orderItem: ResultOf<typeof OrderItemFragment
       : null,
     productOptions,
     quantity: orderItem.quantity,
+    baseCatalogProduct: baseCatalogProduct,
     prices: {
       price: subTotalListPrice,
       basePrice: null,
@@ -167,6 +182,8 @@ export const ProductSnippet = async ({
 
   const { path = '' } = data.site.product ?? {};
 
+  //let productMpn: string = retrieveMpnData(product, product?.)
+
   return (
     <div className="flex flex-col items-start gap-[15px] border border-[#CCCBCB] p-0">
       {from != 'order' && (
@@ -176,13 +193,13 @@ export const ProductSnippet = async ({
           </button>
         </div>
       )}
-      <div className="flex w-full flex-row items-center justify-between p-0 px-[20px] pb-[20px]">
-        <div className="flex w-2/3 flex-row items-center gap-[20px] p-0 pr-[20px]">
+      <div className={`flex w-full flex-row items-center justify-between p-0 px-[20px] pb-[20px] ${from == 'order' ? 'mt-[20px]' : ''}`}>
+        <div className={`flex-row items-center gap-[20px] p-0  ${from == 'order' ? 'w-full pr-0 grid [grid-template-columns:88px_auto] sm:flex' : 'w-2/3 pr-[20px] flex'}` }>
           <div>
             {isImageAvailable && (
               <BcImage
                 alt={defaultImage.altText || name}
-                className="h-[150px] w-[150px]"
+                className={`${from == 'order' ? "h-[88px] w-[88px] sm:h-[150px] sm:w-[150px]" : 'h-[150px] w-[150px]'}`}
                 width={150}
                 height={150}
                 priority={imagePriority}
@@ -223,7 +240,7 @@ export const ProductSnippet = async ({
                 );
               })}
             </div>
-            <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#353535]">
+            <div className={`text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] ${from == 'order' ? 'font-normal' : 'font-bold'}`}>
               {t('qty')}: {product.quantity}
             </div>
           </div>

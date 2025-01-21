@@ -328,3 +328,21 @@ export const getMetaFieldsByProduct = async (
 
   return result;
 };
+
+export const retrieveMpnData = (product: any, productid: Number, variantId: Number) => {
+  if(product?.baseCatalogProduct?.variants) {
+    let productVariants: any = removeEdgesAndNodes(product?.baseCatalogProduct?.variants);
+    let productvariantData: any = productVariants.find((prod:any) => prod?.entityId == variantId);
+    return productvariantData?.mpn ?? product?.sku;
+  } else {
+    return product?.sku;
+  }
+}
+
+export const checkZeroTaxCouponIsApplied = async(cart: any) => {
+  console.log('========cart=======', JSON.stringify(cart));
+}
+
+export const zeroTaxCalculation = async(cart: any) => {
+  console.log('========cart=======', JSON.stringify(cart));
+}

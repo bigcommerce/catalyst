@@ -39,7 +39,9 @@ export const AddToCartButton = ({
 
     return t('addToCart');
   };
-
+  if (buttonText() === t('unavailable')) {
+    return null;
+  }
   return (
     <Button
       id="add-to-cart"

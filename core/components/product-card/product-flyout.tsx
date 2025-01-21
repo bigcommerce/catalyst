@@ -331,7 +331,7 @@ export const ProductFlyout = ({
                       </div>
                     </div>
                     
-                    <div className="cart-buttons flex flex-col items-start gap-[10px] ssm:flex-row">
+                    <div className="cart-buttons grid grid-cols-1 ssm:grid-cols-2 items-start gap-[10px]">
                       <Dialog.Close asChild>
                         <Link
                           className="hover:text-secondary flex h-[41px] w-[100%] flex-row items-center justify-center self-stretch rounded-[3px] border border-[#b3dce8] text-[14px] text-sm font-medium uppercase tracking-[1.25px] text-[#002A37]"
