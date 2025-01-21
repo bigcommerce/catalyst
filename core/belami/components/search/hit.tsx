@@ -424,8 +424,8 @@ export function Hit({
         <div className="ml-auto flex flex-none items-center space-x-1">
           {hit.metafields &&
             hit.metafields.Details &&
-            hit.metafields.Details.ratings_certifications && (
-              <RatingCertifications data={hit.metafields.Details.ratings_certifications} />
+            hit.metafields.Details['Ratings and Certifications'] && (
+              <RatingCertifications data={hit.metafields.Details['Ratings and Certifications']} />
             )}
           {hit.on_sale && (
             <span className="flex items-center space-x-1 bg-brand-500 px-1.5 py-1 text-xs uppercase text-white">

@@ -24,6 +24,7 @@ import { RemoveCart } from './_components/remove-cart';
 import { GetCartMetaFields } from '~/components/management-apis';
 import CartProductComponent from '../sales-buddy/common-components/_components/CartComponent/CartProductComponent';
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
+import ScrollButton from './_components/ScrollButton';
 
 const CartPageQuery = graphql(
   `
@@ -60,6 +61,9 @@ export default async function Cart() {
   const cookieStore = await cookies();
 
   const cartId = cookieStore.get('cartId')?.value;
+  const cookie_agent_login_status = cookieStore.get('agent_login')?.value;
+
+  
 
   if (!cartId) {
     return <EmptyCart />;
@@ -97,7 +101,7 @@ export default async function Cart() {
     return [{ error: 'Failed to retrive data' }];
     }
   };
-const product_data_in_cart = await get_product_price_data_in_cart(cartId);
+  const product_data_in_cart = await get_product_price_data_in_cart(cartId);
 
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
@@ -166,11 +170,13 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
     label: "Your Cart",
     href: '#'
   }];
-  console.log("CustomItems------",CustomItems);
   
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
+      <div className=' sticky top-0 z-20'>
       <ContinuetocheckoutButton cartId={cartId} />
+      </div>
+    
 
       <div className="pt-6 text-center lg:hidden">
         <div className="inline-flex items-center gap-2 text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#002A37]">
@@ -187,16 +193,21 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
             src={downArrow}
           />
         </div>
+       
+      </div>
+      <div className=" text-center lg:hidden">
+      <ScrollButton targetId="order-summary" />
+      </div>
+     
+    
+
+      <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
+      <div className=" text-center lg:hidden ">
+        <p>Cart #12345</p>
       </div>
 
-      <div className="pt-8 text-center lg:hidden">
-        <div>Cart #12345</div>
-      </div>
-
-      <ComponentsBreadcrumbs className="mt-10" breadcrumbs={breadcrumbs} />
-
-      <h1 className="cart-heading pb-6 pt-0 text-center text-[24px] font-normal leading-[32px] lg:pb-4 lg:text-left lg:text-[24px]">
-        {`${t('heading')} (${cartQty}${cartItemsText})`}
+      <h1 className="cart-heading  pt-0 text-center text-[24px] font-normal leading-[32px]  lg:text-left lg:text-[24px]">
+        {`${t('heading')} (${cartQty} ${cartItemsText})`}
       </h1>
 
       <div className="hidden lg:flex lg:items-center lg:space-x-8">
@@ -228,11 +239,12 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
               cartId={cart?.entityId}
               priceAdjustData={product_data_in_cart?.physical_items?.[product?.entityId]}
               ProductType={"product"}
+              cookie_agent_login_status={cookie_agent_login_status  === 'true' ? true : false}
             />
           ))}
           {
-          
-           CustomItems.length > 0 && CustomItems?.map((data)=>{
+            cookie_agent_login_status === 'true' &&
+            CustomItems.length > 0 && CustomItems?.map((data)=>{
               return (
               <CartProductComponent
                 key={data.entityId}
@@ -242,13 +254,14 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
                 deleteIcon={deleteIcon}
                 priceAdjustData={product_data_in_cart?.custom_items &&  product_data_in_cart?.custom_items[data?.entityId]}
                 ProductType={"custom"}
+                cookie_agent_login_status={cookie_agent_login_status === 'true' ? true : false}
               />
               )
             })
           }
         </ul>
 
-        <div className="cart-right-side sticky top-0 col-span-1 col-start-2 -mt-[9em] h-[100px] min-h-[800px] border-t border-[#CCCBCB] py-[1.4em] lg:col-start-3">
+        <div id="order-summary" className="cart-right-side sticky top-0 col-span-1 col-start-2 -mt-[9em] h-[100px] min-h-[800px] border-t border-[#CCCBCB] py-[1.4em] lg:col-start-3">
           {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
 
           <CheckoutButton cartId={cartId} />

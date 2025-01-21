@@ -141,6 +141,7 @@ interface Props {
   productSize?: string;
   imagePriority?: boolean;
   isExtended?: boolean;
+  from?: string;
 }
 
 export const ProductSnippet = async ({
@@ -150,6 +151,7 @@ export const ProductSnippet = async ({
   imagePriority = false,
   brandSize,
   productSize,
+  from,
 }: Props) => {
   const { name, defaultImage, brand, productId, prices } = product;
   const format = await getFormatter();
@@ -167,18 +169,20 @@ export const ProductSnippet = async ({
 
   return (
     <div className="flex flex-col items-start gap-[15px] border border-[#CCCBCB] p-0">
-      <div className="flex w-full flex-row items-start gap-[10px] bg-[#03465C] p-[10px]">
-        <button className="flex flex-row items-center justify-center gap-[10px] rounded-[50px] bg-[#F3F4F5] px-[10px] text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#353535]">
-          PROCESSING
-        </button>
-      </div>
-      <div className="flex w-full flex-row items-center justify-between p-0 px-[20px] pb-[20px]">
-        <div className="flex w-2/3 flex-row items-center gap-[20px] p-0 pr-[20px]">
+      {from != 'order' && (
+        <div className="flex w-full flex-row items-start gap-[10px] bg-[#03465C] p-[10px]">
+          <button className="flex flex-row items-center justify-center gap-[10px] rounded-[50px] bg-[#F3F4F5] px-[10px] text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#353535]">
+            PROCESSING
+          </button>
+        </div>
+      )}
+      <div className={`flex w-full flex-row items-center justify-between p-0 px-[20px] pb-[20px] ${from == 'order' ? 'mt-[20px]' : ''}`}>
+        <div className={`flex-row items-center gap-[20px] p-0  ${from == 'order' ? 'w-full pr-0 grid [grid-template-columns:88px_auto] sm:flex' : 'w-2/3 pr-[20px] flex'}` }>
           <div>
             {isImageAvailable && (
               <BcImage
                 alt={defaultImage.altText || name}
-                className="h-[150px] w-[150px]"
+                className={`${from == 'order' ? "h-[88px] w-[88px] sm:h-[150px] sm:w-[150px]" : 'h-[150px] w-[150px]'}`}
                 width={150}
                 height={150}
                 priority={imagePriority}
@@ -219,7 +223,7 @@ export const ProductSnippet = async ({
                 );
               })}
             </div>
-            <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#353535]">
+            <div className={`text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] ${from == 'order' ? 'font-normal' : 'font-bold'}`}>
               {t('qty')}: {product.quantity}
             </div>
           </div>
@@ -227,9 +231,10 @@ export const ProductSnippet = async ({
             <Price price={price} />
           </div>
         </div>
-        <div className="w-1/3">
-          <div className="flex flex-col gap-[5px]">
-            {/*<button className="flex w-full flex-row items-center justify-center gap-[5px] rounded-[3px] bg-[#008BB7] p-[5px] px-[10px] text-[14px] font-medium leading-[32px] tracking-[1.25px] text-white">
+        {from != 'order' && (
+          <div className="w-1/3">
+            <div className="flex flex-col gap-[5px]">
+              {/*<button className="flex w-full flex-row items-center justify-center gap-[5px] rounded-[3px] bg-[#008BB7] p-[5px] px-[10px] text-[14px] font-medium leading-[32px] tracking-[1.25px] text-white">
               CANCEL ORDER
             </button>
             <div className="h-[42px] self-center text-center text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#000000]">
@@ -238,11 +243,12 @@ export const ProductSnippet = async ({
             <button className="flex h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-[#ffffff] p-[5px_10px] text-[14px] font-[500] leading-[32px] tracking-[1.25px] text-[#002A37]">
               LEAVE A REVIEW
             </button>*/}
-            <button className="flex h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-[#ffffff] p-[5px_10px] text-[14px] font-[500] leading-[32px] tracking-[1.25px] text-[#002A37]">
-              REPLACE ITEMS
-            </button>
+              <button className="flex h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-[#ffffff] p-[5px_10px] text-[14px] font-[500] leading-[32px] tracking-[1.25px] text-[#002A37]">
+                REPLACE ITEMS
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
