@@ -193,9 +193,6 @@ export const RegisterForm2 = ({
   const [showAddressLine2, setShowAddressLine2] = useState(false);
   const [stateSelector, setStateSelector] = useState(false);
 
-  const [selectedOption, setSelectedOption] = useState("15");
-  const [selectError, setSelectError] = useState("");
-
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Register.Form');
 
@@ -282,10 +279,10 @@ export const RegisterForm2 = ({
           name: state.name,
         })),
       );
-       setStateSelector(true);
+      setStateSelector(true);
     } else {
       setCountryStates([]);
-       setStateSelector(false);
+      setStateSelector(false);
     }
     setStateInputValid(false);
   };
@@ -294,7 +291,7 @@ export const RegisterForm2 = ({
   const getModifiedLabel = (originalLabel: string): string => {
     switch (originalLabel) {
       case 'I am a':
-        return 'I am a:*'
+        return 'I am a:*';
       case 'Tax ID / Licence#':
         return 'Tax ID/License#';
       case 'Company Name':
@@ -316,13 +313,32 @@ export const RegisterForm2 = ({
     }
   };
 
+  const [formValues, setFormValues] = useState({
+    'State*': '',
+    'I am a:*': '',
+    'Country*': '',
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    'State*': '',
+    'I am a:*': '',
+    'Country*': '',
+  });
+
+  const handleSelectChange = (field: string, value: string) => {
+    setFormValues((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    setFormErrors((prev) => ({
+      ...prev,
+      [field]: value ? '' : 'This field is required.',
+    }));
+  };
+
   // Form submission handler
   const onSubmit = async (formData: FormData) => {
-
-    if(selectedOption == '15'){
-      setSelectError("Please select an option.");
-      return;
-    }
 
     if (isSubmitting) return;
 
@@ -469,13 +485,13 @@ export const RegisterForm2 = ({
             <FieldWrapper fieldId={fieldId} key={fieldId}>
               <Picklist
                 field={countryField}
-                isValid={picklistValid[fieldId]}
                 name={fieldName}
                 onChange={(value: string) => {
                   handleCountryChange(value);
                 }}
-                onValidate={setPicklistValid}
                 options={countryField.options}
+                formErrors={formErrors}
+                onSelectChange={handleSelectChange}
               />
             </FieldWrapper>
           );
@@ -485,14 +501,10 @@ export const RegisterForm2 = ({
           <FieldWrapper fieldId={fieldId} key={fieldId}>
             <Picklist
               field={modifiedField as PicklistFormField}
-              isValid={picklistValid[fieldId]}
               name={fieldName}
-              onValidate={setPicklistValid}
               options={field.options}
-              selectedOption={selectedOption}
-              setSelectedOption={setSelectedOption}
-              selectError={selectError}
-              setSelectError={setSelectError}
+              formErrors={formErrors}
+              onSelectChange={handleSelectChange}
             />
           </FieldWrapper>
         );
@@ -603,6 +615,8 @@ export const RegisterForm2 = ({
                   setStateInputValid(isValid);
                 }}
                 isValid={stateInputValid}
+                formErrors={formErrors}
+                onSelectChange={handleSelectChange}
               />
             </FieldWrapper>
           );
@@ -657,10 +671,38 @@ export const RegisterForm2 = ({
         className="register-form mx-auto max-w-[600px] sm:pt-3 md:pt-3"
         onSubmit={(e) => {
           e.preventDefault();
-          if(!selectedOption && !selectedOption.trim()){
-            setSelectError("Please select an option.");
+
+          let hasErrors = false;
+
+          if(formValues['State*'] == ''){
+            setFormErrors((prev)=>({
+              ...prev,
+              'State*': 'Please select or enter a state',
+            }))
+            hasErrors = true;
+          }
+      
+          if(formValues['I am a:*'] == ''){
+            setFormErrors((prev)=>({
+              ...prev,
+              'I am a:*': 'Please select or enter a state',
+            }))
+            hasErrors = true;
+          }
+      
+          if(formValues['Country*'] == ''){
+            setFormErrors((prev)=>({
+              ...prev,
+              'Country*': 'Please select or enter a state',
+            }))
+            hasErrors = true;
+          }
+
+          if (hasErrors) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
           }
+
           const formData = new FormData(e.currentTarget);
           onSubmit(formData);
         }}
@@ -718,7 +760,7 @@ export const RegisterForm2 = ({
             className="relative w-full items-center !bg-[#008BB7] px-8 py-2 !transition-colors !duration-500 hover:!bg-[rgb(75,200,240)] disabled:cursor-not-allowed xl:mt-[10px]"
             variant="primary"
             type="submit"
-            disabled={isSubmitting || !!selectError}
+            disabled={isSubmitting || (Object.values(formErrors).some((error)=>error !== ''))}
           >
             {isSubmitting ? 'SUBMITTING...' : 'SUBMIT'}
           </Button>
