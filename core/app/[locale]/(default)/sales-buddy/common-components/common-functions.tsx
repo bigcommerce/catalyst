@@ -49,7 +49,16 @@ export const validateInput = (type: string, value: string | any[], action: strin
       if (!value) return 'Company name cannot be empty.';
       return value.length <= 50 ? '' : 'Company name must be 50 characters or less.';
     }
-
+    case 'cart-id': {
+      // Company name validation: not empty, length between 1 and 50
+      if (!value) return '';
+      return value.length != 17 ?  'Enter Valid Session Id' : '';
+    }
+    case 'session-id': {
+      // Company name validation: not empty, length between 1 and 50
+      if (!value) return '';
+      return value.length != 17 ? 'Enter Valid Session Id' : '';
+    }
     default:
       return '';
   }

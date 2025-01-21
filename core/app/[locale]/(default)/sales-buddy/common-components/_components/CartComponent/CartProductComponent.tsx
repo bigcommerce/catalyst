@@ -40,7 +40,7 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
     <li className="mb-[24px] border border-gray-200">
       <div className="">
       <div className="mb-5 flex flex-col gap-4 p-4 py-4 md:flex-row">
-        <div className="cart-main-img mx-auto w-full flex-none border border-gray-300 md:mx-0 md:w-[144px]">
+          <div className="cart-main-img mx-auto flex-none border border-gray-300 md:mx-0 w-[295px] h-[295px] sm:w-[200px] sm:h-fit">
           
           {product?.image?.url ? (
             <BcImage
@@ -48,10 +48,10 @@ export default function CartProductComponent({ currencyCode, product, deleteIcon
               height={144}
               src={product?.image_url}
               width={144}
-              className="h-full min-h-[9em] w-full object-contain"
+                className="flex items-center justify-center"
             />
           ) : (
-            <div className=" h-fit min-w-[300px]" >
+                <div className=" flex items-center justify-center" >
                   <BcImage
                     alt={product?.name}
                     height={144}
