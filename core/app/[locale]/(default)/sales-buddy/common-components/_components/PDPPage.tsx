@@ -84,7 +84,7 @@ export default function SalesBuddyProductPage() {
         <div className="bg-white">
           <table className="w-full border-collapse border-b border-gray-300 text-sm">
             <thead>
-              <tr className="text-left">
+              <tr className="text-left h-[34px]">
                 {['SKU', 'Cost', 'IMAP', 'Floor (%)', 'Floor ($)'].map((header) => (
                   <th key={header} className="p-1">
                     {header}
@@ -97,7 +97,7 @@ export default function SalesBuddyProductPage() {
               <tbody>
                 {
                   childSku?.map((skuNum: any, i: number) => (
-                    <tr key={i}>
+                    <tr key={i} className='h-[34px]'>
                       {[
                         skuNum?.variants_sku ?? 'N/A',
                         skuNum?.adjusted_cost
@@ -217,6 +217,8 @@ export default function SalesBuddyProductPage() {
         <Accordions
           styles="  py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.costPricing, ACCORDION_DATA.inventory]}
+          contentCss="px-5"
+
         // type="multiple"
         />
       </div>

@@ -86,7 +86,7 @@ type Props =
 
 // export { Accordions };
 
-const Accordions = ({ accordions,styles }) => {
+const Accordions = ({ accordions,styles,contentCss }) => {
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleAccordion = (index) => {
@@ -133,7 +133,7 @@ const Accordions = ({ accordions,styles }) => {
           </h2>
           <div
             id={`accordion-collapse-body-${index + 1}`}
-            className={`${openIndex === index ? 'block' : 'hidden'} p-3 dark:border-gray-700`}
+            className={`${openIndex === index ? 'block' : 'hidden'} ${contentCss ? contentCss : 'p-3' }  dark:border-gray-700`}
             aria-labelledby={`accordion-collapse-heading-${index + 1}`}
           >
             <div className="mr-5 w-[440px]">{accordion.content}</div>
