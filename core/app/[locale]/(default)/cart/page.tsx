@@ -98,6 +98,7 @@ export default async function Cart() {
           cta: { label: t('Empty.cta'), href: '/shop-all' },
         }}
         incrementLineItemLabel={t('increment')}
+        key={`${cart.entityId}-${cart.version}`}
         lineItemAction={updateLineItem}
         lineItems={formattedLineItems}
         summary={{
