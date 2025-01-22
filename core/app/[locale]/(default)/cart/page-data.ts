@@ -134,6 +134,7 @@ const CartPageQuery = graphql(
       site {
         cart(entityId: $cartId) {
           entityId
+          version
           currencyCode
           lineItems {
             physicalItems {
