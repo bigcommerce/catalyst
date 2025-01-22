@@ -26,6 +26,13 @@ import CartProductComponent from '../sales-buddy/common-components/_components/C
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
 import ScrollButton from './_components/ScrollButton';
 
+import heartIcon from '~/public/cart/heartIcon.svg'
+import applePayIcon from '~/public/cart/applePayIcon.svg'
+import paypalIcon from '~/public/cart/paypalIcon.svg'
+import amazonPayIcon from '~/public/cart/amazonPayIcon.svg'
+import agentIcon from '~/public/cart/agentIcon.svg'
+import downArrow from '~/public/cart/downArrow.svg'
+
 const CartPageQuery = graphql(
   `
     query CartPageQuery($cartId: String) {
@@ -113,12 +120,6 @@ export default async function Cart() {
   }, 0);
   let cartItemsText = cartQty > 1 ? ' Items' : ' Item';
   const deleteIcon = imageManagerImageUrl('delete.png', '20w');
-  const downArrow = imageManagerImageUrl('downarrow.png', '20w');
-  const agentIcon = imageManagerImageUrl('agent-icon.png', '20w');
-  const heartIcon = imageManagerImageUrl('hearticon.png', '20w');
-  const applePayIcon = imageManagerImageUrl('applepay.png', '60w');
-  const amazonPayIcon = imageManagerImageUrl('amazonpay.png', '125w');
-  const paypalIcon = imageManagerImageUrl('fill-11.png', '25w');
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
   let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
@@ -251,7 +252,6 @@ export default async function Cart() {
                 cartId={cart.entityId}
                 currencyCode={cart.currencyCode}
                 product={data}
-                deleteIcon={deleteIcon}
                 priceAdjustData={product_data_in_cart?.custom_items &&  product_data_in_cart?.custom_items[data?.entityId]}
                 ProductType={"custom"}
                 cookie_agent_login_status={cookie_agent_login_status === 'true' ? true : false}

@@ -297,10 +297,13 @@ export const MultipleChoiceField = ({
           className="div-product-dropdownlist text-center lg:text-left xl:text-left"
         >
           <div className="mb-3 block text-center lg:flex lg:items-center xl:flex xl:items-center">
-            <img
+            <BcImage
               className="variant-img inline-block !h-[20px] !w-[20px] rounded-[50px]"
               alt="headline icon"
-              src={multipleOptionIcon}
+              src={exclamatryIcon}
+              width={15}
+              height={15}
+              unoptimized={true}
               loading="lazy"
             />
             <Label

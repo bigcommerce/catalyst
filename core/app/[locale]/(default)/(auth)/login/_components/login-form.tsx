@@ -25,6 +25,10 @@ import { login, getRememberMeCookie, deleteRememberCookie } from '../_actions/lo
 import { IconProps } from '../../fragments';
 import { cn } from '~/lib/utils';
 
+import facebookLogo from '~/public/accountIcons/faceBookIcon.svg'
+import appleLogo from '~/public/accountIcons/appleIcon.svg'
+import googleLogo from '~/public/accountIcons/googleIcon.svg'
+
 const SubmitButton = () => {
   const { pending } = useFormStatus();
   const t = useTranslations('Login');
@@ -42,9 +46,6 @@ const SubmitButton = () => {
 };
 
 export const LoginForm = ({
-  google,
-  facebookLogo,
-  appleLogo,
   passwordHide,
 }: IconProps & { passwordHide: string }) => {
   const t = useTranslations('Login');
@@ -238,8 +239,8 @@ export const LoginForm = ({
                 alt="Facebook logo"
                 className="Login-logo h-[24px] w-[24px]"
                 src={facebookLogo}
-                width={20}
-                height={20}
+                width={24}
+                height={24}
                 priority={true}
                 unoptimized={true}
               />
@@ -250,9 +251,9 @@ export const LoginForm = ({
               <BcImage
                 alt="Google logo"
                 className="Login-logo h-[24px] w-[24px]"
-                src={google}
-                width={20}
-                height={20}
+                src={googleLogo}
+                width={24}
+                height={24}
                 priority={true}
                 unoptimized={true}
               />
@@ -262,7 +263,7 @@ export const LoginForm = ({
             <button className="flex h-[54px] w-full items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px] sm:w-full md:w-full lg:w-full xl:w-[170px]">
               <BcImage
                 alt="Apple logo"
-                className="Login-logo w-[24px]"
+                className="Login-logo w-[24px] h-[24px]"
                 src={appleLogo}
                 width={24}
                 height={24}
