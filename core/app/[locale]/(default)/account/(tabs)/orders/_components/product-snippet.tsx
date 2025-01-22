@@ -4,6 +4,7 @@ import { client } from '~/client';
 import { graphql, ResultOf, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { BcImage } from '~/components/bc-image';
+import { retrieveMpnData } from '~/components/common-functions';
 import { Link } from '~/components/link';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { Price as PricesType } from '~/components/ui/product-card';
@@ -29,6 +30,18 @@ export const OrderItemFragment = graphql(`
     brand
     name
     quantity
+    baseCatalogProduct {
+      variants {
+        edges {
+          node {
+            mpn
+            sku
+            entityId
+            isPurchasable
+          }
+        }
+      }
+    }
     image {
       url(width: 150, height: 150, lossy: true)
       altText
@@ -68,6 +81,7 @@ export const assembleProductData = (orderItem: ResultOf<typeof OrderItemFragment
     image,
     subTotalListPrice,
     productOptions,
+    baseCatalogProduct,
   } = orderItem;
 
   return {
@@ -83,6 +97,7 @@ export const assembleProductData = (orderItem: ResultOf<typeof OrderItemFragment
       : null,
     productOptions,
     quantity: orderItem.quantity,
+    baseCatalogProduct: baseCatalogProduct,
     prices: {
       price: subTotalListPrice,
       basePrice: null,
@@ -166,6 +181,8 @@ export const ProductSnippet = async ({
   });
 
   const { path = '' } = data.site.product ?? {};
+
+  //let productMpn: string = retrieveMpnData(product, product?.)
 
   return (
     <div className="flex flex-col items-start gap-[15px] border border-[#CCCBCB] p-0">

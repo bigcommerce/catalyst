@@ -204,13 +204,8 @@ export default async function Cart() {
       <div className=" text-center lg:hidden">
       <ScrollButton targetId="order-summary" />
       </div>
-     
-    
 
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
-      <div className=" text-center lg:hidden ">
-        <p>Cart #12345</p>
-      </div>
 
       <h1 className="cart-heading  pt-0 text-center text-[24px] font-normal leading-[32px]  lg:text-left lg:text-[24px]">
         {`${t('heading')} (${cartQty} ${cartItemsText})`}
@@ -218,10 +213,6 @@ export default async function Cart() {
 
       <div className="hidden lg:flex lg:items-center lg:space-x-8">
         <SaveCart cartItems={lineItems} saveCartIcon={heartIcon} />
-
-        <div className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.03125rem] text-[#7F7F7F]">
-          Cart #12345
-        </div>
       </div>
 
       <div className="save-cart pb-8 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-6">
