@@ -362,21 +362,22 @@ export const getCommonSettingByBrandChannel = async (brand) => {
     brand_ids: brand,
     channel_id: process?.env?.BIGCOMMERCE_CHANNEL_ID,
   };
+  if (!commonSettingUrl) { return { output: [] }; }
+    try {
+      const response = await fetch(`${commonSettingUrl}api/get-comman-settings`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(postData),
+        cache: 'no-store',
+      });
 
-  try {
-    const response = await fetch(`${commonSettingUrl}api/get-comman-settings`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(postData),
-      cache: 'no-store',
-    });
-
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error(error);
-    throw error; // Re-throw the error to handle it in the calling component
-  }
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      console.error(error);
+      throw error; // Re-throw the error to handle it in the calling component
+    }
+  
 };
