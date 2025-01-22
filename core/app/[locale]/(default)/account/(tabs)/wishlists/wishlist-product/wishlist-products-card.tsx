@@ -10,6 +10,61 @@ import { useFormatter, useTranslations } from 'next-intl';
 import { InputPlusMinus } from '~/components/form-fields/input-plus-minus';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import { addToCart } from '~/components/product-card/add-to-cart/form/_actions/add-to-cart';
+<<<<<<< Updated upstream
+=======
+import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
+
+interface OptionValue {
+  entityId: number;
+  label: string;
+  isDefault: boolean;
+}
+
+interface ProductOption {
+  __typename: string;
+  entityId: number;
+  displayName: string;
+  isRequired: boolean;
+  isVariantOption: boolean;
+  values: OptionValue[];
+}
+
+interface ProductVariant {
+  entityId: number;
+  sku: string;
+  mpn: string;
+  prices: {
+    price: { value: number; currencyCode: string };
+    basePrice: { value: number; currencyCode: string };
+    salePrice: { value: number; currencyCode: string } | null;
+  };
+}
+
+interface WishlistProduct {
+  entityId: number;
+  name: string;
+  sku: string;
+  mpn: string;
+  path: string;
+  availabilityV2: string;
+  brand?: {
+    name: string;
+    path: string;
+  };
+  defaultImage: {
+    url: string;
+    altText: string;
+  };
+  prices: {
+    price: { value: number; currencyCode: string };
+    basePrice: { value: number; currencyCode: string };
+    salePrice: { value: number; currencyCode: string } | null;
+  };
+  productOptions?: ProductOption[];
+  variants: ProductVariant[];
+}
+>>>>>>> Stashed changes
 
 interface WishlistItem {
   entityId: number;
@@ -114,6 +169,7 @@ const ProductCard = ({ item }: { item: WishlistItem }) => {
 
         {formattedPrice && <p className="text-lg font-bold">{formattedPrice}</p>}
 
+<<<<<<< Updated upstream
         <form onSubmit={handleSubmit}>
           <input name="product_id" type="hidden" value={item.product.entityId} />
           <input
@@ -138,6 +194,81 @@ const ProductCard = ({ item }: { item: WishlistItem }) => {
             >
               ADD TO CART
             </Button>
+=======
+          {/* Display variant options with null check */}
+          {item.product.productOptions
+            ?.filter((option) => option.isVariantOption)
+            .map((option) => (
+              <div key={option.entityId} className="text-sm">
+                <span className="font-semibold">{option.displayName}:</span>{' '}
+                <span>{getOptionDisplay(option)}</span>
+              </div>
+            ))}
+        </div>
+
+        {getPrice()}
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setIsLoading(true);
+            const formData = new FormData(e.currentTarget);
+
+            // Add selected options to form data
+            Object.entries(selectedOptions).forEach(([optionId, value]) => {
+              formData.append(`modifier[${optionId}]`, value.entityId.toString());
+            });
+
+            addToCart(formData)
+              .then((result) => {
+                if (result.error) {
+                  toast.error('Failed to add item to cart');
+                } else {
+                  toast.success('Item added to cart');
+                }
+              })
+              .catch((error) => {
+                console.error('Error:', error);
+                toast.error('Failed to add item to cart');
+              })
+              .finally(() => {
+                setIsLoading(false);
+              });
+          }}
+        >
+          <input name="product_id" type="hidden" value={item.productEntityId} />
+          <input name="variant_id" type="hidden" value={item.variantEntityId} />
+
+          <div className="mt-4">
+            {item.product.availabilityV2.status === 'Unavailable' ? (
+              <div className="flex flex-col items-center">
+                <Button
+                  id="add-to-cart"
+                  className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                  disabled={item.product.availabilityV2.status === 'Unavailable'}
+                  type="submit"
+                >
+                  <span>ADD TO CART</span>
+                </Button>
+                <p className="text-[12px] text-[#2e2e2e]">This product is currently unavailable</p>
+              </div>
+            ) : (
+              <Button
+                type="submit"
+                className="h-[42px] w-full bg-[#03465C] font-medium tracking-wider text-white hover:bg-[#02374a]"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>ADDING...</span>
+                  </div>
+                ) : (
+                  'ADD TO CART'
+                )}
+              </Button>
+            )}
+>>>>>>> Stashed changes
           </div>
         </form>
       </div>

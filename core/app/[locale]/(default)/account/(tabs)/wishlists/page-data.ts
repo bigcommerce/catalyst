@@ -33,6 +33,10 @@ const WishlistsQuery = graphql(
                     entityId
                     product {
                       entityId
+                      availabilityV2 {
+                        status
+                        description
+                      }
                       name
                       sku
                       path
@@ -81,6 +85,7 @@ export const getWishlists = cache(async ({ limit = 3, before, after, filters }: 
   const customerAccessToken = await getSessionCustomerAccessToken();
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
+<<<<<<< Updated upstream
   const response = await client.fetch({
     document: WishlistsQuery,
     variables: { ...filters, ...paginationArgs },
@@ -89,6 +94,13 @@ export const getWishlists = cache(async ({ limit = 3, before, after, filters }: 
   });
 
   const { customer } = response.data;
+=======
+    const data = response.data as WishlistResponse;
+   
+    if (!data?.customer) {
+      return undefined;
+    }
+>>>>>>> Stashed changes
 
   if (!customer) {
     return undefined;
