@@ -7,7 +7,7 @@ import { NotFound as NotFoundSection } from '@/vibes/soul/sections/not-found';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { Footer } from '~/components/footer/footer';
+import { Footer } from '~/components/footer';
 import { Header } from '~/components/header';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
