@@ -25,6 +25,7 @@ import { GetCartMetaFields } from '~/components/management-apis';
 import CartProductComponent from '../sales-buddy/common-components/_components/CartComponent/CartProductComponent';
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
 import ScrollButton from './_components/ScrollButton';
+import { zeroTaxCalculation } from '~/components/common-functions';
 
 const CartPageQuery = graphql(
   `
@@ -159,6 +160,7 @@ export default async function Cart() {
       }
     });
   } else {
+    getCartMetaFields = [];
     updatedLineItemInfo = lineItems;
   }
   updatedLineItemInfo?.forEach((item: any, index: number) => {
@@ -170,6 +172,8 @@ export default async function Cart() {
     label: "Your Cart",
     href: '#'
   }];
+
+  let checkZeroTax: any = await zeroTaxCalculation(data.site);
   
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
@@ -196,7 +200,7 @@ export default async function Cart() {
        
       </div>
       <div className=" text-center lg:hidden">
-      <ScrollButton targetId="order-summary" />
+      <ScrollButton targetId="order-summary" accessoriesData={getCartMetaFields} />
       </div>
 
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
