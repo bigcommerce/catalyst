@@ -332,7 +332,7 @@ export const getMetaFieldsByProduct = async (
 
 export const commonSettinngs = async(brand_ids) =>{
     // 47, 111,
-    var res = await getCommonSettingByBrandChannel(brand_ids);
+    var res = await getCommonSettingByBrandChannel(brand_ids);        
     return res.output;
 }
 export const retrieveMpnData = (product: any, productid: Number, variantId: Number) => {

@@ -536,7 +536,7 @@ export const Details = ({
       <Coupon couponIcon={couponIcon} />
 
       <FreeDelivery />
-      {getAllCommonSettinngsValues && getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada  &&
+      {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) && getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada  &&
         <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
       }
 

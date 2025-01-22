@@ -31,6 +31,10 @@ const PhysicalItemFragment = graphql(`
     productEntityId
     variantEntityId
     baseCatalogProduct {
+    brand{
+    entityId
+    id
+    }
       variants {
         edges {
           node {
@@ -197,6 +201,7 @@ type CustomItem = FragmentResult['customItems'][number];
 export type Product = PhysicalItem | DigitalItem | CustomItem;
 
 interface Props {
+  brandId:any;
   product: any;
   currencyCode: string;
   deleteIcon: string;
@@ -204,6 +209,7 @@ interface Props {
   priceAdjustData: string;
   ProductType: string;
   cookie_agent_login_status: boolean;
+  getAllCommonSettinngsValues: any;
 }
 function moveToTheEnd(arr: any, word: string) {
   arr?.map((elem: any, index: number) => {
@@ -214,7 +220,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export const CartItem = async({ currencyCode, product, deleteIcon, cartId, priceAdjustData, cookie_agent_login_status }: Props) => {
+export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, cartId, priceAdjustData, cookie_agent_login_status, getAllCommonSettinngsValues }: Props) => {
 
 
   const closeIcon = imageManagerImageUrl('close.png', '14w');
@@ -233,15 +239,14 @@ export const CartItem = async({ currencyCode, product, deleteIcon, cartId, price
   if (discountedPrice > 0) {
     discountPriceText = discountedPrice + '% Off';
   }
-
   let productSKU: string = retrieveMpnData(product, product?.productEntityId, product?.variantEntityId);
-
-  var getAllCommonSettinngsValues=commonSettinngs()
-  // var getAllCommonSettinngsValues = await commonSettinngs([product?.brand?.entityId]);
-
-  
   return (
     <li className="mb-[24px] border border-gray-200">
+      {getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
+        <div className='bg-[#E7F5F8] w-full flex justify-center'>
+          <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
+        </div>
+      }
       <div className="">
         
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
@@ -508,7 +513,9 @@ export const CartItem = async({ currencyCode, product, deleteIcon, cartId, price
             })}
         </div>
       {/* ) : ( */}
-      {getAllCommonSettinngsValues.accessories == 'yes' && 
+      {
+      // getAllCommonSettinngsValues.accessories == 'yes' && 
+        getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.use_accessories && 
       <AccessoriesButton 
         key={product?.entityId}
         closeIcon={closeIcon}
