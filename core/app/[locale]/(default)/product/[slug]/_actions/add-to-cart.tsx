@@ -4,7 +4,6 @@ import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { unstable_expireTag } from 'next/cache';
-import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
@@ -15,6 +14,7 @@ import { createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
 import { TAGS } from '~/client/tags';
 import { Link } from '~/components/link';
+import { getCartId, setCartId } from '~/lib/cart';
 
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
 
@@ -43,8 +43,7 @@ export const addToCart = async (
   const productEntityId = Number(submission.value.id);
   const quantity = Number(submission.value.quantity);
 
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value;
+  const cartId = await getCartId();
 
   let cart;
 
@@ -217,14 +216,7 @@ export const addToCart = async (
       };
     }
 
-    cookieStore.set({
-      name: 'cartId',
-      value: cart.entityId,
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: true,
-      path: '/',
-    });
+    await setCartId(cart.entityId);
 
     unstable_expireTag(TAGS.cart);
 

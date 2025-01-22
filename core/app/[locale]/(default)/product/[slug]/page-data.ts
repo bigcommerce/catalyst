@@ -7,6 +7,7 @@ import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
 import { ProductViewedFragment } from './_components/product-viewed/fragment';
@@ -211,6 +212,7 @@ const ProductPageQuery = graphql(
       $entityId: Int!
       $optionValueIds: [OptionValueId!]
       $useDefaultOptionSelections: Boolean
+      $currencyCode: currencyCode
     ) {
       site {
         product(
@@ -254,10 +256,11 @@ type Variables = VariablesOf<typeof ProductPageQuery>;
 
 export const getProductData = cache(async (variables: Variables) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const currencyCode = await getPreferredCurrencyCode();
 
   const { data } = await client.fetch({
     document: ProductPageQuery,
-    variables,
+    variables: { ...variables, currencyCode },
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });

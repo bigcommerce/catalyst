@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { getLocale, getTranslations } from 'next-intl/server';
 import PLazy from 'p-lazy';
 import { cache } from 'react';
@@ -12,8 +11,11 @@ import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { routing } from '~/i18n/routing';
+import { getCartId } from '~/lib/cart';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { search } from './_actions/search';
+import { switchCurrency } from './_actions/switch-currency';
 import { switchLocale } from './_actions/switch-locale';
 import { HeaderFragment } from './fragment';
 
@@ -35,6 +37,7 @@ const getLayoutData = cache(async () => {
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
+    customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
@@ -71,8 +74,11 @@ const getLogo = async () => {
 };
 
 const getCartCount = async () => {
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value;
+  const cartId = await getCartId();
+
+  if (!cartId) {
+    return null;
+  }
 
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -95,14 +101,38 @@ const getCartCount = async () => {
   return response.data.site.cart.lineItems.totalQuantity;
 };
 
+const getCurrencies = async () => {
+  const data = await getLayoutData();
+
+  if (!data.currencies.edges) {
+    return [];
+  }
+
+  const currencies = data.currencies.edges
+    // only show transactional currencies for now until cart prices can be rendered in display currencies
+    .filter(({ node }) => node.isTransactional)
+    .map(({ node }) => ({
+      id: node.code,
+      label: node.code,
+      isDefault: node.isDefault,
+    }));
+
+  return currencies;
+};
+
 export const Header = async () => {
   const t = await getTranslations('Components.Header');
   const locale = await getLocale();
+  const currencyCode = await getPreferredCurrencyCode();
 
   const locales = routing.locales.map((enabledLocales) => ({
     id: enabledLocales,
     label: enabledLocales.toLocaleUpperCase(),
   }));
+
+  const currencies = await getCurrencies();
+  const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
+  const activeCurrencyId = currencyCode ?? defaultCurrency?.id;
 
   return (
     <HeaderSection
@@ -124,6 +154,9 @@ export const Header = async () => {
         activeLocaleId: locale,
         locales,
         localeAction: switchLocale,
+        currencies,
+        activeCurrencyId,
+        currencyAction: switchCurrency,
       }}
     />
   );
