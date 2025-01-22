@@ -151,8 +151,6 @@ export const Details = ({
   blankAddImg,
   productImages,
 }: Props) => {
-  const { wishlists, isAuthenticated, loading } = useWishlists();
-
   const t = useTranslations('Product.Details');
   const format = useFormatter();
   const productFormRef = useRef<HTMLDivElement>(null);
@@ -279,6 +277,36 @@ export const Details = ({
                           SKU: {product.mpn}
                         </span>
                       )}
+
+                      {product.mpn &&
+                        productOptions.filter(
+                          (option) => option.__typename === 'MultipleChoiceOption',
+                        ).length > 0 && <span className="mx-1 text-[14px] font-normal">|</span>}
+                      {productOptions.filter(
+                        (option) => option.__typename === 'MultipleChoiceOption',
+                      ).length > 0 && (
+                        <div className="inline text-[14px] font-normal">
+                          {productOptions
+                            .filter((option) => option.__typename === 'MultipleChoiceOption')
+                            .map((option, index, filteredArray) => {
+                              if (option.__typename === 'MultipleChoiceOption') {
+                                const selectedValue = getSelectedValue(
+                                  option as MultipleChoiceOption,
+                                );
+                                return (
+                                  <span key={option.entityId}>
+                                    <span className="font-bold">{option.displayName}:</span>
+                                    <span className="text-[15px]"> {selectedValue}</span>
+                                    {index < filteredArray.length - 1 && (
+                                      <span className="mx-1">|</span>
+                                    )}
+                                  </span>
+                                );
+                              }
+                              return null;
+                            })}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -361,24 +389,6 @@ export const Details = ({
           <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
             {product.name}
           </h1>
-
-          {/* Add wishlist button */}
-          {/* Wishlist component */}
-          <div className="mb-4 flex justify-center lg:justify-start">
-            <WishlistAddToList
-              wishlists={wishlists}
-              hasPreviousPage={false}
-              product={{
-                entityId: product.entityId,
-                name: product.name,
-                path: product.path || '',
-                images: removeEdgesAndNodes(product.images),
-                brand: product.brand,
-                prices: product.prices,
-                variantEntityId: product.variants?.edges?.[0]?.node?.entityId,
-              }}
-            />
-          </div>
         </div>
 
         <div className="items-center space-x-1 text-center lg:text-left xl:text-left">

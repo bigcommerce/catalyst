@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Heart, X, Check, Loader2, AlertCircle } from 'lucide-react';
+import { Heart, X, Check, Loader2, AlertCircle, Plus } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
@@ -47,6 +47,24 @@ interface Product {
   rating?: number;
   reviewCount?: number;
   variantEntityId?: number;
+  mpn: string;
+  selectedOptionValue?: string; // Make sure it's optional
+  productOptions?: {
+    // Add this if needed for accessing options
+    edges: Array<{
+      node: {
+        __typename: string;
+        values: {
+          edges: Array<{
+            node: {
+              label: string;
+              isSelected: boolean;
+            };
+          }>;
+        };
+      };
+    }>;
+  };
 }
 
 interface WishlistItem {
@@ -126,7 +144,7 @@ const WishlistAddToList = ({
     const authResult = await checkAuthStatus();
 
     if (!authResult.isAuthenticated) {
-      window.location.href = '/login'; // Redirect to login page
+      window.location.href = '/login';
       return;
     }
 
@@ -204,6 +222,12 @@ const WishlistAddToList = ({
 
     setLoadingListId(wishlist.entityId);
     try {
+      const selectedOption =
+        product.productOptions?.edges
+          ?.find((edge) => edge.node.__typename === 'MultipleChoiceOption')
+          ?.node.values?.edges?.find((valueEdge) => valueEdge.node.isSelected)?.node.label ||
+        undefined; // Convert null to undefined
+
       const productToAdd = {
         listId: wishlist.entityId,
         product: {
@@ -214,6 +238,10 @@ const WishlistAddToList = ({
           brand: product.brand,
           prices: product.prices,
           variantEntityId: product.variantEntityId,
+          mpn: product.mpn,
+          selectedOptionValue: product.productOptions?.edges
+            ?.find((edge) => edge.node.__typename === 'MultipleChoiceOption')
+            ?.node.values?.edges?.find((valueEdge) => valueEdge.node.isSelected)?.node.label,
         },
       };
 
@@ -411,13 +439,17 @@ const WishlistAddToList = ({
             <h2 className="mb-1 text-xl font-[500]">Add to List</h2>
 
             {/* Wishlists Section */}
+
+            {/* Wishlists Section */}
             <div className="flex flex-col">
               <div className="flex-1">
                 <div className="max-h-[250px] overflow-y-auto pr-2">
                   <div className="scrollbar-thin scrollbar-track-transparent scrollbar-thumb-gray-300">
                     {currentWishlists.map((wishlist) => {
+                      // Skip if no items or product
                       if (!wishlist.items || !product) return null;
 
+                      // Check if product is already in list
                       const isProductInList =
                         wishlist.items.some(
                           (item) => item.product?.entityId === product?.entityId,
@@ -427,37 +459,56 @@ const WishlistAddToList = ({
                       const isAdded = justAddedToList === wishlist.entityId;
 
                       return (
-                        <button
-                          key={wishlist.entityId}
-                          onClick={() => {
-                            if (isProductInList) {
-                              setMessage({
-                                type: 'error',
-                                text: `This product already exists in "${wishlist.name}"`,
-                              });
-                            } else {
-                              handleWishlistSelect(wishlist);
-                            }
-                          }}
-                          disabled={isPending || isLoading}
-                          className={cn(
-                            'group flex w-full items-center py-[0.5em] text-left transition-colors',
-                            isProductInList ? 'cursor-not-allowed bg-gray-50' : 'hover:bg-gray-50',
-                            (isPending || isLoading) && 'opacity-50',
-                          )}
-                        >
-                          <span className="text-[#4B4B4B]">
-                            {wishlist.name}
-                            <span className="ml-2 text-[#4B4B4B]">
-                              ({wishlist.items.length} items)
+                        <div className="wishlist-item">
+                          <button
+                            key={wishlist.entityId}
+                            onClick={() => {
+                              if (isProductInList) {
+                                setMessage({
+                                  type: 'error',
+                                  text: `This product already exists in "${wishlist.name}"`,
+                                });
+                              } else {
+                                handleWishlistSelect(wishlist);
+                              }
+                            }}
+                            disabled={isPending || isLoading}
+                            className={cn(
+                              // Base styles
+                              'group flex w-full items-center py-[0.5em] text-left transition-all hover:bg-green-100 hover:pl-4',
+                              // Conditional background
+                              isProductInList ? 'cursor-not-allowed' : '',
+                              // Loading state
+                              (isPending || isLoading) && 'opacity-50',
+                            )}
+                          >
+                            {/* Plus Icon or Checkmark */}
+                            {isAdded ? (
+                              <span className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-green-600">
+                                <Check className="mb-1 mt-1 h-3 w-3 text-white" />
+                              </span>
+                            ) : (
+                              <span className="mr-2 text-[#B4B4B5]">
+                                <Plus className="h-5 w-5 text-[#B4B4B5]" />
+                              </span>
+                            )}
+
+                            {/* Wishlist Name and Item Count */}
+                            <span className="capitalize text-[#353535]">
+                              {wishlist.name}
+                              <span className="ml-2 capitalize text-[#353535]">
+                                ({wishlist.items.length} items)
+                              </span>
                             </span>
-                          </span>
-                          {isLoading ? (
-                            <Loader2 className="ml-auto h-4 w-4 animate-spin" />
-                          ) : isAdded ? (
-                            <Check className="ml-auto h-4 w-4 text-green-500" />
-                          ) : null}
-                        </button>
+
+                            {/* Loading/Added Icons */}
+                            {isLoading ? (
+                              <Loader2 className="ml-auto h-4 w-4 animate-spin" />
+                            ) : isAdded ? (
+                              <Check className="ml-auto h-4 w-4 text-green-500" />
+                            ) : null}
+                          </button>
+                        </div>
                       );
                     })}
                   </div>
@@ -475,7 +526,7 @@ const WishlistAddToList = ({
                       <span className="text-[16px] text-black">NEW LIST</span>
                     ) : (
                       <span className="text-black">
-                        <span className="text-[30px]">+</span>
+                        <span className="mr-2 text-[29px]">+</span>
                         <span className="relative bottom-[4px] text-[16px] font-bold">
                           New List...
                         </span>

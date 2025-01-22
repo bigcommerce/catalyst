@@ -3,50 +3,77 @@ import { cache } from 'react';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
-import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { GalleryFragment } from '../../../product/[slug]/_components/gallery/fragment';
 
-// Updated interfaces
-interface ProductImage {
-  url: string;
-  altText: string | null;
+interface Price {
+  value: number;
+  currencyCode: string;
+}
+
+interface PriceData {
+  price: Price;
+  basePrice: Price;
+  salePrice: Price | null;
+}
+
+interface OptionValue {
+  entityId: number;
+  label: string;
+}
+
+interface VariantOption {
+  displayName: string;
+  entityId: number;
+  isRequired: boolean;
+  values: {
+    edges: Array<{
+      node: OptionValue;
+    }>;
+  };
 }
 
 interface ProductVariant {
   entityId: number;
   sku: string;
-  defaultImage: ProductImage | null;
+  mpn?: string;
+  options: {
+    edges: Array<{
+      node: VariantOption;
+    }>;
+  };
+  defaultImage?: {
+    url: string;
+    altText: string;
+  };
+  prices?: PriceData;
 }
 
 interface Product {
   entityId: number;
   name: string;
   sku: string;
+  mpn?: string;
   path: string;
-  brand: {
+  brand?: {
     name: string;
     path: string;
-  } | null;
+  };
+  defaultImage: {
+    url: string;
+    altText: string;
+  };
   variants: {
     edges: Array<{
       node: ProductVariant;
-    }> | null;
+    }>;
   };
-  images: {
-    edges: Array<{
-      node: ProductImage;
-    }> | null;
-  };
-  defaultImage: ProductImage | null;
-  videos: {
-    edges: Array<any> | null;
-  };
-  prices: any | null;
+  prices: PriceData;
 }
 
 interface WishlistItem {
   entityId: number;
+  productEntityId: number;
+  variantEntityId: number;
   product: Product;
 }
 
@@ -56,7 +83,7 @@ interface WishlistEdgeNode {
   items: {
     edges: Array<{
       node: WishlistItem;
-    }> | null;
+    }>;
   };
 }
 
@@ -100,10 +127,13 @@ const WishlistsQuery = graphql(
                 edges {
                   node {
                     entityId
+                    productEntityId
+                    variantEntityId
                     product {
                       entityId
                       name
                       sku
+                      mpn
                       path
                       brand {
                         name
@@ -114,15 +144,55 @@ const WishlistsQuery = graphql(
                           node {
                             entityId
                             sku
+                            mpn
+                            options {
+                              edges {
+                                node {
+                                  displayName
+                                  entityId
+                                  isRequired
+                                }
+                              }
+                            }
                             defaultImage {
                               url(width: 100)
                               altText
                             }
+                            prices {
+                              price {
+                                value
+                                currencyCode
+                              }
+                              basePrice {
+                                value
+                                currencyCode
+                              }
+                              salePrice {
+                                value
+                                currencyCode
+                              }
+                            }
                           }
                         }
                       }
-                      ...GalleryFragment
-                      ...PricingFragment
+                      defaultImage {
+                        url(width: 300)
+                        altText
+                      }
+                      prices {
+                        price {
+                          value
+                          currencyCode
+                        }
+                        basePrice {
+                          value
+                          currencyCode
+                        }
+                        salePrice {
+                          value
+                          currencyCode
+                        }
+                      }
                     }
                   }
                 }
@@ -133,7 +203,7 @@ const WishlistsQuery = graphql(
       }
     }
   `,
-  [GalleryFragment, PaginationFragment, PricingFragment],
+  [PaginationFragment],
 );
 
 type WishlistsVariables = VariablesOf<typeof WishlistsQuery>;
@@ -157,7 +227,7 @@ export const getWishlists = cache(
       return undefined;
     }
 
-    return {
+    const transformedData = {
       pageInfo: data.customer.wishlists.pageInfo,
       wishlists: removeEdgesAndNodes(data.customer.wishlists).map((wishlist: WishlistEdgeNode) => ({
         ...wishlist,
@@ -165,10 +235,19 @@ export const getWishlists = cache(
           ...item,
           product: {
             ...item.product,
-            images: item.product.images ? removeEdgesAndNodes(item.product.images) : [],
+            variants: item.product.variants
+              ? removeEdgesAndNodes(item.product.variants).map((variant) => ({
+                  ...variant,
+                  options: variant.options ? removeEdgesAndNodes(variant.options) : [],
+                }))
+              : [],
           },
         })),
       })),
     };
+
+    return transformedData;
   },
 );
+
+export type { WishlistItem, Product, ProductVariant, VariantOption, OptionValue, PriceData };
