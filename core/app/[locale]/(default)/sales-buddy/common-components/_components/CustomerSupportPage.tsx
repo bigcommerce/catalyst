@@ -209,7 +209,7 @@ function CustomerSupportPage() {
     setLoading((prev) => ({ ...prev, show2: true }));
     if (
       findCustomerData.email !== '' ||
-      // findCustomerData.company !== '' ||
+      findCustomerData.company !== '' ||
       findCustomerData.phone !== '' ||
       findCustomerData.first_name !== ''
       // findCustomerData.last_name !== ''
@@ -241,7 +241,7 @@ function CustomerSupportPage() {
           setLoading((prev) => ({ ...prev, show2: false }));
           setTableData([])
           const errorMessage = response.error || 'An unknown error occurred';
-          setFindCustomerErrorMessage(` Failed to retrieve account`);
+          setFindCustomerErrorMessage(`else Failed to retrieve account`);
           setFindCustomerSuccessMessage(null);
         }
       } catch (error: any) {
