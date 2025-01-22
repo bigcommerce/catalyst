@@ -991,6 +991,7 @@ border-top: 1px solid var(--gray-300);
 .mega-menu-sidebar .main-menu-item > a, .mega-menu-sidebar .main-menu-item > span, 
 .mega-menu-sidebar .secondary-menu-item > a, .mega-menu-sidebar .secondary-menu-item > span {
 display: flex;
+align-items: center;
 font-size: 16px;
 line-height: 32px;
 font-weight: 400;
@@ -1008,12 +1009,40 @@ flex-grow: 1;
 flex: none;
 }
 
+.mega-menu-sidebar-header {
+display: flex;
+text-align: center;
+}
+.mega-menu-sidebar-header .mega-menu-sidebar-close-button {
+margin-left: auto;
+flex: none;
+}
+
+.mega-menu-sidebar .main-menu-item .main-menu-back-link {
+display: flex;
+align-items: center;
+}
+.mega-menu-sidebar .main-menu-item .main-menu-back-link span {
+display: flex;
+align-items: center;
+cursor: pointer;
+color: var(--brand-400);
+}
+.mega-menu-sidebar .main-menu-item .main-menu-back-link span svg {
+color: var(--foreground)
+}
+.mega-menu-sidebar .main-menu-item .main-menu-back-link .main-menu-shop-all-link {
+color: var(--brand-400);
+text-transform: uppercase;
+}
+
 .mega-menu-sidebar .main-sub-menu-item {
 border-top: 1px solid var(--gray-300);
 }
 
 .mega-menu-sidebar .main-sub-menu-item > a, .mega-menu-sidebar .main-sub-menu-item > span {
 display: flex;
+align-items: center;
 font-size: 15px;
 line-height: 32px;
 font-weight: 400;
@@ -1029,18 +1058,27 @@ flex-grow: 1;
 flex: none;
 }
 
+.mega-menu-sidebar .main-sub-menu-item ul {
+padding-bottom: .5rem
+}
 .mega-menu-sidebar .main-sub-sub-menu-item {
-border-top: 1px solid var(--gray-300);
+/*border-top: 1px solid var(--gray-300);*/
+padding-left: 1rem;
 }
 .mega-menu-sidebar .main-sub-sub-menu-item > a, .mega-menu-sidebar .main-sub-sub-menu-item > span {
 display: flex;
+align-items: center;
 font-size: 14px;
 line-height: 32px;
 font-weight: 400;
 letter-spacing: .5px;
 text-align: left;
-padding: .75rem 0;
+padding: .25rem 0;
 white-space: nowrap;
+}
+.mega-menu-sidebar .main-sub-sub-menu-item .main-sub-sub-menu-shop-all-link {
+color: var(--brand-400);
+text-transform: uppercase;
 }
 
 
@@ -1052,7 +1090,7 @@ padding: 0 1rem;
 border: 0px solid;
 border-top: 1px solid var(--gray-300);
 border-bottom: 1px solid var(--gray-300);
-display: flex;
+display: none;
 max-width: 100%;
 align-items: center;
 justify-content: space-between;
@@ -1062,6 +1100,7 @@ background: var(--background);
 @media (min-width: 1024px) {
 .mega-menu {
 padding: 0 2.5rem;
+display: flex;
 }
 }
 
@@ -1095,6 +1134,7 @@ color: var(--brand-400);
 
 .mega-menu .main-menu-item > a, .mega-menu .main-menu-item > span {
 display: flex;
+align-items: center;
 font-size: 16px;
 line-height: 32px;
 font-weight: 400;
@@ -1105,6 +1145,7 @@ white-space: nowrap;
 }
 .mega-menu .secondary-menu-item > a, .mega-menu .secondary-menu-item > span {
 display: flex;
+align-items: center;
 font-size: 16px;
 line-height: 32px;
 font-weight: 400;
@@ -1227,6 +1268,7 @@ margin-top: 0.5rem;
 
 .mega-menu .sub-menu .main-sub-sub-menu-item > a, .mega-menu .sub-menu .main-sub-sub-menu-item > span {
 display: flex;
+align-items: center;
 font-size: 14px;
 font-weight: 400;
 letter-spacing: .5px;

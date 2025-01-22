@@ -283,6 +283,8 @@ export const DetailsFragment = graphql(
       }
       brand {
         name
+        entityId
+        id
       }
       ...PricingFragment
     }

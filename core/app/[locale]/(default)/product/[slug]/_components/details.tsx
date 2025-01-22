@@ -27,6 +27,8 @@ import Link from 'next/link';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import addToCart from '~/public/add-to-cart/addToCart.svg';
 import Image from 'next/image';
+import { NoShipCanada } from './belami-product-no-shipping-canada';
+import { commonSettinngs } from '~/components/common-functions';
 
 interface ProductOptionValue {
   entityId: number;
@@ -108,6 +110,8 @@ export const DetailsFragment = graphql(
       }
       brand {
         name
+        entityId
+        id
       }
       ...PricingFragment
     }
@@ -133,6 +137,7 @@ interface Props {
   closeIcon?: string;
   blankAddImg?: string;
   productImages?: string;
+  getAllCommonSettinngsValues?:any
 }
 export const Details = ({
   product,
@@ -146,6 +151,7 @@ export const Details = ({
   closeIcon,
   blankAddImg,
   productImages,
+  getAllCommonSettinngsValues
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -154,8 +160,32 @@ export const Details = ({
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const scrollableRef = useRef(null); // Reference to the scrollable div
+  const [isDragging, setIsDragging] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartY(e.clientY);
+    setScrollTop(scrollableRef.current.scrollTop);
+    document.body.style.userSelect = 'none';
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+
+    const distance = e.clientY - startY;
+    scrollableRef.current.scrollTop = scrollTop - distance; // Update the scroll position
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    document.body.style.userSelect = 'auto';
+  };
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
+  // const [getAllCommonSettinngsValues, setGetAllCommonSettinngsValues] = useState<any>([]);
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
@@ -166,6 +196,7 @@ export const Details = ({
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
   const productMpn = product.mpn;
+  const brand = product.brand?.entityId;
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
@@ -216,6 +247,7 @@ export const Details = ({
 
       setCurrentImageUrl(product.defaultImage?.url || '');
     };
+    
 
     updateImageFromVariant();
   }, [searchParams, product, variants, productOptions, currentMainMedia]);
@@ -223,42 +255,6 @@ export const Details = ({
   useEffect(() => {
     // store product id in local storage for Salesbuddy
     store_pdp_product_in_localstorage(product);
-  }, [product]);
-
-  useEffect(() => {
-    console.log('Product Details:', {
-      basic: {
-        name: product.name,
-        entityId: product.entityId,
-        sku: product.sku,
-        mpn: product.mpn,
-        upc: product.upc,
-        brand: product.brand?.name,
-        variantId: product.variants?.edges?.[0]?.node?.entityId || 0,
-      },
-      pricing: {
-        price: product.prices?.price,
-        basePrice: product.prices?.basePrice,
-        priceRange: product.prices?.priceRange,
-      },
-      inventory: {
-        minPurchaseQuantity: product.minPurchaseQuantity,
-        maxPurchaseQuantity: product.maxPurchaseQuantity,
-        availability: product.availabilityV2?.description,
-        availabilityStatus: product.availabilityV2?.status,
-      },
-      specs: {
-        condition: product.condition,
-        weight: product.weight,
-        customFields: removeEdgesAndNodes(product.customFields),
-      },
-      images: {
-        defaultImage: product.defaultImage,
-        allImages: removeEdgesAndNodes(product.images),
-      },
-      variants: removeEdgesAndNodes(product.variants),
-      options: removeEdgesAndNodes(product.productOptions),
-    });
   }, [product]);
 
   const productAvailability = product.availabilityV2.status;
@@ -480,7 +476,31 @@ export const Details = ({
           </div>
         </>
       )}
+       <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          display: none; /* Hides scrollbar for Chrome, Safari, Edge */
+        }
 
+        .custom-scrollbar {
+          -ms-overflow-style: none; /* Hides scrollbar for IE and Edge */
+          scrollbar-width: none; /* Hides scrollbar for Firefox */
+        }
+
+        .cursor-grab:active {
+          cursor: grabbing; /* Changes cursor while dragging */
+        }
+
+        .smooth-scroll {
+          scroll-behavior: smooth; /* Smooth scrolling */
+        }
+      `}</style>
+<div 
+    ref={scrollableRef}
+    onMouseDown={handleMouseDown}
+    onMouseMove={handleMouseMove}
+    onMouseUp={handleMouseUp}
+    onMouseLeave={handleMouseUp}
+    className="custom-scrollbar h-[600px] w-full overflow-y-scroll cursor-grab ">
       <div className="div-product-details">
         <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
           {product.name}
@@ -554,9 +574,12 @@ export const Details = ({
           )}
         </div>
       )}
-
       <Coupon couponIcon={couponIcon} />
+
       <FreeDelivery />
+      {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) && getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada  &&
+        <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
+      }
 
       <div ref={productFormRef}>
         <ProductForm
@@ -636,6 +659,8 @@ export const Details = ({
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
       <ShippingReturns />
+    </div>
+   
     </div>
   );
 };

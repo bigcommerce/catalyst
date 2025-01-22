@@ -19,6 +19,7 @@ import { CheckoutButton } from '~/app/[locale]/(default)/cart/_components/checko
 import { GetVariantsByProductSKU } from '~/components/graphql-apis';
 import { InputPlusMinus } from '../form-fields/input-plus-minus';
 import closeIcon from '~/public/add-to-cart/flyoutCloseIcon.svg';
+import { commonSettinngs } from '../common-functions';
 
 const getVariantProductInfo = async (metaData: any) => {
   let variantProductInfo: any = [],
@@ -110,6 +111,7 @@ export const ProductFlyout = ({
   showFlyoutFn?: any;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [commonSettingsValues, setCommonSettingsValues] = useState<any>([]);
   const format = useFormatter();
   const productFlyout = useCommonContext();
   let productData = productFlyout.productData;
@@ -135,11 +137,12 @@ export const ProductFlyout = ({
     setOpen = showFlyoutFn;
     currencyCode = product?.extendedSalePrice?.currencyCode
   }
+  
   const [variantProductData, setVariantProductData] = useState<any>([]);
   let productId = (from == 'pdp') ? product?.entityId: product?.productEntityId;
   let productQtyData = (from == 'pdp') ? productData?.quantity: product?.quantity;
   if (variantData && optionsData && optionsData?.length > 0) {
-    let variantProduct: any = variantData?.find((item: any) => item?.sku == product?.sku);
+    let variantProduct: any = variantData?.find((item: any) => item?.sku == product?.sku);    
     useEffect(() => {
       const getProductMetaData = async () => {
         let metaData = await GetProductVariantMetaFields(
@@ -149,7 +152,11 @@ export const ProductFlyout = ({
         );
         let productData = await getVariantProductInfo(metaData);
         setVariantProductData([...productData]);
+        var getAllCommonSettinngsValues =await commonSettinngs([product?.brand?.entityId]);
+        setCommonSettingsValues(getAllCommonSettinngsValues);
+        
       };
+
       if (variantProduct) {
         getProductMetaData();
       }
@@ -166,6 +173,8 @@ export const ProductFlyout = ({
       setProductQty(productQtyData);
     }, [productId, productQtyData]);
   }
+
+  
 
   return (
     <>
@@ -276,7 +285,8 @@ export const ProductFlyout = ({
                 </div>
               </Dialog.Content>
               )}
-              {variantProductData && variantProductData?.length > 0 && (
+              
+              {variantProductData && variantProductData?.length > 0 && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories  && (
                 <>
                   <hr className="my-[20px] border-[#93cfa1]" />
                   <div className="pop-up-text flex flex-col gap-4">

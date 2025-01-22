@@ -13,6 +13,9 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 import { AccessoriesInputPlusMinus } from '~/components/form-fields/accessories-input-plus-minus';
 import { get_product_by_entity_id_in_cart } from '../_actions/get-product-by-entityid';
 import { Button } from '~/components/ui/button';
+import { retrieveMpnData } from '~/components/common-functions';
+import { commonSettinngs } from '~/components/common-functions';
+import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -27,6 +30,39 @@ const PhysicalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
+    couponAmount {
+      currencyCode
+      formatted
+      value
+    }
+    discountedAmount {
+      currencyCode
+      formatted
+      value
+    }
+    discounts {
+      discountedAmount {
+        currencyCode
+        formatted
+        value
+      }
+    }
+    baseCatalogProduct {
+    brand{
+    entityId
+    id
+    }
+      variants {
+        edges {
+          node {
+            mpn
+            sku
+            entityId
+            isPurchasable
+          }
+        }
+      }
+    }
     extendedListPrice {
       currencyCode
       value
@@ -100,6 +136,35 @@ const DigitalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
+    couponAmount {
+      currencyCode
+      formatted
+      value
+    }
+    discountedAmount {
+      currencyCode
+      formatted
+      value
+    }
+    discounts {
+      discountedAmount {
+        currencyCode
+        formatted
+        value
+      }
+    }
+    baseCatalogProduct {
+      variants {
+        edges {
+          node {
+            mpn
+            sku
+            entityId
+            isPurchasable
+          }
+        }
+      }
+    }
     extendedListPrice {
       currencyCode
       value
@@ -170,13 +235,15 @@ type CustomItem = FragmentResult['customItems'][number];
 export type Product = PhysicalItem | DigitalItem | CustomItem;
 
 interface Props {
+  brandId:any;
   product: any;
   currencyCode: string;
   deleteIcon: string;
   cartId: string;
-  priceAdjustData:string;
-  ProductType:string;
+  priceAdjustData: string;
+  ProductType: string;
   cookie_agent_login_status: boolean;
+  getAllCommonSettinngsValues: any;
 }
 function moveToTheEnd(arr: any, word: string) {
   arr?.map((elem: any, index: number) => {
@@ -187,9 +254,9 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjustData, cookie_agent_login_status }: Props) => {
+export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, cartId, priceAdjustData, cookie_agent_login_status, getAllCommonSettinngsValues }: Props) => {
 
-  
+
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
@@ -206,10 +273,16 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
   if (discountedPrice > 0) {
     discountPriceText = discountedPrice + '% Off';
   }
-
+  let productSKU: string = retrieveMpnData(product, product?.productEntityId, product?.variantEntityId);
   return (
     <li className="mb-[24px] border border-gray-200">
+      {getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
+        <div className='bg-[#E7F5F8] w-full flex justify-center'>
+          <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
+        </div>
+      }
       <div className="">
+        
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
           <div className="cart-main-img mx-auto flex-none border border-gray-300 md:mx-0 w-[295px] h-[295px] sm:w-[200px] sm:h-fit">
             {product.image?.url ? (
@@ -228,8 +301,8 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product?.brand}</p>
             <div className={`grid gap-1 grid-cols-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
-                ? "xl:grid-cols-[40%_20%_40%]"
-                : "xl:grid-cols-[60%_40%]"
+              ? "xl:grid-cols-[40%_20%_40%]"
+              : "xl:grid-cols-[60%_40%]"
               }`}>
               <div className="">
                 <Link href={product?.url}>
@@ -241,7 +314,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
                     <div className="cart-options flex flex-wrap gap-2">
                       <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                        SKU: {product?.sku}
+                        SKU: {productSKU}
                       </p>
                     </div>
                   </div>
@@ -250,7 +323,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 ">
                     <div className="cart-options">
                       <p className="text-left inline text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                        SKU: {product.sku}
+                        SKU: {productSKU}
                         {changeTheProtectedPosition.length > 0 && (
                           <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
                             {' '}
@@ -381,30 +454,32 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
                   <ItemQuantity product={product} />
                 </div>
               </div>
-              {cookie_agent_login_status == true && 
-              <div className="overflow-x-hidden xl:pl-[10px]">
-                <ProductPriceAdjuster
-                  parentSku={priceAdjustData?.parent_sku}
-                  sku={priceAdjustData?.sku}
-                  oem_sku={priceAdjustData?.oem_sku}
-                  productPrice={Number(product?.listPrice?.value)}
-                  initialCost={Number(priceAdjustData?.cost)}
-                  initialFloor={Number(priceAdjustData?.floor_percentage)}
-                  initialMarkup={Number(product?.listPrice?.value)}
-                  productId={product?.productEntityId}
-                  cartId={cartId} 
-                  ProductType={"product"}
-                   />
-                {/* priceAdjustData.parent_sku */}
-              </div>
-               } 
+              {cookie_agent_login_status == true &&
+                <div className="overflow-x-hidden xl:pl-[10px]">
+                  <ProductPriceAdjuster
+                    parentSku={priceAdjustData?.parent_sku}
+                    sku={priceAdjustData?.sku}
+                    oem_sku={priceAdjustData?.oem_sku}
+                    productPrice={Number(product?.listPrice?.value)}
+                    initialCost={Number(priceAdjustData?.cost)}
+                    initialFloor={Number(priceAdjustData?.floor_percentage)}
+                    initialMarkup={Number(product?.listPrice?.value)}
+                    productId={product?.productEntityId}
+                    cartId={cartId}
+                    ProductType={"product"}
+                  />
+                  {/* priceAdjustData.parent_sku */}
+                </div>
+              }
             </div>
           </div>
         </div>
       </div>
       {/* {product?.accessories?.length > 0 ? ( */}
         <div>
-          {product?.accessories &&
+        {/* {product?.accessories && getAllCommonSettinngsValues.accessories == 'yes' && */}
+
+        {product?.accessories  &&
             product?.accessories?.map((item: any, index: number) => {
               let oldPriceAccess = item?.originalPrice?.value;
               let salePriceAccess = item?.extendedSalePrice?.value;
@@ -433,7 +508,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
                         <div>{item.name}</div>
                         <div className="flex flex-wrap items-center gap-[0px_10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                           {item.originalPrice.value &&
-                          item.originalPrice.value !== item.listPrice.value ? (
+                            item.originalPrice.value !== item.listPrice.value ? (
                             <p className="flex items-center tracking-[0.25px] line-through">
                               {format.number(item.originalPrice.value * item.quantity, {
                                 style: 'currency',
@@ -472,12 +547,16 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
             })}
         </div>
       {/* ) : ( */}
+      {
+      // getAllCommonSettinngsValues.accessories == 'yes' && 
+        getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.use_accessories && 
       <AccessoriesButton 
         key={product?.entityId}
         closeIcon={closeIcon}
         blankAddImg={blankAddImg}
         fanPopup={fanPopup}
-        product={product} />
+        product={product} 
+        />}
         {/* )} */}
     </li>
   );

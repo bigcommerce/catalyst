@@ -241,7 +241,7 @@ function CustomerSupportPage() {
           setLoading((prev) => ({ ...prev, show2: false }));
           setTableData([])
           const errorMessage = response.error || 'An unknown error occurred';
-          setFindCustomerErrorMessage(`else Failed to retrieve account`);
+          setFindCustomerErrorMessage(` Failed to retrieve account`);
           setFindCustomerSuccessMessage(null);
         }
       } catch (error: any) {
