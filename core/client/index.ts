@@ -31,7 +31,7 @@ export const client = createClient({
   backendUserAgentExtensions: backendUserAgent,
   logger:
     (process.env.NODE_ENV !== 'production' && process.env.CLIENT_LOGGER !== 'false') ||
-    process.env.CLIENT_LOGGER === 'true',
+    process.env.CLIENT_LOGGER === 'false',
   getChannelId: async (defaultChannelId: string) => {
     const locale = await getLocale();
 

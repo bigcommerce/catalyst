@@ -256,6 +256,8 @@ export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
     const locale = request.headers.get('x-bc-locale') ?? '';
 
+    console.log(request, 'request_11111');
+
     const { route, status } = await getRouteInfo(request, event);
 
     if (status === 'MAINTENANCE') {

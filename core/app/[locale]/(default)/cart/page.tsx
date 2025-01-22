@@ -1,10 +1,12 @@
 import { cookies } from 'next/headers';
 import { getTranslations } from 'next-intl/server';
+import Script from 'next/script';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
+import { WalletButtons } from '~/components/wallet-buttons';
 
 import { CartItem, CartItemFragment } from './_components/cart-item';
 import { CartViewed } from './_components/cart-viewed';
@@ -95,7 +97,10 @@ export default async function Cart() {
           <CheckoutButton cartId={cartId} />
         </div>
       </div>
+      <Script src="/test-path/headless-wallet-button-initializer.js" />
+      <Script src="/test-path/main-app.js" />
       <CartViewed checkout={checkout} currencyCode={cart.currencyCode} lineItems={lineItems} />
+      <WalletButtons cartId={cartId} />
     </div>
   );
 }

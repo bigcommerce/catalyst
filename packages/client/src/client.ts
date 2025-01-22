@@ -100,7 +100,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
       (await this.beforeRequest?.(fetchOptions)) ?? {};
 
-    const response = await fetch(graphqlUrl, {
+    const reqBody = {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -117,7 +117,11 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       }),
       ...additionalFetchOptions,
       ...rest,
-    });
+    };
+
+    console.log(reqBody);
+
+    const response = await fetch(graphqlUrl, reqBody);
 
     if (!response.ok) {
       throw await BigCommerceAPIError.createFromResponse(response);

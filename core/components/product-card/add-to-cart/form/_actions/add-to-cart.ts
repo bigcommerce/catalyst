@@ -59,7 +59,7 @@ export const addToCart = async (data: FormData) => {
       value: cart.entityId,
       httpOnly: true,
       sameSite: 'lax',
-      secure: true,
+      secure: false,
       path: '/',
     });
 

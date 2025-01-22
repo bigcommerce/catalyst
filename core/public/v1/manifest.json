@@ -1,0 +1,14 @@
+{
+  "version": "1.684.0",
+  "js": [
+    "v1/checkout-sdk-63f0135d.js",
+    "v1/checkout-button-da194b84.js",
+    "v1/headless-checkout-wallet-2343e759.js",
+    "v1/embedded-checkout-9d4d8458.js",
+    "v1/extension-7fcaebab.js",
+    "v1/hosted-form-bc3fca59.js",
+    "v1/internal-mappers-816b1963.js",
+    "v1/hosted-form-v2-iframe-content-cf0f65c8.js",
+    "v1/hosted-form-v2-iframe-host-1ddb115b.js"
+  ]
+}
