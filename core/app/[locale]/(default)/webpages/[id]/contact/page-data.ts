@@ -1,7 +1,7 @@
 import { cache } from 'react';
 
 import { client } from '~/client';
-import { graphql } from '~/client/graphql';
+import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { BreadcrumbsWebPageFragment } from '~/components/breadcrumbs/fragment';
 
@@ -37,7 +37,9 @@ const ContactPageQuery = graphql(
   [BreadcrumbsWebPageFragment],
 );
 
-export const getWebpageData = cache(async (variables: { id: string }) => {
+type Variables = VariablesOf<typeof ContactPageQuery>;
+
+export const getWebpageData = cache(async (variables: Variables) => {
   const { data } = await client.fetch({
     document: ContactPageQuery,
     variables,
