@@ -40,7 +40,24 @@ export const AddToCartButton = ({
     return t('addToCart');
   };
   if (buttonText() === t('unavailable')) {
-    return null;
+    return (
+      <div className='flex flex-col items-center'>
+      <Button
+        id="add-to-cart"
+        className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+        disabled={isProductDisabled}
+        loading={loading}
+        loadingText={t('processing')}
+        type="submit"
+      >
+        {children}
+        <span>
+           ADD TO CART
+        </span>
+      </Button>
+      <p className="text-[#2e2e2e] text-[12px]">This product is currently unavailable</p>
+      </div>
+    );
   }
   return (
     <Button

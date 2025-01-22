@@ -245,6 +245,7 @@ export const Details = ({
         minPurchaseQuantity: product.minPurchaseQuantity,
         maxPurchaseQuantity: product.maxPurchaseQuantity,
         availability: product.availabilityV2?.description,
+        availabilityStatus: product.availabilityV2?.status,
       },
       specs: {
         condition: product.condition,
@@ -259,6 +260,8 @@ export const Details = ({
       options: removeEdgesAndNodes(product.productOptions),
     });
   }, [product]);
+
+  const productAvailability = product.availabilityV2.status;
 
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
@@ -383,32 +386,46 @@ export const Details = ({
                       )}
                     </div>
                   )}
-
-                  <button
-                    className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
-                    onClick={() => {
-                      const addToCartButton = productFormRef.current?.querySelector(
-                        'button[type="submit"]',
-                      ) as HTMLButtonElement | null;
-                      if (addToCartButton) {
-                        addToCartButton.click();
-                      }
-                    }}
-                  >
-                    <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                      ADD TO CART
-                    </span>
-                    <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
-                      <Image
-                        src={addToCart}
-                        className=""
-                        alt="Add to Cart"
-                        unoptimized={true}
-                        width={44}
-                        height={44}
-                      />
-                    </div>
-                  </button>
+                  {productAvailability === 'Unavailable' ? (
+                     <div className='flex flex-col items-center'>
+                     <button
+                       id="add-to-cart"
+                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                       disabled
+                     >
+                       <span>
+                          ADD TO CART
+                       </span>
+                     </button>
+                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
+                     </div>
+                  ) : (
+                    <button
+                      className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
+                      onClick={() => {
+                        const addToCartButton = productFormRef.current?.querySelector(
+                          'button[type="submit"]',
+                        ) as HTMLButtonElement | null;
+                        if (addToCartButton) {
+                          addToCartButton.click();
+                        }
+                      }}
+                    >
+                      <span className="transition-transform duration-300 group-hover:-translate-x-2">
+                        ADD TO CART
+                      </span>
+                      <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
+                        <Image
+                          src={addToCart}
+                          className=""
+                          alt="Add to Cart"
+                          unoptimized={true}
+                          width={44}
+                          height={44}
+                        />
+                      </div>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -420,6 +437,20 @@ export const Details = ({
             } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
+            {productAvailability === 'Unavailable' ? (
+                     <div className='flex flex-col items-center'>
+                     <button
+                       id="add-to-cart"
+                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                       disabled
+                     >
+                       <span>
+                          ADD TO CART
+                       </span>
+                     </button>
+                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
+                     </div>
+                  ) : (
             <button
               className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
               onClick={() => {
@@ -445,6 +476,7 @@ export const Details = ({
                 />
               </div>
             </button>
+                  )}
           </div>
         </>
       )}
