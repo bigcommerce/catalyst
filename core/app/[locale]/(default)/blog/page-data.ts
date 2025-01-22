@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter } from 'next-intl/server';
 import { cache } from 'react';
 
 import { client } from '~/client';
@@ -110,16 +110,3 @@ export const getBlogPosts = cache(
     };
   },
 );
-
-export async function getBlogMetaData() {
-  const t = await getTranslations('Blog');
-  const blog = await getBlog();
-
-  return {
-    title: blog?.name ?? t('title'),
-    description:
-      blog?.description && blog.description.length > 150
-        ? `${blog.description.substring(0, 150)}...`
-        : blog?.description,
-  };
-}

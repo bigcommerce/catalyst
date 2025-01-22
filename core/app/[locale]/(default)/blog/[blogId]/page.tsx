@@ -1,11 +1,14 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter } from 'next-intl/server';
+import { cache } from 'react';
 
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { BlogPostContent, BlogPostContentBlogPost } from '@/vibes/soul/sections/blog-post-content';
 
 import { getBlogPageData } from './page-data';
+
+const cachedBlogPageDataVariables = cache((blogId: string) => ({ entityId: Number(blogId) }));
 
 interface Props {
   params: Promise<{ blogId: string }>;
@@ -13,7 +16,10 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { blogId } = await params;
-  const blog = await getBlogPageData({ entityId: Number(blogId) });
+
+  const variables = cachedBlogPageDataVariables(blogId);
+
+  const blog = await getBlogPageData(variables);
   const blogPost = blog?.post;
 
   if (!blogPost) {
@@ -29,9 +35,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-async function getBlogPost(entityId: number): Promise<BlogPostContentBlogPost> {
+async function getBlogPost(props: Props): Promise<BlogPostContentBlogPost> {
   const format = await getFormatter();
-  const blog = await getBlogPageData({ entityId });
+
+  const { blogId } = await props.params;
+
+  const variables = cachedBlogPageDataVariables(blogId);
+
+  const blog = await getBlogPageData(variables);
   const blogPost = blog?.post;
 
   if (!blog || !blogPost) {
@@ -55,8 +66,12 @@ async function getBlogPost(entityId: number): Promise<BlogPostContentBlogPost> {
   };
 }
 
-async function getBlogPostBreadcrumbs(entityId: number): Promise<Breadcrumb[]> {
-  const blog = await getBlogPageData({ entityId });
+async function getBlogPostBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
+  const { blogId } = await props.params;
+
+  const variables = cachedBlogPageDataVariables(blogId);
+
+  const blog = await getBlogPageData(variables);
   const blogPost = blog?.post;
 
   if (!blog || !blogPost) {
@@ -79,13 +94,8 @@ async function getBlogPostBreadcrumbs(entityId: number): Promise<Breadcrumb[]> {
   ];
 }
 
-export default async function Blog({ params }: Props) {
-  const { blogId } = await params;
-
+export default function Blog(props: Props) {
   return (
-    <BlogPostContent
-      blogPost={getBlogPost(Number(blogId))}
-      breadcrumbs={getBlogPostBreadcrumbs(Number(blogId))}
-    />
+    <BlogPostContent blogPost={getBlogPost(props)} breadcrumbs={getBlogPostBreadcrumbs(props)} />
   );
 }
