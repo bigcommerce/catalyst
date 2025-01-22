@@ -357,24 +357,21 @@ export const GetProductImagesById = async (id: Number) => {
   }
 };
 export const getCommonSettingByBrandChannel = async (brand) => {
+  const commonSettingUrl=process?.env?.COMMON_SETTING_URL
   const postData = {
     brand_ids: brand,
-    channel_id: process.env.BIGCOMMERCE_CHANNEL_ID,
+    channel_id: process?.env?.BIGCOMMERCE_CHANNEL_ID,
   };
 
   try {
-    const response = await fetch(
-      'https://bc-api-integrations.vercel.app/api/get-comman-settings',
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
-        },
-        body: JSON.stringify(postData),
-        cache: 'no-store',
-      }
-    );
+    const response = await fetch(`${commonSettingUrl}api/get-comman-settings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+      cache: 'no-store',
+    });
 
     const data = await response.json();
     return data;
