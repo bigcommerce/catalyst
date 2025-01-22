@@ -14,6 +14,8 @@ import { AccessoriesInputPlusMinus } from '~/components/form-fields/accessories-
 import { get_product_by_entity_id_in_cart } from '../_actions/get-product-by-entityid';
 import { Button } from '~/components/ui/button';
 import { retrieveMpnData } from '~/components/common-functions';
+import { commonSettinngs } from '~/components/common-functions';
+import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -46,6 +48,10 @@ const PhysicalItemFragment = graphql(`
       }
     }
     baseCatalogProduct {
+    brand{
+    entityId
+    id
+    }
       variants {
         edges {
           node {
@@ -229,6 +235,7 @@ type CustomItem = FragmentResult['customItems'][number];
 export type Product = PhysicalItem | DigitalItem | CustomItem;
 
 interface Props {
+  brandId:any;
   product: any;
   currencyCode: string;
   deleteIcon: string;
@@ -236,6 +243,7 @@ interface Props {
   priceAdjustData: string;
   ProductType: string;
   cookie_agent_login_status: boolean;
+  getAllCommonSettinngsValues: any;
 }
 function moveToTheEnd(arr: any, word: string) {
   arr?.map((elem: any, index: number) => {
@@ -246,7 +254,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjustData, cookie_agent_login_status }: Props) => {
+export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, cartId, priceAdjustData, cookie_agent_login_status, getAllCommonSettinngsValues }: Props) => {
 
 
   const closeIcon = imageManagerImageUrl('close.png', '14w');
@@ -265,12 +273,16 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
   if (discountedPrice > 0) {
     discountPriceText = discountedPrice + '% Off';
   }
-
   let productSKU: string = retrieveMpnData(product, product?.productEntityId, product?.variantEntityId);
-
   return (
     <li className="mb-[24px] border border-gray-200">
+      {getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
+        <div className='bg-[#E7F5F8] w-full flex justify-center'>
+          <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
+        </div>
+      }
       <div className="">
+        
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
           <div className="cart-main-img mx-auto flex-none border border-gray-300 md:mx-0 w-[295px] h-[295px] sm:w-[200px] sm:h-fit">
             {product.image?.url ? (
@@ -465,7 +477,9 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
       </div>
       {/* {product?.accessories?.length > 0 ? ( */}
         <div>
-          {product?.accessories &&
+        {/* {product?.accessories && getAllCommonSettinngsValues.accessories == 'yes' && */}
+
+        {product?.accessories  &&
             product?.accessories?.map((item: any, index: number) => {
               let oldPriceAccess = item?.originalPrice?.value;
               let salePriceAccess = item?.extendedSalePrice?.value;
@@ -533,12 +547,16 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
             })}
         </div>
       {/* ) : ( */}
+      {
+      // getAllCommonSettinngsValues.accessories == 'yes' && 
+        getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.use_accessories && 
       <AccessoriesButton 
         key={product?.entityId}
         closeIcon={closeIcon}
         blankAddImg={blankAddImg}
         fanPopup={fanPopup}
-        product={product} />
+        product={product} 
+        />}
         {/* )} */}
     </li>
   );

@@ -25,6 +25,8 @@ import { GetCartMetaFields } from '~/components/management-apis';
 import CartProductComponent from '../sales-buddy/common-components/_components/CartComponent/CartProductComponent';
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
 import ScrollButton from './_components/ScrollButton';
+import { NoShipCanada } from '../product/[slug]/_components/belami-product-no-shipping-canada';
+import { commonSettinngs } from '~/components/common-functions';
 import { zeroTaxCalculation } from '~/components/common-functions';
 
 const CartPageQuery = graphql(
@@ -92,7 +94,6 @@ export default async function Cart() {
   if (!cart) {
     return <EmptyCart />;
   }
- 
   const CustomItems = cart?.lineItems?.customItems
   const get_product_price_data_in_cart = async (cartId: any) => {
   const result = await get_cart_price_adjuster_data(cartId);
@@ -102,8 +103,7 @@ export default async function Cart() {
     return [{ error: 'Failed to retrive data' }];
     }
   };
-  const product_data_in_cart = await get_product_price_data_in_cart(cartId);
-
+  const product_data_in_cart = cookie_agent_login_status ? await get_product_price_data_in_cart(cartId):[];
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
@@ -172,6 +172,10 @@ export default async function Cart() {
     label: "Your Cart",
     href: '#'
   }];
+  var getBrandIds = lineItems?.map((item: any) => {
+    return item?.baseCatalogProduct?.brand?.entityId;
+  });
+  var getAllCommonSettinngsValues =await commonSettinngs(getBrandIds)
 
   let checkZeroTax: any = await zeroTaxCalculation(data.site);
   
@@ -217,10 +221,13 @@ export default async function Cart() {
           </div>
         </div>
       </div>
+      
       <div className="cart-right-side-details px-18 w-full pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
+        
         <ul className="cart-details-item col-span-2 lg:w-full">
           {updatedLineItemWithoutAccessories.map((product: any ) => (
             <CartItem
+              brandId={product?.baseCatalogProduct?.brand?.entityId}
               currencyCode={cart.currencyCode}
               key={product.entityId}
               product={product}
@@ -229,6 +236,7 @@ export default async function Cart() {
               priceAdjustData={product_data_in_cart?.physical_items?.[product?.entityId]}
               ProductType={"product"}
               cookie_agent_login_status={cookie_agent_login_status  === 'true' ? true : false}
+              getAllCommonSettinngsValues={getAllCommonSettinngsValues}
             />
           ))}
           {

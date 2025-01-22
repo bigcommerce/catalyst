@@ -27,6 +27,8 @@ import Link from 'next/link';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import addToCart from '~/public/add-to-cart/addToCart.svg';
 import Image from 'next/image';
+import { NoShipCanada } from './belami-product-no-shipping-canada';
+import { commonSettinngs } from '~/components/common-functions';
 
 interface ProductOptionValue {
   entityId: number;
@@ -108,6 +110,8 @@ export const DetailsFragment = graphql(
       }
       brand {
         name
+        entityId
+        id
       }
       ...PricingFragment
     }
@@ -133,6 +137,7 @@ interface Props {
   closeIcon?: string;
   blankAddImg?: string;
   productImages?: string;
+  getAllCommonSettinngsValues?:any
 }
 export const Details = ({
   product,
@@ -146,6 +151,7 @@ export const Details = ({
   closeIcon,
   blankAddImg,
   productImages,
+  getAllCommonSettinngsValues
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -179,6 +185,7 @@ export const Details = ({
   };
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
+  // const [getAllCommonSettinngsValues, setGetAllCommonSettinngsValues] = useState<any>([]);
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
@@ -189,6 +196,7 @@ export const Details = ({
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
   const productMpn = product.mpn;
+  const brand = product.brand?.entityId;
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
@@ -239,6 +247,7 @@ export const Details = ({
 
       setCurrentImageUrl(product.defaultImage?.url || '');
     };
+    
 
     updateImageFromVariant();
   }, [searchParams, product, variants, productOptions, currentMainMedia]);
@@ -249,39 +258,41 @@ export const Details = ({
   }, [product]);
 
   useEffect(() => {
-    console.log('Product Details:', {
-      basic: {
-        name: product.name,
-        entityId: product.entityId,
-        sku: product.sku,
-        mpn: product.mpn,
-        upc: product.upc,
-        brand: product.brand?.name,
-        variantId: product.variants?.edges?.[0]?.node?.entityId || 0,
-      },
-      pricing: {
-        price: product.prices?.price,
-        basePrice: product.prices?.basePrice,
-        priceRange: product.prices?.priceRange,
-      },
-      inventory: {
-        minPurchaseQuantity: product.minPurchaseQuantity,
-        maxPurchaseQuantity: product.maxPurchaseQuantity,
-        availability: product.availabilityV2?.description,
-      },
-      specs: {
-        condition: product.condition,
-        weight: product.weight,
-        customFields: removeEdgesAndNodes(product.customFields),
-      },
-      images: {
-        defaultImage: product.defaultImage,
-        allImages: removeEdgesAndNodes(product.images),
-      },
-      variants: removeEdgesAndNodes(product.variants),
-      options: removeEdgesAndNodes(product.productOptions),
-    });
+    // console.log('Product Details:', {
+    //   basic: {
+    //     name: product.name,
+    //     entityId: product.entityId,
+    //     sku: product.sku,
+    //     mpn: product.mpn,
+    //     upc: product.upc,
+    //     brand: product.brand?.name,
+    //     variantId: product.variants?.edges?.[0]?.node?.entityId || 0,
+    //   },
+    //   pricing: {
+    //     price: product.prices?.price,
+    //     basePrice: product.prices?.basePrice,
+    //     priceRange: product.prices?.priceRange,
+    //   },
+    //   inventory: {
+    //     minPurchaseQuantity: product.minPurchaseQuantity,
+    //     maxPurchaseQuantity: product.maxPurchaseQuantity,
+    //     availability: product.availabilityV2?.description,
+    //   },
+    //   specs: {
+    //     condition: product.condition,
+    //     weight: product.weight,
+    //     customFields: removeEdgesAndNodes(product.customFields),
+    //   },
+    //   images: {
+    //     defaultImage: product.defaultImage,
+    //     allImages: removeEdgesAndNodes(product.images),
+    //   },
+    //   variants: removeEdgesAndNodes(product.variants),
+    //   options: removeEdgesAndNodes(product.productOptions),
+    // });
   }, [product]);
+
+  
 
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
@@ -569,9 +580,12 @@ export const Details = ({
           )}
         </div>
       )}
-
       <Coupon couponIcon={couponIcon} />
+
       <FreeDelivery />
+      {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) && getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada  &&
+        <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
+      }
 
       <div ref={productFormRef}>
         <ProductForm
