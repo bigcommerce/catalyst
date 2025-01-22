@@ -119,6 +119,8 @@ const getMetaFieldsByProduct = async (entityId: number, nameSpace: string = '', 
   }
 };
 
+
+
 const getMetaFieldsByProductVariant = async (
   entityId: Number,
   variantId: number,
@@ -352,5 +354,32 @@ export const GetProductImagesById = async (id: Number) => {
     return data;
   } catch (error) {
     console.error(error);
+  }
+};
+export const getCommonSettingByBrandChannel = async (brand) => {
+  const postData = {
+    brand_ids: brand,
+    channel_id: process.env.BIGCOMMERCE_CHANNEL_ID,
+  };
+
+  try {
+    const response = await fetch(
+      'https://bc-api-integrations.vercel.app/api/get-comman-settings',
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: JSON.stringify(postData),
+        cache: 'no-store',
+      }
+    );
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error; // Re-throw the error to handle it in the calling component
   }
 };

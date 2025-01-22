@@ -25,6 +25,8 @@ import { GetCartMetaFields } from '~/components/management-apis';
 import CartProductComponent from '../sales-buddy/common-components/_components/CartComponent/CartProductComponent';
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
 import ScrollButton from './_components/ScrollButton';
+import { NoShipCanada } from '../product/[slug]/_components/belami-product-no-shipping-canada';
+import { commonSettinngs } from '~/components/common-functions';
 
 const CartPageQuery = graphql(
   `
@@ -92,6 +94,8 @@ export default async function Cart() {
     return <EmptyCart />;
   }
  
+  console.log(cart);
+  
   const CustomItems = cart?.lineItems?.customItems
   const get_product_price_data_in_cart = async (cartId: any) => {
   const result = await get_cart_price_adjuster_data(cartId);
@@ -101,8 +105,7 @@ export default async function Cart() {
     return [{ error: 'Failed to retrive data' }];
     }
   };
-  const product_data_in_cart = await get_product_price_data_in_cart(cartId);
-
+  const product_data_in_cart = cookie_agent_login_status ? await get_product_price_data_in_cart(cartId):[];
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
@@ -170,6 +173,9 @@ export default async function Cart() {
     label: "Your Cart",
     href: '#'
   }];
+  //  var getAllCommonSettinngsValues=common/Settinngs()
+  console.log('cartpageeeeeee----', updatedLineItemWithoutAccessories);
+
   
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
@@ -228,8 +234,15 @@ export default async function Cart() {
           </div>
         </div>
       </div>
+      
       <div className="cart-right-side-details px-18 w-full pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
+        
         <ul className="cart-details-item col-span-2 lg:w-full">
+          {/* {getAllCommonSettinngsValues?.noShipToCanada == 'yes' && */}
+            <div className='bg-[#E7F5F8] w-full flex justify-center'>
+              <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
+            </div>
+          {/* } */}
           {updatedLineItemWithoutAccessories.map((product: any ) => (
             <CartItem
               currencyCode={cart.currencyCode}
