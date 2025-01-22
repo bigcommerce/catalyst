@@ -30,6 +30,23 @@ const PhysicalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
+    couponAmount {
+      currencyCode
+      formatted
+      value
+    }
+    discountedAmount {
+      currencyCode
+      formatted
+      value
+    }
+    discounts {
+      discountedAmount {
+        currencyCode
+        formatted
+        value
+      }
+    }
     baseCatalogProduct {
     brand{
     entityId
@@ -119,6 +136,23 @@ const DigitalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
+    couponAmount {
+      currencyCode
+      formatted
+      value
+    }
+    discountedAmount {
+      currencyCode
+      formatted
+      value
+    }
+    discounts {
+      discountedAmount {
+        currencyCode
+        formatted
+        value
+      }
+    }
     baseCatalogProduct {
       variants {
         edges {

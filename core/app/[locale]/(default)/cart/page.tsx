@@ -27,6 +27,7 @@ import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-produc
 import ScrollButton from './_components/ScrollButton';
 import { NoShipCanada } from '../product/[slug]/_components/belami-product-no-shipping-canada';
 import { commonSettinngs } from '~/components/common-functions';
+import { zeroTaxCalculation } from '~/components/common-functions';
 
 const CartPageQuery = graphql(
   `
@@ -159,6 +160,7 @@ export default async function Cart() {
       }
     });
   } else {
+    getCartMetaFields = [];
     updatedLineItemInfo = lineItems;
   }
   updatedLineItemInfo?.forEach((item: any, index: number) => {
@@ -174,9 +176,12 @@ export default async function Cart() {
     return item?.baseCatalogProduct?.brand?.entityId;
   });
   var getAllCommonSettinngsValues =await commonSettinngs(getBrandIds)
+
+  let checkZeroTax: any = await zeroTaxCalculation(data.site);
+  
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
-      <div className=' sticky top-0 z-20'>
+      <div className=' sticky top-2 z-50 '>
       <ContinuetocheckoutButton cartId={cartId} />
       </div>
     
@@ -188,18 +193,12 @@ export default async function Cart() {
             style: 'currency',
             currency: cart?.currencyCode,
           })}
-          <BcImage
-            alt="Remove"
-            width={12}
-            height={8}
-            className="h-[8px] w-[12px]"
-            src={downArrow}
-          />
+
         </div>
        
       </div>
       <div className=" text-center lg:hidden">
-      <ScrollButton targetId="order-summary" />
+      <ScrollButton targetId="order-summary" accessoriesData={getCartMetaFields} />
       </div>
 
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
