@@ -106,7 +106,7 @@ const Accordions = ({ accordions,styles,contentCss }) => {
           >
             <button
               type="button"
-              className="flex w-full items-center justify-between gap-3 font-medium text-gray-500 "
+              className="flex w-full items-center justify-between gap-3 font-medium text-gray-500 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-gray-800"
               onClick={() => toggleAccordion(index)}
               aria-expanded={openIndex === index}
               aria-controls={`accordion-collapse-body-${index + 1}`}
