@@ -154,6 +154,29 @@ export const Details = ({
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const scrollableRef = useRef(null); // Reference to the scrollable div
+  const [isDragging, setIsDragging] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartY(e.clientY);
+    setScrollTop(scrollableRef.current.scrollTop);
+    document.body.style.userSelect = 'none';
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+
+    const distance = e.clientY - startY;
+    scrollableRef.current.scrollTop = scrollTop - distance; // Update the scroll position
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    document.body.style.userSelect = 'auto';
+  };
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
 
@@ -448,7 +471,31 @@ export const Details = ({
           </div>
         </>
       )}
+       <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          display: none; /* Hides scrollbar for Chrome, Safari, Edge */
+        }
 
+        .custom-scrollbar {
+          -ms-overflow-style: none; /* Hides scrollbar for IE and Edge */
+          scrollbar-width: none; /* Hides scrollbar for Firefox */
+        }
+
+        .cursor-grab:active {
+          cursor: grabbing; /* Changes cursor while dragging */
+        }
+
+        .smooth-scroll {
+          scroll-behavior: smooth; /* Smooth scrolling */
+        }
+      `}</style>
+<div 
+    ref={scrollableRef}
+    onMouseDown={handleMouseDown}
+    onMouseMove={handleMouseMove}
+    onMouseUp={handleMouseUp}
+    onMouseLeave={handleMouseUp}
+    className="custom-scrollbar h-[600px] w-full overflow-y-scroll cursor-grab ">
       <div className="div-product-details">
         <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
           {product.name}
@@ -604,6 +651,8 @@ export const Details = ({
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
       <ShippingReturns />
+    </div>
+   
     </div>
   );
 };

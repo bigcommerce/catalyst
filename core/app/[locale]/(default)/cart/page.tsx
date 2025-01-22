@@ -177,7 +177,7 @@ export default async function Cart() {
   
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
-      <div className=' sticky top-0 z-20'>
+      <div className=' sticky top-2 z-50 '>
       <ContinuetocheckoutButton cartId={cartId} />
       </div>
     
@@ -189,13 +189,7 @@ export default async function Cart() {
             style: 'currency',
             currency: cart?.currencyCode,
           })}
-          <BcImage
-            alt="Remove"
-            width={12}
-            height={8}
-            className="h-[8px] w-[12px]"
-            src={downArrow}
-          />
+
         </div>
        
       </div>
