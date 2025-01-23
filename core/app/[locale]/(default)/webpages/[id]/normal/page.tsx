@@ -2,8 +2,12 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
+import {
+  breadcrumbsTransformer,
+  truncateBreadcrumbs,
+} from '~/data-transformers/breadcrumbs-transformer';
 
-import { WebPageContent, WebPage as WebPageData } from '../../_components/web-page';
+import { WebPageContent, WebPage as WebPageData } from '../_components/web-page';
 
 import { getWebpageData } from './page-data';
 
@@ -19,8 +23,11 @@ async function getWebPage(id: string): Promise<WebPageData> {
     return notFound();
   }
 
+  const breadcrumbs = breadcrumbsTransformer(webpage.breadcrumbs);
+
   return {
     title: webpage.name,
+    breadcrumbs,
     content: webpage.htmlBody,
     seo: webpage.seo,
   };
@@ -28,17 +35,20 @@ async function getWebPage(id: string): Promise<WebPageData> {
 
 async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
   const webpage = await getWebPage(id);
-
-  return [
+  const [, ...rest] = webpage.breadcrumbs.reverse();
+  const breadcrumbs = [
     {
       label: 'Home',
       href: '/',
     },
+    ...rest.reverse(),
     {
       label: webpage.title,
       href: '#',
     },
   ];
+
+  return truncateBreadcrumbs(breadcrumbs, 5);
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
