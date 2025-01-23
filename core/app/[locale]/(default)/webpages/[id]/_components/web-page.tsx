@@ -1,12 +1,10 @@
-import { clsx } from 'clsx';
-
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
-import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 
 export interface WebPage {
   title: string;
   content: string;
+  breadcrumbs: Breadcrumb[];
   seo: {
     pageTitle: string;
     metaDescription: string;
@@ -17,18 +15,12 @@ export interface WebPage {
 interface Props {
   webPage: Streamable<WebPage>;
   breadcrumbs?: Streamable<Breadcrumb[]>;
-  className?: string;
   children?: React.ReactNode;
 }
 
-export function WebPageContent({
-  webPage: streamableWebPage,
-  className = '',
-  breadcrumbs,
-  children,
-}: Props) {
+export function WebPageContent({ webPage: streamableWebPage, breadcrumbs, children }: Props) {
   return (
-    <SectionLayout className={clsx('mx-auto w-full max-w-4xl', className)}>
+    <section className="w-full max-w-4xl">
       <Stream fallback={<WebPageContentSkeleton />} value={streamableWebPage}>
         {(webPage) => {
           const { title, content } = webPage;
@@ -52,7 +44,7 @@ export function WebPageContent({
           );
         }}
       </Stream>
-    </SectionLayout>
+    </section>
   );
 }
 
@@ -78,7 +70,7 @@ function WebPageBodySkeleton() {
   );
 }
 
-export function WebPageContentSkeleton() {
+function WebPageContentSkeleton() {
   return (
     <div>
       <div className="mx-auto w-full max-w-4xl pb-8 @2xl:pb-12 @4xl:pb-16">
