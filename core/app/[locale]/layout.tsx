@@ -6,7 +6,7 @@ import localFont from 'next/font/local';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { draftMode } from 'next/headers';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 
 import '../globals.css';
 import 'instantsearch.css/themes/satellite-min.css';
@@ -144,7 +144,9 @@ export default async function RootLayout({ params, children }: Props) {
           src="https://app.sitevibes.com/js/pixel.js?key=e0feae51-26fd-453a-8e67-f9a1a74c8d69"
           strategy="afterInteractive"
         />
-        <SiteVibesIntegration />
+        <Suspense>
+          <SiteVibesIntegration />
+        </Suspense>
         <Notifications />
         <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
         <NextIntlClientProvider locale={locale} messages={messages}>
