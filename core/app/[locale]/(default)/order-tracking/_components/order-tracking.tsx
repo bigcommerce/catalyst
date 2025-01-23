@@ -2,7 +2,7 @@
 
 import { Suspense, useEffect, useState } from "react";
 import { StillNeedContactUs } from "../../account/(tabs)/orders/_components/stillneed-contactus";
-import { getGuestOrderDetails } from "~/components/graphql-apis";
+import { getGuestOrderDetails, getOrderDetails } from "~/components/graphql-apis";
 import { getGuestOrderDetailsFromAPI } from "~/components/management-apis";
 import { useFormatter, useTranslations } from "next-intl";
 import { Button } from "~/components/ui/button";
@@ -25,6 +25,7 @@ const OrderDetails = ({
   orderPrice,
   orderStatus,
   cartId,
+  guestUserCheck
 }: {
   orderId: number;
   orderDate: string;
@@ -34,6 +35,7 @@ const OrderDetails = ({
   };
   orderStatus: string;
   cartId: string;
+  guestUserCheck: any;
 }) => {
   const t = useTranslations('Account.Orders');
   const format = useFormatter();
@@ -63,7 +65,7 @@ const OrderDetails = ({
                 style: 'currency',
                 currency: orderPrice.currencyCode,
               })} |</span>
-            <PrintOrder from='order' orderId={orderId} guestUser={1} cartId={cartId} key={orderId} />
+            <PrintOrder from='order' orderId={orderId} guestUser={guestUserCheck} cartId={cartId} key={orderId} />
           </div>
         </div>
       </div>
@@ -117,7 +119,7 @@ const ManageOrderButtons = ({
   );
 };
 
-const OrderList = ({ orderData, cartId, setShowOrderSummary }: { orderData: any, cartId: string, setShowOrderSummary: any }) => {
+const OrderList = ({ orderData, cartId, setShowOrderSummary, guestUserCheck }: { orderData: any, cartId: string, setShowOrderSummary: any, guestUserCheck: Number }) => {
   let { orderState, paymentInfo, summaryInfo, consignments } = orderData;
   const shippingConsignments = consignments?.shipping;
   // NOTE: tracking url will be supported later
@@ -147,6 +149,7 @@ const OrderList = ({ orderData, cartId, setShowOrderSummary }: { orderData: any,
             orderPrice={summaryInfo?.grandTotal}
             orderStatus={orderState?.status.label}
             cartId={cartId}
+            guestUserCheck={guestUserCheck}
           />
           <div className="flex w-full flex-row items-center justify-between p-[0px_20px_20px_20px]">
             <div className="flex flex-1 flex-row items-center gap-[40px] p-0" key={`order-${orderState?.orderId}`}>
@@ -493,7 +496,7 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
   );
 };
 
-export default function OrderTracking({ icon }: { icon: any }) {
+export default function OrderTracking({ icon, guestUserCheck }: { icon: any; guestUserCheck: Number }) {
   const [number, setNumber] = useState('');
   const [email, setEmail] = useState('');
   const [errors, setErrors] = useState({});
@@ -502,6 +505,7 @@ export default function OrderTracking({ icon }: { icon: any }) {
   const [showOrderInfo, setShowOrderInfo] = useState(0);
   const [cartId, setCartId] = useState('');
   const [showOrderSummary, setShowOrderSummary] = useState(0);
+  const [guestFlow, setGuestFlow] = useState(1);
 
   const onNumberChange = (e: any) => {
     setNumber(e.target.value);
@@ -535,14 +539,27 @@ export default function OrderTracking({ icon }: { icon: any }) {
     setShowOrderSummary(0);
     setShowOrderInfo(0);
     if (isFormValid) {
-      const getOrderData = async (orderId: any, cartId: string) => {
+      const getOrderData = async (orderId: any, cartId: string, guestUserCheck: Number) => {
         let orderInfo: any = {};
-        orderInfo = await getGuestOrderDetails({
-          filter: {
-            entityId: orderId,
-            cartEntityId: cartId,
-          },
-        });
+        if(guestUserCheck == 1) {
+          orderInfo = await getGuestOrderDetails({
+            filter: {
+              entityId: orderId,
+              cartEntityId: cartId,
+            },
+          });
+        } else {
+          orderInfo = await getOrderDetails({
+            filter: {
+              entityId: orderId,
+            },
+          });
+        }
+        if(!orderData) {
+          setErrors({
+            orderError: "Order is not available."
+          })
+        }
         setShowOrderInfo(1);
         setOrderData(orderInfo);
         return orderInfo;
@@ -552,7 +569,9 @@ export default function OrderTracking({ icon }: { icon: any }) {
         orderInfoData = await getGuestOrderDetailsFromAPI(orderId);
         if (orderInfoData?.billing_address?.email == email) {
           setCartId(orderInfoData?.cart_id);
-          await getOrderData(Number(orderId), orderInfoData?.cart_id);
+          let guestFlowCheck = (orderInfoData?.customer_id > 0) ? 0 : 1;
+          setGuestFlow(guestFlowCheck);
+          await getOrderData(Number(orderId), orderInfoData?.cart_id, guestFlowCheck);
         } else {
           setErrors({
             orderError: "Order is not available."
@@ -613,8 +632,8 @@ export default function OrderTracking({ icon }: { icon: any }) {
           <div className="flex flex-col gap-[20px] p-0">
             {(errors.orderError || showOrderInfo || showOrderSummary) ? <div className="text-[24px] font-normal leading-[32px] text-[#000]">Results</div> : null}
             {errors.orderError && <p >{errors.orderError} </p>}
-            {showOrderInfo ? <OrderList setShowOrderSummary={setShowOrderSummary} orderData={orderData} cartId={cartId} /> : null}
-            {showOrderSummary ? <OrderSummaryInfo orderData={orderData} /> : null}
+            {(showOrderInfo && orderData?.orderState?.orderId) ? <OrderList setShowOrderSummary={setShowOrderSummary} orderData={orderData} cartId={cartId} guestUserCheck={guestFlow} /> : null}
+            {(showOrderSummary && orderData?.orderState?.orderId) ? <OrderSummaryInfo orderData={orderData} /> : null}
           </div>
         </div>
       </div>
