@@ -153,7 +153,7 @@ const Quantity = ({ value }: { value: number }) => {
 
 export const ItemQuantity = ({ product, accessories }: { product: Product; accessories?: any }) => {
   const t = useTranslations('Cart.SubmitItemQuantity');
-  const { quantity, entityId, productEntityId, variantEntityId, selectedOptions } = product;
+  const { quantity, entityId, productEntityId, variantEntityId, selectedOptions, extendedSalePrice } = product;
   const [productQuantity, setProductQuantity] = useState<number>(quantity);
   const [isLoading, setIsLoading] = useState<boolean>(false); // State to track loading status
 
@@ -163,14 +163,12 @@ export const ItemQuantity = ({ product, accessories }: { product: Product; acces
     } else {
       document.body.style.overflow='';
     }
- 
     return ()=>{
       document.body.style.overflow='';
     }
   }, [isLoading]);
   useEffect(() => {
     setProductQuantity(quantity);
-
   }, [quantity]);
 
   const onSubmit = async (e?: React.FormEvent) => {
@@ -204,9 +202,12 @@ export const ItemQuantity = ({ product, accessories }: { product: Product; acces
       toast.error(t('errorMessage'), {
         icon: <AlertCircle className="text-error-secondary" />,
       });
-      setProductQuantity(quantity); // Revert to original value on error
+      setProductQuantity(quantity);
     } finally {
-      setIsLoading(false); // Hide loader after request is completed
+      if(extendedSalePrice){
+        await extendedSalePrice
+      }
+      setIsLoading(false);
     }
   };
 

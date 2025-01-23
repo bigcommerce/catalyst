@@ -53,14 +53,13 @@ export const Modal = ({
           )}
           <div className="flex flex-col gap-2 p-6 lg:flex-row">
             <DialogPrimitive.Action asChild>
-              <Button className="w-full lg:w-fit" onClick={actionHandler} variant="primary">
-              <Trash2 size={16} />
+              <Button className="w-full lg:w-fit px-2.5" onClick={actionHandler} variant="primary">
+                <Trash2 size={16} className="mr-[5px]" />
                 {confirmationText}
               </Button>
             </DialogPrimitive.Action>
             <DialogPrimitive.Cancel asChild>
-              <Button className="w-full lg:w-fit" variant="subtle">
-              <Trash2 size={16} />
+              <Button className="w-full lg:w-fit px-2.5" variant="subtle">
                 {abortText}
               </Button>
             </DialogPrimitive.Cancel>
