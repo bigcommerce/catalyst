@@ -358,6 +358,7 @@ export const UpdateSettingsForm = ({
                         name={fieldName}
                         onValidate={setPicklistValid}
                         options={field.options}
+                        // formErrors={{}}
                       />
                     </FieldWrapper>
                   );
