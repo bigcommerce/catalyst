@@ -105,7 +105,6 @@ async function getFilters(props: Props): Promise<Filter[]> {
   const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
   const brand = cacheBrandFacetedSearch(slug);
   const brandSearch = await fetchFacetedSearch(brand);
-  // const brandSearch = await fetchFacetedSearch({ brand: [slug] });
   const brandFacets = brandSearch.facets.items.filter(
     (facet) => facet.__typename !== 'BrandSearchFilter',
   );
