@@ -22,15 +22,9 @@ import { fetchFacetedSearch } from '../../fetch-faceted-search';
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
 
-type SearchParams = Record<string, string | string[] | undefined>;
-
-interface Props {
-  params: Promise<{
-    slug: string;
-    locale: string;
-  }>;
-  searchParams: Promise<SearchParams>;
-}
+const cacheCategoryFacetedSearch = cache((categoryId: string) => {
+  return { category: Number(categoryId) };
+});
 
 async function getCategory(props: Props) {
   const { slug } = await props.params;
@@ -43,6 +37,49 @@ async function getCategory(props: Props) {
 
   return category;
 }
+
+const createCategorySearchParamsCache = cache(async (props: Props) => {
+  const { slug } = await props.params;
+  const category = cacheCategoryFacetedSearch(slug);
+  const categorySearch = await fetchFacetedSearch(category);
+  const categoryFacets = categorySearch.facets.items.filter(
+    (facet) => facet.__typename !== 'CategorySearchFilter',
+  );
+  const transformedCategoryFacets = await facetsTransformer({
+    refinedFacets: categoryFacets,
+    allFacets: categoryFacets,
+    searchParams: {},
+  });
+  const categoryFilters = transformedCategoryFacets.filter((facet) => facet != null);
+  const filterParsers = getFilterParsers(categoryFilters);
+
+  // If there are no filters, return `null`, since calling `createSearchParamsCache` with an empty
+  // object will throw the following cryptic error:
+  //
+  // ```
+  // Error: [nuqs] Empty search params cache. Search params can't be accessed in Layouts.
+  //   See https://err.47ng.com/NUQS-500
+  // ```
+  if (Object.keys(filterParsers).length === 0) {
+    return null;
+  }
+
+  return createSearchParamsCache(filterParsers);
+});
+
+const getRefinedSearch = cache(async (props: Props) => {
+  const { slug } = await props.params;
+  const categoryId = Number(slug);
+  const searchParams = await props.searchParams;
+  const searchParamsCache = await createCategorySearchParamsCache(props);
+  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
+
+  return await fetchFacetedSearch({
+    ...searchParams,
+    ...parsedSearchParams,
+    category: categoryId,
+  });
+});
 
 async function getBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
   const category = await getCategory(props);
@@ -81,48 +118,11 @@ async function getTitle(props: Props): Promise<string | null> {
   return category.name;
 }
 
-const createCategorySearchParamsCache = cache(async (props: Props) => {
-  const { slug } = await props.params;
-  const categorySearch = await fetchFacetedSearch({ category: Number(slug) });
-  const categoryFacets = categorySearch.facets.items.filter(
-    (facet) => facet.__typename !== 'CategorySearchFilter',
-  );
-  const transformedCategoryFacets = await facetsTransformer({
-    refinedFacets: categoryFacets,
-    allFacets: categoryFacets,
-    searchParams: {},
-  });
-  const categoryFilters = transformedCategoryFacets.filter((facet) => facet != null);
-  const filterParsers = getFilterParsers(categoryFilters);
-
-  // If there are no filters, return `null`, since calling `createSearchParamsCache` with an empty
-  // object will throw the following cryptic error:
-  //
-  // ```
-  // Error: [nuqs] Empty search params cache. Search params can't be accessed in Layouts.
-  //   See https://err.47ng.com/NUQS-500
-  // ```
-  if (Object.keys(filterParsers).length === 0) {
-    return null;
-  }
-
-  return createSearchParamsCache(filterParsers);
-});
-
-async function getSearch(props: Props) {
-  const { slug } = await props.params;
-  const categoryId = Number(slug);
-  const searchParams = await props.searchParams;
-  const searchParamsCache = await createCategorySearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
-  const search = await fetchFacetedSearch({
-    ...searchParams,
-    ...parsedSearchParams,
-    category: categoryId,
-  });
+const getSearch = cache(async (props: Props) => {
+  const search = await getRefinedSearch(props);
 
   return search;
-}
+});
 
 async function getTotalCount(props: Props): Promise<number> {
   const search = await getSearch(props);
@@ -154,16 +154,13 @@ async function getListProducts(props: Props): Promise<ListProduct[]> {
 
 async function getFilters(props: Props): Promise<Filter[]> {
   const { slug } = await props.params;
-  const categoryId = Number(slug);
   const searchParams = await props.searchParams;
   const searchParamsCache = await createCategorySearchParamsCache(props);
   const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
-  const categorySearch = await fetchFacetedSearch({ category: categoryId });
-  const refinedSearch = await fetchFacetedSearch({
-    ...searchParams,
-    ...parsedSearchParams,
-    category: categoryId,
-  });
+  const category = cacheCategoryFacetedSearch(slug);
+  const categorySearch = await fetchFacetedSearch(category);
+  const refinedSearch = await getRefinedSearch(props);
+
   const allFacets = categorySearch.facets.items.filter(
     (facet) => facet.__typename !== 'CategorySearchFilter',
   );
@@ -206,16 +203,7 @@ async function getSortOptions(): Promise<SortOption[]> {
 }
 
 async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
-  const { slug } = await props.params;
-  const categoryId = Number(slug);
-  const searchParams = await props.searchParams;
-  const searchParamsCache = await createCategorySearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
-  const search = await fetchFacetedSearch({
-    ...searchParams,
-    ...parsedSearchParams,
-    category: categoryId,
-  });
+  const search = await getRefinedSearch(props);
 
   return pageInfoTransformer(search.products.pageInfo);
 }
@@ -260,6 +248,16 @@ async function getEmptyStateSubtitle(): Promise<string | null> {
   const t = await getTranslations('Category.Empty');
 
   return t('subtitle');
+}
+
+type SearchParams = Record<string, string | string[] | undefined>;
+
+interface Props {
+  params: Promise<{
+    slug: string;
+    locale: string;
+  }>;
+  searchParams: Promise<SearchParams>;
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
