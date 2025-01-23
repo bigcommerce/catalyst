@@ -1,54 +1,38 @@
-import { Page as MakeswiftPage } from '@makeswift/runtime/next';
-import { getSiteVersion } from '@makeswift/runtime/next/server';
-import { notFound } from 'next/navigation';
-
 import { defaultLocale, locales } from '~/i18n/routing';
-import { client } from '~/lib/makeswift/client';
-import { MakeswiftProvider } from '~/lib/makeswift/provider';
+import { client, Page } from '~/lib/makeswift';
 
-interface CatchAllParams {
+interface PageParams {
   locale: string;
   rest: string[];
 }
 
-interface Props {
-  params: {
-    rest: string[];
-    locale: string;
-  };
-}
-
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<PageParams[]> {
   const pages = await client.getPages().toArray();
 
-  return pages
-    .filter((page) => page.path !== '/')
-    .flatMap((page) =>
-      locales.map((locale) => ({
-        rest: page.path.split('/').filter((segment) => segment !== ''),
-        // Remove eslint disable once more locales are added
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-        locale: locale === defaultLocale ? undefined : locale,
-      })),
-    );
+  const params = pages
+    .filter((page: any) => page.path !== '/')
+    .flatMap((page: any) => localesFanOut(page.path));
+
+  // Next.js requires providing at least one value in `generateStaticParams`.
+  //
+  // See https://github.com/vercel/next.js/pull/73933
+  if (params.length === 0) {
+    return [{ rest: ['dev', 'null'], locale: defaultLocale }];
+  }
+
+  return params;
 }
 
-export default async function CatchAllPage({ params }: { params: Promise<CatchAllParams> }) {
+export default async function CatchAllPage({ params }: { params: Promise<PageParams> }) {
   const { rest, locale } = await params;
   const path = `/${rest.join('/')}`;
 
-  const snapshot = await client.getPageSnapshot(path, {
-    siteVersion: getSiteVersion(),
-    locale: locale === defaultLocale ? undefined : locale,
-  });
-
-  if (snapshot == null) return notFound();
-
-  return (
-    <MakeswiftProvider>
-      <MakeswiftPage snapshot={snapshot} />
-    </MakeswiftProvider>
-  );
+  return <Page locale={locale} path={path} />;
 }
 
-export const runtime = 'nodejs';
+function localesFanOut(path: string): PageParams[] {
+  return locales.map((locale) => ({
+    rest: path.split('/').filter((segment) => segment !== ''),
+    locale,
+  }));
+}

@@ -1,7 +1,6 @@
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -299,24 +298,17 @@ export const withRoutes: MiddlewareFactory = () => {
       }
     }
 
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    let postfix = '';
-
-    if (!request.nextUrl.search && !customerAccessToken && request.method === 'GET') {
-      postfix = '/static';
-    }
-
     const node = route?.node;
     let url: string;
 
     switch (node?.__typename) {
       case 'Brand': {
-        url = `/${locale}/brand/${node.entityId}${postfix}`;
+        url = `/${locale}/brand/${node.entityId}`;
         break;
       }
 
       case 'Category': {
-        url = `/${locale}/category/${node.entityId}${postfix}`;
+        url = `/${locale}/category/${node.entityId}`;
         break;
       }
 

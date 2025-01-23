@@ -3,10 +3,10 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
-import { NextIntlClientProvider, useMessages } from 'next-intl';
+import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
-import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { PropsWithChildren } from 'react';
+import { draftMode } from 'next/headers';
+import { PropsWithChildren, Suspense } from 'react';
 
 import '../globals.css';
 import 'instantsearch.css/themes/satellite-min.css';
@@ -27,6 +27,8 @@ import { Open_Sans, Roboto_Mono } from 'next/font/google';
 
 import Script from 'next/script';
 import { SiteVibesIntegration } from "~/belami/components/sitevibes";
+import '~/lib/makeswift/components';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 const dm_serif_text = localFont({
   src: [
@@ -142,13 +144,15 @@ export default async function RootLayout({ params, children }: Props) {
           src="https://app.sitevibes.com/js/pixel.js?key=e0feae51-26fd-453a-8e67-f9a1a74c8d69"
           strategy="afterInteractive"
         />
-        <SiteVibesIntegration />
+        <Suspense>
+          <SiteVibesIntegration />
+        </Suspense>
         <Notifications />
+        <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <NuqsAdapter>
             <Providers>{children}</Providers>
-          </NuqsAdapter>
         </NextIntlClientProvider>
+        </MakeswiftProvider>
         <VercelComponents />
       </body>
     </html>

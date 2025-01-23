@@ -1,10 +1,8 @@
-import { draftMode } from 'next/headers';
 import { setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren, Suspense } from 'react';
 
 import { Footer } from '~/components/footer/footer';
 import { Header, HeaderSkeleton } from '~/components/header';
-import { MakeswiftProvider } from '~/lib/makeswift/provider';
 import { Cart } from '~/components/header/cart';
 //import { LocaleType } from '~/i18n/routing';
 import SalesBuddyPage from './sales-buddy/page';
@@ -33,7 +31,7 @@ export default async function DefaultLayout({ params, children }: Props) {
   const ua = headersList.get('user-agent') || '';
 
   return (
-    <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
+    <>
       {(
         !BAD_UA_KEYWORDS.some(keyword => ua?.toLowerCase().includes(keyword)) && 
         !process.env.LOCAL_IPS?.includes(ip) && 
@@ -52,6 +50,6 @@ export default async function DefaultLayout({ params, children }: Props) {
         <Footer />
         <SalesBuddyPage />
       </Suspense>
-    </MakeswiftProvider>
+    </>
   );
 }
