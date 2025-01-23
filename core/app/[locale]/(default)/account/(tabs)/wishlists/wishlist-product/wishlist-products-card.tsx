@@ -9,6 +9,7 @@ import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumb
 import { addToCart } from '~/components/product-card/add-to-cart/form/_actions/add-to-cart';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
+import { GetVariantsByProductId } from '~/components/management-apis';
 
 interface OptionValue {
   entityId: number;
@@ -69,58 +70,37 @@ interface WishlistItem {
 const ProductCard = ({ item }: { item: WishlistItem }) => {
   const format = useFormatter();
   const [isLoading, setIsLoading] = useState(false);
-  const [isPending, startTransition] = useTransition();
-  const [currentVariant, setCurrentVariant] = useState<ProductVariant | null>(null);
-  const [selectedOptions, setSelectedOptions] = useState<Record<number, OptionValue>>({});
+  const [variantDetails, setVariantDetails] = useState<{
+    mpn: string;
+    calculated_price: number;
+    option_values: Array<{
+      option_display_name: string;
+      label: string;
+    }>;
+  } | null>(null);
 
   useEffect(() => {
-    // Find current variant based on variantEntityId
-    const variant = item.product.variants.find((v) => v.entityId === item.variantEntityId);
-    if (variant) {
-      setCurrentVariant(variant);
+    const fetchVariantDetails = async () => {
+      try {
+        const allVariantData = await GetVariantsByProductId(item.productEntityId);
+        const variant = item.variantEntityId
+          ? allVariantData.find((v: any) => v.id === item.variantEntityId)
+          : allVariantData[0];
 
-      // Initialize selected options (only for variant options, not modifiers)
-      const initialSelections: Record<number, OptionValue> = {};
-
-      // Only process productOptions if they exist
-      if (item.product.productOptions) {
-        item.product.productOptions.forEach((option) => {
-          if (option.isVariantOption) {
-            const variantValue = option.values.find((v) =>
-              variant.sku.toLowerCase().includes(v.label.replace(/\s+/g, '').toLowerCase()),
-            );
-            if (variantValue) {
-              initialSelections[option.entityId] = variantValue;
-            }
-          }
-        });
+        if (variant) {
+          setVariantDetails({
+            mpn: variant.mpn,
+            calculated_price: variant.calculated_price,
+            option_values: variant.option_values,
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching variant details:', error);
       }
+    };
 
-      setSelectedOptions(initialSelections);
-    }
+    fetchVariantDetails();
   }, [item]);
-
-  const getOptionDisplay = (option: ProductOption) => {
-    const variantValue = option.values.find((value) =>
-      currentVariant?.sku.toLowerCase().includes(value.label.replace(/\s+/g, '').toLowerCase()),
-    );
-    return variantValue?.label || 'Select an option';
-  };
-
-  const getPrice = () => {
-    const variantPrice = currentVariant?.prices?.price;
-    const productPrice = item.product.prices.price;
-    const priceToDisplay = variantPrice || productPrice;
-
-    return (
-      <p className="text-lg font-bold">
-        {format.number(priceToDisplay.value, {
-          style: 'currency',
-          currency: priceToDisplay.currencyCode,
-        })}
-      </p>
-    );
-  };
 
   return (
     <div className="relative flex h-full flex-col rounded border border-gray-300">
@@ -134,42 +114,47 @@ const ProductCard = ({ item }: { item: WishlistItem }) => {
         </Link>
       </div>
 
-      <div className="flex flex-col gap-2 p-4">
-        {item.product.brand && <p className="text-sm text-gray-600">{item.product.brand.name}</p>}
+      <div className="flex flex-col p-4">
+        {item.product.brand && (
+          <p className="mb-2 text-sm text-gray-600">{item.product.brand.name}</p>
+        )}
 
         <Link href={item.product.path}>
           <h3 className="font-medium text-black hover:text-gray-700">{item.product.name}</h3>
         </Link>
 
-        <div className="space-y-2">
-          <p className="text-sm">
-            <span className="font-semibold">SKU: </span>
-            <span>{currentVariant?.sku || item.product.sku || ''}</span>
-          </p>
+        {/* Display the specific variant details */}
+        {variantDetails && (
+          <div className="mt-2 space-y-2">
+            <p className="text-sm">
+              <span className="font-semibold">Sku: </span>
+              <span>{variantDetails.mpn}</span>
+            </p>
 
-          {/* Display variant options with null check */}
-          {item.product.productOptions
-            ?.filter((option) => option.isVariantOption)
-            .map((option) => (
-              <div key={option.entityId} className="text-sm">
-                <span className="font-semibold">{option.displayName}:</span>{' '}
-                <span>{getOptionDisplay(option)}</span>
-              </div>
+            <p className="text-sm">
+              <span className="font-semibold">Price: </span>
+              <span>
+                {format.number(variantDetails.calculated_price, {
+                  style: 'currency',
+                  currency: 'USD',
+                })}
+              </span>
+            </p>
+
+            {variantDetails.option_values.map((option, index) => (
+              <p key={index} className="text-sm">
+                <span className="font-semibold">{option.option_display_name}: </span>
+                <span>{option.label}</span>
+              </p>
             ))}
-        </div>
-
-        {getPrice()}
+          </div>
+        )}
 
         <form
           onSubmit={(e) => {
             e.preventDefault();
             setIsLoading(true);
             const formData = new FormData(e.currentTarget);
-
-            // Add selected options to form data
-            Object.entries(selectedOptions).forEach(([optionId, value]) => {
-              formData.append(`modifier[${optionId}]`, value.entityId.toString());
-            });
 
             addToCart(formData)
               .then((result) => {
@@ -194,7 +179,7 @@ const ProductCard = ({ item }: { item: WishlistItem }) => {
           <div className="mt-4">
             <Button
               type="submit"
-              className="h-[42px] w-full bg-[#03465C] font-medium tracking-wider text-white hover:bg-[#02374a]"
+              className="h-[42px] w-full !bg-[#03465C] font-medium tracking-wider text-white hover:bg-[#02374a]"
               disabled={isLoading}
             >
               {isLoading ? (
@@ -294,7 +279,7 @@ export function WishlistProductCard(): JSX.Element {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 2xl:grid-cols-4">
         {wishlistData?.items.map((item) => <ProductCard key={item.entityId} item={item} />)}
       </div>
     </div>
