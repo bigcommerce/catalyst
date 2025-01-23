@@ -31,8 +31,8 @@ interface PicklistProps {
   selectError?: string;
   setSelectError?: any;
 
-  formErrors: { [key: string]: string };
-  onSelectChange: (field: string, value: string) => void;
+  formErrors?: { [key: string]: string };
+  onSelectChange?: (field: string, value: string) => void;
 }
 
 export const Picklist = ({
@@ -70,7 +70,7 @@ export const Picklist = ({
     } else if (validateAgainstMissingValue) {
       validateAgainstMissingValue(value);
     }
-    onSelectChange(field.label, value);
+    onSelectChange?.(field.label, value);
   };
 
   return (
@@ -101,7 +101,7 @@ export const Picklist = ({
         />
       </FieldControl>
       <div className="relative h-7">
-        {(formErrors[field.label] ) && (
+        {formErrors?.[field.label] && (
           <FieldMessage className="inline-flex w-full text-xs font-normal text-[#A71F23]">
             {t('empty')}
           </FieldMessage>
