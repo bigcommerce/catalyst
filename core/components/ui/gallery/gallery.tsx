@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { BcImage } from '~/components/bc-image';
 import { cn } from '~/lib/utils';
 import { GalleryModel } from './belami-gallery-view-all-model-pdp';
@@ -6,6 +6,9 @@ import { Banner } from './belami-banner-pdp';
 import ProductImage from './product-zoom';
 import { useCommonContext } from '~/components/common-context/common-provider';
 import WishlistAddToList from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
+import { useWishlists } from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/hooks';
+import { ProductItemFragment } from '~/client/fragments/product-item';
+import { FragmentOf } from '~/client/graphql';
 
 const isYoutubeUrl = (url?: string) => url?.includes('youtube.com') || url?.includes('youtu.be');
 
@@ -22,6 +25,37 @@ const getYoutubeThumbnailUrl = (url: string) => {
   )?.[1];
   return videoId ? `https://img.youtube.com/vi/${videoId}/mqdefault.jpg` : null;
 };
+
+interface ProductBrand {
+  name: string;
+  path: string;
+}
+
+interface ProductImage {
+  url: string;
+  altText: string;
+  isDefault: boolean;
+}
+
+interface Product {
+  entityId: number;
+  name: string;
+  path?: string;
+  brand?: ProductBrand;
+  mpn?: string;
+  prices?: any;
+  variants?: {
+    edges: Array<{
+      node: {
+        entityId: number;
+        defaultImage?: {
+          url: string;
+          altText: string;
+        };
+      };
+    }>;
+  };
+}
 
 interface Image {
   altText: string;
@@ -54,36 +88,7 @@ interface Props {
   galleryExpandIcon: string;
   productMpn?: string | null;
   selectedVariantId?: string | null;
-}
-
-interface WishlistData {
-  [x: string]: any;
-  wishlists: any[];
-  product: {
-    entityId: number;
-    variantEntityId?: number;
-    name: string;
-    path: string;
-    images: any[];
-    brand?: {
-      name: string;
-    } | null;
-    prices: any;
-    rating?: number;
-    reviewCount?: number;
-  };
-}
-
-interface Props {
-  className?: string;
-  defaultImageIndex?: number;
-  images: Image[];
-  videos: Video[];
-  bannerIcon: string;
-  galleryExpandIcon: string;
-  productMpn?: string | null;
-  selectedVariantId?: string | null;
-  wishlistData?: WishlistData; // Add new prop
+  product: FragmentOf<typeof ProductItemFragment>;
 }
 
 const Gallery = ({
@@ -95,9 +100,89 @@ const Gallery = ({
   galleryExpandIcon,
   productMpn,
   selectedVariantId,
-  wishlistData, // Add new prop
+  product,
 }: Props) => {
+  const { wishlists } = useWishlists();
   const { setCurrentMainMedia } = useCommonContext();
+  const [currentVariantId, setCurrentVariantId] = useState<number | undefined>();
+
+  useEffect(() => {
+    // Helper function to extract variant identifier from SKU
+    const getVariantIdentifier = (sku: string) => {
+      return sku.split('_')[1]?.toLowerCase(); // e.g., "26SH-RED" or "26SH-YELLOW"
+    };
+
+    // Helper function to match image to variant based on SKU/altText
+    const getVariantImage = (
+      sku: string,
+      images: Array<{
+        url: string;
+        altText?: string;
+        isDefault?: boolean;
+      }> = [],
+    ) => {
+      const variantId = getVariantIdentifier(sku);
+      return images.find((img) =>
+        img.altText?.toLowerCase().includes(variantId?.split('-')[1] || ''),
+      );
+    };
+
+    const allImages = product?.images?.edges?.map((img) => img.node) || [];
+
+    // Get matching variant
+    const currentVariant = product?.variants?.edges?.find((edge) => edge.node.sku === product.sku);
+
+    if (product) {
+      // Find selected variant options
+      const selectedOptions = product.productOptions?.edges
+        ?.map((edge) => {
+          if (edge.node.__typename === 'MultipleChoiceOption') {
+            const selectedValue = edge.node.values?.edges?.find(
+              (valueEdge) => valueEdge.node.isSelected,
+            );
+
+            return {
+              optionName: edge.node.displayName,
+              selectedValue: selectedValue?.node.label,
+              displayStyle: edge.node.displayStyle,
+              isSelected: selectedValue?.node.isSelected,
+            };
+          }
+          return null;
+        })
+        .filter(Boolean);
+
+      // Update current variant ID when variant changes
+      if (currentVariant) {
+        setCurrentVariantId(currentVariant.node.entityId);
+      }
+    }
+  }, [product]);
+
+  useEffect(() => {
+    if (product?.variants?.edges) {
+      const matchingVariant = product.variants.edges.find(
+        (variant) => variant.node.sku === product.sku,
+      );
+
+      // Find variant image based on SKU
+      const variantImages = product?.images?.edges?.map((edge) => edge.node) || [];
+      const currentVariantImage = variantImages.find((img) =>
+        img.altText
+          ?.toLowerCase()
+          .includes(product.sku.split('_')[1]?.split('-')[1]?.toLowerCase() || ''),
+      );
+
+      console.log('Current Variant Data:', {
+        currentSku: product.sku,
+        matchedVariantId: matchingVariant?.node?.entityId,
+        currentImage: currentVariantImage,
+      });
+
+      setCurrentVariantId(matchingVariant?.node?.entityId);
+    }
+  }, [product?.sku, product?.variants?.edges]);
+
   const [selectedIndex, setSelectedIndex] = useState(defaultImageIndex);
   const [viewAll, setViewAll] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -107,8 +192,15 @@ const Gallery = ({
   const thumbnailRef = useRef<HTMLDivElement>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  useEffect(() => {
+    console.log('Product and Variant Data:', {
+      productId: product?.entityId,
+      selectedVariantId,
+      product,
+    });
+  }, [product, selectedVariantId]);
+
   const { mediaItems, selectedItem } = useMemo(() => {
-    // Process images
     const filteredImages = (() => {
       let filtered = Array.isArray(images) ? images : [];
       if (selectedVariantId) {
@@ -125,13 +217,11 @@ const Gallery = ({
       return filtered;
     })();
 
-    // Process videos
     const processedVideos = (Array.isArray(videos) ? videos : []).map((video) => ({
       ...video,
       type: video.type || (isYoutubeUrl(video.url) ? 'youtube' : 'direct'),
     }));
 
-    // Combine into media items
     const items = [
       ...filteredImages.map((image) => ({
         type: 'image' as const,
@@ -153,43 +243,12 @@ const Gallery = ({
     };
   }, [images, videos, selectedVariantId, productMpn, selectedIndex]);
 
-  // First, let's properly define our union type for MediaItem
-  type ImageItem = {
-    type: 'image';
-    altText: string;
-    src: string;
-    variantId?: string;
-  };
-
-  type VideoItem = {
-    type: 'video';
-    title: string;
-    url: string;
-    videoType: 'youtube' | 'direct';
-  };
-  type MediaItem = ImageItem | VideoItem;
-
-  // Helper function to safely get the media source
-  const getMediaSource = (item: MediaItem): string => {
-    if (item.type === 'image') {
-      return item.src;
-    }
-    return item.url;
-  };
-
-  // Helper function to safely get the media title/alt text
-  const getMediaTitle = (item: MediaItem): string => {
-    if (item.type === 'image') {
-      return item.altText;
-    }
-    return item.title;
-  };
-
-  // Fix the useEffect implementation
   useEffect(() => {
     if (!selectedItem) return;
 
-    const currentMediaKey = `${selectedItem.type}-${getMediaSource(selectedItem)}`;
+    const currentMediaKey = `${selectedItem.type}-${
+      selectedItem.type === 'image' ? selectedItem.src : selectedItem.url
+    }`;
     if (prevMediaRef.current !== currentMediaKey) {
       prevMediaRef.current = currentMediaKey;
       setCurrentMainMedia({
@@ -466,6 +525,60 @@ const Gallery = ({
         <figure className="main-gallery group relative aspect-square h-full max-h-[100%] w-full">
           {selectedItem && (
             <>
+              {product && (
+                <div className="absolute right-4 top-4 z-10">
+                  <WishlistAddToList
+                    wishlists={wishlists}
+                    hasPreviousPage={false}
+                    product={{
+                      entityId: product.entityId,
+                      name: product.name,
+                      path: product.path || '',
+                      brand: product.brand
+                        ? {
+                            name: product.brand.name,
+                            path: product.brand.path,
+                          }
+                        : undefined,
+                      prices: product.prices,
+                      images:
+                        product.images?.edges
+                          ?.filter((edge) =>
+                            edge.node.altText
+                              ?.toLowerCase()
+                              .includes(product.mpn?.toLowerCase() || ''),
+                          )
+                          .map((edge) => ({
+                            url: edge.node.url,
+                            altText: edge.node.altText,
+                            isDefault: edge.node.isDefault,
+                          })) || [],
+                      variantEntityId: currentVariantId,
+                      mpn: product.mpn,
+                      // Pass the selected options
+                      selectedOptions:
+                        product.productOptions?.edges
+                          ?.map((edge) => {
+                            if (edge.node.__typename === 'MultipleChoiceOption') {
+                              const selectedValue = edge.node.values?.edges?.find(
+                                (valueEdge) => valueEdge.node.isSelected,
+                              );
+                              return {
+                                optionName: edge.node.displayName,
+                                selectedValue: selectedValue?.node.label,
+                              };
+                            }
+                            return null;
+                          })
+                          .filter(Boolean) || [],
+                    }}
+                    onGuestClick={() => {
+                      window.location.href = '/login';
+                    }}
+                  />
+                </div>
+              )}
+
               {selectedItem.type === 'image' ? (
                 <div
                   className="product-img relative float-left h-full w-full overflow-hidden"
@@ -540,20 +653,6 @@ const Gallery = ({
                 </div>
               )}
 
-              {/* Wishlist button in top right corner */}
-              {wishlistData && (
-                <div className="absolute right-4 top-4 z-10">
-                  <WishlistAddToList
-                    wishlists={wishlistData.wishlists}
-                    hasPreviousPage={false}
-                    product={wishlistData.product}
-                    isAuthenticated={wishlistData.isAuthenticated}
-                    onGuestClick={() => {
-                      window.location.href = '/login';
-                    }}
-                  />
-                </div>
-              )}
               <div
                 className="absolute bottom-4 right-4 m-1 h-6 w-6 cursor-pointer rounded-full bg-white object-cover p-1 opacity-70 transition-opacity hover:opacity-100"
                 onClick={() => openPopup()}
