@@ -209,10 +209,8 @@ function CustomerSupportPage() {
     setLoading((prev) => ({ ...prev, show2: true }));
     if (
       findCustomerData.email !== '' ||
-      findCustomerData.company !== '' ||
       findCustomerData.phone !== '' ||
       findCustomerData.first_name !== ''
-      // findCustomerData.last_name !== ''
     ) {
       try {
         const response = await findCustomerDetails(findCustomerData);        
@@ -225,8 +223,6 @@ function CustomerSupportPage() {
               first_name: item.first_name,
               last_name: item.last_name,
               email: item.email,
-              // phone: item.phone,
-              // company: item.company,
             }),
           );
           if (extractedData.length > 0) {
@@ -428,11 +424,11 @@ function CustomerSupportPage() {
       }
       case 'company': {
         setFindCustomerData({ ...findCustomerData, company: value });
-        const companyError = validateInput('company', value, 'find');
-        setFindCustomerDataError((prev) => ({
-          ...prev,
-          company: companyError,
-        }));
+        // const companyError = validateInput('company', value, 'find');
+        // setFindCustomerDataError((prev) => ({
+        //   ...prev,
+        //   company: companyError,
+        // }));
         // setFindCustomerDataError({ company: companyError });
 
         break;

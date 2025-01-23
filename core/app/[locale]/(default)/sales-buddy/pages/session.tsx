@@ -9,12 +9,16 @@ export default function SessionId() {
     const { context_session_id, setContext_Session_id } = useCompareDrawerContext();
 
     useEffect(() => {
+        // const getCartValue =await getCartIdCookie()
         const onloadFetchSessionId = async () => {
             const sessionId = await getSessionIdCookie()
             if (sessionId?.value) {
                 setContext_Session_id(sessionId?.value);
             }
         }
+        
+        // if(!getCartValue.value){
+        // }
         onloadFetchSessionId();
     }, [])
 
