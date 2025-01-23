@@ -13,7 +13,8 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 import { AccessoriesInputPlusMinus } from '~/components/form-fields/accessories-input-plus-minus';
 import { get_product_by_entity_id_in_cart } from '../_actions/get-product-by-entityid';
 import { Button } from '~/components/ui/button';
-import { retrieveMpnData } from '~/components/common-functions';
+import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
+
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -28,35 +29,6 @@ const PhysicalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
-    couponAmount {
-      currencyCode
-      formatted
-      value
-    }
-    discountedAmount {
-      currencyCode
-      formatted
-      value
-    }
-    discounts {
-      discountedAmount {
-        currencyCode
-        formatted
-        value
-      }
-    }
-    baseCatalogProduct {
-      variants {
-        edges {
-          node {
-            mpn
-            sku
-            entityId
-            isPurchasable
-          }
-        }
-      }
-    }
     extendedListPrice {
       currencyCode
       value
@@ -130,35 +102,6 @@ const DigitalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
-    couponAmount {
-      currencyCode
-      formatted
-      value
-    }
-    discountedAmount {
-      currencyCode
-      formatted
-      value
-    }
-    discounts {
-      discountedAmount {
-        currencyCode
-        formatted
-        value
-      }
-    }
-    baseCatalogProduct {
-      variants {
-        edges {
-          node {
-            mpn
-            sku
-            entityId
-            isPurchasable
-          }
-        }
-      }
-    }
     extendedListPrice {
       currencyCode
       value
@@ -235,7 +178,6 @@ interface Props {
   cartId: string;
   priceAdjustData: string;
   ProductType: string;
-  cookie_agent_login_status: boolean;
 }
 function moveToTheEnd(arr: any, word: string) {
   arr?.map((elem: any, index: number) => {
@@ -246,8 +188,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjustData, cookie_agent_login_status }: Props) => {
-
+export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjustData, ProductType }: Props) => {
 
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
@@ -260,13 +201,11 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
   const format = useFormatter();
   let oldPrice = product?.originalPrice?.value;
   let salePrice = product?.extendedSalePrice?.value;
-  let discountedPrice: any = Math.round(100 - (salePrice * 100) / oldPrice);
+  let discountedPrice: any = Number(100 - (salePrice * 100) / oldPrice)?.toFixed(2);
   let discountPriceText: string = '';
   if (discountedPrice > 0) {
     discountPriceText = discountedPrice + '% Off';
   }
-
-  let productSKU: string = retrieveMpnData(product, product?.productEntityId, product?.variantEntityId);
 
   return (
     <li className="mb-[24px] border border-gray-200">
@@ -288,10 +227,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
 
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product?.brand}</p>
-            <div className={`grid gap-1 grid-cols-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
-              ? "xl:grid-cols-[40%_20%_40%]"
-              : "xl:grid-cols-[60%_40%]"
-              }`}>
+            <div className="grid gap-1 grid-cols-1 sm:grid-cols-[auto,auto] xl:grid-cols-[40%_20%_40%]">
               <div className="">
                 <Link href={product?.url}>
                   <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -302,7 +238,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
                     <div className="cart-options flex flex-wrap gap-2">
                       <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                        SKU: {productSKU}
+                        SKU: {product?.sku}
                       </p>
                     </div>
                   </div>
@@ -311,7 +247,7 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 ">
                     <div className="cart-options">
                       <p className="text-left inline text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                        SKU: {productSKU}
+                        SKU: {product.sku}
                         {changeTheProtectedPosition.length > 0 && (
                           <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
                             {' '}
@@ -409,6 +345,9 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
                             return null;
                         }
                       })}
+                      {product.variantEntityId && (
+                        <FreeDelivery entityId={product.productEntityId} variantId={product.variantEntityId} isFromPDP={false} />
+                      )}
                     </div>
                   </div>
                 )}
@@ -442,28 +381,26 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
                   <ItemQuantity product={product} />
                 </div>
               </div>
-              {cookie_agent_login_status == true &&
-                <div className="overflow-x-hidden xl:pl-[10px]">
-                  <ProductPriceAdjuster
-                    parentSku={priceAdjustData?.parent_sku}
-                    sku={priceAdjustData?.sku}
-                    oem_sku={priceAdjustData?.oem_sku}
-                    productPrice={Number(product?.listPrice?.value)}
-                    initialCost={Number(priceAdjustData?.cost)}
-                    initialFloor={Number(priceAdjustData?.floor_percentage)}
-                    initialMarkup={Number(product?.listPrice?.value)}
-                    productId={product?.productEntityId}
-                    cartId={cartId}
-                    ProductType={"product"}
-                  />
-                  {/* priceAdjustData.parent_sku */}
-                </div>
-              }
+              <div className="overflow-x-hidden xl:pl-[10px]">
+                <ProductPriceAdjuster
+                  parentSku={priceAdjustData?.parent_sku}
+                  sku={priceAdjustData?.sku}
+                  oem_sku={priceAdjustData?.oem_sku}
+                  productPrice={Number(product?.listPrice?.value)}
+                  initialCost={Number(priceAdjustData?.cost)}
+                  initialFloor={Number(priceAdjustData?.floor_percentage)}
+                  initialMarkup={Number(product?.listPrice?.value)}
+                  productId={product?.productEntityId}
+                  cartId={cartId}
+                  ProductType={"product"}
+                />
+                {/* priceAdjustData.parent_sku */}
+              </div>
             </div>
           </div>
         </div>
       </div>
-      {/* {product?.accessories?.length > 0 ? ( */}
+      {product?.accessories?.length > 0 ? (
         <div>
           {product?.accessories &&
             product?.accessories?.map((item: any, index: number) => {
@@ -532,14 +469,14 @@ export const CartItem = ({ currencyCode, product, deleteIcon, cartId, priceAdjus
               );
             })}
         </div>
-      {/* ) : ( */}
-      <AccessoriesButton 
-        key={product?.entityId}
-        closeIcon={closeIcon}
-        blankAddImg={blankAddImg}
-        fanPopup={fanPopup}
-        product={product} />
-        {/* )} */}
+      ) : (
+        <AccessoriesButton
+          key={product?.entityId}
+          closeIcon={closeIcon}
+          blankAddImg={blankAddImg}
+          fanPopup={fanPopup}
+          product={product} />
+      )}
     </li>
   );
 };

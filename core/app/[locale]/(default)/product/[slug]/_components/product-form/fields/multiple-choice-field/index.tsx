@@ -140,7 +140,7 @@ export const MultipleChoiceField = ({
       return (
         <div
           key={option.entityId}
-          className="div-product-swatch text-center lg:text-left xl:text-left"
+          className="div-product-swatch text-center lg:text-left xl:text-left mt-[20px]"
         >
           <Label
             className="mb-2 inline-block text-center text-base font-normal leading-8 tracking-wide lg:text-left xl:text-left"
