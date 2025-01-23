@@ -19,9 +19,11 @@ export function ReferrerId({sid, referrerId = null, ip, ua, referrer = ''} : {si
   const log: number = Number(logRef) === 0 ? 0 : 1;
 
   useEffect(() => {
+    const iFrame = window.self !== window.top;
     (async () => {
       if (typeof window !== 'undefined' && 
         log === 1 && 
+        !iFrame &&
         !referrer.includes(window.location.hostname) && 
         (Number(refId) === 0 || (Number(refId) > 0 && (source.length > 0 || keywords.length > 0 || clickId.length > 0)))
       ) {

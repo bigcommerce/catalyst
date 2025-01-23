@@ -9,6 +9,8 @@ export default function SessionId() {
     const { context_session_id, setContext_Session_id } = useCompareDrawerContext();
 
     useEffect(() => {
+      const iFrame = window.self !== window.top;
+      if(iFrame) return;
         // const getCartValue =await getCartIdCookie()
         const onloadFetchSessionId = async () => {
             const sessionId = await getSessionIdCookie()
