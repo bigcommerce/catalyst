@@ -1,6 +1,6 @@
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql } from '~/client/graphql';
+import { graphql, VariablesOf } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 
 export const PhysicalItemFragment = graphql(`
@@ -169,12 +169,14 @@ const CartPageQuery = graphql(
   [PhysicalItemFragment, DigitalItemFragment, MoneyFieldsFragment],
 );
 
-export const getCart = async (cartId: string) => {
+type Variables = VariablesOf<typeof CartPageQuery>;
+
+export const getCart = async (variables: Variables) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
     document: CartPageQuery,
-    variables: { cartId },
+    variables,
     customerAccessToken,
     fetchOptions: {
       cache: 'no-store',

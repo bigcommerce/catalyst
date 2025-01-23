@@ -7,7 +7,7 @@ import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/ser
 import { FeaturedBlogPostList } from '@/vibes/soul/sections/featured-blog-post-list';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
-import { getBlog, getBlogMetaData, getBlogPosts } from './page-data';
+import { getBlog, getBlogPosts } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -24,7 +24,16 @@ const searchParamsCache = createSearchParamsCache({
 });
 
 export async function generateMetadata(): Promise<Metadata> {
-  return await getBlogMetaData();
+  const t = await getTranslations('Blog');
+  const blog = await getBlog();
+
+  return {
+    title: blog?.name ?? t('title'),
+    description:
+      blog?.description && blog.description.length > 150
+        ? `${blog.description.substring(0, 150)}...`
+        : blog?.description,
+  };
 }
 
 async function listBlogPosts(searchParamsPromise: Promise<SearchParams>) {

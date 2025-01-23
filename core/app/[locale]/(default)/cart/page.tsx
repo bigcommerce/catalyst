@@ -32,7 +32,7 @@ export default async function Cart() {
     );
   }
 
-  const data = await getCart(cartId);
+  const data = await getCart({ cartId });
 
   const cart = data.site.cart;
   const checkout = data.site.checkout;

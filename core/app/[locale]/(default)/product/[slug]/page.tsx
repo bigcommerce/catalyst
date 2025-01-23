@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { cache } from 'react';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
@@ -16,24 +17,37 @@ import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
 import { getProductData } from './page-data';
 
-const getOptionValueIds = ({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) => {
-  const { slug, ...options } = searchParams;
+const cachedProductDataVariables = cache(
+  async (productId: string, searchParams: Props['searchParams']) => {
+    const options = await searchParams;
+    const optionValueIds = Object.keys(options)
+      .map((option) => ({
+        optionEntityId: Number(option),
+        valueEntityId: Number(options[option]),
+      }))
+      .filter(
+        (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
+      );
 
-  return Object.keys(options)
-    .map((option) => ({
-      optionEntityId: Number(option),
-      valueEntityId: Number(searchParams[option]),
-    }))
-    .filter(
-      (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
-    );
-};
+    const currencyCode = await getPreferredCurrencyCode();
 
-const getProduct = async (productPromise: ReturnType<typeof getProductData>) => {
+    return {
+      entityId: Number(productId),
+      optionValueIds,
+      useDefaultOptionSelections: true,
+      currencyCode,
+    };
+  },
+);
+
+const getProduct = async (props: Props) => {
   const t = await getTranslations('Product.ProductDetails.Accordions');
 
   const format = await getFormatter();
-  const product = await productPromise;
+
+  const { slug } = await props.params;
+  const variables = await cachedProductDataVariables(slug, props.searchParams);
+  const product = await getProductData(variables);
 
   const images = removeEdgesAndNodes(product.images).map((image) => ({
     src: image.url,
@@ -112,16 +126,20 @@ const getProduct = async (productPromise: ReturnType<typeof getProductData>) => 
   };
 };
 
-const getFields = async (productPromise: ReturnType<typeof getProductData>) => {
-  const product = await productPromise;
+const getFields = async (props: Props) => {
+  const { slug } = await props.params;
+  const variables = await cachedProductDataVariables(slug, props.searchParams);
+  const product = await getProductData(variables);
 
   return await productOptionsTransformer(product.productOptions);
 };
 
-const getCtaLabel = async (productPromise: ReturnType<typeof getProductData>) => {
+const getCtaLabel = async (props: Props) => {
   const t = await getTranslations('Product.ProductDetails.Submit');
 
-  const product = await productPromise;
+  const { slug } = await props.params;
+  const variables = await cachedProductDataVariables(slug, props.searchParams);
+  const product = await getProductData(variables);
 
   if (product.availabilityV2.status === 'Unavailable') {
     return t('unavailable');
@@ -138,8 +156,10 @@ const getCtaLabel = async (productPromise: ReturnType<typeof getProductData>) =>
   return t('addToCart');
 };
 
-const getCtaDisabled = async (productPromise: ReturnType<typeof getProductData>) => {
-  const product = await productPromise;
+const getCtaDisabled = async (props: Props) => {
+  const { slug } = await props.params;
+  const variables = await cachedProductDataVariables(slug, props.searchParams);
+  const product = await getProductData(variables);
 
   if (product.availabilityV2.status === 'Unavailable') {
     return true;
@@ -156,9 +176,12 @@ const getCtaDisabled = async (productPromise: ReturnType<typeof getProductData>)
   return false;
 };
 
-const getRelatedProducts = async (productPromise: ReturnType<typeof getProductData>) => {
+const getRelatedProducts = async (props: Props) => {
   const format = await getFormatter();
-  const product = await productPromise;
+
+  const { slug } = await props.params;
+  const variables = await cachedProductDataVariables(slug, props.searchParams);
+  const product = await getProductData(variables);
 
   const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
 
@@ -171,16 +194,11 @@ interface Props {
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const searchParams = await props.searchParams;
-  const params = await props.params;
-  const productId = Number(params.slug);
-  const optionValueIds = getOptionValueIds({ searchParams });
+  const { slug } = await props.params;
 
-  const product = await getProductData({
-    entityId: productId,
-    optionValueIds,
-    useDefaultOptionSelections: true,
-  });
+  const variables = await cachedProductDataVariables(slug, props.searchParams);
+
+  const product = await getProductData(variables);
 
   const { pageTitle, metaDescription, metaKeywords } = product.seo;
   const { url, altText: alt } = product.defaultImage || {};
@@ -203,39 +221,27 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 
 export default async function Product(props: Props) {
-  const searchParams = await props.searchParams;
-  const params = await props.params;
-  const currencyCode = await getPreferredCurrencyCode();
-
-  const { locale, slug } = params;
+  const { locale, slug } = await props.params;
 
   setRequestLocale(locale);
 
   const t = await getTranslations('Product');
 
   const productId = Number(slug);
-
-  const optionValueIds = getOptionValueIds({ searchParams });
-
-  const productPromise = getProductData({
-    entityId: productId,
-    optionValueIds,
-    useDefaultOptionSelections: true,
-    currencyCode,
-  });
+  const variables = await cachedProductDataVariables(slug, props.searchParams);
 
   return (
     <>
       <ProductDetail
         action={addToCart}
         additionalInformationLabel={t('ProductDetails.additionalInformation')}
-        ctaDisabled={getCtaDisabled(productPromise)}
-        ctaLabel={getCtaLabel(productPromise)}
+        ctaDisabled={getCtaDisabled(props)}
+        ctaLabel={getCtaLabel(props)}
         decrementLabel={t('ProductDetails.decreaseQuantity')}
-        fields={getFields(productPromise)}
+        fields={getFields(props)}
         incrementLabel={t('ProductDetails.increaseQuantity')}
         prefetch={true}
-        product={getProduct(productPromise)}
+        product={getProduct(props)}
         quantityLabel={t('ProductDetails.quantity')}
         thumbnailLabel={t('ProductDetails.thumbnail')}
       />
@@ -246,14 +252,14 @@ export default async function Product(props: Props) {
         emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
         nextLabel={t('RelatedProducts.nextProducts')}
         previousLabel={t('RelatedProducts.previousProducts')}
-        products={getRelatedProducts(productPromise)}
+        products={getRelatedProducts(props)}
         scrollbarLabel={t('RelatedProducts.scrollbar')}
         title={t('RelatedProducts.title')}
       />
 
       <Reviews productId={productId} />
 
-      <Stream fallback={null} value={productPromise}>
+      <Stream fallback={null} value={getProductData(variables)}>
         {(product) => (
           <>
             <ProductSchema product={product} />

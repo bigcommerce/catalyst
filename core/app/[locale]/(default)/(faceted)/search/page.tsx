@@ -15,10 +15,6 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { fetchFacetedSearch } from '../fetch-faceted-search';
 
-interface Props {
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
 const createSearchSearchParamsCache = cache(async (props: Props) => {
   const searchParams = await props.searchParams;
   const search = await fetchFacetedSearch(searchParams);
@@ -45,6 +41,17 @@ const createSearchSearchParamsCache = cache(async (props: Props) => {
   return createSearchParamsCache(filterParsers);
 });
 
+const getRefinedSearch = cache(async (props: Props) => {
+  const searchParams = await props.searchParams;
+  const searchParamsCache = await createSearchSearchParamsCache(props);
+  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
+
+  return await fetchFacetedSearch({
+    ...searchParams,
+    ...parsedSearchParams,
+  });
+});
+
 async function getSearchTerm(props: Props): Promise<string> {
   const searchParams = await props.searchParams;
   const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : '';
@@ -52,14 +59,11 @@ async function getSearchTerm(props: Props): Promise<string> {
   return searchTerm;
 }
 
-async function getSearch(props: Props) {
-  const searchParams = await props.searchParams;
-  const searchParamsCache = await createSearchSearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
-  const search = await fetchFacetedSearch({ ...searchParams, ...parsedSearchParams });
+const getSearch = cache(async (props: Props) => {
+  const search = await getRefinedSearch(props);
 
   return search;
-}
+});
 
 async function getProducts(props: Props) {
   const searchTerm = await getSearchTerm(props);
@@ -89,10 +93,7 @@ async function getFilters(props: Props): Promise<Filter[]> {
   let refinedSearch: Awaited<ReturnType<typeof fetchFacetedSearch>> | null = null;
 
   if (searchTerm !== '') {
-    refinedSearch = await fetchFacetedSearch({
-      ...searchParams,
-      ...parsedSearchParams,
-    });
+    refinedSearch = await getRefinedSearch(props);
   }
 
   const categorySearch = await fetchFacetedSearch({});
@@ -235,6 +236,10 @@ async function getBreadcrumbs(): Promise<Breadcrumb[]> {
     { label: t('Breadcrumbs.home'), href: '/' },
     { label: t('Breadcrumbs.search'), href: `#` },
   ];
+}
+
+interface Props {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateMetadata(): Promise<Metadata> {
