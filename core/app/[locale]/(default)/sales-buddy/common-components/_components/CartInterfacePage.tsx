@@ -240,7 +240,10 @@ export default function CartInterface() {
             <SelectDropdown
               id="supplier"
               value={formData.supplier}
-              onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
+              onChange={(e) => 
+                // setFormData({ ...formData, supplier: e.target.value })
+                handleOnchangeInput(e)
+              }
               options={[]}
             />
           )}

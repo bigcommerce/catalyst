@@ -48,15 +48,18 @@ export const ProductAccessories = ({
       price,
       name,
       sale_price,
+      purchasingDisabled,
     }: {
       sku: any;
       id: any;
       price: any;
       name: any;
       sale_price: any;
+      purchasingDisabled:any,
     }) => ({
       value: id,
       label: `(+$${sale_price}) ${sku}  ${name}`,
+      purchasingDisabled: purchasingDisabled,
     }),
   );
   const [isPending, startTransition] = useTransition();
@@ -67,11 +70,13 @@ export const ProductAccessories = ({
   const [productImage, setProductImage] = useState<string>(blankAddImg);
   const [baseImage, setBaseImage] = useState<string>(' bg-set');
   const [hasSalePrice, setHasSalePrice] = useState<number>(0);
+  const [isPurchasingDisabled, setIsPurchasingDisabled] = useState<boolean>(false);
 
   const onProductChange = (variant: any) => {
     setvariantId(variant);
     let accessoriesData = accessories?.productData?.find((prod: any) => prod.id == variant);
     if (accessoriesData) {
+      setIsPurchasingDisabled(accessoriesData.purchasingDisabled);
       let formatPrice = format.number(accessoriesData?.price, {
         style: 'currency',
         currency: currencyCode,
@@ -195,7 +200,7 @@ export const ProductAccessories = ({
   if (baseImage) {
     hideImage = ' hidden';
   }
-
+ 
   return (
     <>
       {accessories?.length}
@@ -240,21 +245,25 @@ export const ProductAccessories = ({
             <input name="product_id" type="hidden" value={accessories?.entityId} />
             <input name="variant_id" type="hidden" value={variantId} />
             <div className="relative flex flex-col items-center justify-end gap-[10px] p-0 sm:flex-row sm:items-start">
-              <InputPlusMinus
+             {!isPurchasingDisabled && <InputPlusMinus
                 product="false"
                 isLoading={isLoading}
                 setIsLoading={setIsLoading}
                 productData=""
-              />
+              />}
+              <div className='justify-center'>
               <Button
                 id="add-to-cart"
-                className="h-[42px] flex-shrink-[100] !rounded-[3px] bg-[#03465C] !px-[10px] !py-[5px] text-[14px] font-medium tracking-[1.25px]"
+                className={`h-[42px] flex-shrink-[100] !rounded-[3px] bg-[#03465C] !px-[10px] !py-[5px] text-[14px] font-medium tracking-[1.25px] ${isPurchasingDisabled &&'!bg-[#b1b9bc]'}`}  
                 loading={isPending}
                 loadingText="processing"
                 type="submit"
+                disabled={isPurchasingDisabled}
               >
                 ADD TO CART
               </Button>
+              {isPurchasingDisabled&& <p className="text-[#2e2e2e] text-[12px] text-center mt-1">This product is currently unavailable</p>}
+              </div>
             </div>
           </form>
         </div>

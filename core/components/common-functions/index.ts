@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { GetProductMetaFields, GetProductVariantMetaFields } from '../management-apis';
+import { getCommonSettingByBrandChannel, GetProductMetaFields, GetProductVariantMetaFields } from '../management-apis';
 
 interface MetaField {
   entityId: number;
@@ -329,6 +329,12 @@ export const getMetaFieldsByProduct = async (
   return result;
 };
 
+
+export const commonSettinngs = async(brand_ids) =>{
+    // 47, 111,
+    var res = await getCommonSettingByBrandChannel(brand_ids);        
+    return res.output;
+}
 export const retrieveMpnData = (product: any, productid: Number, variantId: Number) => {
   if(product?.baseCatalogProduct?.variants) {
     let productVariants: any = removeEdgesAndNodes(product?.baseCatalogProduct?.variants);

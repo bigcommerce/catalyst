@@ -27,6 +27,8 @@ import Link from 'next/link';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import addToCart from '~/public/add-to-cart/addToCart.svg';
 import Image from 'next/image';
+import { NoShipCanada } from './belami-product-no-shipping-canada';
+import { commonSettinngs } from '~/components/common-functions';
 
 interface ProductOptionValue {
   entityId: number;
@@ -108,6 +110,8 @@ export const DetailsFragment = graphql(
       }
       brand {
         name
+        entityId
+        id
       }
       ...PricingFragment
     }
@@ -133,6 +137,7 @@ interface Props {
   closeIcon?: string;
   blankAddImg?: string;
   productImages?: string;
+  getAllCommonSettinngsValues?:any
 }
 export const Details = ({
   product,
@@ -146,6 +151,7 @@ export const Details = ({
   closeIcon,
   blankAddImg,
   productImages,
+  getAllCommonSettinngsValues
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -179,6 +185,7 @@ export const Details = ({
   };
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
+  // const [getAllCommonSettinngsValues, setGetAllCommonSettinngsValues] = useState<any>([]);
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
@@ -187,6 +194,8 @@ export const Details = ({
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
+  const productMpn = product.mpn;
+  const brand = product.brand?.entityId;
   const productSku = product.sku;
   const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null);
   // const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
@@ -250,6 +259,7 @@ export const Details = ({
 
       setCurrentImageUrl(product.defaultImage?.url || '');
     };
+    
 
     updateImageFromVariant();
   }, [searchParams, product, variants, productOptions, currentMainMedia]);
@@ -259,40 +269,7 @@ export const Details = ({
     store_pdp_product_in_localstorage(product);
   }, [product]);
 
-  useEffect(() => {
-    console.log('Product Details:', {
-      basic: {
-        name: product.name,
-        entityId: product.entityId,
-        sku: product.sku,
-        mpn: product.mpn,
-        upc: product.upc,
-        brand: product.brand?.name,
-        variantId: product.variants?.edges?.[0]?.node?.entityId || 0,
-      },
-      pricing: {
-        price: product.prices?.price,
-        basePrice: product.prices?.basePrice,
-        priceRange: product.prices?.priceRange,
-      },
-      inventory: {
-        minPurchaseQuantity: product.minPurchaseQuantity,
-        maxPurchaseQuantity: product.maxPurchaseQuantity,
-        availability: product.availabilityV2?.description,
-      },
-      specs: {
-        condition: product.condition,
-        weight: product.weight,
-        customFields: removeEdgesAndNodes(product.customFields),
-      },
-      images: {
-        defaultImage: product.defaultImage,
-        allImages: removeEdgesAndNodes(product.images),
-      },
-      variants: removeEdgesAndNodes(product.variants),
-      options: removeEdgesAndNodes(product.productOptions),
-    });
-  }, [product]);
+  const productAvailability = product.availabilityV2.status;
 
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
@@ -417,32 +394,46 @@ export const Details = ({
                       )}
                     </div>
                   )}
-
-                  <button
-                    className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
-                    onClick={() => {
-                      const addToCartButton = productFormRef.current?.querySelector(
-                        'button[type="submit"]',
-                      ) as HTMLButtonElement | null;
-                      if (addToCartButton) {
-                        addToCartButton.click();
-                      }
-                    }}
-                  >
-                    <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                      ADD TO CART
-                    </span>
-                    <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
-                      <Image
-                        src={addToCart}
-                        className=""
-                        alt="Add to Cart"
-                        unoptimized={true}
-                        width={44}
-                        height={44}
-                      />
-                    </div>
-                  </button>
+                  {productAvailability === 'Unavailable' ? (
+                     <div className='flex flex-col items-center'>
+                     <button
+                       id="add-to-cart"
+                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                       disabled
+                     >
+                       <span>
+                          ADD TO CART
+                       </span>
+                     </button>
+                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
+                     </div>
+                  ) : (
+                    <button
+                      className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
+                      onClick={() => {
+                        const addToCartButton = productFormRef.current?.querySelector(
+                          'button[type="submit"]',
+                        ) as HTMLButtonElement | null;
+                        if (addToCartButton) {
+                          addToCartButton.click();
+                        }
+                      }}
+                    >
+                      <span className="transition-transform duration-300 group-hover:-translate-x-2">
+                        ADD TO CART
+                      </span>
+                      <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
+                        <Image
+                          src={addToCart}
+                          className=""
+                          alt="Add to Cart"
+                          unoptimized={true}
+                          width={44}
+                          height={44}
+                        />
+                      </div>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -453,6 +444,20 @@ export const Details = ({
               } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
+            {productAvailability === 'Unavailable' ? (
+                     <div className='flex flex-col items-center'>
+                     <button
+                       id="add-to-cart"
+                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                       disabled
+                     >
+                       <span>
+                          ADD TO CART
+                       </span>
+                     </button>
+                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
+                     </div>
+                  ) : (
             <button
               className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
               onClick={() => {
@@ -478,6 +483,7 @@ export const Details = ({
                 />
               </div>
             </button>
+                  )}
           </div>
         </>
       )}
@@ -579,8 +585,13 @@ export const Details = ({
           )}
         </div>
       )}
-
       <Coupon couponIcon={couponIcon} />
+
+      <FreeDelivery />
+      {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) && getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada  &&
+        <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
+      }
+
       {selectedVariantId && (
         <FreeDelivery entityId={product.entityId} variantId={selectedVariantId} isFromPDP={true}/>
       )}
