@@ -1,16 +1,16 @@
-import { notFound } from 'next/navigation';
 import { getRequestConfig } from 'next-intl/server';
 
-import { locales } from './routing';
+import { locales, defaultLocale } from './routing';
 
 export default getRequestConfig(async ({ requestLocale }) => {
-  const locale = await requestLocale;
+  let locale = await requestLocale;
 
   if (!locale || !locales.includes(locale)) {
-    notFound();
+    locale = defaultLocale;
   }
 
   return {
+    locale,
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
     messages: (await import(`../messages/${locale}.json`)).default,
   };
