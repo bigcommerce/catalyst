@@ -76,7 +76,7 @@ export default function Account() {
             <Image src={AddressesIcon} alt={t('addresses')} width={70} height={70} />
           </AccountItem>
           <AccountItem
-            href="/account/wishlists"
+            href="#"
             title={t('requestAQuote')}
             description={t('requestAQuoteMsg')}
           >
