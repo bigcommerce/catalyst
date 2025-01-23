@@ -12,7 +12,7 @@ interface Props extends React.PropsWithChildren {
 }
 
 const WebPageChildrenQuery = graphql(`
-  query WebPageChildren($id: ID!) {
+  query WebPageChildrenQuery($id: ID!) {
     node(id: $id) {
       ... on WebPage {
         children(first: 20) {

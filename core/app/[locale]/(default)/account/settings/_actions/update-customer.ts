@@ -6,12 +6,11 @@ import { unstable_expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { updateAccountSchema } from '@/vibes/soul/sections/account-settings-section/schema';
+import { UpdateAccountAction } from '@/vibes/soul/sections/account-settings-section/update-account-form';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
-
-import { UpdateAccountAction } from '../../../../../../vibes/soul/sections/account-settings-section/update-account-form';
 
 const UpdateCustomerMutation = graphql(`
   mutation UpdateCustomerMutation($input: UpdateCustomerInput!) {

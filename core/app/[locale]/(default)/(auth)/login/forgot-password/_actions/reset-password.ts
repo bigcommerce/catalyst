@@ -10,7 +10,7 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 
 const ResetPasswordMutation = graphql(`
-  mutation ResetPassword($input: RequestResetPasswordInput!, $reCaptcha: ReCaptchaV2Input) {
+  mutation ResetPasswordMutation($input: RequestResetPasswordInput!, $reCaptcha: ReCaptchaV2Input) {
     customer {
       requestResetPassword(input: $input, reCaptchaV2: $reCaptcha) {
         __typename

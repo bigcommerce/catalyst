@@ -11,7 +11,7 @@ import { kv } from '../lib/kv';
 import { type MiddlewareFactory } from './compose-middlewares';
 
 const GetRouteQuery = graphql(`
-  query getRoute($path: String!) {
+  query GetRouteQuery($path: String!) {
     site {
       route(path: $path, redirectBehavior: FOLLOW) {
         redirect {

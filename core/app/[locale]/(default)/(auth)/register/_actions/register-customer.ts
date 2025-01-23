@@ -14,7 +14,10 @@ import { FieldNameToFieldId } from '~/data-transformers/form-field-transformer/u
 import { redirect } from '~/i18n/routing';
 
 const RegisterCustomerMutation = graphql(`
-  mutation RegisterCustomer($input: RegisterCustomerInput!, $reCaptchaV2: ReCaptchaV2Input) {
+  mutation RegisterCustomerMutation(
+    $input: RegisterCustomerInput!
+    $reCaptchaV2: ReCaptchaV2Input
+  ) {
     customer {
       registerCustomer(input: $input, reCaptchaV2: $reCaptchaV2) {
         customer {
