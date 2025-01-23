@@ -9,7 +9,7 @@ import { graphql } from '~/client/graphql';
 import { getCartId } from '~/lib/cart';
 
 const LoginMutation = graphql(`
-  mutation Login($email: String!, $password: String!, $cartEntityId: String) {
+  mutation LoginMutation($email: String!, $password: String!, $cartEntityId: String) {
     login(email: $email, password: $password, guestCartEntityId: $cartEntityId) {
       customerAccessToken {
         value
@@ -25,7 +25,7 @@ const LoginMutation = graphql(`
 `);
 
 const LoginWithTokenMutation = graphql(`
-  mutation LoginWithCustomerLoginJwt($jwt: String!, $cartEntityId: String) {
+  mutation LoginWithCustomerLoginJwtMutation($jwt: String!, $cartEntityId: String) {
     loginWithCustomerLoginJwt(jwt: $jwt, guestCartEntityId: $cartEntityId) {
       customerAccessToken {
         value

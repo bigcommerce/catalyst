@@ -22,7 +22,7 @@ const currencySwitchSchema = z.object({
 
 // Note: this results in a new cart being created in the new currency, so the cart ID will change
 const UpdateCartCurrencyMutation = graphql(`
-  mutation UpdateCartCurrency($input: UpdateCartCurrencyInput!) {
+  mutation UpdateCartCurrencyMutation($input: UpdateCartCurrencyInput!) {
     cart {
       updateCartCurrency(input: $input) {
         cart {

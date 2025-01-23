@@ -15,7 +15,7 @@ import { graphql } from '~/client/graphql';
 import { defaultLocale } from '~/i18n/routing';
 
 const GetFaviconQuery = graphql(`
-  query GetFavicon {
+  query GetFaviconQuery {
     site {
       settings {
         faviconUrl

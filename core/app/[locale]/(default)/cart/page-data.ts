@@ -122,7 +122,7 @@ export const DigitalItemFragment = graphql(`
 `);
 
 const MoneyFieldsFragment = graphql(`
-  fragment MoneyFields on Money {
+  fragment MoneyFieldsFragment on Money {
     currencyCode
     value
   }
@@ -148,18 +148,18 @@ const CartPageQuery = graphql(
         }
         checkout(entityId: $cartId) {
           subtotal {
-            ...MoneyFields
+            ...MoneyFieldsFragment
           }
           grandTotal {
-            ...MoneyFields
+            ...MoneyFieldsFragment
           }
           taxTotal {
-            ...MoneyFields
+            ...MoneyFieldsFragment
           }
           cart {
             currencyCode
             discountedAmount {
-              ...MoneyFields
+              ...MoneyFieldsFragment
             }
           }
         }
