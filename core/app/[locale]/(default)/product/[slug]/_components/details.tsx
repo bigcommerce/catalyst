@@ -29,6 +29,8 @@ import addToCart from '~/public/add-to-cart/addToCart.svg';
 import Image from 'next/image';
 import WishlistAddToList from '../../../account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
 import { useWishlists } from '../../../account/(tabs)/wishlists/wishlist-add-to-list/hooks';
+import { NoShipCanada } from './belami-product-no-shipping-canada';
+import { commonSettinngs } from '~/components/common-functions';
 
 interface ProductOptionValue {
   entityId: number;
@@ -125,6 +127,8 @@ export const DetailsFragment = graphql(
       brand {
         name
         path
+        entityId
+        id
       }
       ...PricingFragment
     }
@@ -138,6 +142,21 @@ export const DetailsFragment = graphql(
   ],
 );
 
+interface Props {
+  product: FragmentOf<typeof DetailsFragment>;
+  collectionValue?: string;
+  dropdownSheetIcon?: string;
+  cartHeader?: string;
+  couponIcon?: string;
+  paywithGoogle?: string;
+  payPal?: string;
+  requestQuote?: string;
+  closeIcon?: string;
+  blankAddImg?: string;
+  productImages?: string;
+  getAllCommonSettinngsValues?:any
+}
+  
 export const Details = ({
   product,
   collectionValue,
@@ -150,6 +169,7 @@ export const Details = ({
   closeIcon,
   blankAddImg,
   productImages,
+  getAllCommonSettinngsValues
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -158,8 +178,32 @@ export const Details = ({
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const scrollableRef = useRef(null); // Reference to the scrollable div
+  const [isDragging, setIsDragging] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartY(e.clientY);
+    setScrollTop(scrollableRef.current.scrollTop);
+    document.body.style.userSelect = 'none';
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+
+    const distance = e.clientY - startY;
+    scrollableRef.current.scrollTop = scrollTop - distance; // Update the scroll position
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    document.body.style.userSelect = 'auto';
+  };
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
+  // const [getAllCommonSettinngsValues, setGetAllCommonSettinngsValues] = useState<any>([]);
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
@@ -169,6 +213,7 @@ export const Details = ({
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
   const productMpn = product.mpn;
+  const brand = product.brand?.entityId;
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
@@ -219,6 +264,7 @@ export const Details = ({
 
       setCurrentImageUrl(product.defaultImage?.url || '');
     };
+    
 
     updateImageFromVariant();
   }, [searchParams, product, variants, productOptions, currentMainMedia]);
@@ -227,6 +273,8 @@ export const Details = ({
     store_pdp_product_in_localstorage(product);
   }, [product]);
 
+  const productAvailability = product.availabilityV2.status;
+  
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
     if (selectedId) {
@@ -350,39 +398,125 @@ export const Details = ({
                       )}
                     </div>
                   )}
-
-                  <button
-                    className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
-                    onClick={() => {
-                      const addToCartButton = productFormRef.current?.querySelector(
-                        'button[type="submit"]',
-                      ) as HTMLButtonElement | null;
-                      if (addToCartButton) {
-                        addToCartButton.click();
-                      }
-                    }}
-                  >
-                    <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                      ADD TO CART
-                    </span>
-                    <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
-                      <Image
-                        src={addToCart}
-                        className=""
-                        alt="Add to Cart"
-                        unoptimized={true}
-                        width={44}
-                        height={44}
-                      />
-                    </div>
-                  </button>
+                  {productAvailability === 'Unavailable' ? (
+                     <div className='flex flex-col items-center'>
+                     <button
+                       id="add-to-cart"
+                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                       disabled
+                     >
+                       <span>
+                          ADD TO CART
+                       </span>
+                     </button>
+                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
+                     </div>
+                  ) : (
+                    <button
+                      className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
+                      onClick={() => {
+                        const addToCartButton = productFormRef.current?.querySelector(
+                          'button[type="submit"]',
+                        ) as HTMLButtonElement | null;
+                        if (addToCartButton) {
+                          addToCartButton.click();
+                        }
+                      }}
+                    >
+                      <span className="transition-transform duration-300 group-hover:-translate-x-2">
+                        ADD TO CART
+                      </span>
+                      <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
+                        <Image
+                          src={addToCart}
+                          className=""
+                          alt="Add to Cart"
+                          unoptimized={true}
+                          width={44}
+                          height={44}
+                        />
+                      </div>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
           </div>
+
+          <div
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
+              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+            } px-[20px] pt-[20px]`}
+          >
+            {/* Mobile View Button */}
+            {productAvailability === 'Unavailable' ? (
+                     <div className='flex flex-col items-center'>
+                     <button
+                       id="add-to-cart"
+                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                       disabled
+                     >
+                       <span>
+                          ADD TO CART
+                       </span>
+                     </button>
+                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
+                     </div>
+                  ) : (
+            <button
+              className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
+              onClick={() => {
+                const addToCartButton = productFormRef.current?.querySelector(
+                  'button[type="submit"]',
+                ) as HTMLButtonElement | null;
+                if (addToCartButton) {
+                  addToCartButton.click();
+                }
+              }}
+            >
+              <span className="transition-transform duration-300 group-hover:-translate-x-2">
+                ADD TO CART
+              </span>
+              <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
+                <Image
+                  src={addToCart}
+                  className=""
+                  alt="Add to Cart"
+                  unoptimized={true}
+                  width={44}
+                  height={44}
+                />
+              </div>
+            </button>
+                  )}
+          </div>
         </>
       )}
+       <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          display: none; /* Hides scrollbar for Chrome, Safari, Edge */
+        }
 
+        .custom-scrollbar {
+          -ms-overflow-style: none; /* Hides scrollbar for IE and Edge */
+          scrollbar-width: none; /* Hides scrollbar for Firefox */
+        }
+
+        .cursor-grab:active {
+          cursor: grabbing; /* Changes cursor while dragging */
+        }
+
+        .smooth-scroll {
+          scroll-behavior: smooth; /* Smooth scrolling */
+        }
+      `}</style>
+<div 
+    ref={scrollableRef}
+    onMouseDown={handleMouseDown}
+    onMouseMove={handleMouseMove}
+    onMouseUp={handleMouseUp}
+    onMouseLeave={handleMouseUp}
+    className="custom-scrollbar h-[600px] w-full overflow-y-scroll cursor-grab ">
       <div className="div-product-details">
         {/* Add relative positioning wrapper */}
         <div className="relative">
@@ -461,9 +595,12 @@ export const Details = ({
           )}
         </div>
       )}
-
       <Coupon couponIcon={couponIcon} />
+
       <FreeDelivery />
+      {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) && getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada  &&
+        <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
+      }
 
       <div ref={productFormRef}>
         <ProductForm
@@ -543,6 +680,8 @@ export const Details = ({
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
       <ShippingReturns />
+    </div>
+   
     </div>
   );
 };

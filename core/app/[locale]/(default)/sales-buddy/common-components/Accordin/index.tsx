@@ -86,7 +86,7 @@ type Props =
 
 // export { Accordions };
 
-const Accordions = ({ accordions,styles }) => {
+const Accordions = ({ accordions,styles,contentCss }) => {
   const [openIndex, setOpenIndex] = useState(null);
 
   const toggleAccordion = (index) => {
@@ -106,7 +106,7 @@ const Accordions = ({ accordions,styles }) => {
           >
             <button
               type="button"
-              className="flex w-full items-center justify-between gap-3 font-medium text-gray-500 dark:text-gray-400 dark:hover:bg-gray-800 dark:focus:ring-gray-800"
+              className="flex w-full items-center justify-between gap-3 font-medium text-gray-500 "
               onClick={() => toggleAccordion(index)}
               aria-expanded={openIndex === index}
               aria-controls={`accordion-collapse-body-${index + 1}`}
@@ -133,7 +133,7 @@ const Accordions = ({ accordions,styles }) => {
           </h2>
           <div
             id={`accordion-collapse-body-${index + 1}`}
-            className={`${openIndex === index ? 'block' : 'hidden'} p-3 dark:border-gray-700`}
+            className={`${openIndex === index ? 'block' : 'hidden'} ${contentCss ? contentCss : 'p-3' }  dark:border-gray-700`}
             aria-labelledby={`accordion-collapse-heading-${index + 1}`}
           >
             <div className="mr-5 w-[440px]">{accordion.content}</div>

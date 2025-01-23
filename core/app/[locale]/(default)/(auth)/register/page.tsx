@@ -6,8 +6,18 @@ import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 import { RegisterCustomerForm } from './_components/register-customer-form';
 import { getRegisterCustomerQuery } from './page-data';
 import { BcImage } from '~/components/bc-image';
-import { imageManagerImageUrl } from '~/lib/store-assets';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
+
+import facebookLogo from '~/public/accountIcons/faceBookIcon.svg'
+import appleLogo from '~/public/accountIcons/appleIcon.svg'
+import googleLogo from '~/public/accountIcons/googleIcon.svg'
+
+import patjoheatAndShade from '~/public/accountIcons/patjoheatAndShade.svg'
+import baileyStreet from '~/public/accountIcons/baileyStreet.svg'
+import oneStopLightning from '~/public/accountIcons/oneStopLightning.svg'
+import lunaWarehouse from '~/public/accountIcons/lunaWarehouse.svg'
+import canadaLightning from '~/public/accountIcons/canadaLightning.svg'
+import homeclickBlack from '~/public/accountIcons/homeclickBlack.svg'
 
 const FALLBACK_COUNTRY = {
   entityId: 226,
@@ -30,16 +40,8 @@ const breadcrumbs: any = [
   },
 ];
 
-// Define image URLs using the function
-const patjoheatAndShade = imageManagerImageUrl('patjoheat-and-shade.png', '95w');
-const baileyStreet = imageManagerImageUrl('bailey-street.png', '138w');
-const oneStopLightning = imageManagerImageUrl('1stop-lightning.png', '194w');
-const lunaWarehouse = imageManagerImageUrl('luna-warehouse.png', '298w');
-const canadaLightning = imageManagerImageUrl('canada-lightning.png', '228w');
-const homeclickBlack = imageManagerImageUrl('homeclick-black.png', '150w');
-const facebookLogo = imageManagerImageUrl('facebook-blue.png', '16w');
-const google = imageManagerImageUrl('google-logo.png', '23w');
-const appleLogo = imageManagerImageUrl('apple-black.png', '24w');
+
+
 
 export default async function Register() {
   const t = await getTranslations('Register');
@@ -165,8 +167,8 @@ export default async function Register() {
               alt="Facebook logo"
               className="Login-logo h-[24px] w-[24px]"
               src={facebookLogo}
-              width={20}
-              height={20}
+              width={24}
+              height={24}
               priority={true}
             />
             <p className="text-[20px] font-medium text-[#1877F2]">Facebook</p>
@@ -176,9 +178,9 @@ export default async function Register() {
             <BcImage
               alt="Google logo"
               className="Login-logo h-[24px] w-[24px]"
-              src={google}
-              width={20}
-              height={20}
+              src={googleLogo}
+              width={24}
+              height={24}
               priority={true}
             />
             <p className="text-[20px] font-medium text-[#757575]">Google</p>
@@ -187,7 +189,7 @@ export default async function Register() {
           <button className="flex h-[54px] w-full items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px] lg:w-[200px]">
             <BcImage
               alt="Apple logo"
-              className="Login-logo w-[24px]"
+              className="Login-logo w-[24px] h-[24px]"
               src={appleLogo}
               width={24}
               height={24}

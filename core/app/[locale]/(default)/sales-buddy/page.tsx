@@ -1,13 +1,43 @@
-import React from 'react'
+"use client"
+import React, { useEffect, useState } from 'react'
 import SalesBuddyAppIndex from '.'
-// import { getBrowserInfo, getIPAddress, getLocation, getSystemInfo } from './common-components/common-functions'
+import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { InsertShopperVisitedUrl } from './_actions/insert-shopper-url';
 
 export default function SalesBuddyPage() {
-  // getBrowserInfo()
-  // getIPAddress()
-  // getLocation()
+  const { agentLoginStatus, setAgentLoginStatus, context_session_id } = useCompareDrawerContext();
+  const [urlWithQuery, setUrlWithQuery] = useState('');
+  useEffect(() => {
+    const handleStorageChange = () => {
+      setAgentLoginStatus(localStorage.getItem('agent_login') === 'true')
+    };
+  }, [agentLoginStatus]);
+  const path = usePathname();
+  const searchParams = useSearchParams();
+  const queryString = searchParams.toString();  
+  
+  useEffect(() => {
+    if (context_session_id){
+      const fullUrl = queryString ? `${window.location.protocol}//${window.location.host}${path}?${queryString}` : `${window.location.protocol}//${window.location.host}${path}`;
+      // const fullUrl = `${window.location.protocol}//${window.location.host}${path}`;      
+      const previousUrl = localStorage.getItem('previous_url');
+      if (previousUrl !== fullUrl) {
+        const insertShopperVisitedUrlFunc = async () => {
+          try {
+            await InsertShopperVisitedUrl(context_session_id, fullUrl);
+            localStorage.setItem('previous_url', fullUrl);
+          } catch (error) {
+            console.error('Error inserting shopper visited URL:', error);
+          }
+        };
+        insertShopperVisitedUrlFunc();
+      }
+    }
+  }, [path, searchParams]);
+  
   
   return (
-    <div className='hidden  sm:block md:block lg:block z-[999]'><SalesBuddyAppIndex/></div>
-  )
+    <div className='hidden sm:block md:block lg:block z-[999]'>{agentLoginStatus && <SalesBuddyAppIndex />}</div>
+  );
 }

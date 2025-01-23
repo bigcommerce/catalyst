@@ -30,18 +30,18 @@ export function ProductCard({ title, image, url, classNames }: ProductCardProps)
               className="flex h-full w-full items-center justify-center align-middle"
             >
               {image != null ? (
-                /*
                 <img
                   src={image.src}
                   alt={image.alt}
-                  className="relative m-auto inline-block h-auto max-h-full w-auto max-w-full align-middle"
+                  className={clsx('relative m-auto inline-block h-auto max-h-full w-auto max-w-full align-middle', classNames?.image)}
                 />
-                */
+                /*
                 <Image
                   src={image.src}
                   alt={image.alt}
                   className={clsx('relative m-auto inline-block h-auto max-h-full w-auto max-w-full align-middle', classNames?.image)}
                 />
+                */
               ) : (
                 <Image
                   src={noImage}

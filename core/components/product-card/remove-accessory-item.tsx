@@ -20,12 +20,11 @@ export type Product = PhysicalItem | DigitalItem;
 interface Props {
   currency: string;
   product: Product;
-  deleteIcon: string;
   lineItemId: string;
   cartId: string;
 }
 
-export const RemoveAccessoryItem = ({ currency, product, deleteIcon, lineItemId, cartId }: Props) => {
+export const RemoveAccessoryItem = ({ currency, product, lineItemId, cartId }: Props) => {
   const t = useTranslations('Cart.SubmitRemoveItem');
   const onSubmitRemoveItem = async () => {
     let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
@@ -96,7 +95,7 @@ export const RemoveAccessoryItem = ({ currency, product, deleteIcon, lineItemId,
 
   return (
     <form action={onSubmitRemoveItem}>
-      <RemoveFromCartButton icon={deleteIcon} />
+      <RemoveFromCartButton  />
     </form>
   );
 };

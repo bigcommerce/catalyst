@@ -1,55 +1,11 @@
 import { Image, Link, List, Select, Shape, TextInput } from '@makeswift/runtime/controls';
 
 import { MegaMenu } from '.';
+import { MegaMenuProps } from './mega-menu-types';
 import { runtime } from '~/lib/makeswift/runtime';
 
-interface MenuItem {
-  title?: string;
-  link?: { href?: string; target?: string };
-  subMenuItems: SubMenuItem[];
-}
-
-interface SubMenuItem {
-  title?: string;
-  imageSrc?: string;
-  imageAlt?: string;
-  link?: { href?: string; target?: string };
-  subSubMenuItems: SubSubMenuItem[];
-}
-
-interface SubSubMenuItem {
-  title?: string;
-  imageSrc?: string;
-  imageAlt?: string;
-  link?: { href?: string; target?: string };
-}
-
-interface SecondaryMenuItem {
-  title?: string;
-  link?: { href?: string; target?: string };
-}
-
-interface MSMegaMenuProps {
-  classNames?: {
-    root?: string,
-    mainMenu?: string;
-    secondaryMenu?: string;
-    mainMenuItem?: string;
-    mainSubMenuItem?: string;
-    mainSubSubMenuItem?: string;
-    secondaryMenuItem?: string;
-    mainMenuLink?: string;
-    mainSubMenuLink?: string;
-    mainSubSubMenuLink?: string;
-    secondaryMenuLink?: string;
-  };
-  variant?: string;
-  menuItems: MenuItem[];
-  secondaryMenuItems: SecondaryMenuItem[];
-}
-
 runtime.registerComponent(
-  function MSMegaMenu({ classNames, variant, menuItems, secondaryMenuItems }: MSMegaMenuProps) {
+  function MSMegaMenu({ classNames, variant, menuItems, secondaryMenuItems }: MegaMenuProps) {
     return (
       <MegaMenu
         variant={variant}
@@ -64,30 +20,6 @@ runtime.registerComponent(
     label: 'Belami / Mega Menu',
     icon: 'navigation',
     props: {
-      /*
-      classNames: Shape({
-        type: {
-          root: TextInput({ label: 'Root class', defaultValue: '' }),
-          content: TextInput({ label: 'Content class', defaultValue: '' }),
-          item: TextInput({ label: 'Item class', defaultValue: '' }),
-        }
-      }),
-      */
-      /*
-      menuItems: List({
-        label: 'Menu Items',
-        type: Shape({
-          type: {
-            title: TextInput({ label: 'Title', defaultValue: 'Text' }),
-            link: Link({ label: 'Link' }),
-          },
-        }),
-        getItemLabel(menuItem) {
-          return menuItem?.title || 'Menu item';
-        },
-      }),
-      */
-
       variant: Select({
         label: "Style",
         labelOrientation: "horizontal",
@@ -103,15 +35,12 @@ runtime.registerComponent(
           type: {
             title: TextInput({ label: 'Title', defaultValue: 'Text' }),
             link: Link({ label: 'Link' }),
-            subMenuItems: List({
-              label: 'Menu Items',
+            columns: List({
+              label: 'Columns',
               type: Shape({
                 type: {
-                  title: TextInput({ label: 'Title', defaultValue: 'Text' }),
-                  link: Link({ label: 'Link' }),
-                  imageSrc: Image({ label: 'Image' }),
-                  //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
-                  subSubMenuItems: List({
+                  //title: TextInput({ label: 'Title', defaultValue: 'Text' }),
+                  subMenuItems: List({
                     label: 'Menu Items',
                     type: Shape({
                       type: {
@@ -119,18 +48,37 @@ runtime.registerComponent(
                         link: Link({ label: 'Link' }),
                         imageSrc: Image({ label: 'Image' }),
                         //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
+                        button: TextInput({ label: 'Button', defaultValue: '' }),
+                        description: TextInput({ label: 'Description', defaultValue: '' }),
+                        subSubMenuItems: List({
+                          label: 'Menu Items',
+                          type: Shape({
+                            type: {
+                              title: TextInput({ label: 'Title', defaultValue: 'Text' }),
+                              link: Link({ label: 'Link' }),
+                              imageSrc: Image({ label: 'Image' }),
+                              //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
+                              //button: TextInput({ label: 'Button', defaultValue: '' }),
+                              //description: TextInput({ label: 'Description', defaultValue: '' }),
+                            },
+                          }),
+                          getItemLabel(menuItem) {
+                            return menuItem?.title || 'Menu item';
+                          },
+                        }),
                       },
                     }),
                     getItemLabel(menuItem) {
                       return menuItem?.title || 'Menu item';
                     },
                   }),
-                },
+                }
               }),
-              getItemLabel(menuItem) {
-                return menuItem?.title || 'Menu item';
+              getItemLabel(columnItem) {
+                //return columnItem?.title || 'Menu item column';
+                return 'Menu item column';
               },
-            }),
+            }), 
           },
         }),
         getItemLabel(menuItem) {
@@ -149,6 +97,13 @@ runtime.registerComponent(
           return menuItem?.title || 'Menu item';
         },
       }),
+      /*
+      classNames: Shape({
+        type: {
+          root: TextInput({ label: 'Root class', defaultValue: '' }),
+        },
+      })
+      */
     },
   },
 );

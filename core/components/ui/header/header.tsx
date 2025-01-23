@@ -142,10 +142,11 @@ const Header = ({
             <LocaleSwitcher activeLocale={activeLocale} locales={locales} />
           ) : null}
 
-          <MobileNav links={links} logo={logo} account={''} homeLogoMobile={homeLogoMobile} customerAccessToken={customerAccessToken} />
+          {/* <MobileNav links={links} logo={logo} account={''} homeLogoMobile={homeLogoMobile} customerAccessToken={customerAccessToken} /> */}
         </div>
       </header>
 
+      {/*
       <div className="header-bottom mx-auto flex max-w-full items-center justify-between border-b border-t border-[#cccbcb] bg-white px-4 lg:mt-[30px] lg:px-10 xl:mt-0">
         <NavigationMenuPrimitive.Root id="nav-menu-root" className="hidden lg:block">
           <NavigationMenuPrimitive.List
@@ -272,6 +273,7 @@ const Header = ({
           </CustomLink>
         </nav>
       </div>
+      */}
 
       {megaMenu}
     </div>
