@@ -663,8 +663,8 @@ export function Hit({
             )}
             {hit.metafields &&
               hit.metafields.Details &&
-              hit.metafields.Details.ratings_certifications && (
-                <RatingCertifications data={hit.metafields.Details.ratings_certifications} />
+              hit.metafields.Details['Ratings and Certifications'] && (
+                <RatingCertifications data={hit.metafields.Details['Ratings and Certifications']} />
               )}
           </div>
 

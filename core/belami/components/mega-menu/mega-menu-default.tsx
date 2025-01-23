@@ -311,6 +311,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                                   <Link
                                     href={menuItem.link.href}
                                     className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
+                                    onClick={handleMenuClose}
                                   >
                                     {menuItem.title}
                                   </Link>
@@ -325,7 +326,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                                 {menuItem.imageSrc &&
                                   <figure>
                                     {menuItem.link?.href ? (
-                                      <Link href={menuItem.link.href}><img src={menuItem.imageSrc} alt={menuItem.title ?? menuItem.button ?? 'Menu item image'} className={clsx('sub-menu-image', classNames?.mainSubMenuImage)} /></Link>
+                                      <Link href={menuItem.link.href} onClick={handleMenuClose}><img src={menuItem.imageSrc} alt={menuItem.title ?? menuItem.button ?? 'Menu item image'} className={clsx('sub-menu-image', classNames?.mainSubMenuImage)} /></Link>
                                     ) : (
                                       <img src={menuItem.imageSrc} alt={menuItem.title} className={clsx('sub-menu-image', classNames?.mainSubMenuImage)} />
                                     )}
@@ -334,7 +335,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
 
                                 {menuItem.description && <div className={clsx('sub-menu-description', classNames?.mainSubMenuDescription)}>{menuItem.description}</div>}
 
-                                {menuItem.button && menuItem.link?.href && <Link href={menuItem.link.href} className={clsx('sub-menu-button', classNames?.mainSubMenuButton)}>{menuItem.button}</Link>}
+                                {menuItem.button && menuItem.link?.href && <Link href={menuItem.link.href} className={clsx('sub-menu-button', classNames?.mainSubMenuButton)} onClick={handleMenuClose}>{menuItem.button}</Link>}
 
                                 {menuItem.subSubMenuItems && menuItem.subSubMenuItems.length > 0 && (
                                   <ul>
@@ -344,6 +345,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                                           <Link
                                             href={menuItem.link.href}
                                             className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
+                                            onClick={handleMenuClose}
                                           >
                                             {menuItem.title}
                                           </Link>
