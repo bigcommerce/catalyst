@@ -111,7 +111,6 @@ body {
   font-family: var(--font-opensans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
 }
 
 /* Desktop */
