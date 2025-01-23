@@ -38,6 +38,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
   const [showSidebarMenu, _setShowSidebarMenu] = useState(false);
   function setShowSidebarMenu(value: boolean) {
     _setShowSidebarMenu(value);
+    setOpenMenuId(null);
     resetSidebarMenu();
   }
 
@@ -107,7 +108,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                         >
                           <span onClick={() => resetSidebarMenu()}><ChevronLeft /> Main Menu</span>
                           {menuItem.link?.href ? (
-                            <Link className={clsx('main-menu-shop-all-link')} href={menuItem.link.href}>Shop All</Link>
+                            <Link className={clsx('main-menu-shop-all-link')} href={menuItem.link.href} onClick={() => setShowSidebarMenu(false)}>Shop All</Link>
                           ) : (
                             <></>
                           )}
@@ -168,6 +169,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                                               <Link
                                                 href={menuItem.link.href}
                                                 className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
+                                                onClick={() => setShowSidebarMenu(false)}
                                               >
                                                 <span>{menuItem.title}</span>
                                               </Link>
@@ -182,7 +184,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                                         ))}
                                         <li className={clsx('main-sub-sub-menu-item', classNames?.mainSubSubMenuItem)} key={`main-sub-sub-menu-item-shop-all`}>
                                           {menuItem.link?.href ? (
-                                            <Link className={clsx('main-sub-sub-menu-shop-all-link')} href={menuItem.link.href}>Shop All</Link>
+                                            <Link className={clsx('main-sub-sub-menu-shop-all-link')} href={menuItem.link.href} onClick={() => setShowSidebarMenu(false)}>Shop All</Link>
                                           ) : (
                                             <></>
                                           )}
