@@ -21,7 +21,7 @@ export type Product = PhysicalItem | DigitalItem;
 interface Props {
   currency: string;
   product: Product;
-  deleteIcon: string
+
 }
 
 const lineItemTransform = (item: Product) => {
@@ -40,7 +40,7 @@ const lineItemTransform = (item: Product) => {
   };
 };
 
-export const RemoveItem = ({ currency, product, deleteIcon }: Props) => {
+export const RemoveItem = ({ currency, product, }: Props) => {
   const t = useTranslations('Cart.SubmitRemoveItem');
 
   const onSubmitRemoveItem = async () => {
@@ -65,7 +65,7 @@ export const RemoveItem = ({ currency, product, deleteIcon }: Props) => {
 
   return (
     <form action={onSubmitRemoveItem} className='flex justify-end cart-item-delete md:block order-1 sm:order-[0]'>
-      <RemoveFromCartButton icon={deleteIcon} />
+      <RemoveFromCartButton  />
     </form>
   );
 };

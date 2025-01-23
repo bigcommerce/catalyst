@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { GetProductMetaFields, GetProductVariantMetaFields } from '../management-apis';
+import { getCommonSettingByBrandChannel, GetProductMetaFields, GetProductVariantMetaFields } from '../management-apis';
 
 interface MetaField {
   entityId: number;
@@ -328,3 +328,59 @@ export const getMetaFieldsByProduct = async (
 
   return result;
 };
+
+
+export const commonSettinngs = async(brand_ids) =>{
+    // 47, 111,
+    var res = await getCommonSettingByBrandChannel(brand_ids);        
+    return res.output;
+}
+export const retrieveMpnData = (product: any, productid: Number, variantId: Number) => {
+  if(product?.baseCatalogProduct?.variants) {
+    let productVariants: any = removeEdgesAndNodes(product?.baseCatalogProduct?.variants);
+    let productvariantData: any = productVariants.find((prod:any) => prod?.entityId == variantId);
+    return productvariantData?.mpn ?? product?.sku;
+  } else {
+    return product?.sku;
+  }
+}
+
+export const checkZeroTaxCouponIsApplied = async(checkoutData: any) => {
+  let couponCodeArray: any = checkoutData?.coupons;
+  let zeroTaxCoupon: number = 0;
+  if(couponCodeArray?.length > 0) {
+    let couponData: any = couponCodeArray?.find((discount: any) => discount?.code?.includes('ZEROTAX'));
+    if(couponData) {
+      zeroTaxCoupon = 1;
+    }
+  }
+  return zeroTaxCoupon;
+}
+
+export const zeroTaxCalculation = async(cartObject: any) => {
+  let checkoutData: any = cartObject?.checkout;
+  let cartData:any = cartObject?.cart;
+  if(await checkZeroTaxCouponIsApplied(checkoutData)) {
+    let taxPercentage: number = 0;
+    let subTotalAmount: number = checkoutData?.subtotal?.value || 0;
+    let taxAmount: number = checkoutData?.taxTotal?.value || 0;
+    taxPercentage = Number((subTotalAmount / taxAmount)?.toFixed(2));
+    cartData?.lineItems?.physicalItems?.forEach((item: any) => {
+      let couponDiscount: any = item?.couponAmount;
+      let couponAmount: number = couponDiscount?.value;
+      let qty: number = item?.quantity;
+      let zeroTaxCheck: number = (couponAmount/qty);
+      if(zeroTaxCheck == 0.1) {
+        let productAmount = item?.extendedSalePrice?.value;
+        let taxAmountForProduct: number = taxAmount * (productAmount/subTotalAmount);
+        let taxAmountToReduce: number = productAmount/subTotalAmount;
+        let apportionedTax = taxAmountForProduct * taxAmountToReduce;
+        let applyDiscountAmount: number = taxAmountForProduct/taxAmountToReduce;
+        console.log('========taxAmountForProduct=======', taxAmountForProduct);
+        console.log('========taxAmountToReduce=======', taxAmountToReduce);
+        console.log('========apportionedTax=======', apportionedTax);
+        console.log('========applyDiscountAmount=======', applyDiscountAmount);
+      }
+    });
+  }
+}

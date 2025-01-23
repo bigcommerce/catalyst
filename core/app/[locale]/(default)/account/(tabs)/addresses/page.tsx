@@ -54,9 +54,9 @@ export default async function Addresses({ searchParams }: Props) {
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
 
   return (
-    <div className='flex flex-col gap-[30px]'>
+    <div className='flex flex-col gap-[30px] [&_.login-div]:hidden [&_.login-div]:lg:hidden'>
       <div>
-      <ComponentsBreadcrumbs className="" breadcrumbs={breadcrumbs} />
+      <ComponentsBreadcrumbs className="mb-5" breadcrumbs={breadcrumbs} />
       <TabHeading heading="addresses" />
       </div>
       <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor}>

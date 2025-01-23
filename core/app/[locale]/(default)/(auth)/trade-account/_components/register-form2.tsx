@@ -23,6 +23,7 @@ import { Form } from '~/components/ui/form';
 import { Message } from '~/components/ui/message';
 import { registerCustomers } from '../_actions/register-customers';
 import { logins } from '../_actions/logins';
+import { selectors } from '@playwright/test';
 
 // Constants
 const REQUIRED_FIELDS = new Set([
@@ -51,24 +52,14 @@ const FIELD_ORDER: Record<FieldOrderKeys, number> = {
   'Company Name': 2,
   'Tax ID / Licence#': 3,
   Country: 4,
-  'State/Province': 5,
-  'Address Line 1': 6,
-  'Address Line 2': 7,
-  'Suburb/City': 8,
+  'State/Province': 8,
+  'Address Line 1': 5,
+  'Address Line 2': 6,
+  'Suburb/City': 7,
   'Zip/Postcode': 9,
 };
 
-const ALLOWED_CUSTOMER_FIELDS = ['I am a', 'Tax ID / Licence#'];
-
-const ALLOWED_ADDRESS_FIELDS = [
-  'Company Name',
-  'Country',
-  'Suburb/City',
-  'State/Province',
-  'Zip/Postcode',
-  'Address Line 1',
-  'Address Line 2',
-];
+const ALLOWED_FIELDS = ['I am a', 'Tax ID / Licence#','Company Name','Country','Suburb/City','State/Province','Zip/Postcode','Address Line 1','Address Line 2',]
 
 // Interfaces
 interface BaseField {
@@ -200,6 +191,7 @@ export const RegisterForm2 = ({
   const [stateInputValid, setStateInputValid] = useState(false);
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
   const [showAddressLine2, setShowAddressLine2] = useState(false);
+  const [stateSelector, setStateSelector] = useState(false);
 
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Register.Form');
@@ -287,8 +279,10 @@ export const RegisterForm2 = ({
           name: state.name,
         })),
       );
+      setStateSelector(true);
     } else {
       setCountryStates([]);
+      setStateSelector(false);
     }
     setStateInputValid(false);
   };
@@ -297,15 +291,15 @@ export const RegisterForm2 = ({
   const getModifiedLabel = (originalLabel: string): string => {
     switch (originalLabel) {
       case 'I am a':
-        return 'I am a:*'
+        return 'I am a:*';
       case 'Tax ID / Licence#':
         return 'Tax ID/License#';
       case 'Company Name':
         return 'Business Name';
       case 'Country':
-        return 'Country';
+        return 'Country*';
       case 'State/Province':
-        return 'State';
+        return 'State*';
       case 'Address Line 1':
         return 'Address Line 1';
       case 'Address Line 2':
@@ -319,8 +313,33 @@ export const RegisterForm2 = ({
     }
   };
 
+  const [formValues, setFormValues] = useState({
+    'State*': '',
+    'I am a:*': '',
+    'Country*': '',
+  });
+
+  const [formErrors, setFormErrors] = useState({
+    'State*': '',
+    'I am a:*': '',
+    'Country*': '',
+  });
+
+  const handleSelectChange = (field: string, value: string) => {
+    setFormValues((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    setFormErrors((prev) => ({
+      ...prev,
+      [field]: value ? '' : 'This field is required.',
+    }));
+  };
+
   // Form submission handler
   const onSubmit = async (formData: FormData) => {
+
     if (isSubmitting) return;
 
     const stateValue = formData.get('address-stateOrProvince');
@@ -465,15 +484,14 @@ export const RegisterForm2 = ({
           return (
             <FieldWrapper fieldId={fieldId} key={fieldId}>
               <Picklist
-                defaultValue={defaultCountry.code}
                 field={countryField}
-                isValid={picklistValid[fieldId]}
                 name={fieldName}
                 onChange={(value: string) => {
                   handleCountryChange(value);
                 }}
-                onValidate={setPicklistValid}
                 options={countryField.options}
+                formErrors={formErrors}
+                onSelectChange={handleSelectChange}
               />
             </FieldWrapper>
           );
@@ -483,10 +501,10 @@ export const RegisterForm2 = ({
           <FieldWrapper fieldId={fieldId} key={fieldId}>
             <Picklist
               field={modifiedField as PicklistFormField}
-              isValid={picklistValid[fieldId]}
               name={fieldName}
-              onValidate={setPicklistValid}
               options={field.options}
+              formErrors={formErrors}
+              onSelectChange={handleSelectChange}
             />
           </FieldWrapper>
         );
@@ -589,7 +607,7 @@ export const RegisterForm2 = ({
           return (
             <FieldWrapper fieldId={fieldId} key={fieldId}>
               <PicklistOrText
-                defaultValue={countryStates[0]?.name}
+                defaultValue={stateSelector ? countryStates[0]?.name : ''}
                 field={stateField}
                 name={fieldName}
                 options={stateOptions}
@@ -597,6 +615,8 @@ export const RegisterForm2 = ({
                   setStateInputValid(isValid);
                 }}
                 isValid={stateInputValid}
+                formErrors={formErrors}
+                onSelectChange={handleSelectChange}
               />
             </FieldWrapper>
           );
@@ -637,6 +657,8 @@ export const RegisterForm2 = ({
     }
   };
 
+  const formFields = [...customerFields,...addressFields];
+
   return (
     <>
       {formStatus && (
@@ -649,26 +671,50 @@ export const RegisterForm2 = ({
         className="register-form mx-auto max-w-[600px] sm:pt-3 md:pt-3"
         onSubmit={(e) => {
           e.preventDefault();
+
+          let hasErrors = false;
+
+          if(formValues['State*'] == ''){
+            setFormErrors((prev)=>({
+              ...prev,
+              'State*': 'Please select or enter a state',
+            }))
+            hasErrors = true;
+          }
+      
+          if(formValues['I am a:*'] == ''){
+            setFormErrors((prev)=>({
+              ...prev,
+              'I am a:*': 'Please select or enter a state',
+            }))
+            hasErrors = true;
+          }
+      
+          if(formValues['Country*'] == ''){
+            setFormErrors((prev)=>({
+              ...prev,
+              'Country*': 'Please select or enter a state',
+            }))
+            hasErrors = true;
+          }
+
+          if (hasErrors) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            return;
+          }
+
           const formData = new FormData(e.currentTarget);
           onSubmit(formData);
         }}
       >
         <div className="trade2-form">
           {[
-            ...customerFields
-              .filter((field) => ALLOWED_CUSTOMER_FIELDS.includes(field.label))
-              .sort(
-                (a, b) =>
-                  (FIELD_ORDER[a.label as FieldOrderKeys] || 0) -
-                  (FIELD_ORDER[b.label as FieldOrderKeys] || 0),
-              )
-              .map((field) => renderField(field, true)),
-            ...addressFields
+            ...formFields
               .filter((field) => {
                 if (field.label === 'Address Line 2' && !showAddressLine2) {
                   return false;
                 }
-                return ALLOWED_ADDRESS_FIELDS.includes(field.label);
+                return ALLOWED_FIELDS.includes(field.label);
               })
               .sort(
                 (a, b) =>
@@ -691,6 +737,8 @@ export const RegisterForm2 = ({
                         </button>
                       )}
                     </>
+                  ) : field.label === 'I am a' || field.label === 'Tax ID / Licence#' ? (
+                    renderField(field, true)
                   ) : (
                     renderField(field, false)
                   )}
@@ -712,7 +760,7 @@ export const RegisterForm2 = ({
             className="relative w-full items-center !bg-[#008BB7] px-8 py-2 !transition-colors !duration-500 hover:!bg-[rgb(75,200,240)] disabled:cursor-not-allowed xl:mt-[10px]"
             variant="primary"
             type="submit"
-            disabled={isSubmitting}
+            disabled={isSubmitting || (Object.values(formErrors).some((error)=>error !== ''))}
           >
             {isSubmitting ? 'SUBMITTING...' : 'SUBMIT'}
           </Button>

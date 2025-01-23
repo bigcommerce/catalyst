@@ -131,6 +131,10 @@ const WishlistsQuery = graphql(
                     variantEntityId
                     product {
                       entityId
+                      availabilityV2 {
+                        status
+                        description
+                      }
                       name
                       sku
                       mpn
@@ -220,9 +224,9 @@ export const getWishlists = cache(
       fetchOptions: { cache: 'no-store' },
       customerAccessToken,
     });
-
+    
     const data = response.data as WishlistResponse;
-
+    
     if (!data?.customer) {
       return undefined;
     }

@@ -6,7 +6,7 @@ import { Accordions } from '../Accordin/index';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/form';
 import NotesIcons from '../../assets/add_notes.png';
-import {  get_product_data, PdpProduct } from '../common-functions';
+import { get_product_data, PdpProduct } from '../common-functions';
 import Loader from './Spinner';
 // Utility for styles
 const TailwindCustomCssValues = {
@@ -22,7 +22,7 @@ export default function SalesBuddyProductPage() {
   const retrievedProductData = JSON.parse(localStorage.getItem('productInfo') || '{}');
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
   const [quoteNumber, setQuoteNumber] = useState('');
-const [loading, setLoading] = useState({
+  const [loading, setLoading] = useState({
     cost: false,
     inventory: false,
   });
@@ -32,31 +32,29 @@ const [loading, setLoading] = useState({
     );
   };
 
-  const costPricingTableData = (data) => { 
+  const costPricingTableData = (data) => {
     setChildSku(data.child_sku)
   };
 
   useEffect(() => {
     const fetchData = async () => {
-       setLoading((prev) => ({ ...prev, cost: true }));
+      setLoading((prev) => ({ ...prev, cost: true }));
       try {
         const data = await get_product_data(retrievedProductData.productId);
         
         if (data.status === 200) {
-          
           costPricingTableData(data?.data?.output);
           setLoading((prev) => ({ ...prev, cost: false }));
-
         }
       } catch (error) {
-       setLoading((prev) => ({ ...prev, cost: false }));
+        setLoading((prev) => ({ ...prev, cost: false }));
         console.error('Error fetching product data:', error);
       }
     };
     fetchData(); // Call the async function
   }, []);
-  
-  
+
+
   const ACCORDION_DATA = {
     existingQuote: {
       title: (
@@ -86,7 +84,7 @@ const [loading, setLoading] = useState({
         <div className="bg-white">
           <table className="w-full border-collapse border-b border-gray-300 text-sm">
             <thead>
-              <tr className="text-left">
+              <tr className="text-left h-[34px]">
                 {['SKU', 'Cost', 'IMAP', 'Floor (%)', 'Floor ($)'].map((header) => (
                   <th key={header} className="p-1">
                     {header}
@@ -94,42 +92,42 @@ const [loading, setLoading] = useState({
                 ))}
               </tr>
             </thead>
+            {
+              loading.cost == false &&
+              <tbody>
                 {
-                  loading.cost == false && 
-                  <tbody>
-                    {  
-                      childSku?.map((skuNum: any, i: number) => (
-                        <tr key={i}>
-                          {[
-                            skuNum?.variants_sku ?? 'N/A',
-                            skuNum?.adjusted_cost 
-                              ? Number(skuNum.adjusted_cost).toFixed(2) 
-                              : "0000.00",
-                            skuNum?.variant_price 
-                              ? Number(skuNum.variant_price).toFixed(2) 
-                              : "0000.00",
-                            skuNum?.floor_percentage 
-                              ? `${(skuNum?.floor_percentage * 100).toFixed(2)}%` 
-                              : '00%',
-                            skuNum?.floor_percentage 
-                              ? (skuNum?.floor_percentage * skuNum?.adjusted_cost).toFixed(2) 
-                              : '0.00',
-                          ].map((data, j) => (
-                            <td key={j} className="border-b px-[5px] py-[5px]">
-                              {data}
-                            </td>
-                          ))}
-                        </tr>
-                      ))
-                    }
-                  </tbody>
+                  childSku?.map((skuNum: any, i: number) => (
+                    <tr key={i} className='h-[34px]'>
+                      {[
+                        skuNum?.variants_sku ?? 'N/A',
+                        skuNum?.adjusted_cost
+                          ? Number(skuNum.adjusted_cost).toFixed(2)
+                          : "0000.00",
+                        skuNum?.variant_price
+                          ? Number(skuNum.variant_price).toFixed(2)
+                          : "0000.00",
+                        skuNum?.floor_percentage
+                          ? `${(skuNum?.floor_percentage)}%`
+                          : '00.00%',
+                        skuNum?.floor_percentage
+                          ? (skuNum?.floor_percentage * skuNum?.adjusted_cost).toFixed(2)
+                          : '0.00',
+                      ].map((data, j) => (
+                        <td key={j} className="border-b px-[5px] py-[5px]">
+                          {data}
+                        </td>
+                      ))}
+                    </tr>
+                  ))
                 }
-                    
+              </tbody>
+            }
+
           </table>
-          { loading?.cost== true &&  
+          {loading?.cost == true &&
             <div className='flex justify-center w-full p-5'>
               <Loader />
-            </div> 
+            </div>
           }
         </div>
       ),
@@ -139,66 +137,66 @@ const [loading, setLoading] = useState({
       content: (
 
         <>
-        {loading.cost == false && 
-          <div className="w-[460px] bg-white p-[20px]">
-          {childSku?.map((skuNum, index) => {
+          {loading.cost == false &&
+            <div className="w-[460px] bg-white p-[20px]">
+              {childSku?.map((skuNum, index) => {
                 // Step 1: Split the stockPlace details by double pipe
-            const entries = skuNum?.stock_information?.split('||').map(entry => entry?.trim());
-            // Step 2: Split each entry by single pipe
-            const stockDetails = entries?.map(entry => entry?.split('|').map(item => item?.trim()));
-            
-            const item = {
-              id: skuNum?.variants_sku, // Use skuNum.sku instead of hardcoded id
-              status:stockDetails,
-            };
+                const entries = skuNum?.stock_information?.split('||').map(entry => entry?.trim());
+                // Step 2: Split each entry by single pipe
+                const stockDetails = entries?.map(entry => entry?.split('|').map(item => item?.trim()));
 
-            return (
-              
-                <div key={index} className="space-y-[5px] border-b pb-[10px] pt-[10px]">
-                  <p className="font-bold">{item.id}</p>
-                {
-                 item.status ? <>
-                  {item?.status?.map((details, detailIndex) => (
-                    <div key={detailIndex} className=' w-full mb-2'> {/* Added margin-bottom for spacing */}
-                      <div className=" justify-between w-full">
-                        <p className="text-[14px] open-sans text-[#353535]">{details[0]} | {details[1]}</p> {/* Assuming the first item is the location */}
-                        <div className='flex justify-between items-center'>
-                          <p className="mr-2">{details[2]}</p> {/* Added margin-right for spacing */}
-                          <p
-                            className={`p-[5px] text-sm ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
-                            style={{ backgroundColor: details[3] }} // Assuming the fourth item is the updatedColor
-                          >
-                            <span
-                              className={`font-bold ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
-                            >
-                              {details[3]} {/* Assuming the fourth item is the updated value */}
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                  </> :<div className="space-y-[5px]  pb-[10px] pt-[10px]">No Inventory Available </div> 
-                }
-                </div>
-              
-            );
-          })}
-          </div>
-        }
-        {
-          loading.cost == true &&
-          <div className='flex justify-center w-full'>
+                const item = {
+                  id: skuNum?.variants_sku, // Use skuNum.sku instead of hardcoded id
+                  status: stockDetails,
+                };
+
+                return (
+
+                  <div key={index} className="space-y-[5px] border-b pb-[10px] pt-[10px]">
+                    <p className="font-bold">{item.id}</p>
+                    {
+                      item.status ? <>
+                        {item?.status?.map((details, detailIndex) => (
+                          <div key={detailIndex} className=' w-full mb-2'> {/* Added margin-bottom for spacing */}
+                            <div className=" justify-between w-full">
+                              <p className="text-[14px] open-sans text-[#353535]">{details[0]} | {details[1]}</p> {/* Assuming the first item is the location */}
+                              <div className='flex justify-between items-center'>
+                                <p className="mr-2">{details[2]}</p> {/* Added margin-right for spacing */}
+                                <p
+                                  className={`p-[5px] text-sm ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
+                                  style={{ backgroundColor: details[3] }} // Assuming the fourth item is the updatedColor
+                                >
+                                  <span
+                                    className={`font-bold ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
+                                  >
+                                    {details[3]} {/* Assuming the fourth item is the updated value */}
+                                  </span>
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </> : <div className="space-y-[5px]  pb-[10px] pt-[10px]">No Inventory Available </div>
+                    }
+                  </div>
+
+                );
+              })}
+            </div>
+          }
+          {
+            loading.cost == true &&
+            <div className='flex justify-center w-full'>
               <Loader />
-            </div> 
-        }
+            </div>
+          }
         </>
-       
+
       ),
     },
   };
 
-  
+
   return (
     <div className="space-y-[10px] overflow-x-hidden">
       {/* Product Info */}
@@ -212,14 +210,16 @@ const [loading, setLoading] = useState({
         <Accordions
           styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.existingQuote]}
-          // type="multiple"
+        // type="multiple"
         />
       </div>
       <div className="w-full">
         <Accordions
           styles="  py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.costPricing, ACCORDION_DATA.inventory]}
-          // type="multiple"
+          contentCss="px-5"
+
+        // type="multiple"
         />
       </div>
 

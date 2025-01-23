@@ -50,10 +50,7 @@ export default async function DefaultLayout({ params, children }: Props) {
       </main>
       <Suspense>
         <Footer />
-        {flagSalesBuddy
-          ? <SalesBuddyPage/>
-          : ''
-        }
+        <SalesBuddyPage />
       </Suspense>
     </MakeswiftProvider>
   );

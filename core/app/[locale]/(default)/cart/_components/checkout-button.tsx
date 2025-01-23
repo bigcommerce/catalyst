@@ -12,7 +12,7 @@ const InternalButton = () => {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="checkout-btn !mt-0 bg-[#008BB7] font-medium text-[14px] tracking-[1.25px] text-white " loading={pending} loadingText={t('loading')}>
+    <Button className="checkout-btn !mt-0 bg-[#008BB7] h-[41px] w-[100%] font-medium text-[14px] tracking-[1.25px] text-white " loading={pending} loadingText={t('loading')}>
       {t('proceedToCheckout')}
     </Button>
     

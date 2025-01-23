@@ -21,6 +21,7 @@ import { CollectionProducts } from '~/belami/components/product';
 import { SiteVibesReviews } from '~/belami/components/sitevibes';
 import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-algolia-products';
 import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
+import { commonSettinngs } from '~/components/common-functions';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -214,7 +215,8 @@ export default async function ProductPage(props: Props) {
       : null;
 
     const productImages = removeEdgesAndNodes(product.images);
-
+    var brandId = product?.brand?.entityId;
+    var CommonSettinngsValues = await commonSettinngs([brandId])
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-8">
         <ProductProvider getMetaFields={productMetaFields}>
@@ -247,10 +249,13 @@ export default async function ProductPage(props: Props) {
               requestQuote={assets.requestQuote}
               closeIcon={assets.closeIcon}
               blankAddImg={assets.blankAddImg}
+              getAllCommonSettinngsValues={CommonSettinngsValues}
               productImages={productImages}
             />
             <div className="lg:col-span-2">
+            <hr className="border border-gray-200 mb-4"/>
               <Description product={product} />
+              <hr className="border border-gray-200 my-4"/>
               <CollectionProducts
                 collection={collectionValue}
                 products={collectionProducts.hits}

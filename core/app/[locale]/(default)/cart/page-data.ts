@@ -15,6 +15,18 @@ export const PhysicalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
+    baseCatalogProduct {
+      variants {
+        edges {
+          node {
+            mpn
+            sku
+            entityId
+            isPurchasable
+          }
+        }
+      }
+    }
     extendedListPrice {
       currencyCode
       value
@@ -74,6 +86,18 @@ export const DigitalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
+    baseCatalogProduct {
+      variants {
+        edges {
+          node {
+            mpn
+            sku
+            entityId
+            isPurchasable
+          }
+        }
+      }
+    }
     extendedListPrice {
       currencyCode
       value

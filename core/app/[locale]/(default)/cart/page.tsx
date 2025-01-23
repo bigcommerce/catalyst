@@ -24,6 +24,17 @@ import { RemoveCart } from './_components/remove-cart';
 import { GetCartMetaFields } from '~/components/management-apis';
 import CartProductComponent from '../sales-buddy/common-components/_components/CartComponent/CartProductComponent';
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
+import ScrollButton from './_components/ScrollButton';
+import { NoShipCanada } from '../product/[slug]/_components/belami-product-no-shipping-canada';
+import { commonSettinngs } from '~/components/common-functions';
+import { zeroTaxCalculation } from '~/components/common-functions';
+
+import heartIcon from '~/public/cart/heartIcon.svg'
+import applePayIcon from '~/public/cart/applePayIcon.svg'
+import paypalIcon from '~/public/cart/paypalIcon.svg'
+import amazonPayIcon from '~/public/cart/amazonPayIcon.svg'
+import agentIcon from '~/public/cart/agentIcon.svg'
+import downArrow from '~/public/cart/downArrow.svg'
 
 const CartPageQuery = graphql(
   `
@@ -60,6 +71,9 @@ export default async function Cart() {
   const cookieStore = await cookies();
 
   const cartId = cookieStore.get('cartId')?.value;
+  const cookie_agent_login_status = cookieStore.get('agent_login')?.value;
+
+  
 
   if (!cartId) {
     return <EmptyCart />;
@@ -87,7 +101,6 @@ export default async function Cart() {
   if (!cart) {
     return <EmptyCart />;
   }
- 
   const CustomItems = cart?.lineItems?.customItems
   const get_product_price_data_in_cart = async (cartId: any) => {
   const result = await get_cart_price_adjuster_data(cartId);
@@ -97,8 +110,7 @@ export default async function Cart() {
     return [{ error: 'Failed to retrive data' }];
     }
   };
-const product_data_in_cart = await get_product_price_data_in_cart(cartId);
-
+  const product_data_in_cart = cookie_agent_login_status ? await get_product_price_data_in_cart(cartId):[];
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
@@ -109,12 +121,6 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
   }, 0);
   let cartItemsText = cartQty > 1 ? ' Items' : ' Item';
   const deleteIcon = imageManagerImageUrl('delete.png', '20w');
-  const downArrow = imageManagerImageUrl('downarrow.png', '20w');
-  const agentIcon = imageManagerImageUrl('agent-icon.png', '20w');
-  const heartIcon = imageManagerImageUrl('hearticon.png', '20w');
-  const applePayIcon = imageManagerImageUrl('applepay.png', '60w');
-  const amazonPayIcon = imageManagerImageUrl('amazonpay.png', '125w');
-  const paypalIcon = imageManagerImageUrl('fill-11.png', '25w');
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
   let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
@@ -155,6 +161,7 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
       }
     });
   } else {
+    getCartMetaFields = [];
     updatedLineItemInfo = lineItems;
   }
   updatedLineItemInfo?.forEach((item: any, index: number) => {
@@ -166,11 +173,19 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
     label: "Your Cart",
     href: '#'
   }];
-  console.log("CustomItems------",CustomItems);
+  var getBrandIds = lineItems?.map((item: any) => {
+    return item?.baseCatalogProduct?.brand?.entityId;
+  });
+  var getAllCommonSettinngsValues =await commonSettinngs(getBrandIds)
+
+  let checkZeroTax: any = await zeroTaxCalculation(data.site);
   
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
+      <div className=' sticky top-2 z-50 '>
       <ContinuetocheckoutButton cartId={cartId} />
+      </div>
+    
 
       <div className="pt-6 text-center lg:hidden">
         <div className="inline-flex items-center gap-2 text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#002A37]">
@@ -179,32 +194,22 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
             style: 'currency',
             currency: cart?.currencyCode,
           })}
-          <BcImage
-            alt="Remove"
-            width={12}
-            height={8}
-            className="h-[8px] w-[12px]"
-            src={downArrow}
-          />
+
         </div>
+       
+      </div>
+      <div className=" text-center lg:hidden">
+      <ScrollButton targetId="order-summary" accessoriesData={getCartMetaFields} />
       </div>
 
-      <div className="pt-8 text-center lg:hidden">
-        <div>Cart #12345</div>
-      </div>
+      <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
 
-      <ComponentsBreadcrumbs className="mt-10" breadcrumbs={breadcrumbs} />
-
-      <h1 className="cart-heading pb-6 pt-0 text-center text-[24px] font-normal leading-[32px] lg:pb-4 lg:text-left lg:text-[24px]">
-        {`${t('heading')} (${cartQty}${cartItemsText})`}
+      <h1 className="cart-heading  pt-0 text-center text-[24px] font-normal leading-[32px]  lg:text-left lg:text-[24px]">
+        {`${t('heading')} (${cartQty} ${cartItemsText})`}
       </h1>
 
       <div className="hidden lg:flex lg:items-center lg:space-x-8">
         <SaveCart cartItems={lineItems} saveCartIcon={heartIcon} />
-
-        <div className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.03125rem] text-[#7F7F7F]">
-          Cart #12345
-        </div>
       </div>
 
       <div className="save-cart pb-8 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-6">
@@ -217,10 +222,13 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
           </div>
         </div>
       </div>
+      
       <div className="cart-right-side-details px-18 w-full pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
+        
         <ul className="cart-details-item col-span-2 lg:w-full">
           {updatedLineItemWithoutAccessories.map((product: any ) => (
             <CartItem
+              brandId={product?.baseCatalogProduct?.brand?.entityId}
               currencyCode={cart.currencyCode}
               key={product.entityId}
               product={product}
@@ -228,27 +236,29 @@ const product_data_in_cart = await get_product_price_data_in_cart(cartId);
               cartId={cart?.entityId}
               priceAdjustData={product_data_in_cart?.physical_items?.[product?.entityId]}
               ProductType={"product"}
+              cookie_agent_login_status={cookie_agent_login_status  === 'true' ? true : false}
+              getAllCommonSettinngsValues={getAllCommonSettinngsValues}
             />
           ))}
           {
-          
-           CustomItems.length > 0 && CustomItems?.map((data)=>{
+            cookie_agent_login_status === 'true' &&
+            CustomItems.length > 0 && CustomItems?.map((data)=>{
               return (
               <CartProductComponent
                 key={data.entityId}
                 cartId={cart.entityId}
                 currencyCode={cart.currencyCode}
                 product={data}
-                deleteIcon={deleteIcon}
                 priceAdjustData={product_data_in_cart?.custom_items &&  product_data_in_cart?.custom_items[data?.entityId]}
                 ProductType={"custom"}
+                cookie_agent_login_status={cookie_agent_login_status === 'true' ? true : false}
               />
               )
             })
           }
         </ul>
 
-        <div className="cart-right-side sticky top-0 col-span-1 col-start-2 -mt-[9em] h-[100px] min-h-[800px] border-t border-[#CCCBCB] py-[1.4em] lg:col-start-3">
+        <div id="order-summary" className="cart-right-side sticky top-0 col-span-1 col-start-2 -mt-[9em] h-[100px] min-h-[800px] border-t border-[#CCCBCB] py-[1.4em] lg:col-start-3">
           {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
 
           <CheckoutButton cartId={cartId} />

@@ -43,6 +43,7 @@ interface WishlistProduct {
   sku: string;
   mpn: string;
   path: string;
+  availabilityV2: string;
   brand?: {
     name: string;
     path: string;
@@ -177,20 +178,34 @@ const ProductCard = ({ item }: { item: WishlistItem }) => {
           <input name="variant_id" type="hidden" value={item.variantEntityId} />
 
           <div className="mt-4">
-            <Button
-              type="submit"
-              className="h-[42px] w-full !bg-[#03465C] font-medium tracking-wider text-white hover:bg-[#02374a]"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <div className="flex items-center justify-center gap-2">
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>ADDING...</span>
-                </div>
-              ) : (
-                'ADD TO CART'
-              )}
-            </Button>
+          {item.product.availabilityV2.status === 'Unavailable' ? (
+              <div className="flex flex-col items-center">
+                <Button
+                  id="add-to-cart"
+                  className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                  disabled={item.product.availabilityV2.status === 'Unavailable'}
+                  type="submit"
+                >
+                  <span>ADD TO CART</span>
+                </Button>
+                <p className="text-[12px] text-[#2e2e2e]">This product is currently unavailable</p>
+              </div>
+            ) : (
+              <Button
+                type="submit"
+                className="h-[42px] w-full bg-[#03465C] font-medium tracking-wider text-white hover:bg-[#02374a]"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>ADDING...</span>
+                  </div>
+                ) : (
+                  'ADD TO CART'
+                )}
+              </Button>
+            )}
           </div>
         </form>
       </div>

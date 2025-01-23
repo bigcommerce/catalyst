@@ -49,7 +49,7 @@ export function ReferrerId({sid, referrerId = null, ip, ua, referrer = ''} : {si
             cache: 'no-store',
           });
           const data = await response.json();
-          console.log(data);
+          localStorage.setItem('referrerId', data.data);
         } catch (error) {
           console.error('Error generating referrer id: ', error);
         }
