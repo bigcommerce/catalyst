@@ -38,6 +38,8 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
           toggleModal();
           storeAgentLoginStatusInCookies(true);
           setLoading(false); // Set loading state
+          setEmail('')
+          setPassword('')
         }else{
           localStorage.setItem('agent_login', 'false');
           setAgentLoginStatus(false);
