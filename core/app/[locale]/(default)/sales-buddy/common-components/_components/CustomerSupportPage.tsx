@@ -206,7 +206,7 @@ function CustomerSupportPage() {
   };
   const handleFindCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading((prev) => ({ ...prev, show2: true }));
+    setLoading((prev) => ({ ...prev, show2: true }));    
     if (
       findCustomerData.email !== '' ||
       findCustomerData.phone !== '' ||
@@ -363,6 +363,7 @@ function CustomerSupportPage() {
     ));
   };
   const handleInputChange = (id: string, value: string) => {
+    setFindCustomerErrorMessage('')
     switch (id) {
       case 'cart-id': {
         setCartId(value);
