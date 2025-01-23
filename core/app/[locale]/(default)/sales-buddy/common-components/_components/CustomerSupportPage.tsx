@@ -206,6 +206,7 @@ function CustomerSupportPage() {
   };
   const handleFindCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFindCustomerSuccessMessage('')
     setLoading((prev) => ({ ...prev, show2: true }));    
     if (
       findCustomerData.email !== '' ||
@@ -550,7 +551,7 @@ function CustomerSupportPage() {
               ],
               findCustomerData,
             )}
-            {findCustomerErrorMessage && <p className="text-red-800">{findCustomerErrorMessage}</p>}
+            {findCustomerErrorMessage && <p className="text-[#1DB14B]">{findCustomerErrorMessage}</p>}
             {findCustomerSuccessMessage && (
               <p className="text-green-600">{findCustomerSuccessMessage}</p>
             )}
