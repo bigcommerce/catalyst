@@ -29,6 +29,15 @@ import { ProductFormData, useProductForm } from './use-product-form';
 import { ProductFlyout } from '~/components/product-card/product-flyout';
 import { useCommonContext } from '~/components/common-context/common-provider';
 
+import aa from 'search-insights';
+
+aa('init', {
+  appId: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
+  apiKey: process.env.NEXT_PUBLIC_ALGOLIA_API_KEY || '',
+});
+
+const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
+
 interface Props {
   data: FragmentOf<typeof ProductItemFragment>;
   multipleOptionIcon: string;
@@ -187,6 +196,21 @@ export const ProductForm = ({
     }
 
     const transformedProduct = productItemTransform(product);
+
+    if (product && product.prices) {
+      aa('addedToCartObjectIDs', {
+        eventName: 'Product Added To Cart',
+        index: indexName,
+        objectIDs: [String(transformedProduct.product_id)],
+        objectData: [
+          {
+            price: transformedProduct.purchase_price,
+            quantity: quantity,
+          },
+        ],
+        currency: transformedProduct.currency,
+      });
+    }
 
     bodl.cart.productAdded({
       product_value: transformedProduct.purchase_price * quantity,

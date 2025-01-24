@@ -26,7 +26,7 @@ const OrderDetails = ({
   orderPrice,
   orderStatus,
   cartId,
-  guestUserCheck,
+  guestUserCheck
 }: {
   orderId: number;
   orderDate: string;
@@ -642,7 +642,7 @@ export default function OrderTracking({
         orderInfoData = await getGuestOrderDetailsFromAPI(orderId);
         if (orderInfoData?.billing_address?.email == email) {
           setCartId(orderInfoData?.cart_id);
-          let guestFlowCheck = orderInfoData?.customer_id > 0 ? 0 : 1;
+          let guestFlowCheck = (orderInfoData?.customer_id > 0) ? 0 : 1;
           setGuestFlow(guestFlowCheck);
           await getOrderData(Number(orderId), orderInfoData?.cart_id, guestFlowCheck);
         } else {
