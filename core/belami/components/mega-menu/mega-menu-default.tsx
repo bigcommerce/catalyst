@@ -38,6 +38,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
   const [showSidebarMenu, _setShowSidebarMenu] = useState(false);
   function setShowSidebarMenu(value: boolean) {
     _setShowSidebarMenu(value);
+    setOpenMenuId(null);
     resetSidebarMenu();
   }
 
@@ -107,7 +108,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                         >
                           <span onClick={() => resetSidebarMenu()}><ChevronLeft /> Main Menu</span>
                           {menuItem.link?.href ? (
-                            <Link className={clsx('main-menu-shop-all-link')} href={menuItem.link.href}>Shop All</Link>
+                            <Link className={clsx('main-menu-shop-all-link')} href={menuItem.link.href} onClick={() => setShowSidebarMenu(false)}>Shop All</Link>
                           ) : (
                             <></>
                           )}
@@ -168,6 +169,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                                               <Link
                                                 href={menuItem.link.href}
                                                 className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
+                                                onClick={() => setShowSidebarMenu(false)}
                                               >
                                                 <span>{menuItem.title}</span>
                                               </Link>
@@ -182,7 +184,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                                         ))}
                                         <li className={clsx('main-sub-sub-menu-item', classNames?.mainSubSubMenuItem)} key={`main-sub-sub-menu-item-shop-all`}>
                                           {menuItem.link?.href ? (
-                                            <Link className={clsx('main-sub-sub-menu-shop-all-link')} href={menuItem.link.href}>Shop All</Link>
+                                            <Link className={clsx('main-sub-sub-menu-shop-all-link')} href={menuItem.link.href} onClick={() => setShowSidebarMenu(false)}>Shop All</Link>
                                           ) : (
                                             <></>
                                           )}
@@ -311,6 +313,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                                   <Link
                                     href={menuItem.link.href}
                                     className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
+                                    onClick={handleMenuClose}
                                   >
                                     {menuItem.title}
                                   </Link>
@@ -325,7 +328,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                                 {menuItem.imageSrc &&
                                   <figure>
                                     {menuItem.link?.href ? (
-                                      <Link href={menuItem.link.href}><img src={menuItem.imageSrc} alt={menuItem.title ?? menuItem.button ?? 'Menu item image'} className={clsx('sub-menu-image', classNames?.mainSubMenuImage)} /></Link>
+                                      <Link href={menuItem.link.href} onClick={handleMenuClose}><img src={menuItem.imageSrc} alt={menuItem.title ?? menuItem.button ?? 'Menu item image'} className={clsx('sub-menu-image', classNames?.mainSubMenuImage)} /></Link>
                                     ) : (
                                       <img src={menuItem.imageSrc} alt={menuItem.title} className={clsx('sub-menu-image', classNames?.mainSubMenuImage)} />
                                     )}
@@ -334,7 +337,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
 
                                 {menuItem.description && <div className={clsx('sub-menu-description', classNames?.mainSubMenuDescription)}>{menuItem.description}</div>}
 
-                                {menuItem.button && menuItem.link?.href && <Link href={menuItem.link.href} className={clsx('sub-menu-button', classNames?.mainSubMenuButton)}>{menuItem.button}</Link>}
+                                {menuItem.button && menuItem.link?.href && <Link href={menuItem.link.href} className={clsx('sub-menu-button', classNames?.mainSubMenuButton)} onClick={handleMenuClose}>{menuItem.button}</Link>}
 
                                 {menuItem.subSubMenuItems && menuItem.subSubMenuItems.length > 0 && (
                                   <ul>
@@ -344,6 +347,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                                           <Link
                                             href={menuItem.link.href}
                                             className={clsx('main-sub-sub-menu-link', classNames?.mainSubSubMenuLink)}
+                                            onClick={handleMenuClose}
                                           >
                                             {menuItem.title}
                                           </Link>

@@ -166,6 +166,10 @@
     "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
     "searchResults": "Search results for"
   },
+  "QuickDeliveryProducts": {
+    "title": "Quick Delivery Products",
+    "heading": "Quick Delivery Products"
+  },
   "Account": {
     "Home": {
       "title": "My account",

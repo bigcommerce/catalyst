@@ -43,7 +43,7 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
             }
           : product;
 
-        const response = await getMetaFieldsByProduct(productData, 'ratings_certifications');
+        const response = await getMetaFieldsByProduct(productData, 'Ratings and Certifications');
 
         let validProductCerts: Certification[] = [];
         let validVariantCerts: Certification[] = [];

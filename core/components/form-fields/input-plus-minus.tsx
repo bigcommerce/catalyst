@@ -9,7 +9,7 @@ import { Link } from '~/components/link';
 import { getCartData } from "../get-cart-items";
 
 export const InputPlusMinus = ({product, productData, isLoading, setIsLoading}: {product:string, productData: any, isLoading: boolean, setIsLoading: (loading: boolean) => void}) => {
-  const [quantity, setQuantity] = useState<number>(1);
+  const [quantity, setQuantity] = useState<number>(productData?.quantity || 1);
   const [loader, setLoader] = useState<Boolean>(false);
   const productFlyout = useCommonContext();
   let cartItemsData = productFlyout.cartData;

@@ -206,13 +206,16 @@ function CustomerSupportPage() {
   };
   const handleFindCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setFindCustomerSuccessMessage("")
     setLoading((prev) => ({ ...prev, show2: true }));    
     if (
-      findCustomerData.email !== '' ||
+      (findCustomerData.email !== '' ||
       findCustomerData.phone !== '' ||
-      findCustomerData.first_name !== ''
+      findCustomerData.first_name !== '')  
     ) {
-      try {
+      if(findCustomerDataError.email == "" && findCustomerDataError.company == "" && findCustomerDataError.phone == "" && findCustomerDataError.first_name == "")
+      {
+        try {
         const response = await findCustomerDetails(findCustomerData);        
         setCustomerDetails(findCustomerData);
         if (response.data.status == 200) {
@@ -240,19 +243,38 @@ function CustomerSupportPage() {
           setFindCustomerErrorMessage(` Failed to retrieve account`);
           setFindCustomerSuccessMessage(null);
         }
-      } catch (error: any) {
+        } catch (error: any) {
         setLoading((prev) => ({ ...prev, show2: false }));
         setTableData([])
         setFindCustomerErrorMessage(`Failed to retrieve account`);
         // setFindCustomerErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
         setFindCustomerSuccessMessage(null);
-      }
+        }
+      } else { setLoading((prev) => ({ ...prev, show2: false })); }
     } else {
       setLoading((prev) => ({ ...prev, show2: false }));
       setFindCustomerErrorMessage('Required at least one field');
     }
   };
 
+  const handleValidationMsgForCreateAccount=()=>{
+    const missingFields = [];
+
+    if (!createAccountData.first_name) {
+      missingFields.push("First Name");
+    }
+    if (!createAccountData.last_name) {
+      missingFields.push("Last Name");
+    }
+    if (!createAccountData.email) {
+      missingFields.push("Valid Email Address");
+    }
+    if (!createAccountData.referral_id) {
+      missingFields.push("Referral ID");
+    }
+    const errorMessage = `Please provide the following: ${missingFields.join(" ")}.`;
+    return errorMessage;
+  }
   const handleCreateAccountSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -264,7 +286,8 @@ function CustomerSupportPage() {
       !createAccountData.referral_id
     ) {
       setCreateAccountErrorMessage(
-        'Please provide a first name, last name,  valid email address and Referral ID.',
+        handleValidationMsgForCreateAccount()
+        // 'Please provide a first name, last name,  valid email address and Referral ID.',
       );
       setCreateAccountSuccessMessage(null);
       setLoading((prev) => ({ ...prev, show3: false }));
@@ -552,7 +575,7 @@ function CustomerSupportPage() {
             )}
             {findCustomerErrorMessage && <p className="text-red-800">{findCustomerErrorMessage}</p>}
             {findCustomerSuccessMessage && (
-              <p className="text-green-600">{findCustomerSuccessMessage}</p>
+              <p className={` ${tableData.length > 0 ? "text-green-600" :"text-red-800" }`}>{findCustomerSuccessMessage}</p>
             )}
             <button
               type="submit"

@@ -176,7 +176,7 @@ export default async function Cart() {
   var getBrandIds = lineItems?.map((item: any) => {
     return item?.baseCatalogProduct?.brand?.entityId;
   });
-  var getAllCommonSettinngsValues =await commonSettinngs(getBrandIds)
+  var getAllCommonSettinngsValues =await commonSettinngs([getBrandIds])
 
   let checkZeroTax: any = await zeroTaxCalculation(data.site);
   

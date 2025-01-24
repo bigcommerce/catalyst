@@ -63,7 +63,7 @@ interface ExcludedMetaFields {
 
 // Define excluded metadata
 const excludedMetaFields: ExcludedMetaFields = {
-  keys: ['spec_sheet', 'install_sheet', 'included', 'ratings_certifications'],
+  keys: ['spec_sheet', 'install_sheet', 'included', 'ratings_certifications', 'Ratings and Certifications'],
   categories: [
     'Other', // Exclude the Other category entirely
   ],
