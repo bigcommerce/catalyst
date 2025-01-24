@@ -92,6 +92,10 @@ export const GetVariantsByProductSKU = async (skuArray: any) => {
               }
             }
             upc
+            availabilityV2 {
+        status
+        description
+      }
           }`;
           index++;
         }
@@ -280,6 +284,24 @@ export const getOrderDetails = cache(
       variables,
       fetchOptions: { cache: 'no-store' },
       customerAccessToken,
+    });
+    const order = response.data.site.order;
+
+    if (!order) {
+      return undefined;
+    }
+    const data = mapOrderData(order);
+    return data;
+  },
+);
+
+export const getGuestOrderDetails = cache(
+  async (variables: VariablesOf<typeof CustomerOrderDetails>) => {
+
+    const response = await client.fetch({
+      document: CustomerOrderDetails,
+      variables,
+      fetchOptions: { cache: 'no-store' },
     });
     const order = response.data.site.order;
 

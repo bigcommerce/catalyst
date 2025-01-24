@@ -8,6 +8,7 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 import { OrderListTabs } from './_components/order-list-tabs';
 import { ExistingResultType } from '~/client/util';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
+import wavingHandIcon from '~/public/pdp-icons/wavingHandIcon.svg' 
 
 interface Props {
   searchParams: Promise<{
@@ -33,7 +34,6 @@ export default async function Orders({ searchParams }: Props) {
   }
 
   const { orders, pageInfo } = customerOrdersDetails;
-  const icon = imageManagerImageUrl("waving-hand-1-.png", '24w');
   const breadcrumbs: any = [{
     label: "Orders",
     href: '#'
@@ -49,7 +49,7 @@ export default async function Orders({ searchParams }: Props) {
               <div className="mx-auto w-fit">{t('noOrders')}</div>
             ) : (
               <>
-                {<OrderListTabs orders={orders} pageInfo={pageInfo} icon={icon} />}
+                {<OrderListTabs orders={orders} pageInfo={pageInfo} icon={wavingHandIcon} />}
               </>
             )}
           </div>

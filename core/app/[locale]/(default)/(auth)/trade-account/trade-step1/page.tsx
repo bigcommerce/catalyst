@@ -66,15 +66,23 @@ export interface RegisterForm1Props {
   reCaptchaSettings: any;
 }
 
+import patjoheatAndShade from '~/public/accountIcons/patjoheatAndShade.svg'
+import baileyStreet from '~/public/accountIcons/baileyStreet.svg'
+import OneStopLightning from '~/public/accountIcons/oneStopLightning.svg'
+import lunaWarehouse from '~/public/accountIcons/lunaWarehouse.svg'
+import canadaLightning from '~/public/accountIcons/canadaLightning.svg'
+import homeclickBlack from '~/public/accountIcons/homeclickBlack.svg'
+import tradeCheckCircle from '~/public/accountIcons/tradeCheckCircle.svg'
+
 const imageUrls = {
   tradeAccountHeader: imageManagerImageUrl('trade-account-header.png', 'original'),
-  tradeCircleCircle: imageManagerImageUrl('trade-check-circle.jpg', 'original'),
-  patjoheatAndShade: imageManagerImageUrl('patjoheat-and-shade.png', 'original'),
-  baileyStreet: imageManagerImageUrl('bailey-street.png', 'original'),
-  oneStopLightning: imageManagerImageUrl('1stop-lightning.png', 'original'),
-  lunaWarehouse: imageManagerImageUrl('luna-warehouse.png', 'original'),
-  canadaLightning: imageManagerImageUrl('canada-lightning.png', 'original'),
-  homeclickBlack: imageManagerImageUrl('homeclick-black.png', 'original'),
+  tradeCircleCircle: tradeCheckCircle,
+  patjoheatAndShade: patjoheatAndShade,
+  baileyStreet: baileyStreet,
+  oneStopLightning: OneStopLightning,
+  lunaWarehouse: lunaWarehouse,
+  canadaLightning: canadaLightning,
+  homeclickBlack: homeclickBlack,
 };
 
 const testimonials: TestimonialData[] = [

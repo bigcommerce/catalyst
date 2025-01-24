@@ -13,6 +13,7 @@ import { MobileNav } from './mobile-nav';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { imageIconList } from '~/app/[locale]/(default)/(auth)/fragments';
 import { StaticImport } from 'next/dist/shared/lib/get-img-props';
+import { MegaMenu } from '~/belami/components/mega-menu';
 
 interface Link {
   label: string;
@@ -48,6 +49,7 @@ interface Props extends ComponentPropsWithoutRef<typeof NavigationMenuPrimitive.
   homeLogoMobile?: string | Image;
   homeLogoMobileFirst?: string;
   customerAccessToken?: string;
+  megaMenu?: ReactNode;
 }
 
 const Header = ({
@@ -62,6 +64,7 @@ const Header = ({
   homeLogoMobile,
   homeLogoMobileFirst,
   customerAccessToken,
+  megaMenu
 }: Props) => {
   const [openMenuId, setOpenMenuId] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout>(null);
@@ -139,10 +142,11 @@ const Header = ({
             <LocaleSwitcher activeLocale={activeLocale} locales={locales} />
           ) : null}
 
-          <MobileNav links={links} logo={logo} account={''} homeLogoMobile={homeLogoMobile} customerAccessToken={customerAccessToken} />
+          {/* <MobileNav links={links} logo={logo} account={''} homeLogoMobile={homeLogoMobile} customerAccessToken={customerAccessToken} /> */}
         </div>
       </header>
 
+      {/*
       <div className="header-bottom mx-auto flex max-w-full items-center justify-between border-b border-t border-[#cccbcb] bg-white px-4 lg:mt-[30px] lg:px-10 xl:mt-0">
         <NavigationMenuPrimitive.Root id="nav-menu-root" className="hidden lg:block">
           <NavigationMenuPrimitive.List
@@ -269,6 +273,9 @@ const Header = ({
           </CustomLink>
         </nav>
       </div>
+      */}
+
+      {megaMenu}
     </div>
   );
 };

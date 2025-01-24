@@ -1,53 +1,92 @@
-import { Image, Link, List, Shape, TextInput } from '@makeswift/runtime/controls';
+import { Image, Link, List, Select, Shape, TextInput } from '@makeswift/runtime/controls';
 
 import { MegaMenu } from '.';
+import { MegaMenuProps } from './mega-menu-types';
 import { runtime } from '~/lib/makeswift/runtime';
 
-interface MenuItem {
-  title?: string;
-  link?: { href?: string; target?: string };
-}
-
-interface MSMegaMenuProps {
-  classNames?: {
-    root?: string,
-    content?: string,
-    item?: string
-  };
-  menuItems: MenuItem[];
-}
-
 runtime.registerComponent(
-  function MSMegaMenu({ classNames, menuItems }: MSMegaMenuProps) {
+  function MSMegaMenu({ classNames, variant, menuItems, secondaryMenuItems }: MegaMenuProps) {
     return (
       <MegaMenu
-        menuItems={menuItems.map(({ title, link }, index) => {
-          return {
-            id: title ?? index.toString(),
-            title: title ?? '',
-            url: link?.href ?? '',
-          };
-        })}
+        variant={variant}
+        menuItems={menuItems}
+        secondaryMenuItems={secondaryMenuItems}
         classNames={classNames}
       />
     );
   },
   {
-    type: 'primitive-mega-menu',
+    type: 'belami-mega-menu',
     label: 'Belami / Mega Menu',
     icon: 'navigation',
     props: {
-      /*
-      classNames: Shape({
-        type: {
-          root: TextInput({ label: 'Root class', defaultValue: '' }),
-          content: TextInput({ label: 'Content class', defaultValue: '' }),
-          item: TextInput({ label: 'Item class', defaultValue: '' }),
-        }
+      variant: Select({
+        label: "Style",
+        labelOrientation: "horizontal",
+        options: [
+          { value: "hidden", label: "Hidden" },
+          { value: "default", label: "Default" },
+        ],
+        defaultValue: "default",
       }),
-      */
       menuItems: List({
         label: 'Menu Items',
+        type: Shape({
+          type: {
+            title: TextInput({ label: 'Title', defaultValue: 'Text' }),
+            link: Link({ label: 'Link' }),
+            columns: List({
+              label: 'Columns',
+              type: Shape({
+                type: {
+                  //title: TextInput({ label: 'Title', defaultValue: 'Text' }),
+                  subMenuItems: List({
+                    label: 'Menu Items',
+                    type: Shape({
+                      type: {
+                        title: TextInput({ label: 'Title', defaultValue: 'Text' }),
+                        link: Link({ label: 'Link' }),
+                        imageSrc: Image({ label: 'Image' }),
+                        //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
+                        button: TextInput({ label: 'Button', defaultValue: '' }),
+                        description: TextInput({ label: 'Description', defaultValue: '' }),
+                        subSubMenuItems: List({
+                          label: 'Menu Items',
+                          type: Shape({
+                            type: {
+                              title: TextInput({ label: 'Title', defaultValue: 'Text' }),
+                              link: Link({ label: 'Link' }),
+                              imageSrc: Image({ label: 'Image' }),
+                              //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
+                              //button: TextInput({ label: 'Button', defaultValue: '' }),
+                              //description: TextInput({ label: 'Description', defaultValue: '' }),
+                            },
+                          }),
+                          getItemLabel(menuItem) {
+                            return menuItem?.title || 'Menu item';
+                          },
+                        }),
+                      },
+                    }),
+                    getItemLabel(menuItem) {
+                      return menuItem?.title || 'Menu item';
+                    },
+                  }),
+                }
+              }),
+              getItemLabel(columnItem) {
+                //return columnItem?.title || 'Menu item column';
+                return 'Menu item column';
+              },
+            }), 
+          },
+        }),
+        getItemLabel(menuItem) {
+          return menuItem?.title || 'Menu item';
+        },
+      }),
+      secondaryMenuItems: List({
+        label: 'Secondary Menu Items',
         type: Shape({
           type: {
             title: TextInput({ label: 'Title', defaultValue: 'Text' }),
@@ -58,6 +97,13 @@ runtime.registerComponent(
           return menuItem?.title || 'Menu item';
         },
       }),
+      /*
+      classNames: Shape({
+        type: {
+          root: TextInput({ label: 'Root class', defaultValue: '' }),
+        },
+      })
+      */
     },
   },
 );

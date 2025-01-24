@@ -21,20 +21,16 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
   product,
   selectedVariant,
 }) => {
-
-  
   const t = useTranslations('certificationsAndRatings');
   const [variantCertifications, setVariantCertifications] = useState<Certification[]>([]);
   const [productCertifications, setProductCertifications] = useState<Certification[]>([]);
   const [statusMessage, setStatusMessage] = useState<string>('');
 
-  // Helper function to validate certification
   const isValidCertification = (cert: Certification): boolean => {
     return Boolean(cert && cert.code && cert.label && cert.image);
   };
 
   useEffect(() => {
-
     const fetchData = async () => {
       try {
         let productData = selectedVariant
@@ -47,12 +43,11 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
             }
           : product;
 
-        const response = await getMetaFieldsByProduct(productData, 'ratings_certifications');
+        const response = await getMetaFieldsByProduct(productData, 'Ratings and Certifications');
 
         let validProductCerts: Certification[] = [];
         let validVariantCerts: Certification[] = [];
 
-        // Parse and validate product certifications
         if (response.productMetaField?.value) {
           try {
             const parsedProductValue: Certification[] = JSON.parse(response.productMetaField.value);
@@ -64,7 +59,6 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
           }
         }
 
-        // Parse and validate variant certifications
         if (response.metaField?.value) {
           try {
             const parsedVariantValue: Certification[] = JSON.parse(response.metaField.value);
@@ -78,7 +72,6 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
           setVariantCertifications([]);
         }
 
-        // Set status message based on actual valid certifications
         if (validVariantCerts.length > 0 && validProductCerts.length > 0) {
           setStatusMessage('Found both variant and product data');
         } else if (validVariantCerts.length > 0) {
@@ -101,7 +94,6 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
     }
   }, [product, selectedVariant]);
 
-  // Combine and deduplicate valid certifications
   const allCertifications = [
     ...new Map(
       [...variantCertifications, ...productCertifications]
@@ -110,7 +102,6 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
     ).values(),
   ];
 
-  // Don't render anything if there are no valid certifications
   if (allCertifications.length === 0) {
     return null;
   }
@@ -118,10 +109,6 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
   return (
     <div className="product-certificates mt-6 xl:mt-10">
       <h2 className="mb-4 text-center text-base text-[#002A37] xl:text-left">{t('title')}</h2>
-
-      <div className="mb-4 text-sm text-gray-600">
-        <div>Status: {statusMessage}</div>
-      </div>
 
       <div className="certifications md:py-8em mx-auto grid w-[80%] grid-cols-2 items-center gap-4 md:grid-cols-4 lg:w-[100%] lg:grid-cols-4 xl:w-auto xl:grid-cols-4 xl:gap-4">
         {allCertifications.map((certification: Certification, index: number) => (

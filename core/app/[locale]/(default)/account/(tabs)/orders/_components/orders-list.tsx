@@ -160,6 +160,7 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
                   } else if (itemsCount == 2) {
                     className = 'flex h-[150px] w-[310px] flex-row gap-[10px]';
                     width = 150;
+                    productCount = 2;
                   } else if (itemsCount == 1) {
                     className = 'flex h-[150px] w-[150px] flex-row gap-[10px] ';
                     width = 150;

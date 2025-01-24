@@ -27,6 +27,10 @@ import Link from 'next/link';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import addToCart from '~/public/add-to-cart/addToCart.svg';
 import Image from 'next/image';
+import WishlistAddToList from '../../../account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
+import { useWishlists } from '../../../account/(tabs)/wishlists/wishlist-add-to-list/hooks';
+import { NoShipCanada } from './belami-product-no-shipping-canada';
+import { commonSettinngs } from '~/components/common-functions';
 
 interface ProductOptionValue {
   entityId: number;
@@ -49,6 +53,20 @@ interface ProductImage {
   url: string;
   altText: string;
   isDefault: boolean;
+}
+
+interface Props {
+  product: FragmentOf<typeof DetailsFragment>;
+  collectionValue?: string;
+  dropdownSheetIcon?: string;
+  cartHeader?: string;
+  couponIcon?: string;
+  paywithGoogle?: string;
+  payPal?: string;
+  requestQuote?: string;
+  closeIcon?: string;
+  blankAddImg?: string;
+  productImages?: string;
 }
 
 export const DetailsFragment = graphql(
@@ -108,6 +126,9 @@ export const DetailsFragment = graphql(
       }
       brand {
         name
+        path
+        entityId
+        id
       }
       ...PricingFragment
     }
@@ -133,8 +154,9 @@ interface Props {
   closeIcon?: string;
   blankAddImg?: string;
   productImages?: string;
+  getAllCommonSettinngsValues?:any
 }
-
+  
 export const Details = ({
   product,
   collectionValue,
@@ -147,6 +169,7 @@ export const Details = ({
   closeIcon,
   blankAddImg,
   productImages,
+  getAllCommonSettinngsValues
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -155,18 +178,42 @@ export const Details = ({
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const scrollableRef = useRef(null); // Reference to the scrollable div
+  const [isDragging, setIsDragging] = useState(false);
+  const [startY, setStartY] = useState(0);
+  const [scrollTop, setScrollTop] = useState(0);
+
+  const handleMouseDown = (e) => {
+    setIsDragging(true);
+    setStartY(e.clientY);
+    setScrollTop(scrollableRef.current.scrollTop);
+    document.body.style.userSelect = 'none';
+  };
+
+  const handleMouseMove = (e) => {
+    if (!isDragging) return;
+
+    const distance = e.clientY - startY;
+    scrollableRef.current.scrollTop = scrollTop - distance; // Update the scroll position
+  };
+
+  const handleMouseUp = () => {
+    setIsDragging(false);
+    document.body.style.userSelect = 'auto';
+  };
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
+  // const [getAllCommonSettinngsValues, setGetAllCommonSettinngsValues] = useState<any>([]);
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
-  // const productImages = removeEdgesAndNodes(product.images);
   const variants = removeEdgesAndNodes(product.variants);
 
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
   const productMpn = product.mpn;
+  const brand = product.brand?.entityId;
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
@@ -217,15 +264,17 @@ export const Details = ({
 
       setCurrentImageUrl(product.defaultImage?.url || '');
     };
+    
 
     updateImageFromVariant();
   }, [searchParams, product, variants, productOptions, currentMainMedia]);
 
   useEffect(() => {
-    // store product id in local storage for Salesbuddy
     store_pdp_product_in_localstorage(product);
   }, [product]);
 
+  const productAvailability = product.availabilityV2.status;
+  
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
     if (selectedId) {
@@ -240,11 +289,11 @@ export const Details = ({
     const defaultValue = values.find((value) => value.isDefault);
     return defaultValue?.label || 'Select';
   };
+
   return (
     <div>
       {showStickyHeader && (
         <>
-          {/* Desktop View - Sticky Top */}
           <div className="fixed left-0 right-0 top-0 z-50 hidden border-b border-gray-200 bg-white shadow-2xl xl:block">
             <div className="container mx-auto px-[3rem] pb-[2rem] pt-[1rem]">
               <div className="flex items-center justify-between gap-4">
@@ -312,24 +361,24 @@ export const Details = ({
 
                 <div className="flex items-center gap-4">
                   {product.prices && (
-                    <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
+                    <div className="sticky-product-price mt-2 block !w-[16em] items-center gap-[0.5em] text-center lg:text-right">
                       {product.prices.basePrice?.value !== undefined &&
                       product.prices.price?.value !== undefined &&
                       product.prices.basePrice.value > product.prices.price.value ? (
                         <>
-                          <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                          <span className="mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                             {format.number(product.prices.price.value, {
                               style: 'currency',
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
-                          <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
+                          <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                             {format.number(product.prices.basePrice.value, {
                               style: 'currency',
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
-                          <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+                          <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                             Save{' '}
                             {Math.round(
                               ((product.prices.basePrice.value - product.prices.price.value) /
@@ -349,32 +398,46 @@ export const Details = ({
                       )}
                     </div>
                   )}
-
-                  <button
-                    className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
-                    onClick={() => {
-                      const addToCartButton = productFormRef.current?.querySelector(
-                        'button[type="submit"]',
-                      ) as HTMLButtonElement | null;
-                      if (addToCartButton) {
-                        addToCartButton.click();
-                      }
-                    }}
-                  >
-                    <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                      ADD TO CART
-                    </span>
-                    <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
-                      <Image
-                        src={addToCart}
-                        className=""
-                        alt="Add to Cart"
-                        unoptimized={true}
-                        width={44}
-                        height={44}
-                      />
-                    </div>
-                  </button>
+                  {productAvailability === 'Unavailable' ? (
+                     <div className='flex flex-col items-center'>
+                     <button
+                       id="add-to-cart"
+                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                       disabled
+                     >
+                       <span>
+                          ADD TO CART
+                       </span>
+                     </button>
+                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
+                     </div>
+                  ) : (
+                    <button
+                      className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
+                      onClick={() => {
+                        const addToCartButton = productFormRef.current?.querySelector(
+                          'button[type="submit"]',
+                        ) as HTMLButtonElement | null;
+                        if (addToCartButton) {
+                          addToCartButton.click();
+                        }
+                      }}
+                    >
+                      <span className="transition-transform duration-300 group-hover:-translate-x-2">
+                        ADD TO CART
+                      </span>
+                      <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
+                        <Image
+                          src={addToCart}
+                          className=""
+                          alt="Add to Cart"
+                          unoptimized={true}
+                          width={44}
+                          height={44}
+                        />
+                      </div>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
@@ -386,6 +449,20 @@ export const Details = ({
             } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
+            {productAvailability === 'Unavailable' ? (
+                     <div className='flex flex-col items-center'>
+                     <button
+                       id="add-to-cart"
+                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                       disabled
+                     >
+                       <span>
+                          ADD TO CART
+                       </span>
+                     </button>
+                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
+                     </div>
+                  ) : (
             <button
               className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
               onClick={() => {
@@ -411,14 +488,42 @@ export const Details = ({
                 />
               </div>
             </button>
+                  )}
           </div>
         </>
       )}
+       <style jsx>{`
+        .custom-scrollbar::-webkit-scrollbar {
+          display: none; /* Hides scrollbar for Chrome, Safari, Edge */
+        }
 
+        .custom-scrollbar {
+          -ms-overflow-style: none; /* Hides scrollbar for IE and Edge */
+          scrollbar-width: none; /* Hides scrollbar for Firefox */
+        }
+
+        .cursor-grab:active {
+          cursor: grabbing; /* Changes cursor while dragging */
+        }
+
+        .smooth-scroll {
+          scroll-behavior: smooth; /* Smooth scrolling */
+        }
+      `}</style>
+<div 
+    ref={scrollableRef}
+    onMouseDown={handleMouseDown}
+    onMouseMove={handleMouseMove}
+    onMouseUp={handleMouseUp}
+    onMouseLeave={handleMouseUp}
+    className="custom-scrollbar h-[600px] w-full overflow-y-scroll cursor-grab ">
       <div className="div-product-details">
-        <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
-          {product.name}
-        </h1>
+        {/* Add relative positioning wrapper */}
+        <div className="relative">
+          <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
+            {product.name}
+          </h1>
+        </div>
 
         <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
           <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
@@ -437,7 +542,9 @@ export const Details = ({
             <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
               from the{' '}
               <Link
-                href={`/search?brand_name[0]=${encodeURIComponent(product.brand?.name ?? '')}&collection[0]=${encodeURIComponent(collectionValue)}`}
+                href={`/search?brand_name[0]=${encodeURIComponent(
+                  product.brand?.name ?? '',
+                )}&collection[0]=${encodeURIComponent(collectionValue)}`}
                 className="products-underline border-b border-black"
               >
                 {collectionValue}
@@ -488,9 +595,12 @@ export const Details = ({
           )}
         </div>
       )}
-
       <Coupon couponIcon={couponIcon} />
+
       <FreeDelivery />
+      {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) && getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada  &&
+        <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
+      }
 
       <div ref={productFormRef}>
         <ProductForm
@@ -562,11 +672,16 @@ export const Details = ({
       </div>
 
       <ProductSchema product={product} />
-      <PayPalPayLater amount={product?.prices?.price?.value?.toString()} currency={product?.prices?.price?.currencyCode} />
+      <PayPalPayLater
+        amount={product?.prices?.price?.value?.toString()}
+        currency={product?.prices?.price?.currencyCode}
+      />
       <RequestQuote requestQuote={requestQuote} />
       <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
       <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
       <ShippingReturns />
+    </div>
+   
     </div>
   );
 };

@@ -156,7 +156,6 @@ const ProductDetailDropdown: React.FC<ProductDetailDropdownProps> = ({
 
   const specSheetUrl = getSpecSheetValue();
   const installSheetUrl = installSheet?.value;
-
   return (
     <div
       className="relative mt-6 inline-block w-full transition-all duration-300 xl:mt-12"
@@ -295,8 +294,8 @@ const ProductDetailDropdown: React.FC<ProductDetailDropdownProps> = ({
                               >
                                 {detail.key}
                               </td>
-                              <td className="border p-2 py-2 text-[15px] text-gray-900">
-                                {detail.value}
+                              <td className="border p-2 py-2 text-[15px] text-gray-900">                                
+                              {detail.value === "True" ? "Yes" : (detail.value === "False" ? "No" : detail.value)}
                               </td>
                             </tr>
                           ))}
