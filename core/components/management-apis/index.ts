@@ -63,7 +63,7 @@ export const GetProductMetaFields = async (entityId: number, nameSpace: string) 
 
 export const getDeliveryMessage = async (
   entityId: number,
-  variantId: number,
+  variantId: number
 ) => {
   const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
 
@@ -75,22 +75,17 @@ export const getDeliveryMessage = async (
   );
 
   // Check if metaFields has data
-  if (metaFields && metaFields.data && metaFields.data.length > 0) {
-    const deliveryMessage = metaFields.data.find(
-      (item: any) => item.namespace === 'delivery_message'
-    );
+  if ( metaFields.data.length > 0) {
+    const deliveryMessage = metaFields.data
 
     if (deliveryMessage) {
-
-      const deliveryKey = deliveryMessage.value?.split('|'); //split by "|"
-      console.log("deliveryKey", deliveryKey);
+      const deliveryKey = deliveryMessage?.[0]?.['value']?.split('|'); //split by "|"
       const result = deliveryKey?.map((item: any) => {
         const parts = item.split(':'); // Split by ':'
         const id = parseInt(parts[0].trim(), 10); // Get the ID
         const value = parts.slice(1).join(':').trim().replace(/: Backorder/g, '').trim(); //trimed ":Backorder" add in value
         return { id, value };
     }) || [];
-      console.log("result", result);
 
       // Parse the channelId as an integer (if it exists)
       const parsedChannelId = channelId ? parseInt(channelId, 10) : null;
@@ -106,13 +101,11 @@ export const getDeliveryMessage = async (
   // If no data from getMetaFieldsByProductVariant, try getMetaFieldsByProduct
   metaFields = await getMetaFieldsByProduct(entityId, "delivery_message");
   if (metaFields && metaFields.data && metaFields.data.length > 0) {
-    const deliveryMessage = metaFields.data.find(
-      (item: any) => item.namespace === 'delivery_message'
-    );
+    const deliveryMessage = metaFields.data
 
     if (deliveryMessage) {
       // Split the delivery message by '|' and parse it
-      const deliveryKey = deliveryMessage.value?.split('|');
+      const deliveryKey = deliveryMessage?.[0]?.['value']?.split('|');
       const result = deliveryKey?.map((item: any) => {
         const [id, value] = item.split(':').map((str: any) => str.trim()); // Split and trim
         return { id: parseInt(id, 10), value };
@@ -202,11 +195,11 @@ const getMetaFieldsByProductVariant = async (
   page = 1,
 ) => {
   try {
+    console.log("namespace", namespace)
     let nameSpaceValue = '';
     if (namespace) {
-      nameSpaceValue = '&namespace=' + namespace;
+      nameSpaceValue = '&namespace=' + encodeURIComponent(namespace);;
     }
-
     let productMetaFields = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/products/${entityId}/variants/${variantId}/metafields?page=${page}${nameSpaceValue}`,
       {
@@ -222,6 +215,7 @@ const getMetaFieldsByProductVariant = async (
     )
       .then((res) => res.json())
       .then((jsonData) => {
+        // console.log("jsonData", jsonData);
         return jsonData;
       });
     return productMetaFields;
