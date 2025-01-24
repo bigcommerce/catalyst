@@ -16,6 +16,8 @@ import { Button } from '~/components/ui/button';
 import { retrieveMpnData } from '~/components/common-functions';
 import { commonSettinngs } from '~/components/common-functions';
 import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
+import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
+
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -136,35 +138,6 @@ const DigitalItemFragment = graphql(`
     quantity
     productEntityId
     variantEntityId
-    couponAmount {
-      currencyCode
-      formatted
-      value
-    }
-    discountedAmount {
-      currencyCode
-      formatted
-      value
-    }
-    discounts {
-      discountedAmount {
-        currencyCode
-        formatted
-        value
-      }
-    }
-    baseCatalogProduct {
-      variants {
-        edges {
-          node {
-            mpn
-            sku
-            entityId
-            isPurchasable
-          }
-        }
-      }
-    }
     extendedListPrice {
       currencyCode
       value
@@ -268,7 +241,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
   const format = useFormatter();
   let oldPrice = product?.originalPrice?.value;
   let salePrice = product?.extendedSalePrice?.value;
-  let discountedPrice: any = Math.round(100 - (salePrice * 100) / oldPrice);
+  let discountedPrice: any = Number(100 - (salePrice * 100) / oldPrice)?.toFixed(2);
   let discountPriceText: string = '';
   if (discountedPrice > 0) {
     discountPriceText = discountedPrice + '% Off';
@@ -276,11 +249,11 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
   let productSKU: string = retrieveMpnData(product, product?.productEntityId, product?.variantEntityId);
   return (
     <li className="mb-[24px] border border-gray-200">
-      {getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
+      {/* {getAllCommonSettinngsValues && getAllCommonSettinngsValues?.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
         <div className='bg-[#E7F5F8] w-full flex justify-center'>
           <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
         </div>
-      }
+      } */}
       <div className="">
         
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
@@ -300,10 +273,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
 
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product?.brand}</p>
-            <div className={`grid gap-1 grid-cols-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
-              ? "xl:grid-cols-[40%_20%_40%]"
-              : "xl:grid-cols-[60%_40%]"
-              }`}>
+            <div className="grid gap-1 grid-cols-1 sm:grid-cols-[auto,auto] xl:grid-cols-[40%_20%_40%]">
               <div className="">
                 <Link href={product?.url}>
                   <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -314,7 +284,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
                     <div className="cart-options flex flex-wrap gap-2">
                       <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                        SKU: {productSKU}
+                        SKU: {product?.sku}
                       </p>
                     </div>
                   </div>
@@ -323,7 +293,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 ">
                     <div className="cart-options">
                       <p className="text-left inline text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                        SKU: {productSKU}
+                        SKU: {product.sku}
                         {changeTheProtectedPosition.length > 0 && (
                           <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
                             {' '}
@@ -421,6 +391,9 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                             return null;
                         }
                       })}
+                      {product.variantEntityId && (
+                        <FreeDelivery entityId={product.productEntityId} variantId={product.variantEntityId} isFromPDP={false} />
+                      )}
                     </div>
                   </div>
                 )}
@@ -454,28 +427,26 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                   <ItemQuantity product={product} />
                 </div>
               </div>
-              {cookie_agent_login_status == true &&
-                <div className="overflow-x-hidden xl:pl-[10px]">
-                  <ProductPriceAdjuster
-                    parentSku={priceAdjustData?.parent_sku}
-                    sku={priceAdjustData?.sku}
-                    oem_sku={priceAdjustData?.oem_sku}
-                    productPrice={Number(product?.listPrice?.value)}
-                    initialCost={Number(priceAdjustData?.cost)}
-                    initialFloor={Number(priceAdjustData?.floor_percentage)}
-                    initialMarkup={Number(product?.listPrice?.value)}
-                    productId={product?.productEntityId}
-                    cartId={cartId}
-                    ProductType={"product"}
-                  />
-                  {/* priceAdjustData.parent_sku */}
-                </div>
-              }
+              <div className="overflow-x-hidden xl:pl-[10px]">
+                <ProductPriceAdjuster
+                  parentSku={priceAdjustData?.parent_sku}
+                  sku={priceAdjustData?.sku}
+                  oem_sku={priceAdjustData?.oem_sku}
+                  productPrice={Number(product?.listPrice?.value)}
+                  initialCost={Number(priceAdjustData?.cost)}
+                  initialFloor={Number(priceAdjustData?.floor_percentage)}
+                  initialMarkup={Number(product?.listPrice?.value)}
+                  productId={product?.productEntityId}
+                  cartId={cartId}
+                  ProductType={"product"}
+                />
+                {/* priceAdjustData.parent_sku */}
+              </div>
             </div>
           </div>
         </div>
       </div>
-      {/* {product?.accessories?.length > 0 ? ( */}
+      {product?.accessories?.length > 0 && (
         <div>
         {/* {product?.accessories && getAllCommonSettinngsValues.accessories == 'yes' && */}
 
@@ -544,20 +515,21 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                   </div>
                 </div>
               );
-            })}
+            })
+        }
         </div>
-      {/* ) : ( */}
-      {
-      // getAllCommonSettinngsValues.accessories == 'yes' && 
-        getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.use_accessories && 
+        )
+      }
+      
+      {getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.use_accessories && 
       <AccessoriesButton 
         key={product?.entityId}
         closeIcon={closeIcon}
         blankAddImg={blankAddImg}
         fanPopup={fanPopup}
         product={product} 
-        />}
-        {/* )} */}
+        />
+      }
     </li>
   );
 };
