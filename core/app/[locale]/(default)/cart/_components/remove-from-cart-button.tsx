@@ -5,10 +5,10 @@ import { useFormStatus } from 'react-dom';
 import { BcImage } from '~/components/bc-image';
 
 import { Button } from '~/components/ui/button';
-interface Props {
-  icon: string
-}
-export const RemoveFromCartButton = ({icon}: Props) => {
+
+import deleteIcon from '~/public/cart/deleteIcon.svg'
+
+export const RemoveFromCartButton = () => {
   const { pending } = useFormStatus();
   const t = useTranslations('Cart.SubmitRemoveItem');
 
@@ -22,10 +22,10 @@ export const RemoveFromCartButton = ({icon}: Props) => {
     >
       <BcImage
         alt="Remove"
-        width={20}
-        height={20}
+        width={16}
+        height={18}
         className="w-[16px] h-[18px]"
-        src={icon}
+        src={deleteIcon}
       />
     </Button>
   );

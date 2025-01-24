@@ -19,6 +19,7 @@ import { CheckoutButton } from '~/app/[locale]/(default)/cart/_components/checko
 import { GetVariantsByProductSKU } from '~/components/graphql-apis';
 import { InputPlusMinus } from '../form-fields/input-plus-minus';
 import closeIcon from '~/public/add-to-cart/flyoutCloseIcon.svg';
+import { commonSettinngs } from '../common-functions';
 
 const getVariantProductInfo = async (metaData: any) => {
   let variantProductInfo: any = [],
@@ -71,6 +72,7 @@ const getVariantProductInfo = async (metaData: any) => {
                   mpn: item?.mpn,
                   sku: item?.sku,
                   name: optionValues,
+                  purchasingDisabled:item?.purchasing_disabled,
                   selectedOptions: item?.selectedOption,
                 });
               }
@@ -109,6 +111,7 @@ export const ProductFlyout = ({
   showFlyoutFn?: any;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [commonSettingsValues, setCommonSettingsValues] = useState<any>([]);
   const format = useFormatter();
   const productFlyout = useCommonContext();
   let productData = productFlyout.productData;
@@ -134,11 +137,12 @@ export const ProductFlyout = ({
     setOpen = showFlyoutFn;
     currencyCode = product?.extendedSalePrice?.currencyCode
   }
+  
   const [variantProductData, setVariantProductData] = useState<any>([]);
   let productId = (from == 'pdp') ? product?.entityId: product?.productEntityId;
   let productQtyData = (from == 'pdp') ? productData?.quantity: product?.quantity;
   if (variantData && optionsData && optionsData?.length > 0) {
-    let variantProduct: any = variantData?.find((item: any) => item?.sku == product?.sku);
+    let variantProduct: any = variantData?.find((item: any) => item?.sku == product?.sku);    
     useEffect(() => {
       const getProductMetaData = async () => {
         let metaData = await GetProductVariantMetaFields(
@@ -148,7 +152,11 @@ export const ProductFlyout = ({
         );
         let productData = await getVariantProductInfo(metaData);
         setVariantProductData([...productData]);
+        var getAllCommonSettinngsValues =await commonSettinngs([product?.brand?.entityId]);
+        setCommonSettingsValues(getAllCommonSettinngsValues);
+        
       };
+
       if (variantProduct) {
         getProductMetaData();
       }
@@ -166,12 +174,14 @@ export const ProductFlyout = ({
     }, [productId, productQtyData]);
   }
 
+  
+
   return (
     <>
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
-          <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow fixed right-[0] top-[50%] z-[100] flex h-[100vh] w-[90vw] max-w-[610px] translate-y-[-50%] animate-slideInFromLeft flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+          <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow left-[50%] sm:left-[unset] fixed right-[unset] sm:right-[0] top-[50%] z-[100] flex h-[100vh] w-[90vw] max-w-[610px] [transform:translate(-50%,-50%)] sm:translate-y-[-50%] animate-mobSlideInFromLeft sm:animate-slideInFromLeft flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <div
               className={`flyout-loading ${isLoading ? 'flex' : 'hidden'} fixed left-0 top-0 z-50 h-full w-full items-center justify-center`}
             >
@@ -275,7 +285,8 @@ export const ProductFlyout = ({
                 </div>
               </Dialog.Content>
               )}
-              {variantProductData && variantProductData?.length > 0 && (
+              
+              {variantProductData && variantProductData?.length > 0 && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories  && (
                 <>
                   <hr className="my-[20px] border-[#93cfa1]" />
                   <div className="pop-up-text flex flex-col gap-4">
@@ -331,7 +342,7 @@ export const ProductFlyout = ({
                       </div>
                     </div>
                     
-                    <div className="cart-buttons flex flex-col items-start gap-[10px] ssm:flex-row">
+                    <div className="cart-buttons grid grid-cols-1 ssm:grid-cols-2 items-start gap-[10px]">
                       <Dialog.Close asChild>
                         <Link
                           className="hover:text-secondary flex h-[41px] w-[100%] flex-row items-center justify-center self-stretch rounded-[3px] border border-[#b3dce8] text-[14px] text-sm font-medium uppercase tracking-[1.25px] text-[#002A37]"

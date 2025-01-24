@@ -43,7 +43,7 @@ runtime.registerComponent(
     );
   },
   {
-    type: 'primitive-product-card-carousel',
+    type: 'belami-product-card-carousel',
     label: 'Belami / Product Card Carousel',
     icon: 'carousel',
     props: {

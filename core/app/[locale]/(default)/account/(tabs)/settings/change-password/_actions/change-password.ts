@@ -46,7 +46,7 @@ const CustomerChangePasswordMutation = graphql(`
 
 export interface State {
   [x: string]: any;
-  isLoggedIn: any;
+  isLoggedIn?: any;
   status: 'idle' | 'error' | 'success';
   message?: string;
 }

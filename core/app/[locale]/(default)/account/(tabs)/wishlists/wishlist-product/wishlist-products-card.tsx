@@ -1,109 +1,241 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { Hit as AlgoliaHit, HitHighlightResult } from 'instantsearch.js';
 import { Button } from '~/components/ui/button';
+import Link from 'next/link';
+import { useFormatter } from 'next-intl';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
-import { Hit } from '~/belami/components/search/hit';
-import { AddToCart } from '~/app/[locale]/(default)/compare/_components/add-to-cart';
+import { addToCart } from '~/components/product-card/add-to-cart/form/_actions/add-to-cart';
+import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
 
-interface HitPrice {
-  USD: number;
-  CAD: number;
-}
-
-interface ProductImage {
-  url: string;
-  altText: string;
+interface OptionValue {
+  entityId: number;
+  label: string;
   isDefault: boolean;
 }
 
-interface ProductVariant {
-  name: string;
-  hex: string;
-  imageUrl?: string;
-  variant_id?: string;
+interface ProductOption {
+  __typename: string;
+  entityId: number;
+  displayName: string;
+  isRequired: boolean;
+  isVariantOption: boolean;
+  values: OptionValue[];
 }
 
-type AvailabilityStatus = 'Available' | 'Preorder' | 'Unavailable';
+interface ProductVariant {
+  entityId: number;
+  sku: string;
+  mpn: string;
+  prices: {
+    price: { value: number; currencyCode: string };
+    basePrice: { value: number; currencyCode: string };
+    salePrice: { value: number; currencyCode: string } | null;
+  };
+}
+
+interface WishlistProduct {
+  entityId: number;
+  name: string;
+  sku: string;
+  mpn: string;
+  path: string;
+  availabilityV2: string;
+  brand?: {
+    name: string;
+    path: string;
+  };
+  defaultImage: {
+    url: string;
+    altText: string;
+  };
+  prices: {
+    price: { value: number; currencyCode: string };
+    basePrice: { value: number; currencyCode: string };
+    salePrice: { value: number; currencyCode: string } | null;
+  };
+  productOptions?: ProductOption[];
+  variants: ProductVariant[];
+}
 
 interface WishlistItem {
   entityId: number;
-  product: {
-    reviewCount: number;
-    path: string;
+  productEntityId: number;
+  variantEntityId: number;
+  product: WishlistProduct;
+}
+
+const ProductCard = ({ item }: { item: WishlistItem }) => {
+  const format = useFormatter();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isPending, startTransition] = useTransition();
+  const [currentVariant, setCurrentVariant] = useState<ProductVariant | null>(null);
+  const [selectedOptions, setSelectedOptions] = useState<Record<number, OptionValue>>({});
+
+  useEffect(() => {
+    // Find current variant based on variantEntityId
+    const variant = item.product.variants.find((v) => v.entityId === item.variantEntityId);
+    if (variant) {
+      setCurrentVariant(variant);
+
+      // Initialize selected options (only for variant options, not modifiers)
+      const initialSelections: Record<number, OptionValue> = {};
+
+      // Only process productOptions if they exist
+      if (item.product.productOptions) {
+        item.product.productOptions.forEach((option) => {
+          if (option.isVariantOption) {
+            const variantValue = option.values.find((v) =>
+              variant.sku.toLowerCase().includes(v.label.replace(/\s+/g, '').toLowerCase()),
+            );
+            if (variantValue) {
+              initialSelections[option.entityId] = variantValue;
+            }
+          }
+        });
+      }
+
+      setSelectedOptions(initialSelections);
+    }
+  }, [item]);
+
+  const getOptionDisplay = (option: ProductOption) => {
+    const variantValue = option.values.find((value) =>
+      currentVariant?.sku.toLowerCase().includes(value.label.replace(/\s+/g, '').toLowerCase()),
+    );
+    return variantValue?.label || 'Select an option';
+  };
+
+  const getPrice = () => {
+    const variantPrice = currentVariant?.prices?.price;
+    const productPrice = item.product.prices.price;
+    const priceToDisplay = variantPrice || productPrice;
+
+    return (
+      <p className="text-lg font-bold">
+        {format.number(priceToDisplay.value, {
+          style: 'currency',
+          currency: priceToDisplay.currencyCode,
+        })}
+      </p>
+    );
+  };
+
+  return (
+    <div className="relative flex h-full flex-col rounded border border-gray-300">
+      <div className="relative aspect-square overflow-hidden">
+        <Link href={item.product.path}>
+          <img
+            src={item.product.defaultImage.url.replace('{:size}', '500x500')}
+            alt={item.product.defaultImage.altText || item.product.name}
+            className="h-full w-full object-cover"
+          />
+        </Link>
+      </div>
+
+      <div className="flex flex-col gap-2 p-4">
+        {item.product.brand && <p className="text-sm text-gray-600">{item.product.brand.name}</p>}
+
+        <Link href={item.product.path}>
+          <h3 className="font-medium text-black hover:text-gray-700">{item.product.name}</h3>
+        </Link>
+
+        <div className="space-y-2">
+          <p className="text-sm">
+            <span className="font-semibold">SKU: </span>
+            <span>{currentVariant?.sku || item.product.sku || ''}</span>
+          </p>
+
+          {/* Display variant options with null check */}
+          {item.product.productOptions
+            ?.filter((option) => option.isVariantOption)
+            .map((option) => (
+              <div key={option.entityId} className="text-sm">
+                <span className="font-semibold">{option.displayName}:</span>{' '}
+                <span>{getOptionDisplay(option)}</span>
+              </div>
+            ))}
+        </div>
+
+        {getPrice()}
+
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            setIsLoading(true);
+            const formData = new FormData(e.currentTarget);
+
+            // Add selected options to form data
+            Object.entries(selectedOptions).forEach(([optionId, value]) => {
+              formData.append(`modifier[${optionId}]`, value.entityId.toString());
+            });
+
+            addToCart(formData)
+              .then((result) => {
+                if (result.error) {
+                  toast.error('Failed to add item to cart');
+                } else {
+                  toast.success('Item added to cart');
+                }
+              })
+              .catch((error) => {
+                console.error('Error:', error);
+                toast.error('Failed to add item to cart');
+              })
+              .finally(() => {
+                setIsLoading(false);
+              });
+          }}
+        >
+          <input name="product_id" type="hidden" value={item.productEntityId} />
+          <input name="variant_id" type="hidden" value={item.variantEntityId} />
+
+          <div className="mt-4">
+          {item.product.availabilityV2.status === 'Unavailable' ? (
+              <div className="flex flex-col items-center">
+                <Button
+                  id="add-to-cart"
+                  className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                  disabled={item.product.availabilityV2.status === 'Unavailable'}
+                  type="submit"
+                >
+                  <span>ADD TO CART</span>
+                </Button>
+                <p className="text-[12px] text-[#2e2e2e]">This product is currently unavailable</p>
+              </div>
+            ) : (
+              <Button
+                type="submit"
+                className="h-[42px] w-full bg-[#03465C] font-medium tracking-wider text-white hover:bg-[#02374a]"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <div className="flex items-center justify-center gap-2">
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                    <span>ADDING...</span>
+                  </div>
+                ) : (
+                  'ADD TO CART'
+                )}
+              </Button>
+            )}
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+};
+
+export function WishlistProductCard(): JSX.Element {
+  const [wishlistData, setWishlistData] = useState<{
+    entityId: number;
     name: string;
-    images: ProductImage[];
-    brand?: {
-      name: string;
-      path: string;
-    };
-    prices?: {
-      price: {
-        value: number;
-        currencyCode: string;
-      };
-      priceRange: {
-        min: { value: number };
-        max: { value: number };
-      };
-    } | null;
-    rating?: number;
-    variants?: ProductVariant[];
-    availabilityV2?: {
-      status: AvailabilityStatus;
-    };
-    inventory?: {
-      isInStock: boolean;
-    };
-  };
-}
-
-interface WishlistData {
-  entityId: number;
-  name: string;
-  items: WishlistItem[];
-}
-
-interface ProductHit {
-  objectID: string;
-  name: string;
-  brand: string;
-  brand_id: number;
-  brand_name: string;
-  category_ids: number[];
-  image: string;
-  image_url: string;
-  url: string;
-  product_images: any;
-  price: number;
-  prices: HitPrice;
-  sales_prices: HitPrice;
-  retail_prices: HitPrice;
-  rating: number;
-  on_sale: boolean;
-  on_clearance: boolean;
-  newPrice: number;
-  description: string;
-  reviews_rating_sum: number;
-  reviews_count: number;
-  metafields: {
-    Details: {
-      ratings_certifications: any[];
-    };
-  };
-  variants: any[];
-  has_variants: boolean;
-  sku?: string;
-  __position: number;
-  __queryID: string;
-  _highlightResult?: HitHighlightResult;
-}
-
-export function WishlistProductCard() {
-  const [wishlistData, setWishlistData] = useState<WishlistData | null>(null);
+    items: WishlistItem[];
+  } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -111,12 +243,15 @@ export function WishlistProductCard() {
       try {
         const savedWishlist = localStorage.getItem('selectedWishlist');
         if (savedWishlist) {
-          setWishlistData(JSON.parse(savedWishlist));
+          const parsedWishlist = JSON.parse(savedWishlist);
+          console.log('Loaded Wishlist Data:', parsedWishlist);
+          setWishlistData(parsedWishlist);
         } else {
           router.push('/account/wishlists');
         }
       } catch (error) {
         console.error('Error loading wishlist:', error);
+        setError('Failed to load wishlist data');
       } finally {
         setIsLoading(false);
       }
@@ -125,171 +260,36 @@ export function WishlistProductCard() {
     loadWishlist();
   }, [router]);
 
-  const transformToProductData = (item: WishlistItem): AlgoliaHit<ProductHit> => {
-    const defaultImage = item.product.images.find((img: ProductImage) => img.isDefault);
-    const basePrice = item.product.prices?.price.value || 0;
-
-    const getFormattedImageUrl = (url: string) => {
-      return url.replace('{:size}', '386x513');
-    };
-
-    const priceObject: HitPrice = {
-      USD: basePrice,
-      CAD: basePrice,
-    };
-
-    const variants = (item.product.variants || []).map(
-      (variant: ProductVariant, index: number) => ({
-        variant_id: `${item.entityId}_${index}`,
-        options: {
-          'Finish Color': variant.name || 'Default',
-        },
-        image_url: variant.imageUrl
-          ? getFormattedImageUrl(variant.imageUrl)
-          : defaultImage?.url
-            ? getFormattedImageUrl(defaultImage.url)
-            : '',
-        image: variant.imageUrl
-          ? getFormattedImageUrl(variant.imageUrl)
-          : defaultImage?.url
-            ? getFormattedImageUrl(defaultImage.url)
-            : '',
-        hex: variant.hex || '#000000',
-        url: item.product.path || '#',
-        price: basePrice,
-        prices: priceObject,
-        sales_prices: { USD: 0, CAD: 0 },
-        retail_prices: priceObject,
-      }),
-    );
-
-    if (variants.length === 0) {
-      variants.push({
-        variant_id: `${item.entityId}_default`,
-        options: {
-          'Finish Color': 'Default',
-        },
-        image_url: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-        image: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-        hex: '#000000',
-        url: item.product.path || '#',
-        price: basePrice,
-        prices: priceObject,
-        sales_prices: { USD: 0, CAD: 0 },
-        retail_prices: priceObject,
-      });
-    }
-
-    return {
-      objectID: item.entityId.toString(),
-      name: item.product.name,
-      brand: item.product.brand?.name || '',
-      brand_id: item.entityId,
-      brand_name: item.product.brand?.name || '',
-      category_ids: [],
-      image: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-      image_url: defaultImage?.url ? getFormattedImageUrl(defaultImage.url) : '',
-      url: item.product.path || '#',
-      product_images: item.product.images.map((img) => ({
-        ...img,
-        url: getFormattedImageUrl(img.url),
-      })),
-      price: basePrice,
-      prices: priceObject,
-      sales_prices: { USD: 0, CAD: 0 },
-      retail_prices: priceObject,
-      rating: item.product.rating || 0,
-      on_sale: false,
-      on_clearance: false,
-      newPrice: 0,
-      description: '',
-      reviews_rating_sum: item.product.rating || 0,
-      reviews_count: item.product.reviewCount || 0,
-      metafields: {
-        Details: {
-          ratings_certifications: [],
-        },
-      },
-      variants,
-      has_variants: variants.length > 0,
-      sku: item.entityId.toString(),
-      __position: 0,
-      __queryID: '',
-      _highlightResult: {
-        name: {
-          value: item.product.name,
-          matchLevel: 'none',
-          matchedWords: [],
-          fullyHighlighted: false,
-        },
-      } as HitHighlightResult,
-    };
-  };
-
-  const breadcrumbs = [
-    {
-      label: 'Favorites and Lists',
-      href: '/account/wishlists',
-    },
-    {
-      label: wishlistData?.name || 'Loading...',
-      href: '#',
-    },
-  ];
-
-  const WishlistItem = ({
-    item,
-    productData,
-  }: {
-    item: WishlistItem;
-    productData: AlgoliaHit<ProductHit>;
-  }) => {
+  if (isLoading) {
     return (
-      <div className="relative flex h-full flex-col">
-        <div className="product-form mb-[1.4em] flex-grow">
-          <Hit
-            hit={productData}
-            view="grid"
-            promotions={[]}
-            useDefaultPrices={true}
-            classname="wishlist-product-card"
-          />
-          <button type="submit" className="hidden" id={`add-to-cart-${item.entityId}`}>
-            Submit
-          </button>
-        </div>
-        <div className="mt-auto">
-          <AddToCart
-            data={{
-              entityId: item.entityId,
-              availabilityV2: {
-                status: (item.product.availabilityV2?.status || 'Available') as AvailabilityStatus,
-              },
-              inventory: {
-                isInStock: item.product.inventory?.isInStock ?? true,
-              },
-            }}
-          />
-        </div>
+      <div className="flex items-center justify-center p-8">
+        <Loader2 className="h-8 w-8 animate-spin text-gray-500" />
       </div>
     );
-  };
+  }
 
-  if (isLoading) {
-    return <div className="flex items-center justify-center p-8">Loading...</div>;
+  if (error) {
+    return <div className="flex items-center justify-center p-8 text-red-500">{error}</div>;
   }
 
   if (!wishlistData) {
-    return null;
+    return <div></div>;
   }
-
-  const items = wishlistData.items || [];
 
   return (
     <div className="container mx-auto mb-12 px-4">
       <ComponentsBreadcrumbs
         className="login-div login-breadcrumb mx-auto mb-2 mt-2 hidden px-[1px] lg:block"
-        breadcrumbs={breadcrumbs}
+        breadcrumbs={[
+          {
+            label: 'Favorites and Lists',
+            href: '/account/wishlists',
+          },
+          {
+            label: wishlistData?.name || 'Loading...',
+            href: '#',
+          },
+        ]}
       />
 
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
@@ -298,7 +298,7 @@ export function WishlistProductCard() {
             {wishlistData?.name}
           </h1>
           <p className="text-left text-base leading-8 tracking-[0.15px] text-black">
-            {items.length} {items.length === 1 ? 'item' : 'items'}
+            {wishlistData?.items.length} {wishlistData?.items.length === 1 ? 'item' : 'items'}
           </p>
         </div>
         <Button
@@ -309,27 +309,11 @@ export function WishlistProductCard() {
         </Button>
       </div>
 
-      <div className="ais-Hits product-card-plp">
-        {items.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-8">
-            <p className="mb-4 text-lg text-gray-500">No items in this wishlist</p>
-            <button
-              onClick={() => router.push('/account/wishlists')}
-              className="text-blue-600 underline hover:text-blue-800"
-            >
-              Return to Wishlists
-            </button>
-          </div>
-        ) : (
-          <ol className="ais-Hits-list grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {items.map((item) => (
-              <li key={item.entityId} className="ais-Hits-item !radius-none !p-0 !shadow-none">
-                <WishlistItem item={item} productData={transformToProductData(item)} />
-              </li>
-            ))}
-          </ol>
-        )}
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+        {wishlistData?.items.map((item) => <ProductCard key={item.entityId} item={item} />)}
       </div>
     </div>
   );
 }
+
+export default WishlistProductCard;

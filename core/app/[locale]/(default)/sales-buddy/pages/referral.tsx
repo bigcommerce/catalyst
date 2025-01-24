@@ -5,6 +5,8 @@ import { getReferralIdCookie, createReferralIdCookie } from '../_actions/referra
 export default function ReferralId() {
     const [referrerId, setReferrerId] = useState('');
     useEffect(() => {
+      const iFrame = window.self !== window.top;
+      if(iFrame) return;
         // setReferrerId(localStorage.getItem('referrerId') || '');
         // createReferralIdCookie();
         async function fetchMyCookie() {

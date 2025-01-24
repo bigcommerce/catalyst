@@ -29,6 +29,9 @@ export default function AgentFooter() {
   };
 
   useEffect(() => {    
+    const isInIframe = window.self !== window.top;
+    if (isInIframe) return
+
     setAgentLoginStatus(localStorage.getItem('agent_login') === 'true')
     router.refresh();
   }, [agentLoginStatus]);

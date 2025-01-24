@@ -11,6 +11,14 @@ import { LoginForm } from './_components/login-form';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { BcImage } from '~/components/bc-image';
 import PERSONICON from '~/public/accountIcons/person.svg';
+
+import checkCircle from '~/public/accountIcons/checkCIrcleIcon.svg'
+import patjoheatAndShade from '~/public/accountIcons/patjoheatAndShade.svg'
+import baileyStreet from '~/public/accountIcons/baileyStreet.svg'
+import OneStopLightning from '~/public/accountIcons/oneStopLightning.svg'
+import lunaWarehouse from '~/public/accountIcons/lunaWarehouse.svg'
+import canadaLightning from '~/public/accountIcons/canadaLightning.svg'
+import homeclickBlack from '~/public/accountIcons/homeclickBlack.svg'
  
 export async function generateMetadata({ params }: Props) {
   const { locale } = await params;
@@ -25,21 +33,12 @@ export async function generateMetadata({ params }: Props) {
  
 }
  
-const patjoheatAndShade = imageManagerImageUrl('patjoheat-and-shade.png', '95w');
-const baileyStreet = imageManagerImageUrl('bailey-street.png', '138w');
-const OneStopLightning = imageManagerImageUrl('1stop-lightning.png', '194w');
-const lunaWarehouse = imageManagerImageUrl('luna-warehouse.png', '298w');
-const canadaLightning = imageManagerImageUrl('canada-lightning.png', '228w');
-const homeclickBlack = imageManagerImageUrl('homeclick-black.png', '150w');
 const passwordHide = imageManagerImageUrl('eye-password-hide.png', '150w');
  
 interface Props {
   params: Promise<{ locale: string }>;
 }
- 
-const person = imageManagerImageUrl('person.png', '16w');
-const checkCircle = imageManagerImageUrl('check-circle.png', '20w');
- 
+  
 export default async function Login({ params }: Props) {
   const { locale } = await params;
  
@@ -126,12 +125,12 @@ export default async function Login({ params }: Props) {
         </div>
       </div>
  
-      <div className="m-auto mt-[20px] flex w-[92%] flex-col gap-[20px] px-0 xl:px-12 2xl:mx-auto 2xl:px-0 [&_.main-breadcrumbs]:py-0">
+      <div className="m-auto mt-[30px] flex w-[92%] flex-col gap-[20px] px-0 xl:px-12 2xl:mx-auto 2xl:px-0 [&_.main-breadcrumbs]:py-0">
         <ComponentsBreadcrumbs
           className="login-div login-breadcrumb mx-auto mt-[0.5rem] hidden w-[80%] px-[1px] xl:block"
           breadcrumbs={breadcrumbs}
         />
-        <div className="login-div login-div-one mx-auto mt-3 flex w-full flex-col justify-between gap-0 px-[1px] text-center md:mt-6 lg:mt-0 xl:w-[80%] xl:flex-row xl:gap-24 xl:text-left">
+        <div className="login-div login-div-one mx-auto flex w-full flex-col justify-between gap-0 px-[1px] text-center md:mt-6 lg:mt-0 xl:w-[80%] xl:flex-row xl:gap-24 xl:text-left">
           <h2 className="text-[24px] font-normal text-[#353535] xl:text-[34px]">Rewards Program</h2>
           <div className="flex flex-col xl:flex-row flex-wrap content-center items-center justify-center gap-[10px] px-0 pb-0 pt-[10px]">
             <p className="flex items-center text-center text-[16px] xl:text-[20px] font-medium tracking-[0.15px] text-[#002A37]">
@@ -177,37 +176,37 @@ export default async function Login({ params }: Props) {
               </div>
               <ul className="flex list-disc flex-col gap-[20px]">
                 <li className="flex list-none flex-row items-center gap-[10px]">
-                  <img className="mt-[5px] self-start" src={checkCircle} alt="" />
+                  <BcImage width={20} height={20} className="w-[20px] h-[20px] mt-[5px] self-start" src={checkCircle} alt="checkCircle" unoptimized={true} />
                   <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.fastCheckout')}
                   </p>
                 </li>
                 <li className="flex list-none flex-row items-center gap-[10px]">
-                  <img className="mt-[5px] self-start" src={checkCircle} alt="" />
+                  <BcImage width={20} height={20} className="w-[20px] h-[20px] mt-[5px] self-start" src={checkCircle} alt="checkCircle" unoptimized={true} />
                   <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.multipleAddresses')}
                   </p>
                 </li>
                 <li className="flex list-none flex-row items-center gap-[10px]">
-                  <img className="mt-[5px] self-start" src={checkCircle} alt="" />
+                  <BcImage width={20} height={20} className="w-[20px] h-[20px] mt-[5px] self-start" src={checkCircle} alt="checkCircle" unoptimized={true} />
                   <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.ordersHistory')}
                   </p>
                 </li>
                 <li className="flex list-none flex-row items-center gap-[10px]">
-                  <img className="mt-[5px] self-start" src={checkCircle} alt="" />
+                  <BcImage width={20} height={20} className="w-[20px] h-[20px] mt-[5px] self-start" src={checkCircle} alt="checkCircle" unoptimized={true} />
                   <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.ordersTracking')}
                   </p>
                 </li>
                 <li className="flex list-none flex-row items-center gap-[10px]">
-                  <img className="mt-[5px] self-start" src={checkCircle} alt="" />
+                  <BcImage width={20} height={20} className="w-[20px] h-[20px] mt-[5px] self-start" src={checkCircle} alt="checkCircle" unoptimized={true} />
                   <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.wishlists')}
                   </p>
                 </li>
                 <li className="flex list-none flex-row items-center gap-[10px]">
-                  <img className="mt-[5px] self-start" src={checkCircle} alt="" />
+                  <BcImage width={20} height={20} className="w-[20px] h-[20px] mt-[5px] self-start" src={checkCircle} alt="checkCircle" unoptimized={true} />
                   <p className="text-[19px] font-normal tracking-[0.15px]">
                     {t('CreateAccount.exclusiveAccess')}
                   </p>

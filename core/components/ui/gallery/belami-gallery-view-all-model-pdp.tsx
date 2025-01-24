@@ -254,12 +254,12 @@ const GalleryModel = ({
         </div>
 
         <div className="gallery-thumbnails h-auto w-full overflow-y-auto p-4 xl:h-full xl:w-[25%]">
-          <div className="grid grid-cols-6 gap-4 xl:grid-cols-3 w-fit">
+          <div className={`grid grid-cols-6 gap-4 xl:grid-cols-3 w-fit ${mediaItems.length % 3 !== 0 ? '[&>div:last-child]:[grid-column-start:2]' : ''} `}>
             {mediaItems.map((item, index) => (
               <div
                 key={index}
                 className={`relative cursor-pointer border-[3px] ${
-                  index === validIndex ? 'border-[#03465C]' : 'border-transparent'
+                  index === validIndex ? 'border-[#008BB7]' : 'border-transparent'
                 }`}
                 onClick={() => onSelectIndex(index)}
               >

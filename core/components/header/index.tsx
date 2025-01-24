@@ -32,6 +32,9 @@ interface Props {
 const homeLogoMobile = imageManagerImageUrl('logo-mark.png', '150w');
 const homeLogoMobileFirst = imageManagerImageUrl('logo-mark.png', '150w');
 
+import { MakeswiftComponent } from '@makeswift/runtime/next';
+import { client as makeswiftClient, getSiteVersion } from '~/lib/makeswift/client';
+
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations('Components.Header');
@@ -66,6 +69,11 @@ export const Header = async ({ cart }: Props) => {
   }));
 
   const getCustomerData = await getSessionUserDetails();
+
+  const megaMenuSnapshot = await makeswiftClient.getComponentSnapshot('belami-mega-menu', {
+    siteVersion: await getSiteVersion()
+  });
+
   return (
     <ComponentsHeader
       homeLogoMobile={homeLogoMobile}
@@ -75,13 +83,14 @@ export const Header = async ({ cart }: Props) => {
         <div className="flex items-center">
           {/* Support Dropdown */}
           <Dropdown
+            getCustomerData={getCustomerData as any}
             items={[
-              { href: '/support/faqs', label: 'Existing Purchase' },
-              { href: '/support/contact', label: 'Order Status' },
-              { href: '/support/contact', label: 'Return/Replacement' },
+              { href: '/support/faqs', label: 'Existing Order' },
+              { href: '/support/contact', label: 'Track My Order' },
+              { href: '/support/contact', label: 'Replace Items' },
               { href: '/support/contact', label: 'Gift Certificates' },
               { href: '/support/contact', label: 'Visit Our Help Center' },
-              { href: '/support/contact', label: 'New Purchase' },
+              { href: '/support/contact', label: 'New Orders' },
               { href: '/support/contact', label: 'Contact ' },
             ]}
             trigger={
@@ -109,7 +118,7 @@ export const Header = async ({ cart }: Props) => {
 
           {/* Account Dropdown */}
           <Dropdown
-            getCustomerData={getCustomerData}
+            getCustomerData={getCustomerData as any}
             items={
               customerAccessToken
                 ? [
@@ -167,6 +176,7 @@ export const Header = async ({ cart }: Props) => {
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
       search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} />}
+      megaMenu={<MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' />}
     />
   );
 };

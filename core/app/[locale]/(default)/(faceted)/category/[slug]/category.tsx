@@ -96,7 +96,6 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
         router: {
           cleanUrlOnDispose: false
         },
-        /*
         stateMapping: {
           stateToRoute(uiState: any) {
             const indexUiState = uiState[indexName];
@@ -247,7 +246,6 @@ export const Category = ({ category, promotions, useDefaultPrices = false }: any
             };
           },
         }
-        */
       }}
       onStateChange={({
         uiState,
