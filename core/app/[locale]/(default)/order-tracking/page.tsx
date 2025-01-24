@@ -3,9 +3,9 @@ import OrderTracking from './_components/order-tracking';
 import HelpCenter from './_components/help-center';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { getSessionCustomerAccessToken } from '~/auth';
+import wavingHandIcon from '~/public/pdp-icons/wavingHandIcon.svg'
 
 export default async function page() {
-  const icon = imageManagerImageUrl("waving-hand-1-.png", '24w');
   let guestUserCheck = 0;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -14,9 +14,8 @@ export default async function page() {
   }
 
   return (
-    <div className="my-[2rem] text-[#353535]">
-      {<OrderTracking icon={icon} guestUserCheck={guestUserCheck} />}
-      {<HelpCenter />}
+    <div className="text-[#353535] mb-[2rem]">
+      {<OrderTracking icon={wavingHandIcon} guestUserCheck={guestUserCheck} />}
     </div>
   );
 }

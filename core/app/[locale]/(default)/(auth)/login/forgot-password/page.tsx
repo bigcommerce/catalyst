@@ -50,12 +50,12 @@ export default async function Reset() {
   ];
 
   return (
-    <div className="mx-auto my-2 max-w-4xl">
+    <div className="mx-auto my-2 max-w-4xl p-5 md:p-0">
       <ComponentsBreadcrumbs
           className="login-div flex justify-center login-breadcrumb mx-auto w-[80%] px-[1px]"
           breadcrumbs={breadcrumbs}
         />
-      <h2 className="mb-8 text-1xl lg:text-3xl font-[500] text-center">{t('heading')}</h2>
+      <h2 className="mb-8 text-[24px] lg:text-[34px] font-[400] text-center">{t('heading')}</h2>
       <ResetPasswordForm reCaptchaSettings={recaptchaSettings} />
     </div>
   );
