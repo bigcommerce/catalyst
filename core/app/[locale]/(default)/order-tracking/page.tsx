@@ -16,7 +16,6 @@ export default async function page() {
   return (
     <div className="text-[#353535] mb-[2rem]">
       {<OrderTracking icon={wavingHandIcon} guestUserCheck={guestUserCheck} />}
-      {<HelpCenter />}
     </div>
   );
 }
