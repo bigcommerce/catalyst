@@ -41,7 +41,7 @@ export const validateInput = (type: string, value: string | any[], action: strin
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!value && action != 'find') return 'Email cannot be empty.';
 
-      return value == '' && action == 'find' ? " " : emailRegex.test(value) ? '' : 'Enter a valid email address.';
+      return value == '' && action == 'find' ? "" : emailRegex.test(value) ? '' : 'Enter a valid email address.';
     }
 
     case 'company': {
