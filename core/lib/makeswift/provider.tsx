@@ -6,14 +6,14 @@ import { runtime } from '~/lib/makeswift/runtime';
 import '~/lib/makeswift/components';
 
 export function MakeswiftProvider({
-  previewMode,
   children,
+  previewMode,
 }: {
-  previewMode: boolean;
   children: React.ReactNode;
+  previewMode: boolean;
 }) {
   return (
-    <ReactRuntimeProvider runtime={runtime} previewMode={previewMode}>
+    <ReactRuntimeProvider previewMode={previewMode} runtime={runtime}>
       <RootStyleRegistry>{children}</RootStyleRegistry>
     </ReactRuntimeProvider>
   );

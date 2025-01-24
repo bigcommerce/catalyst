@@ -27,6 +27,8 @@ import Link from 'next/link';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import addToCart from '~/public/add-to-cart/addToCart.svg';
 import Image from 'next/image';
+import WishlistAddToList from '../../../account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
+import { useWishlists } from '../../../account/(tabs)/wishlists/wishlist-add-to-list/hooks';
 import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { commonSettinngs } from '~/components/common-functions';
 
@@ -51,6 +53,20 @@ interface ProductImage {
   url: string;
   altText: string;
   isDefault: boolean;
+}
+
+interface Props {
+  product: FragmentOf<typeof DetailsFragment>;
+  collectionValue?: string;
+  dropdownSheetIcon?: string;
+  cartHeader?: string;
+  couponIcon?: string;
+  paywithGoogle?: string;
+  payPal?: string;
+  requestQuote?: string;
+  closeIcon?: string;
+  blankAddImg?: string;
+  productImages?: string;
 }
 
 export const DetailsFragment = graphql(
@@ -110,6 +126,7 @@ export const DetailsFragment = graphql(
       }
       brand {
         name
+        path
         entityId
         id
       }
@@ -139,6 +156,7 @@ interface Props {
   productImages?: string;
   getAllCommonSettinngsValues?:any
 }
+  
 export const Details = ({
   product,
   collectionValue,
@@ -189,7 +207,6 @@ export const Details = ({
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
-  // const productImages = removeEdgesAndNodes(product.images);
   const variants = removeEdgesAndNodes(product.variants);
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
@@ -265,12 +282,11 @@ export const Details = ({
   }, [searchParams, product, variants, productOptions, currentMainMedia]);
 
   useEffect(() => {
-    // store product id in local storage for Salesbuddy
     store_pdp_product_in_localstorage(product);
   }, [product]);
 
   const productAvailability = product.availabilityV2.status;
-
+  
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
     if (selectedId) {
@@ -285,11 +301,11 @@ export const Details = ({
     const defaultValue = values.find((value) => value.isDefault);
     return defaultValue?.label || 'Select';
   };
+
   return (
     <div>
       {showStickyHeader && (
         <>
-          {/* Desktop View - Sticky Top */}
           <div className="fixed left-0 right-0 top-0 z-50 hidden border-b border-gray-200 bg-white shadow-2xl xl:block">
             <div className="container mx-auto px-[3rem] pb-[2rem] pt-[1rem]">
               <div className="flex items-center justify-between gap-4">
@@ -513,9 +529,12 @@ export const Details = ({
     onMouseLeave={handleMouseUp}
     className="custom-scrollbar h-[600px] w-full overflow-y-scroll cursor-grab ">
       <div className="div-product-details">
-        <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
-          {product.name}
-        </h1>
+        {/* Add relative positioning wrapper */}
+        <div className="relative">
+          <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
+            {product.name}
+          </h1>
+        </div>
 
         <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
           <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
@@ -534,7 +553,9 @@ export const Details = ({
             <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
               from the{' '}
               <Link
-                href={`/search?brand_name[0]=${encodeURIComponent(product.brand?.name ?? '')}&collection[0]=${encodeURIComponent(collectionValue)}`}
+                href={`/search?brand_name[0]=${encodeURIComponent(
+                  product.brand?.name ?? '',
+                )}&collection[0]=${encodeURIComponent(collectionValue)}`}
                 className="products-underline border-b border-black"
               >
                 {collectionValue}

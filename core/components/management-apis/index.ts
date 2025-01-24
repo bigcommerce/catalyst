@@ -449,3 +449,105 @@ export const getCommonSettingByBrandChannel = async (brand) => {
     }
   
 };
+
+export const updateProductDiscount = async (checkoutId: string, postData: any) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/checkouts/${checkoutId}/discounts`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: postData,
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        console.log('========JSON===cal====', jsonData);
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.log('========error=======', error);
+    console.error(error);
+  }
+};
+
+export const deleteCouponCodeFromCart = async (checkoutId: string, couponCode: string) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/checkouts/${checkoutId}/coupons/${couponCode}`,
+      {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        console.log('========jsonData=delete======', jsonData);
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const addCouponCodeToCart = async (checkoutId: string, couponCode: string) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/checkouts/${checkoutId}/coupons`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: {
+          "coupon_code": couponCode,
+          "version": 1
+        },
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        console.log('========jsonData=add======', jsonData);
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getGuestOrderDetailsFromAPI = async (orderId: any) => {
+  try {
+    let data = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/orders/${orderId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}

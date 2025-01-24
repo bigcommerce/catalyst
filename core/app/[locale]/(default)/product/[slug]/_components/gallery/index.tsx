@@ -4,7 +4,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { FragmentOf } from '~/client/graphql';
 import { Gallery as ComponentsGallery } from '~/components/ui/gallery';
 import { GalleryFragment } from './fragment';
-import WishlistAddToList from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
+import { useSearchParams } from 'next/navigation';
 
 interface Image {
   url: string;
@@ -17,39 +17,15 @@ interface Video {
   url: string;
 }
 
-interface WishlistData {
-  wishlists: any[];
-  isAuthenticated?: boolean; // Add this field
-  product: {
-    entityId: number;
-    variantEntityId?: number;
-    name: string;
-    path: string;
-    images: any[];
-    brand?: {
-      name: string;
-    } | null;
-    prices: any;
-    rating?: number;
-    reviewCount?: number;
-  };
-}
-
 interface Props {
   product: FragmentOf<typeof GalleryFragment>;
   bannerIcon: string;
   galleryExpandIcon: string;
   productMpn?: string | null;
-  wishlistData?: WishlistData; // Make it optional
 }
 
-export const Gallery = ({
-  product,
-  bannerIcon,
-  galleryExpandIcon,
-  productMpn,
-  wishlistData,
-}: Props) => {
+export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: Props) => {
+  const searchParams = useSearchParams();
   const images: Image[] = removeEdgesAndNodes(product.images) as Image[];
   const videos: Video[] = removeEdgesAndNodes(product.videos) as Video[];
 
@@ -83,6 +59,9 @@ export const Gallery = ({
     title: video.title,
   }));
 
+  // Get the selected variant ID from URL params
+  const variantId = searchParams.get('variantId');
+
   return (
     <div>
       <ComponentsGallery
@@ -92,7 +71,8 @@ export const Gallery = ({
         images={imagesWithMetadata}
         videos={videosWithMetadata}
         productMpn={productMpn}
-        wishlistData={wishlistData}
+        selectedVariantId={variantId}
+        product={product}
       />
     </div>
   );

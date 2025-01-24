@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
-import { getSessionCustomerAccessToken } from '~/auth';
+import { getSessionCustomerAccessToken, getSessionUserDetails } from '~/auth';
 import Link from 'next/link';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
@@ -96,9 +96,10 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 }
 export default async function ProductPage(props: Props) {
   try {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+
     const searchParams = await props.searchParams;
     const params = await props.params;
-    const customerAccessToken = await getSessionCustomerAccessToken();
 
     if (!params || !searchParams) {
       console.error('Missing required params:', { params, searchParams });
@@ -123,15 +124,6 @@ export default async function ProductPage(props: Props) {
     if (!product) {
       return notFound();
     }
-
-    // Add this after the wishlist fetch
-    const wishlistData = await getWishlists({
-      cursor: null,
-      limit: 50,
-    }).catch((error) => {
-      console.error('Error fetching wishlists:', error);
-      return { wishlists: [] };
-    });
 
     // Asset URLs
     const assets = {
@@ -243,21 +235,6 @@ export default async function ProductPage(props: Props) {
                 bannerIcon={assets.bannerIcon}
                 galleryExpandIcon={assets.galleryExpandIcon}
                 productMpn={product.mpn}
-                wishlistData={{
-                  wishlists: customerAccessToken ? wishlistData?.wishlists || [] : [],
-                  isAuthenticated: !!customerAccessToken,
-                  product: {
-                    entityId: product.entityId,
-                    variantEntityId: product.variants.edges?.[0]?.node.entityId,
-                    name: product.name,
-                    path: product.path,
-                    images: productImages,
-                    brand: product.brand,
-                    prices: product.prices,
-                    rating: product.reviewSummary?.averageRating,
-                    reviewCount: product.reviewSummary?.numberOfReviews,
-                  },
-                }}
               />
             </Suspense>
 

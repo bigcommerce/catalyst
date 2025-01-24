@@ -23,8 +23,8 @@ interface PicklistOrTextProps {
   setSelectedOption?: any;
   selectError?: string;
   setSelectError?: any;
-  formErrors: { [key: string]: string };
-  onSelectChange: (field: string, value: string) => void;
+  formErrors?: { [key: string]: string };
+  onSelectChange?: (field: string, value: string) => void;
 }
 
 export const PicklistOrText = ({
@@ -39,7 +39,7 @@ export const PicklistOrText = ({
   const t = useTranslations('Components.FormFields.Validation');
 
   const handleValueChange = (value: string) => {
-    onSelectChange(field.label, value);
+    onSelectChange?.(field.label, value);
   }
 
   return (
@@ -69,7 +69,7 @@ export const PicklistOrText = ({
         )}
       </FieldControl>
       <div className="relative h-7">
-        {(formErrors[field.label] ) && (
+        {(formErrors?.[field.label] ) && (
           <FieldMessage className="inline-flex w-full text-xs font-normal text-[#A71F23]">
             {t('empty')}
           </FieldMessage>

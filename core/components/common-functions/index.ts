@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getCommonSettingByBrandChannel, GetProductMetaFields, GetProductVariantMetaFields } from '../management-apis';
+import { getCommonSettingByBrandChannel, addCouponCodeToCart, deleteCouponCodeFromCart, GetProductMetaFields, GetProductVariantMetaFields, updateProductDiscount } from '../management-apis';
 
 interface MetaField {
   entityId: number;
@@ -63,7 +63,7 @@ interface ExcludedMetaFields {
 
 // Define excluded metadata
 const excludedMetaFields: ExcludedMetaFields = {
-  keys: ['spec_sheet', 'install_sheet', 'included', 'ratings_certifications'],
+  keys: ['spec_sheet', 'install_sheet', 'included', 'ratings_certifications', 'Ratings and Certifications'],
   categories: [
     'Other', // Exclude the Other category entirely
   ],
@@ -361,26 +361,44 @@ export const zeroTaxCalculation = async(cartObject: any) => {
   let checkoutData: any = cartObject?.checkout;
   let cartData:any = cartObject?.cart;
   if(await checkZeroTaxCouponIsApplied(checkoutData)) {
-    let taxPercentage: number = 0;
-    let subTotalAmount: number = checkoutData?.subtotal?.value || 0;
-    let taxAmount: number = checkoutData?.taxTotal?.value || 0;
+    let taxPercentage: any = 0;
+    let subTotalAmount: any = checkoutData?.subtotal?.value || 0;
+    let taxAmount: any = checkoutData?.taxTotal?.value || 0;
     taxPercentage = Number((subTotalAmount / taxAmount)?.toFixed(2));
-    cartData?.lineItems?.physicalItems?.forEach((item: any) => {
+    let taxPercentCalc: any = (taxAmount/subTotalAmount);
+    let postDataArray: any = [];
+    console.log('========cartData?.lineItems?.physicalItems=======', cartData?.lineItems?.physicalItems);
+    for await (const item of cartData?.lineItems?.physicalItems) {
       let couponDiscount: any = item?.couponAmount;
-      let couponAmount: number = couponDiscount?.value;
-      let qty: number = item?.quantity;
-      let zeroTaxCheck: number = (couponAmount/qty);
+      let couponAmount: any = couponDiscount?.value;
+      let qty: any = item?.quantity;
+      let zeroTaxCheck: any = (couponAmount/qty);
       if(zeroTaxCheck == 0.1) {
         let productAmount = item?.extendedSalePrice?.value;
-        let taxAmountForProduct: number = taxAmount * (productAmount/subTotalAmount);
-        let taxAmountToReduce: number = productAmount/subTotalAmount;
-        let apportionedTax = taxAmountForProduct * taxAmountToReduce;
-        let applyDiscountAmount: number = taxAmountForProduct/taxAmountToReduce;
-        console.log('========taxAmountForProduct=======', taxAmountForProduct);
-        console.log('========taxAmountToReduce=======', taxAmountToReduce);
-        console.log('========apportionedTax=======', apportionedTax);
-        console.log('========applyDiscountAmount=======', applyDiscountAmount);
+        let taxAmountEachProduct = (taxPercentCalc * productAmount) / (1 + taxPercentCalc);
+        console.log('========taxAmountEachProduct=======', taxAmountEachProduct);
+        if(taxAmountEachProduct) {
+          postDataArray.push({
+            "id": item?.entityId,
+            "discounted_amount": taxAmountEachProduct
+          });
+        }
       }
-    });
+    }
+    console.log('=======postDataArray========', postDataArray);
+    if(postDataArray?.length > 0) {
+      //delete the ZERO TAX Coupon
+      await deleteCouponCodeFromCart(cartData?.entityId, "ZEROTAX");
+      let postData: any = `{
+        "cart": {
+          "line_items": ${JSON.stringify(postDataArray)},
+          "version": 1
+        }
+      }`;
+      console.log('========after remove=======');
+      let discountData: any = await updateProductDiscount(cartData?.entityId, postData);
+      console.log('========discountData=======', discountData);
+      await addCouponCodeToCart(cartData?.entityId, "ZEROTAX");
+    }
   }
 }

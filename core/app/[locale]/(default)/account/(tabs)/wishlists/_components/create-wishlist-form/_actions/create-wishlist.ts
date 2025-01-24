@@ -1,5 +1,4 @@
 'use server';
-
 import { revalidatePath, revalidateTag } from 'next/cache';
 import { z } from 'zod';
 import { createWishlist as createWishlistMutation } from '~/client/mutations/create-wishlist';

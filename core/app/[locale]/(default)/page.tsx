@@ -1,29 +1,20 @@
-import { Page as MakeswiftPage } from '@makeswift/runtime/next';
-import { getSiteVersion } from '@makeswift/runtime/next/server';
-import { notFound } from 'next/navigation';
+import { locales } from '~/i18n/routing';
+import { Page as MakeswiftPage } from '~/lib/makeswift';
 
-import { defaultLocale } from '~/i18n/routing';
-import { client } from '~/lib/makeswift/client';
-import '~/lib/makeswift/components';
+interface Params {
+  locale: string;
+}
+
+export function generateStaticParams(): Params[] {
+  return locales.map((locale) => ({ locale }));
+}
 
 interface Props {
-  params: {
-    locale: string;
-  };
+  params: Promise<Params>;
 }
 
-export default async function Home(props : Props) {
-  const params = await props.params;
-  const { locale } = params;
-  const snapshot = await client.getPageSnapshot('/', {
-    siteVersion: await getSiteVersion(),
-    locale: locale === defaultLocale ? undefined : locale,
-  });
+export default async function Home({ params }: Props) {
+  const { locale } = await params;
 
-  if (snapshot == null) return notFound();
-
-  return <MakeswiftPage snapshot={snapshot} />;
+  return <MakeswiftPage locale={locale} path="/" />;
 }
-
-export const runtime = 'nodejs';
-export const dynamic = 'force-dynamic';
