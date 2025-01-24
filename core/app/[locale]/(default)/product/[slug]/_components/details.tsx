@@ -194,11 +194,11 @@ export const Details = ({
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
-  const productMpn = product.mpn;
-  const brand = product.brand?.entityId;
   const productSku = product.sku;
   const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null);
   // const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
+  const productMpn = product.mpn;
+  const brand = product.brand?.entityId;
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
@@ -586,12 +586,6 @@ export const Details = ({
         </div>
       )}
       <Coupon couponIcon={couponIcon} />
-
-      <FreeDelivery />
-      {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) && getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada  &&
-        <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
-      }
-
       {selectedVariantId && (
         <FreeDelivery entityId={product.entityId} variantId={selectedVariantId} isFromPDP={true}/>
       )}

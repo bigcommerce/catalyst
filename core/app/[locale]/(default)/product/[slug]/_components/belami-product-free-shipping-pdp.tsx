@@ -23,7 +23,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
         const message = await getDeliveryMessage(entityId, variantId);
         setDeliveryMessage(message);
       } catch (err) {
-        setError(err.message);
+        setError(err?.message);
       } finally {
         setLoading(false);
       }
@@ -35,13 +35,13 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
   }, [entityId, variantId]); // Dependencies to trigger fetch on change
 
   if (loading) {
-    return ( 
+    return (
       <div className="flex justify-center lg:justify-start px-[50px] py-[30px]">
         <Spinner aria-hidden="true" />
       </div>
     );
   }
-  
+
   if (error) {
     return <div>Error: {error}</div>;
   }
@@ -53,18 +53,22 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
   const backgroundColorClass = isBackorder ? 'bg-[#FBF4E9]' : 'bg-transparent';
 
   return (
-    <div className={`mt-[10px] flex flex-col ${isFromPDP ? 'items-center' : 'items-start'} lg:items-start`}>
-      <div className="text-gray-700 text-base leading-8 tracking-wide"> 
-        {t('title')} 
+    <div className={`mt-[5px] flex flex-col ${isFromPDP ? 'items-center' : 'items-start'} lg:items-start`}>
+      <div className="font-normal text-sm leading-6 tracking-[0.25px]">
+        {t('title')}
       </div>
-      <div className={`${backgroundColorClass} w-fit px-1 py-0 mt-[10px]`}>
+      <div className={`${backgroundColorClass} w-fit mt-[5px]`}>
         {isBackorder ? (
           <div>
             {/* <strong>Important:</strong> The delivery message includes a backorder. */}
-            <div>{deliveryMessage?.replace(":Backorder", "").trim() || 'No delivery message available.'}</div>
+            <div className='text-[#6A4C1E] font-normal text-sm leading-6 tracking-[0.25px] px-2'>
+              {deliveryMessage?.replace(":Backorder", "")?.trim() || 'No delivery message available.'}
+            </div>
           </div>
         ) : (
-          <div>{deliveryMessage || 'No delivery message available.'}</div>
+          <div className='font-normal text-sm leading-6 tracking-[0.25px] px-0'>
+            {deliveryMessage || 'No delivery message available.'}
+          </div>
         )}
       </div>
     </div>

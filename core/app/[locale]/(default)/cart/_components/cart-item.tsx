@@ -249,11 +249,11 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
   let productSKU: string = retrieveMpnData(product, product?.productEntityId, product?.variantEntityId);
   return (
     <li className="mb-[24px] border border-gray-200">
-      {getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
+      {/* {getAllCommonSettinngsValues && getAllCommonSettinngsValues?.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
         <div className='bg-[#E7F5F8] w-full flex justify-center'>
           <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
         </div>
-      }
+      } */}
       <div className="">
         
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
@@ -446,7 +446,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
           </div>
         </div>
       </div>
-      {product?.accessories?.length > 0 ? (
+      {product?.accessories?.length > 0 && (
         <div>
         {/* {product?.accessories && getAllCommonSettinngsValues.accessories == 'yes' && */}
 
@@ -515,20 +515,21 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                   </div>
                 </div>
               );
-            })}
+            })
+        }
         </div>
-      {/* ) : ( */}
-      {
-      // getAllCommonSettinngsValues.accessories == 'yes' && 
-        getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.use_accessories && 
+        )
+      }
+      
+      {getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.use_accessories && 
       <AccessoriesButton 
         key={product?.entityId}
         closeIcon={closeIcon}
         blankAddImg={blankAddImg}
         fanPopup={fanPopup}
         product={product} 
-        />}
-        {/* )} */}
+        />
+      }
     </li>
   );
 };
