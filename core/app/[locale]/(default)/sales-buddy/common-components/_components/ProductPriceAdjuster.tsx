@@ -47,29 +47,30 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   const [floor] = useState<number>(initialFloor);
   const [markup] = useState<number>(initialMarkup);
   const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [newCost, setNewCost] = useState<number>(cost);
+  const [newCost, setNewCost] = useState<string>(cost.toString());
   const [isSave, setIsSave] = useState<boolean>(false);
   const [loading, setLoading] = useState(false);
   const {  agentRole } = useCompareDrawerContext();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const handleSave = () => {
-    if ((agentRole === 'agent' || agentRole === null) && newCost < initialCost * floor) {
+    if ((agentRole === 'agent' || agentRole === null) && parseFloat(newCost) < initialCost * floor) {
       setErrorMessage('Agent cannot adjust price less than floor price');
       return;
     }
-    setCost(newCost); // Update the cost value
+    setCost(parseFloat(newCost)); // Update the cost value
     setIsEditing(false); // Exit editing mode
     setErrorMessage(null); // Clear error message
   };
 
   const handleSubmit = async () => {
-    if ((agentRole === 'agent' || agentRole === null) && newCost < initialCost * floor) {
+    const numericValue = parseFloat(newCost);
+    if ((agentRole === 'agent' || agentRole === null) && numericValue < initialCost * floor) {
       setErrorMessage('Price cannot be less than floor price');
       return;
     }
     setLoading(true);
-    let res = await updateProductPrice(newCost, cartId, productId, ProductType, sku);
+    let res = await updateProductPrice(numericValue, cartId, productId, ProductType, sku);
     console.log('res');
     console.log(res)
     if(res.status == 200){
@@ -82,12 +83,15 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   };
 
   const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(e.target.value);
-    setNewCost(value);
-    if ((agentRole === 'agent' || agentRole === null) && value < initialCost * floor) {
-      setErrorMessage('Price cannot be less than floor price');
-    } else {
-      setErrorMessage(null);
+    const value = e.target.value;
+    if (/^\d*\.?\d*$/.test(value)) {
+      setNewCost(value);
+      const numericValue = parseFloat(value);
+      if ((agentRole === 'agent' || agentRole === null) && numericValue < initialCost * floor) {
+        setErrorMessage('Price cannot be less than floor price');
+      } else {
+        setErrorMessage(null);
+      }
     }
   };
 
@@ -168,7 +172,7 @@ if (isSave) {
       {isEditing && (
         <>
           <Input
-            // type="number"
+            type="text"
             value={newCost}
             style={{ color: 'black' }}
             onChange={handleCostChange}
@@ -187,7 +191,7 @@ if (isSave) {
             <button
               className="relative mb-2 w-full rounded bg-[#1DB14B] px-4 py-2 text-white"
               onClick={handleSubmit}
-              disabled={(agentRole === 'agent' || agentRole === null) && newCost < initialCost * floor}
+              disabled={(agentRole === 'agent' || agentRole === null) && parseFloat(newCost) < initialCost * floor}
             >
               {loading && (
                 <div className="absolute inset-0 flex items-center justify-center">
