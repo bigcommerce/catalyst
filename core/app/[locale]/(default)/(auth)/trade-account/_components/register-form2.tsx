@@ -59,7 +59,17 @@ const FIELD_ORDER: Record<FieldOrderKeys, number> = {
   'Zip/Postcode': 9,
 };
 
-const ALLOWED_FIELDS = ['I am a', 'Tax ID / Licence#','Company Name','Country','Suburb/City','State/Province','Zip/Postcode','Address Line 1','Address Line 2',]
+const ALLOWED_FIELDS = [
+  'I am a',
+  'Tax ID / Licence#',
+  'Company Name',
+  'Country',
+  'Suburb/City',
+  'State/Province',
+  'Zip/Postcode',
+  'Address Line 1',
+  'Address Line 2',
+];
 
 // Interfaces
 interface BaseField {
@@ -193,15 +203,23 @@ export const RegisterForm2 = ({
   const [showAddressLine2, setShowAddressLine2] = useState(false);
   const [stateSelector, setStateSelector] = useState(false);
 
+  const [textInputValCheck, setTextInputValCheck] = useState({
+    6: '',
+    8: '',
+    10: '',
+    13: '',
+    26: '',
+  });
+  const [textInputValError, setTextInputValError] = useState({});
+
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Register.Form');
 
-  // Effects
   useEffect(() => {
     router.prefetch('/trade-account/trade-step3/');
   }, [router]);
 
-  // Form Data Handling
+
   const isValidFormValue = (value: unknown): value is string | Blob => {
     return (
       value !== null && value !== undefined && (typeof value === 'string' || value instanceof Blob)
@@ -241,9 +259,8 @@ export const RegisterForm2 = ({
 
   const handleTextInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
-    const validityState = e.target.validity;
-    const validationStatus = validityState.valueMissing || validityState.typeMismatch;
-    setTextInputValid((prev) => ({ ...prev, [fieldId]: !validationStatus }));
+    setTextInputValid((prev) => ({ ...prev, [fieldId]: true }));
+    setTextInputValCheck((prev) => ({ ...prev, [fieldId]: e.target.value }));
   };
 
   const handleMultiTextValidation = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -339,7 +356,6 @@ export const RegisterForm2 = ({
 
   // Form submission handler
   const onSubmit = async (formData: FormData) => {
-
     if (isSubmitting) return;
 
     const stateValue = formData.get('address-stateOrProvince');
@@ -444,6 +460,7 @@ export const RegisterForm2 = ({
                   isValid={true}
                   name={fieldName}
                   onChange={handleTextInputValidation}
+                  from="register-form2"
                 />
               </div>
             </FieldWrapper>
@@ -457,9 +474,10 @@ export const RegisterForm2 = ({
                 __typename: 'TextFormField',
                 label: fieldLabel,
               }}
-              isValid={textInputValid[fieldId]}
               name={fieldName}
               onChange={handleTextInputValidation}
+              from="register-form2"
+              textInputValError={textInputValError}
             />
           </FieldWrapper>
         );
@@ -651,13 +669,12 @@ export const RegisterForm2 = ({
             />
           </FieldWrapper>
         );
-
       default:
         return null;
     }
   };
 
-  const formFields = [...customerFields,...addressFields];
+  const formFields = [...customerFields, ...addressFields];
 
   return (
     <>
@@ -674,29 +691,39 @@ export const RegisterForm2 = ({
 
           let hasErrors = false;
 
-          if(formValues['State*'] == ''){
-            setFormErrors((prev)=>({
+          if (formValues['State*'] == '') {
+            setFormErrors((prev) => ({
               ...prev,
               'State*': 'Please select or enter a state',
-            }))
+            }));
             hasErrors = true;
           }
-      
-          if(formValues['I am a:*'] == ''){
-            setFormErrors((prev)=>({
+
+          if (formValues['I am a:*'] == '') {
+            setFormErrors((prev) => ({
               ...prev,
               'I am a:*': 'Please select or enter a state',
-            }))
+            }));
             hasErrors = true;
           }
-      
-          if(formValues['Country*'] == ''){
-            setFormErrors((prev)=>({
+
+          if (formValues['Country*'] == '') {
+            setFormErrors((prev) => ({
               ...prev,
               'Country*': 'Please select or enter a state',
-            }))
+            }));
             hasErrors = true;
           }
+
+          let newCheckFieldvalError:any = {};
+          Object.entries(textInputValCheck).forEach(([key, value]) => {
+            if (!value) {
+              newCheckFieldvalError[key] = `Field ${key} is required.`;
+              hasErrors = true;
+            }
+          });
+
+          setTextInputValError(newCheckFieldvalError);
 
           if (hasErrors) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -760,7 +787,7 @@ export const RegisterForm2 = ({
             className="relative w-full items-center !bg-[#008BB7] px-8 py-2 !transition-colors !duration-500 hover:!bg-[rgb(75,200,240)] disabled:cursor-not-allowed xl:mt-[10px]"
             variant="primary"
             type="submit"
-            disabled={isSubmitting || (Object.values(formErrors).some((error)=>error !== ''))}
+            disabled={isSubmitting || Object.values(formErrors).some((error) => error !== '')}
           >
             {isSubmitting ? 'SUBMITTING...' : 'SUBMIT'}
           </Button>
