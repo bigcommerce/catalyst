@@ -216,8 +216,20 @@ export const Details = ({
   const productMpn = product.mpn;
   const brand = product.brand?.entityId;
 
+  const productSku = product.sku;
+  const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null);
+
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
+
+  useEffect(() => {
+    const matchingVariant = variants.find((variant) => variant?.sku === productSku);
+    if (matchingVariant) {
+      setSelectedVariantId(matchingVariant.entityId);
+    } else {
+      setSelectedVariantId(null); // Reset if no matching variant is found
+    }
+  }, [variants, productSku]);
 
   useEffect(() => {
     const updateImageFromVariant = () => {
@@ -286,7 +298,6 @@ export const Details = ({
                       className="h-full w-full object-center"
                     />
                   </div>
-
                   <div className="mr-[10em] flex-1">
                     <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-black">
                       {product.name}
@@ -310,34 +321,27 @@ export const Details = ({
                         productOptions.filter(
                           (option) => option.__typename === 'MultipleChoiceOption',
                         ).length > 0 && <span className="mx-1 text-[14px] font-normal">|</span>}
-
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
                         <div className="inline text-[14px] font-normal">
                           {productOptions
-
                             .filter((option) => option.__typename === 'MultipleChoiceOption')
-
                             .map((option, index, filteredArray) => {
                               if (option.__typename === 'MultipleChoiceOption') {
                                 const selectedValue = getSelectedValue(
                                   option as MultipleChoiceOption,
                                 );
-
                                 return (
                                   <span key={option.entityId}>
                                     <span className="font-bold">{option.displayName}:</span>
-
                                     <span className="text-[15px]"> {selectedValue}</span>
-
                                     {index < filteredArray.length - 1 && (
                                       <span className="mx-1">|</span>
                                     )}
                                   </span>
                                 );
                               }
-
                               return null;
                             })}
                         </div>
@@ -356,19 +360,15 @@ export const Details = ({
                           <span className="mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                             {format.number(product.prices.price.value, {
                               style: 'currency',
-
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
-
                           <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                             {format.number(product.prices.basePrice.value, {
                               style: 'currency',
-
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
-
                           <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                             Save{' '}
                             {Math.round(
@@ -383,14 +383,12 @@ export const Details = ({
                         <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                           {format.number(product.prices.price?.value || 0, {
                             style: 'currency',
-
                             currency: product.prices.price?.currencyCode || 'USD',
                           })}
                         </span>
                       )}
                     </div>
                   )}
-
                   {productAvailability === 'Unavailable' ? (
                     <div className="flex flex-col items-center">
                       <button
@@ -400,7 +398,6 @@ export const Details = ({
                       >
                         <span>ADD TO CART</span>
                       </button>
-
                       <p className="text-center text-[12px] text-[#2e2e2e]">
                         This product is currently unavailable
                       </p>
@@ -412,7 +409,6 @@ export const Details = ({
                         const addToCartButton = productFormRef.current?.querySelector(
                           'button[type="submit"]',
                         ) as HTMLButtonElement | null;
-
                         if (addToCartButton) {
                           addToCartButton.click();
                         }
@@ -421,7 +417,6 @@ export const Details = ({
                       <span className="transition-transform duration-300 group-hover:-translate-x-2">
                         ADD TO CART
                       </span>
-
                       <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
                         <Image
                           src={addToCart}
@@ -445,7 +440,6 @@ export const Details = ({
             } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
-
             {productAvailability === 'Unavailable' ? (
               <div className="flex flex-col items-center">
                 <button
@@ -455,7 +449,6 @@ export const Details = ({
                 >
                   <span>ADD TO CART</span>
                 </button>
-
                 <p className="text-center text-[12px] text-[#2e2e2e]">
                   This product is currently unavailable
                 </p>
@@ -467,7 +460,6 @@ export const Details = ({
                   const addToCartButton = productFormRef.current?.querySelector(
                     'button[type="submit"]',
                   ) as HTMLButtonElement | null;
-
                   if (addToCartButton) {
                     addToCartButton.click();
                   }
@@ -476,7 +468,6 @@ export const Details = ({
                 <span className="transition-transform duration-300 group-hover:-translate-x-2">
                   ADD TO CART
                 </span>
-
                 <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
                   <Image
                     src={addToCart}
@@ -573,9 +564,17 @@ export const Details = ({
               )}
             </div>
           )}
+
           <Coupon couponIcon={couponIcon} />
 
-          <FreeDelivery />
+          {selectedVariantId && (
+            <FreeDelivery
+              entityId={product.entityId}
+              variantId={selectedVariantId}
+              isFromPDP={true}
+            />
+          )}
+
           {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
             getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
               <NoShipCanada
