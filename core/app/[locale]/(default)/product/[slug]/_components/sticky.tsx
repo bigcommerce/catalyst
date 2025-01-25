@@ -8,7 +8,7 @@ interface ScrollContainerProps {
 
 const ScrollContainer = ({
   children,
-  height = 'h-[685px]',
+  height = 'h-[750px]',
   className = '',
 }: ScrollContainerProps) => {
   const scrollableRef = useRef<HTMLDivElement>(null);

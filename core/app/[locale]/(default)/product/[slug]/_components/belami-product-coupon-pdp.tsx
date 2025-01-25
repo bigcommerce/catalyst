@@ -17,7 +17,7 @@ export const Coupon = () => {
         width={22}
         unoptimized={true}
       />
-      <div className="product-coupon text-left text-sm font-normal leading-6 tracking-wide">
+      <div className="product-coupon text-left text-sm font-normal leading-6 tracking-wide text-[#353535]">
         {t('couponText')}
       </div>
     </div>

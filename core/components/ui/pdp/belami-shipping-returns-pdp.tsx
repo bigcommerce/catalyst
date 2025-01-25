@@ -10,7 +10,7 @@ export const ShippingReturns: React.FC = () => {
   const [isShippingOpen, setIsShippingOpen] = useState(false);
 
   return (
-    <div className="mt-4 flex justify-center gap-5 text-center text-[#008BB7] xl:mt-7">
+    <div className="mt-4 flex justify-center gap-5 text-center text-[#008BB7] xl:mt-[1.5rem]">
       <ShippingPolicyDialog
         isOpen={isShippingOpen}
         onOpenChange={setIsShippingOpen}

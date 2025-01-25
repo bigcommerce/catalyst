@@ -286,6 +286,7 @@ export const Details = ({
                       className="h-full w-full object-center"
                     />
                   </div>
+
                   <div className="mr-[10em] flex-1">
                     <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-black">
                       {product.name}
@@ -309,27 +310,34 @@ export const Details = ({
                         productOptions.filter(
                           (option) => option.__typename === 'MultipleChoiceOption',
                         ).length > 0 && <span className="mx-1 text-[14px] font-normal">|</span>}
+
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
                         <div className="inline text-[14px] font-normal">
                           {productOptions
+
                             .filter((option) => option.__typename === 'MultipleChoiceOption')
+
                             .map((option, index, filteredArray) => {
                               if (option.__typename === 'MultipleChoiceOption') {
                                 const selectedValue = getSelectedValue(
                                   option as MultipleChoiceOption,
                                 );
+
                                 return (
                                   <span key={option.entityId}>
                                     <span className="font-bold">{option.displayName}:</span>
+
                                     <span className="text-[15px]"> {selectedValue}</span>
+
                                     {index < filteredArray.length - 1 && (
                                       <span className="mx-1">|</span>
                                     )}
                                   </span>
                                 );
                               }
+
                               return null;
                             })}
                         </div>
@@ -348,15 +356,19 @@ export const Details = ({
                           <span className="mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                             {format.number(product.prices.price.value, {
                               style: 'currency',
+
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
+
                           <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                             {format.number(product.prices.basePrice.value, {
                               style: 'currency',
+
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
+
                           <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                             Save{' '}
                             {Math.round(
@@ -371,12 +383,14 @@ export const Details = ({
                         <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                           {format.number(product.prices.price?.value || 0, {
                             style: 'currency',
+
                             currency: product.prices.price?.currencyCode || 'USD',
                           })}
                         </span>
                       )}
                     </div>
                   )}
+
                   {productAvailability === 'Unavailable' ? (
                     <div className="flex flex-col items-center">
                       <button
@@ -386,6 +400,7 @@ export const Details = ({
                       >
                         <span>ADD TO CART</span>
                       </button>
+
                       <p className="text-center text-[12px] text-[#2e2e2e]">
                         This product is currently unavailable
                       </p>
@@ -397,6 +412,7 @@ export const Details = ({
                         const addToCartButton = productFormRef.current?.querySelector(
                           'button[type="submit"]',
                         ) as HTMLButtonElement | null;
+
                         if (addToCartButton) {
                           addToCartButton.click();
                         }
@@ -405,6 +421,7 @@ export const Details = ({
                       <span className="transition-transform duration-300 group-hover:-translate-x-2">
                         ADD TO CART
                       </span>
+
                       <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
                         <Image
                           src={addToCart}
@@ -428,6 +445,7 @@ export const Details = ({
             } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
+
             {productAvailability === 'Unavailable' ? (
               <div className="flex flex-col items-center">
                 <button
@@ -437,6 +455,7 @@ export const Details = ({
                 >
                   <span>ADD TO CART</span>
                 </button>
+
                 <p className="text-center text-[12px] text-[#2e2e2e]">
                   This product is currently unavailable
                 </p>
@@ -448,6 +467,7 @@ export const Details = ({
                   const addToCartButton = productFormRef.current?.querySelector(
                     'button[type="submit"]',
                   ) as HTMLButtonElement | null;
+
                   if (addToCartButton) {
                     addToCartButton.click();
                   }
@@ -456,6 +476,7 @@ export const Details = ({
                 <span className="transition-transform duration-300 group-hover:-translate-x-2">
                   ADD TO CART
                 </span>
+
                 <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
                   <Image
                     src={addToCart}
@@ -477,16 +498,16 @@ export const Details = ({
           <div className="div-product-details">
             {/* Add relative positioning wrapper */}
             <div className="relative">
-              <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
+              <h1 className="product-name mb-3 text-center text-[24px] font-medium leading-[2rem] tracking-[0.15px] text-[#353535] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
                 {product.name}
               </h1>
             </div>
 
             <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
-              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                 SKU: <span>{product.mpn}</span>
               </span>
-              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                 by{' '}
                 <Link
                   href={product.brand?.path ?? ''}
@@ -515,24 +536,24 @@ export const Details = ({
           </div>
 
           {product.prices && (
-            <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
+            <div className="product-price mb-[0.1em] mt-[25px] flex items-center gap-[0.5em] text-center lg:text-left">
               {product.prices.basePrice?.value !== undefined &&
               product.prices.price?.value !== undefined &&
               product.prices.basePrice.value > product.prices.price.value ? (
                 <>
-                  <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                  <span className="price-1 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                     {format.number(product.prices.price.value, {
                       style: 'currency',
                       currency: product.prices.price.currencyCode,
                     })}
                   </span>
-                  <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
+                  <span className="price-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                     {format.number(product.prices.basePrice.value, {
                       style: 'currency',
                       currency: product.prices.price.currencyCode,
                     })}
                   </span>
-                  <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+                  <span className="price-3 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                     Save{' '}
                     {Math.round(
                       ((product.prices.basePrice.value - product.prices.price.value) /
@@ -543,7 +564,7 @@ export const Details = ({
                   </span>
                 </>
               ) : (
-                <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+                <span className="price-4 text-left text-[20px] font-[500] leading-8 tracking-[0.15px] text-[#008BB7]">
                   {format.number(product.prices.price?.value || 0, {
                     style: 'currency',
                     currency: product.prices.price?.currencyCode || 'USD',

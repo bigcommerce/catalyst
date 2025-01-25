@@ -216,7 +216,7 @@ export default async function ProductPage(props: Props) {
 
     const productImages = removeEdgesAndNodes(product.images);
     var brandId = product?.brand?.entityId;
-    var CommonSettinngsValues = await commonSettinngs([brandId])
+    var CommonSettinngsValues = await commonSettinngs([brandId]);
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-8">
         <ProductProvider getMetaFields={productMetaFields}>
@@ -228,34 +228,39 @@ export default async function ProductPage(props: Props) {
             )}
           </div>
 
-          <div className="mb-4 mt-4 lg:grid lg:grid-cols-2 lg:gap-8 xl:mb-12">
-            <Suspense fallback={<div>Loading gallery...</div>}>
-              <Gallery
-                product={product}
-                bannerIcon={assets.bannerIcon}
-                galleryExpandIcon={assets.galleryExpandIcon}
-                productMpn={product.mpn}
-              />
-            </Suspense>
+          <div className="mb-4 mt-4 lg:grid lg:grid-cols-1 lg:gap-8 xl:mb-12">
+            <div className="w-[52em]">
+              <Suspense fallback={<div>Loading gallery...</div>}>
+                <Gallery
+                  product={product}
+                  bannerIcon={assets.bannerIcon}
+                  galleryExpandIcon={assets.galleryExpandIcon}
+                  productMpn={product.mpn}
+                />
+              </Suspense>
+            </div>
 
-            <Details
-              product={product}
-              collectionValue={collectionValue}
-              dropdownSheetIcon={assets.dropdownSheetIcon}
-              cartHeader={assets.cartHeader}
-              couponIcon={assets.couponIcon}
-              paywithGoogle={assets.paywithGoogle}
-              payPal={assets.payPal}
-              requestQuote={assets.requestQuote}
-              closeIcon={assets.closeIcon}
-              blankAddImg={assets.blankAddImg}
-              getAllCommonSettinngsValues={CommonSettinngsValues}
-              productImages={productImages}
-            />
+            <div className="w-[36em] pl-[2em]">
+              <Details
+                product={product}
+                collectionValue={collectionValue}
+                dropdownSheetIcon={assets.dropdownSheetIcon}
+                cartHeader={assets.cartHeader}
+                couponIcon={assets.couponIcon}
+                paywithGoogle={assets.paywithGoogle}
+                payPal={assets.payPal}
+                requestQuote={assets.requestQuote}
+                closeIcon={assets.closeIcon}
+                blankAddImg={assets.blankAddImg}
+                getAllCommonSettinngsValues={CommonSettinngsValues}
+                productImages={productImages}
+              />
+            </div>
+
             <div className="lg:col-span-2">
-            <hr className="border border-gray-200 mb-4"/>
+              <hr className="mb-4 border border-gray-200" />
               <Description product={product} />
-              <hr className="border border-gray-200 my-4"/>
+              <hr className="mb-[55px] mt-[35px] border border-gray-200" />
               <CollectionProducts
                 collection={collectionValue}
                 products={collectionProducts.hits}
@@ -277,6 +282,7 @@ export default async function ProductPage(props: Props) {
               <SiteVibesReviews product={product} category={categoryWithBreadcrumbs} />
             </div>
           </div>
+
           <ProductViewed product={product} />
         </ProductProvider>
       </div>
