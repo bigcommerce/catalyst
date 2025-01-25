@@ -17,38 +17,35 @@ interface TextProps {
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   type?: string;
   emailExists?: string;
+  from?: string;
+  textInputValError?:any;
 }
 
-export const Text = ({ defaultValue, field, isValid, name, onChange, type, emailExists }: TextProps) => {
+export const Text = ({ defaultValue, field, isValid, name, onChange, type, emailExists, from,textInputValError }: TextProps) => {
   const t = useTranslations('Components.FormFields.Validation');
 
   const fieldName = FieldNameToFieldId[field.entityId];
   const [emailError, setEmailError] = useState('');
 
+  let validateErrorId;
+  let isValidateErrorId
+  if(from == 'register-form2'){
+    validateErrorId= textInputValError && Object.keys(textInputValError)
+    isValidateErrorId = validateErrorId.includes(String(field.entityId))
+  } 
+
   const validateEmail = (email: string) => {
-    // Check if email is empty
     if (!email.trim()) {
       setEmailError('Enter a valid email such as name@domain.com');
       return false;
     }
-
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-
-    // Check if email is invalid
     if (!emailRegex.test(email)) {
       setEmailError('Please enter a valid email address');
       return false;
     }
-
     setEmailError('');
     return true;
-  };
-
-  const getPlaceholder = () => {
-    if (type === 'email') {
-      return 'Enter your email address';
-    }
-    return field.placeholder || `Enter ${field.label.toLowerCase()}`;
   };
 
   return (
@@ -66,8 +63,8 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type, email
           id={`field-${field.entityId}`}
           maxLength={field.maxLength ?? undefined}
           onChange={field.isRequired ? onChange : undefined}
-          onInvalid={field.isRequired ? onChange : undefined}
-          required={field.isRequired}
+          onInvalid={from !== 'register-form2' && field.isRequired ? onChange : undefined}
+          required={ from !== 'register-form2' ? field.isRequired : false}
           type={type === 'email' ? 'email' : 'text'}
           placeholder={field.label === 'Address Line 1*' ? 'Start typing your address.' : ''}
           onBlur={(e) => {
@@ -79,10 +76,17 @@ export const Text = ({ defaultValue, field, isValid, name, onChange, type, email
         />
       </FieldControl>
       <div className="pass2 relative h-7">
-        {field.isRequired && (
+        {(from !== 'register-form2' && field.isRequired) && (
           <FieldMessage
             className="text-error-secondary validation-error-email relative inline-flex w-full text-xs font-normal text-[#A71F23]"
             match="valueMissing"
+          >
+            {t(fieldName ?? 'empty')}
+          </FieldMessage>
+        )}
+        {(from == 'register-form2' && isValidateErrorId && field.entityId ) && (
+          <FieldMessage
+            className="text-error-secondary validation-error-13 inline-flex w-full text-xs font-normal text-[#A71F23]"
           >
             {t(fieldName ?? 'empty')}
           </FieldMessage>

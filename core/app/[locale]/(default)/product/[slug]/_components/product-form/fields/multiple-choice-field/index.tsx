@@ -111,7 +111,7 @@ export const MultipleChoiceField = ({
           <button
             type="button"
             onClick={() => setShowAll(true)}
-            className="show-all view-more-button w-full rounded-[50px] !p-[0.4rem] !py-[0px] text-center text-[14px] font-medium leading-[24px] tracking-[0.25px] text-[#008BB7] !shadow-none"
+            className="show-all underline view-more-button w-full rounded-[50px] !p-[0.4rem] !py-[0px] text-center text-[14px] font-medium leading-[24px] tracking-[0.25px] text-[#008BB7] !shadow-none"
           >
             Show All
           </button>
@@ -140,7 +140,7 @@ export const MultipleChoiceField = ({
       return (
         <div
           key={option.entityId}
-          className="div-product-swatch text-center lg:text-left xl:text-left"
+          className="div-product-swatch text-center lg:text-left xl:text-left mt-[10px]"
         >
           <Label
             className="mb-2 inline-block text-center text-base font-normal leading-8 tracking-wide lg:text-left xl:text-left"
@@ -249,7 +249,7 @@ export const MultipleChoiceField = ({
       return (
         <div
           key={option.entityId}
-          className="div-product-radiobuttons border-2 border-[#4EAECC] px-7 py-5 text-center xl:text-left"
+          className="div-product-radiobuttons border-2 border-[#4EAECC] px-7 py-5 text-center xl:text-left mt-[20px]"
         >
           <Label
             className="mb-2 inline-block text-left text-base font-normal leading-8 tracking-wide"

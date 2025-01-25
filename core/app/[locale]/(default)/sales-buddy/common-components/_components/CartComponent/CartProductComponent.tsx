@@ -206,7 +206,7 @@ export default function CartProductComponent({ currencyCode, product, cartId,pri
                   </div> */}
                   <p className="text-left md:text-right">
                     {
-                    format.number(product?.listPrice?.value, {
+                    format.number(product?.listPrice?.value * product?.quantity, {
                       style: 'currency',
                       currency: currencyCode,
                     })
