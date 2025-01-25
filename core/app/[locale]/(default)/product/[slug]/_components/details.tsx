@@ -208,15 +208,25 @@ export const Details = ({
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
   const variants = removeEdgesAndNodes(product.variants);
-
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
   const certificationIcon = imageManagerImageUrl('vector-7-.png', '20w');
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
+  const productSku = product.sku;
+  const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null);
+  // const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
   const productMpn = product.mpn;
   const brand = product.brand?.entityId;
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
+  useEffect(() => {
+    const matchingVariant = variants.find(variant => variant.sku === productSku);
+    if (matchingVariant) {
+      setSelectedVariantId(matchingVariant.entityId);
+    } else {
+      setSelectedVariantId(null); // Reset if no matching variant is found
+    }
+  }, [variants, productSku]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -255,10 +265,12 @@ export const Details = ({
         const selectedVariant = variants.find((variant) =>
           selectedOptionIds.includes(String(variant.entityId)),
         );
-
-        if (selectedVariant?.defaultImage?.url) {
-          setCurrentImageUrl(selectedVariant.defaultImage.url);
-          return;
+        if (selectedVariant) {
+          setSelectedVariantId(selectedVariant.entityId);
+          if (selectedVariant?.defaultImage?.url) {
+            setCurrentImageUrl(selectedVariant.defaultImage.url);
+            return;
+          }
         }
       }
 
@@ -444,9 +456,8 @@ export const Details = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
-              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-            } px-[20px] pt-[20px]`}
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+              } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
@@ -596,12 +607,9 @@ export const Details = ({
         </div>
       )}
       <Coupon couponIcon={couponIcon} />
-
-      <FreeDelivery />
-      {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) && getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada  &&
-        <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
-      }
-
+      {selectedVariantId && (
+        <FreeDelivery entityId={product.entityId} variantId={selectedVariantId} isFromPDP={true}/>
+      )}
       <div ref={productFormRef}>
         <ProductForm
           data={product}
