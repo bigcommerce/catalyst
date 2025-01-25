@@ -67,7 +67,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
           </div>
         ) : (
           <div className='font-normal text-sm leading-6 tracking-[0.25px] px-0'>
-            {deliveryMessage || 'No delivery message available.'}
+            {deliveryMessage || ''}
           </div>
         )}
       </div>

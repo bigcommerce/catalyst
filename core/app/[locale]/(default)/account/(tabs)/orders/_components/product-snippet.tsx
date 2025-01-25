@@ -1,4 +1,5 @@
 import { getFormatter, getTranslations } from 'next-intl/server';
+import { cookies } from 'next/headers';
 
 import { client } from '~/client';
 import { graphql, ResultOf, VariablesOf } from '~/client/graphql';
@@ -6,6 +7,7 @@ import { revalidate } from '~/client/revalidate-target';
 import { BcImage } from '~/components/bc-image';
 import { retrieveMpnData } from '~/components/common-functions';
 import { Link } from '~/components/link';
+import { GetCartMetaFields } from '~/components/management-apis';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { Price as PricesType } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -168,6 +170,9 @@ export const ProductSnippet = async ({
   productSize,
   from,
 }: Props) => {
+//    const cookieStore = await cookies();
+//     const cartId = cookieStore.get('cartId')?.value ||"";
+const cartId = "0fc2508f-f0aa-4ff6-b59a-821fbc5187f1";
   const { name, defaultImage, brand, productId, prices } = product;
   const format = await getFormatter();
   const t = await getTranslations('Product.Details');
@@ -179,8 +184,71 @@ export const ProductSnippet = async ({
     variables: { entityId: productId },
     fetchOptions: { next: { revalidate } },
   });
-
+console.log("product------", product);
   const { path = '' } = data.site.product ?? {};
+
+
+
+
+  let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
+console.log("getCartMetaFields", getCartMetaFields);
+
+let updatedLineItemInfo: any = [];
+let updatedLineItemWithoutAccessories: any = [];
+let accessoriesSkuArray: any = [];
+
+// Ensure getCartMetaFields is an array
+if (Array.isArray(getCartMetaFields) && getCartMetaFields?.length > 0) {
+  // Ensure product is an array before forEach
+  if (Array.isArray(product)) {
+    product?.forEach((item: any) => {
+      let accessoriesData: any = [];
+      let findAccessories = getCartMetaFields?.find((acces: any) => acces?.key == item?.entityId);
+      console.log("item.entitId", item?.entitId);
+      if (findAccessories) {
+        let getAccessoriesInfo = findAccessories?.value ? JSON?.parse(findAccessories?.value) : [];
+        if (Array.isArray(getAccessoriesInfo) && getAccessoriesInfo?.length > 0) {
+          getAccessoriesInfo?.forEach((getInfo: any) => {
+            if (!accessoriesSkuArray?.includes(getInfo?.variantId)) {
+              accessoriesSkuArray.push(getInfo?.variantId);
+            }
+            let accessoriesInfo = product?.find(
+              (line: any) => line?.variantEntityId == getInfo?.variantId,
+            );
+            if (accessoriesInfo) {
+              let accessSpreadData: any = { ...accessoriesInfo };
+              accessSpreadData.prodQuantity = getInfo.quantity;
+              accessSpreadData.cartId = cartId;
+              accessSpreadData.lineItemId = item?.entityId;
+              accessoriesData.push(accessSpreadData);
+            }
+          });
+        }
+      }
+      if (accessoriesData?.length > 0) {
+        item['accessories'] = accessoriesData;
+      }
+      if (!accessoriesSkuArray?.includes(item?.variantEntityId)) {
+        updatedLineItemInfo.push(item);
+      }
+    });
+  } else {
+    console.error("Product is not an array");
+  }
+} else {
+  // Fallback when getCartMetaFields is empty or not an array
+  getCartMetaFields = [];
+  updatedLineItemInfo = Array.isArray(product) ? product : [];
+}
+
+// Ensure updatedLineItemInfo is an array
+updatedLineItemInfo?.forEach((item: any, index: number) => {
+  if (!accessoriesSkuArray?.includes(item?.variantEntityId)) {
+    updatedLineItemWithoutAccessories.push(item);
+  }
+});
+
+
 
   //let productMpn: string = retrieveMpnData(product, product?.)
 

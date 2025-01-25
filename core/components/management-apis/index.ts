@@ -67,14 +67,12 @@ export const getDeliveryMessage = async (
 ) => {
   const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
 
-  // Attempt to get meta fields by product variant
   let metaFields: any = await getMetaFieldsByProductVariant(
     entityId,
     variantId,
     "delivery_message",
   );
 
-  // Check if metaFields has data
   if ( metaFields.data.length > 0) {
     const deliveryMessage = metaFields.data
 
@@ -87,9 +85,7 @@ export const getDeliveryMessage = async (
         return { id, value };
     }) || [];
 
-      // Parse the channelId as an integer (if it exists)
       const parsedChannelId = channelId ? parseInt(channelId, 10) : null;
-      // Find the matched delivery based on channelId
       const matchedDelivery = parsedChannelId !== null ? result.find((item: any) => item.id === parsedChannelId) : null;
 
       if (matchedDelivery) {
@@ -98,32 +94,26 @@ export const getDeliveryMessage = async (
     }
   }
 
-  // If no data from getMetaFieldsByProductVariant, try getMetaFieldsByProduct
   metaFields = await getMetaFieldsByProduct(entityId, "delivery_message");
   if (metaFields && metaFields.data && metaFields.data.length > 0) {
     const deliveryMessage = metaFields.data
 
     if (deliveryMessage) {
-      // Split the delivery message by '|' and parse it
       const deliveryKey = deliveryMessage?.[0]?.['value']?.split('|');
       const result = deliveryKey?.map((item: any) => {
         const [id, value] = item.split(':').map((str: any) => str.trim()); // Split and trim
         return { id: parseInt(id, 10), value };
       });
 
-      // Parse the channelId as an integer (if it exists)
       const parsedChannelId = channelId ? parseInt(channelId, 10) : null;
-
-      // Find the matched delivery based on channelId
       const matchedDelivery = parsedChannelId !== null ? result.find((item: any) => item.id === parsedChannelId) : null;
 
       if (matchedDelivery) {
-        return matchedDelivery.value; // Return the value of the matched delivery
+        return matchedDelivery.value; 
       }
     }
   }
 
-  // Return null if no delivery message is found in either call
   return null;
 };
 
@@ -195,7 +185,6 @@ const getMetaFieldsByProductVariant = async (
   page = 1,
 ) => {
   try {
-    console.log("namespace", namespace)
     let nameSpaceValue = '';
     if (namespace) {
       nameSpaceValue = '&namespace=' + encodeURIComponent(namespace);;
