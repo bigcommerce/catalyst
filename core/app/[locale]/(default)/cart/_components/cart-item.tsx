@@ -273,6 +273,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
   if (discountedPrice > 0) {
     discountPriceText = discountedPrice + '% Off';
   }
+  
   let productSKU: string = retrieveMpnData(product, product?.productEntityId, product?.variantEntityId);
   return (
     <li className="mb-[24px] border border-gray-200">

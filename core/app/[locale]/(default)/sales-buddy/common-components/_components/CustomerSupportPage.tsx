@@ -215,7 +215,7 @@ function CustomerSupportPage() {
     ) {
       if (findCustomerData.email.length == 0 && findCustomerDataError.email == "" || findCustomerData.email.length > 0 && findCustomerDataError.email == "" ){
         try {
-        const response = await findCustomerDetails(findCustomerData);        
+        const response = await findCustomerDetails(findCustomerData);                
         setCustomerDetails(findCustomerData);
         if (response.data.status == 200) {
           setLoading((prev) => ({ ...prev, show2: false }));
@@ -297,13 +297,12 @@ function CustomerSupportPage() {
     }
     try {
       const response = await createCustomerAccount(createAccountData);
-      
       setLoading((prev) => ({ ...prev, show3: false }));
       if (response.status === 200) {
         setCreateAccountSuccessMessage('Account created successfully!');
         setCreateAccountErrorMessage(null);
       } else {
-        setCreateAccountErrorMessage('Error during account creation');
+        setCreateAccountErrorMessage('Email id already exist');
       }
     } catch (error) {
       setLoading((prev) => ({ ...prev, show3: false }));
@@ -389,7 +388,7 @@ function CustomerSupportPage() {
   const handleInputChange = (id: string, value: string) => {
     setFindCustomerErrorMessage('')
     setCreateAccountSuccessMessage('')
-
+    setCreateAccountErrorMessage('')
     switch (id) {
       case 'cart-id': {
         setCartId(value);
