@@ -428,7 +428,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                   <ItemQuantity product={product} />
                 </div>
               </div>
-              <div className="overflow-x-hidden xl:pl-[10px]">
+              { cookie_agent_login_status == true && <div className="overflow-x-hidden xl:pl-[10px]">
                 <ProductPriceAdjuster
                   parentSku={priceAdjustData?.parent_sku}
                   sku={priceAdjustData?.sku}
@@ -442,7 +442,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                   ProductType={"product"}
                 />
                 {/* priceAdjustData.parent_sku */}
-              </div>
+              </div>}
             </div>
           </div>
         </div>
