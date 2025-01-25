@@ -218,9 +218,6 @@ export const Details = ({
   const productMpn = product.mpn;
   const brand = product.brand?.entityId;
 
-  const productSku = product.sku;
-  const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null);
-
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
   useEffect(() => {
