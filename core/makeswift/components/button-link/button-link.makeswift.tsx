@@ -12,7 +12,7 @@ type MSButtonLinkProps = Omit<Props, 'href'> & {
 runtime.registerComponent(
   function MSButtonLink({ link, text, ...props }: MSButtonLinkProps) {
     return (
-      <ButtonLink href={link.href ?? ''} target={link.target ?? ''} {...props}>
+      <ButtonLink href={link?.href ?? ''} target={link?.target ?? ''} {...props}>
         {text}
       </ButtonLink>
     );

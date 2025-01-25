@@ -89,12 +89,12 @@ export default function CartInterface() {
 
       // Check for required fields
       if (!value) {
-        newErrors[key as keyof FormData] = `Feild is required`;
+        newErrors[key as keyof FormData] = `Field is required`;
       }
 
       // Check for number fields
       if (['cost', 'retailPrice', 'quantity'].includes(key) && value !== '' && isNaN(Number(value))) {
-        newErrors[key as keyof FormData] = `Feild must be a valid number`;
+        newErrors[key as keyof FormData] = `Field must be a valid number`;
       }
     }
 

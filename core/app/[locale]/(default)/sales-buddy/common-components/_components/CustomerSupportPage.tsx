@@ -206,15 +206,14 @@ function CustomerSupportPage() {
   };
   const handleFindCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFindCustomerSuccessMessage("")
+    setFindCustomerSuccessMessage("")    
     setLoading((prev) => ({ ...prev, show2: true }));    
     if (
       (findCustomerData.email !== '' ||
       findCustomerData.phone !== '' ||
       findCustomerData.first_name !== '')  
     ) {
-      if(findCustomerDataError.email == "" && findCustomerDataError.company == "" && findCustomerDataError.phone == "" && findCustomerDataError.first_name == "")
-      {
+      if (findCustomerData.email.length == 0 && findCustomerDataError.email == "" || findCustomerData.email.length > 0 && findCustomerDataError.email == "" ){
         try {
         const response = await findCustomerDetails(findCustomerData);        
         setCustomerDetails(findCustomerData);
@@ -257,6 +256,8 @@ function CustomerSupportPage() {
     }
   };
 
+
+ 
   const handleValidationMsgForCreateAccount=()=>{
     const missingFields = [];
 
@@ -275,40 +276,39 @@ function CustomerSupportPage() {
     const errorMessage = `Please provide the following: ${missingFields.join(" ")}.`;
     return errorMessage;
   }
-  const handleCreateAccountSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
 
+  const handleCreateAccountSubmit = async (e: React.FormEvent) => {
+    setCreateAccountSuccessMessage('')
+    setCreateAccountErrorMessage('')
+    e.preventDefault();
     setLoading((prev) => ({ ...prev, show3: true }));
-    if (
-      !createAccountData.first_name ||
-      !createAccountData.last_name ||
-      !createAccountData.email ||
-      !createAccountData.referral_id
-    ) {
-      setCreateAccountErrorMessage(
-        handleValidationMsgForCreateAccount()
-        // 'Please provide a first name, last name,  valid email address and Referral ID.',
-      );
+    const hasInitialErrors = Object.values(createAccountData_errors).some(error => error !== '');
+    if (hasInitialErrors) {
+      setLoading((prev) => ({ ...prev, show3: false }));
+      return;
+    }
+    const requiredFields = ['first_name', 'last_name', 'email', 'referral_id'];
+    const missingFields = requiredFields.filter(field => !createAccountData[field]);
+    if (missingFields.length > 0) {
+      setCreateAccountErrorMessage(handleValidationMsgForCreateAccount());
       setCreateAccountSuccessMessage(null);
       setLoading((prev) => ({ ...prev, show3: false }));
-      return 0;
-    } else {
-      try {
-        const response = await createCustomerAccount(createAccountData);
-        if (response.status == 200) {
-          setLoading((prev) => ({ ...prev, show3: false }));
-          setCreateAccountSuccessMessage('Account created successfully!');
-          setCreateAccountErrorMessage(null);
-        } else {
-          setLoading((prev) => ({ ...prev, show3: false }));
-          setCreateAccountErrorMessage('Error during account creation');
-        }
-      } catch (error: any) {
-        setLoading((prev) => ({ ...prev, show3: false }));
+      return;
+    }
+    try {
+      const response = await createCustomerAccount(createAccountData);
+      
+      setLoading((prev) => ({ ...prev, show3: false }));
+      if (response.status === 200) {
+        setCreateAccountSuccessMessage('Account created successfully!');
+        setCreateAccountErrorMessage(null);
+      } else {
         setCreateAccountErrorMessage('Error during account creation');
-        // setCreateAccountErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
-        setCreateAccountSuccessMessage(null);
       }
+    } catch (error) {
+      setLoading((prev) => ({ ...prev, show3: false }));
+      setCreateAccountErrorMessage('Error during account creation');
+      setCreateAccountSuccessMessage(null);
     }
   };
   useEffect(() => {
@@ -385,8 +385,11 @@ function CustomerSupportPage() {
       </div>
     ));
   };
+  
   const handleInputChange = (id: string, value: string) => {
     setFindCustomerErrorMessage('')
+    setCreateAccountSuccessMessage('')
+
     switch (id) {
       case 'cart-id': {
         setCartId(value);
