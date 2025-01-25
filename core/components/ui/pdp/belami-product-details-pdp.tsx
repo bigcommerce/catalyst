@@ -158,7 +158,7 @@ const ProductDetailDropdown: React.FC<ProductDetailDropdownProps> = ({
   const installSheetUrl = installSheet?.value;
   return (
     <div
-      className="relative mt-6 inline-block w-full transition-all duration-300 xl:mt-12"
+      className="relative mt-6 inline-block w-full transition-all duration-300 xl:mt-[2em]"
       ref={dropdownRef}
     >
       <button

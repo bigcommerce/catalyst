@@ -279,6 +279,7 @@ const Gallery = ({
       setSelectedIndex(index);
       prevMediaRef.current = null;
     }
+    openPopup(index);
   };
 
   const handleVideoClick = (e: React.MouseEvent) => {
@@ -399,7 +400,7 @@ const Gallery = ({
 
   return (
     <div aria-live="polite" className={className}>
-      <div className="gallery-container relative flex flex-col-reverse xl:flex-row">
+      <div className="gallery-container relative flex flex-col-reverse lg:h-[40em] xl:flex-row">
         <div className="gallery-items mr-0 mt-5 flex flex-col items-center xl:mr-4 xl:mt-0 xl:flex-col xl:space-y-4">
           <nav
             ref={thumbnailRef}
@@ -417,7 +418,7 @@ const Gallery = ({
                   aria-label={isVideo ? 'Play video' : 'Enlarge product image'}
                   aria-pressed={isActive}
                   className={cn(
-                    'gallery-thumbnail relative h-12 w-12 flex-shrink-0 border-2 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-[6.4em] xl:w-[6.4em]',
+                    'gallery-thumbnail left-side relative h-12 w-12 flex-shrink-0 border-2 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-[7.2em] xl:w-[7em]',
                     isActive ? 'border-primary' : 'border-gray-200',
                   )}
                   key={`${isVideo ? item.url : item.src}-${index}`}
@@ -486,8 +487,8 @@ const Gallery = ({
             {!viewAll && mediaItems.length > 4 && (
               <button
                 aria-label="View all items"
-                className="gallery-thumbnail relative h-12 w-12 flex-shrink-0 border-2 border-gray-200 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-[6.4em] xl:w-[6.4em]"
-                onClick={() => openPopup()}
+                className="gallery-thumbnail relative h-12 w-12 flex-shrink-0 border-2 border-gray-200 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-[7.2em] xl:w-[7em]"
+                onClick={() => openPopup(3)}
               >
                 {mediaItems[3]?.type === 'video' ? (
                   <div className="relative h-full w-full">
