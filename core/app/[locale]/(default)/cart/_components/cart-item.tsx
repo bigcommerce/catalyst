@@ -255,6 +255,11 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
           <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
         </div>
       } */}
+
+      {/* {`grid gap-1 grid-cols-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
+        ? "xl:grid-cols-[40%_20%_40%]"
+        : "xl:grid-cols-[60%_40%]"
+        }`} */}
       <div className="">
         
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
@@ -274,7 +279,10 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
 
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product?.brand}</p>
-            <div className="grid gap-1 grid-cols-1 sm:grid-cols-[auto,auto] xl:grid-cols-[40%_20%_40%]">
+            <div className={`grid gap-1 grid-cols-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
+              ? "xl:grid-cols-[40%_20%_40%]"
+              : "xl:grid-cols-[60%_40%]"
+              }`}>
               <div className="">
                 <Link href={product?.url}>
                   <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
