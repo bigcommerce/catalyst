@@ -30,7 +30,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
     if (entityId && variantId) {
       fetchMessage();
     }
-  }, [entityId, variantId]); // Dependencies to trigger fetch on change
+  }, [entityId, variantId]);
 
   if (loading) {
     return (
@@ -44,10 +44,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
     return <div>Error: {error}</div>;
   }
 
-  // Check if the deliveryMessage includes "Backorder"
   const isBackorder = deliveryMessage?.includes("Backorder");
-
-  // Determine background color based on Backorder presence
   const backgroundColorClass = isBackorder ? 'bg-[#FBF4E9]' : 'bg-transparent';
 
   return (
@@ -55,7 +52,6 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
       <div className={`${backgroundColorClass} w-fit ${deliveryMessage ? 'mt-[10px]' : 'mt-[0px]'}`}>
         {isBackorder ? (
           <div>
-            {/* <strong>Important:</strong> The delivery message includes a backorder. */}
             <div className='text-[#6A4C1E] font-normal text-sm leading-6 tracking-[0.25px] px-2'>
               {deliveryMessage?.replace(":Backorder", "")?.trim()}
             </div>
