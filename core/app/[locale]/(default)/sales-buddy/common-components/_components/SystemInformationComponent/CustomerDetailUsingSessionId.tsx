@@ -14,9 +14,7 @@ interface UserData {
 }
 
 const CompactUserCard: React.FC<{ data: UserData }> = ({ data }) => {
-    const renderInfoPair = (label, value) => (
-        
-        
+    const renderInfoPair = (label:any, value:any) => (
         <div className="border-b border-gray-100 last:border-0">
             <div className="px-4 py-3 hover:bg-gray-50 transition-colors">
                 <div className="text-xs font-medium text-gray-500 uppercase tracking-wider">

@@ -18,6 +18,15 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
+interface Props {
+  currencyCode: string;
+  product: any;
+  cartId: string;
+  priceAdjustData: any;
+  ProductType: string;
+  cookie_agent_login_status: boolean;
+}
+
 export default function CartProductComponent({ currencyCode, product, cartId, priceAdjustData, ProductType, cookie_agent_login_status }: Props) {
   const changeTheProtectedPosition = moveToTheEnd(
     product?.selectedOptions,
