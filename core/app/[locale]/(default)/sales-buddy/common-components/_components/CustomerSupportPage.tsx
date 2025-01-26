@@ -180,7 +180,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
             const ShopperMachineInformationJsonToObj = JSON?.parse(
               shopperData?.shopper_information
             );
-            ShopperMachineInformationJsonToObj.session_id = sessionId;
+            ShopperMachineInformationJsonToObj?.session_id = sessionId;
             setShopperSystemInfo(ShopperMachineInformationJsonToObj);
           } catch (parseError) {
             console.error('Error parsing shopper information:', parseError);
@@ -320,14 +320,14 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
   useEffect(() => {
     const getCartLookUpValueFromLS=()=>{
       const getCart_lookup_sessionID_agent = JSON?.parse(localStorage?.getItem('cart_lookup_sessionID_agent'));
-      setCartId(getCart_lookup_sessionID_agent.SessionId)
+      setCartId(getCart_lookup_sessionID_agent?.SessionId)
       setCustomerDetailsBasedOnSessionId(getCart_lookup_sessionID_agent?.SessionIDUserDetails)
 
     }
     const getShopperInfoAndLoad = () => {
       try {
         const getCart_lookup_sessionID_agent = JSON?.parse(localStorage?.getItem('cart_lookup_sessionID_agent'));
-        const sessionFromLS = getCart_lookup_sessionID_agent.SessionId
+        const sessionFromLS = getCart_lookup_sessionID_agent?.SessionId
         const overAllValue = localStorage.getItem('ShopperInformations');
         // Check if data exists in localStorage
         setSessionId(sessionFromLS)
