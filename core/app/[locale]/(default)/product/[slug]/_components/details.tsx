@@ -178,7 +178,7 @@ export const Details = ({
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const scrollableRef = useRef(null); // Reference to the scrollable div
+  const scrollableRef = useRef(null); 
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
@@ -194,7 +194,7 @@ export const Details = ({
     if (!isDragging) return;
 
     const distance = e.clientY - startY;
-    scrollableRef.current.scrollTop = scrollTop - distance; // Update the scroll position
+    scrollableRef.current.scrollTop = scrollTop - distance; 
   };
 
   const handleMouseUp = () => {
@@ -203,8 +203,7 @@ export const Details = ({
   };
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
-  // const [getAllCommonSettinngsValues, setGetAllCommonSettinngsValues] = useState<any>([]);
-
+  
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
   const variants = removeEdgesAndNodes(product.variants);
@@ -213,8 +212,7 @@ export const Details = ({
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
   const productSku = product.sku;
   const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null);
-  // const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
-  const productMpn = product.mpn;
+   const productMpn = product.mpn;
   const brand = product.brand?.entityId;
 
   const showPriceRange =
@@ -224,7 +222,7 @@ export const Details = ({
     if (matchingVariant) {
       setSelectedVariantId(matchingVariant.entityId);
     } else {
-      setSelectedVariantId(null); // Reset if no matching variant is found
+      setSelectedVariantId(null); 
     }
   }, [variants, productSku]);
 
@@ -371,12 +369,10 @@ export const Details = ({
                 </div>
 
                 <div className="flex items-center gap-4">
-                  {/* sticky addtocart */}
                   {product.prices && (
                     <div className="sticky-product-price mt-2 inline-flex !w-[16em] items-center text-center lg:text-right whitespace-nowrap">
                       {product.prices.retailPrice?.value && product.prices.salePrice?.value ? (
                         <>
-                          {/* Retail Price, Sale Price */}
                           <span className="mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                             {format.number(product.prices.salePrice.value, {
                               style: 'currency',
@@ -402,7 +398,6 @@ export const Details = ({
                         </>
                       ) : product.prices.retailPrice?.value && product.prices.basePrice?.value ? (
                         <>
-                          {/* Retail Price, Base Price */}
                           <span className="mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                             {format.number(product.prices.basePrice.value, {
                               style: 'currency',
@@ -428,7 +423,6 @@ export const Details = ({
                         </>
                       ) : product.prices.salePrice?.value && product.prices.basePrice?.value ? (
                         <>
-                          {/* Sale Price, Base Price */}
                           <span className="mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                             {format.number(product.prices.salePrice.value, {
                               style: 'currency',
@@ -453,7 +447,6 @@ export const Details = ({
                         </>
                       ) : product.prices.basePrice?.value ? (
                         <>
-                          {/* Only Base Price */}
                           <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                             {format.number(product.prices.basePrice.value, {
                               style: 'currency',
@@ -462,7 +455,6 @@ export const Details = ({
                           </span>
                         </>
                       ) : (
-                        // Fallback for just the price if no conditions are met
                         <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                           {format.number(product.prices.price?.value || 0, {
                             style: 'currency',
@@ -473,7 +465,6 @@ export const Details = ({
                     </div>
                   )}
 
-                  {/* sticky addtocart */}
                   {productAvailability === 'Unavailable' ? (
                     <div className="flex flex-col items-center">
                       <button
@@ -524,7 +515,6 @@ export const Details = ({
               isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
             } px-[20px] pt-[20px]`}
           >
-            {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
               <div className="flex flex-col items-center">
                 <button
@@ -595,7 +585,6 @@ export const Details = ({
         className="custom-scrollbar h-[600px] w-full cursor-grab overflow-y-scroll"
       >
         <div className="div-product-details">
-          {/* Add relative positioning wrapper */}
           <div className="relative">
             <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
               {product.name}
@@ -637,7 +626,6 @@ export const Details = ({
         {product.prices && (
           <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
             {product.prices.retailPrice?.value && product.prices.salePrice?.value ? (
-              // retailPrice, salePrice, basePrice
               <>
                 <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                   {format.number(product.prices.salePrice.value, {
@@ -663,7 +651,6 @@ export const Details = ({
                 </span>
               </>
             ) : product.prices.retailPrice?.value && product.prices.basePrice?.value ? (
-              // retailPrice,basePrice
               <>
                 <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                   {format.number(product.prices.basePrice.value, {
@@ -689,7 +676,6 @@ export const Details = ({
                 </span>
               </>
             ) : product.prices.salePrice?.value && product.prices.basePrice?.value ? (
-              // salePrice,basePrice
               <>
                 <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                   {format.number(product.prices.salePrice.value, {
@@ -714,7 +700,6 @@ export const Details = ({
                 </span>
               </>
             ) : product.prices.basePrice?.value ? (
-              //Only basePrice
               <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                 {format.number(product.prices.basePrice.value, {
                   style: 'currency',

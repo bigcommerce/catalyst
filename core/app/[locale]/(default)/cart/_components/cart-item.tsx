@@ -262,30 +262,17 @@ export const CartItem = async ({
     'Protect Your Purchase',
   );
   const format = useFormatter();
-  // let oldPrice = product?.originalPrice?.value;
-  // let salePrice = product?.extendedSalePrice?.value;
-  // let discountedPrice: any = Number(Math.round(100 - (salePrice * 100) / oldPrice));
-  // let discountPriceText: string = '';
-  // if (discountedPrice > 0) {
-  //   discountPriceText = discountedPrice + '% Off';
-  // }
   let productSKU: string = retrieveMpnData(
     product,
     product?.productEntityId,
     product?.variantEntityId,
   );
-  console.log('Product price details in cart**************************', { product });
   const retailPrice = product?.catalogProductWithOptionSelections?.prices?.retailPrice;
   const salePrice = product?.catalogProductWithOptionSelections?.prices?.salePrice;
   const basePrice = product?.catalogProductWithOptionSelections?.prices?.basePrice;
 
   return (
     <li className="mb-[24px] border border-gray-200">
-      {/* {getAllCommonSettinngsValues && getAllCommonSettinngsValues?.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
-        <div className='bg-[#E7F5F8] w-full flex justify-center'>
-          <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
-        </div>
-      } */}
       <div className="">
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
           <div className="cart-main-img mx-auto h-[295px] w-[295px] flex-none border border-gray-300 sm:h-[200px] sm:w-[200px] md:mx-0">
@@ -428,11 +415,9 @@ export const CartItem = async ({
                 )}
               </div>
               <div className="">
-                {/* Desktop layout (unchanged) */}
                 <div className="cart-deleteIcon relative flex flex-col gap-0 text-right sm:gap-2 md:items-end [&_.cart-item-delete]:absolute [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:sm:static [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0">
                   <RemoveItem currency={currencyCode} product={product} />
                   <div className="mb-0">
-                    {/* salePrice,retailPrice  */}
                     {salePrice?.value && retailPrice?.value ?(
                      <>
                      <p className="text-left sm:text-right">
@@ -454,7 +439,6 @@ export const CartItem = async ({
                     </div>
                      </>
                     ): 
-                    // retailPrice, basePrice 
                     retailPrice?.value && basePrice?.value?(
                       <>
                       <p className="text-left sm:text-right">
@@ -476,7 +460,6 @@ export const CartItem = async ({
                      </div>
                       </>
                     ):
-                    //salePrice, basePrice
                     salePrice?.value && basePrice?.value ?(
                       <>
                       <p className="text-left sm:text-right">
@@ -523,7 +506,6 @@ export const CartItem = async ({
                   cartId={cartId}
                   ProductType={'product'}
                 />
-                {/* priceAdjustData.parent_sku */}
               </div>
             </div>
           </div>
@@ -531,8 +513,6 @@ export const CartItem = async ({
       </div>
       {product?.accessories?.length > 0 && (
         <div>
-          {/* {product?.accessories && getAllCommonSettinngsValues.accessories == 'yes' && */}
-
           {product?.accessories &&
             product?.accessories?.map((item: any, index: number) => {
               let oldPriceAccess = item?.originalPrice?.value;
