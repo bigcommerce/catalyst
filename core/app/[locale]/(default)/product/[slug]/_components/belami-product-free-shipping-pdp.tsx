@@ -1,5 +1,4 @@
 'use client';
-import { useTranslations } from 'next-intl';
 import { getDeliveryMessage } from "~/components/management-apis";
 import React, { useState, useEffect } from "react";
 import { Spinner } from "@/vibes/soul/primitives/spinner";
@@ -11,7 +10,6 @@ interface DeliveryMessageProps {
 }
 
 export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variantId, isFromPDP }) => {
-  const t = useTranslations('freeDelivery');
   const [deliveryMessage, setDeliveryMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,10 +34,10 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
 
   if (loading) {
     return (
-      <div className="flex justify-center lg:justify-start px-[50px] py-[30px]">
+      <div className="flex justify-center lg:justify-start px-[50px] p-y[10px]">
         <Spinner aria-hidden="true" />
       </div>
-    );
+    )
   }
 
   if (error) {
@@ -53,21 +51,18 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
   const backgroundColorClass = isBackorder ? 'bg-[#FBF4E9]' : 'bg-transparent';
 
   return (
-    <div className={`mt-[5px] flex flex-col ${isFromPDP ? 'items-center' : 'items-start'} lg:items-start`}>
-      <div className="font-normal text-sm leading-6 tracking-[0.25px]">
-        {t('title')}
-      </div>
-      <div className={`${backgroundColorClass} w-fit mt-[5px]`}>
+    <div className={`flex flex-col ${isFromPDP ? 'items-center' : 'items-start'} lg:items-start`}>
+      <div className={`${backgroundColorClass} w-fit ${deliveryMessage ? 'mt-[10px]' : 'mt-[0px]'}`}>
         {isBackorder ? (
           <div>
             {/* <strong>Important:</strong> The delivery message includes a backorder. */}
             <div className='text-[#6A4C1E] font-normal text-sm leading-6 tracking-[0.25px] px-2'>
-              {deliveryMessage?.replace(":Backorder", "")?.trim() || 'No delivery message available.'}
+              {deliveryMessage?.replace(":Backorder", "")?.trim()}
             </div>
           </div>
         ) : (
           <div className='font-normal text-sm leading-6 tracking-[0.25px] px-0'>
-            {deliveryMessage || ''}
+            {deliveryMessage}
           </div>
         )}
       </div>

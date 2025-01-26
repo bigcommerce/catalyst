@@ -607,6 +607,9 @@ export const Details = ({
         </div>
       )}
       <Coupon couponIcon={couponIcon} />
+      <div className="font-normal text-sm leading-6 tracking-[0.25px]">
+        <span> Free Delivery</span>
+      </div>
       {selectedVariantId && (
         <FreeDelivery entityId={product.entityId} variantId={selectedVariantId} isFromPDP={true}/>
       )}
