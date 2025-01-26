@@ -554,6 +554,13 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
     width: 100% !important;
     display: block;
   }
+  @media screen and (max-width:768px){
+    .product-price{
+      display:flex;
+      justify-content: center;
+    }
+  }
+
   .div-product-rectangleboxes div button {
     padding: 8px;
     font-size: 12px;
