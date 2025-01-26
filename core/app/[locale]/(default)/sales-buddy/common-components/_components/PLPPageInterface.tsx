@@ -4,7 +4,13 @@ import {Checkbox} from '../Input/checkbox'; // Replace with your actual Checkbox
 import {Input} from '../Input/index'; // Replace with your Input component
 import {Button} from '../Button/index'; // Replace with your Button component
 
-function PLPPageInterface({ toggleAccordion, openIndexes, setOpenIndexes }) {
+interface PLPPageInterfaceProps {
+  toggleAccordion: (index: number) => void;
+  openIndexes: number[];
+  setOpenIndexes: (indexes: number[]) => void;
+}
+
+function PLPPageInterface({ toggleAccordion, openIndexes, setOpenIndexes }: PLPPageInterfaceProps) {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   // Filters data
