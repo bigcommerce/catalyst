@@ -31,6 +31,7 @@ import WishlistAddToList from '../../../account/(tabs)/wishlists/wishlist-add-to
 import { useWishlists } from '../../../account/(tabs)/wishlists/wishlist-add-to-list/hooks';
 import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { commonSettinngs } from '~/components/common-functions';
+import ScrollContainer from './sticky';
 
 interface ProductOptionValue {
   entityId: number;
@@ -154,9 +155,9 @@ interface Props {
   closeIcon?: string;
   blankAddImg?: string;
   productImages?: string;
-  getAllCommonSettinngsValues?:any
+  getAllCommonSettinngsValues?: any;
 }
-  
+
 export const Details = ({
   product,
   collectionValue,
@@ -169,7 +170,7 @@ export const Details = ({
   closeIcon,
   blankAddImg,
   productImages,
-  getAllCommonSettinngsValues
+  getAllCommonSettinngsValues,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -183,24 +184,24 @@ export const Details = ({
   const [startY, setStartY] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
 
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setStartY(e.clientY);
-    setScrollTop(scrollableRef.current.scrollTop);
-    document.body.style.userSelect = 'none';
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowStickyHeader(window.scrollY > 200);
+    };
 
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
+    const handleCustomScroll = (e: CustomEvent) => {
+      setShowStickyHeader(e.detail.scrollY > 200);
+    };
 
-    const distance = e.clientY - startY;
-    scrollableRef.current.scrollTop = scrollTop - distance; // Update the scroll position
-  };
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('customScroll', handleCustomScroll as EventListener);
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    document.body.style.userSelect = 'auto';
-  };
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('customScroll', handleCustomScroll as EventListener);
+    };
+  }, []);
+
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
   // const [getAllCommonSettinngsValues, setGetAllCommonSettinngsValues] = useState<any>([]);
@@ -229,25 +230,13 @@ export const Details = ({
   }, [variants, productSku]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (!productFormRef.current) return;
-
-      const formRect = productFormRef.current.getBoundingClientRect();
-      setShowStickyHeader(formRect.bottom < 0);
-
-      if (currentScrollY < lastScrollY) {
-        setIsScrollingUp(true);
-      } else {
-        setIsScrollingUp(false);
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+    const matchingVariant = variants.find((variant) => variant?.sku === productSku);
+    if (matchingVariant) {
+      setSelectedVariantId(matchingVariant.entityId);
+    } else {
+      setSelectedVariantId(null); // Reset if no matching variant is found
+    }
+  }, [variants, productSku]);
 
   useEffect(() => {
     const updateImageFromVariant = () => {
@@ -276,7 +265,6 @@ export const Details = ({
 
       setCurrentImageUrl(product.defaultImage?.url || '');
     };
-    
 
     updateImageFromVariant();
   }, [searchParams, product, variants, productOptions, currentMainMedia]);
@@ -286,7 +274,7 @@ export const Details = ({
   }, [product]);
 
   const productAvailability = product.availabilityV2.status;
-  
+
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
     if (selectedId) {
@@ -411,18 +399,18 @@ export const Details = ({
                     </div>
                   )}
                   {productAvailability === 'Unavailable' ? (
-                     <div className='flex flex-col items-center'>
-                     <button
-                       id="add-to-cart"
-                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
-                       disabled
-                     >
-                       <span>
-                          ADD TO CART
-                       </span>
-                     </button>
-                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
-                     </div>
+                    <div className="flex flex-col items-center">
+                      <button
+                        id="add-to-cart"
+                        className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                        disabled
+                      >
+                        <span>ADD TO CART</span>
+                      </button>
+                      <p className="text-center text-[12px] text-[#2e2e2e]">
+                        This product is currently unavailable
+                      </p>
+                    </div>
                   ) : (
                     <button
                       className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
@@ -461,112 +449,90 @@ export const Details = ({
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
-                     <div className='flex flex-col items-center'>
-                     <button
-                       id="add-to-cart"
-                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
-                       disabled
-                     >
-                       <span>
-                          ADD TO CART
-                       </span>
-                     </button>
-                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
-                     </div>
-                  ) : (
-            <button
-              className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
-              onClick={() => {
-                const addToCartButton = productFormRef.current?.querySelector(
-                  'button[type="submit"]',
-                ) as HTMLButtonElement | null;
-                if (addToCartButton) {
-                  addToCartButton.click();
-                }
-              }}
-            >
-              <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                ADD TO CART
-              </span>
-              <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
-                <Image
-                  src={addToCart}
-                  className=""
-                  alt="Add to Cart"
-                  unoptimized={true}
-                  width={44}
-                  height={44}
-                />
+              <div className="flex flex-col items-center">
+                <button
+                  id="add-to-cart"
+                  className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                  disabled
+                >
+                  <span>ADD TO CART</span>
+                </button>
+                <p className="text-center text-[12px] text-[#2e2e2e]">
+                  This product is currently unavailable
+                </p>
               </div>
-            </button>
-                  )}
+            ) : (
+              <button
+                className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
+                onClick={() => {
+                  const addToCartButton = productFormRef.current?.querySelector(
+                    'button[type="submit"]',
+                  ) as HTMLButtonElement | null;
+                  if (addToCartButton) {
+                    addToCartButton.click();
+                  }
+                }}
+              >
+                <span className="transition-transform duration-300 group-hover:-translate-x-2">
+                  ADD TO CART
+                </span>
+                <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
+                  <Image
+                    src={addToCart}
+                    className=""
+                    alt="Add to Cart"
+                    unoptimized={true}
+                    width={44}
+                    height={44}
+                  />
+                </div>
+              </button>
+            )}
           </div>
         </>
       )}
-       <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          display: none; /* Hides scrollbar for Chrome, Safari, Edge */
-        }
 
-        .custom-scrollbar {
-          -ms-overflow-style: none; /* Hides scrollbar for IE and Edge */
-          scrollbar-width: none; /* Hides scrollbar for Firefox */
-        }
+      <ScrollContainer>
+        <div className="main-div-product-details">
+          <div className="div-product-details">
+            {/* Add relative positioning wrapper */}
+            <div className="relative">
+              <h1 className="product-name mb-3 text-center text-[24px] font-medium leading-[2rem] tracking-[0.15px] text-[#353535] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
+                {product.name}
+              </h1>
+            </div>
 
-        .cursor-grab:active {
-          cursor: grabbing; /* Changes cursor while dragging */
-        }
+            <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
+              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                SKU: <span>{product.mpn}</span>
+              </span>
+              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                by{' '}
+                <Link
+                  href={product.brand?.path ?? ''}
+                  className="products-underline border-b border-black"
+                >
+                  {product.brand?.name}
+                </Link>
+              </span>
+              {collectionValue && (
+                <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                  from the{' '}
+                  <Link
+                    href={`/search?brand_name[0]=${encodeURIComponent(
+                      product.brand?.name ?? '',
+                    )}&collection[0]=${encodeURIComponent(collectionValue)}`}
+                    className="products-underline border-b border-black"
+                  >
+                    {collectionValue}
+                  </Link>{' '}
+                  Family
+                </span>
+              )}
+            </div>
 
-        .smooth-scroll {
-          scroll-behavior: smooth; /* Smooth scrolling */
-        }
-      `}</style>
-<div 
-    ref={scrollableRef}
-    onMouseDown={handleMouseDown}
-    onMouseMove={handleMouseMove}
-    onMouseUp={handleMouseUp}
-    onMouseLeave={handleMouseUp}
-    className="custom-scrollbar h-[600px] w-full overflow-y-scroll cursor-grab ">
-      <div className="div-product-details">
-        {/* Add relative positioning wrapper */}
-        <div className="relative">
-          <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
-            {product.name}
-          </h1>
-        </div>
-
-        <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
-          <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-            SKU: <span>{product.mpn}</span>
-          </span>
-          <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-            by{' '}
-            <Link
-              href={product.brand?.path ?? ''}
-              className="products-underline border-b border-black"
-            >
-              {product.brand?.name}
-            </Link>
-          </span>
-          {collectionValue && (
-            <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-              from the{' '}
-              <Link
-                href={`/search?brand_name[0]=${encodeURIComponent(
-                  product.brand?.name ?? '',
-                )}&collection[0]=${encodeURIComponent(collectionValue)}`}
-                className="products-underline border-b border-black"
-              >
-                {collectionValue}
-              </Link>{' '}
-              Family
-            </span>
-          )}
-        </div>
-
-        <ReviewSummary data={product} />
-      </div>
+            <ReviewSummary data={product} />
+          </div>
 
       {product.prices && (
         <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
@@ -611,8 +577,16 @@ export const Details = ({
         <span> Free Delivery</span>
       </div>
       {selectedVariantId && (
-        <FreeDelivery entityId={product.entityId} variantId={selectedVariantId} isFromPDP={true}/>
-      )}
+            <FreeDelivery
+              entityId={product.entityId}
+              variantId={selectedVariantId}
+              isFromPDP={true}
+            />
+          )}
+      {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) && getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada  &&
+        <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
+      }
+
       <div ref={productFormRef}>
         <ProductForm
           data={product}
@@ -625,74 +599,74 @@ export const Details = ({
         />
       </div>
 
-      <div className="div-product-description my-12 hidden">
-        <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {Boolean(product.sku) && (
-            <div>
-              <h3 className="font-semibold">{t('sku')}</h3>
-              <p>{product.sku}</p>
+          <div className="div-product-description my-12 hidden">
+            <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {Boolean(product.sku) && (
+                <div>
+                  <h3 className="font-semibold">{t('sku')}</h3>
+                  <p>{product.sku}</p>
+                </div>
+              )}
+              {Boolean(product.upc) && (
+                <div>
+                  <h3 className="font-semibold">{t('upc')}</h3>
+                  <p>{product.upc}</p>
+                </div>
+              )}
+              {Boolean(product.minPurchaseQuantity) && (
+                <div>
+                  <h3 className="font-semibold">{t('minPurchase')}</h3>
+                  <p>{product.minPurchaseQuantity}</p>
+                </div>
+              )}
+              {Boolean(product.maxPurchaseQuantity) && (
+                <div>
+                  <h3 className="font-semibold">{t('maxPurchase')}</h3>
+                  <p>{product.maxPurchaseQuantity}</p>
+                </div>
+              )}
+              {Boolean(product.availabilityV2.description) && (
+                <div>
+                  <h3 className="font-semibold">{t('availability')}</h3>
+                  <p>{product.availabilityV2.description}</p>
+                </div>
+              )}
+              {Boolean(product.condition) && (
+                <div>
+                  <h3 className="font-semibold">{t('condition')}</h3>
+                  <p>{product.condition}</p>
+                </div>
+              )}
+              {Boolean(product.weight) && (
+                <div>
+                  <h3 className="font-semibold">{t('weight')}</h3>
+                  <p>
+                    {product.weight?.value} {product.weight?.unit}
+                  </p>
+                </div>
+              )}
+              {Boolean(customFields) &&
+                customFields.map((customField) => (
+                  <div key={customField.entityId}>
+                    <h3 className="font-semibold">{customField.name}</h3>
+                    <p>{customField.value}</p>
+                  </div>
+                ))}
             </div>
-          )}
-          {Boolean(product.upc) && (
-            <div>
-              <h3 className="font-semibold">{t('upc')}</h3>
-              <p>{product.upc}</p>
-            </div>
-          )}
-          {Boolean(product.minPurchaseQuantity) && (
-            <div>
-              <h3 className="font-semibold">{t('minPurchase')}</h3>
-              <p>{product.minPurchaseQuantity}</p>
-            </div>
-          )}
-          {Boolean(product.maxPurchaseQuantity) && (
-            <div>
-              <h3 className="font-semibold">{t('maxPurchase')}</h3>
-              <p>{product.maxPurchaseQuantity}</p>
-            </div>
-          )}
-          {Boolean(product.availabilityV2.description) && (
-            <div>
-              <h3 className="font-semibold">{t('availability')}</h3>
-              <p>{product.availabilityV2.description}</p>
-            </div>
-          )}
-          {Boolean(product.condition) && (
-            <div>
-              <h3 className="font-semibold">{t('condition')}</h3>
-              <p>{product.condition}</p>
-            </div>
-          )}
-          {Boolean(product.weight) && (
-            <div>
-              <h3 className="font-semibold">{t('weight')}</h3>
-              <p>
-                {product.weight?.value} {product.weight?.unit}
-              </p>
-            </div>
-          )}
-          {Boolean(customFields) &&
-            customFields.map((customField) => (
-              <div key={customField.entityId}>
-                <h3 className="font-semibold">{customField.name}</h3>
-                <p>{customField.value}</p>
-              </div>
-            ))}
-        </div>
-      </div>
+          </div>
 
-      <ProductSchema product={product} />
-      <PayPalPayLater
-        amount={product?.prices?.price?.value?.toString()}
-        currency={product?.prices?.price?.currencyCode}
-      />
-      <RequestQuote requestQuote={requestQuote} />
-      <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
-      <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
-      <ShippingReturns />
-    </div>
-   
+          <ProductSchema product={product} />
+          <PayPalPayLater
+            amount={product?.prices?.price?.value?.toString()}
+            currency={product?.prices?.price?.currencyCode}
+          />
+          <RequestQuote requestQuote={requestQuote} />
+          <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
+          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
+          <ShippingReturns />
+        </div>
+      </ScrollContainer>
     </div>
   );
 };

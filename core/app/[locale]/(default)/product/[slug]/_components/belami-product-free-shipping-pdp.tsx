@@ -34,7 +34,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
 
   if (loading) {
     return (
-      <div className="flex justify-center lg:justify-start px-[50px] p-y[10px]">
+      <div className="flex justify-center lg:justify-start px-[50px] py-[10px]">
         <Spinner aria-hidden="true" />
       </div>
     )
