@@ -143,7 +143,7 @@ export const MultipleChoiceField = ({
           className="div-product-swatch text-center lg:text-left xl:text-left mt-[10px]"
         >
           <Label
-            className="mb-2 inline-block text-center text-base font-normal leading-8 tracking-wide lg:text-left xl:text-left"
+            className="mb-2 inline-block text-center text-base font-normal leading-8 tracking-wide lg:text-left xl:text-left text-[#353535] lg:mb-0 xl:mb-0"
             htmlFor={`label-${option.entityId}`}
           >
             {option.displayName} :
@@ -205,7 +205,7 @@ export const MultipleChoiceField = ({
               loading="lazy"
             />
             <Label
-              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide"
+              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
               htmlFor={`label-${option.entityId}`}
             >
               {option.displayName} :
@@ -252,7 +252,7 @@ export const MultipleChoiceField = ({
           className="div-product-radiobuttons border-2 border-[#4EAECC] px-7 py-5 text-center xl:text-left mt-[20px]"
         >
           <Label
-            className="mb-2 inline-block text-left text-base font-normal leading-8 tracking-wide"
+            className="mb-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
             htmlFor={`label-${option.entityId}`}
           >
             {option.displayName} 
@@ -307,7 +307,7 @@ export const MultipleChoiceField = ({
               loading="lazy"
             />
             <Label
-              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide"
+              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
               htmlFor={`label-${option.entityId}`}
             >
               {option.displayName} :
@@ -360,7 +360,7 @@ export const MultipleChoiceField = ({
               loading="lazy"
             />
             <Label
-              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide"
+              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
               htmlFor={`label-${option.entityId}`}
             >
               {option.displayName} :

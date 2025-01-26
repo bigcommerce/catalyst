@@ -229,8 +229,12 @@ export default async function ProductPage(props: Props) {
             )}
           </div>
 
-          <div className="mb-4 mt-4 lg:grid lg:grid-cols-1 lg:gap-8 xl:mb-12">
-            <div className="w-[52em]">
+
+
+
+          <div className="mb-4 mt-4 xl:grid xl:grid-cols-2 xl:gap-8 xl:mb-12">
+          {/* <div className="mb-4 mt-4 lg:grid lg:grid-cols-2 lg:gap-8 xl:mb-12"> */}
+            <div className=" xl:w-[40em] 2xl:!w-[54em]">
               <Suspense fallback={<div>Loading gallery...</div>}>
                 <Gallery
                   product={product}
@@ -241,7 +245,7 @@ export default async function ProductPage(props: Props) {
               </Suspense>
             </div>
 
-            <div className="w-[36em] pl-[2em]">
+            <div className="2xl:w-[43em] xl:w-[35em] xl:pl-[12em] 2xl:!pl-[11em]">
               <Details
                 product={product}
                 collectionValue={collectionValue}

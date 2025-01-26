@@ -308,7 +308,7 @@ export const Details = ({
                     />
                   </div>
                   <div className="mr-[10em] flex-1">
-                    <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-black">
+                    <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-[#353535]">
                       {product.name}
                     </h2>
 
@@ -402,7 +402,7 @@ export const Details = ({
                     <div className="flex flex-col items-center">
                       <button
                         id="add-to-cart"
-                        className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                        className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
                         disabled
                       >
                         <span>ADD TO CART</span>
@@ -452,7 +452,7 @@ export const Details = ({
               <div className="flex flex-col items-center">
                 <button
                   id="add-to-cart"
-                  className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                  className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
                   disabled
                 >
                   <span>ADD TO CART</span>
@@ -516,7 +516,7 @@ export const Details = ({
                 </Link>
               </span>
               {collectionValue && (
-                <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
                   from the{' '}
                   <Link
                     href={`/search?brand_name[0]=${encodeURIComponent(
@@ -535,7 +535,7 @@ export const Details = ({
           </div>
 
       {product.prices && (
-        <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
+        <div className="product-price mt-[1.5em] flex items-center gap-[0.5em] text-center lg:text-left">
           {product.prices.basePrice?.value !== undefined &&
           product.prices.price?.value !== undefined &&
           product.prices.basePrice.value > product.prices.price.value ? (
@@ -563,7 +563,7 @@ export const Details = ({
               </span>
             </>
           ) : (
-            <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+            <span className="text-left text-[20px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
               {format.number(product.prices.price?.value || 0, {
                 style: 'currency',
                 currency: product.prices.price?.currencyCode || 'USD',

@@ -401,11 +401,12 @@ const Gallery = ({
   return (
     <div aria-live="polite" className={className}>
       <div className="gallery-container relative flex flex-col-reverse lg:h-[40em] xl:flex-row">
-        <div className="gallery-items mr-0 mt-5 flex flex-col items-center xl:mr-4 xl:mt-0 xl:flex-col xl:space-y-4">
+        {/* <div className="gallery-items mr-0 mt-5 flex flex-col items-center xl:mr-4 xl:mt-0 xl:flex-col xl:space-y-4"> */}
+        <div className="gallery-items mr-0 mt-5 flex flex-col items-center xl:mr-4 xl:mt-0">
           <nav
             ref={thumbnailRef}
             aria-label="Thumbnail navigation"
-            className="no-scrollbar flex flex-row space-x-4 overflow-x-auto xl:flex-col xl:space-x-0 xl:space-y-4"
+            className="no-scrollbar flex flex-row overflow-x-auto xl:flex-col gap-y-[15px]"
             style={{ maxHeight: '700px' }}
           >
             {(viewAll ? mediaItems : mediaItems.slice(0, 4)).map((item, index) => {
@@ -418,7 +419,7 @@ const Gallery = ({
                   aria-label={isVideo ? 'Play video' : 'Enlarge product image'}
                   aria-pressed={isActive}
                   className={cn(
-                    'gallery-thumbnail left-side relative h-12 w-12 flex-shrink-0 border-2 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-[7.2em] xl:w-[7em]',
+                    'gallery-thumbnail left-side gap-y-8 relative h-[3.6em] w-[3.6em] flex-shrink-0 border-2 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-[7.2em] xl:w-[7em]',
                     isActive ? 'border-primary' : 'border-gray-200',
                   )}
                   key={`${isVideo ? item.url : item.src}-${index}`}
@@ -487,7 +488,7 @@ const Gallery = ({
             {!viewAll && mediaItems.length > 4 && (
               <button
                 aria-label="View all items"
-                className="gallery-thumbnail relative h-12 w-12 flex-shrink-0 border-2 border-gray-200 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-[7.2em] xl:w-[7em]"
+                className="gallery-thumbnail relative h-[3.6em] w-[3.6em] flex-shrink-0 border-2 border-gray-200 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-[7.2em] xl:w-[7em]"
                 onClick={() => openPopup(3)}
               >
                 {mediaItems[3]?.type === 'video' ? (
