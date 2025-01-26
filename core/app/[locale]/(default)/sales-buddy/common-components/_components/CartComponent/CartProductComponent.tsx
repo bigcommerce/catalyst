@@ -18,7 +18,7 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export default function CartProductComponent({ currencyCode, product, cartId,priceAdjustData,ProductType }: Props) {
+export default function CartProductComponent({ currencyCode, product, cartId, priceAdjustData, ProductType, cookie_agent_login_status }: Props) {
   const changeTheProtectedPosition = moveToTheEnd(
     product?.selectedOptions,
     'Protect Your Purchase',
@@ -65,7 +65,10 @@ export default function CartProductComponent({ currencyCode, product, cartId,pri
 
         <div className="flex-1">
           <p className="hidden text-base text-gray-500">{product?.brand}</p>
-          <div className="grid gap-1 lg:grid-cols-[40%_20%_40%]">
+            <div className={`grid gap-1 grid-cols-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
+              ? "xl:grid-cols-[40%_20%_40%]"
+              : "xl:grid-cols-[60%_40%]"
+              }`}>
             <div className="">
               <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
                 {product?.name}
@@ -213,11 +216,11 @@ export default function CartProductComponent({ currencyCode, product, cartId,pri
                     }
                   </p>
                 </div>
-                <ItemQuantity product={product} />
+                  {cookie_agent_login_status == true && <ItemQuantity product={product} />}
               </div>
             </div>
             <div className="overflow-x-hidden pl-[10px]">
-              <ProductPriceAdjuster
+                {cookie_agent_login_status ==true && <ProductPriceAdjuster
                  parentSku={priceAdjustData?.parent_sku}
                   sku={priceAdjustData?.sku}
                   oem_sku={priceAdjustData?.oem_sku}
@@ -228,7 +231,7 @@ export default function CartProductComponent({ currencyCode, product, cartId,pri
                   productId={priceAdjustData?.id}
                   cartId={cartId}
                   ProductType={ProductType}
-              />
+              />}
             </div>
           </div>
         </div>

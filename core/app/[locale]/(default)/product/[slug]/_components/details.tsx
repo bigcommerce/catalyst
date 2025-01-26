@@ -182,7 +182,6 @@ export const Details = ({
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
-
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartY(e.clientY);
@@ -276,7 +275,6 @@ export const Details = ({
 
       setCurrentImageUrl(product.defaultImage?.url || '');
     };
-    
 
     updateImageFromVariant();
   }, [searchParams, product, variants, productOptions, currentMainMedia]);

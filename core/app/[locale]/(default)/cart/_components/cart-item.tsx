@@ -246,6 +246,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
   if (discountedPrice > 0) {
     discountPriceText = discountedPrice + '% Off';
   }
+  
   let productSKU: string = retrieveMpnData(product, product?.productEntityId, product?.variantEntityId);
   return (
     <li className="mb-[24px] border border-gray-200">
@@ -254,6 +255,11 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
           <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
         </div>
       } */}
+
+      {/* {`grid gap-1 grid-cols-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
+        ? "xl:grid-cols-[40%_20%_40%]"
+        : "xl:grid-cols-[60%_40%]"
+        }`} */}
       <div className="">
         
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
@@ -273,7 +279,10 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
 
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product?.brand}</p>
-            <div className="grid gap-1 grid-cols-1 sm:grid-cols-[auto,auto] xl:grid-cols-[40%_20%_40%]">
+            <div className={`grid gap-1 grid-cols-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
+              ? "xl:grid-cols-[40%_20%_40%]"
+              : "xl:grid-cols-[60%_40%]"
+              }`}>
               <div className="">
                 <Link href={product?.url}>
                   <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -402,10 +411,11 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                 {/* Desktop layout (unchanged) */}
                 <div className="cart-deleteIcon relative flex flex-col gap-0 [&_.cart-item-delete]:absolute [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:sm:static text-right md:items-end sm:gap-2">
                   <RemoveItem currency={currencyCode} product={product}/>
+                 
                   <div className="mb-0">
                     <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-                      {product.originalPrice.value &&
-                        product.originalPrice.value !== product.listPrice.value ? (
+                      {product?.originalPrice.value  &&
+                        product?.originalPrice.value !== product?.listPrice.value ? (
                         <p className="line-through">
                           {format.number(product?.originalPrice?.value * product?.quantity, {
                             style: 'currency',
@@ -424,10 +434,11 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                       })}
                     </p>
                   </div>
+                
                   <ItemQuantity product={product} />
                 </div>
               </div>
-              <div className="overflow-x-hidden xl:pl-[10px]">
+              { cookie_agent_login_status == true && <div className="overflow-x-hidden xl:pl-[10px]">
                 <ProductPriceAdjuster
                   parentSku={priceAdjustData?.parent_sku}
                   sku={priceAdjustData?.sku}
@@ -441,7 +452,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                   ProductType={"product"}
                 />
                 {/* priceAdjustData.parent_sku */}
-              </div>
+              </div>}
             </div>
           </div>
         </div>
