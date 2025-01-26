@@ -50,12 +50,12 @@ const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   const [cartIdForCheck, setCartIdForCheck] = useState<string | null>(null);
   
   useEffect(() => {
-    setAgentLoginStatus(localStorage.getItem('agent_login') === 'true');
-    setAgentRole(localStorage.getItem('agent_role'));
-    setAgentName(localStorage.getItem('agent_name'));
+    setAgentLoginStatus(localStorage?.getItem('agent_login') === 'true');
+    setAgentRole(localStorage?.getItem('agent_role'));
+    setAgentName(localStorage?.getItem('agent_name'));
   }, []);
   useEffect(() => {
-    const stringProducts = sessionStorage.getItem('compareProducts');
+    const stringProducts = sessionStorage?.getItem('compareProducts');
 
     if (stringProducts && stringProducts !== '[]') {
       try {
