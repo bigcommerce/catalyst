@@ -18,20 +18,38 @@ export default function SalesBuddyAppIndex() {
     setIsOpen(!isOpen);
   };
   const path = usePathname();
+  const [customerAccordinOpenIndexes, setCustomerAccordinOpenIndexes] = useState<number[]>([]);
+  const [cartAccordinOpenIndexes, setCartAccordinOpenIndexes] = useState<number[]>([]);
+
+  const CustomerSupportToggleAccordion = (index: any) => {
+    setCustomerAccordinOpenIndexes(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+  const CartToggleAccordion = (index: any) => {
+    setCartAccordinOpenIndexes(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+
 
   const renderDrawerContent = () => {
     if (path.indexOf('/cart/') > -1 || path.indexOf('/cart') > -1) {
       return (
         <div className="space-y-[20px]">
           <ReferalId />
-          <CartInterface />
-          <CustomerSupportPage />
+          <CartInterface toggleAccordion={CartToggleAccordion} openIndexes={cartAccordinOpenIndexes} setOpenIndexes={setCartAccordinOpenIndexes} />
+          <CustomerSupportPage toggleAccordion={CustomerSupportToggleAccordion} openIndexes={customerAccordinOpenIndexes} setOpenIndexes={setCustomerAccordinOpenIndexes} />
         </div>
       );
     } else if (path.indexOf('/c/') > -1 || path.indexOf('/search/') > -1) {
       return (
         <div className="">
-          <CustomerSupportPage />
+          <CustomerSupportPage toggleAccordion={CustomerSupportToggleAccordion} openIndexes={customerAccordinOpenIndexes} setOpenIndexes={setCustomerAccordinOpenIndexes} />
           <PLPPageInterface />
         </div>
       );
@@ -40,13 +58,13 @@ export default function SalesBuddyAppIndex() {
       return (
         <div className=" space-y-[20px] ">
           <SalesBuddyProductPage />
-          <CustomerSupportPage />
+          <CustomerSupportPage toggleAccordion={CustomerSupportToggleAccordion} openIndexes={customerAccordinOpenIndexes} setOpenIndexes={setCustomerAccordinOpenIndexes} />
         </div>
       );
     } else {
       return (
         <div className="">
-          <CustomerSupportPage />
+          <CustomerSupportPage toggleAccordion={CustomerSupportToggleAccordion} openIndexes={customerAccordinOpenIndexes} setOpenIndexes={setCustomerAccordinOpenIndexes} />
         </div>
       );
     }

@@ -115,7 +115,7 @@ export default async function Cart() {
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
     // ...cart.lineItems.customItems,
-  ];
+  ];  
   let cartQty = lineItems?.reduce(function (total: number, cartItems: any) {
     return total + cartItems?.quantity;
   }, 0);
@@ -124,6 +124,7 @@ export default async function Cart() {
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
   let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
+  
   let updatedLineItemInfo: any = [];
   let updatedLineItemWithoutAccessories: any = [];
   let accessoriesSkuArray: any = [];
@@ -180,7 +181,7 @@ export default async function Cart() {
   // await commonSettinngs([getBrandIds])
 
   let checkZeroTax: any = await zeroTaxCalculation(data.site);
-  
+
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
       <div className=' sticky top-2 z-50 '>
@@ -242,7 +243,7 @@ export default async function Cart() {
             />
           ))}
           {
-            cookie_agent_login_status === 'true' &&
+            // cookie_agent_login_status === 'true' &&
             CustomItems.length > 0 && CustomItems?.map((data)=>{
               return (
               <CartProductComponent
@@ -255,7 +256,8 @@ export default async function Cart() {
                 cookie_agent_login_status={cookie_agent_login_status === 'true' ? true : false}
               />
               )
-            })
+            }
+          )
           }
         </ul>
 

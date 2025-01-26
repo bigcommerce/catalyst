@@ -411,10 +411,11 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                 {/* Desktop layout (unchanged) */}
                 <div className="cart-deleteIcon relative flex flex-col gap-0 [&_.cart-item-delete]:absolute [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:sm:static text-right md:items-end sm:gap-2">
                   <RemoveItem currency={currencyCode} product={product}/>
+                 
                   <div className="mb-0">
                     <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-                      {product.originalPrice.value &&
-                        product.originalPrice.value !== product.listPrice.value ? (
+                      {product?.originalPrice.value  &&
+                        product?.originalPrice.value !== product?.listPrice.value ? (
                         <p className="line-through">
                           {format.number(product?.originalPrice?.value * product?.quantity, {
                             style: 'currency',
@@ -433,6 +434,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                       })}
                     </p>
                   </div>
+                
                   <ItemQuantity product={product} />
                 </div>
               </div>

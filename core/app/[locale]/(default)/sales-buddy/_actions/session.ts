@@ -80,3 +80,4 @@ export const createSessionIdCookie = async (localMachineInformation: any) => {
   }
 
 };
+

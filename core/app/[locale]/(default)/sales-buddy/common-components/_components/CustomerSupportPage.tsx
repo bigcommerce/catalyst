@@ -17,7 +17,7 @@ import Link from 'next/link';
 import SystemInfoComponent from './SystemInformationComponent';
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import CompactUserCard from './SystemInformationComponent/CustomerDetailUsingSessionId';
-function CustomerSupportPage() {
+function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
   const [customerDetails, setCustomerDetails] = useState({});
   const [customerDetailsBasedOnSessionId, setCustomerDetailsBasedOnSessionId] = useState([]);
   const [cartErrorMessage, setCartErrorMessage] = useState<string | null>(null);
@@ -85,15 +85,22 @@ function CustomerSupportPage() {
       setLoading((prev) => ({ ...prev, show1: false }));
       return
     }
+    localStorage.setItem('cart_lookup_sessionID_agent',"")
     try {
       const response = await getCustomerUrlSession_id(cartId);
       if (response.output.count > 0){
         setCart_interface_session_id(response.output.data[0]['session_id'])
         setCart_interface_Refferal_id(response.output.data[0]['referral_id'])
-
         setCustomerDetailsBasedOnSessionId(response.output.data[0])
         UpdateCartIdCookie(response.output.data[0]['cart_id'])
         setUpdatedCCartId(cartId)
+        localStorage.setItem(
+          'cart_lookup_sessionID_agent',
+          JSON.stringify({
+            SessionId: cartId,
+            SessionIDUserDetails: response.output.data[0]
+          })
+        );
       }else{
         setCartErrorMessage('No cart found with the given session id');
       }
@@ -311,13 +318,19 @@ function CustomerSupportPage() {
     }
   };
   useEffect(() => {
+    const getCartLookUpValueFromLS=()=>{
+      const getCart_lookup_sessionID_agent = JSON?.parse(localStorage?.getItem('cart_lookup_sessionID_agent'));
+      setCartId(getCart_lookup_sessionID_agent.SessionId)
+      setCustomerDetailsBasedOnSessionId(getCart_lookup_sessionID_agent?.SessionIDUserDetails)
+
+    }
     const getShopperInfoAndLoad = () => {
       try {
-        const sessionFromLS = localStorage.getItem('session_id');
+        const getCart_lookup_sessionID_agent = JSON?.parse(localStorage?.getItem('cart_lookup_sessionID_agent'));
+        const sessionFromLS = getCart_lookup_sessionID_agent.SessionId
         const overAllValue = localStorage.getItem('ShopperInformations');
-       
-        
         // Check if data exists in localStorage
+        setSessionId(sessionFromLS)
         if (!overAllValue) {
           setShopperSystemInfo([]);
           setCustomerVisitedUrl([]);
@@ -343,7 +356,9 @@ function CustomerSupportPage() {
         setCustomerVisitedUrl([]);
       }
     };
-    // getShopperInfoAndLoad()
+
+    getCartLookUpValueFromLS()
+    getShopperInfoAndLoad()
 
   }, [])
 
@@ -546,7 +561,7 @@ function CustomerSupportPage() {
               {loading.show1 && <Loader />}
             </div>
           </button>
-          {Object.keys(customerDetailsBasedOnSessionId).length > 0 && cartErrorMessage =='' && cartId !=='' && <div className='m-2'>
+          {Object.keys(customerDetailsBasedOnSessionId).length > 0 && cartErrorMessage == '' ||   cartErrorMessage == null && cartId !=='' && <div className='m-2'>
             <CompactUserCard data={customerDetailsBasedOnSessionId} />
           </div>}
         </form>
@@ -699,6 +714,9 @@ function CustomerSupportPage() {
         <Accordions
           styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={accordions}
+          toggleAccordion={toggleAccordion} 
+          openIndexes={openIndexes}
+          setOpenIndexes={setOpenIndexes}
         />
       </div>
     </div>
