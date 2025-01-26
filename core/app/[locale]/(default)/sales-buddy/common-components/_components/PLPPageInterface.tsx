@@ -4,7 +4,7 @@ import {Checkbox} from '../Input/checkbox'; // Replace with your actual Checkbox
 import {Input} from '../Input/index'; // Replace with your Input component
 import {Button} from '../Button/index'; // Replace with your Button component
 
-function PLPPageInterface() {
+function PLPPageInterface({ toggleAccordion, openIndexes, setOpenIndexes }) {
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
 
   // Filters data
@@ -88,6 +88,9 @@ function PLPPageInterface() {
       <Accordions
         styles="border-x-0 border-y-[1px] -my-[1px] border-[#CCCBCB] py-[10px] px-[20px] text-[16px] bg-white"
         accordions={accordions}
+        toggleAccordion={toggleAccordion}
+        openIndexes={openIndexes}
+        setOpenIndexes={setOpenIndexes}
       />
       <div className="w-[460px] space-y-[10px]">
         <div className="bg-white"></div>

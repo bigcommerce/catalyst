@@ -20,6 +20,8 @@ export default function SalesBuddyAppIndex() {
   const path = usePathname();
   const [customerAccordinOpenIndexes, setCustomerAccordinOpenIndexes] = useState<number[]>([]);
   const [cartAccordinOpenIndexes, setCartAccordinOpenIndexes] = useState<number[]>([]);
+  const [pdpAccordinOpenIndexes, setPdpAccordinOpenIndexes] = useState<number[]>([]);
+  const [plpAccordinOpenIndexes, setPlpAccordinOpenIndexes] = useState<number[]>([]);
 
   const CustomerSupportToggleAccordion = (index: any) => {
     setCustomerAccordinOpenIndexes(prev =>
@@ -30,6 +32,20 @@ export default function SalesBuddyAppIndex() {
   };
   const CartToggleAccordion = (index: any) => {
     setCartAccordinOpenIndexes(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+  const PDPToggleAccordion = (index: any) => {
+    setPdpAccordinOpenIndexes(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+  const PLPToggleAccordion = (index: any) => {
+    setPlpAccordinOpenIndexes(prev =>
       prev.includes(index)
         ? prev.filter(i => i !== index)
         : [...prev, index]
@@ -50,14 +66,14 @@ export default function SalesBuddyAppIndex() {
       return (
         <div className="">
           <CustomerSupportPage toggleAccordion={CustomerSupportToggleAccordion} openIndexes={customerAccordinOpenIndexes} setOpenIndexes={setCustomerAccordinOpenIndexes} />
-          <PLPPageInterface />
+          <PLPPageInterface toggleAccordion={PLPToggleAccordion} openIndexes={plpAccordinOpenIndexes} setOpenIndexes={setPlpAccordinOpenIndexes} />
         </div>
       );
     }
     else if (path.indexOf('/p/') !== -1) {
       return (
         <div className=" space-y-[20px] ">
-          <SalesBuddyProductPage />
+          <SalesBuddyProductPage toggleAccordion={PDPToggleAccordion} openIndexes={pdpAccordinOpenIndexes} setOpenIndexes={setPdpAccordinOpenIndexes} />
           <CustomerSupportPage toggleAccordion={CustomerSupportToggleAccordion} openIndexes={customerAccordinOpenIndexes} setOpenIndexes={setCustomerAccordinOpenIndexes} />
         </div>
       );
