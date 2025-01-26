@@ -11,6 +11,7 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
 import { ProductViewedFragment } from './_components/product-viewed/fragment';
+import { withLQIP } from '~/lib/with-lqip';
 
 const MultipleChoiceFieldFragment = graphql(`
   fragment MultipleChoiceFieldFragment on MultipleChoiceOption {
@@ -169,12 +170,14 @@ const ProductDetailsFragment = graphql(
             altText
             url: urlTemplate(lossy: true)
             isDefault
+            lqipUrl: url(lossy: true, width: 10)
           }
         }
       }
       defaultImage {
         altText
         url: urlTemplate(lossy: true)
+        lqipUrl: url(lossy: true, width: 10)
       }
       brand {
         name
@@ -271,5 +274,7 @@ export const getProductData = cache(async (variables: Variables) => {
     return notFound();
   }
 
-  return product;
+  const productWithLqip = await withLQIP(product);
+
+  return productWithLqip;
 });

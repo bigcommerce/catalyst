@@ -28,6 +28,7 @@ export default async (): Promise<NextConfig> => {
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
       ppr: 'incremental',
+      useCache: true,
     },
     typescript: {
       ignoreBuildErrors: !!process.env.CI,

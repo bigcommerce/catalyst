@@ -11,7 +11,7 @@ export interface CardProduct {
   id: string;
   title: string;
   href: string;
-  image?: { src: string; alt: string };
+  image?: { src: string; alt: string, blurDataURL?: string };
   price?: Price;
   subtitle?: string;
   badge?: string;
@@ -85,16 +85,18 @@ export function ProductCard({
             <Image
               alt={image.alt}
               className={clsx(
-                'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
-                {
-                  light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
-                  dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
-                }[colorScheme],
-              )}
-              fill
-              priority={imagePriority}
+              'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+              {
+                light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
+                dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
+              }[colorScheme],
+            )}
+            fill
+            priority={imagePriority}
               sizes={imageSizes}
               src={image.src}
+              placeholder={image.blurDataURL ? 'blur' : 'empty'}
+              blurDataURL={image.blurDataURL}
             />
           ) : (
             <div

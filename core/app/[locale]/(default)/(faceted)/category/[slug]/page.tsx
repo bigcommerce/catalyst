@@ -145,7 +145,7 @@ async function getListProducts(props: Props): Promise<ListProduct[]> {
     title: product.name,
     href: product.path,
     image: product.defaultImage
-      ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+      ? { src: product.defaultImage.url, alt: product.defaultImage.altText, blurDataURL: product.defaultImage.blurDataURL }
       : undefined,
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name ?? undefined,

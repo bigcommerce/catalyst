@@ -52,6 +52,7 @@ const getProduct = async (props: Props) => {
   const images = removeEdgesAndNodes(product.images).map((image) => ({
     src: image.url,
     alt: image.altText,
+    blurDataURL: image.blurDataURL,
   }));
 
   const customFields = removeEdgesAndNodes(product.customFields);
@@ -117,7 +118,7 @@ const getProduct = async (props: Props) => {
     ),
     href: product.path,
     images: product.defaultImage
-      ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
+      ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText, blurDataURL: product.defaultImage.blurDataUrl }, ...images]
       : images,
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name,

@@ -8,6 +8,7 @@ import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { withLQIP } from '~/lib/with-lqip';
 
 const GetProductSearchResultsQuery = graphql(
   `
@@ -188,6 +189,8 @@ const getProductSearchResults = cache(
       ...product,
     }));
 
+    const itemsWithLqip = await withLQIP(items);
+
     return {
       facets: {
         items: removeEdgesAndNodes(searchResults.filters).map((node) => {
@@ -224,7 +227,7 @@ const getProductSearchResults = cache(
       products: {
         collectionInfo: searchResults.products.collectionInfo,
         pageInfo: searchResults.products.pageInfo,
-        items,
+        items: itemsWithLqip,
       },
     };
   },

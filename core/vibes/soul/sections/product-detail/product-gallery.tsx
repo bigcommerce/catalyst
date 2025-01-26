@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import { Image } from '~/components/image';
 
 interface Props {
-  images: Array<{ alt: string; src: string }>;
+  images: Array<{ alt: string; src: string, blurDataURL?: string; }>;
   className?: string;
   thumbnailLabel?: string;
 }
@@ -49,6 +49,8 @@ export function ProductGallery({ images, className, thumbnailLabel = 'View image
                 priority={idx === 0}
                 sizes="(min-width: 42rem) 50vw, 100vw"
                 src={image.src}
+                placeholder={image.blurDataURL ? 'blur' : 'empty'}
+                blurDataURL={image.blurDataURL}
               />
             </div>
           ))}
@@ -73,6 +75,8 @@ export function ProductGallery({ images, className, thumbnailLabel = 'View image
               fill
               sizes="(min-width: 28rem) 4rem, 3rem"
               src={image.src}
+              placeholder={image.blurDataURL ? 'blur' : 'empty'}
+              blurDataURL={image.blurDataURL}
             />
           </button>
         ))}
