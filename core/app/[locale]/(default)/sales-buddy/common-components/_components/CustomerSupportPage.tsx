@@ -180,7 +180,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
             const ShopperMachineInformationJsonToObj = JSON?.parse(
               shopperData?.shopper_information
             );
-            ShopperMachineInformationJsonToObj?.session_id = sessionId;
+            //ShopperMachineInformationJsonToObj?.session_id = sessionId;
             setShopperSystemInfo(ShopperMachineInformationJsonToObj);
           } catch (parseError) {
             console.error('Error parsing shopper information:', parseError);
@@ -561,7 +561,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
               {loading.show1 && <Loader />}
             </div>
           </button>
-          {Object.keys(customerDetailsBasedOnSessionId).length > 0 && cartErrorMessage == '' ||   cartErrorMessage == null && cartId !=='' && <div className='m-2'>
+          {customerDetailsBasedOnSessionId && (Object.keys(customerDetailsBasedOnSessionId).length > 0 && cartErrorMessage == '' ||   cartErrorMessage == null && cartId !=='') && <div className='m-2'>
             <CompactUserCard data={customerDetailsBasedOnSessionId} />
           </div>}
         </form>

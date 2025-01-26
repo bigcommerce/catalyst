@@ -16,7 +16,7 @@ export default function SalesBuddyPage() {
     if (context_session_id ){
       const fullUrl = queryString ? `${window.location.protocol}//${window.location.host}${path}?${queryString}` : `${window.location.protocol}//${window.location.host}${path}`;
       // const fullUrl = `${window.location.protocol}//${window.location.host}${path}`;      
-      const previousUrl = localStorage.getItem('previous_url');
+      const previousUrl:any = localStorage.getItem('previous_url');
       if (previousUrl !== fullUrl  ) {
         const insertShopperVisitedUrlFunc = async () => {
           try {
