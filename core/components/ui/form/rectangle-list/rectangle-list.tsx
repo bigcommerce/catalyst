@@ -1,6 +1,5 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { ComponentPropsWithRef, ElementRef, forwardRef, useId } from 'react';
-
 import { cn } from '~/lib/utils';
 
 interface Item {
@@ -19,7 +18,10 @@ const RectangleList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Pr
 
     return (
       <RadioGroupPrimitive.Root
-        className={cn('flex flex-wrap fabric-type-modifier-list', className)}
+        className={cn(
+          'fabric-type-modifier-list flex flex-wrap justify-center xl:justify-start',
+          className,
+        )}
         orientation="horizontal"
         ref={ref}
         {...props}
@@ -29,20 +31,21 @@ const RectangleList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Pr
 
           return (
             <RadioGroupPrimitive.Item
-            key={`${id}-${value}`}
-            {...itemProps}
-            className={cn(
-              'border-2 px-6 py-2.5 font-semibold text-black',
-              'hover:border-sky-400',
-              'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-400/20',
-              'disabled:border-gray-100 disabled:text-gray-400 disabled:hover:border-gray-100',
-              'data-[state=checked]:border-sky-400',
-              'border-sky-200 border-2 font-normal text-slate-900',
-              error && 
-                'border-red-300 hover:border-red-500 focus-visible:border-red-300 focus-visible:ring-red-500/20 disabled:border-gray-200 data-[state=checked]:border-red-300',
-            )}
-            value={value}
-          >
+              key={`${id}-${value}`}
+              {...itemProps}
+              className={cn(
+                'w-auto border-2 px-4 py-2.5 font-semibold text-black',
+                'mx-1 mb-2',
+                'hover:border-sky-400',
+                'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-400/20',
+                'disabled:border-gray-100 disabled:text-gray-400 disabled:hover:border-gray-100',
+                'data-[state=checked]:border-sky-400 data-[state=checked]:bg-[#B4DDE9]',
+                'border-2 border-sky-200 font-normal text-slate-900',
+                error &&
+                  'border-red-300 hover:border-red-500 focus-visible:border-red-300 focus-visible:ring-red-500/20 disabled:border-gray-200 data-[state=checked]:border-red-300',
+              )}
+              value={value}
+            >
               {item.label}
             </RadioGroupPrimitive.Item>
           );

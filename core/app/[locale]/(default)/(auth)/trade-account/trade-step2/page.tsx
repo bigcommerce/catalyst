@@ -174,15 +174,17 @@ export default async function Trade() {
             <h2 className="m-auto mb-[30px] mt-[20px] text-center text-[20px] font-[500] leading-[32px] text-[#353535] lg:mb-[40px] lg:text-left">
               Quickly tell us about what you do.
             </h2>
-            <div className="rounded-lg bg-white px-5 pb-[2.5em] pt-[2em] shadow-[0_0_30px_5px_rgba(0,0,0,0.06)] xl:px-0 xl:pb-[3.5em]">
-              <RegisterForm2
-                TradeAddress1={TradeAddress1}
-                addressFields={addressFields as FormField[]}
-                countries={filteredCountries}
-                customerFields={customerFields as FormField[]}
-                defaultCountry={defaultCountry}
-              />
-            </div>
+                     <div className="max-w-screen-lg w-full rounded-lg bg-white px-8 pb-[2.5em] pt-[2em] shadow-[0_0_30px_5px_rgba(0,0,0,0.06)] xl:px-12 xl:pb-[3.5em] xl:pt-[2.5em] sm:px-6 sm:pb-[2em] sm:pt-[2em] md:px-8 md:pb-[2.2em] md:pt-[2em]">
+  <div className="max-w-full w-full">
+    <RegisterForm2
+      TradeAddress1={TradeAddress1}
+      addressFields={addressFields as FormField[]}
+      countries={filteredCountries}
+      customerFields={customerFields as FormField[]}
+      defaultCountry={defaultCountry}
+    />
+  </div>
+</div>
           </div>
         </div>
 

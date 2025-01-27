@@ -6,6 +6,7 @@ import { cn } from '~/lib/utils';
 import { Locale } from './locale';
 import AgentFooter from '~/app/[locale]/(default)/sales-buddy/pages/footer';
 import CookieConsent from '../cookie-consent/cookieConsent';
+import Link from 'next/link';
 const flagSalesBuddy = Number(process.env.SALES_BUDDY_FLAG);
 
 interface Image {
@@ -66,23 +67,33 @@ const Footer = ({
               Customer Service
             </h3>
           )}
-          {Boolean(contactInformation?.phone) && (
+          {/* {Boolean(contactInformation?.phone) && (
             <CustomLink
               className="flex-col gap-[10px] font-['Open_Sans'] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
               href={`tel:${contactInformation?.phone}`}
-            >
-              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-                Start a Return or Replacement
-              </p>
-              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-                View Order Status
-              </p>
-              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-                Visit our Helpdesk
-              </p>
-            </CustomLink>
-          )}
+            > */}
+          <Link
+            href="/content/returns"
+            className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
+          >
+            Start a Return or Replacement
+          </Link>
+          <Link
+            href="#"
+            className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
+          >
+            View Order Status
+          </Link>
+          <Link
+            href="/content/help-center"
+            className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
+          >
+            Visit our Helpdesk
+          </Link>
+          {/* </CustomLink>
+          )} */}
         </div>
+
         {Boolean(contactInformation?.phone) && (
           <CustomLink
             className="flex flex-col gap-[10px] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
@@ -140,7 +151,10 @@ const Footer = ({
       ))}
     </nav>
 
-    <nav className="grid grid-cols-1 sm:grid-cols-2 gap-[30px] xl:hidden [&>*]:h-fit" id="nav-footer-section">
+    <nav
+      className="grid grid-cols-1 gap-[30px] sm:grid-cols-2 xl:hidden [&>*]:h-fit"
+      id="nav-footer-section"
+    >
       <div className="flex flex-col gap-[30px] [&>*:first-child]:order-[0] [&>*:nth-child(2)]:order-[2] [&>*:nth-child(3)]:order-[1] [&>*:nth-child(4)]:hidden">
         <div className="flex flex-col gap-[10px]">
           {Boolean(logo) && (
@@ -166,7 +180,6 @@ const Footer = ({
           )}
         </div>
         {sections.map((section, index) => (
-          
           <div key={`${section.title}-${index}`} className="flex h-fit flex-col gap-[10px]">
             <h3 className="text-left text-[20px] font-medium leading-[32px] tracking-[0.15px] text-white">
               {section.title}
@@ -186,12 +199,12 @@ const Footer = ({
                   )}
                 </li>
               ))}
-            {Boolean(index == 2 && flagSalesBuddy) && <AgentFooter />}
+              {Boolean(index == 2 && flagSalesBuddy) && <AgentFooter />}
             </ul>
           </div>
         ))}
       </div>
-      <div className='flex flex-col gap-[30px] [&>*:nth-child(2)]:hidden [&>*:nth-child(3)]:hidden'>
+      <div className="flex flex-col gap-[30px] [&>*:nth-child(2)]:hidden [&>*:nth-child(3)]:hidden">
         {Boolean(contactInformation?.phone) && (
           <CustomLink
             className="flex flex-col gap-[10px] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
@@ -242,7 +255,7 @@ const Footer = ({
                   )}
                 </li>
               ))}
-            {Boolean(index == 2 && flagSalesBuddy) && <AgentFooter />}
+              {Boolean(index == 2 && flagSalesBuddy) && <AgentFooter />}
             </ul>
           </div>
         ))}
