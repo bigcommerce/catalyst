@@ -13,8 +13,9 @@ import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { Category } from './category';
 
 import { Page as MakeswiftPage } from '@makeswift/runtime/next';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { defaultLocale } from '~/i18n/routing';
-import { client, getSiteVersion } from '~/lib/makeswift/client';
+import { client } from '~/lib/makeswift/client';
 import '~/lib/makeswift/components';
 
 interface Props {
