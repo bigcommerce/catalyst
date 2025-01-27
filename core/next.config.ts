@@ -52,6 +52,16 @@ export default async (): Promise<NextConfig> => {
               key: 'Link',
               value: `<https://${process.env.BIGCOMMERCE_CDN_HOSTNAME ?? 'cdn11.bigcommerce.com'}>; rel=preconnect`,
             },
+            // These headers help BigCommerce support identify your storefront; you may delete them if you wish,
+            // but doing so will make it harder for BigCommerce support to help you efficiently.
+            {
+              key: 'X-Bc-Store-Hash',
+              value: process.env.BIGCOMMERCE_STORE_HASH,
+            },
+            {
+              key: 'X-Bc-Primary-Channel-Id',
+              value: process.env.BIGCOMMERCE_CHANNEL_ID,
+            },
           ],
         },
       ];
