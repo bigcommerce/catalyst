@@ -31,6 +31,7 @@ import WishlistAddToList from '../../../account/(tabs)/wishlists/wishlist-add-to
 import { useWishlists } from '../../../account/(tabs)/wishlists/wishlist-add-to-list/hooks';
 import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { commonSettinngs } from '~/components/common-functions';
+import ScrollContainer from './sticky';
 
 interface ProductOptionValue {
   entityId: number;
@@ -183,24 +184,24 @@ export const Details = ({
   const [startY, setStartY] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
 
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setStartY(e.clientY);
-    setScrollTop(scrollableRef.current.scrollTop);
-    document.body.style.userSelect = 'none';
-  };
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowStickyHeader(window.scrollY > 200);
+    };
 
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
+    const handleCustomScroll = (e: CustomEvent) => {
+      setShowStickyHeader(e.detail.scrollY > 200);
+    };
 
-    const distance = e.clientY - startY;
-    scrollableRef.current.scrollTop = scrollTop - distance; 
-  };
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('customScroll', handleCustomScroll as EventListener);
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    document.body.style.userSelect = 'auto';
-  };
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('customScroll', handleCustomScroll as EventListener);
+    };
+  }, []);
+
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
   
@@ -227,25 +228,13 @@ export const Details = ({
   }, [variants, productSku]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (!productFormRef.current) return;
-
-      const formRect = productFormRef.current.getBoundingClientRect();
-      setShowStickyHeader(formRect.bottom < 0);
-
-      if (currentScrollY < lastScrollY) {
-        setIsScrollingUp(true);
-      } else {
-        setIsScrollingUp(false);
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+    const matchingVariant = variants.find((variant) => variant?.sku === productSku);
+    if (matchingVariant) {
+      setSelectedVariantId(matchingVariant.entityId);
+    } else {
+      setSelectedVariantId(null); // Reset if no matching variant is found
+    }
+  }, [variants, productSku]);
 
   useEffect(() => {
     const updateImageFromVariant = () => {
@@ -558,19 +547,45 @@ export const Details = ({
           </div>
         </>
       )}
-      <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          display: none; /* Hides scrollbar for Chrome, Safari, Edge */
-        }
 
-        .custom-scrollbar {
-          -ms-overflow-style: none; /* Hides scrollbar for IE and Edge */
-          scrollbar-width: none; /* Hides scrollbar for Firefox */
-        }
+      <ScrollContainer>
+        <div className="main-div-product-details">
+          <div className="div-product-details">
+            {/* Add relative positioning wrapper */}
+            <div className="relative">
+              <h1 className="product-name mb-3 text-center text-[24px] font-medium leading-[2rem] tracking-[0.15px] text-[#353535] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
+                {product.name}
+              </h1>
+            </div>
 
-        .cursor-grab:active {
-          cursor: grabbing; /* Changes cursor while dragging */
-        }
+            <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
+              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                SKU: <span>{product.mpn}</span>
+              </span>
+              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                by{' '}
+                <Link
+                  href={product.brand?.path ?? ''}
+                  className="products-underline border-b border-black"
+                >
+                  {product.brand?.name}
+                </Link>
+              </span>
+              {collectionValue && (
+                <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                  from the{' '}
+                  <Link
+                    href={`/search?brand_name[0]=${encodeURIComponent(
+                      product.brand?.name ?? '',
+                    )}&collection[0]=${encodeURIComponent(collectionValue)}`}
+                    className="products-underline border-b border-black"
+                  >
+                    {collectionValue}
+                  </Link>{' '}
+                  Family
+                </span>
+              )}
+            </div>
 
         .smooth-scroll {
           scroll-behavior: smooth; /* Smooth scrolling */
@@ -701,6 +716,22 @@ export const Details = ({
               </>
             ) : product.prices.basePrice?.value ? (
               <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+            <ReviewSummary data={product} />
+          </div>
+
+      {product.prices && (
+        <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
+          {product.prices.basePrice?.value !== undefined &&
+          product.prices.price?.value !== undefined &&
+          product.prices.basePrice.value > product.prices.price.value ? (
+            <>
+              <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                {format.number(product.prices.price.value, {
+                  style: 'currency',
+                  currency: product.prices.price.currencyCode,
+                })}
+              </span>
+              <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                 {format.number(product.prices.basePrice.value, {
                   style: 'currency',
                   currency: product.prices.basePrice.currencyCode,
@@ -797,6 +828,119 @@ export const Details = ({
         <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
         <ShippingReturns />
       </div>
+              <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+                Save{' '}
+                {Math.round(
+                  ((product.prices.basePrice.value - product.prices.price.value) /
+                    product.prices.basePrice.value) *
+                    100,
+                )}
+                %
+              </span>
+            </>
+          ) : (
+            <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+              {format.number(product.prices.price?.value || 0, {
+                style: 'currency',
+                currency: product.prices.price?.currencyCode || 'USD',
+              })}
+            </span>
+          )}
+        </div>
+      )}
+      <Coupon couponIcon={couponIcon} />
+
+      {selectedVariantId && (
+            <FreeDelivery
+              entityId={product.entityId}
+              variantId={selectedVariantId}
+              isFromPDP={true}
+            />
+          )}
+      {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) && getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada  &&
+        <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
+      }
+
+      <div ref={productFormRef}>
+        <ProductForm
+          data={product}
+          productMpn={product.mpn || ''}
+          multipleOptionIcon={multipleOptionIcon}
+          blankAddImg={blankAddImg}
+          productImages={productImages}
+          fanPopup={fanPopup}
+          closeIcon={closeIcon}
+        />
+      </div>
+
+          <div className="div-product-description my-12 hidden">
+            <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {Boolean(product.sku) && (
+                <div>
+                  <h3 className="font-semibold">{t('sku')}</h3>
+                  <p>{product.sku}</p>
+                </div>
+              )}
+              {Boolean(product.upc) && (
+                <div>
+                  <h3 className="font-semibold">{t('upc')}</h3>
+                  <p>{product.upc}</p>
+                </div>
+              )}
+              {Boolean(product.minPurchaseQuantity) && (
+                <div>
+                  <h3 className="font-semibold">{t('minPurchase')}</h3>
+                  <p>{product.minPurchaseQuantity}</p>
+                </div>
+              )}
+              {Boolean(product.maxPurchaseQuantity) && (
+                <div>
+                  <h3 className="font-semibold">{t('maxPurchase')}</h3>
+                  <p>{product.maxPurchaseQuantity}</p>
+                </div>
+              )}
+              {Boolean(product.availabilityV2.description) && (
+                <div>
+                  <h3 className="font-semibold">{t('availability')}</h3>
+                  <p>{product.availabilityV2.description}</p>
+                </div>
+              )}
+              {Boolean(product.condition) && (
+                <div>
+                  <h3 className="font-semibold">{t('condition')}</h3>
+                  <p>{product.condition}</p>
+                </div>
+              )}
+              {Boolean(product.weight) && (
+                <div>
+                  <h3 className="font-semibold">{t('weight')}</h3>
+                  <p>
+                    {product.weight?.value} {product.weight?.unit}
+                  </p>
+                </div>
+              )}
+              {Boolean(customFields) &&
+                customFields.map((customField) => (
+                  <div key={customField.entityId}>
+                    <h3 className="font-semibold">{customField.name}</h3>
+                    <p>{customField.value}</p>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          <ProductSchema product={product} />
+          <PayPalPayLater
+            amount={product?.prices?.price?.value?.toString()}
+            currency={product?.prices?.price?.currencyCode}
+          />
+          <RequestQuote requestQuote={requestQuote} />
+          <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
+          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
+          <ShippingReturns />
+        </div>
+      </ScrollContainer>
     </div>
   );
 };

@@ -16,7 +16,7 @@ export const TabHeading = async ({ heading }: { heading: TabType }) => {
   return (
     <>
       <ComponentsBreadcrumbs
-        className="login-div login-breadcrumb mx-auto mb-[30px] hidden px-[1px] lg:block"
+        className="login-div login-breadcrumb mx-auto mb-[30px] px-[1px] lg:block"
         breadcrumbs={breadcrumbs}
       />
 
