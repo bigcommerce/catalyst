@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { cache } from 'react';
 
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
@@ -41,7 +42,7 @@ const fieldMapping = {
 
 type ContactField = keyof typeof fieldMapping;
 
-async function getWebPage(id: string): Promise<ContactPage> {
+const getWebPage = cache(async (id: string): Promise<ContactPage> => {
   const data = await getWebpageData({ id: decodeURIComponent(id) });
   const reCaptchaSettings = data.site.settings?.reCaptcha ?? null;
   const webpage = data.node?.__typename === 'ContactPage' ? data.node : null;
@@ -62,7 +63,7 @@ async function getWebPage(id: string): Promise<ContactPage> {
     seo: webpage.seo,
     reCaptchaSettings,
   };
-}
+});
 
 async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
   const webpage = await getWebPage(id);

@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
 
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import {
@@ -15,7 +16,7 @@ interface Props {
   params: Promise<{ id: string }>;
 }
 
-async function getWebPage(id: string): Promise<WebPageData> {
+const getWebPage = cache(async (id: string): Promise<WebPageData> => {
   const data = await getWebpageData({ id: decodeURIComponent(id) });
   const webpage = data.node?.__typename === 'NormalPage' ? data.node : null;
 
@@ -31,7 +32,7 @@ async function getWebPage(id: string): Promise<WebPageData> {
     content: webpage.htmlBody,
     seo: webpage.seo,
   };
-}
+});
 
 async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
   const webpage = await getWebPage(id);
