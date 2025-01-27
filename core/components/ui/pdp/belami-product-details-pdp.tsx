@@ -201,7 +201,7 @@ const ProductDetailDropdown: React.FC<ProductDetailDropdownProps> = ({
               <span className="text-sm text-gray-600">SKU: {product?.mpn || t('sku')}</span>
             </div>
 
-            <div className="mb-2">
+            <div className="product-detail-canopy mb-2">
               <div className="text-gray-700">
                 {includedItems.variantLevel.length > 0
                   ? includedItems.variantLevel.map((item, index) => (
@@ -294,8 +294,12 @@ const ProductDetailDropdown: React.FC<ProductDetailDropdownProps> = ({
                               >
                                 {detail.key}
                               </td>
-                              <td className="border p-2 py-2 text-[15px] text-gray-900">                                
-                              {detail.value === "True" ? "Yes" : (detail.value === "False" ? "No" : detail.value)}
+                              <td className="border p-2 py-2 text-[15px] text-gray-900">
+                                {detail.value === 'True'
+                                  ? 'Yes'
+                                  : detail.value === 'False'
+                                    ? 'No'
+                                    : detail.value}
                               </td>
                             </tr>
                           ))}

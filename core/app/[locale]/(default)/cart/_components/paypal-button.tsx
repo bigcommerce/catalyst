@@ -12,21 +12,19 @@ const InternalButton = ({ icon }: { icon: string }) => {
   const { pending } = useFormStatus();
 
   return (
-    <Button className="mt-3 mb-3 bg-slate-100 border-solid border-2 border-black-600 h-[40px]" loading={pending} loadingText={t('loading')}>
-      <BcImage
-        alt="Paypal"
-        width={20}
-        height={20}
-        className="w-[20px] h-[20px]"
-        src={icon}
-      />
+    <Button
+      className="border-black-600 mb-3 mt-3 h-[40px] border-2 border-solid bg-slate-100"
+      loading={pending}
+      loadingText={t('loading')}
+    >
+      <BcImage alt="Paypal" width={20} height={20} className="h-[20px] w-[20px]" src={icon} />
     </Button>
   );
 };
 
-export const PaypalButton = ({ cartId, icon }: { cartId: string, icon: string }) => {
+export const PaypalButton = ({ cartId, icon }: { cartId: string; icon: string }) => {
   return (
-    <form action={redirectToCheckout} className='cart-paypalButton'>
+    <form action={redirectToCheckout} className="cart-paypalButton">
       <input name="cartId" type="hidden" value={cartId} />
       <InternalButton icon={icon} />
     </form>

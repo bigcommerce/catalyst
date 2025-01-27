@@ -1,8 +1,8 @@
 'use client';
 import { useTranslations } from 'next-intl';
-import { getDeliveryMessage } from "~/components/management-apis";
-import React, { useState, useEffect } from "react";
-import { Spinner } from "@/vibes/soul/primitives/spinner";
+import { getDeliveryMessage } from '~/components/management-apis';
+import React, { useState, useEffect } from 'react';
+import { Spinner } from '@/vibes/soul/primitives/spinner';
 
 interface DeliveryMessageProps {
   entityId: number;
@@ -10,7 +10,11 @@ interface DeliveryMessageProps {
   isFromPDP: boolean;
 }
 
-export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variantId, isFromPDP }) => {
+export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
+  entityId,
+  variantId,
+  isFromPDP,
+}) => {
   const t = useTranslations('freeDelivery');
   const [deliveryMessage, setDeliveryMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -36,7 +40,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
 
   if (loading) {
     return (
-      <div className="flex justify-center px-[50px] py-[30px] lg:justify-start">
+      <div className="flex justify-center px-[50px] py-[30px] xl:justify-start">
         <Spinner aria-hidden="true" />
       </div>
     );
@@ -47,14 +51,14 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
   }
 
   // Check if the deliveryMessage includes "Backorder"
-  const isBackorder = deliveryMessage?.includes("Backorder");
+  const isBackorder = deliveryMessage?.includes('Backorder');
 
   // Determine background color based on Backorder presence
   const backgroundColorClass = isBackorder ? 'bg-[#FBF4E9]' : 'bg-transparent';
 
   return (
     <div
-      className={`mt-[5px] flex flex-col ${isFromPDP ? 'items-center' : 'items-start'} lg:items-start`}
+      className={`mt-[5px] flex flex-col ${isFromPDP ? 'items-center' : 'items-start'} xl:items-start`}
     >
       <div className="text-sm font-normal leading-6 tracking-[0.25px]">{t('title')}</div>
       <div className={`${backgroundColorClass} mt-[5px] w-fit`}>

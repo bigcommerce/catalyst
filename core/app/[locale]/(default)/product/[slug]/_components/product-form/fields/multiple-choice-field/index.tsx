@@ -11,7 +11,7 @@ import { ErrorMessage } from '../shared/error-message';
 
 import { MultipleChoiceFieldFragment } from './fragment';
 import { BcImage } from '~/components/bc-image';
-import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg'
+import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
 
 interface InteractionOptions {
   optionId: number;
@@ -105,13 +105,13 @@ export const MultipleChoiceField = ({
   const displayedValues = useMemo(() => (showAll ? values : values.slice(0, 6)), [showAll, values]);
 
   const renderShowAllButton = (remainingCount: number) => (
-    <div className="mt-4 flex flex-col items-center lg:mt-2 xl:mt-0">
+    <div className="inline-flex items-center">
       {remainingCount > 0 && !showAll && (
         <>
           <button
             type="button"
             onClick={() => setShowAll(true)}
-            className="show-all underline view-more-button w-full rounded-[50px] !p-[0.4rem] !py-[0px] text-center text-[14px] font-medium leading-[24px] tracking-[0.25px] text-[#008BB7] !shadow-none"
+            className="show-all view-more-button w-full rounded-[50px] !p-[0.4rem] !py-[0px] text-center text-[14px] font-medium leading-[24px] tracking-[0.25px] text-[#008BB7] underline !shadow-none"
           >
             Show All
           </button>
@@ -140,10 +140,10 @@ export const MultipleChoiceField = ({
       return (
         <div
           key={option.entityId}
-          className="div-product-swatch text-center lg:text-left xl:text-left mt-[10px]"
+          className="div-product-swatch mb-[10px] text-center xl:text-left"
         >
           <Label
-            className="mb-2 inline-block text-center text-base font-normal leading-8 tracking-wide lg:text-left xl:text-left"
+            className="mb-2 inline-block text-center text-base font-normal leading-8 tracking-wide text-[#353535] lg:mb-0 xl:mb-0 xl:text-left"
             htmlFor={`label-${option.entityId}`}
           >
             {option.displayName} :
@@ -152,38 +152,66 @@ export const MultipleChoiceField = ({
             {activeOptionSwatch ? activeOptionSwatch.label : 'Selection'}
           </span>
 
-          <div className="block xl:flex">
-            <Swatch
-              aria-labelledby={`label-${option.entityId}`}
-              error={Boolean(error)}
-              name={field.name}
-              onValueChange={(value) => {
-                field.onChange(value);
-                handleOnValueChange({
-                  optionId: option.entityId,
-                  valueId: Number(value),
-                });
-              }}
-              swatches={displayedValues
-                .filter(
-                  (value) => '__typename' in value && value.__typename === 'SwatchOptionValue',
-                )
-                .map((value) => ({
-                  label: value.label,
-                  value: value.entityId.toString(),
-                  color: value.hexColors[0] ?? value.imageUrl,
-                  onMouseEnter: () => {
-                    handleMouseEnter({
-                      optionId: option.entityId,
-                      valueId: Number(value.entityId),
-                    });
-                  },
-                }))}
-              value={field.value?.toString()}
-            />
-            {renderShowAllButton(remainingCount)}
+          <div className="ml-[0.8em] flex flex-wrap items-center justify-center gap-2 xl:ml-[0em] xl:justify-start">
+            <div className="flex flex-wrap gap-2">
+              <Swatch
+                aria-labelledby={`label-${option.entityId}`}
+                error={Boolean(error)}
+                name={field.name}
+                className="rounded-full"
+                onValueChange={(value) => {
+                  field.onChange(value);
+                  handleOnValueChange({
+                    optionId: option.entityId,
+                    valueId: Number(value),
+                  });
+                }}
+                swatches={displayedValues
+                  .filter(
+                    (value) => '__typename' in value && value.__typename === 'SwatchOptionValue',
+                  )
+                  .map((value) => ({
+                    label: value.label,
+                    value: value.entityId.toString(),
+                    color: value.hexColors[0] ?? value.imageUrl,
+                    onMouseEnter: () => {
+                      handleMouseEnter({
+                        optionId: option.entityId,
+                        valueId: Number(value.entityId),
+                      });
+                    },
+                  }))}
+                value={field.value?.toString()}
+              />
+
+              {remainingCount > 0 && !showAll && (
+                <div className="flex items-center gap-1 text-[#008BB7]">
+                  <button
+                    type="button"
+                    onClick={() => setShowAll(true)}
+                    className="grid text-[14px] font-medium"
+                  >
+                    <span className="underline">Show All</span>
+
+                    <span>({'+' + remainingCount})</span>
+                  </button>
+                </div>
+              )}
+              {showAll && (
+                <div className="ml-2 flex items-center gap-1 text-[#008BB7]">
+                  <button
+                    type="button"
+                    onClick={() => setShowAll(false)}
+                    className="grid text-[14px] font-medium"
+                  >
+                    <span className="underline">Show </span>{' '}
+                    <span className="underline">Fewer</span>
+                  </button>
+                </div>
+              )}
+            </div>
+            {error && <ErrorMessage>{error.message}</ErrorMessage>}
           </div>
-          {error && <ErrorMessage>{error.message}</ErrorMessage>}
         </div>
       );
     }
@@ -193,8 +221,8 @@ export const MultipleChoiceField = ({
       const remainingCount = values.length - displayedValues.length;
 
       return (
-        <div key={option.entityId} className="div-product-rectangleboxes mt-3 xl:mt-0">
-          <div className="mb-3 block !gap-0 text-center lg:flex lg:items-center xl:flex xl:items-center">
+        <div key={option.entityId} className="div-product-rectangleboxes xl:mt-0">
+          <div className="mb-3 block !gap-0 text-center xl:flex xl:items-center">
             <BcImage
               className="variant-img inline-block !h-[20px] !w-[20px] rounded-[50px]"
               alt="headline icon"
@@ -205,7 +233,7 @@ export const MultipleChoiceField = ({
               loading="lazy"
             />
             <Label
-              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide"
+              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
               htmlFor={`label-${option.entityId}`}
             >
               {option.displayName} :
@@ -215,7 +243,7 @@ export const MultipleChoiceField = ({
             </span>
           </div>
 
-          <div className="block xl:flex">
+          <div className="flex justify-center xl:justify-start">
             <RectangleList
               aria-labelledby={`label-${option.entityId}`}
               error={Boolean(error)}
@@ -249,13 +277,13 @@ export const MultipleChoiceField = ({
       return (
         <div
           key={option.entityId}
-          className="div-product-radiobuttons border-2 border-[#4EAECC] px-7 py-5 text-center xl:text-left mt-[20px]"
+          className="div-product-radiobuttons mt-[5px] border-2 border-[#4EAECC] px-7 py-5 text-center xl:text-left"
         >
           <Label
-            className="mb-2 inline-block text-left text-base font-normal leading-8 tracking-wide"
+            className="mb-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
             htmlFor={`label-${option.entityId}`}
           >
-            {option.displayName} 
+            {option.displayName}
           </Label>
           {/* <span className="selection ml-[5px] text-[#008BB7]">
             {activeOptionRadio ? activeOptionRadio.label : 'Selection'}
@@ -292,11 +320,8 @@ export const MultipleChoiceField = ({
       const activeOptionDropdownList = values.find((v) => v.entityId.toString() === field.value);
 
       return (
-        <div
-          key={option.entityId}
-          className="div-product-dropdownlist text-center lg:text-left xl:text-left"
-        >
-          <div className="mb-3 block text-center lg:flex lg:items-center xl:flex xl:items-center">
+        <div key={option.entityId} className="div-product-dropdownlist text-center xl:text-left">
+          <div className="mb-3 block text-center xl:flex xl:items-center">
             <BcImage
               className="variant-img inline-block !h-[20px] !w-[20px] rounded-[50px]"
               alt="headline icon"
@@ -307,7 +332,7 @@ export const MultipleChoiceField = ({
               loading="lazy"
             />
             <Label
-              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide"
+              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
               htmlFor={`label-${option.entityId}`}
             >
               {option.displayName} :
@@ -360,7 +385,7 @@ export const MultipleChoiceField = ({
               loading="lazy"
             />
             <Label
-              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide"
+              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
               htmlFor={`label-${option.entityId}`}
             >
               {option.displayName} :
