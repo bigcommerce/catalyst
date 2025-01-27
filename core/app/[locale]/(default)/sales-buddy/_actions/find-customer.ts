@@ -25,8 +25,6 @@ export const findCustomerDetails = async (payload: {
     const apiPath = process.env.SALES_BUDDY_API_PATH!;
     const fullApiUrl = `${apiUrl}${apiEnv}${apiPath}find-customer`;
 
-    console.log('Sending API Request:', fullApiUrl, postData);
-
     // Make the API call
     const response = await fetch(fullApiUrl, {
       method: 'POST',
@@ -43,7 +41,6 @@ export const findCustomerDetails = async (payload: {
     }
 
     const data = await response.json();
-    console.log('API Response:', data);
     return { status: 200, data };
   } catch (error: any) {
     console.error('Error in createCustomerAccount:', error);

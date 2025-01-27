@@ -16,7 +16,13 @@ import { ChevronDown } from 'lucide-react';
 import { getBrand } from '../../_actions/brand';
 import Loader from './Spinner';
 import { useRouter } from 'next/navigation';
-export default function CartInterface() {
+interface CartInterfaceProps {
+  toggleAccordion: (index: number) => void;
+  openIndexes: number[];
+  setOpenIndexes: (indexes: number[]) => void;
+}
+
+export default function CartInterface({ toggleAccordion, openIndexes, setOpenIndexes }: CartInterfaceProps) {
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
   const [comment, setComment] = useState<string>(''); // Comment state
   const [action, setAction] = useState('');
@@ -205,11 +211,11 @@ export default function CartInterface() {
      }
    }
   };
-  const toggleAccordion = (index: number) => {
-    setOpenAccordions((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
-    );
-  };
+  // const toggleAccordion = (index: number) => {
+  //   setOpenAccordions((prev) =>
+  //     prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
+  //   );
+  // };
 
   const renderInputFields = (
     fields: Array<{ id: string; label: string; component?: JSX.Element }>,
@@ -273,7 +279,7 @@ export default function CartInterface() {
         <AccordionTitle
           icon={ShopIcon}
           text="Add an Account ID"
-          onClick={() => toggleAccordion(0)}
+          // onClick={() => toggleAccordion(0)}
         />
       ),
       content: (
@@ -309,7 +315,7 @@ export default function CartInterface() {
         <AccordionTitle
           icon={CategoryIcon}
           text="Add Custom Item"
-          onClick={() => toggleAccordion(1)}
+          // onClick={() => toggleAccordion(1)}
         />
       ),
       content: (
@@ -342,6 +348,9 @@ export default function CartInterface() {
         <Accordions
           styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={accordions}
+          toggleAccordion={toggleAccordion}
+          openIndexes={openIndexes}
+          setOpenIndexes={setOpenIndexes}
         />
 
         <div>

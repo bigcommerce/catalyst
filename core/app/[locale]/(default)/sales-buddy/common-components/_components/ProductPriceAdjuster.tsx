@@ -53,6 +53,8 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   const {  agentRole } = useCompareDrawerContext();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const skuLength = 15;
+
   const handleSave = () => {
     if ((agentRole === 'agent' || agentRole === null) && parseFloat(newCost) < initialCost * floor) {
       setErrorMessage('Agent cannot adjust price less than floor price');
@@ -65,6 +67,10 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
 
   const handleSubmit = async () => {
     const numericValue = parseFloat(newCost);
+    if (newCost.trim() === '') {
+      setErrorMessage('Price cannot be empty');
+      return;
+    }
     if ((agentRole === 'agent' || agentRole === null) && numericValue < initialCost * floor) {
       setErrorMessage('Price cannot be less than floor price');
       return;
@@ -84,7 +90,7 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
 
   const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
-    if (/^\d*\.?\d*$/.test(value)) {
+    if (/^\d*\.?\d*$/.test(value) ) {
       setNewCost(value);
       const numericValue = parseFloat(value);
       if ((agentRole === 'agent' || agentRole === null) && numericValue < initialCost * floor) {
@@ -106,57 +112,39 @@ if (isSave) {
   setLoading(false);
 }
 
+  const ProductInfoRow = ({ label, value }: { label: string; value: string | number }) => {
+    const valueString = String(value);
+    const isLongValue = valueString.length > 15;
 
+    return (
+      <div className={`${isLongValue ? 'grid grid-cols-1' : 'grid grid-cols-2'} items-center border-b border-[#cccbcb] py-1`}>
+        <p className="text-sm font-bold tracking-wide break-words">{label}</p>
+        <p className={`
+        text-sm font-normal tracking-wide 
+        ${isLongValue ? 'mt-1' : 'text-right'}
+        ${isLongValue ? 'text-left' : ''}
+      `}>
+          {valueString}
+        </p>
+      </div>
+    );
+  };
 
   return (
     <div className="w-full bg-[#353535] p-[10px] text-white">
-      {/* Parent SKU */}
-      <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
-        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">PARENT SKU</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{parentSku}</p>
-      </div>
-      {/* <hr className="border-white-600 m-2" /> */}
 
-      {/* SKU */}
-      <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
-        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">SKU</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{sku}</p>
-      </div>
-      <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
-        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">OEM SKU</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{oem_sku}</p>
-      </div>
-      {/* <hr className="border-white-600 m-2" /> */}
-
-      {/* Cost */}
-      <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
-        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Cost</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{initialCost ? initialCost :'0000.00' }</p>
-      </div>
-      {/* <hr className="border-white-600 m-2" /> */}
-
-      {/* Floor */}
-      <div className="my-0 mx-auto h-[24px] flex items-center justify-between border-b border-[#cccbcb]">
-        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Floor ($)</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{floor ? initialCost * floor : '0000.00'}</p>
-      </div>
-      {/* <hr className="border-white-600 m-2" /> */}
-
-      {/* Markup */}
-      <div className="my-0 mx-auto h-[24px] flex items-center justify-between">
-        <p className="text-[14px] leading-[24px] tracking-[0.25px] font-bold">Markup</p>
-        <p className="text-[14px] font-normal tracking-[0.25px]">{floor ? initialCost * floor : '#.#'}</p>
-      </div>
-      {/* <hr className="border-white-600 m-2" /> */}
-
+      <ProductInfoRow label="PARENT SKU " value={parentSku} />
+      <ProductInfoRow label="SKU" value={sku } />
+      <ProductInfoRow label="OEM SKU" value={oem_sku} />
+      <ProductInfoRow label="Cost" value={initialCost ? initialCost : '0000.00'} />
+      <ProductInfoRow label="Floor ($)" value={floor ? initialCost * floor : '0000.00'} />
+      <ProductInfoRow label="Markup" value={floor ? initialCost * floor : '0000.00'} />
       {/* Adjust Price Button */}
-      {errorMessage && (
-        <div className="text-red-500 text-center mb-4">{errorMessage}</div>
-      )}
+      
       {!isEditing && (
         <button
           onClick={() => setIsEditing(true)}
-          className="w-full rounded-sm bg-[#1DB14B] px-[10px] py-[5px] h-[42px] hover:bg-green-700"
+          className="w-full rounded-sm bg-[#1DB14B] px-[10px] py-[5px] h-[42px]"
         >
           <div className="flex items-center justify-center">
             {' '}
@@ -179,6 +167,9 @@ if (isSave) {
             className="text-black-700 mb-4 w-full rounded border-none bg-[#FFFFFF] p-2"
             placeholder="$0.00"
           />
+          {errorMessage && (
+            <div className="text-red-500 text-center m-2">{errorMessage}</div>
+          )}
 
           <div className="mt-[10px] flex items-center justify-center">
             <button

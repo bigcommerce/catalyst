@@ -130,7 +130,7 @@ export default async function Cart({ params }: Props) {
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
     // ...cart.lineItems.customItems,
-  ];
+  ];  
   let cartQty = lineItems?.reduce(function (total: number, cartItems: any) {
     return total + cartItems?.quantity;
   }, 0);
@@ -139,6 +139,7 @@ export default async function Cart({ params }: Props) {
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
   let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
+  
   let updatedLineItemInfo: any = [];
   let updatedLineItemWithoutAccessories: any = [];
   let accessoriesSkuArray: any = [];

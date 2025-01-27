@@ -210,6 +210,7 @@ export const Details = ({
 
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
+  // const [getAllCommonSettinngsValues, setGetAllCommonSettinngsValues] = useState<any>([]);
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
@@ -224,6 +225,15 @@ export const Details = ({
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
+  useEffect(() => {
+    const matchingVariant = variants.find((variant) => variant.sku === productSku);
+    if (matchingVariant) {
+      setSelectedVariantId(matchingVariant.entityId);
+    } else {
+      setSelectedVariantId(null); // Reset if no matching variant is found
+    }
+  }, [variants, productSku]);
+
   useEffect(() => {
     const matchingVariant = variants.find((variant) => variant?.sku === productSku);
     if (matchingVariant) {
@@ -287,6 +297,7 @@ export const Details = ({
 
   return (
     <div className="sticky z-50">
+      
       {showStickyHeader && (
         <>
           <div className="fixed left-0 right-0 top-0 z-50 hidden border-b border-gray-200 bg-white shadow-2xl xl:block">
@@ -358,8 +369,8 @@ export const Details = ({
                     <div className="sticky-product-price mt-2 !w-[16em] items-center whitespace-nowrap text-center lg:text-right">
                       {product.prices.retailPrice?.value && product.prices.salePrice?.value ? (
                         <>
-                          <span className="mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                            {format.number(product.prices.salePrice.value, {
+                          <span className="price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                            {format.number(product.prices.price.value, {
                               style: 'currency',
                               currency: product.prices.salePrice.currencyCode,
                             })}
@@ -421,13 +432,13 @@ export const Details = ({
                           <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                             {format.number(product.prices.basePrice.value, {
                               style: 'currency',
-                              currency: product.prices.salePrice.currencyCode,
+                              currency: product.prices.price.currencyCode,
                             })}
                           </span>
                           <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                             Save{' '}
                             {Math.round(
-                              ((product.prices.basePrice.value - product.prices.salePrice.value) /
+                              ((product.prices.basePrice.value - product.prices.price.value) /
                                 product.prices.basePrice.value) *
                                 100,
                             )}
@@ -453,7 +464,6 @@ export const Details = ({
                       )}
                     </div>
                   )}
-
                   {productAvailability === 'Unavailable' ? (
                     <div className="flex flex-col items-center">
                       <button
@@ -504,6 +514,7 @@ export const Details = ({
               isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
             } px-[20px] pt-[20px]`}
           >
+            {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
               <div className="flex flex-col items-center">
                 <button
@@ -791,6 +802,7 @@ export const Details = ({
 
             <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
           </div>
+
         </div>
       </ScrollContainer>
     </div>
