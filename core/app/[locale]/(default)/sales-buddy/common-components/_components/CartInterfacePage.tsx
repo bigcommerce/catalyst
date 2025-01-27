@@ -16,7 +16,13 @@ import { ChevronDown } from 'lucide-react';
 import { getBrand } from '../../_actions/brand';
 import Loader from './Spinner';
 import { useRouter } from 'next/navigation';
-export default function CartInterface({ toggleAccordion, openIndexes, setOpenIndexes }) {
+interface CartInterfaceProps {
+  toggleAccordion: (index: number) => void;
+  openIndexes: number[];
+  setOpenIndexes: (indexes: number[]) => void;
+}
+
+export default function CartInterface({ toggleAccordion, openIndexes, setOpenIndexes }: CartInterfaceProps) {
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
   const [comment, setComment] = useState<string>(''); // Comment state
   const [action, setAction] = useState('');
