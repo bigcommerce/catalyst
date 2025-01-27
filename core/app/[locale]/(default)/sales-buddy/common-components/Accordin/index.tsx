@@ -26,99 +26,28 @@ type Props =
       titlestyle: string;
     };
 
-// const Accordions = ({ accordions, ...props }: Props) => {
-//   return (
-//     <AccordionPrimitive.Root {...props} className={props.contentGap} defaultValue={props.defaultValue}>
-//       {accordions.map((accordion, i) => (
-//         <AccordionPrimitive.Item
-//           key={i}
-//           defaultValue={accordions[i]}
-//           className={props.styles}
-//           value={accordion.title}
-//         >
-//           <AccordionPrimitive.Header className={`flex ${props.titlestyle}`}>
-//             <AccordionPrimitive.Trigger className="flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all focus-visible:text-secondary [&[data-state=open]>svg]:rotate-180">
-//               {accordion.title}
-//               <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
-//             </AccordionPrimitive.Trigger>
-//           </AccordionPrimitive.Header>
-//           <AccordionPrimitive.Content
-//             className={`data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down m-0 overflow-hidden transition-all`}
-//           >
-//             {accordion.content}
-//           </AccordionPrimitive.Content>
-//         </AccordionPrimitive.Item>
-//       ))}
-//     </AccordionPrimitive.Root>
-//   );
-// };
-
-// const Accordions = ({ accordions, ...props }: Props) => {
-//   return (
-//     <AccordionPrimitive.Root
-//       {...props}
-//       className={props.contentgap}
-//       defaultValue={props.defaultValue || props.defaultValue}
-//     >
-//       {accordions.map((accordion, i) => (
-//         <AccordionPrimitive.Item
-//           key={i}
-//           defaultValue={accordions[i].title} // This can be removed if it's not needed
-//           className={props.styles}
-//           value={accordion.title}
-//         >
-//           <AccordionPrimitive.Header className={`flex ${props.titlestyle}`}>
-//             <AccordionPrimitive.Trigger className="flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all focus-visible:text-secondary [&[data-state=open]>svg]:rotate-180">
-//               {accordion.title}
-//               <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
-//             </AccordionPrimitive.Trigger>
-//           </AccordionPrimitive.Header>
-//           <AccordionPrimitive.Content
-//             className={`mt-[10px] data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down m-0 overflow-hidden transition-all`}
-//           >
-//             {accordion.content}
-//           </AccordionPrimitive.Content>
-//         </AccordionPrimitive.Item>
-//       ))}
-//     </AccordionPrimitive.Root>
-//   );
-// };
-
-// export { Accordions };
-
-
-const Accordions = ({ accordions, styles, contentCss }: { accordions: Accordion[], styles: string, contentCss?: string }) => {
-  const [openIndexes, setOpenIndexes] = useState<number[]>([]);
-
-  const toggleAccordion = (index:any) => {
-    setOpenIndexes(prev =>
-      prev.includes(index)
-        ? prev.filter(i => i !== index)
-        : [...prev, index]
-    );
-  };
-
+const Accordions = ({ accordions, styles, contentCss, toggleAccordion, openIndexes, setOpenIndexes }: { accordions: Accordion[], styles: string, contentCss?: string, toggleAccordion: (index: number) => void, openIndexes: any, setOpenIndexes: any }) => {
   return (
     <div id="accordion-collapse" className="w-[460px]" data-accordion="collapse">
       {accordions.map((accordion, index) => (
         <div
           key={index}
-          className={`${openIndexes.includes(index) ? 'bg-[#FFFFFF]' : 'bg-[#F3F4F6]'}`}
+          className={`${openIndexes &&  openIndexes.includes(index) ? 'bg-[#FFFFFF]' : 'bg-[#F3F4F6]'}`}
         >
           <h2
-            className={`flex h-[52px] items-center justify-center ${styles} ${openIndexes.includes(index) ? 'border-b-0' : ''}`}
+            className={`flex h-[52px] items-center justify-center ${styles} ${openIndexes && openIndexes.includes(index) ? 'border-b-0' : ''}`}
             id={`accordion-collapse-heading-${index + 1}`}
           >
             <button
               type="button"
               className="flex w-full items-center justify-between gap-3 font-medium text-gray-500"
               onClick={() => toggleAccordion(index)}
-              aria-expanded={openIndexes.includes(index)}
+              aria-expanded={openIndexes && openIndexes.includes(index)}
               aria-controls={`accordion-collapse-body-${index + 1}`}
             >
               <span>{accordion.title}</span>
               <svg
-                className={`h-4 w-3 shrink-0 transition-transform duration-200 ${openIndexes.includes(index) ? 'rotate-0' : 'rotate-180'
+                className={`h-4 w-3 shrink-0 transition-transform duration-200 ${openIndexes && openIndexes.includes(index) ? 'rotate-0' : 'rotate-180'
                   }`}
                 aria-hidden="true"
                 xmlns="http://www.w3.org/2000/svg"
@@ -137,7 +66,7 @@ const Accordions = ({ accordions, styles, contentCss }: { accordions: Accordion[
           </h2>
           <div
             id={`accordion-collapse-body-${index + 1}`}
-            className={`${openIndexes.includes(index) ? 'block' : 'hidden'} ${contentCss ? contentCss : 'p-3'}  dark:border-gray-700`}
+            className={`${openIndexes && openIndexes.includes(index) ? 'block' : 'hidden'} ${contentCss ? contentCss : 'p-3'}  dark:border-gray-700`}
             aria-labelledby={`accordion-collapse-heading-${index + 1}`}
           >
             <div className="mr-5 w-[440px]">{accordion.content}</div>

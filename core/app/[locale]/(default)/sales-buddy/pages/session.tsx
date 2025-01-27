@@ -52,9 +52,9 @@ export default function SessionId() {
         if (!context_session_id) {
             const localMachineInformation = await fetchSystemInfo();
             const sessionId = await createSessionIdCookie(localMachineInformation);
-            setContext_Session_id(sessionId.output);
-            setStoreSessionId(sessionId.output)
-            localStorage.setItem('session_id', sessionId.output)
+            setContext_Session_id(sessionId?.output);
+            setStoreSessionId(sessionId?.output)
+            localStorage.setItem('session_id', sessionId?.output)
             fetchMyCookie();
         }
 
