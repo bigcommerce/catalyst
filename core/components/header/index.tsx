@@ -86,7 +86,7 @@ export const Header = async ({ cart }: Props) => {
             getCustomerData={getCustomerData as any}
             items={[
               { href: '/support/faqs', label: 'Existing Order' },
-              { href: '/support/contact', label: 'Track My Order' },
+              { href: '/order-tracking', label: 'Track My Order' },
               { href: '/support/contact', label: 'Replace Items' },
               { href: '/support/contact', label: 'Gift Certificates' },
               { href: '/support/contact', label: 'Visit Our Help Center' },
