@@ -80,7 +80,7 @@ export default function ReferalId() {
       </div>
       <div className="flex h-[36px] items-end justify-between">
          <div className="font-open-sans flex items-center gap-2 text-[16px] text-[#353535]">
-          <span>{`Referral ID: ${cart_interface_refferal_id}`}</span>
+          <span>{`Referrer ID: ${cart_interface_refferal_id}`}</span>
               </div>
         <div className="w-[110px] bg-[#1DB14B] py-[5px] px-[10px] h-[44px] rounded-[3px] items-center content-center ">
           <button
