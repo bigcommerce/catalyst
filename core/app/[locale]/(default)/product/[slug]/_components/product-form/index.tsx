@@ -263,7 +263,7 @@ export const ProductForm = ({
       />
       <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
         <form
-          className="product-variants flex flex-col gap-[30px] mt-[30px]"
+          className="product-variants flex flex-col gap-[20px] mt-[15px]"
           onSubmit={handleSubmit(productFormSubmit)}
         >
           <input type="hidden" value={product.entityId} {...register('product_id')} />
@@ -305,7 +305,7 @@ export const ProductForm = ({
 
           <QuantityField />
 
-          <div className="mt-0 flex flex-col gap-4 @md:flex-row xl:mt-0">
+          <div className="mt-0 flex flex-col gap-4 @md:flex-row">
             <Submit data={product} />
             <div className="hidden w-full">
               <Button disabled type="submit" variant="secondary">

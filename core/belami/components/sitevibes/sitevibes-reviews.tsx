@@ -2,7 +2,7 @@
 
 declare global {
   interface Window {
-    SiteVibesProduct?: any,
+    SiteVibesProduct?: any;
     SiteVibesEvents?: {
       pageRefresh: () => void;
     };
@@ -12,12 +12,13 @@ declare global {
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { useEffect } from 'react';
 
-export function SiteVibesReviews({ product, category }: { product: any, category: any }) {
-
-  const breadcrumbs = (category?.breadcrumbs)?(removeEdgesAndNodes(category?.breadcrumbs) as any[]).map(({ name, path }) => ({
-    label: name,
-    href: path ?? '#',
-  })): [];
+export function SiteVibesReviews({ product, category }: { product: any; category: any }) {
+  const breadcrumbs = category?.breadcrumbs
+    ? (removeEdgesAndNodes(category?.breadcrumbs) as any[]).map(({ name, path }) => ({
+        label: name,
+        href: path ?? '#',
+      }))
+    : [];
 
   const productData = {
     product_id: product.entityId,
@@ -25,16 +26,20 @@ export function SiteVibesReviews({ product, category }: { product: any, category
     name: product.name,
     description: product.plainTextDescription,
     url: product.path,
-    image_url: product.defaultImage && product.defaultImage.url ? product.defaultImage.url.replace('{:size}', 'original') : null,
-    category_name: breadcrumbs && breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1]?.label : '',
+    image_url:
+      product.defaultImage && product.defaultImage.url
+        ? product.defaultImage.url.replace('{:size}', 'original')
+        : null,
+    category_name:
+      breadcrumbs && breadcrumbs.length > 0 ? breadcrumbs[breadcrumbs.length - 1]?.label : '',
     brand_name: product.brand?.name,
     quantity: 1,
     price: product.prices?.price.value,
-  }
+  };
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      productData.url = window.location.href;      
+      productData.url = window.location.href;
       window.SiteVibesProduct = productData;
       if (window.SiteVibesEvents && typeof window.SiteVibesEvents.pageRefresh === 'function') {
         window.SiteVibesEvents.pageRefresh();
@@ -42,7 +47,5 @@ export function SiteVibesReviews({ product, category }: { product: any, category
     }
   }, [product.entityId]);
 
-  return (
-    <div id="sitevibes-product-reviews" className='mb-4' />
-  );
+  return <div id="sitevibes-product-reviews" className="mb-[60px] xl:mb-[0px]" />;
 }

@@ -16,6 +16,9 @@ const config = {
       'lg': '1024px',
       'lgg':'1200px',
       'xl': '1280px',
+      'x2': '1300px',
+      'x3': '1400px',
+      'x4': '1600px',
       '2xl': '1536px',
     },
     extend: {
