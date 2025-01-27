@@ -300,209 +300,207 @@ export const Details = ({
   };
 
   return (
-    <div>
-      <div className="sticky z-50">
-        {showStickyHeader && (
-          <>
-            <div className="fixed left-0 right-0 top-0 z-50 hidden border-b border-gray-200 bg-white shadow-2xl xl:block">
-              <div className="container mx-auto px-[3rem] pb-[2rem] pt-[1rem]">
-                <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-start gap-5">
-                    <div className="flex-shrink-0 overflow-hidden rounded-md border border-gray-200 xl:h-[10em] xl:w-[10em] 2xl:h-[8em] 2xl:w-[8em]">
-                      <BcImage
-                        src={currentImageUrl}
-                        alt={product.name}
-                        width={100}
-                        height={100}
-                        className="h-full w-full object-center"
-                      />
+    <div className="sticky z-50">
+      {showStickyHeader && (
+        <>
+          <div className="fixed left-0 right-0 top-0 z-50 hidden border-b border-gray-200 bg-white shadow-2xl xl:block">
+            <div className="container mx-auto px-[3rem] pb-[2rem] pt-[1rem]">
+              <div className="flex items-center justify-between gap-4">
+                <div className="flex items-start gap-5">
+                  <div className="flex-shrink-0 overflow-hidden rounded-md border border-gray-200 xl:h-[10em] xl:w-[10em] 2xl:h-[8em] 2xl:w-[8em]">
+                    <BcImage
+                      src={currentImageUrl}
+                      alt={product.name}
+                      width={100}
+                      height={100}
+                      className="h-full w-full object-center"
+                    />
+                  </div>
+                  <div className="mr-[10em] flex-1">
+                    <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-[#353535]">
+                      {product.name}
+                    </h2>
+
+                    <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px]">
+                      by{' '}
+                      <Link href={product.brand?.path ?? ''} className="underline">
+                        {product.brand?.name}
+                      </Link>
                     </div>
-                    <div className="mr-[10em] flex-1">
-                      <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-[#353535]">
-                        {product.name}
-                      </h2>
 
-                      <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px]">
-                        by{' '}
-                        <Link href={product.brand?.path ?? ''} className="underline">
-                          {product.brand?.name}
-                        </Link>
-                      </div>
+                    <div className="mt-3 block flex-wrap items-center text-[#7F7F7F]">
+                      {product.mpn && (
+                        <span className="text-[14px] font-bold leading-[24px] tracking-[0.25px]">
+                          SKU: {product.mpn}
+                        </span>
+                      )}
 
-                      <div className="mt-3 block flex-wrap items-center text-[#7F7F7F]">
-                        {product.mpn && (
-                          <span className="text-[14px] font-bold leading-[24px] tracking-[0.25px]">
-                            SKU: {product.mpn}
-                          </span>
-                        )}
-
-                        {product.mpn &&
-                          productOptions.filter(
-                            (option) => option.__typename === 'MultipleChoiceOption',
-                          ).length > 0 && <span className="mx-1 text-[14px] font-normal">|</span>}
-                        {productOptions.filter(
+                      {product.mpn &&
+                        productOptions.filter(
                           (option) => option.__typename === 'MultipleChoiceOption',
-                        ).length > 0 && (
-                          <div className="inline text-[14px] font-normal">
-                            {productOptions
-                              .filter((option) => option.__typename === 'MultipleChoiceOption')
-                              .map((option, index, filteredArray) => {
-                                if (option.__typename === 'MultipleChoiceOption') {
-                                  const selectedValue = getSelectedValue(
-                                    option as MultipleChoiceOption,
-                                  );
-                                  return (
-                                    <span key={option.entityId}>
-                                      <span className="font-bold">{option.displayName}:</span>
-                                      <span className="text-[15px]"> {selectedValue}</span>
-                                      {index < filteredArray.length - 1 && (
-                                        <span className="mx-1">|</span>
-                                      )}
-                                    </span>
-                                  );
-                                }
-                                return null;
-                              })}
-                          </div>
-                        )}
-                      </div>
+                        ).length > 0 && <span className="mx-1 text-[14px] font-normal">|</span>}
+                      {productOptions.filter(
+                        (option) => option.__typename === 'MultipleChoiceOption',
+                      ).length > 0 && (
+                        <div className="inline text-[14px] font-normal">
+                          {productOptions
+                            .filter((option) => option.__typename === 'MultipleChoiceOption')
+                            .map((option, index, filteredArray) => {
+                              if (option.__typename === 'MultipleChoiceOption') {
+                                const selectedValue = getSelectedValue(
+                                  option as MultipleChoiceOption,
+                                );
+                                return (
+                                  <span key={option.entityId}>
+                                    <span className="font-bold">{option.displayName}:</span>
+                                    <span className="text-[15px]"> {selectedValue}</span>
+                                    {index < filteredArray.length - 1 && (
+                                      <span className="mx-1">|</span>
+                                    )}
+                                  </span>
+                                );
+                              }
+                              return null;
+                            })}
+                        </div>
+                      )}
                     </div>
                   </div>
+                </div>
 
-                  <div className="flex items-center gap-4">
-                    {product.prices && (
-                      <div className="sticky-product-price mt-2 block !w-[16em] items-center gap-[0.5em] text-center lg:text-right">
-                        {product.prices.basePrice?.value !== undefined &&
-                        product.prices.price?.value !== undefined &&
-                        product.prices.basePrice.value > product.prices.price.value ? (
-                          <>
-                            <span className="price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                              {format.number(product.prices.price.value, {
-                                style: 'currency',
-                                currency: product.prices.price.currencyCode,
-                              })}
-                            </span>
-                            <span className="price-2 mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
-                              {format.number(product.prices.basePrice.value, {
-                                style: 'currency',
-                                currency: product.prices.price.currencyCode,
-                              })}
-                            </span>
-                            <span className="price-3 mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                              Save{' '}
-                              {Math.round(
-                                ((product.prices.basePrice.value - product.prices.price.value) /
-                                  product.prices.basePrice.value) *
-                                  100,
-                              )}
-                              %
-                            </span>
-                          </>
-                        ) : (
-                          <span className="price-4 text-left text-[20px] font-[500] leading-8 tracking-[0.15px] text-[#008BB7]">
-                            {format.number(product.prices.price?.value || 0, {
+                <div className="flex items-center gap-4">
+                  {product.prices && (
+                    <div className="sticky-product-price mt-2 block !w-[16em] items-center gap-[0.5em] text-center lg:text-right">
+                      {product.prices.basePrice?.value !== undefined &&
+                      product.prices.price?.value !== undefined &&
+                      product.prices.basePrice.value > product.prices.price.value ? (
+                        <>
+                          <span className="price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                            {format.number(product.prices.price.value, {
                               style: 'currency',
-                              currency: product.prices.price?.currencyCode || 'USD',
+                              currency: product.prices.price.currencyCode,
                             })}
                           </span>
-                        )}
-                      </div>
-                    )}
-                    {productAvailability === 'Unavailable' ? (
-                      <div className="flex flex-col items-center">
-                        <button
-                          id="add-to-cart"
-                          className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
-                          disabled
-                        >
-                          <span>ADD TO CART</span>
-                        </button>
-                        <p className="text-center text-[12px] text-[#2e2e2e]">
-                          This product is currently unavailable
-                        </p>
-                      </div>
-                    ) : (
-                      <button
-                        className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
-                        onClick={() => {
-                          const addToCartButton = productFormRef.current?.querySelector(
-                            'button[type="submit"]',
-                          ) as HTMLButtonElement | null;
-                          if (addToCartButton) {
-                            addToCartButton.click();
-                          }
-                        }}
-                      >
-                        <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                          ADD TO CART
+                          <span className="price-2 mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
+                            {format.number(product.prices.basePrice.value, {
+                              style: 'currency',
+                              currency: product.prices.price.currencyCode,
+                            })}
+                          </span>
+                          <span className="price-3 mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+                            Save{' '}
+                            {Math.round(
+                              ((product.prices.basePrice.value - product.prices.price.value) /
+                                product.prices.basePrice.value) *
+                                100,
+                            )}
+                            %
+                          </span>
+                        </>
+                      ) : (
+                        <span className="price-4 text-left text-[20px] font-[500] leading-8 tracking-[0.15px] text-[#008BB7]">
+                          {format.number(product.prices.price?.value || 0, {
+                            style: 'currency',
+                            currency: product.prices.price?.currencyCode || 'USD',
+                          })}
                         </span>
-                        <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
-                          <Image
-                            src={addToCart}
-                            className=""
-                            alt="Add to Cart"
-                            unoptimized={true}
-                            width={44}
-                            height={44}
-                          />
-                        </div>
+                      )}
+                    </div>
+                  )}
+                  {productAvailability === 'Unavailable' ? (
+                    <div className="flex flex-col items-center">
+                      <button
+                        id="add-to-cart"
+                        className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                        disabled
+                      >
+                        <span>ADD TO CART</span>
                       </button>
-                    )}
-                  </div>
+                      <p className="text-center text-[12px] text-[#2e2e2e]">
+                        This product is currently unavailable
+                      </p>
+                    </div>
+                  ) : (
+                    <button
+                      className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
+                      onClick={() => {
+                        const addToCartButton = productFormRef.current?.querySelector(
+                          'button[type="submit"]',
+                        ) as HTMLButtonElement | null;
+                        if (addToCartButton) {
+                          addToCartButton.click();
+                        }
+                      }}
+                    >
+                      <span className="transition-transform duration-300 group-hover:-translate-x-2">
+                        ADD TO CART
+                      </span>
+                      <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
+                        <Image
+                          src={addToCart}
+                          className=""
+                          alt="Add to Cart"
+                          unoptimized={true}
+                          width={44}
+                          height={44}
+                        />
+                      </div>
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
+          </div>
 
-            <div
-              className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
-                isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-              } px-[20px] pt-[20px]`}
-            >
-              {/* Mobile View Button */}
-              {productAvailability === 'Unavailable' ? (
-                <div className="flex flex-col items-center">
-                  <button
-                    id="add-to-cart"
-                    className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
-                    disabled
-                  >
-                    <span>ADD TO CART</span>
-                  </button>
-                  <p className="text-center text-[12px] text-[#2e2e2e]">
-                    This product is currently unavailable
-                  </p>
-                </div>
-              ) : (
+          <div
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
+              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+            } px-[20px] pt-[20px]`}
+          >
+            {/* Mobile View Button */}
+            {productAvailability === 'Unavailable' ? (
+              <div className="flex flex-col items-center">
                 <button
-                  className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
-                  onClick={() => {
-                    const addToCartButton = productFormRef.current?.querySelector(
-                      'button[type="submit"]',
-                    ) as HTMLButtonElement | null;
-                    if (addToCartButton) {
-                      addToCartButton.click();
-                    }
-                  }}
+                  id="add-to-cart"
+                  className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                  disabled
                 >
-                  <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                    ADD TO CART
-                  </span>
-                  <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
-                    <Image
-                      src={addToCart}
-                      className=""
-                      alt="Add to Cart"
-                      unoptimized={true}
-                      width={44}
-                      height={44}
-                    />
-                  </div>
+                  <span>ADD TO CART</span>
                 </button>
-              )}
-            </div>
-          </>
-        )}
-      </div>
+                <p className="text-center text-[12px] text-[#2e2e2e]">
+                  This product is currently unavailable
+                </p>
+              </div>
+            ) : (
+              <button
+                className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
+                onClick={() => {
+                  const addToCartButton = productFormRef.current?.querySelector(
+                    'button[type="submit"]',
+                  ) as HTMLButtonElement | null;
+                  if (addToCartButton) {
+                    addToCartButton.click();
+                  }
+                }}
+              >
+                <span className="transition-transform duration-300 group-hover:-translate-x-2">
+                  ADD TO CART
+                </span>
+                <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
+                  <Image
+                    src={addToCart}
+                    className=""
+                    alt="Add to Cart"
+                    unoptimized={true}
+                    width={44}
+                    height={44}
+                  />
+                </div>
+              </button>
+            )}
+          </div>
+        </>
+      )}
 
       <ScrollContainer>
         <div className="main-div-product-details mb-[35px] xl:mb-[0px]">
