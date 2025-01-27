@@ -130,6 +130,7 @@ export const ProductAccessories = ({
         if (cartId) {
           let lineItemId = (from == 'pdp') ? productFlyout?.productData?.entityId : data?.entityId;
           let productId = (from == 'pdp') ? productFlyout?.productData?.productEntityId : data?.productEntityId;
+          let variantIdData = (from == 'pdp') ? productFlyout?.productData?.variantEntityId : data?.variantEntityId;
           let optionValue = {
             productId: productId,
             variantId: variantId,
@@ -139,11 +140,16 @@ export const ProductAccessories = ({
           let getCartMetaLineItems = cartMetaFields?.find((item: any) => item?.key == lineItemId);
           if (cartMetaFields?.length == 0 || !getCartMetaLineItems) {
             let metaArray: any = [];
+            let parentInfo: any = JSON.stringify([{
+              productId: productId,
+              variantId: variantIdData
+            }]);
             metaArray.push(optionValue);
             let cartMeta = {
               permission_set: 'write_and_sf_access',
               namespace: 'accessories_data',
               key: lineItemId,
+              description: parentInfo,
               value: JSON.stringify(metaArray),
             };
             await CreateCartMetaFields(cartId, cartMeta);

@@ -34,8 +34,6 @@ import applePayIcon from '~/public/cart/applePayIcon.svg';
 import paypalIcon from '~/public/cart/paypalIcon.svg';
 import amazonPayIcon from '~/public/cart/amazonPayIcon.svg';
 import agentIcon from '~/public/cart/agentIcon.svg';
-import downArrow from '~/public/cart/downArrow.svg';
-import { locales } from '~/i18n/routing';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { Flyout } from '~/components/common-flyout';
 
@@ -82,7 +80,6 @@ export async function generateMetadata() {
 
 export default async function Cart({ params }: Props) {
   const { locale } = await params;
-  console.log("lllll",locale)
   const cookieStore = await cookies();
 
   const cartId = cookieStore.get('cartId')?.value;
