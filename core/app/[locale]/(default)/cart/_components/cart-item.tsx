@@ -1,4 +1,4 @@
-import { useFormatter } from 'next-intl';
+import { getFormatter } from 'next-intl/server';
 import Link from 'next/link';
 
 import { FragmentOf, graphql } from '~/client/graphql';
@@ -261,7 +261,7 @@ export const CartItem = async ({
     product?.selectedOptions,
     'Protect Your Purchase',
   );
-  const format = useFormatter();
+  const format = await getFormatter();
   let productSKU: string = retrieveMpnData(
     product,
     product?.productEntityId,

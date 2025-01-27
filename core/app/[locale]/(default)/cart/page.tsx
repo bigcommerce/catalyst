@@ -318,7 +318,7 @@ export default async function Cart({ params }: Props) {
         </div>
       </div>
 
-      <CartViewed checkout={checkout} currencyCode={cart.currencyCode} lineItems={lineItems} />
+      <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
     </div>
   );
 }
