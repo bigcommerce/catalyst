@@ -194,7 +194,7 @@ export default async function Cart({ params }: Props) {
   var getAllCommonSettinngsValues = {};
   // await commonSettinngs([getBrandIds])
 
-  let checkZeroTax: any = await zeroTaxCalculation(data.site);
+  //let checkZeroTax: any = await zeroTaxCalculation(data.site);
 
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
