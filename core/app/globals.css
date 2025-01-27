@@ -466,7 +466,22 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   .product-coupon-section.flex.items-center.gap-1 {
     display: none;
   }
+  .product-price {
+    width: 100% !important;
+    display: block;
+  }
+  @media screen and (max-width:768px){
+    .product-price{
+      display:flex;
+      justify-content: center;
+    }
+  }
 
+  .div-product-rectangleboxes div button {
+    padding: 8px;
+    font-size: 12px;
+    width: 33%;
+  }
   .div-product-dropdownlist {
     margin-top: -10px;
   }
