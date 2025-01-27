@@ -10,7 +10,7 @@ import { useTranslations } from "next-intl";
 import { Link } from '~/components/link';
 import { getCartData } from "../get-cart-items";
 
-export const AccessoriesInputPlusMinus = ({ accessories }: { accessories: any }) => {
+export const AccessoriesInputPlusMinus = ({ accessories, data }: { accessories: any, data: any }) => {
   const [quantity, setQuantity] = useState<any>(accessories?.prodQuantity);
   const [loader, setLoader] = useState<Boolean>(false);
   const productFlyout = useCommonContext();
@@ -65,6 +65,7 @@ export const AccessoriesInputPlusMinus = ({ accessories }: { accessories: any })
         if (cartId) {
           let lineItemId = accessories?.lineItemId;
           let productId = accessories?.productEntityId;
+          let variantIdData = data?.variantEntityId;
           let optionValue = {
             productId: productId,
             variantId: accessories?.variantEntityId,
@@ -74,11 +75,16 @@ export const AccessoriesInputPlusMinus = ({ accessories }: { accessories: any })
           let getCartMetaLineItems = cartMetaFields?.find((item: any) => item?.key == lineItemId);
           if (cartMetaFields?.length == 0 || !getCartMetaLineItems) {
             let metaArray: any = [];
+            let parentInfo: any = JSON.stringify([{
+              productId: productId,
+              variantId: variantIdData
+            }]);
             metaArray.push(optionValue);
             let cartMeta = {
               permission_set: 'write_and_sf_access',
               namespace: 'accessories_data',
               key: lineItemId,
+              description: parentInfo,
               value: JSON.stringify(metaArray),
             };
             await CreateCartMetaFields(cartId, cartMeta);
