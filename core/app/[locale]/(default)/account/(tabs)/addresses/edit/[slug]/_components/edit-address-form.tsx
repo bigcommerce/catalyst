@@ -246,7 +246,7 @@ export const EditAddressForm = ({
   return (
     <>
       {formStatus && (
-        <Message className="mx-auto mb-8 w-full" variant={formStatus.status}>
+        <Message className="mx-auto  w-full" variant={formStatus.status}>
           <p>{formStatus.message}</p>
         </Message>
       )}
@@ -435,7 +435,7 @@ export const EditAddressForm = ({
                 sitekey={reCaptchaSettings.siteKey}
               />
               {!isReCaptchaValid && (
-                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-error">
+                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-[rgb(167,31,35)] ">
                   {t('recaptchaText')}
                 </span>
               )}
