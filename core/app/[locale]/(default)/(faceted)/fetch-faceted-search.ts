@@ -6,7 +6,6 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
@@ -187,7 +186,6 @@ const getProductSearchResults = cache(
 
     const items = removeEdgesAndNodes(searchResults.products).map((product) => ({
       ...product,
-      fetchOptions: { next: { revalidate } },
     }));
 
     return {
