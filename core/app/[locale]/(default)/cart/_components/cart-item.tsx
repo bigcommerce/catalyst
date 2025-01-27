@@ -509,7 +509,7 @@ export const CartItem = async ({
                   cartId={cartId}
                   ProductType={'product'}
                 />
-              </div>
+              </div>}
             </div>
           </div>
         </div>
