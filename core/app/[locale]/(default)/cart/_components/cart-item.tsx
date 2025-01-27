@@ -564,7 +564,7 @@ export const CartItem = async ({
                       </div>
                     </div>
                     <div className="cart-deleteIcon mt-[5px] flex w-full flex-row items-center justify-between gap-[20px] p-0 md:mt-0 md:w-auto md:justify-start [&_.cart-item-quantity]:static [&_.cart-item-quantity]:order-[0]">
-                      <AccessoriesInputPlusMinus key={item?.variantEntityId} accessories={item} />
+                      <AccessoriesInputPlusMinus key={item?.variantEntityId} accessories={item} data={product}/>
                       <div className="flex items-center">
                         <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535] sm:hidden">
                           QTY: {item.prodQuantity}
