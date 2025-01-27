@@ -507,6 +507,10 @@
                 "login": "Log på",
                 "logout": "Log ud"
             },
+            "Currency": {
+                "invalidCurrency": "Invalid currency",
+                "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
+            },
             "Locale": {
                 "invalidLocale": "Ugyldig lokalitet"
             },
