@@ -2,7 +2,6 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import {
   SiFacebook,
   SiInstagram,
-  SiLinkedin,
   SiPinterest,
   SiX,
   SiYoutube,
@@ -41,7 +40,6 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   X: { icon: <SiX title="X" /> },
   Pinterest: { icon: <SiPinterest title="Pinterest" /> },
   Instagram: { icon: <SiInstagram title="Instagram" /> },
-  LinkedIn: { icon: <SiLinkedin title="LinkedIn" /> },
   YouTube: { icon: <SiYoutube title="YouTube" /> },
 };
 
