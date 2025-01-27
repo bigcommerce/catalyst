@@ -85,7 +85,7 @@ export const AddressBook = ({
   return (
     <>
       {(accountState.status === 'error' || accountState.status === 'success') && (
-        <Message className="mb-8 w-full text-gray-500" variant={accountState.status}>
+        <Message className=" w-full text-gray-500" variant={accountState.status}>
           <p>{accountState.message}</p>
         </Message>
       )}

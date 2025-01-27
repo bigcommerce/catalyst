@@ -18,7 +18,6 @@ import { commonSettinngs } from '~/components/common-functions';
 import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
 import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
 
-
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
     name
@@ -50,10 +49,10 @@ const PhysicalItemFragment = graphql(`
       }
     }
     baseCatalogProduct {
-    brand{
-    entityId
-    id
-    }
+      brand {
+        entityId
+        id
+      }
       variants {
         edges {
           node {
@@ -62,6 +61,24 @@ const PhysicalItemFragment = graphql(`
             entityId
             isPurchasable
           }
+        }
+      }
+    }
+    catalogProductWithOptionSelections {
+      prices {
+        retailPrice {
+          currencyCode
+          value
+          formatted
+          ...MoneyFields
+        }
+        salePrice{
+          currencyCode
+          value
+        }
+        basePrice{
+          currencyCode
+          value
         }
       }
     }
@@ -116,12 +133,11 @@ const CustomItemFragment = graphql(`
     sku
     entityId
     quantity
-    
+
     listPrice {
       currencyCode
       value
     }
-    
   }
 `);
 
@@ -208,7 +224,7 @@ type CustomItem = FragmentResult['customItems'][number];
 export type Product = PhysicalItem | DigitalItem | CustomItem;
 
 interface Props {
-  brandId:any;
+  brandId: any;
   product: any;
   currencyCode: string;
   deleteIcon: string;
@@ -227,9 +243,16 @@ function moveToTheEnd(arr: any, word: string) {
   });
   return arr;
 }
-export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, cartId, priceAdjustData, cookie_agent_login_status, getAllCommonSettinngsValues }: Props) => {
-
-
+export const CartItem = async ({
+  brandId,
+  currencyCode,
+  product,
+  deleteIcon,
+  cartId,
+  priceAdjustData,
+  cookie_agent_login_status,
+  getAllCommonSettinngsValues,
+}: Props) => {
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
@@ -239,38 +262,27 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
     'Protect Your Purchase',
   );
   const format = useFormatter();
-  let oldPrice = product?.originalPrice?.value;
-  let salePrice = product?.extendedSalePrice?.value;
-  let discountedPrice: any = Number(100 - (salePrice * 100) / oldPrice)?.toFixed(2);
-  let discountPriceText: string = '';
-  if (discountedPrice > 0) {
-    discountPriceText = discountedPrice + '% Off';
-  }
-  
-  let productSKU: string = retrieveMpnData(product, product?.productEntityId, product?.variantEntityId);
+  let productSKU: string = retrieveMpnData(
+    product,
+    product?.productEntityId,
+    product?.variantEntityId,
+  );
+  const retailPrice = product?.catalogProductWithOptionSelections?.prices?.retailPrice;
+  const salePrice = product?.catalogProductWithOptionSelections?.prices?.salePrice;
+  const basePrice = product?.catalogProductWithOptionSelections?.prices?.basePrice;
+
   return (
     <li className="mb-[24px] border border-gray-200">
-      {/* {getAllCommonSettinngsValues && getAllCommonSettinngsValues?.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
-        <div className='bg-[#E7F5F8] w-full flex justify-center'>
-          <NoShipCanada description={'Canadian shipping note:This product cannot ship to Canada'} />
-        </div>
-      } */}
-
-      {/* {`grid gap-1 grid-cols-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
-        ? "xl:grid-cols-[40%_20%_40%]"
-        : "xl:grid-cols-[60%_40%]"
-        }`} */}
       <div className="">
-        
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
-          <div className="cart-main-img mx-auto flex-none border border-gray-300 md:mx-0 w-[295px] h-[295px] sm:w-[200px] sm:h-[200px]">
+          <div className="cart-main-img mx-auto h-[295px] w-[295px] flex-none border border-gray-300 sm:h-[200px] sm:w-[200px] md:mx-0">
             {product.image?.url ? (
               <BcImage
                 alt={product?.name}
                 height={200}
                 src={product?.image?.url}
                 width={200}
-                className="min-h-[9em] w-[295px] h-[295px] sm:w-[200px] sm:h-[200px] object-contain"
+                className="h-[295px] min-h-[9em] w-[295px] object-contain sm:h-[200px] sm:w-[200px]"
               />
             ) : (
               <div className="min-h-[300px] min-w-[300px]" />
@@ -299,13 +311,12 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                   </div>
                 )}
                 {changeTheProtectedPosition?.length > 0 && (
-                  <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 ">
+                  <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2">
                     <div className="cart-options">
-                      <p className="text-left inline text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
+                      <p className="inline text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
                         SKU: {product.sku}
                         {changeTheProtectedPosition.length > 0 && (
                           <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                            {' '}
                             |
                           </span>
                         )}
@@ -328,7 +339,6 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
 
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                    {' '}
                                     {pipeLineData}
                                   </span>
                                 )}
@@ -346,7 +356,6 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
 
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                    {' '}
                                     {pipeLineData}
                                   </span>
                                 )}
@@ -360,7 +369,6 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                                 <span>{selectedOption?.number}</span>
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                    {' '}
                                     {pipeLineData}
                                   </span>
                                 )}
@@ -375,7 +383,6 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                                 <span>{selectedOption?.text}</span>
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                    {' '}
                                     {pipeLineData}
                                   </span>
                                 )}
@@ -389,7 +396,6 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                                 <span>{format.dateTime(new Date(selectedOption?.date.utc))}</span>
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                    {' '}
                                     {pipeLineData}
                                   </span>
                                 )}
@@ -401,40 +407,92 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                         }
                       })}
                       {product.variantEntityId && (
-                        <FreeDelivery entityId={product.productEntityId} variantId={product.variantEntityId} isFromPDP={false} />
+                        <FreeDelivery
+                          entityId={product.productEntityId}
+                          variantId={product.variantEntityId}
+                          isFromPDP={false}
+                        />
                       )}
                     </div>
                   </div>
                 )}
               </div>
               <div className="">
-                {/* Desktop layout (unchanged) */}
-                <div className="cart-deleteIcon relative flex flex-col gap-0 [&_.cart-item-delete]:absolute [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:sm:static text-right md:items-end sm:gap-2">
-                  <RemoveItem currency={currencyCode} product={product}/>
-                 
+                <div className="cart-deleteIcon relative flex flex-col gap-0 text-right sm:gap-2 md:items-end [&_.cart-item-delete]:absolute [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:sm:static [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0">
+                  <RemoveItem currency={currencyCode} product={product} />
                   <div className="mb-0">
-                    <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-                      {product?.originalPrice.value  &&
-                        product?.originalPrice.value !== product?.listPrice.value ? (
-                        <p className="line-through">
-                          {format.number(product?.originalPrice?.value * product?.quantity, {
-                            style: 'currency',
-                            currency: currencyCode,
-                          })}
-                        </p>
-                      ) : null}
-                      <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                        {discountPriceText}
-                      </p>
-                    </div>
-                    <p className="text-left sm:text-right">
-                      {format.number(product?.extendedSalePrice?.value, {
+                    {salePrice?.value && retailPrice?.value ?(
+                     <>
+                     <p className="text-left sm:text-right">
+                      {format.number(salePrice.value * product?.quantity, {
                         style: 'currency',
                         currency: currencyCode,
                       })}
                     </p>
+                    <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                        <p className="line-through">
+                          {format.number(retailPrice.value * product?.quantity, {
+                            style: 'currency',
+                            currency: currencyCode,
+                          })}
+                        </p>
+                      <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                      {Math.round(((retailPrice.value - salePrice.value) / retailPrice.value) * 100,)}% Off
+                      </p>
+                    </div>
+                     </>
+                    ): 
+                    retailPrice?.value && basePrice?.value?(
+                      <>
+                      <p className="text-left sm:text-right">
+                       {format.number(basePrice.value * product?.quantity, {
+                         style: 'currency',
+                         currency: currencyCode,
+                       })}
+                     </p>
+                     <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                         <p className="line-through">
+                           {format.number(retailPrice.value * product?.quantity, {
+                             style: 'currency',
+                             currency: currencyCode,
+                           })}
+                         </p>
+                       <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                       {Math.round(((retailPrice.value - basePrice.value) / retailPrice.value) * 100,)}% Off
+                       </p>
+                     </div>
+                      </>
+                    ):
+                    salePrice?.value && basePrice?.value ?(
+                      <>
+                      <p className="text-left sm:text-right">
+                       {format.number(salePrice.value * product?.quantity, {
+                         style: 'currency',
+                         currency: currencyCode,
+                       })}
+                     </p>
+                     <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                         <p className="line-through">
+                           {format.number(basePrice.value * product?.quantity, {
+                             style: 'currency',
+                             currency: currencyCode,
+                           })}
+                         </p>
+                       <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                       {Math.round(((basePrice.value - salePrice.value) / basePrice.value) * 100,)}% Off
+                       </p>
+                     </div>
+                      </>
+                    ):( 
+                    <p className="text-left sm:text-right">
+                      {format.number(basePrice.value * product?.quantity, {
+                        style: 'currency',
+                        currency: currencyCode,
+                      })}
+                    </p>
+                  )}
                   </div>
-                
+
                   <ItemQuantity product={product} />
                 </div>
               </div>
@@ -449,19 +507,16 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                   initialMarkup={Number(product?.listPrice?.value)}
                   productId={product?.productEntityId}
                   cartId={cartId}
-                  ProductType={"product"}
+                  ProductType={'product'}
                 />
-                {/* priceAdjustData.parent_sku */}
-              </div>}
+              </div>
             </div>
           </div>
         </div>
       </div>
       {product?.accessories?.length > 0 && (
         <div>
-        {/* {product?.accessories && getAllCommonSettinngsValues.accessories == 'yes' && */}
-
-        {product?.accessories  &&
+          {product?.accessories &&
             product?.accessories?.map((item: any, index: number) => {
               let oldPriceAccess = item?.originalPrice?.value;
               let salePriceAccess = item?.extendedSalePrice?.value;
@@ -490,7 +545,7 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                         <div>{item.name}</div>
                         <div className="flex flex-wrap items-center gap-[0px_10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                           {item.originalPrice.value &&
-                            item.originalPrice.value !== item.listPrice.value ? (
+                          item.originalPrice.value !== item.listPrice.value ? (
                             <p className="flex items-center tracking-[0.25px] line-through">
                               {format.number(item.originalPrice.value * item.quantity, {
                                 style: 'currency',
@@ -526,21 +581,20 @@ export const CartItem = async ({ brandId, currencyCode, product, deleteIcon, car
                   </div>
                 </div>
               );
-            })
-        }
+            })}
         </div>
-        )
-      }
-      
-      {getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.use_accessories && 
-      <AccessoriesButton 
-        key={product?.entityId}
-        closeIcon={closeIcon}
-        blankAddImg={blankAddImg}
-        fanPopup={fanPopup}
-        product={product} 
-        />
-      }
+      )}
+
+      {getAllCommonSettinngsValues.hasOwnProperty(brandId) &&
+        getAllCommonSettinngsValues?.[brandId]?.use_accessories && (
+          <AccessoriesButton
+            key={product?.entityId}
+            closeIcon={closeIcon}
+            blankAddImg={blankAddImg}
+            fanPopup={fanPopup}
+            product={product}
+          />
+        )}
     </li>
   );
 };

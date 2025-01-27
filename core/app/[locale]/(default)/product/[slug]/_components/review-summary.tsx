@@ -25,18 +25,25 @@ export const ReviewSummary = ({ data }: Props) => {
 
   const { numberOfReviews, averageRating } = data.reviewSummary;
 
-  const hasNoReviews = !numberOfReviews || Number(numberOfReviews) === 0 || !averageRating || Number(averageRating) === 0;
+  const hasNoReviews =
+    !numberOfReviews ||
+    Number(numberOfReviews) === 0 ||
+    !averageRating ||
+    Number(averageRating) === 0;
 
   return (
-    <div className="ratings-star flex items-center justify-center gap-1 lg:justify-start mt-2">
+    <div className="ratings-star-div mt-2 flex items-center justify-center gap-1 xl:justify-start">
       <p
         aria-describedby={summaryId}
-        className={cn('flex flex-nowrap text-primary', hasNoReviews && 'text-gray-400')}
+        className={cn(
+          'ratings-stars flex flex-nowrap text-primary',
+          hasNoReviews && 'text-gray-400',
+        )}
       >
         <Rating rating={averageRating} />
       </p>
 
-      <div className="font-semibold review-count mt-[-3px]" id={summaryId}>
+      <div className="review-count font-semibold" id={summaryId}>
         {!hasNoReviews && (
           <>
             <span className="sr-only">{t('rating')}</span>

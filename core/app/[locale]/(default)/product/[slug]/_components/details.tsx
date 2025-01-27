@@ -31,6 +31,8 @@ import WishlistAddToList from '../../../account/(tabs)/wishlists/wishlist-add-to
 import { useWishlists } from '../../../account/(tabs)/wishlists/wishlist-add-to-list/hooks';
 import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { commonSettinngs } from '~/components/common-functions';
+import ScrollContainer from './sticky';
+import { Flyout } from '~/components/common-flyout';
 
 interface ProductOptionValue {
   entityId: number;
@@ -67,6 +69,10 @@ interface Props {
   closeIcon?: string;
   blankAddImg?: string;
   productImages?: string;
+  triggerLabel1: React.ReactNode;
+  children1: React.ReactNode;
+  triggerLabel2: React.ReactNode;
+  children2: React.ReactNode;
 }
 
 export const DetailsFragment = graphql(
@@ -154,9 +160,9 @@ interface Props {
   closeIcon?: string;
   blankAddImg?: string;
   productImages?: string;
-  getAllCommonSettinngsValues?:any
+  getAllCommonSettinngsValues?: any;
 }
-  
+
 export const Details = ({
   product,
   collectionValue,
@@ -169,7 +175,11 @@ export const Details = ({
   closeIcon,
   blankAddImg,
   productImages,
-  getAllCommonSettinngsValues
+  getAllCommonSettinngsValues,
+  triggerLabel1,
+  triggerLabel2,
+  children1,
+  children2,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -178,28 +188,29 @@ export const Details = ({
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const scrollableRef = useRef(null); // Reference to the scrollable div
+  const scrollableRef = useRef(null); 
   const [isDragging, setIsDragging] = useState(false);
   const [startY, setStartY] = useState(0);
   const [scrollTop, setScrollTop] = useState(0);
-  const handleMouseDown = (e) => {
-    setIsDragging(true);
-    setStartY(e.clientY);
-    setScrollTop(scrollableRef.current.scrollTop);
-    document.body.style.userSelect = 'none';
-  };
 
-  const handleMouseMove = (e) => {
-    if (!isDragging) return;
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowStickyHeader(window.scrollY > 200);
+    };
 
-    const distance = e.clientY - startY;
-    scrollableRef.current.scrollTop = scrollTop - distance; // Update the scroll position
-  };
+    const handleCustomScroll = (e: CustomEvent) => {
+      setShowStickyHeader(e.detail.scrollY > 200);
+    };
 
-  const handleMouseUp = () => {
-    setIsDragging(false);
-    document.body.style.userSelect = 'auto';
-  };
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('customScroll', handleCustomScroll as EventListener);
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('customScroll', handleCustomScroll as EventListener);
+    };
+  }, []);
+
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
   // const [getAllCommonSettinngsValues, setGetAllCommonSettinngsValues] = useState<any>([]);
@@ -219,7 +230,7 @@ export const Details = ({
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
   useEffect(() => {
-    const matchingVariant = variants.find(variant => variant.sku === productSku);
+    const matchingVariant = variants.find((variant) => variant.sku === productSku);
     if (matchingVariant) {
       setSelectedVariantId(matchingVariant.entityId);
     } else {
@@ -228,25 +239,13 @@ export const Details = ({
   }, [variants, productSku]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
-      if (!productFormRef.current) return;
-
-      const formRect = productFormRef.current.getBoundingClientRect();
-      setShowStickyHeader(formRect.bottom < 0);
-
-      if (currentScrollY < lastScrollY) {
-        setIsScrollingUp(true);
-      } else {
-        setIsScrollingUp(false);
-      }
-
-      setLastScrollY(currentScrollY);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [lastScrollY]);
+    const matchingVariant = variants.find((variant) => variant?.sku === productSku);
+    if (matchingVariant) {
+      setSelectedVariantId(matchingVariant.entityId);
+    } else {
+      setSelectedVariantId(null); // Reset if no matching variant is found
+    }
+  }, [variants, productSku]);
 
   useEffect(() => {
     const updateImageFromVariant = () => {
@@ -284,7 +283,7 @@ export const Details = ({
   }, [product]);
 
   const productAvailability = product.availabilityV2.status;
-  
+
   const getSelectedValue = (option: MultipleChoiceOption): string => {
     const selectedId = searchParams.get(String(option.entityId));
     if (selectedId) {
@@ -301,7 +300,8 @@ export const Details = ({
   };
 
   return (
-    <div>
+    <div className="sticky z-50">
+      
       {showStickyHeader && (
         <>
           <div className="fixed left-0 right-0 top-0 z-50 hidden border-b border-gray-200 bg-white shadow-2xl xl:block">
@@ -318,7 +318,7 @@ export const Details = ({
                     />
                   </div>
                   <div className="mr-[10em] flex-1">
-                    <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-black">
+                    <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-[#353535]">
                       {product.name}
                     </h2>
 
@@ -376,19 +376,19 @@ export const Details = ({
                       product.prices.price?.value !== undefined &&
                       product.prices.basePrice.value > product.prices.price.value ? (
                         <>
-                          <span className="mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                          <span className="price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
                             {format.number(product.prices.price.value, {
                               style: 'currency',
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
-                          <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
+                          <span className="price-2 mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
                             {format.number(product.prices.basePrice.value, {
                               style: 'currency',
                               currency: product.prices.price.currencyCode,
                             })}
                           </span>
-                          <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+                          <span className="price-3 mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                             Save{' '}
                             {Math.round(
                               ((product.prices.basePrice.value - product.prices.price.value) /
@@ -399,7 +399,7 @@ export const Details = ({
                           </span>
                         </>
                       ) : (
-                        <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+                        <span className="price-4 text-left text-[20px] font-[500] leading-8 tracking-[0.15px] text-[#008BB7]">
                           {format.number(product.prices.price?.value || 0, {
                             style: 'currency',
                             currency: product.prices.price?.currencyCode || 'USD',
@@ -409,18 +409,18 @@ export const Details = ({
                     </div>
                   )}
                   {productAvailability === 'Unavailable' ? (
-                     <div className='flex flex-col items-center'>
-                     <button
-                       id="add-to-cart"
-                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
-                       disabled
-                     >
-                       <span>
-                          ADD TO CART
-                       </span>
-                     </button>
-                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
-                     </div>
+                    <div className="flex flex-col items-center">
+                      <button
+                        id="add-to-cart"
+                        className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                        disabled
+                      >
+                        <span>ADD TO CART</span>
+                      </button>
+                      <p className="text-center text-[12px] text-[#2e2e2e]">
+                        This product is currently unavailable
+                      </p>
+                    </div>
                   ) : (
                     <button
                       className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
@@ -454,240 +454,241 @@ export const Details = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-              } px-[20px] pt-[20px]`}
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
+              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+            } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
-                     <div className='flex flex-col items-center'>
-                     <button
-                       id="add-to-cart"
-                       className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-black transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
-                       disabled
-                     >
-                       <span>
-                          ADD TO CART
-                       </span>
-                     </button>
-                     <p className="text-[#2e2e2e] text-[12px] text-center">This product is currently unavailable</p>
-                     </div>
-                  ) : (
-            <button
-              className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
-              onClick={() => {
-                const addToCartButton = productFormRef.current?.querySelector(
-                  'button[type="submit"]',
-                ) as HTMLButtonElement | null;
-                if (addToCartButton) {
-                  addToCartButton.click();
-                }
-              }}
-            >
-              <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                ADD TO CART
-              </span>
-              <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
-                <Image
-                  src={addToCart}
-                  className=""
-                  alt="Add to Cart"
-                  unoptimized={true}
-                  width={44}
-                  height={44}
-                />
+              <div className="flex flex-col items-center">
+                <button
+                  id="add-to-cart"
+                  className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                  disabled
+                >
+                  <span>ADD TO CART</span>
+                </button>
+                <p className="text-center text-[12px] text-[#2e2e2e]">
+                  This product is currently unavailable
+                </p>
               </div>
-            </button>
-                  )}
+            ) : (
+              <button
+                className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
+                onClick={() => {
+                  const addToCartButton = productFormRef.current?.querySelector(
+                    'button[type="submit"]',
+                  ) as HTMLButtonElement | null;
+                  if (addToCartButton) {
+                    addToCartButton.click();
+                  }
+                }}
+              >
+                <span className="transition-transform duration-300 group-hover:-translate-x-2">
+                  ADD TO CART
+                </span>
+                <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
+                  <Image
+                    src={addToCart}
+                    className=""
+                    alt="Add to Cart"
+                    unoptimized={true}
+                    width={44}
+                    height={44}
+                  />
+                </div>
+              </button>
+            )}
           </div>
         </>
       )}
-       <style jsx>{`
-        .custom-scrollbar::-webkit-scrollbar {
-          display: none; /* Hides scrollbar for Chrome, Safari, Edge */
-        }
 
-        .custom-scrollbar {
-          -ms-overflow-style: none; /* Hides scrollbar for IE and Edge */
-          scrollbar-width: none; /* Hides scrollbar for Firefox */
-        }
+      <ScrollContainer>
+        <div className="main-div-product-details mb-[35px] xl:mb-[0px]">
+          <div className="div-product-details mt-[30px] xl:mt-[0px]">
+            {/* Add relative positioning wrapper */}
+            <div className="relative">
+              <h1 className="product-name mb-3 text-center text-[24px] font-medium leading-[2rem] tracking-[0.15px] text-[#353535] sm:text-center md:mt-6 lg:mt-0 xl:mt-0 xl:text-left xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
+                {product.name}
+              </h1>
+            </div>
 
-        .cursor-grab:active {
-          cursor: grabbing; /* Changes cursor while dragging */
-        }
-
-        .smooth-scroll {
-          scroll-behavior: smooth; /* Smooth scrolling */
-        }
-      `}</style>
-<div 
-    ref={scrollableRef}
-    onMouseDown={handleMouseDown}
-    onMouseMove={handleMouseMove}
-    onMouseUp={handleMouseUp}
-    onMouseLeave={handleMouseUp}
-    className="custom-scrollbar h-[600px] w-full overflow-y-scroll cursor-grab ">
-      <div className="div-product-details">
-        {/* Add relative positioning wrapper */}
-        <div className="relative">
-          <h1 className="product-name mb-3 text-center text-[1.25rem] font-medium leading-[2rem] tracking-[0.15px] sm:text-center md:mt-6 lg:mt-0 lg:text-left xl:mt-0 xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
-            {product.name}
-          </h1>
-        </div>
-
-        <div className="items-center space-x-1 text-center lg:text-left xl:text-left">
-          <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-            SKU: <span>{product.mpn}</span>
-          </span>
-          <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-            by{' '}
-            <Link
-              href={product.brand?.path ?? ''}
-              className="products-underline border-b border-black"
-            >
-              {product.brand?.name}
-            </Link>
-          </span>
-          {collectionValue && (
-            <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-black lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-              from the{' '}
-              <Link
-                href={`/search?brand_name[0]=${encodeURIComponent(
-                  product.brand?.name ?? '',
-                )}&collection[0]=${encodeURIComponent(collectionValue)}`}
-                className="products-underline border-b border-black"
-              >
-                {collectionValue}
-              </Link>{' '}
-              Family
-            </span>
-          )}
-        </div>
-
-        <ReviewSummary data={product} />
-      </div>
-
-      {product.prices && (
-        <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
-          {product.prices.basePrice?.value !== undefined &&
-          product.prices.price?.value !== undefined &&
-          product.prices.basePrice.value > product.prices.price.value ? (
-            <>
-              <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                {format.number(product.prices.price.value, {
-                  style: 'currency',
-                  currency: product.prices.price.currencyCode,
-                })}
+            <div className="items-center space-x-1 text-center xl:text-left">
+              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                SKU: <span>{product.mpn}</span>
               </span>
-              <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
-                {format.number(product.prices.basePrice.value, {
-                  style: 'currency',
-                  currency: product.prices.price.currencyCode,
-                })}
+              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                by{' '}
+                <Link
+                  href={product.brand?.path ?? ''}
+                  className="products-underline border-b border-black"
+                >
+                  {product.brand?.name}
+                </Link>
               </span>
-              <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                Save{' '}
-                {Math.round(
-                  ((product.prices.basePrice.value - product.prices.price.value) /
-                    product.prices.basePrice.value) *
-                    100,
-                )}
-                %
-              </span>
-            </>
-          ) : (
-            <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-              {format.number(product.prices.price?.value || 0, {
-                style: 'currency',
-                currency: product.prices.price?.currencyCode || 'USD',
-              })}
-            </span>
-          )}
-        </div>
-      )}
-      <Coupon couponIcon={couponIcon} />
-      {selectedVariantId && (
-        <FreeDelivery entityId={product.entityId} variantId={selectedVariantId} isFromPDP={true}/>
-      )}
-      <div ref={productFormRef}>
-        <ProductForm
-          data={product}
-          productMpn={product.mpn || ''}
-          multipleOptionIcon={multipleOptionIcon}
-          blankAddImg={blankAddImg}
-          productImages={productImages}
-          fanPopup={fanPopup}
-          closeIcon={closeIcon}
-        />
-      </div>
+              {collectionValue && (
+                <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                  from the{' '}
+                  <Link
+                    href={`/search?brand_name[0]=${encodeURIComponent(
+                      product.brand?.name ?? '',
+                    )}&collection[0]=${encodeURIComponent(collectionValue)}`}
+                    className="products-underline border-b border-black"
+                  >
+                    {collectionValue}
+                  </Link>{' '}
+                  Family
+                </span>
+              )}
+            </div>
 
-      <div className="div-product-description my-12 hidden">
-        <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {Boolean(product.sku) && (
-            <div>
-              <h3 className="font-semibold">{t('sku')}</h3>
-              <p>{product.sku}</p>
-            </div>
-          )}
-          {Boolean(product.upc) && (
-            <div>
-              <h3 className="font-semibold">{t('upc')}</h3>
-              <p>{product.upc}</p>
-            </div>
-          )}
-          {Boolean(product.minPurchaseQuantity) && (
-            <div>
-              <h3 className="font-semibold">{t('minPurchase')}</h3>
-              <p>{product.minPurchaseQuantity}</p>
-            </div>
-          )}
-          {Boolean(product.maxPurchaseQuantity) && (
-            <div>
-              <h3 className="font-semibold">{t('maxPurchase')}</h3>
-              <p>{product.maxPurchaseQuantity}</p>
-            </div>
-          )}
-          {Boolean(product.availabilityV2.description) && (
-            <div>
-              <h3 className="font-semibold">{t('availability')}</h3>
-              <p>{product.availabilityV2.description}</p>
-            </div>
-          )}
-          {Boolean(product.condition) && (
-            <div>
-              <h3 className="font-semibold">{t('condition')}</h3>
-              <p>{product.condition}</p>
-            </div>
-          )}
-          {Boolean(product.weight) && (
-            <div>
-              <h3 className="font-semibold">{t('weight')}</h3>
-              <p>
-                {product.weight?.value} {product.weight?.unit}
-              </p>
-            </div>
-          )}
-          {Boolean(customFields) &&
-            customFields.map((customField) => (
-              <div key={customField.entityId}>
-                <h3 className="font-semibold">{customField.name}</h3>
-                <p>{customField.value}</p>
-              </div>
-            ))}
-        </div>
-      </div>
+            <ReviewSummary data={product} />
+          </div>
 
-      <ProductSchema product={product} />
-      <PayPalPayLater
-        amount={product?.prices?.price?.value?.toString()}
-        currency={product?.prices?.price?.currencyCode}
-      />
-      <RequestQuote requestQuote={requestQuote} />
-      <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
-      <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
-      <ShippingReturns />
-    </div>
-   
+          {product.prices && (
+            <div className="product-price mt-[1.5em] flex items-center justify-center gap-[0.5em] text-center xl:justify-start">
+              {product.prices.basePrice?.value !== undefined &&
+              product.prices.price?.value !== undefined &&
+              product.prices.basePrice.value > product.prices.price.value ? (
+                <>
+                  <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                    {format.number(product.prices.price.value, {
+                      style: 'currency',
+                      currency: product.prices.price.currencyCode,
+                    })}
+                  </span>
+                  <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
+                    {format.number(product.prices.basePrice.value, {
+                      style: 'currency',
+                      currency: product.prices.price.currencyCode,
+                    })}
+                  </span>
+                  <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+                    Save{' '}
+                    {Math.round(
+                      ((product.prices.basePrice.value - product.prices.price.value) /
+                        product.prices.basePrice.value) *
+                        100,
+                    )}
+                    %
+                  </span>
+                </>
+              ) : (
+                <span className="text-left text-[20px] font-[500] leading-8 tracking-[0.15px] text-[#008BB7]">
+                  {format.number(product.prices.price?.value || 0, {
+                    style: 'currency',
+                    currency: product.prices.price?.currencyCode || 'USD',
+                  })}
+                </span>
+              )}
+            </div>
+          )}
+          <Coupon couponIcon={couponIcon} />
+
+          <div className="free-shipping-detail mb-[25px] text-center xl:text-left">
+            {selectedVariantId && (
+              <FreeDelivery
+                entityId={product.entityId}
+                variantId={selectedVariantId}
+                isFromPDP={true}
+              />
+            )}
+            {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
+              getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
+                <NoShipCanada
+                  description={'Canadian shipping note:This product cannot ship to Canada'}
+                />
+              )}
+          </div>
+
+          <div ref={productFormRef}>
+            <ProductForm
+              data={product}
+              productMpn={product.mpn || ''}
+              multipleOptionIcon={multipleOptionIcon}
+              blankAddImg={blankAddImg}
+              productImages={productImages}
+              fanPopup={fanPopup}
+              closeIcon={closeIcon}
+            />
+          </div>
+
+          <div className="div-product-description my-12 hidden">
+            <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {Boolean(product.sku) && (
+                <div>
+                  <h3 className="font-semibold">{t('sku')}</h3>
+                  <p>{product.sku}</p>
+                </div>
+              )}
+              {Boolean(product.upc) && (
+                <div>
+                  <h3 className="font-semibold">{t('upc')}</h3>
+                  <p>{product.upc}</p>
+                </div>
+              )}
+              {Boolean(product.minPurchaseQuantity) && (
+                <div>
+                  <h3 className="font-semibold">{t('minPurchase')}</h3>
+                  <p>{product.minPurchaseQuantity}</p>
+                </div>
+              )}
+              {Boolean(product.maxPurchaseQuantity) && (
+                <div>
+                  <h3 className="font-semibold">{t('maxPurchase')}</h3>
+                  <p>{product.maxPurchaseQuantity}</p>
+                </div>
+              )}
+              {Boolean(product.availabilityV2.description) && (
+                <div>
+                  <h3 className="font-semibold">{t('availability')}</h3>
+                  <p>{product.availabilityV2.description}</p>
+                </div>
+              )}
+              {Boolean(product.condition) && (
+                <div>
+                  <h3 className="font-semibold">{t('condition')}</h3>
+                  <p>{product.condition}</p>
+                </div>
+              )}
+              {Boolean(product.weight) && (
+                <div>
+                  <h3 className="font-semibold">{t('weight')}</h3>
+                  <p>
+                    {product.weight?.value} {product.weight?.unit}
+                  </p>
+                </div>
+              )}
+              {Boolean(customFields) &&
+                customFields.map((customField) => (
+                  <div key={customField.entityId}>
+                    <h3 className="font-semibold">{customField.name}</h3>
+                    <p>{customField.value}</p>
+                  </div>
+                ))}
+            </div>
+          </div>
+
+          <ProductSchema product={product} />
+          <PayPalPayLater
+            amount={product?.prices?.price?.value?.toString()}
+            currency={product?.prices?.price?.currencyCode}
+          />
+          <RequestQuote requestQuote={requestQuote} />
+          <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
+          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
+
+          {/* <ShippingReturns /> */}
+
+          <div className="flex justify-center gap-4 xl:mt-7">
+            <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
+
+            <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
+          </div>
+
+        </div>
+      </ScrollContainer>
     </div>
   );
 };

@@ -1,8 +1,8 @@
 'use client';
 import { useTranslations } from 'next-intl';
-import { getDeliveryMessage } from "~/components/management-apis";
-import React, { useState, useEffect } from "react";
-import { Spinner } from "@/vibes/soul/primitives/spinner";
+import { getDeliveryMessage } from '~/components/management-apis';
+import React, { useState, useEffect } from 'react';
+import { Spinner } from '@/vibes/soul/primitives/spinner';
 
 interface DeliveryMessageProps {
   entityId: number;
@@ -10,7 +10,11 @@ interface DeliveryMessageProps {
   isFromPDP: boolean;
 }
 
-export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variantId, isFromPDP }) => {
+export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
+  entityId,
+  variantId,
+  isFromPDP,
+}) => {
   const t = useTranslations('freeDelivery');
   const [deliveryMessage, setDeliveryMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -36,7 +40,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
 
   if (loading) {
     return (
-      <div className="flex justify-center lg:justify-start px-[50px] py-[30px]">
+      <div className="flex justify-center px-[50px] py-[30px] xl:justify-start">
         <Spinner aria-hidden="true" />
       </div>
     );
@@ -47,27 +51,26 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
   }
 
   // Check if the deliveryMessage includes "Backorder"
-  const isBackorder = deliveryMessage?.includes("Backorder");
+  const isBackorder = deliveryMessage?.includes('Backorder');
 
   // Determine background color based on Backorder presence
   const backgroundColorClass = isBackorder ? 'bg-[#FBF4E9]' : 'bg-transparent';
 
   return (
-    <div className={`mt-[5px] flex flex-col ${isFromPDP ? 'items-center' : 'items-start'} lg:items-start`}>
-      <div className="font-normal text-sm leading-6 tracking-[0.25px]">
-        {t('title')}
-      </div>
-      <div className={`${backgroundColorClass} w-fit mt-[5px]`}>
+    <div
+      className={`mt-[5px] flex flex-col ${isFromPDP ? 'items-center' : 'items-start'} xl:items-start`}
+    >
+      <div className="text-sm font-normal leading-6 tracking-[0.25px]">{t('title')}</div>
+      <div className={`${backgroundColorClass} mt-[5px] w-fit`}>
         {isBackorder ? (
           <div>
-            {/* <strong>Important:</strong> The delivery message includes a backorder. */}
-            <div className='text-[#6A4C1E] font-normal text-sm leading-6 tracking-[0.25px] px-2'>
-              {deliveryMessage?.replace(":Backorder", "")?.trim() || 'No delivery message available.'}
+            <div className="px-2 text-sm font-normal leading-6 tracking-[0.25px] text-[#6A4C1E]">
+              {deliveryMessage?.replace(':Backorder', '')?.trim() || ''}
             </div>
           </div>
         ) : (
-          <div className='font-normal text-sm leading-6 tracking-[0.25px] px-0'>
-            {deliveryMessage || 'No delivery message available.'}
+          <div className="px-0 text-sm font-normal leading-6 tracking-[0.25px]">
+            {deliveryMessage || ''}
           </div>
         )}
       </div>

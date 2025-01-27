@@ -29,13 +29,13 @@ import { Link as CustomLink } from '~/components/link';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { BcImage } from '../bc-image';
 
-import bbbIcon from '~/public/footerIcons/bbbIcon.svg'
-import payPalIcon from '~/public/footerIcons/payPalIcon.svg'
-import visaIcon from '~/public/footerIcons/visaIcon.svg'
-import paymentIcon from '~/public/footerIcons/paymentIcon.svg'
-import discoverIcon from '~/public/footerIcons/discoverIcon.svg'
-import amexIcon from '~/public/footerIcons/amexIcon.svg'
-import brainTreeIcon from '~/public/footerIcons/brainTreeIcon.svg'
+import bbbIcon from '~/public/footerIcons/bbbIcon.svg';
+import payPalIcon from '~/public/footerIcons/payPalIcon.svg';
+import visaIcon from '~/public/footerIcons/visaIcon.svg';
+import paymentIcon from '~/public/footerIcons/paymentIcon.svg';
+import discoverIcon from '~/public/footerIcons/discoverIcon.svg';
+import amexIcon from '~/public/footerIcons/amexIcon.svg';
+import brainTreeIcon from '~/public/footerIcons/brainTreeIcon.svg';
 
 const socialIcons: Record<string, { icon: JSX.Element; link: string }> = {
   Pinterest: {
@@ -52,7 +52,6 @@ const socialIcons: Record<string, { icon: JSX.Element; link: string }> = {
 };
 
 export const Footer = async () => {
-
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data: response } = await client.fetch({
@@ -66,34 +65,46 @@ export const Footer = async () => {
       title: 'Shopping',
       links: [
         { label: <span className="footer-link shopping-link">Gift Cards</span>, href: '/path-1' },
-        { label: <span className="footer-link shopping-link">On Sale</span>, href: '/path-2' },
-        { label: <span className="footer-link shopping-link">Our Brands</span>, href: '/path-3' },
+        {
+          label: <span className="footer-link shopping-link">On Sale</span>,
+          href: 'search?on_sale=true',
+        },
+        { label: <span className="footer-link shopping-link">Our Brands</span>, href: '/brands' },
         {
           label: <span className="footer-link shopping-link">B2B and Trade Customers</span>,
-          href: '/path-4',
+          href: '/trade-account/trade-step1',
         },
         {
           label: <span className="footer-link shopping-link">View your Cart</span>,
-          href: '/path-5',
+          href: '/cart',
         },
         {
           label: <span className="footer-link shopping-link">Coupon Policy</span>,
-          href: '/path-6',
+          href: '/content/coupons',
         },
       ],
     },
     {
       title: 'About Us',
       links: [
-        { label: <span className="footer-link about-link">About Us</span>, href: '/path-1' },
-        { label: <span className="footer-link about-link">Partners</span>, href: '/path-2' },
-        { label: <span className="footer-link about-link">Privacy Policy</span>, href: '/path-3' },
-        { label: <span className="footer-link about-link">Terms of Use</span>, href: '/path-4' },
+        { label: <span className="footer-link about-link">About Us</span>, href: '/about-us' },
+        { label: <span className="footer-link about-link">Partners</span>, href: '/partners' },
+        {
+          label: <span className="footer-link about-link">Privacy Policy</span>,
+          href: '/content/privacy',
+        },
+        {
+          label: <span className="footer-link about-link">Terms of Use</span>,
+          href: '/content/termsofuse',
+        },
         {
           label: <span className="footer-link about-link">Affiliate Program</span>,
           href: '/path-5',
         },
-        { label: <span className="footer-link about-link">Accessibility</span>, href: '/path-6' },
+        {
+          label: <span className="footer-link about-link">Accessibility</span>,
+          href: '/content/accessibility',
+        },
       ],
     },
     {
@@ -110,17 +121,17 @@ export const Footer = async () => {
         {
           label: (
             <div className="footer-subscribe !ml-[0em]">
-              <form action="/subscribe" method="POST" className='flex items-center'>
+              <form action="/subscribe" method="POST" className="flex items-center">
                 <input
                   type="email"
                   name="email"
                   placeholder="Enter your email"
-                  className="subscription-input !placeholder:pl-[8px] w-[243px] h-[40px] pl-[12px] text-left tracking-[0.25px] text-[#6b7280] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] focus:outline-none"
+                  className="subscription-input !placeholder:pl-[8px] h-[40px] w-[243px] pl-[12px] text-left tracking-[0.25px] text-[#6b7280] placeholder:text-[14px] placeholder:font-normal placeholder:leading-[24px] focus:outline-none"
                   required
                 />
                 <button
                   type="submit"
-                  className="subscription-button relative h-[40px] bg-[#008bb7] text-center text-[14px] font-normal uppercase text-white w-[80px]"
+                  className="subscription-button relative h-[40px] w-[80px] bg-[#008bb7] text-center text-[14px] font-normal uppercase text-white"
                 >
                   Sign Up
                 </button>
@@ -164,7 +175,7 @@ export const Footer = async () => {
             </div>
           ),
           href: '#',
-        }
+        },
       ],
     },
   ];
@@ -180,19 +191,67 @@ export const Footer = async () => {
         }
         logo={data.settings ? logoTransformer(data.settings) : undefined}
         paymentIcons={[
-
           <div className="flex items-center gap-[10px]">
-            <BcImage src={bbbIcon} className='w-[63px] h-[24px]' alt="payment images" width={63} height={24} unoptimized={true} />
-            <BcImage src={payPalIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24} unoptimized={true}/>
-            <BcImage src={visaIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24} unoptimized={true}/>
-            <BcImage src={paymentIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24} unoptimized={true}/>
-            <BcImage src={discoverIcon} className='w-[34px] h-[24px]' alt="payment images"width={34} height={24} unoptimized={true} />
-            <BcImage src={amexIcon} className='w-[34px] h-[24px]' alt="payment images" width={34} height={24} unoptimized={true}/>
-            <BcImage src={brainTreeIcon} className='w-[89px] h-[24px]' alt="payment images" width={89} height={24} unoptimized={true} />
+            <BcImage
+              src={bbbIcon}
+              className="h-[24px] w-[63px]"
+              alt="payment images"
+              width={63}
+              height={24}
+              unoptimized={true}
+            />
+            <BcImage
+              src={payPalIcon}
+              className="h-[24px] w-[34px]"
+              alt="payment images"
+              width={34}
+              height={24}
+              unoptimized={true}
+            />
+            <BcImage
+              src={visaIcon}
+              className="h-[24px] w-[34px]"
+              alt="payment images"
+              width={34}
+              height={24}
+              unoptimized={true}
+            />
+            <BcImage
+              src={paymentIcon}
+              className="h-[24px] w-[34px]"
+              alt="payment images"
+              width={34}
+              height={24}
+              unoptimized={true}
+            />
+            <BcImage
+              src={discoverIcon}
+              className="h-[24px] w-[34px]"
+              alt="payment images"
+              width={34}
+              height={24}
+              unoptimized={true}
+            />
+            <BcImage
+              src={amexIcon}
+              className="h-[24px] w-[34px]"
+              alt="payment images"
+              width={34}
+              height={24}
+              unoptimized={true}
+            />
+            <BcImage
+              src={brainTreeIcon}
+              className="h-[24px] w-[89px]"
+              alt="payment images"
+              width={89}
+              height={24}
+              unoptimized={true}
+            />
           </div>,
         ]}
         sections={sections}
       />
-   </div>
+    </div>
   );
 };

@@ -1,5 +1,12 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getCommonSettingByBrandChannel, addCouponCodeToCart, deleteCouponCodeFromCart, GetProductMetaFields, GetProductVariantMetaFields, updateProductDiscount } from '../management-apis';
+import {
+  getCommonSettingByBrandChannel,
+  addCouponCodeToCart,
+  deleteCouponCodeFromCart,
+  GetProductMetaFields,
+  GetProductVariantMetaFields,
+  updateProductDiscount,
+} from '../management-apis';
 
 interface MetaField {
   entityId: number;
@@ -63,10 +70,14 @@ interface ExcludedMetaFields {
 
 // Define excluded metadata
 const excludedMetaFields: ExcludedMetaFields = {
-  keys: ['spec_sheet', 'install_sheet', 'included', 'ratings_certifications', 'Ratings and Certifications'],
-  categories: [
-    'Other', // Exclude the Other category entirely
+  keys: [
+    'spec_sheet',
+    'install_sheet',
+    'included',
+    'ratings_certifications',
+    'Ratings and Certifications',
   ],
+  categories: ['Other'],
 };
 
 // Helper function to check if a field should be excluded
@@ -163,7 +174,6 @@ export const processMetaFields = (metaFields: MetaField[]): GroupedDetails[] => 
     .filter((group) => group.details.length > 0); // Remove any empty groups
 };
 
-// Fetch variant details
 export const fetchVariantDetails = async (product: any): Promise<ProcessedMetaFieldsResponse> => {
   if (!product?.entityId) {
     throw new Error('Product ID is missing');
@@ -173,6 +183,11 @@ export const fetchVariantDetails = async (product: any): Promise<ProcessedMetaFi
   let groupedDetails: GroupedDetails[] = [];
 
   try {
+    // Fetch product level details
+    const productMetaFields = await GetProductMetaFields(product.entityId, 'Details');
+    const productGroupedDetails = processMetaFields(productMetaFields);
+
+    // Fetch variant level details
     let variantData: Variant[] = removeEdgesAndNodes(product?.variants) as Variant[];
     const currentSku = product.sku;
     const matchingVariant = variantData.find((variant) => variant.sku === currentSku);
@@ -186,7 +201,8 @@ export const fetchVariantDetails = async (product: any): Promise<ProcessedMetaFi
 
       if (variantMetaFields) {
         variantDetails = variantMetaFields;
-        groupedDetails = processMetaFields(variantMetaFields);
+        const variantGroupedDetails = processMetaFields(variantMetaFields);
+        groupedDetails = [...productGroupedDetails, ...variantGroupedDetails];
       }
     }
 
@@ -329,66 +345,70 @@ export const getMetaFieldsByProduct = async (
   return result;
 };
 
-
-export const commonSettinngs = async(brand_ids) =>{
-    // 47, 111,
-    var res = await getCommonSettingByBrandChannel(brand_ids);        
-    return res.output;
-}
+export const commonSettinngs = async (brand_ids) => {
+  // 47, 111,
+  var res = await getCommonSettingByBrandChannel(brand_ids);
+  return res.output;
+};
 export const retrieveMpnData = (product: any, productid: Number, variantId: Number) => {
-  if(product?.baseCatalogProduct?.variants) {
+  if (product?.baseCatalogProduct?.variants) {
     let productVariants: any = removeEdgesAndNodes(product?.baseCatalogProduct?.variants);
-    let productvariantData: any = productVariants.find((prod:any) => prod?.entityId == variantId);
+    let productvariantData: any = productVariants.find((prod: any) => prod?.entityId == variantId);
     return productvariantData?.mpn ?? product?.sku;
   } else {
     return product?.sku;
   }
-}
+};
 
-export const checkZeroTaxCouponIsApplied = async(checkoutData: any) => {
+export const checkZeroTaxCouponIsApplied = async (checkoutData: any) => {
   let couponCodeArray: any = checkoutData?.coupons;
   let zeroTaxCoupon: number = 0;
-  if(couponCodeArray?.length > 0) {
-    let couponData: any = couponCodeArray?.find((discount: any) => discount?.code?.includes('ZEROTAX'));
-    if(couponData) {
+  if (couponCodeArray?.length > 0) {
+    let couponData: any = couponCodeArray?.find((discount: any) =>
+      discount?.code?.includes('ZEROTAX'),
+    );
+    if (couponData) {
       zeroTaxCoupon = 1;
     }
   }
   return zeroTaxCoupon;
-}
+};
 
-export const zeroTaxCalculation = async(cartObject: any) => {
+export const zeroTaxCalculation = async (cartObject: any) => {
   let checkoutData: any = cartObject?.checkout;
-  let cartData:any = cartObject?.cart;
-  if(await checkZeroTaxCouponIsApplied(checkoutData)) {
+  let cartData: any = cartObject?.cart;
+  if (await checkZeroTaxCouponIsApplied(checkoutData)) {
     let taxPercentage: any = 0;
     let subTotalAmount: any = checkoutData?.subtotal?.value || 0;
     let taxAmount: any = checkoutData?.taxTotal?.value || 0;
     taxPercentage = Number((subTotalAmount / taxAmount)?.toFixed(2));
-    let taxPercentCalc: any = (taxAmount/subTotalAmount);
+    let taxPercentCalc: any = taxAmount / subTotalAmount;
     let postDataArray: any = [];
-    console.log('========cartData?.lineItems?.physicalItems=======', cartData?.lineItems?.physicalItems);
+    console.log(
+      '========cartData?.lineItems?.physicalItems=======',
+      cartData?.lineItems?.physicalItems,
+    );
     for await (const item of cartData?.lineItems?.physicalItems) {
       let couponDiscount: any = item?.couponAmount;
       let couponAmount: any = couponDiscount?.value;
       let qty: any = item?.quantity;
-      let zeroTaxCheck: any = (couponAmount/qty);
-      if(zeroTaxCheck == 0.1) {
+      let zeroTaxCheck: any = couponAmount / qty;
+      if (zeroTaxCheck == 0.1) {
         let productAmount = item?.extendedSalePrice?.value;
         let taxAmountEachProduct = (taxPercentCalc * productAmount) / (1 + taxPercentCalc);
         console.log('========taxAmountEachProduct=======', taxAmountEachProduct);
-        if(taxAmountEachProduct) {
+        if (taxAmountEachProduct) {
           postDataArray.push({
-            "id": item?.entityId,
-            "discounted_amount": taxAmountEachProduct
+            id: item?.entityId,
+            discounted_amount: taxAmountEachProduct,
           });
         }
       }
     }
     console.log('=======postDataArray========', postDataArray);
-    if(postDataArray?.length > 0) {
+    if (postDataArray?.length > 0) {
       //delete the ZERO TAX Coupon
-      await deleteCouponCodeFromCart(cartData?.entityId, "ZEROTAX");
+      await deleteCouponCodeFromCart(cartData?.entityId, 'ZEROTAX');
       let postData: any = `{
         "cart": {
           "line_items": ${JSON.stringify(postDataArray)},
@@ -398,7 +418,7 @@ export const zeroTaxCalculation = async(cartObject: any) => {
       console.log('========after remove=======');
       let discountData: any = await updateProductDiscount(cartData?.entityId, postData);
       console.log('========discountData=======', discountData);
-      await addCouponCodeToCart(cartData?.entityId, "ZEROTAX");
+      await addCouponCodeToCart(cartData?.entityId, 'ZEROTAX');
     }
   }
-}
+};

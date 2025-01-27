@@ -1,4 +1,3 @@
-// wishlist-book.tsx
 'use client';
 
 import { useRouter } from 'next/navigation';
@@ -16,6 +15,7 @@ import { useAccountStatusContext } from '../../_components/account-status-provid
 import { Modal } from '../../_components/modal';
 import { DeleteWishlistForm } from './delete-wishlist-form';
 import { CreateWishlistDialog } from './create-wishlist-form';
+import { MoreVertical } from 'lucide-react';
 
 // Constants
 const WISHLISTS_PER_PAGE = 100;
@@ -91,6 +91,155 @@ interface WishlistBookProps {
   onColorSelect?: (variant: ProductVariant) => void;
 }
 
+interface WishlistMenuProps {
+  entityId: number;
+  name: string;
+  onWishlistDeleted: () => void;
+}
+
+interface WishlistMenuProps {
+  entityId: number;
+  name: string;
+  onWishlistDeleted: () => void;
+  wishlist: any;
+}
+
+const WishlistMenu: React.FC<WishlistMenuProps> = ({
+  entityId,
+  name,
+  onWishlistDeleted,
+  wishlist,
+}) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const { setAccountState } = useAccountStatusContext();
+  const t = useTranslations('Account.Wishlist');
+
+  const toggleModal = () => setIsOpen(!isOpen);
+
+  const handleWishlistDeleted = () => {
+    onWishlistDeleted();
+    setAccountState((prevState) => ({
+      ...prevState,
+      status: 'success',
+      message: t('messages.deleted', { name }),
+    }));
+    setDeleteModalOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleEditClick = () => {
+    localStorage.setItem('selectedWishlist', JSON.stringify(wishlist));
+    toggleModal();
+  };
+
+  return (
+    <div className="relative block lg:hidden">
+      <button onClick={toggleModal} className="p-2">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          height="20"
+          viewBox="0 0 20 20"
+          width="20"
+        >
+          <path
+            d="M6 10C6 11.1046 5.10457 12 4 12C2.89543 12 2 11.1046 2 10C2 8.89543 2.89543 8 4 8C5.10457 8 6 8.89543 6 10Z"
+            fill="#4A5568"
+          />
+          <path
+            d="M12 10C12 11.1046 11.1046 12 10 12C8.89543 12 8 11.1046 8 10C8 8.89543 8.89543 8 10 8C11.1046 8 12 8.89543 12 10Z"
+            fill="#4A5568"
+          />
+          <path
+            d="M16 12C17.1046 12 18 11.1046 18 10C18 8.89543 17.1046 8 16 8C14.8954 8 14 8.89543 14 10C14 11.1046 14.8954 12 16 12Z"
+            fill="#4A5568"
+          />
+        </svg>
+      </button>
+
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-40 bg-black bg-opacity-50" onClick={toggleModal} />
+          <div className="fixed bottom-0 left-0 right-0 z-50 flex transform justify-center rounded-t-lg bg-white p-4 transition-transform duration-300 ease-out">
+            <div className="space-y-4">
+              <Modal
+                isOpen={deleteModalOpen}
+                onClose={() => setDeleteModalOpen(false)}
+                showCancelButton={false}
+                title={t('deleteTitle', { name })}
+                trigger={
+                  <button
+                    onClick={() => setDeleteModalOpen(true)}
+                    className="flex w-full items-center gap-2 rounded-lg p-3 hover:bg-gray-50"
+                  >
+                    <span className="text-gray-600">
+                      <svg
+                        className="h-5 w-5"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </span>
+                    <span className="text-gray-700">Delete List</span>
+                  </button>
+                }
+              >
+                <DeleteWishlistForm
+                  id={entityId}
+                  name={name}
+                  onWishistDeleted={handleWishlistDeleted}
+                />
+              </Modal>
+
+              <Link
+                href="/account/wishlists/wishlist-product"
+                className="flex w-full items-center gap-2 rounded-lg p-3 pl-0"
+                onClick={handleEditClick}
+              >
+                <span className="text-gray-600">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"
+                    />
+                  </svg>
+                </span>
+                <span className="text-gray-700">Edit List</span>
+              </Link>
+
+              <button className="flex w-full items-center gap-2 rounded-lg p-3 pl-0">
+                <span className="text-gray-600">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+                    />
+                  </svg>
+                </span>
+                <span className="text-gray-700">Share List</span>
+              </button>
+            </div>
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
+
+export default WishlistMenu;
+
 const Wishlist = ({
   setWishlistBook,
   wishlist,
@@ -120,7 +269,7 @@ const Wishlist = ({
   };
 
   return (
-    <div className="wishlist-item flex w-full items-center gap-6 bg-white">
+    <div className="wishlist-item flex w-full items-center gap-4 bg-white lg:gap-6">
       {/* Left Column - Image */}
       <div className="flex h-32 w-32 items-center justify-center rounded bg-[#80C5DA]">
         <svg
@@ -145,10 +294,10 @@ const Wishlist = ({
             {name}
           </h3>
         </Link>
-        <p className="mb-[6px] text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#000000]">
+        <p className="mb-[12px] text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#000000]">
           {items.length} {items.length === 1 ? 'item' : 'items'}
         </p>
-        <div className="flex w-[30%] gap-2">
+        <div className="flex hidden w-[30%] gap-2 lg:block">
           <Link
             href="/account/wishlists/wishlist-product"
             onClick={handleWishlistClick}
@@ -161,31 +310,41 @@ const Wishlist = ({
 
       {/* Right Column - Delete Button */}
       {name !== t('favorites') && (
-        <div>
-          <Modal
-            isOpen={deleteWishlistModalOpen}
-            onClose={() => setDeleteWishlistModalOpen(false)}
-            showCancelButton={false}
-            title={t('deleteTitle', { name })}
-            trigger={
-              <Button variant="ghost" size="sm" className="text-gray-500 hover:text-red-600">
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                  />
-                </svg>
-              </Button>
-            }
-          >
-            <DeleteWishlistForm
-              id={entityId}
-              name={name}
-              onWishistDeleted={handleWishlistDeleted}
-            />
-          </Modal>
+        <div className="delete-wishlist block h-[10em]">
+          <WishlistMenu
+            entityId={entityId}
+            name={name}
+            onWishlistDeleted={() => {
+              handleWishlistDeleted();
+            }}
+          />
+
+          <div className="delete-wishlist hidden lg:block">
+            <Modal
+              isOpen={deleteWishlistModalOpen}
+              onClose={() => setDeleteWishlistModalOpen(false)}
+              showCancelButton={false}
+              title={t('deleteTitle', { name })}
+              trigger={
+                <Button variant="ghost" size="sm" className="text-gray-500 hover:text-red-600">
+                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                    />
+                  </svg>
+                </Button>
+              }
+            >
+              <DeleteWishlistForm
+                id={entityId}
+                name={name}
+                onWishistDeleted={handleWishlistDeleted}
+              />
+            </Modal>
+          </div>
         </div>
       )}
     </div>
