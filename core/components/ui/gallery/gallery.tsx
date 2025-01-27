@@ -37,26 +37,6 @@ interface ProductImage {
   isDefault: boolean;
 }
 
-interface Product {
-  entityId: number;
-  name: string;
-  path?: string;
-  brand?: ProductBrand;
-  mpn?: string;
-  prices?: any;
-  variants?: {
-    edges: Array<{
-      node: {
-        entityId: number;
-        defaultImage?: {
-          url: string;
-          altText: string;
-        };
-      };
-    }>;
-  };
-}
-
 interface Image {
   altText: string;
   src: string;
@@ -105,14 +85,35 @@ const Gallery = ({
   const { wishlists } = useWishlists();
   const { setCurrentMainMedia } = useCommonContext();
   const [currentVariantId, setCurrentVariantId] = useState<number | undefined>();
+  const [selectedIndex, setSelectedIndex] = useState(defaultImageIndex);
+  const [viewAll, setViewAll] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [videoError, setVideoError] = useState<string | null>(null);
+  const prevMediaRef = useRef<string | null>(null);
+  const thumbnailRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const ExpandIcon = () => (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      className="h-full w-full"
+    >
+      <path
+        d="M0 18V12H2V14.6L5.1 11.5L6.5 12.9L3.4 16H6V18H0ZM12.9 6.5L11.5 5.1L14.6 2H12V0H18V6H16V3.4L12.9 6.5Z"
+        fill="#1C1B1F"
+      />
+    </svg>
+  );
 
   useEffect(() => {
-    // Helper function to extract variant identifier from SKU
     const getVariantIdentifier = (sku: string) => {
-      return sku.split('_')[1]?.toLowerCase(); // e.g., "26SH-RED" or "26SH-YELLOW"
+      return sku.split('_')[1]?.toLowerCase();
     };
 
-    // Helper function to match image to variant based on SKU/altText
     const getVariantImage = (
       sku: string,
       images: Array<{
@@ -128,12 +129,9 @@ const Gallery = ({
     };
 
     const allImages = product?.images?.edges?.map((img) => img.node) || [];
-
-    // Get matching variant
     const currentVariant = product?.variants?.edges?.find((edge) => edge.node.sku === product.sku);
 
     if (product) {
-      // Find selected variant options
       const selectedOptions = product.productOptions?.edges
         ?.map((edge) => {
           if (edge.node.__typename === 'MultipleChoiceOption') {
@@ -152,7 +150,6 @@ const Gallery = ({
         })
         .filter(Boolean);
 
-      // Update current variant ID when variant changes
       if (currentVariant) {
         setCurrentVariantId(currentVariant.node.entityId);
       }
@@ -165,7 +162,6 @@ const Gallery = ({
         (variant) => variant.node.sku === product.sku,
       );
 
-      // Find variant image based on SKU
       const variantImages = product?.images?.edges?.map((edge) => edge.node) || [];
       const currentVariantImage = variantImages.find((img) =>
         img.altText
@@ -173,32 +169,9 @@ const Gallery = ({
           .includes(product.sku.split('_')[1]?.split('-')[1]?.toLowerCase() || ''),
       );
 
-      console.log('Current Variant Data:', {
-        currentSku: product.sku,
-        matchedVariantId: matchingVariant?.node?.entityId,
-        currentImage: currentVariantImage,
-      });
-
       setCurrentVariantId(matchingVariant?.node?.entityId);
     }
   }, [product?.sku, product?.variants?.edges]);
-
-  const [selectedIndex, setSelectedIndex] = useState(defaultImageIndex);
-  const [viewAll, setViewAll] = useState(false);
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [videoError, setVideoError] = useState<string | null>(null);
-  const prevMediaRef = useRef<string | null>(null);
-
-  const thumbnailRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  useEffect(() => {
-    console.log('Product and Variant Data:', {
-      productId: product?.entityId,
-      selectedVariantId,
-      product,
-    });
-  }, [product, selectedVariantId]);
 
   const { mediaItems, selectedItem } = useMemo(() => {
     const filteredImages = (() => {
@@ -400,13 +373,12 @@ const Gallery = ({
 
   return (
     <div aria-live="polite" className={className}>
-      <div className="gallery-container relative flex flex-col-reverse lg:h-[40em] xl:flex-row">
-        {/* <div className="gallery-items mr-0 mt-5 flex flex-col items-center xl:mr-4 xl:mt-0 xl:flex-col xl:space-y-4"> */}
-        <div className="gallery-items mr-0 mt-5 flex flex-col items-center xl:mr-4 xl:mt-0">
+      <div className="gallery-container relative flex flex-col-reverse xl:h-[40em] xl:flex-row">
+        <div className="gallery-items mr-0 mt-3 flex flex-col xl:mr-4 xl:mt-0 xl:items-center">
           <nav
             ref={thumbnailRef}
             aria-label="Thumbnail navigation"
-            className="no-scrollbar flex flex-row overflow-x-auto xl:flex-col gap-y-[15px]"
+            className="no-scrollbar xl:gap-x:0 flex flex-row justify-between gap-x-[15px] gap-y-[15px] overflow-x-auto xl:flex-col"
             style={{ maxHeight: '700px' }}
           >
             {(viewAll ? mediaItems : mediaItems.slice(0, 4)).map((item, index) => {
@@ -419,7 +391,7 @@ const Gallery = ({
                   aria-label={isVideo ? 'Play video' : 'Enlarge product image'}
                   aria-pressed={isActive}
                   className={cn(
-                    'gallery-thumbnail left-side gap-y-8 relative h-[3.6em] w-[3.6em] flex-shrink-0 border-2 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-[7.2em] xl:w-[7em]',
+                    'gallery-thumbnail left-side relative h-[3.6em] w-[3.6em] flex-shrink-0 gap-y-8 border-2 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 md:h-[8em] md:w-[8em] lg:h-[10em] lg:w-[10em] xl:h-[7.2em] xl:w-[7em]',
                     isActive ? 'border-primary' : 'border-gray-200',
                   )}
                   key={`${isVideo ? item.url : item.src}-${index}`}
@@ -472,14 +444,11 @@ const Gallery = ({
                     />
                   )}
 
-                  <div onClick={() => openPopup()}>
-                    <img
-                      alt="Overlay"
-                      className="absolute bottom-2 right-2 m-1 h-4 w-4 rounded-full bg-white object-fill p-1 opacity-70"
-                      height={24}
-                      src={galleryExpandIcon}
-                      width={24}
-                    />
+                  <div
+                    onClick={() => openPopup()}
+                    className="absolute bottom-1 right-1 h-4 w-4 rounded-full bg-white bg-opacity-60 p-1 xl:bottom-2 xl:right-2 xl:m-1"
+                  >
+                    <ExpandIcon />
                   </div>
                 </button>
               );
@@ -488,36 +457,37 @@ const Gallery = ({
             {!viewAll && mediaItems.length > 4 && (
               <button
                 aria-label="View all items"
-                className="gallery-thumbnail relative h-[3.6em] w-[3.6em] flex-shrink-0 border-2 border-gray-200 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 xl:h-[7.2em] xl:w-[7em]"
+                className="gallery-thumbnail relative h-[3.6em] w-[3.6em] flex-shrink-0 border-2 border-gray-200 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 md:h-[8em] md:w-[8em] lg:h-[10em] lg:w-[10em] xl:h-[7.2em] xl:w-[7em]"
                 onClick={() => openPopup(3)}
               >
-                {mediaItems[3]?.type === 'video' ? (
-                  <div className="relative h-full w-full">
-                    {isYoutubeUrl(mediaItems[3]?.url) ? (
-                      <img
-                        src={getYoutubeThumbnailUrl(mediaItems[3]?.url || '') || ''}
-                        alt="Video thumbnail"
-                        className="h-full w-full object-cover"
-                      />
-                    ) : (
-                      <video className="h-full w-full object-cover" preload="metadata">
-                        <source src={mediaItems[3]?.url} type="video/mp4" />
-                      </video>
-                    )}
-                  </div>
-                ) : (
+                <div className="relative h-full w-full">
                   <BcImage
                     alt="View All"
-                    className="flex h-full w-full cursor-pointer items-center justify-center object-fill"
+                    className="h-full w-full object-cover brightness-50"
                     height={94}
                     priority={true}
                     src={mediaItems[3]?.src || ''}
                     width={94}
                   />
-                )}
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black bg-opacity-50 uppercase text-white">
-                  <span className="text-[0.625rem] xl:text-lg">View All</span>
-                  <span className="mt-1 text-[0.625rem] xl:text-sm">{`(+${remainingItemsCount})`}</span>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
+                    <span className="text-[0.625rem] xl:text-lg">VIEW ALL</span>
+                    <span className="mt-1 text-[0.625rem] xl:text-sm">{`(+${remainingItemsCount})`}</span>
+                  </div>
+                  <div className="absolute bottom-1 right-1 m-1 h-4 w-4 rounded-full bg-white bg-opacity-60 p-1 xl:bottom-2 xl:right-2">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="18"
+                      height="18"
+                      viewBox="0 0 18 18"
+                      fill="none"
+                      className="h-full w-full"
+                    >
+                      <path
+                        d="M0 18V12H2V14.6L5.1 11.5L6.5 12.9L3.4 16H6V18H0ZM12.9 6.5L11.5 5.1L14.6 2H12V0H18V6H16V3.4L12.9 6.5Z"
+                        fill="#1C1B1F"
+                      />
+                    </svg>
+                  </div>
                 </div>
               </button>
             )}
@@ -557,7 +527,6 @@ const Gallery = ({
                           })) || [],
                       variantEntityId: currentVariantId,
                       mpn: product.mpn,
-                      // Pass the selected options
                       selectedOptions:
                         product.productOptions?.edges
                           ?.map((edge) => {
@@ -656,16 +625,10 @@ const Gallery = ({
               )}
 
               <div
-                className="absolute bottom-4 right-4 m-1 h-6 w-6 cursor-pointer rounded-full bg-white object-cover p-1 opacity-70 transition-opacity hover:opacity-100"
+                className="absolute bottom-4 right-4 h-6 w-6 cursor-pointer rounded-full bg-white bg-opacity-60 p-[6px] transition-opacity xl:m-1"
                 onClick={() => openPopup()}
               >
-                <img
-                  alt="Overlay"
-                  className="h-full w-full object-cover"
-                  height={24}
-                  src={galleryExpandIcon}
-                  width={24}
-                />
+                <ExpandIcon />
               </div>
 
               {mediaItems.length > 1 && (
