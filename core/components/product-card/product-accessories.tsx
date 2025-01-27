@@ -48,18 +48,20 @@ export const ProductAccessories = ({
       price,
       name,
       sale_price,
-      purchasingDisabled,
+      retail_price,
+      purchasing_disabled,
     }: {
       sku: any;
       id: any;
       price: any;
       name: any;
       sale_price: any;
-      purchasingDisabled:any,
+      retail_price:any;
+      purchasing_disabled:any,
     }) => ({
       value: id,
       label: `(+$${sale_price}) ${sku}  ${name}`,
-      purchasingDisabled: purchasingDisabled,
+      purchasing_disabled: purchasing_disabled,
     }),
   );
   const [isPending, startTransition] = useTransition();
@@ -67,6 +69,7 @@ export const ProductAccessories = ({
   const [productlabel, setProductLabel] = useState<string>(accessories?.label);
   const [productPrice, setProductPrice] = useState<any>();
   const [productSalePrice, setProductSalePrice] = useState<any>();
+  const [productRetailPrice, setProductRetailPrice] = useState<any>();
   const [productImage, setProductImage] = useState<string>(blankAddImg);
   const [baseImage, setBaseImage] = useState<string>(' bg-set');
   const [hasSalePrice, setHasSalePrice] = useState<number>(0);
@@ -76,12 +79,13 @@ export const ProductAccessories = ({
     setvariantId(variant);
     let accessoriesData = accessories?.productData?.find((prod: any) => prod.id == variant);
     if (accessoriesData) {
-      setIsPurchasingDisabled(accessoriesData.purchasingDisabled);
+      setIsPurchasingDisabled(accessoriesData.purchasing_disabled);
       let formatPrice = format.number(accessoriesData?.price, {
         style: 'currency',
         currency: currencyCode,
       });
       let salePrice: number = accessoriesData?.sale_price;
+      let retailPrice: number = accessoriesData?.retail_price;
       if (salePrice != accessoriesData?.price) {
         setHasSalePrice(1);
       } else {
@@ -92,11 +96,17 @@ export const ProductAccessories = ({
         style: 'currency',
         currency: currencyCode,
       });
+      let formatRetailPrice: any = 0;
+      formatRetailPrice = retailPrice && format.number(retailPrice,{
+        style: 'currency',
+        currency: currencyCode,
+      });
       setBaseImage('');
       setProductLabel(accessoriesData?.name?.replace('-', ''));
       setProductPrice(formatPrice);
       setProductImage(accessoriesData?.image);
       setProductSalePrice(formatSalePrice);
+      setProductRetailPrice(formatRetailPrice);
     }
   };
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -130,6 +140,7 @@ export const ProductAccessories = ({
         if (cartId) {
           let lineItemId = (from == 'pdp') ? productFlyout?.productData?.entityId : data?.entityId;
           let productId = (from == 'pdp') ? productFlyout?.productData?.productEntityId : data?.productEntityId;
+          let variantIdData = (from == 'pdp') ? productFlyout?.productData?.variantEntityId : data?.variantEntityId;
           let optionValue = {
             productId: productId,
             variantId: variantId,
@@ -139,11 +150,16 @@ export const ProductAccessories = ({
           let getCartMetaLineItems = cartMetaFields?.find((item: any) => item?.key == lineItemId);
           if (cartMetaFields?.length == 0 || !getCartMetaLineItems) {
             let metaArray: any = [];
+            let parentInfo: any = JSON.stringify([{
+              productId: productId,
+              variantId: variantIdData
+            }]);
             metaArray.push(optionValue);
             let cartMeta = {
               permission_set: 'write_and_sf_access',
               namespace: 'accessories_data',
               key: lineItemId,
+              description: parentInfo,
               value: JSON.stringify(metaArray),
             };
             await CreateCartMetaFields(cartId, cartMeta);
@@ -223,11 +239,10 @@ export const ProductAccessories = ({
               {productlabel}
             </p>
             <p className="text-center text-[16px] font-normal tracking-[0.15px] text-[#353535] sm:text-right">
-              {' '}
-              {productSalePrice}{' '}
-              {hasSalePrice == 1 && (
-                <span className="text-[#808080] line-through">{productPrice}</span>
-              )}
+              {productSalePrice}
+              {hasSalePrice == 1 ? (
+                <span className="ml-1 text-[#808080] line-through">{productRetailPrice?productRetailPrice:productPrice}</span>
+              ):( <span className="ml-1 text-[#808080] line-through">{productRetailPrice}</span>)}
             </p>
           </div>
         )}

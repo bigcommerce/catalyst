@@ -25,10 +25,18 @@ import { changePassword } from '../_actions/change-password';
 const ChangePasswordFieldsSchema = z.object({
   customerId: z.string(),
   customerToken: z.string(),
-  currentPassword: z.string().min(1),
-  newPassword: z.string().min(1),
+  currentPassword: z
+    .string()
+    .min(1, "Current password is required"),
+    newPassword: z
+    .string()
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      'Password must include at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character.'
+    ),
   confirmPassword: z.string().min(1),
 });
+
 
 const CustomerChangePasswordSchema = ChangePasswordFieldsSchema.omit({
   customerId: true,
@@ -105,6 +113,10 @@ export const ChangePasswordForm = () => {
   const [isCurrentPasswordValid, setIsCurrentPasswordValid] = useState(true);
   const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
+  const [isCurrentPasswordEmpty, setIsCurrentPasswordEmpty] = useState(true);
+  console.log("current",isCurrentPasswordEmpty);
+  console.log("newvalid",isNewPasswordValid)
+  console.log("confirmvalid",isConfirmPasswordValid)
 
   const { setAccountState } = useAccountStatusContext();
 
@@ -115,6 +127,7 @@ export const ChangePasswordForm = () => {
       setAccountState({
         status: 'success',
         message: t('confirmChangePassword'),
+        isLoggedIn:false
       });
     }
   }, [state, setAccountState, t]);
@@ -129,18 +142,32 @@ export const ChangePasswordForm = () => {
     messageText = state.message;
   }
 
-  const handleCurrentPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setIsCurrentPasswordValid(!e.target.validity.valueMissing);
+  const handleCurrentPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>{
+    const isEmpty=e.target.validity.valueMissing;
+    setIsCurrentPasswordValid(!isEmpty);
+    setIsCurrentPasswordEmpty(isEmpty)
+  }
+ 
 
   const validateNewAndConfirmPasswords = (formData: FormData) => {
-    const newPasswordValid = validatePasswords('new-password', formData);
+    const newPassword = formData.get('new-password');
     const confirmPassword = formData.get('confirm-password');
-    const confirmPasswordValid = confirmPassword
-      ? validatePasswords('confirm-password', formData)
-      : true;
+    if (isCurrentPasswordEmpty ) {
+      setIsNewPasswordValid(true);  // Treat new password as valid
+      setIsConfirmPasswordValid(true);  // Treat confirm password as valid
+      return;
+    }
 
+    // Check if the new password is valid or empty
+    const newPasswordValid = newPassword === ''   ? true : validatePasswords('new-password', formData);
+  
+    // Check if the confirm password is valid or empty
+    const confirmPasswordValid = confirmPassword === ''  ? true : validatePasswords('confirm-password', formData);
     setIsNewPasswordValid(newPasswordValid);
     setIsConfirmPasswordValid(confirmPasswordValid);
+  
+    // Update state
+    
   };
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -150,9 +177,10 @@ export const ChangePasswordForm = () => {
       formData = new FormData(e.target.form);
     }
 
-    if (formData) {
+    if (formData && !isCurrentPasswordEmpty ) {
       validateNewAndConfirmPasswords(formData);
     }
+  
   };
 
   return (
@@ -207,7 +235,7 @@ export const ChangePasswordForm = () => {
           >
             {t('notEmptyMessage')}
           </FieldMessage>
-          {!isNewPasswordValid && (
+          {!isNewPasswordValid &&  (
             <FieldMessage className="absolute inset-x-0 inline-flex w-full text-xs text-error md:bottom-0">
               {t('newPasswordValidationMessage')}
             </FieldMessage>
@@ -234,8 +262,8 @@ export const ChangePasswordForm = () => {
           >
             {t('notEmptyMessage')}
           </FieldMessage>
-          {!isConfirmPasswordValid && (
-            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error">
+          {!isConfirmPasswordValid  &&(
+            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)]">
               {t('confirmPasswordValidationMessage')}
             </FieldMessage>
           )}

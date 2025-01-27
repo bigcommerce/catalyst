@@ -72,7 +72,7 @@ const getVariantProductInfo = async (metaData: any) => {
                   mpn: item?.mpn,
                   sku: item?.sku,
                   name: optionValues,
-                  purchasingDisabled:item?.purchasing_disabled,
+                  purchasing_disabled:item?.purchasing_disabled,
                   selectedOptions: item?.selectedOption,
                 });
               }
@@ -173,8 +173,6 @@ export const ProductFlyout = ({
       setProductQty(productQtyData);
     }, [productId, productQtyData]);
   }
-
-  
 
   return (
     <>

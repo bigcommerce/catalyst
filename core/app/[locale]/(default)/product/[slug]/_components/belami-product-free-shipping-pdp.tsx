@@ -9,7 +9,11 @@ interface DeliveryMessageProps {
   isFromPDP: boolean;
 }
 
-export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variantId, isFromPDP }) => {
+export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
+  entityId,
+  variantId,
+  isFromPDP,
+}) => {
   const [deliveryMessage, setDeliveryMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -33,7 +37,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({ entityId, variant
 
   if (loading) {
     return (
-      <div className="flex justify-center lg:justify-start px-[50px] py-[10px]">
+      <div className="flex justify-center xl:justify-start px-[50px] py-[10px]">
         <Spinner aria-hidden="true" />
       </div>
     )

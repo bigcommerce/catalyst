@@ -435,7 +435,30 @@ export const getCommonSettingByBrandChannel = async (brand) => {
       console.error(error);
       throw error; // Re-throw the error to handle it in the calling component
     }
-  
+};
+
+export const addCartLevelDiscount = async (checkoutId: string, postData: any) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/checkouts/${checkoutId}/discounts`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: JSON.stringify(postData),
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 export const updateProductDiscount = async (checkoutId: string, postData: any) => {
