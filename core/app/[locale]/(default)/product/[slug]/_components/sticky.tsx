@@ -8,7 +8,7 @@ interface ScrollContainerProps {
 
 const ScrollContainer = ({
   children,
-  height = 'h-[750px]',
+  height = 'xl:h-[752px]',
   className = '',
 }: ScrollContainerProps) => {
   const scrollableRef = useRef<HTMLDivElement>(null);
@@ -16,6 +16,8 @@ const ScrollContainer = ({
 
   useEffect(() => {
     const handleScroll = (e: WheelEvent) => {
+      if (window.innerWidth < 1200) return;
+
       const container = scrollableRef.current;
       if (!container) return;
 
@@ -61,8 +63,7 @@ const ScrollContainer = ({
   return (
     <div
       ref={scrollableRef}
-      className={`${height} scrollbar-hide w-full overflow-y-scroll ${className}`}
-      style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+      className={`w-full xl:overflow-y-scroll ${height} ${className} [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
     >
       {children}
     </div>

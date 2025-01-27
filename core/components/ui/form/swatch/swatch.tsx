@@ -1,6 +1,5 @@
 import * as RadioGroupPrimitive from '@radix-ui/react-radio-group';
 import { ComponentPropsWithRef, ElementRef, forwardRef, useId } from 'react';
-
 import { cn } from '~/lib/utils';
 
 interface Swatch {
@@ -20,7 +19,7 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
 
     return (
       <RadioGroupPrimitive.Root
-        className={cn('block xl:flex flex-wrap gap-2', className)}
+        className={cn('contents flex-wrap gap-2', className)}
         ref={ref}
         role="radiogroup"
         {...props}
@@ -33,7 +32,9 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
               key={`${id}-${value}`}
               {...itemProps}
               className={cn(
-                'group h-12 w-12 border-2 bg-white hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-100 disabled:hover:border-gray-100 data-[state=checked]:border-primary p-0 m-0',
+                'group m-0 h-12 w-12 rounded-[50px] bg-white p-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-[#4EAECC]',
+                'data-[state=checked]:border-[2px] data-[state=checked]:border-[#4EAECC]', // Default selected state
+                'focus-within:border-[2px] focus-within:border-[#4EAECC] hover:border-[2px] hover:border-[#4EAECC]',
                 error &&
                   'border-error-secondary focus-visible:border-error-secondary data-[state=checked]:border-error-secondary hover:border-error focus-visible:ring-error/20 disabled:border-gray-200',
               )}
@@ -42,7 +43,7 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
             >
               {color ? (
                 <span
-                  className="swatch-span block h-full w-full group-disabled:bg-gray-200 group-disabled:opacity-30 "
+                  className="swatch-span block h-full w-full rounded-[50px] group-focus-within:border-[3px] group-focus-within:border-[#B4DDE9] group-hover:border-[3px] group-hover:border-[#B4DDE9] group-disabled:bg-gray-200 group-disabled:opacity-30 group-data-[state=checked]:border-[3px] group-data-[state=checked]:border-[#B4DDE9]"
                   style={{
                     backgroundColor: color,
                     backgroundImage: `url(${color})`,

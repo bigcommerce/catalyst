@@ -105,6 +105,10 @@ export const ChangePasswordForm = () => {
   const [isCurrentPasswordValid, setIsCurrentPasswordValid] = useState(true);
   const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
+  const [isCurrentPasswordEmpty, setIsCurrentPasswordEmpty] = useState(true);
+  console.log("current",isCurrentPasswordEmpty);
+  console.log("newvalid",isNewPasswordValid)
+  console.log("confirmvalid",isConfirmPasswordValid)
 
   const { setAccountState } = useAccountStatusContext();
 
@@ -129,18 +133,32 @@ export const ChangePasswordForm = () => {
     messageText = state.message;
   }
 
-  const handleCurrentPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setIsCurrentPasswordValid(!e.target.validity.valueMissing);
+  const handleCurrentPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>{
+    const isEmpty=e.target.validity.valueMissing;
+    setIsCurrentPasswordValid(!isEmpty);
+    setIsCurrentPasswordEmpty(isEmpty)
+  }
+ 
 
   const validateNewAndConfirmPasswords = (formData: FormData) => {
-    const newPasswordValid = validatePasswords('new-password', formData);
+    const newPassword = formData.get('new-password');
     const confirmPassword = formData.get('confirm-password');
-    const confirmPasswordValid = confirmPassword
-      ? validatePasswords('confirm-password', formData)
-      : true;
+    if (isCurrentPasswordEmpty ) {
+      setIsNewPasswordValid(true);  // Treat new password as valid
+      setIsConfirmPasswordValid(true);  // Treat confirm password as valid
+      return;
+    }
 
+    // Check if the new password is valid or empty
+    const newPasswordValid = newPassword === ''   ? true : validatePasswords('new-password', formData);
+  
+    // Check if the confirm password is valid or empty
+    const confirmPasswordValid = confirmPassword === ''  ? true : validatePasswords('confirm-password', formData);
     setIsNewPasswordValid(newPasswordValid);
     setIsConfirmPasswordValid(confirmPasswordValid);
+  
+    // Update state
+    
   };
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -150,9 +168,10 @@ export const ChangePasswordForm = () => {
       formData = new FormData(e.target.form);
     }
 
-    if (formData) {
+    if (formData && !isCurrentPasswordEmpty ) {
       validateNewAndConfirmPasswords(formData);
     }
+  
   };
 
   return (
@@ -207,7 +226,7 @@ export const ChangePasswordForm = () => {
           >
             {t('notEmptyMessage')}
           </FieldMessage>
-          {!isNewPasswordValid && (
+          {!isNewPasswordValid &&  (
             <FieldMessage className="absolute inset-x-0 inline-flex w-full text-xs text-error md:bottom-0">
               {t('newPasswordValidationMessage')}
             </FieldMessage>
@@ -234,8 +253,8 @@ export const ChangePasswordForm = () => {
           >
             {t('notEmptyMessage')}
           </FieldMessage>
-          {!isConfirmPasswordValid && (
-            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error">
+          {!isConfirmPasswordValid  &&(
+            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)]">
               {t('confirmPasswordValidationMessage')}
             </FieldMessage>
           )}

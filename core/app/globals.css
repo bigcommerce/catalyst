@@ -176,9 +176,7 @@ div#radix-\:Raiptajt6H1\: {
   font-weight: 400;
   line-height: 18px;
 }
-/* ul#nav-menu-list li button svg {
-  display: none !important;
-} */
+
 .focus\:ring-\[\#008BB7\]:focus {
   --tw-ring-color: unset !important;
 }
@@ -303,9 +301,7 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
     height: 7.8em !important;
     width: 7.8em !important;
   }
-  div.gallery-container {
-    padding: 0px 0px !important;
-  }
+
   .div-searched-products {
     padding: 5px 0px 15px !important;
   }
@@ -325,17 +321,12 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   .main-product-details {
     display: none;
   }
-  div.gallery-container {
-    padding: 0px 0px !important;
-  }
+
   div.div-searched-products {
     padding: 5px 0px 15px !important;
   }
   .main-product-details {
     display: none;
-  }
-  .div-product-details {
-    display: block !important;
   }
 }
 @media only screen and (min-width: 1200px) and (max-width: 1290px) {
@@ -360,10 +351,7 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
 }
 @media only screen and (max-width: 1200px) {
   /* gallery */
-  .group.main-gallery .product-img {
-    width: 100%;
-    height: 100%;
-  }
+
   .header-search-bar button[aria-label='Open search popup'] {
     width: 92% !important;
     position: absolute;
@@ -416,23 +404,16 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
     gap: 1rem !important;
     flex-direction: column-reverse;
   }
-  div.gallery-container {
-    padding: 0px 0px !important;
-  }
+
   div.div-searched-products {
     padding: 5px 0px 15px !important;
   }
   .main-product-details {
     display: none;
   }
-  .div-product-details {
-    display: block !important;
-  }
+
   /* gallery */
-  .group.main-gallery .product-img {
-    width: 100%;
-    height: 100%;
-  }
+
   .product-free-delivery {
     margin: 10px;
   }
@@ -444,9 +425,6 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   }
   .product-overview {
     margin-bottom: 30px;
-  }
-  .div-product-details {
-    display: none;
   }
   .delete-icon-empty-cart-hidden {
     display: none;
@@ -481,13 +459,7 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   .main-body {
     padding: 0px 0px !important;
   }
-  /* button.gallery-thumbnail {
-    height: 3.3em !important;
-    width: 3.3em !important;
-  } */
-  .gallery-container {
-    padding: 0px 30px !important;
-  }
+
   .promo-banner {
     display: none;
   }
