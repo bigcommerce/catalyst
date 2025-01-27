@@ -1,5 +1,3 @@
-import { useTranslations } from 'next-intl';
-
 interface NoShipCanadaProps {
     description: string;
 }
