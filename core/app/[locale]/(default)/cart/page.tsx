@@ -211,7 +211,7 @@ export default async function Cart({ params }: Props) {
         </div>
       </div>
       <div className="text-center lg:hidden">
-        <ScrollButton targetId="order-summary" accessoriesData={getCartMetaFields} />
+        <ScrollButton targetId="order-summary"/>
       </div>
 
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
