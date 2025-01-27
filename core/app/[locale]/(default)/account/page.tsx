@@ -57,7 +57,7 @@ export default function Account() {
   ];
 
   return (
-    <div className="my-account-page m-auto mx-auto mb-[40px] mt-[24px] w-[70%] font-['Open_Sans'] text-[#353535]">
+    <div className="my-account-page m-auto mx-auto mb-[40px] mt-[24px] w-[90%] font-['Open_Sans'] text-[#353535]">
       <AccountNotification message={t('successMessage')} />
       <div className="flex flex-col gap-[40px]">
         <div>
