@@ -109,8 +109,8 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
         'User-Agent': this.backendUserAgent,
         ...(customerAccessToken && { 'X-Bc-Customer-Access-Token': customerAccessToken }),
         ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
-        ...additionalFetchHeaders,
-        ...headers,
+        ...Object.fromEntries(new Headers(additionalFetchHeaders).entries()),
+        ...Object.fromEntries(new Headers(headers).entries()),
       },
       body: JSON.stringify({
         query,
@@ -155,7 +155,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       throw new Error(`Unable to get Shipping Zones: ${response.statusText}`);
     }
 
-    return response.json() as Promise<unknown>;
+    return response.json();
   }
 
   async fetchSitemapIndex(channelId?: string): Promise<string> {
