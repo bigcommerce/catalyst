@@ -507,6 +507,10 @@
                 "login": "Connexion",
                 "logout": "Déconnexion"
             },
+            "Currency": {
+                "invalidCurrency": "Invalid currency",
+                "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
+            },
             "Locale": {
                 "invalidLocale": "Paramètres régionaux non valides"
             },

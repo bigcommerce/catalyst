@@ -507,6 +507,10 @@
                 "login": "Inloggen",
                 "logout": "Uitloggen"
             },
+            "Currency": {
+                "invalidCurrency": "Ongeldige valuta",
+                "errorUpdatingCurrency": "Er is een fout opgetreden bij het bijwerken van de valuta voor je winkelwagen. Probeer het opnieuw."
+            },
             "Locale": {
                 "invalidLocale": "Ongeldige landinstelling"
             },

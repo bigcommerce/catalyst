@@ -507,6 +507,10 @@
                 "login": "Logg inn",
                 "logout": "Logg av"
             },
+            "Currency": {
+                "invalidCurrency": "Ugyldig valuta",
+                "errorUpdatingCurrency": "Det oppsto en feil ved oppdatering av valutaen for handlekurven din. Prøv igjen."
+            },
             "Locale": {
                 "invalidLocale": "Ugyldig lokalitet"
             },
