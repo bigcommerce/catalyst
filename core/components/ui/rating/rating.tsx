@@ -32,7 +32,7 @@ const Rating = ({ className, rating, size = 24 }: Props) => {
   }
 
   return (
-    <span className={cn('inline-flex fill-current', className)} role="img">
+    <span className={cn('inline-flex fill-current w-[90px]', className)} role="img">
       {stars}
     </span>
   );

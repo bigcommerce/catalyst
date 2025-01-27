@@ -13,7 +13,7 @@ export const RequestQuote = ({ requestQuote }: requestQuote) => {
   const t = useTranslations('requestQuote');
 
   return (
-    <div className="mt-6 flex items-center justify-between bg-[#E7F5F8] p-4 xl:mt-[2em]">
+    <div className="mt-6 flex items-center justify-between bg-[#E7F5F8] p-4 xl:mt-[1.5em]">
       <div className="flex flex-1 justify-center">
         <p className="text-center text-[0.75rem] font-normal leading-[1.125rem] tracking-[0.025rem] text-[#000000]">
           <span className="block xl:contents">{t('heading')}</span>
