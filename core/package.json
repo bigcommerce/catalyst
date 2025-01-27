@@ -57,7 +57,7 @@
     "nuqs": "^2.3.1",
     "p-lazy": "^5.0.0",
     "react": "^19.0.0",
-    "react-day-picker": "^9.5.0",
+    "react-day-picker": "^9.5.1",
     "react-dom": "^19.0.0",
     "react-google-recaptcha": "^3.1.0",
     "react-headroom": "^3.2.1",
