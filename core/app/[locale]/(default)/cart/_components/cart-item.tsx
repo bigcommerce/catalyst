@@ -420,79 +420,107 @@ export const CartItem = async ({
               <div className="">
                 <div className="cart-deleteIcon relative flex flex-col gap-0 text-right sm:gap-2 md:items-end [&_.cart-item-delete]:absolute [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:sm:static [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0">
                   <RemoveItem currency={currencyCode} product={product} />
-                  <div className="mb-0">
-                    {salePrice?.value && retailPrice?.value ?(
-                     <>
-                     <p className="text-left sm:text-right">
-                      {format.number(salePrice.value * product?.quantity, {
-                        style: 'currency',
-                        currency: currencyCode,
-                      })}
-                    </p>
-                    <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-                        <p className="line-through">
-                          {format.number(retailPrice.value * product?.quantity, {
-                            style: 'currency',
-                            currency: currencyCode,
-                          })}
-                        </p>
-                      <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                      {Math.round(((retailPrice.value - salePrice.value) / retailPrice.value) * 100,)}% Off
+                  {cookie_agent_login_status == true ?
+                    <div className="mb-0">
+                      <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                        {product?.originalPrice.value &&
+                          product?.originalPrice.value !== product?.listPrice.value ? (
+                          <p className="line-through">
+                            {format.number(product?.originalPrice?.value * product?.quantity, {
+                              style: 'currency',
+                              currency: currencyCode,
+                            })}
+                          </p>
+                        ) : null}
+                        {/* <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                          {discountPriceText}
+                        </p> */}
+                      </div>
+                      <p className="text-left sm:text-right">
+                        {format.number(product?.extendedSalePrice?.value, {
+                          style: 'currency',
+                          currency: currencyCode,
+                        })}
                       </p>
+                    </div> 
+                   :
+                    <div className="mb-0">
+                      {salePrice?.value && retailPrice?.value ? (
+                        <>
+                          <p className="text-left sm:text-right">
+                            {format.number(salePrice.value * product?.quantity, {
+                              style: 'currency',
+                              currency: currencyCode,
+                            })}
+                          </p>
+                          <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                            <p className="line-through">
+                              {format.number(retailPrice.value * product?.quantity, {
+                                style: 'currency',
+                                currency: currencyCode,
+                              })}
+                            </p>
+                            <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                              {Math.round(((retailPrice.value - salePrice.value) / retailPrice.value) * 100,)}% Off
+                            </p>
+                          </div>
+                        </>
+                      ) :
+                        retailPrice?.value && basePrice?.value ? (
+                          <>
+                            <p className="text-left sm:text-right">
+                              {format.number(basePrice.value * product?.quantity, {
+                                style: 'currency',
+                                currency: currencyCode,
+                              })}
+                            </p>
+                            <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                              <p className="line-through">
+                                {format.number(retailPrice.value * product?.quantity, {
+                                  style: 'currency',
+                                  currency: currencyCode,
+                                })}
+                              </p>
+                              <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                                {Math.round(((retailPrice.value - basePrice.value) / retailPrice.value) * 100,)}% Off
+                              </p>
+                            </div>
+                          </>
+                        ) :
+                          salePrice?.value && basePrice?.value ? (
+                            <>
+                              <p className="text-left sm:text-right">
+                                {format.number(salePrice.value * product?.quantity, {
+                                  style: 'currency',
+                                  currency: currencyCode,
+                                })}
+                              </p>
+                              <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                                <p className="line-through">
+                                  {format.number(basePrice.value * product?.quantity, {
+                                    style: 'currency',
+                                    currency: currencyCode,
+                                  })}
+                                </p>
+                                <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                                  {Math.round(((basePrice.value - salePrice.value) / basePrice.value) * 100,)}% Off
+                                </p>
+                              </div>
+                            </>
+                          ) : (
+                            <p className="text-left sm:text-right">
+                              {format.number(basePrice.value * product?.quantity, {
+                                style: 'currency',
+                                currency: currencyCode,
+                              })}
+                            </p>
+                          )}
                     </div>
-                     </>
-                    ): 
-                    retailPrice?.value && basePrice?.value?(
-                      <>
-                      <p className="text-left sm:text-right">
-                       {format.number(basePrice.value * product?.quantity, {
-                         style: 'currency',
-                         currency: currencyCode,
-                       })}
-                     </p>
-                     <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-                         <p className="line-through">
-                           {format.number(retailPrice.value * product?.quantity, {
-                             style: 'currency',
-                             currency: currencyCode,
-                           })}
-                         </p>
-                       <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                       {Math.round(((retailPrice.value - basePrice.value) / retailPrice.value) * 100,)}% Off
-                       </p>
-                     </div>
-                      </>
-                    ):
-                    salePrice?.value && basePrice?.value ?(
-                      <>
-                      <p className="text-left sm:text-right">
-                       {format.number(salePrice.value * product?.quantity, {
-                         style: 'currency',
-                         currency: currencyCode,
-                       })}
-                     </p>
-                     <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-                         <p className="line-through">
-                           {format.number(basePrice.value * product?.quantity, {
-                             style: 'currency',
-                             currency: currencyCode,
-                           })}
-                         </p>
-                       <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                       {Math.round(((basePrice.value - salePrice.value) / basePrice.value) * 100,)}% Off
-                       </p>
-                     </div>
-                      </>
-                    ):( 
-                    <p className="text-left sm:text-right">
-                      {format.number(basePrice.value * product?.quantity, {
-                        style: 'currency',
-                        currency: currencyCode,
-                      })}
-                    </p>
-                  )}
-                  </div>
 
+                   }
+                  
+                 
+                  
                   <ItemQuantity product={product} />
                 </div>
               </div>

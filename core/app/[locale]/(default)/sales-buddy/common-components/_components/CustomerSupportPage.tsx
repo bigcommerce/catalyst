@@ -17,6 +17,7 @@ import Link from 'next/link';
 import SystemInfoComponent from './SystemInformationComponent';
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import CompactUserCard from './SystemInformationComponent/CustomerDetailUsingSessionId';
+import { setCustomerIdViaSessionId } from '../../_actions/update-customer-id';
 function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
   const [customerDetails, setCustomerDetails] = useState({});
   const [customerDetailsBasedOnSessionId, setCustomerDetailsBasedOnSessionId] = useState([]);
@@ -93,13 +94,14 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
         setCart_interface_session_id(response.output.data[0]['session_id'])
         setCart_interface_Refferal_id(response.output.data[0]['referral_id'])
         setCustomerDetailsBasedOnSessionId(response.output.data[0])
-        UpdateCartIdCookie(response.output.data[0]['cart_id'])
+        UpdateCartIdCookie(response?.output?.data?.[0]?.['cart_id'])
         setUpdatedCCartId(cartId)
+        setCustomerIdViaSessionId(response?.output?.data?.[0]?.customer_id)
         localStorage.setItem(
           'cart_lookup_sessionID_agent',
           JSON.stringify({
             SessionId: cartId,
-            SessionIDUserDetails: response.output.data[0]
+            SessionIDUserDetails: response?.output?.data[0]
           })
         );
       } else {
@@ -224,6 +226,8 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
       if (findCustomerData.email.length == 0 && findCustomerDataError.email == "" || findCustomerData.email.length > 0 && findCustomerDataError.email == "") {
         try {
           const response = await findCustomerDetails(findCustomerData);
+          console.log(response);
+          
           setCustomerDetails(findCustomerData);
           if (response.data.status == 200) {
             setLoading((prev) => ({ ...prev, show2: false }));
@@ -321,6 +325,9 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
   useEffect(() => {
     const getCartLookUpValueFromLS = () => {
       const getCart_lookup_sessionID_agent = JSON?.parse(localStorage?.getItem('cart_lookup_sessionID_agent') || '{}')
+      const isNotEmpty = Object.keys(getCart_lookup_sessionID_agent).length > 0;
+      setCustomerIdViaSessionId(isNotEmpty && getCart_lookup_sessionID_agent?.SessionIDUserDetails.customer_id)
+
       setGetUserStoredSessionInfoFromLS(getCart_lookup_sessionID_agent)
       setCartId(getCart_lookup_sessionID_agent?.SessionId)
       setCustomerDetailsBasedOnSessionId(getCart_lookup_sessionID_agent?.SessionIDUserDetails)
@@ -638,7 +645,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
               { id: 'create_company', label: 'Company (Optional)' },
               { id: 'create_email', label: 'Email*' },
               { id: 'create_phone', label: 'Phone (Optional)' },
-              { id: 'create_referralId', label: 'Referral ID*' },
+              { id: 'create_referralId', label: 'Referrer ID*' },
             ],
             createAccountData,
           )}

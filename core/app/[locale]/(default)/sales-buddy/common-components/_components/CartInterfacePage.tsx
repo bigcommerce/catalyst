@@ -16,6 +16,8 @@ import { ChevronDown } from 'lucide-react';
 import { getBrand } from '../../_actions/brand';
 import Loader from './Spinner';
 import { useRouter } from 'next/navigation';
+import { findCustomerDetails } from '../../_actions/find-customer';
+import { setCustomerIdViaSessionId } from '../../_actions/update-customer-id';
 interface CartInterfaceProps {
   toggleAccordion: (index: number) => void;
   openIndexes: number[];
@@ -261,17 +263,45 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
   };
 
   
-  const handleAddAccountSubmit = (e: any) => {
-    e.preventDefault();
-    setLoading((prev) => ({ ...prev, accountId: true }));
-    if(accountId === ''){
-      setAccountIdError('Please enter a Account ID before submitting');
-    }else{
-      setInterval(() => {
-        setLoading((prev) => ({ ...prev, accountId: false }));
-      }, 3000);
+  const handleAddAccountSubmit = async () => {
+    try {
+      // Set the loading state for accountId
+      setLoading((prev) => ({ ...prev, accountId: true }));
+
+      // Check if accountId is empty
+      if (!accountId) {
+        setAccountIdError('Please enter an Account ID before submitting');
+        setLoading((prev) => ({ ...prev, accountId: false })); // Reset loading state
+        return; // Exit early
+      }
+
+      // Call the findCustomerDetails API
+      const response = await findCustomerDetails({
+        first_name: '',
+        last_name: '',
+        email: accountId
+      });
+
+      // Handle the response
+      if (response?.data?.status === 200) {
+        setCustomerIdViaSessionId(response.data.output[0].id)
+        // Log successful output
+      } else {
+        throw new Error(
+          response?.data?.message || 'Failed to fetch customer details'
+        );
+      }
+    } catch (error) {
+      // Handle errors gracefully
+      console.error('Error in handleAddAccountSubmit:', error.message);
+      setAccountIdError(error.message || 'An unexpected error occurred');
+    } finally {
+      // Ensure loading is reset
+      setLoading((prev) => ({ ...prev, accountId: false }));
     }
   };
+
+  
 
   const accordions = [
     {
@@ -291,6 +321,7 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
             onChange={(e) => {
               setAccountId(e.target.value);
               setAccountIdError('');
+              GetCustomerIdByGivingEmail()
             }}
             className="mb-[10px]"
           />
@@ -299,7 +330,7 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
 
             className="mt-2 font-open-sans w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white"
             onClick={(e) => {
-              handleAddAccountSubmit(e);
+              handleAddAccountSubmit();
             }}
           >
             <div className="absolute inset-0 flex items-center justify-center">
