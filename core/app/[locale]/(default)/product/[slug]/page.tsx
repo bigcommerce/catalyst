@@ -23,7 +23,6 @@ import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-al
 import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
 import { commonSettinngs } from '~/components/common-functions';
 import { locales } from '~/i18n/routing';
-import { Page as MakeswiftPage } from '~/lib/makeswift';
 import MakeswiftContent from './_components/example';
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -259,22 +258,7 @@ export default async function ProductPage(props: Props) {
               closeIcon={assets.closeIcon}
               blankAddImg={assets.blankAddImg}
               getAllCommonSettinngsValues={CommonSettinngsValues}
-              productImages={productImages}
-              triggerLabel1={  <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#008BB7] underline underline-offset-4">
-                Shipping Policy
-              </p>}
-              triggerLabel2={
-                <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#008BB7] underline underline-offset-4">
-                Return Policy
-              </p>
-              }
-                children1={
-                  <MakeswiftPage locale={locale} path="/content/shipping-flyout" />
-                }
-                children2={
-                  <MakeswiftPage locale={locale} path="/content/returns-flyout" />
-                }
-              
+              productImages={productImages}   
             />
             <div className="lg:col-span-2">
             <hr className="border border-gray-200 mb-4"/>

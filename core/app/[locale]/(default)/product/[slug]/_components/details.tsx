@@ -31,7 +31,7 @@ import WishlistAddToList from '../../../account/(tabs)/wishlists/wishlist-add-to
 import { useWishlists } from '../../../account/(tabs)/wishlists/wishlist-add-to-list/hooks';
 import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { commonSettinngs } from '~/components/common-functions';
-import { Flyout } from '~/components/common-flyout';
+
 
 interface ProductOptionValue {
   entityId: number;
@@ -156,10 +156,6 @@ interface Props {
   blankAddImg?: string;
   productImages?: string;
   getAllCommonSettinngsValues?: any;
-  triggerLabel1: React.ReactNode;
-  children1: React.ReactNode;
-  triggerLabel2: React.ReactNode;
-  children2: React.ReactNode;
 }
 
 export const Details = ({
@@ -175,10 +171,6 @@ export const Details = ({
   blankAddImg,
   productImages,
   getAllCommonSettinngsValues,
-  triggerLabel1,
-  triggerLabel2,
-  children1,
-  children2
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -701,12 +693,8 @@ export const Details = ({
         <RequestQuote requestQuote={requestQuote} />
         <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
         <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
-        {/* <ShippingReturns /> */}
-        <div className="flex   xl:mt-7  justify-center gap-4">
-          <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
-
-          <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
-        </div>
+        <ShippingReturns />
+     
       </div>
     </div>
   );
