@@ -23,7 +23,7 @@ export const SendOrderToAlgolia = ({
       aa('purchasedObjectIDs', {
         eventName: 'Product Purchased',
         index: indexName,
-        objectIDs: lineItems.map((item: any) => String(item.entityId)).join(','), // List of product IDs
+        objectIDs: lineItems.map((item: any) => String(item.entityId)), // List of product IDs
         objectData: lineItems.map((item: any) => ({
           objectID: String(item.entityId),
           price: item.subTotalListPrice?.value,
