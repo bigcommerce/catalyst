@@ -25,10 +25,18 @@ import { changePassword } from '../_actions/change-password';
 const ChangePasswordFieldsSchema = z.object({
   customerId: z.string(),
   customerToken: z.string(),
-  currentPassword: z.string().min(1),
-  newPassword: z.string().min(1),
+  currentPassword: z
+    .string()
+    .min(1, "Current password is required"),
+    newPassword: z
+    .string()
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      'Password must include at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character.'
+    ),
   confirmPassword: z.string().min(1),
 });
+
 
 const CustomerChangePasswordSchema = ChangePasswordFieldsSchema.omit({
   customerId: true,
@@ -119,6 +127,7 @@ export const ChangePasswordForm = () => {
       setAccountState({
         status: 'success',
         message: t('confirmChangePassword'),
+        isLoggedIn:false
       });
     }
   }, [state, setAccountState, t]);
