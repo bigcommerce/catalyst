@@ -204,7 +204,6 @@ const getMetaFieldsByProductVariant = async (
     )
       .then((res) => res.json())
       .then((jsonData) => {
-        // console.log("jsonData", jsonData);
         return jsonData;
       });
     return productMetaFields;
@@ -455,12 +454,10 @@ export const updateProductDiscount = async (checkoutId: string, postData: any) =
     )
       .then((res) => res.json())
       .then((jsonData) => {
-        console.log('========JSON===cal====', jsonData);
         return jsonData;
       });
     return data;
   } catch (error) {
-    console.log('========error=======', error);
     console.error(error);
   }
 };
@@ -480,7 +477,6 @@ export const deleteCouponCodeFromCart = async (checkoutId: string, couponCode: s
     )
       .then((res) => res.json())
       .then((jsonData) => {
-        console.log('========jsonData=delete======', jsonData);
         return jsonData;
       });
     return data;
@@ -508,7 +504,6 @@ export const addCouponCodeToCart = async (checkoutId: string, couponCode: string
     )
       .then((res) => res.json())
       .then((jsonData) => {
-        console.log('========jsonData=add======', jsonData);
         return jsonData;
       });
     return data;

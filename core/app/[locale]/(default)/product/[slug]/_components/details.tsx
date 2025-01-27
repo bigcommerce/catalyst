@@ -573,7 +573,7 @@ export const Details = ({
         </div>
       )}
       <Coupon couponIcon={couponIcon} />
-      <div className="font-normal text-sm leading-6 tracking-[0.25px]">
+      <div className="flex justify-center lg:justify-start mt-[10px] font-normal text-sm leading-6 tracking-[0.25px]">
         <span> Free Delivery</span>
       </div>
       {selectedVariantId && (
