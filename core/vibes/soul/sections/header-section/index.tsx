@@ -21,9 +21,9 @@ export const HeaderSection = forwardRef<React.ComponentRef<'div'>, Props>(
       if (!bannerElement) return;
 
       const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
-        for (const entry of entries) {
+        entries.forEach((entry) => {
           setBannerHeight(entry.contentRect.height);
-        }
+        });
       });
 
       resizeObserver.observe(bannerElement);

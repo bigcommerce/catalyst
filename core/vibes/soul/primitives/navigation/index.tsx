@@ -341,12 +341,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
                 <Stream
                   fallback={
-                    <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
+                    <ul className="flex animate-pulse flex-row gap-6 p-3">
                       <li>
-                        <span className="block h-4 w-10 rounded-md bg-contrast-100" />
+                        <span className="block h-4 w-16 rounded-md bg-contrast-100" />
                       </li>
                       <li>
-                        <span className="block h-4 w-14 rounded-md bg-contrast-100" />
+                        <span className="block h-4 w-12 rounded-md bg-contrast-100" />
                       </li>
                       <li>
                         <span className="block h-4 w-24 rounded-md bg-contrast-100" />
@@ -927,6 +927,7 @@ function CurrencyForm({
                 // eslint-disable-next-line @typescript-eslint/require-await
                 startTransition(async () => {
                   const formData = new FormData();
+
                   formData.append('id', currency.id);
                   formAction(formData);
                 });
