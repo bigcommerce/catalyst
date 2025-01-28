@@ -1,6 +1,5 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 import PLazy from 'p-lazy';
-import { cache } from 'react';
 
 import { HeaderSection } from '@/vibes/soul/sections/header-section';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
@@ -32,26 +31,41 @@ const GetCartCountQuery = graphql(`
   }
 `);
 
-const getLayoutData = cache(async () => {
+export const GetHeaderLinksQuery = graphql(`
+  query GetHeaderLinksQuery {
+    site {
+      categoryTree {
+        name
+        path
+        children {
+          name
+          path
+          children {
+            name
+            path
+          }
+        }
+      }
+    }
+  }
+`);
+
+const getLinks = async () => {
+  console.log('getLinks called');
+
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const { data: response } = await client.fetch({
-    document: LayoutQuery,
+  const { data } = await client.fetch({
+    document: GetHeaderLinksQuery,
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
-
-  return readFragment(HeaderFragment, response).site;
-});
-
-const getLinks = async () => {
-  const data = await getLayoutData();
 
   /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
    To show a full list of categories, modify the `slice` method to remove the limit.
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
-  const categoryTree = data.categoryTree.slice(0, 6);
+  const categoryTree = data.site.categoryTree.slice(0, 6);
 
   return categoryTree.map(({ name, path, children }) => ({
     label: name,
@@ -67,12 +81,6 @@ const getLinks = async () => {
   }));
 };
 
-const getLogo = async () => {
-  const data = await getLayoutData();
-
-  return data.settings ? logoTransformer(data.settings) : '';
-};
-
 const getCartCount = async () => {
   const cartId = await getCartId();
 
@@ -82,7 +90,7 @@ const getCartCount = async () => {
 
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const response = await client.fetch({
+  const { data } = await client.fetch({
     document: GetCartCountQuery,
     variables: { cartId },
     customerAccessToken,
@@ -94,45 +102,44 @@ const getCartCount = async () => {
     },
   });
 
-  if (!response.data.site.cart) {
+  if (!data.site.cart) {
     return null;
   }
 
-  return response.data.site.cart.lineItems.totalQuantity;
-};
-
-const getCurrencies = async () => {
-  const data = await getLayoutData();
-
-  if (!data.currencies.edges) {
-    return [];
-  }
-
-  const currencies = data.currencies.edges
-    // only show transactional currencies for now until cart prices can be rendered in display currencies
-    .filter(({ node }) => node.isTransactional)
-    .map(({ node }) => ({
-      id: node.code,
-      label: node.code,
-      isDefault: node.isDefault,
-    }));
-
-  return currencies;
+  return data.site.cart.lineItems.totalQuantity;
 };
 
 export const Header = async () => {
   const t = await getTranslations('Components.Header');
   const locale = await getLocale();
-  const currencyCode = await getPreferredCurrencyCode();
 
   const locales = routing.locales.map((enabledLocales) => ({
     id: enabledLocales,
     label: enabledLocales.toLocaleUpperCase(),
   }));
 
-  const currencies = await getCurrencies();
+  const { data: response } = await client.fetch({
+    document: LayoutQuery,
+    fetchOptions: { next: { revalidate } },
+  });
+
+  const data = readFragment(HeaderFragment, response).site;
+
+  const currencyCode = await getPreferredCurrencyCode();
+  const currencies = data.currencies.edges
+    ? // only show transactional currencies for now until cart prices can be rendered in display currencies
+      data.currencies.edges
+        .filter(({ node }) => node.isTransactional)
+        .map(({ node }) => ({
+          id: node.code,
+          label: node.code,
+          isDefault: node.isDefault,
+        }))
+    : [];
   const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
   const activeCurrencyId = currencyCode ?? defaultCurrency?.id;
+
+  const logo = data.settings ? logoTransformer(data.settings) : '';
 
   return (
     <HeaderSection
@@ -145,8 +152,8 @@ export const Header = async () => {
         searchLabel: t('Icons.search'),
         searchParamName: 'term',
         searchAction: search,
-        links: getLinks(),
-        logo: getLogo(),
+        links: PLazy.from(getLinks),
+        logo,
         mobileMenuTriggerLabel: t('toggleNavigation'),
         openSearchPopupLabel: t('Search.openSearchPopup'),
         logoLabel: t('home'),
