@@ -432,7 +432,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           <Stream
             fallback={
-              <ul className="flex animate-pulse flex-row gap-6 p-3">
+              <ul className="flex animate-pulse flex-row gap-6 p-[12.5px]">
                 <li>
                   <span className="block h-4 w-16 rounded-md bg-contrast-100" />
                 </li>
