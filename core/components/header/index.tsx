@@ -80,7 +80,9 @@ const getLinks = cache(async () => {
   }));
 });
 
-const getCartCount = async () => {
+const getCartCount = cache(async () => {
+  console.log('getCartCount');
+
   const cartId = await getCartId();
 
   if (!cartId) {
@@ -106,7 +108,7 @@ const getCartCount = async () => {
   }
 
   return data.site.cart.lineItems.totalQuantity;
-};
+});
 
 export const Header = async () => {
   const t = await getTranslations('Components.Header');
