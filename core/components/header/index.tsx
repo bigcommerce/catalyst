@@ -32,8 +32,10 @@ interface Props {
 const homeLogoMobile = imageManagerImageUrl('logo-mark.png', '150w');
 const homeLogoMobileFirst = imageManagerImageUrl('logo-mark.png', '150w');
 
+
 import { MakeswiftComponent } from '@makeswift/runtime/next';
-import { client as makeswiftClient, getSiteVersion } from '~/lib/makeswift/client';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
+import { client as makeswiftClient } from '~/lib/makeswift/client';
 
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
@@ -86,7 +88,7 @@ export const Header = async ({ cart }: Props) => {
             getCustomerData={getCustomerData as any}
             items={[
               { href: '/support/faqs', label: 'Existing Order' },
-              { href: '/support/contact', label: 'Track My Order' },
+              { href: '/order-tracking', label: 'Track My Order' },
               { href: '/support/contact', label: 'Replace Items' },
               { href: '/support/contact', label: 'Gift Certificates' },
               { href: '/support/contact', label: 'Visit Our Help Center' },

@@ -17,7 +17,13 @@ const TailwindCustomCssValues = {
 };
 
 
-export default function SalesBuddyProductPage() {
+interface SalesBuddyProductPageProps {
+  toggleAccordion: (index: number) => void;
+  openIndexes: number[];
+  setOpenIndexes: (indexes: number[]) => void;
+}
+
+export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, setOpenIndexes }: SalesBuddyProductPageProps) {
   const [childSku, setChildSku] = useState([]);
   const retrievedProductData = JSON.parse(localStorage.getItem('productInfo') || '{}');
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
@@ -26,11 +32,11 @@ export default function SalesBuddyProductPage() {
     cost: false,
     inventory: false,
   });
-  const toggleAccordion = (index: number) => {
-    setOpenAccordions((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
-    );
-  };
+  // const toggleAccordion = (index: number) => {
+  //   setOpenAccordions((prev) =>
+  //     prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
+  //   );
+  // };
 
   const costPricingTableData = (data) => {
     setChildSku(data.child_sku)
@@ -210,6 +216,7 @@ export default function SalesBuddyProductPage() {
         <Accordions
           styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.existingQuote]}
+
         // type="multiple"
         />
       </div>
@@ -218,6 +225,9 @@ export default function SalesBuddyProductPage() {
           styles="  py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.costPricing, ACCORDION_DATA.inventory]}
           contentCss="px-5"
+          toggleAccordion={toggleAccordion}
+          openIndexes={openIndexes}
+          setOpenIndexes={setOpenIndexes}
 
         // type="multiple"
         />
