@@ -277,6 +277,7 @@ export default async function ProductPage(props: Props) {
               <hr className="mb-4 border border-gray-200" />
               <Description product={product} />
               <hr className="mb-[55px] mt-[20px] border border-gray-200" />
+              {/*
               <CollectionProducts
                 collection={collectionValue}
                 products={collectionProducts.hits}
@@ -286,6 +287,12 @@ export default async function ProductPage(props: Props) {
                     : 0
                 }
                 moreLink={`/search?brand_name[0]=${product.brand?.name ?? ''}&collection[0]=${collectionValue}`}
+                useDefaultPrices={useDefaultPrices}
+              />
+              */}
+              <CollectionProducts
+                collection={collectionValue}
+                products={collectionProducts.hits}
                 useDefaultPrices={useDefaultPrices}
               />
               <Promotion />

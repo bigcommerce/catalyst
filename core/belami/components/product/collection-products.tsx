@@ -17,6 +17,7 @@ import {
 
 import { useFormatter } from 'next-intl';
 
+import { ProductPrice } from '~/belami/components/search/product-price';
 import { ReviewSummary } from '~/belami/components/reviews';
 
 import searchColors from '~/belami/include/search-colors.json';
@@ -94,6 +95,33 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
         <div className="flex-1 p-0 text-center">
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
           <h2 className="text-lg font-medium mt-2"><Link href={hit.url}>{hit.name}</Link></h2>
+
+          <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
+            {!!hit.on_clearance &&
+              <span className="mt-2 inline-block px-1 py-0.5 bg-gray-400 text-white text-xs uppercase tracking-wider">Clearance</span>
+            }
+
+            <ProductPrice 
+              defaultPrice={hit?.prices?.USD || 0} 
+              defaultSalePrice={hit?.sales_prices?.USD || null} 
+              price={price}
+              salePrice={salePrice}
+              currency={currency}
+              format={format}
+              options={{
+                useAsyncMode: useAsyncMode,
+                useDefaultPrices: useDefaultPrices,
+                isLoading: isLoading,
+                isLoaded: isLoaded
+              }}
+              classNames={{
+                root: 'mt-2 flex space-x-2 items-center',
+                discount: 'font-bold text-brand-400 whitespace-nowrap',
+              }}
+            />
+          </div>
+
+          {/*
           {useAsyncMode && !useDefaultPrices ? (
             <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
               {hit.on_clearance &&
@@ -130,6 +158,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
                 </div>
               </div> : null
           )}
+          */}
 
           {hit.reviews_count > 0 &&
             <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="mx-auto mt-2 justify-center" />
