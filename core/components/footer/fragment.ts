@@ -25,43 +25,5 @@ export const FooterFragment = graphql(`
         }
       }
     }
-    content {
-      pages(filters: { parentEntityIds: [0] }) {
-        edges {
-          node {
-            __typename
-            name
-            ... on RawHtmlPage {
-              path
-            }
-            ... on ContactPage {
-              path
-            }
-            ... on NormalPage {
-              path
-            }
-            ... on BlogIndexPage {
-              path
-            }
-            ... on ExternalLinkPage {
-              link
-            }
-          }
-        }
-      }
-    }
-    brands(first: 5) {
-      edges {
-        node {
-          entityId
-          name
-          path
-        }
-      }
-    }
-    categoryTree {
-      name
-      path
-    }
   }
 `);

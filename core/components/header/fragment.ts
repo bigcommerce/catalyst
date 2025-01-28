@@ -17,18 +17,6 @@ export const HeaderFragment = graphql(`
         }
       }
     }
-    # categoryTree {
-    #   name
-    #   path
-    #   children {
-    #     name
-    #     path
-    #     children {
-    #       name
-    #       path
-    #     }
-    #   }
-    # }
     currencies(first: 25) {
       edges {
         node {

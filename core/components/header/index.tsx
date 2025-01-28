@@ -32,7 +32,7 @@ const GetCartCountQuery = graphql(`
 `);
 
 const GetLinksQuery = graphql(`
-  query GetHeaderLinksQuery {
+  query GetLinksQuery {
     site {
       categoryTree {
         name
