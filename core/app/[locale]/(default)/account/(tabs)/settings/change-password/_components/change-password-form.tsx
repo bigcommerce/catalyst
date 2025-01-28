@@ -127,7 +127,7 @@ export const ChangePasswordForm = () => {
       setAccountState({
         status: 'success',
         message: t('confirmChangePassword'),
-        isLoggedIn:false
+        // isLoggedIn:false
       });
     }
   }, [state, setAccountState, t]);
@@ -263,7 +263,7 @@ export const ChangePasswordForm = () => {
             {t('notEmptyMessage')}
           </FieldMessage>
           {!isConfirmPasswordValid  &&(
-            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)]">
+            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs  text-error text-[rgb(167,31,35)]">
               {t('confirmPasswordValidationMessage')}
             </FieldMessage>
           )}

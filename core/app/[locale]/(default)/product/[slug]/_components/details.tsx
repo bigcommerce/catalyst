@@ -73,6 +73,8 @@ interface Props {
   children1: React.ReactNode;
   triggerLabel2: React.ReactNode;
   children2: React.ReactNode;
+  triggerLabel3: React.ReactNode;
+  children3: React.ReactNode;
 }
 
 export const DetailsFragment = graphql(
@@ -180,6 +182,8 @@ export const Details = ({
   triggerLabel2,
   children1,
   children2,
+  triggerLabel3,
+  children3,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -675,7 +679,7 @@ export const Details = ({
             amount={product?.prices?.price?.value?.toString()}
             currency={product?.prices?.price?.currencyCode}
           />
-          <RequestQuote requestQuote={requestQuote} />
+            <RequestQuote children={children3} />
           <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
           <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
 
