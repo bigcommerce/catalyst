@@ -206,7 +206,7 @@ export function CollectionProductsStatic({collection, products, total = 0, useDe
 
   return (
     products && products.length > 0 &&
-    <div className="carousel-container p-4 xl:p-8 bg-gray-50 mt-8 mb-12">
+    <div className="carousel-container p-4 xl:p-8 bg-gray-50 mt-8 mb-12 relative z-[-1]">
       <h2 className="text-3xl font-black text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535]">{`More from ${collection} collection`}</h2>
       <div className="mt-5 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4 xl:gap-8">
         {products.map((item: any, index: number) => (
