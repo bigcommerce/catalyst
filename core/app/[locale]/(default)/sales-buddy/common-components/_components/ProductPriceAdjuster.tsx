@@ -139,7 +139,7 @@ if (isSave) {
       <ProductInfoRow label="Cost" value={initialCost ? initialCost : '0000.00'} />
       <ProductInfoRow label="Floor ($)" value={floor ? initialCost * floor : '0000.00'} />
       <ProductInfoRow label="Markup" value={floor ? initialCost * floor : '0000.00'} />
-      {/* Adjust Price Button */}
+      <ProductInfoRow label="Floor Markup" value={floor ?  floor : '00'} />
       
       {!isEditing && (
         <button
