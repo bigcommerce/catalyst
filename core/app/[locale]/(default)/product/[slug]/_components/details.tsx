@@ -599,7 +599,7 @@ export const Details = ({
           </div>
           {/* msrp  */}
           {product.prices && (
-            <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
+            <div className="product-price mt-4 flex items-center gap-[0.5em] text-center lg:text-left">
               {product.prices.retailPrice?.value && product.prices.salePrice?.value ? (
                 // retailPrice, salePrice, basePrice
                 <>
