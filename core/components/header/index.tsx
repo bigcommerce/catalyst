@@ -51,6 +51,15 @@ const GetLinksQuery = graphql(`
   }
 `);
 
+const getLayoutData = cache(async () => {
+  const { data: response } = await client.fetch({
+    document: LayoutQuery,
+    fetchOptions: { next: { revalidate } },
+  });
+
+  return readFragment(HeaderFragment, response).site;
+});
+
 const getLinks = cache(async () => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -81,8 +90,6 @@ const getLinks = cache(async () => {
 });
 
 const getCartCount = cache(async () => {
-  console.log('getCartCount');
-
   const cartId = await getCartId();
 
   if (!cartId) {
@@ -119,14 +126,8 @@ export const Header = async () => {
     label: enabledLocales.toLocaleUpperCase(),
   }));
 
-  const { data: response } = await client.fetch({
-    document: LayoutQuery,
-    fetchOptions: { next: { revalidate } },
-  });
+  const data = await getLayoutData();
 
-  const data = readFragment(HeaderFragment, response).site;
-
-  const currencyCode = await getPreferredCurrencyCode();
   const currencies = data.currencies.edges
     ? // only show transactional currencies for now until cart prices can be rendered in display currencies
       data.currencies.edges
@@ -138,9 +139,14 @@ export const Header = async () => {
         }))
     : [];
   const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
-  const activeCurrencyId = currencyCode ?? defaultCurrency?.id;
 
   const logo = data.settings ? logoTransformer(data.settings) : '';
+
+  const getActiveCurrencyId = cache(async () => {
+    const currencyCode = await getPreferredCurrencyCode();
+
+    return currencyCode ?? defaultCurrency?.id;
+  });
 
   return (
     <HeaderSection
@@ -163,7 +169,7 @@ export const Header = async () => {
         locales,
         localeAction: switchLocale,
         currencies,
-        activeCurrencyId,
+        activeCurrencyId: PLazy.from(getActiveCurrencyId),
         currencyAction: switchCurrency,
       }}
     />

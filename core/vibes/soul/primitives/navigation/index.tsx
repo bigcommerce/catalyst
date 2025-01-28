@@ -99,7 +99,7 @@ interface Props<S extends SearchResult> {
   activeLocaleId?: string;
   localeAction?: LocaleAction;
   currencies?: Currency[];
-  activeCurrencyId?: string;
+  activeCurrencyId?: Streamable<string | undefined>;
   currencyAction?: CurrencyAction;
   logo?: Streamable<string | { src: string; alt: string } | null>;
   logoWidth?: number;
@@ -274,7 +274,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     localeAction,
     locales,
     currencies,
-    activeCurrencyId,
+    activeCurrencyId: streamableActiveCurrencyId,
     currencyAction,
     searchHref,
     searchParamName = 'query',
@@ -312,14 +312,17 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   return (
     <NavigationMenu.Root
-      className={clsx('relative mx-auto w-full max-w-screen-2xl @container', className)}
+      className={clsx(
+        'relative mx-auto flex min-h-[68px] w-full max-w-screen-2xl items-center @container',
+        className,
+      )}
       delayDuration={0}
       onValueChange={() => setIsSearchOpen(false)}
       ref={ref}
     >
       <div
         className={clsx(
-          'flex items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-2 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5',
+          'flex w-full items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-2 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5',
           isFloating
             ? 'shadow-xl ring-1 ring-[var(--nav-floating-border,hsl(var(--foreground)/10%))]'
             : 'shadow-none ring-0',
@@ -432,7 +435,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           <Stream
             fallback={
-              <ul className="flex animate-pulse flex-row gap-6 p-[12.5px]">
+              <ul className="flex animate-pulse flex-row gap-6">
                 <li>
                   <span className="block h-4 w-16 rounded-md bg-contrast-100" />
                 </li>
@@ -540,7 +543,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               <Search size={20} strokeWidth={1} />
             </Link>
           )}
-
           <Link aria-label={accountLabel} className={navButtonClassName} href={accountHref}>
             <User size={20} strokeWidth={1} />
           </Link>
@@ -562,7 +564,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               }
             </Stream>
           </Link>
-
           {/* Locale / Language Dropdown */}
           {locales && locales.length > 1 && localeAction ? (
             <LocaleForm
@@ -575,11 +576,25 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
           {/* Currency Dropdown */}
           {currencies && currencies.length > 1 && currencyAction ? (
-            <CurrencyForm
-              action={currencyAction}
-              activeCurrencyId={activeCurrencyId}
-              currencies={currencies as [Currency, ...Currency[]]}
-            />
+            <Stream
+              fallback={
+                <CurrencyForm
+                  action={currencyAction}
+                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                  currencies={currencies as [Currency, ...Currency[]]}
+                />
+              }
+              value={streamableActiveCurrencyId}
+            >
+              {(activeCurrencyId) => (
+                <CurrencyForm
+                  action={currencyAction}
+                  activeCurrencyId={activeCurrencyId}
+                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                  currencies={currencies as [Currency, ...Currency[]]}
+                />
+              )}
+            </Stream>
           ) : null}
         </div>
       </div>
