@@ -599,9 +599,7 @@ export function Hit({
               }}
               classNames={{
                 root: 'mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start',
-                oldPrice: 'order-1',
-                discount: 'order-3 whitespace-nowrap font-bold text-brand-400 md:order-2',
-                newPrice: 'order-2 md:order-3'
+                discount: 'whitespace-nowrap font-bold text-brand-400',
               }}
             />
           </div>
@@ -834,9 +832,7 @@ export function Hit({
               }}
               classNames={{
                 root: 'mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start',
-                oldPrice: 'order-1',
-                discount: 'order-3 whitespace-nowrap font-bold text-brand-400 md:order-2',
-                newPrice: 'order-2 md:order-3'
+                discount: 'whitespace-nowrap font-bold text-brand-400',
               }}
             />
           </div>

@@ -115,7 +115,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
                 isLoaded: isLoaded
               }}
               classNames={{
-                root: 'mt-2 flex space-x-2 items-center',
+                root: 'mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start',
                 discount: 'font-bold text-brand-400 whitespace-nowrap',
               }}
             />
