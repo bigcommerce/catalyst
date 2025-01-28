@@ -31,7 +31,7 @@ const GetCartCountQuery = graphql(`
   }
 `);
 
-export const GetHeaderLinksQuery = graphql(`
+const GetLinksQuery = graphql(`
   query GetHeaderLinksQuery {
     site {
       categoryTree {
@@ -51,12 +51,10 @@ export const GetHeaderLinksQuery = graphql(`
 `);
 
 const getLinks = async () => {
-  console.log('getLinks called');
-
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
-    document: GetHeaderLinksQuery,
+    document: GetLinksQuery,
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
@@ -152,12 +150,13 @@ export const Header = async () => {
         searchLabel: t('Icons.search'),
         searchParamName: 'term',
         searchAction: search,
-        links: PLazy.from(getLinks),
+        // links: PLazy.from(getLinks),
+        links: [],
         logo,
         mobileMenuTriggerLabel: t('toggleNavigation'),
         openSearchPopupLabel: t('Search.openSearchPopup'),
         logoLabel: t('home'),
-        cartCount: PLazy.from(getCartCount),
+        // cartCount: PLazy.from(getCartCount),
         activeLocaleId: locale,
         locales,
         localeAction: switchLocale,
