@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useHits } from 'react-instantsearch';
 import { Hit } from './hit';
 
-export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...props }: any) {
+export function Hits({ hitComponent, view, useDefaultPrices, promotions, priceMaxTriggers, ...props }: any) {
   const { items, sendEvent } = useHits(props);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -92,7 +92,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...prop
   );
 }
 
-export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, ...props }: any) {
+export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, priceMaxTriggers, ...props }: any) {
   const { items, sendEvent } = useHits(props);
 
   const [isLoading, setIsLoading] = useState(false);

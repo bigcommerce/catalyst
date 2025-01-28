@@ -52,6 +52,11 @@ export default async function BrandPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
+  const priceMaxTriggers = {
+    d: searchParams['d'],
+    source: searchParams['source']
+  }
+
   const customerAccessToken = await getSessionCustomerAccessToken();
   const useDefaultPrices = !customerAccessToken;
 
@@ -138,7 +143,7 @@ export default async function BrandPage(props: Props) {
         <MakeswiftPage snapshot={snapshot} />
       }
 
-      <Brand brand={brand} promotions={promotions} useDefaultPrices={useDefaultPrices} />
+      <Brand brand={brand} promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxTriggers={priceMaxTriggers} />
     </div>
   );
 }

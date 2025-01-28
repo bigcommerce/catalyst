@@ -107,6 +107,11 @@ export default async function ProductPage(props: Props) {
       return null;
     }
 
+    const priceMaxTriggers = {
+      d: searchParams['d'],
+      source: searchParams['source']
+    }
+
     const useDefaultPrices = !customerAccessToken;
     const { locale, slug } = params;
 
@@ -294,12 +299,14 @@ export default async function ProductPage(props: Props) {
                 collection={collectionValue}
                 products={collectionProducts.hits}
                 useDefaultPrices={useDefaultPrices}
+                priceMaxTriggers={priceMaxTriggers}
               />
               <Promotion />
               <RelatedProducts
                 productId={product.entityId}
                 products={relatedProducts}
                 useDefaultPrices={useDefaultPrices}
+                priceMaxTriggers={priceMaxTriggers}
               />
               <Warranty product={product} />
               <SiteVibesReviews product={product} category={categoryWithBreadcrumbs} />

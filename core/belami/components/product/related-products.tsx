@@ -34,7 +34,8 @@ const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
 interface Props {
   productId: number,
   products: any[],
-  useDefaultPrices?: boolean
+  useDefaultPrices?: boolean,
+  priceMaxTriggers?: any
 }
 
 function getDiscount(price: number, sale: number): number | null {
@@ -177,7 +178,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
   );
 }
 
-export function RelatedProducts({ productId, products, useDefaultPrices = false }: Props) {
+export function RelatedProducts({ productId, products, useDefaultPrices = false, priceMaxTriggers }: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);

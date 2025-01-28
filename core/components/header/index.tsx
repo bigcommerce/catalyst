@@ -36,10 +36,12 @@ const homeLogoMobileFirst = imageManagerImageUrl('logo-mark.png', '150w');
 import { MakeswiftComponent } from '@makeswift/runtime/next';
 import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { client as makeswiftClient } from '~/lib/makeswift/client';
+import { Props } from '@makeswift/runtime/prop-controllers';
 
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations('Components.Header');
+
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const useDefaultPrices = !customerAccessToken;

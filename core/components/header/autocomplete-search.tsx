@@ -25,7 +25,7 @@ import Image from 'next/image';
 import noImage from '~/public/no-image.svg';
 
 import { useFormatter } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const client = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
@@ -376,6 +376,14 @@ function getDiscount(price: number, salePrice: number): number | null {
 }
 
 export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPrices?: boolean }) {
+
+  const searchParams = useSearchParams();
+
+  const priceMaxTriggers = {
+    d: searchParams.get('d'),
+    source: searchParams.get('source')
+  }
+
   const containerRef = useRef(null);
   const panelRoot = useRef(null);
 
