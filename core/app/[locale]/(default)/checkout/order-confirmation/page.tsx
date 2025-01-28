@@ -61,7 +61,7 @@ export default async function OrderConfirmation() {
 
   if (orderId) {
     let data: any = [];
-    if(customerAccessToken) {
+    if (customerAccessToken) {
       data = await getOrderDetails({ filter: { entityId: orderId } });
     } else {
       data = await getGuestOrderDetails({ filter: { entityId: orderId, cartEntityId: cartId } });
@@ -76,8 +76,11 @@ export default async function OrderConfirmation() {
     const format = await getFormatter();
     const { orderState, summaryInfo, consignments, paymentInfo } = orderData;
     const shippingConsignments = consignments.shipping;
-    const isMultiShippingConsignments = shippingConsignments && shippingConsignments.length > 1;
-    const noOfItems: number = shippingConsignments?.[0]?.lineItems?.length || 0;
+    const sumWithInitial: any = 0;
+    const noOfItems = shippingConsignments?.[0]?.lineItems?.reduce(
+      (accumulator, item) => accumulator + item?.quantity,
+      sumWithInitial,
+    );
     let shippingAddressData = shippingConsignments?.[0]?.shippingAddress;
     const { subtotal, shipping, tax, discounts, grandTotal, handlingCost } = summaryInfo;
     const { nonCouponDiscountTotal, couponDiscounts } = discounts;

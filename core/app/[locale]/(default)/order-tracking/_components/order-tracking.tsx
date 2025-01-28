@@ -1,6 +1,6 @@
 'use client';
 
-import { Suspense, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { StillNeedContactUs } from '../../account/(tabs)/orders/_components/stillneed-contactus';
 import { getGuestOrderDetails, getOrderDetails } from '~/components/graphql-apis';
 import { getGuestOrderDetailsFromAPI } from '~/components/management-apis';
@@ -184,7 +184,11 @@ const OrderList = ({
               key={`order-${orderState?.orderId}`}
             >
               {(shippingConsignments ?? []).map(({ lineItems }) => {
-                let itemsCount = lineItems?.length;
+                let sumWithInitial: any = 0;
+                let itemsCount = shippingConsignments?.[0]?.lineItems?.reduce(
+                  (accumulator, item) => accumulator + item?.quantity,
+                  sumWithInitial,
+                );
                 let className = '',
                   imageClass = '';
                 let productCount = 1;
@@ -271,8 +275,11 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
   const { subtotal, shipping, tax, discounts, grandTotal, handlingCost } = summaryInfo;
   const { nonCouponDiscountTotal, couponDiscounts } = discounts;
   const shippingConsignments = consignments.shipping;
-  const isMultiShippingConsignments = shippingConsignments && shippingConsignments.length > 1;
-  const noOfItems: number = shippingConsignments?.[0]?.lineItems?.length || 0;
+  const sumWithInitial: any = 0;
+  const noOfItems = shippingConsignments?.[0]?.lineItems?.reduce(
+    (accumulator, item) => accumulator + item?.quantity,
+    sumWithInitial,
+  );
   let shippingAddressData = shippingConsignments?.[0]?.shippingAddress;
   let regSubTotal = subtotal?.value;
   let youSave = 0;

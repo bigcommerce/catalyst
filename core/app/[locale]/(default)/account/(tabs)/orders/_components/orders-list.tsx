@@ -147,7 +147,11 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
             <div className="flex w-full flex-row items-center justify-between p-[0px_20px_20px_20px]">
               <div className="flex flex-1 flex-row items-center gap-[40px] p-0" key={`order-${entityId}`}>
                 {(shippingConsignments ?? []).map(({ lineItems }) => {
-                  let itemsCount = lineItems?.length;
+                  let sumWithInitial: any = 0;
+                  let itemsCount = shippingConsignments?.[0]?.lineItems?.reduce(
+                    (accumulator, item) => accumulator + item?.quantity,
+                    sumWithInitial,
+                  );
                   let className = '', imageClass = '';
                   let productCount = 1;
                   let width = 150, height = 150;
