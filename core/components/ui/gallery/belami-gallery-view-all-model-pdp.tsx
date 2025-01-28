@@ -160,7 +160,7 @@ const GalleryModel = ({
       return (
         <BcImage
           alt={selectedItem.altText || 'Image not available'}
-          className="h-full w-[80%] object-contain"
+          className="h-full w-[100%] object-fill"
           src={selectedItem.src || ''}
           width={800}
           height={600}
@@ -233,28 +233,32 @@ const GalleryModel = ({
   return (
     <div className="modal-overlay fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70">
       <div className="modal-content relative flex h-full w-full flex-col bg-white p-0 lg:p-[30px] xl:flex-row">
-        <div className="gallery-slider relative flex h-[65%] w-full items-center justify-center overflow-hidden sm:h-[100%] xl:h-full xl:w-[70%] xl:py-[20px]">
+        <div className="gallery-slider relative flex h-[65%] w-full items-center justify-center overflow-hidden sm:h-[50%] xl:h-full xl:w-[60%] xl:py-[20px] 2xl:w-[70%]">
           <button
             aria-label="Previous item"
-            className="absolute left-8 top-1/2 -translate-y-1/2 transform p-2 hover:bg-opacity-50 focus:outline-none"
+            className="absolute left-0 top-1/2 -translate-y-1/2 transform p-2 hover:bg-opacity-50 focus:outline-none xl:left-8"
             onClick={handlePrevious}
           >
             <ChevronLeft size={36} className="hover:text-gray-300" />
           </button>
 
-          <div className="relative h-full flex justify-center items-center w-[65%]">{renderMediaContent()}</div>
+          <div className="relative flex h-[300px] w-[80%] items-center justify-center xl:h-[100%] xl:w-[80%]">
+            {renderMediaContent()}
+          </div>
 
           <button
             aria-label="Next item"
-            className="absolute right-8 top-1/2 -translate-y-1/2 transform p-2 hover:bg-opacity-50 focus:outline-none"
+            className="absolute right-0 top-1/2 -translate-y-1/2 transform p-2 hover:bg-opacity-50 focus:outline-none xl:right-8"
             onClick={handleNext}
           >
             <ChevronRight size={36} className="hover:text-gray-300" />
           </button>
         </div>
 
-        <div className="gallery-thumbnails h-auto w-full overflow-y-auto p-4 xl:h-full xl:w-[25%]">
-          <div className={`grid grid-cols-6 gap-4 xl:grid-cols-3 w-fit ${mediaItems.length % 3 !== 0 ? '[&>div:last-child]:[grid-column-start:2]' : ''} `}>
+        <div className="gallery-thumbnails h-auto overflow-y-auto p-4 xl:h-full xl:w-[35%] 2xl:w-[25%]">
+          <div
+            className={`grid w-fit grid-cols-4 gap-4 xl:grid-cols-3 ${mediaItems.length % 3 !== 0 ? '[&>div:last-child]:[grid-column-start:2]' : ''} `}
+          >
             {mediaItems.map((item, index) => (
               <div
                 key={index}
@@ -264,15 +268,15 @@ const GalleryModel = ({
                 onClick={() => onSelectIndex(index)}
               >
                 {item.type === 'video' ? (
-                  <div className="relative h-12 w-full md:h-24">
+                  <div className="Images-Videos relative h-12 w-[100%] object-fill md:!h-[8em] lg:!h-[10em] xl:!h-[6em] xl:w-[7em] 2xl:w-[6em]">
                     {isYoutubeUrl(item.url) ? (
                       <img
                         src={getYoutubeThumbnailUrl(item.url || '') || ''}
                         alt={item.title || 'Video thumbnail'}
-                        className="h-full w-full object-cover"
+                        className="gallery-img h-full w-full object-cover"
                       />
                     ) : (
-                      <video className="h-full w-full object-cover">
+                      <video className="gallery-video h-full w-full object-cover">
                         <source src={item.url} type="video/mp4" />
                       </video>
                     )}
@@ -302,7 +306,7 @@ const GalleryModel = ({
                 ) : (
                   <BcImage
                     alt={item.altText || ''}
-                    className="h-12 w-28 object-cover md:h-24"
+                    className="Images-Gallery h-12 w-[100%] object-fill md:!h-[8em] lg:!h-[10em] xl:!h-[6em] xl:w-28"
                     src={item.src || ''}
                     width={96}
                     height={96}
