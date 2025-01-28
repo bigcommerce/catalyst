@@ -47,5 +47,5 @@ export function SiteVibesReviews({ product, category }: { product: any; category
     }
   }, [product.entityId]);
 
-  return <div id="sitevibes-product-reviews" className="mb-[60px] xl:mb-[0px]" />;
+  return <div id="sitevibes-product-reviews" className="mb-[60px] xl:mb-[0px] relative z-[-1]" />
 }
