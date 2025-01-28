@@ -8,7 +8,7 @@ import {
 } from '@icons-pack/react-simple-icons';
 import { getTranslations } from 'next-intl/server';
 import PLazy from 'p-lazy';
-import { JSX } from 'react';
+import { cache, JSX } from 'react';
 
 import { Footer as FooterSection } from '@/vibes/soul/sections/footer';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
@@ -89,7 +89,9 @@ const GetSectionsQuery = graphql(`
   }
 `);
 
-const getSections = async () => {
+const getSections = cache(async () => {
+  const t = await getTranslations('Components.Footer');
+
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
@@ -100,28 +102,28 @@ const getSections = async () => {
 
   return [
     {
-      title: 'Categories',
+      title: t('categories'),
       links: data.site.categoryTree.map((category) => ({
         label: category.name,
         href: category.path,
       })),
     },
     {
-      title: 'Brands',
+      title: t('brands'),
       links: removeEdgesAndNodes(data.site.brands).map((brand) => ({
         label: brand.name,
         href: brand.path,
       })),
     },
     {
-      title: 'Navigate',
+      title: t('navigate'),
       links: removeEdgesAndNodes(data.site.content.pages).map((page) => ({
         label: page.name,
         href: page.__typename === 'ExternalLinkPage' ? page.link : page.path,
       })),
     },
   ];
-};
+});
 
 export const Footer = async () => {
   const t = await getTranslations('Components.Footer');

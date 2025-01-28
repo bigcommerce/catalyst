@@ -542,7 +542,10 @@
     "Footer": {
       "home": "Home",
       "contact": "Contact Us",
-      "socialMediaLinks": "Social media links"
+      "socialMediaLinks": "Social media links",
+      "categories": "Categories",
+      "brands": "Brands",
+      "navigate": "Navigate"
     },
     "Subscribe": {
       "title": "Sign up for our newsletter",

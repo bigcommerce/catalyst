@@ -1,5 +1,6 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 import PLazy from 'p-lazy';
+import { cache } from 'react';
 
 import { HeaderSection } from '@/vibes/soul/sections/header-section';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
@@ -50,7 +51,7 @@ const GetLinksQuery = graphql(`
   }
 `);
 
-const getLinks = async () => {
+const getLinks = cache(async () => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
@@ -77,7 +78,7 @@ const getLinks = async () => {
       })),
     })),
   }));
-};
+});
 
 const getCartCount = async () => {
   const cartId = await getCartId();
