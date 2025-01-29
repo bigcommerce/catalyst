@@ -1,10 +1,10 @@
-import { Number, Shape } from '@makeswift/runtime/controls';
+import { Group, Number } from '@makeswift/runtime/controls';
 
 const widthGroup = (label: string) =>
-  Shape({
+  Group({
     label,
-    layout: Shape.Layout.Inline,
-    type: {
+    preferredLayout: Group.Layout.Inline,
+    props: {
       medium: Number({ label: 'Medium', suffix: 'px', defaultValue: 768 }),
       lg: Number({ label: 'Large', suffix: 'px', defaultValue: 1024 }),
       xl: Number({ label: 'XL', suffix: 'px', defaultValue: 1200 }),
@@ -12,10 +12,10 @@ const widthGroup = (label: string) =>
     },
   });
 
-export const section = Shape({
+export const section = Group({
   label: 'Section',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     maxWidth: widthGroup('Max width'),
   },
 });
