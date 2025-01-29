@@ -379,6 +379,62 @@ export const checkZeroTaxCouponIsApplied = async (checkoutData: any) => {
   return zeroTaxCoupon;
 };
 
+export const calculateProductPrice = async (products: any ) =>  {
+  const isSingleProduct = !Array.isArray(products);
+  const productArray = isSingleProduct ? [products] : products;
+    const convertedPrices = productArray.map((product: any) => {
+    const prices = product?.catalogProductWithOptionSelections?.prices || product?.prices;
+    const quantity = product?.quantity || 1;
+
+    const retailPrice = prices?.retailPrice?.value;
+    const salePrice = prices?.salePrice?.value;
+    const basePrice = prices?.basePrice?.value;
+    const currencyCode = prices?.basePrice?.currencyCode;
+
+    let originalPrice = 0;
+    let updatedPrice = 0;
+    let discount = 0;
+
+    // Determine original price, updated price, and discount based on available prices
+    if (salePrice && retailPrice) {
+      originalPrice = retailPrice * quantity;
+      updatedPrice = salePrice * quantity;
+      discount = Math.round(((retailPrice - salePrice) / retailPrice) * 100);
+    } else if (retailPrice && basePrice) {
+      originalPrice = retailPrice * quantity;
+      updatedPrice = basePrice * quantity;
+      discount = Math.round(((retailPrice - basePrice) / retailPrice) * 100);
+    } else if (salePrice && basePrice) {
+      originalPrice = basePrice * quantity;
+      updatedPrice = salePrice * quantity;
+      discount = Math.round(((basePrice - salePrice) / basePrice) * 100);
+    } else if (basePrice) {
+      originalPrice = basePrice * quantity;
+      updatedPrice = basePrice * quantity;
+      discount = 0;
+    }
+
+    // Create a new object for converted prices
+    const convertedObject = {
+      UpdatePriceForMSRP: {
+        originalPrice,
+        updatedPrice,
+        currencyCode,
+        discount,
+        hasDiscount: discount > 0,
+      },
+    };
+
+    // Attach the converted object to the product
+    return {
+      ...product,
+      ...convertedObject,
+    };
+  });
+
+  return convertedPrices;
+};
+
 export const zeroTaxCalculation = async (cartObject: any) => {
   let checkoutData: any = cartObject?.checkout;
   let cartData: any = cartObject?.cart;
