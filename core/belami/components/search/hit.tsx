@@ -19,8 +19,6 @@ import coastalBadge from '~/public/badges/coastal.svg';
 
 import { useFormatter } from 'next-intl';
 
-export { ProductPrice } from './product-price';
-
 import { ReviewSummary } from '~/belami/components/reviews';
 import { Compare } from '~/components/ui/product-card/compare';
 import WishlistAddToList from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';

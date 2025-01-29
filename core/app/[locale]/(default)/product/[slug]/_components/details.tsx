@@ -33,6 +33,7 @@ import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { commonSettinngs } from '~/components/common-functions';
 import ScrollContainer from './sticky';
 import { Flyout } from '~/components/common-flyout';
+import { ProductPrice } from '~/belami/components/search/product-price';
 
 interface ProductOptionValue {
   entityId: number;
@@ -75,6 +76,7 @@ interface Props {
   children2: React.ReactNode;
   triggerLabel3: React.ReactNode;
   children3: React.ReactNode;
+  priceMaxRules: any;
   getAllCommonSettinngsValues:any;
 }
 
@@ -170,6 +172,7 @@ export const Details = ({
   children2,
   triggerLabel3,
   children3,
+  priceMaxRules
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -355,6 +358,27 @@ export const Details = ({
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
+                  {product?.UpdatePriceForMSRP && <ProductPrice 
+                    defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0} 
+                    defaultSalePrice={product?.UpdatePriceForMSRP.hasDiscount ? product.UpdatePriceForMSRP.updatedPrice : null} 
+                    priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(product?.brand?.id)) || (r.skus && r.skus.includes(product?.sku)))}
+                    currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
+                    format={format}
+                    showMSRP={true}
+                    options={{
+                      useAsyncMode: false,
+                      useDefaultPrices: true
+                    }}
+                    classNames={{
+                      root: 'sticky-product-price mt-2 !w-[16em] items-center whitespace-nowrap text-center lg:text-right',
+                      newPrice: 'price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                      oldPrice: 'mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through',
+                      discount: 'whitespace-nowrap mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
+                      price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                      msrp: '-ml-[0.5em] mb-1 mr-2 text-left text-[12px] text-gray-500'
+                    }} />
+                  }
+                  {/*
                   {product?.UpdatePriceForMSRP && (
                     <div className="sticky-product-price mt-2 !w-[16em] items-center whitespace-nowrap text-center lg:text-right">
                       {product?.UpdatePriceForMSRP.hasDiscount === true ?(
@@ -390,6 +414,7 @@ export const Details = ({
                       )}
                     </div>
                   )}
+                  */}
                   {productAvailability === 'Unavailable' ? (
                     <div className="flex flex-col items-center">
                       <button
@@ -526,6 +551,28 @@ export const Details = ({
             <ReviewSummary data={product} />
           </div>
           {/* msrp  */}
+
+          {product?.UpdatePriceForMSRP && <ProductPrice 
+            defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0} 
+            defaultSalePrice={product?.UpdatePriceForMSRP.hasDiscount ? product.UpdatePriceForMSRP.updatedPrice : null} 
+            priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(product?.brand?.id)) || (r.skus && r.skus.includes(product?.sku)))}
+            currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
+            format={format}
+            showMSRP={true}
+            options={{
+              useAsyncMode: false,
+              useDefaultPrices: true
+            }}            
+            classNames={{
+              root: 'product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left',
+              newPrice: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+              oldPrice: 'inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
+              discount: 'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
+              price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500'
+            }} />
+          }
+          {/*
           {product?.['UpdatePriceForMSRP'] && (
             <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
               {product?.UpdatePriceForMSRP &&
@@ -561,6 +608,7 @@ export const Details = ({
               )}
             </div>
           )}
+          */}
           {/* msrp  */}
 
           <Coupon couponIcon={couponIcon} />
