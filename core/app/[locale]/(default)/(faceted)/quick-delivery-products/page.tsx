@@ -3,6 +3,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { getSessionCustomerAccessToken } from '~/auth';
 
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
+import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
 
@@ -57,6 +58,7 @@ export default async function QuickDeliveryProductsPage(props: Props) {
   });
 
   const promotions = await getActivePromotions(true);
+  const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
 
   return (
     <div className="group py-4 px-4 xl:px-12">
@@ -69,7 +71,7 @@ export default async function QuickDeliveryProductsPage(props: Props) {
         <MakeswiftPage snapshot={snapshot} />
       }
 
-      <QuickDeliveryProducts promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxTriggers={priceMaxTriggers} />
+      <QuickDeliveryProducts promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />
     </div>
   );
 }

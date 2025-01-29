@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { getBrand } from './page-data';
 
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
+import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
 
 import { Brand } from './brand';
 
@@ -83,6 +84,7 @@ export default async function BrandPage(props: Props) {
   });
 
   const promotions = await getActivePromotions(true);
+  const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
 
   return (
     <div className="group py-4 px-4 xl:px-12">
@@ -146,7 +148,7 @@ export default async function BrandPage(props: Props) {
         <MakeswiftPage snapshot={snapshot} />
       }
 
-      <Brand brand={brand} promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxTriggers={priceMaxTriggers} />
+      <Brand brand={brand} promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />
     </div>
   );
 }

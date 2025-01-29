@@ -105,6 +105,7 @@ export type ProductRecord = {
 
 type HitProps = {
   hit: AlgoliaHit<ProductRecord>,
+  priceMaxRules?: any,
   components: AutocompleteComponents,
   insights?: any,
   useDefaultPrices?: boolean,
@@ -137,6 +138,7 @@ function debouncePromise(fn: any, time: number) {
 
 function ProductItem({
   hit,
+  priceMaxRules = null,
   components,
   insights,
   useDefaultPrices = false,
@@ -200,6 +202,7 @@ function ProductItem({
             defaultSalePrice={hit?.sales_prices?.USD || null} 
             price={price}
             salePrice={salePrice}
+            priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(hit?.brand_id)) || (r.skus && r.skus.includes(hit?.sku)))}
             currency={currency}
             format={format}
             options={{
@@ -388,14 +391,16 @@ function getCookieValue(name: string): string | null {
   return null;
 }
 
-export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPrices?: boolean }) {
+export function AutocompleteSearch({ useDefaultPrices = false, priceMaxRules }: { useDefaultPrices?: boolean, priceMaxRules?: any }) {
 
+  /*
   const searchParams = useSearchParams();
 
   const priceMaxCookieValue = getCookieValue('pmx');
   const priceMaxTriggers = priceMaxCookieValue 
     ? JSON.parse(atob(priceMaxCookieValue)) 
     : undefined;
+  */
 
   const containerRef = useRef(null);
   const panelRoot = useRef(null);
@@ -553,10 +558,6 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
           return [];
         }
 
-        const priceMaxQuery = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 
-          ? '&pmx=' + btoa(JSON.stringify(priceMaxTriggers)) 
-          : '';
-
         return debounced([
           {
             sourceId: 'products',
@@ -578,7 +579,7 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                   const [resultHits] = hits;
                   const skus: string[] = resultHits.map((hit: any) => hit.sku);
 
-                  if (!useDefaultPrices || priceMaxQuery.length > 0) {
+                  if (!useDefaultPrices) {
                     if (!state || !state.context || !state.context.isLoading) {
                       if (
                         !state ||
@@ -591,7 +592,7 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                           isLoaded: false,
                         });
                         //console.log(skus.join(','));
-                        fetch('/api/prices/?skus=' + skus.join(',') + priceMaxQuery)
+                        fetch('/api/prices/?skus=' + skus.join(','))
                           .then((response) => {
                             if (!response.ok) {
                               throw new Error('Network response was not ok');
@@ -647,7 +648,8 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                     hit={item as any}
                     components={components}
                     insights={(state?.context?.algoliaInsightsPlugin as any).insights}
-                    useDefaultPrices={useDefaultPrices && priceMaxQuery.length === 0}
+                    priceMaxRules={priceMaxRules}
+                    useDefaultPrices={useDefaultPrices}
                     price={
                       item.sku &&
                       state?.context?.prices &&

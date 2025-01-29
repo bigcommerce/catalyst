@@ -6,6 +6,7 @@ export function ProductPrice({
   defaultSalePrice, 
   price = null, 
   salePrice = null, 
+  priceMaxRule = null,
   currency = 'USD', 
   format,
   options = {
@@ -26,6 +27,7 @@ export function ProductPrice({
   defaultSalePrice?: number | null, 
   price?: number | null, 
   salePrice?: number | null, 
+  priceMaxRule?: any | null,
   currency?: string, 
   format: any,
   options?: {
@@ -35,6 +37,21 @@ export function ProductPrice({
     isLoaded: boolean
   }
 }) {
+
+  if (priceMaxRule && !!priceMaxRule.discount) {
+    const discount = Number(priceMaxRule.discount);
+    if (options?.useDefaultPrices && !!defaultPrice) {
+      const originalPrice = defaultPrice;
+      const originalSalePrice = defaultSalePrice;
+      const discountedPrice = originalPrice - (originalPrice * discount / 100);
+      defaultSalePrice = !!originalSalePrice && Number(originalSalePrice) < discountedPrice ? originalSalePrice : Number(discountedPrice.toFixed(2));
+    } else if (!options?.useDefaultPrices && !!price) {
+      const originalPrice = price;
+      const originalSalePrice = salePrice;
+      const discountedPrice = originalPrice - (originalPrice * discount / 100);
+      salePrice = !!originalSalePrice && Number(originalSalePrice) < discountedPrice ? originalSalePrice : Number(discountedPrice.toFixed(2));
+    }
+  }
 
   function getDiscount(price: number, salePrice: number): number | null {
     return price > 0 ? Math.round(((price - salePrice) * 100) / price) : 0;

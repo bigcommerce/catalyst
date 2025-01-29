@@ -24,6 +24,7 @@ import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
 import { commonSettinngs } from '~/components/common-functions';
 
 import { cookies } from 'next/headers';
+import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
 
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import StickyScroll, { DetailsWrapper } from './_components/sticky';
@@ -232,6 +233,8 @@ export default async function ProductPage(props: Props) {
     var brandId = product?.brand?.entityId;
     var CommonSettinngsValues =  await commonSettinngs([brandId])
     
+    const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
+
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-8">
         <ProductProvider getMetaFields={productMetaFields}>
@@ -308,14 +311,14 @@ export default async function ProductPage(props: Props) {
                 collection={collectionValue}
                 products={collectionProducts.hits}
                 useDefaultPrices={useDefaultPrices}
-                priceMaxTriggers={priceMaxTriggers}
+                priceMaxRules={priceMaxRules}
               />
               <Promotion />
               <RelatedProducts
                 productId={product.entityId}
                 products={relatedProducts}
                 useDefaultPrices={useDefaultPrices}
-                priceMaxTriggers={priceMaxTriggers}
+                priceMaxRules={priceMaxRules}
               />
               <Warranty product={product} />
               <SiteVibesReviews product={product} category={categoryWithBreadcrumbs} />

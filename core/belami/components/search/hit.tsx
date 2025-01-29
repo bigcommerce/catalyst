@@ -72,6 +72,7 @@ type HitProps = {
   sendEvent?: any;
   insights?: any;
   promotions?: any[] | null;
+  priceMaxRules?: any[] | null;
   useDefaultPrices?: boolean;
   price?: number | null;
   salePrice?: number | null;
@@ -442,6 +443,7 @@ export function Hit({
   sendEvent,
   insights,
   promotions = null,
+  priceMaxRules = null,
   useDefaultPrices = false,
   price = null,
   salePrice = null,
@@ -589,6 +591,7 @@ export function Hit({
               defaultSalePrice={hit?.sales_prices?.USD || null} 
               price={price}
               salePrice={salePrice}
+              priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(hit?.brand_id)) || (r.skus && r.skus.includes(hit?.sku)))}
               currency={currency}
               format={format}
               options={{
