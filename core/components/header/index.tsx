@@ -75,7 +75,8 @@ const getLinks = cache(async () => {
    To show a full list of categories, modify the `slice` method to remove the limit.
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
-  const categoryTree = data.site.categoryTree.slice(0, 6);
+  // const categoryTree = data.site.categoryTree.slice(0, 6);
+  const categoryTree = data.site.categoryTree;
 
   await new Promise((resolve) => setTimeout(resolve, 5000));
 
