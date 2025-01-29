@@ -168,7 +168,7 @@ export default async function Cart({ params }: Props) {
       if (accessoriesData?.length > 0) {
         item['accessories'] = accessoriesData;
       }
-      if (!accessoriesSkuArray?.includes(item?.variantEntityId)) {
+      if (!accessoriesSkuArray?.includes(item?.variantEntityId)){
         updatedLineItemInfo.push(item);
       }
     });

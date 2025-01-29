@@ -60,12 +60,13 @@ export default async function OrderConfirmation() {
   const orderId: number = Number(cookieStore.get('orderId')?.value);
   const cartId: any = cookieStore.get('cartId')?.value;
   const getCustomerIdfromCookie = cookieStore?.get('customer_id_for_agent')?.value
-  const customerAccessToken = await getSessionCustomerAccessToken();
+  let customerAccessToken = await getSessionCustomerAccessToken();
+
   let guestUserCheck = 0;
 
   if (orderId) {
     let data: any = [];
-    if(customerAccessToken) {
+    if (customerAccessToken) {
       data = await getOrderDetails({ filter: { entityId: orderId } });
     } else {
       data = await getGuestOrderDetails({ filter: { entityId: orderId, cartEntityId: cartId } });
