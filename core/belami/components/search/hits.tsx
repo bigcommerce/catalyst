@@ -13,17 +13,21 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, priceMa
 
   const skus: string[] = items.map((hit: any) => hit.sku);
 
+  const priceMaxQuery = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 
+    ? '&pmx=' + btoa(JSON.stringify(priceMaxTriggers)) 
+    : '';
+
   const [hits, setHits] = useState(null as any);
 
   useEffect(() => {
     (async () => {
-      if (!useDefaultPrices && !isLoading) {
+      if ((!useDefaultPrices || priceMaxQuery.length > 0) && !isLoading) {
         if (!cachedPrices[skus.join(',')]) {
           try {
             setIsLoaded(false);
             setIsLoading(true);
             //console.log(skus.join(','));
-            const response = await fetch('/api/prices/?skus=' + skus.join(','));
+            const response = await fetch('/api/prices/?skus=' + skus.join(',') + priceMaxQuery);
             const data = await response.json();
             //console.log(data);
             setCachedPrices({
@@ -67,7 +71,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, priceMa
   }, [skus]);
 
   return (
-    ((!useDefaultPrices && hits) || (useDefaultPrices && items)) && (
+    (((!useDefaultPrices || priceMaxQuery.length > 0) && hits) || (useDefaultPrices && items)) && (
       <div className="ais-Hits product-card-plp mt-4">
         <ol
           className={
@@ -76,7 +80,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, priceMa
               : 'ais-Hits-list grid grid-cols-2 gap-4 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5'
           }
         >
-          {(!useDefaultPrices ? hits : items).map((hit: any) => (
+          {((!useDefaultPrices || priceMaxQuery.length > 0) ? hits : items).map((hit: any) => (
             <li
               className="ais-Hits-item !radius-none !p-0 !shadow-none"
               key={hit.objectID}
@@ -102,17 +106,19 @@ export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, pr
 
   const skus: string[] = items.map((hit: any) => hit.sku);
 
-  alert('/api/prices/?skus=' + skus.join(',') + (priceMaxTriggers?.d ? '&d=' + priceMaxTriggers?.d : '') + (priceMaxTriggers?.source ? '&source=' + priceMaxTriggers?.source : ''));
+  const priceMaxQuery = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 
+    ? '&pmx=' + btoa(JSON.stringify(priceMaxTriggers)) 
+    : '';
 
   useEffect(() => {
     (async () => {
-      if (!useDefaultPrices && !isLoading) {
+      if ((!useDefaultPrices || priceMaxQuery.length > 0) && !isLoading) {
         if (!cachedPrices[skus.join(',')]) {
           try {
             setIsLoaded(false);
             setIsLoading(true);
             //console.log(skus.join(','));
-            const response = await fetch('/api/prices/?skus=' + skus.join(','));
+            const response = await fetch('/api/prices/?skus=' + skus.join(',') + priceMaxQuery);
             const data = await response.json();
             //console.log(data);
             setCachedPrices({
@@ -155,7 +161,7 @@ export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, pr
             <Hit
               hit={hit as any}
               promotions={promotions}
-              useDefaultPrices={useDefaultPrices}
+              useDefaultPrices={useDefaultPrices && priceMaxQuery.length === 0}
               price={
                 hit.sku && prices && prices[hit.sku] && prices[hit.sku].price
                   ? prices[hit.sku].price

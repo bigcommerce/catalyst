@@ -376,12 +376,14 @@ function getDiscount(price: number, salePrice: number): number | null {
 }
 
 function getCookieValue(name: string): string | null {
-  const cookies = document.cookie.split('; ');
-  for (const cookie of cookies) {
-      const [cookieName, cookieValue] = cookie.split('=');
-      if (cookieName === name && cookieValue) {
-          return decodeURIComponent(cookieValue);
-      }
+  if (typeof document !== 'undefined') {
+    const cookies = document.cookie.split('; ');
+    for (const cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.split('=');
+        if (cookieName === name && cookieValue) {
+            return decodeURIComponent(cookieValue);
+        }
+    }
   }
   return null;
 }
@@ -390,10 +392,10 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
 
   const searchParams = useSearchParams();
 
-  const priceMaxTriggers = {
-    d: getCookieValue('d') || searchParams.get('d'),
-    source: getCookieValue('source') || searchParams.get('source')
-  }
+  const priceMaxCookieValue = getCookieValue('pmx');
+  const priceMaxTriggers = priceMaxCookieValue 
+    ? JSON.parse(atob(priceMaxCookieValue)) 
+    : undefined;
 
   const containerRef = useRef(null);
   const panelRoot = useRef(null);
@@ -551,6 +553,10 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
           return [];
         }
 
+        const priceMaxQuery = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 
+          ? '&pmx=' + btoa(JSON.stringify(priceMaxTriggers)) 
+          : '';
+
         return debounced([
           {
             sourceId: 'products',
@@ -572,7 +578,7 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                   const [resultHits] = hits;
                   const skus: string[] = resultHits.map((hit: any) => hit.sku);
 
-                  if (!useDefaultPrices) {
+                  if (!useDefaultPrices || priceMaxQuery.length > 0) {
                     if (!state || !state.context || !state.context.isLoading) {
                       if (
                         !state ||
@@ -585,7 +591,7 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                           isLoaded: false,
                         });
                         //console.log(skus.join(','));
-                        fetch('/api/prices/?skus=' + skus.join(','))
+                        fetch('/api/prices/?skus=' + skus.join(',') + priceMaxQuery)
                           .then((response) => {
                             if (!response.ok) {
                               throw new Error('Network response was not ok');
@@ -641,7 +647,7 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                     hit={item as any}
                     components={components}
                     insights={(state?.context?.algoliaInsightsPlugin as any).insights}
-                    useDefaultPrices={useDefaultPrices}
+                    useDefaultPrices={useDefaultPrices && priceMaxQuery.length === 0}
                     price={
                       item.sku &&
                       state?.context?.prices &&

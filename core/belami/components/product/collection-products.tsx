@@ -179,15 +179,19 @@ export function CollectionProducts({ collection, products, useDefaultPrices = fa
 
   const skus: string[] = products.map((hit: any) => hit.sku);
 
+  const priceMaxQuery = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 
+    ? '&pmx=' + btoa(JSON.stringify(priceMaxTriggers)) 
+    : '';
+
   useEffect(() => {
     (async () => {
-      if (!useDefaultPrices && !isLoading) {
+      if ((!useDefaultPrices || priceMaxQuery.length > 0) && !isLoading) {
         if (!cachedPrices[skus.join(',')]) {
           try {
             setIsLoaded(false);
             setIsLoading(true);
             console.log(skus.join(','));
-            const response = await fetch('/api/prices/?skus=' + skus.join(','));
+            const response = await fetch('/api/prices/?skus=' + skus.join(',') + priceMaxQuery);
             const data = await response.json();
             console.log(data);
             setCachedPrices({
@@ -224,7 +228,7 @@ export function CollectionProducts({ collection, products, useDefaultPrices = fa
           <CarouselItem className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/5" key={item.objectID}>
           <CustomItem 
             hit={item} 
-            useDefaultPrices={useDefaultPrices}
+            useDefaultPrices={useDefaultPrices && priceMaxQuery.length === 0}
             price={
               item.sku && prices && prices[item.sku] && prices[item.sku].price
                 ? prices[item.sku].price

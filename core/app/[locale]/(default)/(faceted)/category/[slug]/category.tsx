@@ -165,10 +165,6 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
               page: indexUiState.page,
               hitsPerPage: indexUiState.hitsPerPage,
               sortBy: indexUiState.sortBy,
-
-              // We may need to preserve PriceMax triggers
-              d: priceMaxTriggers?.d,
-              source: priceMaxTriggers?.source,
             };
           },
           routeToState(routeState: any) {
@@ -245,10 +241,6 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
                 page: routeState?.page,
                 hitsPerPage: routeState?.hitsPerPage,
                 sortBy: routeState?.sortBy,
-
-                // We may need to preserve PriceMax triggers
-                d: priceMaxTriggers?.d,
-                source: priceMaxTriggers?.source,
               },
             };
           },

@@ -56,13 +56,10 @@ export default async function CategoryPage(props: Props) {
   const params = await props.params;
 
   const cookieStore = await cookies();
-  const dCookie = cookieStore.get('d');
-  const sourceCookie = cookieStore.get('source');
-
-  const priceMaxTriggers = {
-    d: dCookie?.value || searchParams['d'],
-    source: sourceCookie?.value || searchParams['source'],
-  }
+  const priceMaxCookie = cookieStore.get('pmx');
+  const priceMaxTriggers = priceMaxCookie?.value 
+    ? JSON.parse(atob(priceMaxCookie?.value)) 
+    : undefined;
 
   const customerAccessToken = await getSessionCustomerAccessToken();
   const useDefaultPrices = !customerAccessToken;

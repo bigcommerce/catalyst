@@ -113,13 +113,10 @@ export default async function ProductPage(props: Props) {
     }
 
     const cookieStore = await cookies();
-    const dCookie = cookieStore.get('d');
-    const sourceCookie = cookieStore.get('source');
-
-    const priceMaxTriggers = {
-      d: dCookie?.value || searchParams['d'],
-      source: sourceCookie?.value || searchParams['source'],
-    }
+    const priceMaxCookie = cookieStore.get('pmx');
+    const priceMaxTriggers = priceMaxCookie?.value 
+      ? JSON.parse(atob(priceMaxCookie?.value)) 
+      : undefined;
 
     const useDefaultPrices = !customerAccessToken;
     const { locale, slug } = params;

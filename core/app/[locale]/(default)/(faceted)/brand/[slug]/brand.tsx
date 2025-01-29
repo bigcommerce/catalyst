@@ -162,10 +162,6 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false, priceMaxTri
               page: indexUiState.page,
               hitsPerPage: indexUiState.hitsPerPage,
               sortBy: indexUiState.sortBy,
-
-              // We may need to preserve PriceMax triggers
-              d: indexUiState.d,
-              source: indexUiState.source,
             };
           },
           routeToState(routeState: any) {
@@ -242,10 +238,6 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false, priceMaxTri
                 page: routeState?.page,
                 hitsPerPage: routeState?.hitsPerPage,
                 sortBy: routeState?.sortBy,
-
-                // We may need to preserve PriceMax triggers
-                d: routeState?.d,
-                source: routeState?.source,
               },
             };
           },
