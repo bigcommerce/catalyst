@@ -3,10 +3,10 @@
 import {
   Checkbox,
   Combobox,
+  Group,
   List,
   Number,
   Select,
-  Shape,
   Style,
   TextInput,
 } from '@makeswift/runtime/controls';
@@ -85,8 +85,9 @@ runtime.registerComponent(
       limit: Number({ label: 'Max collection items', defaultValue: 12 }),
       additionalProducts: List({
         label: 'Additional products',
-        type: Shape({
-          type: {
+        type: Group({
+          label: 'Product',
+          props: {
             title: TextInput({ label: 'Title', defaultValue: 'Product title' }),
             entityId: Combobox({
               label: 'Product',

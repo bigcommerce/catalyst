@@ -1,4 +1,4 @@
-import { Color, Number, Shape } from '@makeswift/runtime/controls';
+import { Color, Group, Number } from '@makeswift/runtime/controls';
 
 import { hsl } from '~/lib/makeswift/utils/color';
 
@@ -12,20 +12,20 @@ const colorGroup = (
     subtitle: string;
   },
 ) =>
-  Shape({
+  Group({
     label,
-    layout: Shape.Layout.Inline,
-    type: {
+    preferredLayout: Group.Layout.Inline,
+    props: {
       background: Color({ label: 'Background', defaultValue: defaults.background }),
       title: Color({ label: 'Title', defaultValue: defaults.title }),
       subtitle: Color({ label: 'Subtitle', defaultValue: defaults.subtitle }),
     },
   });
 
-export const productCard = Shape({
+export const productCard = Group({
   label: 'Product card',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     borderRadius: Number({ label: 'Border radius', suffix: 'px', defaultValue: 16 }),
     focus: Color({ label: 'Focus', defaultValue: hsl(colors.primary) }),
     light: colorGroup('Light', {

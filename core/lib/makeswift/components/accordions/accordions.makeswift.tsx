@@ -1,4 +1,4 @@
-import { List, Select, Shape, Slot, Style, TextInput } from '@makeswift/runtime/controls';
+import { Group, List, Select, Slot, Style, TextInput } from '@makeswift/runtime/controls';
 
 import { Accordion, Accordions } from '@/vibes/soul/primitives/accordions';
 import { runtime } from '~/lib/makeswift/runtime';
@@ -42,8 +42,9 @@ runtime.registerComponent(
       className: Style(),
       accordions: List({
         label: 'Accordions',
-        type: Shape({
-          type: {
+        type: Group({
+          label: 'Accordion item',
+          props: {
             title: TextInput({ label: 'Title', defaultValue: 'This is an accordion title' }),
             children: Slot(),
           },

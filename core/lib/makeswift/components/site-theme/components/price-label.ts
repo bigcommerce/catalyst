@@ -1,4 +1,4 @@
-import { Color, Shape } from '@makeswift/runtime/controls';
+import { Color, Group } from '@makeswift/runtime/controls';
 
 import { hsl } from '~/lib/makeswift/utils/color';
 
@@ -11,19 +11,19 @@ const colorGroup = (
     saleText: string;
   },
 ) =>
-  Shape({
+  Group({
     label,
-    layout: Shape.Layout.Inline,
-    type: {
+    preferredLayout: Group.Layout.Inline,
+    props: {
       text: Color({ label: 'Text', defaultValue: defaults.text }),
       saleText: Color({ label: 'Sale text', defaultValue: defaults.saleText }),
     },
   });
 
-export const priceLabel = Shape({
+export const priceLabel = Group({
   label: 'Price label',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     light: colorGroup('Light', {
       text: hsl(colors.foreground),
       saleText: hsl(colors.foreground),
