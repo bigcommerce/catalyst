@@ -1,4 +1,4 @@
-import { List, Select, Shape, Slot, TextArea, TextInput } from '@makeswift/runtime/controls';
+import { Group, List, Select, Slot, TextArea, TextInput } from '@makeswift/runtime/controls';
 
 import { runtime } from '~/lib/makeswift/runtime';
 
@@ -6,9 +6,9 @@ import { DescriptionSource, MakeswiftProductDetail } from './client';
 
 export const COMPONENT_TYPE = 'catalyst-makeswift-product-detail-description';
 
-const description = Shape({
+const description = Group({
   label: 'Description',
-  type: {
+  props: {
     source: Select({
       label: 'Source',
       options: [
@@ -33,9 +33,9 @@ runtime.registerComponent(MakeswiftProductDetail, {
     description,
     accordions: List({
       label: 'Product info',
-      type: Shape({
+      type: Group({
         label: 'Product info section',
-        type: {
+        props: {
           title: TextInput({ label: 'Title', defaultValue: 'Section' }),
           content: Slot(),
         },

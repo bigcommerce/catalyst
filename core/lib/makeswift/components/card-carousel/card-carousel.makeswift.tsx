@@ -1,10 +1,10 @@
 import {
   Checkbox,
+  Group,
   Image,
   Link,
   List,
   Select,
-  Shape,
   Style,
   TextInput,
 } from '@makeswift/runtime/controls';
@@ -49,8 +49,9 @@ runtime.registerComponent(
       className: Style(),
       cards: List({
         label: 'Cards',
-        type: Shape({
-          type: {
+        type: Group({
+          label: 'Card',
+          props: {
             title: TextInput({ label: 'Title', defaultValue: 'Title' }),
             imageSrc: Image({ label: 'Image' }),
             imageAlt: TextInput({ label: 'Image Alt', defaultValue: 'Card image' }),

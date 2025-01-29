@@ -39,8 +39,8 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0(react@19.0.0)
       '@makeswift/runtime':
-        specifier: 0.0.0-snapshot-20250108161914
-        version: 0.0.0-snapshot-20250108161914(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.23.3
+        version: 0.23.3(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@radix-ui/react-accordion':
         specifier: ^1.2.2
         version: 1.2.2(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -1373,25 +1373,25 @@ packages:
     resolution: {integrity: sha512-qC72D4+CDdjGqJvkFMMEAtancHUQ7/d/tAiHf64z8MopFDmcrtbcJuerDtFceuAfQJ2pDSfCKCtbqoGBNnwg0w==}
     engines: {node: '>=8'}
 
-  '@makeswift/controls@0.0.0-snapshot-20250108161914':
-    resolution: {integrity: sha512-bYcV60IenaNLiFbHC9j75y7VVqXx/SM/iUvMggTatK4G7dHI72w0h+mOfbeztZXZYGRFYn4+adSc950QpThL0A==}
+  '@makeswift/controls@0.1.7':
+    resolution: {integrity: sha512-DaZeA3rrtzIE9j1TcN4nu1uFUHjkA8yVSmsbNqz22PxC4bOp8DiRtblkk6brWOmoNYlMAaEq7va5ct8ZK2Cv8w==}
 
-  '@makeswift/next-plugin@0.3.0':
-    resolution: {integrity: sha512-pGe0D6KrVxZcyaM8hFCIK806yNV6YJtRcjjD+2Wpn5qkFStIMTlACkGRVHVLftFyfi8/E3lGkbR05Jo3aTecwQ==}
+  '@makeswift/next-plugin@0.3.1':
+    resolution: {integrity: sha512-du4Z+0vw3FgGUEsE590gq5WaEeAIOeM2nv8STXpfMAzaTBvTV335RZNxm538d142JBy0SyD4EdNISJQTZ6X41g==}
     peerDependencies:
-      next: ^13.4.0 || ^14.0.0
-
-  '@makeswift/prop-controllers@0.0.0-snapshot-20250108161914':
-    resolution: {integrity: sha512-OpjPnDOgdjGpZrSSGhupBFrwsDjEilIet/Ew6PONXkznXIzBvG3N+lLVEcMv31yHcrwawxuDtFIGTcjtuX0UtQ==}
-
-  '@makeswift/runtime@0.0.0-snapshot-20250108161914':
-    resolution: {integrity: sha512-ZYhXYeIQCz+qo9JnTnbpfv/Ffh00HapWXt/u2hfHOzdW7MWKtIS66lizsGJt00sYC+h1mkXEAwjQD2o1w0ypSA==}
-    peerDependencies:
-      '@types/react': ^18.0.0
-      '@types/react-dom': ^18.0.0
       next: ^13.4.0 || ^14.0.0 || ^15.0.0
-      react: ^18.0.0 || ^19.0.0 || 19.0.0-rc
-      react-dom: ^18.0.0 || ^19.0.0 || 19.0.0-rc
+
+  '@makeswift/prop-controllers@0.4.0':
+    resolution: {integrity: sha512-vx+KhbIEI7ob4P9x9a1baLS9iiR8BqLgFegxKKsJRKBjfN2Ez7x/MumQwFmPtWmBXfQvgdHPDBisgpJXM17Xjw==}
+
+  '@makeswift/runtime@0.23.3':
+    resolution: {integrity: sha512-pxbYJRZM2DBc2VGETh0Am7d/O66Fd63LaDCjiT56JcCBEUww0iXwYq7geoDPmQBgndme/PaisVfpfZH3FBZnvw==}
+    peerDependencies:
+      '@types/react': ^18.0.0 || ^19.0.0
+      '@types/react-dom': ^18.0.0 || ^19.0.0
+      next: ^13.4.0 || ^14.0.0 || ^15.0.0
+      react: ^18.0.0 || ^19.0.0
+      react-dom: ^18.0.0 || ^19.0.0
     peerDependenciesMeta:
       '@types/react':
         optional: true
@@ -5135,6 +5135,9 @@ packages:
   requires-port@1.0.0:
     resolution: {integrity: sha512-KigOCHcocU3XODJxsu8i/j8T9tzT4adHiecwORRQ0ZZFcp7ahwXuRU1m+yuO90C5ZUyGeGfocHDI14M3L3yDAQ==}
 
+  reselect@5.1.1:
+    resolution: {integrity: sha512-K/BG6eIky/SBpzfHZv/dd+9JBFiS4SWV7FIujVyJRux6e45+73RaUHXLmIR1f7WOMaQ0U1km6qwklRQxpJJY0w==}
+
   resolve-cwd@3.0.0:
     resolution: {integrity: sha512-OrZaX2Mb+rJCpH/6CpSqt9xFVpN++x01XnN2ie9g6P5/3xelLAkXWVADpdz1IHD/KFfEXyE6V0U01OQ3UO2rEg==}
     engines: {node: '>=8'}
@@ -7079,7 +7082,7 @@ snapshots:
     dependencies:
       '@lukeed/csprng': 1.1.0
 
-  '@makeswift/controls@0.0.0-snapshot-20250108161914':
+  '@makeswift/controls@0.1.7':
     dependencies:
       color: 3.2.1
       css-box-model: 1.2.1
@@ -7088,20 +7091,20 @@ snapshots:
       uuid: 9.0.1
       zod: 3.24.1
 
-  '@makeswift/next-plugin@0.3.0(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))':
+  '@makeswift/next-plugin@0.3.1(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))':
     dependencies:
       enhanced-resolve: 5.10.0
       escalade: 3.1.1
       next: 15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       semver: 7.6.3
 
-  '@makeswift/prop-controllers@0.0.0-snapshot-20250108161914':
+  '@makeswift/prop-controllers@0.4.0':
     dependencies:
-      '@makeswift/controls': 0.0.0-snapshot-20250108161914
+      '@makeswift/controls': 0.1.7
       ts-pattern: 5.5.0
       zod: 3.24.1
 
-  '@makeswift/runtime@0.0.0-snapshot-20250108161914(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@makeswift/runtime@0.23.3(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@emotion/cache': 11.14.0
       '@emotion/css': 11.13.5
@@ -7109,9 +7112,9 @@ snapshots:
       '@emotion/server': 11.11.0(@emotion/css@11.13.5)
       '@emotion/sheet': 1.4.0
       '@emotion/utils': 1.4.2
-      '@makeswift/controls': 0.0.0-snapshot-20250108161914
-      '@makeswift/next-plugin': 0.3.0(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
-      '@makeswift/prop-controllers': 0.0.0-snapshot-20250108161914
+      '@makeswift/controls': 0.1.7
+      '@makeswift/next-plugin': 0.3.1(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
+      '@makeswift/prop-controllers': 0.4.0
       '@popmotion/popcorn': 0.4.4
       '@redux-devtools/extension': 3.3.0(redux@4.2.1)
       '@types/is-hotkey': 0.1.10
@@ -7140,6 +7143,7 @@ snapshots:
       react-player: 1.15.3(react@19.0.0)
       redux: 4.2.1
       redux-thunk: 2.4.2(redux@4.2.1)
+      reselect: 5.1.1
       scroll-into-view-if-needed: 2.2.31
       slate: 0.91.4
       slate-hyperscript: 0.77.0(slate@0.91.4)
@@ -11157,6 +11161,8 @@ snapshots:
   requireindex@1.2.0: {}
 
   requires-port@1.0.0: {}
+
+  reselect@5.1.1: {}
 
   resolve-cwd@3.0.0:
     dependencies:

@@ -1,4 +1,4 @@
-import { Color, Shape } from '@makeswift/runtime/controls';
+import { Color, Group } from '@makeswift/runtime/controls';
 
 import { FontFamily, type FontFamilyCssVar } from '~/lib/makeswift/controls/font-tokens';
 import { hsl } from '~/lib/makeswift/utils/color';
@@ -16,10 +16,10 @@ const elementGroup = (
     backgroundHover: string;
   },
 ) =>
-  Shape({
+  Group({
     label,
-    layout: Shape.Layout.Popover,
-    type: {
+    preferredLayout: Group.Layout.Popover,
+    props: {
       fontFamily: FontFamily({ label: 'Font', defaultValue: defaults.fontFamily }),
       text: Color({ label: 'Text', defaultValue: defaults.text }),
       textHover: Color({ label: 'Text hover', defaultValue: defaults.textHover }),
@@ -31,10 +31,10 @@ const elementGroup = (
     },
   });
 
-const button = Shape({
+const button = Group({
   label: 'Button',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     icon: Color({ label: 'Icon', defaultValue: hsl(colors.foreground) }),
     iconHover: Color({ label: 'Icon hover', defaultValue: hsl(colors.foreground) }),
     background: Color({ label: 'Background', defaultValue: hsl(colors.background) }),
@@ -42,19 +42,19 @@ const button = Shape({
   },
 });
 
-const menu = Shape({
+const menu = Group({
   label: 'Menu',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     background: Color({ label: 'Background', defaultValue: hsl(colors.background) }),
     border: Color({ label: 'Border', defaultValue: hsl(colors.foreground, 0.05) }),
   },
 });
 
-const mobile = Shape({
+const mobile = Group({
   label: 'Mobile',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     background: Color({ label: 'Background', defaultValue: hsl(colors.background) }),
     divider: Color({ label: 'Divider', defaultValue: hsl(colors.contrast[100]) }),
     buttonIcon: Color({ label: 'Button icon', defaultValue: hsl(colors.foreground) }),
@@ -75,10 +75,10 @@ const mobile = Shape({
   },
 });
 
-const search = Shape({
+const search = Group({
   label: 'Search',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     background: Color({ label: 'Background', defaultValue: hsl(colors.background) }),
     border: Color({ label: 'Border', defaultValue: hsl(colors.foreground, 0.05) }),
     divider: Color({ label: 'Divider', defaultValue: hsl(colors.foreground, 0.05) }),
@@ -88,10 +88,10 @@ const search = Shape({
   },
 });
 
-const searchResult = Shape({
+const searchResult = Group({
   label: 'Search result',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     title: Color({ label: 'Title', defaultValue: hsl(colors.foreground) }),
     titleFontFamily: FontFamily({ label: 'Title font', defaultValue: FontFamily.Accent }),
     link: elementGroup('Link', {
@@ -104,19 +104,19 @@ const searchResult = Shape({
   },
 });
 
-const cartCount = Shape({
+const cartCount = Group({
   label: 'Cart count',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     text: Color({ label: 'Text', defaultValue: hsl(colors.background) }),
     background: Color({ label: 'Background', defaultValue: hsl(colors.foreground) }),
   },
 });
 
-const locale = Shape({
+const locale = Group({
   label: 'Locale',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     background: Color({ label: 'Background', defaultValue: hsl(colors.background) }),
     link: elementGroup('Link', {
       fontFamily: FontFamily.Body,
@@ -129,10 +129,10 @@ const locale = Shape({
   },
 });
 
-export const nav = Shape({
+export const nav = Group({
   label: 'Navigation',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     background: Color({ label: 'Background', defaultValue: hsl(colors.background) }),
     floatingBorder: Color({ label: 'Floating border', defaultValue: hsl(colors.foreground, 0.1) }),
     focus: Color({ label: 'Focus', defaultValue: hsl(colors.primary) }),
