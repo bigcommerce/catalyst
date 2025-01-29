@@ -63,6 +63,8 @@ const getLayoutData = cache(async () => {
 const getLinks = cache(async () => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
+  console.log('customerAccessToken', customerAccessToken);
+
   const { data } = await client.fetch({
     document: GetLinksQuery,
     customerAccessToken,
@@ -74,6 +76,10 @@ const getLinks = cache(async () => {
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
   const categoryTree = data.site.categoryTree.slice(0, 6);
+
+  await new Promise((resolve) => setTimeout(resolve, 5000));
+
+  console.log('hello why is this called?');
 
   return categoryTree.map(({ name, path, children }) => ({
     label: name,
@@ -90,6 +96,8 @@ const getLinks = cache(async () => {
 });
 
 const getCartCount = cache(async () => {
+  console.log('getCartCount');
+
   const cartId = await getCartId();
 
   if (!cartId) {
@@ -128,25 +136,29 @@ export const Header = async () => {
 
   const data = await getLayoutData();
 
-  const currencies = data.currencies.edges
-    ? // only show transactional currencies for now until cart prices can be rendered in display currencies
-      data.currencies.edges
-        .filter(({ node }) => node.isTransactional)
-        .map(({ node }) => ({
-          id: node.code,
-          label: node.code,
-          isDefault: node.isDefault,
-        }))
-    : [];
-  const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
+  // const currencies = data.currencies.edges
+  //   ? // only show transactional currencies for now until cart prices can be rendered in display currencies
+  //     data.currencies.edges
+  //       .filter(({ node }) => node.isTransactional)
+  //       .map(({ node }) => ({
+  //         id: node.code,
+  //         label: node.code,
+  //         isDefault: node.isDefault,
+  //       }))
+  //   : [];
+  // const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
+
+  const links = await getLinks();
 
   const logo = data.settings ? logoTransformer(data.settings) : '';
 
-  const getActiveCurrencyId = cache(async () => {
-    const currencyCode = await getPreferredCurrencyCode();
+  // const getActiveCurrencyId = cache(async () => {
+  //   const currencyCode = await getPreferredCurrencyCode();
 
-    return currencyCode ?? defaultCurrency?.id;
-  });
+  //   return currencyCode ?? defaultCurrency?.id;
+  // });
+
+  console.log(Math.random());
 
   return (
     <HeaderSection
@@ -159,7 +171,8 @@ export const Header = async () => {
         searchLabel: t('Icons.search'),
         searchParamName: 'term',
         searchAction: search,
-        links: PLazy.from(getLinks),
+        links,
+        // links: [],
         logo,
         mobileMenuTriggerLabel: t('toggleNavigation'),
         openSearchPopupLabel: t('Search.openSearchPopup'),
@@ -168,9 +181,9 @@ export const Header = async () => {
         activeLocaleId: locale,
         locales,
         localeAction: switchLocale,
-        currencies,
-        activeCurrencyId: PLazy.from(getActiveCurrencyId),
-        currencyAction: switchCurrency,
+        // currencies,
+        // activeCurrencyId: PLazy.from(getActiveCurrencyId),
+        // currencyAction: switchCurrency,
       }}
     />
   );
