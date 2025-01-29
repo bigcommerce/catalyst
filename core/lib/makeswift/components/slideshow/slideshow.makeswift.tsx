@@ -1,11 +1,11 @@
 import {
   Checkbox,
+  Group,
   Image,
   Link,
   List,
   Number,
   Select,
-  Shape,
   Style,
   TextArea,
   TextInput,
@@ -73,8 +73,8 @@ runtime.registerComponent(
       className: Style(),
       slides: List({
         label: 'Slides',
-        type: Shape({
-          type: {
+        type: Group({
+          props: {
             title: TextInput({ label: 'Title', defaultValue: 'Slide title' }),
             showDescription: Checkbox({ label: 'Show description', defaultValue: true }),
             description: TextArea({ label: 'Description', defaultValue: 'Slide description' }),

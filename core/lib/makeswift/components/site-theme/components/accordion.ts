@@ -1,4 +1,4 @@
-import { Color, Shape } from '@makeswift/runtime/controls';
+import { Color, Group } from '@makeswift/runtime/controls';
 
 import { FontFamily } from '~/lib/makeswift/controls/font-tokens';
 import { hsl } from '~/lib/makeswift/utils/color';
@@ -15,10 +15,10 @@ const colorGroup = (
     contentText: string;
   },
 ) =>
-  Shape({
+  Group({
     label,
-    layout: Shape.Layout.Inline,
-    type: {
+    preferredLayout: Group.Layout.Inline,
+    props: {
       titleText: Color({ label: 'Title text', defaultValue: defaults.titleText }),
       titleTextHover: Color({ label: 'Title text hover', defaultValue: defaults.titleTextHover }),
       titleIcon: Color({ label: 'Title icon', defaultValue: defaults.titleIcon }),
@@ -27,10 +27,10 @@ const colorGroup = (
     },
   });
 
-export const accordion = Shape({
+export const accordion = Group({
   label: 'Accordion',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     titleFontFamily: FontFamily({ label: 'Title font', defaultValue: FontFamily.Accent }),
     contentFontFamily: FontFamily({ label: 'Content font', defaultValue: FontFamily.Body }),
     light: colorGroup('Light', {

@@ -1,4 +1,4 @@
-import { Shape } from '@makeswift/runtime/controls';
+import { Group } from '@makeswift/runtime/controls';
 
 import { fontFamilyTokens } from '~/lib/makeswift/controls/font-tokens';
 import { runtime } from '~/lib/makeswift/runtime';
@@ -13,14 +13,14 @@ runtime.registerComponent(MakeswiftSiteTheme, {
   label: 'MakeswiftSiteTheme (private)',
   hidden: true,
   props: {
-    fontTokens: Shape({
+    fontTokens: Group({
       label: 'Fonts',
-      layout: Shape.Layout.Popover,
-      type: fontFamilyTokens,
+      preferredLayout: Group.Layout.Popover,
+      props: fontFamilyTokens,
     }),
-    components: Shape({
+    components: Group({
       label: 'Components',
-      type: components,
+      props: components,
     }),
   },
 });

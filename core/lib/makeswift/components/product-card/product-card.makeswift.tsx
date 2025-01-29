@@ -1,6 +1,6 @@
 'use client';
 
-import { Checkbox, Combobox, Select, Shape, Style, TextInput } from '@makeswift/runtime/controls';
+import { Checkbox, Combobox, Group, Select, Style, TextInput } from '@makeswift/runtime/controls';
 import useSWR from 'swr';
 
 import { runtime } from '~/lib/makeswift/runtime';
@@ -81,8 +81,9 @@ runtime.registerComponent(MakeswiftProductCard, {
       ],
       defaultValue: 'light',
     }),
-    badge: Shape({
-      type: {
+    badge: Group({
+      label: 'Badge',
+      props: {
         show: Checkbox({ label: 'Show badge', defaultValue: true }),
         text: TextInput({ label: 'Badge text', defaultValue: 'New' }),
       },

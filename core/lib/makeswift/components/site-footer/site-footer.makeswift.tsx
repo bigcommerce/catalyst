@@ -1,4 +1,4 @@
-import { Checkbox, Image, Link, List, Number, Shape, TextInput } from '@makeswift/runtime/controls';
+import { Checkbox, Group, Image, Link, List, Number, TextInput } from '@makeswift/runtime/controls';
 
 import { runtime } from '~/lib/makeswift/runtime';
 
@@ -6,10 +6,10 @@ import { MakeswiftFooter } from './site-footer.client';
 
 export const COMPONENT_TYPE = 'catalyst-makeswift-footer';
 
-const logo = Shape({
+const logo = Group({
   label: 'Logo',
-  layout: Shape.Layout.Popover,
-  type: {
+  preferredLayout: Group.Layout.Popover,
+  props: {
     show: Checkbox({ label: 'Show logo', defaultValue: true }),
     src: Image({ label: 'Logo' }),
     alt: TextInput({ label: 'Alt text', defaultValue: 'Logo alt' }),
@@ -20,9 +20,9 @@ const logo = Shape({
 
 const links = List({
   label: 'Links',
-  type: Shape({
+  type: Group({
     label: 'Link',
-    type: {
+    props: {
       label: TextInput({ label: 'Text', defaultValue: 'Text' }),
       link: Link({ label: 'URL' }),
     },
@@ -38,9 +38,9 @@ runtime.registerComponent(MakeswiftFooter, {
     logo,
     sections: List({
       label: 'Sections',
-      type: Shape({
+      type: Group({
         label: 'Section',
-        type: {
+        props: {
           title: TextInput({ label: 'Title', defaultValue: 'Section' }),
           links,
         },
