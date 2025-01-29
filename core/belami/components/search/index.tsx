@@ -6,5 +6,6 @@ export { Pagination } from './pagination';
 export { Facet } from './facet';
 export { FacetDropdown } from './facet-dropdown';
 export { Hits, HitsAsync } from './hits';
+export { ProductPrice } from './product-price';
 export { Hit } from './hit';
 export { RatingMenu } from './rating-menu';

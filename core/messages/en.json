@@ -352,11 +352,12 @@
         "confirmPasswordLabel": "Confirm password",
         "cancel": "Cancel",
         "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
-        "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
         "notEmptyMessage": "Field should not be empty",
         "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials.",
         "spinnerText": "Submitting...",
-        "submitText": "Change password"
+        "submitText": "Change password",
+        "newPasswordValidationMessage":
+        "New password must be different from the current password and must include at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character or/and match confirm password"
       },
       "UpdateCustomer": {
         "Errors": {

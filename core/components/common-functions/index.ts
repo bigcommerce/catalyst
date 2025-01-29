@@ -345,10 +345,15 @@ export const getMetaFieldsByProduct = async (
   return result;
 };
 
-export const commonSettinngs = async (brand_ids) => {
-  // 47, 111,
-  var res = await getCommonSettingByBrandChannel(brand_ids);
-  return res.output;
+export const commonSettinngs = async (brand_ids:any) => {
+
+  brand_ids = [...new Set(brand_ids.filter((id: any) => id !== undefined))];
+  if(brand_ids !== undefined && brand_ids.length > 0) {
+    var res = await getCommonSettingByBrandChannel(brand_ids);
+    return res.output;
+  }else{
+    return {status:500,output:[]}
+  }
 };
 export const retrieveMpnData = (product: any, productid: Number, variantId: Number) => {
   if (product?.baseCatalogProduct?.variants) {

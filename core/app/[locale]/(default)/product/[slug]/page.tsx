@@ -109,6 +109,11 @@ export default async function ProductPage(props: Props) {
       return null;
     }
 
+    const priceMaxTriggers = {
+      d: searchParams['d'],
+      source: searchParams['source']
+    }
+
     const useDefaultPrices = !customerAccessToken;
     const { locale, slug } = params;
 
@@ -221,8 +226,8 @@ export default async function ProductPage(props: Props) {
 
     const productImages = removeEdgesAndNodes(product.images);
     var brandId = product?.brand?.entityId;
-    var CommonSettinngsValues = {};
-    // await commonSettinngs([brandId])
+    var CommonSettinngsValues =  await commonSettinngs([brandId])
+    
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-8">
         <ProductProvider getMetaFields={productMetaFields}>
@@ -273,6 +278,7 @@ export default async function ProductPage(props: Props) {
                   }
                   children1={<MakeswiftPage locale={locale} path="/content/shipping-flyout" />}
                   children2={<MakeswiftPage locale={locale} path="/content/returns-flyout" />}
+                  children3={<MakeswiftPage locale={locale} path="/content/request-a-quote-flyout" />}
                 />
               </DetailsWrapper>
             </div>
@@ -281,6 +287,7 @@ export default async function ProductPage(props: Props) {
               <hr className="mb-4 border border-gray-200" />
               <Description product={product} />
               <hr className="mb-[55px] mt-[20px] border border-gray-200" />
+              {/*
               <CollectionProducts
                 collection={collectionValue}
                 products={collectionProducts.hits}
@@ -292,11 +299,19 @@ export default async function ProductPage(props: Props) {
                 moreLink={`/search?brand_name[0]=${product.brand?.name ?? ''}&collection[0]=${collectionValue}`}
                 useDefaultPrices={useDefaultPrices}
               />
+              */}
+              <CollectionProducts
+                collection={collectionValue}
+                products={collectionProducts.hits}
+                useDefaultPrices={useDefaultPrices}
+                priceMaxTriggers={priceMaxTriggers}
+              />
               <Promotion />
               <RelatedProducts
                 productId={product.entityId}
                 products={relatedProducts}
                 useDefaultPrices={useDefaultPrices}
+                priceMaxTriggers={priceMaxTriggers}
               />
               <Warranty product={product} />
               <SiteVibesReviews product={product} category={categoryWithBreadcrumbs} />

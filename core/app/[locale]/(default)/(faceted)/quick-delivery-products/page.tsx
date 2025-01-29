@@ -33,6 +33,11 @@ export default async function QuickDeliveryProductsPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
+  const priceMaxTriggers = {
+    d: searchParams['d'],
+    source: searchParams['source']
+  }
+
   const customerAccessToken = await getSessionCustomerAccessToken();
   const useDefaultPrices = !customerAccessToken;
 
@@ -60,7 +65,7 @@ export default async function QuickDeliveryProductsPage(props: Props) {
         <MakeswiftPage snapshot={snapshot} />
       }
 
-      <QuickDeliveryProducts promotions={promotions} useDefaultPrices={useDefaultPrices} />
+      <QuickDeliveryProducts promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxTriggers={priceMaxTriggers} />
     </div>
   );
 }

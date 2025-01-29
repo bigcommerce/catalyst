@@ -73,6 +73,9 @@ interface Props {
   children1: React.ReactNode;
   triggerLabel2: React.ReactNode;
   children2: React.ReactNode;
+  triggerLabel3: React.ReactNode;
+  children3: React.ReactNode;
+  getAllCommonSettinngsValues:any;
 }
 
 export const DetailsFragment = graphql(
@@ -165,6 +168,8 @@ export const Details = ({
   triggerLabel2,
   children1,
   children2,
+  triggerLabel3,
+  children3,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -521,7 +526,7 @@ export const Details = ({
             <ReviewSummary data={product} />
           </div>
           {/* msrp  */}
-          {product?.UpdatePriceForMSRP && (
+          {product?.['UpdatePriceForMSRP'] && (
             <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
               {product?.UpdatePriceForMSRP &&
                       product?.UpdatePriceForMSRP.hasDiscount === true ? (
@@ -571,7 +576,7 @@ export const Details = ({
             {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
               getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
                 <NoShipCanada
-                  description={'Canadian shipping note:This product cannot ship to Canada'}
+                description={getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message}
                 />
               )}
           </div>
@@ -650,7 +655,7 @@ export const Details = ({
             amount={product?.prices?.price?.value?.toString()}
             currency={product?.prices?.price?.currencyCode}
           />
-          <RequestQuote requestQuote={requestQuote} />
+            <RequestQuote children={children3} />
           <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
           <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
 
