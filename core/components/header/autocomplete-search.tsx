@@ -375,13 +375,24 @@ function getDiscount(price: number, salePrice: number): number | null {
   return price > 0 ? Math.round(((price - salePrice) * 100) / price) : 0;
 }
 
+function getCookieValue(name: string): string | null {
+  const cookies = document.cookie.split('; ');
+  for (const cookie of cookies) {
+      const [cookieName, cookieValue] = cookie.split('=');
+      if (cookieName === name && cookieValue) {
+          return decodeURIComponent(cookieValue);
+      }
+  }
+  return null;
+}
+
 export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPrices?: boolean }) {
 
   const searchParams = useSearchParams();
 
   const priceMaxTriggers = {
-    d: searchParams.get('d'),
-    source: searchParams.get('source')
+    d: getCookieValue('d') || searchParams.get('d'),
+    source: getCookieValue('source') || searchParams.get('source')
   }
 
   const containerRef = useRef(null);

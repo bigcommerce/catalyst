@@ -102,6 +102,8 @@ export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, pr
 
   const skus: string[] = items.map((hit: any) => hit.sku);
 
+  alert('/api/prices/?skus=' + skus.join(',') + (priceMaxTriggers?.d ? '&d=' + priceMaxTriggers?.d : '') + (priceMaxTriggers?.source ? '&source=' + priceMaxTriggers?.source : ''));
+
   useEffect(() => {
     (async () => {
       if (!useDefaultPrices && !isLoading) {

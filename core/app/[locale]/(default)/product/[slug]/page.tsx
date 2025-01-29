@@ -22,6 +22,9 @@ import { SiteVibesReviews } from '~/belami/components/sitevibes';
 import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-algolia-products';
 import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
 import { commonSettinngs } from '~/components/common-functions';
+
+import { cookies } from 'next/headers';
+
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import StickyScroll, { DetailsWrapper } from './_components/sticky';
 interface Props {
@@ -107,9 +110,13 @@ export default async function ProductPage(props: Props) {
       return null;
     }
 
+    const cookieStore = await cookies();
+    const dCookie = cookieStore.get('d');
+    const sourceCookie = cookieStore.get('source');
+
     const priceMaxTriggers = {
-      d: searchParams['d'],
-      source: searchParams['source']
+      d: dCookie?.value || searchParams['d'],
+      source: sourceCookie?.value || searchParams['source'],
     }
 
     const useDefaultPrices = !customerAccessToken;
