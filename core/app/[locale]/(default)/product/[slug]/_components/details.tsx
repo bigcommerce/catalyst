@@ -525,7 +525,7 @@ export const Details = ({
             <ReviewSummary data={product} />
           </div>
           {/* msrp  */}
-          {product?.['UpdatePriceForMSRP'] && (
+          {product?.UpdatePriceForMSRP && (
             <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
               {product?.UpdatePriceForMSRP &&
                       product?.UpdatePriceForMSRP?.hasDiscount === true ? (
