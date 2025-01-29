@@ -60,13 +60,39 @@ const getLayoutData = cache(async () => {
   return readFragment(HeaderFragment, response).site;
 });
 
-const getLinks = cache(async () => {
+const getGuestShopperLinks = cache(async () => {
+  const { data } = await client.fetch({
+    document: GetLinksQuery,
+    fetchOptions: { next: { revalidate } },
+  });
+
+  /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
+   To show a full list of categories, modify the `slice` method to remove the limit.
+   Will require modification of navigation menu styles to accommodate the additional categories.
+   */
+  const categoryTree = data.site.categoryTree.slice(0, 6);
+
+  return categoryTree.map(({ name, path, children }) => ({
+    label: name,
+    href: path,
+    groups: children.map((firstChild) => ({
+      label: firstChild.name,
+      href: firstChild.path,
+      links: firstChild.children.map((secondChild) => ({
+        label: secondChild.name,
+        href: secondChild.path,
+      })),
+    })),
+  }));
+});
+
+const getCustomerLinks = cache(async () => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
     document: GetLinksQuery,
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { cache: 'no-store' },
   });
 
   /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
@@ -140,7 +166,10 @@ export const Header = async () => {
     : [];
   const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
 
-  const links = await getLinks();
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const links = customerAccessToken ? getCustomerLinks() : await getGuestShopperLinks();
+
+  console.log('links', links);
 
   const logo = data.settings ? logoTransformer(data.settings) : '';
 
