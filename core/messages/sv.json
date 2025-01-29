@@ -507,6 +507,10 @@
                 "login": "Logga in",
                 "logout": "Logga ut"
             },
+            "Currency": {
+                "invalidCurrency": "Ogiltig valuta",
+                "errorUpdatingCurrency": "Det gick inte att uppdatera valutan för din kundvagn. Försök igen."
+            },
             "Locale": {
                 "invalidLocale": "Ogiltig platsinställning"
             },

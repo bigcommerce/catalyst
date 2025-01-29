@@ -7,19 +7,19 @@ import { redirect } from '~/i18n/routing';
 
 import { changePassword } from './_actions/change-password';
 
+interface Props {
+  searchParams: Promise<{
+    c?: string;
+    t?: string;
+  }>;
+}
+
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('ChangePassword');
 
   return {
     title: t('title'),
   };
-}
-
-interface Props {
-  searchParams: Promise<{
-    c?: string;
-    t?: string;
-  }>;
 }
 
 export default async function ChangePassword({ searchParams }: Props) {

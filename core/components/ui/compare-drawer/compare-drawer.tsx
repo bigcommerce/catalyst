@@ -77,7 +77,7 @@ const CompareDrawer = () => {
   return (
     <div className="fixed bottom-0 start-0 w-full border-t border-gray-200 bg-white p-6 md:pe-0">
       <div className="hidden md:flex">
-        <CompareLink key={products.toString()} products={products} />
+        <CompareLink key={products.map(({ id }) => id).join('-')} products={products} />
         <ul className="flex overflow-auto">
           {products.map((product) => {
             return (

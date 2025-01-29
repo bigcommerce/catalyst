@@ -11,7 +11,7 @@ import { kv } from '../lib/kv';
 import { type MiddlewareFactory } from './compose-middlewares';
 
 const GetRouteQuery = graphql(`
-  query getRoute($path: String!) {
+  query GetRouteQuery($path: String!) {
     site {
       route(path: $path, redirectBehavior: FOLLOW) {
         redirect {
@@ -318,12 +318,12 @@ export const withRoutes: MiddlewareFactory = () => {
       }
 
       case 'NormalPage': {
-        url = `/${locale}/webpages/normal/${node.id}`;
+        url = `/${locale}/webpages/${node.id}/normal/`;
         break;
       }
 
       case 'ContactPage': {
-        url = `/${locale}/webpages/contact/${node.id}`;
+        url = `/${locale}/webpages/${node.id}/contact/`;
         break;
       }
 

@@ -19,13 +19,15 @@ import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { getBrand as getBrandData } from './page-data';
 
-interface Props {
-  params: Promise<{
-    slug: string;
-    locale: string;
-  }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
+const cachedBrandDataVariables = cache((brandId: string) => {
+  return {
+    entityId: Number(brandId),
+  };
+});
+
+const cacheBrandFacetedSearch = cache((brandId: string) => {
+  return { brand: [brandId] };
+});
 
 function getBreadcrumbs(): Breadcrumb[] {
   return [];
@@ -33,7 +35,9 @@ function getBreadcrumbs(): Breadcrumb[] {
 
 async function getBrand(props: Props) {
   const { slug } = await props.params;
-  const brand = await getBrandData({ entityId: Number(slug) });
+
+  const variables = cachedBrandDataVariables(slug);
+  const brand = await getBrandData(variables);
 
   if (brand == null) notFound();
 
@@ -46,15 +50,10 @@ async function getTitle(props: Props): Promise<string> {
   return brand.name;
 }
 
-async function getTotalCount(props: Props): Promise<number> {
-  const search = await getRefinedSearch(props);
-
-  return search.products.collectionInfo?.totalItems ?? 0;
-}
-
 const createBrandSearchParamsCache = cache(async (props: Props) => {
   const { slug } = await props.params;
-  const brandSearch = await fetchFacetedSearch({ brand: [slug] });
+  const brand = cacheBrandFacetedSearch(slug);
+  const brandSearch = await fetchFacetedSearch(brand);
   const brandFacets = brandSearch.facets.items.filter(
     (facet) => facet.__typename !== 'BrandSearchFilter',
   );
@@ -80,7 +79,7 @@ const createBrandSearchParamsCache = cache(async (props: Props) => {
   return createSearchParamsCache(filterParsers);
 });
 
-async function getRefinedSearch(props: Props) {
+const getRefinedSearch = cache(async (props: Props) => {
   const { slug } = await props.params;
   const searchParams = await props.searchParams;
   const searchParamsCache = await createBrandSearchParamsCache(props);
@@ -91,6 +90,12 @@ async function getRefinedSearch(props: Props) {
     ...parsedSearchParams,
     brand: [slug],
   });
+});
+
+async function getTotalCount(props: Props): Promise<number> {
+  const search = await getRefinedSearch(props);
+
+  return search.products.collectionInfo?.totalItems ?? 0;
 }
 
 async function getFilters(props: Props): Promise<Filter[]> {
@@ -98,7 +103,8 @@ async function getFilters(props: Props): Promise<Filter[]> {
   const searchParams = await props.searchParams;
   const searchParamsCache = await createBrandSearchParamsCache(props);
   const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
-  const brandSearch = await fetchFacetedSearch({ brand: [slug] });
+  const brand = cacheBrandFacetedSearch(slug);
+  const brandSearch = await fetchFacetedSearch(brand);
   const brandFacets = brandSearch.facets.items.filter(
     (facet) => facet.__typename !== 'BrandSearchFilter',
   );
@@ -149,15 +155,7 @@ async function getListProducts(props: Props): Promise<ListProduct[]> {
 }
 
 async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
-  const { slug } = await props.params;
-  const searchParams = await props.searchParams;
-  const searchParamsCache = await createBrandSearchParamsCache(props);
-  const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
-  const brandSearch = await fetchFacetedSearch({
-    ...searchParams,
-    ...parsedSearchParams,
-    brand: [slug],
-  });
+  const brandSearch = await getRefinedSearch(props);
 
   return pageInfoTransformer(brandSearch.products.pageInfo);
 }
@@ -208,6 +206,14 @@ async function getResetFiltersLabel(): Promise<string> {
   const t = await getTranslations('FacetedGroup.FacetedSearch');
 
   return t('resetFilters');
+}
+
+interface Props {
+  params: Promise<{
+    slug: string;
+    locale: string;
+  }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {

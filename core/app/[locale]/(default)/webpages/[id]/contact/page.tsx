@@ -1,13 +1,18 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { cache } from 'react';
 
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { DynamicForm } from '@/vibes/soul/primitives/dynamic-form';
 import type { Field, FieldGroup } from '@/vibes/soul/primitives/dynamic-form/schema';
+import {
+  breadcrumbsTransformer,
+  truncateBreadcrumbs,
+} from '~/data-transformers/breadcrumbs-transformer';
 
-import { WebPage, WebPageContent } from '../../_components/web-page';
+import { WebPage, WebPageContent } from '../_components/web-page';
 
 import { submitContactForm } from './_actions/submit-contact-form';
 import { getWebpageData } from './page-data';
@@ -37,7 +42,7 @@ const fieldMapping = {
 
 type ContactField = keyof typeof fieldMapping;
 
-async function getWebPage(id: string): Promise<ContactPage> {
+const getWebPage = cache(async (id: string): Promise<ContactPage> => {
   const data = await getWebpageData({ id: decodeURIComponent(id) });
   const reCaptchaSettings = data.site.settings?.reCaptcha ?? null;
   const webpage = data.node?.__typename === 'ContactPage' ? data.node : null;
@@ -46,30 +51,36 @@ async function getWebPage(id: string): Promise<ContactPage> {
     return notFound();
   }
 
+  const breadcrumbs = breadcrumbsTransformer(webpage.breadcrumbs);
+
   return {
     entityId: webpage.entityId,
     title: webpage.name,
     path: webpage.path,
+    breadcrumbs,
     content: webpage.htmlBody,
     contactFields: webpage.contactFields,
     seo: webpage.seo,
     reCaptchaSettings,
   };
-}
+});
 
 async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
   const webpage = await getWebPage(id);
-
-  return [
+  const [, ...rest] = webpage.breadcrumbs.reverse();
+  const breadcrumbs = [
     {
       label: 'Home',
       href: '/',
     },
+    ...rest.reverse(),
     {
       label: webpage.title,
       href: '#',
     },
   ];
+
+  return truncateBreadcrumbs(breadcrumbs, 5);
 }
 
 async function getWebPageWithSuccessContent(id: string, message: string) {

@@ -4,7 +4,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { BreadcrumbsFragment } from '~/components/breadcrumbs/fragment';
+import { BreadcrumbsCategoryFragment } from '~/components/breadcrumbs/fragment';
 
 const CategoryPageQuery = graphql(
   `
@@ -38,7 +38,7 @@ const CategoryPageQuery = graphql(
       }
     }
   `,
-  [BreadcrumbsFragment],
+  [BreadcrumbsCategoryFragment],
 );
 
 type Variables = VariablesOf<typeof CategoryPageQuery>;

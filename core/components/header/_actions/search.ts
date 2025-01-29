@@ -12,12 +12,16 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { searchResultsTransformer } from '~/data-transformers/search-results-transformer';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { SearchProductFragment } from './fragment';
 
 const GetQuickSearchResultsQuery = graphql(
   `
-    query getQuickSearchResults($filters: SearchProductsFiltersInput!) {
+    query getQuickSearchResults(
+      $filters: SearchProductsFiltersInput!
+      $currencyCode: currencyCode
+    ) {
       site {
         search {
           searchProducts(filters: $filters) {
@@ -77,10 +81,12 @@ export async function search(
 
   const customerAccessToken = await getSessionCustomerAccessToken();
 
+  const currencyCode = await getPreferredCurrencyCode();
+
   try {
     const response = await client.fetch({
       document: GetQuickSearchResultsQuery,
-      variables: { filters: { searchTerm: submission.value.term } },
+      variables: { filters: { searchTerm: submission.value.term }, currencyCode },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });

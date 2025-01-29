@@ -507,6 +507,10 @@
                 "login": "Acesso",
                 "logout": "Sair"
             },
+            "Currency": {
+                "invalidCurrency": "Invalid currency",
+                "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
+            },
             "Locale": {
                 "invalidLocale": "Localidade inválida"
             },

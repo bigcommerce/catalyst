@@ -1,7 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
 
-import { AccountLayout } from '@/vibes/soul/sections/account-layout';
+import { SidebarMenu } from '@/vibes/soul/sections/sidebar-menu';
+import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { auth } from '~/auth';
 import { redirect } from '~/i18n/routing';
 
@@ -22,15 +23,20 @@ export default async function Layout({ children, params }: Props) {
   }
 
   return (
-    <AccountLayout
-      links={[
-        { href: '/account/orders', label: t('orders') },
-        { href: '/account/addresses', label: t('addresses') },
-        { href: '/account/settings', label: t('settings') },
-        { href: '/logout', label: t('logout') },
-      ]}
+    <StickySidebarLayout
+      sidebar={
+        <SidebarMenu
+          links={[
+            { href: '/account/orders', label: t('orders') },
+            { href: '/account/addresses', label: t('addresses') },
+            { href: '/account/settings', label: t('settings') },
+            { href: '/logout', label: t('logout') },
+          ]}
+        />
+      }
+      sidebarSize="small"
     >
       {children}
-    </AccountLayout>
+    </StickySidebarLayout>
   );
 }
