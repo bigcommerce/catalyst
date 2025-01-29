@@ -28,6 +28,7 @@ import ScrollButton from './_components/ScrollButton';
 import { NoShipCanada } from '../product/[slug]/_components/belami-product-no-shipping-canada';
 import { commonSettinngs } from '~/components/common-functions';
 import { zeroTaxCalculation } from '~/components/common-functions';
+import { calculateProductPrice } from '~/components/common-functions';
 
 import heartIcon from '~/public/cart/heartIcon.svg';
 import applePayIcon from '~/public/cart/applePayIcon.svg';
@@ -188,6 +189,8 @@ export default async function Cart({ params }: Props) {
       href: '#',
     },
   ];
+
+
   var getBrandIds = lineItems?.map((item: any) => {
     return item?.baseCatalogProduct?.brand?.entityId;
   });
@@ -196,6 +199,8 @@ export default async function Cart({ params }: Props) {
 
   //let checkZeroTax: any = await zeroTaxCalculation(data.site);
 
+  updatedLineItemWithoutAccessories = await calculateProductPrice(updatedLineItemWithoutAccessories);
+ 
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
       <div className="sticky top-2 z-50">
