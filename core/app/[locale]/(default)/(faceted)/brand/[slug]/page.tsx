@@ -14,6 +14,8 @@ import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 
 import { Brand } from './brand';
 
+import { cookies } from 'next/headers';
+
 import { Page as MakeswiftPage } from '@makeswift/runtime/next';
 import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { defaultLocale } from '~/i18n/routing';
@@ -52,9 +54,13 @@ export default async function BrandPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
+  const cookieStore = await cookies();
+  const dCookie = cookieStore.get('d');
+  const sourceCookie = cookieStore.get('source');
+
   const priceMaxTriggers = {
-    d: searchParams['d'],
-    source: searchParams['source']
+    d: dCookie?.value || searchParams['d'],
+    source: sourceCookie?.value || searchParams['source'],
   }
 
   const customerAccessToken = await getSessionCustomerAccessToken();

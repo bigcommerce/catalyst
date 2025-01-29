@@ -22,8 +22,12 @@ import { SiteVibesReviews } from '~/belami/components/sitevibes';
 import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-algolia-products';
 import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
 import { commonSettinngs } from '~/components/common-functions';
+
+import { cookies } from 'next/headers';
+
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import StickyScroll, { DetailsWrapper } from './_components/sticky';
+import { calculateProductPrice } from '~/components/common-functions';
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -66,6 +70,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
   const productId = Number(params.slug);
   const optionValueIds = getOptionValueIds({ searchParams });
+
   const product = await getProduct({
     entityId: productId,
     optionValueIds,
@@ -107,9 +112,13 @@ export default async function ProductPage(props: Props) {
       return null;
     }
 
+    const cookieStore = await cookies();
+    const dCookie = cookieStore.get('d');
+    const sourceCookie = cookieStore.get('source');
+
     const priceMaxTriggers = {
-      d: searchParams['d'],
-      source: searchParams['source']
+      d: dCookie?.value || searchParams['d'],
+      source: sourceCookie?.value || searchParams['source'],
     }
 
     const useDefaultPrices = !customerAccessToken;
@@ -126,11 +135,13 @@ export default async function ProductPage(props: Props) {
       optionValueIds,
       useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
     });
-
+    
+    const [updatedProduct] = await calculateProductPrice(product);
+  
     if (!product) {
       return notFound();
     }
-
+    
     // Asset URLs
     const assets = {
       bannerIcon: imageManagerImageUrl('example-1.png', '50w'),
@@ -222,8 +233,8 @@ export default async function ProductPage(props: Props) {
 
     const productImages = removeEdgesAndNodes(product.images);
     var brandId = product?.brand?.entityId;
-    var CommonSettinngsValues = {};
-    // await commonSettinngs([brandId])
+    var CommonSettinngsValues =  await commonSettinngs([brandId])
+    
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-8">
         <ProductProvider getMetaFields={productMetaFields}>
@@ -250,7 +261,7 @@ export default async function ProductPage(props: Props) {
             <div className="x2:w-[40em] x3:w-[42em] x4:!pl-[15em] x4:!w-[46em] xl:w-[35em] xl:pl-[12em] 2xl:w-[43em] 2xl:!pl-[11em]">
               <DetailsWrapper>
                 <Details
-                  product={product}
+                  product={updatedProduct}
                   collectionValue={collectionValue}
                   dropdownSheetIcon={assets.dropdownSheetIcon}
                   cartHeader={assets.cartHeader}
@@ -274,6 +285,7 @@ export default async function ProductPage(props: Props) {
                   }
                   children1={<MakeswiftPage locale={locale} path="/content/shipping-flyout" />}
                   children2={<MakeswiftPage locale={locale} path="/content/returns-flyout" />}
+                  children3={<MakeswiftPage locale={locale} path="/content/request-a-quote-flyout" />}
                 />
               </DetailsWrapper>
             </div>

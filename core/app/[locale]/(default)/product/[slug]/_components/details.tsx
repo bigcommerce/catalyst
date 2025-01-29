@@ -73,6 +73,9 @@ interface Props {
   children1: React.ReactNode;
   triggerLabel2: React.ReactNode;
   children2: React.ReactNode;
+  triggerLabel3: React.ReactNode;
+  children3: React.ReactNode;
+  getAllCommonSettinngsValues:any;
 }
 
 export const DetailsFragment = graphql(
@@ -148,21 +151,6 @@ export const DetailsFragment = graphql(
   ],
 );
 
-interface Props {
-  product: FragmentOf<typeof DetailsFragment>;
-  collectionValue?: string;
-  dropdownSheetIcon?: string;
-  cartHeader?: string;
-  couponIcon?: string;
-  paywithGoogle?: string;
-  payPal?: string;
-  requestQuote?: string;
-  closeIcon?: string;
-  blankAddImg?: string;
-  productImages?: string;
-  getAllCommonSettinngsValues?: any;
-}
-
 export const Details = ({
   product,
   collectionValue,
@@ -180,6 +168,8 @@ export const Details = ({
   triggerLabel2,
   children1,
   children2,
+  triggerLabel3,
+  children3,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -224,6 +214,8 @@ export const Details = ({
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
+
+    console.log("prod details from PDP------------",product);
   useEffect(() => {
     const matchingVariant = variants.find((variant) => variant.sku === productSku);
     if (matchingVariant) {
@@ -363,100 +355,36 @@ export const Details = ({
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  {product.prices && (
+                  {product?.UpdatePriceForMSRP && (
                     <div className="sticky-product-price mt-2 !w-[16em] items-center whitespace-nowrap text-center lg:text-right">
-                      {product.prices.retailPrice?.value && product.prices.salePrice?.value ? (
+                      {product?.UpdatePriceForMSRP.hasDiscount === true ?(
                         <>
                           <span className="price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                            {format.number(product.prices.price.value, {
+                            {format.number(product.UpdatePriceForMSRP.updatedPrice, {
                               style: 'currency',
-                              currency: product.prices.salePrice.currencyCode,
+                              currency: product.UpdatePriceForMSRP.currencyCode,
                             })}
                           </span>
                           <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
-                            {format.number(product.prices.retailPrice.value, {
+                            {format.number(product.UpdatePriceForMSRP.originalPrice, {
                               style: 'currency',
-                              currency: product.prices.salePrice.currencyCode,
+                              currency: product.UpdatePriceForMSRP.currencyCode,
                             })}
                           </span>
                           <span className="-ml-[0.5em] mb-1 mr-2 text-left text-[12px] text-gray-500">
                             MSRP
                           </span>
                           <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                            Save{' '}
-                            {Math.round(
-                              ((product.prices.retailPrice.value - product.prices.salePrice.value) /
-                                product.prices.retailPrice.value) *
-                                100,
-                            )}
+                            Save
+                            {product.UpdatePriceForMSRP.discount}
                             %
-                          </span>
-                        </>
-                      ) : product.prices.retailPrice?.value && product.prices.basePrice?.value ? (
-                        <>
-                          <span className="mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                            {format.number(product.prices.basePrice.value, {
-                              style: 'currency',
-                              currency: product.prices.basePrice.currencyCode,
-                            })}
-                          </span>
-                          <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
-                            {format.number(product.prices.retailPrice.value, {
-                              style: 'currency',
-                              currency: product.prices.basePrice.currencyCode,
-                            })}
-                          </span>
-                          <span className="-ml-[0.5em] mb-1 mr-2 text-left text-[12px] text-gray-500">
-                            MSRP
-                          </span>
-                          <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                            Save{' '}
-                            {Math.round(
-                              ((product.prices.retailPrice.value - product.prices.basePrice.value) /
-                                product.prices.retailPrice.value) *
-                                100,
-                            )}
-                            %
-                          </span>
-                        </>
-                      ) : product.prices.salePrice?.value && product.prices.basePrice?.value ? (
-                        <>
-                          <span className="mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                            {format.number(product.prices.salePrice.value, {
-                              style: 'currency',
-                              currency: product.prices.salePrice.currencyCode,
-                            })}
-                          </span>
-                          <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
-                            {format.number(product.prices.basePrice.value, {
-                              style: 'currency',
-                              currency: product.prices.price.currencyCode,
-                            })}
-                          </span>
-                          <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                            Save{' '}
-                            {Math.round(
-                              ((product.prices.basePrice.value - product.prices.price.value) /
-                                product.prices.basePrice.value) *
-                                100,
-                            )}
-                            %
-                          </span>
-                        </>
-                      ) : product.prices.basePrice?.value ? (
-                        <>
-                          <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                            {format.number(product.prices.basePrice.value, {
-                              style: 'currency',
-                              currency: product.prices.basePrice.currencyCode,
-                            })}
                           </span>
                         </>
                       ) : (
                         <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                          {format.number(product.prices.price?.value || 0, {
+                          {format.number(product.UpdatePriceForMSRP.originalPrice || 0, {
                             style: 'currency',
-                            currency: product.prices.price?.currencyCode || 'USD',
+                            currency: product.updatePriceForMSRP.currencyCode || 'USD',
                           })}
                         </span>
                       )}
@@ -598,98 +526,36 @@ export const Details = ({
             <ReviewSummary data={product} />
           </div>
           {/* msrp  */}
-          {product.prices && (
-            <div className="product-price mt-4 flex items-center gap-[0.5em] text-center lg:text-left">
-              {product.prices.retailPrice?.value && product.prices.salePrice?.value ? (
+          {product?.['UpdatePriceForMSRP'] && (
+            <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
+              {product?.UpdatePriceForMSRP &&
+                      product?.UpdatePriceForMSRP.hasDiscount === true ? (
                 // retailPrice, salePrice, basePrice
                 <>
                   <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                    {format.number(product.prices.salePrice.value, {
+                    {format.number(product.UpdatePriceForMSRP.updatedPrice, {
                       style: 'currency',
-                      currency: product.prices.salePrice.currencyCode,
+                      currency: product.updatePriceForMSRP?.currencyCode?.currencyCode || 'USD' ,
                     })}
                   </span>
                   <span className="inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0">
-                    {format.number(product.prices.retailPrice.value, {
+                    {format.number(product.UpdatePriceForMSRP.originalPrice, {
                       style: 'currency',
-                      currency: product.prices.retailPrice.currencyCode,
+                      currency:  product.updatePriceForMSRP?.currencyCode?.currencyCode|| 'USD',
                     })}
                   </span>
                   <span className="-ml-[0.5em] mb-1 text-[12px] text-gray-500">MSRP</span>
                   <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                     Save{' '}
-                    {Math.round(
-                      ((product.prices.retailPrice.value - product.prices.salePrice.value) /
-                        product.prices.retailPrice.value) *
-                        100,
-                    )}
+                    {product.UpdatePriceForMSRP.discount}
                     %
                   </span>
                 </>
-              ) : product.prices.retailPrice?.value && product.prices.basePrice?.value ? (
-                // retailPrice,basePrice
-                <>
-                  <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                    {format.number(product.prices.basePrice.value, {
-                      style: 'currency',
-                      currency: product.prices.basePrice.currencyCode,
-                    })}
-                  </span>
-                  <span className="inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0">
-                    {format.number(product.prices.retailPrice.value, {
-                      style: 'currency',
-                      currency: product.prices.retailPrice.currencyCode,
-                    })}
-                  </span>
-                  <span className="-ml-[0.5em] mb-1 text-[12px] text-gray-500">MSRP</span>
-                  <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                    Save{' '}
-                    {Math.round(
-                      ((product.prices.retailPrice.value - product.prices.basePrice.value) /
-                        product.prices.retailPrice.value) *
-                        100,
-                    )}
-                    %
-                  </span>
-                </>
-              ) : product.prices.salePrice?.value && product.prices.basePrice?.value ? (
-                // salePrice,basePrice
-                <>
-                  <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                    {format.number(product.prices.salePrice.value, {
-                      style: 'currency',
-                      currency: product.prices.salePrice.currencyCode,
-                    })}
-                  </span>
-                  <span className="inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
-                    {format.number(product.prices.basePrice.value, {
-                      style: 'currency',
-                      currency: product.prices.basePrice.currencyCode,
-                    })}
-                  </span>
-                  <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                    Save{' '}
-                    {Math.round(
-                      ((product.prices.basePrice.value - product.prices.salePrice.value) /
-                        product.prices.basePrice.value) *
-                        100,
-                    )}
-                    %
-                  </span>
-                </>
-              ) : product.prices.basePrice?.value ? (
-                //Only basePrice
-                <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                  {format.number(product.prices.basePrice.value, {
-                    style: 'currency',
-                    currency: product.prices.basePrice.currencyCode,
-                  })}
-                </span>
               ) : (
                 <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                  {format.number(product.prices.price?.value || 0, {
+                  {format.number(product.UpdatePriceForMSRP.originalPrice || 0, {
                     style: 'currency',
-                    currency: product.prices.price?.currencyCode || 'USD',
+                    currency: product.updatePriceForMSRP?.currencyCode?.currencyCode || 'USD',
                   })}
                 </span>
               )}
@@ -710,7 +576,7 @@ export const Details = ({
             {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
               getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
                 <NoShipCanada
-                  description={'Canadian shipping note:This product cannot ship to Canada'}
+                description={getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message}
                 />
               )}
           </div>
@@ -789,7 +655,7 @@ export const Details = ({
             amount={product?.prices?.price?.value?.toString()}
             currency={product?.prices?.price?.currencyCode}
           />
-          <RequestQuote requestQuote={requestQuote} />
+            <RequestQuote children={children3} />
           <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
           <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
 
