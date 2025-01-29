@@ -46,6 +46,7 @@ export const TextField = ({
           onInvalid={isRequired ? onChange : undefined}
           required={isRequired}
           type={type}
+          readOnly={type === 'email'}
         />
       </FieldControl>
       {isRequired && (

@@ -4,12 +4,14 @@ import { useTranslations } from 'next-intl';
 import { BcImage } from '~/components/bc-image';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import Link from 'next/link';
+import { Flyout } from '~/components/common-flyout';
 
-interface requestQuote {
-  requestQuote: string;
+interface props {
+ 
+  children: React.ReactNode;
 }
 
-export const RequestQuote = ({ requestQuote }: requestQuote) => {
+export const RequestQuote = ({ children}:props) => {
   const t = useTranslations('requestQuote');
 
   return (
@@ -18,7 +20,8 @@ export const RequestQuote = ({ requestQuote }: requestQuote) => {
         <p className="text-center text-[0.75rem] font-normal leading-[1.125rem] tracking-[0.025rem] text-[#000000]">
           <span className="block xl:contents">{t('heading')}</span>
           <span className="border-b border-[#006380] text-[#006380]">
-            <Link href="#">{t('requestQuoteLink')}</Link>
+            {/* <Link href="#">{t('requestQuoteLink')}</Link> */}
+             <Flyout triggerLabel={t('requestQuoteLink')}>{children}</Flyout>
           </span>
           <span className="mx-1">{t('or')}</span>
           <span className="border-b border-[#006380] text-[#006380]">
