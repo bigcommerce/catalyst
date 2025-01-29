@@ -85,6 +85,7 @@ const validatePasswords = (
   }).success;
 };
 
+
 const SubmitButton = () => {
   const { pending } = useFormStatus();
   const t = useTranslations('Account.Settings.ChangePassword');
@@ -114,9 +115,6 @@ export const ChangePasswordForm = () => {
   const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
   const [isCurrentPasswordEmpty, setIsCurrentPasswordEmpty] = useState(true);
-  console.log("current",isCurrentPasswordEmpty);
-  console.log("newvalid",isNewPasswordValid)
-  console.log("confirmvalid",isConfirmPasswordValid)
 
   const { setAccountState } = useAccountStatusContext();
 
@@ -208,7 +206,7 @@ export const ChangePasswordForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error text-[rgb(167,31,35)]"
             match="valueMissing"
           >
             {t('notEmptyMessage')}
@@ -230,14 +228,15 @@ export const ChangePasswordForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error text-[rgb(167,31,35)]"
             match="valueMissing"
           >
             {t('notEmptyMessage')}
           </FieldMessage>
           {!isNewPasswordValid &&  (
-            <FieldMessage className="absolute inset-x-0 inline-flex w-full text-xs text-error md:bottom-0">
+            <FieldMessage className="absolute inset-x-0 inline-flex w-full text-xs text-error md:bottom-0 text-[rgb(167,31,35)]">
               {t('newPasswordValidationMessage')}
+              
             </FieldMessage>
           )}
         </Field>
@@ -257,7 +256,7 @@ export const ChangePasswordForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error text-[rgb(167,31,35)]"
             match="valueMissing"
           >
             {t('notEmptyMessage')}

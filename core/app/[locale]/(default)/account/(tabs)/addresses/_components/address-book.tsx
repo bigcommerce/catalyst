@@ -97,6 +97,8 @@ export const AddressBook = ({
           <p>{accountState.message}</p>
         </Message>
       )}
+      
+      <div className=" gap-[30px]">
       {!addressesCount && <p className="border-t py-12 text-center">{t('emptyAddresses')}</p>}
       <ul className="flex flex-wrap gap-5">
         {addressBook.map(
@@ -146,8 +148,7 @@ export const AddressBook = ({
         )}
       </ul>
 
-      <div className="">
-        <Button aria-label={t('addNewAddress')} asChild className="w-fit">
+        <Button aria-label={t('addNewAddress')} asChild className="w-fit mt-[30px]">
           <Link href="/account/addresses/add">{t('addNewAddress')}</Link>
         </Button>
         {children}
