@@ -10,6 +10,8 @@ import { PrintOrder } from '../print/print-order';
 import { Suspense } from 'react';
 import { assembleProductData, ProductSnippet, ProductSnippetSkeleton } from '../../account/(tabs)/orders/_components/product-snippet';
 import { getSessionCustomerAccessToken } from '~/auth';
+import { UpdateCustomerId } from '../../sales-buddy/_actions/update-customer-id';
+import { SendOrderToAlgolia } from './send-order-to-algolia';
 
 const emailImg = imageManagerImageUrl('emailicon.png', '16w');
 const facebookImg = imageManagerImageUrl('facebook.png', '23w');
@@ -56,6 +58,7 @@ export default async function OrderConfirmation() {
   const cookieStore = await cookies();
   const orderId: number = Number(cookieStore.get('orderId')?.value);
   const cartId: any = cookieStore.get('cartId')?.value;
+  const getCustomerIdfromCookie = cookieStore?.get('customer_id_for_agent')?.value
   const customerAccessToken = await getSessionCustomerAccessToken();
   let guestUserCheck = 0;
 
@@ -91,6 +94,9 @@ export default async function OrderConfirmation() {
       regSubTotal -= discountedAmount.value;
       youSave += discountedAmount.value;
     });
+    
+    const updateCustomerApi = await UpdateCustomerId(getCustomerIdfromCookie,orderState?.orderId)
+    
 
     return (
       <div className="lg:mt-[3rem] mt-[1rem] mb-[2rem] flex lg:flex-row justify-around gap-[30px] lg:gap-[50px] px-[20px] flex-col">
@@ -102,6 +108,7 @@ export default async function OrderConfirmation() {
                 Your order has been placed
               </p>
             </div>
+            <SendOrderToAlgolia lineItems={shippingConsignments?.[0]?.lineItems} />
             <p className="flex flex-col">
               <span className="text-[16px] font-[400] leading-[32px] xsm:tracking-[0.15px] tracking-[0.5px] text-[#353535] text-center xsm:text-left">
                 We have received your order. You will receive an email conformation at

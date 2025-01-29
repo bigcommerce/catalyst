@@ -13,8 +13,9 @@ import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { Category } from './category';
 
 import { Page as MakeswiftPage } from '@makeswift/runtime/next';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { defaultLocale } from '~/i18n/routing';
-import { client, getSiteVersion } from '~/lib/makeswift/client';
+import { client } from '~/lib/makeswift/client';
 import '~/lib/makeswift/components';
 
 interface Props {
@@ -52,6 +53,11 @@ export default async function CategoryPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
+  const priceMaxTriggers = {
+    d: searchParams['d'],
+    source: searchParams['source']
+  }
+
   const customerAccessToken = await getSessionCustomerAccessToken();
   const useDefaultPrices = !customerAccessToken;
 
@@ -87,7 +93,7 @@ export default async function CategoryPage(props: Props) {
         <MakeswiftPage snapshot={snapshot} />
       }
 
-      <Category category={category} promotions={promotions} useDefaultPrices={useDefaultPrices} />
+      <Category category={category} promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxTriggers={priceMaxTriggers} />
     </div>
   );
 }

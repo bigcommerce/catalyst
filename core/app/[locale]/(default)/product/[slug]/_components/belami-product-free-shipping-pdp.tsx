@@ -27,7 +27,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
         const message = await getDeliveryMessage(entityId, variantId);
         setDeliveryMessage(message);
       } catch (err) {
-        setError(err?.message);
+        ('');
       } finally {
         setLoading(false);
       }
@@ -44,10 +44,6 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
         <Spinner aria-hidden="true" />
       </div>
     );
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
   }
 
   // Check if the deliveryMessage includes "Backorder"

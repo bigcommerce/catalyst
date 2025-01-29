@@ -17,6 +17,7 @@ import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query
 import '@algolia/autocomplete-theme-classic';
 import insightsClient from 'search-insights';
 
+import { ProductPrice } from '~/belami/components/search/product-price';
 import { ReviewSummary } from '~/belami/components/reviews';
 
 import Link from 'next/link';
@@ -24,7 +25,7 @@ import Image from 'next/image';
 import noImage from '~/public/no-image.svg';
 
 import { useFormatter } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const client = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
@@ -194,6 +195,26 @@ function ProductItem({
           </div>
           */}
 
+          <ProductPrice 
+            defaultPrice={hit?.prices?.USD || 0} 
+            defaultSalePrice={hit?.sales_prices?.USD || null} 
+            price={price}
+            salePrice={salePrice}
+            currency={currency}
+            format={format}
+            options={{
+              useAsyncMode: !useDefaultPrices,
+              useDefaultPrices: useDefaultPrices,
+              isLoading: isLoading,
+              isLoaded: isLoaded
+            }}
+            classNames={{
+              root: 'flex items-center space-x-2',
+              discount: 'font-bold text-brand-400',
+            }}
+          />
+
+          {/*
           {!useDefaultPrices ? (
             <div className="flex items-center space-x-2">
               {!isLoading && (price || salePrice) ? (
@@ -291,6 +312,7 @@ function ProductItem({
               ) : null}
             </div>
           ) : null}
+          */}
 
           {hit.reviews_count > 0 &&
             <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="aa-ItemContentDescription" />
@@ -354,6 +376,14 @@ function getDiscount(price: number, salePrice: number): number | null {
 }
 
 export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPrices?: boolean }) {
+
+  const searchParams = useSearchParams();
+
+  const priceMaxTriggers = {
+    d: searchParams.get('d'),
+    source: searchParams.get('source')
+  }
+
   const containerRef = useRef(null);
   const panelRoot = useRef(null);
 

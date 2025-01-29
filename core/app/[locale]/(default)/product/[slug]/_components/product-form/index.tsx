@@ -30,6 +30,8 @@ import { ProductFlyout } from '~/components/product-card/product-flyout';
 import { useCommonContext } from '~/components/common-context/common-provider';
 
 import aa from 'search-insights';
+import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
+import { getCartIdCookie } from '~/app/[locale]/(default)/sales-buddy/_actions/cart';
 
 aa('init', {
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
@@ -99,6 +101,7 @@ export const ProductForm = ({
   const cart = useCart();
   const productFlyout: any = useCommonContext();
   const productOptions = removeEdgesAndNodes(product.productOptions);
+  const { cartIdForCheck, setCartIdForCheck } = useCompareDrawerContext();
 
   if (productOptions?.length > 0) {
     const router = useRouter();
@@ -137,9 +140,13 @@ export const ProductForm = ({
   const productFormSubmit = async (data: ProductFormData) => {
     const quantity = Number(data.quantity);
     // Optimistic update
+    
     cart.increment(quantity);
     const result = await handleAddToCart(data, product);
-
+    const cartId = await getCartIdCookie()
+    if (cartId?.value == undefined) {
+      setCartIdForCheck(result?.data?.entityId)
+    }
     if (result.error) {
       toast.error(t('error'), {
         icon: <AlertCircle className="text-error-secondary" />,

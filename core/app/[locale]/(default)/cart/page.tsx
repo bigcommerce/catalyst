@@ -34,8 +34,6 @@ import applePayIcon from '~/public/cart/applePayIcon.svg';
 import paypalIcon from '~/public/cart/paypalIcon.svg';
 import amazonPayIcon from '~/public/cart/amazonPayIcon.svg';
 import agentIcon from '~/public/cart/agentIcon.svg';
-import downArrow from '~/public/cart/downArrow.svg';
-import { locales } from '~/i18n/routing';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { Flyout } from '~/components/common-flyout';
 
@@ -129,7 +127,7 @@ export default async function Cart({ params }: Props) {
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
     // ...cart.lineItems.customItems,
-  ];
+  ];  
   let cartQty = lineItems?.reduce(function (total: number, cartItems: any) {
     return total + cartItems?.quantity;
   }, 0);
@@ -138,6 +136,7 @@ export default async function Cart({ params }: Props) {
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
   let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
+  
   let updatedLineItemInfo: any = [];
   let updatedLineItemWithoutAccessories: any = [];
   let accessoriesSkuArray: any = [];
@@ -195,7 +194,7 @@ export default async function Cart({ params }: Props) {
   var getAllCommonSettinngsValues = {};
   // await commonSettinngs([getBrandIds])
 
-  let checkZeroTax: any = await zeroTaxCalculation(data.site);
+  //let checkZeroTax: any = await zeroTaxCalculation(data.site);
 
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
@@ -213,7 +212,7 @@ export default async function Cart({ params }: Props) {
         </div>
       </div>
       <div className="text-center lg:hidden">
-        <ScrollButton targetId="order-summary" accessoriesData={getCartMetaFields} />
+        <ScrollButton targetId="order-summary"/>
       </div>
 
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
@@ -319,7 +318,7 @@ export default async function Cart({ params }: Props) {
         </div>
       </div>
 
-      <CartViewed checkout={checkout} currencyCode={cart.currencyCode} lineItems={lineItems} />
+      <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
     </div>
   );
 }

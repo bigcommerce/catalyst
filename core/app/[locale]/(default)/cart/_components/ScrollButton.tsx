@@ -8,15 +8,9 @@ import ArrowDownIcon from '~/public/other/arrow_circle_down.svg';
 
 interface ScrollButtonProps {
   targetId: string;
-  accessoriesData: any;
 }
 
-const ScrollButton: React.FC<ScrollButtonProps> = ({ targetId, accessoriesData }) => {
-
-  useEffect(() => {
-    localStorage.setItem('accessories_data', JSON.stringify(accessoriesData));
-  }, []);
-
+const ScrollButton: React.FC<ScrollButtonProps> = ({ targetId }) => {
   const handleScroll = () => {
     const element = document.getElementById(targetId);
     if (element) {

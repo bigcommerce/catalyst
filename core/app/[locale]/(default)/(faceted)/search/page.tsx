@@ -23,6 +23,11 @@ interface Props {
 export default async function SearchPage(props: Props) {
   const searchParams = await props.searchParams;
 
+  const priceMaxTriggers = {
+    d: searchParams['d'],
+    source: searchParams['source']
+  }
+
   const customerAccessToken = await getSessionCustomerAccessToken();
   const useDefaultPrices = !customerAccessToken;
 
@@ -50,7 +55,7 @@ export default async function SearchPage(props: Props) {
           : <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{t('title')}</h1>
         }
       </div>
-      <Search query={searchTerm} promotions={promotions} useDefaultPrices={useDefaultPrices} />
+      <Search query={searchTerm} promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxTriggers={priceMaxTriggers} />
     </div>
   );
 }

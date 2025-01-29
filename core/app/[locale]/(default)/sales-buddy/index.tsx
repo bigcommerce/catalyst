@@ -18,35 +18,69 @@ export default function SalesBuddyAppIndex() {
     setIsOpen(!isOpen);
   };
   const path = usePathname();
+  const [customerAccordinOpenIndexes, setCustomerAccordinOpenIndexes] = useState<number[]>([]);
+  const [cartAccordinOpenIndexes, setCartAccordinOpenIndexes] = useState<number[]>([]);
+  const [pdpAccordinOpenIndexes, setPdpAccordinOpenIndexes] = useState<number[]>([]);
+  const [plpAccordinOpenIndexes, setPlpAccordinOpenIndexes] = useState<number[]>([]);
+
+  const CustomerSupportToggleAccordion = (index: any) => {
+    setCustomerAccordinOpenIndexes(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+  const CartToggleAccordion = (index: any) => {
+    setCartAccordinOpenIndexes(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+  const PDPToggleAccordion = (index: any) => {
+    setPdpAccordinOpenIndexes(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+  const PLPToggleAccordion = (index: any) => {
+    setPlpAccordinOpenIndexes(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  };
+
 
   const renderDrawerContent = () => {
     if (path.indexOf('/cart/') > -1 || path.indexOf('/cart') > -1) {
       return (
         <div className="space-y-[20px]">
           <ReferalId />
-          <CartInterface />
-          <CustomerSupportPage />
+          <CartInterface toggleAccordion={CartToggleAccordion} openIndexes={cartAccordinOpenIndexes} setOpenIndexes={setCartAccordinOpenIndexes} />
+          <CustomerSupportPage toggleAccordion={CustomerSupportToggleAccordion} openIndexes={customerAccordinOpenIndexes} setOpenIndexes={setCustomerAccordinOpenIndexes} />
         </div>
       );
     } else if (path.indexOf('/c/') > -1 || path.indexOf('/search/') > -1) {
       return (
         <div className="">
-          <CustomerSupportPage />
-          <PLPPageInterface />
+          <CustomerSupportPage toggleAccordion={CustomerSupportToggleAccordion} openIndexes={customerAccordinOpenIndexes} setOpenIndexes={setCustomerAccordinOpenIndexes} />
+          <PLPPageInterface toggleAccordion={PLPToggleAccordion} openIndexes={plpAccordinOpenIndexes} setOpenIndexes={setPlpAccordinOpenIndexes} />
         </div>
       );
     }
     else if (path.indexOf('/p/') !== -1) {
       return (
         <div className=" space-y-[20px] ">
-          <SalesBuddyProductPage />
-          <CustomerSupportPage />
+          <SalesBuddyProductPage toggleAccordion={PDPToggleAccordion} openIndexes={pdpAccordinOpenIndexes} setOpenIndexes={setPdpAccordinOpenIndexes} />
+          <CustomerSupportPage toggleAccordion={CustomerSupportToggleAccordion} openIndexes={customerAccordinOpenIndexes} setOpenIndexes={setCustomerAccordinOpenIndexes} />
         </div>
       );
     } else {
       return (
         <div className="">
-          <CustomerSupportPage />
+          <CustomerSupportPage toggleAccordion={CustomerSupportToggleAccordion} openIndexes={customerAccordinOpenIndexes} setOpenIndexes={setCustomerAccordinOpenIndexes} />
         </div>
       );
     }
