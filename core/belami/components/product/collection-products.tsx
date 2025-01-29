@@ -17,6 +17,7 @@ import {
 
 import { useFormatter } from 'next-intl';
 
+import { ProductPrice } from '~/belami/components/search/product-price';
 import { ReviewSummary } from '~/belami/components/reviews';
 
 import searchColors from '~/belami/include/search-colors.json';
@@ -33,7 +34,8 @@ const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
 interface Props {
   collection: string,
   products: any[],
-  useDefaultPrices?: boolean
+  useDefaultPrices?: boolean,
+  priceMaxTriggers?: any
 }
 
 function getDiscount(price: number, sale: number): number | null {
@@ -94,6 +96,33 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
         <div className="flex-1 p-0 text-center">
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
           <h2 className="text-lg font-medium mt-2"><Link href={hit.url}>{hit.name}</Link></h2>
+
+          <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
+            {!!hit.on_clearance &&
+              <span className="mt-2 inline-block px-1 py-0.5 bg-gray-400 text-white text-xs uppercase tracking-wider">Clearance</span>
+            }
+
+            <ProductPrice 
+              defaultPrice={hit?.prices?.USD || 0} 
+              defaultSalePrice={hit?.sales_prices?.USD || null} 
+              price={price}
+              salePrice={salePrice}
+              currency={currency}
+              format={format}
+              options={{
+                useAsyncMode: useAsyncMode,
+                useDefaultPrices: useDefaultPrices,
+                isLoading: isLoading,
+                isLoaded: isLoaded
+              }}
+              classNames={{
+                root: 'mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start',
+                discount: 'font-bold text-brand-400 whitespace-nowrap',
+              }}
+            />
+          </div>
+
+          {/*
           {useAsyncMode && !useDefaultPrices ? (
             <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
               {hit.on_clearance &&
@@ -130,6 +159,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
                 </div>
               </div> : null
           )}
+          */}
 
           {hit.reviews_count > 0 &&
             <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="mx-auto mt-2 justify-center" />
@@ -140,7 +170,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
   );
 }
 
-export function CollectionProducts({ collection, products, useDefaultPrices = false }: Props) {
+export function CollectionProducts({ collection, products, useDefaultPrices = false, priceMaxTriggers }: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -183,7 +213,7 @@ export function CollectionProducts({ collection, products, useDefaultPrices = fa
 
   return (
     products && products.length > 0 &&
-    <div className="p-4 xl:p-8 bg-gray-50 mt-8 mb-12">
+    <div className="p-4 xl:p-8 bg-gray-50 mt-8 mb-12 relative z-[-1]">
       <div className="md:flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">
         <h2 className="text-3xl font-black text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535] md:flex-grow md:mr-auto">{`More from ${collection} collection`}</h2>
         <Link href={`/search?collection[0]=${encodeURIComponent(collection)}`} className="md:flex-none text-brand-500 text-xl">Shop the Collection</Link>

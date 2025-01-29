@@ -11,6 +11,7 @@ import { Suspense } from 'react';
 import { assembleProductData, ProductSnippet, ProductSnippetSkeleton } from '../../account/(tabs)/orders/_components/product-snippet';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { UpdateCustomerId } from '../../sales-buddy/_actions/update-customer-id';
+import { SendOrderToAlgolia } from './send-order-to-algolia';
 
 const emailImg = imageManagerImageUrl('emailicon.png', '16w');
 const facebookImg = imageManagerImageUrl('facebook.png', '23w');
@@ -107,6 +108,7 @@ export default async function OrderConfirmation() {
                 Your order has been placed
               </p>
             </div>
+            <SendOrderToAlgolia lineItems={shippingConsignments?.[0]?.lineItems} />
             <p className="flex flex-col">
               <span className="text-[16px] font-[400] leading-[32px] xsm:tracking-[0.15px] tracking-[0.5px] text-[#353535] text-center xsm:text-left">
                 We have received your order. You will receive an email conformation at

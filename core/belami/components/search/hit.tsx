@@ -19,10 +19,13 @@ import coastalBadge from '~/public/badges/coastal.svg';
 
 import { useFormatter } from 'next-intl';
 
+export { ProductPrice } from './product-price';
+
 import { ReviewSummary } from '~/belami/components/reviews';
 import { Compare } from '~/components/ui/product-card/compare';
 import WishlistAddToList from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
 import { useWishlists } from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/hooks';
+import { ProductPrice } from './product-price';
 
 const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
 
@@ -527,10 +530,14 @@ export function Hit({
             product={{
               entityId: parseInt(hit.objectID.toString()),
               name: hit.name,
+              path: hit.url,
               sku: hit.variants?.[0]?.sku || hit.sku || '',
               brand: {
                 name: hit.brand_name,
+                path: ''
               },
+              images: [],
+              mpn: '',
               variants: [
                 {
                   id: hit.variants?.[0]?.id,
@@ -570,6 +577,34 @@ export function Hit({
               <Highlight hit={hit} attribute="name" />
             </Link>
           </h2>
+
+          <div className="mx-auto mt-2 flex flex-wrap items-center justify-center space-x-2">
+            {!!hit.on_clearance &&
+              <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
+                Clearance
+              </span>
+            }
+            <ProductPrice 
+              defaultPrice={hit?.prices?.USD || 0} 
+              defaultSalePrice={hit?.sales_prices?.USD || null} 
+              price={price}
+              salePrice={salePrice}
+              currency={currency}
+              format={format}
+              options={{
+                useAsyncMode: useAsyncMode,
+                useDefaultPrices: useDefaultPrices,
+                isLoading: isLoading,
+                isLoaded: isLoaded
+              }}
+              classNames={{
+                root: 'mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start',
+                discount: 'whitespace-nowrap font-bold text-brand-400',
+              }}
+            />
+          </div>
+
+          {/*
           {useAsyncMode && !useDefaultPrices ? (
             <div className="mx-auto mt-2 flex flex-wrap items-center justify-center space-x-2">
               {hit.on_clearance && (
@@ -683,6 +718,7 @@ export function Hit({
               </div>
             </div>
           ) : null}
+          */}
           {hit.reviews_count > 0 && (
             <ReviewSummary
               numberOfReviews={hit.reviews_count}
@@ -693,7 +729,7 @@ export function Hit({
         </div>
         <Promotion
           promotions={promotions}
-          product_id={hit.objectID}
+          product_id={Number(hit.objectID)}
           brand_id={hit.brand_id}
           category_ids={hit.category_ids}
           free_shipping={hit.free_shipping}
@@ -774,6 +810,34 @@ export function Hit({
               <Highlight hit={hit} attribute="name" />
             </Link>
           </h2>
+
+          <div className="mx-auto mt-2 flex flex-wrap items-center space-x-2">
+            {!!hit.on_clearance &&
+              <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
+                Clearance
+              </span>
+            }
+            <ProductPrice 
+              defaultPrice={hit?.prices?.USD || 0} 
+              defaultSalePrice={hit?.sales_prices?.USD || null} 
+              price={price}
+              salePrice={salePrice}
+              currency={currency}
+              format={format}
+              options={{
+                useAsyncMode: useAsyncMode,
+                useDefaultPrices: useDefaultPrices,
+                isLoading: isLoading,
+                isLoaded: isLoaded
+              }}
+              classNames={{
+                root: 'mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start',
+                discount: 'whitespace-nowrap font-bold text-brand-400',
+              }}
+            />
+          </div>
+
+          {/*
           {useAsyncMode && !useDefaultPrices ? (
             <div className="mx-auto mt-2 flex flex-wrap items-center space-x-2">
               {hit.on_clearance && (
@@ -886,6 +950,7 @@ export function Hit({
               </div>
             </div>
           ) : null}
+          */}
           {hit.reviews_count > 0 && (
             <ReviewSummary
               numberOfReviews={hit.reviews_count}
@@ -895,7 +960,7 @@ export function Hit({
           )}
           <Promotion
             promotions={promotions}
-            product_id={hit.objectID}
+            product_id={Number(hit.objectID)}
             brand_id={hit.brand_id}
             category_ids={hit.category_ids}
             free_shipping={hit.free_shipping}

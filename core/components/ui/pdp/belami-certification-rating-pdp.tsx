@@ -24,8 +24,8 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
   const t = useTranslations('certificationsAndRatings');
   const [variantCertifications, setVariantCertifications] = useState<Certification[]>([]);
   const [productCertifications, setProductCertifications] = useState<Certification[]>([]);
-  const [statusMessage, setStatusMessage] = useState<string>('');
 
+  // Helper function to validate certification
   const isValidCertification = (cert: Certification): boolean => {
     return Boolean(cert && cert.code && cert.label && cert.image);
   };
@@ -43,27 +43,24 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
             }
           : product;
 
-        const response = await getMetaFieldsByProduct(productData, 'Ratings and Certifications');
+        const response = await getMetaFieldsByProduct(productData, 'ratings_certifications');
 
-        let validProductCerts: Certification[] = [];
-        let validVariantCerts: Certification[] = [];
-
+        // Parse and validate product certifications
         if (response.productMetaField?.value) {
           try {
             const parsedProductValue: Certification[] = JSON.parse(response.productMetaField.value);
-            validProductCerts = parsedProductValue.filter(isValidCertification);
-            setProductCertifications(validProductCerts);
+            setProductCertifications(parsedProductValue.filter(isValidCertification));
           } catch (error) {
             console.error('Failed to parse product certifications:', error);
             setProductCertifications([]);
           }
         }
 
+        // Parse and validate variant certifications
         if (response.metaField?.value) {
           try {
             const parsedVariantValue: Certification[] = JSON.parse(response.metaField.value);
-            validVariantCerts = parsedVariantValue.filter(isValidCertification);
-            setVariantCertifications(validVariantCerts);
+            setVariantCertifications(parsedVariantValue.filter(isValidCertification));
           } catch (error) {
             console.error('Failed to parse variant certifications:', error);
             setVariantCertifications([]);
@@ -71,21 +68,10 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
         } else {
           setVariantCertifications([]);
         }
-
-        if (validVariantCerts.length > 0 && validProductCerts.length > 0) {
-          setStatusMessage('Found both variant and product data');
-        } else if (validVariantCerts.length > 0) {
-          setStatusMessage('Found variant data only');
-        } else if (validProductCerts.length > 0) {
-          setStatusMessage('Found product data only');
-        } else {
-          setStatusMessage('No valid certification data found');
-        }
       } catch (error) {
         console.error('Error fetching certifications:', error);
         setVariantCertifications([]);
         setProductCertifications([]);
-        setStatusMessage('Error fetching certification data');
       }
     };
 
@@ -94,6 +80,7 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
     }
   }, [product, selectedVariant]);
 
+  // Combine and deduplicate valid certifications
   const allCertifications = [
     ...new Map(
       [...variantCertifications, ...productCertifications]
@@ -102,20 +89,17 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
     ).values(),
   ];
 
+  // Don't render anything if there are no valid certifications
   if (allCertifications.length === 0) {
     return null;
   }
 
   return (
-    <div className="product-certificates mt-6 xl:mt-[2em]">
-      <h2 className="mb-3 text-center text-base text-[#002A37] xl:text-left">{t('title')}</h2>
-
-      <div className="certifications md:py-8em mx-auto grid w-[80%] grid-cols-2 items-center gap-4 md:grid-cols-4 lg:w-[100%] lg:grid-cols-4 xl:w-auto xl:grid-cols-3 xl:gap-[0.75rem_0.5em]">
+    <div className="product-certificates mt-6 xl:mt-10">
+      <h2 className="mb-4 text-center text-base text-[#002A37] xl:text-left">{t('title')}</h2>
+      <div className="certifications flex flex-wrap items-center justify-center gap-4 xl:justify-start">
         {allCertifications.map((certification: Certification, index: number) => (
-          <div
-            key={`${certification.code}-${index}`}
-            className="flex items-center gap-2 md:justify-start"
-          >
+          <div key={`${certification.code}-${index}`} className="flex items-center gap-2">
             <BcImage
               alt={certification.label}
               src={certification.image}
@@ -123,7 +107,7 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
               height={20}
               priority={true}
             />
-            <span className="text-[0.875rem]">{certification.label}</span>
+            <span className="text-sm">{certification.label}</span>
           </div>
         ))}
       </div>

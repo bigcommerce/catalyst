@@ -23,6 +23,7 @@ import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-al
 import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
 import { commonSettinngs } from '~/components/common-functions';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
+import StickyScroll, { DetailsWrapper } from './_components/sticky';
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -104,6 +105,11 @@ export default async function ProductPage(props: Props) {
     if (!params || !searchParams) {
       console.error('Missing required params:', { params, searchParams });
       return null;
+    }
+
+    const priceMaxTriggers = {
+      d: searchParams['d'],
+      source: searchParams['source']
     }
 
     const useDefaultPrices = !customerAccessToken;
@@ -242,38 +248,41 @@ export default async function ProductPage(props: Props) {
             </div>
 
             <div className="x2:w-[40em] x3:w-[42em] x4:!pl-[15em] x4:!w-[46em] xl:w-[35em] xl:pl-[12em] 2xl:w-[43em] 2xl:!pl-[11em]">
-              <Details
-                product={product}
-                collectionValue={collectionValue}
-                dropdownSheetIcon={assets.dropdownSheetIcon}
-                cartHeader={assets.cartHeader}
-                couponIcon={assets.couponIcon}
-                paywithGoogle={assets.paywithGoogle}
-                payPal={assets.payPal}
-                requestQuote={assets.requestQuote}
-                closeIcon={assets.closeIcon}
-                blankAddImg={assets.blankAddImg}
-                getAllCommonSettinngsValues={CommonSettinngsValues}
-                productImages={productImages}
-                triggerLabel1={
-                  <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#008BB7] underline underline-offset-4">
-                    Shipping Policy
-                  </p>
-                }
-                triggerLabel2={
-                  <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#008BB7] underline underline-offset-4">
-                    Return Policy
-                  </p>
-                }
-                children1={<MakeswiftPage locale={locale} path="/content/shipping-flyout" />}
-                children2={<MakeswiftPage locale={locale} path="/content/returns-flyout" />}
-              />
+              <DetailsWrapper>
+                <Details
+                  product={product}
+                  collectionValue={collectionValue}
+                  dropdownSheetIcon={assets.dropdownSheetIcon}
+                  cartHeader={assets.cartHeader}
+                  couponIcon={assets.couponIcon}
+                  paywithGoogle={assets.paywithGoogle}
+                  payPal={assets.payPal}
+                  requestQuote={assets.requestQuote}
+                  closeIcon={assets.closeIcon}
+                  blankAddImg={assets.blankAddImg}
+                  getAllCommonSettinngsValues={CommonSettinngsValues}
+                  productImages={productImages}
+                  triggerLabel1={
+                    <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#008BB7] underline underline-offset-4">
+                      Shipping Policy
+                    </p>
+                  }
+                  triggerLabel2={
+                    <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#008BB7] underline underline-offset-4">
+                      Return Policy
+                    </p>
+                  }
+                  children1={<MakeswiftPage locale={locale} path="/content/shipping-flyout" />}
+                  children2={<MakeswiftPage locale={locale} path="/content/returns-flyout" />}
+                />
+              </DetailsWrapper>
             </div>
 
             <div className="lg:col-span-2">
               <hr className="mb-4 border border-gray-200" />
               <Description product={product} />
               <hr className="mb-[55px] mt-[20px] border border-gray-200" />
+              {/*
               <CollectionProducts
                 collection={collectionValue}
                 products={collectionProducts.hits}
@@ -285,11 +294,19 @@ export default async function ProductPage(props: Props) {
                 moreLink={`/search?brand_name[0]=${product.brand?.name ?? ''}&collection[0]=${collectionValue}`}
                 useDefaultPrices={useDefaultPrices}
               />
+              */}
+              <CollectionProducts
+                collection={collectionValue}
+                products={collectionProducts.hits}
+                useDefaultPrices={useDefaultPrices}
+                priceMaxTriggers={priceMaxTriggers}
+              />
               <Promotion />
               <RelatedProducts
                 productId={product.entityId}
                 products={relatedProducts}
                 useDefaultPrices={useDefaultPrices}
+                priceMaxTriggers={priceMaxTriggers}
               />
               <Warranty product={product} />
               <SiteVibesReviews product={product} category={categoryWithBreadcrumbs} />

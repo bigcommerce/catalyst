@@ -47,7 +47,6 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
       setLoading((prev) => ({ ...prev, cost: true }));
       try {
         const data = await get_product_data(retrievedProductData.productId);
-        
         if (data.status === 200) {
           costPricingTableData(data?.data?.output);
           setLoading((prev) => ({ ...prev, cost: false }));
@@ -150,7 +149,6 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
                 const entries = skuNum?.stock_information?.split('||').map(entry => entry?.trim());
                 // Step 2: Split each entry by single pipe
                 const stockDetails = entries?.map(entry => entry?.split('|').map(item => item?.trim()));
-
                 const item = {
                   id: skuNum?.variants_sku, // Use skuNum.sku instead of hardcoded id
                   status: stockDetails,
@@ -166,16 +164,17 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
                           <div key={detailIndex} className=' w-full mb-2'> {/* Added margin-bottom for spacing */}
                             <div className=" justify-between w-full">
                               <p className="text-[14px] open-sans text-[#353535]">{details[0]} | {details[1]}</p> {/* Assuming the first item is the location */}
-                              <div className='flex justify-between items-center'>
                                 <p className="mr-2">{details[2]}</p> {/* Added margin-right for spacing */}
+                              <div className='flex justify-between items-center'>
+                                <p className="mr-2">{details[3]}</p>
                                 <p
                                   className={`p-[5px] text-sm ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
-                                  style={{ backgroundColor: details[3] }} // Assuming the fourth item is the updatedColor
+                                  style={{ backgroundColor: details[4] }} // Assuming the fourth item is the updatedColor
                                 >
                                   <span
                                     className={`font-bold ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
                                   >
-                                    {details[3]} {/* Assuming the fourth item is the updated value */}
+                                    {details[4]} {/* Assuming the fourth item is the updated value */}
                                   </span>
                                 </p>
                               </div>

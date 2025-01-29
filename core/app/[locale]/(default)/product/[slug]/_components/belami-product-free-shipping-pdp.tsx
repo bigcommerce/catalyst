@@ -24,8 +24,9 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
         setLoading(true);
         const message = await getDeliveryMessage(entityId, variantId);
         setDeliveryMessage(message);
-      } catch (err) {""} 
-      finally {
+      } catch (err) {
+        ('');
+      } finally {
         setLoading(false);
       }
     };

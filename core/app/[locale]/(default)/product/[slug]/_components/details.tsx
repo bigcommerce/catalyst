@@ -188,15 +188,14 @@ export const Details = ({
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
-  
 
   useEffect(() => {
     const handleScroll = () => {
-      setShowStickyHeader(window.scrollY > 200);
+      setShowStickyHeader(window.scrollY > 800);
     };
 
     const handleCustomScroll = (e: CustomEvent) => {
-      setShowStickyHeader(e.detail.scrollY > 200);
+      setShowStickyHeader(e.detail.scrollY > 800);
     };
 
     window.addEventListener('scroll', handleScroll);
@@ -297,7 +296,6 @@ export const Details = ({
 
   return (
     <div className="sticky z-50">
-      
       {showStickyHeader && (
         <>
           <div className="fixed left-0 right-0 top-0 z-50 hidden border-b border-gray-200 bg-white shadow-2xl xl:block">
@@ -313,14 +311,14 @@ export const Details = ({
                       className="h-full w-full object-center"
                     />
                   </div>
-                  <div className="mr-[10em] flex-1">
+                  <div className="mr-[1em] flex-1">
                     <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-[#353535]">
                       {product.name}
                     </h2>
 
-                    <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px]">
+                    <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px] text-[#353535]">
                       by{' '}
-                      <Link href={product.brand?.path ?? ''} className="underline">
+                      <Link href={product.brand?.path ?? ''} className="text-[#353535] underline">
                         {product.brand?.name}
                       </Link>
                     </div>
@@ -601,7 +599,7 @@ export const Details = ({
           </div>
           {/* msrp  */}
           {product.prices && (
-            <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
+            <div className="product-price mt-4 flex items-center gap-[0.5em] text-center lg:text-left">
               {product.prices.retailPrice?.value && product.prices.salePrice?.value ? (
                 // retailPrice, salePrice, basePrice
                 <>
@@ -802,7 +800,6 @@ export const Details = ({
 
             <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
           </div>
-
         </div>
       </ScrollContainer>
     </div>

@@ -53,6 +53,11 @@ export default async function CategoryPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
+  const priceMaxTriggers = {
+    d: searchParams['d'],
+    source: searchParams['source']
+  }
+
   const customerAccessToken = await getSessionCustomerAccessToken();
   const useDefaultPrices = !customerAccessToken;
 
@@ -88,7 +93,7 @@ export default async function CategoryPage(props: Props) {
         <MakeswiftPage snapshot={snapshot} />
       }
 
-      <Category category={category} promotions={promotions} useDefaultPrices={useDefaultPrices} />
+      <Category category={category} promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxTriggers={priceMaxTriggers} />
     </div>
   );
 }
