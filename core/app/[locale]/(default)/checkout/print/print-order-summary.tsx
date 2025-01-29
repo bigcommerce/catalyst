@@ -1,14 +1,17 @@
 'use client';
 
 import { useFormatter, useTranslations } from 'next-intl';
+import { Key } from 'react';
 import { BcImage } from '~/components/bc-image';
 
 export default function PrintOrderSummary({ data, innerRef }: { data: any, innerRef: any }) {
   const t = useTranslations('Account.Orders');
   const format = useFormatter();
+
   if (!data?.orderState) {
-    return;
+    return null; // Return null instead of undefined or nothing
   }
+
   const { orderState, summaryInfo, consignments, paymentInfo } = data;
   const shippingConsignments = consignments.shipping;
   const isMultiShippingConsignments = shippingConsignments && shippingConsignments.length > 1;
@@ -18,11 +21,13 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
   const { nonCouponDiscountTotal, couponDiscounts } = discounts;
   let regSubTotal = subtotal?.value;
   let youSave = 0;
+
   if (nonCouponDiscountTotal?.value > 0) {
     regSubTotal -= nonCouponDiscountTotal.value;
     youSave += nonCouponDiscountTotal.value;
   }
-  couponDiscounts.map(({ discountedAmount }) => {
+
+  couponDiscounts.forEach(({ discountedAmount }: any) => {
     regSubTotal -= discountedAmount.value;
     youSave += discountedAmount.value;
   });
@@ -83,12 +88,6 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
                     <div>{paymentInfo?.billingAddress?.stateOrProvince}, {paymentInfo?.billingAddress?.countryCode} {paymentInfo?.billingAddress?.postalCode}</div>
                   </div>
                 </div>
-                {/*<div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
-                  <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
-                    Payment
-                  </div>
-                  <div>*** *** *** 1234</div>
-                </div>*/}
               </div>
             </div>
             <div className="flex w-1/2 ml-[60px] flex-col gap-[3px] text-[16px] font-normal leading-[32px] tracking-[0.5px]">
@@ -105,7 +104,8 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
                     {format.number(subtotal.value, {
                       style: 'currency',
                       currency: subtotal.currencyCode,
-                    })}</div>
+                    })}
+                  </div>
                 </div>
                 {nonCouponDiscountTotal.value > 0 && (
                   <div className="flex justify-between border-b border-b-[#E8E7E7]">
@@ -118,15 +118,13 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
                     </div>
                   </div>
                 )}
-                {couponDiscounts.map(({ couponCode, discountedAmount }, index) => (
+                {couponDiscounts.map(({ couponCode, discountedAmount }: any, index: Key | null | undefined) => (
                   <div className="flex justify-between border-b border-b-[#E8E7E7]" key={index}>
                     <div>{t('orderAppliedCoupon', { code: couponCode })}</div>
                     <div>- {format.number(discountedAmount.value, {
                       style: 'currency',
                       currency: discountedAmount.currencyCode,
-                    })}
-
-                    </div>
+                    })}</div>
                   </div>
                 ))}
                 {youSave > 0 && (
@@ -154,8 +152,7 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
                   <div>{shipping.value > 0 ? format.number(shipping.value, {
                     style: 'currency',
                     currency: shipping.currencyCode,
-                  }) : 'FREE'}
-                  </div>
+                  }) : 'FREE'}</div>
                 </div>
                 {handlingCost.value > 0 && (
                   <div className="flex justify-between border-b border-b-[#E8E7E7]">
@@ -190,82 +187,67 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
             </div>
           </div>
         </div>
+
         <div className="flex flex-col gap-[30px]">
-          <div className="font-[500] text-[20px] leading-[32px] tracking-[0.15px] text-black">Items In This Order ({noOfItems})</div>
+          <div className="font-[500] text-[20px] leading-[32px] tracking-[0.15px] text-black">
+            Items In This Order ({noOfItems})
+          </div>
           <div className="flex flex-col gap-[30px]">
             <div className="flex flex-col gap-[30px]">
-              {shippingConsignments?.map((consignment, idx) => {
+              {shippingConsignments?.map((consignment: { lineItems: any; }, idx: any) => {
                 const { lineItems } = consignment;
                 return (
-                  <>
-                    {lineItems.map((shipment) => {
-                      const isImageAvailable = shipment?.defaultImage !== null;
-                      return (
-                        <div className="border border-[#cccbcb] p-[20px] [@media_print]:break-inside-avoid [@media_print]:[page-break-inside:avoid] " key={shipment?.entityId}>
-                          <div className="flex gap-[20px] justify-between items-center">
-                            <div className="flex gap-[20px] items-center flex-1">
-                              <div className="bg-[#d9d9d9]">
-                                {isImageAvailable && (
-                                  <BcImage
-                                    alt={shipment?.image?.altText || shipment?.name}
-                                    className="h-[150px] w-[150px]"
-                                    width={150}
-                                    height={150}
-                                    priority={true}
-                                    src={shipment?.image?.url}
-                                  />
-                                )}
-                                {!isImageAvailable && (
-                                  <div className="h-[150px] w-[150px]">
-                                    <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
-                                      <span className="text-center text-sm md:text-base">{t('comingSoon')}</span>
-                                    </div>
+                  lineItems.map((shipment:any) => {
+                    const isImageAvailable = shipment?.defaultImage !== null;
+                    return (
+                      <div className="border border-[#cccbcb] p-[20px] [@media_print]:break-inside-avoid [@media_print]:[page-break-inside:avoid]" key={shipment?.entityId}>
+                        <div className="flex gap-[20px] justify-between items-center">
+                          <div className="flex gap-[20px] items-center flex-1">
+                            <div className="bg-[#d9d9d9]">
+                              {isImageAvailable ? (
+                                <BcImage
+                                  alt={shipment?.image?.altText || shipment?.name}
+                                  className="h-[150px] w-[150px]"
+                                  width={150}
+                                  height={150}
+                                  priority={true}
+                                  src={shipment?.image?.url}
+                                />
+                              ) : (
+                                <div className="h-[150px] w-[150px]">
+                                  <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
+                                    <span className="text-center text-sm md:text-base">{t('comingSoon')}</span>
                                   </div>
-                                )}
-                              </div>
-                              <div className="flex-shrink-[50] flex flex-col gap-[3px]">
-                                <div className="font-normal text-[16px] leading-[32px] tracking-[0.15px] text-black">
-                                  {shipment?.name}
                                 </div>
-                                <div className="font-bold text-[14px] leading-[24px] tracking-[0.25px] text-[#7f7f7f]">
-                                  <span>SKU: ABC-1234DE</span>{' '}
-                                  {shipment?.productOptions?.map(({ name: optionName, value }, idx) => {
-                                    return (
-                                      <>
-                                        <span className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7F7F7F]" key={idx}>
-                                          {optionName}
-                                        </span>
-                                        <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
-                                          {' '}
-                                          {value}
-                                        </span>
-                                      </>
-                                    );
-                                  })}
-                                </div>
-                                <div className="font-normal text-[14px] leading-[24px] tracking-[0.25px]">QTY: {shipment?.quantity}</div>
-                              </div>
+                              )}
                             </div>
-                            <div className="flex-1 text-right flex flex-col gap-[3px]">
-                              {/*<div className="font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#1DB14B]">
-                                10% Coupon: <span>$81.17</span>
-                              </div>*/}
-                              <div className="font-normal text-[14px] leading-[24px] tracking-[0.25px]">
-                                {format.number(shipment?.subTotalListPrice.value, {
-                                  style: 'currency',
-                                  currency: shipment?.subTotalListPrice.currencyCode,
-                                })}
+                            <div className="flex-shrink-[50] flex flex-col gap-[3px]">
+                              <div className="font-normal text-[16px] leading-[32px] tracking-[0.15px] text-black">
+                                {shipment?.name}
                               </div>
-                              {/*
-                              <div>
-                                <span className="font-normal text-[14px] leading-[24px] tracking-[0.25px] line-through ">$100.20</span> <span className="font-normal text-[12px] leading-[18px] tracking-[0.4px] text-[#5c5c5c]">10% Off</span>
-                              </div>*/}
+                              <div className="font-bold text-[14px] leading-[24px] tracking-[0.25px] text-[#7f7f7f]">
+                                <span>SKU: ABC-1234DE</span>{' '}
+                                {shipment?.productOptions?.map(({ name: optionName, value }: any, idx: Key | null | undefined) => (
+                                  <span key={idx} className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                                    {optionName}: {value}
+                                  </span>
+                                ))}
+                              </div>
+                              <div className="font-normal text-[14px] leading-[24px] tracking-[0.25px]">QTY: {shipment?.quantity}</div>
+                            </div>
+                          </div>
+                          <div className="flex-1 text-right flex flex-col gap-[3px]">
+                            <div className="font-normal text-[14px] leading-[24px] tracking-[0.25px]">
+                              {format.number(shipment?.subTotalListPrice.value, {
+                                style: 'currency',
+                                currency: shipment?.subTotalListPrice.currencyCode,
+                              })}
                             </div>
                           </div>
                         </div>
-                      );
-                    })}
-                  </>
+                      </div>
+                    );
+                  })
                 )
               })}
             </div>
@@ -275,3 +257,4 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
     </div>
   );
 }
+

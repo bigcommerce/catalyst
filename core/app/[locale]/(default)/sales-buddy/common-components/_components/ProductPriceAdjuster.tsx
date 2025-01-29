@@ -1,4 +1,4 @@
-"use client"
+'use client';
 import React, { useEffect, useState } from 'react';
 import { Input } from '../Input';
 import { useRouter } from 'next/navigation';
@@ -40,7 +40,7 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   initialMarkup,
   productId,
   cartId,
-  ProductType
+  ProductType,
 }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [newCost, setNewCost] = useState<string>('');
@@ -65,7 +65,10 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
       return;
     }
 
-    if ((agentRole === 'agent' || agentRole === null) && numericValue < initialCost * initialFloor) {
+    if (
+      (agentRole === 'agent' || agentRole === null) &&
+      numericValue < initialCost * initialFloor
+    ) {
       setErrorMessage('Price cannot be less than floor price');
       return;
     }
@@ -94,7 +97,10 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
       setNewCost(value);
       const numericValue = parseFloat(value);
 
-      if ((agentRole === 'agent' || agentRole === null) && numericValue < initialCost * initialFloor) {
+      if (
+        (agentRole === 'agent' || agentRole === null) &&
+        numericValue < initialCost * initialFloor
+      ) {
         setErrorMessage('Price cannot be less than floor price');
       } else {
         setErrorMessage(null);
@@ -107,9 +113,13 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
     const isLongValue = valueString.length > 15;
 
     return (
-      <div className={`${isLongValue ? 'grid grid-cols-1' : 'grid grid-cols-2'} items-center border-b border-[#cccbcb] py-1`}>
-        <p className="text-sm font-bold tracking-wide break-words">{label}</p>
-        <p className={`text-sm font-normal tracking-wide ${isLongValue ? 'mt-1 text-left' : 'text-right'}`}>
+      <div
+        className={`${isLongValue ? 'grid grid-cols-1' : 'grid grid-cols-2'} items-center border-b border-[#cccbcb] py-1`}
+      >
+        <p className="break-words text-sm font-bold tracking-wide">{label}</p>
+        <p
+          className={`text-sm font-normal tracking-wide ${isLongValue ? 'mt-1 text-left' : 'text-right'}`}
+        >
           {valueString}
         </p>
       </div>
@@ -122,18 +132,27 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
       <ProductInfoRow label="SKU" value={sku} />
       <ProductInfoRow label="OEM SKU" value={oem_sku} />
       <ProductInfoRow label="Cost" value={initialCost || '0000.00'} />
-      <ProductInfoRow label="Floor ($)" value={initialFloor ? initialCost * initialFloor : '0000.00'} />
-      <ProductInfoRow label="Markup" value={initialMarkup ? initialCost * initialMarkup : '0000.00'} />
+      <ProductInfoRow
+        label="Floor ($)"
+        value={initialFloor ? initialCost * initialFloor : '0000.00'}
+      />
+
+      {/* <ProductInfoRow label="Markup" value={initialMarkup ? productPrice / initialCost  : '0000.00'} /> */}
+
+      <ProductInfoRow
+        label="Markup"
+        value={initialCost ? (productPrice / initialCost).toFixed(2) : '0000.00'}
+      />
       <ProductInfoRow label="Floor Markup" value={initialFloor || '00'} />
 
       {!isEditing ? (
         <button
           onClick={() => setIsEditing(true)}
-          className="w-full rounded-sm bg-[#1DB14B] px-[10px] py-[5px] h-[42px]"
+          className="h-[42px] w-full rounded-sm bg-[#1DB14B] px-[10px] py-[5px]"
         >
           <div className="flex items-center justify-center">
             <EditIcon />
-            <span className="text-[14px] font-medium tracking-[1.25px] leading-[32px] items-center">
+            <span className="items-center text-[14px] font-medium leading-[32px] tracking-[1.25px]">
               ADJUST PRICE
             </span>
           </div>
@@ -148,9 +167,7 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
             className="text-black-700 mb-4 w-full rounded border-none bg-[#FFFFFF] p-2"
             placeholder="$0.00"
           />
-          {errorMessage && (
-            <div className="text-red-500 text-center m-2">{errorMessage}</div>
-          )}
+          {errorMessage && <div className="m-2 text-center text-red-500">{errorMessage}</div>}
 
           <div className="mt-[10px] flex items-center justify-center">
             <button
@@ -162,7 +179,10 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
             <button
               className="relative mb-2 w-full rounded bg-[#1DB14B] px-4 py-2 text-white"
               onClick={handleSubmit}
-              disabled={(agentRole === 'agent' || agentRole === null) && parseFloat(newCost) < initialCost * initialFloor}
+              disabled={
+                (agentRole === 'agent' || agentRole === null) &&
+                parseFloat(newCost) < initialCost * initialFloor
+              }
             >
               {loading && (
                 <div className="absolute inset-0 flex items-center justify-center">
