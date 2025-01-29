@@ -74,8 +74,8 @@ export const getDeliveryMessage = async (
   );
 
   if ( metaFields.data.length > 0) {
-    const deliveryMessage = metaFields.data
-
+    const deliveryMessage:any = metaFields.data
+    let deliveryMessageResponse:any = '';
     if (deliveryMessage) {
       const deliveryKey = deliveryMessage?.[0]?.['value']?.split('|'); //split by "|"
       const result = deliveryKey?.map((item: any) => {
@@ -83,38 +83,39 @@ export const getDeliveryMessage = async (
         const id = parseInt(parts[0].trim(), 10); // Get the ID
         const value = parts.slice(1).join(':').trim().replace(/: Backorder/g, '').trim(); //trimed ":Backorder" add in value
         return { id, value };
-    }) || [];
+      }) || [];
 
       const parsedChannelId = channelId ? parseInt(channelId, 10) : null;
       const matchedDelivery = parsedChannelId !== null ? result.find((item: any) => item.id === parsedChannelId) : null;
 
       if (matchedDelivery) {
-        return matchedDelivery.value; // Return the value of the matched delivery
+        deliveryMessageResponse = matchedDelivery.value; // Return the value of the matched delivery
       }
+      return deliveryMessageResponse;
     }
   }
 
-  metaFields = await getMetaFieldsByProduct(entityId, "delivery_message");
-  if (metaFields && metaFields.data && metaFields.data.length > 0) {
-    const deliveryMessage = metaFields.data
+  // metaFields = await getMetaFieldsByProduct(entityId, "delivery_message");
+  // if (metaFields && metaFields.data && metaFields.data.length > 0) {
+  //   const deliveryMessage = metaFields.data
 
-    if (deliveryMessage) {
-      const deliveryKey = deliveryMessage?.[0]?.['value']?.split('|');
-      const result = deliveryKey?.map((item: any) => {
-        const [id, value] = item.split(':').map((str: any) => str.trim()); // Split and trim
-        return { id: parseInt(id, 10), value };
-      });
+  //   if (deliveryMessage) {
+  //     const deliveryKey = deliveryMessage?.[0]?.['value']?.split('|');
+  //     const result = deliveryKey?.map((item: any) => {
+  //       const [id, value] = item.split(':').map((str: any) => str.trim()); // Split and trim
+  //       return { id: parseInt(id, 10), value };
+  //     });
 
-      const parsedChannelId = channelId ? parseInt(channelId, 10) : null;
-      const matchedDelivery = parsedChannelId !== null ? result.find((item: any) => item.id === parsedChannelId) : null;
+  //     const parsedChannelId = channelId ? parseInt(channelId, 10) : null;
+  //     const matchedDelivery = parsedChannelId !== null ? result.find((item: any) => item.id === parsedChannelId) : null;
 
-      if (matchedDelivery) {
-        return matchedDelivery.value; 
-      }
-    }
-  }
+  //     if (matchedDelivery) {
+  //       return matchedDelivery.value; 
+  //     }
+  //   }
+  // }
 
-  return null;
+  // return null;
 };
 
 export const GetProductVariantMetaFields = async (
