@@ -270,9 +270,14 @@ export const CartItem = async ({
   const retailPrice = product?.catalogProductWithOptionSelections?.prices?.retailPrice;
   const salePrice = product?.catalogProductWithOptionSelections?.prices?.salePrice;
   const basePrice = product?.catalogProductWithOptionSelections?.prices?.basePrice;
-
+  
   return (
     <li className="mb-[24px] border border-gray-200">
+      {getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
+        <div className='bg-[#E7F5F8] w-full flex justify-center'>
+          <NoShipCanada description={getAllCommonSettinngsValues?.[brandId]?.no_ship_canada_message} />
+        </div>
+      }
       <div className="">
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
           <div className="cart-main-img mx-auto h-[295px] w-[295px] flex-none border border-gray-300 sm:h-[200px] sm:w-[200px] md:mx-0">

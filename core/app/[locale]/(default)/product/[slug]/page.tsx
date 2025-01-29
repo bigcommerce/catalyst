@@ -222,8 +222,8 @@ export default async function ProductPage(props: Props) {
 
     const productImages = removeEdgesAndNodes(product.images);
     var brandId = product?.brand?.entityId;
-    var CommonSettinngsValues = {};
-    // await commonSettinngs([brandId])
+    var CommonSettinngsValues =  await commonSettinngs([brandId])
+    
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-8">
         <ProductProvider getMetaFields={productMetaFields}>

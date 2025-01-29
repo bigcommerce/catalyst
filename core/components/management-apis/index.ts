@@ -422,29 +422,32 @@ export const GetProductImagesById = async (id: Number) => {
     console.error(error);
   }
 };
-export const getCommonSettingByBrandChannel = async (brand) => {
-  const commonSettingUrl=process?.env?.COMMON_SETTING_URL
+export const getCommonSettingByBrandChannel = async (brand: any) => {
+  const commonSettingUrl = process?.env?.COMMON_SETTING_URL;
+
   const postData = {
     brand_ids: brand,
     channel_id: process?.env?.BIGCOMMERCE_CHANNEL_ID,
   };
-  if (!commonSettingUrl) { return { output: [] }; }
-    try {
-      const response = await fetch(`${commonSettingUrl}api/get-comman-settings`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-        cache: 'no-store',
-      });
+  if (!commonSettingUrl) {
+    return { output: [] };
+  }
+  try {
+    const response = await fetch(`${commonSettingUrl}api/get-comman-settings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+    });
+    
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error(error);
-      throw error; // Re-throw the error to handle it in the calling component
-    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error; // Re-throw the error to handle it in the calling component
+  }
 };
 
 export const addCartLevelDiscount = async (checkoutId: string, postData: any) => {
