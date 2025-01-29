@@ -127,7 +127,7 @@ export default async function Cart({ params }: Props) {
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
     // ...cart.lineItems.customItems,
-  ];  
+  ];
   let cartQty = lineItems?.reduce(function (total: number, cartItems: any) {
     return total + cartItems?.quantity;
   }, 0);
@@ -136,7 +136,7 @@ export default async function Cart({ params }: Props) {
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
   let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
-  
+
   let updatedLineItemInfo: any = [];
   let updatedLineItemWithoutAccessories: any = [];
   let accessoriesSkuArray: any = [];
@@ -151,9 +151,7 @@ export default async function Cart({ params }: Props) {
             !accessoriesSkuArray?.includes(getInfo?.variantId)
               ? accessoriesSkuArray.push(getInfo?.variantId)
               : '';
-            let accessoriesInfo = lineItems?.find(
-              (line: any) => line?.variantEntityId == getInfo?.variantId,
-            );
+            let accessoriesInfo = lineItems?.find((line: any) => line?.variantEntityId == getInfo?.variantId);
             if (accessoriesInfo) {
               let accessSpreadData: any = { ...accessoriesInfo };
               if (accessSpreadData) {
@@ -177,8 +175,8 @@ export default async function Cart({ params }: Props) {
     getCartMetaFields = [];
     updatedLineItemInfo = lineItems;
   }
-  updatedLineItemInfo?.forEach((item: any, index: number) => {
-    if(!accessoriesSkuArray?.includes(item?.variantEntityId)) {
+  updatedLineItemInfo?.forEach((item: any) => {
+    if (!accessoriesSkuArray?.includes(item?.variantEntityId)) {
       updatedLineItemWithoutAccessories.push(item);
     }
   });
@@ -212,7 +210,7 @@ export default async function Cart({ params }: Props) {
         </div>
       </div>
       <div className="text-center lg:hidden">
-        <ScrollButton targetId="order-summary"/>
+        <ScrollButton targetId="order-summary" />
       </div>
 
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
@@ -284,26 +282,26 @@ export default async function Cart({ params }: Props) {
           <AmazonpayButton cartId={cartId} icon={amazonPayIcon} />
           <div className="pt-1"></div>
 
-          
-          <Flyout
-              triggerLabel={
-                <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
-                  Shipping Policy
-                </p>
-              }
-            >
-              <MakeswiftPage locale={locale} path="/content/shipping-flyout" />
-            </Flyout>
-          <div>
+
           <Flyout
             triggerLabel={
               <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
-                Return Policy
+                Shipping Policy
               </p>
             }
           >
-            <MakeswiftPage locale={locale} path="/content/returns-flyout" />
+            <MakeswiftPage locale={locale} path="/content/shipping-flyout" />
           </Flyout>
+          <div>
+            <Flyout
+              triggerLabel={
+                <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
+                  Return Policy
+                </p>
+              }
+            >
+              <MakeswiftPage locale={locale} path="/content/returns-flyout" />
+            </Flyout>
           </div>
           <p className="flex items-center pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
             <BcImage

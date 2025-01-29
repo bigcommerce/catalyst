@@ -67,6 +67,14 @@ export type ProductSnippetFragment = Omit<
   productId: number;
   brand: string | null;
   quantity: number;
+  accessories?: Array<{
+    name: string;
+    details: string;
+    prodQuantity: number;
+    entityId: number;
+    cartId: string;
+    lineItemId: number;
+  }>;
   productOptions?: Array<{
     __typename: string;
     name: string;
@@ -85,7 +93,6 @@ export const assembleProductData = (orderItem: ResultOf<typeof OrderItemFragment
     productOptions,
     baseCatalogProduct,
   } = orderItem;
-
   return {
     entityId,
     productId,
@@ -110,6 +117,7 @@ export const assembleProductData = (orderItem: ResultOf<typeof OrderItemFragment
         max: subTotalListPrice,
       },
     },
+    accessories: orderItem.accessories || [],
   };
 };
 
@@ -170,10 +178,8 @@ export const ProductSnippet = async ({
   productSize,
   from,
 }: Props) => {
-//    const cookieStore = await cookies();
-//     const cartId = cookieStore.get('cartId')?.value ||"";
-const cartId = "0fc2508f-f0aa-4ff6-b59a-821fbc5187f1";
-  const { name, defaultImage, brand, productId, prices } = product;
+  const { name, defaultImage, brand, productId, prices, accessories } = product;
+
   const format = await getFormatter();
   const t = await getTranslations('Product.Details');
   const price = pricesTransformer(prices, format);
@@ -184,74 +190,9 @@ const cartId = "0fc2508f-f0aa-4ff6-b59a-821fbc5187f1";
     variables: { entityId: productId },
     fetchOptions: { next: { revalidate } },
   });
-console.log("product------", product);
   const { path = '' } = data.site.product ?? {};
 
-
-
-
-  let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
-console.log("getCartMetaFields", getCartMetaFields);
-
-let updatedLineItemInfo: any = [];
-let updatedLineItemWithoutAccessories: any = [];
-let accessoriesSkuArray: any = [];
-
-// Ensure getCartMetaFields is an array
-if (Array.isArray(getCartMetaFields) && getCartMetaFields?.length > 0) {
-  // Ensure product is an array before forEach
-  if (Array.isArray(product)) {
-    product?.forEach((item: any) => {
-      let accessoriesData: any = [];
-      let findAccessories = getCartMetaFields?.find((acces: any) => acces?.key == item?.entityId);
-      console.log("item.entitId", item?.entitId);
-      if (findAccessories) {
-        let getAccessoriesInfo = findAccessories?.value ? JSON?.parse(findAccessories?.value) : [];
-        if (Array.isArray(getAccessoriesInfo) && getAccessoriesInfo?.length > 0) {
-          getAccessoriesInfo?.forEach((getInfo: any) => {
-            if (!accessoriesSkuArray?.includes(getInfo?.variantId)) {
-              accessoriesSkuArray.push(getInfo?.variantId);
-            }
-            let accessoriesInfo = product?.find(
-              (line: any) => line?.variantEntityId == getInfo?.variantId,
-            );
-            if (accessoriesInfo) {
-              let accessSpreadData: any = { ...accessoriesInfo };
-              accessSpreadData.prodQuantity = getInfo.quantity;
-              accessSpreadData.cartId = cartId;
-              accessSpreadData.lineItemId = item?.entityId;
-              accessoriesData.push(accessSpreadData);
-            }
-          });
-        }
-      }
-      if (accessoriesData?.length > 0) {
-        item['accessories'] = accessoriesData;
-      }
-      if (!accessoriesSkuArray?.includes(item?.variantEntityId)) {
-        updatedLineItemInfo.push(item);
-      }
-    });
-  } else {
-    console.error("Product is not an array");
-  }
-} else {
-  // Fallback when getCartMetaFields is empty or not an array
-  getCartMetaFields = [];
-  updatedLineItemInfo = Array.isArray(product) ? product : [];
-}
-
-// Ensure updatedLineItemInfo is an array
-updatedLineItemInfo?.forEach((item: any, index: number) => {
-  if (!accessoriesSkuArray?.includes(item?.variantEntityId)) {
-    updatedLineItemWithoutAccessories.push(item);
-  }
-});
-
-
-
   //let productMpn: string = retrieveMpnData(product, product?.)
-
   return (
     <div className="flex flex-col items-start gap-[15px] border border-[#CCCBCB] p-0">
       {from != 'order' && (
@@ -261,8 +202,8 @@ updatedLineItemInfo?.forEach((item: any, index: number) => {
           </button>
         </div>
       )}
-      <div className={`flex w-full flex-row items-center justify-between p-0 px-[20px] pb-[20px] ${from == 'order' ? 'mt-[20px]' : ''}`}>
-        <div className={`flex-row items-center gap-[20px] p-0  ${from == 'order' ? 'w-full pr-0 grid [grid-template-columns:88px_auto] sm:flex' : 'w-2/3 pr-[20px] flex'}` }>
+      <div className={`flex w-full flex-row items-center justify-between p-0 px-[10px] pb-[10px] ${from == 'order' ? 'mt-[10px]' : ''}`}>
+        <div className={`flex-row items-center gap-[20px] p-0  ${from == 'order' ? 'w-full pr-0 grid [grid-template-columns:88px_auto] sm:flex' : 'w-2/3 pr-[20px] flex'}`}>
           <div>
             {isImageAvailable && (
               <BcImage
@@ -275,14 +216,14 @@ updatedLineItemInfo?.forEach((item: any, index: number) => {
               />
             )}
             {!isImageAvailable && (
-              <div className="h-[150px] w-[150px]">
+              <div className={`${from == 'order' ? "h-[88px] w-[88px] sm:h-[150px] sm:w-[150px]" : 'h-[150px] w-[150px]'}`}>
                 <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
                   <span className="text-center text-sm md:text-base">{t('comingSoon')}</span>
                 </div>
               </div>
             )}
           </div>
-          <div className="flex-shrink-[100]">
+          <div className="flex-shrink-[100] [flex-grow:1;]">
             <div className="items-center text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
               {name}
             </div>
@@ -335,6 +276,49 @@ updatedLineItemInfo?.forEach((item: any, index: number) => {
           </div>
         )}
       </div>
+      {accessories && accessories.length > 0 && (
+        <div className="">
+          <ul className="list-disc px-[10px] pt-[10px]">
+            {accessories.map((accessory, index) => (
+              <li key={index} className="text-[14px] pb-[10px] list-none leading-[24px] text-[#353535]">
+                <div className='bg-[#F3F4F5] flex flex-col'>
+                  <div className='flex-row items-center gap-[20px] p-0 w-full pr-0 grid [grid-template-columns:88px_auto] sm:flex'>
+                    <div>
+                      {isImageAvailable && (
+                        <BcImage
+                          alt={accessory?.name}
+                          className={`${from == 'order' ? "h-[75px] w-[75px] p-[10px] sm:h-[150px] sm:w-[150px]" : 'h-[150px] w-[150px]'}`}
+                          width={150}
+                          height={150}
+                          priority={imagePriority}
+                          src={accessory?.image?.url}
+                        />
+                      )}
+                      {!isImageAvailable && (
+                        <div className="h-[75px] w-[75px]">
+                          <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
+                            <span className="text-center text-sm md:text-base">{t('comingSoon')}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-shrink-[100] [flex-grow:1;]">
+                      <div className="items-center text-[16px] font-normal pr-[10px] leading-[32px] tracking-[0.15px] text-black">
+                        {accessory.name}
+                      </div>
+                      <div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`text-[14px] p-[10px] leading-[24px] tracking-[0.25px] text-[#353535] ${from == 'order' ? 'font-normal' : 'font-bold'}`}>
+                    QTY: {accessory?.quantity}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };
