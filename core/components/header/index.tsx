@@ -70,7 +70,8 @@ const getGuestShopperLinks = cache(async () => {
    To show a full list of categories, modify the `slice` method to remove the limit.
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
-  const categoryTree = data.site.categoryTree.slice(0, 6);
+  // const categoryTree = data.site.categoryTree.slice(0, 6);
+  const categoryTree = data.site.categoryTree;
 
   return categoryTree.map(({ name, path, children }) => ({
     label: name,
@@ -99,7 +100,8 @@ const getCustomerLinks = cache(async () => {
    To show a full list of categories, modify the `slice` method to remove the limit.
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
-  const categoryTree = data.site.categoryTree.slice(0, 6);
+  // const categoryTree = data.site.categoryTree.slice(0, 6);
+  const categoryTree = data.site.categoryTree;
 
   return categoryTree.map(({ name, path, children }) => ({
     label: name,
@@ -168,8 +170,6 @@ export const Header = async () => {
 
   const customerAccessToken = await getSessionCustomerAccessToken();
   const links = customerAccessToken ? getCustomerLinks() : await getGuestShopperLinks();
-
-  console.log('links', links);
 
   const logo = data.settings ? logoTransformer(data.settings) : '';
 
