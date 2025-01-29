@@ -411,6 +411,9 @@ export const CartItem = async ({
                             return null;
                         }
                       })}
+                      <div className="flex justify-start mt-[10px] font-normal text-sm leading-6 tracking-[0.25px]">
+                        <span> Free Delivery</span>
+                      </div>
                       {product.variantEntityId && (
                         <FreeDelivery
                           entityId={product.productEntityId}
