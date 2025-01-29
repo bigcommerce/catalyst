@@ -191,9 +191,7 @@ export default async function Cart({ params }: Props) {
   var getBrandIds = lineItems?.map((item: any) => {
     return item?.baseCatalogProduct?.brand?.entityId;
   });
-  var getAllCommonSettinngsValues = {};
-  // await commonSettinngs([getBrandIds])
-
+  var getAllCommonSettinngsValues = await commonSettinngs(getBrandIds)
   //let checkZeroTax: any = await zeroTaxCalculation(data.site);
 
   return (
@@ -238,6 +236,7 @@ export default async function Cart({ params }: Props) {
 
       <div className="cart-right-side-details px-18 w-full pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
         <ul className="cart-details-item col-span-2 lg:w-full">
+
           {updatedLineItemWithoutAccessories.map((product: any) => (
             <CartItem
               brandId={product?.baseCatalogProduct?.brand?.entityId}

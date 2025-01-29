@@ -714,7 +714,7 @@ export const Details = ({
             {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
               getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
                 <NoShipCanada
-                  description={'Canadian shipping note:This product cannot ship to Canada'}
+                description={getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message}
                 />
               )}
           </div>
