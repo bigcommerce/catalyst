@@ -15,7 +15,7 @@ export const getPriceMaxRules = async (
         activation_code: triggers.d || triggers.source,
       }),
       cache: 'force-cache',
-      //next: { revalidate: 3600 }
+      next: { revalidate: 3600 }
     });
   
     const data = await response.json();
