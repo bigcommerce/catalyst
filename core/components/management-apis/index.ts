@@ -94,28 +94,7 @@ export const getDeliveryMessage = async (
       return deliveryMessageResponse;
     }
   }
-
-  // metaFields = await getMetaFieldsByProduct(entityId, "delivery_message");
-  // if (metaFields && metaFields.data && metaFields.data.length > 0) {
-  //   const deliveryMessage = metaFields.data
-
-  //   if (deliveryMessage) {
-  //     const deliveryKey = deliveryMessage?.[0]?.['value']?.split('|');
-  //     const result = deliveryKey?.map((item: any) => {
-  //       const [id, value] = item.split(':').map((str: any) => str.trim()); // Split and trim
-  //       return { id: parseInt(id, 10), value };
-  //     });
-
-  //     const parsedChannelId = channelId ? parseInt(channelId, 10) : null;
-  //     const matchedDelivery = parsedChannelId !== null ? result.find((item: any) => item.id === parsedChannelId) : null;
-
-  //     if (matchedDelivery) {
-  //       return matchedDelivery.value; 
-  //     }
-  //   }
-  // }
-
-  // return null;
+  return null;
 };
 
 export const GetProductVariantMetaFields = async (

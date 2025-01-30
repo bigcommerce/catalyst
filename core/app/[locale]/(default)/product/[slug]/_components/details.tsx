@@ -331,28 +331,28 @@ export const Details = ({
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
-                        <div className="inline text-[14px] font-normal">
-                          {productOptions
-                            .filter((option) => option.__typename === 'MultipleChoiceOption')
-                            .map((option, index, filteredArray) => {
-                              if (option.__typename === 'MultipleChoiceOption') {
-                                const selectedValue = getSelectedValue(
-                                  option as MultipleChoiceOption,
-                                );
-                                return (
-                                  <span key={option.entityId}>
-                                    <span className="font-bold">{option.displayName}:</span>
-                                    <span className="text-[15px]"> {selectedValue}</span>
-                                    {index < filteredArray.length - 1 && (
-                                      <span className="mx-1">|</span>
-                                    )}
-                                  </span>
-                                );
-                              }
-                              return null;
-                            })}
-                        </div>
-                      )}
+                          <div className="inline text-[14px] font-normal">
+                            {productOptions
+                              .filter((option) => option.__typename === 'MultipleChoiceOption')
+                              .map((option, index, filteredArray) => {
+                                if (option.__typename === 'MultipleChoiceOption') {
+                                  const selectedValue = getSelectedValue(
+                                    option as MultipleChoiceOption,
+                                  );
+                                  return (
+                                    <span key={option.entityId}>
+                                      <span className="font-bold">{option.displayName}:</span>
+                                      <span className="text-[15px]"> {selectedValue}</span>
+                                      {index < filteredArray.length - 1 && (
+                                        <span className="mx-1">|</span>
+                                      )}
+                                    </span>
+                                  );
+                                }
+                                return null;
+                              })}
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -460,9 +460,8 @@ export const Details = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
-              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-            } px-[20px] pt-[20px]`}
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+              } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
@@ -611,7 +610,8 @@ export const Details = ({
 
           <Coupon couponIcon={couponIcon} />
 
-          <div className="free-shipping-detail mb-[25px] text-center xl:text-left">
+          <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
+              <span> Free Delivery</span>
             {selectedVariantId && (
               <FreeDelivery
                 entityId={product.entityId}

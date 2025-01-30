@@ -284,7 +284,9 @@ export const ProductFlyout = ({
               </Dialog.Content>
               )}
               
-              {variantProductData && variantProductData?.length > 0 && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories  && (
+              {variantProductData && variantProductData?.length > 0 
+              // && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories  
+              && (
                 <>
                   <hr className="my-[20px] border-[#93cfa1]" />
                   <div className="pop-up-text flex flex-col gap-4">
