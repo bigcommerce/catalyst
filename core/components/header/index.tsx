@@ -1,3 +1,4 @@
+import { cookies } from 'next/headers';
 import { getLocale, getTranslations } from 'next-intl/server';
 import PLazy from 'p-lazy';
 import { cache } from 'react';
@@ -70,8 +71,7 @@ const getGuestShopperLinks = cache(async () => {
    To show a full list of categories, modify the `slice` method to remove the limit.
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
-  // const categoryTree = data.site.categoryTree.slice(0, 6);
-  const categoryTree = data.site.categoryTree;
+  const categoryTree = data.site.categoryTree.slice(0, 6);
 
   return categoryTree.map(({ name, path, children }) => ({
     label: name,
@@ -100,8 +100,7 @@ const getCustomerLinks = cache(async () => {
    To show a full list of categories, modify the `slice` method to remove the limit.
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
-  // const categoryTree = data.site.categoryTree.slice(0, 6);
-  const categoryTree = data.site.categoryTree;
+  const categoryTree = data.site.categoryTree.slice(0, 6);
 
   return categoryTree.map(({ name, path, children }) => ({
     label: name,
@@ -179,6 +178,8 @@ export const Header = async () => {
     return currencyCode ?? defaultCurrency?.id;
   });
 
+  console.log('prerender', logo, links, currencies, locales);
+
   return (
     <HeaderSection
       navigation={{
@@ -201,6 +202,7 @@ export const Header = async () => {
         localeAction: switchLocale,
         currencies,
         activeCurrencyId: PLazy.from(getActiveCurrencyId),
+        // activeCurrencyId,
         currencyAction: switchCurrency,
       }}
     />
