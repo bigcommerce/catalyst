@@ -1,4 +1,3 @@
-import { cookies } from 'next/headers';
 import { getLocale, getTranslations } from 'next-intl/server';
 import PLazy from 'p-lazy';
 import { cache } from 'react';
@@ -61,33 +60,7 @@ const getLayoutData = cache(async () => {
   return readFragment(HeaderFragment, response).site;
 });
 
-const getGuestShopperLinks = cache(async () => {
-  const { data } = await client.fetch({
-    document: GetLinksQuery,
-    fetchOptions: { next: { revalidate } },
-  });
-
-  /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
-   To show a full list of categories, modify the `slice` method to remove the limit.
-   Will require modification of navigation menu styles to accommodate the additional categories.
-   */
-  const categoryTree = data.site.categoryTree.slice(0, 6);
-
-  return categoryTree.map(({ name, path, children }) => ({
-    label: name,
-    href: path,
-    groups: children.map((firstChild) => ({
-      label: firstChild.name,
-      href: firstChild.path,
-      links: firstChild.children.map((secondChild) => ({
-        label: secondChild.name,
-        href: secondChild.path,
-      })),
-    })),
-  }));
-});
-
-const getCustomerLinks = cache(async () => {
+const getLinks = cache(async () => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
@@ -167,9 +140,6 @@ export const Header = async () => {
     : [];
   const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
 
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  const links = customerAccessToken ? getCustomerLinks() : await getGuestShopperLinks();
-
   const logo = data.settings ? logoTransformer(data.settings) : '';
 
   const getActiveCurrencyId = cache(async () => {
@@ -189,7 +159,7 @@ export const Header = async () => {
         searchLabel: t('Icons.search'),
         searchParamName: 'term',
         searchAction: search,
-        links,
+        links: PLazy.from(getLinks),
         logo,
         mobileMenuTriggerLabel: t('toggleNavigation'),
         openSearchPopupLabel: t('Search.openSearchPopup'),
@@ -200,7 +170,6 @@ export const Header = async () => {
         localeAction: switchLocale,
         currencies,
         activeCurrencyId: PLazy.from(getActiveCurrencyId),
-        // activeCurrencyId,
         currencyAction: switchCurrency,
       }}
     />
