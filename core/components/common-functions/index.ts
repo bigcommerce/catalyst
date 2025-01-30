@@ -389,7 +389,7 @@ export const calculateProductPrice = async (products: any ) =>  {
     const retailPrice = prices?.retailPrice?.value;
     const salePrice = prices?.salePrice?.value;
     const basePrice = prices?.basePrice?.value;
-    const currencyCode = prices?.basePrice?.currencyCode;
+   // const currencyCode = prices?.basePrice?.currencyCode;
 
     let originalPrice = 0;
     let updatedPrice = 0;
@@ -419,7 +419,6 @@ export const calculateProductPrice = async (products: any ) =>  {
       UpdatePriceForMSRP: {
         originalPrice,
         updatedPrice,
-        currencyCode,
         discount,
         hasDiscount: discount > 0,
       },

@@ -105,6 +105,7 @@ export type ProductRecord = {
 
 type HitProps = {
   hit: AlgoliaHit<ProductRecord>,
+  priceMaxRules?: any,
   components: AutocompleteComponents,
   insights?: any,
   useDefaultPrices?: boolean,
@@ -137,6 +138,7 @@ function debouncePromise(fn: any, time: number) {
 
 function ProductItem({
   hit,
+  priceMaxRules = null,
   components,
   insights,
   useDefaultPrices = false,
@@ -200,6 +202,7 @@ function ProductItem({
             defaultSalePrice={hit?.sales_prices?.USD || null} 
             price={price}
             salePrice={salePrice}
+            priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(hit?.brand_id)) || (r.skus && r.skus.includes(hit?.sku)))}
             currency={currency}
             format={format}
             options={{
@@ -376,24 +379,28 @@ function getDiscount(price: number, salePrice: number): number | null {
 }
 
 function getCookieValue(name: string): string | null {
-  const cookies = document.cookie.split('; ');
-  for (const cookie of cookies) {
-      const [cookieName, cookieValue] = cookie.split('=');
-      if (cookieName === name && cookieValue) {
-          return decodeURIComponent(cookieValue);
-      }
+  if (typeof document !== 'undefined') {
+    const cookies = document.cookie.split('; ');
+    for (const cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.split('=');
+        if (cookieName === name && cookieValue) {
+            return decodeURIComponent(cookieValue);
+        }
+    }
   }
   return null;
 }
 
-export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPrices?: boolean }) {
+export function AutocompleteSearch({ useDefaultPrices = false, priceMaxRules }: { useDefaultPrices?: boolean, priceMaxRules?: any }) {
 
+  /*
   const searchParams = useSearchParams();
 
-  const priceMaxTriggers = {
-    d: getCookieValue('d') || searchParams.get('d'),
-    source: getCookieValue('source') || searchParams.get('source')
-  }
+  const priceMaxCookieValue = getCookieValue('pmx');
+  const priceMaxTriggers = priceMaxCookieValue 
+    ? JSON.parse(atob(priceMaxCookieValue)) 
+    : undefined;
+  */
 
   const containerRef = useRef(null);
   const panelRoot = useRef(null);
@@ -641,6 +648,7 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                     hit={item as any}
                     components={components}
                     insights={(state?.context?.algoliaInsightsPlugin as any).insights}
+                    priceMaxRules={priceMaxRules}
                     useDefaultPrices={useDefaultPrices}
                     price={
                       item.sku &&

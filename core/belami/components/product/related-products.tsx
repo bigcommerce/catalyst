@@ -35,7 +35,7 @@ interface Props {
   productId: number,
   products: any[],
   useDefaultPrices?: boolean,
-  priceMaxTriggers?: any
+  priceMaxRules?: any
 }
 
 function getDiscount(price: number, sale: number): number | null {
@@ -67,7 +67,7 @@ function ColorSwatches({ variants, onImageClick }: any) {
   )
 }
 
-function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = null, isLoading = false, isLoaded = false }: any) {
+function CustomItem({ hit, priceMaxRules = null, useDefaultPrices = false, price = null, salePrice = null, isLoading = false, isLoaded = false }: any) {
 
   const format = useFormatter();
   const currency = 'USD';
@@ -107,6 +107,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
               defaultSalePrice={hit?.sales_prices?.USD || null} 
               price={price}
               salePrice={salePrice}
+              priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(hit?.brand_id)) || (r.skus && r.skus.includes(hit?.sku)))}
               currency={currency}
               format={format}
               options={{
@@ -178,7 +179,7 @@ function CustomItem({ hit, useDefaultPrices = false, price = null, salePrice = n
   );
 }
 
-export function RelatedProducts({ productId, products, useDefaultPrices = false, priceMaxTriggers }: Props) {
+export function RelatedProducts({ productId, products, useDefaultPrices = false, priceMaxRules }: Props) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -232,6 +233,7 @@ export function RelatedProducts({ productId, products, useDefaultPrices = false,
           <CarouselItem className="basis-full sm:basis-1/2 md:basis-1/3 lg:basis-1/3 xl:basis-1/4 2xl:basis-1/5" key={item.objectID}>
           <CustomItem 
             hit={item} 
+            priceMaxRules={priceMaxRules}
             useDefaultPrices={useDefaultPrices}
             price={
               item.sku && prices && prices[item.sku] && prices[item.sku].price

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useHits } from 'react-instantsearch';
 import { Hit } from './hit';
 
-export function Hits({ hitComponent, view, useDefaultPrices, promotions, priceMaxTriggers, ...props }: any) {
+export function Hits({ hitComponent, view, useDefaultPrices, promotions, priceMaxRules, ...props }: any) {
   const { items, sendEvent } = useHits(props);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -83,7 +83,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, priceMa
               onClick={() => sendEvent('click', hit, 'Hit Clicked')}
               onAuxClick={() => sendEvent('click', hit, 'Hit Clicked')}
             >
-              <Hit hit={hit as any} promotions={promotions} view={view} />
+              <Hit hit={hit as any} promotions={promotions} priceMaxRules={priceMaxRules} view={view} />
             </li>
           ))}
         </ol>
@@ -92,7 +92,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, priceMa
   );
 }
 
-export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, priceMaxTriggers, ...props }: any) {
+export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, priceMaxRules, ...props }: any) {
   const { items, sendEvent } = useHits(props);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -101,8 +101,6 @@ export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, pr
   const [cachedPrices, setCachedPrices] = useState({} as any);
 
   const skus: string[] = items.map((hit: any) => hit.sku);
-
-  alert('/api/prices/?skus=' + skus.join(',') + (priceMaxTriggers?.d ? '&d=' + priceMaxTriggers?.d : '') + (priceMaxTriggers?.source ? '&source=' + priceMaxTriggers?.source : ''));
 
   useEffect(() => {
     (async () => {
@@ -155,6 +153,7 @@ export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, pr
             <Hit
               hit={hit as any}
               promotions={promotions}
+              priceMaxRules={priceMaxRules}
               useDefaultPrices={useDefaultPrices}
               price={
                 hit.sku && prices && prices[hit.sku] && prices[hit.sku].price
