@@ -59,7 +59,7 @@ interface ProductImage {
 }
 
 interface Props {
-  product: FragmentOf<typeof DetailsFragment> & { parent: any };
+  product: FragmentOf<typeof DetailsFragment> & { parent: any, UpdatePriceForMSRP: any };
   collectionValue?: string;
   dropdownSheetIcon?: string;
   cartHeader?: string;
@@ -609,7 +609,7 @@ export const Details = ({
                 isFromPDP={true}
               />
             )}
-            {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
+            {product?.brand?.entityId && getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
               getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
                 <NoShipCanada
                 description={getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message}
@@ -622,10 +622,10 @@ export const Details = ({
               data={product}
               productMpn={product.mpn || ''}
               multipleOptionIcon={multipleOptionIcon}
-              blankAddImg={blankAddImg}
+              blankAddImg={blankAddImg || ''}
               productImages={productImages}
               fanPopup={fanPopup}
-              closeIcon={closeIcon}
+              closeIcon={closeIcon || ''}
             />
           </div>
 
@@ -688,8 +688,8 @@ export const Details = ({
 
           <ProductSchema product={product} />
           <PayPalPayLater
-            amount={product?.prices?.price?.value?.toString()}
-            currency={product?.prices?.price?.currencyCode}
+            amount={product?.prices?.price?.value?.toString() || '0'}
+            currency={product?.prices?.price?.currencyCode || 'USD'}
           />
             <RequestQuote children={children3} />
           <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
