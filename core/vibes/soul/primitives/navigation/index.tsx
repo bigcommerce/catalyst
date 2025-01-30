@@ -26,6 +26,7 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { Logo } from '@/vibes/soul/primitives/logo';
 import { Price } from '@/vibes/soul/primitives/price-label';
 import { ProductCard } from '@/vibes/soul/primitives/product-card';
+import { toast } from '@/vibes/soul/primitives/toaster';
 import { Link } from '~/components/link';
 import { usePathname } from '~/i18n/routing';
 
@@ -341,12 +342,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
                 <Stream
                   fallback={
-                    <ul className="flex animate-pulse flex-row gap-6 p-3">
+                    <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
                       <li>
-                        <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                        <span className="block h-4 w-10 rounded-md bg-contrast-100" />
                       </li>
                       <li>
-                        <span className="block h-4 w-12 rounded-md bg-contrast-100" />
+                        <span className="block h-4 w-14 rounded-md bg-contrast-100" />
                       </li>
                       <li>
                         <span className="block h-4 w-24 rounded-md bg-contrast-100" />
@@ -540,6 +541,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               <Search size={20} strokeWidth={1} />
             </Link>
           )}
+
           <Link aria-label={accountLabel} className={navButtonClassName} href={accountHref}>
             <User size={20} strokeWidth={1} />
           </Link>
@@ -561,6 +563,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               }
             </Stream>
           </Link>
+
           {/* Locale / Language Dropdown */}
           {locales && locales.length > 1 && localeAction ? (
             <LocaleForm
@@ -848,9 +851,17 @@ function LocaleForm({
   const [lastResult, formAction] = useActionState(action, null);
   const activeLocale = locales.find((locale) => locale.id === activeLocaleId);
 
+  const [form] = useForm({
+    lastResult,
+  });
+
   useEffect(() => {
-    if (lastResult?.error) console.log(lastResult.error);
-  }, [lastResult?.error]);
+    if (form.errors) {
+      form.errors.forEach((error) => {
+        toast.error(error);
+      });
+    }
+  }, [form.errors]);
 
   return (
     <DropdownMenu.Root>
@@ -907,9 +918,17 @@ function CurrencyForm({
   const [lastResult, formAction] = useActionState(action, null);
   const activeCurrency = currencies.find((currency) => currency.id === activeCurrencyId);
 
+  const [form] = useForm({
+    lastResult,
+  });
+
   useEffect(() => {
-    if (lastResult?.error) console.log(lastResult.error);
-  }, [lastResult?.error]);
+    if (form.errors) {
+      form.errors.forEach((error) => {
+        toast.error(error);
+      });
+    }
+  }, [form.errors]);
 
   return (
     <DropdownMenu.Root>
