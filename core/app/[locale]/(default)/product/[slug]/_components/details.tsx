@@ -59,7 +59,7 @@ interface ProductImage {
 }
 
 interface Props {
-  product: FragmentOf<typeof DetailsFragment>;
+  product: FragmentOf<typeof DetailsFragment> & { parent: any };
   collectionValue?: string;
   dropdownSheetIcon?: string;
   cartHeader?: string;
@@ -228,15 +228,6 @@ export const Details = ({
   }, [variants, productSku]);
 
   useEffect(() => {
-    const matchingVariant = variants.find((variant) => variant?.sku === productSku);
-    if (matchingVariant) {
-      setSelectedVariantId(matchingVariant.entityId);
-    } else {
-      setSelectedVariantId(null); // Reset if no matching variant is found
-    }
-  }, [variants, productSku]);
-
-  useEffect(() => {
     const updateImageFromVariant = () => {
       if (currentMainMedia?.type === 'image' && currentMainMedia.src) {
         setCurrentImageUrl(currentMainMedia.src);
@@ -360,10 +351,10 @@ export const Details = ({
                   {product?.UpdatePriceForMSRP && <ProductPrice 
                     defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0} 
                     defaultSalePrice={product?.UpdatePriceForMSRP.hasDiscount ? product.UpdatePriceForMSRP.updatedPrice : null} 
-                    priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(product?.brand?.entityId)) || (r.skus && r.skus.includes(product?.mpn)))}
+                    priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(product?.brand?.entityId)) || (r.skus && r.skus.includes(product?.parent?.sku)))}
                     currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
                     format={format}
-                    showMSRP={true}
+                    showMSRP={product.UpdatePriceForMSRP.showDecoration}
                     options={{
                       useAsyncMode: false,
                       useDefaultPrices: true
@@ -552,10 +543,10 @@ export const Details = ({
           {product?.UpdatePriceForMSRP && <ProductPrice 
             defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0} 
             defaultSalePrice={product?.UpdatePriceForMSRP.hasDiscount ? product.UpdatePriceForMSRP.updatedPrice : null} 
-            priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(product?.brand?.entityId)) || (r.skus && r.skus.includes(product?.mpn)))}
+            priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(product?.brand?.entityId)) || (r.skus && r.skus.includes(product?.parent?.sku)))}
             currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
             format={format}
-            showMSRP={true}
+            showMSRP={product.UpdatePriceForMSRP.showDecoration}
             options={{
               useAsyncMode: false,
               useDefaultPrices: true

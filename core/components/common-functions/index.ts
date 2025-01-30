@@ -421,6 +421,7 @@ export const calculateProductPrice = async (products: any ) =>  {
         updatedPrice,
         discount,
         hasDiscount: discount > 0,
+        showDecoration: !!retailPrice && retailPrice > 0
       },
     };
 

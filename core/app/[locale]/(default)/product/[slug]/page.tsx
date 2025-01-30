@@ -236,7 +236,7 @@ export default async function ProductPage(props: Props) {
     const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
 
     return (
-      <div className="products-detail-page mx-auto max-w-[93.5%] pt-8">
+      <div className="products-detail-page mx-auto max-w-[93.5%] pt-8" data-product-sku={product?.parent?.sku} data-product-mpn={product?.parent?.mpn}>
         <ProductProvider getMetaFields={productMetaFields}>
           <div className="breadcrumbs-container">
             {categoryWithBreadcrumbs && (
