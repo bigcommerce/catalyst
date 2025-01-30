@@ -340,22 +340,22 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popper-anchor-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
               <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
                 <Stream
-                  // fallback={
-                  //   <ul className="flex animate-pulse flex-row gap-6 p-3">
-                  //     <li>
-                  //       <span className="block h-4 w-16 rounded-md bg-contrast-100" />
-                  //     </li>
-                  //     <li>
-                  //       <span className="block h-4 w-12 rounded-md bg-contrast-100" />
-                  //     </li>
-                  //     <li>
-                  //       <span className="block h-4 w-24 rounded-md bg-contrast-100" />
-                  //     </li>
-                  //     <li>
-                  //       <span className="block h-4 w-16 rounded-md bg-contrast-100" />
-                  //     </li>
-                  //   </ul>
-                  // }
+                  fallback={
+                    <ul className="flex animate-pulse flex-row gap-6 p-3">
+                      <li>
+                        <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                      </li>
+                      <li>
+                        <span className="block h-4 w-12 rounded-md bg-contrast-100" />
+                      </li>
+                      <li>
+                        <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+                      </li>
+                      <li>
+                        <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                      </li>
+                    </ul>
+                  }
                   value={streamableLinks}
                 >
                   {(links) =>
@@ -431,22 +431,22 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           )}
         >
           <Stream
-            fallback={
-              <ul className="flex animate-pulse flex-row gap-6">
-                <li>
-                  <span className="block h-4 w-16 rounded-md bg-contrast-100" />
-                </li>
-                <li>
-                  <span className="block h-4 w-12 rounded-md bg-contrast-100" />
-                </li>
-                <li>
-                  <span className="block h-4 w-24 rounded-md bg-contrast-100" />
-                </li>
-                <li>
-                  <span className="block h-4 w-16 rounded-md bg-contrast-100" />
-                </li>
-              </ul>
-            }
+            // fallback={
+            //   <ul className="flex animate-pulse flex-row gap-6">
+            //     <li>
+            //       <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+            //     </li>
+            //     <li>
+            //       <span className="block h-4 w-12 rounded-md bg-contrast-100" />
+            //     </li>
+            //     <li>
+            //       <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+            //     </li>
+            //     <li>
+            //       <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+            //     </li>
+            //   </ul>
+            // }
             value={streamableLinks}
           >
             {(links) =>
