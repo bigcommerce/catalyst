@@ -1,12 +1,18 @@
 'use client';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, createContext, useContext } from 'react';
 import { MegaMenuMenuItem, MegaMenuMenuItemColumn, MegaMenuSubMenuItem, MegaMenuSubSubMenuItem, MegaMenuSecondaryMenuItem, MegaMenuProps } from './mega-menu-types';
 import { ChevronLeft, ChevronRight, Menu, X, Plus, Minus } from 'lucide-react';
 import clsx from 'clsx';
 //import { Link } from '~/components/link';
 import Link from 'next/link';
 
-export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: MegaMenuProps) {
+//const PropsContext = createContext<MegaMenuCustomProps | null>(null);
+
+export function MegaMenuDefault({ menuItems, secondaryMenuItems, customProps, classNames }: MegaMenuProps) {
+
+//  const passedProps = useContext(PropsContext);
+
+//  alert(JSON.stringify(passedProps));
 
   const variant = 'default';
 
@@ -89,7 +95,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
         showSidebarMenu ? 'shadow-2xl shadow-blue-gray-900/10 translate-x-0' : '-translate-x-full'
       )}>
         <div className={clsx('mega-menu-sidebar-header')}>
-          <div className={clsx('mega-menu-sidebar-logo')}></div>
+          {!!customProps?.logo && <img src={customProps.logo} alt={customProps?.title || 'Logo'} className={clsx('mega-menu-sidebar-logo')} />}
           <button type="button" title="Close menu" className="mega-menu-sidebar-close-button" onClick={() => setShowSidebarMenu(false)}><X /></button>
         </div>
         {menuItems && menuItems.length > 0 && (

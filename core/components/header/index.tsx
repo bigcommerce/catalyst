@@ -40,6 +40,8 @@ import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { client as makeswiftClient } from '~/lib/makeswift/client';
 import { Props } from '@makeswift/runtime/prop-controllers';
 
+import { MegaMenuContextProvider } from '~/belami/components/mega-menu';
+
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations('Components.Header');
@@ -190,7 +192,7 @@ export const Header = async ({ cart }: Props) => {
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
       search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />}
-      megaMenu={<MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' />}
+      megaMenu={<MegaMenuContextProvider value={{ logo: homeLogoMobile, title: data?.settings?.storeName }}><MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' /></MegaMenuContextProvider>}
     />
   );
 };
