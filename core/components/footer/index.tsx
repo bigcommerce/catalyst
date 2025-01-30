@@ -89,6 +89,15 @@ const GetSectionsQuery = graphql(`
   }
 `);
 
+const getLayoutData = cache(async () => {
+  const { data: response } = await client.fetch({
+    document: LayoutQuery,
+    fetchOptions: { next: { revalidate } },
+  });
+
+  return readFragment(FooterFragment, response).site;
+});
+
 const getSections = cache(async () => {
   const t = await getTranslations('Components.Footer');
 
@@ -128,12 +137,7 @@ const getSections = cache(async () => {
 export const Footer = async () => {
   const t = await getTranslations('Components.Footer');
 
-  const { data: response } = await client.fetch({
-    document: LayoutQuery,
-    fetchOptions: { next: { revalidate } },
-  });
-
-  const data = readFragment(FooterFragment, response).site;
+  const data = await getLayoutData();
 
   const contactInformation = data.settings?.contact
     ? {
