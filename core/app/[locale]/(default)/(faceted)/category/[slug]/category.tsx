@@ -61,7 +61,7 @@ const sortByNumericRangeName: RefinementListProps['sortBy'] = (a: any, b: any) =
 //const closeOnChange = () => window.innerWidth > 375;
 const closeOnChange = false;
 
-export const Category = ({ category, promotions, useDefaultPrices = false, priceMaxTriggers }: any) => {
+export const Category = ({ category, promotions, useDefaultPrices = false, priceMaxRules }: any) => {
 
   const breadcrumbs = removeEdgesAndNodes(category?.breadcrumbs as any);
 
@@ -165,10 +165,6 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
               page: indexUiState.page,
               hitsPerPage: indexUiState.hitsPerPage,
               sortBy: indexUiState.sortBy,
-
-              // We may need to preserve PriceMax triggers
-              d: priceMaxTriggers?.d,
-              source: priceMaxTriggers?.source,
             };
           },
           routeToState(routeState: any) {
@@ -245,10 +241,6 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
                 page: routeState?.page,
                 hitsPerPage: routeState?.hitsPerPage,
                 sortBy: routeState?.sortBy,
-
-                // We may need to preserve PriceMax triggers
-                d: priceMaxTriggers?.d,
-                source: priceMaxTriggers?.source,
               },
             };
           },
@@ -668,8 +660,8 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
         </div>
 
         {useAsyncMode
-          ? <HitsAsync view={view} useDefaultPrices={useDefaultPrices} promotions={promotions} priceMaxTriggers={priceMaxTriggers} />
-          : <Hits view={view} useDefaultPrices={useDefaultPrices} promotions={promotions} priceMaxTriggers={priceMaxTriggers} />
+          ? <HitsAsync view={view} useDefaultPrices={useDefaultPrices} promotions={promotions} priceMaxRules={priceMaxRules} />
+          : <Hits view={view} useDefaultPrices={useDefaultPrices} promotions={promotions} priceMaxRules={priceMaxRules} />
         }
 
         <div className="mt-4 flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0 items-center">

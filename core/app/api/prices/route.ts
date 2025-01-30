@@ -3,11 +3,11 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { getProductPrices } from '~/belami/lib/fetch-product-prices';
 
 export const GET = async (
-  _request: NextRequest,
+  request: NextRequest,
 ) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const searchParams = _request.nextUrl.searchParams;
+  const searchParams = request.nextUrl.searchParams;
   const skus = searchParams.get('skus') ?? '';
 
   //console.log(skus);
