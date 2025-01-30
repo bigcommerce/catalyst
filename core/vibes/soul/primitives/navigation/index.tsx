@@ -431,22 +431,22 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           )}
         >
           <Stream
-            // fallback={
-            //   <ul className="flex animate-pulse flex-row gap-6">
-            //     <li>
-            //       <span className="block h-4 w-16 rounded-md bg-contrast-100" />
-            //     </li>
-            //     <li>
-            //       <span className="block h-4 w-12 rounded-md bg-contrast-100" />
-            //     </li>
-            //     <li>
-            //       <span className="block h-4 w-24 rounded-md bg-contrast-100" />
-            //     </li>
-            //     <li>
-            //       <span className="block h-4 w-16 rounded-md bg-contrast-100" />
-            //     </li>
-            //   </ul>
-            // }
+            fallback={
+              <ul className="flex animate-pulse flex-row gap-6">
+                <li>
+                  <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                </li>
+                <li>
+                  <span className="block h-4 w-12 rounded-md bg-contrast-100" />
+                </li>
+                <li>
+                  <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+                </li>
+                <li>
+                  <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                </li>
+              </ul>
+            }
             value={streamableLinks}
           >
             {(links) =>
