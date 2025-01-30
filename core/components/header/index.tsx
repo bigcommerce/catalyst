@@ -178,8 +178,6 @@ export const Header = async () => {
     return currencyCode ?? defaultCurrency?.id;
   });
 
-  console.log('prerender', logo, links, currencies, locales);
-
   return (
     <HeaderSection
       navigation={{
