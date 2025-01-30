@@ -198,6 +198,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                                       <Link
                                         href={menuItem.link.href}
                                         className={clsx('main-sub-menu-link', classNames?.mainSubMenuLink)}
+                                        onClick={() => setShowSidebarMenu(false)}
                                       >
                                         <span>{menuItem.title}</span>
                                       </Link>
@@ -224,6 +225,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                       <Link
                         href={menuItem.link.href}
                         className={clsx('main-menu-link', classNames?.mainMenuLink)}
+                        onClick={() => setShowSidebarMenu(false)}
                       >
                         <span>{menuItem.title}</span>
                       </Link>
@@ -255,6 +257,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, classNames }: M
                     <Link
                       href={menuItem.link.href}
                       className={clsx('secondary-menu-link', classNames?.secondaryMenuLink)}
+                      onClick={() => setShowSidebarMenu(false)}
                     >
                       <span>{menuItem.title}</span>
                     </Link>
