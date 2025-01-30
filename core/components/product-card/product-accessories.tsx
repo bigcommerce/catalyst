@@ -50,6 +50,7 @@ export const ProductAccessories = ({
       sale_price,
       retail_price,
       purchasing_disabled,
+      update_price_for_msrp,
     }: {
       sku: any;
       id: any;
@@ -57,7 +58,8 @@ export const ProductAccessories = ({
       name: any;
       sale_price: any;
       retail_price:any;
-      purchasing_disabled:any,
+      purchasing_disabled:Boolean,
+      update_price_for_msrp:any,
     }) => ({
       value: id,
       label: `(+$${sale_price}) ${sku}  ${name}`,
@@ -69,10 +71,12 @@ export const ProductAccessories = ({
   const [productlabel, setProductLabel] = useState<string>(accessories?.label);
   const [productPrice, setProductPrice] = useState<any>();
   const [productSalePrice, setProductSalePrice] = useState<any>();
-  const [productRetailPrice, setProductRetailPrice] = useState<any>();
+  const [originalPrice, setOriginalPrice] = useState<any>();
+  const [updatedPrice, setUpdatedPrice] = useState<any>();
   const [productImage, setProductImage] = useState<string>(blankAddImg);
   const [baseImage, setBaseImage] = useState<string>(' bg-set');
   const [hasSalePrice, setHasSalePrice] = useState<number>(0);
+  const [hasDiscount, setHasDiscount] = useState<boolean>(true);
   const [isPurchasingDisabled, setIsPurchasingDisabled] = useState<boolean>(false);
 
   const onProductChange = (variant: any) => {
@@ -85,19 +89,29 @@ export const ProductAccessories = ({
         currency: currencyCode,
       });
       let salePrice: number = accessoriesData?.sale_price;
-      let retailPrice: number = accessoriesData?.retail_price;
       if (salePrice != accessoriesData?.price) {
         setHasSalePrice(1);
       } else {
         setHasSalePrice(0);
+      }
+      if (accessoriesData?.update_price_for_msrp?.hasDiscount){
+        setHasDiscount(true);
+      }else{
+        setHasDiscount(false);
       }
       let formatSalePrice: any = 0;
       formatSalePrice = format.number(salePrice, {
         style: 'currency',
         currency: currencyCode,
       });
-      let formatRetailPrice: any = 0;
-      formatRetailPrice = retailPrice && format.number(retailPrice,{
+      let originalPrice = accessoriesData?.update_price_for_msrp?.originalPrice;
+      let formatOriginalPrice: any = 0;
+      formatOriginalPrice = format.number(originalPrice,{
+        style: 'currency',
+        currency: currencyCode,
+      });
+      let updatedPrice = accessoriesData?.update_price_for_msrp?.updatedPrice;
+      let formatUpdatedPrice = format.number(updatedPrice,{
         style: 'currency',
         currency: currencyCode,
       });
@@ -106,7 +120,8 @@ export const ProductAccessories = ({
       setProductPrice(formatPrice);
       setProductImage(accessoriesData?.image);
       setProductSalePrice(formatSalePrice);
-      setProductRetailPrice(formatRetailPrice);
+      setOriginalPrice(formatOriginalPrice);
+      setUpdatedPrice(formatUpdatedPrice);
     }
   };
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -233,19 +248,17 @@ export const ProductAccessories = ({
         />
       </div>
       <div className="flex w-full shrink-[100] flex-col gap-[10px]">
-        {productlabel && (
           <div className="flex flex-col gap-[5px] sm:gap-[0px]">
             <p className="text-center text-[16px] font-normal tracking-[0.15px] text-[#353535] sm:text-left">
               {productlabel}
             </p>
             <p className="text-center text-[16px] font-normal tracking-[0.15px] text-[#353535] sm:text-right">
-              {productSalePrice}
-              {hasSalePrice == 1 ? (
-                <span className="ml-1 text-[#808080] line-through">{productRetailPrice?productRetailPrice:productPrice}</span>
-              ):( <span className="ml-1 text-[#808080] line-through">{productRetailPrice}</span>)}
+              {updatedPrice}
+              {hasDiscount && (
+                <span className="ml-1 text-[#808080] line-through">{originalPrice}</span>
+              )}
             </p>
           </div>
-        )}
         <div className="right-container">
           <Select
             name={`accessories-products-${index}`}

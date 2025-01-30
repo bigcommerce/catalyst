@@ -19,7 +19,7 @@ import { CheckoutButton } from '~/app/[locale]/(default)/cart/_components/checko
 import { GetVariantsByProductSKU } from '~/components/graphql-apis';
 import { InputPlusMinus } from '../form-fields/input-plus-minus';
 import closeIcon from '~/public/add-to-cart/flyoutCloseIcon.svg';
-import { commonSettinngs } from '../common-functions';
+import { calculateProductPrice, commonSettinngs } from '../common-functions';
 
 const getVariantProductInfo = async (metaData: any) => {
   let variantProductInfo: any = [],
@@ -48,8 +48,11 @@ const getVariantProductInfo = async (metaData: any) => {
             let varaiantProductData = await GetVariantsByProductId(productInfo?.entityId);
             let variantNewObject: any = [];
             let productName: string = productInfo?.name;
+            
+            let updatedProductData = await calculateProductPrice(varaiantProductData,"accessories");
+            
             let imageArray: Array<any> = removeEdgesAndNodes(productInfo?.images);
-            varaiantProductData?.forEach((item: any) => {
+            updatedProductData?.forEach(async (item: any) => {
               if (skuArrayData?.find((sku: any) => sku == item?.sku)) {
                 let optionValues: string = item?.option_values
                   ?.map((data: any) => data?.label)
@@ -74,6 +77,7 @@ const getVariantProductInfo = async (metaData: any) => {
                   name: optionValues,
                   purchasing_disabled:item?.purchasing_disabled,
                   selectedOptions: item?.selectedOption,
+                  update_price_for_msrp: item?.UpdatePriceForMSRP,
                 });
               }
             });
