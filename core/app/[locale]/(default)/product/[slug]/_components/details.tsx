@@ -360,7 +360,7 @@ export const Details = ({
                   {product?.UpdatePriceForMSRP && <ProductPrice 
                     defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0} 
                     defaultSalePrice={product?.UpdatePriceForMSRP.hasDiscount ? product.UpdatePriceForMSRP.updatedPrice : null} 
-                    priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(product?.brand?.id)) || (r.skus && r.skus.includes(product?.sku)))}
+                    priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(product?.brand?.entityId)) || (r.skus && r.skus.includes(product?.mpn)))}
                     currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
                     format={format}
                     showMSRP={true}
@@ -549,11 +549,10 @@ export const Details = ({
             <ReviewSummary data={product} />
           </div>
           {/* msrp  */}
-
           {product?.UpdatePriceForMSRP && <ProductPrice 
             defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0} 
             defaultSalePrice={product?.UpdatePriceForMSRP.hasDiscount ? product.UpdatePriceForMSRP.updatedPrice : null} 
-            priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(product?.brand?.id)) || (r.skus && r.skus.includes(product?.sku)))}
+            priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(product?.brand?.entityId)) || (r.skus && r.skus.includes(product?.mpn)))}
             currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
             format={format}
             showMSRP={true}

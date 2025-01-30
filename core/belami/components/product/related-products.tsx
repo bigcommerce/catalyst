@@ -107,7 +107,7 @@ function CustomItem({ hit, priceMaxRules = null, useDefaultPrices = false, price
               defaultSalePrice={hit?.sales_prices?.USD || null} 
               price={price}
               salePrice={salePrice}
-              priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(hit?.brand_id)) || (r.skus && r.skus.includes(hit?.sku)))}
+              priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(hit?.brand_id)) || (r.skus && r.skus.includes(hit?.mpn)))}
               currency={currency}
               format={format}
               options={{
