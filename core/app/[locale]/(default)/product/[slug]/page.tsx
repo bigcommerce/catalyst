@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 import { getSessionCustomerAccessToken, getSessionUserDetails } from '~/auth';
-import Link from 'next/link';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
 import { Description } from './_components/description';
@@ -20,10 +19,7 @@ import { RelatedProducts } from '~/belami/components/product';
 import { CollectionProducts } from '~/belami/components/product';
 import { SiteVibesReviews } from '~/belami/components/sitevibes';
 import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-algolia-products';
-import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
-import { commonSettinngs } from '~/components/common-functions';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
-import StickyScroll, { DetailsWrapper } from './_components/sticky';
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -216,34 +212,34 @@ export default async function ProductPage(props: Props) {
       : null;
 
     const productImages = removeEdgesAndNodes(product.images);
-    var brandId = product?.brand?.entityId;
     var CommonSettinngsValues = {};
-    // await commonSettinngs([brandId])
     return (
-      <div className="products-detail-page mx-auto max-w-[93.5%] pt-8">
-        <ProductProvider getMetaFields={productMetaFields}>
-          <div className="breadcrumbs-container">
-            {categoryWithBreadcrumbs && (
-              <div className="breadcrumb-row">
-                <Breadcrumbs category={categoryWithBreadcrumbs} />
-              </div>
-            )}
-          </div>
-
-          <div className="mb-4 mt-4 xl:mb-12 xl:grid xl:grid-cols-2 xl:gap-8">
-            <div className="x2:w-[50em] x3:w-[52em] x4:!w-[60em] xl:w-[48em] 2xl:!w-[54em]">
-              <Suspense fallback={<div>Loading gallery...</div>}>
-                <Gallery
-                  product={product}
-                  bannerIcon={assets.bannerIcon}
-                  galleryExpandIcon={assets.galleryExpandIcon}
-                  productMpn={product.mpn}
-                />
-              </Suspense>
+      <div className="products-detail-page mx-auto max-w-[93.5%] pt-5">
+        <div className="breadcrumbs-container">
+          {categoryWithBreadcrumbs && (
+            <div className="breadcrumb-row mb-5">
+              <Breadcrumbs category={categoryWithBreadcrumbs} />
             </div>
+          )}
+        </div>
 
-            <div className="x2:w-[40em] x3:w-[42em] x4:!pl-[15em] x4:!w-[46em] xl:w-[35em] xl:pl-[12em] 2xl:w-[43em] 2xl:!pl-[11em]">
-              <DetailsWrapper>
+        <ProductProvider getMetaFields={productMetaFields}>
+          <div className="mb-4 xl:mb-12 xl:gap-8">
+            <div className="pdp-scroll mb-[7em] flex w-[100%] max-w-[100%] gap-x-[3em]">
+              <div className="Gallery relative flex w-[64%]">
+                <div className="gallery-sticky-pop-up sticky top-0 z-10 h-[100vh] w-[100%]">
+                  <Suspense fallback={<div>Loading gallery...</div>}>
+                    <Gallery
+                      product={product}
+                      bannerIcon={assets.bannerIcon}
+                      galleryExpandIcon={assets.galleryExpandIcon}
+                      productMpn={product.mpn}
+                    />
+                  </Suspense>
+                </div>
+              </div>
+
+              <div className="PDP relative flex-1">
                 <Details
                   product={product}
                   collectionValue={collectionValue}
@@ -270,10 +266,10 @@ export default async function ProductPage(props: Props) {
                   children1={<MakeswiftPage locale={locale} path="/content/shipping-flyout" />}
                   children2={<MakeswiftPage locale={locale} path="/content/returns-flyout" />}
                 />
-              </DetailsWrapper>
+              </div>
             </div>
 
-            <div className="lg:col-span-2">
+            <div className="flex flex-col">
               <hr className="mb-4 border border-gray-200" />
               <Description product={product} />
               <hr className="mb-[55px] mt-[20px] border border-gray-200" />
