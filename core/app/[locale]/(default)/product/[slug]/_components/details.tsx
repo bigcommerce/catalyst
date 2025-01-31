@@ -542,7 +542,7 @@ export const Details = ({
               useDefaultPrices: true
             }}            
             classNames={{
-              root: 'product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left',
+              root: 'product-price mt-2 flex items-center gap-[0.5em] text-center xl:text-left',
               newPrice: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
               oldPrice: 'inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
               discount: 'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',

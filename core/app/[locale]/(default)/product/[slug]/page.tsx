@@ -245,9 +245,9 @@ export default async function ProductPage(props: Props) {
 
         <ProductProvider getMetaFields={productMetaFields}>
           <div className="mb-4 xl:mb-12 xl:gap-8">
-            <div className="pdp-scroll mb-[7em] flex w-[100%] max-w-[100%] gap-x-[3em]">
-              <div className="Gallery relative flex w-[64%]">
-                <div className="gallery-sticky-pop-up sticky top-0 z-10 h-[100vh] w-[100%]">
+            <div className="pdp-scroll xl:mb-[7em] xl:flex xl:w-[100%] xl:max-w-[100%] xl:gap-x-[3em]">
+              <div className="Gallery relative xl:flex xl:w-[64%]">
+                <div className="gallery-sticky-pop-up xl:sticky xl:top-0 z-10 xl:h-[100vh] xl:w-[100%]">
                   <Suspense fallback={<div>Loading gallery...</div>}>
                     <Gallery
                       product={product}
@@ -259,7 +259,7 @@ export default async function ProductPage(props: Props) {
                 </div>
               </div>
 
-              <div className="PDP relative flex-1">
+              <div className="PDP xl:relative xl:flex-1">
                 <Details
                   product={updatedProduct}
                   collectionValue={collectionValue}
