@@ -1,7 +1,24 @@
+import { NextResponse } from 'next/server';
+
 import { auth } from '~/auth';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
-// The `auth` function doesn't have the correct type to support it as a MiddlewareFactory.
-// eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-export const withAuth: MiddlewareFactory = auth as unknown as MiddlewareFactory;
+const AUTH_PATHS = ['/login/', '/login/forgot-password/', '/register/', '/change-password/'];
+
+export const withAuth: MiddlewareFactory = (next) => {
+  return (request, event) => {
+    // @ts-expect-error: The `auth` function doesn't have the correct type to support it as a MiddlewareFactory.
+    const authWithCallback = auth(async (req) => {
+      if (req.auth && AUTH_PATHS.includes(req.nextUrl.pathname)) {
+        return NextResponse.redirect(new URL('/account/orders', req.nextUrl.origin));
+      }
+
+      // Continue the middleware chain
+      return next(req, event);
+    });
+
+    // @ts-expect-error: The `auth` function doesn't have the correct type to support it as a MiddlewareFactory.
+    return authWithCallback(request, event);
+  };
+};
