@@ -395,11 +395,7 @@ const Gallery = ({
         { filename: bannerIcon, width: '50w' },
       ],
     },
-    {
-      alt: 'Save 20% on all items through 9/01',
-      images: [],
-      msg: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
-    },
+   
   ];
 
   return (
