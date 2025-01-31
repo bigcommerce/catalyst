@@ -313,14 +313,14 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   return (
     <NavigationMenu.Root
-      className={clsx('relative mx-auto h-20 w-full max-w-screen-2xl @container', className)}
+      className={clsx('relative mx-auto w-full max-w-screen-2xl @container', className)}
       delayDuration={0}
       onValueChange={() => setIsSearchOpen(false)}
       ref={ref}
     >
       <div
         className={clsx(
-          'flex min-h-20 items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-2 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5',
+          'flex items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-2 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5',
           isFloating
             ? 'shadow-xl ring-1 ring-[var(--nav-floating-border,hsl(var(--foreground)/10%))]'
             : 'shadow-none ring-0',
@@ -423,7 +423,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         {/* Top Level Nav Links */}
         <ul
           className={clsx(
-            'hidden gap-1 @4xl:flex @4xl:flex-1',
+            'hidden min-h-11 items-center gap-1 @4xl:flex @4xl:flex-1',
             {
               left: '@4xl:justify-start',
               center: '@4xl:justify-center',
