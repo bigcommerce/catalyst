@@ -1,20 +1,30 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { SignInSection } from '@/vibes/soul/sections/sign-in-section';
 
 import { login } from './_actions/login';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Login');
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  const t = await getTranslations({ namespace: 'Login', locale });
 
   return {
     title: t('title'),
   };
 }
 
-export default async function Login() {
+export default async function Login({ params }: Props) {
+  const { locale } = await params;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('Login');
 
   return (
@@ -25,7 +35,7 @@ export default async function Login() {
       submitLabel={t('Form.logIn')}
       title={t('heading')}
     >
-      <div className="">
+      <div>
         <h3 className="mb-3 text-xl font-bold lg:text-2xl">{t('CreateAccount.heading')}</h3>
         <p className="text-base font-semibold">{t('CreateAccount.accountBenefits')}</p>
         <ul className="mb-4 list-disc ps-4">
@@ -42,3 +52,5 @@ export default async function Login() {
     </SignInSection>
   );
 }
+
+export const experimental_ppr = false;

@@ -1,8 +1,8 @@
 import { cache } from 'react';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { FormFieldsFragment } from '~/data-transformers/form-field-transformer/fragment';
 import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
@@ -52,8 +52,6 @@ interface Props {
 }
 
 export const getRegisterCustomerQuery = cache(async ({ address, customer }: Props) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-
   const response = await client.fetch({
     document: RegisterCustomerQuery,
     variables: {
@@ -62,8 +60,7 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
       customerFilters: customer?.filters,
       customerSortBy: customer?.sortBy,
     },
-    fetchOptions: { cache: 'no-store' },
-    customerAccessToken,
+    fetchOptions: { next: { revalidate } },
   });
 
   const addressFields = response.data.site.settings?.formFields.shippingAddress;

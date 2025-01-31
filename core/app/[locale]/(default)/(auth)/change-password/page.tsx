@@ -40,3 +40,5 @@ export default async function ChangePassword({ searchParams }: Props) {
     />
   );
 }
+
+export const experimental_ppr = false;

@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 // import { client } from '~/client';
 // import { graphql } from '~/client/graphql';
@@ -24,15 +24,25 @@ import { resetPassword } from './_actions/reset-password';
 //   }
 // `);
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Login.ForgotPassword');
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  const t = await getTranslations({ namespace: 'Login.ForgotPassword', locale });
 
   return {
     title: t('title'),
   };
 }
 
-export default async function Reset() {
+export default async function Reset({ params }: Props) {
+  const { locale } = await params;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('Login.ForgotPassword');
 
   // TODO: add recaptcha token
@@ -50,3 +60,5 @@ export default async function Reset() {
     />
   );
 }
+
+export const experimental_ppr = false;
