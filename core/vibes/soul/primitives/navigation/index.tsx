@@ -314,7 +314,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   return (
     <NavigationMenu.Root
       className={clsx(
-        'relative mx-auto flex min-h-16 w-full max-w-screen-2xl items-center @container',
+        'relative mx-auto flex min-h-20 w-full max-w-screen-2xl items-center @container',
         className,
       )}
       delayDuration={0}
