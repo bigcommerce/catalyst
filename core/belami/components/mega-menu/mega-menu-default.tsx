@@ -86,7 +86,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, customProps, cl
         'block lg:hidden absolute z-20 top-10 left-3'
       )} onClick={() => setShowSidebarMenu(true)}><Menu /></button>
       {showSidebarMenu &&
-        <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebarMenu(false)}></div>
+        <div className="mega-menu-sidebar-fade hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebarMenu(false)}></div>
       }
       <aside className={clsx(
         'mega-menu-sidebar',

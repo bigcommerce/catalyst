@@ -971,7 +971,13 @@ display: none !important;
   white-space: nowrap;
 }
 
-
+body:has(.mega-menu-sidebar-fade) > main {
+  position: fixed !important;
+  overflow: hidden !important;
+}
+body:has(.mega-menu-sidebar-fade) > footer {
+  display: none !important;
+}
 
 .mega-menu-sidebar-header {
   display: flex;
