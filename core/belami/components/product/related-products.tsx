@@ -17,6 +17,7 @@ import {
 
 import { useFormatter } from 'next-intl';
 
+import { ProductPrice } from '~/belami/components/search/product-price';
 import { ReviewSummary } from '~/belami/components/reviews';
 
 import searchColors from '~/belami/include/search-colors.json';
@@ -31,9 +32,10 @@ const searchColorsHEX: DynamicObject = searchColors;
 const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
 
 interface Props {
-  productId: number;
-  products: any[];
-  useDefaultPrices?: boolean;
+  productId: number,
+  products: any[],
+  useDefaultPrices?: boolean,
+  priceMaxRules?: any
 }
 
 function getDiscount(price: number, sale: number): number | null {
@@ -97,14 +99,8 @@ function ColorSwatches({ variants, onImageClick }: any) {
   );
 }
 
-function CustomItem({
-  hit,
-  useDefaultPrices = false,
-  price = null,
-  salePrice = null,
-  isLoading = false,
-  isLoaded = false,
-}: any) {
+function CustomItem({ hit, priceMaxRules = null, useDefaultPrices = false, price = null, salePrice = null, isLoading = false, isLoaded = false }: any) {
+
   const format = useFormatter();
   const currency = 'USD';
 
@@ -148,9 +144,35 @@ function CustomItem({
       <div className="flex flex-1 flex-col">
         <div className="flex-1 p-4 text-center">
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
-          <h2 className="mt-2 text-lg font-medium">
-            <Link href={hit.url}>{hit.name}</Link>
-          </h2>
+          <h2 className="text-lg font-medium mt-2"><Link href={hit.url}>{hit.name}</Link></h2>
+
+          <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
+            {!!hit.on_clearance &&
+              <span className="mt-2 inline-block px-1 py-0.5 bg-gray-400 text-white text-xs uppercase tracking-wider">Clearance</span>
+            }
+
+            <ProductPrice 
+              defaultPrice={hit?.prices?.USD || 0} 
+              defaultSalePrice={hit?.sales_prices?.USD || null} 
+              price={price}
+              salePrice={salePrice}
+              priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && (r.bc_brand_ids.includes(hit?.brand_id) || r.bc_brand_ids.includes(String(hit?.brand_id)))) || (r.skus && r.skus.includes(hit?.sku)))}
+              currency={currency}
+              format={format}
+              options={{
+                useAsyncMode: useAsyncMode,
+                useDefaultPrices: useDefaultPrices,
+                isLoading: isLoading,
+                isLoaded: isLoaded
+              }}
+              classNames={{
+                root: 'mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start',
+                discount: 'font-bold text-brand-400 whitespace-nowrap',
+              }}
+            />
+          </div>
+
+          {/*
           {useAsyncMode && !useDefaultPrices ? (
             <div className="mx-auto mt-2 flex flex-wrap items-center justify-center space-x-2">
               {hit.on_clearance && (
@@ -224,44 +246,20 @@ function CustomItem({
                 'Loading...'
               )}
             </div>
-          ) : hit.prices ? (
-            <div className="mx-auto mt-2 flex flex-wrap items-center justify-center space-x-2">
-              {hit.on_clearance && (
-                <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
-                  Clearance
-                </span>
-              )}
-              <div className="mt-2 flex items-center space-x-2">
-                {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                hit.on_sale ? (
-                  <s>
-                    {format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}
-                  </s>
-                ) : (
-                  <span>
-                    {format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}
-                  </span>
-                )}
-                {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                hit.on_sale ? (
-                  <strong className="whitespace-nowrap font-bold text-brand-400">
-                    Save{' '}
-                    {getDiscount(hit.prices.USD ?? hit.price, hit.sales_prices.USD ?? hit.newPrice)}
-                    %
-                  </strong>
-                ) : null}
-                {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                hit.on_sale ? (
-                  <span>
-                    {format.number(hit.sales_prices.USD || 0, {
-                      style: 'currency',
-                      currency: currency,
-                    })}
-                  </span>
-                ) : null}
-              </div>
-            </div>
-          ) : null}
+          ) : (
+            hit.prices ?
+              <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
+                {hit.on_clearance &&
+                  <span className="mt-2 inline-block px-1 py-0.5 bg-gray-400 text-white text-xs uppercase tracking-wider">Clearance</span>
+                }
+                <div className="mt-2 flex space-x-2 items-center">
+                  {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) || hit.on_sale ? <s>{format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}</s> : <span>{format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}</span>}
+                  {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) || hit.on_sale ? <strong className="font-bold text-brand-400 whitespace-nowrap">Save {getDiscount(hit.prices.USD ?? hit.price, hit.sales_prices.USD ?? hit.newPrice)}%</strong> : null}
+                  {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) || hit.on_sale ? <span>{format.number(hit.sales_prices.USD || 0, { style: 'currency', currency: currency })}</span> : null}
+                </div>
+              </div> : null
+          )}
+          */}
 
           {hit.reviews_count > 0 && (
             <ReviewSummary
@@ -299,7 +297,8 @@ function CustomItem({
   );
 }
 
-export function RelatedProducts({ productId, products, useDefaultPrices = false }: Props) {
+export function RelatedProducts({ productId, products, useDefaultPrices = false, priceMaxRules }: Props) {
+
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [prices, setPrices] = useState({} as any);

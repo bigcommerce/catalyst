@@ -19,7 +19,14 @@ import { RelatedProducts } from '~/belami/components/product';
 import { CollectionProducts } from '~/belami/components/product';
 import { SiteVibesReviews } from '~/belami/components/sitevibes';
 import { getRelatedProducts, getCollectionProducts } from '~/belami/lib/fetch-algolia-products';
+import { getWishlists } from '../../account/(tabs)/wishlists/page-data';
+import { commonSettinngs } from '~/components/common-functions';
+
+import { cookies } from 'next/headers';
+import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
+
 import { Page as MakeswiftPage } from '~/lib/makeswift';
+import { calculateProductPrice } from '~/components/common-functions';
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -62,6 +69,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
   const productId = Number(params.slug);
   const optionValueIds = getOptionValueIds({ searchParams });
+
   const product = await getProduct({
     entityId: productId,
     optionValueIds,
@@ -103,6 +111,12 @@ export default async function ProductPage(props: Props) {
       return null;
     }
 
+    const cookieStore = await cookies();
+    const priceMaxCookie = cookieStore.get('pmx');
+    const priceMaxTriggers = priceMaxCookie?.value 
+      ? JSON.parse(atob(priceMaxCookie?.value)) 
+      : undefined;
+
     const useDefaultPrices = !customerAccessToken;
     const { locale, slug } = params;
 
@@ -117,11 +131,13 @@ export default async function ProductPage(props: Props) {
       optionValueIds,
       useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
     });
-
+    
+    const [updatedProduct] = await calculateProductPrice(product);
+  
     if (!product) {
       return notFound();
     }
-
+    
     // Asset URLs
     const assets = {
       bannerIcon: imageManagerImageUrl('example-1.png', '50w'),
@@ -212,7 +228,11 @@ export default async function ProductPage(props: Props) {
       : null;
 
     const productImages = removeEdgesAndNodes(product.images);
-    var CommonSettinngsValues = {};
+    var brandId = product?.brand?.entityId;
+    var CommonSettinngsValues =  await commonSettinngs([brandId])
+    
+    const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
+
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-5">
         <div className="breadcrumbs-container">
@@ -241,7 +261,7 @@ export default async function ProductPage(props: Props) {
 
               <div className="PDP relative flex-1">
                 <Details
-                  product={product}
+                  product={updatedProduct}
                   collectionValue={collectionValue}
                   dropdownSheetIcon={assets.dropdownSheetIcon}
                   cartHeader={assets.cartHeader}
@@ -265,6 +285,8 @@ export default async function ProductPage(props: Props) {
                   }
                   children1={<MakeswiftPage locale={locale} path="/content/shipping-flyout" />}
                   children2={<MakeswiftPage locale={locale} path="/content/returns-flyout" />}
+                  children3={<MakeswiftPage locale={locale} path="/content/request-a-quote-flyout" />}
+                  priceMaxRules={priceMaxRules}
                 />
               </div>
             </div>
@@ -273,6 +295,7 @@ export default async function ProductPage(props: Props) {
               <hr className="mb-4 border border-gray-200" />
               <Description product={product} />
               <hr className="mb-[55px] mt-[20px] border border-gray-200" />
+              {/*
               <CollectionProducts
                 collection={collectionValue}
                 products={collectionProducts.hits}
@@ -284,11 +307,19 @@ export default async function ProductPage(props: Props) {
                 moreLink={`/search?brand_name[0]=${product.brand?.name ?? ''}&collection[0]=${collectionValue}`}
                 useDefaultPrices={useDefaultPrices}
               />
+              */}
+              <CollectionProducts
+                collection={collectionValue}
+                products={collectionProducts.hits}
+                useDefaultPrices={useDefaultPrices}
+                priceMaxRules={priceMaxRules}
+              />
               <Promotion />
               <RelatedProducts
                 productId={product.entityId}
                 products={relatedProducts}
                 useDefaultPrices={useDefaultPrices}
+                priceMaxRules={priceMaxRules}
               />
               <Warranty product={product} />
               <SiteVibesReviews product={product} category={categoryWithBreadcrumbs} />

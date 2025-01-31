@@ -39,6 +39,11 @@ export interface MegaMenuSecondaryMenuItem {
   description?: string;
 }
 
+export type MegaMenuCustomProps = {
+  logo?: string;
+  title?: string;
+};
+
 export type MegaMenuProps = {
   variant?: string;
   /*
@@ -47,6 +52,7 @@ export type MegaMenuProps = {
     */
   menuItems: MegaMenuMenuItem[];
   secondaryMenuItems: MegaMenuSecondaryMenuItem[];
+  customProps?: MegaMenuCustomProps;
   classNames?: {
     root?: string;
     mainMenu?: string;

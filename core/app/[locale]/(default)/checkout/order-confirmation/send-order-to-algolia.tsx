@@ -32,7 +32,7 @@ export const SendOrderToAlgolia = ({
         currency: lineItems[0]?.subTotalListPrice?.currencyCode || 'USD',
       });
   }
-  }, [lineItems]);
+  }, []);
 
   return <></>;
 }

@@ -23,6 +23,9 @@ import { AutocompleteSearch } from './autocomplete-search';
 import { BcImage } from '../bc-image';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
+import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
+import { cookies } from 'next/headers';
+
 import { getSessionUserDetails } from '~/auth';
 import { get } from 'http';
 interface Props {
@@ -32,17 +35,28 @@ interface Props {
 const homeLogoMobile = imageManagerImageUrl('logo-mark.png', '150w');
 const homeLogoMobileFirst = imageManagerImageUrl('logo-mark.png', '150w');
 
-
 import { MakeswiftComponent } from '@makeswift/runtime/next';
 import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { client as makeswiftClient } from '~/lib/makeswift/client';
+import { Props } from '@makeswift/runtime/prop-controllers';
+
+import { MegaMenuContextProvider } from '~/belami/components/mega-menu';
 
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations('Components.Header');
+
+  const cookieStore = await cookies();
+  const priceMaxCookie = cookieStore.get('pmx');
+  const priceMaxTriggers = priceMaxCookie?.value 
+    ? JSON.parse(atob(priceMaxCookie?.value)) 
+    : undefined;
+
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const useDefaultPrices = !customerAccessToken;
+
+  const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
@@ -177,8 +191,8 @@ export const Header = async ({ cart }: Props) => {
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
-      search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} />}
-      megaMenu={<MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' />}
+      search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />}
+      megaMenu={<MegaMenuContextProvider value={{ logo: homeLogoMobile, title: data?.settings?.storeName }}><MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' /></MegaMenuContextProvider>}
     />
   );
 };

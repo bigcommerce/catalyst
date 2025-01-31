@@ -943,6 +943,12 @@ display: none !important;
   display: flex;
   text-align: center;
 }
+.mega-menu-sidebar-header .mega-menu-sidebar-logo {
+  width: auto;
+  height: 2rem;
+  min-width: auto;
+  display: block;
+}
 .mega-menu-sidebar-header .mega-menu-sidebar-close-button {
   margin-left: auto;
   flex: none;

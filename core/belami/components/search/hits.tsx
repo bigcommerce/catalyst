@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useHits } from 'react-instantsearch';
 import { Hit } from './hit';
 
-export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...props }: any) {
+export function Hits({ hitComponent, view, useDefaultPrices, promotions, priceMaxRules, ...props }: any) {
   const { items, sendEvent } = useHits(props);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -83,7 +83,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...prop
               onClick={() => sendEvent('click', hit, 'Hit Clicked')}
               onAuxClick={() => sendEvent('click', hit, 'Hit Clicked')}
             >
-              <Hit hit={hit as any} promotions={promotions} view={view} />
+              <Hit hit={hit as any} promotions={promotions} priceMaxRules={priceMaxRules} view={view} />
             </li>
           ))}
         </ol>
@@ -92,7 +92,7 @@ export function Hits({ hitComponent, view, useDefaultPrices, promotions, ...prop
   );
 }
 
-export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, ...props }: any) {
+export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, priceMaxRules, ...props }: any) {
   const { items, sendEvent } = useHits(props);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -153,6 +153,7 @@ export function HitsAsync({ hitComponent, view, useDefaultPrices, promotions, ..
             <Hit
               hit={hit as any}
               promotions={promotions}
+              priceMaxRules={priceMaxRules}
               useDefaultPrices={useDefaultPrices}
               price={
                 hit.sku && prices && prices[hit.sku] && prices[hit.sku].price

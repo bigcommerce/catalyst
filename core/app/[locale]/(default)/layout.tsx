@@ -29,13 +29,15 @@ export default async function DefaultLayout({ params, children }: Props) {
   const referrer = headersList.get('referer') || '';
   const ip = headersList.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
   const ua = headersList.get('user-agent') || '';
+  const isMakeSwift = !!headersList.get('x-makeswift-draft-mode');
 
   return (
     <>
       {(
         !BAD_UA_KEYWORDS.some(keyword => ua?.toLowerCase().includes(keyword)) && 
         !process.env.LOCAL_IPS?.includes(ip) && 
-        !process.env.NO_REFERRER_IPS?.includes(ip) 
+        !process.env.NO_REFERRER_IPS?.includes(ip) && 
+        !isMakeSwift
       )
         ? <ReferrerId sid={Number(process.env.SITE_CONFIG_ID ?? 0)} referrerId={referrerIdCookie?.value || null} ip={ip} ua={ua} referrer={referrer} />
         : null
