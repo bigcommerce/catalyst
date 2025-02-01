@@ -395,7 +395,6 @@ const Gallery = ({
         { filename: bannerIcon, width: '50w' },
       ],
     },
-   
   ];
 
   return (

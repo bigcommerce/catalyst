@@ -113,8 +113,8 @@ export default async function ProductPage(props: Props) {
 
     const cookieStore = await cookies();
     const priceMaxCookie = cookieStore.get('pmx');
-    const priceMaxTriggers = priceMaxCookie?.value 
-      ? JSON.parse(atob(priceMaxCookie?.value)) 
+    const priceMaxTriggers = priceMaxCookie?.value
+      ? JSON.parse(atob(priceMaxCookie?.value))
       : undefined;
 
     const useDefaultPrices = !customerAccessToken;
@@ -131,13 +131,13 @@ export default async function ProductPage(props: Props) {
       optionValueIds,
       useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
     });
-    
+
     const [updatedProduct] = await calculateProductPrice(product);
-  
+
     if (!product) {
       return notFound();
     }
-    
+
     // Asset URLs
     const assets = {
       bannerIcon: imageManagerImageUrl('example-1.png', '50w'),
@@ -229,15 +229,18 @@ export default async function ProductPage(props: Props) {
 
     const productImages = removeEdgesAndNodes(product.images);
     var brandId = product?.brand?.entityId;
-    var CommonSettinngsValues =  await commonSettinngs([brandId])
-    
-    const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
+    var CommonSettinngsValues = await commonSettinngs([brandId]);
+
+    const priceMaxRules =
+      priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
+        ? await getPriceMaxRules(priceMaxTriggers)
+        : null;
 
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-5">
-        <div className="breadcrumbs-container">
+        <div className="breadcrumbs-container hidden md:block">
           {categoryWithBreadcrumbs && (
-            <div className="breadcrumb-row mb-5">
+            <div className="breadcrumb-row mb-5 flex justify-center xl:justify-start">
               <Breadcrumbs category={categoryWithBreadcrumbs} />
             </div>
           )}
@@ -247,7 +250,7 @@ export default async function ProductPage(props: Props) {
           <div className="mb-4 xl:mb-12 xl:gap-8">
             <div className="pdp-scroll xl:mb-[7em] xl:flex xl:w-[100%] xl:max-w-[100%] xl:gap-x-[3em]">
               <div className="Gallery relative xl:flex xl:w-[64%]">
-                <div className="gallery-sticky-pop-up xl:sticky xl:top-0 z-10 xl:h-[100vh] xl:w-[100%]">
+                <div className="gallery-sticky-pop-up z-10 xl:sticky xl:top-0 xl:h-[100vh] xl:w-[100%]">
                   <Suspense fallback={<div>Loading gallery...</div>}>
                     <Gallery
                       product={product}
@@ -285,7 +288,9 @@ export default async function ProductPage(props: Props) {
                   }
                   children1={<MakeswiftPage locale={locale} path="/content/shipping-flyout" />}
                   children2={<MakeswiftPage locale={locale} path="/content/returns-flyout" />}
-                  children3={<MakeswiftPage locale={locale} path="/content/request-a-quote-flyout" />}
+                  children3={
+                    <MakeswiftPage locale={locale} path="/content/request-a-quote-flyout" />
+                  }
                   priceMaxRules={priceMaxRules}
                 />
               </div>
