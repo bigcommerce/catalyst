@@ -37,7 +37,7 @@ const StickyScroll = ({
           isScrolling.current = false;
           return;
         }
-        const delta = Math.max(15, currentScroll * 0.1); // Dynamic scroll speed
+        const delta = Math.max(15, currentScroll * 0.1);
         container.scrollTop = currentScroll - delta;
         animationFrameId = requestAnimationFrame(step);
       };
@@ -159,7 +159,7 @@ const StickyScroll = ({
   return (
     <div
       ref={containerRef}
-      className={`relative h-[752px] w-full ${className} overflow-y-auto overflow-x-hidden will-change-scroll [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
+      className={`relative h-[752px] w-full overflow-y-auto overflow-x-hidden will-change-scroll [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
       style={{
         scrollBehavior: 'auto',
       }}

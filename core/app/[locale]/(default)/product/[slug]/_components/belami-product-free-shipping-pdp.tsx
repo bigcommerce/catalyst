@@ -46,7 +46,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
   const backgroundColorClass = isBackorder ? 'bg-[#FBF4E9]' : 'bg-transparent';
 
   return (
-    <div className={`flex ${isFromPDP ? 'items-center' : 'items-start'} lg:items-start`}>
+    <div className={`flex ${isFromPDP ? 'justify-center' : 'justify-start'}  xl:justify-start`}>
       <div className={`${backgroundColorClass} w-fit ${deliveryMessage ? 'mt-[10px]' : 'mt-[0px]'}`}>
         {isBackorder ? (
           <div>

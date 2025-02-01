@@ -74,7 +74,6 @@ const ProductDetailDropdown: React.FC<ProductDetailDropdownProps> = ({
   const t = useTranslations('productDetailDropdown');
   const [isOpen, setIsOpen] = useState<boolean>(false);
   const [isWarningOpen, setIsWarningOpen] = useState<boolean>(false);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const buttonRef = useRef<HTMLButtonElement | null>(null);
 
   // State for product details
@@ -141,26 +140,11 @@ const ProductDetailDropdown: React.FC<ProductDetailDropdownProps> = ({
     }
   };
 
-  const handleClickOutside = (e: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-      setIsOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener('click', handleClickOutside);
-    return () => {
-      document.removeEventListener('click', handleClickOutside);
-    };
-  }, []);
-
   const specSheetUrl = getSpecSheetValue();
   const installSheetUrl = installSheet?.value;
+
   return (
-    <div
-      className="relative mt-6 inline-block w-full transition-all duration-300 xl:mt-[2em]"
-      ref={dropdownRef}
-    >
+    <div className="relative mt-6 inline-block w-full transition-all duration-300 xl:mt-[2em]">
       <button
         ref={buttonRef}
         className="relative flex w-full cursor-pointer items-center rounded border border-gray-300 px-6 py-4 text-left"
@@ -189,8 +173,8 @@ const ProductDetailDropdown: React.FC<ProductDetailDropdownProps> = ({
       </button>
 
       <div
-        className={`transition-max-height overflow-hidden duration-300 ${
-          isOpen ? 'max-h-[1600px]' : 'max-h-0'
+        className={`overflow-hidden transition-all duration-300 ${
+          isOpen ? 'max-h-none opacity-100' : 'max-h-0 opacity-0'
         }`}
         style={{ transitionTimingFunction: 'ease' }}
       >
