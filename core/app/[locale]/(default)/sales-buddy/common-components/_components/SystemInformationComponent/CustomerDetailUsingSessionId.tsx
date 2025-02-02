@@ -32,10 +32,10 @@ const CompactUserCard: React.FC<{ data: UserData }> = ({ data }) => {
             {/* Header */}
             <div className="bg-gradient-to-r from-blue-600 to-indigo-600 px-4 py-3">
                 <div className="flex items-center justify-between">
-                    <h2 className="text-lg font-semibold text-white">User #{data && data.id}</h2>
-                    <div className="px-2 py-1 bg-white/20 rounded text-xs text-white font-medium">
+                    <h2 className="text-lg font-semibold text-white">{data && data.session_id}</h2>
+                    {/* <div className="px-2 py-1 bg-white/20 rounded text-xs text-white font-medium">
                         ID: {data?.id}
-                    </div>
+                    </div> */}
                 </div>
             </div>
 

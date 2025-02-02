@@ -37,7 +37,6 @@ export async function agentLogin(emailId: any, password: any) {
 export  const storeAgentLoginStatusInCookies = async(status: any) => {
   const cookieStore = await cookies();
   const cookieExpirationDate = new Date();
-  cookieExpirationDate.setFullYear(cookieExpirationDate.getFullYear() + 1); // Set expiration to 10 years from now
   cookieStore.set({
     name: 'agent_login',
     value: status,
@@ -45,6 +44,12 @@ export  const storeAgentLoginStatusInCookies = async(status: any) => {
     sameSite: 'lax',
     secure: true,
     path: '/',
-    expires: cookieExpirationDate,
   });
+}
+export const getAgentLoginStatusFromCookies = async() => {
+  const cookieStore = await cookies();
+  const agentLoginCookie = cookieStore?.get('agent_login');
+  const agentLoginStatus = agentLoginCookie ? agentLoginCookie?.value : null;
+  return agentLoginStatus;
+
 }
