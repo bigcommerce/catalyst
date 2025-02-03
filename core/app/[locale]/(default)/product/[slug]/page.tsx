@@ -73,7 +73,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const optionValueIds = getOptionValueIds({ searchParams });
   let product: any;
-  if (productSku) {
+  if (productSku && optionValueIds.length === 0) {
     product = await getProductBySku({
       sku: productSku,
     });
@@ -137,7 +137,7 @@ export default async function ProductPage(props: Props) {
     const optionValueIds = getOptionValueIds({ searchParams });
 
     let product: any;
-    if (productSku) {
+    if (productSku && optionValueIds.length === 0) {
       product = await getProductBySku({
         sku: productSku,
       });

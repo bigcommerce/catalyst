@@ -268,8 +268,6 @@ export const Details = ({
     return defaultValue?.label || 'Select';
   };
 
-  console.log('hello-world');
-
   return (
     <div className="">
       {showStickyHeader && (
