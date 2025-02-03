@@ -66,7 +66,7 @@
         "title": "Inloggen",
         "heading": "Inloggen",
         "Form": {
-            "error": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
+            "invalidCredentials": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
             "successful": "Je aanmelding is gelukt.",
             "emailLabel": "E-mailadres",
             "enterEmailMessage": "Voer uw e-mail in",
@@ -74,7 +74,8 @@
             "enterPasswordMessage": "Voer je wachtwoord in",
             "submitting": "Verzenden...",
             "logIn": "Inloggen",
-            "forgotPassword": "Wachtwoord vergeten?"
+            "forgotPassword": "Wachtwoord vergeten?",
+            "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
         },
         "CreateAccount": {
             "heading": "Nieuwe klant?",

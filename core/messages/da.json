@@ -66,7 +66,7 @@
         "title": "Log på",
         "heading": "Log på",
         "Form": {
-            "error": "Din e-mailadresse eller adgangskode er forkert. Prøv at logge ind igen, eller nulstil din adgangskode",
+            "invalidCredentials": "Din e-mailadresse eller adgangskode er forkert. Prøv at logge ind igen, eller nulstil din adgangskode",
             "successful": "Du har logget ind.",
             "emailLabel": "E-mail",
             "enterEmailMessage": "Indtast din e-mailadresse",
@@ -74,7 +74,8 @@
             "enterPasswordMessage": "Indtast din adgangskode.",
             "submitting": "Indsender ...",
             "logIn": "Log ind",
-            "forgotPassword": "Har du glemt din adgangskode?"
+            "forgotPassword": "Har du glemt din adgangskode?",
+            "somethingWentWrong": "Noget gik galt. Prøv igen senere."
         },
         "CreateAccount": {
             "heading": "Ny kunde?",
@@ -508,8 +509,8 @@
                 "logout": "Log ud"
             },
             "Currency": {
-                "invalidCurrency": "Invalid currency",
-                "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
+                "invalidCurrency": "Ugyldig valuta",
+                "errorUpdatingCurrency": "Fejl ved opdatering af valuta for din indkøbskurv. Prøv igen."
             },
             "Locale": {
                 "invalidLocale": "Ugyldig lokalitet"

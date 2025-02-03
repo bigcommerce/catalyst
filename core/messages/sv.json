@@ -66,7 +66,7 @@
         "title": "Logga in",
         "heading": "Logga in",
         "Form": {
-            "error": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
+            "invalidCredentials": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
             "successful": "Du har nu loggat in.",
             "emailLabel": "E-post",
             "enterEmailMessage": "Ange din e-postadress",
@@ -74,7 +74,8 @@
             "enterPasswordMessage": "Ange ditt lösenord",
             "submitting": "Skickar ...",
             "logIn": "Logga in",
-            "forgotPassword": "Glömt ditt lösenord?"
+            "forgotPassword": "Glömt ditt lösenord?",
+            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
         },
         "CreateAccount": {
             "heading": "Nya kunder?",

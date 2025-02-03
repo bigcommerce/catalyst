@@ -66,7 +66,7 @@
         "title": "Zaloguj się",
         "heading": "Zaloguj",
         "Form": {
-            "error": "Twój adres e-mail lub hasło są nieprawidłowe. Spróbuj zalogować się ponownie lub zresetuj hasło",
+            "invalidCredentials": "Twój adres e-mail lub hasło są nieprawidłowe. Spróbuj zalogować się ponownie lub zresetuj hasło",
             "successful": "Zalogowano pomyślnie.",
             "emailLabel": "Email",
             "enterEmailMessage": "Wpisz swój adres e-mail",
@@ -74,7 +74,8 @@
             "enterPasswordMessage": "Podaj hasło",
             "submitting": "Przekazanie...",
             "logIn": "Zaloguj się",
-            "forgotPassword": "Nie pamiętasz hasła?"
+            "forgotPassword": "Nie pamiętasz hasła?",
+            "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
         },
         "CreateAccount": {
             "heading": "Nowy klient?",
@@ -508,8 +509,8 @@
                 "logout": "Wyloguj się"
             },
             "Currency": {
-                "invalidCurrency": "Invalid currency",
-                "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
+                "invalidCurrency": "Nieprawidłowa waluta",
+                "errorUpdatingCurrency": "Błąd aktualizacji waluty w koszyku. Spróbuj ponownie."
             },
             "Locale": {
                 "invalidLocale": "Nieprawidłowe ustawienia regionalne"

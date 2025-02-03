@@ -66,7 +66,7 @@
         "title": "Acesso",
         "heading": "Credencial de acesso",
         "Form": {
-            "error": "O endereço de email ou a senha está incorreto. Tente fazer login novamente ou redefinir sua senha",
+            "invalidCredentials": "O endereço de email ou a senha está incorreto. Tente fazer login novamente ou redefinir sua senha",
             "successful": "Você fez login com sucesso.",
             "emailLabel": "Email",
             "enterEmailMessage": "Digite seu email",
@@ -74,7 +74,8 @@
             "enterPasswordMessage": "Digite sua senha",
             "submitting": "Enviando...",
             "logIn": "Credencial de acesso",
-            "forgotPassword": "Esqueceu sua senha?"
+            "forgotPassword": "Esqueceu sua senha?",
+            "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde."
         },
         "CreateAccount": {
             "heading": "Cliente novo?",
@@ -508,8 +509,8 @@
                 "logout": "Sair"
             },
             "Currency": {
-                "invalidCurrency": "Invalid currency",
-                "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
+                "invalidCurrency": "Moeda inválida",
+                "errorUpdatingCurrency": "Erro ao atualizar a moeda do seu carrinho. Tente novamente."
             },
             "Locale": {
                 "invalidLocale": "Localidade inválida"

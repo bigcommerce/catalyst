@@ -66,7 +66,7 @@
         "title": "ログイン",
         "heading": "Log In",
         "Form": {
-            "error": "Your email address or password is incorrect. Try signing in again or reset your password",
+            "invalidCredentials": "Your email address or password is incorrect. Try signing in again or reset your password",
             "successful": "You have successfully logged in.",
             "emailLabel": "Eメール",
             "enterEmailMessage": "Enter your email",
@@ -74,7 +74,8 @@
             "enterPasswordMessage": "Enter your password",
             "submitting": "提出中…",
             "logIn": "ログイン",
-            "forgotPassword": "パスワードをお忘れですか?"
+            "forgotPassword": "パスワードをお忘れですか?",
+            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
         },
         "CreateAccount": {
             "heading": "New customer?",

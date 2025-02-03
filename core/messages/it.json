@@ -66,7 +66,7 @@
         "title": "Accedi",
         "heading": "Accedi",
         "Form": {
-            "error": "L'indirizzo e-mail o la password non sono corretti. Prova ad accedere di nuovo o reimposta la password",
+            "invalidCredentials": "L'indirizzo e-mail o la password non sono corretti. Prova ad accedere di nuovo o reimposta la password",
             "successful": "Hai effettuato l'accesso correttamente.",
             "emailLabel": "E-mail",
             "enterEmailMessage": "Inserisci la tua e-mail",
@@ -74,7 +74,8 @@
             "enterPasswordMessage": "Inserisci la tua password",
             "submitting": "Invio in corso...",
             "logIn": "Accedi",
-            "forgotPassword": "Hai dimenticato la password?"
+            "forgotPassword": "Hai dimenticato la password?",
+            "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
         },
         "CreateAccount": {
             "heading": "Nuovo cliente?",
@@ -508,8 +509,8 @@
                 "logout": "Esci"
             },
             "Currency": {
-                "invalidCurrency": "Invalid currency",
-                "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
+                "invalidCurrency": "Valuta non valida",
+                "errorUpdatingCurrency": "Si è verificato un errore durante l'aggiornamento della valuta per il tuo carrello. Riprova."
             },
             "Locale": {
                 "invalidLocale": "Locale non valido"

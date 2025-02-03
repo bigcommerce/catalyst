@@ -66,7 +66,7 @@
         "title": "Logg inn",
         "heading": "Logg inn",
         "Form": {
-            "error": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
+            "invalidCredentials": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
             "successful": "Du har logget inn.",
             "emailLabel": "E-post",
             "enterEmailMessage": "Skriv inn epostadressen din",
@@ -74,7 +74,8 @@
             "enterPasswordMessage": "Skriv inn passordet ditt.",
             "submitting": "Sender inn …",
             "logIn": "Logg inn",
-            "forgotPassword": "Har du glemt passordet?"
+            "forgotPassword": "Har du glemt passordet?",
+            "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
         },
         "CreateAccount": {
             "heading": "Ny kunde?",
