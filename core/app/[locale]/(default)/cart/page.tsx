@@ -193,7 +193,7 @@ export default async function Cart({ params }: Props) {
     return item?.baseCatalogProduct?.brand?.entityId;
   });
   var getAllCommonSettinngsValues = await commonSettinngs(getBrandIds)
-  //let checkZeroTax: any = await zeroTaxCalculation(data.site);
+  let checkZeroTax: any = await zeroTaxCalculation(data.site);
 
   updatedLineItemWithoutAccessories = await calculateProductPrice(updatedLineItemWithoutAccessories,"cart");
  

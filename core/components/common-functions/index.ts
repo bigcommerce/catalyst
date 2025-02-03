@@ -6,6 +6,8 @@ import {
   GetProductMetaFields,
   GetProductVariantMetaFields,
   updateProductDiscount,
+  createGiftCardCoupon,
+  processGiftCertificate,
 } from '../management-apis';
 
 interface MetaField {
@@ -448,9 +450,12 @@ export const zeroTaxCalculation = async (cartObject: any) => {
       '========cartData?.lineItems?.physicalItems=======',
       cartData?.lineItems?.physicalItems,
     );
+    let overAllTaxAmount: any = 0;
+    let overallZeroTaxAmount: any = 0;
     for await (const item of cartData?.lineItems?.physicalItems) {
       let couponDiscount: any = item?.couponAmount;
       let couponAmount: any = couponDiscount?.value;
+      overallZeroTaxAmount += couponAmount;
       let qty: any = item?.quantity;
       let zeroTaxCheck: any = couponAmount / qty;
       if (zeroTaxCheck == 0.1) {
@@ -458,6 +463,7 @@ export const zeroTaxCalculation = async (cartObject: any) => {
         let taxAmountEachProduct = (taxPercentCalc * productAmount) / (1 + taxPercentCalc);
         console.log('========taxAmountEachProduct=======', taxAmountEachProduct);
         if (taxAmountEachProduct) {
+          overAllTaxAmount += taxAmountEachProduct;
           postDataArray.push({
             id: item?.entityId,
             discounted_amount: taxAmountEachProduct,
@@ -467,7 +473,7 @@ export const zeroTaxCalculation = async (cartObject: any) => {
     }
     console.log('=======postDataArray========', postDataArray);
     if (postDataArray?.length > 0) {
-      //delete the ZERO TAX Coupon
+      /*//delete the ZERO TAX Coupon
       await deleteCouponCodeFromCart(cartData?.entityId, 'ZEROTAX');
       let postData: any = `{
         "cart": {
@@ -478,7 +484,31 @@ export const zeroTaxCalculation = async (cartObject: any) => {
       console.log('========after remove=======');
       let discountData: any = await updateProductDiscount(cartData?.entityId, postData);
       console.log('========discountData=======', discountData);
-      await addCouponCodeToCart(cartData?.entityId, 'ZEROTAX');
+      await addCouponCodeToCart(cartData?.entityId, 'ZEROTAX');*/
+
+      //Gift Certificate Creation
+      let giftCode: string = generateRandomString(15);
+      console.log('========overAllTaxAmount=======', overAllTaxAmount);
+      console.log('========overallZeroTaxAmount=======', overallZeroTaxAmount);
+      console.log('========giftCode=======', giftCode);
+      let finalDiscountAmount: any = overAllTaxAmount - overallZeroTaxAmount;
+      console.log('========finalDiscountAmount=======', finalDiscountAmount);
+      //let giftcardData: any = await createGiftCardCoupon(finalDiscountAmount, giftCode);
+      //console.log('========giftcardData=======', giftcardData);
+      //let processGiftCard: any = await processGiftCertificate(giftCode);
+      //console.log('=======processGiftCard========', processGiftCard);
     }
   }
 };
+
+export function generateRandomString(length: number) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let counter: number = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result?.toUpperCase();
+}
