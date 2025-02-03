@@ -41,6 +41,7 @@ interface ProductPrices {
 interface Product {
   entityId: number;
   name: string;
+  sku: string;
   path: string;
   images: ProductImage[];
   brand?: ProductBrand;
@@ -65,6 +66,7 @@ interface Product {
       };
     }>;
   };
+  variants: any;
 }
 
 interface WishlistItem {

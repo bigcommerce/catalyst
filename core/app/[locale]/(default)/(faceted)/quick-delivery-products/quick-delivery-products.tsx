@@ -61,7 +61,7 @@ const sortByNumericRangeName: RefinementListProps['sortBy'] = (a: any, b: any) =
 //const closeOnChange = () => window.innerWidth > 375;
 const closeOnChange = false;
 
-export const QuickDeliveryProducts = ({ query, promotions, useDefaultPrices = false }: any) => {
+export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, priceMaxRules }: any) => {
 
   const [view, setView] = useState('grid');
 
@@ -238,7 +238,7 @@ export const QuickDeliveryProducts = ({ query, promotions, useDefaultPrices = fa
                 },
                 page: routeState?.page,
                 hitsPerPage: routeState?.hitsPerPage,
-                sortBy: routeState?.sortBy
+                sortBy: routeState?.sortBy,
               },
             };
           },
@@ -659,8 +659,8 @@ export const QuickDeliveryProducts = ({ query, promotions, useDefaultPrices = fa
         </div>
 
         {useAsyncMode
-          ? <HitsAsync view={view} useDefaultPrices={useDefaultPrices} promotions={promotions} />
-          : <Hits view={view} useDefaultPrices={useDefaultPrices} promotions={promotions} />
+          ? <HitsAsync view={view} useDefaultPrices={useDefaultPrices} promotions={promotions} priceMaxRules={priceMaxRules} />
+          : <Hits view={view} useDefaultPrices={useDefaultPrices} promotions={promotions} priceMaxRules={priceMaxRules} />
         }
 
         <div className="mt-4 flex flex-col lg:flex-row lg:space-x-4 space-y-4 lg:space-y-0 items-center">

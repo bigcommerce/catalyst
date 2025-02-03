@@ -35,7 +35,7 @@ const RectangleList = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Pr
               {...itemProps}
               className={cn(
                 'w-auto border-2 px-4 py-2.5 font-semibold text-black',
-                'mx-1 mb-2',
+                'mb-2',
                 'hover:border-sky-400',
                 'focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-sky-400/20',
                 'disabled:border-gray-100 disabled:text-gray-400 disabled:hover:border-gray-100',

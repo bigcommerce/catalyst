@@ -32,8 +32,8 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
               key={`${id}-${value}`}
               {...itemProps}
               className={cn(
-                'group m-0 h-12 w-12 rounded-[50px] bg-white p-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-[#4EAECC]',
-                'data-[state=checked]:border-[2px] data-[state=checked]:border-[#4EAECC]', // Default selected state
+                'group m-0 h-12 w-12 rounded-[50px] border border-gray-300 bg-white p-0 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-[#4EAECC]',
+                'data-[state=checked]:border-[2px] data-[state=checked]:border-[#4EAECC]',
                 'focus-within:border-[2px] focus-within:border-[#4EAECC] hover:border-[2px] hover:border-[#4EAECC]',
                 error &&
                   'border-error-secondary focus-visible:border-error-secondary data-[state=checked]:border-error-secondary hover:border-error focus-visible:ring-error/20 disabled:border-gray-200',
@@ -50,7 +50,7 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
                   }}
                 />
               ) : (
-                <span className="relative block h-9 w-9 overflow-hidden border border-gray-200 group-disabled:border-gray-100">
+                <span className="relative block h-9 w-9 overflow-hidden border-2 border-solid border-[#B4B4B5] group-disabled:border-gray-100">
                   <span className="border-error-secondary absolute -start-px -top-[2px] w-[51px] origin-top-left rotate-45 border-t-2 group-disabled:opacity-30" />
                 </span>
               )}

@@ -5,7 +5,9 @@ import { MiddlewareFactory } from './compose-middlewares';
 
 export const withMakeswift: MiddlewareFactory = (middleware) => {
   return async (request, event) => {
-    const apiKey = request.nextUrl.searchParams.get('x-makeswift-draft-mode');
+    const apiKey =
+      request.nextUrl.searchParams.get('x-makeswift-draft-mode') ??
+      request.headers.get('x-makeswift-draft-mode');
 
     if (apiKey === process.env.MAKESWIFT_SITE_API_KEY) {
       const response = await fetch(new URL('/api/makeswift/draft-mode', request.nextUrl.origin), {

@@ -23,6 +23,9 @@ import { AutocompleteSearch } from './autocomplete-search';
 import { BcImage } from '../bc-image';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
+import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
+import { cookies } from 'next/headers';
+
 import { getSessionUserDetails } from '~/auth';
 import { get } from 'http';
 interface Props {
@@ -33,14 +36,27 @@ const homeLogoMobile = imageManagerImageUrl('logo-mark.png', '150w');
 const homeLogoMobileFirst = imageManagerImageUrl('logo-mark.png', '150w');
 
 import { MakeswiftComponent } from '@makeswift/runtime/next';
-import { client as makeswiftClient, getSiteVersion } from '~/lib/makeswift/client';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
+import { client as makeswiftClient } from '~/lib/makeswift/client';
+import { Props } from '@makeswift/runtime/prop-controllers';
+
+import { MegaMenuContextProvider } from '~/belami/components/mega-menu';
 
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations('Components.Header');
+
+  const cookieStore = await cookies();
+  const priceMaxCookie = cookieStore.get('pmx');
+  const priceMaxTriggers = priceMaxCookie?.value 
+    ? JSON.parse(atob(priceMaxCookie?.value)) 
+    : undefined;
+
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const useDefaultPrices = !customerAccessToken;
+
+  const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
@@ -129,7 +145,6 @@ export const Header = async ({ cart }: Props) => {
                     { action: logout, name: 'Sign Out' },
                   ]
                 : [
-                    { href: '/login', label: 'Account' },
                     { href: '/login', label: 'My Account' },
                     { href: '/login', label: 'Favorites' },
                     { href: '/login', label: 'Purchase History' },
@@ -175,8 +190,39 @@ export const Header = async ({ cart }: Props) => {
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
-      search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} />}
-      megaMenu={<MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' />}
+      search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />}
+      megaMenu={
+        <MegaMenuContextProvider value={{ 
+            logo: homeLogoMobile, 
+            storeName: data?.settings?.storeName, 
+            accountMenuItems: customerAccessToken
+              ? [
+                  { href: '/account', label: 'My Account' },
+                  { href: '/account/favorites', label: 'Favorites' },
+                  { href: '/account/purchase-history', label: 'Purchase History' },
+                  { href: '/account/finance', label: 'Finance' },
+                  { action: logout, name: 'Sign Out' },
+                ]
+              : [
+                  { href: '/login', label: 'My Account' },
+                  { href: '/login', label: 'Favorites' },
+                  { href: '/login', label: 'Purchase History' },
+                  { href: '/login', label: 'Financing' },
+                  { href: '/login', label: 'Login' },
+                ],
+            supportMenuItems: [
+                { href: '/support/faqs', label: 'Existing Order' },
+                { href: '/order-tracking', label: 'Track My Order' },
+                { href: '/support/contact', label: 'Replace Items' },
+                { href: '/support/contact', label: 'Gift Certificates' },
+                { href: '/support/contact', label: 'Visit Our Help Center' },
+                { href: '/support/contact', label: 'New Orders' },
+                { href: '/support/contact', label: 'Contact ' },
+              ]
+          }}>
+          <MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' />
+        </MegaMenuContextProvider>
+      }
     />
   );
 };

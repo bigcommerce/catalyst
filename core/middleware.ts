@@ -4,6 +4,7 @@ import { withChannelId } from './middlewares/with-channel-id';
 import { withIntl } from './middlewares/with-intl';
 import { withMakeswift } from './middlewares/with-makeswift';
 //import { withReferrerId } from './middlewares/with-referrer-id';
+import { withPriceMax } from './middlewares/with-price-max';
 import { withRoutes } from './middlewares/with-routes';
 
 export const middleware = composeMiddlewares(
@@ -12,6 +13,7 @@ export const middleware = composeMiddlewares(
   withIntl,
   withChannelId,
   //withReferrerId,
+  withPriceMax,
   withRoutes,
 );
 

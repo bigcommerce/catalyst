@@ -17,7 +17,8 @@ import Link from 'next/link';
 import SystemInfoComponent from './SystemInformationComponent';
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import CompactUserCard from './SystemInformationComponent/CustomerDetailUsingSessionId';
-function CustomerSupportPage() {
+import { setCustomerIdViaSessionId } from '../../_actions/update-customer-id';
+function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
   const [customerDetails, setCustomerDetails] = useState({});
   const [customerDetailsBasedOnSessionId, setCustomerDetailsBasedOnSessionId] = useState([]);
   const [cartErrorMessage, setCartErrorMessage] = useState<string | null>(null);
@@ -36,6 +37,7 @@ function CustomerSupportPage() {
   const [customerVisitedUrl, setCustomerVisitedUrl] = useState<any[]>([])
   const [updatedCartId, setUpdatedCCartId] = useState('');
   const [shopperSystemInfo, setShopperSystemInfo] = useState({});
+  const [getUserStoredSessionInfoFromLS, setGetUserStoredSessionInfoFromLS] = useState([])
   const [findCustomerData, setFindCustomerData] = useState({
     email: '',
     phone: '',
@@ -78,26 +80,35 @@ function CustomerSupportPage() {
   const handleCartLookupSubmit = async (e: React.FormEvent) => {
     setLoading((prev) => ({ ...prev, show1: true }));
     e.preventDefault();
-    
-    if(cartId === ''){
+
+    if (cartId === '') {
       const cartError = validateInput('cart-id', cartId, "");
       setCartErrorMessage('Session Id cannot be empty');
       setLoading((prev) => ({ ...prev, show1: false }));
       return
     }
+    localStorage.setItem('cart_lookup_sessionID_agent', "")
     try {
       const response = await getCustomerUrlSession_id(cartId);
-      if (response.output.count > 0){
+      if (response.output.count > 0) {
         setCart_interface_session_id(response.output.data[0]['session_id'])
         setCart_interface_Refferal_id(response.output.data[0]['referral_id'])
-
         setCustomerDetailsBasedOnSessionId(response.output.data[0])
-        UpdateCartIdCookie(response.output.data[0]['cart_id'])
+        UpdateCartIdCookie(response?.output?.data?.[0]?.['cart_id'])
         setUpdatedCCartId(cartId)
-      }else{
+        setCustomerIdViaSessionId(response?.output?.data?.[0]?.customer_id)
+        
+        localStorage.setItem(
+          'cart_lookup_sessionID_agent',
+          JSON.stringify({
+            SessionId: cartId,
+            SessionIDUserDetails: response?.output?.data[0]
+          })
+        );
+      } else {
         setCartErrorMessage('No cart found with the given session id');
       }
-      
+
       setLoading((prev) => ({ ...prev, show1: false }));
     } catch (error: any) {
       setLoading((prev) => ({ ...prev, show1: false }));
@@ -108,23 +119,23 @@ function CustomerSupportPage() {
     e.preventDefault();
     try {
       let getShopperDetailFromLS = localStorage.getItem('session_id');
-        const response = await getShopperUrls(sessionId);
-        let storeShopperInformationInLS = {
-          machineInfo: response?.output?.data?.length ? response.output.data[0]['shopper_information'] : {},
-          shopperUrls: response?.output?.urls == '' ? [] : response?.output?.urls 
-        }
-        const shopperInfoString = JSON.stringify(storeShopperInformationInLS);
-        localStorage.setItem('ShopperInformations', shopperInfoString)
-        let getShopperMachineInformation = response?.output?.data[0]['shopper_information']
-        const ShopperMachineInformationJsonToObj = JSON.parse(getShopperMachineInformation);
-        ShopperMachineInformationJsonToObj.session_id = getShopperDetailFromLS
-        setShopperSystemInfo(ShopperMachineInformationJsonToObj)
-        UpdateCartIdCookie(response.output.data[0]['cart_id'])
-        setCustomerVisitedUrl(response.output.urls)
-        setLoading((prev) => ({ ...prev, show4: false }));  
+      const response = await getShopperUrls(sessionId);
+      let storeShopperInformationInLS = {
+        machineInfo: response?.output?.data?.length ? response.output.data[0]['shopper_information'] : {},
+        shopperUrls: response?.output?.urls == '' ? [] : response?.output?.urls
+      }
+      const shopperInfoString = JSON.stringify(storeShopperInformationInLS);
+      localStorage.setItem('ShopperInformations', shopperInfoString)
+      let getShopperMachineInformation = response?.output?.data[0]['shopper_information']
+      const ShopperMachineInformationJsonToObj = JSON.parse(getShopperMachineInformation);
+      ShopperMachineInformationJsonToObj.session_id = getShopperDetailFromLS
+      setShopperSystemInfo(ShopperMachineInformationJsonToObj)
+      UpdateCartIdCookie(response.output.data[0]['cart_id'])
+      setCustomerVisitedUrl(response.output.urls)
+      setLoading((prev) => ({ ...prev, show4: false }));
       // }
 
-      
+
     } catch (error: any) {
       setLoading((prev) => ({ ...prev, show4: false }));
     }
@@ -146,19 +157,19 @@ function CustomerSupportPage() {
         return;
       }
 
-      const response = await getShopperUrls(sessionId);      
+      const response = await getShopperUrls(sessionId);
       if (!response?.output?.data) {
         console.log('No shopper data received from API');
         setLoading((prev) => ({ ...prev, show4: false }));
         return;
-      }  
-          
-      if(response?.output?.count > 0){
+      }
+
+      if (response?.output?.count > 0) {
         const shopperData = response?.output?.data[0] || {};
         setCart_interface_session_id(shopperData.session_id)
         setCart_interface_Refferal_id(shopperData.referral_id)
-        
-        
+
+
         const shopperUrls = response?.output?.urls || [];
         const storeShopperInformationInLS = {
           machineInfo: shopperData?.shopper_information || {},
@@ -183,20 +194,20 @@ function CustomerSupportPage() {
         }
 
       }
-      else{
+      else {
         setUrlinputErrorMessage('No shopper data found with the given session id');
         setShopperSystemInfo({})
         setCustomerVisitedUrl([]);
         const storeShopperInformationInLS = {
-          machineInfo:  {},
-          shopperUrls:  []
+          machineInfo: {},
+          shopperUrls: []
         };
         localStorage.setItem(
           'ShopperInformations',
           JSON?.stringify(storeShopperInformationInLS)
         );
       }
-      
+
 
     } catch (error) {
       console.error('Error fetching shopper data:', error);
@@ -206,48 +217,50 @@ function CustomerSupportPage() {
   };
   const handleFindCustomerSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFindCustomerSuccessMessage("")    
-    setLoading((prev) => ({ ...prev, show2: true }));    
+    setFindCustomerSuccessMessage("")
+    setLoading((prev) => ({ ...prev, show2: true }));
     if (
       (findCustomerData.email !== '' ||
-      findCustomerData.phone !== '' ||
-      findCustomerData.first_name !== '')  
+        findCustomerData.phone !== '' ||
+        findCustomerData.first_name !== '' || findCustomerData.company !== '')
     ) {
-      if (findCustomerData.email.length == 0 && findCustomerDataError.email == "" || findCustomerData.email.length > 0 && findCustomerDataError.email == "" ){
+      if (findCustomerData.email.length == 0 && findCustomerDataError.email == "" || findCustomerData.email.length > 0 && findCustomerDataError.email == "") {
         try {
-        const response = await findCustomerDetails(findCustomerData);        
-        setCustomerDetails(findCustomerData);
-        if (response.data.status == 200) {
-          setLoading((prev) => ({ ...prev, show2: false }));
-          let data = response.data.output;
-          const extractedData = data.map(
-            (item: { first_name: any; last_name: any; email: any }) => ({
-              first_name: item.first_name,
-              last_name: item.last_name,
-              email: item.email,
-            }),
-          );
-          if (extractedData.length > 0) {
-            setTableData(extractedData);
-            setFindCustomerSuccessMessage(`${extractedData.length} Account retrieved successfully!`);
-            setFindCustomerErrorMessage(null);
+          const response = await findCustomerDetails(findCustomerData);
+          console.log(response);
+          
+          setCustomerDetails(findCustomerData);
+          if (response.data.status == 200) {
+            setLoading((prev) => ({ ...prev, show2: false }));
+            let data = response.data.output;
+            const extractedData = data.map(
+              (item: { first_name: any; last_name: any; email: any }) => ({
+                first_name: item.first_name,
+                last_name: item.last_name,
+                email: item.email,
+              }),
+            );
+            if (extractedData.length > 0) {
+              setTableData(extractedData);
+              setFindCustomerSuccessMessage(`${extractedData.length} Account retrieved successfully!`);
+              setFindCustomerErrorMessage(null);
+            } else {
+              setTableData([])
+              setFindCustomerSuccessMessage(`No account found with the given details!`);
+            }
           } else {
+            setLoading((prev) => ({ ...prev, show2: false }));
             setTableData([])
-            setFindCustomerSuccessMessage(`No account found with the given details!`);
+            const errorMessage = response.error || 'An unknown error occurred';
+            setFindCustomerErrorMessage(` Failed to retrieve account`);
+            setFindCustomerSuccessMessage(null);
           }
-        } else {
+        } catch (error: any) {
           setLoading((prev) => ({ ...prev, show2: false }));
           setTableData([])
-          const errorMessage = response.error || 'An unknown error occurred';
-          setFindCustomerErrorMessage(` Failed to retrieve account`);
+          setFindCustomerErrorMessage(`Failed to retrieve account`);
+          // setFindCustomerErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
           setFindCustomerSuccessMessage(null);
-        }
-        } catch (error: any) {
-        setLoading((prev) => ({ ...prev, show2: false }));
-        setTableData([])
-        setFindCustomerErrorMessage(`Failed to retrieve account`);
-        // setFindCustomerErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
-        setFindCustomerSuccessMessage(null);
         }
       } else { setLoading((prev) => ({ ...prev, show2: false })); }
     } else {
@@ -257,8 +270,8 @@ function CustomerSupportPage() {
   };
 
 
- 
-  const handleValidationMsgForCreateAccount=()=>{
+
+  const handleValidationMsgForCreateAccount = () => {
     const missingFields = [];
 
     if (!createAccountData.first_name) {
@@ -297,13 +310,12 @@ function CustomerSupportPage() {
     }
     try {
       const response = await createCustomerAccount(createAccountData);
-      
       setLoading((prev) => ({ ...prev, show3: false }));
       if (response.status === 200) {
         setCreateAccountSuccessMessage('Account created successfully!');
         setCreateAccountErrorMessage(null);
       } else {
-        setCreateAccountErrorMessage('Error during account creation');
+        setCreateAccountErrorMessage('Email id already exist');
       }
     } catch (error) {
       setLoading((prev) => ({ ...prev, show3: false }));
@@ -312,20 +324,31 @@ function CustomerSupportPage() {
     }
   };
   useEffect(() => {
+    const getCartLookUpValueFromLS = () => {
+      const getCart_lookup_sessionID_agent = JSON?.parse(localStorage?.getItem('cart_lookup_sessionID_agent') || '{}')
+      const isNotEmpty = Object.keys(getCart_lookup_sessionID_agent).length > 0;
+      setCustomerIdViaSessionId(isNotEmpty && getCart_lookup_sessionID_agent?.SessionIDUserDetails.customer_id)
+
+      setGetUserStoredSessionInfoFromLS(getCart_lookup_sessionID_agent)
+      setCartId(getCart_lookup_sessionID_agent?.SessionId)
+      setCustomerDetailsBasedOnSessionId(getCart_lookup_sessionID_agent?.SessionIDUserDetails)
+
+    }
     const getShopperInfoAndLoad = () => {
       try {
-        const sessionFromLS = localStorage.getItem('session_id');
+        const getCart_lookup_sessionID_agent = JSON?.parse(localStorage?.getItem('cart_lookup_sessionID_agent') || '{}')
+        setGetUserStoredSessionInfoFromLS(getCart_lookup_sessionID_agent)
+        const sessionFromLS = getCart_lookup_sessionID_agent?.SessionId
         const overAllValue = localStorage.getItem('ShopperInformations');
-       
-        
         // Check if data exists in localStorage
+        setSessionId(sessionFromLS)
         if (!overAllValue) {
           setShopperSystemInfo([]);
           setCustomerVisitedUrl([]);
           return;
         }
         const parsedOverallValue = JSON?.parse(overAllValue);
-        if (parsedOverallValue?.machineInfo ) {
+        if (parsedOverallValue?.machineInfo) {
           try {
             const machineInfo = JSON?.parse(parsedOverallValue?.machineInfo);
             machineInfo.session_id = sessionFromLS;
@@ -344,7 +367,9 @@ function CustomerSupportPage() {
         setCustomerVisitedUrl([]);
       }
     };
-    // getShopperInfoAndLoad()
+
+    getCartLookUpValueFromLS()
+    getShopperInfoAndLoad()
 
   }, [])
 
@@ -385,16 +410,16 @@ function CustomerSupportPage() {
       </div>
     ));
   };
-  
+
   const handleInputChange = (id: string, value: string) => {
     setFindCustomerErrorMessage('')
     setCreateAccountSuccessMessage('')
-
+    setCreateAccountErrorMessage('')
     switch (id) {
       case 'cart-id': {
         setCartId(value);
-        const cartError = validateInput('cart-id', value,"");
-        if(value.length !== 17){
+        const cartError = validateInput('cart-id', value, "");
+        if (value.length !== 17) {
           setCustomerDetailsBasedOnSessionId([])
         }
         setCartErrorMessage(cartError);
@@ -402,7 +427,7 @@ function CustomerSupportPage() {
       }
       case 'session-id': {
         setSessionId(value);
-        const cartError = validateInput('session-id', value, "");        
+        const cartError = validateInput('session-id', value, "");
         setUrlinputErrorMessage(cartError);
         break;
       }
@@ -516,6 +541,7 @@ function CustomerSupportPage() {
         break;
     }
   };
+
   const accordions = [
     {
       title: (
@@ -537,7 +563,7 @@ function CustomerSupportPage() {
           />
           {cartErrorMessage && <p className="text-red-800">{cartErrorMessage}</p>}
           {cartSuccessMessage && <p className="text-green-600">{cartSuccessMessage}</p>}
-          
+
           <button
             type="submit"
             className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
@@ -547,9 +573,14 @@ function CustomerSupportPage() {
               {loading.show1 && <Loader />}
             </div>
           </button>
-          {Object.keys(customerDetailsBasedOnSessionId).length > 0 && cartErrorMessage =='' && cartId !=='' && <div className='m-2'>
-            <CompactUserCard data={customerDetailsBasedOnSessionId} />
-          </div>}
+          {
+            getUserStoredSessionInfoFromLS &&
+            customerDetailsBasedOnSessionId &&
+            Object.keys(customerDetailsBasedOnSessionId).length > 0 &&
+            (cartErrorMessage === '' || cartErrorMessage === null) &&
+            cartId !== '' && <div className='m-2'>
+              <CompactUserCard data={customerDetailsBasedOnSessionId} />
+            </div>}
         </form>
       ),
     },
@@ -578,7 +609,7 @@ function CustomerSupportPage() {
             )}
             {findCustomerErrorMessage && <p className="text-red-800">{findCustomerErrorMessage}</p>}
             {findCustomerSuccessMessage && (
-              <p className={` ${tableData.length > 0 ? "text-green-600" :"text-red-800" }`}>{findCustomerSuccessMessage}</p>
+              <p className={` ${tableData.length > 0 ? "text-green-600" : "text-red-800"}`}>{findCustomerSuccessMessage}</p>
             )}
             <button
               type="submit"
@@ -615,7 +646,7 @@ function CustomerSupportPage() {
               { id: 'create_company', label: 'Company (Optional)' },
               { id: 'create_email', label: 'Email*' },
               { id: 'create_phone', label: 'Phone (Optional)' },
-              { id: 'create_referralId', label: 'Referral ID*' },
+              { id: 'create_referralId', label: 'Referrer ID*' },
             ],
             createAccountData,
           )}
@@ -668,22 +699,22 @@ function CustomerSupportPage() {
               {loading.show4 && <Loader />}
             </div>
           </button>
+          <div>
             <div>
-              <div>
-                {Object?.keys(shopperSystemInfo || {})?.length > 0 ? (
+              {shopperSystemInfo && Object?.keys(shopperSystemInfo || {})?.length > 0 ? (
                 sessionId !== '' && shopperSystemInfo && <SystemInfoComponent data={shopperSystemInfo} />
-                ) : (
-                  sessionId !== '' && shopperSystemInfo.length > 0 &&  <p className="text-gray-500 text-center py-4">No System Information Found</p>
-                )}
-              </div>
-              <div className="m-2">
-                {Array?.isArray(customerVisitedUrl) && customerVisitedUrl?.length > 0 ? (
-                sessionId !== '' && loading.show4 == false && <UrlList urls={customerVisitedUrl} />
-                ) : (
-                  sessionId !== '' && shopperSystemInfo.length > 0 && <p className="text-gray-500 text-center py-4">No URL Data Found</p>
-                )}
-              </div>
+              ) : (
+                sessionId !== '' && shopperSystemInfo?.length > 0 && <p className="text-gray-500 text-center py-4">No System Information Found</p>
+              )}
             </div>
+            <div className="m-2">
+              {customerVisitedUrl && Array?.isArray(customerVisitedUrl) && customerVisitedUrl?.length > 0 ? (
+                sessionId !== '' && loading.show4 == false && <UrlList urls={customerVisitedUrl} />
+              ) : (
+                sessionId !== '' && shopperSystemInfo?.length > 0 && <p className="text-gray-500 text-center py-4">No URL Data Found</p>
+              )}
+            </div>
+          </div>
         </form>
 
 
@@ -700,6 +731,9 @@ function CustomerSupportPage() {
         <Accordions
           styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={accordions}
+          toggleAccordion={toggleAccordion}
+          openIndexes={openIndexes}
+          setOpenIndexes={setOpenIndexes}
         />
       </div>
     </div>

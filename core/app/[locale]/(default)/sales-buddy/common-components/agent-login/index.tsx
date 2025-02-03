@@ -29,7 +29,7 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
         console.log(result?.data?.output?.data[0]?.name);
         
         if (result?.data?.output?.data[0]?.status){
-          localStorage.setItem('agent_login', 'true');
+          // localStorage.setItem('agent_login', 'true');
           setAgentRole(result?.data?.output?.data[0]?.role)
           localStorage.setItem('agent_role', result?.data?.output?.data[0]?.role);
           setAgentLoginStatus(true);

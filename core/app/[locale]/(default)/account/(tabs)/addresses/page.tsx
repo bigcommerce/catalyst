@@ -52,14 +52,14 @@ export default async function Addresses({ searchParams }: Props) {
 
   const { addresses, pageInfo, addressesCount } = data;
   const { hasNextPage, hasPreviousPage, startCursor, endCursor } = pageInfo;
-
+const reversedOrder = [...addresses].reverse();
   return (
-    <div className='flex flex-col gap-[30px] [&_.login-div]:hidden [&_.login-div]:lg:hidden'>
+    <div className='flex flex-col  [&_.login-div]:hidden [&_.login-div]:lg:hidden'>
       <div>
       <ComponentsBreadcrumbs className="mb-5" breadcrumbs={breadcrumbs} />
       <TabHeading heading="addresses" />
       </div>
-      <AddressBook addressesCount={addressesCount} customerAddresses={addresses} key={endCursor}>
+      <AddressBook addressesCount={addressesCount} customerAddresses={reversedOrder} key={endCursor}>
         <Pagination
           className="my-0 inline-flex justify-center text-center"
           endCursor={endCursor ?? undefined}
@@ -72,4 +72,4 @@ export default async function Addresses({ searchParams }: Props) {
   );
 }
 
-export const runtime = 'edge';
+export const runtime = 'edge'; 

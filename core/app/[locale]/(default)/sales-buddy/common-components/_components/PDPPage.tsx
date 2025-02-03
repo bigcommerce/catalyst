@@ -17,7 +17,13 @@ const TailwindCustomCssValues = {
 };
 
 
-export default function SalesBuddyProductPage() {
+interface SalesBuddyProductPageProps {
+  toggleAccordion: (index: number) => void;
+  openIndexes: number[];
+  setOpenIndexes: (indexes: number[]) => void;
+}
+
+export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, setOpenIndexes }: SalesBuddyProductPageProps) {
   const [childSku, setChildSku] = useState([]);
   const retrievedProductData = JSON.parse(localStorage.getItem('productInfo') || '{}');
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
@@ -26,11 +32,11 @@ export default function SalesBuddyProductPage() {
     cost: false,
     inventory: false,
   });
-  const toggleAccordion = (index: number) => {
-    setOpenAccordions((prev) =>
-      prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
-    );
-  };
+  // const toggleAccordion = (index: number) => {
+  //   setOpenAccordions((prev) =>
+  //     prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
+  //   );
+  // };
 
   const costPricingTableData = (data) => {
     setChildSku(data.child_sku)
@@ -41,7 +47,6 @@ export default function SalesBuddyProductPage() {
       setLoading((prev) => ({ ...prev, cost: true }));
       try {
         const data = await get_product_data(retrievedProductData.productId);
-        
         if (data.status === 200) {
           costPricingTableData(data?.data?.output);
           setLoading((prev) => ({ ...prev, cost: false }));
@@ -144,7 +149,6 @@ export default function SalesBuddyProductPage() {
                 const entries = skuNum?.stock_information?.split('||').map(entry => entry?.trim());
                 // Step 2: Split each entry by single pipe
                 const stockDetails = entries?.map(entry => entry?.split('|').map(item => item?.trim()));
-
                 const item = {
                   id: skuNum?.variants_sku, // Use skuNum.sku instead of hardcoded id
                   status: stockDetails,
@@ -157,24 +161,34 @@ export default function SalesBuddyProductPage() {
                     {
                       item.status ? <>
                         {item?.status?.map((details, detailIndex) => (
-                          <div key={detailIndex} className=' w-full mb-2'> {/* Added margin-bottom for spacing */}
-                            <div className=" justify-between w-full">
-                              <p className="text-[14px] open-sans text-[#353535]">{details[0]} | {details[1]}</p> {/* Assuming the first item is the location */}
-                              <div className='flex justify-between items-center'>
-                                <p className="mr-2">{details[2]}</p> {/* Added margin-right for spacing */}
-                                <p
-                                  className={`p-[5px] text-sm ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
-                                  style={{ backgroundColor: details[3] }} // Assuming the fourth item is the updatedColor
-                                >
-                                  <span
-                                    className={`font-bold ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
+                          <div key={detailIndex} className="w-full mb-2">
+                            <div className=" justify-between items-center w-full">
+                              <p className="text-[14px] open-sans text-[#353535]">
+                                {details[0]} | {details[1]}
+                              </p>
+                              <p className="mr-2">{details[2]}</p>
+                            </div>
+
+                            <div className="flex justify-between items-center w-full">
+                              <p className="mr-2 flex-1 text-left">{details[3]}</p>
+
+                              {/* Determine text color dynamically */}
+                              {(() => {
+                                const textColor =
+                                  detailIndex === 1 ? 'text-[#167E3F] bg-[#EAF4EC] ' : 'text-[#6A4C1E] bg-[#F5E9E8]';
+
+                                return (
+                                  <p
+                                    className={`p-[5px] text-sm ${textColor}`}
+                                    
                                   >
-                                    {details[3]} {/* Assuming the fourth item is the updated value */}
-                                  </span>
-                                </p>
-                              </div>
+                                    <span className={`font-bold ${textColor}`}>{details[4]}</span>
+                                  </p>
+                                );
+                              })()}
                             </div>
                           </div>
+
                         ))}
                       </> : <div className="space-y-[5px]  pb-[10px] pt-[10px]">No Inventory Available </div>
                     }
@@ -210,6 +224,7 @@ export default function SalesBuddyProductPage() {
         <Accordions
           styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.existingQuote]}
+
         // type="multiple"
         />
       </div>
@@ -218,6 +233,9 @@ export default function SalesBuddyProductPage() {
           styles="  py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.costPricing, ACCORDION_DATA.inventory]}
           contentCss="px-5"
+          toggleAccordion={toggleAccordion}
+          openIndexes={openIndexes}
+          setOpenIndexes={setOpenIndexes}
 
         // type="multiple"
         />

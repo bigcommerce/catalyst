@@ -10,7 +10,6 @@ import { FragmentOf, graphql } from '~/client/graphql';
 import CertificationsAndRatings from '~/components/ui/pdp/belami-certification-rating-pdp';
 import { PayPalPayLater } from '~/components/ui/pdp/belami-payment-pdp';
 import { RequestQuote } from '~/components/ui/pdp/belami-request-a-quote-pdp';
-import { ShippingReturns } from '~/components/ui/pdp/belami-shipping-returns-pdp';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { FreeDelivery } from './belami-product-free-shipping-pdp';
 import { ProductForm } from './product-form';
@@ -21,18 +20,13 @@ import { Coupon } from './belami-product-coupon-pdp';
 import { BcImage } from '~/components/bc-image';
 import ProductDetailDropdown from '~/components/ui/pdp/belami-product-details-pdp';
 import { useCommonContext } from '~/components/common-context/common-provider';
-import { StaticImport } from 'next/dist/shared/lib/get-img-props';
-import { ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import addToCart from '~/public/add-to-cart/addToCart.svg';
 import Image from 'next/image';
-import WishlistAddToList from '../../../account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
-import { useWishlists } from '../../../account/(tabs)/wishlists/wishlist-add-to-list/hooks';
 import { NoShipCanada } from './belami-product-no-shipping-canada';
-import { commonSettinngs } from '~/components/common-functions';
-import ScrollContainer from './sticky';
 import { Flyout } from '~/components/common-flyout';
+import { ProductPrice } from '~/belami/components/search/product-price';
 
 interface ProductOptionValue {
   entityId: number;
@@ -51,14 +45,8 @@ interface MultipleChoiceOption {
   };
 }
 
-interface ProductImage {
-  url: string;
-  altText: string;
-  isDefault: boolean;
-}
-
 interface Props {
-  product: FragmentOf<typeof DetailsFragment>;
+  product: FragmentOf<typeof DetailsFragment> & { parent: any, UpdatePriceForMSRP: any };
   collectionValue?: string;
   dropdownSheetIcon?: string;
   cartHeader?: string;
@@ -73,6 +61,10 @@ interface Props {
   children1: React.ReactNode;
   triggerLabel2: React.ReactNode;
   children2: React.ReactNode;
+  triggerLabel3: React.ReactNode;
+  children3: React.ReactNode;
+  priceMaxRules: any;
+  getAllCommonSettinngsValues:any;
 }
 
 export const DetailsFragment = graphql(
@@ -148,29 +140,11 @@ export const DetailsFragment = graphql(
   ],
 );
 
-interface Props {
-  product: FragmentOf<typeof DetailsFragment>;
-  collectionValue?: string;
-  dropdownSheetIcon?: string;
-  cartHeader?: string;
-  couponIcon?: string;
-  paywithGoogle?: string;
-  payPal?: string;
-  requestQuote?: string;
-  closeIcon?: string;
-  blankAddImg?: string;
-  productImages?: string;
-  getAllCommonSettinngsValues?: any;
-}
-
 export const Details = ({
   product,
   collectionValue,
   dropdownSheetIcon,
-  cartHeader,
   couponIcon,
-  paywithGoogle,
-  payPal,
   requestQuote,
   closeIcon,
   blankAddImg,
@@ -180,6 +154,9 @@ export const Details = ({
   triggerLabel2,
   children1,
   children2,
+  triggerLabel3,
+  children3,
+  priceMaxRules
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -188,32 +165,9 @@ export const Details = ({
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const scrollableRef = useRef(null); 
-  const [isDragging, setIsDragging] = useState(false);
-  const [startY, setStartY] = useState(0);
-  const [scrollTop, setScrollTop] = useState(0);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setShowStickyHeader(window.scrollY > 200);
-    };
-
-    const handleCustomScroll = (e: CustomEvent) => {
-      setShowStickyHeader(e.detail.scrollY > 200);
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('customScroll', handleCustomScroll as EventListener);
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('customScroll', handleCustomScroll as EventListener);
-    };
-  }, []);
 
   const searchParams = useSearchParams();
   const { currentMainMedia } = useCommonContext();
-  // const [getAllCommonSettinngsValues, setGetAllCommonSettinngsValues] = useState<any>([]);
 
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
@@ -223,31 +177,34 @@ export const Details = ({
   const multipleOptionIcon = imageManagerImageUrl('vector-5-.png', '20w');
   const productSku = product.sku;
   const [selectedVariantId, setSelectedVariantId] = useState<number | null>(null);
-  // const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
-  const productMpn = product.mpn;
-  const brand = product.brand?.entityId;
 
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
-  useEffect(() => {
-    const matchingVariant = variants.find((variant) => variant.sku === productSku);
-    if (matchingVariant) {
-      setSelectedVariantId(matchingVariant.entityId);
-    } else {
-      setSelectedVariantId(null); // Reset if no matching variant is found
-    }
-  }, [variants, productSku]);
+
+  // Inside your Details component:
 
   useEffect(() => {
+    // 1. Handle scroll behavior
+    const handleScroll = () => {
+      setShowStickyHeader(window.scrollY > 1500);
+    };
+
+    const handleCustomScroll = (e) => {
+      setShowStickyHeader(e.detail.scrollY > 1500);
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('customScroll', handleCustomScroll);
+
+    // 2. Handle variant selection
     const matchingVariant = variants.find((variant) => variant?.sku === productSku);
     if (matchingVariant) {
       setSelectedVariantId(matchingVariant.entityId);
     } else {
-      setSelectedVariantId(null); // Reset if no matching variant is found
+      setSelectedVariantId(null);
     }
-  }, [variants, productSku]);
 
-  useEffect(() => {
+    // 3. Update image from variant
     const updateImageFromVariant = () => {
       if (currentMainMedia?.type === 'image' && currentMainMedia.src) {
         setCurrentImageUrl(currentMainMedia.src);
@@ -274,13 +231,25 @@ export const Details = ({
 
       setCurrentImageUrl(product.defaultImage?.url || '');
     };
-
     updateImageFromVariant();
-  }, [searchParams, product, variants, productOptions, currentMainMedia]);
 
-  useEffect(() => {
+    // 4. Store product in localStorage
     store_pdp_product_in_localstorage(product);
-  }, [product]);
+
+    // Cleanup function for event listeners
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('customScroll', handleCustomScroll);
+    };
+  }, [
+    // Dependencies for all effects
+    variants,
+    productSku,
+    searchParams,
+    product,
+    productOptions,
+    currentMainMedia,
+  ]);
 
   const productAvailability = product.availabilityV2.status;
 
@@ -299,9 +268,10 @@ export const Details = ({
     return defaultValue?.label || 'Select';
   };
 
+  console.log('hello-world');
+
   return (
-    <div className="sticky z-50">
-      
+    <div className="">
       {showStickyHeader && (
         <>
           <div className="fixed left-0 right-0 top-0 z-50 hidden border-b border-gray-200 bg-white shadow-2xl xl:block">
@@ -317,14 +287,14 @@ export const Details = ({
                       className="h-full w-full object-center"
                     />
                   </div>
-                  <div className="mr-[10em] flex-1">
+                  <div className="mr-[1em] flex-1">
                     <h2 className="text-left text-[20px] font-medium leading-8 tracking-wide text-[#353535]">
                       {product.name}
                     </h2>
 
-                    <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px]">
+                    <div className="mt-3 text-left text-[14px] font-normal leading-[10px] tracking-[0.25px] text-[#353535]">
                       by{' '}
-                      <Link href={product.brand?.path ?? ''} className="underline">
+                      <Link href={product.brand?.path ?? ''} className="text-[#353535] underline">
                         {product.brand?.name}
                       </Link>
                     </div>
@@ -343,71 +313,89 @@ export const Details = ({
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
-                        <div className="inline text-[14px] font-normal">
-                          {productOptions
-                            .filter((option) => option.__typename === 'MultipleChoiceOption')
-                            .map((option, index, filteredArray) => {
-                              if (option.__typename === 'MultipleChoiceOption') {
-                                const selectedValue = getSelectedValue(
-                                  option as MultipleChoiceOption,
-                                );
-                                return (
-                                  <span key={option.entityId}>
-                                    <span className="font-bold">{option.displayName}:</span>
-                                    <span className="text-[15px]"> {selectedValue}</span>
-                                    {index < filteredArray.length - 1 && (
-                                      <span className="mx-1">|</span>
-                                    )}
-                                  </span>
-                                );
-                              }
-                              return null;
-                            })}
-                        </div>
-                      )}
+                          <div className="inline text-[14px] font-normal">
+                            {productOptions
+                              .filter((option) => option.__typename === 'MultipleChoiceOption')
+                              .map((option, index, filteredArray) => {
+                                if (option.__typename === 'MultipleChoiceOption') {
+                                  const selectedValue = getSelectedValue(
+                                    option as MultipleChoiceOption,
+                                  );
+                                  return (
+                                    <span key={option.entityId}>
+                                      <span className="font-bold">{option.displayName}:</span>
+                                      <span className="text-[15px]"> {selectedValue}</span>
+                                      {index < filteredArray.length - 1 && (
+                                        <span className="mx-1">|</span>
+                                      )}
+                                    </span>
+                                  );
+                                }
+                                return null;
+                              })}
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
-
                 <div className="flex items-center gap-4">
-                  {product.prices && (
-                    <div className="sticky-product-price mt-2 block !w-[16em] items-center gap-[0.5em] text-center lg:text-right">
-                      {product.prices.basePrice?.value !== undefined &&
-                      product.prices.price?.value !== undefined &&
-                      product.prices.basePrice.value > product.prices.price.value ? (
+                  {product?.UpdatePriceForMSRP && <ProductPrice 
+                    defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0} 
+                    defaultSalePrice={product?.UpdatePriceForMSRP.hasDiscount ? product.UpdatePriceForMSRP.updatedPrice : null} 
+                    priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && (r.bc_brand_ids.includes(product?.brand?.entityId) || r.bc_brand_ids.includes(String(product?.brand?.entityId)))) || (r.skus && r.skus.includes(product?.parent?.sku)))}
+                    currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
+                    format={format}
+                    showMSRP={product.UpdatePriceForMSRP.showDecoration}
+                    options={{
+                      useAsyncMode: false,
+                      useDefaultPrices: true
+                    }}
+                    classNames={{
+                      root: 'sticky-product-price mt-2 !w-[16em] items-center whitespace-nowrap text-center lg:text-right',
+                      newPrice: 'price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                      oldPrice: 'mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through',
+                      discount: 'whitespace-nowrap mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
+                      price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                      msrp: '-ml-[0.5em] mb-1 mr-2 text-left text-[12px] text-gray-500'
+                    }} />
+                  }
+                  {/*
+                  {product?.UpdatePriceForMSRP && (
+                    <div className="sticky-product-price mt-2 !w-[16em] items-center whitespace-nowrap text-center lg:text-right">
+                      {product?.UpdatePriceForMSRP?.hasDiscount === true ?(
                         <>
                           <span className="price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                            {format.number(product.prices.price.value, {
+                            {format.number(product?.UpdatePriceForMSRP?.updatedPrice, {
                               style: 'currency',
-                              currency: product.prices.price.currencyCode,
+                              currency: product?.prices?.price?.currencyCode,
                             })}
                           </span>
-                          <span className="price-2 mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
-                            {format.number(product.prices.basePrice.value, {
+                          <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
+                            {format.number(product?.UpdatePriceForMSRP?.originalPrice, {
                               style: 'currency',
-                              currency: product.prices.price.currencyCode,
+                              currency: product?.prices?.price?.currencyCode,
                             })}
                           </span>
-                          <span className="price-3 mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                            Save{' '}
-                            {Math.round(
-                              ((product.prices.basePrice.value - product.prices.price.value) /
-                                product.prices.basePrice.value) *
-                                100,
-                            )}
+                          <span className="-ml-[0.5em] mb-1 mr-2 text-left text-[12px] text-gray-500">
+                            MSRP
+                          </span>
+                          <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
+                            Save
+                            {product.UpdatePriceForMSRP.discount}
                             %
                           </span>
                         </>
                       ) : (
-                        <span className="price-4 text-left text-[20px] font-[500] leading-8 tracking-[0.15px] text-[#008BB7]">
-                          {format.number(product.prices.price?.value || 0, {
+                        <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                          {format.number(product?.UpdatePriceForMSRP?.originalPrice || 0, {
                             style: 'currency',
-                            currency: product.prices.price?.currencyCode || 'USD',
+                            currency: product?.prices?.price?.currencyCode || 'USD',
                           })}
                         </span>
                       )}
                     </div>
                   )}
+                  */}
                   {productAvailability === 'Unavailable' ? (
                     <div className="flex flex-col items-center">
                       <button
@@ -454,9 +442,8 @@ export const Details = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
-              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-            } px-[20px] pt-[20px]`}
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+              } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
@@ -503,15 +490,14 @@ export const Details = ({
         </>
       )}
 
-      <ScrollContainer>
-        <div className="main-div-product-details mb-[35px] xl:mb-[0px]">
-          <div className="div-product-details mt-[30px] xl:mt-[0px]">
-            {/* Add relative positioning wrapper */}
-            <div className="relative">
-              <h1 className="product-name mb-3 text-center text-[24px] font-medium leading-[2rem] tracking-[0.15px] text-[#353535] sm:text-center md:mt-6 lg:mt-0 xl:mt-0 xl:text-left xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
-                {product.name}
-              </h1>
-            </div>
+      <div className="main-div-product-details mb-[35px] xl:mb-[0px]">
+        <div className="div-product-details mt-[30px] xl:mt-[0px]">
+          {/* Add relative positioning wrapper */}
+          <div className="relative">
+            <h1 className="product-name mb-3 text-center text-[24px] font-medium leading-[2rem] tracking-[0.15px] text-[#353535] sm:text-center md:mt-6 lg:mt-0 xl:mt-0 xl:text-left xl:text-[1.5rem] xl:font-normal xl:leading-[2rem]">
+              {product.name}
+            </h1>
+          </div>
 
             <div className="items-center space-x-1 text-center xl:text-left">
               <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
@@ -541,51 +527,71 @@ export const Details = ({
                 </span>
               )}
             </div>
-
             <ReviewSummary data={product} />
           </div>
-
-          {product.prices && (
-            <div className="product-price mt-[1.5em] flex items-center justify-center gap-[0.5em] text-center xl:justify-start">
-              {product.prices.basePrice?.value !== undefined &&
-              product.prices.price?.value !== undefined &&
-              product.prices.basePrice.value > product.prices.price.value ? (
+          {/* msrp  */}
+          {product?.UpdatePriceForMSRP && <ProductPrice 
+            defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0} 
+            defaultSalePrice={product?.UpdatePriceForMSRP.hasDiscount ? product.UpdatePriceForMSRP.updatedPrice : null} 
+            priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && (r.bc_brand_ids.includes(product?.brand?.entityId) || r.bc_brand_ids.includes(String(product?.brand?.entityId)))) || (r.skus && r.skus.includes(product?.parent?.sku)))}
+            currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
+            format={format}
+            showMSRP={product.UpdatePriceForMSRP.showDecoration}
+            options={{
+              useAsyncMode: false,
+              useDefaultPrices: true
+            }}            
+            classNames={{
+              root: 'product-price mt-2 flex items-center gap-[0.5em] text-center xl:text-left',
+              newPrice: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+              oldPrice: 'inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
+              discount: 'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
+              price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500'
+            }} />
+          }
+          {/*
+          {product?.['UpdatePriceForMSRP'] && (
+            <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
+              {product?.UpdatePriceForMSRP &&
+                      product?.UpdatePriceForMSRP?.hasDiscount === true ? (
                 <>
                   <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                    {format.number(product.prices.price.value, {
+                    {format.number(product?.UpdatePriceForMSRP?.updatedPrice, {
                       style: 'currency',
-                      currency: product.prices.price.currencyCode,
+                      currency: product?.prices?.price?.currencyCode || 'USD' ,
                     })}
                   </span>
-                  <span className="text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
-                    {format.number(product.prices.basePrice.value, {
+                  <span className="inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0">
+                    {format.number(product?.UpdatePriceForMSRP?.originalPrice, {
                       style: 'currency',
-                      currency: product.prices.price.currencyCode,
+                      currency:  product?.prices?.price?.currencyCode|| 'USD',
                     })}
                   </span>
+                  <span className="-ml-[0.5em] mb-1 text-[12px] text-gray-500">MSRP</span>
                   <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
                     Save{' '}
-                    {Math.round(
-                      ((product.prices.basePrice.value - product.prices.price.value) /
-                        product.prices.basePrice.value) *
-                        100,
-                    )}
+                    {product?.UpdatePriceForMSRP?.discount}
                     %
                   </span>
                 </>
               ) : (
-                <span className="text-left text-[20px] font-[500] leading-8 tracking-[0.15px] text-[#008BB7]">
-                  {format.number(product.prices.price?.value || 0, {
+                <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
+                  {format.number(product?.UpdatePriceForMSRP?.originalPrice || 0, {
                     style: 'currency',
-                    currency: product.prices.price?.currencyCode || 'USD',
+                    currency: product?.prices?.price?.currencyCode || 'USD',
                   })}
                 </span>
               )}
             </div>
           )}
-          <Coupon couponIcon={couponIcon} />
+          */}
+          {/* msrp  */}
 
-          <div className="free-shipping-detail mb-[25px] text-center xl:text-left">
+        <Coupon couponIcon={couponIcon} />
+
+          <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
+              <span> Free Delivery</span>
             {selectedVariantId && (
               <FreeDelivery
                 entityId={product.entityId}
@@ -593,10 +599,10 @@ export const Details = ({
                 isFromPDP={true}
               />
             )}
-            {getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
+            {product?.brand?.entityId && getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
               getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
                 <NoShipCanada
-                  description={'Canadian shipping note:This product cannot ship to Canada'}
+                description={getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message}
                 />
               )}
           </div>
@@ -606,89 +612,87 @@ export const Details = ({
               data={product}
               productMpn={product.mpn || ''}
               multipleOptionIcon={multipleOptionIcon}
-              blankAddImg={blankAddImg}
+              blankAddImg={blankAddImg || ''}
               productImages={productImages}
               fanPopup={fanPopup}
-              closeIcon={closeIcon}
+              closeIcon={closeIcon || ''}
             />
           </div>
 
-          <div className="div-product-description my-12 hidden">
-            <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {Boolean(product.sku) && (
-                <div>
-                  <h3 className="font-semibold">{t('sku')}</h3>
-                  <p>{product.sku}</p>
+        <div className="div-product-description my-12 hidden">
+          <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
+          <div className="grid gap-3 sm:grid-cols-2">
+            {Boolean(product.sku) && (
+              <div>
+                <h3 className="font-semibold">{t('sku')}</h3>
+                <p>{product.sku}</p>
+              </div>
+            )}
+            {Boolean(product.upc) && (
+              <div>
+                <h3 className="font-semibold">{t('upc')}</h3>
+                <p>{product.upc}</p>
+              </div>
+            )}
+            {Boolean(product.minPurchaseQuantity) && (
+              <div>
+                <h3 className="font-semibold">{t('minPurchase')}</h3>
+                <p>{product.minPurchaseQuantity}</p>
+              </div>
+            )}
+            {Boolean(product.maxPurchaseQuantity) && (
+              <div>
+                <h3 className="font-semibold">{t('maxPurchase')}</h3>
+                <p>{product.maxPurchaseQuantity}</p>
+              </div>
+            )}
+            {Boolean(product.availabilityV2.description) && (
+              <div>
+                <h3 className="font-semibold">{t('availability')}</h3>
+                <p>{product.availabilityV2.description}</p>
+              </div>
+            )}
+            {Boolean(product.condition) && (
+              <div>
+                <h3 className="font-semibold">{t('condition')}</h3>
+                <p>{product.condition}</p>
+              </div>
+            )}
+            {Boolean(product.weight) && (
+              <div>
+                <h3 className="font-semibold">{t('weight')}</h3>
+                <p>
+                  {product.weight?.value} {product.weight?.unit}
+                </p>
+              </div>
+            )}
+            {Boolean(customFields) &&
+              customFields.map((customField) => (
+                <div key={customField.entityId}>
+                  <h3 className="font-semibold">{customField.name}</h3>
+                  <p>{customField.value}</p>
                 </div>
-              )}
-              {Boolean(product.upc) && (
-                <div>
-                  <h3 className="font-semibold">{t('upc')}</h3>
-                  <p>{product.upc}</p>
-                </div>
-              )}
-              {Boolean(product.minPurchaseQuantity) && (
-                <div>
-                  <h3 className="font-semibold">{t('minPurchase')}</h3>
-                  <p>{product.minPurchaseQuantity}</p>
-                </div>
-              )}
-              {Boolean(product.maxPurchaseQuantity) && (
-                <div>
-                  <h3 className="font-semibold">{t('maxPurchase')}</h3>
-                  <p>{product.maxPurchaseQuantity}</p>
-                </div>
-              )}
-              {Boolean(product.availabilityV2.description) && (
-                <div>
-                  <h3 className="font-semibold">{t('availability')}</h3>
-                  <p>{product.availabilityV2.description}</p>
-                </div>
-              )}
-              {Boolean(product.condition) && (
-                <div>
-                  <h3 className="font-semibold">{t('condition')}</h3>
-                  <p>{product.condition}</p>
-                </div>
-              )}
-              {Boolean(product.weight) && (
-                <div>
-                  <h3 className="font-semibold">{t('weight')}</h3>
-                  <p>
-                    {product.weight?.value} {product.weight?.unit}
-                  </p>
-                </div>
-              )}
-              {Boolean(customFields) &&
-                customFields.map((customField) => (
-                  <div key={customField.entityId}>
-                    <h3 className="font-semibold">{customField.name}</h3>
-                    <p>{customField.value}</p>
-                  </div>
-                ))}
-            </div>
+              ))}
           </div>
+        </div>
 
           <ProductSchema product={product} />
           <PayPalPayLater
-            amount={product?.prices?.price?.value?.toString()}
-            currency={product?.prices?.price?.currencyCode}
+            amount={product?.prices?.price?.value?.toString() || '0'}
+            currency={product?.prices?.price?.currencyCode || 'USD'}
           />
-          <RequestQuote requestQuote={requestQuote} />
+            <RequestQuote children={children3} />
           <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
           <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
 
-          {/* <ShippingReturns /> */}
+        {/* <ShippingReturns /> */}
 
-          <div className="flex justify-center gap-4 xl:mt-7">
-            <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
+        <div className="flex justify-center gap-4 xl:mt-7">
+          <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
 
-            <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
-          </div>
-
+          <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
         </div>
-      </ScrollContainer>
+      </div>
     </div>
   );
 };

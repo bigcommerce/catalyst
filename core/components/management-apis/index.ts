@@ -67,17 +67,15 @@ export const getDeliveryMessage = async (
 ) => {
   const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
 
-  // Attempt to get meta fields by product variant
   let metaFields: any = await getMetaFieldsByProductVariant(
     entityId,
     variantId,
     "delivery_message",
   );
 
-  // Check if metaFields has data
   if ( metaFields.data.length > 0) {
-    const deliveryMessage = metaFields.data
-
+    const deliveryMessage:any = metaFields.data
+    let deliveryMessageResponse:any = '';
     if (deliveryMessage) {
       const deliveryKey = deliveryMessage?.[0]?.['value']?.split('|'); //split by "|"
       const result = deliveryKey?.map((item: any) => {
@@ -85,45 +83,17 @@ export const getDeliveryMessage = async (
         const id = parseInt(parts[0].trim(), 10); // Get the ID
         const value = parts.slice(1).join(':').trim().replace(/: Backorder/g, '').trim(); //trimed ":Backorder" add in value
         return { id, value };
-    }) || [];
+      }) || [];
 
-      // Parse the channelId as an integer (if it exists)
       const parsedChannelId = channelId ? parseInt(channelId, 10) : null;
-      // Find the matched delivery based on channelId
       const matchedDelivery = parsedChannelId !== null ? result.find((item: any) => item.id === parsedChannelId) : null;
 
       if (matchedDelivery) {
-        return matchedDelivery.value; // Return the value of the matched delivery
+        deliveryMessageResponse = matchedDelivery.value; // Return the value of the matched delivery
       }
+      return deliveryMessageResponse;
     }
   }
-
-  // If no data from getMetaFieldsByProductVariant, try getMetaFieldsByProduct
-  metaFields = await getMetaFieldsByProduct(entityId, "delivery_message");
-  if (metaFields && metaFields.data && metaFields.data.length > 0) {
-    const deliveryMessage = metaFields.data
-
-    if (deliveryMessage) {
-      // Split the delivery message by '|' and parse it
-      const deliveryKey = deliveryMessage?.[0]?.['value']?.split('|');
-      const result = deliveryKey?.map((item: any) => {
-        const [id, value] = item.split(':').map((str: any) => str.trim()); // Split and trim
-        return { id: parseInt(id, 10), value };
-      });
-
-      // Parse the channelId as an integer (if it exists)
-      const parsedChannelId = channelId ? parseInt(channelId, 10) : null;
-
-      // Find the matched delivery based on channelId
-      const matchedDelivery = parsedChannelId !== null ? result.find((item: any) => item.id === parsedChannelId) : null;
-
-      if (matchedDelivery) {
-        return matchedDelivery.value; // Return the value of the matched delivery
-      }
-    }
-  }
-
-  // Return null if no delivery message is found in either call
   return null;
 };
 
@@ -422,29 +392,32 @@ export const GetProductImagesById = async (id: Number) => {
     console.error(error);
   }
 };
-export const getCommonSettingByBrandChannel = async (brand) => {
-  const commonSettingUrl=process?.env?.COMMON_SETTING_URL
+export const getCommonSettingByBrandChannel = async (brand: any) => {
+  const commonSettingUrl = process?.env?.COMMON_SETTING_URL;
+
   const postData = {
     brand_ids: brand,
     channel_id: process?.env?.BIGCOMMERCE_CHANNEL_ID,
   };
-  if (!commonSettingUrl) { return { output: [] }; }
-    try {
-      const response = await fetch(`${commonSettingUrl}api/get-comman-settings`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(postData),
-        cache: 'no-store',
-      });
+  if (!commonSettingUrl) {
+    return { output: [] };
+  }
+  try {
+    const response = await fetch(`${commonSettingUrl}api/get-comman-settings`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(postData),
+    });
+    
 
-      const data = await response.json();
-      return data;
-    } catch (error) {
-      console.error(error);
-      throw error; // Re-throw the error to handle it in the calling component
-    }
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error; // Re-throw the error to handle it in the calling component
+  }
 };
 
 export const addCartLevelDiscount = async (checkoutId: string, postData: any) => {

@@ -72,11 +72,11 @@ const PhysicalItemFragment = graphql(`
           formatted
           ...MoneyFields
         }
-        salePrice{
+        salePrice {
           currencyCode
           value
         }
-        basePrice{
+        basePrice {
           currencyCode
           value
         }
@@ -267,12 +267,13 @@ export const CartItem = async ({
     product?.productEntityId,
     product?.variantEntityId,
   );
-  const retailPrice = product?.catalogProductWithOptionSelections?.prices?.retailPrice;
-  const salePrice = product?.catalogProductWithOptionSelections?.prices?.salePrice;
-  const basePrice = product?.catalogProductWithOptionSelections?.prices?.basePrice;
-
   return (
     <li className="mb-[24px] border border-gray-200">
+      {getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
+        <div className='bg-[#E7F5F8] w-full flex justify-center'>
+          <NoShipCanada description={getAllCommonSettinngsValues?.[brandId]?.no_ship_canada_message} />
+        </div>
+      }
       <div className="">
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
           <div className="cart-main-img mx-auto h-[295px] w-[295px] flex-none border border-gray-300 sm:h-[200px] sm:w-[200px] md:mx-0">
@@ -291,7 +292,13 @@ export const CartItem = async ({
 
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product?.brand}</p>
-            <div className="grid grid-cols-1 gap-1 sm:grid-cols-[auto,auto] xl:grid-cols-[40%_20%_40%]">
+            <div
+              className={`grid grid-cols-1 gap-1 sm:grid-cols-[auto_auto] ${
+                cookie_agent_login_status == true
+                  ? 'xl:grid-cols-[40%_20%_40%]'
+                  : 'xl:grid-cols-[60%_40%]'
+              }`}
+            >
               <div className="">
                 <Link href={product?.url}>
                   <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
@@ -403,6 +410,9 @@ export const CartItem = async ({
                             return null;
                         }
                       })}
+                      <div className="flex justify-start mt-[10px] font-normal text-sm leading-6 tracking-[0.25px]">
+                        <span> Free Delivery</span>
+                      </div>
                       {product.variantEntityId && (
                         <FreeDelivery
                           entityId={product.productEntityId}
@@ -417,96 +427,89 @@ export const CartItem = async ({
               <div className="">
                 <div className="cart-deleteIcon relative flex flex-col gap-0 text-right sm:gap-2 md:items-end [&_.cart-item-delete]:absolute [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:sm:static [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0">
                   <RemoveItem currency={currencyCode} product={product} />
-                  <div className="mb-0">
-                    {salePrice?.value && retailPrice?.value ?(
-                     <>
-                     <p className="text-left sm:text-right">
-                      {format.number(salePrice.value * product?.quantity, {
-                        style: 'currency',
-                        currency: currencyCode,
-                      })}
-                    </p>
-                    <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-                        <p className="line-through">
-                          {format.number(retailPrice.value * product?.quantity, {
+                  {cookie_agent_login_status == true ? (
+                    <div className="mb-0">
+                      <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                        {product?.originalPrice.value &&
+                        product?.originalPrice.value !== product?.listPrice.value ? (
+                          <p className="line-through">
+                            {format.number(product?.originalPrice?.value * product?.quantity, {
+                              style: 'currency',
+                              currency: currencyCode,
+                            })}
+                          </p>
+                        ) : null}
+                        {/* <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                          {discountPriceText}
+                        </p> */}
+                      </div>
+                      <p className="text-left sm:text-right">
+                        {format.number(product?.extendedSalePrice?.value, {
+                          style: 'currency',
+                          currency: currencyCode,
+                        })}
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="mb-0">
+                      {product?.UpdatePriceForMSRP &&
+                      product?.UpdatePriceForMSRP.hasDiscount === true ? (
+                        <>
+                          <p className="text-left sm:text-right">
+                            {format.number(
+                              product.UpdatePriceForMSRP.updatedPrice,
+                              {
+                                style: 'currency',
+                                currency: currencyCode,
+                              },
+                            )}
+                          </p>
+                          <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                            <p className="line-through">
+                              {format.number(
+                                product.UpdatePriceForMSRP.originalPrice,
+                                {
+                                  style: 'currency',
+                                  currency: currencyCode,
+                                },
+                              )}
+                            </p>
+                            <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                              {product.UpdatePriceForMSRP.discount}
+                              % Off
+                            </p>
+                          </div>
+                        </>
+                      ) : (
+                        <p className="text-left sm:text-right">
+                          {format.number(product.UpdatePriceForMSRP.originalPrice, {
                             style: 'currency',
                             currency: currencyCode,
                           })}
                         </p>
-                      <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                      {Math.round(((retailPrice.value - salePrice.value) / retailPrice.value) * 100,)}% Off
-                      </p>
+                      )}
                     </div>
-                     </>
-                    ): 
-                    retailPrice?.value && basePrice?.value?(
-                      <>
-                      <p className="text-left sm:text-right">
-                       {format.number(basePrice.value * product?.quantity, {
-                         style: 'currency',
-                         currency: currencyCode,
-                       })}
-                     </p>
-                     <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-                         <p className="line-through">
-                           {format.number(retailPrice.value * product?.quantity, {
-                             style: 'currency',
-                             currency: currencyCode,
-                           })}
-                         </p>
-                       <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                       {Math.round(((retailPrice.value - basePrice.value) / retailPrice.value) * 100,)}% Off
-                       </p>
-                     </div>
-                      </>
-                    ):
-                    salePrice?.value && basePrice?.value ?(
-                      <>
-                      <p className="text-left sm:text-right">
-                       {format.number(salePrice.value * product?.quantity, {
-                         style: 'currency',
-                         currency: currencyCode,
-                       })}
-                     </p>
-                     <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-                         <p className="line-through">
-                           {format.number(basePrice.value * product?.quantity, {
-                             style: 'currency',
-                             currency: currencyCode,
-                           })}
-                         </p>
-                       <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                       {Math.round(((basePrice.value - salePrice.value) / basePrice.value) * 100,)}% Off
-                       </p>
-                     </div>
-                      </>
-                    ):( 
-                    <p className="text-left sm:text-right">
-                      {format.number(basePrice.value * product?.quantity, {
-                        style: 'currency',
-                        currency: currencyCode,
-                      })}
-                    </p>
                   )}
-                  </div>
 
                   <ItemQuantity product={product} />
                 </div>
               </div>
-              <div className="overflow-x-hidden xl:pl-[10px]">
-                <ProductPriceAdjuster
-                  parentSku={priceAdjustData?.parent_sku}
-                  sku={priceAdjustData?.sku}
-                  oem_sku={priceAdjustData?.oem_sku}
-                  productPrice={Number(product?.listPrice?.value)}
-                  initialCost={Number(priceAdjustData?.cost)}
-                  initialFloor={Number(priceAdjustData?.floor_percentage)}
-                  initialMarkup={Number(product?.listPrice?.value)}
-                  productId={product?.productEntityId}
-                  cartId={cartId}
-                  ProductType={'product'}
-                />
-              </div>
+              {cookie_agent_login_status == true && (
+                <div className="overflow-x-hidden xl:pl-[10px]">
+                  <ProductPriceAdjuster
+                    parentSku={priceAdjustData?.parent_sku}
+                    sku={priceAdjustData?.sku}
+                    oem_sku={priceAdjustData?.oem_sku}
+                    productPrice={Number(product?.listPrice?.value)}
+                    initialCost={Number(priceAdjustData?.cost)}
+                    initialFloor={Number(priceAdjustData?.floor_percentage)}
+                    initialMarkup={Number(product?.listPrice?.value)}
+                    productId={product?.productEntityId}
+                    cartId={cartId}
+                    ProductType={'product'}
+                  />
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -561,7 +564,11 @@ export const CartItem = async ({
                       </div>
                     </div>
                     <div className="cart-deleteIcon mt-[5px] flex w-full flex-row items-center justify-between gap-[20px] p-0 md:mt-0 md:w-auto md:justify-start [&_.cart-item-quantity]:static [&_.cart-item-quantity]:order-[0]">
-                      <AccessoriesInputPlusMinus key={item?.variantEntityId} accessories={item} data={product}/>
+                      <AccessoriesInputPlusMinus
+                        key={item?.variantEntityId}
+                        accessories={item}
+                        data={product}
+                      />
                       <div className="flex items-center">
                         <div className="flex items-center text-right text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535] sm:hidden">
                           QTY: {item.prodQuantity}
