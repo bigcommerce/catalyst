@@ -12,7 +12,8 @@ export function KlaviyoJS() {
     return null;
   }
 
+  // <Script src={`//static.klaviyo.com/onsite/js/klaviyo.js?company_id=${klaviyoPublicKey}`} />
   return (
-    <Script src={`//static.klaviyo.com/onsite/js/klaviyo.js?company_id=${klaviyoPublicKey}`} />
+    <Script src={`//static.klaviyo.com/onsite/js/${klaviyoPublicKey}/klaviyo.js`} />
   );
 }

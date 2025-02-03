@@ -29,7 +29,7 @@ export function KlaviyoTrackViewedProduct({ product }: { product: NonNullable<Pr
 
     klaviyo.push(['track', 'Catalyst Viewed Product', viewedProductData]);
     klaviyo.push(['trackViewedItem', viewedProductData]);
-  }, [product.brand, product.defaultImage, product.entityId, product.name, product.prices]);
+  }, []);  //}, [product.brand, product.defaultImage, product.entityId, product.name, product.prices]);
 
   return null;
 }
