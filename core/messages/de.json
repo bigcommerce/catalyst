@@ -66,7 +66,7 @@
         "title": "Anmelden",
         "heading": "Anmelden",
         "Form": {
-            "error": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
+            "invalidCredentials": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
             "successful": "Sie haben sich erfolgreich eingeloggt.",
             "emailLabel": "E-Mail",
             "enterEmailMessage": "Geben Sie Ihre E-Mail-Adresse ein",
@@ -74,7 +74,8 @@
             "enterPasswordMessage": "Geben Sie Ihr Passwort ein.",
             "submitting": "Wird eingereicht ...",
             "logIn": "Anmelden",
-            "forgotPassword": "Passwort vergessen?"
+            "forgotPassword": "Passwort vergessen?",
+            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
         },
         "CreateAccount": {
             "heading": "Neuer Kunde?",
@@ -508,8 +509,8 @@
                 "logout": "Abmelden"
             },
             "Currency": {
-                "invalidCurrency": "Invalid currency",
-                "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
+                "invalidCurrency": "Ungültige Währung",
+                "errorUpdatingCurrency": "Fehler beim Aktualisieren der Währung für Ihren Warenkorb. Bitte versuchen Sie es erneut."
             },
             "Locale": {
                 "invalidLocale": "Ungültige Region"

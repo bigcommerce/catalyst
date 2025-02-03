@@ -66,7 +66,7 @@
         "title": "Inicio de sesión",
         "heading": "Inicio de sesión",
         "Form": {
-            "error": "Tu dirección de correo electrónico o tu contraseña son incorrectas. Intenta iniciar sesión de nuevo o restablece tu contraseña",
+            "invalidCredentials": "Tu dirección de correo electrónico o tu contraseña son incorrectas. Intenta iniciar sesión de nuevo o restablece tu contraseña",
             "successful": "Has iniciado sesión correctamente.",
             "emailLabel": "Correo electrónico",
             "enterEmailMessage": "Ingresa tu correo electrónico",
@@ -74,7 +74,8 @@
             "enterPasswordMessage": "Ingresa tu contraseña",
             "submitting": "Enviando...",
             "logIn": "Inicio de sesión",
-            "forgotPassword": "¿Olvidaste tu contraseña?"
+            "forgotPassword": "¿Olvidaste tu contraseña?",
+            "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
         },
         "CreateAccount": {
             "heading": "¿Nuevo cliente?",
