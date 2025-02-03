@@ -18,7 +18,7 @@ datadogRum.init({
   trackUserInteractions: true,
   trackResources: true,
   trackLongTasks: true,
-  defaultPrivacyLevel: "mask-user-input",
+  defaultPrivacyLevel: 'mask-user-input',
   // Specify URLs to propagate trace headers for connection between RUM and backend trace
   /*
   allowedTracingUrls: [

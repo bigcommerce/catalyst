@@ -24,6 +24,7 @@ import { commonSettinngs } from '~/components/common-functions';
 
 import { cookies } from 'next/headers';
 import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
+import { KlaviyoTrackViewedProduct } from '~/belami/components/klaviyo/klaviyo-track-viewed-product';
 
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { calculateProductPrice } from '~/components/common-functions';
@@ -360,6 +361,8 @@ export default async function ProductPage(props: Props) {
 
           <ProductViewed product={product} />
           <ProductSchema product={product} identifier={newIdentifier} />
+
+          <KlaviyoTrackViewedProduct product={product} />
         </ProductProvider>
       </div>
     );

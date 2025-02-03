@@ -16,5 +16,9 @@ interface Props {
 export default async function Home({ params }: Props) {
   const { locale } = await params;
 
-  return <MakeswiftPage locale={locale} path="/" />;
+  return <>
+    <MakeswiftPage locale={locale} path="/" />
+    {/* Klaviyo Embed Form */}
+    <div className="klaviyo-form-VXCJF7" />
+  </>;
 }
