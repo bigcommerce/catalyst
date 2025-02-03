@@ -15,6 +15,7 @@ import heartIcon from '~/public/wishlistIcons/heartIcon.svg';
 import { cn } from '~/lib/utils';
 import { checkAuthStatus } from './auth-client';
 import Link from 'next/link';
+import { useCommonContext } from '~/components/common-context/common-provider';
 
 interface ProductImage {
   url: string;
@@ -99,16 +100,97 @@ const WishlistAddToList = ({
   const [isInputValid, setInputValidation] = useState(true);
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [isPending, setIsPending] = useState(false);
-  const [currentWishlists, setCurrentWishlists] = useState<Wishlist[]>(wishlists);
+  const [currentWishlists, setCurrentWishlists] = useState<Wishlist[]>([]);
   const [tempAddedItems, setTempAddedItems] = useState<{ listId: number; product: Product }[]>([]);
   const [justAddedToList, setJustAddedToList] = useState<number | null>(null);
   const [loadingListId, setLoadingListId] = useState<number | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const { deletedProductIds, setDeletedProductId } = useCommonContext();
 
   const t = useTranslations('Account.Wishlist');
   const router = useRouter();
+
+  // Function to remove deletion record from IndexedDB
+  const removeFromDeletedProducts = async (wishlistId: number, productId: number) => {
+    try {
+      const request = indexedDB.open('WishlistDB', 4);
+
+      request.onsuccess = (event: Event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        const transaction = db.transaction(['deletedProducts'], 'readwrite');
+        const store = transaction.objectStore('deletedProducts');
+        const index = store.index('by_ids');
+
+        const getRequest = index.getKey([wishlistId, productId]);
+
+        getRequest.onsuccess = () => {
+          if (getRequest.result) {
+            store.delete(getRequest.result);
+          }
+        };
+      };
+    } catch (error) {
+      console.error('Error removing deletion record:', error);
+    }
+  };
+
+  // Filter wishlists based on deletedProductIds
+  useEffect(() => {
+    const filteredWishlists = wishlists.map((wishlist) => ({
+      ...wishlist,
+      items: wishlist.items.filter(
+        (item) =>
+          !deletedProductIds.some(
+            (deletion) =>
+              deletion.wishlistId === wishlist.entityId &&
+              deletion.productId === item.product.entityId,
+          ),
+      ),
+    }));
+
+    setCurrentWishlists(filteredWishlists);
+  }, [wishlists, deletedProductIds]);
+
+  // Add IndexedDB initialization
+  useEffect(() => {
+    const loadDeletedProducts = async () => {
+      try {
+        const request = indexedDB.open('WishlistDB', 4);
+
+        request.onsuccess = (event: Event) => {
+          const db = (event.target as IDBOpenDBRequest).result;
+          const transaction = db.transaction(['deletedProducts'], 'readonly');
+          const store = transaction.objectStore('deletedProducts');
+          const getAllRequest = store.getAll();
+
+          getAllRequest.onsuccess = () => {
+            const storedDeletions = getAllRequest.result;
+
+            // Filter wishlists based on stored deletions
+            const filteredWishlists = wishlists.map((wishlist) => ({
+              ...wishlist,
+              items: wishlist.items.filter(
+                (item) =>
+                  !storedDeletions.some(
+                    (deletion) =>
+                      deletion.wishlistId === wishlist.entityId &&
+                      deletion.productId === item.product.entityId,
+                  ),
+              ),
+            }));
+
+            setCurrentWishlists(filteredWishlists);
+          };
+        };
+      } catch (error) {
+        console.error('Error loading deleted products:', error);
+      }
+    };
+
+    loadDeletedProducts();
+  }, [wishlists]);
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -203,84 +285,28 @@ const WishlistAddToList = ({
     }
   };
 
+  // Update getItemCount function to account for deletions
   const getItemCount = (wishlist: Wishlist) => {
-    const savedItems = wishlist.items.length;
+    // Filter out deleted items first
+    const nonDeletedItems = wishlist.items.filter(
+      (item) =>
+        !deletedProductIds.some(
+          (deletion) =>
+            deletion.wishlistId === wishlist.entityId &&
+            deletion.productId === item.product.entityId,
+        ),
+    );
+
+    const savedItems = nonDeletedItems.length;
     const tempItems = tempAddedItems.filter((item) => item.listId === wishlist.entityId).length;
-    const existingProduct = wishlist.items.some(
+    const existingProduct = nonDeletedItems.some(
       (item) => item.product?.entityId === product?.entityId,
     );
 
-    // If product already exists, count it
-    if (existingProduct) {
-      return savedItems;
-    }
-
-    // Otherwise return saved + temporary items
-    return savedItems + tempItems;
-  };
-
-  const handleWishlistSelect = async (wishlist: Wishlist) => {
-    const authResult = await checkAuthStatus();
-
-    if (!authResult.isAuthenticated) {
-      if (onGuestClick) {
-        onGuestClick();
-      }
-      return;
-    }
-
-    const isProductInList = wishlist.items?.some(
-      (item) => item.product?.entityId === product?.entityId,
-    );
-
-    const isInTempList = tempAddedItems.some((item) => item.listId === wishlist.entityId);
-
-    if (isProductInList || isInTempList) {
-      setMessage({
-        type: 'error',
-        text: `This product already exists in "${wishlist.name}"`,
-      });
-      return;
-    }
-
-    setLoadingListId(wishlist.entityId);
-    try {
-      const productToAdd = {
-        listId: wishlist.entityId,
-        product: {
-          entityId: product.entityId,
-          name: product.name,
-          path: product.path,
-          images: product.images,
-          brand: product.brand,
-          prices: product.prices,
-          variantEntityId: product.variantEntityId,
-          mpn: product.mpn,
-        },
-      };
-
-      setTempAddedItems((prev) => [...prev, productToAdd]);
-      setJustAddedToList(wishlist.entityId);
-    } catch (error) {
-      setMessage({
-        type: 'error',
-        text: 'Failed to add item to list',
-      });
-    } finally {
-      setLoadingListId(null);
-    }
+    return existingProduct ? savedItems : savedItems + tempItems;
   };
 
   const handleSave = async () => {
-    const authResult = await checkAuthStatus();
-
-    if (!authResult.isAuthenticated) {
-      if (onGuestClick) {
-        onGuestClick();
-      }
-      return;
-    }
-
     if (tempAddedItems.length === 0) {
       setMessage({
         type: 'error',
@@ -290,67 +316,44 @@ const WishlistAddToList = ({
     }
 
     setIsSaving(true);
-    let hasError = false;
 
     try {
-      // Save each item one by one
       for (const item of tempAddedItems) {
-        try {
-          const result = await addToWishlist(
-            item.listId,
-            item.product.entityId,
-            item.product.variantEntityId || undefined,
-          );
+        const result = await addToWishlist(
+          item.listId,
+          item.product.entityId,
+          item.product.variantEntityId || undefined,
+        );
 
-          if (result.status !== 'success') {
-            throw new Error(result.message || 'Failed to add item to list');
-          }
-
-          // Update currentWishlists after each successful add
+        if (result.status === 'success') {
+          // Update the current wishlists without clearing temp items
           setCurrentWishlists((prev) =>
             prev.map((wishlist) => {
               if (wishlist.entityId === item.listId) {
+                const newItem = {
+                  entityId: Date.now(),
+                  product: item.product,
+                };
                 return {
                   ...wishlist,
-                  items: [
-                    ...wishlist.items,
-                    {
-                      entityId: Date.now(),
-                      product: item.product,
-                    },
-                  ],
+                  items: [...wishlist.items, newItem],
                 };
               }
               return wishlist;
             }),
           );
-        } catch (error) {
-          console.error('Error saving item:', error);
-          hasError = true;
-          break;
         }
       }
 
-      if (!hasError) {
-        setMessage({
-          type: 'success',
-          text: 'Saved to Favorites',
-        });
+      setMessage({
+        type: 'success',
+        text: 'Saved to Favorites',
+      });
 
-        // Clear temporary items
-        setTempAddedItems([]);
-        setJustAddedToList(null);
-
-        // Refresh the data
-        router.refresh();
-      } else {
-        setMessage({
-          type: 'error',
-          text: 'Failed to save some items. Please try again.',
-        });
-      }
+      // Don't clear tempAddedItems or justAddedToList
+      // Don't close modal
+      router.refresh();
     } catch (error) {
-      console.error('Error in save process:', error);
       setMessage({
         type: 'error',
         text: 'Failed to save items. Please try again.',
@@ -362,25 +365,11 @@ const WishlistAddToList = ({
 
   const handleCreateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const authResult = await checkAuthStatus();
-
-    if (!authResult.isAuthenticated) {
-      if (onGuestClick) {
-        onGuestClick();
-      }
-      return;
-    }
-
     const trimmedName = newListName.trim();
 
     if (!trimmedName) {
       setInputValidation(false);
       setMessage({ type: 'error', text: 'Please enter a list name' });
-      return;
-    }
-
-    if (isDuplicate) {
-      setMessage({ type: 'error', text: 'A list with this name already exists' });
       return;
     }
 
@@ -409,18 +398,57 @@ const WishlistAddToList = ({
           items: [],
         };
 
+        // Add new wishlist to current wishlists
         setCurrentWishlists((prev) => [...prev, newWishlist]);
+
+        // Keep form state
         setNewListName('');
         setShowCreateForm(false);
-        setIsDuplicate(false);
+
+        // Select the new wishlist immediately
         await handleWishlistSelect(newWishlist);
-      } else {
-        setMessage({ type: 'error', text: result.message || 'Failed to create new list' });
       }
     } catch (error) {
       setMessage({ type: 'error', text: 'Failed to create new list' });
     } finally {
       setIsCreating(false);
+    }
+  };
+
+  const handleWishlistSelect = async (wishlist: Wishlist) => {
+    setLoadingListId(wishlist.entityId);
+
+    try {
+      const productToAdd = {
+        listId: wishlist.entityId,
+        product: {
+          ...product,
+          sku: product.sku || '',
+          variants: product.variants || {},
+        },
+      };
+
+      // Add to temporary items without clearing existing ones
+      setTempAddedItems((prev) => {
+        const isAlreadyAdded = prev.some(
+          (item) => item.listId === wishlist.entityId && item.product.entityId === product.entityId,
+        );
+
+        if (isAlreadyAdded) {
+          return prev;
+        }
+
+        return [...prev, productToAdd];
+      });
+
+      setJustAddedToList(wishlist.entityId);
+    } catch (error) {
+      setMessage({
+        type: 'error',
+        text: 'Failed to add item to list',
+      });
+    } finally {
+      setLoadingListId(null);
     }
   };
 

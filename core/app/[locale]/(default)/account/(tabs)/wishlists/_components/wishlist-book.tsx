@@ -1,30 +1,19 @@
+// wishlist-book
 'use client';
 
 import { useRouter } from 'next/navigation';
 import { useFormatter, useTranslations } from 'next-intl';
-import { PropsWithChildren, SetStateAction, useEffect, useState } from 'react';
-import { Hit as AlgoliaHit } from 'instantsearch.js';
+import { PropsWithChildren, SetStateAction, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
-
-import { createWishlist } from '~/client/mutations/create-wishlist';
 import { Button } from '~/components/ui/button';
 import { Message } from '~/components/ui/message/message';
-import { BcImage } from '~/components/bc-image';
-
-import { useAccountStatusContext } from '../../_components/account-status-provider';
 import { Modal } from '../../_components/modal';
 import { DeleteWishlistForm } from './delete-wishlist-form';
 import { CreateWishlistDialog } from './create-wishlist-form';
-import { MoreVertical } from 'lucide-react';
+import { useCommonContext } from '~/components/common-context/common-provider';
+import { useAccountStatusContext } from '../../_components/account-status-provider';
 
-// Constants
 const WISHLISTS_PER_PAGE = 100;
-
-// Types and Interfaces
-interface HitPrice {
-  USD: number;
-  CAD: number;
-}
 
 interface ProductImage {
   url: string;
@@ -42,6 +31,7 @@ interface ProductVariant {
 interface WishlistItem {
   entityId: number;
   product: {
+    entityId: number;
     reviewCount: number;
     path: string;
     name: string;
@@ -71,10 +61,6 @@ interface Wishlist {
   items: WishlistItem[];
 }
 
-type Wishlists = Wishlist[];
-type NewWishlist = NonNullable<Awaited<ReturnType<typeof createWishlist>>>;
-type WishlistArray = Array<NewWishlist | Wishlists[number]>;
-
 interface WishlistProps {
   setWishlistBook: (value: SetStateAction<WishlistArray>) => void;
   wishlist: WishlistArray[number];
@@ -95,14 +81,12 @@ interface WishlistMenuProps {
   entityId: number;
   name: string;
   onWishlistDeleted: () => void;
+  wishlist: Wishlist;
 }
 
-interface WishlistMenuProps {
-  entityId: number;
-  name: string;
-  onWishlistDeleted: () => void;
-  wishlist: any;
-}
+type Wishlists = Wishlist[];
+type NewWishlist = any;
+type WishlistArray = Array<NewWishlist | Wishlists[number]>;
 
 const WishlistMenu: React.FC<WishlistMenuProps> = ({
   entityId,
@@ -164,7 +148,6 @@ const WishlistMenu: React.FC<WishlistMenuProps> = ({
           <div className="fixed bottom-0 left-0 right-0 z-50 flex transform justify-center rounded-t-lg bg-white p-4 transition-transform duration-300 ease-out">
             <div className="space-y-4">
               <Modal
-                isOpen={deleteModalOpen}
                 onClose={() => setDeleteModalOpen(false)}
                 showCancelButton={false}
                 title={t('deleteTitle', { name })}
@@ -238,8 +221,7 @@ const WishlistMenu: React.FC<WishlistMenuProps> = ({
   );
 };
 
-export default WishlistMenu;
-
+// Update the Wishlist component's item count display
 const Wishlist = ({
   setWishlistBook,
   wishlist,
@@ -249,9 +231,18 @@ const Wishlist = ({
 }: WishlistProps) => {
   const [deleteWishlistModalOpen, setDeleteWishlistModalOpen] = useState(false);
   const { setAccountState } = useAccountStatusContext();
+  const { deletedProductIds } = useCommonContext();
   const t = useTranslations('Account.Wishlist');
   const { entityId, name } = wishlist;
   const items = 'items' in wishlist ? wishlist.items : [];
+
+  const filteredItems = items.filter(
+    (item) =>
+      !deletedProductIds.some(
+        (deletion) =>
+          deletion.wishlistId === entityId && deletion.productId === item.product.entityId,
+      ),
+  );
 
   const handleWishlistDeleted = () => {
     setWishlistBook((prev) => prev.filter((item) => item.entityId !== entityId));
@@ -270,7 +261,6 @@ const Wishlist = ({
 
   return (
     <div className="wishlist-item flex w-full items-center gap-4 bg-white lg:gap-6">
-      {/* Left Column - Image */}
       <div className="flex h-32 w-32 items-center justify-center rounded bg-[#80C5DA]">
         <svg
           className="h-16 w-16 text-white"
@@ -287,7 +277,6 @@ const Wishlist = ({
         </svg>
       </div>
 
-      {/* Middle Column - Content */}
       <div className="flex-1">
         <Link href="/account/wishlists/wishlist-product" onClick={handleWishlistClick}>
           <h3 className="wishlist-name mb-[4px] text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#000000]">
@@ -295,7 +284,7 @@ const Wishlist = ({
           </h3>
         </Link>
         <p className="mb-[12px] text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#000000]">
-          {items.length} {items.length === 1 ? 'item' : 'items'}
+          {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'}
         </p>
         <div className="flex hidden w-[30%] gap-2 lg:block">
           <Link
@@ -308,25 +297,15 @@ const Wishlist = ({
         </div>
       </div>
 
-      {/* Right Column - Delete Button */}
       {name !== t('favorites') && (
         <div className="delete-wishlist block h-[10em]">
-          <WishlistMenu
-            entityId={entityId}
-            name={name}
-            onWishlistDeleted={() => {
-              handleWishlistDeleted();
-            }}
-          />
-
           <div className="delete-wishlist hidden lg:block">
             <Modal
-              isOpen={deleteWishlistModalOpen}
               onClose={() => setDeleteWishlistModalOpen(false)}
               showCancelButton={false}
               title={t('deleteTitle', { name })}
               trigger={
-                <Button variant="ghost" size="sm" className="text-gray-500 hover:text-red-600">
+                <Button variant="secondary" size="sm" className="text-gray-500 hover:text-red-600">
                   <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path
                       strokeLinecap="round"
@@ -360,15 +339,147 @@ export const WishlistBook = ({
   onColorSelect,
 }: PropsWithChildren<WishlistBookProps>) => {
   const t = useTranslations('Account.Wishlist');
-  const [wishlistBook, setWishlistBook] = useState<WishlistArray>(wishlists);
+  const [wishlistBook, setWishlistBook] = useState<WishlistArray>([]);
   const { accountState } = useAccountStatusContext();
   const [createWishlistModalOpen, setCreateWishlistModalOpen] = useState(false);
   const router = useRouter();
+  const { deletedProductIds } = useCommonContext();
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Update the filterWishlists function
+  const filterWishlists = (currentWishlists: Wishlists, deletions: any[]) => {
+    return currentWishlists.map((wishlist) => {
+      const filteredItems = wishlist.items.filter(
+        (item) =>
+          !deletions.some(
+            (deletion) =>
+              deletion.wishlistId === wishlist.entityId &&
+              deletion.productId === item.product.entityId,
+          ),
+      );
+
+      return {
+        ...wishlist,
+        items: filteredItems,
+        itemCount: filteredItems.length, // Add explicit item count
+      };
+    });
+  };
+
+  // Load and initialize data
   useEffect(() => {
-    setWishlistBook(wishlists);
-  }, [wishlists]);
+    let isMounted = true;
 
+    const initDB = async () => {
+      try {
+        // Open IndexedDB
+        const dbRequest = indexedDB.open('WishlistDB', 4); // Increment version number
+
+        dbRequest.onupgradeneeded = (event: IDBVersionChangeEvent) => {
+          const db = (event.target as IDBOpenDBRequest).result;
+          if (db.objectStoreNames.contains('deletedProducts')) {
+            db.deleteObjectStore('deletedProducts');
+          }
+          const store = db.createObjectStore('deletedProducts', { autoIncrement: true });
+          store.createIndex('by_ids', ['wishlistId', 'productId'], { unique: false });
+        };
+
+        // Wait for DB to open
+        const db = await new Promise<IDBDatabase>((resolve, reject) => {
+          dbRequest.onsuccess = () => resolve(dbRequest.result);
+          dbRequest.onerror = () => reject(dbRequest.error);
+        });
+
+        // Get stored deletions
+        const transaction = db.transaction(['deletedProducts'], 'readwrite');
+        const store = transaction.objectStore('deletedProducts');
+
+        // Add new deletions
+        deletedProductIds.forEach((deletion) => {
+          store.add({
+            wishlistId: deletion.wishlistId,
+            productId: deletion.productId,
+            timestamp: Date.now(),
+          });
+        });
+
+        // Get all deletions
+        const getAllRequest = store.getAll();
+        getAllRequest.onsuccess = () => {
+          if (!isMounted) return;
+
+          const allDeletions = getAllRequest.result;
+          console.log('All stored deletions:', allDeletions);
+
+          // Filter wishlists
+          const filteredWishlists = filterWishlists(wishlists, allDeletions);
+
+          // Update localStorage
+          const localStorageKey = 'wishlistData';
+          localStorage.setItem(
+            localStorageKey,
+            JSON.stringify({
+              wishlists: filteredWishlists,
+              deletions: allDeletions,
+              lastUpdated: Date.now(),
+            }),
+          );
+
+          // Update state
+          setWishlistBook(filteredWishlists);
+          setIsLoading(false);
+        };
+      } catch (error) {
+        console.error('Error in initDB:', error);
+        if (isMounted) {
+          setWishlistBook(wishlists);
+          setIsLoading(false);
+        }
+      }
+    };
+
+    // Try to get data from localStorage first
+    const localStorageKey = 'wishlistData';
+    const storedData = localStorage.getItem(localStorageKey);
+
+    if (storedData) {
+      try {
+        const { wishlists: storedWishlists, lastUpdated } = JSON.parse(storedData);
+        const isRecent = Date.now() - lastUpdated < 3600000; // 1 hour
+
+        if (isRecent) {
+          setWishlistBook(storedWishlists);
+          setIsLoading(false);
+        }
+      } catch (error) {
+        console.error('Error parsing localStorage:', error);
+      }
+    }
+
+    // Always run initDB to ensure data is up to date
+    initDB();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [wishlists, deletedProductIds]);
+
+  // Sync with localStorage when deletedProductIds changes
+  useEffect(() => {
+    if (!isLoading && wishlistBook.length > 0) {
+      const localStorageKey = 'wishlistData';
+      localStorage.setItem(
+        localStorageKey,
+        JSON.stringify({
+          wishlists: wishlistBook,
+          deletions: deletedProductIds,
+          lastUpdated: Date.now(),
+        }),
+      );
+    }
+  }, [wishlistBook, deletedProductIds, isLoading]);
+
+  // Handle empty wishlist redirect
   useEffect(() => {
     if (hasPreviousPage && wishlistBook.length === 0) {
       const timer = setTimeout(() => {
@@ -376,7 +487,7 @@ export const WishlistBook = ({
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [hasPreviousPage, router, wishlistBook]);
+  }, [hasPreviousPage, router, wishlistBook.length]);
 
   const handleWishlistCreated = (newWishlist: NewWishlist) => {
     setWishlistBook((prev) => {
@@ -388,6 +499,10 @@ export const WishlistBook = ({
     setCreateWishlistModalOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
@@ -416,10 +531,6 @@ export const WishlistBook = ({
 
       <div className="mb-16 flex flex-row-reverse justify-between">
         <Modal
-          isOpen={createWishlistModalOpen}
-          onClose={() => setCreateWishlistModalOpen(false)}
-          showCancelButton={false}
-          title={t('new')}
           trigger={
             <Button
               className="h-[45px] w-[12em] rounded-sm bg-[#03465C] text-sm font-medium leading-8 tracking-wide text-white"
