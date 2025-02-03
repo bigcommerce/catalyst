@@ -39,6 +39,23 @@ export interface MegaMenuSecondaryMenuItem {
   description?: string;
 }
 
+export interface MegaMenuCustomPropsLink {
+  href: string;
+  label: string;
+}
+
+export interface MegaMenuCustomPropsAction {
+  action: () => Promise<void> | void;
+  name: string;
+}
+
+export type MegaMenuCustomProps = {
+  logo?: string;
+  storeName?: string;
+  accountMenuItems?: Array<MegaMenuCustomPropsLink | MegaMenuCustomPropsAction>;
+  supportMenuItems?: Array<MegaMenuCustomPropsLink | MegaMenuCustomPropsAction>;
+};
+
 export type MegaMenuProps = {
   variant?: string;
   /*
@@ -47,6 +64,7 @@ export type MegaMenuProps = {
     */
   menuItems: MegaMenuMenuItem[];
   secondaryMenuItems: MegaMenuSecondaryMenuItem[];
+  customProps?: MegaMenuCustomProps;
   classNames?: {
     root?: string;
     mainMenu?: string;
@@ -69,5 +87,15 @@ export type MegaMenuProps = {
     mainSubMenuLink?: string;
     mainSubSubMenuLink?: string;
     secondaryMenuLink?: string;
+    accountMenu?: string;
+    accountMenuTitle?: string;
+    accountMenuItem?: string;
+    accountMenuLink?: string;
+    accountMenuButton?: string;
+    supportMenu?: string;
+    supportMenuTitle?: string;
+    supportMenuItem?: string;
+    supportMenuLink?: string;
+    supportMenuButton?: string;
   };
 };

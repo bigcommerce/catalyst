@@ -1,6 +1,7 @@
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
 
 import { CompareDrawer } from './compare-drawer';
+import { getAgentLoginStatusFromCookies } from '~/app/[locale]/(default)/sales-buddy/_actions/agent-login';
 
 interface Image {
   altText: string;
@@ -50,7 +51,16 @@ const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   const [cartIdForCheck, setCartIdForCheck] = useState<string | null>(null);
   
   useEffect(() => {
-    setAgentLoginStatus(localStorage?.getItem('agent_login') === 'true');
+   const CheckAgentLoginStatusFromCookies=async()=>{
+     const getStatus = await getAgentLoginStatusFromCookies()
+     if(getStatus !== null && getStatus){
+       setAgentLoginStatus(true);
+     }else{
+       localStorage.setItem("agent_login", "false")
+       setAgentLoginStatus(false);
+     }
+   }
+    CheckAgentLoginStatusFromCookies()
     setAgentRole(localStorage?.getItem('agent_role'));
     setAgentName(localStorage?.getItem('agent_name'));
   }, []);

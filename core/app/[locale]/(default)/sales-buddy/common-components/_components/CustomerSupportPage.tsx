@@ -97,6 +97,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
         UpdateCartIdCookie(response?.output?.data?.[0]?.['cart_id'])
         setUpdatedCCartId(cartId)
         setCustomerIdViaSessionId(response?.output?.data?.[0]?.customer_id)
+        
         localStorage.setItem(
           'cart_lookup_sessionID_agent',
           JSON.stringify({
@@ -221,7 +222,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
     if (
       (findCustomerData.email !== '' ||
         findCustomerData.phone !== '' ||
-        findCustomerData.first_name !== '')
+        findCustomerData.first_name !== '' || findCustomerData.company !== '')
     ) {
       if (findCustomerData.email.length == 0 && findCustomerDataError.email == "" || findCustomerData.email.length > 0 && findCustomerDataError.email == "") {
         try {

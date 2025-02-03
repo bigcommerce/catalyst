@@ -16,7 +16,6 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
 }) => {
   const [deliveryMessage, setDeliveryMessage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchMessage = async () => {
@@ -43,12 +42,11 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
       </div>
     )
   }
-
   const isBackorder = deliveryMessage?.includes("Backorder");
   const backgroundColorClass = isBackorder ? 'bg-[#FBF4E9]' : 'bg-transparent';
 
   return (
-    <div className={`flex flex-col ${isFromPDP ? 'items-center' : 'items-start'} lg:items-start`}>
+    <div className={`flex ${isFromPDP ? 'justify-center' : 'justify-start'}  xl:justify-start`}>
       <div className={`${backgroundColorClass} w-fit ${deliveryMessage ? 'mt-[10px]' : 'mt-[0px]'}`}>
         {isBackorder ? (
           <div>

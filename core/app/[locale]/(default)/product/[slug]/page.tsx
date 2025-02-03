@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Suspense } from 'react';
 import { getSessionCustomerAccessToken, getSessionUserDetails } from '~/auth';
-import Link from 'next/link';
 import { Breadcrumbs } from '~/components/breadcrumbs';
 import Promotion from '../../../../../components/ui/pdp/belami-promotion-banner-pdp';
 import { Description } from './_components/description';
@@ -27,7 +26,6 @@ import { cookies } from 'next/headers';
 import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
 
 import { Page as MakeswiftPage } from '~/lib/makeswift';
-import StickyScroll, { DetailsWrapper } from './_components/sticky';
 import { calculateProductPrice } from '~/components/common-functions';
 import { ProductSchema } from './_components/product-schema';
 interface Props {
@@ -134,9 +132,8 @@ export default async function ProductPage(props: Props) {
       optionValueIds,
       useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
     });
-
-    const [updatedProduct] = await calculateProductPrice(product);
-
+    
+    const [updatedProduct] = await calculateProductPrice(product,"pdp");
     if (!product) {
       return notFound();
     }
@@ -251,30 +248,32 @@ export default async function ProductPage(props: Props) {
         : null;
 
     return (
-      <div className="products-detail-page mx-auto max-w-[93.5%] pt-8">
-        <ProductProvider getMetaFields={productMetaFields}>
-          <div className="breadcrumbs-container">
-            {categoryWithBreadcrumbs && (
-              <div className="breadcrumb-row">
-                <Breadcrumbs category={categoryWithBreadcrumbs} />
-              </div>
-            )}
-          </div>
-
-          <div className="mb-4 mt-4 xl:mb-12 xl:grid xl:grid-cols-2 xl:gap-8">
-            <div className="x2:w-[50em] x3:w-[52em] x4:!w-[60em] xl:w-[48em] 2xl:!w-[54em]">
-              <Suspense fallback={<div>Loading gallery...</div>}>
-                <Gallery
-                  product={product}
-                  bannerIcon={assets.bannerIcon}
-                  galleryExpandIcon={assets.galleryExpandIcon}
-                  productMpn={product.mpn}
-                />
-              </Suspense>
+      <div className="products-detail-page mx-auto max-w-[93.5%] pt-5">
+        <div className="breadcrumbs-container">
+          {categoryWithBreadcrumbs && (
+            <div className="breadcrumb-row mb-5">
+              <Breadcrumbs category={categoryWithBreadcrumbs} />
             </div>
+          )}
+        </div>
 
-            <div className="x2:w-[40em] x3:w-[42em] x4:!pl-[15em] x4:!w-[46em] xl:w-[35em] xl:pl-[12em] 2xl:w-[43em] 2xl:!pl-[11em]">
-              <DetailsWrapper>
+        <ProductProvider getMetaFields={productMetaFields}>
+          <div className="mb-4 xl:mb-12 xl:gap-8">
+            <div className="pdp-scroll xl:mb-[7em] xl:flex xl:w-[100%] xl:max-w-[100%] xl:gap-x-[3em]">
+              <div className="Gallery relative xl:flex xl:w-[64%]">
+                <div className="gallery-sticky-pop-up xl:sticky xl:top-0 z-10 xl:h-[100vh] xl:w-[100%]">
+                  <Suspense fallback={<div>Loading gallery...</div>}>
+                    <Gallery
+                      product={product}
+                      bannerIcon={assets.bannerIcon}
+                      galleryExpandIcon={assets.galleryExpandIcon}
+                      productMpn={product.mpn}
+                    />
+                  </Suspense>
+                </div>
+              </div>
+
+              <div className="PDP xl:relative xl:flex-1">
                 <Details
                   product={updatedProduct}
                   collectionValue={collectionValue}
@@ -305,10 +304,10 @@ export default async function ProductPage(props: Props) {
                   }
                   priceMaxRules={priceMaxRules}
                 />
-              </DetailsWrapper>
+              </div>
             </div>
 
-            <div className="lg:col-span-2">
+            <div className="flex flex-col">
               <hr className="mb-4 border border-gray-200" />
               <Description product={product} />
               <hr className="mb-[55px] mt-[20px] border border-gray-200" />

@@ -379,18 +379,17 @@ export const checkZeroTaxCouponIsApplied = async (checkoutData: any) => {
   return zeroTaxCoupon;
 };
 
-export const calculateProductPrice = async (products: any ) =>  {
+export const calculateProductPrice = async (products: any, type: String ) =>  {
   const isSingleProduct = !Array.isArray(products);
   const productArray = isSingleProduct ? [products] : products;
     const convertedPrices = productArray.map((product: any) => {
     const prices = product?.catalogProductWithOptionSelections?.prices || product?.prices;
     const quantity = product?.quantity || 1;
 
-    const retailPrice = prices?.retailPrice?.value;
-    const salePrice = prices?.salePrice?.value;
-    const basePrice = prices?.basePrice?.value;
-   // const currencyCode = prices?.basePrice?.currencyCode;
-
+    const retailPrice = type === "accessories" ? product.retail_price : prices?.retailPrice?.value;
+    const salePrice = type === "accessories" ? product.sale_price : prices?.salePrice?.value;
+    const basePrice = type === "accessories" ? product.price : prices?.basePrice?.value;
+   
     let originalPrice = 0;
     let updatedPrice = 0;
     let discount = 0;
@@ -421,6 +420,7 @@ export const calculateProductPrice = async (products: any ) =>  {
         updatedPrice,
         discount,
         hasDiscount: discount > 0,
+        showDecoration: !!retailPrice && retailPrice > 0
       },
     };
 

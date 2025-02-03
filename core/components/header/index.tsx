@@ -40,6 +40,8 @@ import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { client as makeswiftClient } from '~/lib/makeswift/client';
 import { Props } from '@makeswift/runtime/prop-controllers';
 
+import { MegaMenuContextProvider } from '~/belami/components/mega-menu';
+
 export const Header = async ({ cart }: Props) => {
   const locale = await getLocale();
   const t = await getTranslations('Components.Header');
@@ -143,7 +145,6 @@ export const Header = async ({ cart }: Props) => {
                     { action: logout, name: 'Sign Out' },
                   ]
                 : [
-                    { href: '/login', label: 'Account' },
                     { href: '/login', label: 'My Account' },
                     { href: '/login', label: 'Favorites' },
                     { href: '/login', label: 'Purchase History' },
@@ -190,7 +191,38 @@ export const Header = async ({ cart }: Props) => {
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
       search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />}
-      megaMenu={<MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' />}
+      megaMenu={
+        <MegaMenuContextProvider value={{ 
+            logo: homeLogoMobile, 
+            storeName: data?.settings?.storeName, 
+            accountMenuItems: customerAccessToken
+              ? [
+                  { href: '/account', label: 'My Account' },
+                  { href: '/account/favorites', label: 'Favorites' },
+                  { href: '/account/purchase-history', label: 'Purchase History' },
+                  { href: '/account/finance', label: 'Finance' },
+                  { action: logout, name: 'Sign Out' },
+                ]
+              : [
+                  { href: '/login', label: 'My Account' },
+                  { href: '/login', label: 'Favorites' },
+                  { href: '/login', label: 'Purchase History' },
+                  { href: '/login', label: 'Financing' },
+                  { href: '/login', label: 'Login' },
+                ],
+            supportMenuItems: [
+                { href: '/support/faqs', label: 'Existing Order' },
+                { href: '/order-tracking', label: 'Track My Order' },
+                { href: '/support/contact', label: 'Replace Items' },
+                { href: '/support/contact', label: 'Gift Certificates' },
+                { href: '/support/contact', label: 'Visit Our Help Center' },
+                { href: '/support/contact', label: 'New Orders' },
+                { href: '/support/contact', label: 'Contact ' },
+              ]
+          }}>
+          <MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' />
+        </MegaMenuContextProvider>
+      }
     />
   );
 };

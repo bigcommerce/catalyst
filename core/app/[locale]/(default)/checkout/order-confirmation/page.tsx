@@ -12,6 +12,7 @@ import { assembleProductData, ProductSnippet, ProductSnippetSkeleton } from '../
 import { getSessionCustomerAccessToken } from '~/auth';
 import { UpdateCustomerId } from '../../sales-buddy/_actions/update-customer-id';
 import { SendOrderToAlgolia } from './send-order-to-algolia';
+import { GetCartMetaFields } from '~/components/management-apis';
 
 const emailImg = imageManagerImageUrl('emailicon.png', '16w');
 const facebookImg = imageManagerImageUrl('facebook.png', '23w');
@@ -59,12 +60,13 @@ export default async function OrderConfirmation() {
   const orderId: number = Number(cookieStore.get('orderId')?.value);
   const cartId: any = cookieStore.get('cartId')?.value;
   const getCustomerIdfromCookie = cookieStore?.get('customer_id_for_agent')?.value
-  const customerAccessToken = await getSessionCustomerAccessToken();
+  let customerAccessToken = await getSessionCustomerAccessToken();
+
   let guestUserCheck = 0;
 
   if (orderId) {
     let data: any = [];
-    if(customerAccessToken) {
+    if (customerAccessToken) {
       data = await getOrderDetails({ filter: { entityId: orderId } });
     } else {
       data = await getGuestOrderDetails({ filter: { entityId: orderId, cartEntityId: cartId } });
@@ -94,10 +96,83 @@ export default async function OrderConfirmation() {
       regSubTotal -= discountedAmount.value;
       youSave += discountedAmount.value;
     });
-    
-    const updateCustomerApi = await UpdateCustomerId(getCustomerIdfromCookie,orderState?.orderId)
-    
 
+    const updateCustomerApi = await UpdateCustomerId(getCustomerIdfromCookie, orderState?.orderId)
+
+    const lineItems = shippingConsignments?.map((consignment: any) => consignment.lineItems) || [];
+    let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
+    let updatedLineItemInfo: any = [];
+    let updatedLineItemWithoutAccessories: any = [];
+    let accessoriesSkuArray: any = [];
+    let productId: any;
+    if (getCartMetaFields?.length > 0) {
+      lineItems.map((data: any) => {
+        data?.forEach((item: any) => {
+          let accessoriesData: any = [];
+          let findAccessories = getCartMetaFields?.find((acces: any) => {
+            const description = JSON.parse(acces.description);
+            productId = description?.[0]?.productId;
+            return productId == item.productEntityId
+          });
+          if (findAccessories) {
+            let getAccessoriesInfo = findAccessories?.value ? JSON?.parse(findAccessories?.value) : [];
+            if (getAccessoriesInfo?.length > 0) {
+              getAccessoriesInfo?.forEach((getInfo: any) => {
+                !accessoriesSkuArray?.includes(getInfo?.variantId)
+                  ? accessoriesSkuArray.push(getInfo?.variantId)
+                  : '';
+                let accessoriesInfo = data.map((line: any) => {
+                  const variants = removeEdgesAndNodes(line?.baseCatalogProduct?.variants);
+                  if (variants) {
+                    const matchingVariants = variants.filter((id: any) =>
+                      id?.entityId == getInfo?.variantId)
+                    if (matchingVariants.length > 0) {
+                      return line;
+                    }
+                  }
+                  return null;
+                });
+                accessoriesInfo = accessoriesInfo.filter((line: any) => line !== null && line !== undefined);
+                if (accessoriesInfo && accessoriesInfo.length > 0) {
+                  accessoriesInfo.forEach((info: any) => {
+                    let accessSpreadData: any = { ...info };
+                    if (accessSpreadData) {
+                      accessSpreadData.prodQuantity = getInfo.quantity;
+                      accessSpreadData.cartId = cartId;
+                      accessSpreadData.lineItemId = item?.productEntityId;
+                      accessoriesData.push(accessSpreadData);
+                    }
+                    return ""
+                  });
+                }
+              });
+            }
+          }
+
+          if (accessoriesData?.length > 0) {
+            const uniqueObjects = accessoriesData.filter((item: any, index: any, self: any) =>
+              index === self.findIndex((t: any) => t.entityId === item.entityId)
+            );
+            item.accessories = uniqueObjects;
+          }
+          const variants = item?.baseCatalogProduct?.variants?.edges;
+          const foundVariant = variants?.find((id: any) => id?.node?.entityId);
+          if (foundVariant && !accessoriesSkuArray?.includes(foundVariant?.node?.entityId) && (item?.productEntityId === productId)) {
+            updatedLineItemInfo.push(item);
+          }
+        })
+      });
+    } else {
+      getCartMetaFields = [];
+      updatedLineItemInfo = lineItems;
+    }
+    updatedLineItemInfo?.forEach((item: any) => {
+      const variants = item?.baseCatalogProduct?.variants?.edges;
+      const foundVariant = variants?.find((id: any) => id?.node?.entityId);
+      if (foundVariant && !accessoriesSkuArray?.includes(foundVariant?.node?.entityId) && (item?.productEntityId === productId)) {
+        updatedLineItemWithoutAccessories.push(item);
+      }
+    });
     return (
       <div className="lg:mt-[3rem] mt-[1rem] mb-[2rem] flex lg:flex-row justify-around gap-[30px] lg:gap-[50px] px-[20px] flex-col">
         <div className="flex w-full lg:w-[calc((800/1600)*100vw)] flex-col items-start gap-[30px] p-[0px] lg:p-[0px_40px]">
@@ -306,10 +381,22 @@ export default async function OrderConfirmation() {
           <div className={`flex w-full flex-col items-start gap-[10px]`}>
             {shippingConsignments?.map((consignment, idx) => {
               const { lineItems } = consignment;
+              const validLineItems = Array.isArray(lineItems) ? lineItems.filter(item => item) : [];
+              const accessoryProductEntityIds = new Set();
+              validLineItems.forEach(lineItem => {
+                if (lineItem?.accessories && lineItem?.accessories.length > 0) {
+                  lineItem?.accessories.forEach((accessory: any) => {
+                    accessoryProductEntityIds.add(accessory.productEntityId);
+                  });
+                }
+              });
+              const filteredLineItems = validLineItems.filter(lineItem => {
+                return !accessoryProductEntityIds.has(lineItem.productEntityId);
+              });
               return (
-                <>
+                <div key={idx}>
                   <ul className="flex flex-col gap-[30px]">
-                    {lineItems.map((shipment) => {
+                    {filteredLineItems.map((shipment) => {
                       return (
                         <li key={shipment.entityId}>
                           <Suspense fallback={<ProductSnippetSkeleton isExtended={true} />}>
@@ -325,8 +412,8 @@ export default async function OrderConfirmation() {
                       );
                     })}
                   </ul>
-                </>
-              )
+                </div>
+              );
             })}
           </div>
         </div>

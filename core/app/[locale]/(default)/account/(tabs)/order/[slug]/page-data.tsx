@@ -135,7 +135,6 @@ export const getOrderDetails = cache(
     const response = await client.fetch({
       document: CustomerOrderDetails,
       variables,
-      fetchOptions: { cache: 'no-store' },
       customerAccessToken,
     });
     const order = response.data.site.order;

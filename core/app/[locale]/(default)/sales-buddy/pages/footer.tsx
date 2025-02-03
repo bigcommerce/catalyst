@@ -10,10 +10,8 @@ export default function AgentFooter() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { agentLoginStatus, setAgentLoginStatus,agentName } = useCompareDrawerContext();
   const router = useRouter(); // Initialize useRouter
-
   const toggleModal = () => {
     if (agentLoginStatus) {
-      localStorage.setItem('agent_login', 'false');
       localStorage.removeItem('agent_role'); // Remove agent_role from localStorage
       setAgentLoginStatus(false);
       storeAgentLoginStatusInCookies(false)
@@ -31,8 +29,7 @@ export default function AgentFooter() {
   useEffect(() => {    
     const isInIframe = window.self !== window.top;
     if (isInIframe) return
-
-    setAgentLoginStatus(localStorage.getItem('agent_login') === 'true')
+    // setAgentLoginStatus(localStorage.getItem('agent_login') === 'true')
     router.refresh();
   }, [agentLoginStatus]);
   
