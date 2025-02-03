@@ -368,6 +368,59 @@ const ProductPageQuery = graphql(
   ],
 );
 
+const ProductPageSKUQuery = graphql(
+  `
+    query ProductPageSKUQuery(
+      $sku: String!
+    ) {
+      site {
+        product(
+          sku: $sku
+        ) {
+          ...GalleryFragment
+          ...DetailsFragment
+          ...ProductItemFragment
+          ...DescriptionFragment
+          ...WarrantyFragment
+          entityId
+          name
+          defaultImage {
+            url: urlTemplate(lossy: true)
+            altText
+          }
+          categories {
+            edges {
+              node {
+                ...BreadcrumbsFragment
+              }
+            }
+          }
+          seo {
+            pageTitle
+            metaDescription
+            metaKeywords
+          }
+        }
+        parent: product(
+          sku: $sku          
+        ) {
+          entityId
+          sku
+          mpn
+        }
+      }
+    }
+  `,
+  [
+    BreadcrumbsFragment,
+    GalleryFragment,
+    DetailsFragment,
+    ProductItemFragment,
+    DescriptionFragment,
+    WarrantyFragment,
+  ],
+);
+
 type Variables = VariablesOf<typeof ProductPageQuery>;
 
 export const getProduct = cache(async (variables: Variables) => {
@@ -375,6 +428,27 @@ export const getProduct = cache(async (variables: Variables) => {
 
   const { data } = await client.fetch({
     document: ProductPageQuery,
+    variables,
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  if (data.site && data.site.product && data.site.parent)
+    data.site.product = {
+      ...data.site.product,
+      parent: data.site.parent,
+    } as any;
+
+  return data.site.product as any;
+});
+
+type SkuVariables = VariablesOf<typeof ProductPageSKUQuery>;
+
+export const getProductBySku = cache(async (variables: SkuVariables) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const { data } = await client.fetch({
+    document: ProductPageSKUQuery,
     variables,
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },

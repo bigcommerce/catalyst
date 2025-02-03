@@ -11,7 +11,7 @@ import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';
 import { ProductViewed } from './_components/product-viewed';
 import { Warranty } from './_components/warranty';
-import { getProduct } from './page-data';
+import { getProduct, getProductBySku } from './page-data';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 import { GetProductMetaFields, GetProductVariantMetaFields } from '~/components/management-apis';
 import { ProductProvider } from '~/components/common-context/product-provider';
@@ -69,13 +69,21 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const searchParams = await props.searchParams;
   const params = await props.params;
   const productId = Number(params.slug);
-  const optionValueIds = getOptionValueIds({ searchParams });
+  const productSku: any = searchParams?.sku;
 
-  const product = await getProduct({
-    entityId: productId,
-    optionValueIds,
-    useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
-  });
+  const optionValueIds = getOptionValueIds({ searchParams });
+  let product: any;
+  if (productSku) {
+    product = await getProductBySku({
+      sku: productSku,
+    });
+  } else {
+    product = await getProduct({
+      entityId: productId,
+      optionValueIds,
+      useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
+    });
+  }
 
   if (!product) {
     return {};
@@ -90,13 +98,13 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     keywords: metaKeywords ? metaKeywords.split(',') : null,
     openGraph: url
       ? {
-          images: [
-            {
-              url,
-              alt,
-            },
-          ],
-        }
+        images: [
+          {
+            url,
+            alt,
+          },
+        ],
+      }
       : null,
   };
 }
@@ -106,6 +114,7 @@ export default async function ProductPage(props: Props) {
 
     const searchParams = await props.searchParams;
     const params = await props.params;
+    const productSku: any = searchParams?.sku;
 
     if (!params || !searchParams) {
       console.error('Missing required params:', { params, searchParams });
@@ -127,13 +136,20 @@ export default async function ProductPage(props: Props) {
     const productId = Number(slug);
     const optionValueIds = getOptionValueIds({ searchParams });
 
-    const product = await getProduct({
-      entityId: productId,
-      optionValueIds,
-      useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
-    });
-    
-    const [updatedProduct] = await calculateProductPrice(product,"pdp");
+    let product: any;
+    if (productSku) {
+      product = await getProductBySku({
+        sku: productSku,
+      });
+    } else {
+      product = await getProduct({
+        entityId: productId,
+        optionValueIds,
+        useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
+      });
+    }
+
+    const [updatedProduct] = await calculateProductPrice(product, "pdp");
     if (!product) {
       return notFound();
     }
@@ -223,19 +239,19 @@ export default async function ProductPage(props: Props) {
 
     const categoryWithBreadcrumbs = categoryWithMostBreadcrumbs
       ? {
-          ...categoryWithMostBreadcrumbs,
-          breadcrumbs: {
-            edges: [
-              ...(categoryWithMostBreadcrumbs?.breadcrumbs?.edges || []),
-              {
-                node: {
-                  name: product.mpn || '',
-                  path: '#',
-                },
+        ...categoryWithMostBreadcrumbs,
+        breadcrumbs: {
+          edges: [
+            ...(categoryWithMostBreadcrumbs?.breadcrumbs?.edges || []),
+            {
+              node: {
+                name: product.mpn || '',
+                path: '#',
               },
-            ].filter(Boolean),
-          },
-        }
+            },
+          ].filter(Boolean),
+        },
+      }
       : null;
 
     const productImages = removeEdgesAndNodes(product.images);
