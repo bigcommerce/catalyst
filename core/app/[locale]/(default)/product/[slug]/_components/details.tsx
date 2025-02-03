@@ -676,7 +676,7 @@ export const Details = ({
           </div>
         </div>
 
-          <ProductSchema product={product} />
+          {/* <ProductSchema product={product} /> */}
           <PayPalPayLater
             amount={product?.prices?.price?.value?.toString() || '0'}
             currency={product?.prices?.price?.currencyCode || 'USD'}

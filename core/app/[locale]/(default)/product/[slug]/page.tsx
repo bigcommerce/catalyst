@@ -27,6 +27,7 @@ import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
 
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { calculateProductPrice } from '~/components/common-functions';
+import { ProductSchema } from './_components/product-schema';
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -113,8 +114,8 @@ export default async function ProductPage(props: Props) {
 
     const cookieStore = await cookies();
     const priceMaxCookie = cookieStore.get('pmx');
-    const priceMaxTriggers = priceMaxCookie?.value 
-      ? JSON.parse(atob(priceMaxCookie?.value)) 
+    const priceMaxTriggers = priceMaxCookie?.value
+      ? JSON.parse(atob(priceMaxCookie?.value))
       : undefined;
 
     const useDefaultPrices = !customerAccessToken;
@@ -133,11 +134,10 @@ export default async function ProductPage(props: Props) {
     });
     
     const [updatedProduct] = await calculateProductPrice(product,"pdp");
-  
     if (!product) {
       return notFound();
     }
-    
+
     // Asset URLs
     const assets = {
       bannerIcon: imageManagerImageUrl('example-1.png', '50w'),
@@ -155,8 +155,14 @@ export default async function ProductPage(props: Props) {
     // Get MetaFields
     const productMetaFields = await GetProductMetaFields(product.entityId, '');
     let variantMetaFields: MetaField[] = [];
+    const variants = product.variants.edges?.map((edge) => edge.node) || [];
+    const selectedVariantId =
+      variants.find((v) => v.sku === product.sku)?.entityId || variants[0]?.entityId;
 
-    const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
+    // Now, use `selectedVariantId` wherever needed
+
+    // const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
+    // console.log("ppp",selectedVariantId);
     if (selectedVariantId) {
       variantMetaFields = await GetProductVariantMetaFields(
         product.entityId,
@@ -164,6 +170,11 @@ export default async function ProductPage(props: Props) {
         '',
       );
     }
+
+    const nsoidField = variantMetaFields.find((field: { key: string }) => field?.key === 'nsoid');
+    const upidField = variantMetaFields.find((field: { key: string }) => field?.key === 'upid');
+
+    const newIdentifier = nsoidField?.value || upidField?.value || null;
 
     // Process Collection Value
     let collectionValue = '';
@@ -229,9 +240,12 @@ export default async function ProductPage(props: Props) {
 
     const productImages = removeEdgesAndNodes(product.images);
     var brandId = product?.brand?.entityId;
-    var CommonSettinngsValues =  await commonSettinngs([brandId])
-    
-    const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
+    var CommonSettinngsValues = await commonSettinngs([brandId]);
+
+    const priceMaxRules =
+      priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
+        ? await getPriceMaxRules(priceMaxTriggers)
+        : null;
 
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-5">
@@ -285,7 +299,9 @@ export default async function ProductPage(props: Props) {
                   }
                   children1={<MakeswiftPage locale={locale} path="/content/shipping-flyout" />}
                   children2={<MakeswiftPage locale={locale} path="/content/returns-flyout" />}
-                  children3={<MakeswiftPage locale={locale} path="/content/request-a-quote-flyout" />}
+                  children3={
+                    <MakeswiftPage locale={locale} path="/content/request-a-quote-flyout" />
+                  }
                   priceMaxRules={priceMaxRules}
                 />
               </div>
@@ -327,6 +343,7 @@ export default async function ProductPage(props: Props) {
           </div>
 
           <ProductViewed product={product} />
+          <ProductSchema product={product} identifier={newIdentifier} />
         </ProductProvider>
       </div>
     );
