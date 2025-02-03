@@ -29,6 +29,7 @@ import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import StickyScroll, { DetailsWrapper } from './_components/sticky';
 import { calculateProductPrice } from '~/components/common-functions';
+import { ProductSchema } from './_components/product-schema';
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -157,8 +158,13 @@ export default async function ProductPage(props: Props) {
     // Get MetaFields
     const productMetaFields = await GetProductMetaFields(product.entityId, '');
     let variantMetaFields: MetaField[] = [];
-
-    const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
+    const variants = product.variants.edges?.map(edge => edge.node) || [];
+    const selectedVariantId = variants.find(v => v.sku === product.sku)?.entityId || variants[0]?.entityId ;
+    
+    // Now, use `selectedVariantId` wherever needed
+    console.log("Selected Variant ID:", selectedVariantId);
+    // const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
+    // console.log("ppp",selectedVariantId);
     if (selectedVariantId) {
       variantMetaFields = await GetProductVariantMetaFields(
         product.entityId,
@@ -166,6 +172,13 @@ export default async function ProductPage(props: Props) {
         '',
       );
     }
+console.log("mainProduct", product)
+
+const nsoidField = variantMetaFields.find((field: { key: string; }) => field?.key === 'nsoid');
+const upidField = variantMetaFields.find((field: { key: string; }) => field?.key === 'upid');
+
+const newIdentifier = nsoidField?.value || upidField?.value || null;
+console.log("mainproductIdentifier:", newIdentifier);
 
     // Process Collection Value
     let collectionValue = '';
@@ -327,6 +340,7 @@ export default async function ProductPage(props: Props) {
           </div>
 
           <ProductViewed product={product} />
+          <ProductSchema product={product} identifier={newIdentifier} />
         </ProductProvider>
       </div>
     );
