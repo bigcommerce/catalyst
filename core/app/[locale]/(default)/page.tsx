@@ -1,6 +1,8 @@
 import { locales } from '~/i18n/routing';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 
+const klaviyoPublicKey = process.env.NEXT_PUBLIC_KLAVIYO_PUBLIC_KEY;
+
 interface Params {
   locale: string;
 }
@@ -19,6 +21,7 @@ export default async function Home({ params }: Props) {
   return <>
     <MakeswiftPage locale={locale} path="/" />
     {/* Klaviyo Embed Form */}
-    <div className="klaviyo-form-VXCJF7" />
+    {/* <div className="klaviyo-form-VXCJF7" /> */}
+    <div className={`klaviyo-form-${klaviyoPublicKey}`} /> 
   </>;
 }
