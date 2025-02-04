@@ -168,8 +168,7 @@ export default async function ProductPage(props: Props) {
         useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
       });
     }
-
-    const [updatedProduct] = await calculateProductPrice(product, 'pdp');
+    
     if (!product) {
       return notFound();
     }
