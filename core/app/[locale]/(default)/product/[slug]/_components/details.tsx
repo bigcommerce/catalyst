@@ -69,6 +69,7 @@ interface Props {
   children5: React.ReactNode;
   priceMaxRules: any;
   getAllCommonSettinngsValues:any;
+  customerGroupDetails:any;
 }
 
 export const DetailsFragment = graphql(
@@ -160,6 +161,7 @@ export const Details = ({
   children2,
   triggerLabel3,
   children3,
+  customerGroupDetails,
   triggerLabel4,
   children4,
   triggerLabel5,
@@ -275,7 +277,6 @@ export const Details = ({
     const defaultValue = values.find((value) => value.isDefault);
     return defaultValue?.label || 'Select';
   };
-
   return (
     <div className="">
       {showStickyHeader && (
@@ -556,45 +557,7 @@ export const Details = ({
               msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500'
             }} />
           }
-          {/*
-          {product?.['UpdatePriceForMSRP'] && (
-            <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
-              {product?.UpdatePriceForMSRP &&
-                      product?.UpdatePriceForMSRP?.hasDiscount === true ? (
-                <>
-                  <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                    {format.number(product?.UpdatePriceForMSRP?.updatedPrice, {
-                      style: 'currency',
-                      currency: product?.prices?.price?.currencyCode || 'USD' ,
-                    })}
-                  </span>
-                  <span className="inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0">
-                    {format.number(product?.UpdatePriceForMSRP?.originalPrice, {
-                      style: 'currency',
-                      currency:  product?.prices?.price?.currencyCode|| 'USD',
-                    })}
-                  </span>
-                  <span className="-ml-[0.5em] mb-1 text-[12px] text-gray-500">MSRP</span>
-                  <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                    Save{' '}
-                    {product?.UpdatePriceForMSRP?.discount}
-                    %
-                  </span>
-                </>
-              ) : (
-                <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                  {format.number(product?.UpdatePriceForMSRP?.originalPrice || 0, {
-                    style: 'currency',
-                    currency: product?.prices?.price?.currencyCode || 'USD',
-                  })}
-                </span>
-              )}
-            </div>
-          )}
-          */}
-          {/* msrp  */}
-
-        <Coupon couponIcon={couponIcon} />
+          <Coupon couponIcon={couponIcon} />
 
           <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
               <span> Free Delivery</span>
@@ -620,7 +583,8 @@ export const Details = ({
               blankAddImg={blankAddImg || ''}
               productImages={productImages}
               fanPopup={fanPopup}
-              closeIcon={closeIcon || ''}
+              closeIcon={closeIcon}
+              customerGroupDetails={customerGroupDetails}
             />
           </div>
 

@@ -7,6 +7,7 @@ export const BreadcrumbsFragment = graphql(`
         node {
           name
           path
+          entityId
         }
       }
     }
