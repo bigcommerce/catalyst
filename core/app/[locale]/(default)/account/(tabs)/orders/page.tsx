@@ -42,9 +42,9 @@ export default async function Orders({ searchParams }: Props) {
     <>
       <div className="flex w-full justify-center text-[#353535]">
         <div className="flex w-[76%] flex-col gap-[4px]">
-          <ComponentsBreadcrumbs className="" breadcrumbs={breadcrumbs} />
+          <ComponentsBreadcrumbs className="flex justify-center items-center" breadcrumbs={breadcrumbs} />
           <div className="flex flex-col gap-[20px]">
-            <div className="text-[24px] font-normal leading-[32px] text-[#000000]">{t('heading')}</div>
+            <div className="text-[24px] font-normal flex justify-center items-center leading-[32px] text-[#000000]">{t('heading')}</div>
             {orders.length === 0 ? (
               <div className="mx-auto w-fit">{t('noOrders')}</div>
             ) : (

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { BcImage } from '~/components/bc-image';
 import { getMetaFieldsByProduct } from '~/components/common-functions';
+import { Flyout } from '~/components/common-flyout';
 
 interface Certification {
   code: string;
@@ -14,12 +15,16 @@ interface CertificationsAndRatingsProps {
   certificationIcon: string;
   product: any;
   selectedVariant?: any;
+  children: React.ReactNode;
+  triggerLabel: React.ReactNode;
 }
 
 const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
   certificationIcon,
   product,
   selectedVariant,
+  children,
+  triggerLabel,
 }) => {
   const t = useTranslations('certificationsAndRatings');
   const [variantCertifications, setVariantCertifications] = useState<Certification[]>([]);
@@ -95,9 +100,13 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
   }
 
   return (
-    <div className="product-certificates mt-6 xl:mt-10">
-      <h2 className="mb-4 text-center text-base text-[#002A37] xl:text-left">{t('title')}</h2>
-      <div className="certifications flex flex-wrap items-center justify-center gap-4 xl:justify-start">
+    <div className="product-certificates mt-4 xl:mt-7">
+      <div className="mb-4 flex items-center gap-2  justify-center">
+        <span className="text-base text-[#002A37]">
+          {t('title')} <Flyout triggerLabel={triggerLabel}>{children}</Flyout>
+        </span>
+      </div>
+      <div className="certifications flex flex-wrap items-center justify-center gap-4 ">
         {allCertifications.map((certification: Certification, index: number) => (
           <div key={`${certification.code}-${index}`} className="flex items-center gap-2">
             <BcImage

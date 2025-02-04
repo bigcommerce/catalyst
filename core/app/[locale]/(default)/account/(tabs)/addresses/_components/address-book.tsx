@@ -33,46 +33,63 @@ const AddressChangeButtons = ({ addressId, isAddressRemovable, onDelete }: Addre
 
   const handleDeleteAddress = async () => {
     scrollToTop();
+  
     const submit = await deleteAddress(addressId);
-
-    if (submit.status === 'success') {
-      onDelete((prevAddressBook) =>
-        prevAddressBook.filter(({ entityId }) => entityId !== addressId),
-      );
-
+  
+    if (submit?.status === 'success') {
+      onDelete((prevAddressBook) => {
+        const updatedAddresses = prevAddressBook.filter(({ entityId }) => entityId !== addressId);
+  
+        // Handle case where no addresses remain
+        if (updatedAddresses.length === 0) {
+          return [];
+        }
+  
+        return updatedAddresses;
+      });
+  
       setAccountState({
         status: 'success',
-        message: submit.message || '',
+        message: submit.message || 'Address deleted successfully',
+      });
+    } else {
+      setAccountState({
+        status: 'error',
+        message: submit?.message || 'Failed to delete address',
       });
     }
   };
+  
 
   return (
-    <div className="flex max-w-full items-center gap-[5px] p-0 sm:gap-6">
+    <div className=" max-w-fit  flex justify-center  gap-4 flex-wrap">
+    <Button
+      className="flex items-center justify-center gap-2 rounded-md bg-[#03465c] px-4 py-2 text-sm font-medium uppercase leading-6 tracking-wider text-white hover:bg-[#03465c]/90 sm:w-auto"
+      aria-label={t('editButton')}
+      asChild
+      variant="secondary"
+    >
+      <Link style={{maxWidth:150}} href={`/account/addresses/edit/${addressId}`}>{t('editButton')}</Link>
+    </Button>
+    <Modal
+      actionHandler={handleDeleteAddress}
+      confirmationText={t('confirmDeleteAddress')}
+      title={t('deleteModalTitle')}
+    >
       <Button
-        className="flex flex-1 items-center justify-center gap-2 rounded-md bg-[#03465c] px-4 py-2 text-sm font-medium uppercase leading-6 tracking-wider text-white hover:bg-[#03465c]/90"
-        aria-label={t('editButton')}
-        asChild
-        variant="secondary"
+        className="flex items-center justify-center gap-2 rounded-md bg-[#03465c] px-4 py-2 text-sm font-medium uppercase leading-6 tracking-wider text-white hover:bg-[#03465c]/90 sm:w-auto"
+        aria-label={t('deleteButton')}
+        disabled={!isAddressRemovable}
+        variant="subtle"
+        style={{maxWidth:150}}
+        // onClick={scrollToTop}
       >
-        <Link href={`/account/addresses/edit/${addressId}`}>{t('editButton')}</Link>
+        {t('deleteButton')}
       </Button>
-      <Modal
-        actionHandler={handleDeleteAddress}
-        confirmationText={t('confirmDeleteAddress')}
-        title={t('deleteModalTitle')}
-      >
-        <Button
-          className="flex w-full flex-1 items-center justify-center gap-2 rounded-md bg-[#03465c] px-4 py-2 text-sm font-medium uppercase leading-6 tracking-wider text-white hover:bg-[#03465c]/90 sm:w-auto"
-          aria-label={t('deleteButton')}
-          disabled={!isAddressRemovable}
-          variant="subtle"
-          // onClick={scrollToTop}
-        >
-          {t('deleteButton')}
-        </Button>
-      </Modal>
-    </div>
+    </Modal>
+  </div>
+  
+  
   );
 };
 
@@ -100,7 +117,7 @@ export const AddressBook = ({
       
       <div className=" gap-[30px]">
       {!addressesCount && <p className="border-t py-12 text-center">{t('emptyAddresses')}</p>}
-      <ul className="flex flex-wrap gap-5">
+      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {addressBook.map(
           ({
             entityId,
@@ -114,7 +131,7 @@ export const AddressBook = ({
             countryCode,
           }) => (
             <li
-              className="flex w-full flex-col items-start gap-4 rounded-lg bg-[#E8E7E7] p-5 sm:w-[48%] sm:flex-row sm:p-8 md:w-[32%]"
+              className="flex w-full flex-col items-start gap-1 rounded-lg bg-[#E8E7E7] p-5 sm:flex-row sm:p-8"
               key={entityId}
             >
               {/* Container div for text and buttons */}
@@ -135,13 +152,13 @@ export const AddressBook = ({
                 </div>
 
                 {/* Address change buttons */}
-                <div className="flex flex-wrap items-center justify-start">
+              
                   <AddressChangeButtons
                     addressId={entityId}
                     isAddressRemovable={addressesCount > 1}
                     onDelete={setAddressBook}
                   />
-                </div>
+             
               </div>
             </li>
           ),
