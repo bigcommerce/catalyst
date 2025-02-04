@@ -109,6 +109,7 @@ const WishlistAddToList = ({
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const { deletedProductIds, setDeletedProductId } = useCommonContext();
+  const [hasCreatedWishlist, setHasCreatedWishlist] = useState(false);
 
   const t = useTranslations('Account.Wishlist');
   const router = useRouter();
@@ -317,13 +318,13 @@ const WishlistAddToList = ({
       return;
     }
 
-    if (tempAddedItems.length === 0) {
-      setMessage({
-        type: 'error',
-        text: 'Please add items to a wishlist before saving',
-      });
-      return;
-    }
+    // if (tempAddedItems.length === 0) {
+    //   setMessage({
+    //     type: 'error',
+    //     text: 'Please add items to a wishlist before saving',
+    //   });
+    //   return;
+    // }
 
     setIsSaving(true);
     let hasError = false;
@@ -424,6 +425,7 @@ const WishlistAddToList = ({
     }
   };
 
+  // Modify handleCreateSubmit to set hasCreatedWishlist to true after successful creation
   const handleCreateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmedName = newListName.trim();
@@ -466,6 +468,9 @@ const WishlistAddToList = ({
         setNewListName('');
         setShowCreateForm(false);
 
+        // Set hasCreatedWishlist to true after successful creation
+        setHasCreatedWishlist(true);
+
         // Select the new wishlist immediately
         await handleWishlistSelect(newWishlist);
       }
@@ -480,33 +485,43 @@ const WishlistAddToList = ({
     setLoadingListId(wishlist.entityId);
 
     try {
-      const productToAdd = {
-        listId: wishlist.entityId,
-        product: {
-          ...product,
-          sku: product.sku || '',
-          variants: product.variants || {},
-        },
-      };
+      // Check if item is already in tempAddedItems
+      const isTemporarilyAdded = tempAddedItems.some(
+        (item) => item.listId === wishlist.entityId && item.product.entityId === product.entityId,
+      );
 
-      // Add to temporary items without clearing existing ones
-      setTempAddedItems((prev) => {
-        const isAlreadyAdded = prev.some(
-          (item) => item.listId === wishlist.entityId && item.product.entityId === product.entityId,
+      if (isTemporarilyAdded) {
+        // Remove item if it's already in tempAddedItems
+        setTempAddedItems((prev) =>
+          prev.filter(
+            (item) =>
+              !(item.listId === wishlist.entityId && item.product.entityId === product.entityId),
+          ),
         );
+        setJustAddedToList(null); // Remove green highlight
+      } else {
+        // Add item if it's not in tempAddedItems
+        const productToAdd = {
+          listId: wishlist.entityId,
+          product: {
+            ...product,
+            sku: product.sku || '',
+            variants: product.variants || {},
+          },
+        };
 
-        if (isAlreadyAdded) {
-          return prev;
-        }
+        // Instead of replacing, we append to existing items
+        setTempAddedItems((prev) => [...prev, productToAdd]);
+        setJustAddedToList(wishlist.entityId);
+      }
 
-        return [...prev, productToAdd];
-      });
-
-      setJustAddedToList(wishlist.entityId);
+      // After modifying tempAddedItems, check if we need to enable/disable save button
+      const hasChangesToSave = tempAddedItems.length > 0;
+      setIsSaving(false); // Ensure save button is not in loading state
     } catch (error) {
       setMessage({
         type: 'error',
-        text: 'Failed to add item to list',
+        text: 'Failed to modify item in list',
       });
     } finally {
       setLoadingListId(null);
@@ -623,7 +638,7 @@ const WishlistAddToList = ({
                         <div key={wishlist.entityId} className="wishlist-item">
                           <button
                             onClick={() => {
-                              if (isProductInList || isInTempList) {
+                              if (isProductInList) {
                                 setMessage({
                                   type: 'error',
                                   text: `This product already exists in "${wishlist.name}"`,
@@ -719,6 +734,7 @@ const WishlistAddToList = ({
               </div>
 
               {/* Action Buttons */}
+
               <div className="m-auto mt-2 flex flex-col justify-center gap-2">
                 {showCreateForm && (
                   <Button
@@ -740,23 +756,27 @@ const WishlistAddToList = ({
                     )}
                   </Button>
                 )}
-                <Button
-                  className={cn(
-                    '!hover:bg-[#008BB7] m-auto !mt-[1em] w-[9em] !bg-[#008BB7] text-[14px] !font-[400] text-white',
-                    'disabled:cursor-not-allowed disabled:opacity-50',
-                  )}
-                  onClick={handleSave}
-                  disabled={isSaving || tempAddedItems.length === 0}
-                >
-                  {isSaving ? (
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      SAVING...
-                    </div>
-                  ) : (
-                    'SAVE'
-                  )}
-                </Button>
+
+                {/* Show SAVE button when there are items in tempAddedItems */}
+                {tempAddedItems.length > 0 && (
+                  <Button
+                    className={cn(
+                      '!hover:bg-[#008BB7] m-auto !mt-[1em] w-[9em] !bg-[#008BB7] text-[14px] !font-[400] text-white',
+                      'disabled:cursor-not-allowed disabled:opacity-50',
+                    )}
+                    onClick={handleSave}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        SAVING...
+                      </div>
+                    ) : (
+                      'SAVE'
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
