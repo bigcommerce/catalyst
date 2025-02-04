@@ -181,77 +181,75 @@ export const Footer = async () => {
   ];
 
   return (
-    <div>
-      <ComponentsFooter
-        contactInformation={data.settings?.contact ?? undefined}
-        copyright={
-          data.settings
-            ? `© ${new Date().getFullYear()} ${data.settings.storeName} . All Rights Reserved`
-            : undefined
-        }
-        logo={data.settings ? logoTransformer(data.settings) : undefined}
-        paymentIcons={[
-          <div className="flex items-center gap-[10px]">
-            <BcImage
-              src={bbbIcon}
-              className="h-[24px] w-[63px]"
-              alt="payment images"
-              width={63}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={payPalIcon}
-              className="h-[24px] w-[34px]"
-              alt="payment images"
-              width={34}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={visaIcon}
-              className="h-[24px] w-[34px]"
-              alt="payment images"
-              width={34}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={paymentIcon}
-              className="h-[24px] w-[34px]"
-              alt="payment images"
-              width={34}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={discoverIcon}
-              className="h-[24px] w-[34px]"
-              alt="payment images"
-              width={34}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={amexIcon}
-              className="h-[24px] w-[34px]"
-              alt="payment images"
-              width={34}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={brainTreeIcon}
-              className="h-[24px] w-[89px]"
-              alt="payment images"
-              width={89}
-              height={24}
-              unoptimized={true}
-            />
-          </div>,
-        ]}
-        sections={sections}
-      />
-    </div>
+    <ComponentsFooter
+      contactInformation={data.settings?.contact ?? undefined}
+      copyright={
+        data.settings
+          ? `© ${new Date().getFullYear()} ${data.settings.storeName} . All Rights Reserved`
+          : undefined
+      }
+      logo={data.settings ? logoTransformer(data.settings) : undefined}
+      paymentIcons={[
+        <div className="flex items-center gap-[10px]">
+          <BcImage
+            src={bbbIcon}
+            className="h-[24px] w-[63px]"
+            alt="payment images"
+            width={63}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={payPalIcon}
+            className="h-[24px] w-[34px]"
+            alt="payment images"
+            width={34}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={visaIcon}
+            className="h-[24px] w-[34px]"
+            alt="payment images"
+            width={34}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={paymentIcon}
+            className="h-[24px] w-[34px]"
+            alt="payment images"
+            width={34}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={discoverIcon}
+            className="h-[24px] w-[34px]"
+            alt="payment images"
+            width={34}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={amexIcon}
+            className="h-[24px] w-[34px]"
+            alt="payment images"
+            width={34}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={brainTreeIcon}
+            className="h-[24px] w-[89px]"
+            alt="payment images"
+            width={89}
+            height={24}
+            unoptimized={true}
+          />
+        </div>,
+      ]}
+      sections={sections}
+    />
   );
 };

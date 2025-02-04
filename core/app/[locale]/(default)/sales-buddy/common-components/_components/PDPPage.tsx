@@ -161,25 +161,34 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
                     {
                       item.status ? <>
                         {item?.status?.map((details, detailIndex) => (
-                          <div key={detailIndex} className=' w-full mb-2'> {/* Added margin-bottom for spacing */}
-                            <div className=" justify-between w-full">
-                              <p className="text-[14px] open-sans text-[#353535]">{details[0]} | {details[1]}</p> {/* Assuming the first item is the location */}
-                                <p className="mr-2">{details[2]}</p> {/* Added margin-right for spacing */}
-                              <div className='flex justify-between items-center'>
-                                <p className="mr-2">{details[3]}</p>
-                                <p
-                                  className={`p-[5px] text-sm ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
-                                  style={{ backgroundColor: details[4] }} // Assuming the fourth item is the updatedColor
-                                >
-                                  <span
-                                    className={`font-bold ${detailIndex === 0 ? 'text-[#6A4C1E]' : detailIndex === 1 ? 'text-[#167E3F]' : 'text-[#6A4C1E]'}`}
+                          <div key={detailIndex} className="w-full mb-2">
+                            <div className=" justify-between items-center w-full">
+                              <p className="text-[14px] open-sans text-[#353535]">
+                                {details[0]} | {details[1]}
+                              </p>
+                              <p className="mr-2">{details[2]}</p>
+                            </div>
+
+                            <div className="flex justify-between items-center w-full">
+                              <p className="mr-2 flex-1 text-left">{details[3]}</p>
+
+                              {/* Determine text color dynamically */}
+                              {(() => {
+                                const textColor =
+                                  detailIndex === 1 ? 'text-[#167E3F] bg-[#EAF4EC] ' : 'text-[#6A4C1E] bg-[#F5E9E8]';
+
+                                return (
+                                  <p
+                                    className={`p-[5px] text-sm ${textColor}`}
+                                    
                                   >
-                                    {details[4]} {/* Assuming the fourth item is the updated value */}
-                                  </span>
-                                </p>
-                              </div>
+                                    <span className={`font-bold ${textColor}`}>{details[4]}</span>
+                                  </p>
+                                );
+                              })()}
                             </div>
                           </div>
+
                         ))}
                       </> : <div className="space-y-[5px]  pb-[10px] pt-[10px]">No Inventory Available </div>
                     }

@@ -348,6 +348,66 @@ const ProductPageQuery = graphql(
             metaKeywords
           }
         }
+        parent: product(
+          entityId: $entityId          
+        ) {
+          entityId
+          sku
+          mpn
+        }
+      }
+    }
+  `,
+  [
+    BreadcrumbsFragment,
+    GalleryFragment,
+    DetailsFragment,
+    ProductItemFragment,
+    DescriptionFragment,
+    WarrantyFragment,
+  ],
+);
+
+const ProductPageSKUQuery = graphql(
+  `
+    query ProductPageSKUQuery(
+      $sku: String!
+    ) {
+      site {
+        product(
+          sku: $sku
+        ) {
+          ...GalleryFragment
+          ...DetailsFragment
+          ...ProductItemFragment
+          ...DescriptionFragment
+          ...WarrantyFragment
+          entityId
+          name
+          defaultImage {
+            url: urlTemplate(lossy: true)
+            altText
+          }
+          categories {
+            edges {
+              node {
+                ...BreadcrumbsFragment
+              }
+            }
+          }
+          seo {
+            pageTitle
+            metaDescription
+            metaKeywords
+          }
+        }
+        parent: product(
+          sku: $sku          
+        ) {
+          entityId
+          sku
+          mpn
+        }
       }
     }
   `,
@@ -373,5 +433,32 @@ export const getProduct = cache(async (variables: Variables) => {
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
-  return data.site.product;
+  if (data.site && data.site.product && data.site.parent)
+    data.site.product = {
+      ...data.site.product,
+      parent: data.site.parent,
+    } as any;
+
+  return data.site.product as any;
+});
+
+type SkuVariables = VariablesOf<typeof ProductPageSKUQuery>;
+
+export const getProductBySku = cache(async (variables: SkuVariables) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const { data } = await client.fetch({
+    document: ProductPageSKUQuery,
+    variables,
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  if (data.site && data.site.product && data.site.parent)
+    data.site.product = {
+      ...data.site.product,
+      parent: data.site.parent,
+    } as any;
+
+  return data.site.product as any;
 });

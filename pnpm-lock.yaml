@@ -69,6 +69,9 @@ importers:
       '@conform-to/zod':
         specifier: ^1.2.2
         version: 1.2.2(zod@3.24.1)
+      '@datadog/browser-rum':
+        specifier: ^6.1.0
+        version: 6.1.0
       '@icons-pack/react-simple-icons':
         specifier: ^10.2.0
         version: 10.2.0(react@19.0.0-rc-5c56b873-20241107)
@@ -949,6 +952,20 @@ packages:
     resolution: {integrity: sha512-mNCzh0XsF2vhCtD8bfHYMYayEJ9dP6/KsGjmq8DFcO1ykDTNQZwfi1MIm4evGYVempSS3poYr4xZjd7cXEbtaw==}
     peerDependencies:
       zod: ^3.21.0
+
+  '@datadog/browser-core@6.1.0':
+    resolution: {integrity: sha512-GQV4zkT1k6vdlFaSqRQ9oh4nPJ8aE47mw9gpD1bGIaxdnEDNtyJXo/KI17arwJBEznhcGf7pHI+2wLWx5SfQ8w==}
+
+  '@datadog/browser-rum-core@6.1.0':
+    resolution: {integrity: sha512-zUL/GoFPfq7rcMTCYXQBfbBA3V5l1jjzrRH0ce/+VsqWIp8SKXao+fVDeT6Ef32MWCDevvkNrG+TCq7sG2qwMg==}
+
+  '@datadog/browser-rum@6.1.0':
+    resolution: {integrity: sha512-38yP4qDnm/IMhjQrxVZMVJbGGpIj2KsXSoFUvdCXrF3h3zlbVu2mg16kmjBeekY0dZu2tf+9N8FPmBZbmzvTeg==}
+    peerDependencies:
+      '@datadog/browser-logs': 6.1.0
+    peerDependenciesMeta:
+      '@datadog/browser-logs':
+        optional: true
 
   '@discoveryjs/json-ext@0.5.7':
     resolution: {integrity: sha512-dBVuXR082gk3jsFp7Rd/JI4kytwGHecnCoTtXFb7DB6CNHp4rg5k1bhg0nWdLGLnOV71lmDzGQaLMy8iPLY0pw==}
@@ -7135,6 +7152,17 @@ snapshots:
     dependencies:
       '@conform-to/dom': 1.2.2
       zod: 3.24.1
+
+  '@datadog/browser-core@6.1.0': {}
+
+  '@datadog/browser-rum-core@6.1.0':
+    dependencies:
+      '@datadog/browser-core': 6.1.0
+
+  '@datadog/browser-rum@6.1.0':
+    dependencies:
+      '@datadog/browser-core': 6.1.0
+      '@datadog/browser-rum-core': 6.1.0
 
   '@discoveryjs/json-ext@0.5.7': {}
 

@@ -60,7 +60,7 @@ export const OrderListTabs = ({ orders, pageInfo, icon }: { orders: any, pageInf
 
   return (
     <>
-      <div className="text-[24px] font-normal leading-[32px] text-[#008BB7]">{t('lookupAnOrder')}</div>
+      <div className="text-[24px] font-normal  flex justify-center items-center leading-[32px] text-[#008BB7]">{t('lookupAnOrder')}</div>
       <div>
         <div className='relative flex items-center'>
           <input

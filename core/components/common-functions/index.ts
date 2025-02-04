@@ -453,7 +453,8 @@ export const calculateProductPrice = async (
         originalPrice,
         updatedPrice,
         discount,
-        hasDiscount,
+        hasDiscount: discount > 0,
+        showDecoration: !!retailPrice && retailPrice > 0
       },
     };
 

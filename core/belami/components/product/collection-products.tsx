@@ -107,7 +107,7 @@ function CustomItem({ hit, priceMaxRules = null, useDefaultPrices = false, price
               defaultSalePrice={hit?.sales_prices?.USD || null} 
               price={price}
               salePrice={salePrice}
-              priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(hit?.brand_id)) || (r.skus && r.skus.includes(hit?.mpn)))}
+              priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && (r.bc_brand_ids.includes(hit?.brand_id) || r.bc_brand_ids.includes(String(hit?.brand_id)))) || (r.skus && r.skus.includes(hit?.sku)))}
               currency={currency}
               format={format}
               options={{
@@ -214,7 +214,7 @@ export function CollectionProducts({ collection, products, useDefaultPrices = fa
 
   return (
     products && products.length > 0 &&
-    <div className="p-4 xl:p-8 bg-gray-50 mt-8 mb-12 relative z-[-1]">
+    <div className="p-4 xl:p-8 bg-gray-50 mt-8 mb-12">
       <div className="md:flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">
         <h2 className="text-3xl font-black text-[1.5rem] font-normal leading-[2rem] text-left text-[#353535] md:flex-grow md:mr-auto">{`More from ${collection} collection`}</h2>
         <Link href={`/search?collection[0]=${encodeURIComponent(collection)}`} className="md:flex-none text-brand-500 text-xl">Shop the Collection</Link>
