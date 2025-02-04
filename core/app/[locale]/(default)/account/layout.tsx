@@ -30,7 +30,7 @@ export default async function Layout({ children, params }: Props) {
             { href: '/account/orders', label: t('orders') },
             { href: '/account/addresses', label: t('addresses') },
             { href: '/account/settings', label: t('settings') },
-            { href: '/logout', label: t('logout') },
+            { href: '/logout', label: t('logout'), prefetch: 'none' },
           ]}
         />
       }
