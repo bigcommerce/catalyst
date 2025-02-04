@@ -20,7 +20,10 @@ interface ProductImage {
   altText: string;
   isDefault: boolean;
 }
-
+interface DeletedProduct {
+  wishlistId: number;
+  productId: number;
+}
 interface ProductVariant {
   name: string;
   hex: string;
@@ -87,6 +90,10 @@ interface WishlistMenuProps {
 type Wishlists = Wishlist[];
 type NewWishlist = any;
 type WishlistArray = Array<NewWishlist | Wishlists[number]>;
+interface DeletedProduct {
+  wishlistId: number;
+  productId: number;
+}
 
 const WishlistMenu: React.FC<WishlistMenuProps> = ({
   entityId,
@@ -221,7 +228,6 @@ const WishlistMenu: React.FC<WishlistMenuProps> = ({
   );
 };
 
-// Update the Wishlist component's item count display
 const Wishlist = ({
   setWishlistBook,
   wishlist,
@@ -237,9 +243,9 @@ const Wishlist = ({
   const items = 'items' in wishlist ? wishlist.items : [];
 
   const filteredItems = items.filter(
-    (item) =>
+    (item: WishlistItem) =>
       !deletedProductIds.some(
-        (deletion) =>
+        (deletion: DeletedProduct) =>
           deletion.wishlistId === entityId && deletion.productId === item.product.entityId,
       ),
   );
@@ -256,7 +262,12 @@ const Wishlist = ({
   };
 
   const handleWishlistClick = () => {
-    localStorage.setItem('selectedWishlist', JSON.stringify(wishlist));
+    const filteredWishlist = {
+      ...wishlist,
+      items: filteredItems,
+    };
+    localStorage.setItem('selectedWishlist', JSON.stringify(filteredWishlist));
+    localStorage.setItem('deletedProductIds', JSON.stringify(deletedProductIds));
   };
 
   return (
@@ -324,6 +335,12 @@ const Wishlist = ({
               />
             </Modal>
           </div>
+          <WishlistMenu
+            entityId={entityId}
+            name={name}
+            onWishlistDeleted={handleWishlistDeleted}
+            wishlist={wishlist as Wishlist}
+          />
         </div>
       )}
     </div>
@@ -346,11 +363,10 @@ export const WishlistBook = ({
   const { deletedProductIds } = useCommonContext();
   const [isLoading, setIsLoading] = useState(true);
 
-  // Update the filterWishlists function
-  const filterWishlists = (currentWishlists: Wishlists, deletions: any[]) => {
+  const filterWishlists = (currentWishlists: Wishlists, deletions: DeletedProduct[]) => {
     return currentWishlists.map((wishlist) => {
       const filteredItems = wishlist.items.filter(
-        (item) =>
+        (item: WishlistItem) =>
           !deletions.some(
             (deletion) =>
               deletion.wishlistId === wishlist.entityId &&
@@ -361,63 +377,52 @@ export const WishlistBook = ({
       return {
         ...wishlist,
         items: filteredItems,
-        itemCount: filteredItems.length, // Add explicit item count
+        itemCount: filteredItems.length,
       };
     });
   };
 
-  // Load and initialize data
   useEffect(() => {
     let isMounted = true;
 
     const initDB = async () => {
       try {
-        // Open IndexedDB
-        const dbRequest = indexedDB.open('WishlistDB', 4); // Increment version number
+        const dbRequest = indexedDB.open('WishlistDB', 5);
 
         dbRequest.onupgradeneeded = (event: IDBVersionChangeEvent) => {
           const db = (event.target as IDBOpenDBRequest).result;
-          if (db.objectStoreNames.contains('deletedProducts')) {
-            db.deleteObjectStore('deletedProducts');
+          if (!db.objectStoreNames.contains('deletedProducts')) {
+            const store = db.createObjectStore('deletedProducts', {
+              keyPath: ['wishlistId', 'productId'],
+            });
+            store.createIndex('by_ids', ['wishlistId', 'productId'], { unique: true });
           }
-          const store = db.createObjectStore('deletedProducts', { autoIncrement: true });
-          store.createIndex('by_ids', ['wishlistId', 'productId'], { unique: false });
         };
 
-        // Wait for DB to open
         const db = await new Promise<IDBDatabase>((resolve, reject) => {
           dbRequest.onsuccess = () => resolve(dbRequest.result);
           dbRequest.onerror = () => reject(dbRequest.error);
         });
 
-        // Get stored deletions
         const transaction = db.transaction(['deletedProducts'], 'readwrite');
         const store = transaction.objectStore('deletedProducts');
 
-        // Add new deletions
-        deletedProductIds.forEach((deletion) => {
-          store.add({
-            wishlistId: deletion.wishlistId,
-            productId: deletion.productId,
+        for (const deletion of deletedProductIds) {
+          store.put({
+            ...deletion,
             timestamp: Date.now(),
           });
-        });
+        }
 
-        // Get all deletions
         const getAllRequest = store.getAll();
         getAllRequest.onsuccess = () => {
           if (!isMounted) return;
 
           const allDeletions = getAllRequest.result;
-          console.log('All stored deletions:', allDeletions);
-
-          // Filter wishlists
           const filteredWishlists = filterWishlists(wishlists, allDeletions);
 
-          // Update localStorage
-          const localStorageKey = 'wishlistData';
           localStorage.setItem(
-            localStorageKey,
+            'wishlistData',
             JSON.stringify({
               wishlists: filteredWishlists,
               deletions: allDeletions,
@@ -425,10 +430,11 @@ export const WishlistBook = ({
             }),
           );
 
-          // Update state
           setWishlistBook(filteredWishlists);
           setIsLoading(false);
         };
+
+        transaction.oncomplete = () => db.close();
       } catch (error) {
         console.error('Error in initDB:', error);
         if (isMounted) {
@@ -438,38 +444,16 @@ export const WishlistBook = ({
       }
     };
 
-    // Try to get data from localStorage first
-    const localStorageKey = 'wishlistData';
-    const storedData = localStorage.getItem(localStorageKey);
-
-    if (storedData) {
-      try {
-        const { wishlists: storedWishlists, lastUpdated } = JSON.parse(storedData);
-        const isRecent = Date.now() - lastUpdated < 3600000; // 1 hour
-
-        if (isRecent) {
-          setWishlistBook(storedWishlists);
-          setIsLoading(false);
-        }
-      } catch (error) {
-        console.error('Error parsing localStorage:', error);
-      }
-    }
-
-    // Always run initDB to ensure data is up to date
     initDB();
-
     return () => {
       isMounted = false;
     };
   }, [wishlists, deletedProductIds]);
 
-  // Sync with localStorage when deletedProductIds changes
   useEffect(() => {
     if (!isLoading && wishlistBook.length > 0) {
-      const localStorageKey = 'wishlistData';
       localStorage.setItem(
-        localStorageKey,
+        'wishlistData',
         JSON.stringify({
           wishlists: wishlistBook,
           deletions: deletedProductIds,
@@ -479,7 +463,6 @@ export const WishlistBook = ({
     }
   }, [wishlistBook, deletedProductIds, isLoading]);
 
-  // Handle empty wishlist redirect
   useEffect(() => {
     if (hasPreviousPage && wishlistBook.length === 0) {
       const timer = setTimeout(() => {

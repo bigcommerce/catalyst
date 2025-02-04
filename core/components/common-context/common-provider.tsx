@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, ReactNode, useContext, useReducer, useEffect } from 'react';
+import { createContext, ReactNode, useContext, useReducer, useEffect, useState } from 'react';
 
 interface Image {
   altText: string;
@@ -71,19 +71,53 @@ type CommonAction =
   | { type: 'SET_CURRENT_MAIN_MEDIA'; payload: CurrentMediaItem }
   | {
       type: 'SET_DELETED_PRODUCT';
-      payload: {
-        productId: number;
-        wishlistId: number;
-        action?: 'add' | 'remove';
-      };
+      payload: { productId: number; wishlistId: number; action?: 'add' | 'remove' };
     }
-  | {
-      type: 'LOAD_DELETED_PRODUCTS';
-      payload: DeletedProductInfo[];
-    };
+  | { type: 'LOAD_DELETED_PRODUCTS'; payload: DeletedProductInfo[] };
 
 function CommonReducer(state: CommonState, action: CommonAction): CommonState {
   switch (action.type) {
+    case 'SET_DELETED_PRODUCT': {
+      const { productId, wishlistId, action: deleteAction = 'add' } = action.payload;
+
+      if (deleteAction === 'remove') {
+        return {
+          ...state,
+          items: {
+            ...state.items,
+            deletedProductIds: state.items.deletedProductIds.filter(
+              (item) => !(item.productId === productId && item.wishlistId === wishlistId),
+            ),
+          },
+        };
+      }
+
+      // Add new deletion
+      const newDeletion: DeletedProductInfo = {
+        productId,
+        wishlistId,
+        timestamp: Date.now(),
+      };
+
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          deletedProductIds: [...state.items.deletedProductIds, newDeletion],
+        },
+      };
+    }
+
+    case 'LOAD_DELETED_PRODUCTS':
+      return {
+        ...state,
+        items: {
+          ...state.items,
+          deletedProductIds: action.payload,
+        },
+      };
+
+    // ... other cases remain the same
     case 'UPDATE_ITEM':
       return {
         ...state,
@@ -121,45 +155,6 @@ function CommonReducer(state: CommonState, action: CommonAction): CommonState {
         },
       };
 
-    case 'SET_DELETED_PRODUCT': {
-      const { productId, wishlistId, action: deleteAction = 'add' } = action.payload;
-
-      if (deleteAction === 'remove') {
-        return {
-          ...state,
-          items: {
-            ...state.items,
-            deletedProductIds: state.items.deletedProductIds.filter(
-              (item) => !(item.productId === productId && item.wishlistId === wishlistId),
-            ),
-          },
-        };
-      }
-
-      const newDeletion: DeletedProductInfo = {
-        productId,
-        wishlistId,
-        timestamp: Date.now(),
-      };
-
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          deletedProductIds: [...state.items.deletedProductIds, newDeletion],
-        },
-      };
-    }
-
-    case 'LOAD_DELETED_PRODUCTS':
-      return {
-        ...state,
-        items: {
-          ...state.items,
-          deletedProductIds: action.payload,
-        },
-      };
-
     default:
       return state;
   }
@@ -176,24 +171,26 @@ export const CommonProvider = ({ children }: { children: ReactNode }) => {
     },
   });
 
-  // Initialize and sync with IndexedDB
-  // Initialize and sync with IndexedDB
+  // Initialize IndexedDB
   useEffect(() => {
     const initDB = async () => {
       try {
-        const request = indexedDB.open('WishlistDB', 4);
+        const request = indexedDB.open('WishlistDB', 5); // Updated version to 5
 
-        request.onerror = () => console.error('Error opening IndexedDB');
+        request.onerror = (event) => {
+          console.error('Error opening IndexedDB:', event);
+        };
 
         request.onupgradeneeded = (event: IDBVersionChangeEvent) => {
           const db = (event.target as IDBOpenDBRequest).result;
-          if (db.objectStoreNames.contains('deletedProducts')) {
-            db.deleteObjectStore('deletedProducts');
+
+          // Create or update store
+          if (!db.objectStoreNames.contains('deletedProducts')) {
+            const store = db.createObjectStore('deletedProducts', {
+              keyPath: ['productId', 'wishlistId'],
+            });
+            store.createIndex('timestamp', 'timestamp', { unique: false });
           }
-          const store = db.createObjectStore('deletedProducts', {
-            keyPath: ['productId', 'wishlistId'],
-          });
-          store.createIndex('timestamp', 'timestamp', { unique: false });
         };
 
         request.onsuccess = (event: Event) => {
@@ -223,22 +220,20 @@ export const CommonProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const syncDeletedProducts = async () => {
       try {
-        const request = indexedDB.open('WishlistDB', 4);
+        const request = indexedDB.open('WishlistDB', 5);
 
         request.onsuccess = (event: Event) => {
           const db = (event.target as IDBOpenDBRequest).result;
           const transaction = db.transaction(['deletedProducts'], 'readwrite');
           const store = transaction.objectStore('deletedProducts');
 
-          // Clear existing records
-          const clearRequest = store.clear();
-
-          clearRequest.onsuccess = () => {
-            // Add current deletions
-            commonState.items.deletedProductIds.forEach((deletion) => {
-              store.put(deletion);
-            });
-          };
+          // Add current deletions
+          commonState.items.deletedProductIds.forEach((deletion) => {
+            const addRequest = store.put(deletion);
+            addRequest.onerror = () => {
+              console.error('Error adding deletion:', deletion);
+            };
+          });
         };
       } catch (error) {
         console.error('Error syncing with IndexedDB:', error);
@@ -249,6 +244,18 @@ export const CommonProvider = ({ children }: { children: ReactNode }) => {
       syncDeletedProducts();
     }
   }, [commonState.items.deletedProductIds]);
+
+  const setDeletedProductId = (
+    productId: number,
+    wishlistId: number,
+    action: 'add' | 'remove' = 'add',
+  ) => {
+    console.log('Setting deleted product:', { productId, wishlistId, action });
+    commonDispatch({
+      type: 'SET_DELETED_PRODUCT',
+      payload: { productId, wishlistId, action },
+    });
+  };
 
   const handlePopup = (open: boolean) => {
     commonDispatch({
@@ -275,17 +282,6 @@ export const CommonProvider = ({ children }: { children: ReactNode }) => {
     commonDispatch({
       type: 'SET_CURRENT_MAIN_MEDIA',
       payload: media,
-    });
-  };
-
-  const setDeletedProductId = (
-    productId: number,
-    wishlistId: number,
-    action: 'add' | 'remove' = 'add',
-  ) => {
-    commonDispatch({
-      type: 'SET_DELETED_PRODUCT',
-      payload: { productId, wishlistId, action },
     });
   };
 
