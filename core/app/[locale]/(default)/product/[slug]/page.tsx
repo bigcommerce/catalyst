@@ -13,7 +13,7 @@ import { ProductViewed } from './_components/product-viewed';
 import { Warranty } from './_components/warranty';
 import { getProduct, getProductBySku } from './page-data';
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import { GetProductMetaFields, GetProductVariantMetaFields } from '~/components/management-apis';
+import { GetCustomerGroupById, GetEmailId, GetProductMetaFields, GetProductVariantMetaFields } from '~/components/management-apis';
 import { ProductProvider } from '~/components/common-context/product-provider';
 import { RelatedProducts } from '~/belami/components/product';
 import { CollectionProducts } from '~/belami/components/product';
@@ -41,6 +41,7 @@ interface CategoryNode {
   breadcrumbs?: {
     edges: Array<{
       node: {
+        entityId: any;
         name: string;
         path: string | null;
       };
@@ -52,6 +53,14 @@ interface MetaField {
   key: string;
   value: string;
   namespace: string;
+}
+
+interface CustomerGroup {
+  discount_rules: Array<{  amount: string;
+    type: string;
+    category_id: string;
+    product_id: string;
+    method: string; }>;
 }
 
 function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) {
@@ -112,7 +121,15 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function ProductPage(props: Props) {
   try {
     const customerAccessToken = await getSessionCustomerAccessToken();
-
+    const sessionUser = await getSessionUserDetails();
+    let customerGroupDetails:CustomerGroup = {
+      discount_rules: []
+    };
+    if(sessionUser){
+    const customerData = await GetEmailId(sessionUser?.user?.email!);
+    const customerGroupId = customerData.data[0].customer_group_id;
+    customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+    }
     const searchParams = await props.searchParams;
     const params = await props.params;
     const productSku: any = searchParams?.sku;
@@ -150,8 +167,7 @@ export default async function ProductPage(props: Props) {
         useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
       });
     }
-
-    const [updatedProduct] = await calculateProductPrice(product, 'pdp');
+    
     if (!product) {
       return notFound();
     }
@@ -250,7 +266,11 @@ export default async function ProductPage(props: Props) {
       const currentLength = current?.breadcrumbs?.edges?.length || 0;
       return currentLength > longestLength ? current : longest;
     }, categories[0]);
-
+    
+    const breadcrumbEntityIds = categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
+      (edge) => edge.node.entityId
+    ) || [];
+    
     const categoryWithBreadcrumbs = categoryWithMostBreadcrumbs
       ? {
           ...categoryWithMostBreadcrumbs,
@@ -261,12 +281,17 @@ export default async function ProductPage(props: Props) {
                 node: {
                   name: product.mpn || '',
                   path: '#',
+                  entityId: '#',
                 },
               },
             ].filter(Boolean),
           },
         }
       : null;
+
+      const discountRules = customerGroupDetails?.discount_rules;
+    
+      const [updatedProduct] = await calculateProductPrice(product,"pdp",discountRules,breadcrumbEntityIds);
 
     const productImages = removeEdgesAndNodes(product.images);
     var brandId = product?.brand?.entityId;
@@ -317,6 +342,8 @@ export default async function ProductPage(props: Props) {
                   blankAddImg={assets.blankAddImg}
                   getAllCommonSettinngsValues={CommonSettinngsValues}
                   productImages={productImages}
+                  customerGroupDetails={customerGroupDetails}
+                  categoryIds={breadcrumbEntityIds}
                   triggerLabel1={
                     <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#008BB7] underline underline-offset-4">
                       Shipping Policy
