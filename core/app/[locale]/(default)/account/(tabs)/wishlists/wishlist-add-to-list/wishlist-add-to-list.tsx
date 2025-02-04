@@ -308,6 +308,15 @@ const WishlistAddToList = ({
   };
 
   const handleSave = async () => {
+    const authResult = await checkAuthStatus();
+
+    if (!authResult.isAuthenticated) {
+      if (onGuestClick) {
+        onGuestClick();
+      }
+      return;
+    }
+
     if (tempAddedItems.length === 0) {
       setMessage({
         type: 'error',
@@ -317,56 +326,95 @@ const WishlistAddToList = ({
     }
 
     setIsSaving(true);
+    let hasError = false;
 
     try {
+      // Save each item one by one
       for (const item of tempAddedItems) {
-        const result = await addToWishlist(
-          item.listId,
-          item.product.entityId,
-          item.product.variantEntityId || undefined,
-        );
+        try {
+          // First check if this item was previously deleted
+          const wasDeleted = deletedProductIds.some(
+            (deletion) =>
+              deletion.wishlistId === item.listId && deletion.productId === item.product.entityId,
+          );
 
-        if (result.status === 'success') {
-          // 1. Remove from deletedProductIds in context
-          setDeletedProductId(item.product.entityId, item.listId, 'remove');
+          if (wasDeleted) {
+            // Remove from deletedProductIds in context
+            setDeletedProductId(item.product.entityId, item.listId, 'remove');
 
-          // 2. Remove from IndexedDB
-          await removeFromDeletedProducts(item.listId, item.product.entityId);
+            // Remove from IndexedDB
+            await removeFromDeletedProducts(item.listId, item.product.entityId);
+          }
 
-          // 3. Update the current wishlists
+          const result = await addToWishlist(
+            item.listId,
+            item.product.entityId,
+            item.product.variantEntityId || undefined,
+          );
+
+          if (result.status !== 'success') {
+            throw new Error(result.message || 'Failed to add item to list');
+          }
+
+          // Update currentWishlists after each successful add
           setCurrentWishlists((prev) =>
             prev.map((wishlist) => {
               if (wishlist.entityId === item.listId) {
-                const newItem = {
-                  entityId: Date.now(),
-                  product: item.product,
-                };
-                return {
-                  ...wishlist,
-                  items: [...wishlist.items, newItem],
-                };
+                // Check if item already exists in this wishlist
+                const itemExists = wishlist.items.some(
+                  (existingItem) => existingItem.product.entityId === item.product.entityId,
+                );
+
+                if (!itemExists) {
+                  return {
+                    ...wishlist,
+                    items: [
+                      ...wishlist.items,
+                      {
+                        entityId: Date.now(),
+                        product: item.product,
+                      },
+                    ],
+                  };
+                }
               }
               return wishlist;
             }),
           );
-
-          // 4. Update localStorage with new wishlist data
-          const updatedWishlistData = {
-            wishlists: currentWishlists,
-            lastUpdated: Date.now(),
-          };
-          localStorage.setItem('wishlistData', JSON.stringify(updatedWishlistData));
-
-          // 5. Force refresh
-          router.refresh();
+        } catch (error) {
+          console.error('Error saving item:', error);
+          hasError = true;
+          break;
         }
       }
 
-      setMessage({
-        type: 'success',
-        text: 'Saved to Favorites',
-      });
+      if (!hasError) {
+        setMessage({
+          type: 'success',
+          text: 'Saved to Favorites',
+        });
+
+        // Clear temporary items
+        setTempAddedItems([]);
+        setJustAddedToList(null);
+
+        // Update localStorage with current state
+        const wishlistData = {
+          wishlists: currentWishlists,
+          lastUpdated: Date.now(),
+        };
+        localStorage.setItem('wishlistData', JSON.stringify(wishlistData));
+
+        // Refresh the data
+        router.refresh();
+      } else {
+        setMessage({
+          type: 'error',
+          text: 'Failed to save some items. Please try again.',
+        });
+      }
     } catch (error) {
+      console.error('Error in save process:', error);
       setMessage({
         type: 'error',
         text: 'Failed to save items. Please try again.',
