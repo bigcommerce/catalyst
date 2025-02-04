@@ -1,3 +1,4 @@
+// add - to list
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -326,7 +327,13 @@ const WishlistAddToList = ({
         );
 
         if (result.status === 'success') {
-          // Update the current wishlists without clearing temp items
+          // 1. Remove from deletedProductIds in context
+          setDeletedProductId(item.product.entityId, item.listId, 'remove');
+
+          // 2. Remove from IndexedDB
+          await removeFromDeletedProducts(item.listId, item.product.entityId);
+
+          // 3. Update the current wishlists
           setCurrentWishlists((prev) =>
             prev.map((wishlist) => {
               if (wishlist.entityId === item.listId) {
@@ -342,6 +349,16 @@ const WishlistAddToList = ({
               return wishlist;
             }),
           );
+
+          // 4. Update localStorage with new wishlist data
+          const updatedWishlistData = {
+            wishlists: currentWishlists,
+            lastUpdated: Date.now(),
+          };
+          localStorage.setItem('wishlistData', JSON.stringify(updatedWishlistData));
+
+          // 5. Force refresh
+          router.refresh();
         }
       }
 
@@ -349,10 +366,6 @@ const WishlistAddToList = ({
         type: 'success',
         text: 'Saved to Favorites',
       });
-
-      // Don't clear tempAddedItems or justAddedToList
-      // Don't close modal
-      router.refresh();
     } catch (error) {
       setMessage({
         type: 'error',
@@ -452,6 +465,29 @@ const WishlistAddToList = ({
     }
   };
 
+  useEffect(() => {
+    const filteredWishlists = wishlists.map((wishlist) => ({
+      ...wishlist,
+      items: wishlist.items.filter((item) => {
+        const isDeleted = deletedProductIds.some(
+          (deletion) =>
+            deletion.wishlistId === wishlist.entityId &&
+            deletion.productId === item.product.entityId,
+        );
+        if (isDeleted) {
+          console.log('Filtered out deleted product:', {
+            wishlistId: wishlist.entityId,
+            productId: item.product.entityId,
+            productName: item.product.name,
+          });
+        }
+        return !isDeleted;
+      }),
+    }));
+
+    setCurrentWishlists(filteredWishlists);
+  }, [wishlists, deletedProductIds]);
+
   return (
     <div className="relative">
       <button
@@ -493,12 +529,12 @@ const WishlistAddToList = ({
                       <span className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#145A2E] xl:h-5 xl:w-5">
                         <Check className="mb-1 mt-1 h-3 w-3 text-white" />
                       </span>
-                      <span className="text-[12px] xl:text-base font-semibold">{message.text}</span>{' '}
+                      <span className="text-[12px] font-semibold xl:text-base">{message.text}</span>{' '}
                       <span className="ml-2 mr-2"> - </span>
                     </div>
                     <Link
                       href="/account/wishlists"
-                      className="text-[12px] xl:text-sm font-medium text-[#145A2E] underline"
+                      className="text-[12px] font-medium text-[#145A2E] underline xl:text-sm"
                     >
                       {' '}
                       View

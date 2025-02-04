@@ -16,11 +16,11 @@ export const TabHeading = async ({ heading }: { heading: TabType }) => {
   return (
     <>
       <ComponentsBreadcrumbs
-        className="login-div login-breadcrumb mx-auto mb-[20px] xl:mb-[30px] px-[1px] flex lg:block justify-center xl:justify-start"
+        className="login-div login-breadcrumb mx-auto mb-[20px] flex justify-center px-[1px] lg:block xl:mb-[30px] xl:justify-start"
         breadcrumbs={breadcrumbs}
       />
 
-      <h2 className=" text-[24px] font-normal leading-[32px] text-[#353535] mb-[20px] xl:mb-[30px] text-center xl:text-left">
+      <h2 className="mb-[20px] text-center text-[24px] font-normal leading-[32px] text-[#353535] xl:mb-[30px] xl:text-left">
         {t(heading)}
       </h2>
     </>

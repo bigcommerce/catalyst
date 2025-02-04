@@ -451,17 +451,32 @@ export const WishlistBook = ({
   }, [wishlists, deletedProductIds]);
 
   useEffect(() => {
-    if (!isLoading && wishlistBook.length > 0) {
+    if (!isLoading) {
+      const filteredWishlists = wishlists.map((wishlist) => ({
+        ...wishlist,
+        items: wishlist.items.filter(
+          (item) =>
+            !deletedProductIds.some(
+              (deletion) =>
+                deletion.wishlistId === wishlist.entityId &&
+                deletion.productId === item.product.entityId,
+            ),
+        ),
+      }));
+
+      setWishlistBook(filteredWishlists);
+
+      // Update localStorage
       localStorage.setItem(
         'wishlistData',
         JSON.stringify({
-          wishlists: wishlistBook,
+          wishlists: filteredWishlists,
           deletions: deletedProductIds,
           lastUpdated: Date.now(),
         }),
       );
     }
-  }, [wishlistBook, deletedProductIds, isLoading]);
+  }, [wishlists, deletedProductIds, isLoading]);
 
   useEffect(() => {
     if (hasPreviousPage && wishlistBook.length === 0) {
@@ -489,18 +504,13 @@ export const WishlistBook = ({
 
   return (
     <div>
-
-
-
-
       {(accountState.status === 'error' || accountState.status === 'success') && (
         <Message className="mb-8 w-full text-gray-500" variant={accountState.status}>
           <p>{accountState.message}</p>
         </Message>
       )}
 
-
-<div className="mb-8 flex flex-row-reverse justify-center block md:hidden">
+      <div className="mb-8 block flex flex-row-reverse justify-center md:hidden">
         <Modal
           trigger={
             <Button
@@ -515,8 +525,6 @@ export const WishlistBook = ({
         </Modal>
         {children}
       </div>
-
-
 
       <ul className="mb-8">
         {wishlistBook.map((wishlist) => (
@@ -535,7 +543,7 @@ export const WishlistBook = ({
         ))}
       </ul>
 
-      <div className="mb-16 flex flex-row-reverse justify-between hidden xl:block">
+      <div className="create-wishlist-mobile-display mb-16 !flex flex-row-reverse justify-between xl:block">
         <Modal
           trigger={
             <Button
