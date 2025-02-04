@@ -650,20 +650,18 @@ const WishlistAddToList = ({
                               </span>
                             )}
 
-                            {/* Wishlist Name and Item Count */}
-                            <span className="capitalize text-[#353535]">
+                            <span
+                              className={`font-[500] capitalize ${isAdded ? 'text-[#145A2E]' : 'text-[#353535]'}`}
+                            >
                               {wishlist.name}
-                              <span className="ml-2 capitalize text-[#353535]">
+                              <span
+                                className={`ml-2 font-[500] capitalize ${isAdded ? 'text-[#145A2E]' : 'text-[#353535]'}`}
+                              >
                                 ({itemCount} {itemCount === 1 ? 'item' : 'items'})
                               </span>
                             </span>
 
-                            {/* Loading/Added Icons */}
-                            {isLoading ? (
-                              <Loader2 className="ml-auto h-4 w-4 animate-spin" />
-                            ) : isAdded ? (
-                              <Check className="ml-auto h-4 w-4 text-[#145A2E]" />
-                            ) : null}
+                            {isLoading && <Loader2 className="ml-auto h-4 w-4 animate-spin" />}
                           </button>
                         </div>
                       );
