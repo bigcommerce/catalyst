@@ -48,6 +48,7 @@ interface Props {
   blankAddImg: string;
   productMpn: string | null;
   showInSticky?: boolean;
+  customerGroupDetails?: any;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -95,6 +96,7 @@ export const ProductForm = ({
   fanPopup,
   blankAddImg,
   productMpn,
+  customerGroupDetails,
   showInSticky = false,
 }: Props) => {
   const t = useTranslations('Product.Form');
@@ -258,7 +260,7 @@ export const ProductForm = ({
       </FormProvider>
     );
   }
-
+  const discountRules = customerGroupDetails?.discount_rules;
   return (
     <>
       <ProductFlyout
@@ -266,6 +268,7 @@ export const ProductForm = ({
         closeIcon={closeIcon}
         blankAddImg={blankAddImg}
         fanPopup={fanPopup}
+        discountRules={discountRules}
         from="pdp"
       />
       <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
