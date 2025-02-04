@@ -481,24 +481,24 @@ const WishlistAddToList = ({
             {message && (
               <div
                 className={cn(
-                  'mb-4 flex items-center rounded-md border px-4 py-3 text-sm font-medium shadow-sm',
+                  'mb-4 flex items-center px-4 py-2 text-sm font-medium shadow-sm',
                   message.type === 'success'
-                    ? 'border-green-200 bg-green-50 text-green-800'
+                    ? 'border-green-200 bg-green-50'
                     : 'border-red-200 bg-red-50 text-red-800',
                 )}
               >
                 {message.type === 'success' ? (
                   <div className="flex w-full items-center justify-center">
                     <div className="flex items-center">
-                      <span className="mr-2 flex h-5 w-7 items-center justify-center rounded-full bg-[#145A2E] xl:h-5 xl:w-5">
+                      <span className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#145A2E] xl:h-5 xl:w-5">
                         <Check className="mb-1 mt-1 h-3 w-3 text-white" />
                       </span>
-                      <span className="text-base font-semibold">{message.text}</span>{' '}
+                      <span className="text-[12px] xl:text-base font-semibold">{message.text}</span>{' '}
                       <span className="ml-2 mr-2"> - </span>
                     </div>
                     <Link
                       href="/account/wishlists"
-                      className="text-sm font-medium text-[#145A2E] underline"
+                      className="text-[12px] xl:text-sm font-medium text-[#145A2E] underline"
                     >
                       {' '}
                       View

@@ -272,7 +272,7 @@ const Wishlist = ({
 
   return (
     <div className="wishlist-item flex w-full items-center gap-4 bg-white lg:gap-6">
-      <div className="flex h-32 w-32 items-center justify-center rounded bg-[#80C5DA]">
+      <div className="flex h-[9em] w-[9em] items-center justify-center bg-[#80C5DA]">
         <svg
           className="h-16 w-16 text-white"
           viewBox="0 0 24 24"
@@ -489,11 +489,34 @@ export const WishlistBook = ({
 
   return (
     <div>
+
+
+
+
       {(accountState.status === 'error' || accountState.status === 'success') && (
         <Message className="mb-8 w-full text-gray-500" variant={accountState.status}>
           <p>{accountState.message}</p>
         </Message>
       )}
+
+
+<div className="mb-8 flex flex-row-reverse justify-center block md:hidden">
+        <Modal
+          trigger={
+            <Button
+              className="h-[45px] w-[12em] rounded-sm bg-[#03465C] text-sm font-medium leading-8 tracking-wide text-white"
+              onClick={() => setCreateWishlistModalOpen(true)}
+            >
+              <span className="mr-[5px] text-[20px]">+</span> CREATE NEW LIST
+            </Button>
+          }
+        >
+          <CreateWishlistDialog onWishlistCreated={handleWishlistCreated} />
+        </Modal>
+        {children}
+      </div>
+
+
 
       <ul className="mb-8">
         {wishlistBook.map((wishlist) => (
@@ -512,7 +535,7 @@ export const WishlistBook = ({
         ))}
       </ul>
 
-      <div className="mb-16 flex flex-row-reverse justify-between">
+      <div className="mb-16 flex flex-row-reverse justify-between hidden xl:block">
         <Modal
           trigger={
             <Button
