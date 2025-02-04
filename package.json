@@ -33,6 +33,7 @@
     }
   },
   "dependencies": {
+    "@react-google-maps/api": "^2.20.5"
     "@datadog/browser-rum": "^6.1.0"
   }
 }
