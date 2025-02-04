@@ -1,8 +1,10 @@
 import { clsx } from 'clsx';
 import { BcImage as Image } from '~/components/bc-image';
-
+ 
+import chevronRight from '~/public/home/chevronRight.svg'
+ 
 import { Link } from '~/components/link';
-
+ 
 export type CardProps = {
   title: string;
   image?: { src: string; alt: string };
@@ -15,7 +17,7 @@ export type CardProps = {
     title?: string
   }
 };
-
+ 
 export function Card({ title, image, href, classNames }: CardProps) {
   return (
     <div className={classNames?.root}>
@@ -40,17 +42,18 @@ export function Card({ title, image, href, classNames }: CardProps) {
         </figure>
         <h3
           className={clsx(
-            'line-clamp-1 text-lg font-medium text-foreground text-center',
+            'line-clamp-1 text-base font-normal leading-[32px] tracking-[0.5px] text-foreground text-center flex justify-center gap-[5px]',
             '@4xl:text-foreground',
           )}
         >
           {title}
+          <Image unoptimized={true} src={chevronRight} width={9} height={12} alt='chevron right' className='mr-1' />
         </h3>
       </Link>
     </div>
   );
 }
-
+ 
 export function CardSkeleton() {
   return (
     <div className="relative flex aspect-[3/4] w-full animate-pulse flex-col gap-2 @4xl:min-w-72">
@@ -61,3 +64,5 @@ export function CardSkeleton() {
     </div>
   );
 }
+ 
+has context menu

@@ -18,7 +18,7 @@ interface Action {
 interface Props {
   align?: 'start' | 'center' | 'end';
   className?: string;
-  items: Array<Link | Action>;
+  items: Array<Link | Action | string>;
   trigger: ReactNode;
   getCustomerData: {
     user: {
@@ -30,7 +30,7 @@ interface Props {
   } | null;
 }
 
-const Dropdown = ({ align = 'center', className, items, trigger, getCustomerData }: Props) => {
+const Dropdown = ({ align = 'center', className, items, trigger, getCustomerData, from }: Props) => {
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild className={className}>
@@ -40,13 +40,13 @@ const Dropdown = ({ align = 'center', className, items, trigger, getCustomerData
       <DropdownMenu.Portal>
         <DropdownMenu.Content
           align={align}
-          className="z-50 bg-white p-4 text-base shadow-md outline-none hover:focus-visible:ring-0 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+          className="z-50 bg-white p-5 text-base outline-none hover:focus-visible:ring-0 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 !w-[200px] flex flex-col gap-[9px] border border-[#e7f5f8] rounded-[3px] shadow-[0px_4px_4px_rgba(0,0,0,0.25)]"
           sideOffset={4}
         >
-          {getCustomerData && (
+          {getCustomerData && from === 'account-dropdown' && (
             <DropdownMenu.Item>
               <CustomLink
-                className="block whitespace-nowrap font-medium p-3 text-[#03465c] hover:focus-visible:ring-0"
+                className="block whitespace-nowrap font-medium text-[#03465c] hover:focus-visible:ring-0"
                 href="/account"
               >
                 Hi, {getCustomerData?.user?.name}
@@ -57,7 +57,7 @@ const Dropdown = ({ align = 'center', className, items, trigger, getCustomerData
             'href' in item ? (
               <DropdownMenu.Item asChild key={`${item.href}-${index}`}>
                 <CustomLink
-                  className="block whitespace-nowrap p-3 hover:focus-visible:ring-0"
+                  className={item?.classNameCss ? item?.classNameCss : 'block whitespace-nowrap hover:focus-visible:ring-0'}
                   href={item.href}
                 >
                   {item.label}
@@ -68,7 +68,7 @@ const Dropdown = ({ align = 'center', className, items, trigger, getCustomerData
               <DropdownMenu.Item asChild key={item.name} className='[&_button.Logout-label]:justify-start [&_button.Logout-label]:text-[#008BB7] [&_button.Logout-label]:font-medium [&_button.Logout-label]:leading-[32px] [&_button.Logout-label]:tracking-[0.5px] [&_button.Logout-label]:whitespace-nowrap'>
                 <form action={item.action} className="hover:focus-visible:ring-0">
                   <Button
-                    className="Logout-label underline justify-center p-3 hover:bg-transparent hover:text-primary"
+                    className="Logout-label underline block hover:bg-transparent hover:text-primary p-0 text-left text-[14px] font-[600]"
                     type="submit"
                     variant="subtle"
                   >

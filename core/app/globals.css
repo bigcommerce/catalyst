@@ -142,7 +142,6 @@ svg.lucide.lucide-shopping-cart.mr-2.text-white.right-\[-0\.6em\].absolute.invis
   top: 1.5em;
 }
 div[data-radix-popper-content-wrapper] div {
-  width: 300px !important;
   transition: unset !important;
 }
 .right-container span:nth-child(1) {
