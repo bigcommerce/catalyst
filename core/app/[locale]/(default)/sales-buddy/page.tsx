@@ -8,6 +8,7 @@ import { getCartIdCookie } from './_actions/session';
 
 export default function SalesBuddyPage() {
   const { agentLoginStatus, setAgentLoginStatus, context_session_id, cartIdForCheck, setCartIdForCheck } = useCompareDrawerContext();
+  const [checkAgentLoginStatusInCookie,setAgentLoginStatusInCookie]=useState(false)
   const [urlWithQuery, setUrlWithQuery] = useState('');
   const path = usePathname();
   const searchParams = useSearchParams();
@@ -29,10 +30,10 @@ export default function SalesBuddyPage() {
         insertShopperVisitedUrlFunc();
       }
     }
-  }, [path, searchParams, cartIdForCheck]);
+  }, [path, searchParams, cartIdForCheck, checkAgentLoginStatusInCookie]);
   
   
   return (
-    <div className='hidden sm:block md:block lg:block z-[999]'>{agentLoginStatus && <SalesBuddyAppIndex />}</div>
+    <div className='hidden sm:block md:block lg:block z-[999]'>{agentLoginStatus  && <SalesBuddyAppIndex />}</div>
   );
 }

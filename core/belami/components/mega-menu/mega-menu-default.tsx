@@ -1,6 +1,6 @@
 'use client';
 import { useState, useRef, useEffect, createContext, useContext } from 'react';
-import { MegaMenuMenuItem, MegaMenuMenuItemColumn, MegaMenuSubMenuItem, MegaMenuSubSubMenuItem, MegaMenuSecondaryMenuItem, MegaMenuProps } from './mega-menu-types';
+import { MegaMenuMenuItem, MegaMenuMenuItemColumn, MegaMenuSubMenuItem, MegaMenuSubSubMenuItem, MegaMenuSecondaryMenuItem, MegaMenuProps, MegaMenuCustomPropsLink, MegaMenuCustomPropsAction } from './mega-menu-types';
 import { ChevronLeft, ChevronRight, Menu, X, Plus, Minus } from 'lucide-react';
 import clsx from 'clsx';
 //import { Link } from '~/components/link';
@@ -86,7 +86,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, customProps, cl
         'block lg:hidden absolute z-20 top-10 left-3'
       )} onClick={() => setShowSidebarMenu(true)}><Menu /></button>
       {showSidebarMenu &&
-        <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebarMenu(false)}></div>
+        <div className="mega-menu-sidebar-fade hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebarMenu(false)}></div>
       }
       <aside className={clsx(
         'mega-menu-sidebar',
@@ -95,7 +95,7 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, customProps, cl
         showSidebarMenu ? 'shadow-2xl shadow-blue-gray-900/10 translate-x-0' : '-translate-x-full'
       )}>
         <div className={clsx('mega-menu-sidebar-header')}>
-          {!!customProps?.logo && <img src={customProps.logo} alt={customProps?.title || 'Logo'} className={clsx('mega-menu-sidebar-logo')} />}
+          {!!customProps?.logo && <img src={customProps.logo} alt={customProps?.storeName || 'Logo'} className={clsx('mega-menu-sidebar-logo')} />}
           <button type="button" title="Close menu" className="mega-menu-sidebar-close-button" onClick={() => setShowSidebarMenu(false)}><X /></button>
         </div>
         {menuItems && menuItems.length > 0 && (
@@ -271,6 +271,70 @@ export function MegaMenuDefault({ menuItems, secondaryMenuItems, customProps, cl
                     <span className={clsx('secondary-menu-link', classNames?.secondaryMenuLink)}>
                       <span>{menuItem.title}</span>
                     </span>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+
+        {!openMenuId && !!customProps?.supportMenuItems && customProps.supportMenuItems.length > 0 && (
+          <nav className={clsx('support-menu', classNames?.supportMenu)}>
+            <h3 className={clsx('support-menu-title', classNames?.supportMenuTitle)}>Support</h3>
+            <ul>
+              {customProps.supportMenuItems.map((menuItem: MegaMenuCustomPropsLink | MegaMenuCustomPropsAction, index: number) => (
+                <li
+                  className={clsx('support-menu-item', classNames?.supportMenuItem)}
+                  key={index}
+                >
+                  {'href' in menuItem ? (
+                    <Link
+                      href={menuItem.href}
+                      className={clsx('support-menu-link', classNames?.supportMenuLink)}
+                      onClick={() => setShowSidebarMenu(false)}
+                    >
+                      <span>{menuItem.label}</span>
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      className={clsx('support-menu-button', classNames?.supportMenuButton)}
+                      onClick={menuItem.action}
+                    >
+                      <span>{menuItem.name}</span>
+                    </button>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )}
+
+        {!openMenuId && !!customProps?.accountMenuItems && customProps.accountMenuItems.length > 0 && (
+          <nav className={clsx('account-menu', classNames?.accountMenu)}>
+            <h3 className={clsx('account-menu-title', classNames?.accountMenuTitle)}>Account</h3>
+            <ul>
+              {customProps.accountMenuItems.map((menuItem: MegaMenuCustomPropsLink | MegaMenuCustomPropsAction, index: number) => (
+                <li
+                  className={clsx('account-menu-item', classNames?.accountMenuItem)}
+                  key={index}
+                >
+                  {'href' in menuItem ? (
+                    <Link
+                      href={menuItem.href}
+                      className={clsx('account-menu-link', classNames?.accountMenuLink)}
+                      onClick={() => setShowSidebarMenu(false)}
+                    >
+                      <span>{menuItem.label}</span>
+                    </Link>
+                  ) : (
+                    <button
+                      type="button"
+                      className={clsx('account-menu-button', classNames?.accountMenuButton)}
+                      onClick={menuItem.action}
+                    >
+                      <span>{menuItem.name}</span>
+                    </button>
                   )}
                 </li>
               ))}

@@ -63,8 +63,13 @@ interface Props {
   children2: React.ReactNode;
   triggerLabel3: React.ReactNode;
   children3: React.ReactNode;
+  triggerLabel4: React.ReactNode;
+  children4: React.ReactNode;
+  triggerLabel5: React.ReactNode;
+  children5: React.ReactNode;
   priceMaxRules: any;
-  getAllCommonSettinngsValues: any;
+  getAllCommonSettinngsValues:any;
+  customerGroupDetails:any;
 }
 
 export const DetailsFragment = graphql(
@@ -156,7 +161,12 @@ export const Details = ({
   children2,
   triggerLabel3,
   children3,
-  priceMaxRules,
+  customerGroupDetails,
+  triggerLabel4,
+  children4,
+  triggerLabel5,
+  children5,
+  priceMaxRules
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -267,7 +277,6 @@ export const Details = ({
     const defaultValue = values.find((value) => value.isDefault);
     return defaultValue?.label || 'Select';
   };
-
   return (
     <div className="">
       {showStickyHeader && (
@@ -576,81 +585,39 @@ export const Details = ({
               discount:
                 'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
               price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500',
-            }}
-          />
-        )}
-        {/*
-          {product?.['UpdatePriceForMSRP'] && (
-            <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
-              {product?.UpdatePriceForMSRP &&
-                      product?.UpdatePriceForMSRP?.hasDiscount === true ? (
-                <>
-                  <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                    {format.number(product?.UpdatePriceForMSRP?.updatedPrice, {
-                      style: 'currency',
-                      currency: product?.prices?.price?.currencyCode || 'USD' ,
-                    })}
-                  </span>
-                  <span className="inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0">
-                    {format.number(product?.UpdatePriceForMSRP?.originalPrice, {
-                      style: 'currency',
-                      currency:  product?.prices?.price?.currencyCode|| 'USD',
-                    })}
-                  </span>
-                  <span className="-ml-[0.5em] mb-1 text-[12px] text-gray-500">MSRP</span>
-                  <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                    Save{' '}
-                    {product?.UpdatePriceForMSRP?.discount}
-                    %
-                  </span>
-                </>
-              ) : (
-                <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                  {format.number(product?.UpdatePriceForMSRP?.originalPrice || 0, {
-                    style: 'currency',
-                    currency: product?.prices?.price?.currencyCode || 'USD',
-                  })}
-                </span>
-              )}
-            </div>
-          )}
-          */}
-        {/* msrp  */}
+              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500'
+            }} />
+          }
+          <Coupon couponIcon={couponIcon} />
 
-        <Coupon couponIcon={couponIcon} />
-
-        <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
-          <span> Free Delivery</span>
-          {selectedVariantId && (
-            <FreeDelivery
-              entityId={product.entityId}
-              variantId={selectedVariantId}
-              isFromPDP={true}
-            />
-          )}
-          {product?.brand?.entityId &&
-            getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
-            getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
-              <NoShipCanada
-                description={
-                  getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message
-                }
+          <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
+              <span> Free Delivery</span>
+            {selectedVariantId && (
+              <FreeDelivery
+                entityId={product.entityId}
+                variantId={selectedVariantId}
+                isFromPDP={true}
               />
             )}
-        </div>
-
-        <div ref={productFormRef}>
-          <ProductForm
-            data={product}
-            productMpn={product.mpn || ''}
-            multipleOptionIcon={multipleOptionIcon}
-            blankAddImg={blankAddImg || ''}
-            productImages={productImages}
-            fanPopup={fanPopup}
-            closeIcon={closeIcon || ''}
-          />
-        </div>
+            {product?.brand?.entityId && getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
+              getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
+                <NoShipCanada
+                description={getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message}
+                />
+              )}
+          </div>
+          <div ref={productFormRef}>
+            <ProductForm
+              data={product}
+              productMpn={product.mpn || ''}
+              multipleOptionIcon={multipleOptionIcon}
+              blankAddImg={blankAddImg || ''}
+              productImages={productImages}
+              fanPopup={fanPopup}
+              closeIcon={closeIcon}
+              customerGroupDetails={customerGroupDetails}
+            />
+          </div>
 
         <div className="div-product-description my-12 hidden">
           <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
@@ -709,14 +676,17 @@ export const Details = ({
           </div>
         </div>
 
-        <ProductSchema product={product} />
-        <PayPalPayLater
-          amount={product?.prices?.price?.value?.toString() || '0'}
-          currency={product?.prices?.price?.currencyCode || 'USD'}
-        />
-        <RequestQuote children={children3} />
-        <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
-        <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
+          {/* <ProductSchema product={product} /> */}
+          <PayPalPayLater
+            amount={product?.prices?.price?.value?.toString() || '0'}
+            currency={product?.prices?.price?.currencyCode || 'USD'}
+          />
+            <RequestQuote children={children3} />
+          <CertificationsAndRatings 
+          certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4}/>
+          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}
+          triggerLabel={triggerLabel5}
+          children={children5} />
 
         {/* <ShippingReturns /> */}
 

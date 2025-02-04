@@ -11,9 +11,9 @@ import { Details } from './_components/details';
 import { Gallery } from './_components/gallery';
 import { ProductViewed } from './_components/product-viewed';
 import { Warranty } from './_components/warranty';
-import { getProduct } from './page-data';
+import { getProduct, getProductBySku } from './page-data';
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import { GetProductMetaFields, GetProductVariantMetaFields } from '~/components/management-apis';
+import { GetCustomerGroupById, GetEmailId, GetProductMetaFields, GetProductVariantMetaFields } from '~/components/management-apis';
 import { ProductProvider } from '~/components/common-context/product-provider';
 import { RelatedProducts } from '~/belami/components/product';
 import { CollectionProducts } from '~/belami/components/product';
@@ -24,9 +24,12 @@ import { commonSettinngs } from '~/components/common-functions';
 
 import { cookies } from 'next/headers';
 import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
+import { KlaviyoTrackViewedProduct } from '~/belami/components/klaviyo/klaviyo-track-viewed-product';
 
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { calculateProductPrice } from '~/components/common-functions';
+import { ProductSchema } from './_components/product-schema';
+import { useTranslations } from 'next-intl';
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -38,6 +41,7 @@ interface CategoryNode {
   breadcrumbs?: {
     edges: Array<{
       node: {
+        entityId: any;
         name: string;
         path: string | null;
       };
@@ -49,6 +53,14 @@ interface MetaField {
   key: string;
   value: string;
   namespace: string;
+}
+
+interface CustomerGroup {
+  discount_rules: Array<{  amount: string;
+    type: string;
+    category_id: string;
+    product_id: string;
+    method: string; }>;
 }
 
 function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) {
@@ -68,13 +80,21 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const searchParams = await props.searchParams;
   const params = await props.params;
   const productId = Number(params.slug);
-  const optionValueIds = getOptionValueIds({ searchParams });
+  const productSku: any = searchParams?.sku;
 
-  const product = await getProduct({
-    entityId: productId,
-    optionValueIds,
-    useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
-  });
+  const optionValueIds = getOptionValueIds({ searchParams });
+  let product: any;
+  if (productSku && optionValueIds.length === 0) {
+    product = await getProductBySku({
+      sku: productSku,
+    });
+  } else {
+    product = await getProduct({
+      entityId: productId,
+      optionValueIds,
+      useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
+    });
+  }
 
   if (!product) {
     return {};
@@ -89,22 +109,31 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     keywords: metaKeywords ? metaKeywords.split(',') : null,
     openGraph: url
       ? {
-          images: [
-            {
-              url,
-              alt,
-            },
-          ],
-        }
+        images: [
+          {
+            url,
+            alt,
+          },
+        ],
+      }
       : null,
   };
 }
 export default async function ProductPage(props: Props) {
   try {
     const customerAccessToken = await getSessionCustomerAccessToken();
-
+    const sessionUser = await getSessionUserDetails();
+    let customerGroupDetails:CustomerGroup = {
+      discount_rules: []
+    };
+    if(sessionUser){
+    const customerData = await GetEmailId(sessionUser?.user?.email!);
+    const customerGroupId = customerData.data[0].customer_group_id;
+    customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+    }
     const searchParams = await props.searchParams;
     const params = await props.params;
+    const productSku: any = searchParams?.sku;
 
     if (!params || !searchParams) {
       console.error('Missing required params:', { params, searchParams });
@@ -122,18 +151,24 @@ export default async function ProductPage(props: Props) {
 
     setRequestLocale(locale);
     const t = await getTranslations('Product');
+    const m = await getTranslations('productDetailDropdown');
 
     const productId = Number(slug);
     const optionValueIds = getOptionValueIds({ searchParams });
 
-    const product = await getProduct({
-      entityId: productId,
-      optionValueIds,
-      useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
-    });
-
-    const [updatedProduct] = await calculateProductPrice(product);
-
+    let product: any;
+    if (productSku && optionValueIds.length === 0) {
+      product = await getProductBySku({
+        sku: productSku,
+      });
+    } else {
+      product = await getProduct({
+        entityId: productId,
+        optionValueIds,
+        useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
+      });
+    }
+    
     if (!product) {
       return notFound();
     }
@@ -154,16 +189,39 @@ export default async function ProductPage(props: Props) {
 
     // Get MetaFields
     const productMetaFields = await GetProductMetaFields(product.entityId, '');
-    let variantMetaFields: MetaField[] = [];
 
-    const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
-    if (selectedVariantId) {
+    const isVariantOption =
+      product.productOptions?.edges?.some((option: any) => option.node.isVariantOption) || false;
+
+    let variantMetaFields: MetaField[] = [];
+    const variants = product.variants.edges?.map((edge: any) => edge.node) || [];
+
+    // Determine `selectedVariantId`
+    const selectedVariantId =
+      variants.find((v: any) => v.sku === product.sku)?.entityId || variants[0]?.entityId;
+
+    if (isVariantOption && selectedVariantId) {
+      // Fetch variant meta fields only if `isVariantOption` is true
       variantMetaFields = await GetProductVariantMetaFields(
         product.entityId,
         selectedVariantId,
         '',
       );
     }
+
+    // Function to extract nsoid or upid
+    const extractIdentifier = (fields: MetaField[]) => {
+      const nsoidField = fields.find((field) => field?.key === 'nsoid');
+      const upidField = fields.find((field) => field?.key === 'upid');
+      return nsoidField?.value || upidField?.value || null;
+    };
+
+    // **Final Logic:**
+    // If `isVariantOption` is TRUE, use `variantMetaFields`
+    // Otherwise, use `productMetaFields`
+    const newIdentifier = isVariantOption
+      ? extractIdentifier(variantMetaFields)
+      : extractIdentifier(productMetaFields);
 
     // Process Collection Value
     let collectionValue = '';
@@ -209,7 +267,11 @@ export default async function ProductPage(props: Props) {
       const currentLength = current?.breadcrumbs?.edges?.length || 0;
       return currentLength > longestLength ? current : longest;
     }, categories[0]);
-
+    
+    const breadcrumbEntityIds = categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
+      (edge) => edge.node.entityId
+    ) || [];
+    
     const categoryWithBreadcrumbs = categoryWithMostBreadcrumbs
       ? {
           ...categoryWithMostBreadcrumbs,
@@ -220,12 +282,17 @@ export default async function ProductPage(props: Props) {
                 node: {
                   name: product.mpn || '',
                   path: '#',
+                  entityId: '#',
                 },
               },
             ].filter(Boolean),
           },
         }
       : null;
+
+      const discountRules = customerGroupDetails?.discount_rules;
+    
+      const [updatedProduct] = await calculateProductPrice(product,"pdp",discountRules,breadcrumbEntityIds);
 
     const productImages = removeEdgesAndNodes(product.images);
     var brandId = product?.brand?.entityId;
@@ -276,6 +343,8 @@ export default async function ProductPage(props: Props) {
                   blankAddImg={assets.blankAddImg}
                   getAllCommonSettinngsValues={CommonSettinngsValues}
                   productImages={productImages}
+                  customerGroupDetails={customerGroupDetails}
+                  categoryIds={breadcrumbEntityIds}
                   triggerLabel1={
                     <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#008BB7] underline underline-offset-4">
                       Shipping Policy
@@ -291,6 +360,20 @@ export default async function ProductPage(props: Props) {
                   children3={
                     <MakeswiftPage locale={locale} path="/content/request-a-quote-flyout" />
                   }
+                  triggerLabel4={
+                    <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#008BB7] underline underline-offset-4">
+                      Learn More
+                    </p>
+                  }
+                  children4={
+                    <MakeswiftPage locale={locale} path="/content/certification-rating-flyout" />
+                  }
+                  triggerLabel5={
+                    <p className="mt-4 w-full text-center text-base font-semibold text-gray-700 underline">
+                      {m('warning')}
+                    </p>
+                  }
+                  children5={<MakeswiftPage locale={locale} path="/content/information-flyout" />}
                   priceMaxRules={priceMaxRules}
                 />
               </div>
@@ -332,6 +415,9 @@ export default async function ProductPage(props: Props) {
           </div>
 
           <ProductViewed product={product} />
+          <ProductSchema product={product} identifier={newIdentifier} />
+
+          <KlaviyoTrackViewedProduct product={product} />
         </ProductProvider>
       </div>
     );

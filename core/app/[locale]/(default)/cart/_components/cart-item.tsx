@@ -13,10 +13,13 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 import { AccessoriesInputPlusMinus } from '~/components/form-fields/accessories-input-plus-minus';
 import { get_product_by_entity_id_in_cart } from '../_actions/get-product-by-entityid';
 import { Button } from '~/components/ui/button';
-import { retrieveMpnData } from '~/components/common-functions';
+import { calculateProductPrice, retrieveMpnData } from '~/components/common-functions';
 import { commonSettinngs } from '~/components/common-functions';
 import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
 import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
+import { getSessionUserDetails } from '~/auth';
+import { GetCustomerGroupById, GetEmailId } from '~/components/management-apis';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -60,6 +63,20 @@ const PhysicalItemFragment = graphql(`
             sku
             entityId
             isPurchasable
+          }
+        }
+      }
+      categories {
+        edges {
+          node {
+            breadcrumbs(depth: 10) {
+              edges {
+                node {
+                  entityId
+                  name
+                }
+              }
+            }
           }
         }
       }
@@ -233,7 +250,23 @@ interface Props {
   ProductType: string;
   cookie_agent_login_status: boolean;
   getAllCommonSettinngsValues: any;
+  discountRules: any;
 }
+
+interface CategoryNode {
+  name: string;
+  path: string | null;
+  breadcrumbs?: {
+    edges: Array<{
+      node: {
+        entityId: any;
+        name: string;
+        path: string | null;
+      };
+    }> | null;
+  };
+}
+
 function moveToTheEnd(arr: any, word: string) {
   arr?.map((elem: any, index: number) => {
     if (elem?.name?.toLowerCase() === word?.toLowerCase()) {
@@ -252,6 +285,7 @@ export const CartItem = async ({
   priceAdjustData,
   cookie_agent_login_status,
   getAllCommonSettinngsValues,
+  discountRules,
 }: Props) => {
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
@@ -267,16 +301,38 @@ export const CartItem = async ({
     product?.productEntityId,
     product?.variantEntityId,
   );
+  const updatedProduct: any[][] = [];
+ 
+  product?.accessories?.length > 0 && product?.accessories?.map(async (item: any, index: number) => {
+    const categories = removeEdgesAndNodes(item.baseCatalogProduct.categories) as CategoryNode[];
+    const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
+      const longestLength = longest?.breadcrumbs?.edges?.length || 0;
+      const currentLength = current?.breadcrumbs?.edges?.length || 0;
+      return currentLength > longestLength ? current : longest;
+    }, categories[0]);
+    
+   const categoryIds= categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
+      (edge) => edge.node.entityId
+    ) || [];
+    
+    const price = await calculateProductPrice(item, "cart", discountRules, categoryIds);
+    updatedProduct.push(...price);
+  })
+  
+
   return (
     <li className="mb-[24px] border border-gray-200">
-      {getAllCommonSettinngsValues.hasOwnProperty(brandId) && getAllCommonSettinngsValues?.[brandId]?.no_ship_canada &&
-        <div className='bg-[#E7F5F8] w-full flex justify-center'>
-          <NoShipCanada description={getAllCommonSettinngsValues?.[brandId]?.no_ship_canada_message} />
-        </div>
-      }
+      {getAllCommonSettinngsValues.hasOwnProperty(brandId) &&
+        getAllCommonSettinngsValues?.[brandId]?.no_ship_canada && (
+          <div className="flex w-full justify-center bg-[#E7F5F8]">
+            <NoShipCanada
+              description={getAllCommonSettinngsValues?.[brandId]?.no_ship_canada_message}
+            />
+          </div>
+        )}
       <div className="">
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
-          <div className="cart-main-img mx-auto h-[295px] w-[295px] flex-none border border-gray-300 sm:h-[200px] sm:w-[200px] md:mx-0">
+          <div className="cart-main-img mx-auto h-[295px] w-[295px] flex-none  sm:h-[200px] sm:w-[200px] md:mx-0">
             {product.image?.url ? (
               <BcImage
                 alt={product?.name}
@@ -410,7 +466,7 @@ export const CartItem = async ({
                             return null;
                         }
                       })}
-                      <div className="flex justify-start mt-[10px] font-normal text-sm leading-6 tracking-[0.25px]">
+                      <div className="mt-[10px] flex justify-start text-sm font-normal leading-6 tracking-[0.25px]">
                         <span> Free Delivery</span>
                       </div>
                       {product.variantEntityId && (
@@ -456,27 +512,20 @@ export const CartItem = async ({
                       product?.UpdatePriceForMSRP.hasDiscount === true ? (
                         <>
                           <p className="text-left sm:text-right">
-                            {format.number(
-                              product.UpdatePriceForMSRP.updatedPrice,
-                              {
-                                style: 'currency',
-                                currency: currencyCode,
-                              },
-                            )}
+                            {format.number(product.UpdatePriceForMSRP.updatedPrice, {
+                              style: 'currency',
+                              currency: currencyCode,
+                            })}
                           </p>
                           <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
                             <p className="line-through">
-                              {format.number(
-                                product.UpdatePriceForMSRP.originalPrice,
-                                {
-                                  style: 'currency',
-                                  currency: currencyCode,
-                                },
-                              )}
+                              {format.number(product.UpdatePriceForMSRP.originalPrice, {
+                                style: 'currency',
+                                currency: currencyCode,
+                              })}
                             </p>
                             <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                              {product.UpdatePriceForMSRP.discount}
-                              % Off
+                              {product.UpdatePriceForMSRP.discount}% Off
                             </p>
                           </div>
                         </>
@@ -596,6 +645,7 @@ export const CartItem = async ({
             closeIcon={closeIcon}
             blankAddImg={blankAddImg}
             fanPopup={fanPopup}
+            discountRules={discountRules}
             product={product}
           />
         )}

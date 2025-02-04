@@ -111,17 +111,15 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
   };
   
   
-  const handleCustomProductSubmit = async (e: React.FormEvent) => {
+    const handleCustomProductSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading((prev) => ({ ...prev, customItem: true }));
-    const createCustomProductData = formData
-    if (validate()){
+    const createCustomProductData = formData;
+
+    if (validate()) {
       try {
         const response = await addCustomProduct(createCustomProductData);
-        // var response={status:200}
         if (response.status === 200) {
-          setLoading((prev) => ({ ...prev, customItem: false }));
-          setSuccessMessage('Product added successfully!');
           setFormData({
             supplier: '',
             sku: '',
@@ -129,8 +127,10 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
             retailPrice: '',
             productName: '',
             quantity: '',
-          })
-          router.refresh()
+          });
+          setLoading((prev) => ({ ...prev, customItem: false }));
+          setSuccessMessage('Product added successfully!');
+          router.refresh();
         } else {
           setLoading((prev) => ({ ...prev, customItem: false }));
           setErrorMessage(`Failed to add product: ${response.error || 'Unknown error'}`);
@@ -140,11 +140,10 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
         console.error('Error during add product:', error);
         setErrorMessage(`An error occurred: ${error.message || 'Unknown error'}`);
       }
-    }else{
+    } else {
       setLoading((prev) => ({ ...prev, customItem: false }));
     }
   };
-  // Handle edit comment functionality
   const handleEditComment = () => {
     setIsCommentVisible(true); // Show the form again to edit comment
     setIsCommentSaved(false); // Reset saved status when editing
@@ -243,7 +242,7 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
             {item.label}
           </label>
           {component ? (
-            <Input id={item.id} onChange={(e) => handleOnchangeInput(e) }  className="w-full" />
+            <Input value={formData[item.id]} id={item.id} onChange={(e) => handleOnchangeInput(e) }  className="w-full" />
           ) : (
             <SelectDropdown
               id="supplier"

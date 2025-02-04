@@ -10,8 +10,9 @@ interface Props {
   blankAddImg: any;
   fanPopup: any;
   product: any;
+  discountRules: any;
 }
-export const AccessoriesButton = ({ product, closeIcon, blankAddImg, fanPopup }: Props) => {
+export const AccessoriesButton = ({ product, closeIcon, blankAddImg, fanPopup ,discountRules}: Props) => {
   const [showFlyout, setShowFlyout] = useState(false);
   const productFlyout = useCommonContext();
 
@@ -32,7 +33,9 @@ export const AccessoriesButton = ({ product, closeIcon, blankAddImg, fanPopup }:
         from="cart"
         showFlyout={showFlyout}
         showFlyoutFn={setShowFlyout}
-        data={product} />
+        data={product} 
+        discountRules={discountRules}
+        />
     </div>
   );
 }

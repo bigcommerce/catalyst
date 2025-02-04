@@ -28,6 +28,10 @@ import { cookies } from 'next/headers';
 
 import { getSessionUserDetails } from '~/auth';
 import { get } from 'http';
+
+import personIcon from '~/public/accountIcons/person.svg';
+import wavingHandIcon from '~/public/home/handWavingIcon.svg'
+
 interface Props {
   cart: ReactNode;
 }
@@ -101,13 +105,12 @@ export const Header = async ({ cart }: Props) => {
           <Dropdown
             getCustomerData={getCustomerData as any}
             items={[
-              { href: '/support/faqs', label: 'Existing Order' },
-              { href: '/order-tracking', label: 'Track My Order' },
-              { href: '/support/contact', label: 'Replace Items' },
-              { href: '/support/contact', label: 'Gift Certificates' },
-              { href: '/support/contact', label: 'Visit Our Help Center' },
-              { href: '/support/contact', label: 'New Orders' },
-              { href: '/support/contact', label: 'Contact ' },
+              { href: '/#', label: 'Existing Order', classNameCss:'block font-normal text-[16px] leading-[32px] tracking-[0.15px] text-[#006380]'},
+              { href: '/order-tracking', label: 'Track My Order', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]'},
+              { href: '/#', label: 'Replace Items', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]'},
+              { href: '/content/help-center', label: 'Visit Our Help Center', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] mb-[5px]'},
+              { href: '/#', label: 'New Orders', classNameCss:'block font-normal text-[16px]leading-[32px] tracking-[0.15px] text-[#006380] '},
+              { href: '/support/contact', label: 'Contact ', classNameCss:'block font-normal text-[14px] leading-[10px] tracking-[0.25px] underline text-[#008BB7]'},
             ]}
             trigger={
               <Button
@@ -122,7 +125,7 @@ export const Header = async ({ cart }: Props) => {
                   className="mr-2"
                   height={28}
                   priority={true}
-                  src={imageManagerImageUrl('waving-hand-1-.png', '20w')}
+                  src={wavingHandIcon}
                   width={28}
                   unoptimized={true}
                 />
@@ -135,22 +138,22 @@ export const Header = async ({ cart }: Props) => {
           {/* Account Dropdown */}
           <Dropdown
             getCustomerData={getCustomerData as any}
+            from='account-dropdown'
             items={
               customerAccessToken
                 ? [
-                    { href: '/account', label: 'My Account' },
-                    { href: '/account/favorites', label: 'Favorites' },
-                    { href: '/account/purchase-history', label: 'Purchase History' },
-                    { href: '/account/finance', label: 'Finance' },
-                    { action: logout, name: 'Sign Out' },
+                  { href: '/account/', label: 'Account Center', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
+                  { href: '/account/wishlists', label: 'Favourites & Lists', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
+                  { href: '/account/orders', label: 'Orders', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
+                  { action: logout, name: 'Sign Out' },
                   ]
                 : [
-                    { href: '/login', label: 'Account' },
-                    { href: '/login', label: 'My Account' },
-                    { href: '/login', label: 'Favorites' },
-                    { href: '/login', label: 'Purchase History' },
-                    { href: '/login', label: 'Financing' },
-                    { href: '/login', label: 'Login' },
+                  { href: '/login', label: 'Account', classNameCss:'block font-normal text-[16px] leading-[32px] tracking-[0.25px] text-[#006380] text-center'},
+                  { href: '/login', label: 'Account Center', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
+                  { href: '/login', label: 'Favorites & Lists', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
+                  { href: '/login', label: 'Orders', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
+                  { href: '/login', label: 'LOG IN', classNameCss:'flex flex-row justify-center items-center p-[0px_8px] gap-[5px] border border-[#b4dde9] rounded-[3px] h-[32px] font-[500] text-[14px] leading-[32px] text-[#002a37] tracking-[1.25px]'},
+                  { href: '/register', label: <span>New? <span className='font-[600] underline'>Create Account</span></span>, classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#008BB7]'},
                   ]
             }
             trigger={
@@ -164,7 +167,7 @@ export const Header = async ({ cart }: Props) => {
                   alt="an assortment of brandless products against a blank background"
                   height={16}
                   priority={true}
-                  src={imageManagerImageUrl('account-icon.png', '20w')}
+                  src={personIcon}
                   width={16}
                   unoptimized={true}
                 />
@@ -192,7 +195,38 @@ export const Header = async ({ cart }: Props) => {
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
       search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />}
-      megaMenu={<MegaMenuContextProvider value={{ logo: homeLogoMobile, title: data?.settings?.storeName }}><MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' /></MegaMenuContextProvider>}
+      megaMenu={
+        <MegaMenuContextProvider value={{ 
+            logo: homeLogoMobile, 
+            storeName: data?.settings?.storeName, 
+            accountMenuItems: customerAccessToken
+              ? [
+                  { href: '/account', label: 'My Account' },
+                  { href: '/account/favorites', label: 'Favorites' },
+                  { href: '/account/purchase-history', label: 'Purchase History' },
+                  { href: '/account/finance', label: 'Finance' },
+                  { action: logout, name: 'Sign Out' },
+                ]
+              : [
+                  { href: '/login', label: 'My Account' },
+                  { href: '/login', label: 'Favorites' },
+                  { href: '/login', label: 'Purchase History' },
+                  { href: '/login', label: 'Financing' },
+                  { href: '/login', label: 'Login' },
+                ],
+            supportMenuItems: [
+                { href: '/support/faqs', label: 'Existing Order' },
+                { href: '/order-tracking', label: 'Track My Order' },
+                { href: '/support/contact', label: 'Replace Items' },
+                { href: '/support/contact', label: 'Gift Certificates' },
+                { href: '/support/contact', label: 'Visit Our Help Center' },
+                { href: '/support/contact', label: 'New Orders' },
+                { href: '/support/contact', label: 'Contact ' },
+              ]
+          }}>
+          <MakeswiftComponent snapshot={megaMenuSnapshot} label={`Mega Menu`} type='belami-mega-menu' />
+        </MegaMenuContextProvider>
+      }
     />
   );
 };

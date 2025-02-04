@@ -131,7 +131,7 @@ export const Footer = async () => {
                 />
                 <button
                   type="submit"
-                  className="subscription-button relative h-[40px] w-[80px] bg-[#008bb7] text-center text-[14px] font-normal uppercase text-white"
+                  className="subscription-button relative h-[40px] w-[80px] bg-[#006380] text-center text-[14px] font-normal uppercase text-white"
                 >
                   Sign Up
                 </button>
@@ -154,7 +154,7 @@ export const Footer = async () => {
           href: '/path-6',
         },
         {
-          label: <span className="footer-social-title">FOLLOW US</span>,
+          label: <span className="footer-social-title font-normal text-xs leading-[18px] tracking-[0.4px] mb-[4px]" >FOLLOW US</span>,
           href: '/path-6',
         },
         {
@@ -181,77 +181,75 @@ export const Footer = async () => {
   ];
 
   return (
-    <div>
-      <ComponentsFooter
-        contactInformation={data.settings?.contact ?? undefined}
-        copyright={
-          data.settings
-            ? `© ${new Date().getFullYear()} ${data.settings.storeName} . All Rights Reserved`
-            : undefined
-        }
-        logo={data.settings ? logoTransformer(data.settings) : undefined}
-        paymentIcons={[
-          <div className="flex items-center gap-[10px]">
-            <BcImage
-              src={bbbIcon}
-              className="h-[24px] w-[63px]"
-              alt="payment images"
-              width={63}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={payPalIcon}
-              className="h-[24px] w-[34px]"
-              alt="payment images"
-              width={34}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={visaIcon}
-              className="h-[24px] w-[34px]"
-              alt="payment images"
-              width={34}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={paymentIcon}
-              className="h-[24px] w-[34px]"
-              alt="payment images"
-              width={34}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={discoverIcon}
-              className="h-[24px] w-[34px]"
-              alt="payment images"
-              width={34}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={amexIcon}
-              className="h-[24px] w-[34px]"
-              alt="payment images"
-              width={34}
-              height={24}
-              unoptimized={true}
-            />
-            <BcImage
-              src={brainTreeIcon}
-              className="h-[24px] w-[89px]"
-              alt="payment images"
-              width={89}
-              height={24}
-              unoptimized={true}
-            />
-          </div>,
-        ]}
-        sections={sections}
-      />
-    </div>
+    <ComponentsFooter
+      contactInformation={data.settings?.contact ?? undefined}
+      copyright={
+        data.settings
+          ? `© ${new Date().getFullYear()} ${data.settings.storeName} . All Rights Reserved`
+          : undefined
+      }
+      logo={data.settings ? logoTransformer(data.settings) : undefined}
+      paymentIcons={[
+        <div className="flex items-center gap-[10px]">
+          <BcImage
+            src={bbbIcon}
+            className="h-[24px] w-[63px]"
+            alt="payment images"
+            width={63}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={payPalIcon}
+            className="h-[24px] w-[34px]"
+            alt="payment images"
+            width={34}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={visaIcon}
+            className="h-[24px] w-[34px]"
+            alt="payment images"
+            width={34}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={paymentIcon}
+            className="h-[24px] w-[34px]"
+            alt="payment images"
+            width={34}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={discoverIcon}
+            className="h-[24px] w-[34px]"
+            alt="payment images"
+            width={34}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={amexIcon}
+            className="h-[24px] w-[34px]"
+            alt="payment images"
+            width={34}
+            height={24}
+            unoptimized={true}
+          />
+          <BcImage
+            src={brainTreeIcon}
+            className="h-[24px] w-[89px]"
+            alt="payment images"
+            width={89}
+            height={24}
+            unoptimized={true}
+          />
+        </div>,
+      ]}
+      sections={sections}
+    />
   );
 };
