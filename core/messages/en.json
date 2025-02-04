@@ -624,6 +624,9 @@
         "increase": "Increase count",
         "decrease": "Decrease count"
       }
+    },
+    "AddToQuoteButton": {
+      "addToQuote": "Add to Quote"
     }
   }
 }

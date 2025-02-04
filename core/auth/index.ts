@@ -5,7 +5,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { z } from 'zod';
 
 import { client } from '~/client';
-import { graphql } from '~/client/graphql';
+import { graphql, ResultOf } from '~/client/graphql';
 import { getCartId } from '~/lib/cart';
 
 const LoginMutation = graphql(`
@@ -13,6 +13,7 @@ const LoginMutation = graphql(`
     login(email: $email, password: $password, guestCartEntityId: $cartEntityId) {
       customerAccessToken {
         value
+        expiresAt
       }
       customer {
         entityId
@@ -29,6 +30,7 @@ const LoginWithTokenMutation = graphql(`
     loginWithCustomerLoginJwt(jwt: $jwt, guestCartEntityId: $cartEntityId) {
       customerAccessToken {
         value
+        expiresAt
       }
       customer {
         entityId
@@ -88,6 +90,12 @@ async function loginWithPassword(
     name: `${result.customer.firstName} ${result.customer.lastName}`,
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
+    ...(process.env.B2B_API_TOKEN && {
+      b2bToken: await loginWithB2B({
+        customer: result.customer,
+        customerAccessToken: result.customerAccessToken,
+      }),
+    }),
   };
 }
 
@@ -119,7 +127,58 @@ async function loginWithJwt(jwt: string, cartEntityId?: string): Promise<User | 
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
     impersonatorId,
+    ...(process.env.B2B_API_TOKEN && {
+      b2bToken: await loginWithB2B({
+        customer: result.customer,
+        customerAccessToken: result.customerAccessToken,
+      }),
+    }),
   };
+}
+
+interface LoginWithB2BParams {
+  customer: NonNullable<ResultOf<typeof LoginMutation>['login']['customer']>;
+  customerAccessToken: NonNullable<ResultOf<typeof LoginMutation>['login']['customerAccessToken']>;
+}
+
+async function loginWithB2B({ customer, customerAccessToken }: LoginWithB2BParams) {
+  if (!process.env.B2B_API_TOKEN) {
+    throw new Error('Environment variable B2B_API_TOKEN is not set');
+  }
+
+  const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
+
+  const payload = {
+    channelId,
+    customerId: customer.entityId,
+    customerAccessToken,
+  };
+
+  const response = await fetch(`https://api-b2b.bigcommerce.com/api/io/auth/customers/storefront`, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      authToken: process.env.B2B_API_TOKEN,
+    },
+    body: JSON.stringify(payload),
+  });
+
+  const B2BTokenResponseSchema = z.object({
+    data: z.object({
+      token: z.array(z.string()),
+    }),
+  });
+
+  const {
+    data: { token },
+  } = B2BTokenResponseSchema.parse(await response.json());
+
+  if (!token[0]) {
+    throw new Error('No token returned from B2B API');
+  }
+
+  return token[0];
 }
 
 async function authorize(credentials: unknown): Promise<User | null> {
@@ -155,8 +214,16 @@ const config = {
     jwt: ({ token, user }) => {
       // user can actually be undefined
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      if (user?.customerAccessToken) {
+      if (!user) {
+        return token;
+      }
+
+      if (user.customerAccessToken) {
         token.customerAccessToken = user.customerAccessToken;
+      }
+
+      if (user.b2bToken) {
+        token.b2bToken = user.b2bToken;
       }
 
       return token;
@@ -166,12 +233,17 @@ const config = {
         session.customerAccessToken = token.customerAccessToken;
       }
 
+      if (token.b2bToken) {
+        session.b2bToken = token.b2bToken;
+      }
+
       return session;
     },
   },
   events: {
     async signOut(message) {
       const customerAccessToken = 'token' in message ? message.token?.customerAccessToken : null;
+      // @todo check if b2bToken is also valid?
 
       if (customerAccessToken) {
         try {
@@ -226,6 +298,7 @@ declare module 'next-auth' {
   interface Session {
     user?: DefaultSession['user'];
     customerAccessToken?: string;
+    b2bToken?: string;
   }
 
   interface User {
@@ -233,6 +306,7 @@ declare module 'next-auth' {
     email?: string | null;
     customerAccessToken?: string;
     impersonatorId?: string | null;
+    b2bToken?: string;
   }
 }
 
@@ -240,5 +314,6 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
     customerAccessToken?: string;
+    b2bToken?: string;
   }
 }

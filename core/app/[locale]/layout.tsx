@@ -11,6 +11,7 @@ import { PropsWithChildren } from 'react';
 import '../globals.css';
 
 import { fonts } from '~/app/fonts';
+import { B2BLoader } from '~/b2b/loader';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -101,6 +102,7 @@ export default async function RootLayout({ params, children }: Props) {
           </NuqsAdapter>
         </NextIntlClientProvider>
         <VercelComponents />
+        <B2BLoader />
       </body>
     </html>
   );

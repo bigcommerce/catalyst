@@ -253,5 +253,5 @@ export async function registerCustomer<F extends Field>(
     };
   }
 
-  return redirect({ href: '/account/orders', locale });
+  return redirect({ href: '/b2b', locale });
 }
