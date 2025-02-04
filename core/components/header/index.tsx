@@ -105,11 +105,11 @@ export const Header = async ({ cart }: Props) => {
           <Dropdown
             getCustomerData={getCustomerData as any}
             items={[
-              { href: '/support/faqs', label: 'Existing Order', classNameCss:'block font-normal text-[16px] leading-[32px] tracking-[0.15px] text-[#006380]'},
-              { href: '/support/contact', label: 'Track My Order', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]'},
-              { href: '/support/contact', label: 'Replace Items', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]'},
-              { href: '/support/contact', label: 'Visit Our Help Center', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] mb-[5px]'},
-              { href: '/support/contact', label: 'New Orders', classNameCss:'block font-normal text-[16px]leading-[32px] tracking-[0.15px] text-[#006380] '},
+              { href: '/#', label: 'Existing Order', classNameCss:'block font-normal text-[16px] leading-[32px] tracking-[0.15px] text-[#006380]'},
+              { href: '/order-tracking', label: 'Track My Order', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]'},
+              { href: '/#', label: 'Replace Items', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]'},
+              { href: '/content/help-center', label: 'Visit Our Help Center', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] mb-[5px]'},
+              { href: '/#', label: 'New Orders', classNameCss:'block font-normal text-[16px]leading-[32px] tracking-[0.15px] text-[#006380] '},
               { href: '/support/contact', label: 'Contact ', classNameCss:'block font-normal text-[14px] leading-[10px] tracking-[0.25px] underline text-[#008BB7]'},
             ]}
             trigger={

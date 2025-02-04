@@ -64,5 +64,3 @@ export function CardSkeleton() {
     </div>
   );
 }
- 
-has context menu
