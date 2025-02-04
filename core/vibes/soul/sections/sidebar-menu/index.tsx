@@ -1,3 +1,5 @@
+import { ComponentPropsWithoutRef } from 'react';
+
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 
 import { SidebarMenuLink } from './sidebar-menu-link';
@@ -6,6 +8,7 @@ import { SidebarMenuSelect } from './sidebar-menu-select';
 interface MenuLink {
   href: string;
   label: string;
+  prefetch?: ComponentPropsWithoutRef<typeof SidebarMenuLink>['prefetch'];
 }
 
 interface Props {
@@ -29,7 +32,9 @@ export function SidebarMenu({ links: streamableLinks, placeholderCount = 5 }: Pr
             <ul className="hidden @2xl:block">
               {links.map((link, index) => (
                 <li key={index}>
-                  <SidebarMenuLink href={link.href}>{link.label}</SidebarMenuLink>
+                  <SidebarMenuLink href={link.href} prefetch={link.prefetch}>
+                    {link.label}
+                  </SidebarMenuLink>
                 </li>
               ))}
             </ul>
