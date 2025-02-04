@@ -10,6 +10,8 @@ import { Field } from './schema';
 
 interface ProductDetailProduct {
   id: string;
+  // @todo why do i have to add this again here?
+  sku: string;
   title: string;
   href: string;
   images: Streamable<Array<{ src: string; alt: string }>>;
@@ -125,6 +127,7 @@ export function ProductDetail<F extends Field>({
                         prefetch={prefetch}
                         productId={product.id}
                         quantityLabel={quantityLabel}
+                        sku={product.sku}
                       />
                     )}
                   </Stream>

@@ -112,6 +112,7 @@ const getProduct = async (props: Props) => {
 
   return {
     id: product.entityId.toString(),
+    sku: product.sku,
     title: product.name,
     description: <div dangerouslySetInnerHTML={{ __html: product.description }} />,
     plainTextDescription: product.plainTextDescription,

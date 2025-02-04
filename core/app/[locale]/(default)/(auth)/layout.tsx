@@ -12,7 +12,7 @@ export default async function Layout({ children, params }: Props) {
   const { locale } = await params;
 
   if (session) {
-    redirect({ href: '/account/orders', locale });
+    redirect({ href: '/b2b', locale });
   }
 
   return children;

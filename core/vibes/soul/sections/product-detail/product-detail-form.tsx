@@ -26,6 +26,8 @@ import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
+import { B2BProductOption } from '~/b2b/types';
+import { AddToQuoteButton } from '~/components/add-to-quote-button';
 import { usePathname, useRouter } from '~/i18n/routing';
 
 import { Field, schema, SchemaRawShape } from './schema';
@@ -44,12 +46,26 @@ interface Props<F extends Field> {
   fields: F[];
   action: ProductDetailFormAction<F>;
   productId: string;
+  sku: string;
   ctaLabel?: string;
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;
   ctaDisabled?: boolean;
   prefetch?: boolean;
+}
+
+interface FormField {
+  id: number;
+  type: string;
+  name: string;
+  value?: string | number;
+  options?: Array<{
+    id: number;
+    value: string;
+    label: string;
+    color?: string;
+  }>;
 }
 
 export function ProductDetailForm<F extends Field>({
@@ -62,6 +78,7 @@ export function ProductDetailForm<F extends Field>({
   decrementLabel = 'Decrease quantity',
   ctaDisabled = false,
   prefetch = false,
+  sku,
 }: Props<F>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -115,6 +132,75 @@ export function ProductDetailForm<F extends Field>({
     shouldRevalidate: 'onInput',
   });
 
+  function transformToB2BProductOption(field: FormField): B2BProductOption {
+    const baseOption: B2BProductOption = {
+      optionEntityId: field.id,
+      optionValueEntityId: 0, // Will be set based on type
+      entityId: field.id,
+      valueEntityId: 0, // Will be set based on type
+      text: '',
+      number: 0,
+      date: { utc: '' },
+    };
+
+    switch (field.type) {
+      case 'text':
+      case 'textarea':
+        return {
+          ...baseOption,
+          text: String(field.value || ''),
+        };
+
+      case 'number':
+        return {
+          ...baseOption,
+          number: Number(field.value || 0),
+        };
+
+      case 'date':
+        return {
+          ...baseOption,
+          date: field.value ? { utc: new Date(field.value).toISOString() } : { utc: '' },
+        };
+
+      case 'button-radio-group':
+      case 'swatch-radio-group':
+      case 'radio-group':
+      case 'card-radio-group':
+      case 'select': {
+        const selectedOption = field.options?.find((opt) => opt.value === String(field.value));
+
+        return {
+          ...baseOption,
+          optionValueEntityId: selectedOption?.id || 0,
+          valueEntityId: selectedOption?.id || 0,
+          text: selectedOption?.label || '',
+        };
+      }
+
+      default:
+        return baseOption;
+    }
+  }
+
+  const selectedOptions = fields.map((field) =>
+    transformToB2BProductOption({
+      id: Number(field.name),
+      type: field.type,
+      name: field.name,
+      value: formFields[field.name]?.value,
+      options:
+        'options' in field
+          ? field.options.map((opt) => ({
+              ...opt,
+              id: Number(opt.value),
+            }))
+          : undefined,
+    }),
+  );
+
+  console.dir(selectedOptions, { depth: null });
+
   const quantityControl = useInputControl(formFields.quantity);
 
   return (
@@ -153,7 +239,16 @@ export function ProductDetailForm<F extends Field>({
               required
               value={quantityControl.value}
             />
-            <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+            <div className="flex flex-1 gap-x-3">
+              <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+              <AddToQuoteButton
+                className="flex-1"
+                productEntityId={productId}
+                quantity={Number(quantityControl.value)}
+                selectedOptions={selectedOptions}
+                sku={sku}
+              />
+            </div>
           </div>
         </div>
       </form>
@@ -166,7 +261,7 @@ function SubmitButton({ children, disabled }: { children: React.ReactNode; disab
 
   return (
     <Button
-      className="w-auto @xl:w-56"
+      className="w-auto flex-1 @xl:w-56"
       disabled={disabled}
       loading={pending}
       size="medium"
