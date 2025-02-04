@@ -179,7 +179,7 @@ const ProductFormFragment = graphql(
   ],
 );
 
-const ProductItemFragment = graphql(
+export const ProductItemFragment = graphql(
   `
     fragment ProductItemFragment on Product {
       entityId
@@ -311,7 +311,7 @@ export const WarrantyFragment = graphql(`
   }
 `);
 
-const ProductPageQuery = graphql(
+export const ProductPageQuery = graphql(
   `
     query ProductPageQuery(
       $entityId: Int!

@@ -7,6 +7,7 @@ import { OrderItemFragment } from '~/app/[locale]/(default)/account/(tabs)/order
 import { cache } from 'react';
 import { OrderDetailsType } from '~/app/[locale]/(default)/account/(tabs)/order/[slug]/page-data';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { ProductPageQuery } from '~/app/[locale]/(default)/product/[slug]/page-data';
 
 const ProductMetaFieldsQuery = graphql(
     `
@@ -312,3 +313,25 @@ export const getGuestOrderDetails = cache(
     return data;
   },
 );
+
+type Variables = VariablesOf<typeof ProductPageQuery>;
+
+export const getProduct = cache(async (variables: Variables) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const { data } = await client.fetch({
+    document: ProductPageQuery,
+    variables,
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  if (data.site && data.site.product && data.site.parent)
+    data.site.product = {
+      ...data.site.product,
+      parent: data.site.parent,
+    } as any;
+
+  return data.site.product as any;
+});
+
