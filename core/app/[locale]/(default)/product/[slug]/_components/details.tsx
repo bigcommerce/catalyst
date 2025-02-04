@@ -276,7 +276,6 @@ export const Details = ({
     return defaultValue?.label || 'Select';
   };
 
-
   return (
     <div className="">
       {showStickyHeader && (
