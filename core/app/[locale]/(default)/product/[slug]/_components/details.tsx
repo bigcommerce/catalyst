@@ -63,6 +63,10 @@ interface Props {
   children2: React.ReactNode;
   triggerLabel3: React.ReactNode;
   children3: React.ReactNode;
+  triggerLabel4: React.ReactNode;
+  children4: React.ReactNode;
+  triggerLabel5: React.ReactNode;
+  children5: React.ReactNode;
   priceMaxRules: any;
   getAllCommonSettinngsValues:any;
 }
@@ -156,6 +160,10 @@ export const Details = ({
   children2,
   triggerLabel3,
   children3,
+  triggerLabel4,
+  children4,
+  triggerLabel5,
+  children5,
   priceMaxRules
 }: Props) => {
   const t = useTranslations('Product.Details');
@@ -604,7 +612,6 @@ export const Details = ({
                 />
               )}
           </div>
-
           <div ref={productFormRef}>
             <ProductForm
               data={product}
@@ -680,8 +687,11 @@ export const Details = ({
             currency={product?.prices?.price?.currencyCode || 'USD'}
           />
             <RequestQuote children={children3} />
-          <CertificationsAndRatings certificationIcon={certificationIcon} product={product} />
-          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon} />
+          <CertificationsAndRatings 
+          certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4}/>
+          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}
+          triggerLabel={triggerLabel5}
+          children={children5} />
 
         {/* <ShippingReturns /> */}
 

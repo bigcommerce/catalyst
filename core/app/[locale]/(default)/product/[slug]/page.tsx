@@ -29,6 +29,7 @@ import { KlaviyoTrackViewedProduct } from '~/belami/components/klaviyo/klaviyo-t
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { calculateProductPrice } from '~/components/common-functions';
 import { ProductSchema } from './_components/product-schema';
+import { useTranslations } from 'next-intl';
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -133,6 +134,7 @@ export default async function ProductPage(props: Props) {
 
     setRequestLocale(locale);
     const t = await getTranslations('Product');
+    const m = await getTranslations('productDetailDropdown');
 
     const productId = Number(slug);
     const optionValueIds = getOptionValueIds({ searchParams });
@@ -150,7 +152,7 @@ export default async function ProductPage(props: Props) {
       });
     }
 
-    const [updatedProduct] = await calculateProductPrice(product, "pdp");
+    const [updatedProduct] = await calculateProductPrice(product, 'pdp');
     if (!product) {
       return notFound();
     }
@@ -171,16 +173,19 @@ export default async function ProductPage(props: Props) {
 
     // Get MetaFields
     const productMetaFields = await GetProductMetaFields(product.entityId, '');
+
+    const isVariantOption =
+      product.productOptions?.edges?.some((option: any) => option.node.isVariantOption) || false;
+
     let variantMetaFields: MetaField[] = [];
-    const variants = product.variants.edges?.map((edge) => edge.node) || [];
+    const variants = product.variants.edges?.map((edge: any) => edge.node) || [];
+
+    // Determine `selectedVariantId`
     const selectedVariantId =
-      variants.find((v) => v.sku === product.sku)?.entityId || variants[0]?.entityId;
+      variants.find((v: any) => v.sku === product.sku)?.entityId || variants[0]?.entityId;
 
-    // Now, use `selectedVariantId` wherever needed
-
-    // const selectedVariantId = product.variants.edges?.[0]?.node.entityId;
-    // console.log("ppp",selectedVariantId);
-    if (selectedVariantId) {
+    if (isVariantOption && selectedVariantId) {
+      // Fetch variant meta fields only if `isVariantOption` is true
       variantMetaFields = await GetProductVariantMetaFields(
         product.entityId,
         selectedVariantId,
@@ -188,10 +193,19 @@ export default async function ProductPage(props: Props) {
       );
     }
 
-    const nsoidField = variantMetaFields.find((field: { key: string }) => field?.key === 'nsoid');
-    const upidField = variantMetaFields.find((field: { key: string }) => field?.key === 'upid');
+    // Function to extract nsoid or upid
+    const extractIdentifier = (fields: MetaField[]) => {
+      const nsoidField = fields.find((field) => field?.key === 'nsoid');
+      const upidField = fields.find((field) => field?.key === 'upid');
+      return nsoidField?.value || upidField?.value || null;
+    };
 
-    const newIdentifier = nsoidField?.value || upidField?.value || null;
+    // **Final Logic:**
+    // If `isVariantOption` is TRUE, use `variantMetaFields`
+    // Otherwise, use `productMetaFields`
+    const newIdentifier = isVariantOption
+      ? extractIdentifier(variantMetaFields)
+      : extractIdentifier(productMetaFields);
 
     // Process Collection Value
     let collectionValue = '';
@@ -278,7 +292,7 @@ export default async function ProductPage(props: Props) {
           <div className="mb-4 xl:mb-12 xl:gap-8">
             <div className="pdp-scroll xl:mb-[7em] xl:flex xl:w-[100%] xl:max-w-[100%] xl:gap-x-[3em]">
               <div className="Gallery relative xl:flex xl:w-[64%]">
-                <div className="gallery-sticky-pop-up xl:sticky xl:top-0 z-10 xl:h-[100vh] xl:w-[100%]">
+                <div className="gallery-sticky-pop-up z-10 xl:sticky xl:top-0 xl:h-[100vh] xl:w-[100%]">
                   <Suspense fallback={<div>Loading gallery...</div>}>
                     <Gallery
                       product={product}
@@ -319,6 +333,20 @@ export default async function ProductPage(props: Props) {
                   children3={
                     <MakeswiftPage locale={locale} path="/content/request-a-quote-flyout" />
                   }
+                  triggerLabel4={
+                    <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#008BB7] underline underline-offset-4">
+                      Learn More
+                    </p>
+                  }
+                  children4={
+                    <MakeswiftPage locale={locale} path="/content/certification-rating-flyout" />
+                  }
+                  triggerLabel5={
+                    <p className="mt-4 w-full text-center text-base font-semibold text-gray-700 underline">
+                      {m('warning')}
+                    </p>
+                  }
+                  children5={<MakeswiftPage locale={locale} path="/content/information-flyout" />}
                   priceMaxRules={priceMaxRules}
                 />
               </div>
