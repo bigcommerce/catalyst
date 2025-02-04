@@ -7,15 +7,19 @@ import { InsertShopperVisitedUrl } from './_actions/insert-shopper-url';
 import { getCartIdCookie } from './_actions/session';
 
 export default function SalesBuddyPage() {
-  const { agentLoginStatus, setAgentLoginStatus, context_session_id, cartIdForCheck, setCartIdForCheck } = useCompareDrawerContext();
+  const { agentLoginStatus,setAgentLoginStatus, context_session_id, cartIdForCheck, setCartIdForCheck } = useCompareDrawerContext();
   const [checkAgentLoginStatusInCookie,setAgentLoginStatusInCookie]=useState(false)
+  
   const [urlWithQuery, setUrlWithQuery] = useState('');
   const path = usePathname();
   const searchParams = useSearchParams();
   const queryString = searchParams.toString();    
-  useEffect(() => {
+  
+  useEffect(() => { 
     if (context_session_id ){
       const fullUrl = queryString ? `${window.location.protocol}//${window.location.host}${path}?${queryString}` : `${window.location.protocol}//${window.location.host}${path}`;
+      console.log(fullUrl);
+      
       // const fullUrl = `${window.location.protocol}//${window.location.host}${path}`;      
       const previousUrl:any = localStorage.getItem('previous_url');
       if (previousUrl !== fullUrl  ) {
