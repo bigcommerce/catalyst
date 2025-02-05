@@ -69,6 +69,7 @@ interface Props {
   children5: React.ReactNode;
   priceMaxRules: any;
   getAllCommonSettinngsValues:any;
+  isFromQuickView : boolean;
 }
 
 export const DetailsFragment = graphql(
@@ -164,7 +165,8 @@ export const Details = ({
   children4,
   triggerLabel5,
   children5,
-  priceMaxRules
+  priceMaxRules,
+  isFromQuickView
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -682,10 +684,13 @@ export const Details = ({
         </div>
 
           {/* <ProductSchema product={product} /> */}
-          <PayPalPayLater
+          <div className={`${isFromQuickView ? "hidden" : "block"}`}>
+            <PayPalPayLater 
             amount={product?.prices?.price?.value?.toString() || '0'}
             currency={product?.prices?.price?.currencyCode || 'USD'}
           />
+          
+          
             <RequestQuote children={children3} />
           <CertificationsAndRatings 
           certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4}/>
@@ -701,6 +706,7 @@ export const Details = ({
           <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
         </div>
       </div>
+    </div>
     </div>
   );
 };
