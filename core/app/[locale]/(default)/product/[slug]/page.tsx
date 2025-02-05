@@ -1,7 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
-import { cache } from 'react';
+import { cache, Suspense } from 'react';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
@@ -193,7 +192,7 @@ interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
+export async function Metadata(props: Props) {
   const { slug } = await props.params;
 
   const variables = await cachedProductDataVariables(slug, props.searchParams);
@@ -201,23 +200,19 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const product = await getProductData(variables);
 
   const { pageTitle, metaDescription, metaKeywords } = product.seo;
-  const { url, altText: alt } = product.defaultImage || {};
+  const { url /* , altText: alt */ } = product.defaultImage || {};
 
-  return {
-    title: pageTitle || product.name,
-    description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
-    keywords: metaKeywords ? metaKeywords.split(',') : null,
-    openGraph: url
-      ? {
-          images: [
-            {
-              url,
-              alt,
-            },
-          ],
-        }
-      : null,
-  };
+  return (
+    <>
+      <title>{pageTitle || product.name}</title>
+      <meta
+        content={metaDescription || `${product.plainTextDescription.slice(0, 150)}...`}
+        name="description"
+      />
+      {metaKeywords ? <meta content={metaKeywords} name="keywords" /> : null}
+      {url ? <meta content={url} property="og:image" /> : null}
+    </>
+  );
 }
 
 export default async function Product(props: Props) {
@@ -232,6 +227,10 @@ export default async function Product(props: Props) {
 
   return (
     <>
+      <Suspense>
+        <Metadata {...props} />
+      </Suspense>
+
       <ProductDetail
         action={addToCart}
         additionalInformationLabel={t('ProductDetails.additionalInformation')}
