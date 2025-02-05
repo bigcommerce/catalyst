@@ -563,6 +563,11 @@ export function Hit({
             onGuestClick={() => {
               window.location.href = '/login';
             }}
+            classNames={{
+              root: 'absolute bottom-2 right-2',
+              button: 'inline-flex items-center justify-center rounded-full p-1.5 focus:outline-none bg-gray-100',
+              icon: 'w-6 h-6',
+            }}
           />
         </div>
       </div>
@@ -799,6 +804,51 @@ export function Hit({
                   )}
                 </Link>
               </figure>
+
+              <WishlistAddToList
+                wishlists={wishlists}
+                hasPreviousPage={false}
+                product={{
+                  entityId: parseInt(hit.objectID.toString()),
+                  name: hit.name,
+                  path: hit.url,
+                  sku: hit.variants?.[0]?.sku || hit.sku || '',
+                  brand: {
+                    name: hit.brand_name,
+                    path: ''
+                  },
+                  images: [],
+                  mpn: '',
+                  variants: [
+                    {
+                      id: hit.variants?.[0]?.id,
+                      sku: hit.variants?.[0]?.sku || hit.sku || '',
+                      price: {
+                        value: hit.variants?.[0]?.price || hit.prices?.USD,
+                        currencyCode: 'USD',
+                      },
+                      basePrice: {
+                        value: hit.prices?.USD,
+                        currencyCode: 'USD',
+                      },
+                      salePrice: hit.sales_prices?.USD
+                        ? {
+                            value: hit.sales_prices.USD,
+                            currencyCode: 'USD',
+                          }
+                        : null,
+                    },
+                  ],
+                }}
+                onGuestClick={() => {
+                  window.location.href = '/login';
+                }}
+                classNames={{
+                  root: 'absolute bottom-2 right-2',
+                  button: 'inline-flex items-center justify-center rounded-full p-1.5 focus:outline-none bg-gray-100',
+                  icon: 'w-6 h-6',
+                }}
+              />
             </div>
           </div>
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
