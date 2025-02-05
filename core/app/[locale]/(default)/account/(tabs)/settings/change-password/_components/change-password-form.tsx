@@ -25,10 +25,18 @@ import { changePassword } from '../_actions/change-password';
 const ChangePasswordFieldsSchema = z.object({
   customerId: z.string(),
   customerToken: z.string(),
-  currentPassword: z.string().min(1),
-  newPassword: z.string().min(1),
+  currentPassword: z
+    .string()
+    .min(1, "Current password is required"),
+    newPassword: z
+    .string()
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      'Password must include at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character.'
+    ),
   confirmPassword: z.string().min(1),
 });
+
 
 const CustomerChangePasswordSchema = ChangePasswordFieldsSchema.omit({
   customerId: true,
@@ -77,6 +85,7 @@ const validatePasswords = (
   }).success;
 };
 
+
 const SubmitButton = () => {
   const { pending } = useFormStatus();
   const t = useTranslations('Account.Settings.ChangePassword');
@@ -106,9 +115,6 @@ export const ChangePasswordForm = () => {
   const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
   const [isCurrentPasswordEmpty, setIsCurrentPasswordEmpty] = useState(true);
-  console.log("current",isCurrentPasswordEmpty);
-  console.log("newvalid",isNewPasswordValid)
-  console.log("confirmvalid",isConfirmPasswordValid)
 
   const { setAccountState } = useAccountStatusContext();
 
@@ -119,6 +125,7 @@ export const ChangePasswordForm = () => {
       setAccountState({
         status: 'success',
         message: t('confirmChangePassword'),
+        // isLoggedIn:false
       });
     }
   }, [state, setAccountState, t]);
@@ -199,7 +206,7 @@ export const ChangePasswordForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error text-[rgb(167,31,35)]"
             match="valueMissing"
           >
             {t('notEmptyMessage')}
@@ -221,14 +228,15 @@ export const ChangePasswordForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error text-[rgb(167,31,35)]"
             match="valueMissing"
           >
             {t('notEmptyMessage')}
           </FieldMessage>
           {!isNewPasswordValid &&  (
-            <FieldMessage className="absolute inset-x-0 inline-flex w-full text-xs text-error md:bottom-0">
+            <FieldMessage className="absolute inset-x-0 inline-flex w-full text-xs text-error md:bottom-0 text-[rgb(167,31,35)]">
               {t('newPasswordValidationMessage')}
+              
             </FieldMessage>
           )}
         </Field>
@@ -248,13 +256,13 @@ export const ChangePasswordForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error text-[rgb(167,31,35)]"
             match="valueMissing"
           >
             {t('notEmptyMessage')}
           </FieldMessage>
           {!isConfirmPasswordValid  &&(
-            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)]">
+            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs  text-error text-[rgb(167,31,35)]">
               {t('confirmPasswordValidationMessage')}
             </FieldMessage>
           )}

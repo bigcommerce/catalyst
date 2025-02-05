@@ -30,6 +30,8 @@ import { ProductFlyout } from '~/components/product-card/product-flyout';
 import { useCommonContext } from '~/components/common-context/common-provider';
 
 import aa from 'search-insights';
+import { klaviyoTrackAddToCart } from '~/belami/components/klaviyo/klaviyo-track-add-to-cart';
+
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import { getCartIdCookie } from '~/app/[locale]/(default)/sales-buddy/_actions/cart';
 
@@ -48,6 +50,7 @@ interface Props {
   blankAddImg: string;
   productMpn: string | null;
   showInSticky?: boolean;
+  customerGroupDetails?: any;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -95,6 +98,7 @@ export const ProductForm = ({
   fanPopup,
   blankAddImg,
   productMpn,
+  customerGroupDetails,
   showInSticky = false,
 }: Props) => {
   const t = useTranslations('Product.Form');
@@ -204,7 +208,10 @@ export const ProductForm = ({
 
     const transformedProduct = productItemTransform(product);
 
+    // Track Add To Cart action...
     if (product && product.prices) {
+      klaviyoTrackAddToCart(product as any);
+
       aa('addedToCartObjectIDs', {
         eventName: 'Product Added To Cart',
         index: indexName,
@@ -258,7 +265,7 @@ export const ProductForm = ({
       </FormProvider>
     );
   }
-
+  const discountRules = customerGroupDetails?.discount_rules;
   return (
     <>
       <ProductFlyout
@@ -266,6 +273,7 @@ export const ProductForm = ({
         closeIcon={closeIcon}
         blankAddImg={blankAddImg}
         fanPopup={fanPopup}
+        discountRules={discountRules}
         from="pdp"
       />
       <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>

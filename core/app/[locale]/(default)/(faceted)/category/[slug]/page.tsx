@@ -9,12 +9,16 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { getCategoryPageData } from './page-data';
 
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
+import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
 
 import { Category } from './category';
 
+import { cookies } from 'next/headers';
+
 import { Page as MakeswiftPage } from '@makeswift/runtime/next';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { defaultLocale } from '~/i18n/routing';
-import { client, getSiteVersion } from '~/lib/makeswift/client';
+import { client } from '~/lib/makeswift/client';
 import '~/lib/makeswift/components';
 
 interface Props {
@@ -52,6 +56,12 @@ export default async function CategoryPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
 
+  const cookieStore = await cookies();
+  const priceMaxCookie = cookieStore.get('pmx');
+  const priceMaxTriggers = priceMaxCookie?.value 
+    ? JSON.parse(atob(priceMaxCookie?.value)) 
+    : undefined;
+
   const customerAccessToken = await getSessionCustomerAccessToken();
   const useDefaultPrices = !customerAccessToken;
 
@@ -75,7 +85,8 @@ export default async function CategoryPage(props: Props) {
   });
 
   const promotions = await getActivePromotions(true);
-  
+  const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
+
   return (
     <div className="group py-4 px-4 xl:px-12">
       <Breadcrumbs category={category} />
@@ -87,7 +98,7 @@ export default async function CategoryPage(props: Props) {
         <MakeswiftPage snapshot={snapshot} />
       }
 
-      <Category category={category} promotions={promotions} useDefaultPrices={useDefaultPrices} />
+      <Category category={category} promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />
     </div>
   );
 }

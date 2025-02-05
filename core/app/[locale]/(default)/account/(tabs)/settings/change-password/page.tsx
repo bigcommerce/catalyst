@@ -23,8 +23,9 @@ export default async function ChangePassword({ params }: Props) {
 
   return (
     <>
-      <TabHeading heading="settings" />
-      <div className="mx-auto lg:w-2/3">
+    <div className='mb-8'>
+      <TabHeading heading="settings" /></div>
+      <div className="mx-auto  lg:w-2/3">
         <ChangePasswordForm />
       </div>
     </>

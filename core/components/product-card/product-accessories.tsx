@@ -48,18 +48,22 @@ export const ProductAccessories = ({
       price,
       name,
       sale_price,
-      purchasingDisabled,
+      retail_price,
+      purchasing_disabled,
+      update_price_for_msrp,
     }: {
       sku: any;
       id: any;
       price: any;
       name: any;
       sale_price: any;
-      purchasingDisabled:any,
+      retail_price:any;
+      purchasing_disabled:Boolean,
+      update_price_for_msrp:any,
     }) => ({
       value: id,
       label: `(+$${sale_price}) ${sku}  ${name}`,
-      purchasingDisabled: purchasingDisabled,
+      purchasing_disabled: purchasing_disabled,
     }),
   );
   const [isPending, startTransition] = useTransition();
@@ -67,16 +71,19 @@ export const ProductAccessories = ({
   const [productlabel, setProductLabel] = useState<string>(accessories?.label);
   const [productPrice, setProductPrice] = useState<any>();
   const [productSalePrice, setProductSalePrice] = useState<any>();
+  const [originalPrice, setOriginalPrice] = useState<any>();
+  const [updatedPrice, setUpdatedPrice] = useState<any>();
   const [productImage, setProductImage] = useState<string>(blankAddImg);
   const [baseImage, setBaseImage] = useState<string>(' bg-set');
   const [hasSalePrice, setHasSalePrice] = useState<number>(0);
+  const [hasDiscount, setHasDiscount] = useState<boolean>(true);
   const [isPurchasingDisabled, setIsPurchasingDisabled] = useState<boolean>(false);
 
   const onProductChange = (variant: any) => {
     setvariantId(variant);
     let accessoriesData = accessories?.productData?.find((prod: any) => prod.id == variant);
     if (accessoriesData) {
-      setIsPurchasingDisabled(accessoriesData.purchasingDisabled);
+      setIsPurchasingDisabled(accessoriesData.purchasing_disabled);
       let formatPrice = format.number(accessoriesData?.price, {
         style: 'currency',
         currency: currencyCode,
@@ -87,8 +94,24 @@ export const ProductAccessories = ({
       } else {
         setHasSalePrice(0);
       }
+      if (accessoriesData?.update_price_for_msrp?.hasDiscount){
+        setHasDiscount(true);
+      }else{
+        setHasDiscount(false);
+      }
       let formatSalePrice: any = 0;
       formatSalePrice = format.number(salePrice, {
+        style: 'currency',
+        currency: currencyCode,
+      });
+      let originalPrice = accessoriesData?.update_price_for_msrp?.originalPrice;
+      let formatOriginalPrice: any = 0;
+      formatOriginalPrice = format.number(originalPrice,{
+        style: 'currency',
+        currency: currencyCode,
+      });
+      let updatedPrice = accessoriesData?.update_price_for_msrp?.updatedPrice;
+      let formatUpdatedPrice = format.number(updatedPrice,{
         style: 'currency',
         currency: currencyCode,
       });
@@ -97,6 +120,8 @@ export const ProductAccessories = ({
       setProductPrice(formatPrice);
       setProductImage(accessoriesData?.image);
       setProductSalePrice(formatSalePrice);
+      setOriginalPrice(formatOriginalPrice);
+      setUpdatedPrice(formatUpdatedPrice);
     }
   };
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -130,6 +155,7 @@ export const ProductAccessories = ({
         if (cartId) {
           let lineItemId = (from == 'pdp') ? productFlyout?.productData?.entityId : data?.entityId;
           let productId = (from == 'pdp') ? productFlyout?.productData?.productEntityId : data?.productEntityId;
+          let variantIdData = (from == 'pdp') ? productFlyout?.productData?.variantEntityId : data?.variantEntityId;
           let optionValue = {
             productId: productId,
             variantId: variantId,
@@ -139,11 +165,16 @@ export const ProductAccessories = ({
           let getCartMetaLineItems = cartMetaFields?.find((item: any) => item?.key == lineItemId);
           if (cartMetaFields?.length == 0 || !getCartMetaLineItems) {
             let metaArray: any = [];
+            let parentInfo: any = JSON.stringify([{
+              productId: productId,
+              variantId: variantIdData
+            }]);
             metaArray.push(optionValue);
             let cartMeta = {
               permission_set: 'write_and_sf_access',
               namespace: 'accessories_data',
               key: lineItemId,
+              description: parentInfo,
               value: JSON.stringify(metaArray),
             };
             await CreateCartMetaFields(cartId, cartMeta);
@@ -217,20 +248,17 @@ export const ProductAccessories = ({
         />
       </div>
       <div className="flex w-full shrink-[100] flex-col gap-[10px]">
-        {productlabel && (
           <div className="flex flex-col gap-[5px] sm:gap-[0px]">
             <p className="text-center text-[16px] font-normal tracking-[0.15px] text-[#353535] sm:text-left">
               {productlabel}
             </p>
             <p className="text-center text-[16px] font-normal tracking-[0.15px] text-[#353535] sm:text-right">
-              {' '}
-              {productSalePrice}{' '}
-              {hasSalePrice == 1 && (
-                <span className="text-[#808080] line-through">{productPrice}</span>
+              {updatedPrice}
+              {hasDiscount && (
+                <span className="ml-1 text-[#808080] line-through">{originalPrice}</span>
               )}
             </p>
           </div>
-        )}
         <div className="right-container">
           <Select
             name={`accessories-products-${index}`}
