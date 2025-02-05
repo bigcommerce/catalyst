@@ -382,43 +382,7 @@ export const Details = ({
                       }}
                     />
                   )}
-                  {/*
-                  {product?.UpdatePriceForMSRP && (
-                    <div className="sticky-product-price mt-2 !w-[16em] items-center whitespace-nowrap text-center lg:text-right">
-                      {product?.UpdatePriceForMSRP?.hasDiscount === true ?(
-                        <>
-                          <span className="price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                            {format.number(product?.UpdatePriceForMSRP?.updatedPrice, {
-                              style: 'currency',
-                              currency: product?.prices?.price?.currencyCode,
-                            })}
-                          </span>
-                          <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
-                            {format.number(product?.UpdatePriceForMSRP?.originalPrice, {
-                              style: 'currency',
-                              currency: product?.prices?.price?.currencyCode,
-                            })}
-                          </span>
-                          <span className="-ml-[0.5em] mb-1 mr-2 text-left text-[12px] text-gray-500">
-                            MSRP
-                          </span>
-                          <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                            Save
-                            {product.UpdatePriceForMSRP.discount}
-                            %
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                          {format.number(product?.UpdatePriceForMSRP?.originalPrice || 0, {
-                            style: 'currency',
-                            currency: product?.prices?.price?.currencyCode || 'USD',
-                          })}
-                        </span>
-                      )}
-                    </div>
-                  )}
-                  */}
+                  
                   {productAvailability === 'Unavailable' ? (
                     <div className="flex flex-col items-center">
                       <button
@@ -553,7 +517,7 @@ export const Details = ({
           </div>
           <ReviewSummary data={product} />
         </div>
-        {/* msrp  */}
+        
         {product?.UpdatePriceForMSRP && (
           <ProductPrice
             defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
@@ -587,7 +551,7 @@ export const Details = ({
               price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
               msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500'
             }} />
-          }
+          )}
           <Coupon couponIcon={couponIcon} />
 
           <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
