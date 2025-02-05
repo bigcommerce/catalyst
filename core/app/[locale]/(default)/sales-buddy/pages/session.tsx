@@ -15,8 +15,10 @@ export default function SessionId() {
     const fullUrl = queryString ? `${window.location.protocol}//${window.location.host}${path}?${queryString}` : `${window.location.protocol}//${window.location.host}${path}`;
 
     useEffect(() => {
-      const iFrame = window.self !== window.top;
-      if(iFrame) return;
+      if (typeof window !== "undefined") {
+        const iFrame = window.self !== window.top;
+        if(iFrame) return;
+      }
         const onloadFetchSessionId = async () => {
             const sessionId = await getSessionIdCookie()
             if (sessionId?.value) {

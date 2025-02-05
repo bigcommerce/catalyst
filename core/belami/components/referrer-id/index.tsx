@@ -19,44 +19,46 @@ export function ReferrerId({sid, referrerId = null, ip, ua, referrer = ''} : {si
   const log: number = Number(logRef) === 0 ? 0 : 1;
 
   useEffect(() => {
-    const iFrame = window.self !== window.top;
-    (async () => {
-      if (typeof window !== 'undefined' && 
-        log === 1 && 
-        !iFrame &&
-        !referrer.includes(window.location.hostname) && 
-        (Number(refId) === 0 || (Number(refId) > 0 && (source.length > 0 || keywords.length > 0 || clickId.length > 0)))
-      ) {
-        try {
-          const response = await fetch('/api/referrer-id', {
-            method: "POST",
-            credentials: "same-origin",
-            headers: {
-              // TODO: Add some security hash here....
-              'Content-Type': 'application/json',
-              'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-              'sid': sid,
-              'rid': refId,
-              'ip': ip,
-              'ua': ua,
-              'referrer': referrer,
-              'sessid': sessId,
-              'source': source,
-              'keywords': keywords,
-              'cid': clickId,
-              'page': pathname
-            }),
-            cache: 'no-store',
-          });
-          const data = await response.json();
-          localStorage.setItem('referrerId', data.data);
-        } catch (error) {
-          console.error('Error generating referrer id: ', error);
+    if (typeof window !== "undefined") {
+      const iFrame = window.self !== window.top;
+      (async () => {
+        if (typeof window !== 'undefined' && 
+          log === 1 && 
+          !iFrame &&
+          !referrer.includes(window.location.hostname) && 
+          (Number(refId) === 0 || (Number(refId) > 0 && (source.length > 0 || keywords.length > 0 || clickId.length > 0)))
+        ) {
+          try {
+            const response = await fetch('/api/referrer-id', {
+              method: "POST",
+              credentials: "same-origin",
+              headers: {
+                // TODO: Add some security hash here....
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+              },
+              body: JSON.stringify({
+                'sid': sid,
+                'rid': refId,
+                'ip': ip,
+                'ua': ua,
+                'referrer': referrer,
+                'sessid': sessId,
+                'source': source,
+                'keywords': keywords,
+                'cid': clickId,
+                'page': pathname
+              }),
+              cache: 'no-store',
+            });
+            const data = await response.json();
+            localStorage.setItem('referrerId', data.data);
+          } catch (error) {
+            console.error('Error generating referrer id: ', error);
+          }
         }
-      }
-    })();
+      })();
+    }
   }, []);
 
   return <></>;
