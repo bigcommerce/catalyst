@@ -3,15 +3,20 @@ import React, { useEffect, useRef, useState } from 'react';
 import { getSessionIdCookie, createSessionIdCookie } from '../_actions/session';
 import { getEnhancedSystemInfo } from '../common-components/common-functions';
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 export default function SessionId() {
     const [storeSessionID, setStoreSessionId] = useState('');
     const { context_session_id, setContext_Session_id } = useCompareDrawerContext();
 
+    const path = usePathname();
+      const searchParams = useSearchParams();
+      const queryString = searchParams.toString(); 
+    const fullUrl = queryString ? `${window.location.protocol}//${window.location.host}${path}?${queryString}` : `${window.location.protocol}//${window.location.host}${path}`;
+
     useEffect(() => {
       const iFrame = window.self !== window.top;
       if(iFrame) return;
-        // const getCartValue =await getCartIdCookie()
         const onloadFetchSessionId = async () => {
             const sessionId = await getSessionIdCookie()
             if (sessionId?.value) {
@@ -19,8 +24,6 @@ export default function SessionId() {
             }
         }
         
-        // if(!getCartValue.value){
-        // }
         onloadFetchSessionId();
     }, [])
 
@@ -51,7 +54,7 @@ export default function SessionId() {
     const initializeSessionId = async () => {
         if (!context_session_id) {
             const localMachineInformation = await fetchSystemInfo();
-            const sessionId = await createSessionIdCookie(localMachineInformation);
+            const sessionId = await createSessionIdCookie(localMachineInformation, fullUrl);
             setContext_Session_id(sessionId?.output);
             setStoreSessionId(sessionId?.output)
             localStorage.setItem('session_id', sessionId?.output)

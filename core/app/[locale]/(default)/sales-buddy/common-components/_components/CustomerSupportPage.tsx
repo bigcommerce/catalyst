@@ -21,7 +21,7 @@ import { setCustomerIdViaSessionId } from '../../_actions/update-customer-id';
 function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
   const [customerDetails, setCustomerDetails] = useState({});
   const [customerDetailsBasedOnSessionId, setCustomerDetailsBasedOnSessionId] = useState([]);
-  const [cartErrorMessage, setCartErrorMessage] = useState<string | null>(null);
+  const [cartErrorMessage, setCartErrorMessage] = useState<string | null>('');
   const [urlinputErrorMessage, setUrlinputErrorMessage] = useState<string | null>(null);
   const [cartSuccessMessage, setCartSuccessMessage] = useState<string | null>(null);
   const [findCustomerErrorMessage, setFindCustomerErrorMessage] = useState<string | null>(null);
@@ -80,16 +80,19 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
   const handleCartLookupSubmit = async (e: React.FormEvent) => {
     setLoading((prev) => ({ ...prev, show1: true }));
     e.preventDefault();
-
-    if (cartId === '') {
-      const cartError = validateInput('cart-id', cartId, "");
+    if (cartId === '' || cartId === null || cartId === undefined){
       setCartErrorMessage('Session Id cannot be empty');
+      setLoading((prev) => ({ ...prev, show1: false }));
+      return
+    }
+    if (cartErrorMessage !== '' ) {
       setLoading((prev) => ({ ...prev, show1: false }));
       return
     }
     localStorage.setItem('cart_lookup_sessionID_agent', "")
     try {
       const response = await getCustomerUrlSession_id(cartId);
+      const shopperInfoDetails =await handleGetShoppersUrlsData(cartId)
       if (response.output.count > 0) {
         setCart_interface_session_id(response.output.data[0]['session_id'])
         setCart_interface_Refferal_id(response.output.data[0]['referral_id'])
@@ -140,36 +143,20 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
       setLoading((prev) => ({ ...prev, show4: false }));
     }
   };
-  const handleGetShoppersUrlsData = async (e: React.FormEvent) => {
-    setLoading((prev) => ({ ...prev, show4: true }));
-    e.preventDefault();
-    if (sessionId === '') {
-      const cartError = validateInput('session-id', sessionId, "");
-      setUrlinputErrorMessage('Session Id cannot be empty');
-      setLoading((prev) => ({ ...prev, show4: false }));
-      return
-    }
+  const handleGetShoppersUrlsData = async (sessionId:any) => {
+
     try {
       // const sessionId = localStorage.getItem('session_id');
-      if (!sessionId) {
-        console.warn('No session ID found in localStorage');
-        setLoading((prev) => ({ ...prev, show4: false }));
-        return;
-      }
-
       const response = await getShopperUrls(sessionId);
       if (!response?.output?.data) {
         console.log('No shopper data received from API');
         setLoading((prev) => ({ ...prev, show4: false }));
         return;
       }
-
       if (response?.output?.count > 0) {
         const shopperData = response?.output?.data[0] || {};
         setCart_interface_session_id(shopperData.session_id)
         setCart_interface_Refferal_id(shopperData.referral_id)
-
-
         const shopperUrls = response?.output?.urls || [];
         const storeShopperInformationInLS = {
           machineInfo: shopperData?.shopper_information || {},
@@ -234,10 +221,12 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
             setLoading((prev) => ({ ...prev, show2: false }));
             let data = response.data.output;
             const extractedData = data.map(
-              (item: { first_name: any; last_name: any; email: any }) => ({
+              (item: { first_name: any; last_name: any; email: any,phone:any,company:any }) => ({
                 first_name: item.first_name,
                 last_name: item.last_name,
                 email: item.email,
+                phone:item.phone,
+                company:item.company
               }),
             );
             if (extractedData.length > 0) {
@@ -283,9 +272,6 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
     if (!createAccountData.email) {
       missingFields.push("Valid Email Address");
     }
-    if (!createAccountData.referral_id) {
-      missingFields.push("Referral ID");
-    }
     const errorMessage = `Please provide the following: ${missingFields.join(" ")}.`;
     return errorMessage;
   }
@@ -300,7 +286,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
       setLoading((prev) => ({ ...prev, show3: false }));
       return;
     }
-    const requiredFields = ['first_name', 'last_name', 'email', 'referral_id'];
+    const requiredFields = ['first_name', 'last_name', 'email'];
     const missingFields = requiredFields.filter(field => !createAccountData[field]);
     if (missingFields.length > 0) {
       setCreateAccountErrorMessage(handleValidationMsgForCreateAccount());
@@ -373,22 +359,6 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
 
   }, [])
 
-  const UrlList = ({ urls }: { urls: { id: string; url: string }[] }) => {
-    return (
-      <div className='m-4 max-w-md'>
-        <h2 className='text-lg font-bold mb-2'>URLs</h2>
-        <ul className='list-disc pl-5'>
-          {urls.map((item) => (
-            <li key={item.id} className='mb-2'>
-              <Link href={item.url} className='text-blue-600 hover:underline break-words block'>
-                {item.url}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  };
 
   const renderInputFields = (fields: Array<{ id: string; label: string }>, refs: any) => {
     return fields.map((item) => (
@@ -548,7 +518,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
         <div className="flex items-center gap-[5px] text-base font-normal">
           <Image src={ShoppingCartIcon} alt="Cart Lookup Icon" />
           <span className="font-open-sans tracking-[0.15px] text-[#353535]">
-            Customer Cart Lookup
+            Customer Session Lookup
           </span>
         </div>
       ),
@@ -579,7 +549,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
             Object.keys(customerDetailsBasedOnSessionId).length > 0 &&
             (cartErrorMessage === '' || cartErrorMessage === null) &&
             cartId !== '' && <div className='m-2'>
-              <CompactUserCard data={customerDetailsBasedOnSessionId} />
+                <CompactUserCard data={customerDetailsBasedOnSessionId} shopperSystemInfo={shopperSystemInfo} customerVisitedUrl={customerVisitedUrl} />
             </div>}
         </form>
       ),
@@ -623,7 +593,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
               </div>
             </button>
           </form>
-          {tableData.length > 0 && <DynamicTable data={tableData} />}
+          {tableData.length > 0 && <DynamicTable data={tableData} setFindCustomerData={setFindCustomerData} />}
           {/* <DynamicTable data={tableData}/> */}
         </>
       ),
@@ -646,7 +616,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
               { id: 'create_company', label: 'Company (Optional)' },
               { id: 'create_email', label: 'Email*' },
               { id: 'create_phone', label: 'Phone (Optional)' },
-              { id: 'create_referralId', label: 'Referrer ID*' },
+             
             ],
             createAccountData,
           )}
@@ -666,60 +636,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
         </form>
       ),
     },
-    {
-      title: (
-        <div className="flex items-center gap-[5px] text-base font-normal">
-          <Image src={PersonIcon} alt="Create Account Icon" />
-          <span className="font-open-sans tracking-[0.15px] text-[#353535]">
-            Shopper Visited URL's
-          </span>
-        </div>
-      ),
-      content: (
-        <form
-          onSubmit={(e) => handleGetShoppersUrlsData(e)}
-          className="mt-[10px] flex flex-col justify-center bg-white pb-[10px]"
-        >
-          <Input
-            value={sessionId}
-            onChange={(e) => handleInputChange('session-id', e.target.value)}
-            id="session-id"
-            placeholder="Session ID"
-            className="font-open-sans w-[225px]"
-          />
-          {urlinputErrorMessage && <p className="text-red-800">{urlinputErrorMessage}</p>}
-          {cartSuccessMessage && <p className="text-green-600">{cartSuccessMessage}</p>}
-          <button
-            type="submit"
-            className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
-
-          >
-            <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH URL's </p>
-            <div className="absolute inset-0 flex items-center justify-center">
-              {loading.show4 && <Loader />}
-            </div>
-          </button>
-          <div>
-            <div>
-              {shopperSystemInfo && Object?.keys(shopperSystemInfo || {})?.length > 0 ? (
-                sessionId !== '' && shopperSystemInfo && <SystemInfoComponent data={shopperSystemInfo} />
-              ) : (
-                sessionId !== '' && shopperSystemInfo?.length > 0 && <p className="text-gray-500 text-center py-4">No System Information Found</p>
-              )}
-            </div>
-            <div className="m-2">
-              {customerVisitedUrl && Array?.isArray(customerVisitedUrl) && customerVisitedUrl?.length > 0 ? (
-                sessionId !== '' && loading.show4 == false && <UrlList urls={customerVisitedUrl} />
-              ) : (
-                sessionId !== '' && shopperSystemInfo?.length > 0 && <p className="text-gray-500 text-center py-4">No URL Data Found</p>
-              )}
-            </div>
-          </div>
-        </form>
-
-
-      ),
-    },
+  
   ];
 
   return (

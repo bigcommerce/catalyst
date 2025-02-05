@@ -11,8 +11,8 @@ import { Spinner } from "@/vibes/soul/primitives/spinner";
 import { getCartIdCookie } from '../../_actions/cart';
 import { useCompareDrawerContext } from "~/components/ui/compare-drawer";
 
-interface Props{
-  cartId:string;
+interface Props {
+  cartId: string;
 }
 export default function ReferalId() {
   const [showReferralInput, setShowReferralInput] = useState(false);
@@ -21,7 +21,7 @@ export default function ReferalId() {
   const [remove, setRemove] = useState(false);
   const [referralId, setReferralId] = useState(localStorage.getItem('referrerId')); // Example referral ID
   const [isDisabled, setIsDisabled] = useState(false);
-  const [session_id,setSession_id] = useState(localStorage.getItem('session_id'))
+  const [session_id, setSession_id] = useState(localStorage.getItem('session_id'))
   const router = useRouter();
   const { cart_interface_session_id, setCart_interface_session_id, cart_interface_refferal_id, setCart_interface_Refferal_id } = useCompareDrawerContext();
 
@@ -57,43 +57,34 @@ export default function ReferalId() {
     setLoading(false);
     async function fetchMyCookie() {
       let cookieValue = await getCartIdCookie();
-      if(cookieValue){
+      if (cookieValue) {
         setIsDisabled(false);
-      }else{
+      } else {
         setIsDisabled(true);
       }
-  }
+    }
 
-  fetchMyCookie();
+    fetchMyCookie();
   }, [remove]);
 
   return (
     <div className="grid content-evenly gap-[10px] h-[81px] w-[460px] space-y-1 rounded-lg">
-      <div className="flex flex-row items-center h-[32px] justify-between border-none">
-        {/* Heading at the start */}
-        <h2 className="text-2xl font-normal">Cart ID: {cart_interface_session_id}</h2>
-
-        {/* Span at the end */}
-        <span className="my-2 flex h-[32px] w-[110px] items-center justify-center bg-[#F2DEBE] text-base font-normal">
-          Mark: #.#
-        </span>
-      </div>
       <div className="flex h-[36px] items-end justify-between">
-         <div className="font-open-sans flex items-center gap-2 text-[16px] text-[#353535]">
+        <div className="font-open-sans flex items-center gap-2 text-[16px] text-[#353535]">
           <span>{`Referrer ID: ${cart_interface_refferal_id}`}</span>
-              </div>
+        </div>
         <div className="w-[110px] bg-[#1DB14B] py-[5px] px-[10px] h-[44px] rounded-[3px] items-center content-center ">
           <button
             className=""
             onClick={handleDelete}
             disabled={isDisabled}
           >
-             {loading && (
-                <div className="absolute flex items-center justify-center">
-                  <Spinner />
-                </div>
-              )}
-              <span className="text-white text-[14px] font-medium h-[32px] "> RESET CART</span>
+            {loading && (
+              <div className="absolute flex items-center justify-center">
+                <Spinner />
+              </div>
+            )}
+            <span className="text-white text-[14px] font-medium h-[32px] "> RESET CART</span>
           </button>
         </div>
       </div>
