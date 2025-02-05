@@ -12,6 +12,7 @@ import { ErrorMessage } from '../shared/error-message';
 import { MultipleChoiceFieldFragment } from './fragment';
 import { BcImage } from '~/components/bc-image';
 import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
+import * as Tooltip from '@radix-ui/react-tooltip';
 
 interface InteractionOptions {
   optionId: number;
@@ -59,7 +60,10 @@ export const MultipleChoiceField = ({
     }
   };
 
-  const handleOnValueChange = ({ optionId, valueId }: InteractionOptions) => {
+  const handleOnValueChange = (
+    { optionId, valueId }: InteractionOptions,
+    event: React.MouseEvent,
+  ) => {
     const selectedValue = values.find((value) => value.entityId === valueId);
     handleInteraction({ optionId, valueId });
     setSelectedOption(selectedValue?.label || null);
@@ -136,6 +140,7 @@ export const MultipleChoiceField = ({
     case 'Swatch': {
       const remainingCount = values.length - displayedValues.length;
       const activeOptionSwatch = values.find((v) => v.entityId.toString() === field.value);
+      const activeOptionSwatchLabel = activeOptionSwatch?.label.split('|');
 
       return (
         <div
@@ -149,41 +154,70 @@ export const MultipleChoiceField = ({
             {option.displayName} :
           </Label>
           <span className="selection ml-[5px] text-[#008BB7]">
-            {activeOptionSwatch ? activeOptionSwatch.label : 'Selection'}
+            {activeOptionSwatchLabel ? activeOptionSwatchLabel[0] : 'Selection'}
           </span>
 
           <div className="ml-[0.8em] flex flex-wrap items-center justify-center gap-2 xl:ml-[0em] xl:justify-start">
             <div className="flex flex-wrap gap-2">
-              <Swatch
-                aria-labelledby={`label-${option.entityId}`}
-                error={Boolean(error)}
-                name={field.name}
-                className="rounded-full"
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  handleOnValueChange({
-                    optionId: option.entityId,
-                    valueId: Number(value),
-                  });
-                }}
-                swatches={displayedValues
-                  .filter(
-                    (value) => '__typename' in value && value.__typename === 'SwatchOptionValue',
-                  )
-                  .map((value) => ({
-                    label: value.label,
-                    value: value.entityId.toString(),
-                    color: value.hexColors[0] ?? value.imageUrl,
-                    onMouseEnter: () => {
-                      handleMouseEnter({
-                        optionId: option.entityId,
-                        valueId: Number(value.entityId),
-                      });
-                    },
-                  }))}
-                value={field.value?.toString()}
-              />
-
+              {displayedValues
+                .filter(
+                  (value) => '__typename' in value && value.__typename === 'SwatchOptionValue',
+                )
+                .map((value) => (
+                  <Tooltip.Provider key={value.entityId} >
+                    <Tooltip.Root>
+                      <Tooltip.Trigger type="button">
+                        <Swatch
+                          aria-labelledby={`label-${option.entityId}`}
+                          error={Boolean(error)}
+                          name={field.name}
+                          className="rounded-full"
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            handleOnValueChange({
+                              optionId: option.entityId,
+                              valueId: Number(value),
+                            });
+                          }}
+                          swatches={[
+                            {
+                              label: value.label,
+                              value: value.entityId.toString(),
+                              color: value.hexColors[0] ?? value.imageUrl,
+                              onMouseEnter: () => {
+                                handleMouseEnter({
+                                  optionId: option.entityId,
+                                  valueId: Number(value.entityId),
+                                });
+                              },
+                            },
+                          ]}
+                          value={field.value?.toString()}
+                        />
+                      </Tooltip.Trigger>
+                      <Tooltip.Content
+                        side="top"
+                        align="center"
+                        sideOffset={5}
+                        className="rounded-md bg-white shadow-xl relative z-[99]"
+                      >
+                        <div className="flex h-[240px] w-[180px] flex-col gap-0 p-3">
+                          <p className="text-sm text-gray-800 p-0 m-0">
+                            {value.label.split('|')[0]}
+                          </p>
+                          <div
+                            className="h-full w-full p-0 m-0 rounded-sm"
+                            style={{ backgroundColor: value.hexColors[0] }}
+                          ></div>
+                          {value.label.split('|')[1] ? (
+                            <p className="text-sm text-gray-800 p-0 m-0">{`${value.label.split('|')[1]}`}</p>
+                          ):<p></p>}
+                        </div>
+                        <Tooltip.Arrow className="fill-white transform scale-150" />
+                      </Tooltip.Content>
+                    </Tooltip.Root>
+                  </Tooltip.Provider>
+                ))}
               {remainingCount > 0 && !showAll && (
                 <div className="flex items-center gap-1 text-[#008BB7]">
                   <button
@@ -215,7 +249,7 @@ export const MultipleChoiceField = ({
         </div>
       );
     }
-
+    
     case 'RectangleBoxes': {
       const activeOptionRectangleBoxes = values.find((v) => v.entityId.toString() === field.value);
       const remainingCount = values.length - displayedValues.length;
@@ -223,7 +257,7 @@ export const MultipleChoiceField = ({
       return (
         <div key={option.entityId} className="div-product-rectangleboxes xl:mt-0">
           <div className="mb-3 block !gap-0 text-center xl:flex xl:items-center">
-            <BcImage
+            {/* <BcImage
               className="variant-img inline-block !h-[20px] !w-[20px] rounded-[50px]"
               alt="headline icon"
               src={exclamatryIcon}
@@ -231,9 +265,9 @@ export const MultipleChoiceField = ({
               height={15}
               unoptimized={true}
               loading="lazy"
-            />
+            /> */}
             <Label
-              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
+              className="inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
               htmlFor={`label-${option.entityId}`}
             >
               {option.displayName} :
@@ -322,7 +356,7 @@ export const MultipleChoiceField = ({
       return (
         <div key={option.entityId} className="div-product-dropdownlist text-center xl:text-left">
           <div className="mb-3 block text-center xl:flex xl:items-center">
-            <BcImage
+            {/* <BcImage
               className="variant-img inline-block !h-[20px] !w-[20px] rounded-[50px]"
               alt="headline icon"
               src={exclamatryIcon}
@@ -330,9 +364,9 @@ export const MultipleChoiceField = ({
               height={15}
               unoptimized={true}
               loading="lazy"
-            />
+            /> */}
             <Label
-              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
+              className="inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
               htmlFor={`label-${option.entityId}`}
             >
               {option.displayName} :

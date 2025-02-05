@@ -38,7 +38,7 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
                 error &&
                   'border-error-secondary focus-visible:border-error-secondary data-[state=checked]:border-error-secondary hover:border-error focus-visible:ring-error/20 disabled:border-gray-200',
               )}
-              title={label}
+              //title={label}
               value={value}
             >
               {color ? (
