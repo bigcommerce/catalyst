@@ -605,7 +605,7 @@ export const Details = ({
                 isFromPDP={true}
               />
             )}
-            {product?.brand?.entityId && getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
+            {product?.brand?.entityId && getAllCommonSettinngsValues?.hasOwnProperty(product?.brand?.entityId) &&
               getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
                 <NoShipCanada
                 description={getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message}

@@ -368,7 +368,7 @@ export const ProductPageQuery = graphql(
   ],
 );
 
-const ProductPageSKUQuery = graphql(
+export const ProductPageSKUQuery = graphql(
   `
     query ProductPageSKUQuery(
       $sku: String!

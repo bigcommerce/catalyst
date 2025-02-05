@@ -8,11 +8,7 @@ import { cache } from 'react';
 import { OrderDetailsType } from '~/app/[locale]/(default)/account/(tabs)/order/[slug]/page-data';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ProductItemFragment, ProductPageQuery } from '~/app/[locale]/(default)/product/[slug]/page-data';
-import { BreadcrumbsFragment } from '../breadcrumbs/fragment';
-import { GalleryFragment } from '~/app/[locale]/(default)/product/[slug]/_components/gallery/fragment';
-import { DetailsFragment } from '~/app/[locale]/(default)/product/[slug]/_components/details';
-import { DescriptionFragment } from '~/app/[locale]/(default)/product/[slug]/_components/description';
-import { WarrantyFragment } from '~/app/[locale]/(default)/product/[slug]/_components/warranty';
+import { ProductPageSKUQuery } from '~/app/[locale]/(default)/product/[slug]/page-data';
 
 const ProductMetaFieldsQuery = graphql(
     `
@@ -340,64 +336,10 @@ export const getProduct = cache(async (variables: Variables) => {
   return data.site.product as any;
 });
 
-const ProductPageSKUQuery = graphql(
-  `
-    query ProductPageSKUQuery(
-      $sku: String!
-    ) {
-      site {
-        product(
-          sku: $sku
-        ) {
-          ...GalleryFragment
-          ...DetailsFragment
-          ...ProductItemFragment
-          ...DescriptionFragment
-          ...WarrantyFragment
-          entityId
-          name
-          defaultImage {
-            url: urlTemplate(lossy: true)
-            altText
-          }
-          categories {
-            edges {
-              node {
-                ...BreadcrumbsFragment
-              }
-            }
-          }
-          seo {
-            pageTitle
-            metaDescription
-            metaKeywords
-          }
-        }
-        parent: product(
-          sku: $sku          
-        ) {
-          entityId
-          sku
-          mpn
-        }
-      }
-    }
-  `,
-  [
-    BreadcrumbsFragment,
-    GalleryFragment,
-    DetailsFragment,
-    ProductItemFragment,
-    DescriptionFragment,
-    WarrantyFragment,
-  ],
-);
-
 type SkuVariables = VariablesOf<typeof ProductPageSKUQuery>;
 
 export const getProductBySku = async (variables: SkuVariables) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
-  console.log('===variables======', variables);
   const { data } = await client.fetch({
     document: ProductPageSKUQuery,
     variables,

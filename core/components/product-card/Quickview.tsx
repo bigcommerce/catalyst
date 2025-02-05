@@ -15,7 +15,6 @@ interface QuickViewProps {
 }
 
 const getProductData = async (product: any) => {
-  console.log('-----------', product);
   const productData: any = await getProductBySku({
     sku: product?.sku,
   });
