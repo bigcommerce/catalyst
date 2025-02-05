@@ -8,13 +8,14 @@ import { Details } from '~/app/[locale]/(default)/product/[slug]/_components/det
 import { Gallery } from '~/app/[locale]/(default)/product/[slug]/_components/gallery';
 import { Warranty } from '~/app/[locale]/(default)/product/[slug]/_components/warranty';
 import { Description } from '~/app/[locale]/(default)/product/[slug]/_components/description';
-import { getProductBySku } from '~/app/[locale]/(default)/product/[slug]/page-data';
+import { getProductBySku } from '../graphql-apis';
 
 interface QuickViewProps {
   product: any;
 }
 
 const getProductData = async (product: any) => {
+  console.log('-----------', product);
   const productData: any = await getProductBySku({
     sku: product?.sku,
   });
@@ -27,9 +28,9 @@ const QuickView = ({ product }: QuickViewProps) => {
   const [productInfo, setProductInfo] = useState(product);
 
   const openQuickView = async () => {
-    setIsOpen(true);
     let productData = await getProductData(product);
     setProductInfo(productData);
+    setIsOpen(true);
   };
 
   return (
@@ -56,7 +57,6 @@ const QuickView = ({ product }: QuickViewProps) => {
           <span>QUICK VIEW</span>
         </div>
       </button>
-
       <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
@@ -68,16 +68,18 @@ const QuickView = ({ product }: QuickViewProps) => {
                 <span className="sr-only">Close</span>
               </Dialog.Close>
               <Dialog.Description></Dialog.Description>
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-                <div className="a1 mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
-                  <Gallery product={productInfo} />
-                  <Details product={productInfo} />
+              {isOpen &&
+                <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+                  <div className="a1 mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
+                    <Gallery product={productInfo} bannerIcon={''} galleryExpandIcon={''} />
+                    <Details product={productInfo} triggerLabel1={undefined} children1={undefined} triggerLabel2={undefined} children2={undefined} triggerLabel3={undefined} children3={undefined} triggerLabel4={undefined} children4={undefined} triggerLabel5={undefined} children5={undefined} priceMaxRules={undefined} getAllCommonSettinngsValues={undefined} />
+                  </div>
+                  <div className="lg:col-span-2" id="tabsection1">
+                    <Description product={productInfo} />
+                    <Warranty product={productInfo} />
+                  </div>
                 </div>
-                <div className="lg:col-span-2" id="tabsection1">
-                  <Description product={productInfo} />
-                  <Warranty product={productInfo} />
-                </div>
-              </div>
+              }
             </div>
           </Dialog.Content>
         </Dialog.Portal>
