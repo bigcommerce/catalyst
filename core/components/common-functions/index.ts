@@ -393,8 +393,8 @@ export const calculateProductPrice = async (
     const retailPrice = type === 'accessories' ? product.retail_price : prices?.retailPrice?.value;
     const salePrice = type === 'accessories' ? product.sale_price : prices?.salePrice?.value;
     const basePrice = type === 'accessories' ? product.price : prices?.basePrice?.value;
-    const productId = type==='accessories' ? product.product_id : product.entityId;
-
+    const productId = type=== 'accessories' ? product.product_id : product.productEntityId;
+  
     let originalPrice = 0;
     let updatedPrice = 0;
     let discount = 0;

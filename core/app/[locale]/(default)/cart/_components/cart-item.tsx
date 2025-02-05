@@ -301,9 +301,10 @@ export const CartItem = async ({
     product?.productEntityId,
     product?.variantEntityId,
   );
-  const updatedProduct: any[][] = [];
- 
-  product?.accessories?.length > 0 && product?.accessories?.map(async (item: any, index: number) => {
+  const updatedAccessories: any[][] = [];
+
+if (product?.accessories?.length > 0) {
+  const promises = product.accessories.map(async (item: any, index: number) => {
     const categories = removeEdgesAndNodes(item.baseCatalogProduct.categories) as CategoryNode[];
     const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
       const longestLength = longest?.breadcrumbs?.edges?.length || 0;
@@ -311,14 +312,19 @@ export const CartItem = async ({
       return currentLength > longestLength ? current : longest;
     }, categories[0]);
     
-   const categoryIds= categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
+    const categoryIds = categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
       (edge) => edge.node.entityId
     ) || [];
     
-    const price = await calculateProductPrice(item, "cart", discountRules, categoryIds);
-    updatedProduct.push(...price);
-  })
-  
+    const details = await calculateProductPrice(item, "cartaccessory", discountRules, categoryIds);
+    updatedAccessories.push(...details);
+  });
+
+  // Wait for all promises to resolve
+  await Promise.all(promises);
+}
+
+product = { ...product, updatedAccessories };
 
   return (
     <li className="mb-[24px] border border-gray-200">
@@ -563,18 +569,18 @@ export const CartItem = async ({
           </div>
         </div>
       </div>
-      {product?.accessories?.length > 0 && (
+      {product?.updatedAccessories?.length > 0 && (
         <div>
-          {product?.accessories &&
-            product?.accessories?.map((item: any, index: number) => {
-              let oldPriceAccess = item?.originalPrice?.value;
-              let salePriceAccess = item?.extendedSalePrice?.value;
+          {product?.updatedAccessories &&
+            product?.updatedAccessories?.map((item: any, index: number) => {
+              let oldPriceAccess = item?.UpdatePriceForMSRP?.originalPrice;
+              let salePriceAccess = item?.UpdatePriceForMSRP?.updatedPrice;
               let discountedPrice: any = Number(
                 100 - (salePriceAccess * 100) / oldPriceAccess,
               )?.toFixed(2);
               let discountPriceText: string = '';
               if (discountedPrice > 0) {
-                discountPriceText = discountedPrice + '% Off';
+                discountPriceText = Math.round(discountedPrice) + '% Off';
               }
               return (
                 <div
@@ -593,17 +599,17 @@ export const CartItem = async ({
                       <div className="flex flex-col items-start p-0">
                         <div>{item.name}</div>
                         <div className="flex flex-wrap items-center gap-[0px_10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
-                          {item.originalPrice.value &&
-                          item.originalPrice.value !== item.listPrice.value ? (
+                          {item?.UpdatePriceForMSRP?.originalPrice &&
+                          item?.UpdatePriceForMSRP?.originalPrice !== item?.UpdatePriceForMSRP?.updatedPrice ? (
                             <p className="flex items-center tracking-[0.25px] line-through">
-                              {format.number(item.originalPrice.value * item.quantity, {
+                              {format.number(oldPriceAccess * item.quantity, {
                                 style: 'currency',
                                 currency: currencyCode,
                               })}
                             </p>
                           ) : null}
                           <p className="text-[#353535]">
-                            {format.number(item.extendedSalePrice.value, {
+                            {format.number(salePriceAccess, {
                               style: 'currency',
                               currency: currencyCode,
                             })}
