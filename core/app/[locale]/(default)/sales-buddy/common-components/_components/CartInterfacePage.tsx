@@ -18,6 +18,7 @@ import Loader from './Spinner';
 import { useRouter } from 'next/navigation';
 import { findCustomerDetails } from '../../_actions/find-customer';
 import { setCustomerIdViaSessionId } from '../../_actions/update-customer-id';
+import { validateInput } from '../common-functions';
 interface CartInterfaceProps {
   toggleAccordion: (index: number) => void;
   openIndexes: number[];
@@ -35,7 +36,8 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
   const [prevComments, setPrevComments] = useState('')
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [accountId, setAccountId] = useState<string>('');
-  const [accountIdError, setAccountIdError] = useState<string | null>(null);
+  const [accountIdError, setAccountIdError] = useState<string | null>("");
+  const [accountIdSuccess, setAccountIdSuccess] = useState<string | null>("");
   type FormData = {
     // accountId: string;
     supplier: string;
@@ -263,6 +265,12 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
     ));
   };
   const handleAddAccountSubmit = async () => {
+    const cartError = validateInput('email', accountId, "");
+    if(cartError !== ""){
+      setAccountIdError(cartError);
+      return
+    }
+     
     try {
       setLoading((prev) => ({ ...prev, accountId: true }));
       if (!accountId) {
@@ -275,16 +283,28 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
         last_name: '',
         email: accountId
       });
+      console.log(response.data);
+      
       if (response?.data?.status === 200) {
-        setCustomerIdViaSessionId(response.data.output[0].id)
+        if(response.data.output.length > 0){
+
+          setLoading((prev) => ({ ...prev, accountId: false }));
+          setCustomerIdViaSessionId(response.data.output[0].id)
+          setAccountIdSuccess("Customer Id has been successfully added");
+        }else{
+          setLoading((prev) => ({ ...prev, accountId: false }));
+          setAccountIdError('Account ID not found');
+        }
+
       } else {
+        setLoading((prev) => ({ ...prev, accountId: false }));
+
         throw new Error(
           response?.data?.message || 'Failed to fetch customer details'
         );
       }
     } catch (error) {
-      console.error('Error in handleAddAccountSubmit:', error.message);
-      setAccountIdError(error.message || 'An unexpected error occurred');
+      setAccountIdError("Failed to retrive details");
     } finally {
       // Ensure loading is reset
       setLoading((prev) => ({ ...prev, accountId: false }));
@@ -311,11 +331,15 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
             onChange={(e) => {
               setAccountId(e.target.value);
               setAccountIdError('');
+              setAccountIdSuccess('')
              
             }}
             className="mb-[10px]"
           />
           <p className="text-red-800">{accountIdError}</p>
+          <p className="text-[#1DB14B]">{accountIdSuccess}</p>
+
+          
           <Button
 
             className="mt-2 font-open-sans w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white"
