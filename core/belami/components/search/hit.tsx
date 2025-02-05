@@ -1034,7 +1034,12 @@ export function Hit({
               </h3>
             )}
           </div>
-          {(hit.metafields && hit.metafields.Details && (Object.keys(hit.metafields.Details).length > 2 || !hit.description || hit.description.length == 0)) ? (
+          {hit.metafields && 
+            hit.metafields.Details && 
+            (Object.keys(hit.metafields.Details).filter(key => ['Depth', 'Height', 'Length', 'Width', 'Minimum Mounting Height', 'Fuel Source', 'Heating Area', 'Wattage', 'Number of Bulbs', 'Lift', 'Lamp Base Type', 'Voltage'].includes(key)).length > 2 
+              || !hit.description 
+              || hit.description.length == 0
+            ) ? (
             <div className="product-details mt-2 leading-6">
               <ul>
                 {hit.metafields.Details.Depth ? (
