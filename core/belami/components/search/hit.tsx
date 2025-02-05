@@ -344,21 +344,21 @@ function Promotion({
 Badges for PLP
 Sale
 Clearance
-Wet rated     wet
-Damp rated    damp
-Energy star   energystar
-Dark sky  darksky
-Coastal/Marine grade  coastal
+Wet rated     wet  Wet Rated
+Damp rated    damp  Damp Rated
+Energy star   energystar  Energy Star Certified
+Dark sky  darksky  Dark Sky Friendly
+Coastal/Marine grade  coastal  Coastal Quality
 */
 function RatingCertifications({ data }: any) {
   const badges: {
     [key: string]: any;
   } = {
-    wet: wetBadge,
-    damp: dampBadge,
-    energystar: energystarBadge,
-    darksky: darkskyBadge,
-    coastal: coastalBadge,
+    'Wet Rated': wetBadge,
+    'Damp Rated': dampBadge,
+    'Energy Star Certified': energystarBadge,
+    'Dark Sky Friendly': darkskyBadge,
+    'Coastal Quality': coastalBadge,
   };
 
   const items = typeof data === 'string' ? JSON.parse(data) : Array.isArray(data) ? data : null;
@@ -367,12 +367,12 @@ function RatingCertifications({ data }: any) {
       {items
         ? items
             .filter((item: any) =>
-              ['wet', 'damp', 'energystar', 'darksky', 'coastal'].includes(item.code),
+              ['Wet Rated', 'Damp Rated', 'Energy Star Certified', 'Dark Sky Friendly', 'Coastal Quality'].includes(item.label),
             )
-            .map((item: any) => (
+            .map((item: any, index: number) => (
               <Image
-                key={item.code}
-                src={badges[item.code]}
+                key={index}
+                src={badges[item.label]}
                 height={24}
                 alt={item.label}
                 title={item.label}
