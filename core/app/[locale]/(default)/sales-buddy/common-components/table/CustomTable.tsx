@@ -1,11 +1,41 @@
+import React, { useState, useEffect } from 'react';
 
-import React from 'react';
-import Link from 'next/link';
+interface DynamicListProps {
+  data: Array<{ first_name: string; last_name: string; email: string }>;
+  setFindCustomerData: (data: any) => void;
+}
 
-export default function DynamicList({ data }) {
+export default function DynamicList({ data, setFindCustomerData }: DynamicListProps) {
+  const [selectedCustomer, setSelectedCustomer] = useState<string | null>(null);
+  console.log(data);
+
+  useEffect(() => {
+    if (data.length === 1) {
+      const customer = data[0];
+      setSelectedCustomer(customer.email);
+      setFindCustomerData({
+        email: customer.email,
+        phone: customer?.company || "",
+        first_name: customer.first_name + " " + customer.last_name,
+        company: customer?.phone || "",
+      });
+    }
+  }, [data, setFindCustomerData]);
+
   if (!data || !data.length) {
     return <p>No data available to display.</p>;
   }
+
+  const handleSelectCustomer = (customer: { first_name: string; last_name: string; email: string }) => {
+    setSelectedCustomer(customer.email);
+    setFindCustomerData({
+      email: customer.email,
+      phone: customer?.phone || "",
+      first_name: customer.first_name + " " + customer.last_name,
+      company: customer?.company || "",
+    
+    });
+  };
 
   return (
     <div style={{ padding: '10px', margin: 'auto' }}>
@@ -17,29 +47,24 @@ export default function DynamicList({ data }) {
             borderRadius: '8px',
             padding: '15px',
             marginBottom: '10px',
-            backgroundColor: '#f9f9f9',
+            backgroundColor: selectedCustomer === item.email ? '#d1e7fd' : '#f9f9f9', // Change color when selected
+            cursor: 'pointer',
+            transition: 'background-color 0.3s ease',
           }}
+          onClick={() => handleSelectCustomer(item)}
         >
           <div style={{ marginBottom: '8px' }}>
             <strong>Name :</strong>{' '}
-            {/* <Link href={`/cart`}> */}
-              <span style={{ textDecoration: 'none', color: 'inherit' }}>
-                {item.first_name +" " +item.last_name  || 'N/A'}
-              </span>
-            {/* </Link> */}
+            <span style={{ textDecoration: 'none', color: 'inherit' }}>
+              {item.first_name + " " + item.last_name || 'N/A'}
+            </span>
           </div>
           <div style={{ marginBottom: '8px' }}>
-            
-            {/* <Link href={`/cart`}> */}
-             <div className='flex justify-between'>
-               <span style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className='flex justify-between'>
+              <span style={{ textDecoration: 'none', color: 'inherit' }}>
                 <strong>Email ID : </strong>{item.email || 'N/A'}
               </span>
-              <Link href={`/`}>
-              <span className=''>Login</span>
-              </Link>
-              </div>
-            {/* </Link> */}
+            </div>
           </div>
         </div>
       ))}
