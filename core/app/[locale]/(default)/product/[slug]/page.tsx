@@ -1,5 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import PLazy from 'p-lazy';
 import { cache, Suspense } from 'react';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
@@ -223,7 +224,6 @@ export default async function Product(props: Props) {
   const t = await getTranslations('Product');
 
   const productId = Number(slug);
-  const variables = await cachedProductDataVariables(slug, props.searchParams);
 
   return (
     <>
@@ -258,7 +258,14 @@ export default async function Product(props: Props) {
 
       <Reviews productId={productId} />
 
-      <Stream fallback={null} value={getProductData(variables)}>
+      <Stream
+        fallback={null}
+        value={PLazy.from(() =>
+          cachedProductDataVariables(slug, props.searchParams).then((variables) =>
+            getProductData(variables),
+          ),
+        )}
+      >
         {(product) => (
           <>
             <ProductSchema product={product} />
