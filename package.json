@@ -33,7 +33,8 @@
     }
   },
   "dependencies": {
-    "@react-google-maps/api": "^2.20.5",
-    "@datadog/browser-rum": "^6.1.0"
+    "@datadog/browser-rum": "^6.1.0",
+    "@radix-ui/react-tooltip": "^1.1.7",
+    "@react-google-maps/api": "^2.20.5"
   }
 }

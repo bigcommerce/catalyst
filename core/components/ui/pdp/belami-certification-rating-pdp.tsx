@@ -101,12 +101,12 @@ const CertificationsAndRatings: React.FC<CertificationsAndRatingsProps> = ({
 
   return (
     <div className="product-certificates mt-4 xl:mt-7">
-      <div className="mb-4 flex items-center justify-center gap-2">
+      <div className="mb-4 flex items-center justify-center gap-2 xl:justify-start">
         <span className="text-base text-[#002A37]">
           {t('title')} <Flyout triggerLabel={triggerLabel}>{children}</Flyout>
         </span>
       </div>
-      <div className="certifications flex flex-wrap items-center justify-center gap-4">
+      <div className="certifications flex flex-wrap items-center justify-center gap-4 xl:justify-start">
         {allCertifications.map((certification: Certification, index: number) => (
           <div key={`${certification.code}-${index}`} className="flex items-center gap-2">
             <BcImage

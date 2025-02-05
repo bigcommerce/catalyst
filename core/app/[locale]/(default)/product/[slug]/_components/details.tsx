@@ -382,7 +382,7 @@ export const Details = ({
                       }}
                     />
                   )}
-
+                  
                   {productAvailability === 'Unavailable' ? (
                     <div className="flex flex-col items-center">
                       <button
@@ -517,8 +517,7 @@ export const Details = ({
           </div>
           <ReviewSummary data={product} />
         </div>
-        {/* msrp  */}
-
+        
         {product?.UpdatePriceForMSRP && (
           <ProductPrice
             defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
@@ -550,12 +549,10 @@ export const Details = ({
               discount:
                 'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
               price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500',
-            }}
-          />
-        )}
-
-        <Coupon couponIcon={couponIcon} />
+              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500'
+            }} />
+          )}
+          <Coupon couponIcon={couponIcon} />
 
         <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
           <span> Free Delivery</span>

@@ -81,7 +81,6 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const params = await props.params;
   const productId = Number(params.slug);
   const productSku: any = searchParams?.sku;
-
   const optionValueIds = getOptionValueIds({ searchParams });
   let product: any;
   if (productSku && optionValueIds.length === 0) {
@@ -109,13 +108,13 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     keywords: metaKeywords ? metaKeywords.split(',') : null,
     openGraph: url
       ? {
-        images: [
-          {
-            url,
-            alt,
-          },
-        ],
-      }
+          images: [
+            {
+              url,
+              alt,
+            },
+          ],
+        }
       : null,
   };
 }
@@ -415,7 +414,12 @@ export default async function ProductPage(props: Props) {
           </div>
 
           <ProductViewed product={product} />
-          <ProductSchema product={product} identifier={newIdentifier} />
+          <ProductSchema
+            product={product}
+            identifier={newIdentifier}
+            optionValueIds={optionValueIds.length}
+            productSku={productSku}
+          />
 
           <KlaviyoTrackViewedProduct product={product} />
         </ProductProvider>
