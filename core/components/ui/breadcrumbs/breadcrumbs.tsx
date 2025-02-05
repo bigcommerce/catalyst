@@ -19,12 +19,12 @@ const Breadcrumbs = ({ breadcrumbs, className }: Props) => {
     <nav aria-label="Breadcrumb" className={className}>
       <ul className="main-breadcrumbs flex flex-wrap items-center">
         {/* Static Home breadcrumb */}
-        <li className="flex items-center text-[16px] font-normal breadcrumbs-li-home">
+        <li className="breadcrumbs-li-home flex items-center text-[16px] font-normal">
           <CustomLink className="font-normal text-[#7F7F7F]" href="/">
             Home
           </CustomLink>
         </li>
-        <span className="mx-1 font-normal text-[#7F7F7F] breadcrumbs-li-slash">/</span>
+        <span className="breadcrumbs-li-slash mx-1 font-normal text-[#7F7F7F]">/</span>
 
         {/* Dynamic breadcrumbs */}
         {breadcrumbs.map(({ label, href }, i, arr) => {

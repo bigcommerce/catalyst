@@ -304,9 +304,9 @@ export default async function ProductPage(props: Props) {
 
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-5">
-        <div className="breadcrumbs-container">
+        <div className="breadcrumbs-container hidden md:block">
           {categoryWithBreadcrumbs && (
-            <div className="breadcrumb-row mb-5">
+            <div className="breadcrumb-row mb-5 flex justify-center xl:justify-start">
               <Breadcrumbs category={categoryWithBreadcrumbs} />
             </div>
           )}
