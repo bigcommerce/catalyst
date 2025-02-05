@@ -68,8 +68,8 @@ interface Props {
   triggerLabel5: React.ReactNode;
   children5: React.ReactNode;
   priceMaxRules: any;
-  getAllCommonSettinngsValues:any;
-  customerGroupDetails:any;
+  getAllCommonSettinngsValues: any;
+  customerGroupDetails: any;
 }
 
 export const DetailsFragment = graphql(
@@ -166,7 +166,7 @@ export const Details = ({
   children4,
   triggerLabel5,
   children5,
-  priceMaxRules
+  priceMaxRules,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -558,34 +558,37 @@ export const Details = ({
           )}
           <Coupon couponIcon={couponIcon} />
 
-          <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
-              <span> Free Delivery</span>
-            {selectedVariantId && (
-              <FreeDelivery
-                entityId={product.entityId}
-                variantId={selectedVariantId}
-                isFromPDP={true}
+        <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
+          <span> Free Delivery</span>
+          {selectedVariantId && (
+            <FreeDelivery
+              entityId={product.entityId}
+              variantId={selectedVariantId}
+              isFromPDP={true}
+            />
+          )}
+          {product?.brand?.entityId &&
+            getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
+            getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
+              <NoShipCanada
+                description={
+                  getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message
+                }
               />
             )}
-            {product?.brand?.entityId && getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
-              getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
-                <NoShipCanada
-                description={getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message}
-                />
-              )}
-          </div>
-          <div ref={productFormRef}>
-            <ProductForm
-              data={product}
-              productMpn={product.mpn || ''}
-              multipleOptionIcon={multipleOptionIcon}
-              blankAddImg={blankAddImg || ''}
-              productImages={productImages}
-              fanPopup={fanPopup}
-              closeIcon={closeIcon}
-              customerGroupDetails={customerGroupDetails}
-            />
-          </div>
+        </div>
+        <div ref={productFormRef}>
+          <ProductForm
+            data={product}
+            productMpn={product.mpn || ''}
+            multipleOptionIcon={multipleOptionIcon}
+            blankAddImg={blankAddImg || ''}
+            productImages={productImages}
+            fanPopup={fanPopup}
+            closeIcon={closeIcon}
+            customerGroupDetails={customerGroupDetails}
+          />
+        </div>
 
         <div className="div-product-description my-12 hidden">
           <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
@@ -644,17 +647,24 @@ export const Details = ({
           </div>
         </div>
 
-          {/* <ProductSchema product={product} /> */}
-          <PayPalPayLater
-            amount={product?.prices?.price?.value?.toString() || '0'}
-            currency={product?.prices?.price?.currencyCode || 'USD'}
-          />
-            <RequestQuote children={children3} />
-          <CertificationsAndRatings 
-          certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4}/>
-          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}
+        {/* <ProductSchema product={product} /> */}
+        <PayPalPayLater
+          amount={product?.prices?.price?.value?.toString() || '0'}
+          currency={product?.prices?.price?.currencyCode || 'USD'}
+        />
+        <RequestQuote children={children3} />
+        <CertificationsAndRatings
+          certificationIcon={certificationIcon}
+          product={product}
+          children={children4}
+          triggerLabel={triggerLabel4}
+        />
+        <ProductDetailDropdown
+          product={product}
+          dropdownSheetIcon={dropdownSheetIcon}
           triggerLabel={triggerLabel5}
-          children={children5} />
+          children={children5}
+        />
 
         {/* <ShippingReturns /> */}
 

@@ -417,7 +417,6 @@ export default async function ProductPage(props: Props) {
           <ProductSchema
             product={product}
             identifier={newIdentifier}
-            optionValueIds={optionValueIds.length}
             productSku={productSku}
           />
 

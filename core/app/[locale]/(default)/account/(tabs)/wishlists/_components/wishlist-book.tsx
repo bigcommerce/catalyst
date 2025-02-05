@@ -436,7 +436,6 @@ export const WishlistBook = ({
 
         transaction.oncomplete = () => db.close();
       } catch (error) {
-        console.error('Error in initDB:', error);
         if (isMounted) {
           setWishlistBook(wishlists);
           setIsLoading(false);
@@ -503,7 +502,7 @@ export const WishlistBook = ({
   }
 
   return (
-    <div className='account-wishlist w-[80%] m-auto'>
+    <div className="account-wishlist m-auto w-[80%]">
       {(accountState.status === 'error' || accountState.status === 'success') && (
         <Message className="mb-8 w-full text-gray-500" variant={accountState.status}>
           <p>{accountState.message}</p>
