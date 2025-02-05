@@ -199,7 +199,7 @@ export const MultipleChoiceField = ({
                         side="top"
                         align="center"
                         sideOffset={5}
-                        className="rounded-md bg-white shadow-xl relative z-[99]"
+                        className="rounded-md bg-white shadow-xl relative z-[99] font-[#353535] font-normal text-[12px]"
                       >
                         <div className="flex h-[240px] w-[180px] flex-col gap-0 p-3">
                           <p className="text-sm text-gray-800 p-0 m-0">

@@ -22,7 +22,6 @@ import { GetVariantsByProductSKU } from '~/components/graphql-apis';
 import { InputPlusMinus } from '../form-fields/input-plus-minus';
 import closeIcon from '~/public/add-to-cart/flyoutCloseIcon.svg';
 import { calculateProductPrice, commonSettinngs } from '../common-functions';
-import { getSessionUserDetails } from '~/auth';
 
 const getVariantProductInfo = async (metaData: any, discountRules:any) => {
   let variantProductInfo: any = [],
@@ -46,7 +45,6 @@ const getVariantProductInfo = async (metaData: any, discountRules:any) => {
       });
       if (variantProductIdSkus?.length) {
         let parentProductInformation = await GetVariantsByProductSKU(variantProductIdSkus);
-        //console.log("parent product-->>",parentProductInformation);
         
         if (parentProductInformation?.length > 0) {
           for await (const productInfo of parentProductInformation) {
