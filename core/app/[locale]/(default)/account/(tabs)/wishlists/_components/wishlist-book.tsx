@@ -503,7 +503,7 @@ export const WishlistBook = ({
   }
 
   return (
-    <div>
+    <div className='account-wishlist w-[80%] m-auto'>
       {(accountState.status === 'error' || accountState.status === 'success') && (
         <Message className="mb-8 w-full text-gray-500" variant={accountState.status}>
           <p>{accountState.message}</p>
