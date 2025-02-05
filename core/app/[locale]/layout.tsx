@@ -6,7 +6,7 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, Suspense } from 'react';
 
 import '../globals.css';
 
@@ -34,7 +34,7 @@ const RootLayoutMetadataQuery = graphql(`
   }
 `);
 
-export async function generateMetadata(): Promise<Metadata> {
+async function Metadata() {
   const { data } = await client.fetch({
     document: RootLayoutMetadataQuery,
     fetchOptions: { next: { revalidate } },
@@ -42,23 +42,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const storeName = data.site.settings?.storeName ?? '';
 
-  const { pageTitle, metaDescription, metaKeywords } = data.site.settings?.seo || {};
+  const { pageTitle } = data.site.settings?.seo || {};
 
-  return {
-    title: {
-      template: `%s - ${storeName}`,
-      default: pageTitle || storeName,
-    },
-    icons: {
-      icon: '/favicon.ico', // app/favicon.ico/route.ts
-    },
-    description: metaDescription,
-    keywords: metaKeywords ? metaKeywords.split(',') : null,
-    other: {
-      platform: 'bigcommerce.catalyst',
-      build_sha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? '',
-    },
-  };
+  return <title>{pageTitle || storeName}</title>;
 }
 
 const VercelComponents = () => {
@@ -93,6 +79,9 @@ export default async function RootLayout({ params, children }: Props) {
 
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+      <Suspense>
+        <Metadata />
+      </Suspense>
       <body>
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
