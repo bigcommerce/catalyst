@@ -16,6 +16,7 @@ import detailsIcon from '~/public/accountIcons/details.svg';
 import favouriteIcon from '~/public/accountIcons/favourite.svg';
 import emailPrefIcon from '~/public/accountIcons/emailPref.svg';
 import { WelcomeMessage } from './welcome-message';
+import Returns from './ReturnIframe';
 
 interface AccountItem {
   children: ReactNode;
@@ -48,6 +49,8 @@ export async function generateMetadata() {
 
 export default function Account() {
   const t = useTranslations('Account.Home');
+  const returnUrl = `${process?.env?.NEXT_PUBLIC_RETURN_URL}` as string;
+  // const returnUrl = process?.env?.REACT_APP_RETURN_URL as string;
   const ts = useTranslations('Account.SalesHours');
   const breadcrumbs: any = [
     {
@@ -61,10 +64,13 @@ export default function Account() {
       <AccountNotification message={t('successMessage')} />
       <div className="flex flex-col gap-[40px]">
         <div>
-          <ComponentsBreadcrumbs className="[&_ul.main-breadcrumbs]:xl:justify-start [&_ul.main-breadcrumbs]:justify-center [&_ul.main-breadcrumbs_.breadcrumbs-li-home]:hidden [&_ul.main-breadcrumbs_.breadcrumbs-li-home]:xl:flex [&_ul.main-breadcrumbs_.breadcrumbs-li-slash]:hidden [&_ul.main-breadcrumbs_.breadcrumbs-li-slash]:xl:block" breadcrumbs={breadcrumbs} />
+          <ComponentsBreadcrumbs
+            className="[&_ul.main-breadcrumbs]:justify-center [&_ul.main-breadcrumbs]:xl:justify-start [&_ul.main-breadcrumbs_.breadcrumbs-li-home]:hidden [&_ul.main-breadcrumbs_.breadcrumbs-li-home]:xl:flex [&_ul.main-breadcrumbs_.breadcrumbs-li-slash]:hidden [&_ul.main-breadcrumbs_.breadcrumbs-li-slash]:xl:block"
+            breadcrumbs={breadcrumbs}
+          />
           <WelcomeMessage />
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 xl:grid-cols-3">
+        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
           <AccountItem href="/account/orders" title={t('orders')} description={t('ordersMsg')}>
             <Image src={ordersIcon} alt={t('orders')} width={70} height={70} />
           </AccountItem>
@@ -75,11 +81,7 @@ export default function Account() {
           >
             <Image src={AddressesIcon} alt={t('addresses')} width={70} height={70} />
           </AccountItem>
-          <AccountItem
-            href="#"
-            title={t('requestAQuote')}
-            description={t('requestAQuoteMsg')}
-          >
+          <AccountItem href="#" title={t('requestAQuote')} description={t('requestAQuoteMsg')}>
             <Image src={requiestQuoteIcon} alt={t('requestAQuote')} width={70} height={70} />
           </AccountItem>
           <AccountItem
@@ -102,6 +104,10 @@ export default function Account() {
             description={t('emailPreferencesMsg')}
           >
             <Image src={emailPrefIcon} alt={t('emailPreferences')} width={70} height={70} />
+          </AccountItem>
+
+          <AccountItem href="#" title="Returns" description={t('emailPreferencesMsg')}>
+            <Returns returnUrl={returnUrl} />
           </AccountItem>
         </div>
         <div className="flex w-max flex-col gap-[10px]">
