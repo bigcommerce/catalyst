@@ -20,9 +20,9 @@ export type ProductCardProps = {
 
 export function ProductCard({ title, image, url, classNames }: ProductCardProps) {
   return (
-    <article className={clsx('relative flex h-full w-full flex-col rounded-none border border-gray-300', classNames?.root)}>
+    <article className={clsx('relative flex h-full w-full flex-col rounded-none', classNames?.root)}>
 
-      <div className="px-4">
+      <div className="p-0">
         <div className="pb-full relative mx-auto my-0 flex h-auto w-full overflow-hidden pb-[100%]">
           <figure className={clsx('absolute left-0 top-0 h-full w-full', classNames?.link)}>
             <Link
@@ -55,12 +55,12 @@ export function ProductCard({ title, image, url, classNames }: ProductCardProps)
       </div>
 
       <div className="flex flex-1 flex-col">
-        <div className="flex-1 p-4 text-center">
+        <div className="flex-1 py-4 text-center">
           <h2 className={clsx('mt-2 mb-8 text-lg font-medium', classNames?.title)}>
             <Link href={url}>{title}</Link>
           </h2>
         </div>
-        <Link className={clsx('m-4 block rounded-none border border-brand-100 uppercase text-center', classNames?.link)} href={url}>Shop</Link>
+        <Link className={clsx('my-4 block rounded px-4 h-10 flex items-center justify-center border border-brand-100 uppercase text-center hover:border-brand-300 hover:bg-brand-50 transition', classNames?.link)} href={url}>Shop</Link>
       </div>
     </article>
   );
