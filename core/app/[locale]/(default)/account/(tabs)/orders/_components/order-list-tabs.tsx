@@ -60,13 +60,13 @@ export const OrderListTabs = ({ orders, pageInfo, icon }: { orders: any, pageInf
 
   return (
     <>
-      <div className="text-[24px] font-normal leading-[32px] text-[#008BB7]">{t('lookupAnOrder')}</div>
+      <div className="text-[24px] font-normal  flex justify-center items-center leading-[32px] text-[#008BB7] text-center xl:justify-start xl:text-left">{t('lookupAnOrder')}</div>
       <div>
         <div className='relative flex items-center'>
           <input
             type="text"
             placeholder="Search by Keyword or Order Number"
-            className="h-[44px] w-full rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_20px] placeholder:text-[#5C5C5C]"
+            className="h-[44px] w-full rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_20px] pr-[40px] placeholder:text-[#5C5C5C]"
             onChange={() => handleOrderFilter(event)}
           />
           <SearchIcon className='absolute right-[20px]'/>
@@ -74,7 +74,7 @@ export const OrderListTabs = ({ orders, pageInfo, icon }: { orders: any, pageInf
       </div>
       <StillNeedContactUs icon={icon}/>
       <div className="my-[10px]">
-        <div className="flex h-[32px] flex-row items-center gap-[30px] p-0">
+        <div className="flex h-[32px] flex-row items-center gap-5 xl:gap-[30px] p-0 justify-center xl:justify-start">
           <button className="flex flex-row items-center justify-center rounded-full bg-[#002A37] p-[0px_10px] text-[16px] font-normal leading-[32px] tracking-[0.5px] text-white">
             All Orders
           </button>

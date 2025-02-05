@@ -350,6 +350,37 @@ const Gallery = ({
 
   const remainingItemsCount = Math.max(0, mediaItems.length - 4);
 
+  const getThumbnailContent = (item: MediaItem) => {
+    if (item.type === 'image') {
+      return (
+        <BcImage
+          alt={item.altText || ''}
+          className="h-full w-full object-cover brightness-50"
+          height={94}
+          priority={true}
+          src={item.src || ''}
+          width={94}
+        />
+      );
+    } else if (item.type === 'video') {
+      if (isYoutubeUrl(item.url)) {
+        return (
+          <img
+            src={getYoutubeThumbnailUrl(item.url || '') || ''}
+            alt={item.title || 'Video thumbnail'}
+            className="h-full w-full object-cover brightness-50"
+          />
+        );
+      } else {
+        return (
+          <video className="h-full w-full object-cover brightness-50" preload="metadata">
+            <source src={item.url} type="video/mp4" onError={handleSourceError} />
+          </video>
+        );
+      }
+    }
+  };
+
   const promoImages = [
     {
       alt: 'Buy one get one Free Now through 8/24',
@@ -363,11 +394,6 @@ const Gallery = ({
         { filename: bannerIcon, width: '50w' },
         { filename: bannerIcon, width: '50w' },
       ],
-    },
-    {
-      alt: 'Save 20% on all items through 9/01',
-      images: [],
-      msg: 'Lorem ipsum dolor sit amet consectetur adipisicing elit.',
     },
   ];
 
@@ -461,32 +487,10 @@ const Gallery = ({
                 onClick={() => openPopup(3)}
               >
                 <div className="relative h-full w-full">
-                  <BcImage
-                    alt="View All"
-                    className="h-full w-full object-cover brightness-50"
-                    height={94}
-                    priority={true}
-                    src={mediaItems[3]?.src || ''}
-                    width={94}
-                  />
+                  {getThumbnailContent(mediaItems[3])}
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
                     <span className="text-[0.625rem] xl:text-lg">VIEW ALL</span>
                     <span className="mt-1 text-[0.625rem] xl:text-sm">{`(+${remainingItemsCount})`}</span>
-                  </div>
-                  <div className="absolute bottom-1 right-1 m-1 h-4 w-4 rounded-full bg-white bg-opacity-60 p-1 xl:bottom-2 xl:right-2">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 18 18"
-                      fill="none"
-                      className="h-full w-full"
-                    >
-                      <path
-                        d="M0 18V12H2V14.6L5.1 11.5L6.5 12.9L3.4 16H6V18H0ZM12.9 6.5L11.5 5.1L14.6 2H12V0H18V6H16V3.4L12.9 6.5Z"
-                        fill="#1C1B1F"
-                      />
-                    </svg>
                   </div>
                 </div>
               </button>

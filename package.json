@@ -31,5 +31,10 @@
       "@types/react": "npm:types-react@19.0.0-rc.1",
       "@types/react-dom": "npm:types-react-dom@19.0.0-rc.1"
     }
+  },
+  "dependencies": {
+    "@datadog/browser-rum": "^6.1.0",
+    "@radix-ui/react-tooltip": "^1.1.7",
+    "@react-google-maps/api": "^2.20.5"
   }
 }

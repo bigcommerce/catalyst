@@ -1,4 +1,5 @@
 import { getFormatter, getTranslations } from 'next-intl/server';
+import { cookies } from 'next/headers';
 
 import { client } from '~/client';
 import { graphql, ResultOf, VariablesOf } from '~/client/graphql';
@@ -6,6 +7,7 @@ import { revalidate } from '~/client/revalidate-target';
 import { BcImage } from '~/components/bc-image';
 import { retrieveMpnData } from '~/components/common-functions';
 import { Link } from '~/components/link';
+import { GetCartMetaFields } from '~/components/management-apis';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { Price as PricesType } from '~/components/ui/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -65,6 +67,14 @@ export type ProductSnippetFragment = Omit<
   productId: number;
   brand: string | null;
   quantity: number;
+  accessories?: Array<{
+    name: string;
+    details: string;
+    prodQuantity: number;
+    entityId: number;
+    cartId: string;
+    lineItemId: number;
+  }>;
   productOptions?: Array<{
     __typename: string;
     name: string;
@@ -83,7 +93,6 @@ export const assembleProductData = (orderItem: ResultOf<typeof OrderItemFragment
     productOptions,
     baseCatalogProduct,
   } = orderItem;
-
   return {
     entityId,
     productId,
@@ -108,6 +117,7 @@ export const assembleProductData = (orderItem: ResultOf<typeof OrderItemFragment
         max: subTotalListPrice,
       },
     },
+    accessories: orderItem.accessories || [],
   };
 };
 
@@ -168,7 +178,8 @@ export const ProductSnippet = async ({
   productSize,
   from,
 }: Props) => {
-  const { name, defaultImage, brand, productId, prices } = product;
+  const { name, defaultImage, brand, productId, prices, accessories } = product;
+
   const format = await getFormatter();
   const t = await getTranslations('Product.Details');
   const price = pricesTransformer(prices, format);
@@ -179,11 +190,9 @@ export const ProductSnippet = async ({
     variables: { entityId: productId },
     fetchOptions: { next: { revalidate } },
   });
-
   const { path = '' } = data.site.product ?? {};
 
   //let productMpn: string = retrieveMpnData(product, product?.)
-
   return (
     <div className="flex flex-col items-start gap-[15px] border border-[#CCCBCB] p-0">
       {from != 'order' && (
@@ -193,8 +202,8 @@ export const ProductSnippet = async ({
           </button>
         </div>
       )}
-      <div className={`flex w-full flex-row items-center justify-between p-0 px-[20px] pb-[20px] ${from == 'order' ? 'mt-[20px]' : ''}`}>
-        <div className={`flex-row items-center gap-[20px] p-0  ${from == 'order' ? 'w-full pr-0 grid [grid-template-columns:88px_auto] sm:flex' : 'w-2/3 pr-[20px] flex'}` }>
+      <div className={`flex w-full flex-row items-center justify-between p-0 px-[10px] pb-[10px] ${from == 'order' ? 'mt-[10px]' : ''}`}>
+        <div className={`flex-row items-center gap-[20px] p-0  ${from == 'order' ? 'w-full pr-0 grid [grid-template-columns:88px_auto] sm:flex' : 'w-2/3 pr-[20px] flex'}`}>
           <div>
             {isImageAvailable && (
               <BcImage
@@ -207,14 +216,14 @@ export const ProductSnippet = async ({
               />
             )}
             {!isImageAvailable && (
-              <div className="h-[150px] w-[150px]">
+              <div className={`${from == 'order' ? "h-[88px] w-[88px] sm:h-[150px] sm:w-[150px]" : 'h-[150px] w-[150px]'}`}>
                 <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
                   <span className="text-center text-sm md:text-base">{t('comingSoon')}</span>
                 </div>
               </div>
             )}
           </div>
-          <div className="flex-shrink-[100]">
+          <div className="flex-shrink-[100] [flex-grow:1;]">
             <div className="items-center text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
               {name}
             </div>
@@ -267,6 +276,49 @@ export const ProductSnippet = async ({
           </div>
         )}
       </div>
+      {accessories && accessories.length > 0 && (
+        <div className="">
+          <ul className="list-disc px-[10px] pt-[10px]">
+            {accessories.map((accessory, index) => (
+              <li key={index} className="text-[14px] pb-[10px] list-none leading-[24px] text-[#353535]">
+                <div className='bg-[#F3F4F5] flex flex-col'>
+                  <div className='flex-row items-center gap-[20px] p-0 w-full pr-0 grid [grid-template-columns:88px_auto] sm:flex'>
+                    <div>
+                      {isImageAvailable && (
+                        <BcImage
+                          alt={accessory?.name}
+                          className={`${from == 'order' ? "h-[75px] w-[75px] p-[10px] sm:h-[150px] sm:w-[150px]" : 'h-[150px] w-[150px]'}`}
+                          width={150}
+                          height={150}
+                          priority={imagePriority}
+                          src={accessory?.image?.url}
+                        />
+                      )}
+                      {!isImageAvailable && (
+                        <div className="h-[75px] w-[75px]">
+                          <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
+                            <span className="text-center text-sm md:text-base">{t('comingSoon')}</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex-shrink-[100] [flex-grow:1;]">
+                      <div className="items-center text-[16px] font-normal pr-[10px] leading-[32px] tracking-[0.15px] text-black">
+                        {accessory.name}
+                      </div>
+                      <div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className={`text-[14px] p-[10px] leading-[24px] tracking-[0.25px] text-[#353535] ${from == 'order' ? 'font-normal' : 'font-bold'}`}>
+                    QTY: {accessory?.quantity}
+                  </div>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 };

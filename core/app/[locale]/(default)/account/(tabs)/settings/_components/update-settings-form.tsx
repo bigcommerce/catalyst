@@ -237,7 +237,6 @@ export const UpdateSettingsForm = ({
             <TextField
               defaultValue={customerInfo.email}
               entityId={FieldNameToFieldId.email}
-              isRequired
               isValid={textInputValid[FieldNameToFieldId.email]}
               label={
                 customerFields.find((field) => field.entityId === FieldNameToFieldId.email)
@@ -246,6 +245,7 @@ export const UpdateSettingsForm = ({
               name="customer-email"
               onChange={handleTextInputValidation}
               type="email"
+              
             />
           </div>
           {customerFields

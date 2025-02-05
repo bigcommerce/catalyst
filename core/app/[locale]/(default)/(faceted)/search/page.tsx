@@ -3,10 +3,13 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 import { getSessionCustomerAccessToken } from '~/auth';
 
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
+import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
 
 import { Breadcrumbs } from '~/components/breadcrumbs';
+
 import { Search } from './search';
 
+import { cookies } from 'next/headers';
 
 export async function generateMetadata() {
   const t = await getTranslations('Search');
@@ -23,6 +26,12 @@ interface Props {
 export default async function SearchPage(props: Props) {
   const searchParams = await props.searchParams;
 
+  const cookieStore = await cookies();
+  const priceMaxCookie = cookieStore.get('pmx');
+  const priceMaxTriggers = priceMaxCookie?.value 
+    ? JSON.parse(atob(priceMaxCookie?.value)) 
+    : undefined;
+
   const customerAccessToken = await getSessionCustomerAccessToken();
   const useDefaultPrices = !customerAccessToken;
 
@@ -34,6 +43,7 @@ export default async function SearchPage(props: Props) {
   const searchTerm = typeof searchParams.query === 'string' ? searchParams.query : undefined;
 
   const promotions = await getActivePromotions(true);
+  const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
 
   /*
   if (!searchTerm) {
@@ -50,7 +60,7 @@ export default async function SearchPage(props: Props) {
           : <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{t('title')}</h1>
         }
       </div>
-      <Search query={searchTerm} promotions={promotions} useDefaultPrices={useDefaultPrices} />
+      <Search query={searchTerm} promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />
     </div>
   );
 }

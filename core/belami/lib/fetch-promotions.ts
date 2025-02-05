@@ -35,7 +35,7 @@ export async function getPromotionCoupons(promotionId: number) {
       "Accept": "application/json"
     },
     cache: 'force-cache',
-    //next: { revalidate: 3600 }
+    next: { revalidate: 3600 }
   });
 
   const data = await response.json();

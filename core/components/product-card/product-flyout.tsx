@@ -9,6 +9,8 @@ import { BcImage } from '~/components/bc-image';
 import { useCommonContext } from '~/components/common-context/common-provider';
 import { Loader2 as Spinner } from 'lucide-react';
 import {
+  GetCustomerGroupById,
+  GetEmailId,
   GetProductMetaFields,
   GetProductVariantMetaFields,
   GetVariantsByProductId,
@@ -19,9 +21,10 @@ import { CheckoutButton } from '~/app/[locale]/(default)/cart/_components/checko
 import { GetVariantsByProductSKU } from '~/components/graphql-apis';
 import { InputPlusMinus } from '../form-fields/input-plus-minus';
 import closeIcon from '~/public/add-to-cart/flyoutCloseIcon.svg';
-import { commonSettinngs } from '../common-functions';
+import { calculateProductPrice, commonSettinngs } from '../common-functions';
+import { getSessionUserDetails } from '~/auth';
 
-const getVariantProductInfo = async (metaData: any) => {
+const getVariantProductInfo = async (metaData: any, discountRules:any) => {
   let variantProductInfo: any = [],
     accessoriesLabelData: any = [],
     skuArrayData: any = [];
@@ -43,13 +46,20 @@ const getVariantProductInfo = async (metaData: any) => {
       });
       if (variantProductIdSkus?.length) {
         let parentProductInformation = await GetVariantsByProductSKU(variantProductIdSkus);
+        //console.log("parent product-->>",parentProductInformation);
+        
         if (parentProductInformation?.length > 0) {
           for await (const productInfo of parentProductInformation) {
+            const categories = removeEdgesAndNodes(productInfo?.categories);
+            const categoryId = categories[0]?.entityId;
+            const categoryIds = categoryId ? [categoryId] : [];
             let varaiantProductData = await GetVariantsByProductId(productInfo?.entityId);
             let variantNewObject: any = [];
             let productName: string = productInfo?.name;
+            let updatedProductData = await calculateProductPrice(varaiantProductData,"accessories",discountRules,categoryIds);
+            
             let imageArray: Array<any> = removeEdgesAndNodes(productInfo?.images);
-            varaiantProductData?.forEach((item: any) => {
+            updatedProductData?.forEach(async (item: any) => {
               if (skuArrayData?.find((sku: any) => sku == item?.sku)) {
                 let optionValues: string = item?.option_values
                   ?.map((data: any) => data?.label)
@@ -72,8 +82,9 @@ const getVariantProductInfo = async (metaData: any) => {
                   mpn: item?.mpn,
                   sku: item?.sku,
                   name: optionValues,
-                  purchasingDisabled:item?.purchasing_disabled,
+                  purchasing_disabled:item?.purchasing_disabled,
                   selectedOptions: item?.selectedOption,
+                  update_price_for_msrp: item?.UpdatePriceForMSRP,
                 });
               }
             });
@@ -102,6 +113,7 @@ export const ProductFlyout = ({
   from,
   showFlyout,
   showFlyoutFn,
+  discountRules,
 }: {
   data: any;
   fanPopup: string;
@@ -109,6 +121,7 @@ export const ProductFlyout = ({
   from: string;
   showFlyout?: Boolean;
   showFlyoutFn?: any;
+  discountRules?: any;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [commonSettingsValues, setCommonSettingsValues] = useState<any>([]);
@@ -150,7 +163,7 @@ export const ProductFlyout = ({
           variantProduct?.entityId,
           'Accessories',
         );
-        let productData = await getVariantProductInfo(metaData);
+        let productData = await getVariantProductInfo(metaData,discountRules);
         setVariantProductData([...productData]);
         var getAllCommonSettinngsValues =await commonSettinngs([product?.brand?.entityId]);
         setCommonSettingsValues(getAllCommonSettinngsValues);
@@ -166,15 +179,13 @@ export const ProductFlyout = ({
     useEffect(() => {
       const getProductMetaData = async () => {
         let metaData = await GetProductMetaFields(productId, 'Accessories');
-        let productData = await getVariantProductInfo(metaData);
+        let productData = await getVariantProductInfo(metaData,discountRules);
         setVariantProductData([...productData]);
       };
       getProductMetaData();
       setProductQty(productQtyData);
     }, [productId, productQtyData]);
   }
-
-  
 
   return (
     <>
@@ -286,7 +297,9 @@ export const ProductFlyout = ({
               </Dialog.Content>
               )}
               
-              {variantProductData && variantProductData?.length > 0 && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories  && (
+              {variantProductData && variantProductData?.length > 0 
+               && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories  
+              && (
                 <>
                   <hr className="my-[20px] border-[#93cfa1]" />
                   <div className="pop-up-text flex flex-col gap-4">

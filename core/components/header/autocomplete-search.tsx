@@ -17,6 +17,7 @@ import { createQuerySuggestionsPlugin } from '@algolia/autocomplete-plugin-query
 import '@algolia/autocomplete-theme-classic';
 import insightsClient from 'search-insights';
 
+import { ProductPrice } from '~/belami/components/search/product-price';
 import { ReviewSummary } from '~/belami/components/reviews';
 
 import Link from 'next/link';
@@ -24,7 +25,7 @@ import Image from 'next/image';
 import noImage from '~/public/no-image.svg';
 
 import { useFormatter } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const client = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
@@ -104,6 +105,7 @@ export type ProductRecord = {
 
 type HitProps = {
   hit: AlgoliaHit<ProductRecord>,
+  priceMaxRules?: any,
   components: AutocompleteComponents,
   insights?: any,
   useDefaultPrices?: boolean,
@@ -136,6 +138,7 @@ function debouncePromise(fn: any, time: number) {
 
 function ProductItem({
   hit,
+  priceMaxRules = null,
   components,
   insights,
   useDefaultPrices = false,
@@ -194,6 +197,27 @@ function ProductItem({
           </div>
           */}
 
+          <ProductPrice 
+            defaultPrice={hit?.prices?.USD || 0} 
+            defaultSalePrice={hit?.sales_prices?.USD || null} 
+            price={price}
+            salePrice={salePrice}
+            priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && r.bc_brand_ids.includes(hit?.brand_id)) || (r.skus && r.skus.includes(hit?.sku)))}
+            currency={currency}
+            format={format}
+            options={{
+              useAsyncMode: !useDefaultPrices,
+              useDefaultPrices: useDefaultPrices,
+              isLoading: isLoading,
+              isLoaded: isLoaded
+            }}
+            classNames={{
+              root: 'flex items-center space-x-2',
+              discount: 'font-bold text-brand-400',
+            }}
+          />
+
+          {/*
           {!useDefaultPrices ? (
             <div className="flex items-center space-x-2">
               {!isLoading && (price || salePrice) ? (
@@ -291,6 +315,7 @@ function ProductItem({
               ) : null}
             </div>
           ) : null}
+          */}
 
           {hit.reviews_count > 0 &&
             <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="aa-ItemContentDescription" />
@@ -353,7 +378,30 @@ function getDiscount(price: number, salePrice: number): number | null {
   return price > 0 ? Math.round(((price - salePrice) * 100) / price) : 0;
 }
 
-export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPrices?: boolean }) {
+function getCookieValue(name: string): string | null {
+  if (typeof document !== 'undefined') {
+    const cookies = document.cookie.split('; ');
+    for (const cookie of cookies) {
+        const [cookieName, cookieValue] = cookie.split('=');
+        if (cookieName === name && cookieValue) {
+            return decodeURIComponent(cookieValue);
+        }
+    }
+  }
+  return null;
+}
+
+export function AutocompleteSearch({ useDefaultPrices = false, priceMaxRules }: { useDefaultPrices?: boolean, priceMaxRules?: any }) {
+
+  /*
+  const searchParams = useSearchParams();
+
+  const priceMaxCookieValue = getCookieValue('pmx');
+  const priceMaxTriggers = priceMaxCookieValue 
+    ? JSON.parse(atob(priceMaxCookieValue)) 
+    : undefined;
+  */
+
   const containerRef = useRef(null);
   const panelRoot = useRef(null);
 
@@ -600,6 +648,7 @@ export function AutocompleteSearch({ useDefaultPrices = false }: { useDefaultPri
                     hit={item as any}
                     components={components}
                     insights={(state?.context?.algoliaInsightsPlugin as any).insights}
+                    priceMaxRules={priceMaxRules}
                     useDefaultPrices={useDefaultPrices}
                     price={
                       item.sku &&
