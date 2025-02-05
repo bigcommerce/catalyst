@@ -96,7 +96,6 @@ const ProductCard = ({
     // Call setDeletedProductId with both IDs
     setDeletedProductId(productId, wishlistEntityId);
 
-    console.log('Delete clicked - Product ID:', productId, 'Wishlist ID:', wishlistEntityId);
     onDelete(productId, item.entityId);
   };
 
@@ -115,9 +114,7 @@ const ProductCard = ({
             option_values: variant.option_values,
           });
         }
-      } catch (error) {
-        console.error('Error fetching variant details:', error);
-      }
+      } catch (error) {}
     };
 
     fetchVariantDetails();
@@ -213,7 +210,6 @@ const ProductCard = ({
               }
             })
             .catch((error) => {
-              console.error('Error:', error);
               toast.error('Failed to add item to cart');
             })
             .finally(() => {
@@ -270,15 +266,6 @@ export function WishlistProductCard(): JSX.Element {
   const handleDelete = (productId: number, wishlistItemId: number) => {
     if (!wishlistData) return;
 
-    console.log(
-      'Deleting - Product ID:',
-      productId,
-      'Wishlist Item ID:',
-      wishlistItemId,
-      'Wishlist ID:',
-      wishlistData.entityId,
-    );
-
     const updatedItems = wishlistData.items.filter((item) => item.product.entityId !== productId);
 
     const updatedWishlist = {
@@ -296,13 +283,12 @@ export function WishlistProductCard(): JSX.Element {
         const savedWishlist = localStorage.getItem('selectedWishlist');
         if (savedWishlist) {
           const parsedWishlist = JSON.parse(savedWishlist);
-          console.log('Loaded Wishlist Data:', parsedWishlist);
+
           setWishlistData(parsedWishlist);
         } else {
           router.push('/account/wishlists');
         }
       } catch (error) {
-        console.error('Error loading wishlist:', error);
         setError('Failed to load wishlist data');
       } finally {
         setIsLoading(false);
@@ -329,7 +315,7 @@ export function WishlistProductCard(): JSX.Element {
   }
 
   return (
-    <div className="container mx-auto mb-12 px-4">
+    <div className="container m-auto mx-auto mb-12 w-[80%] px-4">
       <ComponentsBreadcrumbs
         className="login-div login-breadcrumb mx-auto mb-2 mt-2 hidden px-[1px] lg:block"
         breadcrumbs={[

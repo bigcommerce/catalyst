@@ -134,7 +134,7 @@ const WishlistAddToList = ({
         };
       };
     } catch (error) {
-      console.error('Error removing deletion record:', error);
+      ('');
     }
   };
 
@@ -187,7 +187,7 @@ const WishlistAddToList = ({
           };
         };
       } catch (error) {
-        console.error('Error loading deleted products:', error);
+        ('');
       }
     };
 
@@ -383,7 +383,6 @@ const WishlistAddToList = ({
             }),
           );
         } catch (error) {
-          console.error('Error saving item:', error);
           hasError = true;
           break;
         }
@@ -415,7 +414,6 @@ const WishlistAddToList = ({
         });
       }
     } catch (error) {
-      console.error('Error in save process:', error);
       setMessage({
         type: 'error',
         text: 'Failed to save items. Please try again.',
@@ -538,11 +536,7 @@ const WishlistAddToList = ({
             deletion.productId === item.product.entityId,
         );
         if (isDeleted) {
-          console.log('Filtered out deleted product:', {
-            wishlistId: wishlist.entityId,
-            productId: item.product.entityId,
-            productName: item.product.name,
-          });
+          ('');
         }
         return !isDeleted;
       }),
