@@ -12,13 +12,14 @@ export default function SessionId() {
     const path = usePathname();
       const searchParams = useSearchParams();
       const queryString = searchParams.toString(); 
-    const fullUrl = queryString ? `${window.location.protocol}//${window.location.host}${path}?${queryString}` : `${window.location.protocol}//${window.location.host}${path}`;
+      let fullUrl = '';
 
     useEffect(() => {
       if (typeof window !== "undefined") {
         const iFrame = window.self !== window.top;
         if(iFrame) return;
       }
+      fullUrl = queryString ? `${window.location.protocol}//${window.location.host}${path}?${queryString}` : `${window.location.protocol}//${window.location.host}${path}`
         const onloadFetchSessionId = async () => {
             const sessionId = await getSessionIdCookie()
             if (sessionId?.value) {

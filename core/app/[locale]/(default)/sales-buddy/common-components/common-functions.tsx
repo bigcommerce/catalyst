@@ -172,12 +172,12 @@ export async function getEnhancedSystemInfo(): Promise<SystemInfo> {
       maxTouchPoints: navigator.maxTouchPoints,
     },
     screen: {
-      width: (typeof window !== "undefined") ? window.screen.width : 0,
-      height: (typeof window !== "undefined") ? window.screen.height : 0,
-      availWidth: (typeof window !== "undefined") ? window.screen.availWidth : 0,
-      availHeight: (typeof window !== "undefined") ? window.screen.availHeight : 0,
-      colorDepth: (typeof window !== "undefined") ? window.screen.colorDepth : 0,
-      pixelDepth: (typeof window !== "undefined") ? window.screen.pixelDepth : 0,
+      width: window.screen.width,
+      height: window.screen.height,
+      availWidth: window.screen.availWidth,
+      availHeight: window.screen.availHeight,
+      colorDepth: window.screen.colorDepth,
+      pixelDepth: window.screen.pixelDepth,
       orientation: screen.orientation ? screen.orientation.type : 'unknown'
     },
     timezone: {
