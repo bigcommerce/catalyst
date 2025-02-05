@@ -20,7 +20,7 @@ const colorGroup = (
     },
   });
 
-export const priceLabel = Group({
+export const price = Group({
   label: 'Price label',
   preferredLayout: Group.Layout.Popover,
   props: {
