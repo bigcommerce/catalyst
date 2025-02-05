@@ -45,9 +45,11 @@ export const ProductSchemaFragment = graphql(`
 interface Props {
   product: FragmentOf<typeof ProductSchemaFragment>;
   identifier: string | null;
+  optionValueIds: number;
+  productSku: any;
 }
 
-export const ProductSchema = ({ product, identifier }: Props) => {
+export const ProductSchema = ({ product, identifier, optionValueIds, productSku }: Props) => {
   /* TODO: use common default image when product has no images */
 
   const image = product.defaultImage ? { image: product.defaultImage.url } : null;
@@ -55,7 +57,6 @@ export const ProductSchema = ({ product, identifier }: Props) => {
   const sku = product.sku ? { sku: product.sku } : null;
   const gtin = product.gtin ? { gtin: product.gtin } : null;
   const mpn = product.mpn ? { mpn: product.mpn } : null;
-
   const brand = product.brand
     ? {
         '@type': 'Brand' as const,
@@ -106,7 +107,7 @@ export const ProductSchema = ({ product, identifier }: Props) => {
     '@context': 'https://schema.org',
     '@type': 'Product',
     name: product.name,
-    url: product.path,
+    url: productSku && optionValueIds === 0 ? `${product.path}/?sku=${productSku}` : product.path,
     description: product.plainTextDescription,
     ...(brand && { brand }),
     ...(aggregateRating && { aggregateRating }),
