@@ -1034,63 +1034,51 @@ export function Hit({
               </h3>
             )}
           </div>
-          {hit.metafields && hit.metafields.Akeneo ? (
-            <div className="mt-2 leading-6">
-              {hit.metafields.Details.Depth ? (
-                <p className="">
-                  Depth: <AmountUnitValue data={hit.metafields.Details.Depth} />
-                </p>
-              ) : null}
-              {hit.metafields.Details.Height ? (
-                <p className="">
-                  Height: <AmountUnitValue data={hit.metafields.Details.Height} />
-                </p>
-              ) : null}
-              {hit.metafields.Details.Length ? (
-                <p className="">
-                  Length: <AmountUnitValue data={hit.metafields.Details.Length} />
-                </p>
-              ) : null}
-              {hit.metafields.Details.Width ? (
-                <p className="">
-                  Width/Diameter: <AmountUnitValue data={hit.metafields.Details.Width} />
-                </p>
-              ) : null}
-              {hit.metafields.Details['Minimum Mounting Height'] ? (
-                <p className="">
-                  Min. Mounting Height: {hit.metafields.Details['Minimum Mounting Height']}
-                </p>
-              ) : null}
-              {hit.metafields.Details['Fuel Source'] ? (
-                <p className="">Fuel Source: {hit.metafields.Details['Fuel Source']}</p>
-              ) : null}
-              {hit.metafields.Details['Heating Area'] ? (
-                <p className="">Heating Area: {hit.metafields.Details['Heating Area']}</p>
-              ) : null}
-              {hit.metafields.Details.Wattage ? (
-                <p className="">
-                  Wattage: <AmountUnitValue data={hit.metafields.Details.Wattage} />
-                </p>
-              ) : null}
-              {hit.metafields.Details['Number of Bulbs'] ? (
-                <p className="">Number of Lights: {hit.metafields.Details['Number of Bulbs']}</p>
-              ) : null}
-              {hit.metafields.Details.Lift ? (
-                <p className="">Lift: {hit.metafields.Details.Lift}</p>
-              ) : null}
-              {hit.metafields.Details['Lamp Base Type'] ? (
-                <p className="">Lamp Type: {hit.metafields.Details['Lamp Base Type']}</p>
-              ) : null}
-              {hit.metafields.Details.Voltage ? (
-                <p className="">
-                  Voltage: <AmountUnitValue data={hit.metafields.Details.Voltage} />
-                </p>
-              ) : null}
+          {hit.metafields && hit.metafields.Details && Object.keys(hit.metafields.Details).length > 2 ? (
+            <div className="product-details mt-2 leading-6">
+              <ul>
+                {hit.metafields.Details.Depth ? (
+                  <li><span className="label">Depth: </span><AmountUnitValue data={hit.metafields.Details.Depth} /></li>
+                ) : null}
+                {hit.metafields.Details.Height ? (
+                  <li><span className="label">Height: </span><AmountUnitValue data={hit.metafields.Details.Height} /></li>
+                ) : null}
+                {hit.metafields.Details.Length ? (
+                  <li><span className="label">Length: </span><AmountUnitValue data={hit.metafields.Details.Length} /></li>
+                ) : null}
+                {hit.metafields.Details.Width ? (
+                  <li><span className="label">Width/Diameter: </span><AmountUnitValue data={hit.metafields.Details.Width} /></li>
+                ) : null}
+                {hit.metafields.Details['Minimum Mounting Height'] ? (
+                  <li><span className="label">Min. Mounting Height: </span>{hit.metafields.Details['Minimum Mounting Height']}</li>
+                ) : null}
+                {hit.metafields.Details['Fuel Source'] ? (
+                  <li><span className="label">Fuel Source: </span>{hit.metafields.Details['Fuel Source']}</li>
+                ) : null}
+                {hit.metafields.Details['Heating Area'] ? (
+                  <li><span className="label">Heating Area: </span>{hit.metafields.Details['Heating Area']}</li>
+                ) : null}
+                {hit.metafields.Details.Wattage ? (
+                  <li><span className="label">Wattage: </span><AmountUnitValue data={hit.metafields.Details.Wattage} /></li>
+                ) : null}
+                {hit.metafields.Details['Number of Bulbs'] ? (
+                  <li><span className="label">Number of Lights: </span>{hit.metafields.Details['Number of Bulbs']}</li>
+                ) : null}
+                {hit.metafields.Details.Lift ? (
+                  <li><span className="label">Lift: </span>{hit.metafields.Details.Lift}</li>
+                ) : null}
+                {hit.metafields.Details['Lamp Base Type'] ? (
+                  <li><span className="label">Lamp Type: </span>{hit.metafields.Details['Lamp Base Type']}</li>
+                ) : null}
+                {hit.metafields.Details.Voltage ? (
+                  <li><span className="label">Voltage: </span><AmountUnitValue data={hit.metafields.Details.Voltage} /></li>
+                ) : null}
+              </ul>
             </div>
           ) : (
             hit.description && (
               <div
-                className="mt-2 leading-6"
+                className="product-details mt-2 leading-6"
                 dangerouslySetInnerHTML={{ __html: hit.description }}
               ></div>
             )
