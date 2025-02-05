@@ -12,13 +12,13 @@ import {
   //HitsPerPage,
   //Pagination,
   //SortBy,
-  Stats
+  //Stats
 } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import type { RefinementListProps } from 'react-instantsearch';
 
 import { Panel } from '~/belami/components/panel';
-import { ClearRefinements, CurrentRefinements, SortBy, HitsPerPage, Pagination, Hits, HitsAsync, Facet, FacetDropdown, RatingMenu } from '~/belami/components/search';
+import { ClearRefinements, CurrentRefinements, SortBy, HitsPerPage, Pagination, Hits, HitsAsync, Facet, FacetDropdown, Stats, RatingMenu } from '~/belami/components/search';
 
 import { createFallbackableCache } from "@algolia/cache-common";
 import { createInMemoryCache } from "@algolia/cache-in-memory";
@@ -663,12 +663,12 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false, priceMaxRul
           <div className="lg:ml-auto flex-none flex flex-col md:flex-row space-x-4 items-center order-1 lg:order-2 justify-center">
           */}
           <div className="lg:ml-auto flex-none flex flex-col md:flex-row space-x-4 items-center justify-center">
-            <Stats classNames={{ root: 'mt-2 md:mt-0 flex-none order-2 md:order-1' }} />
-            <HitsPerPage items={[
+            <Stats classNames={{ root: 'mt-4 md:mt-0 flex-none order-2 md:order-1' }} />
+            <HitsPerPage label="Items Per Page" items={[
               { label: '10 per page', value: 10 },
               { label: '20 per page', value: 20, default: true },
               { label: '50 per page', value: 50 }
-            ]} classNames={{ root: 'flex-none ml-auto lg:ml-0 order-1 md:order-2', button: 'w-full !shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2', item: 'text-sm py-1', active: 'text-brand-300' }} />
+            ]} classNames={{ root: 'flex-none ml-auto lg:ml-0 order-1 md:order-2', button: 'w-full !shadow-none !border-gray-300 rounded border', buttonLabel: '!mr-2 md:hidden', item: 'text-sm py-1', active: 'text-brand-300' }} />
           </div>
         </div>
 
