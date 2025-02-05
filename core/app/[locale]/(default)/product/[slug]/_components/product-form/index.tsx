@@ -7,7 +7,7 @@ import { AlertCircle, Check, Heart, ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { AddToCartButton } from '~/components/add-to-cart-button';
@@ -34,6 +34,10 @@ import { klaviyoTrackAddToCart } from '~/belami/components/klaviyo/klaviyo-track
 
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import { getCartIdCookie } from '~/app/[locale]/(default)/sales-buddy/_actions/cart';
+import { BcImage } from '~/components/bc-image';
+import { Label } from '~/components/ui/form';
+import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
+import SkyxFlyout from '~/components/skyx-flyout/skyxFlyout';
 
 aa('init', {
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
@@ -99,6 +103,7 @@ export const ProductForm = ({
   productMpn,
   showInSticky = false,
 }: Props) => {
+  
   const t = useTranslations('Product.Form');
   const cart = useCart();
   const productFlyout: any = useCommonContext();
@@ -142,12 +147,12 @@ export const ProductForm = ({
   const productFormSubmit = async (data: ProductFormData) => {
     const quantity = Number(data.quantity);
     // Optimistic update
-    
+
     cart.increment(quantity);
     const result = await handleAddToCart(data, product);
-    const cartId = await getCartIdCookie()
+    const cartId = await getCartIdCookie();
     if (cartId?.value == undefined) {
-      setCartIdForCheck(result?.data?.entityId)
+      setCartIdForCheck(result?.data?.entityId);
     }
     if (result.error) {
       toast.error(t('error'), {
@@ -236,6 +241,7 @@ export const ProductForm = ({
     });
   };
 
+
   // If showing in sticky header, return only the Submit component
   if (showInSticky) {
     return (
@@ -275,10 +281,94 @@ export const ProductForm = ({
       />
       <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
         <form
-          className="product-variants flex flex-col gap-[20px] mt-[15px]"
+          className="product-variants mt-[15px] flex flex-col gap-[20px]"
           onSubmit={handleSubmit(productFormSubmit)}
         >
           <input type="hidden" value={product.entityId} {...register('product_id')} />
+
+          <div>
+            <div className="mb-3 block !gap-0 text-center xl:flex xl:items-center">
+              <BcImage
+                className="variant-img inline-block !h-[20px] !w-[20px] rounded-[50px]"
+                alt="headline icon"
+                src={exclamatryIcon}
+                width={15}
+                height={15}
+                unoptimized={true}
+                loading="lazy"
+              />
+              <Label
+                className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
+                htmlFor={`label-`}
+              >
+                Product Options:
+              </Label>
+              <SkyxFlyout triggerName={'Hardwire Installation'} />
+            </div>
+
+            <div className="flex flex-row justify-center gap-5 xl:justify-start">
+              <div className="flex max-w-[100px] flex-col items-center rounded-[5px] bg-[#b4dde9] p-[5px]">
+                <div className="bg-white">
+                  <BcImage
+                    width={90}
+                    height={90}
+                    alt="skyx"
+                    unoptimized={true}
+                    src={exclamatryIcon}
+                  />
+                </div>
+                <div className="flex h-full flex-col items-center justify-between p-0">
+                  <div className="text-center text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535]">
+                    Hardwire Installation
+                  </div>
+                  <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px]">
+                    <span>$359.20</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex max-w-[100px] flex-col items-center rounded-[5px] bg-[#F3F4F5] p-[5px]">
+                <div className="bg-white">
+                  <BcImage
+                    width={90}
+                    height={90}
+                    alt="skyx"
+                    unoptimized={true}
+                    src={exclamatryIcon}
+                  />
+                </div>
+                <div className="flex h-full flex-col items-center justify-between p-0">
+                  <div className="text-center text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535]">
+                    With Skyplug
+                  </div>
+                  <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#006380]">
+                    <span>+$20</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex max-w-[100px] flex-col items-center rounded-[5px] bg-[#F3F4F5] p-[5px]">
+                <div className="bg-white">
+                  <BcImage
+                    width={90}
+                    height={90}
+                    alt="skyx"
+                    unoptimized={true}
+                    src={exclamatryIcon}
+                  />
+                </div>
+                <div className="flex h-full flex-col items-center justify-between p-0">
+                  <div className="text-center text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#353535]">
+                    With Skyplug Smart
+                  </div>
+                  <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#006380]">
+                    <span className="font-bold">+$10</span>{' '}
+                    <span className="font-normal text-[#353535]">$20</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
           {productOptions.map((option) => {
             if (option.__typename === 'MultipleChoiceOption') {
