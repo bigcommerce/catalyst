@@ -100,3 +100,4 @@ export function generateStaticParams() {
 }
 
 export const fetchCache = 'default-cache';
+export const experimental_ppr = true;
