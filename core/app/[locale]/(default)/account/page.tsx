@@ -104,7 +104,7 @@ export default function Account() {
 
           <AccountItem
             href="/returns"
-            title="returns"
+            title="Returns"
             description={t('emailPreferencesMsg')}
           >
             <Image src={emailPrefIcon} alt={t('emailPreferences')} width={70} height={70} />
