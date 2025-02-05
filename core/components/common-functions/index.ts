@@ -393,8 +393,13 @@ export const calculateProductPrice = async (
     const retailPrice = type === 'accessories' ? product.retail_price : prices?.retailPrice?.value;
     const salePrice = type === 'accessories' ? product.sale_price : prices?.salePrice?.value;
     const basePrice = type === 'accessories' ? product.price : prices?.basePrice?.value;
-    const productId = type=== 'accessories' ? product.product_id : product.productEntityId;
-  
+    const productId =
+      type === 'accessories'
+        ? product.product_id
+        : type === 'pdp'
+          ? product.entityId
+          : product.productEntityId;
+
     let originalPrice = 0;
     let updatedPrice = 0;
     let discount = 0;
@@ -418,9 +423,15 @@ export const calculateProductPrice = async (
       discount = 0;
     }
     hasDiscount = discount > 0;
-    
+
     discountRules.forEach(
-      (rule: { amount: string; type: string; category_id: string; method: string; product_id: string; }) => {
+      (rule: {
+        amount: string;
+        type: string;
+        category_id: string;
+        method: string;
+        product_id: string;
+      }) => {
         let amount = Math.round(parseInt(rule.amount, 10));
         if (
           rule.type === 'category' &&
@@ -444,17 +455,17 @@ export const calculateProductPrice = async (
           }
         }
         discount = Math.round(((originalPrice - updatedPrice) / originalPrice) * 100);
-        hasDiscount = originalPrice>updatedPrice;
+        hasDiscount = originalPrice > updatedPrice;
       },
     );
-    
+
     const convertedObject = {
       UpdatePriceForMSRP: {
         originalPrice,
         updatedPrice,
         discount,
         hasDiscount: discount > 0,
-        showDecoration: !!retailPrice && retailPrice > 0
+        showDecoration: !!retailPrice && retailPrice > 0,
       },
     };
 
