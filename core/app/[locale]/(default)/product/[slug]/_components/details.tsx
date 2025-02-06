@@ -16,7 +16,6 @@ import { ProductForm } from './product-form';
 import { ProductFormFragment } from './product-form/fragment';
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
 import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
-import { Coupon } from './belami-product-coupon-pdp';
 import { BcImage } from '~/components/bc-image';
 import ProductDetailDropdown from '~/components/ui/pdp/belami-product-details-pdp';
 import { useCommonContext } from '~/components/common-context/common-provider';
@@ -27,6 +26,8 @@ import Image from 'next/image';
 import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { Flyout } from '~/components/common-flyout';
 import { ProductPrice } from '~/belami/components/search/product-price';
+import { Promotion } from '~/belami/components/search/hit';
+import { CheckProductFreeShipping } from '~/components/management-apis';
 
 interface ProductOptionValue {
   entityId: number;
@@ -46,6 +47,8 @@ interface MultipleChoiceOption {
 }
 
 interface Props {
+  isFreeShipping?: boolean;
+  promotions?: any[] | null;
   product: FragmentOf<typeof DetailsFragment> & { parent: any; UpdatePriceForMSRP: any };
   collectionValue?: string;
   dropdownSheetIcon?: string;
@@ -68,8 +71,8 @@ interface Props {
   triggerLabel5: React.ReactNode;
   children5: React.ReactNode;
   priceMaxRules: any;
-  getAllCommonSettinngsValues:any;
-  customerGroupDetails:any;
+  getAllCommonSettinngsValues: any;
+  customerGroupDetails: any;
 }
 
 export const DetailsFragment = graphql(
@@ -146,6 +149,8 @@ export const DetailsFragment = graphql(
 );
 
 export const Details = ({
+  promotions = null,
+  isFreeShipping,
   product,
   collectionValue,
   dropdownSheetIcon,
@@ -166,7 +171,7 @@ export const Details = ({
   children4,
   triggerLabel5,
   children5,
-  priceMaxRules
+  priceMaxRules,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -191,7 +196,9 @@ export const Details = ({
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
 
-  // Inside your Details component:
+  const categoryIds = product?.categories?.edges?.map((edge) => edge.node.entityId) || [];
+  const productId = product?.entityId;
+  const brandId = product.brand?.entityId || 0;
 
   useEffect(() => {
     // 1. Handle scroll behavior
@@ -382,7 +389,7 @@ export const Details = ({
                       }}
                     />
                   )}
-                  
+
                   {productAvailability === 'Unavailable' ? (
                     <div className="flex flex-col items-center">
                       <button
@@ -517,7 +524,7 @@ export const Details = ({
           </div>
           <ReviewSummary data={product} />
         </div>
-        
+
         {product?.UpdatePriceForMSRP && (
           <ProductPrice
             defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
@@ -549,39 +556,49 @@ export const Details = ({
               discount:
                 'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
               price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500'
-            }} />
-          )}
-          <Coupon couponIcon={couponIcon} />
+              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500',
+            }}
+          />
+        )}
 
-          <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
-              <span> Free Delivery</span>
-            {selectedVariantId && (
-              <FreeDelivery
-                entityId={product.entityId}
-                variantId={selectedVariantId}
-                isFromPDP={true}
+        <Promotion
+          promotions={promotions}
+          product_id={productId}
+          brand_id={brandId}
+          category_ids={categoryIds}
+          free_shipping={isFreeShipping}
+        />
+        <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
+          <span> Free Delivery</span>
+          {selectedVariantId && (
+            <FreeDelivery
+              entityId={product.entityId}
+              variantId={selectedVariantId}
+              isFromPDP={true}
+            />
+          )}
+          {product?.brand?.entityId &&
+            getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
+            getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
+              <NoShipCanada
+                description={
+                  getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message
+                }
               />
             )}
-            {product?.brand?.entityId && getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
-              getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
-                <NoShipCanada
-                description={getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message}
-                />
-              )}
-          </div>
-          <div ref={productFormRef}>
-            <ProductForm
-              data={product}
-              productMpn={product.mpn || ''}
-              multipleOptionIcon={multipleOptionIcon}
-              blankAddImg={blankAddImg || ''}
-              productImages={productImages}
-              fanPopup={fanPopup}
-              closeIcon={closeIcon}
-              customerGroupDetails={customerGroupDetails}
-            />
-          </div>
+        </div>
+        <div ref={productFormRef}>
+          <ProductForm
+            data={product}
+            productMpn={product.mpn || ''}
+            multipleOptionIcon={multipleOptionIcon}
+            blankAddImg={blankAddImg || ''}
+            productImages={productImages}
+            fanPopup={fanPopup}
+            closeIcon={closeIcon}
+            customerGroupDetails={customerGroupDetails}
+          />
+        </div>
 
         <div className="div-product-description my-12 hidden">
           <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
@@ -640,17 +657,24 @@ export const Details = ({
           </div>
         </div>
 
-          {/* <ProductSchema product={product} /> */}
-          <PayPalPayLater
-            amount={product?.prices?.price?.value?.toString() || '0'}
-            currency={product?.prices?.price?.currencyCode || 'USD'}
-          />
-            <RequestQuote children={children3} />
-          <CertificationsAndRatings 
-          certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4}/>
-          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}
+        {/* <ProductSchema product={product} /> */}
+        <PayPalPayLater
+          amount={product?.prices?.price?.value?.toString() || '0'}
+          currency={product?.prices?.price?.currencyCode || 'USD'}
+        />
+        <RequestQuote children={children3} />
+        <CertificationsAndRatings
+          certificationIcon={certificationIcon}
+          product={product}
+          children={children4}
+          triggerLabel={triggerLabel4}
+        />
+        <ProductDetailDropdown
+          product={product}
+          dropdownSheetIcon={dropdownSheetIcon}
           triggerLabel={triggerLabel5}
-          children={children5} />
+          children={children5}
+        />
 
         {/* <ShippingReturns /> */}
 
