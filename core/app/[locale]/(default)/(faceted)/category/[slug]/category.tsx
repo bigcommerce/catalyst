@@ -118,6 +118,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
               prices: indexUiState.refinementList?.['prices.USD'],
               price_range: indexUiState.refinementList?.['price_range'],
               reviews_rating_sum: indexUiState.refinementList?.['reviews_rating_sum'],
+              inventory_range: indexUiState.refinementList?.['inventory_range'],
               finish_color: indexUiState.refinementList?.['variants.options.Finish Color'],
               glass_color: indexUiState.refinementList?.['variants.options.Glass Color'],
               shade_color: indexUiState.refinementList?.['variants.options.Shade Color'],
@@ -142,6 +143,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
               heating_area: indexUiState.refinementList?.['metafields.Details.Heating Area'],
               ir_heat_technology: indexUiState.refinementList?.['metafields.Details.IR Heat Technology'],
               lift: indexUiState.refinementList?.['metafields.Details.Lift'],
+              light_kit_type: indexUiState.refinementList?.['metafields.Details.Light Kit Type'],
               lumen_output: indexUiState.refinementList?.['metafields.Details.Lumen Output'],
               material: indexUiState.refinementList?.['metafields.Details.Material'],
               minimum_mounting_height: indexUiState.refinementList?.['metafields.Details.Minimum Mounting Height'],
@@ -191,6 +193,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
                   'prices.USD': routeState?.prices,
                   'price_range': routeState?.price_range,
                   'reviews_rating_sum': routeState?.reviews_rating_sum,
+                  'inventory_range': routeState?.inventory_range,
                   'variants.options.Finish Color': routeState?.finish_color,
                   'variants.options.Glass Color': routeState?.glass_color,
                   'variants.options.Shade Color': routeState?.shade_color,
@@ -215,6 +218,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
                   'metafields.Details.Heating Area': routeState?.heating_area,
                   'metafields.Details.IR Heat Technology': routeState?.ir_heat_technology,
                   'metafields.Details.Lift': routeState?.lift,
+                  'metafields.Details.Light Kit Type': routeState?.light_kit_type,
                   'metafields.Details.Lumen Output': routeState?.lumen_output,
                   'metafields.Details.Material': routeState?.material,
                   'metafields.Details.Minimum Mounting Height': routeState?.minimum_mounting_height,
@@ -415,6 +419,9 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
               </Facet>
               <Facet title="Lift">
                 <RefinementList attribute="metafields.Details.Lift" />
+              </Facet>
+              <Facet title="Light Kit Type">
+                <RefinementList attribute="metafields.Details.Light Kit Type" />
               </Facet>
               <Facet title="Lumen Output">
                 <RefinementList attribute="metafields.Details.Lumen Output" />

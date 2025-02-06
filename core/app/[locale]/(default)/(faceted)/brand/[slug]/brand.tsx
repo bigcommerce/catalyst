@@ -115,6 +115,7 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false, priceMaxRul
               prices: indexUiState.refinementList?.['prices.USD'],
               price_range: indexUiState.refinementList?.['price_range'],
               reviews_rating_sum: indexUiState.refinementList?.['reviews_rating_sum'],
+              inventory_range: indexUiState.refinementList?.['inventory_range'],
               finish_color: indexUiState.refinementList?.['variants.options.Finish Color'],
               glass_color: indexUiState.refinementList?.['variants.options.Glass Color'],
               shade_color: indexUiState.refinementList?.['variants.options.Shade Color'],
@@ -139,6 +140,7 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false, priceMaxRul
               heating_area: indexUiState.refinementList?.['metafields.Details.Heating Area'],
               ir_heat_technology: indexUiState.refinementList?.['metafields.Details.IR Heat Technology'],
               lift: indexUiState.refinementList?.['metafields.Details.Lift'],
+              light_kit_type: indexUiState.refinementList?.['metafields.Details.Light Kit Type'],
               lumen_output: indexUiState.refinementList?.['metafields.Details.Lumen Output'],
               material: indexUiState.refinementList?.['metafields.Details.Material'],
               minimum_mounting_height: indexUiState.refinementList?.['metafields.Details.Minimum Mounting Height'],
@@ -212,6 +214,7 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false, priceMaxRul
                   'metafields.Details.Heating Area': routeState?.heating_area,
                   'metafields.Details.IR Heat Technology': routeState?.ir_heat_technology,
                   'metafields.Details.Lift': routeState?.lift,
+                  'metafields.Details.Light Kit Type': routeState?.light_kit_type,
                   'metafields.Details.Lumen Output': routeState?.lumen_output,
                   'metafields.Details.Material': routeState?.material,
                   'metafields.Details.Minimum Mounting Height': routeState?.minimum_mounting_height,
@@ -415,6 +418,9 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false, priceMaxRul
               </Facet>
               <Facet title="Lift">
                 <RefinementList attribute="metafields.Details.Lift" />
+              </Facet>
+              <Facet title="Light Kit Type">
+                <RefinementList attribute="metafields.Details.Light Kit Type" />
               </Facet>
               <Facet title="Lumen Output">
                 <RefinementList attribute="metafields.Details.Lumen Output" />
