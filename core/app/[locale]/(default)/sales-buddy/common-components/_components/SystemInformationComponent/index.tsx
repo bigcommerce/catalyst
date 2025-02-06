@@ -43,10 +43,6 @@ const SystemInfoComponent = ({ data }) => {
 
     return (
         <div className=" p-1 bg-white rounded-lg shadow-lg overflow-hidden">
-            <div className="px-6 py-4  border-b border-gray-200">
-                {/* <h2 className="text-lg font-semibold text-gray-800">System Information : {data.session_id}</h2> */}
-            </div>
-
             <div className="p-4 space-y-4">
                 {sections.map((section) => (
                     <div key={section.title} className="space-y-2">
