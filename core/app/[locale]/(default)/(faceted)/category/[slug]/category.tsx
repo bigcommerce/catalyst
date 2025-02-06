@@ -63,7 +63,7 @@ const closeOnChange = false;
 
 export const Category = ({ category, promotions, useDefaultPrices = false, priceMaxRules }: any) => {
 
-  const breadcrumbs = removeEdgesAndNodes(category?.breadcrumbs as any);
+  const breadcrumbs = removeEdgesAndNodes(category?.breadcrumbs as any) as any[];
 
   const [view, setView] = useState('grid');
 
@@ -261,7 +261,6 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
       future={{ preserveSharedStateOnUnmount: true }}
       insights={true}
     >
-      <div>{JSON.stringify(breadcrumbs)}</div>
       {breadcrumbs && breadcrumbs.length > 0 &&
         <Configure filters={breadcrumbs.map((item: any) => `categories_without_path:"${item.name}"`).join(' AND ')} maxFacetHits={100} />
       }
@@ -320,7 +319,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
                   showMore={true}
                   showMoreLimit={40}
                   classNames={{
-                    root: 'numbers-of-lights',
+                    root: 'number-of-lights',
                     list: 'grid grid-cols-4 gap-4 max-w-64',
                     item: 'flex m-0 p-0',
                     label: 'flex relative m-0 p-0',
@@ -567,91 +566,155 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
           <div className="hidden lg:flex lg:w-full lg:items-center lg:space-x-4">
             {/* <DynamicWidgets maxValuesPerFacet={1000}> */}
 
-              {/* indoor lighting, outdoor lighting */}
-              {/* Lighting: Brand, Collection, Finish, Number of lights, Style */}
-              <FacetDropdown buttonText="Brand" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="brand_name" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
-                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
-                }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
-                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
-                }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Finish Color" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
-                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
-                }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Number of Lights" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Number of Bulbs"
-                  title="Number of Lights"
-                  sortBy={sortByNumericName}
-                  limit={20}
-                  showMore={true}
-                  showMoreLimit={40}
-                  classNames={{
-                    root: 'numbers-of-lights',
-                    list: 'grid grid-cols-4 gap-4 max-w-64',
-                    item: 'flex m-0 p-0',
-                    label: 'flex relative m-0 p-0',
-                    checkbox: 'peer left-0 top-0 !m-0 !w-full !h-full absolute appearance-none !rounded-none !bg-transparent !bg-none !shadow-none !border-brand-300',
-                    labelText: 'w-full py-1 px-2 inline-flex items-center justify-center text-sm font-medium cursor-pointer text-gray-900 focus:outline-none bg-white border border-brand-300 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 bg-blue-50 text-brand-700 peer-hover:bg-gray-100 peer-hover:text-primary-700 peer-checked:bg-gray-100 peer-checked:text-primary-700',
-                    count: '!hidden',
+              {(breadcrumbs && breadcrumbs.length > 0 && (breadcrumbs[0]?.name === 'Indoor Lighting' ||  breadcrumbs[0]?.name === 'Outdoor Lighting')) ? (
+              <>
+                <FacetDropdown buttonText="Brand" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                  <RefinementList attribute="brand_name" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                     showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                   }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Style" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Product Style" />
-              </FacetDropdown>
-              {/* heating */}
-              {/* Patio (Heating specific): Fuel Source, Collection, Mounting Option, Voltage Rating */}
-              {/*
-              <FacetDropdown buttonText="Fuel Source" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Fuel Source" />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
-                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
-                }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Mounting Options" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Mounting Options" />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Voltage Rating" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Akeneo.Voltage" />
-              </FacetDropdown>
-              */}
+                </FacetDropdown>
+                <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                  <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                    showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                  }} />
+                </FacetDropdown>
+                <FacetDropdown buttonText="Finish Color" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                  <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                    showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                  }} />
+                </FacetDropdown>
+                <FacetDropdown buttonText="Number of Lights" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                  <RefinementList attribute="metafields.Details.Number of Bulbs"
+                    title="Number of Lights"
+                    sortBy={sortByNumericName}
+                    limit={20}
+                    showMore={true}
+                    showMoreLimit={40}
+                    classNames={{
+                      root: 'number-of-lights',
+                      list: 'grid grid-cols-4 gap-4 max-w-64',
+                      item: 'flex m-0 p-0',
+                      label: 'flex relative m-0 p-0',
+                      checkbox: 'peer left-0 top-0 !m-0 !w-full !h-full absolute appearance-none !rounded-none !bg-transparent !bg-none !shadow-none !border-brand-300',
+                      labelText: 'w-full py-1 px-2 inline-flex items-center justify-center text-sm font-medium cursor-pointer text-gray-900 focus:outline-none bg-white border border-brand-300 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 bg-blue-50 text-brand-700 peer-hover:bg-gray-100 peer-hover:text-primary-700 peer-checked:bg-gray-100 peer-checked:text-primary-700',
+                      count: '!hidden',
+                      showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                    }} />
+                </FacetDropdown>
+                <FacetDropdown buttonText="Style" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                  <RefinementList attribute="metafields.Details.Product Style" searchable={false} />
+                </FacetDropdown>
+              </>
+              ) : (
+                (breadcrumbs && breadcrumbs.length > 0 && breadcrumbs[0]?.name === 'Heating') ? (
+                  <>
+                    <FacetDropdown buttonText="Fuel Source" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                      <RefinementList attribute="metafields.Details.Fuel Source" searchable={false} />
+                    </FacetDropdown>
+                    <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                      <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                        showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                      }} />
+                    </FacetDropdown>
+                    <FacetDropdown buttonText="Price" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                        <RefinementList attribute="price_range" sortBy={sortByNumericRangeName} searchable={false} />
+                      </FacetDropdown>
+                    <FacetDropdown buttonText="Mounting Options" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                      <RefinementList attribute="metafields.Details.Mounting Options" searchable={false} />
+                    </FacetDropdown>
+                    <FacetDropdown buttonText="Voltage Rating" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                      <RefinementList attribute="metafields.Details.Voltage" searchable={false} />
+                    </FacetDropdown>
+                  </>
+                ) : (
+                  (breadcrumbs && breadcrumbs.length > 0 && (breadcrumbs[0]?.name === 'Cooling' || breadcrumbs[0]?.name === 'Outdoor Living' || breadcrumbs[0]?.name === 'Shading')) ? (
+                    <>
+                      <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                        <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                          showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                        }} />
+                      </FacetDropdown>
+                      <FacetDropdown buttonText="Shape" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                        <RefinementList attribute="metafields.Details.Product Shape" searchable={false} />
+                      </FacetDropdown>
+                      <FacetDropdown buttonText="Price" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                        <RefinementList attribute="price_range" sortBy={sortByNumericRangeName} searchable={false} />
+                      </FacetDropdown>
+                      <FacetDropdown buttonText="Weight" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                        <RefinementList attribute="metafields.Details.Weight" searchable={false} />
+                      </FacetDropdown>
+                      <FacetDropdown buttonText="Finish Color" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                        <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                          showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                        }} />
+                      </FacetDropdown>
+                    </>
+                  ) : (
+                    (breadcrumbs && breadcrumbs.length > 0 && breadcrumbs[0]?.name === 'Fans') ? (
+                      <>
+                        <FacetDropdown buttonText="Finish Color" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                          <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                            showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                          }} />
+                        </FacetDropdown>
+                        <FacetDropdown buttonText="Blade Color" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                          <RefinementList attribute="variants.options.Blade Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                            showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                          }} />
+                        </FacetDropdown>
+                        <FacetDropdown buttonText="Number of Blades" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                          <RefinementList attribute="metafields.Details.Number of Blades"
+                            title="Number of Blades"
+                            sortBy={sortByNumericName}
+                            limit={20}
+                            showMore={true}
+                            showMoreLimit={40}
+                            classNames={{
+                              root: 'number-of-blades',
+                              list: 'grid grid-cols-4 gap-4 max-w-64',
+                              item: 'flex m-0 p-0',
+                              label: 'flex relative m-0 p-0',
+                              checkbox: 'peer left-0 top-0 !m-0 !w-full !h-full absolute appearance-none !rounded-none !bg-transparent !bg-none !shadow-none !border-brand-300',
+                              labelText: 'w-full py-1 px-2 inline-flex items-center justify-center text-sm font-medium cursor-pointer text-gray-900 focus:outline-none bg-white border border-brand-300 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 bg-blue-50 text-brand-700 peer-hover:bg-gray-100 peer-hover:text-primary-700 peer-checked:bg-gray-100 peer-checked:text-primary-700',
+                              count: '!hidden',
+                              showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                            }} />
+                        </FacetDropdown>
+                        <FacetDropdown buttonText="Control Type" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                          <RefinementList attribute="metafields.Details.Control Type" searchable={false} />
+                        </FacetDropdown>
+                        <FacetDropdown buttonText="Light Kit Type" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                          <RefinementList attribute="metafields.Details.Light Kit Type" searchable={false} />
+                        </FacetDropdown>
+                      </>
+                    ) : (
+                      <>
+                        <FacetDropdown buttonText="Finish Color" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                          <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                            showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                          }} />
+                        </FacetDropdown>
+                        <FacetDropdown buttonText="Style" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                          <RefinementList attribute="metafields.Details.Product Style" searchable={false} />
+                        </FacetDropdown>
+                        <FacetDropdown buttonText="Shape" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                          <RefinementList attribute="metafields.Details.Product Shape" searchable={false} />
+                        </FacetDropdown>
+                        <FacetDropdown buttonText="Price" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                          <RefinementList attribute="price_range" sortBy={sortByNumericRangeName} searchable={false} />
+                        </FacetDropdown>
+                        <FacetDropdown buttonText="Brand" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+                          <RefinementList attribute="brand_name" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                            showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                          }} />
+                        </FacetDropdown>
+                      </>
+                    )
 
-              {/* cooling, outdoor living, shading */}
-              {/* Patio (Shading specific): Collection, Shape, Price, Weight, Finish */}
-              {/*
-              <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
-                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
-                }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Shape" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Product Shape" />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Price" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RangeInput attribute="prices.USD" classNames={{ input: 'max-w-[80px]' }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Weight" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Weight" />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Finish" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" />
-              </FacetDropdown>
-              */}
+                  )
 
-
-
-              {/* fans */}
-              {/* Fans:  finish, blade finish, number of blades, control type, light kit type */}
-              {/* else */}
-              {/* all else:  finish, style, shape, price, brand */}
+                )
+              )}
             {/* </DynamicWidgets> */}
           </div>
         </div>
