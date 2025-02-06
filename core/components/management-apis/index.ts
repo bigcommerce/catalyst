@@ -59,6 +59,10 @@ export const GetEmailId = async (email: string) => {
           'Content-Type': 'application/json',
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
         },
+        next: {
+          revalidate: 3600,
+        },
+
       },
     )
       .then((res) => res.json())
@@ -81,6 +85,9 @@ export const GetCustomerGroupById = async (id: number) => {
           'Content-Type': 'application/json',
           Accept: 'application/json',
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        next: {
+          revalidate: 3600,
         },
       },
     )

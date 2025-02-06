@@ -371,6 +371,7 @@ export const Details = ({
                       currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
                       format={format}
                       showMSRP={product.UpdatePriceForMSRP.showDecoration}
+                      warrantyApplied= {product?.UpdatePriceForMSRP?.warrantyApplied}
                       options={{
                         useAsyncMode: false,
                         useDefaultPrices: true,
@@ -531,6 +532,8 @@ export const Details = ({
             defaultSalePrice={
               product?.UpdatePriceForMSRP.hasDiscount
                 ? product.UpdatePriceForMSRP.updatedPrice
+                : product?.UpdatePriceForMSRP.warrantyApplied
+                ? product.UpdatePriceForMSRP.updatedPrice
                 : null
             }
             priceMaxRule={priceMaxRules?.find(
@@ -543,6 +546,7 @@ export const Details = ({
             currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
             format={format}
             showMSRP={product.UpdatePriceForMSRP.showDecoration}
+            warrantyApplied = {product.UpdatePriceForMSRP.warrantyApplied}
             options={{
               useAsyncMode: false,
               useDefaultPrices: true,

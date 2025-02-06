@@ -30,6 +30,7 @@ interface Props {
     user: {
       name: string;
       email: string;
+      customerGroupId: string;
     };
     expires: string;
     customerAccessToken: string;
