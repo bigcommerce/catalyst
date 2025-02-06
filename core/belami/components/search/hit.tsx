@@ -578,7 +578,7 @@ export function Hit({
           {(hit.brand_name || hit.brand) && (
             <div className="mt-2">{hit.brand_name ?? hit.brand}</div>
           )}
-          <h2 className="mt-2 text-base font-medium md:text-lg">
+          <h2 className="mt-2 text-base font-medium leading-6">
             <Link href={hit.url}>
               <Highlight hit={hit} attribute="name" />
             </Link>
@@ -857,7 +857,7 @@ export function Hit({
           {(hit.brand_name || hit.brand) && (
             <div className="mt-2">{hit.brand_name ?? hit.brand}</div>
           )}
-          <h2 className="mt-2 text-base font-medium md:text-lg">
+          <h2 className="mt-2 text-base font-medium leading-6">
             <Link href={hit.url}>
               <Highlight hit={hit} attribute="name" />
             </Link>

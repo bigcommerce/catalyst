@@ -56,8 +56,8 @@ export function ProductCard({ title, image, url, classNames }: ProductCardProps)
 
       <div className="flex flex-1 flex-col">
         <div className="flex-1 py-4 text-center">
-          <h2 className={clsx('mt-2 mb-8 text-lg font-medium', classNames?.title)}>
-            <Link href={url}>{title}</Link>
+          <h2 className={clsx('mt-2 mb-8 text-base font-medium leading-6', classNames?.title)}>
+            <Link href={url} className="!leading-6 !tracking-normal !text-center">{title}</Link>
           </h2>
         </div>
         <Link className={clsx('my-4 block rounded px-4 h-10 flex items-center justify-center border border-brand-100 uppercase text-center hover:border-brand-300 hover:bg-brand-50 transition', classNames?.link)} href={url}>Shop</Link>
