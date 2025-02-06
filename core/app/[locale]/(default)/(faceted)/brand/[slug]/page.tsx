@@ -89,7 +89,10 @@ export default async function BrandPage(props: Props) {
   return (
     <div className="group py-4 px-4 xl:px-12">
       <Breadcrumbs
-        category={{ breadcrumbs: { edges: [{ node: { name: brand.name, path: brand.path } }] } }}
+        category={{ breadcrumbs: { edges: [
+          { node: { entityId: 0, name: 'Brands', path: '/brands' } }, 
+          { node: { entityId: brandId, name: brand.name, path: brand.path } }
+        ] } }}
       />
 
       {brand.defaultImage && brand.defaultImage.urlOriginal ? (
@@ -139,8 +142,8 @@ export default async function BrandPage(props: Props) {
           </div>
         </section>
       ) : (
-        <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
-          <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{brand.name}</h1>
+        <div className="mb-0 lg:flex lg:flex-row lg:items-center lg:justify-between">
+          <h1 className="mb-4 lg:mb-0 text-2xl">{brand.name}</h1>
         </div>
       )}
 

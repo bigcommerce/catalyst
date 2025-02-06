@@ -6,10 +6,16 @@ import { getLocale } from 'next-intl/server';
 import { Credentials, signIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
 import { cookies } from 'next/headers';
+import { findCustomerDetails } from '../../../sales-buddy/_actions/find-customer';
 
 export const getRememberMeCookie = async () => {
   const cookieStore = await cookies();
   return cookieStore.get('rememberMe');
+}
+
+export const StoreLoginCustomerDetails=async(data:any)=>{
+  const cookieStore = await cookies();
+  return cookieStore.set({ name: 'loginUserDetails', value: JSON.stringify(data) });
 }
 
 export const deleteRememberCookie = async () => {

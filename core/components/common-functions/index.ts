@@ -345,14 +345,13 @@ export const getMetaFieldsByProduct = async (
   return result;
 };
 
-export const commonSettinngs = async (brand_ids:any) => {
-
+export const commonSettinngs = async (brand_ids: any) => {
   brand_ids = [...new Set(brand_ids.filter((id: any) => id !== undefined))];
-  if(brand_ids !== undefined && brand_ids.length > 0) {
+  if (brand_ids !== undefined && brand_ids.length > 0) {
     var res = await getCommonSettingByBrandChannel(brand_ids);
     return res.output;
-  }else{
-    return {status:500,output:[]}
+  } else {
+    return { status: 500, output: [] };
   }
 };
 export const retrieveMpnData = (product: any, productid: Number, variantId: Number) => {
@@ -379,22 +378,33 @@ export const checkZeroTaxCouponIsApplied = async (checkoutData: any) => {
   return zeroTaxCoupon;
 };
 
-export const calculateProductPrice = async (products: any, type: String ) =>  {
+export const calculateProductPrice = async (
+  products: any,
+  type: String,
+  discountRules: any,
+  categoryIds: any,
+) => {
   const isSingleProduct = !Array.isArray(products);
   const productArray = isSingleProduct ? [products] : products;
-    const convertedPrices = productArray.map((product: any) => {
+  const convertedPrices = productArray.map((product: any) => {
     const prices = product?.catalogProductWithOptionSelections?.prices || product?.prices;
     const quantity = product?.quantity || 1;
 
-    const retailPrice = type === "accessories" ? product.retail_price : prices?.retailPrice?.value;
-    const salePrice = type === "accessories" ? product.sale_price : prices?.salePrice?.value;
-    const basePrice = type === "accessories" ? product.price : prices?.basePrice?.value;
-   
+    const retailPrice = type === 'accessories' ? product.retail_price : prices?.retailPrice?.value;
+    const salePrice = type === 'accessories' ? product.sale_price : prices?.salePrice?.value;
+    const basePrice = type === 'accessories' ? product.price : prices?.basePrice?.value;
+    const productId =
+      type === 'accessories'
+        ? product.product_id
+        : type === 'pdp'
+          ? product.entityId
+          : product.productEntityId;
+
     let originalPrice = 0;
     let updatedPrice = 0;
     let discount = 0;
+    let hasDiscount = false;
 
-    // Determine original price, updated price, and discount based on available prices
     if (salePrice && retailPrice) {
       originalPrice = retailPrice * quantity;
       updatedPrice = salePrice * quantity;
@@ -412,19 +422,53 @@ export const calculateProductPrice = async (products: any, type: String ) =>  {
       updatedPrice = basePrice * quantity;
       discount = 0;
     }
+    hasDiscount = discount > 0;
 
-    // Create a new object for converted prices
+    discountRules.forEach(
+      (rule: {
+        amount: string;
+        type: string;
+        category_id: string;
+        method: string;
+        product_id: string;
+      }) => {
+        let amount = Math.round(parseInt(rule.amount, 10));
+        if (
+          rule.type === 'category' &&
+          rule.category_id &&
+          categoryIds?.some((id: number) => id === parseInt(rule.category_id, 10))
+        ) {
+          if (rule.method === 'price') {
+            updatedPrice -= amount;
+          } else if (rule.method === 'percent') {
+            updatedPrice -= (updatedPrice * amount) / 100;
+          }
+        } else if (
+          rule.type === 'product' &&
+          rule.product_id &&
+          productId === parseInt(rule.product_id, 10)
+        ) {
+          if (rule.method === 'price') {
+            updatedPrice -= amount;
+          } else if (rule.method === 'percent') {
+            updatedPrice -= (updatedPrice * amount) / 100;
+          }
+        }
+        discount = Math.round(((originalPrice - updatedPrice) / originalPrice) * 100);
+        hasDiscount = originalPrice > updatedPrice;
+      },
+    );
+
     const convertedObject = {
       UpdatePriceForMSRP: {
         originalPrice,
         updatedPrice,
         discount,
         hasDiscount: discount > 0,
-        showDecoration: !!retailPrice && retailPrice > 0
+        showDecoration: !!retailPrice && retailPrice > 0,
       },
     };
 
-    // Attach the converted object to the product
     return {
       ...product,
       ...convertedObject,

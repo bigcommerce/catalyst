@@ -344,21 +344,21 @@ function Promotion({
 Badges for PLP
 Sale
 Clearance
-Wet rated     wet
-Damp rated    damp
-Energy star   energystar
-Dark sky  darksky
-Coastal/Marine grade  coastal
+Wet rated     wet  Wet Rated
+Damp rated    damp  Damp Rated
+Energy star   energystar  Energy Star Certified
+Dark sky  darksky  Dark Sky Friendly
+Coastal/Marine grade  coastal  Coastal Quality
 */
 function RatingCertifications({ data }: any) {
   const badges: {
     [key: string]: any;
   } = {
-    wet: wetBadge,
-    damp: dampBadge,
-    energystar: energystarBadge,
-    darksky: darkskyBadge,
-    coastal: coastalBadge,
+    'Wet Rated': wetBadge,
+    'Damp Rated': dampBadge,
+    'Energy Star Certified': energystarBadge,
+    'Dark Sky Friendly': darkskyBadge,
+    'Coastal Quality': coastalBadge,
   };
 
   const items = typeof data === 'string' ? JSON.parse(data) : Array.isArray(data) ? data : null;
@@ -367,12 +367,12 @@ function RatingCertifications({ data }: any) {
       {items
         ? items
             .filter((item: any) =>
-              ['wet', 'damp', 'energystar', 'darksky', 'coastal'].includes(item.code),
+              ['Wet Rated', 'Damp Rated', 'Energy Star Certified', 'Dark Sky Friendly', 'Coastal Quality'].includes(item.label),
             )
-            .map((item: any) => (
+            .map((item: any, index: number) => (
               <Image
-                key={item.code}
-                src={badges[item.code]}
+                key={index}
+                src={badges[item.label]}
                 height={24}
                 alt={item.label}
                 title={item.label}
@@ -563,6 +563,11 @@ export function Hit({
             onGuestClick={() => {
               window.location.href = '/login';
             }}
+            classNames={{
+              root: 'absolute bottom-2 right-2',
+              button: 'inline-flex items-center justify-center rounded-full p-1.5 focus:outline-none bg-gray-100',
+              icon: 'w-6 h-6',
+            }}
           />
         </div>
       </div>
@@ -573,7 +578,7 @@ export function Hit({
           {(hit.brand_name || hit.brand) && (
             <div className="mt-2">{hit.brand_name ?? hit.brand}</div>
           )}
-          <h2 className="mt-2 text-base font-medium md:text-lg">
+          <h2 className="mt-2 text-base font-medium leading-6">
             <Link href={hit.url}>
               <Highlight hit={hit} attribute="name" />
             </Link>
@@ -799,6 +804,51 @@ export function Hit({
                   )}
                 </Link>
               </figure>
+
+              <WishlistAddToList
+                wishlists={wishlists}
+                hasPreviousPage={false}
+                product={{
+                  entityId: parseInt(hit.objectID.toString()),
+                  name: hit.name,
+                  path: hit.url,
+                  sku: hit.variants?.[0]?.sku || hit.sku || '',
+                  brand: {
+                    name: hit.brand_name,
+                    path: ''
+                  },
+                  images: [],
+                  mpn: '',
+                  variants: [
+                    {
+                      id: hit.variants?.[0]?.id,
+                      sku: hit.variants?.[0]?.sku || hit.sku || '',
+                      price: {
+                        value: hit.variants?.[0]?.price || hit.prices?.USD,
+                        currencyCode: 'USD',
+                      },
+                      basePrice: {
+                        value: hit.prices?.USD,
+                        currencyCode: 'USD',
+                      },
+                      salePrice: hit.sales_prices?.USD
+                        ? {
+                            value: hit.sales_prices.USD,
+                            currencyCode: 'USD',
+                          }
+                        : null,
+                    },
+                  ],
+                }}
+                onGuestClick={() => {
+                  window.location.href = '/login';
+                }}
+                classNames={{
+                  root: 'absolute bottom-2 right-2',
+                  button: 'inline-flex items-center justify-center rounded-full p-1.5 focus:outline-none bg-gray-100',
+                  icon: 'w-6 h-6',
+                }}
+              />
             </div>
           </div>
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
@@ -807,7 +857,7 @@ export function Hit({
           {(hit.brand_name || hit.brand) && (
             <div className="mt-2">{hit.brand_name ?? hit.brand}</div>
           )}
-          <h2 className="mt-2 text-base font-medium md:text-lg">
+          <h2 className="mt-2 text-base font-medium leading-6">
             <Link href={hit.url}>
               <Highlight hit={hit} attribute="name" />
             </Link>
@@ -984,63 +1034,56 @@ export function Hit({
               </h3>
             )}
           </div>
-          {hit.metafields && hit.metafields.Akeneo ? (
-            <div className="mt-2 leading-6">
-              {hit.metafields.Details.Depth ? (
-                <p className="">
-                  Depth: <AmountUnitValue data={hit.metafields.Details.Depth} />
-                </p>
-              ) : null}
-              {hit.metafields.Details.Height ? (
-                <p className="">
-                  Height: <AmountUnitValue data={hit.metafields.Details.Height} />
-                </p>
-              ) : null}
-              {hit.metafields.Details.Length ? (
-                <p className="">
-                  Length: <AmountUnitValue data={hit.metafields.Details.Length} />
-                </p>
-              ) : null}
-              {hit.metafields.Details.Width ? (
-                <p className="">
-                  Width/Diameter: <AmountUnitValue data={hit.metafields.Details.Width} />
-                </p>
-              ) : null}
-              {hit.metafields.Details['Minimum Mounting Height'] ? (
-                <p className="">
-                  Min. Mounting Height: {hit.metafields.Details['Minimum Mounting Height']}
-                </p>
-              ) : null}
-              {hit.metafields.Details['Fuel Source'] ? (
-                <p className="">Fuel Source: {hit.metafields.Details['Fuel Source']}</p>
-              ) : null}
-              {hit.metafields.Details['Heating Area'] ? (
-                <p className="">Heating Area: {hit.metafields.Details['Heating Area']}</p>
-              ) : null}
-              {hit.metafields.Details.Wattage ? (
-                <p className="">
-                  Wattage: <AmountUnitValue data={hit.metafields.Details.Wattage} />
-                </p>
-              ) : null}
-              {hit.metafields.Details['Number of Bulbs'] ? (
-                <p className="">Number of Lights: {hit.metafields.Details['Number of Bulbs']}</p>
-              ) : null}
-              {hit.metafields.Details.Lift ? (
-                <p className="">Lift: {hit.metafields.Details.Lift}</p>
-              ) : null}
-              {hit.metafields.Details['Lamp Base Type'] ? (
-                <p className="">Lamp Type: {hit.metafields.Details['Lamp Base Type']}</p>
-              ) : null}
-              {hit.metafields.Details.Voltage ? (
-                <p className="">
-                  Voltage: <AmountUnitValue data={hit.metafields.Details.Voltage} />
-                </p>
-              ) : null}
+          {hit.metafields && 
+            hit.metafields.Details && 
+            (Object.keys(hit.metafields.Details).filter(key => ['Depth', 'Height', 'Length', 'Width', 'Minimum Mounting Height', 'Fuel Source', 'Heating Area', 'Wattage', 'Number of Bulbs', 'Lift', 'Lamp Base Type', 'Voltage'].includes(key)).length > 2 
+              || !hit.description 
+              || hit.description.length == 0
+            ) ? (
+            <div className="product-details mt-2 leading-6">
+              <ul>
+                {hit.metafields.Details.Depth ? (
+                  <li><span className="label">Depth: </span><AmountUnitValue data={hit.metafields.Details.Depth} /></li>
+                ) : null}
+                {hit.metafields.Details.Height ? (
+                  <li><span className="label">Height: </span><AmountUnitValue data={hit.metafields.Details.Height} /></li>
+                ) : null}
+                {hit.metafields.Details.Length ? (
+                  <li><span className="label">Length: </span><AmountUnitValue data={hit.metafields.Details.Length} /></li>
+                ) : null}
+                {hit.metafields.Details.Width ? (
+                  <li><span className="label">Width/Diameter: </span><AmountUnitValue data={hit.metafields.Details.Width} /></li>
+                ) : null}
+                {hit.metafields.Details['Minimum Mounting Height'] ? (
+                  <li><span className="label">Min. Mounting Height: </span>{hit.metafields.Details['Minimum Mounting Height']}</li>
+                ) : null}
+                {hit.metafields.Details['Fuel Source'] ? (
+                  <li><span className="label">Fuel Source: </span>{hit.metafields.Details['Fuel Source']}</li>
+                ) : null}
+                {hit.metafields.Details['Heating Area'] ? (
+                  <li><span className="label">Heating Area: </span>{hit.metafields.Details['Heating Area']}</li>
+                ) : null}
+                {hit.metafields.Details.Wattage ? (
+                  <li><span className="label">Wattage: </span><AmountUnitValue data={hit.metafields.Details.Wattage} /></li>
+                ) : null}
+                {hit.metafields.Details['Number of Bulbs'] ? (
+                  <li><span className="label">Number of Lights: </span>{hit.metafields.Details['Number of Bulbs']}</li>
+                ) : null}
+                {hit.metafields.Details.Lift ? (
+                  <li><span className="label">Lift: </span>{hit.metafields.Details.Lift}</li>
+                ) : null}
+                {hit.metafields.Details['Lamp Base Type'] ? (
+                  <li><span className="label">Lamp Type: </span>{hit.metafields.Details['Lamp Base Type']}</li>
+                ) : null}
+                {hit.metafields.Details.Voltage ? (
+                  <li><span className="label">Voltage: </span><AmountUnitValue data={hit.metafields.Details.Voltage} /></li>
+                ) : null}
+              </ul>
             </div>
           ) : (
-            hit.description && (
+            !!hit.description && (
               <div
-                className="mt-2 leading-6"
+                className="product-details mt-2 leading-6"
                 dangerouslySetInnerHTML={{ __html: hit.description }}
               ></div>
             )

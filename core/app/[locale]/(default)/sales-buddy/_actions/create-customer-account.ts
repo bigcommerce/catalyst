@@ -9,12 +9,14 @@ export const createCustomerAccount = async (payload: {
   referral_id?: string;
 }) => {
   try {
-    const { first_name, last_name, email, referral_id } = payload;
+    const { first_name, last_name, email, referral_id,phone,company } = payload;
 
     const postData = JSON.stringify({
       email,
       first_name,
       last_name,
+      phone,
+      company,
       referral_id: referral_id || '',
       access_id: process.env.SALES_BUDDY_ACCESS_ID,
     });

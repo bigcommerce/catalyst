@@ -31,7 +31,7 @@ const CommonFlyout: React.FC<FlyoutProps> = ({ triggerLabel, children,isOpen,onO
             > */}
               {/* <Spinner className="animate-spin rounded-[50%] bg-[#8b8d8f] text-white shadow-[0_10px_38px_2000px_#0e121659,_0_10px_20px_2000px_#0e121633]" />
             </div> */}
-            <div className={`flex   flex-col `}>
+            <div className={`flex flex-col `}>
               <div className="flex flex-col items-center justify-center gap-[20px]">
                 <Dialog.Close asChild>
                   <button
@@ -56,7 +56,6 @@ const CommonFlyout: React.FC<FlyoutProps> = ({ triggerLabel, children,isOpen,onO
                 </div> */}
               </div>
               <Dialog.Description></Dialog.Description>
-           
               <Dialog.Content className="!pointer-events-auto" >
                 <div >
               {children}
