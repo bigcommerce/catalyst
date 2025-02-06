@@ -14,11 +14,11 @@ export async function saveCartData(cartItemsData: any) {
     day: 'numeric',
     hour: 'numeric',
     minute: 'numeric',
-   second: 'numeric',
-    hourCycle: 'h23'
- }).format(new Date());
+    second: 'numeric',
+    hourCycle: 'h23',
+  }).format(new Date());
   const input = {
-    name: "Saved Cart - "+dateTime?.replace(', ', '-'),
+    name: 'Saved Cart',
     items: cartItemsData,
     isPublic: true,
   };

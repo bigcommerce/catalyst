@@ -151,7 +151,7 @@ function CustomItem({
       <div className="flex flex-1 flex-col">
         <div className="flex-1 p-4 text-center">
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
-          <h2 className="mt-2 text-lg font-medium">
+          <h2 className="mt-2 text-base font-medium leading-6">
             <Link href={hit.url}>{hit.name}</Link>
           </h2>
 
@@ -334,7 +334,6 @@ export function RelatedProducts({
           try {
             setIsLoaded(false);
             setIsLoading(true);
-            console.log(skus.join(','));
             const response = await fetch('/api/prices/?skus=' + skus.join(','));
             const data = await response.json();
             console.log(data);

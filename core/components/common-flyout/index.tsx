@@ -4,9 +4,7 @@ import CommonFlyout from './flyouts';
 type FlyoutProps = {
   triggerLabel: React.ReactNode;
   children: React.ReactNode;
-
 };
-
 
 
 export const Flyout: React.FC<FlyoutProps> = ({triggerLabel,children}) => {

@@ -437,7 +437,6 @@ export default async function ProductPage(props: Props) {
           <ProductSchema
             product={product}
             identifier={newIdentifier}
-            optionValueIds={optionValueIds.length}
             productSku={productSku}
           />
 
@@ -446,7 +445,6 @@ export default async function ProductPage(props: Props) {
       </div>
     );
   } catch (error) {
-    console.error('Error in ProductPage:', error);
     return (
       <div className="p-4 text-center">
         <h2>Error loading product</h2>

@@ -25,18 +25,15 @@ import { changePassword } from '../_actions/change-password';
 const ChangePasswordFieldsSchema = z.object({
   customerId: z.string(),
   customerToken: z.string(),
-  currentPassword: z
-    .string()
-    .min(1, "Current password is required"),
-    newPassword: z
+  currentPassword: z.string().min(1, 'Current password is required'),
+  newPassword: z
     .string()
     .regex(
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
-      'Password must include at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character.'
+      'Password must include at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character.',
     ),
   confirmPassword: z.string().min(1),
 });
-
 
 const CustomerChangePasswordSchema = ChangePasswordFieldsSchema.omit({
   customerId: true,
@@ -84,7 +81,6 @@ const validatePasswords = (
     confirmPassword: formData.get('confirm-password'),
   }).success;
 };
-
 
 const SubmitButton = () => {
   const { pending } = useFormStatus();
@@ -140,32 +136,30 @@ export const ChangePasswordForm = () => {
     messageText = state.message;
   }
 
-  const handleCurrentPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>{
-    const isEmpty=e.target.validity.valueMissing;
+  const handleCurrentPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const isEmpty = e.target.validity.valueMissing;
     setIsCurrentPasswordValid(!isEmpty);
-    setIsCurrentPasswordEmpty(isEmpty)
-  }
- 
+    setIsCurrentPasswordEmpty(isEmpty);
+  };
 
   const validateNewAndConfirmPasswords = (formData: FormData) => {
     const newPassword = formData.get('new-password');
     const confirmPassword = formData.get('confirm-password');
-    if (isCurrentPasswordEmpty ) {
-      setIsNewPasswordValid(true);  // Treat new password as valid
-      setIsConfirmPasswordValid(true);  // Treat confirm password as valid
+    if (isCurrentPasswordEmpty) {
+      setIsNewPasswordValid(true); // Treat new password as valid
+      setIsConfirmPasswordValid(true); // Treat confirm password as valid
       return;
     }
 
     // Check if the new password is valid or empty
-    const newPasswordValid = newPassword === ''   ? true : validatePasswords('new-password', formData);
-  
+    const newPasswordValid =
+      newPassword === '' ? true : validatePasswords('new-password', formData);
+
     // Check if the confirm password is valid or empty
-    const confirmPasswordValid = confirmPassword === ''  ? true : validatePasswords('confirm-password', formData);
+    const confirmPasswordValid =
+      confirmPassword === '' ? true : validatePasswords('confirm-password', formData);
     setIsNewPasswordValid(newPasswordValid);
     setIsConfirmPasswordValid(confirmPasswordValid);
-  
-    // Update state
-    
   };
 
   const handlePasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -175,16 +169,15 @@ export const ChangePasswordForm = () => {
       formData = new FormData(e.target.form);
     }
 
-    if (formData && !isCurrentPasswordEmpty ) {
+    if (formData && !isCurrentPasswordEmpty) {
       validateNewAndConfirmPasswords(formData);
     }
-  
   };
 
   return (
     <>
       {state.status === 'error' && (
-        <Message className="mb-8 w-full text-gray-500" variant={state.status}>
+        <Message className="mb-8 w-full text-gray-500 text-[rgb(167,31,35)]" variant={state.status}>
           <p>{messageText}</p>
         </Message>
       )}
@@ -206,7 +199,7 @@ export const ChangePasswordForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error text-[rgb(167,31,35)]"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)]"
             match="valueMissing"
           >
             {t('notEmptyMessage')}
@@ -227,16 +220,18 @@ export const ChangePasswordForm = () => {
               type="password"
             />
           </FieldControl>
+          <FieldMessage className="mt-0 text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                Include uppercase, lowercase, number, symbol (8+ chars).
+              </FieldMessage>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error text-[rgb(167,31,35)]"
+            className={`absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)] ${!isNewPasswordValid ? 'hidden' : ''}`}
             match="valueMissing"
           >
             {t('notEmptyMessage')}
           </FieldMessage>
-          {!isNewPasswordValid &&  (
-            <FieldMessage className="absolute inset-x-0 inline-flex w-full text-xs text-error md:bottom-0 text-[rgb(167,31,35)]">
+          {!isNewPasswordValid && (
+            <FieldMessage className="absolute inset-x-0 inline-flex w-full text-xs text-[rgb(167,31,35)] bottom-0">
               {t('newPasswordValidationMessage')}
-              
             </FieldMessage>
           )}
         </Field>
@@ -256,13 +251,13 @@ export const ChangePasswordForm = () => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error text-[rgb(167,31,35)]"
+            className={`absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)] ${!isConfirmPasswordValid ? 'hidden' : ''}`}
             match="valueMissing"
           >
             {t('notEmptyMessage')}
           </FieldMessage>
-          {!isConfirmPasswordValid  &&(
-            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs  text-error text-[rgb(167,31,35)]">
+          {!isConfirmPasswordValid && (
+            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)]">
               {t('confirmPasswordValidationMessage')}
             </FieldMessage>
           )}
