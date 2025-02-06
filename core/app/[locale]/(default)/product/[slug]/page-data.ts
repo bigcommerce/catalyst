@@ -188,12 +188,16 @@ const ProductItemFragment = graphql(
       categories {
         edges {
           node {
+            entityId
+            name
             ...BreadcrumbsFragment
           }
         }
       }
       brand {
         name
+        entityId
+        id
       }
       ...PricingFragment
       ...ProductFormFragment
@@ -221,6 +225,7 @@ const ProductSchemaFragment = graphql(`
     brand {
       name
       path
+      id
     }
     reviewSummary {
       averageRating
@@ -348,9 +353,7 @@ const ProductPageQuery = graphql(
             metaKeywords
           }
         }
-        parent: product(
-          entityId: $entityId          
-        ) {
+        parent: product(entityId: $entityId) {
           entityId
           sku
           mpn
@@ -370,13 +373,9 @@ const ProductPageQuery = graphql(
 
 const ProductPageSKUQuery = graphql(
   `
-    query ProductPageSKUQuery(
-      $sku: String!
-    ) {
+    query ProductPageSKUQuery($sku: String!) {
       site {
-        product(
-          sku: $sku
-        ) {
+        product(sku: $sku) {
           ...GalleryFragment
           ...DetailsFragment
           ...ProductItemFragment
@@ -401,9 +400,7 @@ const ProductPageSKUQuery = graphql(
             metaKeywords
           }
         }
-        parent: product(
-          sku: $sku          
-        ) {
+        parent: product(sku: $sku) {
           entityId
           sku
           mpn

@@ -1,7 +1,33 @@
 'use server';
 
-export const GetCustomerById = async (entityId: Number) => {
+export const CheckProductFreeShipping = async (productId: string) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/products/${productId}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
 
+    // Check if the product has free shipping
+    const isFreeShipping = data?.is_free_shipping || false;
+    return isFreeShipping;
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
+
+export const GetCustomerById = async (entityId: Number) => {
   try {
     let customerData = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/customers?id:in=${entityId}`,
@@ -45,29 +71,28 @@ export const GetEmailId = async (email: string) => {
   }
 };
 
-
-export const GetCustomerGroupById = async (id:number) => {
-  try{
+export const GetCustomerGroupById = async (id: number) => {
+  try {
     let groupDetails = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/customer_groups/${id}`,
       {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
         },
       },
     )
-    .then((res)=> res.json())
-    .then((jsonData)=> {
-      return jsonData;
-    });
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
     return groupDetails;
-        }catch (error){
-          console.error(error);
-        }
-      };
+  } catch (error) {
+    console.error(error);
+  }
+};
 
 export const GetProductMetaFields = async (entityId: number, nameSpace: string) => {
   let metaFieldsArray: any = [];
@@ -92,7 +117,7 @@ export const getDeliveryMessage = async (
   let metaFields: any = await getMetaFieldsByProductVariant(
     entityId,
     variantId,
-    "delivery_message",
+    'delivery_message',
   );
   if (metaFields?.data?.length > 0) {
     const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
@@ -166,8 +191,6 @@ const getMetaFieldsByProduct = async (entityId: number, nameSpace: string = '', 
   }
 };
 
-
-
 const getMetaFieldsByProductVariant = async (
   entityId: Number,
   variantId: number,
@@ -177,7 +200,7 @@ const getMetaFieldsByProductVariant = async (
   try {
     let nameSpaceValue = '';
     if (namespace) {
-      nameSpaceValue = '&namespace=' + encodeURIComponent(namespace);;
+      nameSpaceValue = '&namespace=' + encodeURIComponent(namespace);
     }
     let productMetaFields = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/products/${entityId}/variants/${variantId}/metafields?page=${page}${nameSpaceValue}`,
@@ -512,8 +535,8 @@ export const addCouponCodeToCart = async (checkoutId: string, couponCode: string
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
         },
         body: {
-          "coupon_code": couponCode,
-          "version": 1
+          coupon_code: couponCode,
+          version: 1,
         },
         cache: 'no-store',
       },
@@ -535,7 +558,7 @@ export const getGuestOrderDetailsFromAPI = async (orderId: any) => {
       {
         method: 'GET',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
         },
@@ -550,4 +573,4 @@ export const getGuestOrderDetailsFromAPI = async (orderId: any) => {
   } catch (error) {
     console.error(error);
   }
-}
+};
