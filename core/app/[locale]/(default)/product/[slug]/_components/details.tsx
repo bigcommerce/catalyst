@@ -71,7 +71,8 @@ interface Props {
   triggerLabel5: React.ReactNode;
   children5: React.ReactNode;
   priceMaxRules: any;
-  getAllCommonSettinngsValues: any;
+  getAllCommonSettinngsValues:any;
+  isFromQuickView : boolean;
   customerGroupDetails: any;
 }
 
@@ -172,6 +173,7 @@ export const Details = ({
   triggerLabel5,
   children5,
   priceMaxRules,
+  isFromQuickView
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -590,19 +592,19 @@ export const Details = ({
                 }
               />
             )}
-        </div>
-        <div ref={productFormRef}>
-          <ProductForm
-            data={product}
-            productMpn={product.mpn || ''}
-            multipleOptionIcon={multipleOptionIcon}
-            blankAddImg={blankAddImg || ''}
-            productImages={productImages}
-            fanPopup={fanPopup}
-            closeIcon={closeIcon}
-            customerGroupDetails={customerGroupDetails}
-          />
-        </div>
+          </div>
+          <div ref={productFormRef}>
+            <ProductForm
+              data={product}
+              productMpn={product.mpn || ''}
+              multipleOptionIcon={multipleOptionIcon}
+              blankAddImg={blankAddImg || ''}
+              productImages={productImages}
+              fanPopup={fanPopup}
+              closeIcon={closeIcon || ''}
+              customerGroupDetails={customerGroupDetails}
+            />
+          </div>
 
         <div className="div-product-description my-12 hidden">
           <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
@@ -661,21 +663,18 @@ export const Details = ({
           </div>
         </div>
 
-        {/* <ProductSchema product={product} /> */}
-        <PayPalPayLater
-          amount={product?.prices?.price?.value?.toString() || '0'}
-          currency={product?.prices?.price?.currencyCode || 'USD'}
-        />
-        <RequestQuote children={children3} />
-        <CertificationsAndRatings
-          certificationIcon={certificationIcon}
-          product={product}
-          children={children4}
-          triggerLabel={triggerLabel4}
-        />
-        <ProductDetailDropdown
-          product={product}
-          dropdownSheetIcon={dropdownSheetIcon}
+          {/* <ProductSchema product={product} /> */}
+          <div className={`${isFromQuickView ? "hidden" : "block"}`}>
+            <PayPalPayLater 
+            amount={product?.prices?.price?.value?.toString() || '0'}
+            currency={product?.prices?.price?.currencyCode || 'USD'}
+          />
+          
+          
+            <RequestQuote children={children3} />
+          <CertificationsAndRatings 
+          certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4}/>
+          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}
           triggerLabel={triggerLabel5}
           children={children5}
         />
@@ -688,6 +687,7 @@ export const Details = ({
           <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
         </div>
       </div>
+    </div>
     </div>
   );
 };
