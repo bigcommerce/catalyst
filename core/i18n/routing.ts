@@ -56,6 +56,12 @@ export const routing = defineRouting({
   locales,
   defaultLocale,
   localePrefix,
+  // configure `NEXT_LOCALE` cookie to work inside of the Makeswift Builder's canvas
+  localeCookie: {
+    partitioned: true,
+    secure: true,
+    sameSite: 'none',
+  },
 });
 
 // Lightweight wrappers around Next.js' navigation APIs
