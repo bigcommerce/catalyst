@@ -95,6 +95,10 @@ export default async function BrandPage(props: Props) {
         ] } }}
       />
 
+      <div className="mb-0 lg:flex lg:flex-row lg:items-center lg:justify-between">
+        <h1 className="mb-4 lg:mb-0 text-2xl">{brand.name}</h1>
+      </div>
+
       {brand.defaultImage && brand.defaultImage.urlOriginal ? (
         <section className="mt-8 bg-gray-50 px-4 py-8 text-center md:mb-8">
           <img
@@ -141,11 +145,7 @@ export default async function BrandPage(props: Props) {
 
           </div>
         </section>
-      ) : (
-        <div className="mb-0 lg:flex lg:flex-row lg:items-center lg:justify-between">
-          <h1 className="mb-4 lg:mb-0 text-2xl">{brand.name}</h1>
-        </div>
-      )}
+      ) : null}
 
       {!!snapshot &&
         <MakeswiftPage snapshot={snapshot} />

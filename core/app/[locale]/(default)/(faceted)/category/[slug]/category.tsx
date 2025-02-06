@@ -261,6 +261,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
       future={{ preserveSharedStateOnUnmount: true }}
       insights={true}
     >
+      <div>{JSON.stringify(breadcrumbs)}</div>
       {breadcrumbs && breadcrumbs.length > 0 &&
         <Configure filters={breadcrumbs.map((item: any) => `categories_without_path:"${item.name}"`).join(' AND ')} maxFacetHits={100} />
       }
@@ -283,12 +284,12 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
           <div className="mt-4 order-2">
             <DynamicWidgets maxValuesPerFacet={1000}>
               <Facet title="Brand">
-                <RefinementList attribute="brand_name" searchable={true} limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="brand_name" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </Facet>
               <Facet title="Collection">
-                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </Facet>
@@ -569,12 +570,12 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
               {/* indoor lighting, outdoor lighting */}
               {/* Lighting: Brand, Collection, Finish, Number of lights, Style */}
               <FacetDropdown buttonText="Brand" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="brand_name" searchable={true} limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="brand_name" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </FacetDropdown>
               <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </FacetDropdown>
@@ -611,7 +612,9 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
                 <RefinementList attribute="metafields.Details.Fuel Source" />
               </FacetDropdown>
               <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Collection" />
+                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                }} />
               </FacetDropdown>
               <FacetDropdown buttonText="Mounting Options" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
                 <RefinementList attribute="metafields.Details.Mounting Options" />
@@ -625,7 +628,9 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
               {/* Patio (Shading specific): Collection, Shape, Price, Weight, Finish */}
               {/*
               <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Collection" />
+                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+                }} />
               </FacetDropdown>
               <FacetDropdown buttonText="Shape" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
                 <RefinementList attribute="metafields.Details.Product Shape" />
@@ -641,8 +646,12 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
               </FacetDropdown>
               */}
 
+
+
               {/* fans */}
+              {/* Fans:  finish, blade finish, number of blades, control type, light kit type */}
               {/* else */}
+              {/* all else:  finish, style, shape, price, brand */}
             {/* </DynamicWidgets> */}
           </div>
         </div>

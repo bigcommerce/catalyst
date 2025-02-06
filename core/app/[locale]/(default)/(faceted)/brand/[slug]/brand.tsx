@@ -286,7 +286,7 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false, priceMaxRul
             </Facet>
             <DynamicWidgets maxValuesPerFacet={1000}>
               <Facet title="Collection">
-                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </Facet>
@@ -563,8 +563,16 @@ export const Brand = ({ brand, promotions, useDefaultPrices = false, priceMaxRul
           </button>
           <div className="hidden lg:flex lg:w-full lg:items-center lg:space-x-4">
             {/* <DynamicWidgets maxValuesPerFacet={1000}> */}
+{/*
+            Good question.  Let's do these as the defaults: 
+Finish (search finish color)
+Price
+Style
+Collection
+Width
+*/}
               <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </FacetDropdown>

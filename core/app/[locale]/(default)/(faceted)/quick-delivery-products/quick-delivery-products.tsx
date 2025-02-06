@@ -288,12 +288,12 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
             </Facet>
             <DynamicWidgets maxValuesPerFacet={1000}>
               <Facet title="Brand">
-                <RefinementList attribute="brand_name" searchable={true} limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="brand_name" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </Facet>
               <Facet title="Collection">
-                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </Facet>
@@ -572,12 +572,12 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
             {/* <DynamicWidgets maxValuesPerFacet={1000}> */}
               {/* Lighting: Brand, Collection, Finish, Number of lights, Style */}
               <FacetDropdown buttonText="Brand" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="brand_name" searchable={true} limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="brand_name" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </FacetDropdown>
               <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </FacetDropdown>
