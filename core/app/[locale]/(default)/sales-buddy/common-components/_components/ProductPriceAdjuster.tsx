@@ -59,11 +59,18 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
 
   const handleSubmit = async () => {
     const numericValue = parseFloat(newCost);
-
+    if (newCost.length > 6) {
+      setErrorMessage('Price cannot be more than 6 digits');
+      return;
+    }
     if (newCost.trim() === '') {
       setErrorMessage('Price cannot be empty');
       return;
-    }
+    } else if (numericValue == 0) {
+      setErrorMessage('Price cannot be 0');
+      return
+    } 
+
 
     if (
       (agentRole === 'agent' || agentRole === null) &&
@@ -118,7 +125,7 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
       >
         <p className="break-words text-sm font-bold tracking-wide">{label}</p>
         <p
-          className={`text-sm font-normal tracking-wide ${isLongValue ? 'mt-1 text-left' : 'text-right'}`}
+          className={`text-sm font-normal tracking-wide ${isLongValue ? 'mt-1 text-right' : 'text-right'}`}
         >
           {valueString}
         </p>

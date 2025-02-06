@@ -32,10 +32,10 @@ const searchColorsHEX: DynamicObject = searchColors;
 const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
 
 interface Props {
-  productId: number,
-  products: any[],
-  useDefaultPrices?: boolean,
-  priceMaxRules?: any
+  productId: number;
+  products: any[];
+  useDefaultPrices?: boolean;
+  priceMaxRules?: any;
 }
 
 function getDiscount(price: number, sale: number): number | null {
@@ -99,8 +99,15 @@ function ColorSwatches({ variants, onImageClick }: any) {
   );
 }
 
-function CustomItem({ hit, priceMaxRules = null, useDefaultPrices = false, price = null, salePrice = null, isLoading = false, isLoaded = false }: any) {
-
+function CustomItem({
+  hit,
+  priceMaxRules = null,
+  useDefaultPrices = false,
+  price = null,
+  salePrice = null,
+  isLoading = false,
+  isLoaded = false,
+}: any) {
   const format = useFormatter();
   const currency = 'USD';
 
@@ -144,26 +151,36 @@ function CustomItem({ hit, priceMaxRules = null, useDefaultPrices = false, price
       <div className="flex flex-1 flex-col">
         <div className="flex-1 p-4 text-center">
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
-          <h2 className="text-lg font-medium mt-2"><Link href={hit.url}>{hit.name}</Link></h2>
+          <h2 className="mt-2 text-base font-medium leading-6">
+            <Link href={hit.url}>{hit.name}</Link>
+          </h2>
 
-          <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
-            {!!hit.on_clearance &&
-              <span className="mt-2 inline-block px-1 py-0.5 bg-gray-400 text-white text-xs uppercase tracking-wider">Clearance</span>
-            }
+          <div className="mx-auto mt-2 flex flex-wrap items-center justify-center space-x-2">
+            {!!hit.on_clearance && (
+              <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
+                Clearance
+              </span>
+            )}
 
-            <ProductPrice 
-              defaultPrice={hit?.prices?.USD || 0} 
-              defaultSalePrice={hit?.sales_prices?.USD || null} 
+            <ProductPrice
+              defaultPrice={hit?.prices?.USD || 0}
+              defaultSalePrice={hit?.sales_prices?.USD || null}
               price={price}
               salePrice={salePrice}
-              priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && (r.bc_brand_ids.includes(hit?.brand_id) || r.bc_brand_ids.includes(String(hit?.brand_id)))) || (r.skus && r.skus.includes(hit?.sku)))}
+              priceMaxRule={priceMaxRules?.find(
+                (r: any) =>
+                  (r.bc_brand_ids &&
+                    (r.bc_brand_ids.includes(hit?.brand_id) ||
+                      r.bc_brand_ids.includes(String(hit?.brand_id)))) ||
+                  (r.skus && r.skus.includes(hit?.sku)),
+              )}
               currency={currency}
               format={format}
               options={{
                 useAsyncMode: useAsyncMode,
                 useDefaultPrices: useDefaultPrices,
                 isLoading: isLoading,
-                isLoaded: isLoaded
+                isLoaded: isLoaded,
               }}
               classNames={{
                 root: 'mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start',
@@ -297,8 +314,12 @@ function CustomItem({ hit, priceMaxRules = null, useDefaultPrices = false, price
   );
 }
 
-export function RelatedProducts({ productId, products, useDefaultPrices = false, priceMaxRules }: Props) {
-
+export function RelatedProducts({
+  productId,
+  products,
+  useDefaultPrices = false,
+  priceMaxRules,
+}: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [prices, setPrices] = useState({} as any);

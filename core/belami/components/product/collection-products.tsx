@@ -95,7 +95,7 @@ function CustomItem({ hit, priceMaxRules = null, useDefaultPrices = false, price
       <div className="flex-1 flex flex-col">
         <div className="flex-1 p-0 text-center">
           <ColorSwatches variants={hit.variants} onImageClick={setImageUrl} />
-          <h2 className="text-lg font-medium mt-2"><Link href={hit.url}>{hit.name}</Link></h2>
+          <h2 className="text-base font-medium mt-2 leading-6"><Link href={hit.url}>{hit.name}</Link></h2>
 
           <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
             {!!hit.on_clearance &&
