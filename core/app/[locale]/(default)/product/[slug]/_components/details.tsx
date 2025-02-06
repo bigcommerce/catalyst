@@ -16,7 +16,6 @@ import { ProductForm } from './product-form';
 import { ProductFormFragment } from './product-form/fragment';
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
 import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
-import { Coupon } from './belami-product-coupon-pdp';
 import { BcImage } from '~/components/bc-image';
 import ProductDetailDropdown from '~/components/ui/pdp/belami-product-details-pdp';
 import { useCommonContext } from '~/components/common-context/common-provider';
@@ -27,6 +26,8 @@ import Image from 'next/image';
 import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { Flyout } from '~/components/common-flyout';
 import { ProductPrice } from '~/belami/components/search/product-price';
+import { Promotion } from '~/belami/components/search/hit';
+import { CheckProductFreeShipping } from '~/components/management-apis';
 
 interface ProductOptionValue {
   entityId: number;
@@ -46,6 +47,8 @@ interface MultipleChoiceOption {
 }
 
 interface Props {
+  isFreeShipping?: boolean;
+  promotions?: any[] | null;
   product: FragmentOf<typeof DetailsFragment> & { parent: any; UpdatePriceForMSRP: any };
   collectionValue?: string;
   dropdownSheetIcon?: string;
@@ -146,6 +149,8 @@ export const DetailsFragment = graphql(
 );
 
 export const Details = ({
+  promotions = null,
+  isFreeShipping,
   product,
   collectionValue,
   dropdownSheetIcon,
@@ -191,7 +196,9 @@ export const Details = ({
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
 
-  // Inside your Details component:
+  const categoryIds = product?.categories?.edges?.map((edge) => edge.node.entityId) || [];
+  const productId = product?.entityId;
+  const brandId = product.brand?.entityId || 0;
 
   useEffect(() => {
     // 1. Handle scroll behavior
@@ -383,7 +390,7 @@ export const Details = ({
                       }}
                     />
                   )}
-                  
+
                   {productAvailability === 'Unavailable' ? (
                     <div className="flex flex-col items-center">
                       <button
@@ -518,7 +525,7 @@ export const Details = ({
           </div>
           <ReviewSummary data={product} />
         </div>
-        
+
         {product?.UpdatePriceForMSRP && (
           <ProductPrice
             defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
@@ -553,11 +560,18 @@ export const Details = ({
               discount:
                 'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
               price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500'
-            }} />
-          )}
-          <Coupon couponIcon={couponIcon} />
+              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500',
+            }}
+          />
+        )}
 
+        <Promotion
+          promotions={promotions}
+          product_id={productId}
+          brand_id={brandId}
+          category_ids={categoryIds}
+          free_shipping={isFreeShipping}
+        />
         <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
           <span> Free Delivery</span>
           {selectedVariantId && (
