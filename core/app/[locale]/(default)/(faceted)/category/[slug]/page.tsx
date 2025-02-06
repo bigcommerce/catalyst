@@ -53,7 +53,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-import { userAgent } from 'next/server';
 export default async function CategoryPage(props: Props) {
   const searchParams = await props.searchParams;
   const params = await props.params;
@@ -71,7 +70,7 @@ export default async function CategoryPage(props: Props) {
   const ua = headersList.get('user-agent') || '';
 
   const isBot = await isBadUserAgent(ua);
-  const isCaliforniaUser = country === 'US' && region === 'California';
+  const isCaliforniaIp = country === 'US' && region === 'CA';
 
   const customerAccessToken = await getSessionCustomerAccessToken();
   const useDefaultPrices = !customerAccessToken;
@@ -104,9 +103,6 @@ export default async function CategoryPage(props: Props) {
   return (
     <div className="group px-4 py-4 xl:px-12">
       <Breadcrumbs category={category} />
-      <div>{country}</div>
-      <div>{region}</div>
-      <div>{ua}</div>
       <div className="mb-0 lg:flex lg:flex-row lg:items-center lg:justify-between">
         <h1 className="mb-4 text-2xl lg:mb-0">{category.name}</h1>
       </div>
@@ -118,6 +114,13 @@ export default async function CategoryPage(props: Props) {
         promotions={promotions}
         useDefaultPrices={useDefaultPrices}
         priceMaxRules={priceMaxRules}
+        userContext={{
+          isBot: isBot,
+          isCaliforniaIp: isCaliforniaIp,
+          ip: ip,
+          ua: ua,
+          isGuest: !customerAccessToken
+        }}
       />
     </div>
   );

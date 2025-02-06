@@ -61,12 +61,24 @@ const sortByNumericRangeName: RefinementListProps['sortBy'] = (a: any, b: any) =
 //const closeOnChange = () => window.innerWidth > 375;
 const closeOnChange = false;
 
-export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, priceMaxRules }: any) => {
+export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, priceMaxRules = null, userContext = null }: any) => {
 
   const [view, setView] = useState('grid');
 
   const [showSidebar, _setShowSidebar] = useState(false);
   const [showViewResultsButton, setShowViewResultsButton] = useState(false);
+
+  const ruleContext = ['quick-delivery-products'];
+  if (userContext?.isCaliforniaIp)
+    ruleContext.push('california-ip');
+  if (userContext?.isBot)  
+    ruleContext.push('bot');
+  if (!userContext?.isGuest)  
+    ruleContext.push('user')
+  else
+    ruleContext.push('guest');
+
+  const analyticsTags = [userContext?.isBot ? 'bot' : (!userContext?.isGuest ? 'user' : 'guest')];
 
   function setShowSidebar(value: boolean) {
     _setShowSidebar(value);
@@ -259,7 +271,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
       future={{ preserveSharedStateOnUnmount: true }}
       insights={true}
     >
-      <Configure ruleContexts={['quick-delivery-products']} maxFacetHits={100} />
+      <Configure ruleContexts={ruleContext} analyticsTags={analyticsTags} maxFacetHits={100} />
 
       {showSidebar &&
         <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebar(false)}></div>
