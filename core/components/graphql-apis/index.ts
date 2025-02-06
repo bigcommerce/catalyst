@@ -95,9 +95,19 @@ export const GetVariantsByProductSKU = async (skuArray: any) => {
             }
             upc
             availabilityV2 {
-        status
-        description
-      }
+             status
+             description
+            }
+            categories {
+              edges {
+                node {
+                  id
+                  entityId
+                  name
+                  path
+                }
+              }
+            }
           }`;
           index++;
         }

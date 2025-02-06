@@ -1,7 +1,7 @@
 import { 
   usePagination, UsePaginationProps
 } from 'react-instantsearch';
-import { ChevronLeft,ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { cn } from '~/lib/utils';
 

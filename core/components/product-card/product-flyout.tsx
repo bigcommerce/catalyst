@@ -9,6 +9,8 @@ import { BcImage } from '~/components/bc-image';
 import { useCommonContext } from '~/components/common-context/common-provider';
 import { Loader2 as Spinner } from 'lucide-react';
 import {
+  GetCustomerGroupById,
+  GetEmailId,
   GetProductMetaFields,
   GetProductVariantMetaFields,
   GetVariantsByProductId,
@@ -21,7 +23,7 @@ import { InputPlusMinus } from '../form-fields/input-plus-minus';
 import closeIcon from '~/public/add-to-cart/flyoutCloseIcon.svg';
 import { calculateProductPrice, commonSettinngs } from '../common-functions';
 
-const getVariantProductInfo = async (metaData: any) => {
+const getVariantProductInfo = async (metaData: any, discountRules:any) => {
   let variantProductInfo: any = [],
     accessoriesLabelData: any = [],
     skuArrayData: any = [];
@@ -43,13 +45,17 @@ const getVariantProductInfo = async (metaData: any) => {
       });
       if (variantProductIdSkus?.length) {
         let parentProductInformation = await GetVariantsByProductSKU(variantProductIdSkus);
+        //console.log("parent product-->>",parentProductInformation);
+        
         if (parentProductInformation?.length > 0) {
           for await (const productInfo of parentProductInformation) {
+            const categories = removeEdgesAndNodes(productInfo?.categories);
+            const categoryId = categories[0]?.entityId;
+            const categoryIds = categoryId ? [categoryId] : [];
             let varaiantProductData = await GetVariantsByProductId(productInfo?.entityId);
             let variantNewObject: any = [];
             let productName: string = productInfo?.name;
-            
-            let updatedProductData = await calculateProductPrice(varaiantProductData,"accessories");
+            let updatedProductData = await calculateProductPrice(varaiantProductData,"accessories",discountRules,categoryIds);
             
             let imageArray: Array<any> = removeEdgesAndNodes(productInfo?.images);
             updatedProductData?.forEach(async (item: any) => {
@@ -106,6 +112,7 @@ export const ProductFlyout = ({
   from,
   showFlyout,
   showFlyoutFn,
+  discountRules,
 }: {
   data: any;
   fanPopup: string;
@@ -113,6 +120,7 @@ export const ProductFlyout = ({
   from: string;
   showFlyout?: Boolean;
   showFlyoutFn?: any;
+  discountRules?: any;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [commonSettingsValues, setCommonSettingsValues] = useState<any>([]);
@@ -154,7 +162,7 @@ export const ProductFlyout = ({
           variantProduct?.entityId,
           'Accessories',
         );
-        let productData = await getVariantProductInfo(metaData);
+        let productData = await getVariantProductInfo(metaData,discountRules);
         setVariantProductData([...productData]);
         var getAllCommonSettinngsValues =await commonSettinngs([product?.brand?.entityId]);
         setCommonSettingsValues(getAllCommonSettinngsValues);
@@ -170,7 +178,7 @@ export const ProductFlyout = ({
     useEffect(() => {
       const getProductMetaData = async () => {
         let metaData = await GetProductMetaFields(productId, 'Accessories');
-        let productData = await getVariantProductInfo(metaData);
+        let productData = await getVariantProductInfo(metaData,discountRules);
         setVariantProductData([...productData]);
       };
       getProductMetaData();
@@ -183,7 +191,15 @@ export const ProductFlyout = ({
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
-          <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow left-[50%] sm:left-[unset] fixed right-[unset] sm:right-[0] top-[50%] z-[100] flex h-[100vh] w-[90vw] max-w-[610px] [transform:translate(-50%,-50%)] sm:translate-y-[-50%] animate-mobSlideInFromLeft sm:animate-slideInFromLeft flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+          <Dialog.Content className=" xl:w-[calc(36%-1.45em)] 
+           lg:max-w-[610px]
+          popup-container-parent data-[state=open]:animate-contentShow 
+          left-[50%] sm:left-[unset]
+           fixed right-[unset] sm:right-[0] top-[50%] z-[100] 
+           flex h-[100vh] w-[90vw] max-w-[610px]  [transform:translate(-50%,-50%)] 
+           sm:translate-y-[-50%] animate-mobSlideInFromLeft sm:animate-slideInFromLeft
+            flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] 
+            shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
             <div
               className={`flyout-loading ${isLoading ? 'flex' : 'hidden'} fixed left-0 top-0 z-50 h-full w-full items-center justify-center`}
             >
@@ -289,7 +305,7 @@ export const ProductFlyout = ({
               )}
               
               {variantProductData && variantProductData?.length > 0 
-              // && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories  
+               && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories  
               && (
                 <>
                   <hr className="my-[20px] border-[#93cfa1]" />

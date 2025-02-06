@@ -1,8 +1,9 @@
 'use client';
-
+ 
 import { ChangeEvent, useRef, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+import { useLoadScript } from "@react-google-maps/api";
 import { useAccountStatusContext } from '~/app/[locale]/(default)/account/(tabs)/_components/account-status-provider';
 import {
   createFieldName,
@@ -24,7 +25,7 @@ import { Message } from '~/components/ui/message';
 import { registerCustomers } from '../_actions/register-customers';
 import { logins } from '../_actions/logins';
 import { selectors } from '@playwright/test';
-
+ 
 // Constants
 const REQUIRED_FIELDS = new Set([
   'customer-email',
@@ -35,7 +36,7 @@ const REQUIRED_FIELDS = new Set([
   'address-city',
   'address-postalCode',
 ]);
-
+ 
 type FieldOrderKeys =
   | 'I am a'
   | 'Company Name'
@@ -46,7 +47,7 @@ type FieldOrderKeys =
   | 'Zip/Postcode'
   | 'Address Line 1'
   | 'Address Line 2';
-
+ 
 const FIELD_ORDER: Record<FieldOrderKeys, number> = {
   'I am a': 1,
   'Company Name': 2,
@@ -58,7 +59,7 @@ const FIELD_ORDER: Record<FieldOrderKeys, number> = {
   'Suburb/City': 7,
   'Zip/Postcode': 9,
 };
-
+ 
 const ALLOWED_FIELDS = [
   'I am a',
   'Tax ID / Licence#',
@@ -70,7 +71,7 @@ const ALLOWED_FIELDS = [
   'Address Line 1',
   'Address Line 2',
 ];
-
+ 
 // Interfaces
 interface BaseField {
   entityId: number;
@@ -79,19 +80,19 @@ interface BaseField {
   isBuiltIn: boolean;
   isRequired: boolean;
 }
-
+ 
 interface TextFormField extends BaseField {
   __typename: 'TextFormField';
   defaultText: string | null;
   maxLength: number | null;
 }
-
+ 
 interface MultilineTextFormField extends BaseField {
   __typename: 'MultilineTextFormField';
   defaultText: string | null;
   rows: number;
 }
-
+ 
 interface NumberFormField extends BaseField {
   __typename: 'NumberFormField';
   defaultNumber: number | null;
@@ -99,48 +100,48 @@ interface NumberFormField extends BaseField {
   minNumber: number | null;
   maxNumber: number | null;
 }
-
+ 
 interface DateFormField extends BaseField {
   __typename: 'DateFormField';
   defaultDate: string | null;
   minDate: string | null;
   maxDate: string | null;
 }
-
+ 
 interface PicklistOption {
   entityId: string | number;
   label: string;
 }
-
+ 
 interface PicklistFormField extends BaseField {
   __typename: 'PicklistFormField';
   choosePrefix: string;
   options: PicklistOption[];
 }
-
+ 
 interface PicklistOrTextFormField extends BaseField {
   __typename: 'PicklistOrTextFormField';
   options: PicklistOption[];
   defaultText?: string | null;
   defaultNumber?: number | null;
 }
-
+ 
 interface RadioButtonsFormField extends BaseField {
   __typename: 'RadioButtonsFormField';
   options: PicklistOption[];
 }
-
+ 
 interface CheckboxesFormField extends BaseField {
   __typename: 'CheckboxesFormField';
   options: PicklistOption[];
 }
-
+ 
 interface PasswordFormField extends BaseField {
   __typename: 'PasswordFormField';
   defaultText: string | null;
   maxLength: number | null;
 }
-
+ 
 type FormField =
   | TextFormField
   | MultilineTextFormField
@@ -151,12 +152,12 @@ type FormField =
   | RadioButtonsFormField
   | CheckboxesFormField
   | PasswordFormField;
-
+ 
 interface FormStatus {
   status: 'success' | 'error';
   message: string;
 }
-
+ 
 interface RegisterForm2Props {
   TradeAddress1: string;
   addressFields: FormField[];
@@ -174,7 +175,9 @@ interface RegisterForm2Props {
     states: Array<{ name: string }>;
   };
 }
-
+ 
+const libraries: any= ["places"];
+ 
 export const RegisterForm2 = ({
   addressFields,
   customerFields,
@@ -182,10 +185,88 @@ export const RegisterForm2 = ({
   defaultCountry,
   TradeAddress1,
 }: RegisterForm2Props) => {
+ 
+  const [lastChangedField, setLastChangedField] = useState<string>('');
+ 
+  const [countryApi, setCountryApi] = useState( defaultCountry.code.toLowerCase() || '')
+  const [isCountryCode, setIsCountryCode] = useState(false);
+ 
+   const { isLoaded, loadError } = useLoadScript({
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY as string,
+    libraries,
+  });
+ 
+  const [inputApi, setInputApi] = useState({});
+  const inputRefApi = useRef(null);
+ 
+  useEffect(() => {
+    if (!isLoaded || loadError || !inputRefApi.current) return;
+ 
+    const options = {
+      componentRestrictions: { country: countryApi },
+      fields: ["address_components", "geometry"],
+    };
+ 
+    const autocomplete = new google.maps.places.Autocomplete(inputRefApi.current, options);
+    autocomplete.addListener("place_changed", () => handlePlaceChanged(autocomplete));
+ 
+    // return () => autocomplete.removeListener("place_changed", handlePlaceChanged);
+  }, [isLoaded, loadError, countryApi, isCountryCode]);
+ 
+  const handlePlaceChanged = async(address: any) => {
+    if (!isLoaded) return;
+    const place = address.getPlace()
+ 
+    if (!place || !place.geometry) {
+      setInputApi({});
+      return;
+    }
+    formData(place);
+  };
+ 
+  const formData = (data: any) => {
+    const addressComponents = data?.address_components;
+ 
+    const componentMap = {
+      subPremise: "",
+      premise: "",
+      street_number: "",
+      route: "",
+      country: "",
+      postal_code: "",
+      administrative_area_level_2: "",
+      administrative_area_level_1: "",
+    };
+ 
+    for (const component of addressComponents) {
+      const componentType = component.types[0];
+      if (componentMap.hasOwnProperty(componentType)) {
+        componentMap[componentType] = component.long_name;
+      }
+    }
+ 
+    const formattedAddress =
+      `${componentMap.subPremise} ${componentMap.premise} ${componentMap.street_number} ${componentMap.route}`.trim();
+    const latitude = data?.geometry?.location?.lat();
+    const longitude = data?.geometry?.location?.lng();
+ 
+    setInputApi((values) => ({
+      ...values,
+      "address-address1": formattedAddress,
+      country: componentMap.country,
+      "address-postalCode": componentMap.postal_code,
+      "address-city": componentMap.administrative_area_level_2,
+      state: componentMap.administrative_area_level_1,
+      latitude: latitude,
+      longitude: longitude,
+    }));
+  };
+ 
+ 
   // Refs and Router
   const formRef = useRef<HTMLFormElement>(null);
   const router = useRouter();
-
+ 
   // States
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -202,7 +283,7 @@ export const RegisterForm2 = ({
   const [countryStates, setCountryStates] = useState(defaultCountry.states);
   const [showAddressLine2, setShowAddressLine2] = useState(false);
   const [stateSelector, setStateSelector] = useState(false);
-
+ 
   const [textInputValCheck, setTextInputValCheck] = useState({
     6: '',
     8: '',
@@ -211,24 +292,24 @@ export const RegisterForm2 = ({
     26: '',
   });
   const [textInputValError, setTextInputValError] = useState({});
-
+ 
+  const [stateValueApi, setStateValueApi] = useState(stateSelector ? countryStates[0]?.name : '');
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Register.Form');
-
+ 
   useEffect(() => {
     router.prefetch('/trade-account/trade-step3/');
   }, [router]);
-
-
+ 
   const isValidFormValue = (value: unknown): value is string | Blob => {
     return (
       value !== null && value !== undefined && (typeof value === 'string' || value instanceof Blob)
     );
   };
-
+ 
   const processFormData = (formData: FormData): FormData => {
     const combinedFormData = new FormData();
-
+ 
     if (typeof window !== 'undefined') {
       const firstStepData = JSON.parse(localStorage.getItem('registrationFormData') || '{}');
       Object.entries(firstStepData).forEach(([key, value]) => {
@@ -237,16 +318,16 @@ export const RegisterForm2 = ({
         }
       });
     }
-
+ 
     for (const [key, value] of formData.entries()) {
       if (isValidFormValue(value)) {
         combinedFormData.append(key, String(value));
       }
     }
-
+ 
     return combinedFormData;
   };
-
+ 
   // Validation Handlers
   const validateStateInput = (value: string): boolean => {
     if (!value) {
@@ -256,40 +337,53 @@ export const RegisterForm2 = ({
     setStateInputValid(true);
     return true;
   };
-
+ 
   const handleTextInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
     setTextInputValid((prev) => ({ ...prev, [fieldId]: true }));
     setTextInputValCheck((prev) => ({ ...prev, [fieldId]: e.target.value }));
+    const {name, value} = e.target;
+    setInputApi((values) => ({ ...values, [name]: value }));
+    setLastChangedField("text")
   };
-
+ 
+  const handleTextInputValidation1 = (e: ChangeEvent<HTMLInputElement>) => {
+    const fieldId = Number(e.target.id.split('-')[1]);
+    setTextInputValid((prev) => ({ ...prev, [fieldId]: true }));
+    setTextInputValCheck((prev) => ({ ...prev, [fieldId]: e.target.value }));
+  };
+ 
   const handleMultiTextValidation = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
     setMultiTextValid((prev) => ({ ...prev, [fieldId]: !e.target.validity.valueMissing }));
   };
-
+ 
   const handleNumbersInputValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
     setNumbersInputValid((prev) => ({ ...prev, [fieldId]: !e.target.validity.valueMissing }));
   };
-
+ 
   const handleDatesValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
     setDatesValid((prev) => ({ ...prev, [fieldId]: !e.target.validity.valueMissing }));
   };
-
+ 
   const handleRadioButtonsChange = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.name.split('-')[1]);
     setRadioButtonsValid((prev) => ({ ...prev, [fieldId]: true }));
   };
-
+ 
   const handlePasswordValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const fieldId = Number(e.target.id.split('-')[1]);
     setPasswordValid((prev) => ({ ...prev, [fieldId]: !e.target.validity.valueMissing }));
   };
-
+ 
   const handleCountryChange = (value: string) => {
     const selectedCountry = countries.find(({ code }) => code === value);
+    if(selectedCountry?.code){
+      setIsCountryCode(true)
+    }
+    setCountryApi(selectedCountry?.code.toLowerCase() || defaultCountry.code.toLowerCase())
     if (selectedCountry && selectedCountry.statesOrProvinces) {
       setCountryStates(
         selectedCountry.statesOrProvinces.map((state) => ({
@@ -303,7 +397,7 @@ export const RegisterForm2 = ({
     }
     setStateInputValid(false);
   };
-
+ 
   // Label Modifier
   const getModifiedLabel = (originalLabel: string): string => {
     switch (originalLabel) {
@@ -329,35 +423,35 @@ export const RegisterForm2 = ({
         return originalLabel;
     }
   };
-
+ 
   const [formValues, setFormValues] = useState({
     'State*': '',
     'I am a:*': '',
     'Country*': '',
   });
-
+ 
   const [formErrors, setFormErrors] = useState({
     'State*': '',
     'I am a:*': '',
     'Country*': '',
   });
-
+ 
   const handleSelectChange = (field: string, value: string) => {
     setFormValues((prev) => ({
       ...prev,
       [field]: value,
     }));
-
+ 
     setFormErrors((prev) => ({
       ...prev,
       [field]: value ? '' : 'This field is required.',
     }));
+    setLastChangedField("state")
   };
-
+ 
   // Form submission handler
   const onSubmit = async (formData: FormData) => {
     if (isSubmitting) return;
-
     const stateValue = formData.get('address-stateOrProvince');
     if (!stateValue) {
       setFormStatus({
@@ -367,33 +461,33 @@ export const RegisterForm2 = ({
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return;
     }
-
+ 
     try {
       setIsSubmitting(true);
       setSubmitProgress(20);
-
+ 
       const combinedFormData = processFormData(formData);
       setSubmitProgress(40);
-
+ 
       const submit = await registerCustomers({ formData: combinedFormData });
       setSubmitProgress(60);
-
+ 
       if (submit.status === 'success') {
         const email = formData.get('customer-email') as string;
         const password = formData.get('customer-password') as string;
-
+ 
         localStorage.removeItem('registrationFormData');
         setSubmitProgress(80);
-
+ 
         try {
           await Promise.all([
             setAccountState({ status: 'success' }),
             logins(email, password, combinedFormData),
           ]);
-
+ 
           setSubmitProgress(100);
           router.push('/trade-account/trade-step3');
-
+ 
           setTimeout(() => {
             if (document.location.pathname !== '/trade-account/trade-step3') {
               window.location.href = '/trade-account/trade-step3';
@@ -420,7 +514,6 @@ export const RegisterForm2 = ({
       setSubmitProgress(0);
     }
   };
-
   // Field Renderer
   const renderField = (field: FormField, isCustomerField: boolean = false) => {
     const fieldId = field.entityId;
@@ -428,13 +521,13 @@ export const RegisterForm2 = ({
     const isCountrySelector = fieldId === FieldNameToFieldId.countryCode;
     const isStateField = fieldId === FieldNameToFieldId.stateOrProvince;
     const fieldLabel = getModifiedLabel(field.label);
-
+ 
     const modifiedField = {
       ...field,
       label: fieldLabel,
       isRequired: field.label !== 'Address Line 2',
     };
-
+ 
     switch (field.__typename) {
       case 'TextFormField':
         if (field.label === 'Address Line 2') {
@@ -459,7 +552,7 @@ export const RegisterForm2 = ({
                   }}
                   isValid={true}
                   name={fieldName}
-                  onChange={handleTextInputValidation}
+                  onChange={handleTextInputValidation1}
                   from="register-form2"
                 />
               </div>
@@ -478,16 +571,23 @@ export const RegisterForm2 = ({
               onChange={handleTextInputValidation}
               from="register-form2"
               textInputValError={textInputValError}
+              inputRefApi={inputRefApi}
+              inputApi={inputApi}
+              countryStates={countryStates}
+              setStateValueApi={setStateValueApi}
+              isCountryCode={isCountryCode}
+              lastChangedField={lastChangedField}
+              setTextInputValCheck={setTextInputValCheck}
             />
           </FieldWrapper>
         );
-
+ 
       case 'PicklistFormField':
         if (isCountrySelector) {
           const filteredCountries = countries.filter((country) =>
             ['US', 'CA'].includes(country.code),
           );
-
+ 
           const countryField: PicklistFormField = {
             ...modifiedField,
             __typename: 'PicklistFormField',
@@ -498,7 +598,7 @@ export const RegisterForm2 = ({
             })),
             label: fieldLabel,
           };
-
+ 
           return (
             <FieldWrapper fieldId={fieldId} key={fieldId}>
               <Picklist
@@ -514,7 +614,7 @@ export const RegisterForm2 = ({
             </FieldWrapper>
           );
         }
-
+ 
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
             <Picklist
@@ -526,7 +626,7 @@ export const RegisterForm2 = ({
             />
           </FieldWrapper>
         );
-
+ 
       case 'MultilineTextFormField':
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -542,7 +642,7 @@ export const RegisterForm2 = ({
             />
           </FieldWrapper>
         );
-
+ 
       case 'NumberFormField':
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -558,7 +658,7 @@ export const RegisterForm2 = ({
             />
           </FieldWrapper>
         );
-
+ 
       case 'DateFormField':
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -574,7 +674,7 @@ export const RegisterForm2 = ({
             />
           </FieldWrapper>
         );
-
+ 
       case 'RadioButtonsFormField':
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -590,7 +690,7 @@ export const RegisterForm2 = ({
             />
           </FieldWrapper>
         );
-
+ 
       case 'CheckboxesFormField':
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -607,21 +707,21 @@ export const RegisterForm2 = ({
             />
           </FieldWrapper>
         );
-
+ 
       case 'PicklistOrTextFormField':
         if (isStateField) {
           const stateOptions = countryStates.map((state) => ({
             entityId: state.name,
             label: state.name,
           }));
-
+ 
           const stateField: PicklistOrTextFormField = {
             ...modifiedField,
             __typename: 'PicklistOrTextFormField',
             options: stateOptions,
             label: fieldLabel,
           };
-
+ 
           return (
             <FieldWrapper fieldId={fieldId} key={fieldId}>
               <PicklistOrText
@@ -635,11 +735,18 @@ export const RegisterForm2 = ({
                 isValid={stateInputValid}
                 formErrors={formErrors}
                 onSelectChange={handleSelectChange}
+                stateValueApi={stateValueApi}
+                setStateValueApi={setStateValueApi}
+                from='register-form2'
+                isCountryCode={isCountryCode}
+                lastChangedField={lastChangedField}
+                inputApi={inputApi}
+                setFormValues={setFormValues}
               />
             </FieldWrapper>
           );
         }
-
+ 
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
             <PicklistOrText
@@ -653,7 +760,7 @@ export const RegisterForm2 = ({
             />
           </FieldWrapper>
         );
-
+ 
       case 'PasswordFormField':
         return (
           <FieldWrapper fieldId={fieldId} key={fieldId}>
@@ -673,9 +780,9 @@ export const RegisterForm2 = ({
         return null;
     }
   };
-
+ 
   const formFields = [...customerFields, ...addressFields];
-
+ 
   return (
     <>
       {formStatus && (
@@ -688,9 +795,9 @@ export const RegisterForm2 = ({
         className="register-form mx-auto max-w-[600px] sm:pt-3 md:pt-3"
         onSubmit={(e) => {
           e.preventDefault();
-
+ 
           let hasErrors = false;
-
+ 
           if (formValues['State*'] == '') {
             setFormErrors((prev) => ({
               ...prev,
@@ -698,7 +805,7 @@ export const RegisterForm2 = ({
             }));
             hasErrors = true;
           }
-
+ 
           if (formValues['I am a:*'] == '') {
             setFormErrors((prev) => ({
               ...prev,
@@ -706,7 +813,7 @@ export const RegisterForm2 = ({
             }));
             hasErrors = true;
           }
-
+ 
           if (formValues['Country*'] == '') {
             setFormErrors((prev) => ({
               ...prev,
@@ -714,7 +821,7 @@ export const RegisterForm2 = ({
             }));
             hasErrors = true;
           }
-
+ 
           let newCheckFieldvalError:any = {};
           Object.entries(textInputValCheck).forEach(([key, value]) => {
             if (!value) {
@@ -722,14 +829,14 @@ export const RegisterForm2 = ({
               hasErrors = true;
             }
           });
-
+ 
           setTextInputValError(newCheckFieldvalError);
-
+ 
           if (hasErrors) {
             window.scrollTo({ top: 0, behavior: 'smooth' });
             return;
           }
-
+ 
           const formData = new FormData(e.currentTarget);
           onSubmit(formData);
         }}
@@ -773,7 +880,7 @@ export const RegisterForm2 = ({
               )),
           ]}
         </div>
-
+ 
         <div className="mt-0 flex flex-col gap-4">
           {isSubmitting && (
             <div className="h-2 w-full rounded-full bg-gray-200">

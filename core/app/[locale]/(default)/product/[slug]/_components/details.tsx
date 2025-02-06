@@ -16,7 +16,6 @@ import { ProductForm } from './product-form';
 import { ProductFormFragment } from './product-form/fragment';
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
 import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
-import { Coupon } from './belami-product-coupon-pdp';
 import { BcImage } from '~/components/bc-image';
 import ProductDetailDropdown from '~/components/ui/pdp/belami-product-details-pdp';
 import { useCommonContext } from '~/components/common-context/common-provider';
@@ -27,6 +26,8 @@ import Image from 'next/image';
 import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { Flyout } from '~/components/common-flyout';
 import { ProductPrice } from '~/belami/components/search/product-price';
+import { Promotion } from '~/belami/components/search/hit';
+import { CheckProductFreeShipping } from '~/components/management-apis';
 
 interface ProductOptionValue {
   entityId: number;
@@ -46,7 +47,9 @@ interface MultipleChoiceOption {
 }
 
 interface Props {
-  product: FragmentOf<typeof DetailsFragment> & { parent: any, UpdatePriceForMSRP: any };
+  isFreeShipping?: boolean;
+  promotions?: any[] | null;
+  product: FragmentOf<typeof DetailsFragment> & { parent: any; UpdatePriceForMSRP: any };
   collectionValue?: string;
   dropdownSheetIcon?: string;
   cartHeader?: string;
@@ -70,6 +73,7 @@ interface Props {
   priceMaxRules: any;
   getAllCommonSettinngsValues:any;
   isFromQuickView : boolean;
+  customerGroupDetails: any;
 }
 
 export const DetailsFragment = graphql(
@@ -146,6 +150,8 @@ export const DetailsFragment = graphql(
 );
 
 export const Details = ({
+  promotions = null,
+  isFreeShipping,
   product,
   collectionValue,
   dropdownSheetIcon,
@@ -161,6 +167,7 @@ export const Details = ({
   children2,
   triggerLabel3,
   children3,
+  customerGroupDetails,
   triggerLabel4,
   children4,
   triggerLabel5,
@@ -191,7 +198,9 @@ export const Details = ({
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
 
-  // Inside your Details component:
+  const categoryIds = product?.categories?.edges?.map((edge) => edge.node.entityId) || [];
+  const productId = product?.entityId;
+  const brandId = product.brand?.entityId || 0;
 
   useEffect(() => {
     // 1. Handle scroll behavior
@@ -277,7 +286,6 @@ export const Details = ({
     const defaultValue = values.find((value) => value.isDefault);
     return defaultValue?.label || 'Select';
   };
-
   return (
     <div className="">
       {showStickyHeader && (
@@ -321,89 +329,70 @@ export const Details = ({
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
-                          <div className="inline text-[14px] font-normal">
-                            {productOptions
-                              .filter((option) => option.__typename === 'MultipleChoiceOption')
-                              .map((option, index, filteredArray) => {
-                                if (option.__typename === 'MultipleChoiceOption') {
-                                  const selectedValue = getSelectedValue(
-                                    option as MultipleChoiceOption,
-                                  );
-                                  return (
-                                    <span key={option.entityId}>
-                                      <span className="font-bold">{option.displayName}:</span>
-                                      <span className="text-[15px]"> {selectedValue}</span>
-                                      {index < filteredArray.length - 1 && (
-                                        <span className="mx-1">|</span>
-                                      )}
-                                    </span>
-                                  );
-                                }
-                                return null;
-                              })}
-                          </div>
-                        )}
+                        <div className="inline text-[14px] font-normal">
+                          {productOptions
+                            .filter((option) => option.__typename === 'MultipleChoiceOption')
+                            .map((option, index, filteredArray) => {
+                              if (option.__typename === 'MultipleChoiceOption') {
+                                const selectedValue = getSelectedValue(
+                                  option as MultipleChoiceOption,
+                                );
+                                return (
+                                  <span key={option.entityId}>
+                                    <span className="font-bold">{option.displayName}:</span>
+                                    <span className="text-[15px]"> {selectedValue}</span>
+                                    {index < filteredArray.length - 1 && (
+                                      <span className="mx-1">|</span>
+                                    )}
+                                  </span>
+                                );
+                              }
+                              return null;
+                            })}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  {product?.UpdatePriceForMSRP && <ProductPrice 
-                    defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0} 
-                    defaultSalePrice={product?.UpdatePriceForMSRP.hasDiscount ? product.UpdatePriceForMSRP.updatedPrice : null} 
-                    priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && (r.bc_brand_ids.includes(product?.brand?.entityId) || r.bc_brand_ids.includes(String(product?.brand?.entityId)))) || (r.skus && r.skus.includes(product?.parent?.sku)))}
-                    currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
-                    format={format}
-                    showMSRP={product.UpdatePriceForMSRP.showDecoration}
-                    options={{
-                      useAsyncMode: false,
-                      useDefaultPrices: true
-                    }}
-                    classNames={{
-                      root: 'sticky-product-price mt-2 !w-[16em] items-center whitespace-nowrap text-center lg:text-right',
-                      newPrice: 'price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                      oldPrice: 'mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through',
-                      discount: 'whitespace-nowrap mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
-                      price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                      msrp: '-ml-[0.5em] mb-1 mr-2 text-left text-[12px] text-gray-500'
-                    }} />
-                  }
-                  {/*
                   {product?.UpdatePriceForMSRP && (
-                    <div className="sticky-product-price mt-2 !w-[16em] items-center whitespace-nowrap text-center lg:text-right">
-                      {product?.UpdatePriceForMSRP?.hasDiscount === true ?(
-                        <>
-                          <span className="price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                            {format.number(product?.UpdatePriceForMSRP?.updatedPrice, {
-                              style: 'currency',
-                              currency: product?.prices?.price?.currencyCode,
-                            })}
-                          </span>
-                          <span className="mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through">
-                            {format.number(product?.UpdatePriceForMSRP?.originalPrice, {
-                              style: 'currency',
-                              currency: product?.prices?.price?.currencyCode,
-                            })}
-                          </span>
-                          <span className="-ml-[0.5em] mb-1 mr-2 text-left text-[12px] text-gray-500">
-                            MSRP
-                          </span>
-                          <span className="mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                            Save
-                            {product.UpdatePriceForMSRP.discount}
-                            %
-                          </span>
-                        </>
-                      ) : (
-                        <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                          {format.number(product?.UpdatePriceForMSRP?.originalPrice || 0, {
-                            style: 'currency',
-                            currency: product?.prices?.price?.currencyCode || 'USD',
-                          })}
-                        </span>
+                    <ProductPrice
+                      defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
+                      defaultSalePrice={
+                        product?.UpdatePriceForMSRP.hasDiscount
+                          ? product.UpdatePriceForMSRP.updatedPrice
+                          : null
+                      }
+                      priceMaxRule={priceMaxRules?.find(
+                        (r: any) =>
+                          (r.bc_brand_ids &&
+                            (r.bc_brand_ids.includes(product?.brand?.entityId) ||
+                              r.bc_brand_ids.includes(String(product?.brand?.entityId)))) ||
+                          (r.skus && r.skus.includes(product?.parent?.sku)),
                       )}
-                    </div>
+                      currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
+                      format={format}
+                      showMSRP={product.UpdatePriceForMSRP.showDecoration}
+                      warrantyApplied= {product?.UpdatePriceForMSRP?.warrantyApplied}
+                      options={{
+                        useAsyncMode: false,
+                        useDefaultPrices: true,
+                      }}
+                      classNames={{
+                        root: 'sticky-product-price mt-2 !w-[16em] items-center whitespace-nowrap text-center lg:text-right',
+                        newPrice:
+                          'price-1 mr-2 text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                        oldPrice:
+                          'mr-2 text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through',
+                        discount:
+                          'whitespace-nowrap mr-2 text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
+                        price:
+                          'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                        msrp: '-ml-[0.5em] mb-1 mr-2 text-left text-[12px] text-gray-500',
+                      }}
+                    />
                   )}
-                  */}
+
                   {productAvailability === 'Unavailable' ? (
                     <div className="flex flex-col items-center">
                       <button
@@ -450,8 +439,9 @@ export const Details = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-              } px-[20px] pt-[20px]`}
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
+              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+            } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
@@ -507,112 +497,101 @@ export const Details = ({
             </h1>
           </div>
 
-            <div className="items-center space-x-1 text-center xl:text-left">
-              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-                SKU: <span>{product.mpn}</span>
-              </span>
-              <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-                by{' '}
+          <div className="items-center space-x-1 text-center xl:text-left">
+            <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+              SKU: <span>{product.mpn}</span>
+            </span>
+            <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+              by{' '}
+              <Link
+                href={product.brand?.path ?? ''}
+                className="products-underline border-b border-black"
+              >
+                {product.brand?.name}
+              </Link>
+            </span>
+            {collectionValue && (
+              <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+                from the{' '}
                 <Link
-                  href={product.brand?.path ?? ''}
+                  href={`/search?brand_name[0]=${encodeURIComponent(
+                    product.brand?.name ?? '',
+                  )}&collection[0]=${encodeURIComponent(collectionValue)}`}
                   className="products-underline border-b border-black"
                 >
-                  {product.brand?.name}
-                </Link>
+                  {collectionValue}
+                </Link>{' '}
+                Family
               </span>
-              {collectionValue && (
-                <span className="product-collection OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-                  from the{' '}
-                  <Link
-                    href={`/search?brand_name[0]=${encodeURIComponent(
-                      product.brand?.name ?? '',
-                    )}&collection[0]=${encodeURIComponent(collectionValue)}`}
-                    className="products-underline border-b border-black"
-                  >
-                    {collectionValue}
-                  </Link>{' '}
-                  Family
-                </span>
-              )}
-            </div>
-            <ReviewSummary data={product} />
+            )}
           </div>
-          {/* msrp  */}
-          {product?.UpdatePriceForMSRP && <ProductPrice 
-            defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0} 
-            defaultSalePrice={product?.UpdatePriceForMSRP.hasDiscount ? product.UpdatePriceForMSRP.updatedPrice : null} 
-            priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && (r.bc_brand_ids.includes(product?.brand?.entityId) || r.bc_brand_ids.includes(String(product?.brand?.entityId)))) || (r.skus && r.skus.includes(product?.parent?.sku)))}
+          <ReviewSummary data={product} />
+        </div>
+
+        {product?.UpdatePriceForMSRP && (
+          <ProductPrice
+            defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
+            defaultSalePrice={
+              product?.UpdatePriceForMSRP.hasDiscount
+                ? product.UpdatePriceForMSRP.updatedPrice
+                : product?.UpdatePriceForMSRP.warrantyApplied
+                ? product.UpdatePriceForMSRP.updatedPrice
+                : null
+            }
+            priceMaxRule={priceMaxRules?.find(
+              (r: any) =>
+                (r.bc_brand_ids &&
+                  (r.bc_brand_ids.includes(product?.brand?.entityId) ||
+                    r.bc_brand_ids.includes(String(product?.brand?.entityId)))) ||
+                (r.skus && r.skus.includes(product?.parent?.sku)),
+            )}
             currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
             format={format}
             showMSRP={product.UpdatePriceForMSRP.showDecoration}
+            warrantyApplied = {product.UpdatePriceForMSRP.warrantyApplied}
             options={{
               useAsyncMode: false,
-              useDefaultPrices: true
-            }}            
+              useDefaultPrices: true,
+            }}
             classNames={{
               root: 'product-price mt-2 flex items-center gap-[0.5em] text-center xl:text-left',
-              newPrice: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-              oldPrice: 'inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
-              discount: 'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
+              newPrice:
+                'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+              oldPrice:
+                'inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
+              discount:
+                'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
               price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500'
-            }} />
-          }
-          {/*
-          {product?.['UpdatePriceForMSRP'] && (
-            <div className="product-price mt-2 flex items-center gap-[0.5em] text-center lg:text-left">
-              {product?.UpdatePriceForMSRP &&
-                      product?.UpdatePriceForMSRP?.hasDiscount === true ? (
-                <>
-                  <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                    {format.number(product?.UpdatePriceForMSRP?.updatedPrice, {
-                      style: 'currency',
-                      currency: product?.prices?.price?.currencyCode || 'USD' ,
-                    })}
-                  </span>
-                  <span className="inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0">
-                    {format.number(product?.UpdatePriceForMSRP?.originalPrice, {
-                      style: 'currency',
-                      currency:  product?.prices?.price?.currencyCode|| 'USD',
-                    })}
-                  </span>
-                  <span className="-ml-[0.5em] mb-1 text-[12px] text-gray-500">MSRP</span>
-                  <span className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#008BB7]">
-                    Save{' '}
-                    {product?.UpdatePriceForMSRP?.discount}
-                    %
-                  </span>
-                </>
-              ) : (
-                <span className="text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#008BB7]">
-                  {format.number(product?.UpdatePriceForMSRP?.originalPrice || 0, {
-                    style: 'currency',
-                    currency: product?.prices?.price?.currencyCode || 'USD',
-                  })}
-                </span>
-              )}
-            </div>
+              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500',
+            }}
+          />
+        )}
+
+        <Promotion
+          promotions={promotions}
+          product_id={productId}
+          brand_id={brandId}
+          category_ids={categoryIds}
+          free_shipping={isFreeShipping}
+        />
+        <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
+          <span> Free Delivery</span>
+          {selectedVariantId && (
+            <FreeDelivery
+              entityId={product.entityId}
+              variantId={selectedVariantId}
+              isFromPDP={true}
+            />
           )}
-          */}
-          {/* msrp  */}
-
-        <Coupon couponIcon={couponIcon} />
-
-          <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
-              <span> Free Delivery</span>
-            {selectedVariantId && (
-              <FreeDelivery
-                entityId={product.entityId}
-                variantId={selectedVariantId}
-                isFromPDP={true}
+          {product?.brand?.entityId &&
+            getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
+            getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
+              <NoShipCanada
+                description={
+                  getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message
+                }
               />
             )}
-            {product?.brand?.entityId && getAllCommonSettinngsValues?.hasOwnProperty(product?.brand?.entityId) &&
-              getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
-                <NoShipCanada
-                description={getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message}
-                />
-              )}
           </div>
           <div ref={productFormRef}>
             <ProductForm
@@ -623,6 +602,7 @@ export const Details = ({
               productImages={productImages}
               fanPopup={fanPopup}
               closeIcon={closeIcon || ''}
+              customerGroupDetails={customerGroupDetails}
             />
           </div>
 
@@ -696,7 +676,8 @@ export const Details = ({
           certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4}/>
           <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}
           triggerLabel={triggerLabel5}
-          children={children5} />
+          children={children5}
+        />
 
         {/* <ShippingReturns /> */}
 

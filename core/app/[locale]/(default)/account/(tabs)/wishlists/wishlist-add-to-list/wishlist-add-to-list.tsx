@@ -1,3 +1,4 @@
+// add - to list
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -15,6 +16,7 @@ import heartIcon from '~/public/wishlistIcons/heartIcon.svg';
 import { cn } from '~/lib/utils';
 import { checkAuthStatus } from './auth-client';
 import Link from 'next/link';
+import { useCommonContext } from '~/components/common-context/common-provider';
 
 interface ProductImage {
   url: string;
@@ -85,6 +87,11 @@ interface WishlistAddToListProps {
   hasPreviousPage: boolean;
   product: Product;
   onGuestClick?: () => void;
+  classNames?: {
+    root?: string,
+    button?: string,
+    icon?: string,
+  }
 }
 
 const WishlistAddToList = ({
@@ -92,6 +99,7 @@ const WishlistAddToList = ({
   hasPreviousPage,
   product,
   onGuestClick,
+  classNames
 }: WishlistAddToListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -99,16 +107,98 @@ const WishlistAddToList = ({
   const [isInputValid, setInputValidation] = useState(true);
   const [isDuplicate, setIsDuplicate] = useState(false);
   const [isPending, setIsPending] = useState(false);
-  const [currentWishlists, setCurrentWishlists] = useState<Wishlist[]>(wishlists);
+  const [currentWishlists, setCurrentWishlists] = useState<Wishlist[]>([]);
   const [tempAddedItems, setTempAddedItems] = useState<{ listId: number; product: Product }[]>([]);
   const [justAddedToList, setJustAddedToList] = useState<number | null>(null);
   const [loadingListId, setLoadingListId] = useState<number | null>(null);
   const [isCreating, setIsCreating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const { deletedProductIds, setDeletedProductId } = useCommonContext();
+  const [hasCreatedWishlist, setHasCreatedWishlist] = useState(false);
 
   const t = useTranslations('Account.Wishlist');
   const router = useRouter();
+
+  // Function to remove deletion record from IndexedDB
+  const removeFromDeletedProducts = async (wishlistId: number, productId: number) => {
+    try {
+      const request = indexedDB.open('WishlistDB', 4);
+
+      request.onsuccess = (event: Event) => {
+        const db = (event.target as IDBOpenDBRequest).result;
+        const transaction = db.transaction(['deletedProducts'], 'readwrite');
+        const store = transaction.objectStore('deletedProducts');
+        const index = store.index('by_ids');
+
+        const getRequest = index.getKey([wishlistId, productId]);
+
+        getRequest.onsuccess = () => {
+          if (getRequest.result) {
+            store.delete(getRequest.result);
+          }
+        };
+      };
+    } catch (error) {
+      ('');
+    }
+  };
+
+  // Filter wishlists based on deletedProductIds
+  useEffect(() => {
+    const filteredWishlists = wishlists.map((wishlist) => ({
+      ...wishlist,
+      items: wishlist.items.filter(
+        (item) =>
+          !deletedProductIds.some(
+            (deletion) =>
+              deletion.wishlistId === wishlist.entityId &&
+              deletion.productId === item.product.entityId,
+          ),
+      ),
+    }));
+
+    setCurrentWishlists(filteredWishlists);
+  }, [wishlists, deletedProductIds]);
+
+  // Add IndexedDB initialization
+  useEffect(() => {
+    const loadDeletedProducts = async () => {
+      try {
+        const request = indexedDB.open('WishlistDB', 4);
+
+        request.onsuccess = (event: Event) => {
+          const db = (event.target as IDBOpenDBRequest).result;
+          const transaction = db.transaction(['deletedProducts'], 'readonly');
+          const store = transaction.objectStore('deletedProducts');
+          const getAllRequest = store.getAll();
+
+          getAllRequest.onsuccess = () => {
+            const storedDeletions = getAllRequest.result;
+
+            // Filter wishlists based on stored deletions
+            const filteredWishlists = wishlists.map((wishlist) => ({
+              ...wishlist,
+              items: wishlist.items.filter(
+                (item) =>
+                  !storedDeletions.some(
+                    (deletion) =>
+                      deletion.wishlistId === wishlist.entityId &&
+                      deletion.productId === item.product.entityId,
+                  ),
+              ),
+            }));
+
+            setCurrentWishlists(filteredWishlists);
+          };
+        };
+      } catch (error) {
+        ('');
+      }
+    };
+
+    loadDeletedProducts();
+  }, [wishlists]);
 
   useEffect(() => {
     const verifyAuth = async () => {
@@ -203,72 +293,25 @@ const WishlistAddToList = ({
     }
   };
 
+  // Update getItemCount function to account for deletions
   const getItemCount = (wishlist: Wishlist) => {
-    const savedItems = wishlist.items.length;
+    // Filter out deleted items first
+    const nonDeletedItems = wishlist.items.filter(
+      (item) =>
+        !deletedProductIds.some(
+          (deletion) =>
+            deletion.wishlistId === wishlist.entityId &&
+            deletion.productId === item.product.entityId,
+        ),
+    );
+
+    const savedItems = nonDeletedItems.length;
     const tempItems = tempAddedItems.filter((item) => item.listId === wishlist.entityId).length;
-    const existingProduct = wishlist.items.some(
+    const existingProduct = nonDeletedItems.some(
       (item) => item.product?.entityId === product?.entityId,
     );
 
-    // If product already exists, count it
-    if (existingProduct) {
-      return savedItems;
-    }
-
-    // Otherwise return saved + temporary items
-    return savedItems + tempItems;
-  };
-
-  const handleWishlistSelect = async (wishlist: Wishlist) => {
-    const authResult = await checkAuthStatus();
-
-    if (!authResult.isAuthenticated) {
-      if (onGuestClick) {
-        onGuestClick();
-      }
-      return;
-    }
-
-    const isProductInList = wishlist.items?.some(
-      (item) => item.product?.entityId === product?.entityId,
-    );
-
-    const isInTempList = tempAddedItems.some((item) => item.listId === wishlist.entityId);
-
-    if (isProductInList || isInTempList) {
-      setMessage({
-        type: 'error',
-        text: `This product already exists in "${wishlist.name}"`,
-      });
-      return;
-    }
-
-    setLoadingListId(wishlist.entityId);
-    try {
-      const productToAdd = {
-        listId: wishlist.entityId,
-        product: {
-          entityId: product.entityId,
-          name: product.name,
-          path: product.path,
-          images: product.images,
-          brand: product.brand,
-          prices: product.prices,
-          variantEntityId: product.variantEntityId,
-          mpn: product.mpn,
-        },
-      };
-
-      setTempAddedItems((prev) => [...prev, productToAdd]);
-      setJustAddedToList(wishlist.entityId);
-    } catch (error) {
-      setMessage({
-        type: 'error',
-        text: 'Failed to add item to list',
-      });
-    } finally {
-      setLoadingListId(null);
-    }
+    return existingProduct ? savedItems : savedItems + tempItems;
   };
 
   const handleSave = async () => {
@@ -281,13 +324,13 @@ const WishlistAddToList = ({
       return;
     }
 
-    if (tempAddedItems.length === 0) {
-      setMessage({
-        type: 'error',
-        text: 'Please add items to a wishlist before saving',
-      });
-      return;
-    }
+    // if (tempAddedItems.length === 0) {
+    //   setMessage({
+    //     type: 'error',
+    //     text: 'Please add items to a wishlist before saving',
+    //   });
+    //   return;
+    // }
 
     setIsSaving(true);
     let hasError = false;
@@ -296,6 +339,20 @@ const WishlistAddToList = ({
       // Save each item one by one
       for (const item of tempAddedItems) {
         try {
+          // First check if this item was previously deleted
+          const wasDeleted = deletedProductIds.some(
+            (deletion) =>
+              deletion.wishlistId === item.listId && deletion.productId === item.product.entityId,
+          );
+
+          if (wasDeleted) {
+            // Remove from deletedProductIds in context
+            setDeletedProductId(item.product.entityId, item.listId, 'remove');
+
+            // Remove from IndexedDB
+            await removeFromDeletedProducts(item.listId, item.product.entityId);
+          }
+
           const result = await addToWishlist(
             item.listId,
             item.product.entityId,
@@ -310,22 +367,28 @@ const WishlistAddToList = ({
           setCurrentWishlists((prev) =>
             prev.map((wishlist) => {
               if (wishlist.entityId === item.listId) {
-                return {
-                  ...wishlist,
-                  items: [
-                    ...wishlist.items,
-                    {
-                      entityId: Date.now(),
-                      product: item.product,
-                    },
-                  ],
-                };
+                // Check if item already exists in this wishlist
+                const itemExists = wishlist.items.some(
+                  (existingItem) => existingItem.product.entityId === item.product.entityId,
+                );
+
+                if (!itemExists) {
+                  return {
+                    ...wishlist,
+                    items: [
+                      ...wishlist.items,
+                      {
+                        entityId: Date.now(),
+                        product: item.product,
+                      },
+                    ],
+                  };
+                }
               }
               return wishlist;
             }),
           );
         } catch (error) {
-          console.error('Error saving item:', error);
           hasError = true;
           break;
         }
@@ -341,6 +404,13 @@ const WishlistAddToList = ({
         setTempAddedItems([]);
         setJustAddedToList(null);
 
+        // Update localStorage with current state
+        const wishlistData = {
+          wishlists: currentWishlists,
+          lastUpdated: Date.now(),
+        };
+        localStorage.setItem('wishlistData', JSON.stringify(wishlistData));
+
         // Refresh the data
         router.refresh();
       } else {
@@ -350,7 +420,6 @@ const WishlistAddToList = ({
         });
       }
     } catch (error) {
-      console.error('Error in save process:', error);
       setMessage({
         type: 'error',
         text: 'Failed to save items. Please try again.',
@@ -360,27 +429,14 @@ const WishlistAddToList = ({
     }
   };
 
+  // Modify handleCreateSubmit to set hasCreatedWishlist to true after successful creation
   const handleCreateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const authResult = await checkAuthStatus();
-
-    if (!authResult.isAuthenticated) {
-      if (onGuestClick) {
-        onGuestClick();
-      }
-      return;
-    }
-
     const trimmedName = newListName.trim();
 
     if (!trimmedName) {
       setInputValidation(false);
       setMessage({ type: 'error', text: 'Please enter a list name' });
-      return;
-    }
-
-    if (isDuplicate) {
-      setMessage({ type: 'error', text: 'A list with this name already exists' });
       return;
     }
 
@@ -409,13 +465,18 @@ const WishlistAddToList = ({
           items: [],
         };
 
+        // Add new wishlist to current wishlists
         setCurrentWishlists((prev) => [...prev, newWishlist]);
+
+        // Keep form state
         setNewListName('');
         setShowCreateForm(false);
-        setIsDuplicate(false);
+
+        // Set hasCreatedWishlist to true after successful creation
+        setHasCreatedWishlist(true);
+
+        // Select the new wishlist immediately
         await handleWishlistSelect(newWishlist);
-      } else {
-        setMessage({ type: 'error', text: result.message || 'Failed to create new list' });
       }
     } catch (error) {
       setMessage({ type: 'error', text: 'Failed to create new list' });
@@ -424,11 +485,78 @@ const WishlistAddToList = ({
     }
   };
 
+  const handleWishlistSelect = async (wishlist: Wishlist) => {
+    setLoadingListId(wishlist.entityId);
+
+    try {
+      // Check if item is already in tempAddedItems
+      const isTemporarilyAdded = tempAddedItems.some(
+        (item) => item.listId === wishlist.entityId && item.product.entityId === product.entityId,
+      );
+
+      if (isTemporarilyAdded) {
+        // Remove item if it's already in tempAddedItems
+        setTempAddedItems((prev) =>
+          prev.filter(
+            (item) =>
+              !(item.listId === wishlist.entityId && item.product.entityId === product.entityId),
+          ),
+        );
+        setJustAddedToList(null); // Remove green highlight
+      } else {
+        // Add item if it's not in tempAddedItems
+        const productToAdd = {
+          listId: wishlist.entityId,
+          product: {
+            ...product,
+            sku: product.sku || '',
+            variants: product.variants || {},
+          },
+        };
+
+        // Instead of replacing, we append to existing items
+        setTempAddedItems((prev) => [...prev, productToAdd]);
+        setJustAddedToList(wishlist.entityId);
+      }
+
+      // After modifying tempAddedItems, check if we need to enable/disable save button
+      const hasChangesToSave = tempAddedItems.length > 0;
+      setIsSaving(false); // Ensure save button is not in loading state
+    } catch (error) {
+      setMessage({
+        type: 'error',
+        text: 'Failed to modify item in list',
+      });
+    } finally {
+      setLoadingListId(null);
+    }
+  };
+
+  useEffect(() => {
+    const filteredWishlists = wishlists.map((wishlist) => ({
+      ...wishlist,
+      items: wishlist.items.filter((item) => {
+        const isDeleted = deletedProductIds.some(
+          (deletion) =>
+            deletion.wishlistId === wishlist.entityId &&
+            deletion.productId === item.product.entityId,
+        );
+        if (isDeleted) {
+          ('');
+        }
+        return !isDeleted;
+      }),
+    }));
+
+    setCurrentWishlists(filteredWishlists);
+  }, [wishlists, deletedProductIds]);
+
   return (
-    <div className="relative">
+    <div className={cn(classNames?.root || 'relative')}>
       <button
+        title="Add to List"
         onClick={handleHeartClick}
-        className="inline-flex items-center justify-center rounded-full bg-[#F3F4F5] p-[10px] text-sm font-medium text-white focus:outline-none"
+        className={cn(classNames?.button || 'inline-flex items-center justify-center rounded-full bg-[#F3F4F5] p-[10px] text-sm font-medium text-white focus:outline-none')}
       >
         <BcImage
           alt="wishlist-heart"
@@ -436,7 +564,7 @@ const WishlistAddToList = ({
           height={35}
           unoptimized={true}
           src={heartIcon}
-          className="h-[30px] w-[30px]"
+          className={cn(classNames?.icon || 'h-[30px] w-[30px]')}
         />
       </button>
 
@@ -444,6 +572,7 @@ const WishlistAddToList = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="relative w-full max-w-[20em] rounded-lg bg-white px-[2.5em] py-[1.5em] pb-[3em] shadow-2xl md:max-w-[35em]">
             <button
+              title='Close "Add to List" modal'
               onClick={handleClose}
               className="mb-[1em] mt-[1em] flex w-[100%] justify-center rounded-full p-1"
             >
@@ -453,24 +582,24 @@ const WishlistAddToList = ({
             {message && (
               <div
                 className={cn(
-                  'mb-4 flex items-center rounded-md border px-4 py-3 text-sm font-medium shadow-sm',
+                  'mb-4 flex items-center px-4 py-2 text-sm font-medium shadow-sm',
                   message.type === 'success'
-                    ? 'border-green-200 bg-green-50 text-green-800'
+                    ? 'border-green-200 bg-green-50'
                     : 'border-red-200 bg-red-50 text-red-800',
                 )}
               >
                 {message.type === 'success' ? (
                   <div className="flex w-full items-center justify-center">
                     <div className="flex items-center">
-                      <span className="mr-2 flex h-5 w-7 items-center justify-center rounded-full bg-[#145A2E] xl:h-5 xl:w-5">
+                      <span className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#145A2E] xl:h-5 xl:w-5">
                         <Check className="mb-1 mt-1 h-3 w-3 text-white" />
                       </span>
-                      <span className="text-base font-semibold">{message.text}</span>{' '}
+                      <span className="text-[12px] font-semibold xl:text-base">{message.text}</span>{' '}
                       <span className="ml-2 mr-2"> - </span>
                     </div>
                     <Link
                       href="/account/wishlists"
-                      className="text-sm font-medium text-[#145A2E] underline"
+                      className="text-[12px] font-medium text-[#145A2E] underline xl:text-sm"
                     >
                       {' '}
                       View
@@ -511,7 +640,7 @@ const WishlistAddToList = ({
                         <div key={wishlist.entityId} className="wishlist-item">
                           <button
                             onClick={() => {
-                              if (isProductInList || isInTempList) {
+                              if (isProductInList) {
                                 setMessage({
                                   type: 'error',
                                   text: `This product already exists in "${wishlist.name}"`,
@@ -538,20 +667,18 @@ const WishlistAddToList = ({
                               </span>
                             )}
 
-                            {/* Wishlist Name and Item Count */}
-                            <span className="capitalize text-[#353535]">
+                            <span
+                              className={`font-[500] capitalize ${isAdded ? 'text-[#145A2E]' : 'text-[#353535]'}`}
+                            >
                               {wishlist.name}
-                              <span className="ml-2 capitalize text-[#353535]">
+                              <span
+                                className={`ml-2 font-[500] capitalize ${isAdded ? 'text-[#145A2E]' : 'text-[#353535]'}`}
+                              >
                                 ({itemCount} {itemCount === 1 ? 'item' : 'items'})
                               </span>
                             </span>
 
-                            {/* Loading/Added Icons */}
-                            {isLoading ? (
-                              <Loader2 className="ml-auto h-4 w-4 animate-spin" />
-                            ) : isAdded ? (
-                              <Check className="ml-auto h-4 w-4 text-[#145A2E]" />
-                            ) : null}
+                            {isLoading && <Loader2 className="ml-auto h-4 w-4 animate-spin" />}
                           </button>
                         </div>
                       );
@@ -609,6 +736,7 @@ const WishlistAddToList = ({
               </div>
 
               {/* Action Buttons */}
+
               <div className="m-auto mt-2 flex flex-col justify-center gap-2">
                 {showCreateForm && (
                   <Button
@@ -630,23 +758,27 @@ const WishlistAddToList = ({
                     )}
                   </Button>
                 )}
-                <Button
-                  className={cn(
-                    '!hover:bg-[#008BB7] m-auto !mt-[1em] w-[9em] !bg-[#008BB7] text-[14px] !font-[400] text-white',
-                    'disabled:cursor-not-allowed disabled:opacity-50',
-                  )}
-                  onClick={handleSave}
-                  disabled={isSaving || tempAddedItems.length === 0}
-                >
-                  {isSaving ? (
-                    <div className="flex items-center gap-2">
-                      <Loader2 className="h-4 w-4 animate-spin" />
-                      SAVING...
-                    </div>
-                  ) : (
-                    'SAVE'
-                  )}
-                </Button>
+
+                {/* Show SAVE button when there are items in tempAddedItems */}
+                {tempAddedItems.length > 0 && (
+                  <Button
+                    className={cn(
+                      '!hover:bg-[#008BB7] m-auto !mt-[1em] w-[9em] !bg-[#008BB7] text-[14px] !font-[400] text-white',
+                      'disabled:cursor-not-allowed disabled:opacity-50',
+                    )}
+                    onClick={handleSave}
+                    disabled={isSaving}
+                  >
+                    {isSaving ? (
+                      <div className="flex items-center gap-2">
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        SAVING...
+                      </div>
+                    ) : (
+                      'SAVE'
+                    )}
+                  </Button>
+                )}
               </div>
             </div>
           </div>

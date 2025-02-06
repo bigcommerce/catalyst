@@ -357,7 +357,7 @@
         "spinnerText": "Submitting...",
         "submitText": "Change password",
         "newPasswordValidationMessage":
-        "New password must be different from the current password and must include at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character or/and match confirm password"
+        "New password must differ, Include uppercase, lowercase, number, symbol (8+ chars)."
       },
       "UpdateCustomer": {
         "Errors": {

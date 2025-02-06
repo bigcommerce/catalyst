@@ -26,7 +26,7 @@ export default async function Settings() {
   return (
     <>
       <TabHeading heading="settings" />
-      <div className="mx-auto lg:w-2/3">
+      <div className="mx-auto px-5 lg:px-0 lg:w-2/3">
         <UpdateSettingsForm {...customerSettings} />
       </div>
     </>

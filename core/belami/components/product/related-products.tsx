@@ -40,6 +40,10 @@ interface Props {
   productImages?: any[];
 }
 
+function getDiscount(price: number, sale: number): number | null {
+  return price > 0 ? Math.round(((price - sale) * 100) / price) : 0;
+}
+
 function ColorSwatches({ variants, onImageClick }: any) {
   const items =
     variants && variants.length > 0
@@ -93,6 +97,7 @@ function ColorSwatches({ variants, onImageClick }: any) {
     </div>
   );
 }
+
 
 function CustomItem({ 
   hit, 
@@ -165,19 +170,25 @@ function CustomItem({
               </span>
             )}
 
-            <ProductPrice 
-              defaultPrice={hit?.prices?.USD || 0} 
-              defaultSalePrice={hit?.sales_prices?.USD || null} 
+            <ProductPrice
+              defaultPrice={hit?.prices?.USD || 0}
+              defaultSalePrice={hit?.sales_prices?.USD || null}
               price={price}
               salePrice={salePrice}
-              priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && (r.bc_brand_ids.includes(hit?.brand_id) || r.bc_brand_ids.includes(String(hit?.brand_id)))) || (r.skus && r.skus.includes(hit?.sku)))}
+              priceMaxRule={priceMaxRules?.find(
+                (r: any) =>
+                  (r.bc_brand_ids &&
+                    (r.bc_brand_ids.includes(hit?.brand_id) ||
+                      r.bc_brand_ids.includes(String(hit?.brand_id)))) ||
+                  (r.skus && r.skus.includes(hit?.sku)),
+              )}
               currency={currency}
               format={format}
               options={{
                 useAsyncMode: useAsyncMode,
                 useDefaultPrices: useDefaultPrices,
                 isLoading: isLoading,
-                isLoaded: isLoaded
+                isLoaded: isLoaded,
               }}
               classNames={{
                 root: 'mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start',

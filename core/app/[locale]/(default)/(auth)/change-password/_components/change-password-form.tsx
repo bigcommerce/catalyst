@@ -63,8 +63,8 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
     messageText = state.message;
   }
 
-  const handleNewPasswordChange = (e: ChangeEvent<HTMLInputElement>) =>
-    setNewPasssword(e.target.value);
+  const handleNewPasswordChange = (e: ChangeEvent<HTMLInputElement>) => setNewPasssword(e.target.value);
+  
   const handleConfirmPasswordValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const confirmPassword = e.target.value;
 
@@ -79,7 +79,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
   return (
     <>
       {state.status === 'error' && (
-        <Message className="mb-8 w-full text-gray-500 " variant={state.status}>
+        <Message className="mb-8 w-full text-gray-500" variant={state.status}>
           <p>{messageText}</p>
         </Message>
       )}
@@ -127,7 +127,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-error"
+            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)]"
             match={(value: string) => value !== newPassword}
           >
             {t('confirmPasswordValidationMessage')}

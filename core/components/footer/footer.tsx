@@ -87,23 +87,23 @@ export const Footer = async () => {
     {
       title: 'About Us',
       links: [
-        { label: <span className="footer-link about-link">About Us</span>, href: '/about-us' },
-        { label: <span className="footer-link about-link">Partners</span>, href: '/partners' },
+        { label: <span className="footer-link about-link">About Us</span>, href: '/content/about-us' },
+        { label: <span className="footer-link about-link">Partners</span>, href: '/content/partners' },
         {
           label: <span className="footer-link about-link">Privacy Policy</span>,
-          href: '/content/privacy',
+          href: '/content/privacy-and-security',
         },
         {
           label: <span className="footer-link about-link">Terms of Use</span>,
-          href: '/content/termsofuse',
+          href: '/content/terms-of-use',
         },
         {
           label: <span className="footer-link about-link">Affiliate Program</span>,
-          href: '/path-5',
+          href: '/#',
         },
         {
           label: <span className="footer-link about-link">Accessibility</span>,
-          href: '/content/accessibility',
+          href: '/content/accessibility-statement',
         },
       ],
     },
@@ -131,7 +131,7 @@ export const Footer = async () => {
                 />
                 <button
                   type="submit"
-                  className="subscription-button relative h-[40px] w-[80px] bg-[#008bb7] text-center text-[14px] font-normal uppercase text-white"
+                  className="subscription-button relative h-[40px] w-[80px] bg-[#006380] text-center text-[14px] font-normal uppercase text-white"
                 >
                   Sign Up
                 </button>
@@ -154,7 +154,7 @@ export const Footer = async () => {
           href: '/path-6',
         },
         {
-          label: <span className="footer-social-title">FOLLOW US</span>,
+          label: <span className="footer-social-title font-normal text-xs leading-[18px] tracking-[0.4px] mb-[4px]" >FOLLOW US</span>,
           href: '/path-6',
         },
         {

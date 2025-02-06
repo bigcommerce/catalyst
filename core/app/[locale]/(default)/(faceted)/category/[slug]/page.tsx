@@ -58,8 +58,8 @@ export default async function CategoryPage(props: Props) {
 
   const cookieStore = await cookies();
   const priceMaxCookie = cookieStore.get('pmx');
-  const priceMaxTriggers = priceMaxCookie?.value 
-    ? JSON.parse(atob(priceMaxCookie?.value)) 
+  const priceMaxTriggers = priceMaxCookie?.value
+    ? JSON.parse(atob(priceMaxCookie?.value))
     : undefined;
 
   const customerAccessToken = await getSessionCustomerAccessToken();
@@ -85,20 +85,26 @@ export default async function CategoryPage(props: Props) {
   });
 
   const promotions = await getActivePromotions(true);
-  const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
+  const priceMaxRules =
+    priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
+      ? await getPriceMaxRules(priceMaxTriggers)
+      : null;
 
   return (
-    <div className="group py-4 px-4 xl:px-12">
+    <div className="group px-4 py-4 xl:px-12">
       <Breadcrumbs category={category} />
       <div className="mb-0 lg:flex lg:flex-row lg:items-center lg:justify-between">
-        <h1 className="mb-4 lg:mb-0 text-2xl">{category.name}</h1>
+        <h1 className="mb-4 text-2xl lg:mb-0">{category.name}</h1>
       </div>
 
-      {!!snapshot &&
-        <MakeswiftPage snapshot={snapshot} />
-      }
+      {!!snapshot && <MakeswiftPage snapshot={snapshot} />}
 
-      <Category category={category} promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />
+      <Category
+        category={category}
+        promotions={promotions}
+        useDefaultPrices={useDefaultPrices}
+        priceMaxRules={priceMaxRules}
+      />
     </div>
   );
 }

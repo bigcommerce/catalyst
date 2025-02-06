@@ -28,11 +28,13 @@ import { cn } from '~/lib/utils';
 import facebookLogo from '~/public/accountIcons/faceBookIcon.svg'
 import appleLogo from '~/public/accountIcons/appleIcon.svg'
 import googleLogo from '~/public/accountIcons/googleIcon.svg'
+import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 
 const SubmitButton = () => {
   const { pending } = useFormStatus();
   const t = useTranslations('Login');
 
+  
   return (
     <Button
       className="!important h-[50px] !w-full bg-[rgb(45,177,219)] text-[14px] font-normal uppercase tracking-[1.25px] transition-colors duration-500 hover:bg-[rgb(75,200,240)] md:w-auto"
@@ -49,7 +51,8 @@ export const LoginForm = ({
   passwordHide,
 }: IconProps & { passwordHide: string }) => {
   const t = useTranslations('Login');
-
+  // const { customerLoginEmail, setCustomerLoginEmail } = useCompareDrawerContext();
+  const [customerLoginEmail, setCustomerLoginEmail] =useState('')
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [state, formAction] = useActionState(login, { status: 'idle' });
@@ -79,6 +82,7 @@ export const LoginForm = ({
     switch (e.target.name) {
       case 'email': {
         setIsEmailValid(!validationStatus);
+        setCustomerLoginEmail(e.target.value); // Store email value
         return;
       }
       case 'password': {
@@ -170,6 +174,7 @@ export const LoginForm = ({
               placeholder="Enter your email"
               onBlur={(e) => {
                 validateEmail((e.target as HTMLInputElement).value);
+                setCustomerLoginEmail((e.target as HTMLInputElement).value); // Store email value on blur
               }}
             />
           </FieldControl>
