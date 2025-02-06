@@ -114,7 +114,7 @@ const Header = ({
             )}
           </CustomLink>
 
-          <CustomLink className="home-logo-two w-[30px] overflow-hidden text-ellipsis pt-3 md:pl-5 block lg:hidden" href="/">
+          <CustomLink className="home-logo-two w-[30px] overflow-hidden text-ellipsis pt-3 lg:pl-5 block lg:hidden" href="/">
             {typeof logo === 'object' && homeLogoMobileFirst ? (
               <div className="second-home-logo block lg:hidden">
                 <BcImage
