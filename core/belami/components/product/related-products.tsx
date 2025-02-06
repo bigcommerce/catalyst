@@ -334,7 +334,6 @@ export function RelatedProducts({
           try {
             setIsLoaded(false);
             setIsLoading(true);
-            console.log(skus.join(','));
             const response = await fetch('/api/prices/?skus=' + skus.join(','));
             const data = await response.json();
             console.log(data);

@@ -42,24 +42,19 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
       </div>
     )
   }
-  const isBackorder = deliveryMessage?.includes("Backorder");
-  const backgroundColorClass = isBackorder ? 'bg-[#FBF4E9]' : 'bg-transparent';
-
+  
   return (
     <div className={`flex ${isFromPDP ? 'justify-center' : 'justify-start'}  xl:justify-start`}>
-      <div className={`${backgroundColorClass} w-fit ${deliveryMessage ? 'mt-[10px]' : 'mt-[0px]'}`}>
-        {isBackorder ? (
-          <div>
-            <div className='text-[#6A4C1E] font-normal text-sm leading-6 tracking-[0.25px] px-2'>
-              {deliveryMessage?.replace(":Backorder", "")?.trim()}
+       {deliveryMessage?.map((item:any, index:any) => {
+        const backgroundColorClass = item?.qty == 0 ? 'bg-[#FBF4E9] px-[10px]' : 'bg-transparent'; // Set background based on qty
+        return (
+          <div key={index} className={`${backgroundColorClass} w-fit mt-[10px]`}>
+            <div className='font-normal text-sm leading-6 tracking-[0.25px] px-0'>
+              {item.delivery_estimated_text}
             </div>
           </div>
-        ) : (
-          <div className='font-normal text-sm leading-6 tracking-[0.25px] px-0'>
-            {deliveryMessage}
-          </div>
-        )}
-      </div>
+        );
+      })}
     </div>
   );
 };
