@@ -71,7 +71,10 @@ export function HitsPerPage(props: UseHitsPerPageProps & { label?: string }) {
     >
       {props.label && <span className={cn('whitespace-nowrap flex-none text-left', props.classNames.buttonLabel)}>{props.label}: </span>}
       <span className={cn('flex-1 whitespace-nowrap truncate text-left', props.classNames.buttonText)}>{text}</span>
-      <svg className="flex-none" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.41 0.290039L6 4.88004L10.59 0.290039L12 1.71004L6 7.71004L0 1.71004L1.41 0.290039Z" fill="#353535" /></svg>
+      {isOpened 
+        ? <svg className="flex-none" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.41 7.70996L6 3.11996L10.59 7.70996L12 6.28996L6 0.289961L0 6.28996L1.41 7.70996Z" fill="#353535"/></svg>
+        : <svg className="flex-none" width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M1.41 0.290039L6 4.88004L10.59 0.290039L12 1.71004L6 7.71004L0 1.71004L1.41 0.290039Z" fill="#353535" /></svg>
+      }
     </button>
   );
 

@@ -96,33 +96,19 @@ export const getDeliveryMessage = async (
   entityId: number,
   variantId: number
 ) => {
-  const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
-
   let metaFields: any = await getMetaFieldsByProductVariant(
     entityId,
     variantId,
     "delivery_message",
   );
-
-  if ( metaFields.data.length > 0) {
-    const deliveryMessage:any = metaFields.data
-    let deliveryMessageResponse:any = '';
-    if (deliveryMessage) {
-      const deliveryKey = deliveryMessage?.[0]?.['value']?.split('|'); //split by "|"
-      const result = deliveryKey?.map((item: any) => {
-        const parts = item.split(':'); // Split by ':'
-        const id = parseInt(parts[0].trim(), 10); // Get the ID
-        const value = parts.slice(1).join(':').trim().replace(/: Backorder/g, '').trim(); //trimed ":Backorder" add in value
-        return { id, value };
-      }) || [];
-
-      const parsedChannelId = channelId ? parseInt(channelId, 10) : null;
-      const matchedDelivery = parsedChannelId !== null ? result.find((item: any) => item.id === parsedChannelId) : null;
-
-      if (matchedDelivery) {
-        deliveryMessageResponse = matchedDelivery.value; // Return the value of the matched delivery
-      }
-      return deliveryMessageResponse;
+  if (metaFields?.data?.length > 0) {
+    const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
+    const deliveryKey = deliveryMessages.join(','); 
+    try {
+      const parsedValue = JSON?.parse(deliveryKey);
+      return parsedValue; 
+    } catch (error) {
+      return null; 
     }
   }
   return null;
@@ -441,7 +427,7 @@ export const getCommonSettingByBrandChannel = async (brand: any) => {
       },
       body: JSON.stringify(postData),
     });
-    
+
 
     const data = await response.json();
     return data;

@@ -13,6 +13,7 @@ declare module 'react-instantsearch' {
   export type UseHitsProps = UseHitsProps;
   export type UseSortByProps = UseSortByProps;
   export type UseHitsPerPageProps = UseHitsPerPageProps;
+  export type UseStatsProps = UseStatsProps;
   export function RefinementList(props: RefinementListProps): ReactNode;
   export function ToggleRefinement(props: ToggleRefinementProps): ReactNode;
   export function RangeInput(props: RangeInputProps): ReactNode;
@@ -38,7 +39,7 @@ declare module 'react-instantsearch' {
   export function useConnector<RatingMenuConnectorParams, RatingMenuWidgetDescription>(props: useConnectorProps, props2: useConnectorProps2): ReactNode;
   export function useSortBy(props: useSortByProps): ReactNode;
   export function useHitsPerPage(props: UseHitsPerPageProps): ReactNode;
-
+  export function useStats(): ReactNode;
 }
 
 // For Next.js library
