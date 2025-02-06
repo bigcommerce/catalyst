@@ -1,5 +1,5 @@
 
-
+'use client';
 import React, { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { X } from 'lucide-react';
@@ -9,6 +9,7 @@ import { Warranty } from '~/app/[locale]/(default)/product/[slug]/_components/wa
 import { Description } from '~/app/[locale]/(default)/product/[slug]/_components/description';
 import { getProductBySku } from '../graphql-apis';
 import { QuickViewGallery } from './Quickviewgallery';
+import { client } from '~/client';
 
 const QuickView = ({ product }) => {
   const [isOpen, setIsOpen] = useState(false);
