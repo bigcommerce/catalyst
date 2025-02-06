@@ -12,7 +12,7 @@ import { ErrorMessage } from '../shared/error-message';
 import { MultipleChoiceFieldFragment } from './fragment';
 import { BcImage } from '~/components/bc-image';
 import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
-import * as Tooltip from '@radix-ui/react-tooltip';
+
 
 interface InteractionOptions {
   optionId: number;
@@ -61,9 +61,7 @@ export const MultipleChoiceField = ({
   };
 
   const handleOnValueChange = (
-    { optionId, valueId }: InteractionOptions,
-    event: React.MouseEvent,
-  ) => {
+    { optionId, valueId }: InteractionOptions ) => {
     const selectedValue = values.find((value) => value.entityId === valueId);
     handleInteraction({ optionId, valueId });
     setSelectedOption(selectedValue?.label || null);
@@ -163,10 +161,9 @@ export const MultipleChoiceField = ({
                 .filter(
                   (value) => '__typename' in value && value.__typename === 'SwatchOptionValue',
                 )
-                .map((value) => (
-                  <Tooltip.Provider key={value.entityId} >
-                    <Tooltip.Root>
-                      <Tooltip.Trigger type="button">
+                .map((value) => {
+                 return(
+                 
                         <Swatch
                           aria-labelledby={`label-${option.entityId}`}
                           error={Boolean(error)}
@@ -194,30 +191,9 @@ export const MultipleChoiceField = ({
                           ]}
                           value={field.value?.toString()}
                         />
-                      </Tooltip.Trigger>
-                      <Tooltip.Content
-                        side="top"
-                        align="center"
-                        sideOffset={5}
-                        className="rounded-md bg-white shadow-xl relative z-[99] font-[#353535] font-normal text-[12px]"
-                      >
-                        <div className="flex h-[240px] w-[180px] flex-col gap-0 p-3">
-                          <p className="text-sm text-gray-800 p-0 m-0">
-                            {value.label.split('|')[0]}
-                          </p>
-                          <div
-                            className="h-full w-full p-0 m-0 rounded-sm"
-                            style={{ backgroundColor: value.hexColors[0] }}
-                          ></div>
-                          {value.label.split('|')[1] ? (
-                            <p className="text-sm text-gray-800 p-0 m-0">{`${value.label.split('|')[1]}`}</p>
-                          ):<p></p>}
-                        </div>
-                        <Tooltip.Arrow className="fill-white transform scale-150" />
-                      </Tooltip.Content>
-                    </Tooltip.Root>
-                  </Tooltip.Provider>
-                ))}
+                      
+                )}
+              )}
               {remainingCount > 0 && !showAll && (
                 <div className="flex items-center gap-1 text-[#008BB7]">
                   <button
@@ -448,10 +424,6 @@ export const MultipleChoiceField = ({
                       }
                     : undefined,
                   onMouseEnter: () => {
-                    handleMouseEnter({
-                      optionId: option.entityId,
-                      valueId: Number(value.entityId),
-                    });
                     handleMouseEnter({
                       optionId: option.entityId,
                       valueId: Number(value.entityId),
