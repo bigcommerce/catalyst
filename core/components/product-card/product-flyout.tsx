@@ -48,9 +48,7 @@ const getVariantProductInfo = async (metaData: any) => {
             let varaiantProductData = await GetVariantsByProductId(productInfo?.entityId);
             let variantNewObject: any = [];
             let productName: string = productInfo?.name;
-            
-            let updatedProductData = await calculateProductPrice(varaiantProductData,"accessories");
-            
+            let updatedProductData = await calculateProductPrice(varaiantProductData, "accessories");
             let imageArray: Array<any> = removeEdgesAndNodes(productInfo?.images);
             updatedProductData?.forEach(async (item: any) => {
               if (skuArrayData?.find((sku: any) => sku == item?.sku)) {
@@ -124,8 +122,9 @@ export const ProductFlyout = ({
   let setOpen;
   let currencyCode: any;
   const [productQty, setProductQty] = useState<number>(1);
-  let variantData: any = [], optionsData: any = []; 
-  if(from == 'pdp') {
+  const [skusWithoutAccessories, setSkusWithoutAccessories] = useState<string[]>([]); // State for SKUs without accessories
+  let variantData: any = [], optionsData: any = [];
+  if (from == 'pdp') {
     variantData = removeEdgesAndNodes(product?.variants);
     optionsData = removeEdgesAndNodes(product?.productOptions);
     open = productFlyout.open;
@@ -143,10 +142,10 @@ export const ProductFlyout = ({
   }
   
   const [variantProductData, setVariantProductData] = useState<any>([]);
-  let productId = (from == 'pdp') ? product?.entityId: product?.productEntityId;
-  let productQtyData = (from == 'pdp') ? productData?.quantity: product?.quantity;
+  let productId = (from == 'pdp') ? product?.entityId : product?.productEntityId;
+  let productQtyData = (from == 'pdp') ? productData?.quantity : product?.quantity;
   if (variantData && optionsData && optionsData?.length > 0) {
-    let variantProduct: any = variantData?.find((item: any) => item?.sku == product?.sku);    
+    let variantProduct: any = variantData?.find((item: any) => item?.sku == product?.sku);
     useEffect(() => {
       const getProductMetaData = async () => {
         let metaData = await GetProductVariantMetaFields(
@@ -156,9 +155,21 @@ export const ProductFlyout = ({
         );
         let productData = await getVariantProductInfo(metaData);
         setVariantProductData([...productData]);
-        var getAllCommonSettinngsValues =await commonSettinngs([product?.brand?.entityId]);
+        if (!productData || productData.length === 0) {
+          setVariantProductData([]);
+          const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
+          if (!storedSkus.includes(product?.sku)) {
+
+            setSkusWithoutAccessories(prev => [...prev, product?.sku]);
+            localStorage.setItem('skusWithoutAccessories', JSON.stringify([...storedSkus, product?.sku]));
+          }
+        } else {
+          const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
+          const updatedSkus = storedSkus.filter((sku: any) => sku !== product?.sku);
+          localStorage.setItem('skusWithoutAccessories', JSON.stringify(updatedSkus));
+        }
+        var getAllCommonSettinngsValues = await commonSettinngs([product?.brand?.entityId]);
         setCommonSettingsValues(getAllCommonSettinngsValues);
-        
       };
 
       if (variantProduct) {
@@ -172,6 +183,19 @@ export const ProductFlyout = ({
         let metaData = await GetProductMetaFields(productId, 'Accessories');
         let productData = await getVariantProductInfo(metaData);
         setVariantProductData([...productData]);
+        if (!productData || productData.length === 0) {
+          setVariantProductData([]);
+          const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
+          if (!storedSkus.includes(product?.sku)) {
+
+            setSkusWithoutAccessories(prev => [...prev, product?.sku]);
+            localStorage.setItem('skusWithoutAccessories', JSON.stringify([...storedSkus, product?.sku]));
+          }
+        } else {
+          const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
+          const updatedSkus = storedSkus.filter((sku: any) => sku !== product?.sku);
+          localStorage.setItem('skusWithoutAccessories', JSON.stringify(updatedSkus));
+        }
       };
       getProductMetaData();
       setProductQty(productQtyData);
@@ -215,113 +239,119 @@ export const ProductFlyout = ({
               </div>
               <Dialog.Description></Dialog.Description>
               {from == 'pdp' && (
-              <Dialog.Content className="popup-box1 !pointer-events-auto flex flex-col items-center gap-[30px] ssm:flex-row ssm:items-start">
-                <div className="popup-box1-div1 relative flex h-[200px] w-[200px] border border-[#cccbcb] ssm:h-[160px] ssm:w-[140px]">
-                  <BcImage
-                    alt={productData?.name}
-                    width={140}
-                    height={140}
-                    unoptimized={true}
-                    className="popup-box1-div-img absolute h-full w-full object-contain"
-                    src={productData?.imageUrl}
-                  />
-                </div>
-                <div className="popup-box1-div2 relative flex max-w-[360px] flex-shrink-[50] flex-col gap-[3px] text-center ssm:gap-[1px] ssm:text-start [&_.input-plus-minus-container]:self-center [&_.input-plus-minus-container]:ssm:[align-self:unset]">
-                  <p className="text-center text-[14px] font-normal tracking-[0.25px] text-[#353535] ssm:text-left">
-                    {productData?.name}
-                  </p>
-                  <p className="popup-box1-div2-sku text-center text-[12px] leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:text-left ssm:tracking-[0.015625rem]">
-                    SKU: {product?.mpn}
-                  </p>
-                  {productData?.selectedOptions?.map((selectedOption: any, index: number) => {
-                    let pipeLineData = '';
-                    if (index < productData?.selectedOptions?.length - 2) {
-                      pipeLineData = ',';
-                    }
-                    return (
-                      <div
-                        key={selectedOption.entityId}
-                        className="text-center ssm:flex ssm:items-center ssm:text-start"
-                      >
-                        <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
-                          {selectedOption.name}:
-                        </span>
-                        <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
-                          {selectedOption.value}
-                        </span>
-                        {pipeLineData && (
-                          <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
-                            {' '}
-                            {pipeLineData}
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
-                  <div className="md:flex-row">
-                    {productData?.originalPrice?.value &&
-                    productData?.selectedOptions?.length === 0 &&
-                    productData?.originalPrice?.value !== productData?.listPrice?.value ? (
-                      <div className="">
-                        {format.number(productData?.originalPrice?.value * productData?.quantity, {
-                          style: 'currency',
-                          currency: productData?.originalPrice?.currencyCode,
-                        })}
-                      </div>
-                    ) : null}
-                    {productData?.extendedSalePrice?.value ? (
-                      <div className="text-center text-[14px] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] ssm:text-right">
-                        {format.number(productData?.extendedSalePrice?.value, {
-                          style: 'currency',
-                          currency: productData?.extendedSalePrice?.currencyCode,
-                        })}
-                      </div>
-                    ) : null}
+                <Dialog.Content className="popup-box1 !pointer-events-auto flex flex-col items-center gap-[30px] ssm:flex-row ssm:items-start">
+                  <div className="popup-box1-div1 relative flex h-[200px] w-[200px] border border-[#cccbcb] ssm:h-[160px] ssm:w-[140px]">
+                    <BcImage
+                      alt={productData?.name}
+                      width={140}
+                      height={140}
+                      unoptimized={true}
+                      className="popup-box1-div-img absolute h-full w-full object-contain"
+                      src={productData?.imageUrl}
+                    />
                   </div>
-                  <InputPlusMinus
-                    product="true"
-                    isLoading={isLoading}
-                    setIsLoading={setIsLoading}
-                    productData={productData}
-                  />
-                </div>
-              </Dialog.Content>
+                  <div className="popup-box1-div2 relative flex max-w-[360px] flex-shrink-[50] flex-col gap-[3px] text-center ssm:gap-[1px] ssm:text-start [&_.input-plus-minus-container]:self-center [&_.input-plus-minus-container]:ssm:[align-self:unset]">
+                    <p className="text-center text-[14px] font-normal tracking-[0.25px] text-[#353535] ssm:text-left">
+                      {productData?.name}
+                    </p>
+                    <p className="popup-box1-div2-sku text-center text-[12px] leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:text-left ssm:tracking-[0.015625rem]">
+                      SKU: {product?.mpn}
+                    </p>
+                    {productData?.selectedOptions?.map((selectedOption: any, index: number) => {
+                      let pipeLineData = '';
+                      if (index < productData?.selectedOptions?.length - 2) {
+                        pipeLineData = ',';
+                      }
+                      return (
+                        <div
+                          key={selectedOption.entityId}
+                          className="text-center ssm:flex ssm:items-center ssm:text-start"
+                        >
+                          <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
+                            {selectedOption.name}:
+                          </span>
+                          <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
+                            {selectedOption.value}
+                          </span>
+                          {pipeLineData && (
+                            <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
+                              {' '}
+                              {pipeLineData}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                    <div className="md:flex-row">
+                      {productData?.originalPrice?.value &&
+                        productData?.selectedOptions?.length === 0 &&
+                        productData?.originalPrice?.value !== productData?.listPrice?.value ? (
+                        <div className="">
+                          {format.number(productData?.originalPrice?.value * productData?.quantity, {
+                            style: 'currency',
+                            currency: productData?.originalPrice?.currencyCode,
+                          })}
+                        </div>
+                      ) : null}
+                      {productData?.extendedSalePrice?.value ? (
+                        <div className="text-center text-[14px] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] ssm:text-right">
+                          {format.number(productData?.extendedSalePrice?.value, {
+                            style: 'currency',
+                            currency: productData?.extendedSalePrice?.currencyCode,
+                          })}
+                        </div>
+                      ) : null}
+                    </div>
+                    <InputPlusMinus
+                      product="true"
+                      isLoading={isLoading}
+                      setIsLoading={setIsLoading}
+                      productData={productData}
+                    />
+                  </div>
+                </Dialog.Content>
               )}
-              
-              {variantProductData && variantProductData?.length > 0 
-              // && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories  
-              && (
-                <>
-                  <hr className="my-[20px] border-[#93cfa1]" />
-                  <div className="pop-up-text flex flex-col gap-4">
-                    <div className="flex flex-col gap-[20px]">
-                      <div className="text-[20px] font-medium tracking-[0.15px] text-black">
-                        You May Also Need
-                      </div>
-                      <div className="accessories-data flex flex-col gap-[20px]">
-                        {variantProductData &&
-                          variantProductData?.map((accessories: any, index: number) => (
-                            <div
-                              className="product-card flex flex-col items-center gap-[20px] border border-[#cccbcb] p-[20px] sm:flex-row"
-                              key={index}
-                            >
-                              <ProductAccessories
-                                isLoading={isLoading}
-                                setIsLoading={setIsLoading}
-                                accessories={accessories}
-                                fanPopup={fanPopup}
-                                blankAddImg={blankAddImg}
-                                index={index}
-                                from={from}
-                                currencyCode={currencyCode}
-                                data={product}
-                              />
-                            </div>
-                          ))}
+
+              {variantProductData && variantProductData?.length > 0 &&
+                // && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories &&
+                (
+                  <>
+                    <hr className="my-[20px] border-[#93cfa1]" />
+                    <div className="pop-up-text flex flex-col gap-4">
+                      <div className="flex flex-col gap-[20px]">
+                        <div className="text-[20px] font-medium tracking-[0.15px] text-black">
+                          You May Also Need
+                        </div>
+                        <div className="accessories-data flex flex-col gap-[20px]">
+                          {variantProductData &&
+                            variantProductData?.map((accessories: any, index: number) => (
+                              <div
+                                className="product-card flex flex-col items-center gap-[20px] border border-[#cccbcb] p-[20px] sm:flex-row"
+                                key={index}
+                              >
+                                <ProductAccessories
+                                  isLoading={isLoading}
+                                  setIsLoading={setIsLoading}
+                                  accessories={accessories}
+                                  fanPopup={fanPopup}
+                                  blankAddImg={blankAddImg}
+                                  index={index}
+                                  from={from}
+                                  currencyCode={currencyCode}
+                                  data={product}
+                                />
+                              </div>
+                            ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </>
+                  </>
+                )
+              }
+              {variantProductData.length = 0  && (
+                <div className="text-center text-gray-500">
+                No accessories available for this product.
+              </div>
               )}
               {from == 'pdp' && cartItemsData && (
                 <>

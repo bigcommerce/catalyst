@@ -71,7 +71,6 @@ function CommonReducer(state: any, action: any) {
         },
       };
     case 'SET_CURRENT_MAIN_MEDIA':
-      console.log('Current main media updated:', action.payload);
       return {
         ...state,
         items: {
