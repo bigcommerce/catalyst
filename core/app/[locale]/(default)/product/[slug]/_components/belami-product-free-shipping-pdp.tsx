@@ -46,7 +46,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
   return (
     <div className={`flex ${isFromPDP ? 'justify-center' : 'justify-start'}  xl:justify-start`}>
        {deliveryMessage?.map((item:any, index:any) => {
-        const backgroundColorClass = item.qty == 0 ? 'bg-[#FBF4E9] px-[10px]' : 'bg-transparent'; // Set background based on qty
+        const backgroundColorClass = item?.qty == 0 ? 'bg-[#FBF4E9] px-[10px]' : 'bg-transparent'; // Set background based on qty
         return (
           <div key={index} className={`${backgroundColorClass} w-fit mt-[10px]`}>
             <div className='font-normal text-sm leading-6 tracking-[0.25px] px-0'>

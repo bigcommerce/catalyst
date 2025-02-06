@@ -33,20 +33,19 @@ const getVariantProductInfo = async (metaData: any, discountRules:any) => {
     if (variantDatas?.length > 0) {
       let variantProductIdSkus: Array<any> = [];
       variantDatas?.forEach(async (itemData: any) => {
-        variantProductIdSkus.push(itemData?.products?.[0]?.parent_sku);
-        accessoriesLabelData.push({
+        variantProductIdSkus?.push(itemData?.products?.[0]?.parent_sku);
+        accessoriesLabelData?.push({
           sku: itemData?.products?.[0]?.parent_sku,
           label: itemData?.label,
         });
         if (itemData?.products?.[0]?.variants) {
-          skuArrayData.push(...itemData?.products?.[0]?.variants);
+          skuArrayData?.push(...itemData?.products?.[0]?.variants);
         } else {
-          skuArrayData.push(itemData?.products?.[0]?.parent_sku);
+          skuArrayData?.push(itemData?.products?.[0]?.parent_sku);
         }
       });
       if (variantProductIdSkus?.length) {
         let parentProductInformation = await GetVariantsByProductSKU(variantProductIdSkus);
-        //console.log("parent product-->>",parentProductInformation);
         
         if (parentProductInformation?.length > 0) {
           for await (const productInfo of parentProductInformation) {
@@ -127,8 +126,8 @@ export const ProductFlyout = ({
   const [commonSettingsValues, setCommonSettingsValues] = useState<any>([]);
   const format = useFormatter();
   const productFlyout = useCommonContext();
-  let productData = productFlyout.productData;
-  let cartItemsData = productFlyout.cartData;
+  let productData = productFlyout?.productData;
+  let cartItemsData = productFlyout?.cartData;
   let open;
   let setOpen;
   let currencyCode: any;
@@ -139,7 +138,7 @@ export const ProductFlyout = ({
     variantData = removeEdgesAndNodes(product?.variants);
     optionsData = removeEdgesAndNodes(product?.productOptions);
     open = productFlyout.open;
-    setOpen = productFlyout.handlePopup;
+    setOpen = productFlyout?.handlePopup;
     currencyCode = productData?.extendedSalePrice?.currencyCode
   } else {
     variantData = [{
@@ -166,7 +165,7 @@ export const ProductFlyout = ({
         );
         let productData = await getVariantProductInfo(metaData,discountRules);
         setVariantProductData([...productData]);
-        if (!productData || productData.length === 0) {
+        if (!productData || productData?.length === 0) {
           setVariantProductData([]);
           const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
           if (!storedSkus.includes(product?.sku)) {
@@ -176,7 +175,7 @@ export const ProductFlyout = ({
           }
         } else {
           const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
-          const updatedSkus = storedSkus.filter((sku: any) => sku !== product?.sku);
+          const updatedSkus = storedSkus?.filter((sku: any) => sku !== product?.sku);
           localStorage.setItem('skusWithoutAccessories', JSON.stringify(updatedSkus));
         }
         var getAllCommonSettinngsValues = await commonSettinngs([product?.brand?.entityId]);
@@ -194,18 +193,18 @@ export const ProductFlyout = ({
         let metaData = await GetProductMetaFields(productId, 'Accessories');
         let productData = await getVariantProductInfo(metaData,discountRules);
         setVariantProductData([...productData]);
-        if (!productData || productData.length === 0) {
+        if (!productData || productData?.length === 0) {
           setVariantProductData([]);
           const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
-          if (!storedSkus.includes(product?.sku)) {
+          if (!storedSkus?.includes(product?.sku)) {
 
             setSkusWithoutAccessories(prev => [...prev, product?.sku]);
-            localStorage.setItem('skusWithoutAccessories', JSON.stringify([...storedSkus, product?.sku]));
+            localStorage?.setItem('skusWithoutAccessories', JSON.stringify([...storedSkus, product?.sku]));
           }
         } else {
           const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
-          const updatedSkus = storedSkus.filter((sku: any) => sku !== product?.sku);
-          localStorage.setItem('skusWithoutAccessories', JSON.stringify(updatedSkus));
+          const updatedSkus = storedSkus?.filter((sku: any) => sku !== product?.sku);
+          localStorage?.setItem('skusWithoutAccessories', JSON.stringify(updatedSkus));
         }
       };
       getProductMetaData();
@@ -275,7 +274,7 @@ export const ProductFlyout = ({
                       }
                       return (
                         <div
-                          key={selectedOption.entityId}
+                          key={selectedOption?.entityId}
                           className="text-center ssm:flex ssm:items-center ssm:text-start"
                         >
                           <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
@@ -359,7 +358,7 @@ export const ProductFlyout = ({
                   </>
                 )
               }
-              {variantProductData.length = 0  && (
+              {variantProductData?.length === 0  && (
                 <div className="text-center text-gray-500">
                 No accessories available for this product.
               </div>

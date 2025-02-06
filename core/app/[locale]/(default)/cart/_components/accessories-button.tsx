@@ -24,7 +24,7 @@ export const AccessoriesButton = ({ product, closeIcon, blankAddImg, fanPopup ,d
 
   let lineItemId = product?.entityId;
   useEffect(() => {
-    const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
+    const storedSkus = JSON?.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
     const productSku = product?.sku;
     if (storedSkus.includes(productSku)) {
       setIsButtonVisible(false);
