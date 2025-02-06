@@ -71,8 +71,8 @@ interface Props {
   triggerLabel5: React.ReactNode;
   children5: React.ReactNode;
   priceMaxRules: any;
-  getAllCommonSettinngsValues:any;
-  isFromQuickView : boolean;
+  getAllCommonSettinngsValues: any;
+  isFromQuickView: boolean;
   customerGroupDetails: any;
 }
 
@@ -329,28 +329,28 @@ export const Details = ({
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
-                        <div className="inline text-[14px] font-normal">
-                          {productOptions
-                            .filter((option) => option.__typename === 'MultipleChoiceOption')
-                            .map((option, index, filteredArray) => {
-                              if (option.__typename === 'MultipleChoiceOption') {
-                                const selectedValue = getSelectedValue(
-                                  option as MultipleChoiceOption,
-                                );
-                                return (
-                                  <span key={option.entityId}>
-                                    <span className="font-bold">{option.displayName}:</span>
-                                    <span className="text-[15px]"> {selectedValue}</span>
-                                    {index < filteredArray.length - 1 && (
-                                      <span className="mx-1">|</span>
-                                    )}
-                                  </span>
-                                );
-                              }
-                              return null;
-                            })}
-                        </div>
-                      )}
+                          <div className="inline text-[14px] font-normal">
+                            {productOptions
+                              .filter((option) => option.__typename === 'MultipleChoiceOption')
+                              .map((option, index, filteredArray) => {
+                                if (option.__typename === 'MultipleChoiceOption') {
+                                  const selectedValue = getSelectedValue(
+                                    option as MultipleChoiceOption,
+                                  );
+                                  return (
+                                    <span key={option.entityId}>
+                                      <span className="font-bold">{option.displayName}:</span>
+                                      <span className="text-[15px]"> {selectedValue}</span>
+                                      {index < filteredArray.length - 1 && (
+                                        <span className="mx-1">|</span>
+                                      )}
+                                    </span>
+                                  );
+                                }
+                                return null;
+                              })}
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -373,7 +373,7 @@ export const Details = ({
                       currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
                       format={format}
                       showMSRP={product.UpdatePriceForMSRP.showDecoration}
-                      warrantyApplied= {product?.UpdatePriceForMSRP?.warrantyApplied}
+                      warrantyApplied={product?.UpdatePriceForMSRP?.warrantyApplied}
                       options={{
                         useAsyncMode: false,
                         useDefaultPrices: true,
@@ -439,9 +439,8 @@ export const Details = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
-              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-            } px-[20px] pt-[20px]`}
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+              } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
@@ -535,8 +534,8 @@ export const Details = ({
               product?.UpdatePriceForMSRP.hasDiscount
                 ? product.UpdatePriceForMSRP.updatedPrice
                 : product?.UpdatePriceForMSRP.warrantyApplied
-                ? product.UpdatePriceForMSRP.updatedPrice
-                : null
+                  ? product.UpdatePriceForMSRP.updatedPrice
+                  : null
             }
             priceMaxRule={priceMaxRules?.find(
               (r: any) =>
@@ -548,7 +547,7 @@ export const Details = ({
             currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
             format={format}
             showMSRP={product.UpdatePriceForMSRP.showDecoration}
-            warrantyApplied = {product.UpdatePriceForMSRP.warrantyApplied}
+            warrantyApplied={product.UpdatePriceForMSRP.warrantyApplied}
             options={{
               useAsyncMode: false,
               useDefaultPrices: true,
@@ -584,7 +583,6 @@ export const Details = ({
             />
           )}
           {product?.brand?.entityId &&
-            getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
             getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
               <NoShipCanada
                 description={
@@ -592,19 +590,19 @@ export const Details = ({
                 }
               />
             )}
-          </div>
-          <div ref={productFormRef}>
-            <ProductForm
-              data={product}
-              productMpn={product.mpn || ''}
-              multipleOptionIcon={multipleOptionIcon}
-              blankAddImg={blankAddImg || ''}
-              productImages={productImages}
-              fanPopup={fanPopup}
-              closeIcon={closeIcon || ''}
-              customerGroupDetails={customerGroupDetails}
-            />
-          </div>
+        </div>
+        <div ref={productFormRef}>
+          <ProductForm
+            data={product}
+            productMpn={product.mpn || ''}
+            multipleOptionIcon={multipleOptionIcon}
+            blankAddImg={blankAddImg || ''}
+            productImages={productImages}
+            fanPopup={fanPopup}
+            closeIcon={closeIcon || ''}
+            customerGroupDetails={customerGroupDetails}
+          />
+        </div>
 
         <div className="div-product-description my-12 hidden">
           <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
@@ -663,31 +661,31 @@ export const Details = ({
           </div>
         </div>
 
-          {/* <ProductSchema product={product} /> */}
-          <div className={`${isFromQuickView ? "hidden" : "block"}`}>
-            <PayPalPayLater 
+        {/* <ProductSchema product={product} /> */}
+        <div className={`${isFromQuickView ? "hidden" : "block"}`}>
+          <PayPalPayLater
             amount={product?.prices?.price?.value?.toString() || '0'}
             currency={product?.prices?.price?.currencyCode || 'USD'}
           />
-          
-          
-            <RequestQuote children={children3} />
-          <CertificationsAndRatings 
-          certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4}/>
+
+
+          <RequestQuote children={children3} />
+          <CertificationsAndRatings
+            certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4} />
           <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}
-          triggerLabel={triggerLabel5}
-          children={children5}
-        />
+            triggerLabel={triggerLabel5}
+            children={children5}
+          />
 
-        {/* <ShippingReturns /> */}
+          {/* <ShippingReturns /> */}
 
-        <div className="flex justify-center gap-4 xl:mt-7">
-          <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
+          <div className="flex justify-center gap-4 xl:mt-7">
+            <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
 
-          <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
+            <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
+          </div>
         </div>
       </div>
-    </div>
     </div>
   );
 };
