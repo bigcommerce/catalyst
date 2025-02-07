@@ -29,6 +29,7 @@
   "metafields.Details.Heating Area": "Heating Area",
   "metafields.Details.IR Heat Technology": "IR Heat Technology",
   "metafields.Details.Lift": "Lift",  
+  "metafields.Details.Light Kit Type": "Light Kit Type",
   "metafields.Details.Lumen Output": "Lumen Output",
   "metafields.Details.Material": "Material",  
   "metafields.Details.Minimum Mounting Height": "Minimum Mounting Height",
@@ -62,5 +63,6 @@
   "on_sale": "On Sale",
   "on_clearance": "On Clearance",
   "in_stock": "In Stock",
-  "free_shipping": "Free Shipping"
+  "free_shipping": "Free Shipping",
+  "inventory_range": "Inventory Level"
 }
