@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { getTranslations, getFormatter } from 'next-intl/server';
-
-import { getSessionCustomerAccessToken } from '~/auth';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getSessionCustomerAccessToken, getSessionUserDetails} from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
@@ -29,6 +29,7 @@ import { NoShipCanada } from '../product/[slug]/_components/belami-product-no-sh
 import { commonSettinngs } from '~/components/common-functions';
 import { zeroTaxCalculation } from '~/components/common-functions';
 import { calculateProductPrice } from '~/components/common-functions';
+import { GetCustomerGroupById, GetEmailId } from '~/components/management-apis';
 
 import heartIcon from '~/public/cart/heartIcon.svg';
 import applePayIcon from '~/public/cart/applePayIcon.svg';
@@ -42,10 +43,30 @@ interface Params {
   locale: string;
 }
 
-
+interface CategoryNode {
+  name: string;
+  path: string | null;
+  breadcrumbs?: {
+    edges: Array<{
+      node: {
+        entityId: any;
+        name: string;
+        path: string | null;
+      };
+    }> | null;
+  };
+}
 
 interface Props {
   params: Promise<Params> | Params; // Support both Promise and object
+}
+
+interface CustomerGroup {
+  discount_rules: Array<{  amount: string;
+    type: string;
+    category_id: string;
+    product_id: string;
+    method: string; }>;
 }
 
 const CartPageQuery = graphql(
@@ -93,6 +114,15 @@ export default async function Cart({ params }: Props) {
   const t = await getTranslations('Cart');
 
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const sessionUser = await getSessionUserDetails();
+  let customerGroupDetails:CustomerGroup = {
+    discount_rules: []
+  };
+  if(sessionUser){
+  const customerData = await GetEmailId(sessionUser?.user?.email!);
+  const customerGroupId = customerData.data[0].customer_group_id;
+  customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+  }
 
   const { data } = await client.fetch({
     document: CartPageQuery,
@@ -188,15 +218,43 @@ export default async function Cart({ params }: Props) {
     },
   ];
 
+const getCategoryIds =(product: any)=>{
+  const categories = removeEdgesAndNodes(product.baseCatalogProduct.categories) as CategoryNode[];
+  const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
+    const longestLength = longest?.breadcrumbs?.edges?.length || 0;
+    const currentLength = current?.breadcrumbs?.edges?.length || 0;
+    return currentLength > longestLength ? current : longest;
+  }, categories[0]);
+  
+  return categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
+    (edge) => edge.node.entityId
+  ) || [];
+}
+
+const discountRules = customerGroupDetails?.discount_rules;
+
 
   var getBrandIds = lineItems?.map((item: any) => {
     return item?.baseCatalogProduct?.brand?.entityId;
   });
-  var getAllCommonSettinngsValues = await commonSettinngs(getBrandIds)
+  var getAllCommonSettinngsValues = await commonSettinngs(getBrandIds);
+  //let checkZeroTax: any = await zeroTaxCalculation(data.site);
+  
+  updatedLineItemWithoutAccessories = updatedLineItemWithoutAccessories.map((product: any)=>{
+     return{
+      ...product,
+      categoryIds: getCategoryIds(product),
+     }
+  });
+  
+  const updatedProduct: any[][] = [];
   let checkZeroTax: any = await zeroTaxCalculation(data.site);
 
-  updatedLineItemWithoutAccessories = await calculateProductPrice(updatedLineItemWithoutAccessories,"cart");
- 
+for (const eachProduct of updatedLineItemWithoutAccessories) {
+  const price = await calculateProductPrice(eachProduct, "cart", discountRules, eachProduct.categoryIds);
+  updatedProduct.push(...price);
+}
+   
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
       <div className="sticky top-2 z-50">
@@ -240,7 +298,7 @@ export default async function Cart({ params }: Props) {
       <div className="cart-right-side-details px-18 w-full pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
         <ul className="cart-details-item col-span-2 lg:w-full">
 
-          {updatedLineItemWithoutAccessories.map((product: any) => (
+          {updatedProduct.map((product: any) => (
             <CartItem
               brandId={product?.baseCatalogProduct?.brand?.entityId}
               currencyCode={cart.currencyCode}
@@ -252,6 +310,7 @@ export default async function Cart({ params }: Props) {
               ProductType={'product'}
               cookie_agent_login_status={cookie_agent_login_status === 'true' ? true : false}
               getAllCommonSettinngsValues={getAllCommonSettinngsValues}
+              discountRules={discountRules}
             />
           ))}
           {cookie_agent_login_status === 'true' &&

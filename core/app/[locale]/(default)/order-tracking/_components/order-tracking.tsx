@@ -1,6 +1,5 @@
 'use client';
-
-import { useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { StillNeedContactUs } from '../../account/(tabs)/orders/_components/stillneed-contactus';
 import { getGuestOrderDetails, getOrderDetails } from '~/components/graphql-apis';
 import { getGuestOrderDetailsFromAPI } from '~/components/management-apis';
@@ -10,7 +9,8 @@ import { Link } from '~/i18n/routing';
 import { BcImage } from '~/components/bc-image';
 import { PrintOrder } from '../../checkout/print/print-order';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
-
+import chevronRight from '~/public/orders/chevronRight.svg';
+ 
 interface ManageOrderButtonsProps {
   className: string;
   orderId: number;
@@ -19,7 +19,7 @@ interface ManageOrderButtonsProps {
   orderData: any;
   setShowOrderSummary: any;
 }
-
+ 
 const OrderDetails = ({
   orderId,
   orderDate,
@@ -40,17 +40,39 @@ const OrderDetails = ({
 }) => {
   const t = useTranslations('Account.Orders');
   const format = useFormatter();
-
+ 
+  const statusBgClassMap: { [key: string]: string } = {
+    processed: 'bg-[#E7F5F8]',
+    delayed: 'bg-[#E5BFBC]',
+    processing: 'bg-[#F3F4F5]',
+    shipped: 'bg-[#008BB7]',
+    delivered: 'bg-[#1DB14B]',
+    'return started': 'bg-[#FBF4E9]',
+    returned: 'bg-[#002A37]',
+  };
+ 
+  const statusTextClassMap: { [key: string]: string } = {
+    'return started': 'text-[#6A4C1E]',
+    shipped: 'text-white',
+    delivered: 'text-white',
+    returned: 'text-white',
+  };
+ 
+  const buttonBgClass = statusBgClassMap[orderStatus.toLowerCase()] || 'bg-[#E7F5F8]';
+  const buttonTextClass = statusTextClassMap[orderStatus.toLowerCase()] || 'text-[#353535]';
+ 
   return (
     <>
       <div className="w-full bg-[#03465C] p-[10px]">
-        <button className="flex h-[32px] flex-row items-center justify-center gap-[10px] rounded-full bg-[#E7F5F8] p-[0px_10px] text-[16px] font-normal leading-[32px]">
+      <button
+          className={`flex h-[32px] flex-row items-center justify-center gap-[10px] rounded-full p-[0px_10px] text-[16px] font-normal leading-[32px] ${buttonBgClass} ${buttonTextClass}`}
+        >
           {orderStatus}
         </button>
       </div>
       <div className="flex w-full flex-col items-start gap-[15px] p-[0px_20px]">
-        <div className="flex w-full flex-row justify-between">
-          <div className="flex flex-row items-center gap-[5px] text-[16px] font-normal leading-[32px] tracking-[0.15px]">
+        <div className="flex w-full flex-col justify-between sm:flex-row">
+          <div className="sm:justify-[unset] inline flex-row items-center justify-center gap-[5px] text-center text-[16px] font-normal leading-[32px] tracking-[0.15px] sm:flex">
             <span>
               {format.dateTime(new Date(orderDate), {
                 year: 'numeric',
@@ -64,7 +86,7 @@ const OrderDetails = ({
               {orderId}
             </span>
           </div>
-          <div className="flex flex-row items-center gap-[5px] text-[16px] font-normal leading-[32px] tracking-[0.15px]">
+          <div className="sm:justify-[unset] inline flex-row items-center justify-center gap-[5px] text-center text-[16px] font-normal leading-[32px] tracking-[0.15px] sm:flex [&>button]:ml-[5px] [&>button]:inline [&>button]:sm:ml-0 [&>span]:inline [&>svg]:ml-[5px] [&>svg]:inline [&>svg]:sm:ml-0">
             <span>
               {t('orderTotal')}:
               {format.number(orderPrice.value, {
@@ -86,7 +108,7 @@ const OrderDetails = ({
     </>
   );
 };
-
+ 
 const ManageOrderButtons = ({
   className,
   orderId,
@@ -99,9 +121,9 @@ const ManageOrderButtons = ({
   const getOrderDetails = () => {
     setShowOrderSummary(1);
   };
-
+ 
   return (
-    <div className="flex flex-[0.5] flex-col gap-[5px]">
+    <div className="flex w-full flex-[0.5] flex-col gap-[5px] xl:w-[unset]">
       {Boolean(orderTrackingUrl) && (
         <Button
           aria-label={t('trackOrder')}
@@ -132,7 +154,7 @@ const ManageOrderButtons = ({
     </div>
   );
 };
-
+ 
 const OrderList = ({
   orderData,
   cartId,
@@ -157,7 +179,7 @@ const OrderList = ({
           ) {
             return shipment.tracking.url;
           }
-
+ 
           return null;
         }),
       )
@@ -178,9 +200,9 @@ const OrderList = ({
             cartId={cartId}
             guestUserCheck={guestUserCheck}
           />
-          <div className="flex w-full flex-row items-center justify-between p-[0px_20px_20px_20px]">
+          <div className="flex w-full flex-col items-center justify-between gap-5 p-[0px_20px_20px_20px] xl:flex-row xl:gap-0">
             <div
-              className="flex flex-1 flex-row items-center gap-[40px] p-0"
+              className="flex w-full flex-1 flex-row items-center gap-[40px] p-0 has-[.product-count-1]:flex-col sm:has-[.product-count-1]:flex-row xl:w-[unset]"
               key={`order-${orderState?.orderId}`}
             >
               {(shippingConsignments ?? []).map(({ lineItems }) => {
@@ -201,11 +223,11 @@ const OrderList = ({
                   height = 65;
                   productCount = 4;
                 } else if (itemsCount == 2) {
-                  className = 'flex h-[150px] w-[310px] flex-row gap-[10px]';
+                  className = 'flex h-[150px] w-[150px] [&>img]:w-[70px] xl:[&>img]:w-[150px] xl:w-[310px] flex-row gap-[10px]';
                   width = 150;
                   productCount = 2;
                 } else if (itemsCount == 1) {
-                  className = 'flex h-[150px] w-[150px] flex-row gap-[10px] ';
+                  className = 'product-count-1 flex h-[150px] sm:w-[150px] flex-row gap-[10px] w-full';
                   width = 150;
                 }
                 return (
@@ -230,7 +252,7 @@ const OrderList = ({
                         {itemsCount} Item{itemsCount > 1 ? 's' : ''}
                       </div>
                     ) : (
-                      <div className="flex flex-[0.7] flex-col items-start justify-center gap-[5px] p-0">
+                      <div className="flex flex-1 flex-col items-start justify-center gap-[5px] p-0 xl:flex-[0.7]">
                         <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
                           {lineItems?.[0]?.name}
                         </div>
@@ -267,7 +289,7 @@ const OrderList = ({
     </>
   );
 };
-
+ 
 const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
   const { orderState, summaryInfo, consignments, paymentInfo } = orderData;
   const t = useTranslations('Account.Orders');
@@ -291,7 +313,7 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
     regSubTotal -= discountedAmount.value;
     youSave += discountedAmount.value;
   });
-
+ 
   return (
     <>
       <div className="border-b border-b-[#E8E7E7]">
@@ -569,7 +591,7 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
     </>
   );
 };
-
+ 
 export default function OrderTracking({
   icon,
   guestUserCheck,
@@ -586,31 +608,31 @@ export default function OrderTracking({
   const [cartId, setCartId] = useState('');
   const [showOrderSummary, setShowOrderSummary] = useState(0);
   const [guestFlow, setGuestFlow] = useState(1);
-
+ 
   const onNumberChange = (e: any) => {
     setNumber(e.target.value);
     validateForm();
   };
-
+ 
   const onEmailChange = (e: any) => {
     setEmail(e.target.value);
     validateForm();
   };
-
+ 
   // Validate form
   const validateForm = () => {
     let errors: any = {};
-
+ 
     if (!number) {
       errors.number = 'Order Number is required.';
     }
-
+ 
     if (!email) {
       errors.email = 'Email is required.';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       errors.email = 'Email is invalid.';
     }
-
+ 
     setErrors(errors);
     setIsFormValid(Object.keys(errors).length === 0);
   };
@@ -663,23 +685,40 @@ export default function OrderTracking({
       console.log('Form has errors. Please correct them.');
     }
   };
-
+ 
   const breadcrumbs: any = [
     {
       label: 'Find an Order',
       href: '#',
     },
   ];
-
+ 
   return (
     <div className="flex justify-center">
-      <div className="w-[70%]">
+      <div className="w-full px-5 xl:p-0 xl:w-[70%]">
         <div className="my-[2rem] flex flex-col gap-[20px] text-[#353535]">
           <div className="flex flex-col gap-[20px] p-0">
-            <ComponentsBreadcrumbs breadcrumbs={breadcrumbs} />
-            <div className="text-[24px] font-[400] leading-[32px] text-[#000]">Find Your Order</div>
+          <div className="flex items-center justify-center gap-[5px] xl:hidden">
+            <div>
+              <BcImage
+                src={chevronRight}
+                width={8}
+                height={12}
+                alt="Chevron Right"
+                unoptimized={true}
+              />
+            </div>
+            <Link
+              href="/"
+              className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#006380]"
+            >
+              Account Center
+            </Link>
+          </div>
+          <ComponentsBreadcrumbs className="hidden xl:block" breadcrumbs={breadcrumbs} />
+            <div className="text-[24px] font-[400] leading-[32px] text-[#000] text-center xl:text-left">Find Your Order</div>
             <StillNeedContactUs icon={icon} />
-            <div className="flex flex-row items-end gap-[20px] p-0">
+            <div className="flex flex-col xl:flex-row xl:items-end gap-[20px] p-0 text-center xl:text-left">
               <div className="flex flex-1 flex-col gap-[20px]">
                 <div className="text-[20px] font-[500] leading-[32px] tracking-[0.15px] text-[#008BB7]">
                   Order Number (Required)
@@ -690,7 +729,7 @@ export default function OrderTracking({
                     className={`mb-[30px] flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_10px] focus-visible:outline-none disabled:bg-gray-100 disabled:hover:border-gray-200 ${errors.number ? 'hover:border hover:border-[#A71F23] focus:border focus:border-[#A71F23] focus-visible:border focus-visible:border-[#A71F23]' : 'hover:border hover:border-[#008bb7] focus:border focus:border-[#008bb7] focus-visible:border focus-visible:border-[#008bb7]'}`}
                     onChange={(e) => onNumberChange(e)}
                   />
-
+ 
                   {errors.number && (
                     <p className="absolute bottom-0 text-sm text-[#A71F23]">{errors.number} </p>
                   )}
@@ -706,7 +745,7 @@ export default function OrderTracking({
                     className={`mb-[30px] flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_10px] focus-visible:outline-none disabled:bg-gray-100 disabled:hover:border-gray-200 ${errors.email ? 'hover:border hover:border-[#A71F23] focus:border focus:border-[#A71F23] focus-visible:border focus-visible:border-[#A71F23]' : 'hover:border hover:border-[#008bb7] focus:border focus:border-[#008bb7] focus-visible:border focus-visible:border-[#008bb7]'}`}
                     onChange={(e) => onEmailChange(e)}
                   />
-
+ 
                   {errors.email && (
                     <p className="absolute bottom-0 text-sm text-[#A71F23]">{errors.email} </p>
                   )}
@@ -714,7 +753,7 @@ export default function OrderTracking({
               </div>
               <div>
                 <button
-                  className="mb-[30px] flex h-[42px] cursor-pointer flex-row items-center justify-center gap-[5px] rounded bg-[#03465C] p-[5px_10px] text-sm font-[500] leading-8 tracking-[1.25px] text-[#ffffff] hover:bg-[#03465C]/90"
+                  className="mb-[30px] flex h-[42px] cursor-pointer flex-row items-center justify-center gap-[5px] rounded bg-[#03465C] p-[5px_10px] text-sm font-[500] leading-8 tracking-[1.25px] text-[#ffffff] hover:bg-[#03465C]/90 w-full xl:w-[unset]"
                   disabled={!isFormValid}
                   onClick={handleSubmit}
                 >
@@ -725,9 +764,9 @@ export default function OrderTracking({
           </div>
           <div className="flex flex-col gap-[20px] p-0">
             {errors.orderError || showOrderInfo || showOrderSummary ? (
-              <div className="text-[24px] font-normal leading-[32px] text-[#000]">Results</div>
+              <div className="text-[24px] font-normal leading-[32px] text-[#000] xl:text-left text-center">Results</div>
             ) : null}
-            {errors.orderError && <p>{errors.orderError} </p>}
+            {errors.orderError && <p className='text-center xl:text-left text-sm text-[#353535] leading-[32px]'>{errors.orderError} </p>}
             {showOrderInfo && orderData?.orderState?.orderId ? (
               <OrderList
                 setShowOrderSummary={setShowOrderSummary}

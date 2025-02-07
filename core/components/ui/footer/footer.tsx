@@ -67,13 +67,8 @@ const Footer = ({
               Customer Service
             </h3>
           )}
-          {/* {Boolean(contactInformation?.phone) && (
-            <CustomLink
-              className="flex-col gap-[10px] font-['Open_Sans'] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-              href={`tel:${contactInformation?.phone}`}
-            > */}
           <Link
-            href="/content/returns"
+            href="/returns"
             className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
           >
             Start a Return or Replacement
@@ -90,10 +85,7 @@ const Footer = ({
           >
             Visit our Helpdesk
           </Link>
-          {/* </CustomLink>
-          )} */}
         </div>
-
         {Boolean(contactInformation?.phone) && (
           <CustomLink
             className="flex flex-col gap-[10px] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
@@ -107,9 +99,9 @@ const Footer = ({
             </p>
 
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-              Monday-friday 6am -5pm PST
+              Monday - friday 6am - 5pm PST
             </p>
-            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-[#80c5da]">
               (####) ###-###
             </p>
             <h3 className="footerheading text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
@@ -117,10 +109,10 @@ const Footer = ({
               CHAT HOURS{' '}
             </h3>
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-              Monday-Friday 6am-4pm PST
+              Monday - Friday 6am - 4pm PST
             </p>
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-              Saturday & Sunday 6am-3pm PST
+              Saturday & Sunday 6am - 3pm PST
             </p>
           </CustomLink>
         )}
@@ -162,22 +154,24 @@ const Footer = ({
               Customer Service
             </h3>
           )}
-          {Boolean(contactInformation?.phone) && (
-            <CustomLink
-              className="flex-col gap-[10px] font-['Open_Sans'] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
-              href={`tel:${contactInformation?.phone}`}
-            >
-              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-                Start a Return or Replacement
-              </p>
-              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-                View Order Status
-              </p>
-              <p className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-                Visit our Helpdesk
-              </p>
-            </CustomLink>
-          )}
+          <Link
+            href="/returns"
+            className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
+          >
+            Start a Return or Replacement
+          </Link>
+          <Link
+            href="#"
+            className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
+          >
+            View Order Status
+          </Link>
+          <Link
+            href="/content/help-center"
+            className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
+          >
+            Visit our Helpdesk
+          </Link>
         </div>
         {sections.map((section, index) => (
           <div key={`${section.title}-${index}`} className="flex h-fit flex-col gap-[10px]">
@@ -218,9 +212,9 @@ const Footer = ({
             </p>
 
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-              Monday-friday 6am -5pm PST
+              Monday - friday 6am - 5pm PST
             </p>
-            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
+            <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-[#80c5da]">
               (####) ###-###
             </p>
             <h3 className="footerheading text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
@@ -228,10 +222,10 @@ const Footer = ({
               CHAT HOURS{' '}
             </h3>
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-              Monday-Friday 6am-4pm PST
+              Monday - Friday 6am - 4pm PST
             </p>
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-              Saturday & Sunday 6am-3pm PST
+              Saturday & Sunday 6am - 3pm PST
             </p>
           </CustomLink>
         )}

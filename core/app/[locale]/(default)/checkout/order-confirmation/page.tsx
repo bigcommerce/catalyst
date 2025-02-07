@@ -189,7 +189,7 @@ export default async function OrderConfirmation() {
             <SendOrderToAlgolia lineItems={shippingConsignments?.[0]?.lineItems} />
             <p className="flex flex-col">
               <span className="text-[16px] font-[400] leading-[32px] xsm:tracking-[0.15px] tracking-[0.5px] text-[#353535] text-center xsm:text-left">
-                We have received your order. You will receive an email conformation at
+                We have received your order. You will receive an email confirmation at
               </span>
               <span className="text-[16px] lg:font-[700] font-normal text-[#008BB7] text-center xsm:text-left leading-[32px] sm:tracking-[0.15px] tracking-[0.5px] lg:text-[#353535]">
                 {paymentInfo?.billingAddress?.email}

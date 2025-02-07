@@ -1,22 +1,28 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
-
+import { locales } from '~/i18n/routing';
+ 
 import { BlogPostCard } from '~/components/blog-post-card';
 import { Pagination } from '~/components/ui/pagination';
-
+ 
+import { Page as MakeswiftPage } from '~/lib/makeswift';
+ 
 import { getBlogPosts } from './page-data';
-
+ 
 interface Props {
   params: Promise<{ locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
-
+ 
+ 
+ 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const searchParams = await props.searchParams;
+ 
   const t = await getTranslations('Blog');
   const blogPosts = await getBlogPosts(searchParams);
-
+ 
   return {
     title: blogPosts?.name ?? t('title'),
     description:
@@ -25,37 +31,17 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
         : blogPosts?.description,
   };
 }
-
+ 
 export default async function Blog(props: Props) {
   const searchParams = await props.searchParams;
   const blogPosts = await getBlogPosts(searchParams);
-
+ 
+  const params = await props.params;
+  const {locale} = params;
+ 
   if (!blogPosts) {
     return notFound();
   }
-
-  return (
-    <div className="mx-auto max-w-screen-xl">
-      <h1 className="mb-8 text-3xl font-black lg:text-5xl">{blogPosts.name}</h1>
-
-      <ul className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-3 lg:gap-8">
-        {blogPosts.posts.items.map((post) => {
-          return (
-            <li key={post.entityId}>
-              <BlogPostCard data={post} />
-            </li>
-          );
-        })}
-      </ul>
-
-      <Pagination
-        endCursor={blogPosts.posts.pageInfo.endCursor ?? undefined}
-        hasNextPage={blogPosts.posts.pageInfo.hasNextPage}
-        hasPreviousPage={blogPosts.posts.pageInfo.hasPreviousPage}
-        startCursor={blogPosts.posts.pageInfo.startCursor ?? undefined}
-      />
-    </div>
-  );
+ 
+  return <MakeswiftPage locale={locale} path="/blog" />
 }
-
-export const runtime = 'edge';

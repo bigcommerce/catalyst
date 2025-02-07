@@ -18,6 +18,7 @@ import Loader from './Spinner';
 import { useRouter } from 'next/navigation';
 import { findCustomerDetails } from '../../_actions/find-customer';
 import { setCustomerIdViaSessionId } from '../../_actions/update-customer-id';
+import { validateInput } from '../common-functions';
 interface CartInterfaceProps {
   toggleAccordion: (index: number) => void;
   openIndexes: number[];
@@ -35,7 +36,8 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
   const [prevComments, setPrevComments] = useState('')
   const [errors, setErrors] = useState<Partial<Record<keyof FormData, string>>>({});
   const [accountId, setAccountId] = useState<string>('');
-  const [accountIdError, setAccountIdError] = useState<string | null>(null);
+  const [accountIdError, setAccountIdError] = useState<string | null>("");
+  const [accountIdSuccess, setAccountIdSuccess] = useState<string | null>("");
   type FormData = {
     // accountId: string;
     supplier: string;
@@ -49,6 +51,7 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
 
   const [formData, setFormData] = useState<FormData>({
     // accountId: '',
+    brand_id:'',
     supplier: '',
     sku: '',
     cost: '',
@@ -224,7 +227,6 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
   ) => {
     const handleOnchangeInput=(e:React.ChangeEvent<HTMLInputElement>)=>{
       const { id, value } = e.target;
-      // console.log(id,"-",value);
       setErrors((prev) => ({ ...prev, [id]: '' }));
       setFormData((prev) => ({
         ...prev,
@@ -251,6 +253,8 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
                 // setFormData({ ...formData, supplier: e.target.value })
                 handleOnchangeInput(e)
               }
+                formData={formData}
+                setFormData={setFormData}
               options={[]}
             />
           )}
@@ -260,40 +264,47 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
       </div>
     ));
   };
-
-  
   const handleAddAccountSubmit = async () => {
+    const cartError = validateInput('email', accountId, "");
+    if(cartError !== ""){
+      setAccountIdError(cartError);
+      return
+    }
+     
     try {
-      // Set the loading state for accountId
       setLoading((prev) => ({ ...prev, accountId: true }));
-
-      // Check if accountId is empty
       if (!accountId) {
         setAccountIdError('Please enter an Account ID before submitting');
         setLoading((prev) => ({ ...prev, accountId: false })); // Reset loading state
         return; // Exit early
       }
-
-      // Call the findCustomerDetails API
       const response = await findCustomerDetails({
         first_name: '',
         last_name: '',
         email: accountId
       });
-
-      // Handle the response
+      console.log(response.data);
+      
       if (response?.data?.status === 200) {
-        setCustomerIdViaSessionId(response.data.output[0].id)
-        // Log successful output
+        if(response.data.output.length > 0){
+
+          setLoading((prev) => ({ ...prev, accountId: false }));
+          setCustomerIdViaSessionId(response.data.output[0].id)
+          setAccountIdSuccess("Customer Id has been successfully added");
+        }else{
+          setLoading((prev) => ({ ...prev, accountId: false }));
+          setAccountIdError('Account ID not found');
+        }
+
       } else {
+        setLoading((prev) => ({ ...prev, accountId: false }));
+
         throw new Error(
           response?.data?.message || 'Failed to fetch customer details'
         );
       }
     } catch (error) {
-      // Handle errors gracefully
-      console.error('Error in handleAddAccountSubmit:', error.message);
-      setAccountIdError(error.message || 'An unexpected error occurred');
+      setAccountIdError("Failed to retrive details");
     } finally {
       // Ensure loading is reset
       setLoading((prev) => ({ ...prev, accountId: false }));
@@ -320,11 +331,15 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
             onChange={(e) => {
               setAccountId(e.target.value);
               setAccountIdError('');
-              GetCustomerIdByGivingEmail()
+              setAccountIdSuccess('')
+             
             }}
             className="mb-[10px]"
           />
           <p className="text-red-800">{accountIdError}</p>
+          <p className="text-[#1DB14B]">{accountIdSuccess}</p>
+
+          
           <Button
 
             className="mt-2 font-open-sans w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white"
@@ -503,6 +518,8 @@ function AccordionTitle({
 
 function SelectDropdown({
   id,
+  setFormData,
+  formData,
   value,
   onChange, // Passed down from parent component
   options, // Array of options passed down
@@ -536,13 +553,20 @@ function SelectDropdown({
       setLoading(false); // Stop loading
     }
   };
+  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedBrand = brands.find(brand => brand.name === event.target.value);
+    if (selectedBrand) {
+      setFormData({ ...formData, brand_id: selectedBrand.id })
+      onChange(event);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center">
       <select
         id={id}
         value={value}
-        onChange={onChange} // Handle the change when a brand is selected
+        onChange={handleChange} // Handle the change when a brand is selected
         onFocus={handleFocus} // Trigger API call when dropdown is clicked
         className="font-open-sans block w-full rounded border-2 border-gray-200 px-[10px] py-[10px] text-sm text-[#7F7F7F] focus:outline-none"
       >

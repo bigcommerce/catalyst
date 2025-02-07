@@ -18,6 +18,7 @@ const LoginMutation = graphql(`
         firstName
         lastName
         email
+        customerGroupId
       }
     }
   }
@@ -140,7 +141,6 @@ const config = {
         }
 
         const result = response.data.login;
-
         if (!result.customer || !result.customerAccessToken) {
           return null;
         }
@@ -149,6 +149,7 @@ const config = {
           name: `${result.customer.firstName} ${result.customer.lastName}`,
           email: result.customer.email,
           customerAccessToken: result.customerAccessToken.value,
+          customerGroupId: result.customer.customerGroupId,
         };
       },
     }),
@@ -186,6 +187,7 @@ declare module 'next-auth' {
   interface User {
     name?: string | null;
     email?: string | null;
+    customerGroupId?: string | null;
     customerAccessToken?: string;
   }
 }

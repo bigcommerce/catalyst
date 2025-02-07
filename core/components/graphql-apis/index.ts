@@ -7,6 +7,8 @@ import { OrderItemFragment } from '~/app/[locale]/(default)/account/(tabs)/order
 import { cache } from 'react';
 import { OrderDetailsType } from '~/app/[locale]/(default)/account/(tabs)/order/[slug]/page-data';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { ProductItemFragment, ProductPageQuery } from '~/app/[locale]/(default)/product/[slug]/page-data';
+import { ProductPageSKUQuery } from '~/app/[locale]/(default)/product/[slug]/page-data';
 
 const ProductMetaFieldsQuery = graphql(
     `
@@ -93,9 +95,19 @@ export const GetVariantsByProductSKU = async (skuArray: any) => {
             }
             upc
             availabilityV2 {
-        status
-        description
-      }
+             status
+             description
+            }
+            categories {
+              edges {
+                node {
+                  id
+                  entityId
+                  name
+                  path
+                }
+              }
+            }
           }`;
           index++;
         }
@@ -312,3 +324,44 @@ export const getGuestOrderDetails = cache(
     return data;
   },
 );
+
+type Variables = VariablesOf<typeof ProductPageQuery>;
+
+export const getProduct = cache(async (variables: Variables) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const { data } = await client.fetch({
+    document: ProductPageQuery,
+    variables,
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  if (data.site && data.site.product && data.site.parent)
+    data.site.product = {
+      ...data.site.product,
+      parent: data.site.parent,
+    } as any;
+
+  return data.site.product as any;
+});
+
+type SkuVariables = VariablesOf<typeof ProductPageSKUQuery>;
+
+export const getProductBySku = async (variables: SkuVariables) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const { data } = await client.fetch({
+    document: ProductPageSKUQuery,
+    variables,
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  if (data.site && data.site.product && data.site.parent)
+    data.site.product = {
+      ...data.site.product,
+      parent: data.site.parent,
+    } as any;
+
+  return data.site.product as any;
+};
