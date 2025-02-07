@@ -1,4 +1,4 @@
-const cdnHostname = process.env.BIGCOMMERCE_CDN_HOSTNAME ?? 'cdn11.bigcommerce.com';
+const cdnHostname = process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME ?? 'cdn11.bigcommerce.com';
 const storeHash = process.env.BIGCOMMERCE_STORE_HASH ?? '';
 
 /**
