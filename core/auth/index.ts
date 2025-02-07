@@ -172,6 +172,16 @@ async function authorize(credentials: unknown): Promise<User | null> {
   }
 }
 
+const partitionedCookie = (name?: string) =>
+  ({
+    ...(name !== undefined ? { name } : {}),
+    options: {
+      partitioned: true,
+      secure: true,
+      sameSite: 'none',
+    },
+  }) as const;
+
 const config = {
   session: {
     strategy: 'jwt',
@@ -232,6 +242,16 @@ const config = {
       authorize,
     }),
   ],
+  // configure NextAuth cookies to work inside of the Makeswift Builder's canvas
+  cookies: {
+    sessionToken: partitionedCookie(),
+    callbackUrl: partitionedCookie(),
+    csrfToken: partitionedCookie(),
+    pkceCodeVerifier: partitionedCookie(),
+    state: partitionedCookie(),
+    nonce: partitionedCookie(),
+    webauthnChallenge: partitionedCookie(),
+  },
 } satisfies NextAuthConfig;
 
 const { handlers, auth, signIn: nextAuthSignIn, signOut } = NextAuth(config);
