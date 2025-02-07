@@ -20,6 +20,7 @@ const config = {
       'x3': '1400px',
       'x4': '1600px',
       '2xl': '1536px',
+      '4xl':'1700px',
     },
     extend: {
       colors: {

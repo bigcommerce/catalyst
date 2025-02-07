@@ -13,6 +13,7 @@ import { MultipleChoiceFieldFragment } from './fragment';
 import { BcImage } from '~/components/bc-image';
 import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
 
+
 interface InteractionOptions {
   optionId: number;
   valueId: number;
@@ -59,7 +60,8 @@ export const MultipleChoiceField = ({
     }
   };
 
-  const handleOnValueChange = ({ optionId, valueId }: InteractionOptions) => {
+  const handleOnValueChange = (
+    { optionId, valueId }: InteractionOptions ) => {
     const selectedValue = values.find((value) => value.entityId === valueId);
     handleInteraction({ optionId, valueId });
     setSelectedOption(selectedValue?.label || null);
@@ -136,6 +138,7 @@ export const MultipleChoiceField = ({
     case 'Swatch': {
       const remainingCount = values.length - displayedValues.length;
       const activeOptionSwatch = values.find((v) => v.entityId.toString() === field.value);
+      const activeOptionSwatchLabel = activeOptionSwatch?.label.split('|');
 
       return (
         <div
@@ -149,41 +152,48 @@ export const MultipleChoiceField = ({
             {option.displayName} :
           </Label>
           <span className="selection ml-[5px] text-[#008BB7]">
-            {activeOptionSwatch ? activeOptionSwatch.label : 'Selection'}
+            {activeOptionSwatchLabel ? activeOptionSwatchLabel[0] : 'Selection'}
           </span>
 
           <div className="ml-[0.8em] flex flex-wrap items-center justify-center gap-2 xl:ml-[0em] xl:justify-start">
             <div className="flex flex-wrap gap-2">
-              <Swatch
-                aria-labelledby={`label-${option.entityId}`}
-                error={Boolean(error)}
-                name={field.name}
-                className="rounded-full"
-                onValueChange={(value) => {
-                  field.onChange(value);
-                  handleOnValueChange({
-                    optionId: option.entityId,
-                    valueId: Number(value),
-                  });
-                }}
-                swatches={displayedValues
-                  .filter(
-                    (value) => '__typename' in value && value.__typename === 'SwatchOptionValue',
-                  )
-                  .map((value) => ({
-                    label: value.label,
-                    value: value.entityId.toString(),
-                    color: value.hexColors[0] ?? value.imageUrl,
-                    onMouseEnter: () => {
-                      handleMouseEnter({
-                        optionId: option.entityId,
-                        valueId: Number(value.entityId),
-                      });
-                    },
-                  }))}
-                value={field.value?.toString()}
-              />
-
+              {displayedValues
+                .filter(
+                  (value) => '__typename' in value && value.__typename === 'SwatchOptionValue',
+                )
+                .map((value) => {
+                 return(
+                 
+                        <Swatch
+                          aria-labelledby={`label-${option.entityId}`}
+                          error={Boolean(error)}
+                          name={field.name}
+                          className="rounded-full"
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                            handleOnValueChange({
+                              optionId: option.entityId,
+                              valueId: Number(value),
+                            });
+                          }}
+                          swatches={[
+                            {
+                              label: value.label,
+                              value: value.entityId.toString(),
+                              color: value.hexColors[0] ?? value.imageUrl,
+                              onMouseEnter: () => {
+                                handleMouseEnter({
+                                  optionId: option.entityId,
+                                  valueId: Number(value.entityId),
+                                });
+                              },
+                            },
+                          ]}
+                          value={field.value?.toString()}
+                        />
+                      
+                )}
+              )}
               {remainingCount > 0 && !showAll && (
                 <div className="flex items-center gap-1 text-[#008BB7]">
                   <button
@@ -215,7 +225,7 @@ export const MultipleChoiceField = ({
         </div>
       );
     }
-
+    
     case 'RectangleBoxes': {
       const activeOptionRectangleBoxes = values.find((v) => v.entityId.toString() === field.value);
       const remainingCount = values.length - displayedValues.length;
@@ -223,7 +233,7 @@ export const MultipleChoiceField = ({
       return (
         <div key={option.entityId} className="div-product-rectangleboxes xl:mt-0">
           <div className="mb-3 block !gap-0 text-center xl:flex xl:items-center">
-            <BcImage
+            {/* <BcImage
               className="variant-img inline-block !h-[20px] !w-[20px] rounded-[50px]"
               alt="headline icon"
               src={exclamatryIcon}
@@ -231,9 +241,9 @@ export const MultipleChoiceField = ({
               height={15}
               unoptimized={true}
               loading="lazy"
-            />
+            /> */}
             <Label
-              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
+              className="inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
               htmlFor={`label-${option.entityId}`}
             >
               {option.displayName} :
@@ -322,7 +332,7 @@ export const MultipleChoiceField = ({
       return (
         <div key={option.entityId} className="div-product-dropdownlist text-center xl:text-left">
           <div className="mb-3 block text-center xl:flex xl:items-center">
-            <BcImage
+            {/* <BcImage
               className="variant-img inline-block !h-[20px] !w-[20px] rounded-[50px]"
               alt="headline icon"
               src={exclamatryIcon}
@@ -330,9 +340,9 @@ export const MultipleChoiceField = ({
               height={15}
               unoptimized={true}
               loading="lazy"
-            />
+            /> */}
             <Label
-              className="ml-2 inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
+              className="inline-block text-left text-base font-normal leading-8 tracking-wide text-[#353535]"
               htmlFor={`label-${option.entityId}`}
             >
               {option.displayName} :
@@ -414,10 +424,6 @@ export const MultipleChoiceField = ({
                       }
                     : undefined,
                   onMouseEnter: () => {
-                    handleMouseEnter({
-                      optionId: option.entityId,
-                      valueId: Number(value.entityId),
-                    });
                     handleMouseEnter({
                       optionId: option.entityId,
                       valueId: Number(value.entityId),

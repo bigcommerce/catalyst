@@ -9,14 +9,13 @@ import SalesBuddyPage from './sales-buddy/page';
 
 import { cookies, headers } from 'next/headers';
 import { ReferrerId } from '~/belami/components/referrer-id';
+import { isBadUserAgent } from '~/belami/lib/bot-detection';
 
 const flagSalesBuddy = Number(process.env.SALES_BUDDY_FLAG);
 
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
 }
-
-const BAD_UA_KEYWORDS = ["bot", "agent", "crawl", "spider", "slurp", "rpt-httpclient", "msnptc", "ktxn", "netcraft", "postman", "curl", "python", "go-http-client", "java", "okhttp", "node-fetch", "axios", "http-client", "httpurlconnection", "okhttp", "vercel", "iframely", "alittle", "scrapy", "dummy", "censys", "researchscan"];
 
 export default async function DefaultLayout({ params, children }: Props) {
 
@@ -34,7 +33,7 @@ export default async function DefaultLayout({ params, children }: Props) {
   return (
     <>
       {(
-        !BAD_UA_KEYWORDS.some(keyword => ua?.toLowerCase().includes(keyword)) && 
+        await isBadUserAgent(ua) === false && 
         !process.env.LOCAL_IPS?.includes(ip) && 
         !process.env.NO_REFERRER_IPS?.includes(ip) && 
         !isMakeSwift
