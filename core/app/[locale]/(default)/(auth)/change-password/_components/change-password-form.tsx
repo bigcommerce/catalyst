@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { ChangeEvent, useActionState, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
+import { z } from 'zod';
 
 import { Button } from '~/components/ui/button';
 import {
@@ -25,9 +26,18 @@ interface Props {
   customerToken: string;
 }
 
+const CustomerChangePasswordSchema = z.object({
+  newPassword: z
+    .string()
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      'Password must include at least 8 characters, an uppercase letter, a lowercase letter, a number, and a special character.',
+    ),
+  confirmPassword: z.string().min(1),
+});
+
 const SubmitButton = () => {
   const t = useTranslations('ChangePassword.Form');
-
   const { pending } = useFormStatus();
 
   return (
@@ -45,7 +55,7 @@ const SubmitButton = () => {
 
 export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
   const t = useTranslations('ChangePassword.Form');
-
+  const s = useTranslations('Account.Settings.ChangePassword');
   const form = useRef<HTMLFormElement>(null);
   const router = useRouter();
   const [state, formAction] = useActionState(changePassword, {
@@ -53,7 +63,8 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
     message: '',
   });
 
-  const [newPassword, setNewPasssword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [isNewPasswordValid, setIsNewPasswordValid] = useState(true);
   const [isConfirmPasswordValid, setIsConfirmPasswordValid] = useState(true);
   const { setAccountState } = useAccountStatusContext();
 
@@ -63,15 +74,20 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
     messageText = state.message;
   }
 
-  const handleNewPasswordChange = (e: ChangeEvent<HTMLInputElement>) => setNewPasssword(e.target.value);
-  
+  const handleNewPasswordChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const password = e.target.value;
+    setNewPassword(password);
+
+    const validation = CustomerChangePasswordSchema.shape.newPassword.safeParse(password);
+    setIsNewPasswordValid(validation.success);
+  };
+
   const handleConfirmPasswordValidation = (e: ChangeEvent<HTMLInputElement>) => {
     const confirmPassword = e.target.value;
-
     setIsConfirmPasswordValid(confirmPassword === newPassword);
   };
 
-  if (state.status === 'success') {
+  if (state.status === 'success' && isConfirmPasswordValid) {
     setAccountState({ status: 'success', message: t('confirmChangePassword') });
     router.push('/login');
   }
@@ -102,13 +118,28 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
           <FieldControl asChild>
             <Input
               autoComplete="none"
-              error={state.status === 'error'}
+              error={!isNewPasswordValid}
               id="new-password"
               onChange={handleNewPasswordChange}
               required
               type="password"
             />
           </FieldControl>
+          <FieldMessage className="mt-0 text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+            Include uppercase, lowercase, number, symbol (8+ chars).
+          </FieldMessage>
+          <FieldMessage
+            className={`absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)] ${!isNewPasswordValid ? 'hidden' : ''}`}
+            match="valueMissing"
+          >
+            {s('notEmptyMessage')}
+          </FieldMessage>
+          {!isNewPasswordValid && (
+            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)]">
+              Password must include at least 8 characters, an uppercase letter, a lowercase letter,
+              a number, and a special character.
+            </FieldMessage>
+          )}
         </Field>
 
         <Field className="relative space-y-2 pb-7" name="confirm-password">
@@ -118,7 +149,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
           <FieldControl asChild>
             <Input
               autoComplete="none"
-              error={!isConfirmPasswordValid || state.status === 'error'}
+              error={!isConfirmPasswordValid}
               id="confirm-password"
               onChange={handleConfirmPasswordValidation}
               onInvalid={handleConfirmPasswordValidation}
@@ -127,11 +158,16 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
             />
           </FieldControl>
           <FieldMessage
-            className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)]"
-            match={(value: string) => value !== newPassword}
+            className={`absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)] ${!isNewPasswordValid ? 'hidden' : ''}`}
+            match="valueMissing"
           >
-            {t('confirmPasswordValidationMessage')}
+            {s('notEmptyMessage')}
           </FieldMessage>
+          {!isConfirmPasswordValid && (
+            <FieldMessage className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)]">
+              {t('confirmPasswordValidationMessage')}
+            </FieldMessage>
+          )}
         </Field>
 
         <FormSubmit asChild>
