@@ -124,7 +124,7 @@ interface Promotion {
   }[];
 }
 
-function sortPromotions(promotions: Promotion[]): Promotion[] {
+export function sortPromotions(promotions: Promotion[]): Promotion[] {
   return promotions.sort((a, b) => {
     const getDiscountValue = (promotion: Promotion, type: string, discountType: string): number => {
       for (const rule of promotion.rules) {
@@ -163,7 +163,7 @@ function sortPromotions(promotions: Promotion[]): Promotion[] {
   });
 }
 
-function findApplicablePromotion(
+export function findApplicablePromotion(
   promotions: any[],
   productId: number,
   brandId: number,
@@ -254,7 +254,7 @@ function findApplicablePromotion(
     : null;
 }
 
-function getPromotionDecoration(
+export function getPromotionDecoration(
   promotion: Promotion,
   free_shipping: boolean = false,
 ): string | null {

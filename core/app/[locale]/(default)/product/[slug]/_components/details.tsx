@@ -18,16 +18,13 @@ import { ProductSchema, ProductSchemaFragment } from './product-schema';
 import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
 import { BcImage } from '~/components/bc-image';
 import ProductDetailDropdown from '~/components/ui/pdp/belami-product-details-pdp';
-import { useCommonContext } from '~/components/common-context/common-provider';
 import Link from 'next/link';
-import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import addToCart from '~/public/add-to-cart/addToCart.svg';
 import Image from 'next/image';
 import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { Flyout } from '~/components/common-flyout';
 import { ProductPrice } from '~/belami/components/search/product-price';
 import { Promotion } from '~/belami/components/search/hit';
-import { CheckProductFreeShipping } from '~/components/management-apis';
 
 interface ProductOptionValue {
   entityId: number;
@@ -72,6 +69,7 @@ interface Props {
   children5: React.ReactNode;
   priceMaxRules: any;
   getAllCommonSettinngsValues: any;
+  isFromQuickView: boolean;
   customerGroupDetails: any;
 }
 
@@ -154,8 +152,6 @@ export const Details = ({
   product,
   collectionValue,
   dropdownSheetIcon,
-  couponIcon,
-  requestQuote,
   closeIcon,
   blankAddImg,
   productImages,
@@ -164,7 +160,6 @@ export const Details = ({
   triggerLabel2,
   children1,
   children2,
-  triggerLabel3,
   children3,
   customerGroupDetails,
   triggerLabel4,
@@ -172,18 +167,17 @@ export const Details = ({
   triggerLabel5,
   children5,
   priceMaxRules,
+  isFromQuickView
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
   const productFormRef = useRef<HTMLDivElement>(null);
   const [showStickyHeader, setShowStickyHeader] = useState(false);
-  const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
+  // const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
 
   const searchParams = useSearchParams();
-  const { currentMainMedia } = useCommonContext();
-
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
   const variants = removeEdgesAndNodes(product.variants);
@@ -200,8 +194,12 @@ export const Details = ({
   const productId = product?.entityId;
   const brandId = product.brand?.entityId || 0;
 
+  // At the top with other state declarations
+  const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
+
+  // Single useEffect for handling scroll and image updates
   useEffect(() => {
-    // 1. Handle scroll behavior
+    // Scroll handlers
     const handleScroll = () => {
       setShowStickyHeader(window.scrollY > 1500);
     };
@@ -213,60 +211,32 @@ export const Details = ({
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('customScroll', handleCustomScroll);
 
-    // 2. Handle variant selection
-    const matchingVariant = variants.find((variant) => variant?.sku === productSku);
+    // Update variant image
+    const variantImages = product.images?.edges?.map((edge) => edge.node) || [];
+    const matchingVariant = variants.find((variant) => variant.sku === product.sku);
+
     if (matchingVariant) {
       setSelectedVariantId(matchingVariant.entityId);
+      // Try to find variant-specific image first
+      const variantImage = variantImages.find((img) =>
+        img.altText?.toLowerCase().includes(product.sku.split('_')[1]?.toLowerCase() || ''),
+      );
+
+      if (variantImage?.url) {
+        setCurrentImageUrl(variantImage.url);
+      } else if (matchingVariant.defaultImage?.url) {
+        setCurrentImageUrl(matchingVariant.defaultImage.url);
+      }
     } else {
       setSelectedVariantId(null);
+      setCurrentImageUrl(product.defaultImage?.url || '');
     }
 
-    // 3. Update image from variant
-    const updateImageFromVariant = () => {
-      if (currentMainMedia?.type === 'image' && currentMainMedia.src) {
-        setCurrentImageUrl(currentMainMedia.src);
-        return;
-      }
-
-      const selectedOptionIds = productOptions
-        .filter((option) => option.__typename === 'MultipleChoiceOption')
-        .map((option) => searchParams.get(String(option.entityId)))
-        .filter(Boolean);
-
-      if (selectedOptionIds.length > 0) {
-        const selectedVariant = variants.find((variant) =>
-          selectedOptionIds.includes(String(variant.entityId)),
-        );
-        if (selectedVariant) {
-          setSelectedVariantId(selectedVariant.entityId);
-          if (selectedVariant?.defaultImage?.url) {
-            setCurrentImageUrl(selectedVariant.defaultImage.url);
-            return;
-          }
-        }
-      }
-
-      setCurrentImageUrl(product.defaultImage?.url || '');
-    };
-    updateImageFromVariant();
-
-    // 4. Store product in localStorage
-    store_pdp_product_in_localstorage(product);
-
-    // Cleanup function for event listeners
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('customScroll', handleCustomScroll);
     };
-  }, [
-    // Dependencies for all effects
-    variants,
-    productSku,
-    searchParams,
-    product,
-    productOptions,
-    currentMainMedia,
-  ]);
+  }, [product.sku, variants, product.images?.edges, product.defaultImage?.url]);
 
   const productAvailability = product.availabilityV2.status;
 
@@ -327,28 +297,28 @@ export const Details = ({
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
-                        <div className="inline text-[14px] font-normal">
-                          {productOptions
-                            .filter((option) => option.__typename === 'MultipleChoiceOption')
-                            .map((option, index, filteredArray) => {
-                              if (option.__typename === 'MultipleChoiceOption') {
-                                const selectedValue = getSelectedValue(
-                                  option as MultipleChoiceOption,
-                                );
-                                return (
-                                  <span key={option.entityId}>
-                                    <span className="font-bold">{option.displayName}:</span>
-                                    <span className="text-[15px]"> {selectedValue}</span>
-                                    {index < filteredArray.length - 1 && (
-                                      <span className="mx-1">|</span>
-                                    )}
-                                  </span>
-                                );
-                              }
-                              return null;
-                            })}
-                        </div>
-                      )}
+                          <div className="inline text-[14px] font-normal">
+                            {productOptions
+                              .filter((option) => option.__typename === 'MultipleChoiceOption')
+                              .map((option, index, filteredArray) => {
+                                if (option.__typename === 'MultipleChoiceOption') {
+                                  const selectedValue = getSelectedValue(
+                                    option as MultipleChoiceOption,
+                                  );
+                                  return (
+                                    <span key={option.entityId}>
+                                      <span className="font-bold">{option.displayName}:</span>
+                                      <span className="text-[15px]"> {selectedValue}</span>
+                                      {index < filteredArray.length - 1 && (
+                                        <span className="mx-1">|</span>
+                                      )}
+                                    </span>
+                                  );
+                                }
+                                return null;
+                              })}
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -371,7 +341,7 @@ export const Details = ({
                       currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
                       format={format}
                       showMSRP={product.UpdatePriceForMSRP.showDecoration}
-                      warrantyApplied= {product?.UpdatePriceForMSRP?.warrantyApplied}
+                      warrantyApplied={product?.UpdatePriceForMSRP?.warrantyApplied}
                       options={{
                         useAsyncMode: false,
                         useDefaultPrices: true,
@@ -437,9 +407,8 @@ export const Details = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
-              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-            } px-[20px] pt-[20px]`}
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+              } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
@@ -533,8 +502,8 @@ export const Details = ({
               product?.UpdatePriceForMSRP.hasDiscount
                 ? product.UpdatePriceForMSRP.updatedPrice
                 : product?.UpdatePriceForMSRP.warrantyApplied
-                ? product.UpdatePriceForMSRP.updatedPrice
-                : null
+                  ? product.UpdatePriceForMSRP.updatedPrice
+                  : null
             }
             priceMaxRule={priceMaxRules?.find(
               (r: any) =>
@@ -546,7 +515,7 @@ export const Details = ({
             currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
             format={format}
             showMSRP={product.UpdatePriceForMSRP.showDecoration}
-            warrantyApplied = {product.UpdatePriceForMSRP.warrantyApplied}
+            warrantyApplied={product.UpdatePriceForMSRP.warrantyApplied}
             options={{
               useAsyncMode: false,
               useDefaultPrices: true,
@@ -573,7 +542,6 @@ export const Details = ({
           free_shipping={isFreeShipping}
         />
         <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
-          <span> Free Delivery</span>
           {selectedVariantId && (
             <FreeDelivery
               entityId={product.entityId}
@@ -582,7 +550,6 @@ export const Details = ({
             />
           )}
           {product?.brand?.entityId &&
-            getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
             getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
               <NoShipCanada
                 description={
@@ -599,7 +566,7 @@ export const Details = ({
             blankAddImg={blankAddImg || ''}
             productImages={productImages}
             fanPopup={fanPopup}
-            closeIcon={closeIcon}
+            closeIcon={closeIcon || ''}
             customerGroupDetails={customerGroupDetails}
           />
         </div>
@@ -662,30 +629,28 @@ export const Details = ({
         </div>
 
         {/* <ProductSchema product={product} /> */}
-        <PayPalPayLater
-          amount={product?.prices?.price?.value?.toString() || '0'}
-          currency={product?.prices?.price?.currencyCode || 'USD'}
-        />
-        <RequestQuote children={children3} />
-        <CertificationsAndRatings
-          certificationIcon={certificationIcon}
-          product={product}
-          children={children4}
-          triggerLabel={triggerLabel4}
-        />
-        <ProductDetailDropdown
-          product={product}
-          dropdownSheetIcon={dropdownSheetIcon}
-          triggerLabel={triggerLabel5}
-          children={children5}
-        />
+        <div className={`${isFromQuickView ? "hidden" : "block"}`}>
+          <PayPalPayLater
+            amount={product?.prices?.price?.value?.toString() || '0'}
+            currency={product?.prices?.price?.currencyCode || 'USD'}
+          />
 
-        {/* <ShippingReturns /> */}
 
-        <div className="flex justify-center gap-4 xl:mt-7">
-          <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
+          <RequestQuote children={children3} />
+          <CertificationsAndRatings
+            certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4} />
+          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}
+            triggerLabel={triggerLabel5}
+            children={children5}
+          />
 
-          <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
+          {/* <ShippingReturns /> */}
+
+          <div className="flex justify-center gap-4 xl:mt-7">
+            <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
+
+            <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
+          </div>
         </div>
       </div>
     </div>

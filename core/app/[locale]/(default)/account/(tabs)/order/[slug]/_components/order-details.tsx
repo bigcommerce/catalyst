@@ -256,7 +256,11 @@ export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:a
   const { orderState, summaryInfo, consignments, paymentInfo } = data;
   const shippingConsignments = consignments.shipping;
   const isMultiShippingConsignments = shippingConsignments && shippingConsignments.length > 1;
-  const noOfItems: number = shippingConsignments?.[0]?.lineItems?.length || 0;
+  const sumWithInitial: any = 0;
+  const noOfItems = shippingConsignments?.[0]?.lineItems?.reduce(
+    (accumulator, item) => accumulator + item?.quantity,
+    sumWithInitial,
+  );
   const breadcrumbs: any = [{
     label: "Orders",
     href: '/account/orders'

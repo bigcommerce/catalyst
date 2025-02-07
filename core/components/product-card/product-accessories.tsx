@@ -236,11 +236,11 @@ export const ProductAccessories = ({
     <>
       {accessories?.length}
       <div
-        className={`left-container flex h-[150px] w-[195px] items-center justify-center border border-[#CCCBCB] bg-transparent sm:h-[155px] sm:w-[150px] sm:bg-transparent ${baseImage}`}
+        className={`left-container flex h-[150px] w-[195px] items-center justify-center border border-[#CCCBCB] bg-transparent xl:h-[150px] xl:w-[195px] sm:h-[155px] sm:w-[150px] 4xl:h-[155px] 4xl:w-[150px] sm:bg-transparent ${baseImage}`}
       >
         <BcImage
           alt={accessories?.label}
-          className={`h-[145px] w-[190px] object-fill sm:h-[150px] sm:w-[150px] ${baseImage}`}
+          className={`h-[145px] w-[190px] xl:h-[145px] xl:w-[190px] object-fill sm:h-[150px] sm:w-[150px] 4xl:h-[150px] 4xl:w-[150px] ${baseImage}`}
           height={150}
           src={productImage}
           width={150}
@@ -248,11 +248,11 @@ export const ProductAccessories = ({
         />
       </div>
       <div className="flex w-full shrink-[100] flex-col gap-[10px]">
-          <div className="flex flex-col gap-[5px] sm:gap-[0px]">
-            <p className="text-center text-[16px] font-normal tracking-[0.15px] text-[#353535] sm:text-left">
+          <div className="flex flex-col gap-[5px] sm:gap-[0px] xl:gap-[5px] 4xl:gap-[0px]">
+            <p className="text-center xl:text-center text-[16px] font-normal tracking-[0.15px] text-[#353535] sm:text-left 4xl:text-left ">
               {productlabel}
             </p>
-            <p className="text-center text-[16px] font-normal tracking-[0.15px] text-[#353535] sm:text-right">
+            <p className="text-center xl:text-center text-[16px] font-normal tracking-[0.15px] text-[#353535] sm:text-right 4xl:text-right">
               {updatedPrice}
               {hasDiscount && (
                 <span className="ml-1 text-[#808080] line-through">{originalPrice}</span>
@@ -272,7 +272,7 @@ export const ProductAccessories = ({
           <form onSubmit={handleSubmit}>
             <input name="product_id" type="hidden" value={accessories?.entityId} />
             <input name="variant_id" type="hidden" value={variantId} />
-            <div className="relative flex flex-col items-center justify-end gap-[10px] p-0 sm:flex-row sm:items-start">
+            <div className="relative flex flex-col items-center justify-end gap-[10px] p-0 xl:flex-col 4xl:flex-row sm:flex-row xl:items-center 4xl:items-start sm:items-start">
              {!isPurchasingDisabled && <InputPlusMinus
                 product="false"
                 isLoading={isLoading}

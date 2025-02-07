@@ -34,6 +34,11 @@ interface ContactInformation {
   phone?: string;
 }
 
+interface CustomerService {
+  label?: string;
+  href: string;
+}
+
 interface Props {
   className?: string;
   contactInformation?: ContactInformation;
@@ -42,6 +47,7 @@ interface Props {
   paymentIcons?: ReactNode[];
   sections: Section[];
   socialMediaLinks?: SocialMediaLink[];
+  customerService: CustomerService[];
 }
 
 const cookieConsentUrl = process.env.COOKIE_CONSENT_URL;
@@ -53,6 +59,7 @@ const Footer = ({
   paymentIcons,
   sections,
   socialMediaLinks,
+  customerService,
   ...props
 }: Props) => (
   <footer
@@ -67,24 +74,15 @@ const Footer = ({
               Customer Service
             </h3>
           )}
-          <Link
-            href="/returns"
+          {customerService.map((customer, index)=>(
+            <CustomLink
+            key={index}
+            href={customer.href}
             className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
           >
-            Start a Return or Replacement
-          </Link>
-          <Link
-            href="#"
-            className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
-          >
-            View Order Status
-          </Link>
-          <Link
-            href="/content/help-center"
-            className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
-          >
-            Visit our Helpdesk
-          </Link>
+            {customer.label}
+          </CustomLink>
+          ))}
         </div>
         {Boolean(contactInformation?.phone) && (
           <CustomLink

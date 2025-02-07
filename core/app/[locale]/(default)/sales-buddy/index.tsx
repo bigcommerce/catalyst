@@ -22,7 +22,15 @@ export default function SalesBuddyAppIndex() {
   const [cartAccordinOpenIndexes, setCartAccordinOpenIndexes] = useState<number[]>([]);
   const [pdpAccordinOpenIndexes, setPdpAccordinOpenIndexes] = useState<number[]>([]);
   const [plpAccordinOpenIndexes, setPlpAccordinOpenIndexes] = useState<number[]>([]);
+  const [qouteIndex, setQouteIndex] = useState<number[]>([])
 
+  const QouteToggleAccordion=(index:any)=>{
+    setQouteIndex(prev =>
+      prev.includes(index)
+        ? prev.filter(i => i !== index)
+        : [...prev, index]
+    );
+  }
   const CustomerSupportToggleAccordion = (index: any) => {
     setCustomerAccordinOpenIndexes(prev =>
       prev.includes(index)
@@ -73,7 +81,7 @@ export default function SalesBuddyAppIndex() {
     else if (path.indexOf('/p/') !== -1) {
       return (
         <div className=" space-y-[20px] ">
-          <SalesBuddyProductPage toggleAccordion={PDPToggleAccordion} openIndexes={pdpAccordinOpenIndexes} setOpenIndexes={setPdpAccordinOpenIndexes} />
+          <SalesBuddyProductPage toggleAccordion={PDPToggleAccordion} openIndexes={pdpAccordinOpenIndexes} setOpenIndexes={setPdpAccordinOpenIndexes} QouteToggleAccordion={QouteToggleAccordion} qouteIndex={qouteIndex} setQouteIndex={setQouteIndex} />
           <CustomerSupportPage toggleAccordion={CustomerSupportToggleAccordion} openIndexes={customerAccordinOpenIndexes} setOpenIndexes={setCustomerAccordinOpenIndexes} />
         </div>
       );

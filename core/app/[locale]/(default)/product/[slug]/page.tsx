@@ -427,6 +427,19 @@ export default async function ProductPage(props: Props) {
                 products={relatedProducts}
                 useDefaultPrices={useDefaultPrices}
                 priceMaxRules={priceMaxRules}
+                product={product}
+                dropdownSheetIcon={assets.dropdownSheetIcon}
+                cartHeader={assets.cartHeader}
+                couponIcon={assets.couponIcon}
+                paywithGoogle={assets.paywithGoogle}
+                payPal={assets.payPal}
+                requestQuote={assets.requestQuote}
+                closeIcon={assets.closeIcon}
+                blankAddImg={assets.blankAddImg}
+                bannerIcon={assets.bannerIcon}
+                galleryExpandIcon={assets.galleryExpandIcon}
+                getAllCommonSettinngsValues={CommonSettinngsValues}
+                productImages={productImages}
               />
               <Warranty product={product} />
               <SiteVibesReviews product={product} category={categoryWithBreadcrumbs} />

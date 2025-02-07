@@ -1,7 +1,5 @@
 import React from 'react';
 import OrderTracking from './_components/order-tracking';
-import HelpCenter from './_components/help-center';
-import { imageManagerImageUrl } from '~/lib/store-assets';
 import { getSessionCustomerAccessToken } from '~/auth';
 import wavingHandIcon from '~/public/pdp-icons/wavingHandIcon.svg'
 

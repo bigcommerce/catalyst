@@ -101,15 +101,15 @@ const Dropdown = ({
           )}
           {from === 'support' && (
             <>
-              <DropdownMenu.Item onClick={()=>setIsOpen('isOpen')} className={`${isOpen ? 'hidden' : 'block'}`} onSelect={(e) => e.preventDefault()}>
+              {/* <DropdownMenu.Item onClick={()=>setIsOpen('isOpen')} className={`${isOpen ? 'hidden' : 'block'}`} onSelect={(e) => e.preventDefault()}>
               <div
                   className="mt-[9px] block text-[14px] font-normal leading-[10px] tracking-[0.25px] text-[#008BB7] underline cursor-pointer"
                 >
                   Contact
                 </div>
-              </DropdownMenu.Item>
+              </DropdownMenu.Item> */}
 
-              <div className={`flex-col gap-[9px] ${isOpen ? 'flex' : 'hidden'}`}>
+              <div className={`flex-col gap-[9px] flex`}>
               <DropdownMenu.Item className='mt-[9px]'>
                 <CustomLink
                   href="/support/contact"
