@@ -18,16 +18,13 @@ import { ProductSchema, ProductSchemaFragment } from './product-schema';
 import { ReviewSummary, ReviewSummaryFragment } from './review-summary';
 import { BcImage } from '~/components/bc-image';
 import ProductDetailDropdown from '~/components/ui/pdp/belami-product-details-pdp';
-import { useCommonContext } from '~/components/common-context/common-provider';
 import Link from 'next/link';
-import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import addToCart from '~/public/add-to-cart/addToCart.svg';
 import Image from 'next/image';
 import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { Flyout } from '~/components/common-flyout';
 import { ProductPrice } from '~/belami/components/search/product-price';
 import { Promotion } from '~/belami/components/search/hit';
-import { CheckProductFreeShipping } from '~/components/management-apis';
 
 interface ProductOptionValue {
   entityId: number;
@@ -155,8 +152,6 @@ export const Details = ({
   product,
   collectionValue,
   dropdownSheetIcon,
-  couponIcon,
-  requestQuote,
   closeIcon,
   blankAddImg,
   productImages,
@@ -165,7 +160,6 @@ export const Details = ({
   triggerLabel2,
   children1,
   children2,
-  triggerLabel3,
   children3,
   customerGroupDetails,
   triggerLabel4,
@@ -179,13 +173,11 @@ export const Details = ({
   const format = useFormatter();
   const productFormRef = useRef<HTMLDivElement>(null);
   const [showStickyHeader, setShowStickyHeader] = useState(false);
-  const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
+  // const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
   const [isScrollingUp, setIsScrollingUp] = useState(false);
   const [lastScrollY, setLastScrollY] = useState(0);
 
   const searchParams = useSearchParams();
-  const { currentMainMedia } = useCommonContext();
-
   const customFields = removeEdgesAndNodes(product.customFields);
   const productOptions = removeEdgesAndNodes(product.productOptions);
   const variants = removeEdgesAndNodes(product.variants);
@@ -202,8 +194,12 @@ export const Details = ({
   const productId = product?.entityId;
   const brandId = product.brand?.entityId || 0;
 
+  // At the top with other state declarations
+  const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
+
+  // Single useEffect for handling scroll and image updates
   useEffect(() => {
-    // 1. Handle scroll behavior
+    // Scroll handlers
     const handleScroll = () => {
       setShowStickyHeader(window.scrollY > 1500);
     };
@@ -215,60 +211,32 @@ export const Details = ({
     window.addEventListener('scroll', handleScroll);
     window.addEventListener('customScroll', handleCustomScroll);
 
-    // 2. Handle variant selection
-    const matchingVariant = variants.find((variant) => variant?.sku === productSku);
+    // Update variant image
+    const variantImages = product.images?.edges?.map((edge) => edge.node) || [];
+    const matchingVariant = variants.find((variant) => variant.sku === product.sku);
+
     if (matchingVariant) {
       setSelectedVariantId(matchingVariant.entityId);
+      // Try to find variant-specific image first
+      const variantImage = variantImages.find((img) =>
+        img.altText?.toLowerCase().includes(product.sku.split('_')[1]?.toLowerCase() || ''),
+      );
+
+      if (variantImage?.url) {
+        setCurrentImageUrl(variantImage.url);
+      } else if (matchingVariant.defaultImage?.url) {
+        setCurrentImageUrl(matchingVariant.defaultImage.url);
+      }
     } else {
       setSelectedVariantId(null);
+      setCurrentImageUrl(product.defaultImage?.url || '');
     }
 
-    // 3. Update image from variant
-    const updateImageFromVariant = () => {
-      if (currentMainMedia?.type === 'image' && currentMainMedia.src) {
-        setCurrentImageUrl(currentMainMedia.src);
-        return;
-      }
-
-      const selectedOptionIds = productOptions
-        .filter((option) => option.__typename === 'MultipleChoiceOption')
-        .map((option) => searchParams.get(String(option.entityId)))
-        .filter(Boolean);
-
-      if (selectedOptionIds.length > 0) {
-        const selectedVariant = variants.find((variant) =>
-          selectedOptionIds.includes(String(variant.entityId)),
-        );
-        if (selectedVariant) {
-          setSelectedVariantId(selectedVariant.entityId);
-          if (selectedVariant?.defaultImage?.url) {
-            setCurrentImageUrl(selectedVariant.defaultImage.url);
-            return;
-          }
-        }
-      }
-
-      setCurrentImageUrl(product.defaultImage?.url || '');
-    };
-    updateImageFromVariant();
-
-    // 4. Store product in localStorage
-    store_pdp_product_in_localstorage(product);
-
-    // Cleanup function for event listeners
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('customScroll', handleCustomScroll);
     };
-  }, [
-    // Dependencies for all effects
-    variants,
-    productSku,
-    searchParams,
-    product,
-    productOptions,
-    currentMainMedia,
-  ]);
+  }, [product.sku, variants, product.images?.edges, product.defaultImage?.url]);
 
   const productAvailability = product.availabilityV2.status;
 
@@ -574,7 +542,6 @@ export const Details = ({
           free_shipping={isFreeShipping}
         />
         <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
-          <span> Free Delivery</span>
           {selectedVariantId && (
             <FreeDelivery
               entityId={product.entityId}
