@@ -9,7 +9,7 @@ interface DeliveryMessageProps {
   isFromPDP: boolean;
 }
 
-export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
+export const DeliveryMessage: React.FC<DeliveryMessageProps> = ({
   entityId,
   variantId,
   isFromPDP,

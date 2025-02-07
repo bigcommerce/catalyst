@@ -16,7 +16,7 @@ import { Button } from '~/components/ui/button';
 import { calculateProductPrice, retrieveMpnData } from '~/components/common-functions';
 import { commonSettinngs } from '~/components/common-functions';
 import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
-import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
+import { DeliveryMessage } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
 import { getSessionUserDetails } from '~/auth';
 import { GetCustomerGroupById, GetEmailId } from '~/components/management-apis';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
@@ -476,7 +476,7 @@ product = { ...product, updatedAccessories };
                         <span> Free Delivery</span>
                       </div>
                       {product.variantEntityId && (
-                        <FreeDelivery
+                        <DeliveryMessage
                           entityId={product.productEntityId}
                           variantId={product.variantEntityId}
                           isFromPDP={false}
@@ -644,8 +644,8 @@ product = { ...product, updatedAccessories };
         </div>
       )}
 
-      {getAllCommonSettinngsValues.hasOwnProperty(brandId) &&
-        getAllCommonSettinngsValues?.[brandId]?.use_accessories && (
+      {/* {getAllCommonSettinngsValues.hasOwnProperty(brandId) &&
+        getAllCommonSettinngsValues?.[brandId]?.use_accessories && ( */}
           <AccessoriesButton
             key={product?.entityId}
             closeIcon={closeIcon}
@@ -654,7 +654,7 @@ product = { ...product, updatedAccessories };
             discountRules={discountRules}
             product={product}
           />
-        )}
+        {/* )} */}
     </li>
   );
 };

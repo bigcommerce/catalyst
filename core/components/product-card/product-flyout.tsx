@@ -199,12 +199,12 @@ export const ProductFlyout = ({
           if (!storedSkus?.includes(product?.sku)) {
 
             setSkusWithoutAccessories(prev => [...prev, product?.sku]);
-            localStorage?.setItem('skusWithoutAccessories', JSON.stringify([...storedSkus, product?.sku]));
+            localStorage?.setItem('skusWithoutAccessories', JSON?.stringify([...storedSkus, product?.sku]));
           }
         } else {
           const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
           const updatedSkus = storedSkus?.filter((sku: any) => sku !== product?.sku);
-          localStorage?.setItem('skusWithoutAccessories', JSON.stringify(updatedSkus));
+          localStorage?.setItem('skusWithoutAccessories', JSON?.stringify(updatedSkus));
         }
       };
       getProductMetaData();
@@ -358,7 +358,7 @@ export const ProductFlyout = ({
                   </>
                 )
               }
-              {variantProductData?.length === 0  && (
+              {!variantProductData  && (
                 <div className="text-center text-gray-500">
                 No accessories available for this product.
               </div>
