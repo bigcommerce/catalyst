@@ -8,6 +8,9 @@ import { Input } from '~/components/ui/form';
 import NotesIcons from '../../assets/add_notes.png';
 import { get_product_data, PdpProduct } from '../common-functions';
 import Loader from './Spinner';
+import { useRouter } from 'next/navigation';
+import ProductQuoteCart from '../Quote/QuoteCart';
+import QuoteRequestPage from '../Quote/RequestForQuote';
 // Utility for styles
 const TailwindCustomCssValues = {
   font: 'font-open-sans',
@@ -21,9 +24,12 @@ interface SalesBuddyProductPageProps {
   toggleAccordion: (index: number) => void;
   openIndexes: number[];
   setOpenIndexes: (indexes: number[]) => void;
+  QouteToggleAccordion: (index: number) => void,
+  qouteIndex: number[],
+  setQouteIndex: any
 }
 
-export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, setOpenIndexes }: SalesBuddyProductPageProps) {
+export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, setOpenIndexes, QouteToggleAccordion ,qouteIndex,setQouteIndex  }: SalesBuddyProductPageProps) {
   const [childSku, setChildSku] = useState([]);
   const retrievedProductData = JSON.parse(localStorage.getItem('productInfo') || '{}');
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
@@ -37,7 +43,7 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
   //     prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
   //   );
   // };
-
+  const router = useRouter();
   const costPricingTableData = (data) => {
     setChildSku(data.child_sku)
   };
@@ -48,6 +54,8 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
       try {
         const data = await get_product_data(retrievedProductData.productId);
         if (data.status === 200) {
+          console.log(data?.data?.output);
+          
           costPricingTableData(data?.data?.output);
           setLoading((prev) => ({ ...prev, cost: false }));
         }
@@ -59,7 +67,11 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
     fetchData(); // Call the async function
   }, []);
 
-
+  const handleRedirect = () => {
+    const locale = 'en'; // Replace with the actual locale you want to use
+    router.push(`/${locale}/sales-buddy/common-components/Quote/QuoteCart`);
+  };
+  
   const ACCORDION_DATA = {
     existingQuote: {
       title: (
@@ -73,11 +85,14 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
       content: (
         <div className="mt-3 w-full bg-white">
           <Input id="quote" placeholder="Quote#" className="mb-4" />
-          <Button
+          <Button onClick={() => { handleRedirect() }}
             className={`${TailwindCustomCssValues.font} w-full bg-[#1DB14B] font-normal text-white`}
           >
             ADD TO QUOTE
           </Button>
+
+          {/* <ProductQuoteCart/>
+          <QuoteRequestPage/> */}
         </div>
       ),
     },
@@ -224,7 +239,9 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
         <Accordions
           styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.existingQuote]}
-
+          toggleAccordion={QouteToggleAccordion}
+          openIndexes={qouteIndex}
+          setOpenIndexes={setQouteIndex}
         // type="multiple"
         />
       </div>
