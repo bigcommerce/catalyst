@@ -164,7 +164,7 @@ export const ProductFlyout = ({
         );
         let productData = await getVariantProductInfo(metaData,discountRules);
         setVariantProductData([...productData]);
-        var getAllCommonSettinngsValues =await commonSettinngs([product?.brand?.entityId]);
+        var getAllCommonSettinngsValues =await commonSettinngs([product?.baseCatalogProduct?.brand?.entityId]);
         setCommonSettingsValues(getAllCommonSettinngsValues);
         
       };
@@ -305,7 +305,7 @@ export const ProductFlyout = ({
               )}
               
               {variantProductData && variantProductData?.length > 0 
-               && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories  
+               && commonSettingsValues?.[product?.baseCatalogProduct?.brand?.entityId]?.use_accessories  
               && (
                 <>
                   <hr className="my-[20px] border-[#93cfa1]" />
