@@ -18,8 +18,14 @@ import { commonSettinngs } from '~/components/common-functions';
 import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
 import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
 import { getSessionUserDetails } from '~/auth';
-import { GetCustomerGroupById, GetEmailId } from '~/components/management-apis';
+import {
+  CheckProductFreeShipping,
+  GetCustomerGroupById,
+  GetEmailId,
+} from '~/components/management-apis';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getActivePromotions } from '~/belami/lib/fetch-promotions';
+import { Promotion } from '../../product/[slug]/_components/promotion';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -303,28 +309,37 @@ export const CartItem = async ({
   );
   const updatedAccessories: any[][] = [];
 
-if (product?.accessories?.length > 0) {
-  const promises = product.accessories.map(async (item: any, index: number) => {
-    const categories = removeEdgesAndNodes(item.baseCatalogProduct.categories) as CategoryNode[];
-    const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
-      const longestLength = longest?.breadcrumbs?.edges?.length || 0;
-      const currentLength = current?.breadcrumbs?.edges?.length || 0;
-      return currentLength > longestLength ? current : longest;
-    }, categories[0]);
-    
-    const categoryIds = categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
-      (edge) => edge.node.entityId
-    ) || [];
-    
-    const details = await calculateProductPrice(item, "cartaccessory", discountRules, categoryIds);
-    updatedAccessories.push(...details);
-  });
+  if (product?.accessories?.length > 0) {
+    const promises = product.accessories.map(async (item: any, index: number) => {
+      const categories = removeEdgesAndNodes(item.baseCatalogProduct.categories) as CategoryNode[];
+      const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
+        const longestLength = longest?.breadcrumbs?.edges?.length || 0;
+        const currentLength = current?.breadcrumbs?.edges?.length || 0;
+        return currentLength > longestLength ? current : longest;
+      }, categories[0]);
 
-  // Wait for all promises to resolve
-  await Promise.all(promises);
-}
+      const categoryIds =
+        categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
 
-product = { ...product, updatedAccessories };
+      const details = await calculateProductPrice(
+        item,
+        'cartaccessory',
+        discountRules,
+        categoryIds,
+      );
+      updatedAccessories.push(...details);
+    });
+
+    // Wait for all promises to resolve
+    await Promise.all(promises);
+  }
+
+  product = { ...product, updatedAccessories };
+
+  const promotions = await getActivePromotions(true);
+
+  const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());
+  const categoryIds = product?.categories?.edges?.map((edge) => edge.node.entityId) || [];
 
   return (
     <li className="mb-[24px] border border-gray-200">
@@ -336,9 +351,9 @@ product = { ...product, updatedAccessories };
             />
           </div>
         )}
-      <div className="">
+      <div className="cart-products">
         <div className="mb-5 flex flex-col gap-4 p-4 py-4 sm:flex-row">
-          <div className="cart-main-img mx-auto h-[295px] w-[295px] flex-none  sm:h-[200px] sm:w-[200px] md:mx-0">
+          <div className="cart-main-img mx-auto h-[295px] w-[295px] flex-none sm:h-[200px] sm:w-[200px] md:mx-0">
             {product.image?.url ? (
               <BcImage
                 alt={product?.name}
@@ -376,6 +391,17 @@ product = { ...product, updatedAccessories };
                     </div>
                   </div>
                 )}
+
+                {/* promotion */}
+
+                {/* <Promotion
+                  promotions={promotions}
+                  product_id={product.entityId}
+                  brand_id={brandId}
+                  category_ids={categoryIds}
+                  free_shipping={isFreeShipping}
+                /> */}
+                
                 {changeTheProtectedPosition?.length > 0 && (
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2">
                     <div className="cart-options">
@@ -472,6 +498,7 @@ product = { ...product, updatedAccessories };
                             return null;
                         }
                       })}
+
                       <div className="mt-[10px] flex justify-start text-sm font-normal leading-6 tracking-[0.25px]">
                         <span> Free Delivery</span>
                       </div>
@@ -486,6 +513,7 @@ product = { ...product, updatedAccessories };
                   </div>
                 )}
               </div>
+
               <div className="">
                 <div className="cart-deleteIcon relative flex flex-col gap-0 text-right sm:gap-2 md:items-end [&_.cart-item-delete]:absolute [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:sm:static [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0">
                   <RemoveItem currency={currencyCode} product={product} />
@@ -515,34 +543,41 @@ product = { ...product, updatedAccessories };
                   ) : (
                     <div className="mb-0">
                       {product?.UpdatePriceForMSRP &&
-                      product?.UpdatePriceForMSRP.hasDiscount === true ? (
-                        <>
+                        (product?.UpdatePriceForMSRP?.warrantyApplied ? (
                           <p className="text-left sm:text-right">
                             {format.number(product.UpdatePriceForMSRP.updatedPrice, {
                               style: 'currency',
                               currency: currencyCode,
                             })}
                           </p>
-                          <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-                            <p className="line-through">
-                              {format.number(product.UpdatePriceForMSRP.originalPrice, {
+                        ) : product?.UpdatePriceForMSRP.hasDiscount === true ? (
+                          <>
+                            <p className="text-left sm:text-right">
+                              {format.number(product.UpdatePriceForMSRP.updatedPrice, {
                                 style: 'currency',
                                 currency: currencyCode,
                               })}
                             </p>
-                            <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                              {product.UpdatePriceForMSRP.discount}% Off
-                            </p>
-                          </div>
-                        </>
-                      ) : (
-                        <p className="text-left sm:text-right">
-                          {format.number(product.UpdatePriceForMSRP.originalPrice, {
-                            style: 'currency',
-                            currency: currencyCode,
-                          })}
-                        </p>
-                      )}
+                            <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                              <p className="line-through">
+                                {format.number(product.UpdatePriceForMSRP.originalPrice, {
+                                  style: 'currency',
+                                  currency: currencyCode,
+                                })}
+                              </p>
+                              <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                                {product.UpdatePriceForMSRP.discount}% Off
+                              </p>
+                            </div>
+                          </>
+                        ) : (
+                          <p className="text-left sm:text-right">
+                            {format.number(product.UpdatePriceForMSRP.originalPrice, {
+                              style: 'currency',
+                              currency: currencyCode,
+                            })}
+                          </p>
+                        ))}
                     </div>
                   )}
 
@@ -600,7 +635,8 @@ product = { ...product, updatedAccessories };
                         <div>{item.name}</div>
                         <div className="flex flex-wrap items-center gap-[0px_10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                           {item?.UpdatePriceForMSRP?.originalPrice &&
-                          item?.UpdatePriceForMSRP?.originalPrice !== item?.UpdatePriceForMSRP?.updatedPrice ? (
+                          item?.UpdatePriceForMSRP?.originalPrice !==
+                            item?.UpdatePriceForMSRP?.updatedPrice ? (
                             <p className="flex items-center tracking-[0.25px] line-through">
                               {format.number(oldPriceAccess * item.quantity, {
                                 style: 'currency',

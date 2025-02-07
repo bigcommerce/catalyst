@@ -9,3 +9,4 @@ export { Hits, HitsAsync } from './hits';
 export { ProductPrice } from './product-price';
 export { Hit } from './hit';
 export { RatingMenu } from './rating-menu';
+export { Stats } from './stats';

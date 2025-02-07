@@ -10,6 +10,7 @@ export function ProductPrice({
   currency = 'USD', 
   format,
   showMSRP = false,
+  warrantyApplied = false,
   options = {
     useAsyncMode: true,
     useDefaultPrices: false,
@@ -33,6 +34,7 @@ export function ProductPrice({
   currency?: string, 
   format: any,
   showMSRP?: boolean,
+  warrantyApplied?: boolean,
   options?: {
     useAsyncMode?: boolean,
     useDefaultPrices?: boolean,
@@ -65,12 +67,18 @@ export function ProductPrice({
       ? !options?.isLoading && (price || salePrice) 
         ? <div className={clsx('product-price', classNames?.root)}>
             {!!price && !!salePrice ?
-              <>
-                <span className={clsx('new-price', classNames?.newPrice)}>{format.number(salePrice || 0, { style: 'currency', currency: currency })}</span> 
-                <s className={clsx('old-price', classNames?.oldPrice)}>{format.number(price || 0, { style: 'currency', currency: currency })}</s> 
-                {showMSRP && <span className={clsx('msrp', classNames?.msrp)}>MSRP</span> }
-                <strong className={clsx('discount', classNames?.discount)}>Save {getDiscount(price || 0, salePrice || 0)}%</strong>
-              </>
+              warrantyApplied ? (
+                <span className={clsx('new-price', classNames?.newPrice)}>
+                  {format.number(salePrice || 0, { style: 'currency', currency: currency })}
+                </span>
+              ) : (
+                <>
+                  <span className={clsx('new-price', classNames?.newPrice)}>{format.number(salePrice || 0, { style: 'currency', currency: currency })}</span> 
+                  <s className={clsx('old-price', classNames?.oldPrice)}>{format.number(price || 0, { style: 'currency', currency: currency })}</s> 
+                  {showMSRP && <span className={clsx('msrp', classNames?.msrp)}>MSRP</span> }
+                  <strong className={clsx('discount', classNames?.discount)}>Save {getDiscount(price || 0, salePrice || 0)}%</strong>
+                </>
+              )
             : <span className={clsx('price', classNames?.price)}>{format.number(price || 0, { style: 'currency', currency: currency })}</span>
             }
           </div>
@@ -78,12 +86,18 @@ export function ProductPrice({
           ? !!defaultPrice && 
             <div className={clsx('product-price', classNames?.root)}>
               {!!defaultSalePrice ?
-                <>
-                  <span className={clsx('new-price', classNames?.newPrice)}>{format.number(defaultSalePrice || 0, { style: 'currency', currency: currency })}</span> 
-                  <s className={clsx('old-price', classNames?.oldPrice)}>{format.number(defaultPrice || 0, { style: 'currency', currency: currency })}</s> 
-                  {showMSRP && <span className={clsx('msrp', classNames?.msrp)}>MSRP</span> }
-                  <strong className={clsx('discount', classNames?.discount)}>Save {getDiscount(defaultPrice, defaultSalePrice || 0)}%</strong>
-                </>
+                warrantyApplied ? (
+                  <span className={clsx('new-price', classNames?.newPrice)}>
+                    {format.number(defaultSalePrice || 0, { style: 'currency', currency: currency })}
+                  </span>
+                ) : (
+                  <>
+                    <span className={clsx('new-price', classNames?.newPrice)}>{format.number(defaultSalePrice || 0, { style: 'currency', currency: currency })}</span> 
+                    <s className={clsx('old-price', classNames?.oldPrice)}>{format.number(defaultPrice || 0, { style: 'currency', currency: currency })}</s> 
+                    {showMSRP && <span className={clsx('msrp', classNames?.msrp)}>MSRP</span> }
+                    <strong className={clsx('discount', classNames?.discount)}>Save {getDiscount(defaultPrice, defaultSalePrice || 0)}%</strong>
+                  </>
+                )
               : <span className={clsx('price', classNames?.price)}>{format.number(defaultPrice, { style: 'currency', currency: currency })}</span>
               }
             </div>
@@ -91,12 +105,18 @@ export function ProductPrice({
     : !!defaultPrice && 
       <div className={clsx('product-price', classNames?.root)}>
         {!!defaultSalePrice ? 
-          <>
-            <span className={clsx('new-price', classNames?.newPrice)}>{format.number(defaultSalePrice || 0, { style: 'currency', currency: currency })}</span> 
-            <s className={clsx('old-price', classNames?.oldPrice)}>{format.number(defaultPrice || 0, { style: 'currency', currency: currency })}</s> 
-            {showMSRP && <span className={clsx('msrp', classNames?.msrp)}>MSRP</span> }
-            <strong className={clsx('discount', classNames?.discount)}>Save {getDiscount(defaultPrice, defaultSalePrice || 0)}%</strong>
-          </>
+          warrantyApplied ? (
+            <span className={clsx('new-price', classNames?.newPrice)}>
+              {format.number(defaultSalePrice || 0, { style: 'currency', currency: currency })}
+            </span>
+          ) : (
+            <>
+              <span className={clsx('new-price', classNames?.newPrice)}>{format.number(defaultSalePrice || 0, { style: 'currency', currency: currency })}</span> 
+              <s className={clsx('old-price', classNames?.oldPrice)}>{format.number(defaultPrice || 0, { style: 'currency', currency: currency })}</s> 
+              {showMSRP && <span className={clsx('msrp', classNames?.msrp)}>MSRP</span> }
+              <strong className={clsx('discount', classNames?.discount)}>Save {getDiscount(defaultPrice, defaultSalePrice || 0)}%</strong>
+            </>
+          )
         : <span className={clsx('price', classNames?.price)}>{format.number(defaultPrice, { style: 'currency', currency: currency })}</span>
         }
       </div>

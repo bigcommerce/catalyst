@@ -5,8 +5,7 @@ import { MiddlewareFactory } from './compose-middlewares';
 import { cookies } from 'next/headers';
 import { userAgent } from 'next/server';
 import { getReferrerID, storeReferrerLog } from '~/belami/lib/fetch-referrer-id';
-
-const BAD_UA_KEYWORDS = ["bot", "agent", "crawl", "spider", "slurp", "rpt-httpclient", "msnptc", "ktxn", "netcraft", "postman", "curl", "python", "go-http-client", "java", "okhttp", "node-fetch", "axios", "http-client", "httpurlconnection", "okhttp", "vercel", "iframely", "alittle", "scrapy", "dummy", "censys", "researchscan"];
+import { isBadUserAgent } from '~/belami/lib/bot-detection';
 
 export const withReferrerId: MiddlewareFactory = (middleware) => {
   return async (request, event) => {
@@ -33,8 +32,8 @@ export const withReferrerId: MiddlewareFactory = (middleware) => {
     const ua = request.headers.get('user-agent') || '';
 
     if (isBot 
-      || BAD_UA_KEYWORDS.some(keyword => browser?.name?.toLowerCase().includes(keyword)) 
-      || BAD_UA_KEYWORDS.some(keyword => ua.toLowerCase().includes(keyword)) 
+      || await isBadUserAgent(browser?.name || '') === true
+      || await isBadUserAgent(ua) === true
       || process.env.LOCAL_IPS?.includes(ip) 
       || process.env.NO_REFERRER_IPS?.includes(ip) 
       || referrer.includes(request.nextUrl.hostname))
