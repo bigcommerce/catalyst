@@ -185,9 +185,12 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
                 key={`order-${entityId}`}
               >
                 {(shippingConsignments ?? []).map(({ lineItems }) => {
-                  let itemsCount = lineItems?.length;
-                  let className = '',
-                    imageClass = '';
+                  let sumWithInitial: any = 0;
+                  let itemsCount = shippingConsignments?.[0]?.lineItems?.reduce(
+                    (accumulator, item) => accumulator + item?.quantity,
+                    sumWithInitial,
+                  );
+                  let className = '', imageClass = '';
                   let productCount = 1;
                   let width = 150,
                     height = 150;
