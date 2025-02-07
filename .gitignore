@@ -14,3 +14,4 @@ playwright/.cache/
 bigcommerce.graphql
 bigcommerce-graphql.d.ts
 .DS_Store
+.open-next
