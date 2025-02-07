@@ -70,15 +70,15 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
   const [showSidebar, _setShowSidebar] = useState(false);
   const [showViewResultsButton, setShowViewResultsButton] = useState(false);
 
-  const ruleContext = [];
+  const ruleContexts = [];
   if (userContext?.isCaliforniaIp)
-    ruleContext.push('california-ip');
+    ruleContexts.push('california-ip');
   if (userContext?.isBot)  
-    ruleContext.push('bot');
+    ruleContexts.push('bot');
   if (!userContext?.isGuest)  
-    ruleContext.push('user')
+    ruleContexts.push('user')
   else
-    ruleContext.push('guest');
+    ruleContexts.push('guest');
 
   const analyticsTags = [userContext?.isBot ? 'bot' : (!userContext?.isGuest ? 'user' : 'guest')];
 
@@ -277,7 +277,7 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
       future={{ preserveSharedStateOnUnmount: true }}
       insights={true}
     >
-      <Configure ruleContexts={ruleContext} analyticsTags={analyticsTags} filters={breadcrumbs && breadcrumbs.length > 0 ? breadcrumbs.map((item: any) => `categories_without_path:"${item.name}"`).join(' AND ') : null} maxFacetHits={100} />
+      <Configure ruleContexts={ruleContexts} analyticsTags={analyticsTags} filters={breadcrumbs && breadcrumbs.length > 0 ? breadcrumbs.map((item: any) => `categories_without_path:"${item.name}"`).join(' AND ') : null} maxFacetHits={100} />
       {showSidebar &&
         <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebar(false)}></div>
       }

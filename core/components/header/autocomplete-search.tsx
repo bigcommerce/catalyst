@@ -391,7 +391,7 @@ function getCookieValue(name: string): string | null {
   return null;
 }
 
-export function AutocompleteSearch({ useDefaultPrices = false, priceMaxRules }: { useDefaultPrices?: boolean, priceMaxRules?: any }) {
+export function AutocompleteSearch({ useDefaultPrices = false, priceMaxRules = null, userContext = null }: { useDefaultPrices?: boolean, priceMaxRules?: any, userContext?: any }) {
 
   /*
   const searchParams = useSearchParams();
@@ -417,6 +417,18 @@ export function AutocompleteSearch({ useDefaultPrices = false, priceMaxRules }: 
   const [cachedPrices, setCachedPrices] = useState({} as any);
 
   const debounced = debouncePromise((items: any) => Promise.resolve(items), 500);
+
+  const ruleContexts = [];
+  if (userContext?.isCaliforniaIp)
+    ruleContexts.push('california-ip');
+  if (userContext?.isBot)  
+    ruleContexts.push('bot');
+  if (!userContext?.isGuest)  
+    ruleContexts.push('user')
+  else
+    ruleContexts.push('guest');
+
+  const analyticsTags = [userContext?.isBot ? 'bot' : (!userContext?.isGuest ? 'user' : 'guest')];
 
   useEffect(() => {
     if (!containerRef.current) {
@@ -572,6 +584,8 @@ export function AutocompleteSearch({ useDefaultPrices = false, priceMaxRules }: 
                       clickAnalytics: true,
                       attributesToSnippet: ['name:10', 'description:35'],
                       snippetEllipsisText: '…',
+                      ruleContexts: ruleContexts,
+                      analyticsTags: analyticsTags
                     },
                   } as any,
                 ],
