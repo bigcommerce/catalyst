@@ -18,15 +18,8 @@ import { Footer as ComponentsFooter } from '~/components/ui/footer';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 
 import { FooterFragment } from './fragment';
-import { AmazonIcon } from './payment-icons/amazon';
-import { AmericanExpressIcon } from './payment-icons/american-express';
-import { ApplePayIcon } from './payment-icons/apple-pay';
-import { MastercardIcon } from './payment-icons/mastercard';
-import { PayPalIcon } from './payment-icons/paypal';
-import { VisaIcon } from './payment-icons/visa';
 import { Link as CustomLink } from '~/components/link';
 
-import { imageManagerImageUrl } from '~/lib/store-assets';
 import { BcImage } from '../bc-image';
 
 import bbbIcon from '~/public/footerIcons/bbbIcon.svg';
@@ -64,7 +57,6 @@ export const Footer = async () => {
     {
       title: 'Shopping',
       links: [
-        { label: <span className="footer-link shopping-link">Gift Cards</span>, href: '/path-1' },
         {
           label: <span className="footer-link shopping-link">On Sale</span>,
           href: 'search?on_sale=true',
@@ -180,6 +172,12 @@ export const Footer = async () => {
     },
   ];
 
+  const customerService = [
+    {label:'Start a Return or Replacement', href:'/returns'},
+    {label:'View Order Status', href:'/#'},
+    {label:'Visit our Helpdesk', href:'/content/help-center'},
+  ]
+
   return (
     <ComponentsFooter
       contactInformation={data.settings?.contact ?? undefined}
@@ -250,6 +248,7 @@ export const Footer = async () => {
         </div>,
       ]}
       sections={sections}
+      customerService={customerService}
     />
   );
 };
