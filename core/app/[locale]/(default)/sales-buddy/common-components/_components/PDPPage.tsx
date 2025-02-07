@@ -8,6 +8,9 @@ import { Input } from '~/components/ui/form';
 import NotesIcons from '../../assets/add_notes.png';
 import { get_product_data, PdpProduct } from '../common-functions';
 import Loader from './Spinner';
+import { useRouter } from 'next/navigation';
+import ProductQuoteCart from '../Quote/QuoteCart';
+import QuoteRequestPage from '../Quote/RequestForQuote';
 // Utility for styles
 const TailwindCustomCssValues = {
   font: 'font-open-sans',
@@ -21,9 +24,12 @@ interface SalesBuddyProductPageProps {
   toggleAccordion: (index: number) => void;
   openIndexes: number[];
   setOpenIndexes: (indexes: number[]) => void;
+  QouteToggleAccordion: (index: number) => void,
+  qouteIndex: number[],
+  setQouteIndex: any
 }
 
-export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, setOpenIndexes }: SalesBuddyProductPageProps) {
+export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, setOpenIndexes, QouteToggleAccordion ,qouteIndex,setQouteIndex  }: SalesBuddyProductPageProps) {
   const [childSku, setChildSku] = useState([]);
   const retrievedProductData = JSON.parse(localStorage.getItem('productInfo') || '{}');
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
@@ -37,7 +43,7 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
   //     prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
   //   );
   // };
-
+  const router = useRouter();
   const costPricingTableData = (data) => {
     setChildSku(data.child_sku)
   };
@@ -48,6 +54,8 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
       try {
         const data = await get_product_data(retrievedProductData.productId);
         if (data.status === 200) {
+          console.log(data?.data?.output);
+          
           costPricingTableData(data?.data?.output);
           setLoading((prev) => ({ ...prev, cost: false }));
         }
@@ -59,7 +67,11 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
     fetchData(); // Call the async function
   }, []);
 
-
+  const handleRedirect = () => {
+    const locale = 'en'; // Replace with the actual locale you want to use
+    router.push(`/${locale}/sales-buddy/common-components/Quote/QuoteCart`);
+  };
+  
   const ACCORDION_DATA = {
     existingQuote: {
       title: (
@@ -73,11 +85,14 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
       content: (
         <div className="mt-3 w-full bg-white">
           <Input id="quote" placeholder="Quote#" className="mb-4" />
-          <Button
+          <Button onClick={() => { handleRedirect() }}
             className={`${TailwindCustomCssValues.font} w-full bg-[#1DB14B] font-normal text-white`}
           >
             ADD TO QUOTE
           </Button>
+
+          {/* <ProductQuoteCart/>
+          <QuoteRequestPage/> */}
         </div>
       ),
     },
@@ -145,58 +160,68 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
           {loading.cost == false &&
             <div className="w-[460px] bg-white p-[20px]">
               {childSku?.map((skuNum, index) => {
-                // Step 1: Split the stockPlace details by double pipe
-                const entries = skuNum?.stock_information?.split('||').map(entry => entry?.trim());
-                // Step 2: Split each entry by single pipe
-                const stockDetails = entries?.map(entry => entry?.split('|').map(item => item?.trim()));
                 const item = {
-                  id: skuNum?.variants_sku, // Use skuNum.sku instead of hardcoded id
-                  status: stockDetails,
+                  id: skuNum?.variants_sku,
+                  status: skuNum?.stock_information,
                 };
-
+                const toMapData=item.status
                 return (
-
                   <div key={index} className="space-y-[5px] border-b pb-[10px] pt-[10px]">
-                    <p className="font-bold">{item.id}</p>
-                    {
-                      item.status ? <>
-                        {item?.status?.map((details, detailIndex) => (
-                          <div key={detailIndex} className="w-full mb-2">
-                            <div className=" justify-between items-center w-full">
-                              <p className="text-[14px] open-sans text-[#353535]">
-                                {details[0]} | {details[1]}
+                    {/* Item ID (Bold) */}
+                    <p className="font-bold text-[16px]">{item.id}</p>
+
+                    {Object.keys(toMapData).length > 0 ? (
+                      <div key={index} className="w-full  flex flex-col ">
+                        {/* Line1 and Line2 */}
+                        <div className="flex flex-col w-full gap-y-1">
+                          <p className="text-[14px] font-semibold text-[#353535]">{toMapData["line1:"]}</p>
+                          <p className="text-[14px] text-[#353535]">{toMapData["line2:"]}</p>
+                        </div>
+
+                        {/* Line3 and Status */}
+                        <div className="flex justify-between items-center w-full ">
+                          <p className="text-[14px] text-[#353535] flex-1">{toMapData["line3:"]}</p>
+
+                          {/* Status Badge */}
+                          {(() => {
+                            const days = toMapData["days:"];
+                            let textColor = "";
+                            let bgColor = "";
+                            let statusText = "";
+
+                            if (days <= 1) {
+                              textColor = "text-[#167E3F]";
+                              bgColor = "bg-[#EAF4EC]";
+                              statusText = "Updated Today";
+                            } else if (days >= 2 && days <= 3) {
+                              textColor = "text-[#6A4C1E]";
+                              bgColor = "bg-[#F5E9E8]";
+                              statusText = `Updated ${days} Days Ago`;
+                            } else {
+                              textColor = "text-[#D32F2F]";
+                              bgColor = "bg-[#FDECEA]";
+                              statusText = `Updated ${days} Days Ago`;
+                            }
+
+                            return (
+                              <p className={`px-3 py-1 text-sm font-semibold rounded-md ${textColor} ${bgColor}`}>
+                                {statusText}
                               </p>
-                              <p className="mr-2">{details[2]}</p>
-                            </div>
+                            );
+                          })()}
+                        </div>
+                      </div>
 
-                            <div className="flex justify-between items-center w-full">
-                              <p className="mr-2 flex-1 text-left">{details[3]}</p>
-
-                              {/* Determine text color dynamically */}
-                              {(() => {
-                                const textColor =
-                                  detailIndex === 1 ? 'text-[#167E3F] bg-[#EAF4EC] ' : 'text-[#6A4C1E] bg-[#F5E9E8]';
-
-                                return (
-                                  <p
-                                    className={`p-[5px] text-sm ${textColor}`}
-                                    
-                                  >
-                                    <span className={`font-bold ${textColor}`}>{details[4]}</span>
-                                  </p>
-                                );
-                              })()}
-                            </div>
-                          </div>
-
-                        ))}
-                      </> : <div className="space-y-[5px]  pb-[10px] pt-[10px]">No Inventory Available </div>
-                    }
+                    ) : (
+                      <div className="pb-[10px] pt-[10px] text-gray-500">No Inventory Available</div>
+                    )}
                   </div>
+
 
                 );
               })}
             </div>
+
           }
           {
             loading.cost == true &&
@@ -224,7 +249,9 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
         <Accordions
           styles="border-y-[1px] border-x-0  border-[#CCCBCB] bg-white py-[10px] px-[20px] text-[16px]"
           accordions={[ACCORDION_DATA.existingQuote]}
-
+          toggleAccordion={QouteToggleAccordion}
+          openIndexes={qouteIndex}
+          setOpenIndexes={setQouteIndex}
         // type="multiple"
         />
       </div>
