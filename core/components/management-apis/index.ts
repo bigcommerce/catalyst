@@ -580,4 +580,71 @@ export const getGuestOrderDetailsFromAPI = async (orderId: any) => {
   } catch (error) {
     console.error(error);
   }
+}
+
+export const createGiftCardCoupon = async (amount: string, code: string) => {
+  try {
+    let data = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/gift_certificates`,
+      {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: JSON.stringify({
+          "to_name": "Kathir",
+          "to_email": "kathir@arizon.digital",
+          "from_name": "YuvaSri",
+          "from_email": "yuvasri@arizon.digital",
+          "amount": amount,
+          "code": code,
+          "status": "active",
+          "currency_code": "USD"
+        }),
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
 };
+
+export const processGiftCertificate = async (giftCode: string) => {
+  try {
+    let data = await fetch(
+      `https://payments.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/payments`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN, // Replace with the Payment Access Token
+        },
+        body: JSON.stringify({
+          "payment": {
+            "instrument": {
+              "type": "gift_certificate",
+              "gift_certificate_code": giftCode
+            },
+            "payment_method_id": "bigcommerce.gift_certificate"
+          }
+        }),
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        console.log('========jsonData=======', jsonData);
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
