@@ -45,7 +45,6 @@ const getVariantProductInfo = async (metaData: any, discountRules: any) => {
       });
       if (variantProductIdSkus?.length) {
         let parentProductInformation = await GetVariantsByProductSKU(variantProductIdSkus);
-        //console.log("parent product-->>",parentProductInformation);
 
         if (parentProductInformation?.length > 0) {
           for await (const productInfo of parentProductInformation) {
@@ -137,6 +136,7 @@ export const ProductFlyout = ({
   let setOpen;
   let currencyCode: any;
   const [productQty, setProductQty] = useState<number>(1);
+  const [skusWithoutAccessories, setSkusWithoutAccessories] = useState<string[]>([]);
   let variantData: any = [],
     optionsData: any = [];
   if (from == 'pdp') {
@@ -172,7 +172,20 @@ export const ProductFlyout = ({
         );
         let productData = await getVariantProductInfo(metaData, discountRules);
         setVariantProductData([...productData]);
-        var getAllCommonSettinngsValues =await commonSettinngs([product?.baseCatalogProduct?.brand?.entityId]);
+        if (!productData || productData?.length === 0) {
+          setVariantProductData([]);
+          const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
+          if (!storedSkus.includes(product?.sku)) {
+
+            setSkusWithoutAccessories(prev => [...prev, product?.sku]);
+            localStorage.setItem('skusWithoutAccessories', JSON.stringify([...storedSkus, product?.sku]));
+          }
+        } else {
+          const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
+          const updatedSkus = storedSkus?.filter((sku: any) => sku !== product?.sku);
+          localStorage.setItem('skusWithoutAccessories', JSON.stringify(updatedSkus));
+        }
+        var getAllCommonSettinngsValues = await commonSettinngs([product?.baseCatalogProduct?.brand?.entityId]);
         setCommonSettingsValues(getAllCommonSettinngsValues);
       };
 
@@ -191,7 +204,6 @@ export const ProductFlyout = ({
           setVariantProductData([]);
           const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
           if (!storedSkus?.includes(product?.sku)) {
-
             setSkusWithoutAccessories(prev => [...prev, product?.sku]);
             localStorage?.setItem('skusWithoutAccessories', JSON?.stringify([...storedSkus, product?.sku]));
           }
@@ -288,8 +300,8 @@ export const ProductFlyout = ({
                     })}
                     <div className="md:flex-row">
                       {productData?.originalPrice?.value &&
-                      productData?.selectedOptions?.length === 0 &&
-                      productData?.originalPrice?.value !== productData?.listPrice?.value ? (
+                        productData?.selectedOptions?.length === 0 &&
+                        productData?.originalPrice?.value !== productData?.listPrice?.value ? (
                         <div className="">
                           {format.number(
                             productData?.originalPrice?.value * productData?.quantity,
@@ -318,41 +330,45 @@ export const ProductFlyout = ({
                   </div>
                 </Dialog.Content>
               )}
-              
-              {variantProductData && variantProductData?.length > 0 
-               && commonSettingsValues?.[product?.baseCatalogProduct?.brand?.entityId]?.use_accessories  
-              && (
-                <>
-                  <hr className="my-[20px] border-[#93cfa1]" />
-                  <div className="pop-up-text flex flex-col gap-4">
-                    <div className="flex flex-col gap-[20px]">
-                      <div className="text-[20px] font-medium tracking-[0.15px] text-black">
-                        You May Also Need
-                      </div>
-                      <div className="accessories-data flex flex-col gap-[20px]">
-                        {variantProductData &&
-                          variantProductData?.map((accessories: any, index: number) => (
-                            <div
-                              className="product-card flex flex-col items-center gap-[20px] border border-[#cccbcb] p-[20px] sm:flex-row xl:flex-col 4xl:flex-row"
-                              key={index}
-                            >
-                              <ProductAccessories
-                                isLoading={isLoading}
-                                setIsLoading={setIsLoading}
-                                accessories={accessories}
-                                fanPopup={fanPopup}
-                                blankAddImg={blankAddImg}
-                                index={index}
-                                from={from}
-                                currencyCode={currencyCode}
-                                data={product}
-                              />
-                            </div>
-                          ))}
+              {variantProductData && variantProductData?.length > 0
+                && commonSettingsValues?.[product?.baseCatalogProduct?.brand?.entityId]?.use_accessories
+                && (
+                  <>
+                    <hr className="my-[20px] border-[#93cfa1]" />
+                    <div className="pop-up-text flex flex-col gap-4">
+                      <div className="flex flex-col gap-[20px]">
+                        <div className="text-[20px] font-medium tracking-[0.15px] text-black">
+                          You May Also Need
+                        </div>
+                        <div className="accessories-data flex flex-col gap-[20px]">
+                          {variantProductData &&
+                            variantProductData?.map((accessories: any, index: number) => (
+                              <div
+                                className="product-card flex flex-col items-center gap-[20px] border border-[#cccbcb] p-[20px] sm:flex-row xl:flex-col 4xl:flex-row"
+                                key={index}
+                              >
+                                <ProductAccessories
+                                  isLoading={isLoading}
+                                  setIsLoading={setIsLoading}
+                                  accessories={accessories}
+                                  fanPopup={fanPopup}
+                                  blankAddImg={blankAddImg}
+                                  index={index}
+                                  from={from}
+                                  currencyCode={currencyCode}
+                                  data={product}
+                                />
+                              </div>
+                            ))}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </>
+                  </>
+                )}
+              {!variantProductData && (
+                <div className="text-center text-gray-500">
+                  No accessories available for this product.
+                </div>
               )}
               {from == 'pdp' && cartItemsData && (
                 <>
@@ -376,7 +392,6 @@ export const ProductFlyout = ({
                         </div>
                       </div>
                     </div>
-
                     <div className="cart-buttons grid grid-cols-1 items-start gap-[10px] ssm:grid-cols-2">
                       <Dialog.Close asChild>
                         <Link

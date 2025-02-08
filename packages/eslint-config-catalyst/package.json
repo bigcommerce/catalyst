@@ -10,6 +10,7 @@
   ],
   "dependencies": {
     "@bigcommerce/eslint-config": "^2.9.1",
+    "@bigcommerce/eslint-config-catalyst": "file:",
     "@next/eslint-plugin-next": "^15.0.3",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-check-file": "^2.8.0",
