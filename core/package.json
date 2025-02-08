@@ -10,7 +10,12 @@
     "build:analyze": "ANALYZE=true npm run build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "opennext:build": "npx opennext@latest build",
+    "echostage": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && echo $STAGE",
+    "sst:dev": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst dev",
+    "sst:deploy": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst deploy --stage $STAGE",
+    "sst:remove": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst remove"
   },
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",

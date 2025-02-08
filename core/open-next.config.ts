@@ -19,12 +19,12 @@ const config = {
     sitemap: {
       // runtime: 'edge',
       routes: ['app/sitemap.xml/route'],
-      patterns: ['/*'],
+      patterns: ['/sitemap.xml/*'],
     },
     xmlsitemap: {
       // runtime: 'edge',
       routes: ['app/xmlsitemap.php/route'],
-      patterns: ['/*'],
+      patterns: ['/xmlsitemap.php/*'],
     },
   },
 };
