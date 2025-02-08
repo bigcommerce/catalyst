@@ -44,11 +44,9 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
           localStorage.setItem('agent_login', 'false');
           setAgentLoginStatus(false);
           toggleModal();
-          storeAgentLoginStatusInCookies(false);
+          storeAgentLoginStatusInCookies("false");
           setLoading(false); // Set loading state
-
         }
-        
       } else {        
         setError(result?.error ?? null);
         setLoading(false); // Set loading state

@@ -69,6 +69,7 @@ interface Props {
   children5: React.ReactNode;
   priceMaxRules: any;
   getAllCommonSettinngsValues: any;
+  isFromQuickView: boolean;
   customerGroupDetails: any;
 }
 
@@ -166,6 +167,7 @@ export const Details = ({
   triggerLabel5,
   children5,
   priceMaxRules,
+  isFromQuickView
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -295,28 +297,28 @@ export const Details = ({
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
-                        <div className="inline text-[14px] font-normal">
-                          {productOptions
-                            .filter((option) => option.__typename === 'MultipleChoiceOption')
-                            .map((option, index, filteredArray) => {
-                              if (option.__typename === 'MultipleChoiceOption') {
-                                const selectedValue = getSelectedValue(
-                                  option as MultipleChoiceOption,
-                                );
-                                return (
-                                  <span key={option.entityId}>
-                                    <span className="font-bold">{option.displayName}:</span>
-                                    <span className="text-[15px]"> {selectedValue}</span>
-                                    {index < filteredArray.length - 1 && (
-                                      <span className="mx-1">|</span>
-                                    )}
-                                  </span>
-                                );
-                              }
-                              return null;
-                            })}
-                        </div>
-                      )}
+                          <div className="inline text-[14px] font-normal">
+                            {productOptions
+                              .filter((option) => option.__typename === 'MultipleChoiceOption')
+                              .map((option, index, filteredArray) => {
+                                if (option.__typename === 'MultipleChoiceOption') {
+                                  const selectedValue = getSelectedValue(
+                                    option as MultipleChoiceOption,
+                                  );
+                                  return (
+                                    <span key={option.entityId}>
+                                      <span className="font-bold">{option.displayName}:</span>
+                                      <span className="text-[15px]"> {selectedValue}</span>
+                                      {index < filteredArray.length - 1 && (
+                                        <span className="mx-1">|</span>
+                                      )}
+                                    </span>
+                                  );
+                                }
+                                return null;
+                              })}
+                          </div>
+                        )}
                     </div>
                   </div>
                 </div>
@@ -339,6 +341,7 @@ export const Details = ({
                       currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
                       format={format}
                       showMSRP={product.UpdatePriceForMSRP.showDecoration}
+                      warrantyApplied={product?.UpdatePriceForMSRP?.warrantyApplied}
                       options={{
                         useAsyncMode: false,
                         useDefaultPrices: true,
@@ -404,9 +407,8 @@ export const Details = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
-              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-            } px-[20px] pt-[20px]`}
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+              } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
@@ -499,7 +501,9 @@ export const Details = ({
             defaultSalePrice={
               product?.UpdatePriceForMSRP.hasDiscount
                 ? product.UpdatePriceForMSRP.updatedPrice
-                : null
+                : product?.UpdatePriceForMSRP.warrantyApplied
+                  ? product.UpdatePriceForMSRP.updatedPrice
+                  : null
             }
             priceMaxRule={priceMaxRules?.find(
               (r: any) =>
@@ -511,6 +515,7 @@ export const Details = ({
             currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
             format={format}
             showMSRP={product.UpdatePriceForMSRP.showDecoration}
+            warrantyApplied={product.UpdatePriceForMSRP.warrantyApplied}
             options={{
               useAsyncMode: false,
               useDefaultPrices: true,
@@ -545,7 +550,6 @@ export const Details = ({
             />
           )}
           {product?.brand?.entityId &&
-            getAllCommonSettinngsValues.hasOwnProperty(product?.brand?.entityId) &&
             getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
               <NoShipCanada
                 description={
@@ -562,7 +566,7 @@ export const Details = ({
             blankAddImg={blankAddImg || ''}
             productImages={productImages}
             fanPopup={fanPopup}
-            closeIcon={closeIcon}
+            closeIcon={closeIcon || ''}
             customerGroupDetails={customerGroupDetails}
           />
         </div>
@@ -625,30 +629,28 @@ export const Details = ({
         </div>
 
         {/* <ProductSchema product={product} /> */}
-        <PayPalPayLater
-          amount={product?.prices?.price?.value?.toString() || '0'}
-          currency={product?.prices?.price?.currencyCode || 'USD'}
-        />
-        <RequestQuote children={children3} />
-        <CertificationsAndRatings
-          certificationIcon={certificationIcon}
-          product={product}
-          children={children4}
-          triggerLabel={triggerLabel4}
-        />
-        <ProductDetailDropdown
-          product={product}
-          dropdownSheetIcon={dropdownSheetIcon}
-          triggerLabel={triggerLabel5}
-          children={children5}
-        />
+        <div className={`${isFromQuickView ? "hidden" : "block"}`}>
+          <PayPalPayLater
+            amount={product?.prices?.price?.value?.toString() || '0'}
+            currency={product?.prices?.price?.currencyCode || 'USD'}
+          />
 
-        {/* <ShippingReturns /> */}
 
-        <div className="flex justify-center gap-4 xl:mt-7">
-          <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
+          <RequestQuote children={children3} />
+          <CertificationsAndRatings
+            certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4} />
+          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}
+            triggerLabel={triggerLabel5}
+            children={children5}
+          />
 
-          <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
+          {/* <ShippingReturns /> */}
+
+          <div className="flex justify-center gap-4 xl:mt-7">
+            <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
+
+            <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
+          </div>
         </div>
       </div>
     </div>

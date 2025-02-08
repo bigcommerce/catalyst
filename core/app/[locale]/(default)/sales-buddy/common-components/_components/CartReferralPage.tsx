@@ -73,9 +73,9 @@ export default function ReferalId() {
         <div className="font-open-sans flex items-center gap-2 text-[16px] text-[#353535]">
           <span>{`Referrer ID: ${cart_interface_refferal_id}`}</span>
         </div>
-        <div className="w-[110px] bg-[#1DB14B] py-[5px] px-[10px] h-[44px] rounded-[3px] items-center content-center ">
+        <div className="w-[110px] bg-[#1DB14B] py-[5px] px-[10px] h-[44px] rounded-[3px] items-center content-center">
           <button
-            className=""
+            className="w-full h-full flex items-center justify-center"
             onClick={handleDelete}
             disabled={isDisabled}
           >
@@ -84,7 +84,9 @@ export default function ReferalId() {
                 <Spinner />
               </div>
             )}
-            <span className="text-white text-[14px] font-medium h-[32px] "> RESET CART</span>
+            <span className="text-white text-[14px] font-medium h-[32px] flex items-center justify-center">
+              RESET CART
+            </span>
           </button>
         </div>
       </div>

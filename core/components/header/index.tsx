@@ -24,7 +24,9 @@ import { BcImage } from '../bc-image';
 import { imageManagerImageUrl } from '~/lib/store-assets';
 
 import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
-import { cookies } from 'next/headers';
+import { isBadUserAgent } from '~/belami/lib/bot-detection';
+
+import { cookies, headers } from 'next/headers';
 
 import { getSessionUserDetails } from '~/auth';
 import { get } from 'http';
@@ -55,6 +57,15 @@ export const Header = async ({ cart }: Props) => {
   const priceMaxTriggers = priceMaxCookie?.value 
     ? JSON.parse(atob(priceMaxCookie?.value)) 
     : undefined;
+
+  const headersList = await headers();
+  const country = headersList.get('x-vercel-ip-country');
+  const region = headersList.get('x-vercel-ip-country-region');
+  const ip = headersList.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
+  const ua = headersList.get('user-agent') || '';
+
+  const isBot = await isBadUserAgent(ua);
+  const isCaliforniaIp = country === 'US' && region === 'CA';
 
   const customerAccessToken = await getSessionCustomerAccessToken();
 
@@ -194,7 +205,16 @@ export const Header = async ({ cart }: Props) => {
       links={links}
       locales={localeLanguageRegionMap}
       logo={data.settings ? logoTransformer(data.settings) : undefined}
-      search={<AutocompleteSearch useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />}
+      search={!isBot ? <AutocompleteSearch 
+        useDefaultPrices={useDefaultPrices} 
+        priceMaxRules={priceMaxRules} 
+        userContext={{
+          isBot: isBot,
+          isCaliforniaIp: isCaliforniaIp,
+          ip: ip,
+          ua: ua,
+          isGuest: !customerAccessToken
+      }} /> : null}
       megaMenu={
         <MegaMenuContextProvider value={{ 
             logo: homeLogoMobile, 

@@ -56,7 +56,7 @@ const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
    const CheckAgentLoginStatusFromCookies=async()=>{
      const getStatus = await getAgentLoginStatusFromCookies()
-     if(getStatus !== null && getStatus){
+     if (getStatus !== null && getStatus && getStatus !== "false"){
        setAgentLoginStatus(true);
      }else{
        localStorage.setItem("agent_login", "false")
