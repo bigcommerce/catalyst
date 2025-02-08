@@ -46,3 +46,9 @@ client/generated
 
 # Build config
 build-config.json
+
+# sst
+.sst
+
+# open-next
+.open-next

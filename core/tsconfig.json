@@ -55,6 +55,6 @@
   ],
   "exclude": [
     "node_modules",
-    ".next"
+    ".next","sst.config.ts"
   ]
 }
