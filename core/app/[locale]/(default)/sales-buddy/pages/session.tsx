@@ -19,7 +19,7 @@ export default function SessionId() {
         const iFrame = window.self !== window.top;
         if(iFrame) return;
       }
-      fullUrl = queryString ? `${window.location.protocol}//${window.location.host}${path}?${queryString}` : `${window.location.protocol}//${window.location.host}${path}`
+      
         const onloadFetchSessionId = async () => {
             const sessionId = await getSessionIdCookie()
             if (sessionId?.value) {
@@ -56,6 +56,7 @@ export default function SessionId() {
     };
     const initializeSessionId = async () => {
         if (!context_session_id) {
+            fullUrl = queryString ? `${window.location.protocol}//${window.location.host}${path}?${queryString}` : `${window.location.protocol}//${window.location.host}${path}`
             const localMachineInformation = await fetchSystemInfo();
             const sessionId = await createSessionIdCookie(localMachineInformation, fullUrl);
             setContext_Session_id(sessionId?.output);
