@@ -3,9 +3,13 @@
 Setup AWS SSO for profile AdministratorAccess-242201303751 & Avios Retail Dev
 ~ aws configure sso
 
-Clone repo <git@github.com>:leighton-digital/wf-catalyst.git <your-folder-name>
+Clone repo <git@github.com>:leighton-digital/wf-catalyst.git your-folder-name
 
-~ cd <your-folder-name>
+~ cd your-folder-name
+
+Switch to `develop` branch and create a branch named
+
+feature/your-branch-name
 
 Enable pnpm - I think by this?
 corepack enable pnpm
