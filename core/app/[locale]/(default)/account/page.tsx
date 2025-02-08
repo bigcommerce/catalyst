@@ -16,8 +16,6 @@ import detailsIcon from '~/public/accountIcons/details.svg';
 import favouriteIcon from '~/public/accountIcons/favourite.svg';
 import emailPrefIcon from '~/public/accountIcons/emailPref.svg';
 import { WelcomeMessage } from './welcome-message';
-import Returns from './ReturnIframe';
-
 interface AccountItem {
   children: ReactNode;
   description?: string;
@@ -49,8 +47,6 @@ export async function generateMetadata() {
 
 export default function Account() {
   const t = useTranslations('Account.Home');
-  const returnUrl = `${process?.env?.NEXT_PUBLIC_RETURN_URL}` as string;
-  // const returnUrl = process?.env?.REACT_APP_RETURN_URL as string;
   const ts = useTranslations('Account.SalesHours');
   const breadcrumbs: any = [
     {
@@ -106,8 +102,12 @@ export default function Account() {
             <Image src={emailPrefIcon} alt={t('emailPreferences')} width={70} height={70} />
           </AccountItem>
 
-          <AccountItem href="#" title="Returns" description={t('emailPreferencesMsg')}>
-            <Returns returnUrl={returnUrl} />
+          <AccountItem
+            href="/returns"
+            title="Returns"
+            description={t('emailPreferencesMsg')}
+          >
+            <Image src={emailPrefIcon} alt={t('emailPreferences')} width={70} height={70} />
           </AccountItem>
         </div>
         <div className="flex w-max flex-col gap-[10px]">

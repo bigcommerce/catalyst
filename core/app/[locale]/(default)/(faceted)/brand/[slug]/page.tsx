@@ -12,10 +12,11 @@ import { getBrand } from './page-data';
 
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
+import { isBadUserAgent } from '~/belami/lib/bot-detection';
 
 import { Brand } from './brand';
 
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 
 import { Page as MakeswiftPage } from '@makeswift/runtime/next';
 import { getSiteVersion } from '@makeswift/runtime/next/server';
@@ -61,6 +62,15 @@ export default async function BrandPage(props: Props) {
     ? JSON.parse(atob(priceMaxCookie?.value)) 
     : undefined;
 
+  const headersList = await headers();
+  const country = headersList.get('x-vercel-ip-country');
+  const region = headersList.get('x-vercel-ip-country-region');
+  const ip = headersList.get('x-forwarded-for')?.split(',')[0] || '127.0.0.1';
+  const ua = headersList.get('user-agent') || '';
+
+  const isBot = await isBadUserAgent(ua);
+  const isCaliforniaIp = country === 'US' && region === 'CA';
+
   const customerAccessToken = await getSessionCustomerAccessToken();
   const useDefaultPrices = !customerAccessToken;
 
@@ -89,8 +99,15 @@ export default async function BrandPage(props: Props) {
   return (
     <div className="group py-4 px-4 xl:px-12">
       <Breadcrumbs
-        category={{ breadcrumbs: { edges: [{ node: { name: brand.name, path: brand.path } }] } }}
+        category={{ breadcrumbs: { edges: [
+          { node: { entityId: 0, name: 'Brands', path: '/brands' } }, 
+          { node: { entityId: brandId, name: brand.name, path: brand.path } }
+        ] } }}
       />
+
+      <div className="mb-0 lg:flex lg:flex-row lg:items-center lg:justify-between">
+        <h1 className="mb-4 lg:mb-0 text-2xl">{brand.name}</h1>
+      </div>
 
       {brand.defaultImage && brand.defaultImage.urlOriginal ? (
         <section className="mt-8 bg-gray-50 px-4 py-8 text-center md:mb-8">
@@ -138,17 +155,25 @@ export default async function BrandPage(props: Props) {
 
           </div>
         </section>
-      ) : (
-        <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
-          <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{brand.name}</h1>
-        </div>
-      )}
+      ) : null}
 
       {!!snapshot &&
         <MakeswiftPage snapshot={snapshot} />
       }
 
-      <Brand brand={brand} promotions={promotions} useDefaultPrices={useDefaultPrices} priceMaxRules={priceMaxRules} />
+      <Brand 
+        brand={brand} 
+        promotions={promotions} 
+        useDefaultPrices={useDefaultPrices} 
+        priceMaxRules={priceMaxRules} 
+        userContext={{
+          isBot: isBot,
+          isCaliforniaIp: isCaliforniaIp,
+          ip: ip,
+          ua: ua,
+          isGuest: !customerAccessToken
+        }}
+      />
     </div>
   );
 }

@@ -248,6 +248,7 @@ const discountRules = customerGroupDetails?.discount_rules;
   });
   
   const updatedProduct: any[][] = [];
+  let checkZeroTax: any = await zeroTaxCalculation(data.site);
 
 for (const eachProduct of updatedLineItemWithoutAccessories) {
   const price = await calculateProductPrice(eachProduct, "cart", discountRules, eachProduct.categoryIds);

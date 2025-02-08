@@ -81,8 +81,11 @@ export default async function OrderConfirmation() {
     const format = await getFormatter();
     const { orderState, summaryInfo, consignments, paymentInfo } = orderData;
     const shippingConsignments = consignments.shipping;
-    const isMultiShippingConsignments = shippingConsignments && shippingConsignments.length > 1;
-    const noOfItems: number = shippingConsignments?.[0]?.lineItems?.length || 0;
+    const sumWithInitial: any = 0;
+    const noOfItems = shippingConsignments?.[0]?.lineItems?.reduce(
+      (accumulator, item) => accumulator + item?.quantity,
+      sumWithInitial,
+    );
     let shippingAddressData = shippingConsignments?.[0]?.shippingAddress;
     const { subtotal, shipping, tax, discounts, grandTotal, handlingCost } = summaryInfo;
     const { nonCouponDiscountTotal, couponDiscounts } = discounts;
@@ -186,7 +189,7 @@ export default async function OrderConfirmation() {
             <SendOrderToAlgolia lineItems={shippingConsignments?.[0]?.lineItems} />
             <p className="flex flex-col">
               <span className="text-[16px] font-[400] leading-[32px] xsm:tracking-[0.15px] tracking-[0.5px] text-[#353535] text-center xsm:text-left">
-                We have received your order. You will receive an email conformation at
+                We have received your order. You will receive an email confirmation at
               </span>
               <span className="text-[16px] lg:font-[700] font-normal text-[#008BB7] text-center xsm:text-left leading-[32px] sm:tracking-[0.15px] tracking-[0.5px] lg:text-[#353535]">
                 {paymentInfo?.billingAddress?.email}

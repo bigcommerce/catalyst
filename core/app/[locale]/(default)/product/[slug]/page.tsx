@@ -13,7 +13,13 @@ import { ProductViewed } from './_components/product-viewed';
 import { Warranty } from './_components/warranty';
 import { getProduct, getProductBySku } from './page-data';
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import { GetCustomerGroupById, GetEmailId, GetProductMetaFields, GetProductVariantMetaFields } from '~/components/management-apis';
+import {
+  CheckProductFreeShipping,
+  GetCustomerGroupById,
+  GetEmailId,
+  GetProductMetaFields,
+  GetProductVariantMetaFields,
+} from '~/components/management-apis';
 import { ProductProvider } from '~/components/common-context/product-provider';
 import { RelatedProducts } from '~/belami/components/product';
 import { CollectionProducts } from '~/belami/components/product';
@@ -30,6 +36,8 @@ import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { calculateProductPrice } from '~/components/common-functions';
 import { ProductSchema } from './_components/product-schema';
 import { useTranslations } from 'next-intl';
+import { getActivePromotions } from '~/belami/lib/fetch-promotions';
+
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -56,11 +64,13 @@ interface MetaField {
 }
 
 interface CustomerGroup {
-  discount_rules: Array<{  amount: string;
+  discount_rules: Array<{
+    amount: string;
     type: string;
     category_id: string;
     product_id: string;
-    method: string; }>;
+    method: string;
+  }>;
 }
 
 function getOptionValueIds({ searchParams }: { searchParams: Awaited<Props['searchParams']> }) {
@@ -122,13 +132,13 @@ export default async function ProductPage(props: Props) {
   try {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const sessionUser = await getSessionUserDetails();
-    let customerGroupDetails:CustomerGroup = {
-      discount_rules: []
+    let customerGroupDetails: CustomerGroup = {
+      discount_rules: [],
     };
-    if(sessionUser){
-    const customerData = await GetEmailId(sessionUser?.user?.email!);
-    const customerGroupId = customerData.data[0].customer_group_id;
-    customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+    if (sessionUser) {
+      const customerData = await GetEmailId(sessionUser?.user?.email!);
+      const customerGroupId = customerData.data[0].customer_group_id;
+      customerGroupDetails = await GetCustomerGroupById(customerGroupId);
     }
     const searchParams = await props.searchParams;
     const params = await props.params;
@@ -167,7 +177,7 @@ export default async function ProductPage(props: Props) {
         useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
       });
     }
-    
+
     if (!product) {
       return notFound();
     }
@@ -266,11 +276,10 @@ export default async function ProductPage(props: Props) {
       const currentLength = current?.breadcrumbs?.edges?.length || 0;
       return currentLength > longestLength ? current : longest;
     }, categories[0]);
-    
-    const breadcrumbEntityIds = categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
-      (edge) => edge.node.entityId
-    ) || [];
-    
+
+    const breadcrumbEntityIds =
+      categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
+
     const categoryWithBreadcrumbs = categoryWithMostBreadcrumbs
       ? {
           ...categoryWithMostBreadcrumbs,
@@ -289,9 +298,14 @@ export default async function ProductPage(props: Props) {
         }
       : null;
 
-      const discountRules = customerGroupDetails?.discount_rules;
-    
-      const [updatedProduct] = await calculateProductPrice(product,"pdp",discountRules,breadcrumbEntityIds);
+    const discountRules = customerGroupDetails?.discount_rules;
+
+    const [updatedProduct] = await calculateProductPrice(
+      product,
+      'pdp',
+      discountRules,
+      breadcrumbEntityIds,
+    );
 
     const productImages = removeEdgesAndNodes(product.images);
     var brandId = product?.brand?.entityId;
@@ -301,6 +315,10 @@ export default async function ProductPage(props: Props) {
       priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
         ? await getPriceMaxRules(priceMaxTriggers)
         : null;
+
+    const promotions = await getActivePromotions(true);
+
+    const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());
 
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-5">
@@ -330,6 +348,8 @@ export default async function ProductPage(props: Props) {
 
               <div className="PDP xl:relative xl:flex-1">
                 <Details
+                  promotions={promotions}
+                  isFreeShipping={isFreeShipping}
                   product={updatedProduct}
                   collectionValue={collectionValue}
                   dropdownSheetIcon={assets.dropdownSheetIcon}
@@ -407,6 +427,19 @@ export default async function ProductPage(props: Props) {
                 products={relatedProducts}
                 useDefaultPrices={useDefaultPrices}
                 priceMaxRules={priceMaxRules}
+                product={product}
+                dropdownSheetIcon={assets.dropdownSheetIcon}
+                cartHeader={assets.cartHeader}
+                couponIcon={assets.couponIcon}
+                paywithGoogle={assets.paywithGoogle}
+                payPal={assets.payPal}
+                requestQuote={assets.requestQuote}
+                closeIcon={assets.closeIcon}
+                blankAddImg={assets.blankAddImg}
+                bannerIcon={assets.bannerIcon}
+                galleryExpandIcon={assets.galleryExpandIcon}
+                getAllCommonSettinngsValues={CommonSettinngsValues}
+                productImages={productImages}
               />
               <Warranty product={product} />
               <SiteVibesReviews product={product} category={categoryWithBreadcrumbs} />
@@ -417,7 +450,6 @@ export default async function ProductPage(props: Props) {
           <ProductSchema
             product={product}
             identifier={newIdentifier}
-            optionValueIds={optionValueIds.length}
             productSku={productSku}
           />
 
@@ -426,7 +458,6 @@ export default async function ProductPage(props: Props) {
       </div>
     );
   } catch (error) {
-    console.error('Error in ProductPage:', error);
     return (
       <div className="p-4 text-center">
         <h2>Error loading product</h2>

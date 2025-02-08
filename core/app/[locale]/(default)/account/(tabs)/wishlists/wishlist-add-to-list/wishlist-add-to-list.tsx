@@ -87,6 +87,11 @@ interface WishlistAddToListProps {
   hasPreviousPage: boolean;
   product: Product;
   onGuestClick?: () => void;
+  classNames?: {
+    root?: string,
+    button?: string,
+    icon?: string,
+  }
 }
 
 const WishlistAddToList = ({
@@ -94,6 +99,7 @@ const WishlistAddToList = ({
   hasPreviousPage,
   product,
   onGuestClick,
+  classNames
 }: WishlistAddToListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -546,10 +552,11 @@ const WishlistAddToList = ({
   }, [wishlists, deletedProductIds]);
 
   return (
-    <div className="relative">
+    <div className={cn(classNames?.root || 'relative')}>
       <button
+        title="Add to List"
         onClick={handleHeartClick}
-        className="inline-flex items-center justify-center rounded-full bg-[#F3F4F5] p-[10px] text-sm font-medium text-white focus:outline-none"
+        className={cn(classNames?.button || 'inline-flex items-center justify-center rounded-full bg-[#F3F4F5] p-[10px] text-sm font-medium text-white focus:outline-none')}
       >
         <BcImage
           alt="wishlist-heart"
@@ -557,7 +564,7 @@ const WishlistAddToList = ({
           height={35}
           unoptimized={true}
           src={heartIcon}
-          className="h-[30px] w-[30px]"
+          className={cn(classNames?.icon || 'h-[30px] w-[30px]')}
         />
       </button>
 
@@ -565,6 +572,7 @@ const WishlistAddToList = ({
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="relative w-full max-w-[20em] rounded-lg bg-white px-[2.5em] py-[1.5em] pb-[3em] shadow-2xl md:max-w-[35em]">
             <button
+              title='Close "Add to List" modal'
               onClick={handleClose}
               className="mb-[1em] mt-[1em] flex w-[100%] justify-center rounded-full p-1"
             >

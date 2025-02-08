@@ -6,6 +6,8 @@ import {
   GetProductMetaFields,
   GetProductVariantMetaFields,
   updateProductDiscount,
+  createGiftCardCoupon,
+  processGiftCertificate,
 } from '../management-apis';
 
 interface MetaField {
@@ -386,6 +388,7 @@ export const calculateProductPrice = async (
 ) => {
   const isSingleProduct = !Array.isArray(products);
   const productArray = isSingleProduct ? [products] : products;
+
   const convertedPrices = productArray.map((product: any) => {
     const prices = product?.catalogProductWithOptionSelections?.prices || product?.prices;
     const quantity = product?.quantity || 1;
@@ -393,18 +396,22 @@ export const calculateProductPrice = async (
     const retailPrice = type === 'accessories' ? product.retail_price : prices?.retailPrice?.value;
     const salePrice = type === 'accessories' ? product.sale_price : prices?.salePrice?.value;
     const basePrice = type === 'accessories' ? product.price : prices?.basePrice?.value;
+    const warrantyPrice = type === "pdp" && product?.prices?.price;
+    const listPrice = type === "cart" && product?.listPrice;
     const productId =
       type === 'accessories'
         ? product.product_id
         : type === 'pdp'
-          ? product.entityId
-          : product.productEntityId;
+        ? product.entityId
+        : product.productEntityId;
 
     let originalPrice = 0;
     let updatedPrice = 0;
     let discount = 0;
     let hasDiscount = false;
+    let warrantyApplied=false;
 
+    // MSRP Logic
     if (salePrice && retailPrice) {
       originalPrice = retailPrice * quantity;
       updatedPrice = salePrice * quantity;
@@ -422,6 +429,19 @@ export const calculateProductPrice = async (
       updatedPrice = basePrice * quantity;
       discount = 0;
     }
+
+    if (type === "pdp") {
+      if (warrantyPrice.value > updatedPrice) {
+        updatedPrice = warrantyPrice.value;
+        warrantyApplied=true; 
+      }
+    }else if(type === "cart") {
+      if (listPrice.value > updatedPrice) {
+        updatedPrice = listPrice.value;
+        warrantyApplied=true;
+      }
+    }
+
     hasDiscount = discount > 0;
 
     discountRules.forEach(
@@ -459,6 +479,7 @@ export const calculateProductPrice = async (
       },
     );
 
+    // Creating the final object
     const convertedObject = {
       UpdatePriceForMSRP: {
         originalPrice,
@@ -466,7 +487,8 @@ export const calculateProductPrice = async (
         discount,
         hasDiscount: discount > 0,
         showDecoration: !!retailPrice && retailPrice > 0,
-      },
+        warrantyApplied: warrantyApplied,
+      },      
     };
 
     return {
@@ -477,6 +499,8 @@ export const calculateProductPrice = async (
 
   return convertedPrices;
 };
+
+
 
 export const zeroTaxCalculation = async (cartObject: any) => {
   let checkoutData: any = cartObject?.checkout;
@@ -492,16 +516,19 @@ export const zeroTaxCalculation = async (cartObject: any) => {
       '========cartData?.lineItems?.physicalItems=======',
       cartData?.lineItems?.physicalItems,
     );
+    let overAllTaxAmount: any = 0;
+    let overallZeroTaxAmount: any = 0;
     for await (const item of cartData?.lineItems?.physicalItems) {
       let couponDiscount: any = item?.couponAmount;
       let couponAmount: any = couponDiscount?.value;
+      overallZeroTaxAmount += couponAmount;
       let qty: any = item?.quantity;
       let zeroTaxCheck: any = couponAmount / qty;
       if (zeroTaxCheck == 0.1) {
         let productAmount = item?.extendedSalePrice?.value;
         let taxAmountEachProduct = (taxPercentCalc * productAmount) / (1 + taxPercentCalc);
-        console.log('========taxAmountEachProduct=======', taxAmountEachProduct);
         if (taxAmountEachProduct) {
+          overAllTaxAmount += taxAmountEachProduct;
           postDataArray.push({
             id: item?.entityId,
             discounted_amount: taxAmountEachProduct,
@@ -509,9 +536,8 @@ export const zeroTaxCalculation = async (cartObject: any) => {
         }
       }
     }
-    console.log('=======postDataArray========', postDataArray);
     if (postDataArray?.length > 0) {
-      //delete the ZERO TAX Coupon
+      /*//delete the ZERO TAX Coupon
       await deleteCouponCodeFromCart(cartData?.entityId, 'ZEROTAX');
       let postData: any = `{
         "cart": {
@@ -519,10 +545,33 @@ export const zeroTaxCalculation = async (cartObject: any) => {
           "version": 1
         }
       }`;
-      console.log('========after remove=======');
       let discountData: any = await updateProductDiscount(cartData?.entityId, postData);
       console.log('========discountData=======', discountData);
-      await addCouponCodeToCart(cartData?.entityId, 'ZEROTAX');
+      await addCouponCodeToCart(cartData?.entityId, 'ZEROTAX');*/
+
+      //Gift Certificate Creation
+      let giftCode: string = generateRandomString(15);
+      console.log('========overAllTaxAmount=======', overAllTaxAmount);
+      console.log('========overallZeroTaxAmount=======', overallZeroTaxAmount);
+      console.log('========giftCode=======', giftCode);
+      let finalDiscountAmount: any = overAllTaxAmount - overallZeroTaxAmount;
+      console.log('========finalDiscountAmount=======', finalDiscountAmount);
+      //let giftcardData: any = await createGiftCardCoupon(finalDiscountAmount, giftCode);
+      //console.log('========giftcardData=======', giftcardData);
+      //let processGiftCard: any = await processGiftCertificate(giftCode);
+      //console.log('=======processGiftCard========', processGiftCard);
     }
   }
 };
+
+export function generateRandomString(length: number) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+  let counter: number = 0;
+  while (counter < length) {
+    result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    counter += 1;
+  }
+  return result?.toUpperCase();
+}
