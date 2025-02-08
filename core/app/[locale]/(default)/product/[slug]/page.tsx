@@ -447,11 +447,7 @@ export default async function ProductPage(props: Props) {
           </div>
 
           <ProductViewed product={product} />
-          <ProductSchema
-            product={product}
-            identifier={newIdentifier}
-            productSku={productSku}
-          />
+          <ProductSchema product={product} identifier={newIdentifier} productSku={productSku} />
 
           <KlaviyoTrackViewedProduct product={product} />
         </ProductProvider>
