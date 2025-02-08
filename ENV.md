@@ -1,4 +1,4 @@
-## Environement setup
+## Environment setup
 
 Setup AWS SSO for profile AdministratorAccess-242201303751 & Avios Retail Dev
 ~ aws configure sso
