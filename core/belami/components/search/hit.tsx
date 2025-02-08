@@ -124,7 +124,7 @@ interface Promotion {
   }[];
 }
 
-function sortPromotions(promotions: Promotion[]): Promotion[] {
+export function sortPromotions(promotions: Promotion[]): Promotion[] {
   return promotions.sort((a, b) => {
     const getDiscountValue = (promotion: Promotion, type: string, discountType: string): number => {
       for (const rule of promotion.rules) {
@@ -163,7 +163,7 @@ function sortPromotions(promotions: Promotion[]): Promotion[] {
   });
 }
 
-function findApplicablePromotion(
+export function findApplicablePromotion(
   promotions: any[],
   productId: number,
   brandId: number,
@@ -254,7 +254,7 @@ function findApplicablePromotion(
     : null;
 }
 
-function getPromotionDecoration(
+export function getPromotionDecoration(
   promotion: Promotion,
   free_shipping: boolean = false,
 ): string | null {
@@ -313,7 +313,7 @@ function getPromotionDecoration(
   return decoration;
 }
 
-function Promotion({
+export function Promotion({
   promotions,
   product_id,
   brand_id,
@@ -535,7 +535,7 @@ export function Hit({
               sku: hit.variants?.[0]?.sku || hit.sku || '',
               brand: {
                 name: hit.brand_name,
-                path: ''
+                path: '',
               },
               images: [],
               mpn: '',
@@ -585,24 +585,30 @@ export function Hit({
           </h2>
 
           <div className="mx-auto mt-2 flex flex-wrap items-center justify-center space-x-2">
-            {!!hit.on_clearance &&
+            {!!hit.on_clearance && (
               <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
                 Clearance
               </span>
-            }
-            <ProductPrice 
-              defaultPrice={hit?.prices?.USD || 0} 
-              defaultSalePrice={hit?.sales_prices?.USD || null} 
+            )}
+            <ProductPrice
+              defaultPrice={hit?.prices?.USD || 0}
+              defaultSalePrice={hit?.sales_prices?.USD || null}
               price={price}
               salePrice={salePrice}
-              priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && (r.bc_brand_ids.includes(hit?.brand_id) || r.bc_brand_ids.includes(String(hit?.brand_id)))) || (r.skus && r.skus.includes(hit?.sku)))}
+              priceMaxRule={priceMaxRules?.find(
+                (r: any) =>
+                  (r.bc_brand_ids &&
+                    (r.bc_brand_ids.includes(hit?.brand_id) ||
+                      r.bc_brand_ids.includes(String(hit?.brand_id)))) ||
+                  (r.skus && r.skus.includes(hit?.sku)),
+              )}
               currency={currency}
               format={format}
               options={{
                 useAsyncMode: useAsyncMode,
                 useDefaultPrices: useDefaultPrices,
                 isLoading: isLoading,
-                isLoaded: isLoaded
+                isLoaded: isLoaded,
               }}
               classNames={{
                 root: 'mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start',
@@ -864,24 +870,30 @@ export function Hit({
           </h2>
 
           <div className="mx-auto mt-2 flex flex-wrap items-center space-x-2">
-            {!!hit.on_clearance &&
+            {!!hit.on_clearance && (
               <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
                 Clearance
               </span>
-            }
-            <ProductPrice 
-              defaultPrice={hit?.prices?.USD || 0} 
-              defaultSalePrice={hit?.sales_prices?.USD || null} 
+            )}
+            <ProductPrice
+              defaultPrice={hit?.prices?.USD || 0}
+              defaultSalePrice={hit?.sales_prices?.USD || null}
               price={price}
               salePrice={salePrice}
-              priceMaxRule={priceMaxRules?.find((r: any) => (r.bc_brand_ids && (r.bc_brand_ids.includes(hit?.brand_id) || r.bc_brand_ids.includes(String(hit?.brand_id)))) || (r.skus && r.skus.includes(hit?.sku)))}
+              priceMaxRule={priceMaxRules?.find(
+                (r: any) =>
+                  (r.bc_brand_ids &&
+                    (r.bc_brand_ids.includes(hit?.brand_id) ||
+                      r.bc_brand_ids.includes(String(hit?.brand_id)))) ||
+                  (r.skus && r.skus.includes(hit?.sku)),
+              )}
               currency={currency}
               format={format}
               options={{
                 useAsyncMode: useAsyncMode,
                 useDefaultPrices: useDefaultPrices,
                 isLoading: isLoading,
-                isLoaded: isLoaded
+                isLoaded: isLoaded,
               }}
               classNames={{
                 root: 'mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start',

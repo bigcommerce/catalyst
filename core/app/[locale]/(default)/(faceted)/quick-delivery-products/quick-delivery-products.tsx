@@ -61,12 +61,24 @@ const sortByNumericRangeName: RefinementListProps['sortBy'] = (a: any, b: any) =
 //const closeOnChange = () => window.innerWidth > 375;
 const closeOnChange = false;
 
-export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, priceMaxRules }: any) => {
+export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, priceMaxRules = null, userContext = null }: any) => {
 
   const [view, setView] = useState('grid');
 
   const [showSidebar, _setShowSidebar] = useState(false);
   const [showViewResultsButton, setShowViewResultsButton] = useState(false);
+
+  const ruleContexts = ['quick-delivery-products'];
+  if (userContext?.isCaliforniaIp)
+    ruleContexts.push('california-ip');
+  if (userContext?.isBot)  
+    ruleContexts.push('bot');
+  if (!userContext?.isGuest)  
+    ruleContexts.push('user')
+  else
+    ruleContexts.push('guest');
+
+  const analyticsTags = [userContext?.isBot ? 'bot' : (!userContext?.isGuest ? 'user' : 'guest')];
 
   function setShowSidebar(value: boolean) {
     _setShowSidebar(value);
@@ -104,6 +116,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
               prices: indexUiState.refinementList?.['prices.USD'],
               price_range: indexUiState.refinementList?.['price_range'],
               reviews_rating_sum: indexUiState.refinementList?.['reviews_rating_sum'],
+              inventory_range: indexUiState.refinementList?.['inventory_range'],
               finish_color: indexUiState.refinementList?.['variants.options.Finish Color'],
               glass_color: indexUiState.refinementList?.['variants.options.Glass Color'],
               shade_color: indexUiState.refinementList?.['variants.options.Shade Color'],
@@ -128,6 +141,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
               heating_area: indexUiState.refinementList?.['metafields.Details.Heating Area'],
               ir_heat_technology: indexUiState.refinementList?.['metafields.Details.IR Heat Technology'],
               lift: indexUiState.refinementList?.['metafields.Details.Lift'],
+              light_kit_type: indexUiState.refinementList?.['metafields.Details.Light Kit Type'],
               lumen_output: indexUiState.refinementList?.['metafields.Details.Lumen Output'],
               material: indexUiState.refinementList?.['metafields.Details.Material'],
               minimum_mounting_height: indexUiState.refinementList?.['metafields.Details.Minimum Mounting Height'],
@@ -177,6 +191,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
                   'prices.USD': routeState?.prices,
                   'price_range': routeState?.price_range,
                   'reviews_rating_sum': routeState?.reviews_rating_sum,
+                  'inventory_range': routeState?.inventory_range,
                   'variants.options.Finish Color': routeState?.finish_color,
                   'variants.options.Glass Color': routeState?.glass_color,
                   'variants.options.Shade Color': routeState?.shade_color,
@@ -201,6 +216,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
                   'metafields.Details.Heating Area': routeState?.heating_area,
                   'metafields.Details.IR Heat Technology': routeState?.ir_heat_technology,
                   'metafields.Details.Lift': routeState?.lift,
+                  'metafields.Details.Light Kit Type': routeState?.light_kit_type,
                   'metafields.Details.Lumen Output': routeState?.lumen_output,
                   'metafields.Details.Material': routeState?.material,
                   'metafields.Details.Minimum Mounting Height': routeState?.minimum_mounting_height,
@@ -259,7 +275,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
       future={{ preserveSharedStateOnUnmount: true }}
       insights={true}
     >
-      <Configure ruleContexts={['quick-delivery-products']} maxFacetHits={100} />
+      <Configure ruleContexts={ruleContexts} analyticsTags={analyticsTags} maxFacetHits={100} />
 
       {showSidebar &&
         <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowSidebar(false)}></div>
@@ -288,12 +304,12 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
             </Facet>
             <DynamicWidgets maxValuesPerFacet={1000}>
               <Facet title="Brand">
-                <RefinementList attribute="brand_name" searchable={true} limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="brand_name" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </Facet>
               <Facet title="Collection">
-                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
                 }} />
               </Facet>
@@ -324,7 +340,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
                   showMore={true}
                   showMoreLimit={40}
                   classNames={{
-                    root: 'numbers-of-lights',
+                    root: 'number-of-lights',
                     list: 'grid grid-cols-4 gap-4 max-w-64',
                     item: 'flex m-0 p-0',
                     label: 'flex relative m-0 p-0',
@@ -410,6 +426,9 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
               </Facet>
               <Facet title="Lift">
                 <RefinementList attribute="metafields.Details.Lift" />
+              </Facet>
+              <Facet title="Light Kit Type">
+                <RefinementList attribute="metafields.Details.Light Kit Type" />
               </Facet>
               <Facet title="Lumen Output">
                 <RefinementList attribute="metafields.Details.Lumen Output" />
@@ -570,78 +589,25 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
           </button>
           <div className="hidden lg:flex lg:w-full lg:items-center lg:space-x-4">
             {/* <DynamicWidgets maxValuesPerFacet={1000}> */}
-              {/* Lighting: Brand, Collection, Finish, Number of lights, Style */}
-              <FacetDropdown buttonText="Brand" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="brand_name" searchable={true} limit={10} showMore={true} showMoreLimit={100} classNames={{
-                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
-                }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Collection" limit={10} showMore={true} showMoreLimit={100} classNames={{
-                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
-                }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Finish Color" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
-                  showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
-                }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Number of Lights" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Number of Bulbs"
-                  title="Number of Lights"
-                  sortBy={sortByNumericName}
-                  limit={20}
-                  showMore={true}
-                  showMoreLimit={40}
-                  classNames={{
-                    root: 'numbers-of-lights',
-                    list: 'grid grid-cols-4 gap-4 max-w-64',
-                    item: 'flex m-0 p-0',
-                    label: 'flex relative m-0 p-0',
-                    checkbox: 'peer left-0 top-0 !m-0 !w-full !h-full absolute appearance-none !rounded-none !bg-transparent !bg-none !shadow-none !border-brand-300',
-                    labelText: 'w-full py-1 px-2 inline-flex items-center justify-center text-sm font-medium cursor-pointer text-gray-900 focus:outline-none bg-white border border-brand-300 hover:bg-gray-100 hover:text-primary-700 focus:z-10 focus:ring-4 focus:ring-gray-100 bg-blue-50 text-brand-700 peer-hover:bg-gray-100 peer-hover:text-primary-700 peer-checked:bg-gray-100 peer-checked:text-primary-700',
-                    count: '!hidden',
-                    showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
-                  }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Style" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Product Style" />
-              </FacetDropdown>
-
-              {/* Patio (Heating specific): Fuel Source, Collection, Mounting Option, Voltage Rating */}
-              {/*
-              <FacetDropdown buttonText="Fuel Source" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Fuel Source" />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Collection" />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Mounting Options" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Mounting Options" />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Voltage Rating" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Akeneo.Voltage" />
-              </FacetDropdown>
-              */}
-
-              {/* Patio (Shading specific): Collection, Shape, Price, Weight, Finish */}
-              {/*
-              <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Collection" />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Shape" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Product Shape" />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Price" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RangeInput attribute="prices.USD" classNames={{ input: 'max-w-[80px]' }} />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Weight" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="metafields.Details.Weight" />
-              </FacetDropdown>
-              <FacetDropdown buttonText="Finish" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
-                <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" />
-              </FacetDropdown>
-              */}
+            <FacetDropdown buttonText="Finish Color" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+              <RefinementList attribute="variants.options.Finish Color" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+              }} />
+            </FacetDropdown>
+            <FacetDropdown buttonText="Price" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+              <RefinementList attribute="price_range" sortBy={sortByNumericRangeName} searchable={false} />
+            </FacetDropdown>
+            <FacetDropdown buttonText="Style" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+              <RefinementList attribute="metafields.Details.Product Style" searchable={false} />
+            </FacetDropdown>
+            <FacetDropdown buttonText="Collection" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+              <RefinementList attribute="metafields.Details.Collection" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
+                showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'
+              }} />
+            </FacetDropdown>
+            <FacetDropdown buttonText="Width" closeOnChange={closeOnChange} classNames={{ root: 'flex-1', button: 'w-full whitespace-nowrap !shadow-none' }}>
+              <RefinementList attribute="metafields.Details.Width" searchable={false} />
+            </FacetDropdown>
             {/* </DynamicWidgets> */}
           </div>
         </div>

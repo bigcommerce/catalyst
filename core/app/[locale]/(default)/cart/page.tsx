@@ -151,7 +151,7 @@ export default async function Cart({ params }: Props) {
       return [{ error: 'Failed to retrive data' }];
     }
   };
-  const product_data_in_cart = cookie_agent_login_status
+  const product_data_in_cart = cookie_agent_login_status == "true"
     ? await get_product_price_data_in_cart(cartId)
     : [];
   const lineItems: any = [
@@ -248,6 +248,7 @@ const discountRules = customerGroupDetails?.discount_rules;
   });
   
   const updatedProduct: any[][] = [];
+  let checkZeroTax: any = await zeroTaxCalculation(data.site);
 
 for (const eachProduct of updatedLineItemWithoutAccessories) {
   const price = await calculateProductPrice(eachProduct, "cart", discountRules, eachProduct.categoryIds);
