@@ -27,8 +27,10 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
       >
         {swatches.map((swatch) => {
           const { label, value, color, ...itemProps } = swatch;
-          const [colorName,fabricCode]= label.split("|");
           
+          const [colorName,fabricCode]= label.split("|");
+          const bgColor = color?.startsWith("#");
+            
           return (
             <Tooltip.Provider key={`tooltip ${value}`}>
               <Tooltip.Root>
@@ -65,17 +67,24 @@ const Swatch = forwardRef<ElementRef<typeof RadioGroupPrimitive.Root>, Props>(
                   side="top"
                   align="center"
                   sideOffset={5}
-                  className="relative z-[99] rounded-md bg-white font-[#353535] text-[12px] font-normal shadow-xl"
+                  className="relative z-[99] rounded-md bg-white font-[#353535] text-[12px] font-normal shadow-[0_10px_20px_5px_rgba(0,0,0,0.25)]"
                 >
                   <div className="flex h-[240px] w-[180px] flex-col gap-0 p-3">
                     <p className="m-0 p-0 text-sm text-gray-800">{colorName}</p>
                     <div
                       className="m-0 h-full w-full rounded-sm p-0"
-                      style={{ backgroundColor: color }}
+                      // style={{ backgroundColor: color }}
+                      style={{
+                        backgroundColor: bgColor ? color : 'transparent', 
+                        backgroundImage: !bgColor ? `url(${color})`:'none',
+                        backgroundRepeat:'no-repeat',
+                        backgroundSize:'100% 100%',
+                        backgroundPosition:'center',
+                      }}
                     ></div>
-                    {fabricCode && <p className="m-0 p-0 text-sm text-gray-800">{fabricCode}</p>}
+                    {fabricCode ? <div className="p-0 m-0 text-sm text-gray-800">{fabricCode}</div>:<div className='mt-5'></div>}
                   </div>
-                  <Tooltip.Arrow className="scale-150 transform fill-white" />
+                  <Tooltip.Arrow className="transform fill-white" style={{ width: '20px', height: '20px' }} />
                 </Tooltip.Content>
               </Tooltip.Root>
             </Tooltip.Provider>

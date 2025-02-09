@@ -50,7 +50,7 @@ const QuickView = ({ product }) => {
       <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
-          <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-[90vw] max-h-[90vh] max-w-4xl translate-x-[-50%] translate-y-[-50%] overflow-y-auto rounded-lg bg-white shadow-lg quickview">
+          <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-[90vw] max-h-[101vh] h-[101vh] max-w-4xl translate-x-[-50%] translate-y-[-50%] overflow-y-auto rounded-lg bg-white shadow-lg quickview">
             <div className="p-8">
               <Dialog.Close className="absolute right-4 top-4 rounded-full p-2 hover:bg-gray-100">
                 <X className="h-6 w-6" />
