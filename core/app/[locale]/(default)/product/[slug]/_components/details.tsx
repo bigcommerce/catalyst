@@ -11,7 +11,7 @@ import CertificationsAndRatings from '~/components/ui/pdp/belami-certification-r
 import { PayPalPayLater } from '~/components/ui/pdp/belami-payment-pdp';
 import { RequestQuote } from '~/components/ui/pdp/belami-request-a-quote-pdp';
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import { FreeDelivery } from './belami-product-free-shipping-pdp';
+import { DeliveryMessage } from './belami-product-free-shipping-pdp';
 import { ProductForm } from './product-form';
 import { ProductFormFragment } from './product-form/fragment';
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
@@ -549,7 +549,7 @@ export const Details = ({
         />
         <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
           {selectedVariantId && (
-            <FreeDelivery
+            <DeliveryMessage
               entityId={product.entityId}
               variantId={selectedVariantId}
               isFromPDP={true}

@@ -16,7 +16,7 @@ import { Button } from '~/components/ui/button';
 import { calculateProductPrice, retrieveMpnData } from '~/components/common-functions';
 import { commonSettinngs } from '~/components/common-functions';
 import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
-import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
+import { DeliveryMessage } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
 import { getSessionUserDetails } from '~/auth';
 import {
   CheckProductFreeShipping,
@@ -499,11 +499,8 @@ export const CartItem = async ({
                         }
                       })}
 
-                      <div className="mt-[10px] flex justify-start text-sm font-normal leading-6 tracking-[0.25px]">
-                        <span> Free Delivery</span>
-                      </div>
                       {product.variantEntityId && (
-                        <FreeDelivery
+                        <DeliveryMessage
                           entityId={product.productEntityId}
                           variantId={product.variantEntityId}
                           isFromPDP={false}
@@ -513,7 +510,6 @@ export const CartItem = async ({
                   </div>
                 )}
               </div>
-
               <div className="">
                 <div className="cart-deleteIcon relative flex flex-col gap-0 text-right sm:gap-2 md:items-end [&_.cart-item-delete]:absolute [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:sm:static [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0">
                   <RemoveItem currency={currencyCode} product={product} />
@@ -690,7 +686,7 @@ export const CartItem = async ({
             discountRules={discountRules}
             product={product}
           />
-        )}
+         )} 
     </li>
   );
 };
