@@ -680,8 +680,8 @@ export const CartItem = async ({
         </div>
       )}
 
-      {/* {getAllCommonSettinngsValues.hasOwnProperty(brandId) &&
-        getAllCommonSettinngsValues?.[brandId]?.use_accessories && ( */}
+      {getAllCommonSettinngsValues.hasOwnProperty(brandId) &&
+        getAllCommonSettinngsValues?.[brandId]?.use_accessories && (
           <AccessoriesButton
             key={product?.entityId}
             closeIcon={closeIcon}
@@ -690,7 +690,7 @@ export const CartItem = async ({
             discountRules={discountRules}
             product={product}
           />
-        {/* )} */}
+         )} 
     </li>
   );
 };
