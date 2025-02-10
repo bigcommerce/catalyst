@@ -160,19 +160,39 @@ type CarouselImage = {
 
 const images: CarouselImage[] = [
   {
-    src: imageManagerImageUrl('trade-carousel-1.jpg', 'original'),
+    src: imageManagerImageUrl('california-homebuilders-inc-3-1.jpeg', 'original'),
     alt: 'California Homebuilders Inc.',
     title: 'California Homebuilders Inc.',
   },
   {
-    src: imageManagerImageUrl('trade-carousel-1.jpg', 'original'),
-    alt: 'Modern Home Design',
-    title: 'Modern Home Design',
+    src: imageManagerImageUrl('california-homebuilders-inc-2-2.jpeg', 'original'),
+    alt: 'California Homebuilders Inc.',
+    title: 'California Homebuilders Inc.',
   },
   {
-    src: imageManagerImageUrl('trade-carousel-1.jpg', 'original'),
-    alt: 'Luxury Homes',
-    title: 'Luxury Homes',
+    src: imageManagerImageUrl('travis-ferran-1-3.jpeg', 'original'),
+    alt: 'Travis Ferran',
+    title: 'Travis Ferran',
+  },
+  {
+    src: imageManagerImageUrl('windsor-1-crystorama-4.jpeg', 'original'),
+    alt: 'Windsor',
+    title: 'Windsor',
+  },
+  {
+    src: imageManagerImageUrl('windsor-2-crystorama-5.jpeg', 'original'),
+    alt: 'Windsor',
+    title: 'Windsor',
+  },
+  {
+    src: imageManagerImageUrl('cutter-landscaping-2-6.jpeg', 'original'),
+    alt: 'Cutter Landscaping',
+    title: 'Cutter Landscaping',
+  },
+  {
+    src: imageManagerImageUrl('cutter-landscaping-7-7.jpeg', 'original'),
+    alt: 'Cutter Landscaping',
+    title: 'Cutter Landscaping',
   },
 ];
 

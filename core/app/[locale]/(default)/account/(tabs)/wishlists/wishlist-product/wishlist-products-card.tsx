@@ -9,8 +9,9 @@ import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumb
 import { addToCart } from '~/components/product-card/add-to-cart/form/_actions/add-to-cart';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
-import { GetVariantsByProductId } from '~/components/management-apis';
+import { GetProductMetaFields, GetVariantsByProductId } from '~/components/management-apis';
 import { useCommonContext } from '~/components/common-context/common-provider';
+import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_components/review-summary';
 
 interface OptionValue {
   entityId: number;
@@ -45,6 +46,10 @@ interface WishlistProduct {
   mpn: string;
   path: string;
   availabilityV2: string;
+  reviewSummary?: {
+    numberOfReviews: string;
+    averageRating: string;
+  };
   brand?: {
     name: string;
     path: string;
@@ -61,7 +66,11 @@ interface WishlistProduct {
   productOptions?: ProductOption[];
   variants: ProductVariant[];
 }
-
+interface MetaField {
+  key: string;
+  value: string;
+  namespace: string;
+}
 interface WishlistItem {
   entityId: number;
   productEntityId: number;
@@ -168,6 +177,17 @@ const ProductCard = ({
           </h3>
         </Link>
 
+        <div className="mt-2 flex justify-center">
+          <ReviewSummary
+            data={{
+              reviewSummary: {
+                numberOfReviews: item.product.reviewSummary?.numberOfReviews || '0',
+                averageRating: item.product.reviewSummary?.averageRating || '0',
+              },
+            }}
+          />
+        </div>
+
         {variantDetails && (
           <div className="mt-2 space-y-2 text-center">
             <p className="text-sm">
@@ -262,6 +282,65 @@ export function WishlistProductCard(): JSX.Element {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    const loadWishlist = async () => {
+      try {
+        const savedWishlist = localStorage.getItem('selectedWishlist');
+        if (savedWishlist) {
+          const parsedWishlist = JSON.parse(savedWishlist);
+
+          // Process each item to get review data
+          Promise.all(
+            parsedWishlist.items.map(async (item: WishlistItem) => {
+              try {
+                const productMetaFields = await GetProductMetaFields(item.productEntityId, '');
+
+                const averageRatingMetaField = productMetaFields?.find(
+                  (field: MetaField) => field?.key === 'sv-average-rating',
+                );
+                const totalReviewsMetaField = productMetaFields?.find(
+                  (field: MetaField) => field?.key === 'sv-total-reviews',
+                );
+
+                return {
+                  ...item,
+                  product: {
+                    ...item.product,
+                    reviewSummary: {
+                      numberOfReviews: totalReviewsMetaField?.value || '0',
+                      averageRating: averageRatingMetaField?.value || '0',
+                    },
+                  },
+                };
+              } catch (error) {
+                console.error('Error fetching meta fields:', error);
+                return item; // Return original item if meta fields fetch fails
+              }
+            }),
+          )
+            .then((updatedItems) => {
+              setWishlistData({
+                ...parsedWishlist,
+                items: updatedItems,
+              });
+            })
+            .catch((error) => {
+              console.error('Error processing items:', error);
+              setWishlistData(parsedWishlist); // Fallback to original data
+            });
+        } else {
+          router.push('/account/wishlists');
+        }
+      } catch (error) {
+        setError('Failed to load wishlist data');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadWishlist();
+  }, [router]);
 
   const handleDelete = (productId: number, wishlistItemId: number) => {
     if (!wishlistData) return;

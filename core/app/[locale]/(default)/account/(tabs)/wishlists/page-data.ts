@@ -47,20 +47,33 @@ interface ProductVariant {
   };
   prices?: PriceData;
 }
-
+interface Brand {
+  entityId: number;
+  name: string;
+  path: string;
+}
 interface Product {
   entityId: number;
   name: string;
   sku: string;
   mpn?: string;
   path: string;
-  brand?: {
-    name: string;
-    path: string;
-  };
+  brand: Brand;
   defaultImage: {
     url: string;
     altText: string;
+  };
+  reviewSummary?: {
+    numberOfReviews: string;
+    averageRating: string;
+  };
+  categories?: {
+    edges: Array<{
+      node: {
+        entityId: number;
+        name: string;
+      };
+    }>;
   };
   variants: {
     edges: Array<{
@@ -105,6 +118,15 @@ interface GetWishlistsParams {
   filters?: WishlistsFiltersInput;
 }
 
+const ReviewSummaryFragment = graphql(`
+  fragment ReviewSummaryFragment on Product {
+    reviewSummary {
+      numberOfReviews
+      averageRating
+    }
+  }
+`);
+
 const WishlistsQuery = graphql(
   `
     query WishlistsQuery(
@@ -129,8 +151,22 @@ const WishlistsQuery = graphql(
                     entityId
                     productEntityId
                     variantEntityId
+
                     product {
                       entityId
+                      brand {
+                        entityId
+                        name
+                        path
+                      }
+                      categories {
+                        edges {
+                          node {
+                            entityId
+                            name
+                          }
+                        }
+                      }
                       availabilityV2 {
                         status
                         description
@@ -139,10 +175,8 @@ const WishlistsQuery = graphql(
                       sku
                       mpn
                       path
-                      brand {
-                        name
-                        path
-                      }
+
+                      ...ReviewSummaryFragment
                       variants {
                         edges {
                           node {
@@ -207,7 +241,7 @@ const WishlistsQuery = graphql(
       }
     }
   `,
-  [PaginationFragment],
+  [PaginationFragment, ReviewSummaryFragment],
 );
 
 type WishlistsVariables = VariablesOf<typeof WishlistsQuery>;
@@ -224,9 +258,9 @@ export const getWishlists = cache(
       fetchOptions: { cache: 'no-store' },
       customerAccessToken,
     });
-    
+
     const data = response.data as WishlistResponse;
-    
+
     if (!data?.customer) {
       return undefined;
     }

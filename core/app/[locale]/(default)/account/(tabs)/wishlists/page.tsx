@@ -17,7 +17,7 @@ export default async function AccountTabPage({ searchParams }: Props) {
   const { before, after, wishlistId } = await searchParams;
 
   if (wishlistId) {
-    return <div>wishlistDetails</div>;
+    return <div>wishlistDetails</div>
   }
 
   const wishlistDetails = await getWishlists({
