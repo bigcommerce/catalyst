@@ -215,7 +215,7 @@ export const ProductForm = ({
 
     // Track Add To Cart action...
     if (product && product.prices) {
-      klaviyoTrackAddToCart(product as any);
+      klaviyoTrackAddToCart({ product: product as any });
 
       aa('addedToCartObjectIDs', {
         eventName: 'Product Added To Cart',
