@@ -283,7 +283,6 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
         last_name: '',
         email: accountId
       });
-      console.log(response.data);
       
       if (response?.data?.status === 200) {
         if(response.data.output.length > 0){
