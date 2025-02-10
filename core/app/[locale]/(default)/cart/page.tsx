@@ -313,7 +313,7 @@ for (const eachProduct of updatedLineItemWithoutAccessories) {
               discountRules={discountRules}
             />
           ))}
-          {cookie_agent_login_status === 'true' &&
+          {
             CustomItems.length > 0 &&
             CustomItems?.map((data) => {
               return (
