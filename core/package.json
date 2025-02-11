@@ -15,7 +15,8 @@
     "echostage": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && echo $STAGE",
     "sst:dev": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst dev",
     "sst:deploy": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst deploy --stage $STAGE",
-    "sst:remove": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst remove"
+    "sst:remove:local": "npx sst remove",
+    "sst:remove:ephemeral": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst remove --stage $STAGE"
   },
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",
