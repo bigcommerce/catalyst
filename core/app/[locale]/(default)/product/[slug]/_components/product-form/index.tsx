@@ -219,7 +219,7 @@ export const ProductForm = ({
 
     // Track Add To Cart action...
     if (product && product.prices) {
-      KlaviyoTrackAddToCart({ product: product as any, user: sessionUser });
+      KlaviyoTrackAddToCart({ product: product as any, user: sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null });
 
       aa('addedToCartObjectIDs', {
         eventName: 'Product Added To Cart',
