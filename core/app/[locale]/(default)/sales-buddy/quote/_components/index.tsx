@@ -32,10 +32,10 @@ export default function DatePicker({placeholder}:Props) {
             value={selectedDate ? format(selectedDate, 'dd-MM-yyyy') : ''}
             placeholder={placeholder}
             readOnly
-            className="border-b border-b-black w-full outline-none cursor-pointer"
+            className="border border w-full outline-none cursor-pointer outline-none p-2 rounded-[5px]"
             onClick={() => setIsOpen(true)}
           />
-          <CalendarDays className='absolute right-0 bottom-[4px]' width={20} height={20} />
+          {/* <CalendarDays className='absolute right-0 bottom-[4px]' width={20} height={20} /> */}
           </div>
         </Popover.Trigger>
         <Popover.Portal>
