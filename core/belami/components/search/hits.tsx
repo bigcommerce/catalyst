@@ -4,6 +4,7 @@ import { useHits } from 'react-instantsearch';
 import { Hit } from './hit';
 import QuickView from '~/components/product-card/Quickview';
 
+
 export function Hits({
   hitComponent,
   view,
@@ -18,6 +19,7 @@ export function Hits({
   const [prices, setPrices] = useState({} as any);
   const [cachedPrices, setCachedPrices] = useState({} as any);
   const [hits, setHits] = useState(null as any);
+  
 
   const skus: string[] = items.map((hit: any) => hit.sku);
 
@@ -70,58 +72,6 @@ export function Hits({
     })();
   }, [skus]);
 
-  const renderProductCard = (hit: any) => {
-    const productData = {
-      ...hit,
-      images: {
-        edges: hit.images?.map(img => ({
-          node: {
-            url: img.url,
-            altText: img.altText,
-            isDefault: img.isDefault
-          }
-        }))
-      }
-    };
-
-    return (
-      <div className="product-card">
-        {/* Product Image Container with QuickView */}
-        <div className="relative group/image">
-          {/* QuickView Button - Positioned at the top */}
-          <div className="absolute left-0 right-0 flex justify-center z-10 opacity-0 group-hover/image:opacity-100 transition-opacity mt-32">
-            <div className="w-48">
-              <QuickView 
-                product={productData} 
-                className="flex h-10 w-full cursor-pointer items-center justify-center space-x-2 rounded border border-[#B4DDE9] px-4 uppercase text-white bg-white"
-              />
-            </div>
-          </div>
-
-          <div className="product-image-wrapper">
-            {hit.images?.[0]?.url && (
-              <img
-                src={hit.images[0].url}
-                alt={hit.images[0].altText || hit.name}
-                className="w-full h-auto"
-              />
-            )}
-          </div>
-        </div>
-
-        {/* Rest of product information */}
-        <div className="product-info">
-          <Hit
-            hit={hit as any}
-            promotions={promotions}
-            priceMaxRules={priceMaxRules}
-            view={view}
-          />
-        </div>
-      </div>
-    );
-  };
-
   return (
     ((!useDefaultPrices && hits) || (useDefaultPrices && items)) && (
       <div className="ais-Hits product-card-plp mt-4">
@@ -140,6 +90,7 @@ export function Hits({
               onAuxClick={() => sendEvent('click', hit, 'Hit Clicked')}
             >
               {renderProductCard(hit)}
+             
             </li>
           ))}
         </ol>
