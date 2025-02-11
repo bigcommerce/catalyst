@@ -1,39 +1,102 @@
-## Environment setup
+# Environment Setup
 
-Setup AWS SSO for profile AdministratorAccess-242201303751 & Avios Retail Dev
-~ aws configure sso
+## AWS SSO Setup
 
-Clone repo <git@github.com>:leighton-digital/wf-catalyst.git your-folder-name
+Set up AWS SSO for the following profiles:
 
-~ cd your-folder-name
+- **AdministratorAccess-242201303751**
+- **Avios Retail Dev**
 
-Switch to `develop` branch and create a branch named
+Run the following command:
 
-feature/your-branch-name
+```sh
+aws configure sso
+```
 
-Enable pnpm - I think by this?
+Follow the instructions here:
+
+<https://leighton.atlassian.net/wiki/spaces/AC/pages/2660761606/AWS+SSO+Configuration>
+
+## Clone the Repository
+
+Clone the repository and navigate into your project folder:
+
+```sh
+git clone git@github.com:leighton-digital/wf-catalyst.git your-folder-name
+cd your-folder-name
+```
+
+## Branching Strategy
+
+Switch to the `develop` branch and create a new feature branch:
+
+```sh
+git checkout develop
+git checkout -b feature/your-branch-name
+```
+
+## Install Dependencies
+
+Enable `pnpm`:
+
+```sh
 corepack enable pnpm
+```
 
-~ pnpm install
-~ pnpm create @bigcommerce/catalyst@latest init
+Install project dependencies:
 
-Follow the authentication flow. You will need to log into BigCommerce
-Until we connect to WF Store we will us our own - speak to Software Dev team for access.
+```sh
+pnpm install
+```
 
-Account - Leighton
-Store - Leighton Test Store
-Which channel would you like to use? wf-catalyst-canary-channel
+Initialize Catalyst:
 
-This will create .env.local
+```sh
+pnpm create @bigcommerce/catalyst@latest init
+```
 
-~ cp .env.local ./core
-~ cd core
-~ pnpm run sst:dev
+## Authentication
 
-This will run a local instance of catalyst pointing to our test store front.
+Follow the authentication flow and log in to BigCommerce.  
+Until we connect to the WF Store, use the test store. Contact the Software Dev team for access.
 
-To deploy to AWS use
+- **Account:** Leighton
+- **Store:** Leighton Test Store
+- **Channel:** `wf-catalyst-canary-channel`
 
-~ pnpm run sst:deploy
+## Configuration
 
-This will use your branch name to kinda make empheral environment
+This process will create an `.env.local` file. Copy it to the `core` directory:
+
+```sh
+cp .env.local ./core
+```
+
+Navigate to the `core` directory and start the local development server:
+
+```sh
+cd core
+pnpm run sst:dev
+```
+
+This runs a local instance of Catalyst pointing to our test storefront.
+
+## Deploying to AWS
+
+To deploy, ensure that required environment variables are added to `sst.config.ts` under `sst.aws.Nextjs`:
+
+```ts
+{
+  environment: {
+    ENV_VARS: 'HERE';
+  }
+}
+```
+
+Then run:
+
+```sh
+pnpm run sst:deploy
+```
+
+This will create an ephemeral environment based on your branch name.
