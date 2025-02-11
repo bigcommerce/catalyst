@@ -16,6 +16,10 @@ import detailsIcon from '~/public/accountIcons/details.svg';
 import favouriteIcon from '~/public/accountIcons/favourite.svg';
 import emailPrefIcon from '~/public/accountIcons/emailPref.svg';
 import { WelcomeMessage } from './welcome-message';
+
+import { getSessionCustomerAccessToken, getSessionUserDetails } from '~/auth';
+import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
+
 interface AccountItem {
   children: ReactNode;
   description?: string;
@@ -45,7 +49,7 @@ export async function generateMetadata() {
   };
 }
 
-export default function Account() {
+export default async function Account() {
   const t = useTranslations('Account.Home');
   const ts = useTranslations('Account.SalesHours');
   const breadcrumbs: any = [
@@ -54,6 +58,11 @@ export default function Account() {
       href: '',
     },
   ];
+
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const sessionUser = await getSessionUserDetails();
+  if(sessionUser)
+    KlaviyoIdentifyUser({ user: sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null });  
 
   return (
     <div className="my-account-page m-auto mx-auto mb-[40px] mt-[24px] w-[90%] font-['Open_Sans'] text-[#353535]">
