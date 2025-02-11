@@ -4,9 +4,6 @@ import { Suspense } from 'react';
 import { Link } from '~/components/link';
 import { Button } from '~/components/ui/button';
 import { cn } from '~/lib/utils';
-import { Link as CustomLink } from '~/components/link';
-import { BcImage } from '~/components/bc-image';
-import chevronRight from '~/public/orders/chevronRight.svg';
 
 import {
   assembleProductData,
@@ -276,28 +273,11 @@ export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:a
   return (
     <div className="mt-[1rem] mb-[2rem] w-[100%] flex justify-center text-[#353535]">
       <div className="flex w-[88%] flex-col gap-[20px]">
-        <div className='hidden xl:block'>
+        <div>
           <ComponentsBreadcrumbs breadcrumbs={breadcrumbs} />
         </div>
-        <div className="flex items-center justify-center gap-[5px] xl:hidden">
-            <div>
-              <BcImage
-                src={chevronRight}
-                width={8}
-                height={12}
-                alt="Chevron Right"
-                unoptimized={true}
-              />
-            </div>
-            <CustomLink
-              href="/account/order"
-              className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#006380]"
-            >
-              Account Center
-            </CustomLink>
-          </div>
         <div className="flex flex-col gap-[30px]">
-          <div className="flex flex-col xl:flex-row gap-[10px] items-center justify-between">
+          <div className="flex items-center justify-between">
             <div className="text-[24px] font-normal leading-[32px]">Order #{orderState?.orderId}</div>
             <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#008BB7] flex gap-[10px] items-center">
               <PrintInvoice orderId={orderState?.orderId} key={orderState?.orderId} />
@@ -306,7 +286,7 @@ export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:a
           <StillNeedContactUs icon={icon} />
           <div className="flex flex-col gap-[30px]">
             <div>
-              <p className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#000000] text-center xl:text-left">
+              <p className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#000000]">
                 Items In This Order ({noOfItems})
               </p>
             </div>
