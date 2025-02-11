@@ -12,7 +12,7 @@ import { ErrorMessage } from '../shared/error-message';
 import { MultipleChoiceFieldFragment } from './fragment';
 import { BcImage } from '~/components/bc-image';
 import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
-
+import { getMultipleChoiceOptions } from '~/components/graphql-apis';
 
 interface InteractionOptions {
   optionId: number;
@@ -26,6 +26,7 @@ interface Props {
   productMpn: string | null;
   onVariantChange?: (mpn: string | null) => void;
   onMpnChange?: (mpn: string | null) => void;
+  swatchOptions: any;
 }
 
 export const MultipleChoiceField = ({
@@ -34,6 +35,7 @@ export const MultipleChoiceField = ({
   productMpn,
   onVariantChange,
   onMpnChange,
+  swatchOptions,
 }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
@@ -45,6 +47,68 @@ export const MultipleChoiceField = ({
 
   const [showAll, setShowAll] = useState(false);
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
+  const [endCursor, setEndCursor] = useState<string | null>(null);
+  const [hasNextPage, setHasNextPage] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [pId, SetpId] = useState<number | null>(null);
+  const [swatchEdges, setswatchEdges] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!swatchOptions) return; // Ensure swatchOptions exists before updating state
+
+    setLoading(true); // Start loading when swatchOptions updates
+
+    SetpId(swatchOptions?.pId);
+    setEndCursor(swatchOptions?.endCursor);
+    setHasNextPage(swatchOptions?.hasNextPage);
+    setswatchEdges((prevEdges = []) => {
+      const mergedEdges = [...prevEdges, ...(swatchOptions?.swatchValuesEdges || [])];
+
+      // Remove duplicates using 'entityId' inside 'node'
+      const uniqueEdges = Array.from(
+        new Map(mergedEdges.map((edge) => [edge.node.entityId, edge])).values(),
+      );
+
+      return uniqueEdges;
+    });
+
+    // Stop loading once all data updates
+    setLoading(false);
+  
+  }, [swatchOptions]);
+
+  const fetchNextPage = async () => {
+    if (!hasNextPage || !endCursor) return;
+
+    const {
+      swatchValuesEdges,
+      endCursor: newEndCursor,
+      hasNextPage: newHasNextPage,
+    } = await getMultipleChoiceOptions(pId, endCursor);
+
+    setswatchEdges((prevEdges = []) => {
+      const mergedEdges = [...prevEdges, ...swatchValuesEdges];
+
+      // Remove duplicates using 'entityId' inside 'node'
+      const uniqueEdges = Array.from(
+        new Map(mergedEdges.map((edge) => [edge.node.entityId, edge])).values(),
+      );
+
+      return uniqueEdges;
+    });
+
+    setEndCursor(newEndCursor);
+    setHasNextPage(newHasNextPage);
+  };
+  const handleShowAll = async () => {
+    setShowAll(true);
+    if (hasNextPage && endCursor) {
+      setIsLoading(true); // Show loader
+      await fetchNextPage();
+      setIsLoading(false); // Hide loader
+    }
+  };
 
   const handleInteraction = async ({ optionId, valueId, prefetch = false }: InteractionOptions) => {
     const optionSearchParams = new URLSearchParams(searchParams.toString());
@@ -60,8 +124,7 @@ export const MultipleChoiceField = ({
     }
   };
 
-  const handleOnValueChange = (
-    { optionId, valueId }: InteractionOptions ) => {
+  const handleOnValueChange = ({ optionId, valueId }: InteractionOptions) => {
     const selectedValue = values.find((value) => value.entityId === valueId);
     handleInteraction({ optionId, valueId });
     setSelectedOption(selectedValue?.label || null);
@@ -102,10 +165,14 @@ export const MultipleChoiceField = ({
       }
     }
   }, [field.value, values, productMpn, onMpnChange]);
+ 
 
   const { error } = fieldState;
   const displayedValues = useMemo(() => (showAll ? values : values.slice(0, 6)), [showAll, values]);
-
+  const displayedValues1 = useMemo(
+    () => (showAll ? swatchEdges : swatchEdges.slice(0, 6)),
+    [showAll, swatchEdges],
+  );
   const renderShowAllButton = (remainingCount: number) => (
     <div className="inline-flex items-center">
       {remainingCount > 0 && !showAll && (
@@ -157,75 +224,66 @@ export const MultipleChoiceField = ({
 
           <div className="ml-[0.8em] flex flex-wrap items-center justify-center gap-2 xl:ml-[0em] xl:justify-start">
             <div className="flex flex-wrap gap-2">
-              {displayedValues
-                .filter(
-                  (value) => '__typename' in value && value.__typename === 'SwatchOptionValue',
-                )
-                .map((value) => {
-                 return(
-                 
-                        <Swatch
-                          aria-labelledby={`label-${option.entityId}`}
-                          error={Boolean(error)}
-                          name={field.name}
-                          className="rounded-full"
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                            handleOnValueChange({
-                              optionId: option.entityId,
-                              valueId: Number(value),
-                            });
-                          }}
-                          swatches={[
-                            {
-                              label: value.label,
-                              value: value.entityId.toString(),
-                              color: value.hexColors[0] ?? value.imageUrl,
-                              onMouseEnter: () => {
-                                handleMouseEnter({
-                                  optionId: option.entityId,
-                                  valueId: Number(value.entityId),
-                                });
-                              },
-                            },
-                          ]}
-                          value={field.value?.toString()}
-                        />
-                      
-                )}
+              {loading ? (
+                <div className="flex items-center justify-center">
+                  <span className="h-6 w-6 animate-spin rounded-full border-2 border-[#008BB7] border-t-transparent"></span>
+                </div>
+              ) : (
+                displayedValues1?.map(({ node }) => (
+                  <Swatch
+                    key={node.entityId} // Add a unique key for React
+                    aria-labelledby={`label-${option.entityId}`}
+                    error={Boolean(error)}
+                    name={field.name}
+                    className="rounded-full"
+                    onValueChange={(value) => {
+                      field.onChange(value);
+                      handleOnValueChange({
+                        optionId: option.entityId,
+                        valueId: Number(value),
+                      });
+                    }}
+                    swatches={[
+                      {
+                        label: node.label,
+                        value: node.entityId.toString(),
+                        color: node.hexColors[0] ?? node.imageUrl,
+                        onMouseEnter: () => {
+                          handleMouseEnter({
+                            optionId: option.entityId,
+                            valueId: Number(node.entityId),
+                          });
+                        },
+                      },
+                    ]}
+                    value={field.value?.toString()}
+                  />
+                ))
               )}
-              {remainingCount > 0 && !showAll && (
+
+              {hasNextPage || swatchEdges.length > 6 ? (
                 <div className="flex items-center gap-1 text-[#008BB7]">
                   <button
                     type="button"
-                    onClick={() => setShowAll(true)}
-                    className="grid text-[14px] font-medium"
+                    onClick={showAll ? () => setShowAll(false) : handleShowAll}
+                    className="grid items-center gap-2 text-[14px] font-medium"
+                    disabled={isLoading} // Disable button while loading
                   >
-                    <span className="underline">Show All</span>
-
-                    <span>({'+' + remainingCount})</span>
+                    {isLoading ? (
+                      <span className="h-4 w-4 animate-spin rounded-full border-2 border-[#008BB7] border-t-transparent"></span>
+                    ) : (
+                      <span className="underline">{showAll ? 'Show Fewer' : 'Show All'}</span>
+                    )}
                   </button>
                 </div>
-              )}
-              {showAll && (
-                <div className="ml-2 flex items-center gap-1 text-[#008BB7]">
-                  <button
-                    type="button"
-                    onClick={() => setShowAll(false)}
-                    className="grid text-[14px] font-medium"
-                  >
-                    <span className="underline">Show </span>{' '}
-                    <span className="underline">Fewer</span>
-                  </button>
-                </div>
-              )}
+              ) : null}
             </div>
             {error && <ErrorMessage>{error.message}</ErrorMessage>}
           </div>
         </div>
       );
     }
-    
+
     case 'RectangleBoxes': {
       const activeOptionRectangleBoxes = values.find((v) => v.entityId.toString() === field.value);
       const remainingCount = values.length - displayedValues.length;
