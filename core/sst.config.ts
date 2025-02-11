@@ -19,6 +19,17 @@ export default $config({
     };
   },
   async run() {
-    new sst.aws.Nextjs(`${process.env.STAGE}-wf-catalyst`);
+    new sst.aws.Nextjs(`${process.env.STAGE}-wf-catalyst`, {
+      environment: {
+        BIGCOMMERCE_STORE_HASH: process.env.BIGCOMMERCE_STORE_HASH as string,
+        BIGCOMMERCE_STOREFRONT_TOKEN: process.env.BIGCOMMERCE_STOREFRONT_TOKEN as string,
+        BIGCOMMERCE_CHANNEL_ID: process.env.BIGCOMMERCE_CHANNEL_ID as string,
+        ENABLE_ADMIN_ROUTE: 'true',
+        AUTH_SECRET: process.env.AUTH_SECRET as string,
+        TURBO_REMOTE_CACHE_SIGNATURE_KEY: process.env.TURBO_REMOTE_CACHE_SIGNATURE_KEY as string,
+        MAKESWIFT_SITE_API_KEY: process.env.MAKESWIFT_SITE_API_KEY as string,
+        TRAILING_SLASH: 'false',
+      },
+    });
   },
 });

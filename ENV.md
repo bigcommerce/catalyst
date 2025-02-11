@@ -81,19 +81,7 @@ pnpm run sst:dev
 
 This runs a local instance of Catalyst pointing to our test storefront.
 
-## Deploying to AWS
-
-To deploy, ensure that required environment variables are added to `sst.config.ts` under `sst.aws.Nextjs`:
-
-```ts
-{
-  environment: {
-    ENV_VARS: 'HERE';
-  }
-}
-```
-
-Then run:
+## Deploy Ephemeral environment to AWS
 
 ```sh
 pnpm run sst:deploy
