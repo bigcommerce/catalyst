@@ -9,8 +9,6 @@ import { BcImage } from '~/components/bc-image';
 import { useCommonContext } from '~/components/common-context/common-provider';
 import { Loader2 as Spinner } from 'lucide-react';
 import {
-  GetCustomerGroupById,
-  GetEmailId,
   GetProductMetaFields,
   GetProductVariantMetaFields,
   GetVariantsByProductId,
