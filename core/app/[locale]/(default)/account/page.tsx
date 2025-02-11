@@ -50,8 +50,9 @@ export async function generateMetadata() {
 }
 
 export default async function Account() {
-  const t = useTranslations('Account.Home');
-  const ts = useTranslations('Account.SalesHours');
+  const t = await getTranslations('Account.Home');
+  const ts = await getTranslations('Account.SalesHours');
+
   const breadcrumbs: any = [
     {
       label: 'Account Center',
