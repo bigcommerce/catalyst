@@ -113,7 +113,10 @@ const getProduct = async (props: Props) => {
     id: product.entityId.toString(),
     title: product.name,
     description: (
-      <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />
+      <div
+        className="prose space-y-4 [&_h2]:font-heading [&_h2]:text-3xl [&_h2]:font-normal [&_h2]:leading-none [&_h2]:@xl:text-4xl [&_h3]:font-heading [&_h3]:text-2xl [&_h3]:font-normal [&_h3]:leading-none [&_h3]:@xl:text-3xl [&_h4]:font-heading [&_h4]:text-xl [&_h4]:font-normal [&_h4]:leading-none [&_h4]:@xl:text-2xl"
+        dangerouslySetInnerHTML={{ __html: product.description }}
+      />
     ),
     href: product.path,
     images: product.defaultImage
