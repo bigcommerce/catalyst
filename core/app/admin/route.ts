@@ -18,4 +18,4 @@ export const GET = () => {
   });
 };
 
-// export const runtime = 'edge';
+export const runtime = 'edge';
