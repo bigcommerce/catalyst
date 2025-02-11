@@ -41,6 +41,7 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   productId,
   cartId,
   ProductType,
+  quantity
 }) => {
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [newCost, setNewCost] = useState<string>('');
