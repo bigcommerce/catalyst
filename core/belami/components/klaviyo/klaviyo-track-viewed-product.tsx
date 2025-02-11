@@ -16,7 +16,7 @@ type KlaviyoEvent =
 
 type Product = Awaited<ReturnType<typeof getProduct>>;
 
-export function KlaviyoTrackViewedProduct({ product, user }: { product: NonNullable<Product>, user?: { email: string } }) {
+export function KlaviyoTrackViewedProduct({ product, user }: { product: NonNullable<Product>, user?: { email: string, first_name?: string, last_name?: string, phone_number?: string, city?: string, region?: string, country?: string, zip?: string } }) {
   useEffect(() => {
     const klaviyo = window.klaviyo || [];
 
@@ -28,12 +28,10 @@ export function KlaviyoTrackViewedProduct({ product, user }: { product: NonNulla
       ...(product.prices && { Price: product.prices.price.value }),
     };
 
-//alert(JSON.stringify(user && user.email ? user : { anonymous: true }));
-    //klaviyo.push(['identify', user && user.email ? user : { anonymous: true }]);
-    //klaviyo.push(['identify', { email: "dmitry-tester@test.com" }]);
-    klaviyo.push(['track', 'Catalyst Viewed Product', viewedProductData]);
+    klaviyo.push(['identify', user && user.email ? user : { anonymous: true }]);
+    klaviyo.push(['track', 'Viewed Product', viewedProductData]);
     klaviyo.push(['trackViewedItem', viewedProductData]);
-  }, []);  //}, [product.brand, product.defaultImage, product.entityId, product.name, product.prices]);
+  }, []);
 
   return null;
 }

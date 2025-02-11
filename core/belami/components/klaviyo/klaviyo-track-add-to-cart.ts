@@ -14,7 +14,7 @@ type KlaviyoEvent =
 
 type Product = ExistingResultType<typeof getProduct>;
 
-export function KlaviyoTrackAddToCart({ product, user }: { product: Product, user?: { email: string } }) {
+export function KlaviyoTrackAddToCart({ product, user }: { product: Product, user?: { email: string, first_name?: string, last_name?: string, phone_number?: string, city?: string, region?: string, country?: string, zip?: string } }) {
   const klaviyo = window.klaviyo || [];
 
   const addedToCartProductData = {
@@ -26,5 +26,5 @@ export function KlaviyoTrackAddToCart({ product, user }: { product: Product, use
   };
 
   klaviyo.push(['identify', user && user.email ? user : { anonymous: true }]);
-  klaviyo.push(['track', 'Catalyst Added to Cart', addedToCartProductData]);
+  klaviyo.push(['track', 'Added to Cart', addedToCartProductData]);
 }
