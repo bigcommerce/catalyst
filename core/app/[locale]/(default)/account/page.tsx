@@ -60,10 +60,7 @@ export default async function Account() {
     },
   ];
 
-  const customerAccessToken = await getSessionCustomerAccessToken();
   const sessionUser = await getSessionUserDetails();
-  if(sessionUser && sessionUser.user && sessionUser.user?.email)
-    KlaviyoIdentifyUser({ user: {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any });  
 
   return (
     <div className="my-account-page m-auto mx-auto mb-[40px] mt-[24px] w-[90%] font-['Open_Sans'] text-[#353535]">
@@ -139,6 +136,7 @@ export default async function Account() {
           </div>
         </div>
       </div>
+      <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
     </div>
   );
 }
