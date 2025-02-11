@@ -72,6 +72,7 @@ interface Props {
   getAllCommonSettinngsValues: any;
   isFromQuickView: boolean;
   customerGroupDetails: any;
+  swatchOptions:any;
 }
 
 export const DetailsFragment = graphql(
@@ -168,7 +169,8 @@ export const Details = ({
   triggerLabel5,
   children5,
   priceMaxRules,
-  isFromQuickView
+  isFromQuickView,
+  swatchOptions
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -574,6 +576,7 @@ export const Details = ({
             fanPopup={fanPopup}
             closeIcon={closeIcon || ''}
             customerGroupDetails={customerGroupDetails}
+            swatchOptions={swatchOptions}
           />
         </div>
 

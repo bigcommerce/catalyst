@@ -9,7 +9,7 @@ import { OrderListTabs } from './_components/order-list-tabs';
 import { ExistingResultType } from '~/client/util';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import wavingHandIcon from '~/public/pdp-icons/wavingHandIcon.svg';
-import Link from 'next/link';
+import { Link as CustomLink } from '~/components/link';
 import { BcImage } from '~/components/bc-image';
 import chevronRight from '~/public/orders/chevronRight.svg';
  
@@ -57,12 +57,12 @@ export default async function Orders({ searchParams }: Props) {
                 unoptimized={true}
               />
             </div>
-            <Link
+            <CustomLink
               href="/account"
               className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#006380]"
             >
               Account Center
-            </Link>
+            </CustomLink>
           </div>
           <ComponentsBreadcrumbs className="hidden xl:block" breadcrumbs={breadcrumbs} />
           <div className="flex flex-col gap-[20px]">
