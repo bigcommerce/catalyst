@@ -55,6 +55,7 @@ interface Props {
   productMpn: string | null;
   showInSticky?: boolean;
   customerGroupDetails?: any;
+  swatchOptions?:any;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -104,6 +105,7 @@ export const ProductForm = ({
   productMpn,
   customerGroupDetails,
   showInSticky = false,
+  swatchOptions
 }: Props) => {
   
   const t = useTranslations('Product.Form');
@@ -381,6 +383,7 @@ export const ProductForm = ({
                   option={option}
                   multipleOptionIcon={multipleOptionIcon}
                   productMpn={productMpn}
+                  swatchOptions={swatchOptions}
                 />
               );
             }
