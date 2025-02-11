@@ -134,7 +134,7 @@ export function Hits({
         >
           {(!useDefaultPrices ? hits : items).map((hit: any) => (
             <li
-              className="ais-Hits-item !radius-none !p-0 !shadow-none rounded-none border border-gray-300 !items-start"
+              className="ais-Hits-item !radius-none !p-0 !shadow-none rounded-none border border-gray-300"
               key={hit.objectID}
               onClick={() => sendEvent('click', hit, 'Hit Clicked')}
               onAuxClick={() => sendEvent('click', hit, 'Hit Clicked')}
@@ -268,11 +268,11 @@ export function HitsAsync({
       >
         {items.map((hit: any) => (
           <li
-            className="ais-Hits-item !radius-none !p-0 !shadow-none rounded-none border border-gray-300 !items-start"
-            key={hit.objectID}
-            onClick={() => sendEvent('click', hit, 'Hit Clicked')}
-            onAuxClick={() => sendEvent('click', hit, 'Hit Clicked')}
-          >
+          className="ais-Hits-item !radius-none !p-0"
+          key={hit.objectID}
+          onClick={() => sendEvent('click', hit, 'Hit Clicked')}
+          onAuxClick={() => sendEvent('click', hit, 'Hit Clicked')}
+        >
             {renderProductCard(hit)}
           </li>
         ))}
