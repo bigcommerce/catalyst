@@ -466,7 +466,7 @@ export function Hit({
   return view === 'grid' ? (
     <article
       data-id={hit.objectID}
-      className="product flex h-full w-full flex-col rounded-none border border-gray-300"
+      className="product flex h-full w-full flex-col "
     >
       <div className="flex min-h-[60px] items-start overflow-x-hidden p-4">
         <div className="compare-product mr-4 hidden md:block">

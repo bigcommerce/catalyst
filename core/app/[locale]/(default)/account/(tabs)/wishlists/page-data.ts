@@ -4,6 +4,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
+import { BreadcrumbsFragment } from '~/components/breadcrumbs/fragment';
 
 interface Price {
   value: number;
@@ -164,6 +165,7 @@ const WishlistsQuery = graphql(
                           node {
                             entityId
                             name
+                            ...BreadcrumbsFragment
                           }
                         }
                       }
@@ -241,7 +243,7 @@ const WishlistsQuery = graphql(
       }
     }
   `,
-  [PaginationFragment, ReviewSummaryFragment],
+  [PaginationFragment, BreadcrumbsFragment, ReviewSummaryFragment],
 );
 
 type WishlistsVariables = VariablesOf<typeof WishlistsQuery>;

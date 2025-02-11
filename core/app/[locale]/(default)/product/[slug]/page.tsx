@@ -16,7 +16,6 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 import {
   CheckProductFreeShipping,
   GetCustomerGroupById,
-  GetEmailId,
   GetProductMetaFields,
   GetProductVariantMetaFields,
 } from '~/components/management-apis';
@@ -37,6 +36,7 @@ import { calculateProductPrice } from '~/components/common-functions';
 import { ProductSchema } from './_components/product-schema';
 import { useTranslations } from 'next-intl';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
+import { getMultipleChoiceOptions } from '~/components/graphql-apis';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -135,11 +135,10 @@ export default async function ProductPage(props: Props) {
     let customerGroupDetails: CustomerGroup = {
       discount_rules: [],
     };
-    if (sessionUser) {
-      const customerData = await GetEmailId(sessionUser?.user?.email!);
-      const customerGroupId = customerData.data[0].customer_group_id;
-      customerGroupDetails = await GetCustomerGroupById(customerGroupId);
-    }
+    if(sessionUser){
+     const customerGroupId = sessionUser?.customerGroupId;
+     customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+     }
     const searchParams = await props.searchParams;
     const params = await props.params;
     const productSku: any = searchParams?.sku;
@@ -181,7 +180,8 @@ export default async function ProductPage(props: Props) {
     if (!product) {
       return notFound();
     }
-
+    let swatchOptions:any
+    swatchOptions= await getMultipleChoiceOptions(productId)
     // Asset URLs
     const assets = {
       bannerIcon: imageManagerImageUrl('example-1.png', '50w'),
@@ -195,7 +195,7 @@ export default async function ProductPage(props: Props) {
       closeIcon: imageManagerImageUrl('close.png', '14w'),
       blankAddImg: imageManagerImageUrl('notneeded-1.jpg', '150w'),
     };
-
+  
     // Get MetaFields
     const productMetaFields = await GetProductMetaFields(product.entityId, '');
 
@@ -349,6 +349,7 @@ export default async function ProductPage(props: Props) {
               <div className="PDP xl:relative xl:flex-1">
                 <Details
                   promotions={promotions}
+                  swatchOptions={swatchOptions}
                   isFreeShipping={isFreeShipping}
                   product={updatedProduct}
                   collectionValue={collectionValue}
