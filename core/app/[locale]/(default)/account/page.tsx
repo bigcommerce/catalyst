@@ -17,8 +17,6 @@ import favouriteIcon from '~/public/accountIcons/favourite.svg';
 import emailPrefIcon from '~/public/accountIcons/emailPref.svg';
 import { WelcomeMessage } from './welcome-message';
 
-import { getSessionCustomerAccessToken, getSessionUserDetails } from '~/auth';
-import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
 
 interface AccountItem {
   children: ReactNode;
@@ -53,14 +51,15 @@ export default async function Account() {
   const t = await getTranslations('Account.Home');
   const ts = await getTranslations('Account.SalesHours');
 
+  //const t = useTranslations('Account.Home');
+  //const ts = useTranslations('Account.SalesHours');
+
   const breadcrumbs: any = [
     {
       label: 'Account Center',
       href: '',
     },
   ];
-
-  const sessionUser = await getSessionUserDetails();
 
   return (
     <div className="my-account-page m-auto mx-auto mb-[40px] mt-[24px] w-[90%] font-['Open_Sans'] text-[#353535]">
@@ -136,9 +135,8 @@ export default async function Account() {
           </div>
         </div>
       </div>
-      <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
     </div>
   );
 }
 
-export const runtime = 'edge';
+//export const runtime = 'edge';
