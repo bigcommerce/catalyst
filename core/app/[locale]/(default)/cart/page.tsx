@@ -120,7 +120,7 @@ export default async function Cart({ params }: Props) {
   };
   if(sessionUser){
    const customerGroupId = sessionUser?.customerGroupId;
-   customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+   customerGroupDetails = customerGroupId ? await GetCustomerGroupById(customerGroupId) : null;
    }
 
   const { data } = await client.fetch({

@@ -73,6 +73,7 @@ interface Props {
   isFromQuickView: boolean;
   customerGroupDetails: any;
   swatchOptions:any;
+  sessionUser: any;
 }
 
 export const DetailsFragment = graphql(
@@ -170,7 +171,8 @@ export const Details = ({
   children5,
   priceMaxRules,
   isFromQuickView,
-  swatchOptions
+  swatchOptions,
+  sessionUser
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -577,6 +579,7 @@ export const Details = ({
             closeIcon={closeIcon || ''}
             customerGroupDetails={customerGroupDetails}
             swatchOptions={swatchOptions}
+            userSession={userSession}
           />
         </div>
 

@@ -395,6 +395,7 @@ export default async function ProductPage(props: Props) {
                   }
                   children5={<MakeswiftPage locale={locale} path="/content/information-flyout" />}
                   priceMaxRules={priceMaxRules}
+                  sessionUser={sessionUser}
                 />
               </div>
             </div>
@@ -450,7 +451,7 @@ export default async function ProductPage(props: Props) {
           <ProductViewed product={product} />
           <ProductSchema product={product} identifier={newIdentifier} productSku={productSku} />
 
-          <KlaviyoTrackViewedProduct product={product} />
+          <KlaviyoTrackViewedProduct product={product} user={sessionUser as any} />
         </ProductProvider>
       </div>
     );

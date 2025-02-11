@@ -56,6 +56,7 @@ interface Props {
   showInSticky?: boolean;
   customerGroupDetails?: any;
   swatchOptions?:any;
+  sessionUser?: any;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -105,7 +106,8 @@ export const ProductForm = ({
   productMpn,
   customerGroupDetails,
   showInSticky = false,
-  swatchOptions
+  swatchOptions,
+  sessionUser = null
 }: Props) => {
   
   const t = useTranslations('Product.Form');
@@ -217,7 +219,7 @@ export const ProductForm = ({
 
     // Track Add To Cart action...
     if (product && product.prices) {
-      KlaviyoTrackAddToCart({ product: product as any });
+      KlaviyoTrackAddToCart({ product: product as any, user: sessionUser });
 
       aa('addedToCartObjectIDs', {
         eventName: 'Product Added To Cart',
