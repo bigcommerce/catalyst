@@ -136,6 +136,17 @@ export const getDeliveryMessage = async (
       return null; 
     }
   }
+  await getMetaFieldsByProduct(entityId, "delivery_message");
+  if (metaFields?.data?.length > 0) {
+    const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
+    const deliveryKey = deliveryMessages.join(','); 
+    try {
+      const parsedValue = JSON?.parse(deliveryKey);
+      return parsedValue; 
+    } catch (error) {
+      return null; 
+    }
+  }
   return null;
 };
 
