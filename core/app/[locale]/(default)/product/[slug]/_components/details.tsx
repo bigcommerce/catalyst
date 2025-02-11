@@ -579,7 +579,7 @@ export const Details = ({
             closeIcon={closeIcon || ''}
             customerGroupDetails={customerGroupDetails}
             swatchOptions={swatchOptions}
-            userSession={userSession}
+            sessionUser={sessionUser}
           />
         </div>
 
