@@ -16,7 +16,6 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 import {
   CheckProductFreeShipping,
   GetCustomerGroupById,
-  GetEmailId,
   GetProductMetaFields,
   GetProductVariantMetaFields,
 } from '~/components/management-apis';
@@ -135,11 +134,10 @@ export default async function ProductPage(props: Props) {
     let customerGroupDetails: CustomerGroup = {
       discount_rules: [],
     };
-    if (sessionUser) {
-      const customerData = await GetEmailId(sessionUser?.user?.email!);
-      const customerGroupId = customerData.data[0].customer_group_id;
-      customerGroupDetails = await GetCustomerGroupById(customerGroupId);
-    }
+    if(sessionUser){
+     const customerGroupId = sessionUser?.customerGroupId;
+     customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+     }
     const searchParams = await props.searchParams;
     const params = await props.params;
     const productSku: any = searchParams?.sku;
@@ -447,11 +445,7 @@ export default async function ProductPage(props: Props) {
           </div>
 
           <ProductViewed product={product} />
-          <ProductSchema
-            product={product}
-            identifier={newIdentifier}
-            productSku={productSku}
-          />
+          <ProductSchema product={product} identifier={newIdentifier} productSku={productSku} />
 
           <KlaviyoTrackViewedProduct product={product} />
         </ProductProvider>

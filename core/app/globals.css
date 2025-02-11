@@ -6,6 +6,11 @@
 @page {
   margin-block: 2cm;
 }
+
+.popup-container-parent ~ div[data-radix-popper-content-wrapper] div{
+  width: var(--radix-popper-anchor-width) !important;
+}
+
 .pdp-wishlist-input input:hover {
   border-color: var(--gray-200);
 }

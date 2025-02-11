@@ -25,6 +25,7 @@ import { NoShipCanada } from './belami-product-no-shipping-canada';
 import { Flyout } from '~/components/common-flyout';
 import { ProductPrice } from '~/belami/components/search/product-price';
 import { Promotion } from '~/belami/components/search/hit';
+import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 
 interface ProductOptionValue {
   entityId: number;
@@ -200,6 +201,11 @@ export const Details = ({
   // Single useEffect for handling scroll and image updates
   useEffect(() => {
     // Scroll handlers
+
+    //Dont remove this function this is for salesbuddy  app 
+    store_pdp_product_in_localstorage(product);
+    //Dont remove this function this is for salesbuddy  app 
+
     const handleScroll = () => {
       setShowStickyHeader(window.scrollY > 1500);
     };

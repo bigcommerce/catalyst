@@ -1,5 +1,5 @@
 'use client';
-
+ 
 import React, { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '~/components/ui/button';
@@ -9,15 +9,25 @@ import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumb
 import { addToCart } from '~/components/product-card/add-to-cart/form/_actions/add-to-cart';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
-import { GetVariantsByProductId } from '~/components/management-apis';
+import {
+  CheckProductFreeShipping,
+  GetProductMetaFields,
+  GetVariantsByProductId,
+} from '~/components/management-apis';
 import { useCommonContext } from '~/components/common-context/common-provider';
-
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { calculateProductPrice } from '~/components/common-functions';
+import { ProductPrice } from '~/belami/components/search/product-price';
+import { Promotion } from '~/belami/components/search/hit';
+import { getActivePromotions } from '~/belami/lib/fetch-promotions';
+import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_components/review-summary';
+ 
 interface OptionValue {
   entityId: number;
   label: string;
   isDefault: boolean;
 }
-
+ 
 interface ProductOption {
   __typename: string;
   entityId: number;
@@ -26,7 +36,7 @@ interface ProductOption {
   isVariantOption: boolean;
   values: OptionValue[];
 }
-
+ 
 interface ProductVariant {
   entityId: number;
   sku: string;
@@ -37,8 +47,22 @@ interface ProductVariant {
     salePrice: { value: number; currencyCode: string } | null;
   };
 }
-
+interface CategoryNode {
+  name: string;
+  path: string | null;
+  breadcrumbs?: {
+    edges: Array<{
+      node: {
+        entityId: any;
+        name: string;
+        path: string | null;
+      };
+    }> | null;
+  };
+}
+ 
 interface WishlistProduct {
+  categories: CategoryNode;
   entityId: number;
   name: string;
   sku: string;
@@ -46,6 +70,7 @@ interface WishlistProduct {
   path: string;
   availabilityV2: string;
   brand?: {
+    entityId: Number;
     name: string;
     path: string;
   };
@@ -61,26 +86,38 @@ interface WishlistProduct {
   productOptions?: ProductOption[];
   variants: ProductVariant[];
 }
-
+interface MetaField {
+  key: string;
+  value: string;
+  namespace: string;
+}
 interface WishlistItem {
   entityId: number;
   productEntityId: number;
   variantEntityId: number;
   product: WishlistProduct;
 }
+ 
 const ProductCard = ({
   item,
   wishlistEntityId,
   onDelete,
+  discountRules,
 }: {
   item: WishlistItem;
   wishlistEntityId: number;
   onDelete: (productId: number, wishlistItemId: number) => void;
+  discountRules: any;
 }) => {
   const { setDeletedProductId } = useCommonContext();
-
   const format = useFormatter();
   const [isLoading, setIsLoading] = useState(false);
+  const [updatedWishlist, setUpdatedWishlist] = useState<any[]>([]);
+  const [promotionsData, setPromotionsData] = useState<any>(null);
+  const [isFreeShipping, setIsFreeShipping] = useState(false);
+  const [categoryIds, setCategoryIds] = useState<number[]>([]);
+  const [hasActivePromotion, setHasActivePromotion] = useState(false);
+ 
   const [variantDetails, setVariantDetails] = useState<{
     mpn: string;
     calculated_price: number;
@@ -89,16 +126,13 @@ const ProductCard = ({
       label: string;
     }>;
   } | null>(null);
-
+ 
   const handleDeleteWishlist = () => {
     const productId = item.productEntityId;
-
-    // Call setDeletedProductId with both IDs
     setDeletedProductId(productId, wishlistEntityId);
-
     onDelete(productId, item.entityId);
   };
-
+ 
   useEffect(() => {
     const fetchVariantDetails = async () => {
       try {
@@ -106,7 +140,7 @@ const ProductCard = ({
         const variant = item.variantEntityId
           ? allVariantData.find((v: any) => v.id === item.variantEntityId)
           : allVariantData[0];
-
+ 
         if (variant) {
           setVariantDetails({
             mpn: variant.mpn,
@@ -117,90 +151,183 @@ const ProductCard = ({
       } catch (error) {}
     };
 
+    const fetchData = async () => {
+      try {
+        const promotions = await getActivePromotions(true);
+        const freeShipping = await CheckProductFreeShipping(item.productEntityId.toString());
+        const cats = item.product?.categories?.edges?.map((edge) => edge.node.entityId) || [];
+
+        // Check if there are any active promotions
+        const hasPromo = promotions && (Object.keys(promotions).length > 0 || freeShipping);
+
+        setPromotionsData(promotions);
+        setIsFreeShipping(freeShipping);
+        setCategoryIds(cats);
+        setHasActivePromotion(hasPromo);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        setHasActivePromotion(false);
+      }
+    };
+
+    fetchData();
     fetchVariantDetails();
-  }, [item]);
-
+  }, [item, discountRules]);
+ 
+  function handlePriceUpdatedProduct(product: any[]) {
+    if (Array.isArray(product) && JSON.stringify(updatedWishlist) !== JSON.stringify(product)) {
+      setUpdatedWishlist((prevWishlist) => {
+        if (JSON.stringify(prevWishlist) !== JSON.stringify(product)) {
+          return product;
+        }
+        return prevWishlist;
+      });
+    }
+  }
+  calculateProductPrice(item.product, 'wishlist', discountRules, categoryIds)
+    .then((result) => {
+      const priceUpdatedProduct = result;
+      handlePriceUpdatedProduct(priceUpdatedProduct);
+    })
+    .catch((error) => {
+      console.error('Error calculating product price:', error);
+    });
+   
   return (
-    <div className="flex flex-col space-y-4">
-      <div className="relative flex h-full flex-col rounded border border-gray-300 p-[1em]">
-        <div className="relative aspect-square overflow-hidden">
-          <Link href={item.product.path}>
-            <img
-              src={item.product.defaultImage.url.replace('{:size}', '500x500')}
-              alt={item.product.defaultImage.altText || item.product.name}
-              className="h-full w-full object-cover"
-            />
-          </Link>
-        </div>
-
-        <div className="flex justify-end">
-          <div
-            className="wishlist-product-delete-icon flex w-fit cursor-pointer justify-end rounded-full bg-[#E7F5F8]"
-            onClick={handleDeleteWishlist}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="35"
-              height="35"
-              viewBox="0 0 21 19"
-              fill="none"
-              className="p-[7px]"
-            >
-              <path
-                d="M10.3257 18.35L8.87568 17.03C3.72568 12.36 0.325684 9.27 0.325684 5.5C0.325684 2.41 2.74568 0 5.82568 0C7.56568 0 9.23568 0.81 10.3257 2.08C11.4157 0.81 13.0857 0 14.8257 0C17.9057 0 20.3257 2.41 20.3257 5.5C20.3257 9.27 16.9257 12.36 11.7757 17.03L10.3257 18.35Z"
-                fill="#008BB7"
+    <div className="flex h-full flex-col">
+      <div className="relative mb-4 flex h-full flex-col justify-between border border-gray-300 pb-0">
+        <div className="product-card-details p-[1em]">
+          <div className="relative aspect-square overflow-hidden">
+            <Link href={item.product.path}>
+              <img
+                src={item.product.defaultImage.url.replace('{:size}', '500x500')}
+                alt={item.product.defaultImage.altText || item.product.name}
+                className="h-full w-full object-cover"
               />
-            </svg>
+            </Link>
           </div>
-        </div>
 
-        <div className="flex justify-center">
-          {item.product.brand && (
-            <p className="mb-2 flex justify-center text-sm text-gray-600">
-              {item.product.brand.name}
-            </p>
-          )}
-        </div>
+          <div className="flex justify-end">
+            <div
+              className="wishlist-product-delete-icon flex w-fit cursor-pointer justify-end rounded-full bg-[#E7F5F8]"
+              onClick={handleDeleteWishlist}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="35"
+                height="35"
+                viewBox="0 0 21 19"
+                fill="none"
+                className="p-[7px]"
+              >
+                <path
+                  d="M10.3257 18.35L8.87568 17.03C3.72568 12.36 0.325684 9.27 0.325684 5.5C0.325684 2.41 2.74568 0 5.82568 0C7.56568 0 9.23568 0.81 10.3257 2.08C11.4157 0.81 13.0857 0 14.8257 0C17.9057 0 20.3257 2.41 20.3257 5.5C20.3257 9.27 16.9257 12.36 11.7757 17.03L10.3257 18.35Z"
+                  fill="#008BB7"
+                />
+              </svg>
+            </div>
+          </div>
 
-        <Link href={item.product.path}>
-          <h3 className="text-center font-medium text-black hover:text-gray-700">
-            {item.product.name}
-          </h3>
-        </Link>
-
-        {variantDetails && (
-          <div className="mt-2 space-y-2 text-center">
-            <p className="text-sm">
-              <span className="font-semibold">Sku: </span>
-              <span>{variantDetails.mpn}</span>
-            </p>
-
-            <p className="text-sm">
-              <span className="font-semibold">Price: </span>
-              <span>
-                {format.number(variantDetails.calculated_price, {
-                  style: 'currency',
-                  currency: 'USD',
-                })}
-              </span>
-            </p>
-
-            {variantDetails.option_values.map((option, index) => (
-              <p key={index} className="text-sm">
-                <span className="font-semibold">{option.option_display_name}: </span>
-                <span>{option.label}</span>
+          <div className="flex justify-center">
+            {item.product.brand && (
+              <p className="mb-2 flex justify-center text-sm text-gray-600">
+                {item.product.brand.name}
               </p>
-            ))}
+            )}
           </div>
-        )}
-      </div>
 
+          <Link href={item.product.path}>
+            <h3 className="text-center font-medium text-black hover:text-gray-700">
+              {item.product.name}
+            </h3>
+          </Link>
+
+          <div className="flex justify-center">
+            <ReviewSummary
+              data={{
+                reviewSummary: {
+                  numberOfReviews: item.product.reviewSummary?.numberOfReviews || '0',
+                  averageRating: item.product.reviewSummary?.averageRating || '0',
+                },
+              }}
+            />
+          </div>
+
+          {variantDetails && (
+            <div className="mt-2 space-y-2 text-center">
+              <p className="text-sm">
+                <span className="font-semibold">Sku: </span>
+                <span>{variantDetails.mpn}</span>
+              </p>
+              {updatedWishlist[0]?.UpdatePriceForMSRP && (
+                <ProductPrice
+                  defaultPrice={updatedWishlist[0].UpdatePriceForMSRP.originalPrice || 0}
+                  defaultSalePrice={
+                    updatedWishlist[0]?.UpdatePriceForMSRP.hasDiscount
+                      ? updatedWishlist[0].UpdatePriceForMSRP.updatedPrice
+                      : updatedWishlist[0]?.UpdatePriceForMSRP.warrantyApplied
+                        ? updatedWishlist[0].UpdatePriceForMSRP.updatedPrice
+                        : null
+                  }
+                  currency={
+                    updatedWishlist[0].UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'
+                  }
+                  format={format}
+                  // showMSRP={updatedWishlist[0].UpdatePriceForMSRP.showDecoration}
+                  warrantyApplied={updatedWishlist[0].UpdatePriceForMSRP.warrantyApplied}
+                  options={{
+                    useAsyncMode: false,
+                    useDefaultPrices: true,
+                  }}
+                  classNames={{
+                    root: 'product-price mt-2 flex justify-center items-center gap-[0.5em] text-center xl:text-center',
+                    newPrice:
+                      'text-center text-[18px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                    oldPrice:
+                      'inline-flex items-baseline text-center text-[14px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
+                    discount:
+                      'whitespace-nowrap text-center text-[14px] font-normal leading-8 tracking-[0.15px] text-brand-400',
+                    price:
+                      'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px] text-brand-400',
+                    msrp: '-ml-[0.5em] mb-1 text-[10px] text-gray-500',
+                  }}
+                />
+              )}
+              {variantDetails.option_values.map((option, index) => {
+                const updatedValue =
+                  option.option_display_name === 'Select Fabric Color'
+                    ? option.label.split('|')[0]
+                    : option.label;
+                return (
+                  <p key={index} className="text-sm">
+                    <span className="font-semibold">{option.option_display_name}: </span>
+                    <span>{updatedValue}</span>
+                  </p>
+                );
+              })}
+            </div>
+          )}
+          {/* Only render promotion section if there are active promotions */}
+        </div>
+        {hasActivePromotion && (
+            <div className="text-center">
+              <Promotion
+                promotions={promotionsData}
+                product_id={item.productEntityId}
+                brand_id={Number(item.product.brand?.entityId)}
+                category_ids={categoryIds}
+                free_shipping={isFreeShipping}
+              />
+            </div>
+          )}
+      </div>
+ 
       <form
         onSubmit={(e) => {
           e.preventDefault();
           setIsLoading(true);
           const formData = new FormData(e.currentTarget);
-
+ 
           addToCart(formData)
             .then((result) => {
               if (result.error) {
@@ -219,7 +346,7 @@ const ProductCard = ({
       >
         <input name="product_id" type="hidden" value={item.productEntityId} />
         <input name="variant_id" type="hidden" value={item.variantEntityId} />
-
+ 
         {item.product.availabilityV2.status === 'Unavailable' ? (
           <div className="flex flex-col items-center">
             <Button
@@ -253,7 +380,7 @@ const ProductCard = ({
   );
 };
 
-export function WishlistProductCard(): JSX.Element {
+export function WishlistProductCard(customerGroupDetails: { discount_rules: any }): JSX.Element {
   const [wishlistData, setWishlistData] = useState<{
     entityId: number;
     name: string;
@@ -262,6 +389,8 @@ export function WishlistProductCard(): JSX.Element {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  const discountRules = customerGroupDetails?.customerGroupDetails?.discount_rules;
 
   const handleDelete = (productId: number, wishlistItemId: number) => {
     if (!wishlistData) return;
@@ -276,7 +405,6 @@ export function WishlistProductCard(): JSX.Element {
     setWishlistData(updatedWishlist);
     localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
   };
-
   useEffect(() => {
     const loadWishlist = async () => {
       try {
@@ -284,7 +412,44 @@ export function WishlistProductCard(): JSX.Element {
         if (savedWishlist) {
           const parsedWishlist = JSON.parse(savedWishlist);
 
-          setWishlistData(parsedWishlist);
+          // Process each item to get review data
+          Promise.all(
+            parsedWishlist.items.map(async (item: WishlistItem) => {
+              try {
+                const productMetaFields = await GetProductMetaFields(item.productEntityId, '');
+                const averageRatingMetaField = productMetaFields?.find(
+                  (field: MetaField) => field?.key === 'sv-average-rating',
+                );
+                const totalReviewsMetaField = productMetaFields?.find(
+                  (field: MetaField) => field?.key === 'sv-total-reviews',
+                );
+
+                return {
+                  ...item,
+                  product: {
+                    ...item.product,
+                    reviewSummary: {
+                      numberOfReviews: totalReviewsMetaField?.value || '0',
+                      averageRating: averageRatingMetaField?.value || '0',
+                    },
+                  },
+                };
+              } catch (error) {
+                console.error('Error fetching meta fields:', error);
+                return item; // Return original item if meta fields fetch fails
+              }
+            }),
+          )
+            .then((updatedItems) => {
+              setWishlistData({
+                ...parsedWishlist,
+                items: updatedItems,
+              });
+            })
+            .catch((error) => {
+              console.error('Error processing items:', error);
+              setWishlistData(parsedWishlist);
+            });
         } else {
           router.push('/account/wishlists');
         }
@@ -305,15 +470,15 @@ export function WishlistProductCard(): JSX.Element {
       </div>
     );
   }
-
+ 
   if (error) {
     return <div className="flex items-center justify-center p-8 text-red-500">{error}</div>;
   }
-
+ 
   if (!wishlistData) {
     return <div></div>;
   }
-
+ 
   return (
     <div className="container m-auto mx-auto mb-12 w-[80%] px-4">
       <ComponentsBreadcrumbs
@@ -329,7 +494,7 @@ export function WishlistProductCard(): JSX.Element {
           },
         ]}
       />
-
+ 
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="mb-2 text-left text-xl font-medium leading-8 tracking-[0.15px] text-black">
@@ -346,7 +511,7 @@ export function WishlistProductCard(): JSX.Element {
           SHARE FAVORITES
         </Button>
       </div>
-
+ 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 2xl:grid-cols-4">
         {wishlistData?.items.map((item) => (
           <ProductCard
@@ -354,11 +519,14 @@ export function WishlistProductCard(): JSX.Element {
             item={item}
             wishlistEntityId={wishlistData.entityId}
             onDelete={handleDelete}
+            discountRules={discountRules}
           />
         ))}
       </div>
     </div>
   );
 }
-
+ 
 export default WishlistProductCard;
+ 
+ 

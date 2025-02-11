@@ -297,7 +297,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
     try {
       const response = await createCustomerAccount(createAccountData);
       setLoading((prev) => ({ ...prev, show3: false }));
-      if (response.status === 200) {
+      if (response?.data?.status === 200) {
         setCreateAccountSuccessMessage('Account created successfully!');
         setCreateAccountErrorMessage(null);
       } else {

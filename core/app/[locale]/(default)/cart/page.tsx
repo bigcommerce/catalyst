@@ -29,7 +29,7 @@ import { NoShipCanada } from '../product/[slug]/_components/belami-product-no-sh
 import { commonSettinngs } from '~/components/common-functions';
 import { zeroTaxCalculation } from '~/components/common-functions';
 import { calculateProductPrice } from '~/components/common-functions';
-import { GetCustomerGroupById, GetEmailId } from '~/components/management-apis';
+import { GetCustomerGroupById } from '~/components/management-apis';
 
 import heartIcon from '~/public/cart/heartIcon.svg';
 import applePayIcon from '~/public/cart/applePayIcon.svg';
@@ -119,10 +119,9 @@ export default async function Cart({ params }: Props) {
     discount_rules: []
   };
   if(sessionUser){
-  const customerData = await GetEmailId(sessionUser?.user?.email!);
-  const customerGroupId = customerData.data[0].customer_group_id;
-  customerGroupDetails = await GetCustomerGroupById(customerGroupId);
-  }
+   const customerGroupId = sessionUser?.customerGroupId;
+   customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+   }
 
   const { data } = await client.fetch({
     document: CartPageQuery,
@@ -151,7 +150,7 @@ export default async function Cart({ params }: Props) {
       return [{ error: 'Failed to retrive data' }];
     }
   };
-  const product_data_in_cart = cookie_agent_login_status
+  const product_data_in_cart = cookie_agent_login_status == "true"
     ? await get_product_price_data_in_cart(cartId)
     : [];
   const lineItems: any = [
@@ -313,7 +312,7 @@ for (const eachProduct of updatedLineItemWithoutAccessories) {
               discountRules={discountRules}
             />
           ))}
-          {cookie_agent_login_status === 'true' &&
+          {
             CustomItems.length > 0 &&
             CustomItems?.map((data) => {
               return (

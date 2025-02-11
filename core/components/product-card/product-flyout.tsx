@@ -9,8 +9,6 @@ import { BcImage } from '~/components/bc-image';
 import { useCommonContext } from '~/components/common-context/common-provider';
 import { Loader2 as Spinner } from 'lucide-react';
 import {
-  GetCustomerGroupById,
-  GetEmailId,
   GetProductMetaFields,
   GetProductVariantMetaFields,
   GetVariantsByProductId,
@@ -23,7 +21,7 @@ import { InputPlusMinus } from '../form-fields/input-plus-minus';
 import closeIcon from '~/public/add-to-cart/flyoutCloseIcon.svg';
 import { calculateProductPrice, commonSettinngs } from '../common-functions';
 
-const getVariantProductInfo = async (metaData: any, discountRules:any) => {
+const getVariantProductInfo = async (metaData: any, discountRules: any) => {
   let variantProductInfo: any = [],
     accessoriesLabelData: any = [],
     skuArrayData: any = [];
@@ -46,7 +44,7 @@ const getVariantProductInfo = async (metaData: any, discountRules:any) => {
       if (variantProductIdSkus?.length) {
         let parentProductInformation = await GetVariantsByProductSKU(variantProductIdSkus);
         //console.log("parent product-->>",parentProductInformation);
-        
+
         if (parentProductInformation?.length > 0) {
           for await (const productInfo of parentProductInformation) {
             const categories = removeEdgesAndNodes(productInfo?.categories);
@@ -55,8 +53,13 @@ const getVariantProductInfo = async (metaData: any, discountRules:any) => {
             let varaiantProductData = await GetVariantsByProductId(productInfo?.entityId);
             let variantNewObject: any = [];
             let productName: string = productInfo?.name;
-            let updatedProductData = await calculateProductPrice(varaiantProductData,"accessories",discountRules,categoryIds);
-            
+            let updatedProductData = await calculateProductPrice(
+              varaiantProductData,
+              'accessories',
+              discountRules,
+              categoryIds,
+            );
+
             let imageArray: Array<any> = removeEdgesAndNodes(productInfo?.images);
             updatedProductData?.forEach(async (item: any) => {
               if (skuArrayData?.find((sku: any) => sku == item?.sku)) {
@@ -81,7 +84,7 @@ const getVariantProductInfo = async (metaData: any, discountRules:any) => {
                   mpn: item?.mpn,
                   sku: item?.sku,
                   name: optionValues,
-                  purchasing_disabled:item?.purchasing_disabled,
+                  purchasing_disabled: item?.purchasing_disabled,
                   selectedOptions: item?.selectedOption,
                   update_price_for_msrp: item?.UpdatePriceForMSRP,
                 });
@@ -132,29 +135,32 @@ export const ProductFlyout = ({
   let setOpen;
   let currencyCode: any;
   const [productQty, setProductQty] = useState<number>(1);
-  let variantData: any = [], optionsData: any = []; 
-  if(from == 'pdp') {
+  let variantData: any = [],
+    optionsData: any = [];
+  if (from == 'pdp') {
     variantData = removeEdgesAndNodes(product?.variants);
     optionsData = removeEdgesAndNodes(product?.productOptions);
     open = productFlyout.open;
     setOpen = productFlyout.handlePopup;
-    currencyCode = productData?.extendedSalePrice?.currencyCode
+    currencyCode = productData?.extendedSalePrice?.currencyCode;
   } else {
-    variantData = [{
-      entityId: product?.variantEntityId,
-      sku: product?.sku
-    }];
+    variantData = [
+      {
+        entityId: product?.variantEntityId,
+        sku: product?.sku,
+      },
+    ];
     optionsData = product?.selectedOptions;
     open = showFlyout;
     setOpen = showFlyoutFn;
-    currencyCode = product?.extendedSalePrice?.currencyCode
+    currencyCode = product?.extendedSalePrice?.currencyCode;
   }
-  
+
   const [variantProductData, setVariantProductData] = useState<any>([]);
-  let productId = (from == 'pdp') ? product?.entityId: product?.productEntityId;
-  let productQtyData = (from == 'pdp') ? productData?.quantity: product?.quantity;
+  let productId = from == 'pdp' ? product?.entityId : product?.productEntityId;
+  let productQtyData = from == 'pdp' ? productData?.quantity : product?.quantity;
   if (variantData && optionsData && optionsData?.length > 0) {
-    let variantProduct: any = variantData?.find((item: any) => item?.sku == product?.sku);    
+    let variantProduct: any = variantData?.find((item: any) => item?.sku == product?.sku);
     useEffect(() => {
       const getProductMetaData = async () => {
         let metaData = await GetProductVariantMetaFields(
@@ -162,11 +168,10 @@ export const ProductFlyout = ({
           variantProduct?.entityId,
           'Accessories',
         );
-        let productData = await getVariantProductInfo(metaData,discountRules);
+        let productData = await getVariantProductInfo(metaData, discountRules);
         setVariantProductData([...productData]);
-        var getAllCommonSettinngsValues =await commonSettinngs([product?.brand?.entityId]);
+        var getAllCommonSettinngsValues =await commonSettinngs([product?.baseCatalogProduct?.brand?.entityId]);
         setCommonSettingsValues(getAllCommonSettinngsValues);
-        
       };
 
       if (variantProduct) {
@@ -178,7 +183,7 @@ export const ProductFlyout = ({
     useEffect(() => {
       const getProductMetaData = async () => {
         let metaData = await GetProductMetaFields(productId, 'Accessories');
-        let productData = await getVariantProductInfo(metaData,discountRules);
+        let productData = await getVariantProductInfo(metaData, discountRules);
         setVariantProductData([...productData]);
       };
       getProductMetaData();
@@ -191,15 +196,7 @@ export const ProductFlyout = ({
       <Dialog.Root open={open} onOpenChange={setOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
-          <Dialog.Content className=" xl:w-[calc(36%-1.45em)] 
-           lg:max-w-[610px]
-          popup-container-parent data-[state=open]:animate-contentShow 
-          left-[50%] sm:left-[unset]
-           fixed right-[unset] sm:right-[0] top-[50%] z-[100] 
-           flex h-[100vh] w-[90vw] max-w-[610px]  [transform:translate(-50%,-50%)] 
-           sm:translate-y-[-50%] animate-mobSlideInFromLeft sm:animate-slideInFromLeft
-            flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] 
-            shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+          <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow fixed left-[50%] right-[unset] top-[50%] z-[100] flex h-[101vh] w-[90vw] max-w-[610px] animate-mobSlideInFromLeft flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] [transform:translate(-50%,-50%)] focus:outline-none sm:left-[unset] sm:right-[0] sm:translate-y-[-50%] sm:animate-slideInFromLeft lg:max-w-[610px] xl:w-[calc(36%-1.45em)]">
             <div
               className={`flyout-loading ${isLoading ? 'flex' : 'hidden'} fixed left-0 top-0 z-50 h-full w-full items-center justify-center`}
             >
@@ -225,87 +222,90 @@ export const ProductFlyout = ({
                 </Dialog.Close>
                 <div className="gap-1.25 flex w-full flex-row items-center justify-center bg-[#EAF4EC] px-2.5">
                   <Dialog.Title className="text-mauve12 m-0 text-[20px] font-medium tracking-[0.15px] text-[#167E3F]">
-                    {from == 'pdp' ? 'Added to Cart!' : 'Add Accessories' }
+                    {from == 'pdp' ? 'Added to Cart!' : 'Add Accessories'}
                   </Dialog.Title>
                 </div>
               </div>
               <Dialog.Description></Dialog.Description>
               {from == 'pdp' && (
-              <Dialog.Content className="popup-box1 !pointer-events-auto flex flex-col items-center gap-[30px] ssm:flex-row ssm:items-start">
-                <div className="popup-box1-div1 relative flex h-[200px] w-[200px] border border-[#cccbcb] ssm:h-[160px] ssm:w-[140px]">
-                  <BcImage
-                    alt={productData?.name}
-                    width={140}
-                    height={140}
-                    unoptimized={true}
-                    className="popup-box1-div-img absolute h-full w-full object-contain"
-                    src={productData?.imageUrl}
-                  />
-                </div>
-                <div className="popup-box1-div2 relative flex max-w-[360px] flex-shrink-[50] flex-col gap-[3px] text-center ssm:gap-[1px] ssm:text-start [&_.input-plus-minus-container]:self-center [&_.input-plus-minus-container]:ssm:[align-self:unset]">
-                  <p className="text-center text-[14px] font-normal tracking-[0.25px] text-[#353535] ssm:text-left">
-                    {productData?.name}
-                  </p>
-                  <p className="popup-box1-div2-sku text-center text-[12px] leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:text-left ssm:tracking-[0.015625rem]">
-                    SKU: {product?.mpn}
-                  </p>
-                  {productData?.selectedOptions?.map((selectedOption: any, index: number) => {
-                    let pipeLineData = '';
-                    if (index < productData?.selectedOptions?.length - 2) {
-                      pipeLineData = ',';
-                    }
-                    return (
-                      <div
-                        key={selectedOption.entityId}
-                        className="text-center ssm:flex ssm:items-center ssm:text-start"
-                      >
-                        <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
-                          {selectedOption.name}:
-                        </span>
-                        <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
-                          {selectedOption.value}
-                        </span>
-                        {pipeLineData && (
-                          <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
-                            {' '}
-                            {pipeLineData}
-                          </span>
-                        )}
-                      </div>
-                    );
-                  })}
-                  <div className="md:flex-row">
-                    {productData?.originalPrice?.value &&
-                    productData?.selectedOptions?.length === 0 &&
-                    productData?.originalPrice?.value !== productData?.listPrice?.value ? (
-                      <div className="">
-                        {format.number(productData?.originalPrice?.value * productData?.quantity, {
-                          style: 'currency',
-                          currency: productData?.originalPrice?.currencyCode,
-                        })}
-                      </div>
-                    ) : null}
-                    {productData?.extendedSalePrice?.value ? (
-                      <div className="text-center text-[14px] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] ssm:text-right">
-                        {format.number(productData?.extendedSalePrice?.value, {
-                          style: 'currency',
-                          currency: productData?.extendedSalePrice?.currencyCode,
-                        })}
-                      </div>
-                    ) : null}
+                <Dialog.Content className="popup-box1 !pointer-events-auto flex flex-col items-center gap-[30px] ssm:flex-row ssm:items-start">
+                  <div className="popup-box1-div1 relative flex h-[200px] w-[200px] border border-[#cccbcb] ssm:h-[160px] ssm:w-[140px]">
+                    <BcImage
+                      alt={productData?.name}
+                      width={140}
+                      height={140}
+                      unoptimized={true}
+                      className="popup-box1-div-img absolute h-full w-full object-contain"
+                      src={productData?.imageUrl}
+                    />
                   </div>
-                  <InputPlusMinus
-                    product="true"
-                    isLoading={isLoading}
-                    setIsLoading={setIsLoading}
-                    productData={productData}
-                  />
-                </div>
-              </Dialog.Content>
+                  <div className="popup-box1-div2 relative flex max-w-[360px] flex-shrink-[50] flex-col gap-[3px] text-center ssm:gap-[1px] ssm:text-start [&_.input-plus-minus-container]:self-center [&_.input-plus-minus-container]:ssm:[align-self:unset]">
+                    <p className="text-center text-[14px] font-normal tracking-[0.25px] text-[#353535] ssm:text-left">
+                      {productData?.name}
+                    </p>
+                    <p className="popup-box1-div2-sku text-center text-[12px] leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:text-left ssm:tracking-[0.015625rem]">
+                      SKU: {product?.mpn}
+                    </p>
+                    {productData?.selectedOptions?.map((selectedOption: any, index: number) => {
+                      let pipeLineData = '';
+                      if (index < productData?.selectedOptions?.length - 2) {
+                        pipeLineData = ',';
+                      }
+                      return (
+                        <div
+                          key={selectedOption.entityId}
+                          className="text-center inline ssm:text-start"
+                        >
+                          <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
+                            {selectedOption.name}:
+                          </span>
+                          <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
+                            {selectedOption.value}
+                          </span>
+                          {pipeLineData && (
+                            <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
+                              {' '}
+                              {pipeLineData}
+                            </span>
+                          )}
+                        </div>
+                      );
+                    })}
+                    <div className="md:flex-row">
+                      {productData?.originalPrice?.value &&
+                      productData?.selectedOptions?.length === 0 &&
+                      productData?.originalPrice?.value !== productData?.listPrice?.value ? (
+                        <div className="">
+                          {format.number(
+                            productData?.originalPrice?.value * productData?.quantity,
+                            {
+                              style: 'currency',
+                              currency: productData?.originalPrice?.currencyCode,
+                            },
+                          )}
+                        </div>
+                      ) : null}
+                      {productData?.extendedSalePrice?.value ? (
+                        <div className="text-center text-[14px] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] ssm:text-right">
+                          {format.number(productData?.extendedSalePrice?.value, {
+                            style: 'currency',
+                            currency: productData?.extendedSalePrice?.currencyCode,
+                          })}
+                        </div>
+                      ) : null}
+                    </div>
+                    <InputPlusMinus
+                      product="true"
+                      isLoading={isLoading}
+                      setIsLoading={setIsLoading}
+                      productData={productData}
+                    />
+                  </div>
+                </Dialog.Content>
               )}
               
               {variantProductData && variantProductData?.length > 0 
-               && commonSettingsValues?.[product?.brand?.entityId]?.use_accessories  
+               && commonSettingsValues?.[product?.baseCatalogProduct?.brand?.entityId]?.use_accessories  
               && (
                 <>
                   <hr className="my-[20px] border-[#93cfa1]" />
@@ -318,7 +318,7 @@ export const ProductFlyout = ({
                         {variantProductData &&
                           variantProductData?.map((accessories: any, index: number) => (
                             <div
-                              className="product-card flex flex-col items-center gap-[20px] border border-[#cccbcb] p-[20px] sm:flex-row"
+                              className="product-card flex flex-col items-center gap-[20px] border border-[#cccbcb] p-[20px] sm:flex-row xl:flex-col 4xl:flex-row"
                               key={index}
                             >
                               <ProductAccessories
@@ -361,8 +361,8 @@ export const ProductFlyout = ({
                         </div>
                       </div>
                     </div>
-                    
-                    <div className="cart-buttons grid grid-cols-1 ssm:grid-cols-2 items-start gap-[10px]">
+
+                    <div className="cart-buttons grid grid-cols-1 items-start gap-[10px] ssm:grid-cols-2">
                       <Dialog.Close asChild>
                         <Link
                           className="hover:text-secondary flex h-[41px] w-[100%] flex-row items-center justify-center self-stretch rounded-[3px] border border-[#b3dce8] text-[14px] text-sm font-medium uppercase tracking-[1.25px] text-[#002A37]"

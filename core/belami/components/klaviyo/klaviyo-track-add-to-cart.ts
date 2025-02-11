@@ -8,12 +8,13 @@ declare global {
 }
 
 type KlaviyoEvent =
+  | [eventType: 'identify', item: Record<string, unknown>]
   | [eventType: 'trackViewedItem', item: Record<string, unknown>]
   | [eventType: 'track', eventName: string, item: Record<string, unknown>];
 
 type Product = ExistingResultType<typeof getProduct>;
 
-export function klaviyoTrackAddToCart(product: Product) {
+export function KlaviyoTrackAddToCart({ product, user }: { product: Product, user?: { email: string } }) {
   const klaviyo = window.klaviyo || [];
 
   const addedToCartProductData = {
@@ -24,5 +25,6 @@ export function klaviyoTrackAddToCart(product: Product) {
     ...(product.prices && { Price: product.prices.price.value }),
   };
 
+  klaviyo.push(['identify', user && user.email ? user : { anonymous: true }]);
   klaviyo.push(['track', 'Catalyst Added to Cart', addedToCartProductData]);
 }
