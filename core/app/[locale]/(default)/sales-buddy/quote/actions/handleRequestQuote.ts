@@ -157,22 +157,6 @@ export const handleRequestQuote = async ( data: ProductFormData,
       try {        
 
        const variantSku = product?.variants?.edges?.find((Item)=>Item?.node?.sku === product.sku);
-      //  const bc_variant_name =selectedOptions.multipleChoices
-      //  ?.map(option => {
-      //    if (Array.isArray(product.productOptions.edges)) {
-
-      //      const optionFromProduct = product.productOptions.edges.find((prodOption: any) => 
-      //        prodOption.node.entityId === option.optionEntityId
-      //      );
-      //     console.log("Testing EdgesTest",optionFromProduct?.node.values);
-      //      if (Array.isArray(optionFromProduct?.node?.values?.edges)) {
-      //        const selectedValue = optionFromProduct?.node?.values?.edges.find((valueItem: any) => valueItem.node.entityId === option.optionValueEntityId);
-      //        return selectedValue?.node.label;
-      //      }
-      //      console.log("Testing",bc_variant_name) ;
-      //    }
-      //    return undefined;
-      //  }).filter(Boolean)
 
       const productSelectedOpt = selectedOptions.multipleChoices
   ?.map(option => {
@@ -209,9 +193,10 @@ const prodModifierOptionLabel = productSelectedOpt?.filter(item => item?.type ==
 
 
 
+
        const cInfo = await customerInfo();
         const reqQuoteItems = {
-              // qr_customer: cInfo,
+              qr_customer: cInfo,
               qr_product:{
                 bc_product_id:productEntityId,
                 bc_sku: product.sku,
@@ -222,32 +207,10 @@ const prodModifierOptionLabel = productSelectedOpt?.filter(item => item?.type ==
                 bc_modifier_id:prodModifierId,
                 bc_modifier_option:prodModifierOptionId,
                 bc_modifier_option_name:prodModifierOptionLabel,
-                // selectedOptions:selectedOptions,
-                // productSelectedOpt,
-                // productInfo:product
-
+                selectedOptions:selectedOptions,
+                productInfo:product,
               }
             }
-
-      //       let postData =  JSON.stringify(reqQuoteItems);
-      //       const apiUrl = process.env.REQUEST_A_QOUTE_API_URL!;
-      //       const apiEnv = process.env.REQUEST_A_QOUTE_API_ENV!;
-      //       const apiPath = process.env.REQUEST_A_QOUTE_API_PATH!;
-
-      //       let data = await fetch("https://tukf5296i6.execute-api.us-east-1.amazonaws.com/dev/quote-api/v1/upsert-cart-data?store=v8uydpfi9m", {
-      //         method: 'POST',
-      //         headers: {
-      //           'Content-Type': 'application/json',
-      //         },
-      //         body: postData,
-      //       }).then((res) => res.json())
-      //       .then((jsonData) => {
-      //         console.log(jsonData,"json");
-      //         return jsonData;
-      // })
-      //       .catch((error) => {
-      //         return { status: 500, error: error.message };
-      //       });
 
           cookieStore.set({
             name: 'RequestQuote',

@@ -18,6 +18,8 @@ import { Button } from '~/components/ui/button';
 import { bodl } from '~/lib/bodl';
 
 import { handleAddToCart } from './_actions/add-to-cart';
+ 
+import { handleRequestQuote } from '~/app/[locale]/(default)/sales-buddy/quote/actions/handleRequestQuote';
 
 import { CheckboxField } from './fields/checkbox-field';
 import { DateField } from './fields/date-field';
@@ -39,7 +41,6 @@ import { BcImage } from '~/components/bc-image';
 import { Label } from '~/components/ui/form';
 import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
 import SkyxFlyout from '~/components/skyx-flyout/skyxFlyout';
-import { handleRequestQuote } from '~/app/[locale]/(default)/sales-buddy/quote/actions/handleRequestQuote';
 
 aa('init', {
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
@@ -221,7 +222,7 @@ export const ProductForm = ({
 
     // Track Add To Cart action...
     if (product && product.prices) {
-      klaviyoTrackAddToCart({ product: product as any });
+      klaviyoTrackAddToCart({product: product as any});
 
       aa('addedToCartObjectIDs', {
         eventName: 'Product Added To Cart',
@@ -255,56 +256,12 @@ export const ProductForm = ({
      console.log(quoteResult,"requestQuoteData");
      debugger;
 
-//             const bc_variant_name =quoteResult.data?.qr_product.selectedOptions.multipleChoices
-//             ?.map(option => {
-//               if (Array.isArray(quoteResult.data?.qr_product.productInfo.productOptions.edges)) {
-
-//                 const optionFromProduct = quoteResult.data?.qr_product.productInfo.productOptions.edges.find((prodOption: any) => 
-//                   prodOption.node.entityId === option.optionEntityId
-//                 );
-//                console.log("Testing EdgesTest",optionFromProduct?.node.values);
-//                 if (Array.isArray(optionFromProduct?.node?.values?.edges)) {
-//                   const selectedValue = optionFromProduct?.node?.values?.edges.find((valueItem: any) => valueItem.node.entityId === option.optionValueEntityId);
-//                   return selectedValue?.node.label;
-//                 }
-//                 console.log("Testing",bc_variant_name) ;
-//               }
-//               return undefined;
-//             }).filter(Boolean)
-// console.log(bc_variant_name,"")
       localStorage.setItem("Q_R_data",JSON.stringify(quoteResult));
 
       if (quoteResult.error) {
         toast.error(`Error requesting quote: ${quoteResult.error}`);
         return;
       }
-    // try {
-    //   let req = await fetch("https://tukf5296i6.execute-api.us-east-1.amazonaws.com/dev/quote-api/v1/upsert-cart-data", {
-    //     method: 'POST',
-    //     headers: {
-    //       'Content-Type': 'application/json',
-    //     },
-    //     body: JSON.stringify(quoteResult),
-    //   });
-    
-    //   if (!req.ok) {
-    //     console.error('API error:', req.status, req.statusText);
-    //     toast.error('Failed to send quote');
-    //     return;
-    //   }
-    
-    //   const jsonData = await req.json();
-    //   console.log(jsonData, "json");
-    
-    //   if (jsonData.error) {
-    //     toast.error(`API error: ${jsonData.error}`);
-    //   } else {
-    //     toast.success('Successfully requested a quote');
-    //   }
-    // } catch (error) {
-    //   console.error('Error during fetch:', error);
-    //   toast.error('Error sending the quote request');
-    // }
   }
 }
 
