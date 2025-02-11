@@ -386,10 +386,14 @@ function RatingCertifications({ data }: any) {
 
 function AmountUnitValue({ data }: any) {
   const value =
-    typeof data === 'string' ? JSON.parse(data) : typeof data === 'object' ? data : null;
-  const amount: number | null = value && value.amount ? +value.amount : null;
-  const unit: string | null = value && value.unit ? value.unit.toLowerCase() : null;
-  return <>{amount ? amount + (unit ? ' ' + unit : '') : null}</>;
+    typeof data === 'string' && (data.includes('{') || data.includes('[')) ? JSON.parse(data) : data;
+  if (typeof data === 'object') {
+    const amount: number | null = value && value.amount ? Number(value.amount) : null;
+    const unit: string | null = value && value.unit ? value.unit.toLowerCase() : null;
+    return <>{amount ? amount + (unit ? ' ' + unit : '') : null}</>;
+  } else {
+    return data;
+  }
 }
 
 function ColorSwatches({ variants, onImageClick }: any) {
@@ -616,122 +620,6 @@ export function Hit({
               }}
             />
           </div>
-
-          {/*
-          {useAsyncMode && !useDefaultPrices ? (
-            <div className="mx-auto mt-2 flex flex-wrap items-center justify-center space-x-2">
-              {hit.on_clearance && (
-                <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
-                  Clearance
-                </span>
-              )}
-
-              {!isLoading && (price || salePrice) ? (
-                <div className="mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start">
-                  {salePrice && salePrice > 0 ? (
-                    <s className="order-1">
-                      {format.number(price || 0, { style: 'currency', currency: currency })}
-                    </s>
-                  ) : (
-                    <span className="order-1">
-                      {format.number(price || 0, { style: 'currency', currency: currency })}
-                    </span>
-                  )}
-                  {price && salePrice && salePrice > 0 ? (
-                    <strong className="order-3 whitespace-nowrap font-bold text-brand-400 md:order-2">
-                      Save {getDiscount(price, salePrice)}%
-                    </strong>
-                  ) : null}
-                  {salePrice && salePrice > 0 ? (
-                    <span className="order-2 md:order-3">
-                      {format.number(salePrice || 0, { style: 'currency', currency: currency })}
-                    </span>
-                  ) : null}
-                </div>
-              ) : !isLoading && isLoaded ? (
-                hit.prices ? (
-                  <div className="mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start">
-                    {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                    hit.on_sale ? (
-                      <s className="order-1">
-                        {format.number(hit.prices.USD || 0, {
-                          style: 'currency',
-                          currency: currency,
-                        })}
-                      </s>
-                    ) : (
-                      <span className="order-1">
-                        {format.number(hit.prices.USD || 0, {
-                          style: 'currency',
-                          currency: currency,
-                        })}
-                      </span>
-                    )}
-                    {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                    hit.on_sale ? (
-                      <strong className="order-3 whitespace-nowrap font-bold text-brand-400 md:order-2">
-                        Save{' '}
-                        {getDiscount(
-                          hit.prices.USD ?? hit.price,
-                          hit.sales_prices.USD ?? hit.newPrice,
-                        )}
-                        %
-                      </strong>
-                    ) : null}
-                    {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                    hit.on_sale ? (
-                      <span className="order-2 md:order-3">
-                        {format.number(hit.sales_prices.USD || 0, {
-                          style: 'currency',
-                          currency: currency,
-                        })}
-                      </span>
-                    ) : null}
-                  </div>
-                ) : null
-              ) : (
-                'Loading...'
-              )}
-            </div>
-          ) : hit.prices ? (
-            <div className="mx-auto mt-2 flex flex-wrap items-center justify-center space-x-2">
-              {hit.on_clearance && (
-                <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
-                  Clearance
-                </span>
-              )}
-              <div className="mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start">
-                {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                hit.on_sale ? (
-                  <s className="order-1">
-                    {format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}
-                  </s>
-                ) : (
-                  <span className="order-1">
-                    {format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}
-                  </span>
-                )}
-                {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                hit.on_sale ? (
-                  <strong className="order-3 whitespace-nowrap font-bold text-brand-400 md:order-2">
-                    Save{' '}
-                    {getDiscount(hit.prices.USD ?? hit.price, hit.sales_prices.USD ?? hit.newPrice)}
-                    %
-                  </strong>
-                ) : null}
-                {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                hit.on_sale ? (
-                  <span className="order-2 md:order-3">
-                    {format.number(hit.sales_prices.USD || 0, {
-                      style: 'currency',
-                      currency: currency,
-                    })}
-                  </span>
-                ) : null}
-              </div>
-            </div>
-          ) : null}
-          */}
           {hit.reviews_count > 0 && (
             <ReviewSummary
               numberOfReviews={hit.reviews_count}
@@ -761,7 +649,7 @@ export function Hit({
       data-id={hit.objectID}
       className="product w-full rounded-none border border-gray-300 p-4"
     >
-      <div className="tems-start flex flex-col space-x-0 space-y-4 md:flex-row md:space-x-8 md:space-y-0">
+      <div className="flex flex-col space-x-0 space-y-4 md:flex-row md:space-x-8 md:space-y-0">
         <div className="w-full flex-none md:w-auto md:max-w-[240px] lg:max-w-[300px]">
           <div className="mb-4 mr-4 flex flex-none items-center space-x-1">
             {hit.on_sale && (

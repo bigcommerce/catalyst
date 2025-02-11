@@ -30,7 +30,7 @@ import { ProductFlyout } from '~/components/product-card/product-flyout';
 import { useCommonContext } from '~/components/common-context/common-provider';
 
 import aa from 'search-insights';
-import { klaviyoTrackAddToCart } from '~/belami/components/klaviyo/klaviyo-track-add-to-cart';
+import { KlaviyoTrackAddToCart } from '~/belami/components/klaviyo/klaviyo-track-add-to-cart';
 
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import { getCartIdCookie } from '~/app/[locale]/(default)/sales-buddy/_actions/cart';
@@ -217,7 +217,7 @@ export const ProductForm = ({
 
     // Track Add To Cart action...
     if (product && product.prices) {
-      klaviyoTrackAddToCart({ product: product as any });
+      KlaviyoTrackAddToCart({ product: product as any });
 
       aa('addedToCartObjectIDs', {
         eventName: 'Product Added To Cart',
