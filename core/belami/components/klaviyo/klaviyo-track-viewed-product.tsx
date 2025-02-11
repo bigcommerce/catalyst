@@ -23,12 +23,14 @@ export function KlaviyoTrackViewedProduct({ product, user }: { product: NonNulla
     const viewedProductData = {
       Name: product.name,
       ProductID: product.entityId,
-      ...(product.defaultImage && { ImageURL: product.defaultImage.url }),
+      ...(product.defaultImage && product.defaultImage.url && { ImageURL: product.defaultImage.url.replace('{:size}', '386x513') }),
       ...(product.brand && { Brand: product.brand.name }),
       ...(product.prices && { Price: product.prices.price.value }),
     };
 
-    klaviyo.push(['identify', user && user.email ? user : { anonymous: true }]);
+//alert(JSON.stringify(user && user.email ? user : { anonymous: true }));
+    //klaviyo.push(['identify', user && user.email ? user : { anonymous: true }]);
+    //klaviyo.push(['identify', { email: "dmitry-tester@test.com" }]);
     klaviyo.push(['track', 'Catalyst Viewed Product', viewedProductData]);
     klaviyo.push(['trackViewedItem', viewedProductData]);
   }, []);  //}, [product.brand, product.defaultImage, product.entityId, product.name, product.prices]);

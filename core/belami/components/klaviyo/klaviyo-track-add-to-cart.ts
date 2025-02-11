@@ -20,7 +20,7 @@ export function KlaviyoTrackAddToCart({ product, user }: { product: Product, use
   const addedToCartProductData = {
     Name: product.name,
     ProductID: product.entityId,
-    ...(product.defaultImage && { ImageURL: product.defaultImage.url }),
+    ...(product.defaultImage && product.defaultImage.url && { ImageURL: product.defaultImage.url.replace('{:size}', '386x513') }),
     ...(product.brand && { Brand: product.brand.name }),
     ...(product.prices && { Price: product.prices.price.value }),
   };
