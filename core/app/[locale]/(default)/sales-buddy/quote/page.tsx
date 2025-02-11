@@ -36,7 +36,6 @@ const page = () => {
   ];
 
 
-
   return (
     <div className="my-[2rem] flex justify-center text-[#353535]">
       <div className="flex w-[90%] flex-col gap-[30px]">

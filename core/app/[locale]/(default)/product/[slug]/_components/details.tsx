@@ -26,6 +26,7 @@ import { Flyout } from '~/components/common-flyout';
 import { ProductPrice } from '~/belami/components/search/product-price';
 import { Promotion } from '~/belami/components/search/hit';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
+import RequestQuoteButton from '../../../sales-buddy/quote/_components/RequestQuoteButton';
 
 interface ProductOptionValue {
   entityId: number;
@@ -645,7 +646,8 @@ export const Details = ({
           />
 
 
-          <RequestQuote children={children3} />
+          {/* <RequestQuote children={children3} /> */}
+          <RequestQuoteButton/>
           <CertificationsAndRatings
             certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4} />
           <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}

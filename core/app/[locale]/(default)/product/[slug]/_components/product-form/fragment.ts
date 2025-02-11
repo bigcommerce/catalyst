@@ -12,6 +12,37 @@ export const ProductFormFragment = graphql(
   `
     fragment ProductFormFragment on Product {
       entityId
+      name
+      mpn
+      sku
+      upc
+      customFields{
+      edges
+      }
+      weight {
+      unit
+      value
+      }
+      UpdatePriceForMSRP {
+      originalPrice
+      discount
+      hasDiscount
+      updatedPrice
+      }
+      prices{
+       basePrice {
+       currencyCode
+       value
+       }
+      }
+      inventory{
+      isInStock
+      prices
+      }
+      brand {
+      entityId
+      name
+      }
       variants {
         edges {
           node {
