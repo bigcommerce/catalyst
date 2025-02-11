@@ -39,6 +39,8 @@ import agentIcon from '~/public/cart/agentIcon.svg';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { Flyout } from '~/components/common-flyout';
 
+import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
+
 interface Params {
   locale: string;
 }
@@ -379,6 +381,8 @@ for (const eachProduct of updatedLineItemWithoutAccessories) {
       </div>
 
       <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
+
+      <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
     </div>
   );
 }

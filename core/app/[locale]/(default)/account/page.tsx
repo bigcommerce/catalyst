@@ -139,4 +139,4 @@ export default async function Account() {
   );
 }
 
-//export const runtime = 'edge';
+export const runtime = 'edge';
