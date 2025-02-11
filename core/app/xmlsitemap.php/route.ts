@@ -12,4 +12,4 @@ export const GET = () => {
   permanentRedirect({ href: '/sitemap.xml', locale: defaultLocale });
 };
 
-// export const runtime = 'edge';
+export const runtime = 'edge';

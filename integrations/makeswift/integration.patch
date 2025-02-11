@@ -175,7 +175,7 @@ index 00000000..bea1b56f
 +  return NextResponse.json(removeEdgesAndNodes(data.site.featuredProducts));
 +};
 +
-+// export const runtime = 'edge';
++ export const runtime = 'edge';
 diff --git a/core/components/ui/accordions/accordion.makeswift.tsx b/core/components/ui/accordions/accordion.makeswift.tsx
 new file mode 100644
 index 00000000..a70a94e8
