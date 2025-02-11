@@ -1,5 +1,5 @@
 'use client';
-
+ 
 import React, { useEffect, useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '~/components/ui/button';
@@ -18,16 +18,16 @@ import { useCommonContext } from '~/components/common-context/common-provider';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { calculateProductPrice } from '~/components/common-functions';
 import { ProductPrice } from '~/belami/components/search/product-price';
-import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_components/review-summary';
 import { Promotion } from '~/belami/components/search/hit';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
-
+import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_components/review-summary';
+ 
 interface OptionValue {
   entityId: number;
   label: string;
   isDefault: boolean;
 }
-
+ 
 interface ProductOption {
   __typename: string;
   entityId: number;
@@ -36,7 +36,7 @@ interface ProductOption {
   isVariantOption: boolean;
   values: OptionValue[];
 }
-
+ 
 interface ProductVariant {
   entityId: number;
   sku: string;
@@ -60,7 +60,7 @@ interface CategoryNode {
     }> | null;
   };
 }
-
+ 
 interface WishlistProduct {
   categories: CategoryNode;
   entityId: number;
@@ -97,6 +97,7 @@ interface WishlistItem {
   variantEntityId: number;
   product: WishlistProduct;
 }
+ 
 const ProductCard = ({
   item,
   wishlistEntityId,
@@ -116,7 +117,7 @@ const ProductCard = ({
   const [isFreeShipping, setIsFreeShipping] = useState(false);
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
   const [hasActivePromotion, setHasActivePromotion] = useState(false);
-
+ 
   const [variantDetails, setVariantDetails] = useState<{
     mpn: string;
     calculated_price: number;
@@ -125,13 +126,13 @@ const ProductCard = ({
       label: string;
     }>;
   } | null>(null);
-
+ 
   const handleDeleteWishlist = () => {
     const productId = item.productEntityId;
     setDeletedProductId(productId, wishlistEntityId);
     onDelete(productId, item.entityId);
   };
-
+ 
   useEffect(() => {
     const fetchVariantDetails = async () => {
       try {
@@ -139,7 +140,7 @@ const ProductCard = ({
         const variant = item.variantEntityId
           ? allVariantData.find((v: any) => v.id === item.variantEntityId)
           : allVariantData[0];
-
+ 
         if (variant) {
           setVariantDetails({
             mpn: variant.mpn,
@@ -172,7 +173,7 @@ const ProductCard = ({
     fetchData();
     fetchVariantDetails();
   }, [item, discountRules]);
-
+ 
   function handlePriceUpdatedProduct(product: any[]) {
     if (Array.isArray(product) && JSON.stringify(updatedWishlist) !== JSON.stringify(product)) {
       setUpdatedWishlist((prevWishlist) => {
@@ -191,7 +192,7 @@ const ProductCard = ({
     .catch((error) => {
       console.error('Error calculating product price:', error);
     });
-
+   
   return (
     <div className="flex h-full flex-col">
       <div className="relative mb-4 flex h-full flex-col justify-between border border-gray-300 pb-0">
@@ -320,13 +321,13 @@ const ProductCard = ({
             </div>
           )}
       </div>
-
+ 
       <form
         onSubmit={(e) => {
           e.preventDefault();
           setIsLoading(true);
           const formData = new FormData(e.currentTarget);
-
+ 
           addToCart(formData)
             .then((result) => {
               if (result.error) {
@@ -345,7 +346,7 @@ const ProductCard = ({
       >
         <input name="product_id" type="hidden" value={item.productEntityId} />
         <input name="variant_id" type="hidden" value={item.variantEntityId} />
-
+ 
         {item.product.availabilityV2.status === 'Unavailable' ? (
           <div className="flex flex-col items-center">
             <Button
@@ -469,15 +470,15 @@ export function WishlistProductCard(customerGroupDetails: { discount_rules: any 
       </div>
     );
   }
-
+ 
   if (error) {
     return <div className="flex items-center justify-center p-8 text-red-500">{error}</div>;
   }
-
+ 
   if (!wishlistData) {
     return <div></div>;
   }
-
+ 
   return (
     <div className="container m-auto mx-auto mb-12 w-[80%] px-4">
       <ComponentsBreadcrumbs
@@ -493,7 +494,7 @@ export function WishlistProductCard(customerGroupDetails: { discount_rules: any 
           },
         ]}
       />
-
+ 
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="mb-2 text-left text-xl font-medium leading-8 tracking-[0.15px] text-black">
@@ -510,7 +511,7 @@ export function WishlistProductCard(customerGroupDetails: { discount_rules: any 
           SHARE FAVORITES
         </Button>
       </div>
-
+ 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 2xl:grid-cols-4">
         {wishlistData?.items.map((item) => (
           <ProductCard
@@ -525,5 +526,7 @@ export function WishlistProductCard(customerGroupDetails: { discount_rules: any 
     </div>
   );
 }
-
+ 
 export default WishlistProductCard;
+ 
+ 
