@@ -20,8 +20,6 @@ import { FreeDelivery } from '../../product/[slug]/_components/belami-product-fr
 import { getSessionUserDetails } from '~/auth';
 import {
   CheckProductFreeShipping,
-  GetCustomerGroupById,
-  GetEmailId,
 } from '~/components/management-apis';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';

@@ -63,16 +63,21 @@ const config = {
       if (user?.customerAccessToken) {
         token.customerAccessToken = user.customerAccessToken;
       }
-
+      if (user?.customerGroupId) {
+        token.customerGroupId = user?.customerGroupId;
+      }
+ 
       return token;
     },
     session({ session, token }) {
       if (token.customerAccessToken) {
         session.customerAccessToken = token.customerAccessToken;
       }
-
+      if (token?.customerGroupId) {
+        session.customerGroupId = token.customerGroupId;
+      }
       return session;
-    },
+    }
   },
   events: {
     async signIn({ user: { customerAccessToken } }) {
@@ -181,13 +186,14 @@ export { handlers, auth, signIn, signOut, getSessionCustomerAccessToken, getSess
 declare module 'next-auth' {
   interface Session {
     user?: DefaultSession['user'];
-    customerAccessToken?: string;
+    customerAccessToken?: string | any;
+    customerGroupId?: number;
   }
 
   interface User {
     name?: string | null;
     email?: string | null;
-    customerGroupId?: string | null;
+    customerGroupId?: number | null;
     customerAccessToken?: string;
   }
 }

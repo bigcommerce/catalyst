@@ -15,6 +15,9 @@ import {
   GetVariantsByProductId,
 } from '~/components/management-apis';
 import { useCommonContext } from '~/components/common-context/common-provider';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { calculateProductPrice } from '~/components/common-functions';
+import { ProductPrice } from '~/belami/components/search/product-price';
 import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_components/review-summary';
 import { Promotion } from '~/belami/components/search/hit';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
@@ -44,18 +47,28 @@ interface ProductVariant {
     salePrice: { value: number; currencyCode: string } | null;
   };
 }
+interface CategoryNode {
+  name: string;
+  path: string | null;
+  breadcrumbs?: {
+    edges: Array<{
+      node: {
+        entityId: any;
+        name: string;
+        path: string | null;
+      };
+    }> | null;
+  };
+}
 
 interface WishlistProduct {
+  categories: CategoryNode;
   entityId: number;
   name: string;
   sku: string;
   mpn: string;
   path: string;
   availabilityV2: string;
-  reviewSummary?: {
-    numberOfReviews: string;
-    averageRating: string;
-  };
   brand?: {
     entityId: Number;
     name: string;
@@ -84,19 +97,21 @@ interface WishlistItem {
   variantEntityId: number;
   product: WishlistProduct;
 }
-
 const ProductCard = ({
   item,
   wishlistEntityId,
   onDelete,
+  discountRules,
 }: {
   item: WishlistItem;
   wishlistEntityId: number;
   onDelete: (productId: number, wishlistItemId: number) => void;
+  discountRules: any;
 }) => {
   const { setDeletedProductId } = useCommonContext();
   const format = useFormatter();
   const [isLoading, setIsLoading] = useState(false);
+  const [updatedWishlist, setUpdatedWishlist] = useState<any[]>([]);
   const [promotionsData, setPromotionsData] = useState<any>(null);
   const [isFreeShipping, setIsFreeShipping] = useState(false);
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
@@ -156,11 +171,30 @@ const ProductCard = ({
 
     fetchData();
     fetchVariantDetails();
-  }, [item]);
+  }, [item, discountRules]);
+
+  function handlePriceUpdatedProduct(product: any[]) {
+    if (Array.isArray(product) && JSON.stringify(updatedWishlist) !== JSON.stringify(product)) {
+      setUpdatedWishlist((prevWishlist) => {
+        if (JSON.stringify(prevWishlist) !== JSON.stringify(product)) {
+          return product;
+        }
+        return prevWishlist;
+      });
+    }
+  }
+  calculateProductPrice(item.product, 'wishlist', discountRules, categoryIds)
+    .then((result) => {
+      const priceUpdatedProduct = result;
+      handlePriceUpdatedProduct(priceUpdatedProduct);
+    })
+    .catch((error) => {
+      console.error('Error calculating product price:', error);
+    });
 
   return (
     <div className="flex h-full flex-col">
-      <div className="relative mb-4 flex h-full flex-col border border-gray-300 pb-0 justify-between">
+      <div className="relative mb-4 flex h-full flex-col justify-between border border-gray-300 pb-0">
         <div className="product-card-details p-[1em]">
           <div className="relative aspect-square overflow-hidden">
             <Link href={item.product.path}>
@@ -224,39 +258,67 @@ const ProductCard = ({
                 <span className="font-semibold">Sku: </span>
                 <span>{variantDetails.mpn}</span>
               </p>
-
-              <p className="text-sm">
-                <span className="font-semibold">Price: </span>
-                <span>
-                  {format.number(variantDetails.calculated_price, {
-                    style: 'currency',
-                    currency: 'USD',
-                  })}
-                </span>
-              </p>
-
-              {variantDetails.option_values.map((option, index) => (
-                <p key={index} className="text-sm">
-                  <span className="font-semibold">{option.option_display_name}: </span>
-                  <span>{option.label}</span>
-                </p>
-              ))}
+              {updatedWishlist[0]?.UpdatePriceForMSRP && (
+                <ProductPrice
+                  defaultPrice={updatedWishlist[0].UpdatePriceForMSRP.originalPrice || 0}
+                  defaultSalePrice={
+                    updatedWishlist[0]?.UpdatePriceForMSRP.hasDiscount
+                      ? updatedWishlist[0].UpdatePriceForMSRP.updatedPrice
+                      : updatedWishlist[0]?.UpdatePriceForMSRP.warrantyApplied
+                        ? updatedWishlist[0].UpdatePriceForMSRP.updatedPrice
+                        : null
+                  }
+                  currency={
+                    updatedWishlist[0].UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'
+                  }
+                  format={format}
+                  // showMSRP={updatedWishlist[0].UpdatePriceForMSRP.showDecoration}
+                  warrantyApplied={updatedWishlist[0].UpdatePriceForMSRP.warrantyApplied}
+                  options={{
+                    useAsyncMode: false,
+                    useDefaultPrices: true,
+                  }}
+                  classNames={{
+                    root: 'product-price mt-2 flex justify-center items-center gap-[0.5em] text-center xl:text-center',
+                    newPrice:
+                      'text-center text-[18px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                    oldPrice:
+                      'inline-flex items-baseline text-center text-[14px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
+                    discount:
+                      'whitespace-nowrap text-center text-[14px] font-normal leading-8 tracking-[0.15px] text-brand-400',
+                    price:
+                      'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px] text-brand-400',
+                    msrp: '-ml-[0.5em] mb-1 text-[10px] text-gray-500',
+                  }}
+                />
+              )}
+              {variantDetails.option_values.map((option, index) => {
+                const updatedValue =
+                  option.option_display_name === 'Select Fabric Color'
+                    ? option.label.split('|')[0]
+                    : option.label;
+                return (
+                  <p key={index} className="text-sm">
+                    <span className="font-semibold">{option.option_display_name}: </span>
+                    <span>{updatedValue}</span>
+                  </p>
+                );
+              })}
             </div>
           )}
+          {/* Only render promotion section if there are active promotions */}
         </div>
-
-        {/* Only render promotion section if there are active promotions */}
         {hasActivePromotion && (
-          <div className="text-center promotion">
-            <Promotion
-              promotions={promotionsData}
-              product_id={item.productEntityId}
-              brand_id={Number(item.product.brand?.entityId)}
-              category_ids={categoryIds}
-              free_shipping={isFreeShipping}
-            />
-          </div>
-        )}
+            <div className="text-center">
+              <Promotion
+                promotions={promotionsData}
+                product_id={item.productEntityId}
+                brand_id={Number(item.product.brand?.entityId)}
+                category_ids={categoryIds}
+                free_shipping={isFreeShipping}
+              />
+            </div>
+          )}
       </div>
 
       <form
@@ -317,7 +379,7 @@ const ProductCard = ({
   );
 };
 
-export function WishlistProductCard(): JSX.Element {
+export function WishlistProductCard(customerGroupDetails: { discount_rules: any }): JSX.Element {
   const [wishlistData, setWishlistData] = useState<{
     entityId: number;
     name: string;
@@ -327,6 +389,21 @@ export function WishlistProductCard(): JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
+  const discountRules = customerGroupDetails?.customerGroupDetails?.discount_rules;
+
+  const handleDelete = (productId: number, wishlistItemId: number) => {
+    if (!wishlistData) return;
+
+    const updatedItems = wishlistData.items.filter((item) => item.product.entityId !== productId);
+
+    const updatedWishlist = {
+      ...wishlistData,
+      items: updatedItems,
+    };
+
+    setWishlistData(updatedWishlist);
+    localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
+  };
   useEffect(() => {
     const loadWishlist = async () => {
       try {
@@ -372,41 +449,6 @@ export function WishlistProductCard(): JSX.Element {
               console.error('Error processing items:', error);
               setWishlistData(parsedWishlist);
             });
-        } else {
-          router.push('/account/wishlists');
-        }
-      } catch (error) {
-        setError('Failed to load wishlist data');
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    loadWishlist();
-  }, [router]);
-
-  const handleDelete = (productId: number, wishlistItemId: number) => {
-    if (!wishlistData) return;
-
-    const updatedItems = wishlistData.items.filter((item) => item.product.entityId !== productId);
-
-    const updatedWishlist = {
-      ...wishlistData,
-      items: updatedItems,
-    };
-
-    setWishlistData(updatedWishlist);
-    localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
-  };
-
-  useEffect(() => {
-    const loadWishlist = async () => {
-      try {
-        const savedWishlist = localStorage.getItem('selectedWishlist');
-        if (savedWishlist) {
-          const parsedWishlist = JSON.parse(savedWishlist);
-
-          setWishlistData(parsedWishlist);
         } else {
           router.push('/account/wishlists');
         }
@@ -476,6 +518,7 @@ export function WishlistProductCard(): JSX.Element {
             item={item}
             wishlistEntityId={wishlistData.entityId}
             onDelete={handleDelete}
+            discountRules={discountRules}
           />
         ))}
       </div>
