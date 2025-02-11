@@ -8,6 +8,7 @@ import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
 import { ProductReviewSchemaFragment } from './product-review-schema/fragment';
 import { ProductReviewSchema } from './product-review-schema/product-review-schema';
@@ -109,25 +110,12 @@ const getAverageRating = async (productId: number) => {
 };
 
 const getPaginationInfo = async (productId: number, searchParams: Promise<SearchParams>) => {
-  const t = await getTranslations('Product.Reviews.Pagination');
   const product = await getReviewsData(productId, searchParams);
 
-  if (!product) {
-    return {};
-  }
-
-  const { hasNextPage, hasPreviousPage, endCursor, startCursor } = product.reviews.pageInfo;
-
-  return hasNextPage || hasPreviousPage
-    ? {
-        startCursorParamName: PaginationSearchParamNames.BEFORE,
-        endCursorParamName: PaginationSearchParamNames.AFTER,
-        endCursor: hasNextPage ? endCursor : null,
-        startCursor: hasPreviousPage ? startCursor : null,
-        nextLabel: t('next'),
-        previousLabel: t('previous'),
-      }
-    : {};
+  return pageInfoTransformer(product?.reviews.pageInfo ?? defaultPageInfo, {
+    startCursorParamName: PaginationSearchParamNames.BEFORE,
+    endCursorParamName: PaginationSearchParamNames.AFTER,
+  });
 };
 
 interface Props {
@@ -143,7 +131,9 @@ export const Reviews = async ({ productId, searchParams }: Props) => {
       <ReviewsSection
         averageRating={getAverageRating(productId)}
         emptyStateMessage={t('empty')}
+        nextLabel={t('Pagination.next')}
         paginationInfo={getPaginationInfo(productId, searchParams)}
+        previousLabel={t('Pagination.previous')}
         reviews={getFormattedReviews(productId, searchParams)}
         reviewsLabel={t('title')}
       />
