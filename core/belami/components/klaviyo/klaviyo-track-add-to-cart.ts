@@ -14,17 +14,17 @@ type KlaviyoEvent =
 
 type Product = ExistingResultType<typeof getProduct>;
 
-export function KlaviyoTrackAddToCart({ product, user }: { product: Product, user?: { email: string } }) {
+export function KlaviyoTrackAddToCart({ product, user }: { product: Product, user?: { email: string, first_name?: string, last_name?: string, phone_number?: string, city?: string, region?: string, country?: string, zip?: string } }) {
   const klaviyo = window.klaviyo || [];
 
   const addedToCartProductData = {
     Name: product.name,
     ProductID: product.entityId,
-    ...(product.defaultImage && { ImageURL: product.defaultImage.url }),
+    ...(product.defaultImage && product.defaultImage.url && { ImageURL: product.defaultImage.url.replace('{:size}', '386x513') }),
     ...(product.brand && { Brand: product.brand.name }),
     ...(product.prices && { Price: product.prices.price.value }),
   };
 
   klaviyo.push(['identify', user && user.email ? user : { anonymous: true }]);
-  klaviyo.push(['track', 'Catalyst Added to Cart', addedToCartProductData]);
+  klaviyo.push(['track', 'Added to Cart', addedToCartProductData]);
 }

@@ -170,7 +170,7 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
                     {/* Item ID (Bold) */}
                     <p className="font-bold text-[16px]">{item.id}</p>
 
-                    {Object.keys(toMapData).length > 0 ? (
+                    {Object?.keys(toMapData)?.length > 0 ? (
                       <div key={index} className="w-full  flex flex-col ">
                         {/* Line1 and Line2 */}
                         <div className="flex flex-col w-full gap-y-1">

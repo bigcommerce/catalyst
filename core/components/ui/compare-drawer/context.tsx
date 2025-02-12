@@ -51,7 +51,7 @@ const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   const [cart_interface_refferal_id, setCart_interface_Refferal_id] = useState<string | null>('');
   const [cart_interface_session_id,setCart_interface_session_id] = useState<string | null>('');
   const [cartIdForCheck, setCartIdForCheck] = useState<string | null>(null);
-  const [customerLoginEmailData,setCustomerLoginEmailData]=useState(null)
+  const [customerLoginEmailData, setCustomerLoginEmailData] = useState<string | null>(null);
   
   useEffect(() => {
    const CheckAgentLoginStatusFromCookies=async()=>{
