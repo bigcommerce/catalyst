@@ -63,16 +63,21 @@ const config = {
       if (user?.customerAccessToken) {
         token.customerAccessToken = user.customerAccessToken;
       }
-
+      if (user?.customerGroupId) {
+        token.customerGroupId = user?.customerGroupId;
+      }
+ 
       return token;
     },
     session({ session, token }) {
       if (token.customerAccessToken) {
         session.customerAccessToken = token.customerAccessToken;
       }
-
+      if (token?.customerGroupId) {
+        session.customerGroupId = token.customerGroupId;
+      }
       return session;
-    },
+    }
   },
   events: {
     async signIn({ user: { customerAccessToken } }) {
@@ -148,6 +153,8 @@ const config = {
         return {
           name: `${result.customer.firstName} ${result.customer.lastName}`,
           email: result.customer.email,
+          firstName: result.customer.firstName,
+          lastName: result.customer.lastName,
           customerAccessToken: result.customerAccessToken.value,
           customerGroupId: result.customer.customerGroupId,
         };
@@ -181,13 +188,16 @@ export { handlers, auth, signIn, signOut, getSessionCustomerAccessToken, getSess
 declare module 'next-auth' {
   interface Session {
     user?: DefaultSession['user'];
-    customerAccessToken?: string;
+    customerAccessToken?: string | any;
+    customerGroupId?: number;
   }
 
   interface User {
     name?: string | null;
     email?: string | null;
-    customerGroupId?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
+    customerGroupId?: number | null;
     customerAccessToken?: string;
   }
 }
@@ -195,6 +205,7 @@ declare module 'next-auth' {
 declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
+    customerGroupId?: number | null;
     customerAccessToken?: string;
   }
 }

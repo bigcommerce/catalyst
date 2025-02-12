@@ -88,10 +88,10 @@ interface WishlistAddToListProps {
   product: Product;
   onGuestClick?: () => void;
   classNames?: {
-    root?: string,
-    button?: string,
-    icon?: string,
-  }
+    root?: string;
+    button?: string;
+    icon?: string;
+  };
 }
 
 const WishlistAddToList = ({
@@ -99,7 +99,7 @@ const WishlistAddToList = ({
   hasPreviousPage,
   product,
   onGuestClick,
-  classNames
+  classNames,
 }: WishlistAddToListProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -443,25 +443,15 @@ const WishlistAddToList = ({
     setIsCreating(true);
 
     try {
-      const dateTime = new Intl.DateTimeFormat('en-US', {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: 'numeric',
-        second: 'numeric',
-        hourCycle: 'h23',
-      }).format(new Date());
-
       const formData = new FormData();
-      formData.append('name', `${trimmedName} - ${dateTime}`);
+      formData.append('name', trimmedName);
 
       const result = await createWishlist(formData);
 
       if (result.status === 'success') {
         const newWishlist: Wishlist = {
           entityId: result.data.entityId,
-          name: `${trimmedName} - ${dateTime}`,
+          name: trimmedName,
           items: [],
         };
 
@@ -556,7 +546,10 @@ const WishlistAddToList = ({
       <button
         title="Add to List"
         onClick={handleHeartClick}
-        className={cn(classNames?.button || 'inline-flex items-center justify-center rounded-full bg-[#F3F4F5] p-[10px] text-sm font-medium text-white focus:outline-none')}
+        className={cn(
+          classNames?.button ||
+            'inline-flex items-center justify-center rounded-full bg-[#F3F4F5] p-[10px] text-sm font-medium text-white focus:outline-none',
+        )}
       >
         <BcImage
           alt="wishlist-heart"

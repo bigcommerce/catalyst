@@ -29,7 +29,7 @@ import { NoShipCanada } from '../product/[slug]/_components/belami-product-no-sh
 import { commonSettinngs } from '~/components/common-functions';
 import { zeroTaxCalculation } from '~/components/common-functions';
 import { calculateProductPrice } from '~/components/common-functions';
-import { GetCustomerGroupById, GetEmailId } from '~/components/management-apis';
+import { GetCustomerGroupById } from '~/components/management-apis';
 
 import heartIcon from '~/public/cart/heartIcon.svg';
 import applePayIcon from '~/public/cart/applePayIcon.svg';
@@ -38,6 +38,8 @@ import amazonPayIcon from '~/public/cart/amazonPayIcon.svg';
 import agentIcon from '~/public/cart/agentIcon.svg';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { Flyout } from '~/components/common-flyout';
+
+import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
 
 interface Params {
   locale: string;
@@ -120,10 +122,9 @@ export default async function Cart({ params }: Props) {
     discount_rules: []
   };
   if(sessionUser){
-  const customerData = await GetEmailId(sessionUser?.user?.email!);
-  const customerGroupId = customerData.data[0].customer_group_id;
-  customerGroupDetails = await GetCustomerGroupById(customerGroupId);
-  }
+   const customerGroupId = sessionUser?.customerGroupId;
+   customerGroupDetails = customerGroupId ? await GetCustomerGroupById(customerGroupId) : null;
+   }
 
   const { data } = await client.fetch({
     document: CartPageQuery,
@@ -383,6 +384,8 @@ for (const eachProduct of updatedLineItemWithoutAccessories) {
       </div>
 
       <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
+
+      <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
     </div>
   );
 }

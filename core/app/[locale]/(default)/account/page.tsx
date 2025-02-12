@@ -16,6 +16,8 @@ import detailsIcon from '~/public/accountIcons/details.svg';
 import favouriteIcon from '~/public/accountIcons/favourite.svg';
 import emailPrefIcon from '~/public/accountIcons/emailPref.svg';
 import { WelcomeMessage } from './welcome-message';
+
+
 interface AccountItem {
   children: ReactNode;
   description?: string;
@@ -45,9 +47,13 @@ export async function generateMetadata() {
   };
 }
 
-export default function Account() {
-  const t = useTranslations('Account.Home');
-  const ts = useTranslations('Account.SalesHours');
+export default async function Account() {
+  const t = await getTranslations('Account.Home');
+  const ts = await getTranslations('Account.SalesHours');
+
+  //const t = useTranslations('Account.Home');
+  //const ts = useTranslations('Account.SalesHours');
+
   const breadcrumbs: any = [
     {
       label: 'Account Center',
