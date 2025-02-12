@@ -36,7 +36,6 @@ const page = () => {
   ];
 
 
-
   return (
     <div className="my-[2rem] flex justify-center text-[#353535]">
       <div className="flex w-[90%] flex-col gap-[30px]">
@@ -47,14 +46,14 @@ const page = () => {
               <div className="grid grid-cols-4 items-center gap-5">
                 <div >
                   <input
-                    className="w-full border border outline-none p-2 rounded-[5px]"
+                    className="w-full outline-none p-2 rounded-[5px]"
                     type="text"
                     placeholder="Customer Name or Quote Id"
                   />
                 </div>
                 <div>
                   <input
-                    className="w-full border border outline-none p-2 rounded-[5px]"
+                    className="w-full outline-none p-2 rounded-[5px]"
                     type="text"
                     placeholder="Company"
                   />
