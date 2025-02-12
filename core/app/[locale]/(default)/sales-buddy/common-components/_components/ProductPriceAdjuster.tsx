@@ -17,6 +17,8 @@ interface ProductPriceAdjusterProps {
   productId: number;
   cartId: any;
   ProductType: string;
+  accessoriesData: any[];
+  quantity: number;
 }
 
 const EditIcon = () => {
@@ -27,6 +29,87 @@ const EditIcon = () => {
         fill="white"
       />
     </svg>
+  );
+};
+
+const PriceEditor = ({
+  isEditing,
+  setIsEditing,
+  newCost,
+  handleCostChange,
+  errorMessage,
+  handleSubmit,
+  loading,
+  agentRole,
+  initialCost,
+  initialFloor
+}) => {
+  return isEditing ? (
+    <>
+      <Input
+        type="text"
+        value={newCost}
+        style={{ color: 'black' }}
+        onChange={handleCostChange}
+        className="text-black-700 mb-4 w-full rounded border-none bg-[#FFFFFF] p-2"
+        placeholder="$0.00"
+      />
+      {errorMessage && <div className="m-2 text-center text-red-500">{errorMessage}</div>}
+
+      <div className="mt-[10px] flex items-center justify-center">
+        <button
+          onClick={() => setIsEditing(false)}
+          className="mb-2 mr-2 w-full rounded bg-white px-4 py-2 text-black"
+        >
+          Cancel
+        </button>
+        <button
+          className="relative mb-2 w-full rounded bg-[#1DB14B] px-4 py-2 text-white"
+          onClick={handleSubmit}
+          disabled={
+            (agentRole === 'agent' || agentRole === null) &&
+            parseFloat(newCost) < initialCost * initialFloor
+          }
+        >
+          {loading && (
+            <div className="absolute inset-0 flex items-center justify-center">
+              <Spinner />
+            </div>
+          )}
+          <span>Save</span>
+        </button>
+      </div>
+    </>
+  ) : (
+    <button
+      onClick={() => setIsEditing(true)}
+      className="h-[42px] w-full rounded-sm bg-[#1DB14B] px-[10px] py-[5px]"
+    >
+      <div className="flex items-center justify-center">
+        <EditIcon />
+        <span className="items-center text-[14px] font-medium leading-[32px] tracking-[1.25px]">
+          ADJUST PRICE
+        </span>
+      </div>
+    </button>
+  );
+};
+
+const ProductInfoRow = ({ label, value }: { label: string; value: string | number }) => {
+  const valueString = String(value);
+  const isLongValue = valueString.length > 15;
+
+  return (
+    <div
+      className={`${isLongValue ? 'grid grid-cols-1' : 'grid grid-cols-2'} items-center border-b border-[#cccbcb] py-1`}
+    >
+      <p className="break-words text-sm font-bold tracking-wide">{label}</p>
+      <p
+        className={`text-sm font-normal tracking-wide ${isLongValue ? 'mt-1 text-right' : 'text-right'}`}
+      >
+        {valueString}
+      </p>
+    </div>
   );
 };
 
@@ -41,23 +124,25 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   productId,
   cartId,
   ProductType,
+  quantity,
+  accessoriesData
 }) => {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isEditingParent, setIsEditingParent] = useState<boolean>(false);
+  const [isEditingAccessory, setIsEditingAccessory] = useState<number | null>(null);
   const [newCost, setNewCost] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const { agentRole } = useCompareDrawerContext();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  // Reset newCost when editing mode is toggled
   useEffect(() => {
-    if (!isEditing) {
+    if (!isEditingParent && isEditingAccessory === null) {
       setNewCost('');
       setErrorMessage(null);
     }
-  }, [isEditing]);
+  }, [isEditingParent, isEditingAccessory]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (isAccessory: boolean = false, accessoryIndex: number = -1) => {
     const numericValue = parseFloat(newCost);
     if (newCost.length > 6) {
       setErrorMessage('Price cannot be more than 6 digits');
@@ -68,25 +153,32 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
       return;
     } else if (numericValue == 0) {
       setErrorMessage('Price cannot be 0');
-      return
-    } 
+      return;
+    }
 
+    const currentCost = isAccessory
+      ? accessoriesData[accessoryIndex]?.originalPrice?.value
+      : initialCost;
+    const floorPrice = currentCost * initialFloor;
 
-    if (
-      (agentRole === 'agent' || agentRole === null) &&
-      numericValue < initialCost * initialFloor
-    ) {
+    if ((agentRole === 'agent' || agentRole === null) && numericValue < floorPrice) {
       setErrorMessage('Price cannot be less than floor price');
       return;
     }
 
     try {
       setLoading(true);
-      const res = await updateProductPrice(numericValue, cartId, productId, ProductType, sku);
+      const currentSku = isAccessory ? accessoriesData[accessoryIndex].sku : sku;
+      const CheckProductID = isAccessory ? accessoriesData[accessoryIndex].productEntityId : productId
+      const res = await updateProductPrice(numericValue, cartId, CheckProductID, ProductType, currentSku);
 
       if (res.status === 200) {
         setNewCost('');
-        setIsEditing(false);
+        if (isAccessory) {
+          setIsEditingAccessory(null);
+        } else {
+          setIsEditingParent(false);
+        }
         router.refresh();
       } else {
         setErrorMessage(res.error || 'Failed to update price');
@@ -102,105 +194,79 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
     const value = e.target.value;
     if (/^\d*\.?\d*$/.test(value)) {
       setNewCost(value);
-      const numericValue = parseFloat(value);
-
-      if (
-        (agentRole === 'agent' || agentRole === null) &&
-        numericValue < initialCost * initialFloor
-      ) {
-        setErrorMessage('Price cannot be less than floor price');
-      } else {
-        setErrorMessage(null);
-      }
+      setErrorMessage(null);
     }
-  };
-
-  const ProductInfoRow = ({ label, value }: { label: string; value: string | number }) => {
-    const valueString = String(value);
-    const isLongValue = valueString.length > 15;
-
-    return (
-      <div
-        className={`${isLongValue ? 'grid grid-cols-1' : 'grid grid-cols-2'} items-center border-b border-[#cccbcb] py-1`}
-      >
-        <p className="break-words text-sm font-bold tracking-wide">{label}</p>
-        <p
-          className={`text-sm font-normal tracking-wide ${isLongValue ? 'mt-1 text-right' : 'text-right'}`}
-        >
-          {valueString}
-        </p>
-      </div>
-    );
   };
 
   return (
     <div className="w-full bg-[#353535] p-[10px] text-white">
-      <ProductInfoRow label="PARENT SKU" value={parentSku} />
-      <ProductInfoRow label="SKU" value={sku} />
-      <ProductInfoRow label="OEM SKU" value={oem_sku} />
-      <ProductInfoRow label="Cost" value={initialCost || '0000.00'} />
-      <ProductInfoRow
-        label="Floor ($)"
-        value={initialFloor ? initialCost * initialFloor : '0000.00'}
-      />
+      {/* Parent Product Section */}
+      <div className="">
+        <ProductInfoRow label="PARENT SKU" value={parentSku} />
+        <ProductInfoRow label="SKU" value={sku} />
+        <ProductInfoRow label="OEM SKU" value={oem_sku} />
+        <ProductInfoRow label="Cost" value={initialCost || '0000.00'} />
+        <ProductInfoRow
+          label="Floor ($)"
+          value={initialFloor ? initialCost * initialFloor : '0000.00'}
+        />
+        <ProductInfoRow
+          label="Markup"
+          value={initialCost ? (productPrice / initialCost).toFixed(2) : '0000.00'}
+        />
+        <ProductInfoRow label="Floor Markup" value={initialFloor || '00'} />
 
-      {/* <ProductInfoRow label="Markup" value={initialMarkup ? productPrice / initialCost  : '0000.00'} /> */}
+        <PriceEditor
+          isEditing={isEditingParent}
+          setIsEditing={setIsEditingParent}
+          newCost={newCost}
+          handleCostChange={handleCostChange}
+          errorMessage={errorMessage}
+          handleSubmit={() => handleSubmit(false)}
+          loading={loading}
+          agentRole={agentRole}
+          initialCost={initialCost}
+          initialFloor={initialFloor}
+        />
+      </div>
+      {accessoriesData?.length > 0 && 
+      
+      <div>
+        {/* Accessories Section */}
+        {accessoriesData && accessoriesData.length > 0 && (
+          <div className="">
+            {accessoriesData.map((accessory, index) => (
+              <div key={index} className=" border-[#cccbcb]">
+                <ProductInfoRow label="ACCESSORY SKU" value={accessory.sku} />
+                <ProductInfoRow label="Cost" value={accessory?.originalPrice?.value || '0000.00'} />
+                <ProductInfoRow
+                  label="Floor ($)"
+                  value={
+                    initialFloor
+                      ? (accessory?.originalPrice?.value * initialFloor).toFixed(2)
+                      : '0000.00'
+                  }
+                />
+                <ProductInfoRow label="Floor Markup" value={initialFloor || '00'} />
 
-      <ProductInfoRow
-        label="Markup"
-        value={initialCost ? (productPrice / initialCost).toFixed(2) : '0000.00'}
-      />
-      <ProductInfoRow label="Floor Markup" value={initialFloor || '00'} />
-
-      {!isEditing ? (
-        <button
-          onClick={() => setIsEditing(true)}
-          className="h-[42px] w-full rounded-sm bg-[#1DB14B] px-[10px] py-[5px]"
-        >
-          <div className="flex items-center justify-center">
-            <EditIcon />
-            <span className="items-center text-[14px] font-medium leading-[32px] tracking-[1.25px]">
-              ADJUST PRICE
-            </span>
+                <PriceEditor
+                  isEditing={isEditingAccessory === index}
+                  setIsEditing={(value) => setIsEditingAccessory(value ? index : null)}
+                  newCost={newCost}
+                  handleCostChange={handleCostChange}
+                  errorMessage={errorMessage}
+                  handleSubmit={() => handleSubmit(true, index)}
+                  loading={loading}
+                  agentRole={agentRole}
+                  initialCost={accessory?.originalPrice?.value}
+                  initialFloor={initialFloor}
+                />
+              </div>
+            ))}
           </div>
-        </button>
-      ) : (
-        <>
-          <Input
-            type="text"
-            value={newCost}
-            style={{ color: 'black' }}
-            onChange={handleCostChange}
-            className="text-black-700 mb-4 w-full rounded border-none bg-[#FFFFFF] p-2"
-            placeholder="$0.00"
-          />
-          {errorMessage && <div className="m-2 text-center text-red-500">{errorMessage}</div>}
-
-          <div className="mt-[10px] flex items-center justify-center">
-            <button
-              onClick={() => setIsEditing(false)}
-              className="mb-2 mr-2 w-full rounded bg-white px-4 py-2 text-black"
-            >
-              Cancel
-            </button>
-            <button
-              className="relative mb-2 w-full rounded bg-[#1DB14B] px-4 py-2 text-white"
-              onClick={handleSubmit}
-              disabled={
-                (agentRole === 'agent' || agentRole === null) &&
-                parseFloat(newCost) < initialCost * initialFloor
-              }
-            >
-              {loading && (
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <Spinner />
-                </div>
-              )}
-              <span>Save</span>
-            </button>
-          </div>
-        </>
-      )}
+        )}
+      </div>
+      }
     </div>
   );
 };
