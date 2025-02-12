@@ -219,7 +219,7 @@ export const MultipleChoiceField = ({
             {option.displayName} :
           </Label>
           <span className="selection ml-[5px] text-[#008BB7]">
-            {activeOptionSwatchLabel ? activeOptionSwatchLabel[0] : 'Selection'}
+            {activeOptionSwatchLabel ? activeOptionSwatchLabel[0] : activeOptionSwatchLabel}
           </span>
 
           <div className="ml-[0.8em] flex flex-wrap items-center justify-center gap-2 xl:ml-[0em] xl:justify-start">
