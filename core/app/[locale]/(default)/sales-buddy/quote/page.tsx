@@ -1,5 +1,5 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowUpDown,
   Download,
@@ -21,9 +21,15 @@ import {
 } from 'lucide-react';
 import DatePicker from './_components';
 import NewQuote from './_components/newQuote';
+import { useRouter } from 'next/navigation';
 
 const page = () => {
+
+  const router = useRouter();
+  const menuRefs = useRef<{ [key: string]: HTMLElement | null }>({});
   const [activeTab, setActiveTab] = useState("All");
+  const [showEdit, setShowEdit] = useState<{ [key: string]: boolean }>({});
+
 
   const tabs = [
     { name: "All", icon: <Menu width={26} height={26} stroke='#000' /> },
@@ -36,6 +42,43 @@ const page = () => {
   ];
 
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      Object.keys(menuRefs.current).forEach((rowId) => {
+        if (
+          menuRefs.current[rowId] &&
+          !menuRefs.current[rowId]!.contains(event.target as Node)
+        ) {
+          setShowEdit((prev) => ({
+            ...prev,
+            [rowId]: false,
+          }));
+        }
+      });
+    };
+    
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const toggleEditMenu = (rowId: string) => {
+    setShowEdit((prev) => ({
+      ...prev,
+      [rowId]: !prev[rowId],
+    }));
+  };
+
+  const handleEditClick = (rowId: string) => {
+    console.log(`Navigating to edit ${rowId}`);
+    router.push(`/sales-buddy/quote/${rowId}`);
+  };
+  
+  const data = [
+    {id:'QI-62',name:'Bala S',company:'Arizon Digital	',email:'balashanmugam@arizon.digital',date:'02/07/2025'},
+    {id:'QI-63',name:'Bala S',company:'Arizon Digital	',email:'balashanmugam@arizon.digital',date:'02/07/2025'},
+    
+  ]
+
   return (
     <div className="my-[2rem] flex justify-center text-[#353535]">
       <div className="flex w-[90%] flex-col gap-[30px]">
@@ -46,14 +89,14 @@ const page = () => {
               <div className="grid grid-cols-4 items-center gap-5">
                 <div >
                   <input
-                    className="w-full outline-none p-2 rounded-[5px]"
+                    className="border w-full outline-none p-2 rounded-[5px]"
                     type="text"
                     placeholder="Customer Name or Quote Id"
                   />
                 </div>
                 <div>
                   <input
-                    className="w-full outline-none p-2 rounded-[5px]"
+                    className="border w-full outline-none p-2 rounded-[5px]"
                     type="text"
                     placeholder="Company"
                   />
@@ -66,10 +109,10 @@ const page = () => {
                 </div>
               </div>
               <div className="flex items-center justify-end gap-5">
-                <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border-brand-600 bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600">
+                <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e]">
                   Search
                 </button>
-                <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border-brand-600 bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600">
+                <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e]">
                   Show All
                 </button>
               </div>
@@ -147,11 +190,11 @@ const page = () => {
           </div> */}
 
           <div className="flex items-center justify-end gap-5 px-[38px]">
-            <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border-brand-600 bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600">
+            <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e]">
               Export
             </button>
             <NewQuote>
-            <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border-brand-600 bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600">
+            <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e]">
              <Plus width={15} height={15}/> Create a Quote
             </button>
             </NewQuote>
@@ -230,55 +273,40 @@ const page = () => {
               </tr>
             </thead>
             <tbody className="[&_td]:p-[3px] [&_td]:text-center [&_td]:text-[12px] [&_td]:font-normal [&_tr:last-child]:[border-bottom:none;] [&_tr]:border-b [&_tr]:border-b-[#f6f7fb]">
-              <tr>
-                <td className="cursor-pointer text-[#8c57ff]">QI-62</td>
-                <td className='text-[#000]'>Bala S</td>
-                <td className='text-[#000]'>Arizon Digital</td>
-                <td className='text-[#555]'>balashanmugam@arizon.digital</td>
-                <td className='text-[#555]'>02/07/2025</td>
-                <td className='text-[#555]'>-</td>
-                <td className='text-[#555]'>-</td>
+            {data.map((row) => (
+              <tr key={row.id}>
+                <td className="cursor-pointer text-[#8c57ff]">{row.id}</td>
+                <td className="text-[#000]">{row.name}</td>
+                <td className="text-[#000]">{row.company}</td>
+                <td className="text-[#555]">{row.email}</td>
+                <td className="text-[#555]">{row.date}</td>
+                <td className="text-[#555]">-</td>
+                <td className="text-[#555]">-</td>
                 <td>
-                <button className="px-4 py-2 rounded-full bg-blue-100 text-blue-500 font-bold">
-                  Open
-                </button>
-                  {/* <button className="flex cursor-pointer items-center justify-center rounded-[5px] border border-brand-400 bg-brand-400 p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-400">
-                    Show All
-                  </button> */}
-                </td>
-                <td>
-                  <div className="flex items-center justify-center gap-1 text-[#555] hover:[&>*]:text-brand-400">
-                    <EllipsisVertical className='text-[#555]'/>
-                    {/* <NotebookPen className="cursor-pointer" width={20} height={20} />
-                    <Eye className="cursor-pointer text-[#CCCBCB]" width={20} height={20} />
-                    <Copy className="cursor-pointer text-[#CCCBCB]" width={20} height={20} />
-                    <Download className="cursor-pointer" width={20} height={20} /> */}
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td className='cusrsor-pointer text-[#8c57ff]'>QI-62</td>
-                <td className='text-[#000]'>Bala S</td>
-                <td className='text-[#000]'>Arizon Digital</td>
-                <td className='text-[#555]'>balashanmugam@arizon.digital balashanmugam@arizon.digital</td>
-                <td className='text-[#555]'>02/07/2025</td>
-                <td className='text-[#555]'>-</td>
-                <td className='text-[#555]'>-</td>
-                <td>
-                <button className="px-4 py-2 rounded-full bg-blue-100 text-blue-500 font-bold">
-                  Open
-                </button>
+                  <button className="px-4 py-2 rounded-full bg-blue-100 text-blue-500 font-bold">
+                    Open
+                  </button>
                 </td>
                 <td>
                   <div className="flex items-center justify-center text-[#555] gap-1 hover:[&>*]:text-brand-400">
-                    <EllipsisVertical className='text-[#555]'/>
-                    {/* <NotebookPen className="cursor-pointer" width={20} height={20} />
-                    <Eye className="cursor-pointer text-[#CCCBCB]" width={20} height={20} />
-                    <Copy className="cursor-pointer text-[#CCCBCB]" width={20} height={20} />
-                    <Download className="cursor-pointer" width={20} height={20} /> */}
+                    <div className="relative" ref={(el) => (menuRefs.current[row.id] = el)}>
+                      <EllipsisVertical
+                        className="text-[#555] cursor-pointer"
+                        onClick={() => toggleEditMenu(row.id)}
+                      />
+                      {showEdit[row.id] && (
+                        <div
+                          className="absolute right-0 mt-2 bg-white border rounded shadow-lg p-2 cursor-pointer transition-all duration-300 ease-in-out z-10"
+                          onClick={() => handleEditClick(row.id)}
+                        >
+                          Edit
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </td>
               </tr>
+            ))}
             </tbody>
           </table>
           <div className="flex items-center justify-end gap-[15px]">

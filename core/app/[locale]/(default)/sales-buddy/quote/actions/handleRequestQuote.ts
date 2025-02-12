@@ -192,11 +192,7 @@ const prodModifierOptionId = productSelectedOpt?.filter(item => item?.type === "
 const prodModifierOptionLabel = productSelectedOpt?.filter(item => item?.type === "modifier").map(item => item?.label).join(", ");
 
 
-
-
-       const cInfo = await customerInfo();
         const reqQuoteItems = {
-              qr_customer: cInfo,
               qr_product:{
                 bc_product_id:productEntityId,
                 bc_sku: product.sku,
@@ -206,9 +202,7 @@ const prodModifierOptionLabel = productSelectedOpt?.filter(item => item?.type ==
                 bc_variant_name:variantLabels,
                 bc_modifier_id:prodModifierId,
                 bc_modifier_option:prodModifierOptionId,
-                bc_modifier_option_name:prodModifierOptionLabel,
-                selectedOptions:selectedOptions,
-                productInfo:product,
+                bc_modifier_option_name:prodModifierOptionLabel
               }
             }
 

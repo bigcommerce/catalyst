@@ -145,7 +145,7 @@ useEffect(() => {
                             <Dialog.Close asChild>
                                 <button
                                     aria-modal
-                                    className="text-violet11 inline-flex h-full w-full appearance-none items-center justify-center rounded-full"
+                                    className="text-violet11 inline-flex h-full appearance-none items-center justify-center rounded-full"
                                     aria-label="Close"
                                 >
                                     <BcImage

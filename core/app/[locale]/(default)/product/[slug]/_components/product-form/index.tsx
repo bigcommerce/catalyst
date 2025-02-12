@@ -160,7 +160,6 @@ export const ProductForm = ({
 
     if (action === 'addToCart') {
     const result = await handleAddToCart(data, product);
-    
     const cartId = await getCartIdCookie();
     if (cartId?.value == undefined) {
       setCartIdForCheck(result?.data?.entityId);
@@ -197,7 +196,6 @@ export const ProductForm = ({
       ),
       { icon: <Check className="text-success-secondary" /> },
     );
-
     if (result?.data?.entityId) {
       let cartData = await getCartData(result?.data?.entityId);
       if (cartData?.data?.lineItems?.physicalItems) {
@@ -254,10 +252,9 @@ export const ProductForm = ({
     else if (action === 'requestQuote'){
 
     // quotebutton handle
+
      const quoteResult = await handleRequestQuote(data, product);
      console.log(quoteResult,"requestQuoteData");
-     debugger;
-
       localStorage.setItem("Q_R_data",JSON.stringify(quoteResult));
 
       if (quoteResult.error) {
@@ -290,7 +287,7 @@ export const ProductForm = ({
             return null;
           })}
           <Submit data={product} isSticky={true} />
-          <button type="submit"  onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}>Request Quote</button>
+          <button type="submit"  onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote') )}>Request Quote</button>
 
         </form>
       </FormProvider>

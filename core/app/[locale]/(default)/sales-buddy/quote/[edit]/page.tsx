@@ -22,22 +22,22 @@ const page = () => {
               </div>
             </div>
             <div className="flex flex-1 items-end justify-end gap-[20px]">
-              <button className="flex cursor-pointer items-center justify-center rounded-[20px] border border-brand-600 bg-brand-600 p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600">
+              <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e]">
                 Extend Quote
               </button>
-              <button className="flex cursor-pointer items-center justify-center rounded-[20px] border border-brand-600 bg-brand-600 p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600">
+              <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e]">
                 Cancel Quote
               </button>
               <AddDialog>
-              <button className="flex cursor-pointer items-center justify-center rounded-[20px] border border-brand-600 bg-brand-600 p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600 gap-[5px]">
+              <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e] gap-[5px]">
                 <span>+</span><span>Add Product</span>
               </button>
               </AddDialog>
             </div>
           </div>
-          <table className="table-auto border-collapse border border-black [&_td]:p-3 [&_td]:text-center [&_th]:p-3 [&_th]:text-center">
-            <thead className="text-[15px] font-bold bg-neutral-400">
-            <tr className="border border-black hover:[&>th]:cursor-pointer">
+          <table className="table-auto border-collapse border [&_td]:p-3 [&_td]:text-center [&_th]:p-3 [&_th]:text-center">
+            <thead className="text-[15px] font-bold bg-[#f6f7fb]">
+            <tr className="border border-b-[#c9c9cb] hover:[&>th]:cursor-pointer">
                 <th>Sl No</th>
                 <th>Items</th>
                 <th>Options</th>
@@ -47,8 +47,8 @@ const page = () => {
                 <th></th>
               </tr>
             </thead>
-            <tbody className="text-[14px] [&>tr_td:last-child]:px-6 [&>tr_td:nth-child(2)]:!text-left [&_tr:last-child]:[border-bottom:none;] [&_tr]:border-b [&_tr]:border-black">
-              <tr>
+            <tbody className="text-[14px] [&>tr_td:last-child]:px-6 [&>tr_td:nth-child(2)]:!text-left [&_tr:last-child]:[border-bottom:none;] [&_tr]:border-b-[2px] [&_tr]:border-b-[#f6f7fb]">
+              <tr className='border-b-[2px]'>
                 <td>
                   <div>1</div>
                 </td>
@@ -78,7 +78,7 @@ const page = () => {
                   <div>
                     <input
                       type="number"
-                      className="w-1/2 border border-neutral-300 p-[5px] outline-none"
+                      className="w-1/2 border border-[#e5e7eb] p-[5px] outline-none"
                     />
                   </div>
                 </td>
@@ -87,7 +87,7 @@ const page = () => {
                     <span className="pr-1 text-[20px] font-bold">$</span>
                     <input
                       type="number"
-                      className="w-1/2 border border-neutral-300 p-[5px] outline-none"
+                      className="w-1/2 border border-[#e5e7eb] p-[5px] outline-none"
                       placeholder='0.00'
                     />
                   </div>
@@ -97,7 +97,7 @@ const page = () => {
                     <span className="pr-1 text-[20px] font-bold">$</span>
                     <input
                       type="number"
-                      className="w-1/2 border border-neutral-300 p-[5px] outline-none"
+                      className="w-1/2 border border-[#e5e7eb] p-[5px] outline-none"
                       defaultValue={0.00}
                     />
                   </div>
@@ -109,9 +109,9 @@ const page = () => {
                 </td>
               </tr>
 
-              <tr>
+              <tr className='border-b-[2px]'>
                 <td>
-                  <div>1</div>
+                  <div>2</div>
                 </td>
                 <td>
                   <div className="flex flex-col gap-[10px]">
@@ -139,7 +139,7 @@ const page = () => {
                   <div>
                     <input
                       type="number"
-                      className="w-1/2 border border-neutral-300 p-[5px] outline-none"
+                      className="w-1/2 border border-[#e5e7eb] p-[5px] outline-none"
                     />
                   </div>
                 </td>
@@ -148,7 +148,7 @@ const page = () => {
                     <span className="pr-1 text-[20px] font-bold">$</span>
                     <input
                       type="number"
-                      className="w-1/2 border border-neutral-300 p-[5px] outline-none"
+                      className="w-1/2 border border-[#e5e7eb] p-[5px] outline-none"
                       placeholder='0.00'
                     />
                   </div>
@@ -158,7 +158,7 @@ const page = () => {
                     <span className="pr-1 text-[20px] font-bold">$</span>
                     <input
                       type="number"
-                      className="w-1/2 border border-neutral-300 p-[5px] outline-none"
+                      className="w-1/2 border border-[#e5e7eb] p-[5px] outline-none"
                       defaultValue={0.00}
                     />
                   </div>
@@ -174,8 +174,8 @@ const page = () => {
             </tbody>
           </table>
           <div className="grid grid-cols-2 gap-[20px] text-[14px]">
-            <div className="border border-black">
-              <div className="bg-neutral-400 p-[5px_12px] text-[15px]">Shipping Address</div>
+            <div className="border-[2px] border-[#f6f7fb]">
+              <div className="bg-[#f6f7fb] p-[5px_12px] text-[15px] text-[#000]">Shipping Address</div>
               <div className="flex flex-col gap-[10px] p-[10px]">
                 <div>Mithran Balaji,</div>
                 <div>4-15-16 Jinguumae</div>
@@ -183,19 +183,19 @@ const page = () => {
                 <div>India</div>
               </div>
             </div>
-            <div className="flex flex-col justify-evenly border border-black [&>div:last-child]:border-none [&>div]:border-b [&>div]:border-b-neutral-300">
+            <div className="flex flex-col justify-evenly border-[2px] border-[#f6f7fb] [&>div:last-child]:border-none [&>div]:border-b [&>div]:border-b-[#f6f7fb]">
               <div className="flex flex-row items-center justify-between p-[10px]">
                 <div>Subtotal:</div>
                 <div className="flex flex-row items-center gap-1">
                   <span className='text-[18px]'>$</span>
-                  <input className="border border-neutral-300 p-[5px] outline-none" type="number" defaultValue={0.00} />
+                  <input className="border border-[#e5e7eb] p-[5px] outline-none" type="number" defaultValue={0.00} />
                 </div>
               </div>
               <div className="flex flex-row items-center justify-between p-[10px]">
                 <div>Total:</div>
                 <div className="flex flex-row items-center gap-1">
                   <span className='text-[18px]'>$</span>
-                  <input className="border border-neutral-300 p-[5px] outline-none" type="number" defaultValue={0.00}/>
+                  <input className="border border-[#e5e7eb] p-[5px] outline-none" type="number" defaultValue={0.00}/>
                 </div>
               </div>
               <div className="flex flex-row items-center justify-between p-[10px]">
@@ -223,7 +223,7 @@ const page = () => {
               </div>
             </div>
           </div>
-          <div className="grid gap-6 border border-black p-3 [grid-template-columns:20%_70%;] [&>div:nth-child(even)]:text-[14px]">
+          <div className="grid gap-6 border border-[#e5e7eb] p-3 [grid-template-columns:20%_70%;] [&>div:nth-child(even)]:text-[14px]">
             {/* <div className="text-[16px] font-bold">Quote Condition1:</div>
             <div className="flex flex-col gap-[10px] text-[14px]">
               <div className="flex flex-row items-center gap-[6px]">
@@ -244,20 +244,20 @@ const page = () => {
               </div>
             </div> */}
 
-            {/* <div className="text-[16px] font-bold">Notes:</div>
+            <div className="text-[16px] font-bold">Notes:</div>
             <div>
               <textarea
                 name=""
-                className="h-[100px] w-full border border-neutral-300 p-[5px] outline-none"
+                className="h-[100px] w-full border border-[#e5e7eb] p-[5px] outline-none"
                 id=""
               ></textarea>
-            </div> */}
+            </div>
 
             <div className="text-[16px] font-bold">Quoted By:</div>
             <div>
               <input
                 type="text"
-                className="w-full border border-neutral-300 p-[5px] text-[15px] font-normal outline-none"
+                className="w-full border border-[#e5e7eb] p-[5px] text-[15px] font-normal outline-none"
               />
             </div>
 
@@ -265,7 +265,7 @@ const page = () => {
             <div>
               <input
                 type="text"
-                className="w-full border border-neutral-300 p-[5px] text-[15px] font-normal outline-none"
+                className="w-full border border-[#e5e7eb] p-[5px] text-[15px] font-normal outline-none"
               />
             </div>
 
@@ -273,7 +273,7 @@ const page = () => {
             <div>
               <input
                 type="text"
-                className="w-full border border-neutral-300 p-[5px] text-[15px] font-normal outline-none"
+                className="w-full border border-[#e5e7eb] p-[5px] text-[15px] font-normal outline-none"
               />
             </div>
 
@@ -281,7 +281,7 @@ const page = () => {
             <div>
               <input
                 type="file"
-                className="w-full border border-neutral-300 p-[5px] text-[15px] font-normal outline-none"
+                className="w-full border border-[#e5e7eb] p-[5px] text-[15px] font-normal outline-none"
               />
               <span className="mt-[10px] block text-[14px] font-bold text-[#A71F23]">
                 Note: The following formats are allowed: PDF, DOC, XLS, PPT, JPG, MP3, PNG
@@ -289,13 +289,13 @@ const page = () => {
             </div>
           </div>
           <div className="flex flex-row justify-end gap-[20px]">
-            <button className="flex cursor-pointer items-center justify-center rounded-[20px] border border-brand-600 bg-brand-600 p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600">
+            <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e]">
               Send Quote
             </button>
-            <button className="flex cursor-pointer items-center justify-center rounded-[20px] border border-brand-600 bg-brand-600 p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600">
+            <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e]">
               Save Quote
             </button>
-            <button className="flex cursor-pointer items-center justify-center rounded-[20px] border border-brand-600 bg-brand-600 p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600">
+            <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e]">
               Cancel
             </button>
           </div>
