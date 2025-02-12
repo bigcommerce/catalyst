@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { getTranslations, getFormatter } from 'next-intl/server';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getSessionCustomerAccessToken, getSessionUserDetails} from '~/auth';
+import { getSessionCustomerAccessToken, getSessionUserDetails } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
@@ -62,11 +62,13 @@ interface Props {
 }
 
 interface CustomerGroup {
-  discount_rules: Array<{  amount: string;
+  discount_rules: Array<{
+    amount: string;
     type: string;
     category_id: string;
     product_id: string;
-    method: string; }>;
+    method: string;
+  }>;
 }
 
 const CartPageQuery = graphql(
@@ -115,13 +117,13 @@ export default async function Cart({ params }: Props) {
 
   const customerAccessToken = await getSessionCustomerAccessToken();
   const sessionUser = await getSessionUserDetails();
-  let customerGroupDetails:CustomerGroup = {
-    discount_rules: []
+  let customerGroupDetails: CustomerGroup = {
+    discount_rules: [],
   };
-  if(sessionUser){
-   const customerGroupId = sessionUser?.customerGroupId;
-   customerGroupDetails = await GetCustomerGroupById(customerGroupId);
-   }
+  if (sessionUser) {
+    const customerGroupId = sessionUser?.customerGroupId;
+    customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+  }
 
   const { data } = await client.fetch({
     document: CartPageQuery,
@@ -150,9 +152,8 @@ export default async function Cart({ params }: Props) {
       return [{ error: 'Failed to retrive data' }];
     }
   };
-  const product_data_in_cart = cookie_agent_login_status == "true"
-    ? await get_product_price_data_in_cart(cartId)
-    : [];
+  const product_data_in_cart =
+    cookie_agent_login_status == 'true' ? await get_product_price_data_in_cart(cartId) : [];
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
@@ -181,7 +182,9 @@ export default async function Cart({ params }: Props) {
             !accessoriesSkuArray?.includes(getInfo?.variantId)
               ? accessoriesSkuArray.push(getInfo?.variantId)
               : '';
-            let accessoriesInfo = lineItems?.find((line: any) => line?.variantEntityId == getInfo?.variantId);
+            let accessoriesInfo = lineItems?.find(
+              (line: any) => line?.variantEntityId == getInfo?.variantId,
+            );
             if (accessoriesInfo) {
               let accessSpreadData: any = { ...accessoriesInfo };
               if (accessSpreadData) {
@@ -197,7 +200,7 @@ export default async function Cart({ params }: Props) {
       if (accessoriesData?.length > 0) {
         item['accessories'] = accessoriesData;
       }
-      if (!accessoriesSkuArray?.includes(item?.variantEntityId)){
+      if (!accessoriesSkuArray?.includes(item?.variantEntityId)) {
         updatedLineItemInfo.push(item);
       }
     });
@@ -217,43 +220,45 @@ export default async function Cart({ params }: Props) {
     },
   ];
 
-const getCategoryIds =(product: any)=>{
-  const categories = removeEdgesAndNodes(product.baseCatalogProduct.categories) as CategoryNode[];
-  const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
-    const longestLength = longest?.breadcrumbs?.edges?.length || 0;
-    const currentLength = current?.breadcrumbs?.edges?.length || 0;
-    return currentLength > longestLength ? current : longest;
-  }, categories[0]);
-  
-  return categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
-    (edge) => edge.node.entityId
-  ) || [];
-}
+  const getCategoryIds = (product: any) => {
+    const categories = removeEdgesAndNodes(product.baseCatalogProduct.categories) as CategoryNode[];
+    const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
+      const longestLength = longest?.breadcrumbs?.edges?.length || 0;
+      const currentLength = current?.breadcrumbs?.edges?.length || 0;
+      return currentLength > longestLength ? current : longest;
+    }, categories[0]);
 
-const discountRules = customerGroupDetails?.discount_rules;
+    return categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
+  };
 
+  const discountRules = customerGroupDetails?.discount_rules;
 
   var getBrandIds = lineItems?.map((item: any) => {
     return item?.baseCatalogProduct?.brand?.entityId;
   });
   var getAllCommonSettinngsValues = await commonSettinngs(getBrandIds);
   //let checkZeroTax: any = await zeroTaxCalculation(data.site);
-  
-  updatedLineItemWithoutAccessories = updatedLineItemWithoutAccessories.map((product: any)=>{
-     return{
+
+  updatedLineItemWithoutAccessories = updatedLineItemWithoutAccessories.map((product: any) => {
+    return {
       ...product,
       categoryIds: getCategoryIds(product),
-     }
+    };
   });
-  
+
   const updatedProduct: any[][] = [];
   let checkZeroTax: any = await zeroTaxCalculation(data.site);
 
-for (const eachProduct of updatedLineItemWithoutAccessories) {
-  const price = await calculateProductPrice(eachProduct, "cart", discountRules, eachProduct.categoryIds);
-  updatedProduct.push(...price);
-}
-   
+  for (const eachProduct of updatedLineItemWithoutAccessories) {
+    const price = await calculateProductPrice(
+      eachProduct,
+      'cart',
+      discountRules,
+      eachProduct.categoryIds,
+    );
+    updatedProduct.push(...price);
+  }
+
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
       <div className="sticky top-2 z-50">
@@ -296,7 +301,6 @@ for (const eachProduct of updatedLineItemWithoutAccessories) {
 
       <div className="cart-right-side-details px-18 w-full pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
         <ul className="cart-details-item col-span-2 lg:w-full">
-
           {updatedProduct.map((product: any) => (
             <CartItem
               brandId={product?.baseCatalogProduct?.brand?.entityId}
@@ -312,8 +316,7 @@ for (const eachProduct of updatedLineItemWithoutAccessories) {
               discountRules={discountRules}
             />
           ))}
-          {
-            CustomItems.length > 0 &&
+          {CustomItems.length > 0 &&
             CustomItems?.map((data) => {
               return (
                 <CartProductComponent
@@ -343,7 +346,6 @@ for (const eachProduct of updatedLineItemWithoutAccessories) {
           <PaypalButton cartId={cartId} icon={paypalIcon} />
           <AmazonpayButton cartId={cartId} icon={amazonPayIcon} />
           <div className="pt-1"></div>
-
 
           <Flyout
             triggerLabel={

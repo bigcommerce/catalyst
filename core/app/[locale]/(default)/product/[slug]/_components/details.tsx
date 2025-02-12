@@ -168,7 +168,7 @@ export const Details = ({
   triggerLabel5,
   children5,
   priceMaxRules,
-  isFromQuickView
+  isFromQuickView,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -202,9 +202,9 @@ export const Details = ({
   useEffect(() => {
     // Scroll handlers
 
-    //Dont remove this function this is for salesbuddy  app 
+    //Dont remove this function this is for salesbuddy  app
     store_pdp_product_in_localstorage(product);
-    //Dont remove this function this is for salesbuddy  app 
+    //Dont remove this function this is for salesbuddy  app
 
     const handleScroll = () => {
       setShowStickyHeader(window.scrollY > 1500);
@@ -303,28 +303,28 @@ export const Details = ({
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
-                          <div className="inline text-[14px] font-normal">
-                            {productOptions
-                              .filter((option) => option.__typename === 'MultipleChoiceOption')
-                              .map((option, index, filteredArray) => {
-                                if (option.__typename === 'MultipleChoiceOption') {
-                                  const selectedValue = getSelectedValue(
-                                    option as MultipleChoiceOption,
-                                  );
-                                  return (
-                                    <span key={option.entityId}>
-                                      <span className="font-bold">{option.displayName}:</span>
-                                      <span className="text-[15px]"> {selectedValue}</span>
-                                      {index < filteredArray.length - 1 && (
-                                        <span className="mx-1">|</span>
-                                      )}
-                                    </span>
-                                  );
-                                }
-                                return null;
-                              })}
-                          </div>
-                        )}
+                        <div className="inline text-[14px] font-normal">
+                          {productOptions
+                            .filter((option) => option.__typename === 'MultipleChoiceOption')
+                            .map((option, index, filteredArray) => {
+                              if (option.__typename === 'MultipleChoiceOption') {
+                                const selectedValue = getSelectedValue(
+                                  option as MultipleChoiceOption,
+                                );
+                                return (
+                                  <span key={option.entityId}>
+                                    <span className="font-bold">{option.displayName}:</span>
+                                    <span className="text-[15px]"> {selectedValue}</span>
+                                    {index < filteredArray.length - 1 && (
+                                      <span className="mx-1">|</span>
+                                    )}
+                                  </span>
+                                );
+                              }
+                              return null;
+                            })}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -413,8 +413,9 @@ export const Details = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-              } px-[20px] pt-[20px]`}
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
+              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+            } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
@@ -635,17 +636,22 @@ export const Details = ({
         </div>
 
         {/* <ProductSchema product={product} /> */}
-        <div className={`${isFromQuickView ? "hidden" : "block"}`}>
+        <div className={`${isFromQuickView ? 'hidden' : 'block'}`}>
           <PayPalPayLater
             amount={product?.prices?.price?.value?.toString() || '0'}
             currency={product?.prices?.price?.currencyCode || 'USD'}
           />
 
-
           <RequestQuote children={children3} />
           <CertificationsAndRatings
-            certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4} />
-          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}
+            certificationIcon={certificationIcon}
+            product={product}
+            children={children4}
+            triggerLabel={triggerLabel4}
+          />
+          <ProductDetailDropdown
+            product={product}
+            dropdownSheetIcon={dropdownSheetIcon}
             triggerLabel={triggerLabel5}
             children={children5}
           />

@@ -134,10 +134,10 @@ export default async function ProductPage(props: Props) {
     let customerGroupDetails: CustomerGroup = {
       discount_rules: [],
     };
-    if(sessionUser){
-     const customerGroupId = sessionUser?.customerGroupId;
-     customerGroupDetails = await GetCustomerGroupById(customerGroupId);
-     }
+    if (sessionUser) {
+      const customerGroupId = sessionUser?.customerGroupId;
+      customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+    }
     const searchParams = await props.searchParams;
     const params = await props.params;
     const productSku: any = searchParams?.sku;
@@ -313,7 +313,6 @@ export default async function ProductPage(props: Props) {
       priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
         ? await getPriceMaxRules(priceMaxTriggers)
         : null;
-
     const promotions = await getActivePromotions(true);
 
     const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());
