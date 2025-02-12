@@ -18,6 +18,9 @@ import { Button } from '~/components/ui/button';
 import { bodl } from '~/lib/bodl';
 
 import { handleAddToCart } from './_actions/add-to-cart';
+ 
+import { handleRequestQuote } from '~/app/[locale]/(default)/sales-buddy/quote/actions/handleRequestQuote';
+
 import { CheckboxField } from './fields/checkbox-field';
 import { DateField } from './fields/date-field';
 import { MultiLineTextField } from './fields/multi-line-text-field';
@@ -30,7 +33,7 @@ import { ProductFlyout } from '~/components/product-card/product-flyout';
 import { useCommonContext } from '~/components/common-context/common-provider';
 
 import aa from 'search-insights';
-import { klaviyoTrackAddToCart } from '~/belami/components/klaviyo/klaviyo-track-add-to-cart';
+import { KlaviyoTrackAddToCart } from '~/belami/components/klaviyo/klaviyo-track-add-to-cart';
 
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import { getCartIdCookie } from '~/app/[locale]/(default)/sales-buddy/_actions/cart';
@@ -56,6 +59,7 @@ interface Props {
   showInSticky?: boolean;
   customerGroupDetails?: any;
   swatchOptions?:any;
+  sessionUser?: any;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -90,7 +94,6 @@ export const Submit = ({
   return (
     <AddToCartButton data={product} loading={isSubmitting}>
       {/* Remove the ShoppingCart icon completely */}
-
       {isSticky ? '' : ''}
     </AddToCartButton>
   );
@@ -105,7 +108,8 @@ export const ProductForm = ({
   productMpn,
   customerGroupDetails,
   showInSticky = false,
-  swatchOptions
+  swatchOptions,
+  sessionUser = null
 }: Props) => {
   
   const t = useTranslations('Product.Form');
@@ -134,6 +138,7 @@ export const ProductForm = ({
         const selectedValue = option.entityId;
         if (selectedValue) {
           const defaultValue = values.find((value: any) => value.isDefault)?.entityId.toString();
+          // console.log(defaultValue,">>Default value");
           urlParamArray.push({
             selectedValue: selectedValue,
             defaultValue: defaultValue,
@@ -148,12 +153,14 @@ export const ProductForm = ({
 
   const { handleSubmit, register, ...methods } = useProductForm();
 
-  const productFormSubmit = async (data: ProductFormData) => {
+  const productFormSubmit = async (data: ProductFormData, action: 'addToCart' | 'requestQuote') => {
     const quantity = Number(data.quantity);
     // Optimistic update
-
     cart.increment(quantity);
+
+    if (action === 'addToCart') {
     const result = await handleAddToCart(data, product);
+    
     const cartId = await getCartIdCookie();
     if (cartId?.value == undefined) {
       setCartIdForCheck(result?.data?.entityId);
@@ -217,7 +224,7 @@ export const ProductForm = ({
 
     // Track Add To Cart action...
     if (product && product.prices) {
-      klaviyoTrackAddToCart({ product: product as any });
+      KlaviyoTrackAddToCart({ product: product as any, user: sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null });
 
       aa('addedToCartObjectIDs', {
         eventName: 'Product Added To Cart',
@@ -243,14 +250,28 @@ export const ProductForm = ({
         },
       ],
     });
-  };
+    }
+    else if (action === 'requestQuote'){
 
+    // quotebutton handle
+     const quoteResult = await handleRequestQuote(data, product);
+     console.log(quoteResult,"requestQuoteData");
+     debugger;
+
+      localStorage.setItem("Q_R_data",JSON.stringify(quoteResult));
+
+      if (quoteResult.error) {
+        toast.error(`Error requesting quote: ${quoteResult.error}`);
+        return;
+      }
+  }
+}
 
   // If showing in sticky header, return only the Submit component
   if (showInSticky) {
     return (
       <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
-        <form onSubmit={handleSubmit(productFormSubmit)}>
+        <form onSubmit={handleSubmit((data) => productFormSubmit(data, 'addToCart'))}>
           <input type="hidden" value={product.entityId} {...register('product_id')} />
           <input type="hidden" value="1" {...register('quantity')} />
           {productOptions.map((option) => {
@@ -269,6 +290,8 @@ export const ProductForm = ({
             return null;
           })}
           <Submit data={product} isSticky={true} />
+          <button type="submit"  onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}>Request Quote</button>
+
         </form>
       </FormProvider>
     );
@@ -287,7 +310,7 @@ export const ProductForm = ({
       <FormProvider handleSubmit={handleSubmit} register={register} {...methods}>
         <form
           className="product-variants mt-[15px] flex flex-col gap-[20px]"
-          onSubmit={handleSubmit(productFormSubmit)}
+          onSubmit={handleSubmit((data) => productFormSubmit(data, 'addToCart'))}
         >
           <input type="hidden" value={product.entityId} {...register('product_id')} />
 
@@ -414,6 +437,7 @@ export const ProductForm = ({
           <QuantityField />
 
           <div className="mt-0 flex flex-col gap-4 @md:flex-row">
+          <button type="submit" className='hidden' id='custom-quote'  onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}>Request Quote</button>
             <Submit data={product} />
             <div className="hidden w-full">
               <Button disabled type="submit" variant="secondary">
