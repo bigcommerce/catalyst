@@ -9,7 +9,6 @@ import toast from "react-hot-toast";
 import { useTranslations } from "next-intl";
 import { Link } from '~/components/link';
 import { getCartData } from "../get-cart-items";
-import { getReferralIdCookie } from "~/app/[locale]/(default)/sales-buddy/_actions/referral";
 
 export const AccessoriesInputPlusMinus = ({ accessories, data }: { accessories: any, data: any }) => {
   const [quantity, setQuantity] = useState<any>(accessories?.prodQuantity);
@@ -72,8 +71,6 @@ export const AccessoriesInputPlusMinus = ({ accessories, data }: { accessories: 
             variantId: accessories?.variantEntityId,
             quantity: quantity,
           };
-          let cookieValue = await getReferralIdCookie();
-          const referrerId = cookieValue?.value;
           let cartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
           let getCartMetaLineItems = cartMetaFields?.find((item: any) => item?.key == lineItemId);
           if (cartMetaFields?.length == 0 || !getCartMetaLineItems) {
