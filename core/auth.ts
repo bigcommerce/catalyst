@@ -153,6 +153,8 @@ const config = {
         return {
           name: `${result.customer.firstName} ${result.customer.lastName}`,
           email: result.customer.email,
+          firstName: result.customer.firstName,
+          lastName: result.customer.lastName,
           customerAccessToken: result.customerAccessToken.value,
           customerGroupId: result.customer.customerGroupId,
         };
@@ -193,6 +195,8 @@ declare module 'next-auth' {
   interface User {
     name?: string | null;
     email?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
     customerGroupId?: number | null;
     customerAccessToken?: string;
   }
@@ -201,6 +205,7 @@ declare module 'next-auth' {
 declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
+    customerGroupId?: number | null;
     customerAccessToken?: string;
   }
 }

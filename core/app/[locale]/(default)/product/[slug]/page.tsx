@@ -116,11 +116,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     title: pageTitle || product.name,
     description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
-    openGraph: url
+    openGraph: url && typeof url === 'string'
       ? {
           images: [
             {
-              url,
+              url: url.replace('{:size}', '386x513'),
               alt,
             },
           ],
@@ -395,6 +395,7 @@ export default async function ProductPage(props: Props) {
                   }
                   children5={<MakeswiftPage locale={locale} path="/content/information-flyout" />}
                   priceMaxRules={priceMaxRules}
+                  sessionUser={sessionUser}
                 />
               </div>
             </div>
@@ -450,7 +451,7 @@ export default async function ProductPage(props: Props) {
           <ProductViewed product={product} />
           <ProductSchema product={product} identifier={newIdentifier} productSku={productSku} />
 
-          <KlaviyoTrackViewedProduct product={product} />
+          <KlaviyoTrackViewedProduct product={product} user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
         </ProductProvider>
       </div>
     );

@@ -33,7 +33,7 @@ import { ProductFlyout } from '~/components/product-card/product-flyout';
 import { useCommonContext } from '~/components/common-context/common-provider';
 
 import aa from 'search-insights';
-import { klaviyoTrackAddToCart } from '~/belami/components/klaviyo/klaviyo-track-add-to-cart';
+import { KlaviyoTrackAddToCart } from '~/belami/components/klaviyo/klaviyo-track-add-to-cart';
 
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import { getCartIdCookie } from '~/app/[locale]/(default)/sales-buddy/_actions/cart';
@@ -59,6 +59,7 @@ interface Props {
   showInSticky?: boolean;
   customerGroupDetails?: any;
   swatchOptions?:any;
+  sessionUser?: any;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -107,7 +108,8 @@ export const ProductForm = ({
   productMpn,
   customerGroupDetails,
   showInSticky = false,
-  swatchOptions
+  swatchOptions,
+  sessionUser = null
 }: Props) => {
   
   const t = useTranslations('Product.Form');
@@ -222,7 +224,7 @@ export const ProductForm = ({
 
     // Track Add To Cart action...
     if (product && product.prices) {
-      klaviyoTrackAddToCart({product: product as any});
+      KlaviyoTrackAddToCart({ product: product as any, user: sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null });
 
       aa('addedToCartObjectIDs', {
         eventName: 'Product Added To Cart',
