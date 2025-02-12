@@ -346,9 +346,7 @@ for (const eachProduct of updatedLineItemWithoutAccessories) {
           <CheckoutButton cartId={cartId} />
           <ApplepayButton cartId={cartId} icon={applePayIcon} />
           <PaypalButton cartId={cartId} icon={paypalIcon} />
-          <AmazonpayButton cartId={cartId} icon={amazonPayIcon} />
           <div className="pt-1"></div>
-
 
           <Flyout
             triggerLabel={

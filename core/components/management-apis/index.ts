@@ -342,7 +342,7 @@ export const RemoveCartMetaFields = async (entityId: string, metaId: number) => 
   }
 };
 
-export const GetCartMetaFields = async (entityId: string, nameSpace: string) => {
+export const GetCartMetaFields = async (entityId: string, nameSpace?: string) => {
   try {
     let nameSpaceValue = '';
     if (nameSpace) {
@@ -350,6 +350,53 @@ export const GetCartMetaFields = async (entityId: string, nameSpace: string) => 
     }
     let { data } = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${entityId}/metafields${nameSpaceValue}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const CreateOrderMetaFields = async (orderId: number, postData: any)=>{
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/orders/${orderId}/metafields`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: JSON.stringify(postData),
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const GetOrderMetaFields = async (orderId: number) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/orders/${orderId}/metafields`,
       {
         method: 'GET',
         headers: {
