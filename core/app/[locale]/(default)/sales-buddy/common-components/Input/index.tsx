@@ -18,8 +18,8 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
     return (
       <div className='relative'>
         <input
-          className={`
-           focus:border-blue-500 peer w-full border-2 border-gray-200 px-4 rounded-sm py-2.5 text-base placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200
+          className={` h-[45px]
+           focus:border-blue-500 peer w-full border-2 border-gray-200 px-4 rounded-sm  text-base placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200
             ${error || isPassword ? 'pe-12' : ''}
             ${error ? 'border-error-secondary hover:border-error focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 disabled:border-gray-200' : ''}
           `}
