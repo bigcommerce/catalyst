@@ -61,6 +61,7 @@ interface CategoryNode {
 
 interface Props {
   params: Promise<Params> | Params; // Support both Promise and object
+  sku?: string | null; // Add sku property
 }
 
 interface CustomerGroup {
@@ -322,6 +323,8 @@ for (const eachProduct of updatedLineItemWithoutAccessories) {
                   key={data.entityId}
                   cartId={cart.entityId}
                   currencyCode={cart.currencyCode}
+                  sku={data.sku}
+                  quantity={data.quantity}
                   product={data}
                   priceAdjustData={
                     product_data_in_cart?.custom_items &&

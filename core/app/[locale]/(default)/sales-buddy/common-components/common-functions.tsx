@@ -46,7 +46,7 @@ export const validateInput = (type: string, value: string | any[], action: strin
 
     case 'company': {
       // Company name validation: not empty, length between 1 and 50
-      if (!value) return 'Company name cannot be empty.';
+      if (!value) return 
       return value.length <= 50 ? '' : 'Company name must be 50 characters or less.';
     }
     case 'cart-id': {
