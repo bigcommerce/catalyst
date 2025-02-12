@@ -86,12 +86,14 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken,
     fetchOptions = {} as FetcherRequestInit,
     channelId,
+    throwOnErrors = true,
   }: {
     document: DocumentDecoration<TResult, TVariables>;
     variables?: TVariables;
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
+    throwOnErrors?: boolean;
   }): Promise<BigCommerceResponse<TResult>> {
     const { headers = {}, ...rest } = fetchOptions;
     const query = normalizeQuery(document);
@@ -128,13 +130,11 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     const result = (await response.json()) as BigCommerceResponse<TResult>;
 
-    const { errors, ...data } = result;
-
-    if (errors) {
-      throw BigCommerceGQLError.createFromResult(errors);
+    if (result.errors && throwOnErrors) {
+      throw BigCommerceGQLError.createFromResult(result.errors);
     }
 
-    return data;
+    return result;
   }
 
   async fetchShippingZones() {

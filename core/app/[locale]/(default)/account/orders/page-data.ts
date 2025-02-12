@@ -94,6 +94,7 @@ export const getCustomerOrders = cache(
       variables: { ...paginationArgs, ...filtersArgs },
       customerAccessToken,
       fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
+      throwOnErrors: false, // handle case where baseCatalogProduct is not found
     });
 
     const orders = response.data.customer?.orders;
