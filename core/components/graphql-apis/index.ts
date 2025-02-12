@@ -365,3 +365,90 @@ export const getProductBySku = async (variables: SkuVariables) => {
 
   return data.site.product as any;
 };
+
+const GetMultipleChoiceOptionsQuery = graphql(`
+  query GetMultipleChoiceOptions($entityId: Int!, $valuesCursor: String) {
+    site {
+      product(entityId: $entityId) {
+      entityId
+        productOptions(first: 50) {
+          edges {
+            node {
+              entityId
+              displayName
+              isRequired
+              ... on MultipleChoiceOption {
+                displayStyle
+                values(first: 50, after: $valuesCursor) {
+                  edges {
+                    node {
+                      entityId
+                      label
+                      isDefault
+                      isSelected
+                      ... on SwatchOptionValue {
+                        __typename
+                        hexColors
+                        imageUrl(lossy: true, width: 40)
+                      }
+                      ... on ProductPickListOptionValue {
+                        __typename
+                        defaultImage {
+                          altText
+                          url: urlTemplate(lossy: true)
+                        }
+                      }
+                    }
+                  }
+                  pageInfo {
+                    startCursor
+                    endCursor
+                    hasNextPage
+                    hasPreviousPage
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
+export const getMultipleChoiceOptions = async (
+  productId: number | undefined,
+  valuesCursor?: string | null,
+) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const { data } = await client.fetch({
+    document: GetMultipleChoiceOptionsQuery,
+    variables: { entityId: productId, valuesCursor },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  // const multipleChoiceOptions = data?.site?.product || [];
+const pId=data?.site?.product?.entityId
+
+  const multipleChoiceOptions = data?.site?.product?.productOptions?.edges
+  ?.map(edge => edge.node)
+  ?.filter(node => node?.displayStyle === "Swatch") || [];
+  const swatchValuesEdges = multipleChoiceOptions
+  ?.map(option => option.values?.edges)
+  .flat() || [];
+  const pageInfo = multipleChoiceOptions
+  ?.map(option => option.values?.pageInfo)
+  .flat() || [];
+  const pageInfo1=pageInfo?.[0]
+  return {
+    multipleChoiceOptions,
+    swatchValuesEdges,
+    pId,pageInfo ,
+    endCursor:
+      pageInfo1?.endCursor || null,
+    hasNextPage:
+    pageInfo1?.hasNextPage ?? null,
+  };
+};

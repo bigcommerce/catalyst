@@ -36,6 +36,7 @@ import { calculateProductPrice } from '~/components/common-functions';
 import { ProductSchema } from './_components/product-schema';
 import { useTranslations } from 'next-intl';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
+import { getMultipleChoiceOptions } from '~/components/graphql-apis';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -115,11 +116,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     title: pageTitle || product.name,
     description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
-    openGraph: url
+    openGraph: url && typeof url === 'string'
       ? {
           images: [
             {
-              url,
+              url: url.replace('{:size}', '386x513'),
               alt,
             },
           ],
@@ -179,7 +180,8 @@ export default async function ProductPage(props: Props) {
     if (!product) {
       return notFound();
     }
-
+    let swatchOptions:any
+    swatchOptions= await getMultipleChoiceOptions(productId)
     // Asset URLs
     const assets = {
       bannerIcon: imageManagerImageUrl('example-1.png', '50w'),
@@ -193,7 +195,7 @@ export default async function ProductPage(props: Props) {
       closeIcon: imageManagerImageUrl('close.png', '14w'),
       blankAddImg: imageManagerImageUrl('notneeded-1.jpg', '150w'),
     };
-
+  
     // Get MetaFields
     const productMetaFields = await GetProductMetaFields(product.entityId, '');
 
@@ -346,6 +348,7 @@ export default async function ProductPage(props: Props) {
               <div className="PDP xl:relative xl:flex-1">
                 <Details
                   promotions={promotions}
+                  swatchOptions={swatchOptions}
                   isFreeShipping={isFreeShipping}
                   product={updatedProduct}
                   collectionValue={collectionValue}
@@ -391,6 +394,7 @@ export default async function ProductPage(props: Props) {
                   }
                   children5={<MakeswiftPage locale={locale} path="/content/information-flyout" />}
                   priceMaxRules={priceMaxRules}
+                  sessionUser={sessionUser}
                 />
               </div>
             </div>
@@ -446,7 +450,7 @@ export default async function ProductPage(props: Props) {
           <ProductViewed product={product} />
           <ProductSchema product={product} identifier={newIdentifier} productSku={productSku} />
 
-          <KlaviyoTrackViewedProduct product={product} />
+          <KlaviyoTrackViewedProduct product={product} user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
         </ProductProvider>
       </div>
     );
