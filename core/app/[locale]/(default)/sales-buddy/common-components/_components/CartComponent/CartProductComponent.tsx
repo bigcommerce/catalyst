@@ -25,9 +25,11 @@ interface Props {
   priceAdjustData: any;
   ProductType: string;
   cookie_agent_login_status: boolean;
+  sku:string;
+  quantity:number;
 }
 
-export default function CartProductComponent({ currencyCode, product, cartId, priceAdjustData, ProductType, cookie_agent_login_status }: Props) {
+export default function CartProductComponent({ currencyCode, product, cartId, priceAdjustData, ProductType, cookie_agent_login_status, quantity,sku }: Props) {
   const changeTheProtectedPosition = moveToTheEnd(
     product?.selectedOptions,
     'Protect Your Purchase',
@@ -86,10 +88,13 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
                 <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
                   <div className="cart-options flex flex-wrap gap-2">
                     <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                      SKU: {priceAdjustData?.sku}
+                      SKU: {priceAdjustData?.sku ?? sku}
                     </p>
                   </div>
                 </div>
+                <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
+                  quantity: {quantity}
+                </p>
               {/* )} */}
               {changeTheProtectedPosition?.length > 0 && (
                 <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
@@ -231,7 +236,8 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
             <div className="overflow-x-hidden pl-[10px]">
                 {cookie_agent_login_status ==true && <ProductPriceAdjuster
                  parentSku={priceAdjustData?.parent_sku}
-                  sku={priceAdjustData?.sku}
+                  sku={sku}
+                  quantity={quantity}
                   oem_sku={priceAdjustData?.oem_sku}
                   productPrice={Number(product?.listPrice?.value)}
                   initialCost={Number(priceAdjustData?.cost)}

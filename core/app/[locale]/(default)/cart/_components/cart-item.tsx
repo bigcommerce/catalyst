@@ -596,6 +596,8 @@ export const CartItem = async ({
                     productId={product?.productEntityId}
                     cartId={cartId}
                     ProductType={'product'}
+                    accessoriesData={product.updatedAccessories}
+                    quantity={product?.quantity}
                   />
                 </div>
               )}

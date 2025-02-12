@@ -14,6 +14,9 @@ import { UpdateCustomerId } from '../../sales-buddy/_actions/update-customer-id'
 import { SendOrderToAlgolia } from './send-order-to-algolia';
 import { GetCartMetaFields } from '~/components/management-apis';
 
+import { getSessionUserDetails } from "~/auth";
+import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
+
 const emailImg = imageManagerImageUrl('emailicon.png', '16w');
 const facebookImg = imageManagerImageUrl('facebook.png', '23w');
 const googleImg = imageManagerImageUrl('google-logo.png', '23w');
@@ -61,6 +64,8 @@ export default async function OrderConfirmation() {
   const cartId: any = cookieStore.get('cartId')?.value;
   const getCustomerIdfromCookie = cookieStore?.get('customer_id_for_agent')?.value
   let customerAccessToken = await getSessionCustomerAccessToken();
+
+  const sessionUser = await getSessionUserDetails();
 
   let guestUserCheck = 0;
 
@@ -187,6 +192,7 @@ export default async function OrderConfirmation() {
               </p>
             </div>
             <SendOrderToAlgolia lineItems={shippingConsignments?.[0]?.lineItems} />
+            <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
             <p className="flex flex-col">
               <span className="text-[16px] font-[400] leading-[32px] xsm:tracking-[0.15px] tracking-[0.5px] text-[#353535] text-center xsm:text-left">
                 We have received your order. You will receive an email confirmation at
