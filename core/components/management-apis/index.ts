@@ -1,5 +1,7 @@
 'use server';
 
+import { cookies } from 'next/headers';
+
 export const CheckProductFreeShipping = async (productId: string) => {
   try {
     let { data } = await fetch(
@@ -128,12 +130,12 @@ export const getDeliveryMessage = async (
   );
   if (metaFields?.data?.length > 0) {
     const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
-    const deliveryKey = deliveryMessages.join(','); 
+    const deliveryKey = deliveryMessages.join(',');
     try {
       const parsedValue = JSON?.parse(deliveryKey);
-      return parsedValue; 
+      return parsedValue;
     } catch (error) {
-      return null; 
+      return null;
     }
   }
   await getMetaFieldsByProduct(entityId, "delivery_message");
@@ -342,7 +344,7 @@ export const RemoveCartMetaFields = async (entityId: string, metaId: number) => 
   }
 };
 
-export const GetCartMetaFields = async (entityId: string, nameSpace: string) => {
+export const GetCartMetaFields = async (entityId: string, nameSpace?: string) => {
   try {
     let nameSpaceValue = '';
     if (nameSpace) {
@@ -350,6 +352,53 @@ export const GetCartMetaFields = async (entityId: string, nameSpace: string) => 
     }
     let { data } = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${entityId}/metafields${nameSpaceValue}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const CreateOrderMetaFields = async (orderId: number, postData: any)=>{
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/orders/${orderId}/metafields`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: JSON.stringify(postData),
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const GetOrderMetaFields = async (orderId: number) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/orders/${orderId}/metafields`,
       {
         method: 'GET',
         headers: {
@@ -552,10 +601,9 @@ export const addCouponCodeToCart = async (checkoutId: string, couponCode: string
           'Content-Type': 'application/json',
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
         },
-        body: {
-          coupon_code: couponCode,
-          version: 1,
-        },
+        body: JSON.stringify({
+          coupon_code: couponCode
+        }),
         cache: 'no-store',
       },
     )
@@ -651,7 +699,190 @@ export const processGiftCertificate = async (giftCode: string) => {
     )
       .then((res) => res.json())
       .then((jsonData) => {
-        console.log('========jsonData=======', jsonData);
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const generateCouponPromotion = async (amount: string, productIds: any, code: string) => {
+  try {
+    let rulesObject: any = [];
+    productIds?.forEach((product: any) => {
+      rulesObject.push(`{
+            "action": {
+              "cart_items": {
+                "discount": {
+                  "fixed_amount": "${product?.discounted_amount}"
+                },
+                "strategy": "LEAST_EXPENSIVE",
+                "add_free_item": false,
+                "as_total": true,
+                "include_items_considered_by_condition": true,
+                "exclude_items_on_sale": false,
+                "items": {
+                  "products": [${product?.prodId}]
+                }
+              }
+            },
+            "apply_once": true,
+            "stop": false,
+            "condition": {
+              "cart": {
+                "items": {
+                  "products": [${product?.prodId}]
+                },
+                "minimum_quantity": 1
+              }
+            }
+          }`);
+    });
+    let promotionPayload = `{
+        "name": "ZeroTax-Addon-${amount}",
+        "channels": [
+          {
+            "id": ${process.env.BIGCOMMERCE_CHANNEL_ID}
+          }
+        ],
+        "rules": [${rulesObject}],
+        "notifications": [],
+        "stop": false,
+        "currency_code": "USD",
+        "redemption_type": "COUPON",
+        "shipping_address": null,
+        "current_uses": 0,
+        "max_uses": 1,
+        "start_date": "${new Date().toISOString()?.slice(0, 19) + '+00:00'}",
+        "end_date": null,
+        "status": "ENABLED",
+        "can_be_used_with_other_promotions": true,
+        "coupon_overrides_automatic_when_offering_higher_discounts": false,
+        "display_name": "ZeroTax-Addon-${amount}"
+    }`;
+    let data = await fetch(
+      ` https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/promotions`,
+      {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN, // Replace with the Payment Access Token
+        },
+        body: promotionPayload,
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const generateCouponCodeInPromotion = async (code: string, promoId: number) => {
+  try {
+    let promotionPayload = `{
+      "code": "${code}",
+      "max_uses": 1,
+      "max_uses_per_customer": 1
+    }`;
+    let data = await fetch(
+      ` https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/promotions/${promoId}/codes`,
+      {
+        method: 'POST',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN, // Replace with the Payment Access Token
+        },
+        body: promotionPayload,
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const updateCouponPromotion = async (amount: any, productIds: any, id: number) => {
+  try {
+    let rulesObject: any = [];
+    productIds?.forEach((product: any) => {
+      rulesObject.push(`{
+            "action": {
+              "cart_items": {
+                "discount": {
+                  "fixed_amount": "${product?.discounted_amount}"
+                },
+                "strategy": "LEAST_EXPENSIVE",
+                "add_free_item": false,
+                "as_total": true,
+                "include_items_considered_by_condition": true,
+                "exclude_items_on_sale": false,
+                "items": {
+                  "products": [${product?.prodId}]
+                }
+              }
+            },
+            "apply_once": true,
+            "stop": false,
+            "condition": {
+              "cart": {
+                "items": {
+                  "products": [${product?.prodId}]
+                },
+                "minimum_quantity": 1
+              }
+            }
+          }`);
+    });
+    let promotionPayload = `{
+        "name": "ZeroTax-Addon-${amount}",
+        "channels": [
+          {
+            "id": ${process.env.BIGCOMMERCE_CHANNEL_ID}
+          }
+        ],
+        "rules": [${rulesObject}],
+        "notifications": [],
+        "stop": false,
+        "currency_code": "USD",
+        "redemption_type": "COUPON",
+        "shipping_address": null,
+        "current_uses": 0,
+        "max_uses": 1,
+        "start_date": "${new Date().toISOString()?.slice(0, 19) + '+00:00'}",
+        "end_date": null,
+        "status": "ENABLED",
+        "can_be_used_with_other_promotions": true,
+        "coupon_overrides_automatic_when_offering_higher_discounts": false,
+        "display_name": "ZeroTax-Addon-${amount}"
+    }`;
+    let data = await fetch(
+      ` https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/promotions/${id}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN, // Replace with the Payment Access Token
+        },
+        body: promotionPayload,
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
         return jsonData;
       });
     return data;

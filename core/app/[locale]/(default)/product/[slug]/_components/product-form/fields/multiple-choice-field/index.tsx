@@ -195,7 +195,7 @@ export const MultipleChoiceField = ({
           onClick={() => setShowAll(false)}
           className="show-all view-more-button view-all w-full rounded-[50px] !p-[0.4rem] !py-[0px] text-center text-[14px] font-medium leading-[24px] tracking-[0.25px] text-[#008BB7] !shadow-none xl:mt-3"
         >
-          View Less
+          Show Fewer
         </button>
       )}
     </div>
@@ -219,7 +219,7 @@ export const MultipleChoiceField = ({
             {option.displayName} :
           </Label>
           <span className="selection ml-[5px] text-[#008BB7]">
-            {activeOptionSwatchLabel ? activeOptionSwatchLabel[0] : 'Selection'}
+            {activeOptionSwatchLabel ? activeOptionSwatchLabel[0] : activeOptionSwatchLabel}
           </span>
 
           <div className="ml-[0.8em] flex flex-wrap items-center justify-center gap-2 xl:ml-[0em] xl:justify-start">

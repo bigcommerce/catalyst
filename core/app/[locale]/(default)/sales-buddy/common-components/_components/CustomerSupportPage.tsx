@@ -11,14 +11,18 @@ import DynamicTable from '../table/CustomTable';
 import { getCustomerCart, getCustomerUrlSession_id } from '../../_actions/get-customer-cart';
 import Loader from './Spinner';
 import { getEnhancedSystemInfo, validateInput } from '../common-functions';
-import { UpdateCartIdCookie } from '../../_actions/update-cart-id-cookies';
+import { retriveInputCheckCookie, UpdateCartIdCookie } from '../../_actions/update-cart-id-cookies';
 import { getShopperUrls } from '../../_actions/get-shopper-urls';
 import Link from 'next/link';
 import SystemInfoComponent from './SystemInformationComponent';
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import CompactUserCard from './SystemInformationComponent/CustomerDetailUsingSessionId';
 import { setCustomerIdViaSessionId } from '../../_actions/update-customer-id';
+import { usePathname } from 'next/navigation';
+import { CreateCartMetaFields } from '~/components/management-apis';
 function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
+  const path = usePathname();
+  
   const [customerDetails, setCustomerDetails] = useState({});
   const [customerDetailsBasedOnSessionId, setCustomerDetailsBasedOnSessionId] = useState([]);
   const [cartErrorMessage, setCartErrorMessage] = useState<string | null>('');
@@ -74,7 +78,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
     show3: false,
     show4: false
   });
-  const { cart_interface_session_id, setCart_interface_session_id, cart_interface_refferal_id, setCart_interface_Refferal_id } = useCompareDrawerContext();
+  const { cart_interface_session_id, context_session_id, setCart_interface_session_id, cart_interface_refferal_id, setCart_interface_Refferal_id } = useCompareDrawerContext();
 
 
   const handleCartLookupSubmit = async (e: React.FormEvent) => {
@@ -100,7 +104,16 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
         UpdateCartIdCookie(response?.output?.data?.[0]?.['cart_id'])
         setUpdatedCCartId(cartId)
         setCustomerIdViaSessionId(response?.output?.data?.[0]?.customer_id)
-        
+        const storedAgentInfo = JSON.parse(localStorage.getItem("agent_info") || '{}');
+        const CustomerCartId = response?.output?.data?.[0]?.['cart_id']
+        let cartMeta = {
+          permission_set: 'write_and_sf_access',
+          namespace: 'agent_cart_information',
+          key: "agent_info",
+          description: "Agent Email and Name Information",
+          value: JSON.stringify(storedAgentInfo),
+        };
+        await CreateCartMetaFields(CustomerCartId, cartMeta);     
         localStorage.setItem(
           'cart_lookup_sessionID_agent',
           JSON.stringify({
@@ -310,11 +323,20 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
     }
   };
   useEffect(() => {
+    const getCart_lookup_sessionID_agent = JSON?.parse(localStorage?.getItem('cart_lookup_sessionID_agent') || '{}')
+    const isNotEmpty = Object.keys(getCart_lookup_sessionID_agent).length > 0;
+    const callAllFunction = async () => {
+      var checkInputFeild = await retriveInputCheckCookie();
+      if (checkInputFeild) {
+        getCartLookUpValueFromLS();
+        getShopperInfoAndLoad();
+      } else {
+        console.log("No inputCheck cookie found or it has no value.");
+      }
+    };
+    callAllFunction()
     const getCartLookUpValueFromLS = () => {
-      const getCart_lookup_sessionID_agent = JSON?.parse(localStorage?.getItem('cart_lookup_sessionID_agent') || '{}')
-      const isNotEmpty = Object.keys(getCart_lookup_sessionID_agent).length > 0;
       setCustomerIdViaSessionId(isNotEmpty && getCart_lookup_sessionID_agent?.SessionIDUserDetails.customer_id)
-
       setGetUserStoredSessionInfoFromLS(getCart_lookup_sessionID_agent)
       setCartId(getCart_lookup_sessionID_agent?.SessionId)
       setCustomerDetailsBasedOnSessionId(getCart_lookup_sessionID_agent?.SessionIDUserDetails)
@@ -354,10 +376,9 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
       }
     };
 
-    getCartLookUpValueFromLS()
-    getShopperInfoAndLoad()
+   
 
-  }, [])
+  }, [path])
 
 
   const renderInputFields = (fields: Array<{ id: string; label: string }>, refs: any) => {

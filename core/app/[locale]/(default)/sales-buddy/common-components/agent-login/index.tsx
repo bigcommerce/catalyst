@@ -3,6 +3,7 @@ import { agentLogin } from '../../_actions/agent-login'; // Adjust the import pa
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import {storeAgentLoginStatusInCookies} from '../../_actions/agent-login';
 import Loader from '../_components/Spinner';
+import { removeInputCheckCookie } from '../../_actions/update-cart-id-cookies';
 interface AgentLoginProps {
   isOpen: boolean;
   toggleModal: () => void;
@@ -19,6 +20,7 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
 
 
   const handleLogin = async (event: React.FormEvent) => {
+    
     event.preventDefault();
     setError(null); // Reset error state
     setLoading(true); // Set loading state
@@ -26,18 +28,21 @@ export default function AgentLogin({ isOpen, toggleModal,  }: AgentLoginProps) {
       const result = await agentLogin(email, password);
       
       if (result.status === 200) {
-        console.log(result?.data?.output?.data[0]?.name);
-        
+        setLoading(false); // Set loading state
         if (result?.data?.output?.data[0]?.status){
           // localStorage.setItem('agent_login', 'true');
+          await removeInputCheckCookie()
           setAgentRole(result?.data?.output?.data[0]?.role)
-          localStorage.setItem('agent_role', result?.data?.output?.data[0]?.role);
           setAgentLoginStatus(true);
-          localStorage.setItem('agent_name', result?.data?.output?.data[0]?.name);
+          const agent_info = {
+            name: result?.data?.output?.data[0]?.name || "",
+            role: result?.data?.output?.data[0]?.role || "",
+            email: result?.data?.output?.data[0]?.emailid || ""
+          };
+          localStorage.setItem("agent_info", JSON.stringify(agent_info));
           setAgentName(result?.data?.output?.data[0]?.name)
           toggleModal();
           storeAgentLoginStatusInCookies(true);
-          setLoading(false); // Set loading state
           setEmail('')
           setPassword('')
         }else{

@@ -232,18 +232,26 @@ export const ProductSnippet = async ({
                 SKU:
               </span>
               <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
-                {' '}
-                |{' '}
+                |
               </span>
               {product.productOptions?.map(({ name: optionName, value }, idx) => {
+                 let pipeLineData = ' | ';
+                 if (idx === product?.productOptions.length - 1) {
+                   pipeLineData = '';
+                 }
+                 const updatedValue = optionName === "Fabric Color"
+                 ? value.split("|")[0]?.trim()
+                 : value;
                 return (
                   <>
                     <span className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7F7F7F]" key={idx}>
-                      {optionName}
+                      {`${optionName}: `}
                     </span>
                     <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
-                      {' '}
-                      {value}
+                      {updatedValue}
+                    </span>
+                    <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                      {pipeLineData}
                     </span>
                   </>
                 );

@@ -2,13 +2,13 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import {
   getCommonSettingByBrandChannel,
   addCouponCodeToCart,
-  deleteCouponCodeFromCart,
   GetProductMetaFields,
   GetProductVariantMetaFields,
-  updateProductDiscount,
-  createGiftCardCoupon,
-  processGiftCertificate,
+  generateCouponPromotion,
+  generateCouponCodeInPromotion,
+  updateCouponPromotion,
 } from '../management-apis';
+import { getCookieData } from '../graphql-apis';
 
 interface MetaField {
   entityId: number;
@@ -349,11 +349,11 @@ export const getMetaFieldsByProduct = async (
 
 export const commonSettinngs = async (brand_ids: any) => {
   brand_ids = [...new Set(brand_ids.filter((id: any) => id !== undefined))];
-  if (brand_ids !== undefined && brand_ids.length > 0) {
+  if(brand_ids !== undefined && brand_ids.length > 0) {
     var res = await getCommonSettingByBrandChannel(brand_ids);
     return res.output;
-  } else {
-    return { status: 500, output: [] };
+  }else{
+    return {status:500,output:[]}
   }
 };
 export const retrieveMpnData = (product: any, productid: Number, variantId: Number) => {
@@ -371,10 +371,24 @@ export const checkZeroTaxCouponIsApplied = async (checkoutData: any) => {
   let zeroTaxCoupon: number = 0;
   if (couponCodeArray?.length > 0) {
     let couponData: any = couponCodeArray?.find((discount: any) =>
-      discount?.code?.includes('ZEROTAX'),
+      discount?.code?.toLowerCase()?.includes('zerotax'),
     );
     if (couponData) {
       zeroTaxCoupon = 1;
+    }
+  }
+  return zeroTaxCoupon;
+};
+
+export const checkZeroTaxCouponAmount = async (checkoutData: any) => {
+  let couponCodeArray: any = checkoutData?.coupons;
+  let zeroTaxCoupon: number = 0;
+  if (couponCodeArray?.length > 0) {
+    let couponData: any = couponCodeArray?.find((discount: any) =>
+      discount?.code?.toLowerCase()?.includes('zerotax'),
+    );
+    if (couponData) {
+      zeroTaxCoupon = couponData?.discountedAmount?.value;
     }
   }
   return zeroTaxCoupon;
@@ -441,10 +455,9 @@ export const calculateProductPrice = async (
         warrantyApplied=true;
       }
     }
-
-    hasDiscount = discount > 0;
-
-    discountRules.forEach(
+    //hasDiscount = discount > 0;
+    if (discountRules && Array.isArray(discountRules) && discountRules.length > 0) {
+    discountRules?.forEach(
       (rule: {
         amount: string;
         type: string;
@@ -478,8 +491,8 @@ export const calculateProductPrice = async (
         hasDiscount = originalPrice > updatedPrice;
       },
     );
+  }
 
-    // Creating the final object
     const convertedObject = {
       UpdatePriceForMSRP: {
         originalPrice,
@@ -500,11 +513,10 @@ export const calculateProductPrice = async (
   return convertedPrices;
 };
 
-
-
 export const zeroTaxCalculation = async (cartObject: any) => {
   let checkoutData: any = cartObject?.checkout;
   let cartData: any = cartObject?.cart;
+  let cartId: string = cartData?.entityId;
   if (await checkZeroTaxCouponIsApplied(checkoutData)) {
     let taxPercentage: any = 0;
     let subTotalAmount: any = checkoutData?.subtotal?.value || 0;
@@ -512,54 +524,61 @@ export const zeroTaxCalculation = async (cartObject: any) => {
     taxPercentage = Number((subTotalAmount / taxAmount)?.toFixed(2));
     let taxPercentCalc: any = taxAmount / subTotalAmount;
     let postDataArray: any = [];
-    console.log(
-      '========cartData?.lineItems?.physicalItems=======',
-      cartData?.lineItems?.physicalItems,
-    );
     let overAllTaxAmount: any = 0;
     let overallZeroTaxAmount: any = 0;
+    let productIdsArray: any = [];
+    let zeroTaxCouponAmount: any = await checkZeroTaxCouponAmount(checkoutData);
     for await (const item of cartData?.lineItems?.physicalItems) {
       let couponDiscount: any = item?.couponAmount;
       let couponAmount: any = couponDiscount?.value;
       overallZeroTaxAmount += couponAmount;
       let qty: any = item?.quantity;
       let zeroTaxCheck: any = couponAmount / qty;
-      if (zeroTaxCheck == 0.1) {
+      if (zeroTaxCheck == 0.1 || (zeroTaxCouponAmount > 0 && couponAmount > 0)) {
         let productAmount = item?.extendedSalePrice?.value;
         let taxAmountEachProduct = (taxPercentCalc * productAmount) / (1 + taxPercentCalc);
         if (taxAmountEachProduct) {
           overAllTaxAmount += taxAmountEachProduct;
           postDataArray.push({
             id: item?.entityId,
-            discounted_amount: taxAmountEachProduct,
+            discounted_amount: taxAmountEachProduct?.toFixed(2),
+            prodId: item?.productEntityId
           });
+          productIdsArray.push(item?.productEntityId);
         }
       }
     }
     if (postDataArray?.length > 0) {
-      /*//delete the ZERO TAX Coupon
-      await deleteCouponCodeFromCart(cartData?.entityId, 'ZEROTAX');
-      let postData: any = `{
-        "cart": {
-          "line_items": ${JSON.stringify(postDataArray)},
-          "version": 1
+      let finalDiscountAmount: any = (overAllTaxAmount - zeroTaxCouponAmount)?.toFixed(2);
+      const cookieStore = await getCookieData();
+      const getCartZTCpn = cookieStore.get('ztcpn_data')?.value;
+      if(!getCartZTCpn) {
+        let couponCodeZerotax: string = 'Zero_Tax_'+generateRandomString(8);
+        let createPromotionData = await generateCouponPromotion(finalDiscountAmount, postDataArray, couponCodeZerotax);
+        if(createPromotionData?.data?.id) {
+          await generateCouponCodeInPromotion(couponCodeZerotax, createPromotionData?.data?.id);
+          await addCouponCodeToCart(cartId, couponCodeZerotax);
+          return {
+            id: createPromotionData?.data?.id,
+            amount: finalDiscountAmount,
+            code: couponCodeZerotax,
+            action: 'create'
+          }
         }
-      }`;
-      let discountData: any = await updateProductDiscount(cartData?.entityId, postData);
-      console.log('========discountData=======', discountData);
-      await addCouponCodeToCart(cartData?.entityId, 'ZEROTAX');*/
-
-      //Gift Certificate Creation
-      let giftCode: string = generateRandomString(15);
-      console.log('========overAllTaxAmount=======', overAllTaxAmount);
-      console.log('========overallZeroTaxAmount=======', overallZeroTaxAmount);
-      console.log('========giftCode=======', giftCode);
-      let finalDiscountAmount: any = overAllTaxAmount - overallZeroTaxAmount;
-      console.log('========finalDiscountAmount=======', finalDiscountAmount);
-      //let giftcardData: any = await createGiftCardCoupon(finalDiscountAmount, giftCode);
-      //console.log('========giftcardData=======', giftcardData);
-      //let processGiftCard: any = await processGiftCertificate(giftCode);
-      //console.log('=======processGiftCard========', processGiftCard);
+      } else {
+        let promoData = (getCartZTCpn) ? JSON.parse(getCartZTCpn): [];
+        if(promoData?.id) {
+          let updatePromotionData = await updateCouponPromotion(finalDiscountAmount, postDataArray, promoData?.id);
+          if(updatePromotionData?.data?.id) {
+            return {
+              id: updatePromotionData?.data?.id,
+              amount: finalDiscountAmount,
+              code: promoData?.code,
+              action: 'update'
+            }
+          }
+        }
+      }
     }
   }
 };

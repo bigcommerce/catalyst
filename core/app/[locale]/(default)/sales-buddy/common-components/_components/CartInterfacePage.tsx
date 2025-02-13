@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useState, useRef, MouseEvent, useEffect } from 'react';
 import { Accordions } from '../Accordin/index';
 import { Button } from '../Button';
-import { Input } from '~/components/ui/form';
+import { Input } from '../Input';
 import ShopIcon from '../../assets/badge.png';
 import ChatIcon from '../../assets/chat.png';
 import CategoryIcon from '../../assets/category.png';
@@ -244,7 +244,8 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
             {item.label}
           </label>
           {component ? (
-            <Input value={formData[item.id]} id={item.id} onChange={(e) => handleOnchangeInput(e) }  className="w-full" />
+            <Input value={formData[item.id]} id={item.id} onChange={(e) => handleOnchangeInput(e)} className="w-[225px]" />
+         
           ) : (
             <SelectDropdown
               id="supplier"

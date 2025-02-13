@@ -24,6 +24,8 @@ import '~/makeswift/components/not-found/register';
 import '~/belami/components/card-carousel/card-carousel.makeswift';
 import '~/belami/components/product-card-carousel/product-card-carousel.makeswift';
 import '~/belami/components/mega-menu/mega-menu.makeswift';
+import '~/belami/components/button-group/ButtonGroup.makeswift';
+import '~/belami/components/flex-text-box-group/FlexTextBoxGroup.makeswift'
 
 import { MakeswiftComponentType } from '@makeswift/runtime';
 

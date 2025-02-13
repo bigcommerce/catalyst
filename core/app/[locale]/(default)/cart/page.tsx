@@ -38,6 +38,7 @@ import amazonPayIcon from '~/public/cart/amazonPayIcon.svg';
 import agentIcon from '~/public/cart/agentIcon.svg';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { Flyout } from '~/components/common-flyout';
+import PromotionCookie from './_components/promotion-cookie';
 
 import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
 
@@ -61,6 +62,7 @@ interface CategoryNode {
 
 interface Props {
   params: Promise<Params> | Params; // Support both Promise and object
+  sku?: string | null; // Add sku property
 }
 
 interface CustomerGroup {
@@ -96,6 +98,19 @@ const CartPageQuery = graphql(
   [CartItemFragment, CheckoutSummaryFragment, GeographyFragment],
 );
 
+const CheckoutPageQuery = graphql(
+  `
+    query CartPageQuery($cartId: String) {
+      site {
+        checkout(entityId: $cartId) {
+          ...CheckoutSummaryFragment
+        }
+      }
+    }
+  `,
+  [CheckoutSummaryFragment],
+);
+
 export async function generateMetadata() {
   const t = await getTranslations('Cart');
 
@@ -120,12 +135,12 @@ export default async function Cart({ params }: Props) {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const sessionUser = await getSessionUserDetails();
   let customerGroupDetails: CustomerGroup = {
-    discount_rules: [],
+    discount_rules: []
   };
   if(sessionUser){
    const customerGroupId = sessionUser?.customerGroupId;
    customerGroupDetails = customerGroupId ? await GetCustomerGroupById(customerGroupId) : null;
-   }
+  }
 
   const { data } = await client.fetch({
     document: CartPageQuery,
@@ -140,8 +155,9 @@ export default async function Cart({ params }: Props) {
   });
 
   const cart = data.site.cart;
-  const checkout = data.site.checkout;
+  let checkout = data.site.checkout;
   const geography = data.geography;
+
   if (!cart) {
     return <EmptyCart />;
   }
@@ -230,34 +246,46 @@ export default async function Cart({ params }: Props) {
       return currentLength > longestLength ? current : longest;
     }, categories[0]);
 
-    return categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
-  };
+    return categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
+      (edge) => edge.node.entityId
+    ) || [];
+  }
 
   const discountRules = customerGroupDetails?.discount_rules;
+
 
   var getBrandIds = lineItems?.map((item: any) => {
     return item?.baseCatalogProduct?.brand?.entityId;
   });
   var getAllCommonSettinngsValues = await commonSettinngs(getBrandIds);
-  //let checkZeroTax: any = await zeroTaxCalculation(data.site);
 
   updatedLineItemWithoutAccessories = updatedLineItemWithoutAccessories.map((product: any) => {
     return {
       ...product,
       categoryIds: getCategoryIds(product),
-    };
+    }
   });
 
   const updatedProduct: any[][] = [];
   let checkZeroTax: any = await zeroTaxCalculation(data.site);
+  
+  if(checkZeroTax?.id) {
+    const { data } = await client.fetch({
+      document: CheckoutPageQuery,
+      variables: { cartId },
+      customerAccessToken,
+      fetchOptions: {
+        cache: 'no-store',
+        next: {
+          tags: [TAGS.checkout],
+        },
+      },
+    });
+    checkout = data.site.checkout;
+  }
 
   for (const eachProduct of updatedLineItemWithoutAccessories) {
-    const price = await calculateProductPrice(
-      eachProduct,
-      'cart',
-      discountRules,
-      eachProduct.categoryIds,
-    );
+    const price = await calculateProductPrice(eachProduct, "cart", discountRules, eachProduct.categoryIds);
     updatedProduct.push(...price);
   }
 
@@ -279,7 +307,7 @@ export default async function Cart({ params }: Props) {
       <div className="text-center lg:hidden">
         <ScrollButton targetId="order-summary" />
       </div>
-
+      {checkZeroTax && (<PromotionCookie promoObj={checkZeroTax} />)}
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
 
       <h1 className="cart-heading pt-0 text-center text-[24px] font-normal leading-[32px] lg:text-left lg:text-[24px]">
@@ -325,6 +353,8 @@ export default async function Cart({ params }: Props) {
                   key={data.entityId}
                   cartId={cart.entityId}
                   currencyCode={cart.currencyCode}
+                  sku={data.sku}
+                  quantity={data.quantity}
                   product={data}
                   priceAdjustData={
                     product_data_in_cart?.custom_items &&
@@ -346,7 +376,6 @@ export default async function Cart({ params }: Props) {
           <CheckoutButton cartId={cartId} />
           <ApplepayButton cartId={cartId} icon={applePayIcon} />
           <PaypalButton cartId={cartId} icon={paypalIcon} />
-          <AmazonpayButton cartId={cartId} icon={amazonPayIcon} />
           <div className="pt-1"></div>
 
           <Flyout
@@ -376,6 +405,7 @@ export default async function Cart({ params }: Props) {
               height={8}
               className="mr-1 h-[14px] w-[14px]"
               src={agentIcon}
+              unoptimized={true}
             />{' '}
             Talk to an Agent
           </p>

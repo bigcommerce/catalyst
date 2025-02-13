@@ -60,7 +60,7 @@ export function ProductCard({ title, image, url, classNames }: ProductCardProps)
             <Link href={url} className="!leading-6 !tracking-normal !text-center">{title}</Link>
           </h2>
         </div>
-        <Link className={clsx('my-4 block rounded px-4 h-10 flex items-center justify-center border border-brand-100 uppercase text-center hover:border-brand-300 hover:bg-brand-50 transition', classNames?.link)} href={url}>Shop</Link>
+        <Link className={clsx('my-4 text-sm font-medium text-brand-700 rounded px-4 h-10 flex items-center justify-center border border-brand-100 uppercase text-center hover:border-brand-300 hover:bg-brand-50 transition', classNames?.link)} href={url}>Shop</Link>
       </div>
     </article>
   );
