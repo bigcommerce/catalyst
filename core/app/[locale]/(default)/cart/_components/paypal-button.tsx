@@ -17,7 +17,7 @@ const InternalButton = ({ icon }: { icon: string }) => {
       loading={pending}
       loadingText={t('loading')}
     >
-      <BcImage alt="Paypal" width={20} height={20} className="h-[20px] w-[20px]" src={icon} />
+      <BcImage alt="Paypal" width={20} height={20} className="h-[20px] w-[20px]" src={icon} unoptimized={true} />
     </Button>
   );
 };
