@@ -9,7 +9,10 @@ import { ProductCardFragment } from '~/components/product-card/fragment';
 
 const GetQuickSearchResultsQuery = graphql(
   `
-    query getQuickSearchResults($filters: SearchProductsFiltersInput!) {
+    query getQuickSearchResults(
+      $filters: SearchProductsFiltersInput!
+      $currencyCode: currencyCode
+    ) {
       site {
         search {
           searchProducts(filters: $filters) {
