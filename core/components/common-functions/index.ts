@@ -430,15 +430,15 @@ export const calculateProductPrice = async (
       discount = 0;
     }
 
-    if (type === "pdp") {
+    if (type === 'pdp') {
       if (warrantyPrice.value > updatedPrice) {
         updatedPrice = warrantyPrice.value;
-        warrantyApplied=true; 
+        warrantyApplied = true;
       }
-    }else if(type === "cart") {
-      if (listPrice.value > updatedPrice) {
+    } else if (type === 'cart') {
+      if (listPrice?.value >= updatedPrice) {
         updatedPrice = listPrice.value;
-        warrantyApplied=true;
+        warrantyApplied = listPrice.value > updatedPrice;
       }
     }
     
