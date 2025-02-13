@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '~/components/ui/button';
 import Link from 'next/link';
@@ -44,6 +44,7 @@ interface ProductVariant {
     price: { value: number; currencyCode: string };
     basePrice: { value: number; currencyCode: string };
     salePrice: { value: number; currencyCode: string } | null;
+    retailPrice: { value: number; currencyCode: string } | null;
   };
 }
 
@@ -85,6 +86,7 @@ interface WishlistProduct {
     price: { value: number; currencyCode: string };
     basePrice: { value: number; currencyCode: string };
     salePrice: { value: number; currencyCode: string } | null;
+    retailPrice: { value: number; currencyCode: string } | null;
   };
   reviewSummary?: {
     numberOfReviews: string;
@@ -397,156 +399,121 @@ const ProductCard = ({
 };
 
 export function WishlistProductCard(customerGroupDetails: { discount_rules: any }): JSX.Element {
-  const [wishlistData, setWishlistData] = useState<{
-    entityId: number;
-    name: string;
-    items: WishlistItem[];
-  } | null>(null);
-
-  const [deletedProductsHistory, setDeletedProductsHistory] = useState<DeletedProductInfo[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [wishlistState, setWishlistState] = useState({
+    wishlistData: null as any,
+    deletedProductsHistory: [] as DeletedProductInfo[],
+    isLoading: true,
+    error: null as string | null,
+  });
   const router = useRouter();
 
   const discountRules = customerGroupDetails?.customerGroupDetails?.discount_rules;
 
-  const handleDelete = (productId: number, wishlistItemId: number) => {
-    if (!wishlistData) return;
-
-    manageDeletedProducts.addDeletedProduct(productId, wishlistItemId);
-
-    const updatedItems = wishlistData.items.filter((item) => item.entityId !== wishlistItemId);
-
-    const updatedWishlist = {
-      ...wishlistData,
-      items: updatedItems,
-    };
-
-    setWishlistData(updatedWishlist);
-    localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
-
-    console.log('Updated wishlist state:', {
-      deletedProducts: manageDeletedProducts.getDeletedProducts(),
-      remainingItems: updatedItems.length,
-    });
-  };
-
   useEffect(() => {
-    const savedHistory = localStorage.getItem('wishlistDeletionHistory');
-    if (savedHistory) {
-      setDeletedProductsHistory(JSON.parse(savedHistory));
-    }
-  }, []);
+    let isMounted = true;
 
-  useEffect(() => {
-    const loadWishlistData = async () => {
+    const initializeWishlist = async () => {
       try {
-        setIsLoading(true);
-        const savedWishlist = localStorage.getItem('selectedWishlist');
-        if (savedWishlist) {
-          const parsedWishlist = JSON.parse(savedWishlist);
+        // Load deletion history
+        const savedHistory = localStorage.getItem('wishlistDeletionHistory');
+        const deletionHistory = savedHistory ? JSON.parse(savedHistory) : [];
 
-          // Get fresh wishlist data
-          const freshData = await getWishlists({ limit: 50 });
-          const currentWishlist = freshData?.wishlists?.find(
-            (w: any) => w.entityId === parsedWishlist.entityId,
+        // Load wishlist data
+        const savedWishlist = localStorage.getItem('selectedWishlist');
+        if (!savedWishlist) {
+          router.push('/account/wishlists');
+          return;
+        }
+
+        const parsedWishlist = JSON.parse(savedWishlist);
+        const freshData = await getWishlists({ limit: 50 });
+        const currentWishlist = freshData?.wishlists?.find(
+          (w: any) => w.entityId === parsedWishlist.entityId,
+        );
+
+        if (currentWishlist && isMounted) {
+          // Transform items
+          const transformedItems = await Promise.all(
+            currentWishlist.items.map(async (item: any) => {
+              const productMetaFields = await GetProductMetaFields(item.productEntityId, '');
+
+              return {
+                entityId: item.entityId,
+                productEntityId: item.productEntityId,
+                variantEntityId: item.variantEntityId,
+                product: {
+                  ...item.product,
+                  reviewSummary: {
+                    numberOfReviews:
+                      productMetaFields?.find(
+                        (field: MetaField) => field?.key === 'sv-total-reviews',
+                      )?.value || '0',
+                    averageRating:
+                      productMetaFields?.find(
+                        (field: MetaField) => field?.key === 'sv-average-rating',
+                      )?.value || '0',
+                  },
+                },
+              };
+            }),
           );
 
-          if (currentWishlist) {
-            // Transform the items to match WishlistItem interface
-            const transformedItems = currentWishlist.items.map((item: any) => ({
-              entityId: item.entityId,
-              productEntityId: item.productEntityId,
-              variantEntityId: item.variantEntityId,
-              product: {
-                categories: item.product.categories,
-                entityId: item.product.entityId,
-                name: item.product.name,
-                sku: item.product.sku,
-                mpn: item.product.mpn,
-                path: item.product.path,
-                availabilityV2: {
-                  status: item.product.availabilityV2?.status || 'Available',
-                  description: item.product.availabilityV2?.description || '',
-                },
-                brand: item.product.brand,
-                defaultImage: {
-                  url: item.product.defaultImage?.url || '',
-                  altText: item.product.defaultImage?.altText || '',
-                },
-                prices: {
-                  price: item.product.prices?.price || { value: 0, currencyCode: 'USD' },
-                  basePrice: item.product.prices?.basePrice || { value: 0, currencyCode: 'USD' },
-                  salePrice: item.product.prices?.salePrice || null,
-                },
-                productOptions: item.product.productOptions,
-                variants: item.product.variants || [],
+          if (isMounted) {
+            setWishlistState((prev) => ({
+              ...prev,
+              wishlistData: {
+                entityId: currentWishlist.entityId,
+                name: currentWishlist.name,
+                items: transformedItems,
               },
+              deletedProductsHistory: deletionHistory,
+              isLoading: false,
             }));
-
-            const batchSize = 5;
-            const processedItems = [];
-
-            for (let i = 0; i < transformedItems.length; i += batchSize) {
-              const batch = transformedItems.slice(i, i + batchSize);
-              const batchResults = await Promise.all(
-                batch.map(async (item: WishlistItem) => {
-                  try {
-                    const productMetaFields = await GetProductMetaFields(item.productEntityId, '');
-                    const averageRatingMetaField = productMetaFields?.find(
-                      (field: MetaField) => field?.key === 'sv-average-rating',
-                    );
-                    const totalReviewsMetaField = productMetaFields?.find(
-                      (field: MetaField) => field?.key === 'sv-total-reviews',
-                    );
-
-                    return {
-                      ...item,
-                      product: {
-                        ...item.product,
-                        reviewSummary: {
-                          numberOfReviews: totalReviewsMetaField?.value || '0',
-                          averageRating: averageRatingMetaField?.value || '0',
-                        },
-                      },
-                    };
-                  } catch (error) {
-                    console.error('Error fetching meta fields:', error);
-                    return {
-                      ...item,
-                      product: {
-                        ...item.product,
-                        reviewSummary: {
-                          numberOfReviews: '0',
-                          averageRating: '0',
-                        },
-                      },
-                    };
-                  }
-                }),
-              );
-              processedItems.push(...batchResults);
-            }
-
-            setWishlistData({
-              entityId: currentWishlist.entityId,
-              name: currentWishlist.name,
-              items: processedItems,
-            });
           }
-        } else {
-          router.push('/account/wishlists');
         }
       } catch (error) {
-        console.error('Error loading wishlist:', error);
-        setError('Failed to load wishlist data');
-      } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setWishlistState((prev) => ({
+            ...prev,
+            error: 'Failed to load wishlist data',
+            isLoading: false,
+          }));
+        }
       }
     };
 
-    loadWishlistData();
+    initializeWishlist();
+
+    return () => {
+      isMounted = false;
+    };
   }, [router]);
+
+  const handleDelete = useCallback((productId: number, wishlistItemId: number) => {
+    setWishlistState((prev) => {
+      if (!prev.wishlistData) return prev;
+
+      manageDeletedProducts.addDeletedProduct(productId, wishlistItemId);
+
+      const updatedItems = prev.wishlistData.items.filter(
+        (item: { entityId: number }) => item.entityId !== wishlistItemId,
+      );
+
+      const updatedWishlist = {
+        ...prev.wishlistData,
+        items: updatedItems,
+      };
+
+      localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
+
+      return {
+        ...prev,
+        wishlistData: updatedWishlist,
+      };
+    });
+  }, []);
+
+  const { wishlistData, isLoading, error } = wishlistState;
 
   if (isLoading) {
     return (
@@ -598,7 +565,7 @@ export function WishlistProductCard(customerGroupDetails: { discount_rules: any 
       </div>
 
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 2xl:grid-cols-4">
-        {wishlistData?.items.map((item) => (
+        {wishlistData?.items.map((item: WishlistItem) => (
           <ProductCard
             key={item.entityId}
             item={item}
@@ -612,4 +579,4 @@ export function WishlistProductCard(customerGroupDetails: { discount_rules: any 
   );
 }
 
-export default WishlistProductCard;
+export default memo(WishlistProductCard);

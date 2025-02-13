@@ -4,7 +4,6 @@ import { cn } from '~/lib/utils';
 import { GalleryModel } from './belami-gallery-view-all-model-pdp';
 import { Banner } from './belami-banner-pdp';
 import ProductImage from './product-zoom';
-import { useCommonContext } from '~/components/common-context/common-provider';
 import WishlistAddToList from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf } from '~/client/graphql';
@@ -81,7 +80,6 @@ const Gallery = ({
   selectedVariantId,
   product,
 }: Props) => {
-  const { setCurrentMainMedia } = useCommonContext();
   const [currentVariantId, setCurrentVariantId] = useState<number | undefined>();
   const [selectedIndex, setSelectedIndex] = useState(defaultImageIndex);
   const [viewAll, setViewAll] = useState(false);
@@ -213,24 +211,6 @@ const Gallery = ({
       selectedItem: items[selectedIndex] || null,
     };
   }, [images, videos, selectedVariantId, productMpn, selectedIndex]);
-
-  useEffect(() => {
-    if (!selectedItem) return;
-
-    const currentMediaKey = `${selectedItem.type}-${
-      selectedItem.type === 'image' ? selectedItem.src : selectedItem.url
-    }`;
-    if (prevMediaRef.current !== currentMediaKey) {
-      prevMediaRef.current = currentMediaKey;
-      setCurrentMainMedia({
-        type: selectedItem.type,
-        src: selectedItem.type === 'image' ? selectedItem.src : undefined,
-        url: selectedItem.type === 'video' ? selectedItem.url : undefined,
-        altText: selectedItem.type === 'image' ? selectedItem.altText : undefined,
-        title: selectedItem.type === 'video' ? selectedItem.title : undefined,
-      });
-    }
-  }, [selectedItem, setCurrentMainMedia]);
 
   useEffect(() => {
     setSelectedIndex(0);

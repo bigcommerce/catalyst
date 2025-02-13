@@ -212,6 +212,10 @@ const WishlistsQuery = graphql(
                                 value
                                 currencyCode
                               }
+                              retailPrice {
+                                value
+                                currencyCode
+                              }
                             }
                           }
                         }
@@ -230,6 +234,10 @@ const WishlistsQuery = graphql(
                           currencyCode
                         }
                         salePrice {
+                          value
+                          currencyCode
+                        }
+                        retailPrice {
                           value
                           currencyCode
                         }
