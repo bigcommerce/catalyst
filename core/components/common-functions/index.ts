@@ -454,9 +454,9 @@ export const calculateProductPrice = async (
         warrantyApplied = true;
       }
     } else if (type === 'cart') {
-      if (listPrice.value > updatedPrice) {
+      if (listPrice?.value >= updatedPrice) {
         updatedPrice = listPrice.value;
-        warrantyApplied = true;
+        warrantyApplied = listPrice.value > updatedPrice;
       }
     }
     //hasDiscount = discount > 0;

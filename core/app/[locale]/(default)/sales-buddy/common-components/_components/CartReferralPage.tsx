@@ -68,14 +68,17 @@ export default function ReferalId() {
   }, [remove]);
 
   return (
-    <div className="grid content-evenly gap-[10px] h-[81px] w-[460px] space-y-1 rounded-lg">
-      <div className="flex h-[36px] items-end justify-between">
-        <div className="font-open-sans flex items-center gap-2 text-[16px] text-[#353535]">
+    <div className="grid content-evenly gap-[10px] h-[81px] w-[460px] rounded-lg">
+      <div className="flex h-[36px] items-center justify-between">
+        {/* Referrer ID */}
+        <div className="font-open-sans flex items-center text-[16px] text-[#353535]">
           <span>{`Referrer ID: ${cart_interface_refferal_id}`}</span>
         </div>
-        <div className="w-[110px] bg-[#1DB14B] py-[5px] px-[10px] h-[44px] rounded-[3px] items-center content-center">
+
+        {/* Button Wrapper */}
+        <div className="w-[110px] h-[36px] bg-[#1DB14B] rounded-[3px] flex items-center justify-center">
           <button
-            className="w-full h-full flex items-center justify-center"
+            className="w-full h-full flex items-center justify-center relative"
             onClick={handleDelete}
             disabled={isDisabled}
           >
@@ -84,12 +87,11 @@ export default function ReferalId() {
                 <Spinner />
               </div>
             )}
-            <span className="text-white text-[14px] font-medium h-[32px] flex items-center justify-center">
-              RESET CART
-            </span>
+            <span className="text-white text-[14px] font-medium">RESET CART</span>
           </button>
         </div>
       </div>
     </div>
+
   );
 }

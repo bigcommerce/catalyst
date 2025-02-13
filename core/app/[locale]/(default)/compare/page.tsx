@@ -117,6 +117,10 @@ export default async function Compare(props: Props) {
     productOptions: removeEdgesAndNodes(product.productOptions),
   }));
 
+console.log('=========================================');
+console.log(products);
+console.log('=========================================');
+
   if (!products.length) {
     return (
       <div className="flex w-full justify-center py-16 align-middle">
@@ -131,9 +135,161 @@ export default async function Compare(props: Props) {
 
   return (
     <>
-      <h1 className="pb-8 text-4xl font-black lg:text-5xl">
+      <h1 className="mb-4 text-2xl lg:mb-0 text-center">
         {t('heading', { quantity: products.length })}
       </h1>
+
+      <div className="TBD">
+        <table className="mx-auto w-full max-w-full table-fixed text-base md:w-fit">
+          <caption className="sr-only">{t('Table.caption')}</caption>
+          <colgroup>
+            <col className="w-80" span={products.length} />
+          </colgroup>
+
+          <thead>
+            <tr>
+              {products.map((product) => (
+                <th className="sr-only" key={product.entityId} scope="col">
+                  {product.name}
+                </th>
+              ))}
+            </tr>
+            <tr>
+              {products.map((product) => {
+                if (product.defaultImage) {
+                  return (
+                    <td className="px-4" key={product.entityId}>
+                      <Link aria-label={product.name} href={product.path}>
+                        <BcImage
+                          alt={product.defaultImage.altText}
+                          height={300}
+                          src={product.defaultImage.url}
+                          width={300}
+                        />
+                      </Link>
+                    </td>
+                  );
+                }
+
+                return (
+                  <td className="px-4" key={product.entityId}>
+                    <Link aria-label={product.name} href={product.path}>
+                      <div className="flex aspect-square items-center justify-center bg-gray-200 text-gray-500">
+                        <p className="text-lg">{t('Table.noImage')}</p>
+                      </div>
+                    </Link>
+                  </td>
+                );
+              })}
+            </tr>
+            <tr>
+              {products.map((product) => (
+                <td className="px-4 pt-4 text-gray-500" key={product.entityId}>
+                  {product.brand?.name}
+                </td>
+              ))}
+            </tr>
+            <tr>
+              {products.map((product) => (
+                <td className="px-4 align-top text-xl font-bold lg:text-2xl" key={product.entityId}>
+                  <Link href={product.path}>{product.name}</Link>
+                </td>
+              ))}
+            </tr>
+            <tr>
+              {products.map((product) => {
+                const showPriceRange =
+                  product.prices?.priceRange.min.value !== product.prices?.priceRange.max.value;
+
+                return (
+                  <td className="px-4 py-4 align-bottom text-base" key={product.entityId}>
+                    {product.prices && (
+                      <p className="w-36 shrink-0">
+                        {showPriceRange ? (
+                          <>
+                            {format.number(product.prices.priceRange.min.value, {
+                              style: 'currency',
+                              currency: product.prices.price.currencyCode,
+                            })}{' '}
+                            -{' '}
+                            {format.number(product.prices.priceRange.max.value, {
+                              style: 'currency',
+                              currency: product.prices.price.currencyCode,
+                            })}
+                          </>
+                        ) : (
+                          <>
+                            {product.prices.retailPrice?.value !== undefined && (
+                              <>
+                                {t('Table.Prices.msrp')}:{' '}
+                                <span className="line-through">
+                                  {format.number(product.prices.retailPrice.value, {
+                                    style: 'currency',
+                                    currency: product.prices.price.currencyCode,
+                                  })}
+                                </span>
+                                <br />
+                              </>
+                            )}
+                            {product.prices.salePrice?.value !== undefined &&
+                            product.prices.basePrice?.value !== undefined ? (
+                              <>
+                                {t('Table.Prices.was')}:{' '}
+                                <span className="line-through">
+                                  {format.number(product.prices.basePrice.value, {
+                                    style: 'currency',
+                                    currency: product.prices.price.currencyCode,
+                                  })}
+                                </span>
+                                <br />
+                                <>
+                                  {t('Table.Prices.now')}:{' '}
+                                  {format.number(product.prices.price.value, {
+                                    style: 'currency',
+                                    currency: product.prices.price.currencyCode,
+                                  })}
+                                </>
+                              </>
+                            ) : (
+                              product.prices.price.value && (
+                                <>
+                                  {format.number(product.prices.price.value, {
+                                    style: 'currency',
+                                    currency: product.prices.price.currencyCode,
+                                  })}
+                                </>
+                              )
+                            )}
+                          </>
+                        )}
+                      </p>
+                    )}
+                  </td>
+                );
+              })}
+            </tr>
+            <tr>
+              {products.map((product) => {
+                if (product.productOptions.length) {
+                  return (
+                    <td className="border-b px-4 pb-12" key={product.entityId}>
+                      <Button aria-label={product.name} asChild className="hover:text-white">
+                        <Link href={product.path}>{t('Table.viewOptions')}</Link>
+                      </Button>
+                    </td>
+                  );
+                }
+
+                return (
+                  <td className="border-b px-4 pb-12" key={product.entityId}>
+                    <AddToCart data={product} />
+                  </td>
+                );
+              })}
+            </tr>
+          </thead>
+        </table>
+      </div>
 
       <div className="-mx-6 overflow-auto overscroll-x-contain px-4 sm:-mx-10 sm:px-10 lg:-mx-12 lg:px-12">
         <table className="mx-auto w-full max-w-full table-fixed text-base md:w-fit">
@@ -373,4 +529,4 @@ export default async function Compare(props: Props) {
   );
 }
 
-export const runtime = 'edge';
+//export const runtime = 'edge';

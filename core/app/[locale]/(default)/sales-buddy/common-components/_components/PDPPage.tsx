@@ -198,8 +198,8 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
                               bgColor = "bg-[#F5E9E8]";
                               statusText = `Updated ${days} Days Ago`;
                             } else {
-                              textColor = "text-[#D32F2F]";
-                              bgColor = "bg-[#FDECEA]";
+                              textColor = "text-[#561813]";
+                              bgColor = "bg-[#F5E9E8]";
                               statusText = `Updated ${days} Days Ago`;
                             }
 

@@ -97,6 +97,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
     try {
       const response = await getCustomerUrlSession_id(cartId);
       const shopperInfoDetails =await handleGetShoppersUrlsData(cartId)
+      
       if (response.output.count > 0) {
         setCart_interface_session_id(response.output.data[0]['session_id'])
         setCart_interface_Refferal_id(response.output.data[0]['referral_id'])
@@ -559,7 +560,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
             type="submit"
             className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
           >
-            <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH CART </p>
+            <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">FETCH SESSION </p>
             <div className="absolute inset-0 flex items-center justify-center">
               {loading.show1 && <Loader />}
             </div>
