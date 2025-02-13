@@ -42,19 +42,18 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
       </div>
     )
   }
-  
+
   return (
     <div className={`flex ${isFromPDP ? 'justify-center' : 'justify-start'}  xl:justify-start`}>
-       {deliveryMessage?.map((item:any, index:any) => {
-        const backgroundColorClass = item?.qty == 0 ? 'bg-[#FBF4E9] px-[10px]' : 'bg-transparent'; // Set background based on qty
-        return (
-          <div key={index} className={`${backgroundColorClass} w-fit mt-[10px]`}>
+      {
+        deliveryMessage && deliveryMessage[0] && (
+          <div className={`${deliveryMessage[0]?.qty === 0 ? 'bg-[#FBF4E9] px-[10px]' : 'bg-transparent'} w-fit mt-[10px]`}>
             <div className='font-normal text-sm leading-6 tracking-[0.25px] px-0'>
-              {item.delivery_estimated_text}
+              {deliveryMessage[0]?.delivery_estimated_text}
             </div>
           </div>
-        );
-      })}
+        )
+      }
     </div>
   );
 };

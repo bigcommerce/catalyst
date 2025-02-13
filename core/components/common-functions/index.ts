@@ -455,9 +455,8 @@ export const calculateProductPrice = async (
         warrantyApplied=true;
       }
     }
-
-    hasDiscount = discount > 0;
-
+    //hasDiscount = discount > 0;
+    if (discountRules && Array.isArray(discountRules) && discountRules.length > 0) {
     discountRules?.forEach(
       (rule: {
         amount: string;
@@ -492,8 +491,8 @@ export const calculateProductPrice = async (
         hasDiscount = originalPrice > updatedPrice;
       },
     );
+  }
 
-    // Creating the final object
     const convertedObject = {
       UpdatePriceForMSRP: {
         originalPrice,

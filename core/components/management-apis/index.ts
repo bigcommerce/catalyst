@@ -138,6 +138,17 @@ export const getDeliveryMessage = async (
       return null;
     }
   }
+  await getMetaFieldsByProduct(entityId, "delivery_message");
+  if (metaFields?.data?.length > 0) {
+    const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
+    const deliveryKey = deliveryMessages.join(','); 
+    try {
+      const parsedValue = JSON?.parse(deliveryKey);
+      return parsedValue; 
+    } catch (error) {
+      return null; 
+    }
+  }
   return null;
 };
 
@@ -333,7 +344,7 @@ export const RemoveCartMetaFields = async (entityId: string, metaId: number) => 
   }
 };
 
-export const GetCartMetaFields = async (entityId: string, nameSpace: string) => {
+export const GetCartMetaFields = async (entityId: string, nameSpace?: string) => {
   try {
     let nameSpaceValue = '';
     if (nameSpace) {
@@ -341,6 +352,53 @@ export const GetCartMetaFields = async (entityId: string, nameSpace: string) => 
     }
     let { data } = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${entityId}/metafields${nameSpaceValue}`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const CreateOrderMetaFields = async (orderId: number, postData: any)=>{
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/orders/${orderId}/metafields`,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: JSON.stringify(postData),
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const GetOrderMetaFields = async (orderId: number) => {
+  try {
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/orders/${orderId}/metafields`,
       {
         method: 'GET',
         headers: {

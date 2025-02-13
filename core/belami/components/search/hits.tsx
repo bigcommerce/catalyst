@@ -85,7 +85,7 @@ export function Hits({
     };
 
     return (
-      <div className="product-card">
+      <div className="product-card w-full">
        
         <div className="relative group/image">
           
@@ -134,7 +134,7 @@ export function Hits({
         >
           {(!useDefaultPrices ? hits : items).map((hit: any) => (
             <li
-              className="ais-Hits-item !radius-none !p-0 !shadow-none rounded-none border border-gray-300 !items-start"
+              className="ais-Hits-item !radius-none !p-0 !shadow-none rounded-none border border-gray-300"
               key={hit.objectID}
               onClick={() => sendEvent('click', hit, 'Hit Clicked')}
               onAuxClick={() => sendEvent('click', hit, 'Hit Clicked')}
@@ -210,7 +210,7 @@ export function HitsAsync({
     };
 
     return (
-      <div className="product-card">
+      <div className="product-card w-full">
         <div className="relative group/image">
           <div className="absolute left-0 right-0 flex justify-center z-10 opacity-0 group-hover/image:opacity-100 transition-opacity mt-32">
             <div className="w-48">
@@ -268,11 +268,11 @@ export function HitsAsync({
       >
         {items.map((hit: any) => (
           <li
-            className="ais-Hits-item !radius-none !p-0 !shadow-none rounded-none border border-gray-300 !items-start"
-            key={hit.objectID}
-            onClick={() => sendEvent('click', hit, 'Hit Clicked')}
-            onAuxClick={() => sendEvent('click', hit, 'Hit Clicked')}
-          >
+          className="ais-Hits-item !radius-none !p-0"
+          key={hit.objectID}
+          onClick={() => sendEvent('click', hit, 'Hit Clicked')}
+          onAuxClick={() => sendEvent('click', hit, 'Hit Clicked')}
+        >
             {renderProductCard(hit)}
           </li>
         ))}

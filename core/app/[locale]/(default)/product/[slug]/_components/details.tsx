@@ -26,6 +26,7 @@ import { Flyout } from '~/components/common-flyout';
 import { ProductPrice } from '~/belami/components/search/product-price';
 import { Promotion } from '~/belami/components/search/hit';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
+import RequestQuoteButton from '../../../sales-buddy/quote/_components/RequestQuoteButton';
 
 interface ProductOptionValue {
   entityId: number;
@@ -72,6 +73,8 @@ interface Props {
   getAllCommonSettinngsValues: any;
   isFromQuickView: boolean;
   customerGroupDetails: any;
+  swatchOptions:any;
+  sessionUser: any;
 }
 
 export const DetailsFragment = graphql(
@@ -168,7 +171,9 @@ export const Details = ({
   triggerLabel5,
   children5,
   priceMaxRules,
-  isFromQuickView
+  isFromQuickView,
+  swatchOptions,
+  sessionUser
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -574,6 +579,8 @@ export const Details = ({
             fanPopup={fanPopup}
             closeIcon={closeIcon || ''}
             customerGroupDetails={customerGroupDetails}
+            swatchOptions={swatchOptions}
+            sessionUser={sessionUser}
           />
         </div>
 
@@ -642,7 +649,8 @@ export const Details = ({
           />
 
 
-          <RequestQuote children={children3} />
+          {/* <RequestQuote children={children3} /> */}
+          <RequestQuoteButton/>
           <CertificationsAndRatings
             certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4} />
           <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}

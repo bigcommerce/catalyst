@@ -337,7 +337,7 @@ export const CartItem = async ({
   const promotions = await getActivePromotions(true);
 
   const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());
-  const categoryIds = product?.categories?.edges?.map((edge) => edge.node.entityId) || [];
+  const categoryIds = product?.categories?.edges?.map((edge:any) => edge.node.entityId) || [];
 
   return (
     <li className="mb-[24px] border border-gray-200">
@@ -416,6 +416,10 @@ export const CartItem = async ({
                         if (index < changeTheProtectedPosition.length - 2) {
                           pipeLineData = '|';
                         }
+                        let displayValue = selectedOption.value;
+                        if (selectedOption.name === 'Select Fabric Color') {
+                          displayValue = selectedOption.value.split('|')[0];
+                        }
                         switch (selectedOption.__typename) {
                           case 'CartSelectedMultipleChoiceOption':
                             return (
@@ -424,7 +428,7 @@ export const CartItem = async ({
                                   {selectedOption?.name}:
                                 </span>
                                 <span className="ml-1.5 mr-1.5 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#7F7F7F]">
-                                  {selectedOption?.value}
+                                  {displayValue}
                                 </span>
 
                                 {pipeLineData && (
@@ -441,7 +445,7 @@ export const CartItem = async ({
                                   {selectedOption?.name}:
                                 </span>
                                 <span className="ml-1.5 mr-1.5 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#7F7F7F]">
-                                  {selectedOption?.value}
+                                  {displayValue}
                                 </span>
 
                                 {pipeLineData && (
@@ -497,9 +501,6 @@ export const CartItem = async ({
                         }
                       })}
 
-                      <div className="mt-[10px] flex justify-start text-sm font-normal leading-6 tracking-[0.25px]">
-                        <span> Free Delivery</span>
-                      </div>
                       {product.variantEntityId && (
                         <FreeDelivery
                           entityId={product.productEntityId}
@@ -595,6 +596,8 @@ export const CartItem = async ({
                     productId={product?.productEntityId}
                     cartId={cartId}
                     ProductType={'product'}
+                    accessoriesData={product.updatedAccessories}
+                    quantity={product?.quantity}
                   />
                 </div>
               )}

@@ -259,12 +259,18 @@ const OrderList = ({
                         <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7f7f7f]">
                           <span>SKU: {lineItems?.[0]?.sku}</span>{' '}
                           {lineItems?.[0]?.productOptions?.length > 0 &&
-                            lineItems?.[0]?.productOptions?.map((lineData) => (
+                            lineItems?.[0]?.productOptions?.map((lineData) => {
+                              const updatedValue =
+                                lineData?.name === 'Select Fabric Color'
+                                  ? lineData?.value.split('|')[0]
+                                  : lineData?.value;
+                              return(
                               <span>
                                 | {lineData?.name}:{' '}
-                                <span className="font-[400]">{lineData?.value}</span>
+                                <span className="font-[400]">{lineData?.updatedValue}</span>
                               </span>
-                            ))}
+                            )}
+                            )}
                         </div>
                         <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#353535]">
                           QTY: {lineItems?.[0]?.quantity}
@@ -541,6 +547,10 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
                                 <span>SKU: ABC-1234DE</span>{' '}
                                 {shipment?.productOptions?.map(
                                   ({ name: optionName, value }, idx) => {
+                                const updatedValue =
+                                 optionName === 'Select Fabric Color'
+                                  ? value.split('|')[0]
+                                  : value;
                                     return (
                                       <>
                                         <span
@@ -551,7 +561,7 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
                                         </span>
                                         <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                                           {' '}
-                                          {value}
+                                          {updatedValue}
                                         </span>
                                       </>
                                     );

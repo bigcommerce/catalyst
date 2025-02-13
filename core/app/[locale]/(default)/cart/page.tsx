@@ -40,6 +40,8 @@ import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { Flyout } from '~/components/common-flyout';
 import PromotionCookie from './_components/promotion-cookie';
 
+import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
+
 interface Params {
   locale: string;
 }
@@ -60,6 +62,7 @@ interface CategoryNode {
 
 interface Props {
   params: Promise<Params> | Params; // Support both Promise and object
+  sku?: string | null; // Add sku property
 }
 
 interface CustomerGroup {
@@ -134,9 +137,9 @@ export default async function Cart({ params }: Props) {
   let customerGroupDetails: CustomerGroup = {
     discount_rules: []
   };
-  if (sessionUser) {
-    const customerGroupId: any = sessionUser?.customerGroupId;
-    customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+  if(sessionUser){
+   const customerGroupId = sessionUser?.customerGroupId;
+   customerGroupDetails = customerGroupId ? await GetCustomerGroupById(customerGroupId) : null;
   }
 
   const { data } = await client.fetch({
@@ -351,6 +354,8 @@ export default async function Cart({ params }: Props) {
                   key={data.entityId}
                   cartId={cart.entityId}
                   currencyCode={cart.currencyCode}
+                  sku={data.sku}
+                  quantity={data.quantity}
                   product={data}
                   priceAdjustData={
                     product_data_in_cart?.custom_items &&
@@ -372,9 +377,7 @@ export default async function Cart({ params }: Props) {
           <CheckoutButton cartId={cartId} />
           <ApplepayButton cartId={cartId} icon={applePayIcon} />
           <PaypalButton cartId={cartId} icon={paypalIcon} />
-          <AmazonpayButton cartId={cartId} icon={amazonPayIcon} />
           <div className="pt-1"></div>
-
 
           <Flyout
             triggerLabel={
@@ -411,6 +414,8 @@ export default async function Cart({ params }: Props) {
       </div>
 
       <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
+
+      <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
     </div>
   );
 }
