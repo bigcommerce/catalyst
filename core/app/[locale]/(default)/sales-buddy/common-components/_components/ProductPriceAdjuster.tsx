@@ -148,7 +148,6 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
 
   const handleSubmit = async (isAccessory: boolean = false, accessoryIndex: number = -1) => {
     const newCost = isAccessory ? newAccessoryCost : newParentCost;
-    console.log("new cost---------",newCost);
     
     const numericValue = parseFloat(newCost);
     if (newCost.length > 6) {
@@ -163,8 +162,6 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
       return;
     }
 
-    console.log("::::::::::::::::::::::::::::::::::::::::::::::");
-    
     const currentCost = isAccessory
       ? accessoriesData[accessoryIndex]?.originalPrice?.value
       : initialCost;
@@ -203,7 +200,6 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>, isAccessory: boolean = false) => {
     
     const value = e.target.value;
-    console.log("value-----",value);
     if (/^\d*\.?\d*$/.test(value)) {
       if (isAccessory) {
         setNewAccessoryCost(value);
