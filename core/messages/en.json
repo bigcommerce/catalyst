@@ -324,7 +324,7 @@
         "apply": "Apply",
         "couponCode": "Coupon code",
         "removeCouponCode": "Remove coupon code",
-        "validCouponCode": "Please enter a valid coupon code",
+        "invalidCouponCode": "Please enter a valid coupon code",
         "cartNotFound": "No cartId cookie found."
       }
     },

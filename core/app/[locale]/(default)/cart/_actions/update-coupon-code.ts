@@ -25,7 +25,7 @@ export const updateCouponCode = async (
 }> => {
   const t = await getTranslations('Cart.CheckoutSummary.CouponCode');
   const submission = parseWithZod(formData, {
-    schema: couponCodeActionFormDataSchema({ required_error: t('validCouponCode') }),
+    schema: couponCodeActionFormDataSchema({ required_error: t('invalidCouponCode') }),
   });
 
   const cartId = await getCartId();
@@ -69,7 +69,13 @@ export const updateCouponCode = async (
           return {
             ...prevState,
             lastResult: submission.reply({
-              formErrors: error.errors.map(({ message }) => message),
+              formErrors: error.errors.map(({ message }) => {
+                if (message.includes('Incorrect or mismatch:')) {
+                  return t('invalidCouponCode');
+                }
+
+                return message;
+              }),
             }),
           };
         }
