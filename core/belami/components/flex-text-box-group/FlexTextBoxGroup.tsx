@@ -19,21 +19,6 @@ type Props = {
 };
 
 export function FlexTextBoxGroup({ className, buttons }: Props) {
-  const useMediaQuery = (maxWidth: number) => {
-    const [isMobile, setIsMobile] = useState(window.innerWidth <= maxWidth);
-
-    useEffect(() => {
-      if (typeof window !== "undefined") {
-        const handleResize = () => setIsMobile(window.innerWidth <= maxWidth);
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-      }
-    }, [maxWidth]);
-
-    return isMobile;
-  };
-
-  const isMobile = useMediaQuery(640);
 
   return (
     <div className={clsx(className, 'flex flex-col items-center text-center sm:inline')}>
@@ -41,13 +26,11 @@ export function FlexTextBoxGroup({ className, buttons }: Props) {
         <div
           key={i}
           className={clsx(
-            'inline text-[16px] font-normal leading-[32px] tracking-[0.5px] first:font-bold last:font-bold',
+            'inline text-[16px] font-normal leading-[32px] tracking-[0.5px] first:font-bold last:font-bold [@media_(width<640px)]:!m-0',
           )}
           style={{
             backgroundColor: button.color || 'transparent',
-            margin: isMobile
-              ? 0
-              : `${button.margin?.top || 0}px ${button.margin?.right || 0}px ${button.margin?.bottom || 0}px ${button.margin?.left || 0}px`,
+            margin: `${button.margin?.top || 0}px ${button.margin?.right || 0}px ${button.margin?.bottom || 0}px ${button.margin?.left || 0}px`,
           }}
         >
           {button.link ? (
