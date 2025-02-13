@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers';
 import { getTranslations, getFormatter } from 'next-intl/server';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getSessionCustomerAccessToken, getSessionUserDetails} from '~/auth';
+import { getSessionCustomerAccessToken, getSessionUserDetails } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
@@ -38,6 +38,7 @@ import amazonPayIcon from '~/public/cart/amazonPayIcon.svg';
 import agentIcon from '~/public/cart/agentIcon.svg';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { Flyout } from '~/components/common-flyout';
+import PromotionCookie from './_components/promotion-cookie';
 
 import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
 
@@ -65,11 +66,13 @@ interface Props {
 }
 
 interface CustomerGroup {
-  discount_rules: Array<{  amount: string;
+  discount_rules: Array<{
+    amount: string;
     type: string;
     category_id: string;
     product_id: string;
-    method: string; }>;
+    method: string;
+  }>;
 }
 
 const CartPageQuery = graphql(
@@ -95,6 +98,19 @@ const CartPageQuery = graphql(
   [CartItemFragment, CheckoutSummaryFragment, GeographyFragment],
 );
 
+const CheckoutPageQuery = graphql(
+  `
+    query CartPageQuery($cartId: String) {
+      site {
+        checkout(entityId: $cartId) {
+          ...CheckoutSummaryFragment
+        }
+      }
+    }
+  `,
+  [CheckoutSummaryFragment],
+);
+
 export async function generateMetadata() {
   const t = await getTranslations('Cart');
 
@@ -118,13 +134,13 @@ export default async function Cart({ params }: Props) {
 
   const customerAccessToken = await getSessionCustomerAccessToken();
   const sessionUser = await getSessionUserDetails();
-  let customerGroupDetails:CustomerGroup = {
+  let customerGroupDetails: CustomerGroup = {
     discount_rules: []
   };
   if(sessionUser){
    const customerGroupId = sessionUser?.customerGroupId;
    customerGroupDetails = customerGroupId ? await GetCustomerGroupById(customerGroupId) : null;
-   }
+  }
 
   const { data } = await client.fetch({
     document: CartPageQuery,
@@ -139,8 +155,9 @@ export default async function Cart({ params }: Props) {
   });
 
   const cart = data.site.cart;
-  const checkout = data.site.checkout;
+  let checkout = data.site.checkout;
   const geography = data.geography;
+
   if (!cart) {
     return <EmptyCart />;
   }
@@ -200,7 +217,7 @@ export default async function Cart({ params }: Props) {
       if (accessoriesData?.length > 0) {
         item['accessories'] = accessoriesData;
       }
-      if (!accessoriesSkuArray?.includes(item?.variantEntityId)){
+      if (!accessoriesSkuArray?.includes(item?.variantEntityId)) {
         updatedLineItemInfo.push(item);
       }
     });
@@ -220,43 +237,57 @@ export default async function Cart({ params }: Props) {
     },
   ];
 
-const getCategoryIds =(product: any)=>{
-  const categories = removeEdgesAndNodes(product.baseCatalogProduct.categories) as CategoryNode[];
-  const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
-    const longestLength = longest?.breadcrumbs?.edges?.length || 0;
-    const currentLength = current?.breadcrumbs?.edges?.length || 0;
-    return currentLength > longestLength ? current : longest;
-  }, categories[0]);
-  
-  return categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
-    (edge) => edge.node.entityId
-  ) || [];
-}
+  const getCategoryIds = (product: any) => {
+    const categories = removeEdgesAndNodes(product.baseCatalogProduct.categories) as CategoryNode[];
+    const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
+      const longestLength = longest?.breadcrumbs?.edges?.length || 0;
+      const currentLength = current?.breadcrumbs?.edges?.length || 0;
+      return currentLength > longestLength ? current : longest;
+    }, categories[0]);
 
-const discountRules = customerGroupDetails?.discount_rules;
+    return categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
+      (edge) => edge.node.entityId
+    ) || [];
+  }
+
+  const discountRules = customerGroupDetails?.discount_rules;
 
 
   var getBrandIds = lineItems?.map((item: any) => {
     return item?.baseCatalogProduct?.brand?.entityId;
   });
   var getAllCommonSettinngsValues = await commonSettinngs(getBrandIds);
-  //let checkZeroTax: any = await zeroTaxCalculation(data.site);
-  
-  updatedLineItemWithoutAccessories = updatedLineItemWithoutAccessories.map((product: any)=>{
-     return{
+
+  updatedLineItemWithoutAccessories = updatedLineItemWithoutAccessories.map((product: any) => {
+    return {
       ...product,
       categoryIds: getCategoryIds(product),
-     }
+    }
   });
-  
+
   const updatedProduct: any[][] = [];
   let checkZeroTax: any = await zeroTaxCalculation(data.site);
+  
+  if(checkZeroTax?.id) {
+    const { data } = await client.fetch({
+      document: CheckoutPageQuery,
+      variables: { cartId },
+      customerAccessToken,
+      fetchOptions: {
+        cache: 'no-store',
+        next: {
+          tags: [TAGS.checkout],
+        },
+      },
+    });
+    checkout = data.site.checkout;
+  }
 
-for (const eachProduct of updatedLineItemWithoutAccessories) {
-  const price = await calculateProductPrice(eachProduct, "cart", discountRules, eachProduct.categoryIds);
-  updatedProduct.push(...price);
-}
-   
+  for (const eachProduct of updatedLineItemWithoutAccessories) {
+    const price = await calculateProductPrice(eachProduct, "cart", discountRules, eachProduct.categoryIds);
+    updatedProduct.push(...price);
+  }
+
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
       <div className="sticky top-2 z-50">
@@ -275,7 +306,7 @@ for (const eachProduct of updatedLineItemWithoutAccessories) {
       <div className="text-center lg:hidden">
         <ScrollButton targetId="order-summary" />
       </div>
-
+      {checkZeroTax && (<PromotionCookie promoObj={checkZeroTax} />)}
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
 
       <h1 className="cart-heading pt-0 text-center text-[24px] font-normal leading-[32px] lg:text-left lg:text-[24px]">
@@ -375,6 +406,7 @@ for (const eachProduct of updatedLineItemWithoutAccessories) {
               height={8}
               className="mr-1 h-[14px] w-[14px]"
               src={agentIcon}
+              unoptimized={true}
             />{' '}
             Talk to an Agent
           </p>
