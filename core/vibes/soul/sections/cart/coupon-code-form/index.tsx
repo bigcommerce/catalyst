@@ -63,8 +63,6 @@ export function CouponCodeForm({
         }
 
         case 'delete': {
-          const { couponCode } = submission.value;
-
           return [];
         }
 
