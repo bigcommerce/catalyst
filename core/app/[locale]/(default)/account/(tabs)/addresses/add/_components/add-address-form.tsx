@@ -213,7 +213,7 @@ export const AddAddressForm = ({
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
-        <div className="grid grid-cols-1 gap-y-3 lg:grid-cols-2 lg:gap-x-6">
+        <div className="px-4 py-3 grid grid-cols-1 gap-y-3 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-x-4">
           {addressFields.map((field) => {
             const fieldId = field.entityId;
             const fieldName = createFieldName(field, 'address');
@@ -377,7 +377,7 @@ export const AddAddressForm = ({
           )}
         </div>
 
-        <div className="mt-8 flex flex-col justify-stretch gap-2 md:flex-row md:justify-start md:gap-6">
+        <div className="mt- 8 px-4 py-3 flex flex-col justify-stretch gap-2 md:flex-row md:justify-start md:gap-6">
           <FormSubmit asChild>
             <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
           </FormSubmit>
