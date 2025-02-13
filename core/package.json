@@ -13,7 +13,9 @@
     "typecheck": "tsc --noEmit",
     "opennext:build": "npx opennext@latest build",
     "echostage": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && echo $STAGE",
-    "sst:dev": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst dev",
+    "presst:dev": "node set-secrets.js",
+    "sst:dev": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst dev --stage $STAGE",
+    "presst:deploy": "node set-secrets.js",
     "sst:deploy": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst deploy --stage $STAGE",
     "sst:remove:local": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst remove",
     "sst:remove:ephemeral": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst remove --stage $STAGE"
