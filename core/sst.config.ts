@@ -5,8 +5,9 @@
 
 export default $config({
   app(input) {
+    // const stage = new sst.Secret('STAGE');
     return {
-      name: `${process.env.STAGE}-wf-catalyst`,
+      name: `catalyst`,
       removal: input.stage === 'production' ? 'retain' : 'remove',
       protect: ['production'].includes(input.stage),
       home: 'aws',
@@ -19,15 +20,22 @@ export default $config({
     };
   },
   async run() {
-    new sst.aws.Nextjs(`${process.env.STAGE}-wf-catalyst`, {
+    const BIGCOMMERCE_STORE_HASH = new sst.Secret('BIGCOMMERCE_STORE_HASH');
+    const BIGCOMMERCE_STOREFRONT_TOKEN = new sst.Secret('BIGCOMMERCE_STOREFRONT_TOKEN');
+    const BIGCOMMERCE_CHANNEL_ID = new sst.Secret('BIGCOMMERCE_CHANNEL_ID');
+    const AUTH_SECRET = new sst.Secret('AUTH_SECRET');
+    const TURBO_REMOTE_CACHE_SIGNATURE_KEY = new sst.Secret('TURBO_REMOTE_CACHE_SIGNATURE_KEY');
+    const MAKESWIFT_SITE_API_KEY = new sst.Secret('MAKESWIFT_SITE_API_KEY');
+
+    new sst.aws.Nextjs('catalyst', {
       environment: {
-        BIGCOMMERCE_STORE_HASH: process.env.BIGCOMMERCE_STORE_HASH as string,
-        BIGCOMMERCE_STOREFRONT_TOKEN: process.env.BIGCOMMERCE_STOREFRONT_TOKEN as string,
-        BIGCOMMERCE_CHANNEL_ID: process.env.BIGCOMMERCE_CHANNEL_ID as string,
+        BIGCOMMERCE_STORE_HASH: BIGCOMMERCE_STORE_HASH.value,
+        BIGCOMMERCE_STOREFRONT_TOKEN: BIGCOMMERCE_STOREFRONT_TOKEN.value,
+        BIGCOMMERCE_CHANNEL_ID: BIGCOMMERCE_CHANNEL_ID.value,
         ENABLE_ADMIN_ROUTE: 'true',
-        AUTH_SECRET: process.env.AUTH_SECRET as string,
-        TURBO_REMOTE_CACHE_SIGNATURE_KEY: process.env.TURBO_REMOTE_CACHE_SIGNATURE_KEY as string,
-        MAKESWIFT_SITE_API_KEY: process.env.MAKESWIFT_SITE_API_KEY as string,
+        AUTH_SECRET: AUTH_SECRET.value,
+        TURBO_REMOTE_CACHE_SIGNATURE_KEY: TURBO_REMOTE_CACHE_SIGNATURE_KEY.value,
+        MAKESWIFT_SITE_API_KEY: MAKESWIFT_SITE_API_KEY.value,
         TRAILING_SLASH: 'false',
       },
     });
