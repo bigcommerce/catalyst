@@ -21,6 +21,8 @@
     "sst:remove:ephemeral": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst remove --stage $STAGE"
   },
   "dependencies": {
+    "@alto-avios/alto-tokens": "^3.0.1",
+    "@alto-avios/alto-ui": "^3.0.0",
     "@bigcommerce/catalyst-client": "workspace:^",
     "@conform-to/react": "^1.2.2",
     "@conform-to/zod": "^1.2.2",

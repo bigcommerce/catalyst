@@ -3,6 +3,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Script from 'next/script';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
@@ -93,6 +94,7 @@ export default async function RootLayout({ params, children }: Props) {
 
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+      <Script crossOrigin="anonymous" src="https://kit.fontawesome.com/ea4747af9a.js" />
       <body>
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
