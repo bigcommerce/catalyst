@@ -6,6 +6,7 @@ import { getCartId } from '~/lib/cart';
 import { exists } from '~/lib/utils';
 
 import { redirectToCheckout } from './_actions/redirect-to-checkout';
+import { updateCouponCode } from './_actions/update-coupon-code';
 import { updateLineItem } from './_actions/update-line-item';
 import { CartViewed } from './_components/cart-viewed';
 import { getCart } from './page-data';
@@ -123,6 +124,13 @@ export default async function Cart() {
         }}
         checkoutAction={redirectToCheckout}
         checkoutLabel={t('proceedToCheckout')}
+        couponCode={{
+          action: updateCouponCode,
+          couponCodes: checkout?.coupons.map((coupon) => coupon.code) ?? [],
+          ctaLabel: t('CheckoutSummary.CouponCode.apply'),
+          label: t('CheckoutSummary.CouponCode.couponCode'),
+          removeLabel: t('CheckoutSummary.CouponCode.removeCouponCode'),
+        }}
         decrementLineItemLabel={t('decrement')}
         deleteLineItemLabel={t('removeItem')}
         emptyState={{

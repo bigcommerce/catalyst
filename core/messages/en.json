@@ -319,7 +319,14 @@
       "add": "Add",
       "change": "Change",
       "cancel": "Cancel",
-      "errorMessage": "Cart summary not found, please try again."
+      "errorMessage": "Cart summary not found, please try again.",
+      "CouponCode": {
+        "apply": "Apply",
+        "couponCode": "Coupon code",
+        "removeCouponCode": "Remove coupon code",
+        "validCouponCode": "Please enter a valid coupon code",
+        "cartNotFound": "No cartId cookie found."
+      }
     },
     "ShippingInfo": {
       "country": "Country",

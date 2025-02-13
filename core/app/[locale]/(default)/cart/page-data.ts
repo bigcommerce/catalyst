@@ -147,6 +147,7 @@ const CartPageQuery = graphql(
           }
         }
         checkout(entityId: $cartId) {
+          entityId
           subtotal {
             ...MoneyFieldsFragment
           }
@@ -161,6 +162,9 @@ const CartPageQuery = graphql(
             discountedAmount {
               ...MoneyFieldsFragment
             }
+          }
+          coupons {
+            code
           }
         }
       }
