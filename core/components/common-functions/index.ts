@@ -69,7 +69,11 @@ interface ExcludedMetaFields {
   keys: string[];
   categories: string[];
 }
-
+interface DeletedProduct {
+  productId: number;
+  wishlistItemId: number;
+  wishlistId: number;
+}
 // Define excluded metadata
 const excludedMetaFields: ExcludedMetaFields = {
   keys: [
@@ -410,20 +414,20 @@ export const calculateProductPrice = async (
     const retailPrice = type === 'accessories' ? product.retail_price : prices?.retailPrice?.value;
     const salePrice = type === 'accessories' ? product.sale_price : prices?.salePrice?.value;
     const basePrice = type === 'accessories' ? product.price : prices?.basePrice?.value;
-    const warrantyPrice = type === "pdp" && product?.prices?.price;
-    const listPrice = type === "cart" && product?.listPrice;
+    const warrantyPrice = type === 'pdp' && product?.prices?.price;
+    const listPrice = type === 'cart' && product?.listPrice;
     const productId =
       type === 'accessories'
         ? product.product_id
-        : type === 'pdp' || type=== "wishlist"
-        ? product.entityId
-        : product.productEntityId;
+        : type === 'pdp' || type === 'wishlist'
+          ? product.entityId
+          : product.productEntityId;
 
     let originalPrice = 0;
     let updatedPrice = 0;
     let discount = 0;
     let hasDiscount = false;
-    let warrantyApplied=false;
+    let warrantyApplied = false;
 
     // MSRP Logic
     if (salePrice && retailPrice) {
@@ -444,15 +448,15 @@ export const calculateProductPrice = async (
       discount = 0;
     }
 
-    if (type === "pdp") {
+    if (type === 'pdp') {
       if (warrantyPrice.value > updatedPrice) {
         updatedPrice = warrantyPrice.value;
-        warrantyApplied=true; 
+        warrantyApplied = true;
       }
-    }else if(type === "cart") {
+    } else if (type === 'cart') {
       if (listPrice.value > updatedPrice) {
         updatedPrice = listPrice.value;
-        warrantyApplied=true;
+        warrantyApplied = true;
       }
     }
     //hasDiscount = discount > 0;
@@ -501,7 +505,7 @@ export const calculateProductPrice = async (
         hasDiscount: discount > 0,
         showDecoration: !!retailPrice && retailPrice > 0,
         warrantyApplied: warrantyApplied,
-      },      
+      },
     };
 
     return {
@@ -594,3 +598,82 @@ export function generateRandomString(length: number) {
   }
   return result?.toUpperCase();
 }
+
+// delete-product-wishlist
+export const storageUtils = {
+  getFromStorage: (key: string) => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(key);
+    }
+    return null;
+  },
+
+  setToStorage: (key: string, value: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(key, value);
+    }
+  },
+
+  removeFromStorage: (key: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(key);
+    }
+  },
+};
+
+// Initialize deleted products array
+let deletedProducts: DeletedProduct[] = [];
+
+// Initialize from storage if available
+if (typeof window !== 'undefined') {
+  const savedProducts = storageUtils.getFromStorage('deletedWishlistProducts');
+  if (savedProducts) {
+    deletedProducts = JSON.parse(savedProducts);
+  }
+}
+
+export const manageDeletedProducts = {
+  addDeletedProduct: (productId: number, wishlistItemId: number) => {
+    const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
+    // Check if product is already in deleted list
+    const existingIndex = deletedProducts.findIndex(
+      (item: any) => item.productId === productId && item.wishlistItemId === wishlistItemId,
+    );
+
+    if (existingIndex === -1) {
+      deletedProducts.push({
+        productId,
+        wishlistItemId,
+        deletionDate: new Date().toISOString(),
+      });
+
+      localStorage.setItem('deletedProducts', JSON.stringify(deletedProducts));
+      window.dispatchEvent(
+        new StorageEvent('storage', {
+          key: 'deletedProducts',
+        }),
+      );
+    }
+  },
+
+  removeDeletedProduct: (productId: number) => {
+    const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
+    const updatedProducts = deletedProducts.filter((item: any) => item.productId !== productId);
+
+    localStorage.setItem('deletedProducts', JSON.stringify(updatedProducts));
+    window.dispatchEvent(
+      new StorageEvent('storage', {
+        key: 'deletedProducts',
+      }),
+    );
+  },
+
+  getDeletedProducts: () => {
+    return JSON.parse(localStorage.getItem('deletedProducts') || '[]');
+  },
+
+  isProductDeleted: (productId: number) => {
+    const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
+    return deletedProducts.some((item: any) => item.productId === productId);
+  },
+};

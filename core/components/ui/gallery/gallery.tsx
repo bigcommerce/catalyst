@@ -6,7 +6,6 @@ import { Banner } from './belami-banner-pdp';
 import ProductImage from './product-zoom';
 import { useCommonContext } from '~/components/common-context/common-provider';
 import WishlistAddToList from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
-import { useWishlists } from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/hooks';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf } from '~/client/graphql';
 
@@ -82,7 +81,6 @@ const Gallery = ({
   selectedVariantId,
   product,
 }: Props) => {
-  const { wishlists } = useWishlists();
   const { setCurrentMainMedia } = useCommonContext();
   const [currentVariantId, setCurrentVariantId] = useState<number | undefined>();
   const [selectedIndex, setSelectedIndex] = useState(defaultImageIndex);
@@ -504,7 +502,6 @@ const Gallery = ({
               {product && (
                 <div className="absolute right-4 top-4 z-10">
                   <WishlistAddToList
-                    wishlists={wishlists}
                     hasPreviousPage={false}
                     product={{
                       entityId: product.entityId,

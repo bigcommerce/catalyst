@@ -1,12 +1,12 @@
-// add - to list
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Heart, X, Check, Loader2, AlertCircle, Plus } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { useTranslations } from 'next-intl';
 import { useRouter } from 'next/navigation';
 import { Input } from '~/components/ui/form';
+import { getWishlists } from '~/components/graphql-apis';
 import {
   addToWishlist,
   createWishlist,
@@ -14,9 +14,8 @@ import {
 import { BcImage } from '~/components/bc-image';
 import heartIcon from '~/public/wishlistIcons/heartIcon.svg';
 import { cn } from '~/lib/utils';
-import { checkAuthStatus } from './auth-client';
 import Link from 'next/link';
-import { useCommonContext } from '~/components/common-context/common-provider';
+import { manageDeletedProducts } from '~/components/common-functions';
 
 interface ProductImage {
   url: string;
@@ -45,7 +44,7 @@ interface Product {
   name: string;
   sku: string;
   path: string;
-  images: ProductImage[];
+  images?: ProductImage[];
   brand?: ProductBrand;
   prices?: ProductPrices | null;
   rating?: number;
@@ -83,7 +82,6 @@ interface Wishlist {
 }
 
 interface WishlistAddToListProps {
-  wishlists: Wishlist[];
   hasPreviousPage: boolean;
   product: Product;
   onGuestClick?: () => void;
@@ -95,7 +93,6 @@ interface WishlistAddToListProps {
 }
 
 const WishlistAddToList = ({
-  wishlists,
   hasPreviousPage,
   product,
   onGuestClick,
@@ -114,99 +111,67 @@ const WishlistAddToList = ({
   const [isCreating, setIsCreating] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-  const { deletedProductIds, setDeletedProductId } = useCommonContext();
   const [hasCreatedWishlist, setHasCreatedWishlist] = useState(false);
-
+  const [isAddToListLoading, setIsAddToListLoading] = useState(false);
   const t = useTranslations('Account.Wishlist');
   const router = useRouter();
 
-  // Function to remove deletion record from IndexedDB
-  const removeFromDeletedProducts = async (wishlistId: number, productId: number) => {
-    try {
-      const request = indexedDB.open('WishlistDB', 4);
+  const [selectedWishlists, setSelectedWishlists] = useState<number[]>([]);
 
-      request.onsuccess = (event: Event) => {
-        const db = (event.target as IDBOpenDBRequest).result;
-        const transaction = db.transaction(['deletedProducts'], 'readwrite');
-        const store = transaction.objectStore('deletedProducts');
-        const index = store.index('by_ids');
-
-        const getRequest = index.getKey([wishlistId, productId]);
-
-        getRequest.onsuccess = () => {
-          if (getRequest.result) {
-            store.delete(getRequest.result);
-          }
-        };
-      };
-    } catch (error) {
-      ('');
-    }
-  };
-
-  // Filter wishlists based on deletedProductIds
   useEffect(() => {
-    const filteredWishlists = wishlists.map((wishlist) => ({
-      ...wishlist,
-      items: wishlist.items.filter(
-        (item) =>
-          !deletedProductIds.some(
-            (deletion) =>
-              deletion.wishlistId === wishlist.entityId &&
-              deletion.productId === item.product.entityId,
-          ),
-      ),
-    }));
-
-    setCurrentWishlists(filteredWishlists);
-  }, [wishlists, deletedProductIds]);
-
-  // Add IndexedDB initialization
-  useEffect(() => {
-    const loadDeletedProducts = async () => {
+    const loadWishlists = async () => {
       try {
-        const request = indexedDB.open('WishlistDB', 4);
+        // Get deleted products from localStorage
+        const deletedProducts = manageDeletedProducts.getDeletedProducts();
 
-        request.onsuccess = (event: Event) => {
-          const db = (event.target as IDBOpenDBRequest).result;
-          const transaction = db.transaction(['deletedProducts'], 'readonly');
-          const store = transaction.objectStore('deletedProducts');
-          const getAllRequest = store.getAll();
-
-          getAllRequest.onsuccess = () => {
-            const storedDeletions = getAllRequest.result;
-
-            // Filter wishlists based on stored deletions
-            const filteredWishlists = wishlists.map((wishlist) => ({
-              ...wishlist,
-              items: wishlist.items.filter(
-                (item) =>
-                  !storedDeletions.some(
-                    (deletion) =>
-                      deletion.wishlistId === wishlist.entityId &&
-                      deletion.productId === item.product.entityId,
-                  ),
-              ),
-            }));
-
-            setCurrentWishlists(filteredWishlists);
-          };
-        };
+        const data = await getWishlists({ limit: 50 });
+        if (data?.wishlists) {
+          const transformedWishlists = data.wishlists.map((wishlist: any) => ({
+            entityId: wishlist.entityId,
+            name: wishlist.name,
+            items: wishlist.items
+              // Filter out any deleted products
+              .filter((item: any) => {
+                const isDeleted = deletedProducts.some(
+                  (deletedProduct: any) =>
+                    deletedProduct.productId === item.product.entityId &&
+                    deletedProduct.wishlistItemId === item.entityId,
+                );
+                return !isDeleted;
+              })
+              .map((item: any) => ({
+                entityId: item.entityId,
+                product: {
+                  ...item.product,
+                  images: item.product.images || [],
+                  variants: item.product.variants || { edges: [] },
+                },
+              })),
+          }));
+          setCurrentWishlists(transformedWishlists);
+        }
       } catch (error) {
-        ('');
+        console.error('Error loading wishlists:', error);
       }
     };
 
-    loadDeletedProducts();
-  }, [wishlists]);
+    loadWishlists();
 
-  useEffect(() => {
-    const verifyAuth = async () => {
-      const authResult = await checkAuthStatus();
+    // Add event listener for storage changes
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'deletedProducts' || e.key === 'selectedWishlist') {
+        loadWishlists();
+      }
     };
-    verifyAuth();
+
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
 
+  // Handle error message timeout
   useEffect(() => {
     if (message?.type === 'error') {
       const timer = setTimeout(() => {
@@ -216,6 +181,7 @@ const WishlistAddToList = ({
     }
   }, [message]);
 
+  // Handle modal body scroll
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -227,14 +193,9 @@ const WishlistAddToList = ({
     };
   }, [isOpen]);
 
-  useEffect(() => {
-    setCurrentWishlists(wishlists);
-  }, [wishlists]);
-
   const handleHeartClick = async () => {
-    const authResult = await checkAuthStatus();
-
-    if (!authResult.isAuthenticated) {
+    const data = await getWishlists({ limit: 1 });
+    if (!data) {
       window.location.href = '/login';
       return;
     }
@@ -293,102 +254,114 @@ const WishlistAddToList = ({
     }
   };
 
-  // Update getItemCount function to account for deletions
   const getItemCount = (wishlist: Wishlist) => {
-    // Filter out deleted items first
-    const nonDeletedItems = wishlist.items.filter(
-      (item) =>
-        !deletedProductIds.some(
-          (deletion) =>
-            deletion.wishlistId === wishlist.entityId &&
-            deletion.productId === item.product.entityId,
-        ),
+    // Base count from actual items
+    const baseCount = wishlist.items?.length || 0;
+
+    // Check if this wishlist has this product pending
+    const hasPendingItem = tempAddedItems.some(
+      (item) => item.listId === wishlist.entityId && item.product.entityId === product.entityId,
     );
 
-    const savedItems = nonDeletedItems.length;
-    const tempItems = tempAddedItems.filter((item) => item.listId === wishlist.entityId).length;
-    const existingProduct = nonDeletedItems.some(
-      (item) => item.product?.entityId === product?.entityId,
-    );
-
-    return existingProduct ? savedItems : savedItems + tempItems;
+    // Only add 1 if this specific wishlist has a pending item
+    return baseCount + (hasPendingItem ? 1 : 0);
   };
 
-  const handleSave = async () => {
-    const authResult = await checkAuthStatus();
+  // Update handleWishlistSelect function
+  const handleWishlistSelect = async (wishlist: Wishlist) => {
+    if (loadingListId === wishlist.entityId || isAddToListLoading) return;
 
-    if (!authResult.isAuthenticated) {
+    // Check if product already exists in the wishlist
+    const isExistingItem = wishlist.items.some(
+      (item) => item.product.entityId === product.entityId,
+    );
+
+    if (isExistingItem) {
+      setMessage({
+        type: 'error',
+        text: `This product already exists in "${wishlist.name}"`,
+      });
+      return;
+    }
+
+    setLoadingListId(wishlist.entityId);
+    setIsAddToListLoading(true);
+
+    try {
+      const isPendingAdd = tempAddedItems.some(
+        (item) => item.listId === wishlist.entityId && item.product.entityId === product.entityId,
+      );
+
+      if (isPendingAdd) {
+        // Remove from temp items
+        setTempAddedItems((prev) =>
+          prev.filter(
+            (item) =>
+              !(item.listId === wishlist.entityId && item.product.entityId === product.entityId),
+          ),
+        );
+        setJustAddedToList(null);
+      } else {
+        // Add to temp items
+        const productToAdd = {
+          listId: wishlist.entityId,
+          product: {
+            ...product,
+            sku: product.sku || '',
+            variants: product.variants || {},
+          },
+        };
+        setTempAddedItems((prev) => [...prev, productToAdd]);
+        setJustAddedToList(wishlist.entityId);
+      }
+    } catch (error) {
+      console.error('Error toggling wishlist item:', error);
+      setMessage({
+        type: 'error',
+        text: 'Failed to modify item in list',
+      });
+    } finally {
+      setLoadingListId(null);
+      setIsAddToListLoading(false);
+    }
+  };
+
+  // Update handleSave function
+  const handleSave = async () => {
+    const data = await getWishlists({ limit: 1 });
+    if (!data) {
       if (onGuestClick) {
         onGuestClick();
       }
       return;
     }
 
-    // if (tempAddedItems.length === 0) {
-    //   setMessage({
-    //     type: 'error',
-    //     text: 'Please add items to a wishlist before saving',
-    //   });
-    //   return;
-    // }
-
     setIsSaving(true);
     let hasError = false;
 
     try {
-      // Save each item one by one
+      // Keep track of successes
+      const successfullyAddedItems: { listId: number; productId: number }[] = [];
+
       for (const item of tempAddedItems) {
         try {
-          // First check if this item was previously deleted
-          const wasDeleted = deletedProductIds.some(
-            (deletion) =>
-              deletion.wishlistId === item.listId && deletion.productId === item.product.entityId,
-          );
-
-          if (wasDeleted) {
-            // Remove from deletedProductIds in context
-            setDeletedProductId(item.product.entityId, item.listId, 'remove');
-
-            // Remove from IndexedDB
-            await removeFromDeletedProducts(item.listId, item.product.entityId);
-          }
-
           const result = await addToWishlist(
             item.listId,
             item.product.entityId,
             item.product.variantEntityId || undefined,
           );
 
-          if (result.status !== 'success') {
+          if (result.status === 'success') {
+            successfullyAddedItems.push({
+              listId: item.listId,
+              productId: item.product.entityId,
+            });
+            manageDeletedProducts.removeDeletedProduct(item.product.entityId);
+          } else {
             throw new Error(result.message || 'Failed to add item to list');
           }
-
-          // Update currentWishlists after each successful add
-          setCurrentWishlists((prev) =>
-            prev.map((wishlist) => {
-              if (wishlist.entityId === item.listId) {
-                // Check if item already exists in this wishlist
-                const itemExists = wishlist.items.some(
-                  (existingItem) => existingItem.product.entityId === item.product.entityId,
-                );
-
-                if (!itemExists) {
-                  return {
-                    ...wishlist,
-                    items: [
-                      ...wishlist.items,
-                      {
-                        entityId: Date.now(),
-                        product: item.product,
-                      },
-                    ],
-                  };
-                }
-              }
-              return wishlist;
-            }),
-          );
         } catch (error) {
+          console.error('Error adding item to wishlist:', error);
           hasError = true;
           break;
         }
@@ -400,18 +373,52 @@ const WishlistAddToList = ({
           text: 'Saved to Favorites',
         });
 
-        // Clear temporary items
+        // Update wishlists immediately with new items
+        setCurrentWishlists((prev) =>
+          prev.map((wishlist) => {
+            const addedToThisWishlist = successfullyAddedItems.find(
+              (item) => item.listId === wishlist.entityId,
+            );
+
+            if (addedToThisWishlist) {
+              // Add the new item to this wishlist
+              return {
+                ...wishlist,
+                items: [
+                  ...wishlist.items,
+                  {
+                    entityId: Date.now(), // Temporary ID until refresh
+                    product: product,
+                    productEntityId: product.entityId,
+                    variantEntityId: product.variantEntityId || 0,
+                  },
+                ],
+              };
+            }
+            return wishlist;
+          }),
+        );
+
+        // Clear temp items
         setTempAddedItems([]);
         setJustAddedToList(null);
 
-        // Update localStorage with current state
-        const wishlistData = {
-          wishlists: currentWishlists,
-          lastUpdated: Date.now(),
+        // Refresh from API after local update
+        const refreshData = async () => {
+          const refreshedData = await getWishlists({ limit: 50 });
+          if (refreshedData?.wishlists) {
+            const transformedWishlists = refreshedData.wishlists.map((wishlist: any) => ({
+              entityId: wishlist.entityId,
+              name: wishlist.name,
+              items: wishlist.items || [],
+            }));
+            setCurrentWishlists(transformedWishlists);
+          }
         };
-        localStorage.setItem('wishlistData', JSON.stringify(wishlistData));
 
-        // Refresh the data
+        // Refresh after a short delay to allow API to sync
+        setTimeout(refreshData, 500);
+
         router.refresh();
       } else {
         setMessage({
@@ -420,6 +427,7 @@ const WishlistAddToList = ({
         });
       }
     } catch (error) {
+      console.error('Error in handleSave:', error);
       setMessage({
         type: 'error',
         text: 'Failed to save items. Please try again.',
@@ -429,7 +437,6 @@ const WishlistAddToList = ({
     }
   };
 
-  // Modify handleCreateSubmit to set hasCreatedWishlist to true after successful creation
   const handleCreateSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const trimmedName = newListName.trim();
@@ -441,6 +448,7 @@ const WishlistAddToList = ({
     }
 
     setIsCreating(true);
+    setIsAddToListLoading(true);
 
     try {
       const formData = new FormData();
@@ -449,54 +457,19 @@ const WishlistAddToList = ({
       const result = await createWishlist(formData);
 
       if (result.status === 'success') {
+        // Create new wishlist with initial item
         const newWishlist: Wishlist = {
           entityId: result.data.entityId,
           name: trimmedName,
-          items: [],
+          items: [], // Start with empty items array
         };
 
-        // Add new wishlist to current wishlists
+        // Add to current wishlists
         setCurrentWishlists((prev) => [...prev, newWishlist]);
 
-        // Keep form state
-        setNewListName('');
-        setShowCreateForm(false);
-
-        // Set hasCreatedWishlist to true after successful creation
-        setHasCreatedWishlist(true);
-
-        // Select the new wishlist immediately
-        await handleWishlistSelect(newWishlist);
-      }
-    } catch (error) {
-      setMessage({ type: 'error', text: 'Failed to create new list' });
-    } finally {
-      setIsCreating(false);
-    }
-  };
-
-  const handleWishlistSelect = async (wishlist: Wishlist) => {
-    setLoadingListId(wishlist.entityId);
-
-    try {
-      // Check if item is already in tempAddedItems
-      const isTemporarilyAdded = tempAddedItems.some(
-        (item) => item.listId === wishlist.entityId && item.product.entityId === product.entityId,
-      );
-
-      if (isTemporarilyAdded) {
-        // Remove item if it's already in tempAddedItems
-        setTempAddedItems((prev) =>
-          prev.filter(
-            (item) =>
-              !(item.listId === wishlist.entityId && item.product.entityId === product.entityId),
-          ),
-        );
-        setJustAddedToList(null); // Remove green highlight
-      } else {
-        // Add item if it's not in tempAddedItems
+        // Add product to temp items immediately
         const productToAdd = {
-          listId: wishlist.entityId,
+          listId: result.data.entityId,
           product: {
             ...product,
             sku: product.sku || '',
@@ -504,42 +477,20 @@ const WishlistAddToList = ({
           },
         };
 
-        // Instead of replacing, we append to existing items
         setTempAddedItems((prev) => [...prev, productToAdd]);
-        setJustAddedToList(wishlist.entityId);
-      }
+        setJustAddedToList(result.data.entityId);
 
-      // After modifying tempAddedItems, check if we need to enable/disable save button
-      const hasChangesToSave = tempAddedItems.length > 0;
-      setIsSaving(false); // Ensure save button is not in loading state
+        setNewListName('');
+        setShowCreateForm(false);
+        setHasCreatedWishlist(true);
+      }
     } catch (error) {
-      setMessage({
-        type: 'error',
-        text: 'Failed to modify item in list',
-      });
+      setMessage({ type: 'error', text: 'Failed to create new list' });
     } finally {
-      setLoadingListId(null);
+      setIsCreating(false);
+      setIsAddToListLoading(false);
     }
   };
-
-  useEffect(() => {
-    const filteredWishlists = wishlists.map((wishlist) => ({
-      ...wishlist,
-      items: wishlist.items.filter((item) => {
-        const isDeleted = deletedProductIds.some(
-          (deletion) =>
-            deletion.wishlistId === wishlist.entityId &&
-            deletion.productId === item.product.entityId,
-        );
-        if (isDeleted) {
-          ('');
-        }
-        return !isDeleted;
-      }),
-    }));
-
-    setCurrentWishlists(filteredWishlists);
-  }, [wishlists, deletedProductIds]);
 
   return (
     <div className={cn(classNames?.root || 'relative')}>
@@ -616,62 +567,57 @@ const WishlistAddToList = ({
                     {currentWishlists.map((wishlist) => {
                       if (!wishlist.items || !product) return null;
 
-                      const isProductInList = wishlist.items.some(
-                        (item) => item.product?.entityId === product?.entityId,
+                      const isExistingItem = wishlist.items.some(
+                        (item) => item.product.entityId === product.entityId,
                       );
-
-                      const isInTempList = tempAddedItems.some(
-                        (item) => item.listId === wishlist.entityId,
+                      const isPendingAdd = tempAddedItems.some(
+                        (item) =>
+                          item.listId === wishlist.entityId &&
+                          item.product.entityId === product.entityId,
                       );
-                      const isLoading = loadingListId === wishlist.entityId;
-                      const isAdded = justAddedToList === wishlist.entityId;
-
-                      // Get correct item count
+                      const isItemLoading = loadingListId === wishlist.entityId;
                       const itemCount = getItemCount(wishlist);
 
                       return (
                         <div key={wishlist.entityId} className="wishlist-item">
                           <button
-                            onClick={() => {
-                              if (isProductInList) {
-                                setMessage({
-                                  type: 'error',
-                                  text: `This product already exists in "${wishlist.name}"`,
-                                });
-                              } else {
-                                handleWishlistSelect(wishlist);
-                              }
-                            }}
-                            disabled={isPending || isLoading}
+                            onClick={() => handleWishlistSelect(wishlist)}
+                            disabled={isItemLoading || isAddToListLoading}
                             className={cn(
                               'group flex w-full items-center py-[0.8em] text-left transition-all hover:bg-green-100 hover:pl-4',
-                              isProductInList ? 'cursor-not-allowed' : '',
-                              (isPending || isLoading) && 'opacity-50',
+                              (isItemLoading || isAddToListLoading) && 'opacity-50',
                             )}
                           >
-                            {/* Plus Icon or Checkmark */}
-                            {isAdded ? (
-                              <span className="mr-2 flex h-5 w-7 items-center justify-center rounded-full bg-[#145A2E] xl:h-5 xl:w-5">
-                                <Check className="mb-1 mt-1 h-3 w-3 text-white" />
+                            {isItemLoading ? (
+                              <span className="mr-2">
+                                <Loader2 className="h-5 w-5 animate-spin text-[#B4B4B5]" />
+                              </span>
+                            ) : isPendingAdd ? (
+                              <span className="mr-2 flex h-5 w-5 items-center justify-center rounded-full bg-[#145A2E]">
+                                <Check className="h-3 w-3 text-white" />
                               </span>
                             ) : (
-                              <span className="mr-2 text-[#B4B4B5]">
+                              <span className="mr-2 flex h-5 w-5 items-center justify-center">
                                 <Plus className="h-5 w-5 text-[#B4B4B5]" />
                               </span>
                             )}
 
                             <span
-                              className={`font-[500] capitalize ${isAdded ? 'text-[#145A2E]' : 'text-[#353535]'}`}
+                              className={cn(
+                                'font-[500] capitalize',
+                                isPendingAdd ? 'text-[#145A2E]' : 'text-[#353535]',
+                              )}
                             >
                               {wishlist.name}
                               <span
-                                className={`ml-2 font-[500] capitalize ${isAdded ? 'text-[#145A2E]' : 'text-[#353535]'}`}
+                                className={cn(
+                                  'ml-2 font-[500]',
+                                  isPendingAdd ? 'text-[#145A2E]' : 'text-[#353535]',
+                                )}
                               >
                                 ({itemCount} {itemCount === 1 ? 'item' : 'items'})
                               </span>
                             </span>
-
-                            {isLoading && <Loader2 className="ml-auto h-4 w-4 animate-spin" />}
                           </button>
                         </div>
                       );
@@ -680,7 +626,6 @@ const WishlistAddToList = ({
                 </div>
               </div>
 
-              {/* New List Section */}
               <div className="mt-4 bg-white">
                 <button
                   onClick={toggleCreateForm}
@@ -728,8 +673,6 @@ const WishlistAddToList = ({
                 )}
               </div>
 
-              {/* Action Buttons */}
-
               <div className="m-auto mt-2 flex flex-col justify-center gap-2">
                 {showCreateForm && (
                   <Button
@@ -752,7 +695,6 @@ const WishlistAddToList = ({
                   </Button>
                 )}
 
-                {/* Show SAVE button when there are items in tempAddedItems */}
                 {tempAddedItems.length > 0 && (
                   <Button
                     className={cn(

@@ -5,6 +5,7 @@ import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { BreadcrumbsFragment } from '~/components/breadcrumbs/fragment';
+import { revalidate } from '~/client/revalidate-target';
 
 interface Price {
   value: number;
@@ -257,8 +258,10 @@ export const getWishlists = cache(
     const response = await client.fetch({
       document: WishlistsQuery,
       variables: { filters, ...paginationArgs },
-      fetchOptions: { cache: 'no-store' },
       customerAccessToken,
+      fetchOptions: customerAccessToken
+        ? { cache: 'no-store' }
+        : { next: { revalidate: revalidate } },
     });
 
     const data = response.data as WishlistResponse;

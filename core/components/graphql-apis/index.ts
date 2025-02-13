@@ -7,59 +7,61 @@ import { OrderItemFragment } from '~/app/[locale]/(default)/account/(tabs)/order
 import { cache } from 'react';
 import { OrderDetailsType } from '~/app/[locale]/(default)/account/(tabs)/order/[slug]/page-data';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { ProductItemFragment, ProductPageQuery } from '~/app/[locale]/(default)/product/[slug]/page-data';
+import {
+  ProductItemFragment,
+  ProductPageQuery,
+} from '~/app/[locale]/(default)/product/[slug]/page-data';
 import { ProductPageSKUQuery } from '~/app/[locale]/(default)/product/[slug]/page-data';
 import { cookies } from 'next/headers';
 
-const ProductMetaFieldsQuery = graphql(
-    `
-    query ProductMetaFieldsQuery($entityId: Int!, $nameSpace: String!) {
-        site {
-            product(entityId: $entityId) {
-                metafields(namespace: $nameSpace, first: 50) {
-                    edges {
-                        cursor
-                        node {
-                            entityId
-                            id
-                            key
-                            value
-                        }
-                    }
-                    pageInfo {
-                        endCursor
-                        hasNextPage
-                        startCursor
-                        hasPreviousPage
-                    }
-                }
+const ProductMetaFieldsQuery = graphql(`
+  query ProductMetaFieldsQuery($entityId: Int!, $nameSpace: String!) {
+    site {
+      product(entityId: $entityId) {
+        metafields(namespace: $nameSpace, first: 50) {
+          edges {
+            cursor
+            node {
+              entityId
+              id
+              key
+              value
             }
+          }
+          pageInfo {
+            endCursor
+            hasNextPage
+            startCursor
+            hasPreviousPage
+          }
         }
-    }`
-);
+      }
+    }
+  }
+`);
 
 export const getProductMetaFields = async (entityId: number, nameSpace: string) => {
   const { data } = await client.fetch({
     document: ProductMetaFieldsQuery,
-    variables: {entityId: entityId, nameSpace: nameSpace}
+    variables: { entityId: entityId, nameSpace: nameSpace },
   });
   return data;
 };
 
 const splitArray = (array: Array<any>, count: number) => {
   let result = [],
-  i = 0;
+    i = 0;
   while (i < array.length) {
-    result.push(array?.slice(i, i += count));
+    result.push(array?.slice(i, (i += count)));
   }
   return result;
-}
+};
 
 export const GetVariantsByProductSKU = async (skuArray: any) => {
   let productVariantData: Array<any> = [];
-  if(skuArray?.length > 0) {
+  if (skuArray?.length > 0) {
     let splitSkuArray = splitArray(skuArray, 20);
-    if(splitSkuArray?.length > 0) {
+    if (splitSkuArray?.length > 0) {
       for await (const skuArrayData of splitSkuArray) {
         let skuQuery = '';
         skuQuery += `query ProductsQuery {
@@ -121,16 +123,15 @@ export const GetVariantsByProductSKU = async (skuArray: any) => {
           fetchOptions: { next: { revalidate } },
         });
         Object.values(data?.site)?.forEach((element: any) => {
-          if(element?.sku) {
-            productVariantData.push({...element});
+          if (element?.sku) {
+            productVariantData.push({ ...element });
           }
         });
       }
     }
   }
   return productVariantData;
-}
-
+};
 
 const OrderShipmentFragment = graphql(`
   fragment OrderShipmentFragment on OrderShipment {
@@ -175,7 +176,7 @@ const mapOrderData = (order: OrderDetailsType) => {
       shipping: order.shippingCostTotal,
       tax: order.taxTotal,
       grandTotal: order.totalIncTax,
-      handlingCost: order.handlingCostTotal
+      handlingCost: order.handlingCostTotal,
     },
     paymentInfo: {
       billingAddress: order.billingAddress,
@@ -310,7 +311,6 @@ export const getOrderDetails = cache(
 
 export const getGuestOrderDetails = cache(
   async (variables: VariablesOf<typeof CustomerOrderDetails>) => {
-
     const response = await client.fetch({
       document: CustomerOrderDetails,
       variables,
@@ -375,7 +375,7 @@ const GetMultipleChoiceOptionsQuery = graphql(`
   query GetMultipleChoiceOptions($entityId: Int!, $valuesCursor: String) {
     site {
       product(entityId: $entityId) {
-      entityId
+        entityId
         productOptions(first: 50) {
           edges {
             node {
@@ -435,25 +435,334 @@ export const getMultipleChoiceOptions = async (
   });
 
   // const multipleChoiceOptions = data?.site?.product || [];
-const pId=data?.site?.product?.entityId
+  const pId = data?.site?.product?.entityId;
 
-  const multipleChoiceOptions = data?.site?.product?.productOptions?.edges
-  ?.map(edge => edge.node)
-  ?.filter(node => node?.displayStyle === "Swatch") || [];
-  const swatchValuesEdges = multipleChoiceOptions
-  ?.map(option => option.values?.edges)
-  .flat() || [];
-  const pageInfo = multipleChoiceOptions
-  ?.map(option => option.values?.pageInfo)
-  .flat() || [];
-  const pageInfo1=pageInfo?.[0]
+  const multipleChoiceOptions =
+    data?.site?.product?.productOptions?.edges
+      ?.map((edge) => edge.node)
+      ?.filter((node) => node?.displayStyle === 'Swatch') || [];
+  const swatchValuesEdges =
+    multipleChoiceOptions?.map((option) => option.values?.edges).flat() || [];
+  const pageInfo = multipleChoiceOptions?.map((option) => option.values?.pageInfo).flat() || [];
+  const pageInfo1 = pageInfo?.[0];
   return {
     multipleChoiceOptions,
     swatchValuesEdges,
-    pId,pageInfo ,
-    endCursor:
-      pageInfo1?.endCursor || null,
-    hasNextPage:
-    pageInfo1?.hasNextPage ?? null,
+    pId,
+    pageInfo,
+    endCursor: pageInfo1?.endCursor || null,
+    hasNextPage: pageInfo1?.hasNextPage ?? null,
   };
+};
+
+import { PaginationFragment } from '~/client/fragments/pagination';
+import { BreadcrumbsFragment } from '~/components/breadcrumbs/fragment';
+
+// Interfaces
+interface Price {
+  value: number;
+  currencyCode: string;
+}
+
+interface PriceData {
+  price: Price;
+  basePrice: Price;
+  salePrice: Price | null;
+}
+
+interface OptionValue {
+  entityId: number;
+  label: string;
+}
+
+interface VariantOption {
+  displayName: string;
+  entityId: number;
+  isRequired: boolean;
+  values: {
+    edges: Array<{
+      node: OptionValue;
+    }>;
+  };
+}
+
+interface ProductVariant {
+  entityId: number;
+  sku: string;
+  mpn?: string;
+  options: {
+    edges: Array<{
+      node: VariantOption;
+    }>;
+  };
+  defaultImage?: {
+    url: string;
+    altText: string;
+  };
+  prices?: PriceData;
+}
+
+interface Brand {
+  entityId: number;
+  name: string;
+  path: string;
+}
+
+interface Product {
+  entityId: number;
+  name: string;
+  sku: string;
+  mpn?: string;
+  path: string;
+  brand: Brand;
+  defaultImage: {
+    url: string;
+    altText: string;
+  };
+  reviewSummary?: {
+    numberOfReviews: string;
+    averageRating: string;
+  };
+  categories?: {
+    edges: Array<{
+      node: {
+        entityId: number;
+        name: string;
+      };
+    }>;
+  };
+  variants: {
+    edges: Array<{
+      node: ProductVariant;
+    }>;
+  };
+  prices: PriceData;
+}
+
+interface WishlistItem {
+  entityId: number;
+  productEntityId: number;
+  variantEntityId: number;
+  product: Product;
+}
+
+interface WishlistEdgeNode {
+  entityId: number;
+  name: string;
+  items: {
+    edges: Array<{
+      node: WishlistItem;
+    }>;
+  };
+}
+
+interface WishlistResponse {
+  customer?: {
+    wishlists: {
+      pageInfo: any;
+      edges: Array<{
+        node: WishlistEdgeNode;
+      }>;
+    };
+  };
+}
+
+interface GetWishlistsParams {
+  limit?: number;
+  before?: string;
+  after?: string;
+  filters?: WishlistsFiltersInput;
+}
+
+// Fragments
+const ReviewSummaryFragment = graphql(`
+  fragment ReviewSummaryFragment on Product {
+    reviewSummary {
+      numberOfReviews
+      averageRating
+    }
+  }
+`);
+
+// Main Query
+const WishlistsQuery = graphql(
+  `
+    query WishlistsQuery(
+      $filters: WishlistFiltersInput
+      $after: String
+      $before: String
+      $first: Int
+      $last: Int
+    ) {
+      customer {
+        wishlists(filters: $filters, after: $after, before: $before, first: $first, last: $last) {
+          pageInfo {
+            ...PaginationFragment
+          }
+          edges {
+            node {
+              entityId
+              name
+              items(first: 50) {
+                edges {
+                  node {
+                    entityId
+                    productEntityId
+                    variantEntityId
+                    product {
+                      entityId
+                      brand {
+                        entityId
+                        name
+                        path
+                      }
+                      categories {
+                        edges {
+                          node {
+                            entityId
+                            name
+                            ...BreadcrumbsFragment
+                          }
+                        }
+                      }
+                      availabilityV2 {
+                        status
+                        description
+                      }
+                      name
+                      sku
+                      mpn
+                      path
+                      ...ReviewSummaryFragment
+                      variants {
+                        edges {
+                          node {
+                            entityId
+                            sku
+                            mpn
+                            options {
+                              edges {
+                                node {
+                                  displayName
+                                  entityId
+                                  isRequired
+                                }
+                              }
+                            }
+                            defaultImage {
+                              url(width: 100)
+                              altText
+                            }
+                            prices {
+                              price {
+                                value
+                                currencyCode
+                              }
+                              basePrice {
+                                value
+                                currencyCode
+                              }
+                              salePrice {
+                                value
+                                currencyCode
+                              }
+                            }
+                          }
+                        }
+                      }
+                      defaultImage {
+                        url(width: 300)
+                        altText
+                      }
+                      prices {
+                        price {
+                          value
+                          currencyCode
+                        }
+                        basePrice {
+                          value
+                          currencyCode
+                        }
+                        salePrice {
+                          value
+                          currencyCode
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  [PaginationFragment, BreadcrumbsFragment, ReviewSummaryFragment],
+);
+
+// Types
+type WishlistsVariables = VariablesOf<typeof WishlistsQuery>;
+type WishlistsFiltersInput = WishlistsVariables['filters'];
+
+// Helper Functions
+function transformWishlistData(data: WishlistResponse) {
+  return {
+    pageInfo: data.customer?.wishlists.pageInfo,
+    wishlists: removeEdgesAndNodes(data.customer?.wishlists).map((wishlist: WishlistEdgeNode) => ({
+      ...wishlist,
+      items: removeEdgesAndNodes(wishlist.items).map((item: WishlistItem) => ({
+        ...item,
+        product: {
+          ...item.product,
+          variants: item.product.variants
+            ? removeEdgesAndNodes(item.product.variants).map((variant: ProductVariant) => ({
+                ...variant,
+                options: variant.options ? removeEdgesAndNodes(variant.options) : [],
+              }))
+            : [],
+        },
+      })),
+    })),
+  };
+}
+
+// Main Export Function
+export const getWishlists = cache(
+  async ({ limit = 3, before, after, filters }: GetWishlistsParams) => {
+    try {
+      const customerAccessToken = await getSessionCustomerAccessToken();
+      const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+
+      const response = await client.fetch({
+        document: WishlistsQuery,
+        variables: { filters, ...paginationArgs },
+        customerAccessToken,
+        fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      });
+
+      const data = response.data as WishlistResponse;
+
+      if (!data?.customer) {
+        return undefined;
+      }
+
+      return transformWishlistData(data);
+    } catch (error) {
+      console.error('Error in getWishlists:', error);
+      return undefined;
+    }
+  },
+);
+
+// Type Exports
+export type {
+  WishlistItem,
+  WishlistResponse,
+  GetWishlistsParams,
+  Product,
+  ProductVariant,
+  VariantOption,
+  OptionValue,
+  PriceData,
 };
