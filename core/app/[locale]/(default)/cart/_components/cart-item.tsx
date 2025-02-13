@@ -413,19 +413,19 @@ export const CartItem = async ({
                       </p>
                       {changeTheProtectedPosition?.map((selectedOption: any, index: number) => {
                         let pipeLineData = '';
-                        if (index < changeTheProtectedPosition.length - 2) {
+                        if (index < changeTheProtectedPosition.length - 1) {
                           pipeLineData = '|';
                         }
                         let displayValue = selectedOption.value;
-                        if (selectedOption.name === 'Select Fabric Color') {
-                          displayValue = selectedOption.value.split('|')[0];
+                        if (selectedOption.name === 'Fabric Color') {
+                          displayValue = selectedOption.value.split('|')[0]?.trim();
                         }
                         switch (selectedOption.__typename) {
                           case 'CartSelectedMultipleChoiceOption':
                             return (
                               <div key={selectedOption.entityId} className="inline">
                                 <span className="text-left text-[0.875rem] font-bold leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                  {selectedOption?.name}:
+                                  {`${selectedOption?.name}: `}
                                 </span>
                                 <span className="ml-1.5 mr-1.5 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#7F7F7F]">
                                   {displayValue}
@@ -442,7 +442,7 @@ export const CartItem = async ({
                             return (
                               <div key={selectedOption.entityId} className="inline">
                                 <span className="text-left text-[0.875rem] font-bold leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                  {selectedOption?.name}:
+                                {`${selectedOption?.name}: `}
                                 </span>
                                 <span className="ml-1.5 mr-1.5 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#7F7F7F]">
                                   {displayValue}
@@ -459,7 +459,7 @@ export const CartItem = async ({
                           case 'CartSelectedNumberFieldOption':
                             return (
                               <div key={selectedOption.entityId} className="inline">
-                                <span className="font-semibold">{selectedOption?.name}:</span>
+                                <span className="font-semibold"> {`${selectedOption?.name}: `}</span>
                                 <span>{selectedOption?.number}</span>
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
@@ -473,7 +473,7 @@ export const CartItem = async ({
                           case 'CartSelectedTextFieldOption':
                             return (
                               <div key={selectedOption.entityId} className="flex items-center">
-                                <span className="font-semibold">{selectedOption?.name}:</span>
+                                <span className="font-semibold"> {`${selectedOption?.name}: `}</span>
                                 <span>{selectedOption?.text}</span>
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
@@ -486,7 +486,7 @@ export const CartItem = async ({
                           case 'CartSelectedDateFieldOption':
                             return (
                               <div key={selectedOption?.entityId} className="flex items-center">
-                                <span className="font-semibold">{selectedOption?.name}:</span>
+                                <span className="font-semibold"> {`${selectedOption?.name}: `}</span>
                                 <span>{format.dateTime(new Date(selectedOption?.date.utc))}</span>
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
@@ -541,10 +541,10 @@ export const CartItem = async ({
                     </div>
                   ) : (
                     <div className="mb-0">
-                      {product?.UpdatePriceForMSRP &&
+                      {product?.UpdatePriceForMSRP && product?.listPrice &&
                         (product?.UpdatePriceForMSRP?.warrantyApplied ? (
                           <p className="text-left sm:text-right">
-                            {format.number(product.UpdatePriceForMSRP.updatedPrice, {
+                            {format.number(product.listPrice.value, {
                               style: 'currency',
                               currency: currencyCode,
                             })}
@@ -552,7 +552,7 @@ export const CartItem = async ({
                         ) : product?.UpdatePriceForMSRP.hasDiscount === true ? (
                           <>
                             <p className="text-left sm:text-right">
-                              {format.number(product.UpdatePriceForMSRP.updatedPrice, {
+                              {format.number(product.listPrice.value, {
                                 style: 'currency',
                                 currency: currencyCode,
                               })}
@@ -610,7 +610,7 @@ export const CartItem = async ({
           {product?.updatedAccessories &&
             product?.updatedAccessories?.map((item: any, index: number) => {
               let oldPriceAccess = item?.UpdatePriceForMSRP?.originalPrice;
-              let salePriceAccess = item?.UpdatePriceForMSRP?.updatedPrice;
+              let salePriceAccess = item?.listPrice.value;
               let discountedPrice: any = Number(
                 100 - (salePriceAccess * 100) / oldPriceAccess,
               )?.toFixed(2);
@@ -637,7 +637,7 @@ export const CartItem = async ({
                         <div className="flex flex-wrap items-center gap-[0px_10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                           {item?.UpdatePriceForMSRP?.originalPrice &&
                           item?.UpdatePriceForMSRP?.originalPrice !==
-                            item?.UpdatePriceForMSRP?.updatedPrice ? (
+                            item?.listPrice ? (
                             <p className="flex items-center tracking-[0.25px] line-through">
                               {format.number(oldPriceAccess * item.quantity, {
                                 style: 'currency',
