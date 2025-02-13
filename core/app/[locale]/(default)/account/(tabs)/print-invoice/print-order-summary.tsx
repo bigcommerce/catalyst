@@ -233,6 +233,10 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
                                 <div className="font-bold text-[14px] leading-[24px] tracking-[0.25px] text-[#7f7f7f]">
                                   <span>SKU: ABC-1234DE</span>{' '}
                                   {shipment?.productOptions?.map(({ name: optionName, value }, idx) => {
+                                    const updatedValue =
+                                    optionName === 'Select Fabric Color'
+                                      ? value.split('|')[0]
+                                      : value;
                                     return (
                                       <>
                                         <span className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7F7F7F]" key={idx}>
@@ -240,7 +244,7 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
                                         </span>
                                         <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                                           {' '}
-                                          {value}
+                                          {updatedValue}
                                         </span>
                                       </>
                                     );

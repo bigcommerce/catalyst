@@ -416,6 +416,10 @@ export const CartItem = async ({
                         if (index < changeTheProtectedPosition.length - 2) {
                           pipeLineData = '|';
                         }
+                        let displayValue = selectedOption.value;
+                        if (selectedOption.name === 'Select Fabric Color') {
+                          displayValue = selectedOption.value.split('|')[0];
+                        }
                         switch (selectedOption.__typename) {
                           case 'CartSelectedMultipleChoiceOption':
                             return (
@@ -424,7 +428,7 @@ export const CartItem = async ({
                                   {selectedOption?.name}:
                                 </span>
                                 <span className="ml-1.5 mr-1.5 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#7F7F7F]">
-                                  {selectedOption?.value}
+                                  {displayValue}
                                 </span>
 
                                 {pipeLineData && (
@@ -441,7 +445,7 @@ export const CartItem = async ({
                                   {selectedOption?.name}:
                                 </span>
                                 <span className="ml-1.5 mr-1.5 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#7F7F7F]">
-                                  {selectedOption?.value}
+                                  {displayValue}
                                 </span>
 
                                 {pipeLineData && (
