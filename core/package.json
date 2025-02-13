@@ -27,6 +27,7 @@
     "@conform-to/react": "^1.2.2",
     "@conform-to/zod": "^1.2.2",
     "@datadog/browser-rum": "^6.1.0",
+    "@google-pay/button-react": "^3.1.0",
     "@icons-pack/react-simple-icons": "^10.2.0",
     "@makeswift/runtime": "^0.23.1",
     "@neondatabase/serverless": "^0.10.4",
