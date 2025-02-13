@@ -113,7 +113,7 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
           description: "Agent Email and Name Information",
           value: JSON.stringify(storedAgentInfo),
         };
-        var createMF=await CreateCartMetaFields(CustomerCartId, cartMeta)        
+        await CreateCartMetaFields(CustomerCartId, cartMeta);     
         localStorage.setItem(
           'cart_lookup_sessionID_agent',
           JSON.stringify({

@@ -231,20 +231,26 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
                                   {shipment?.name}
                                 </div>
                                 <div className="font-bold text-[14px] leading-[24px] tracking-[0.25px] text-[#7f7f7f]">
-                                  <span>SKU: ABC-1234DE</span>{' '}
+                                  <span>SKU: ABC-1234DE</span>
                                   {shipment?.productOptions?.map(({ name: optionName, value }, idx) => {
+                                     let pipeLineData = ' | ';
+                                    if (idx === shipment?.productOptions.length - 1) {
+                                      pipeLineData = '';
+                                    }
                                     const updatedValue =
-                                    optionName === 'Select Fabric Color'
-                                      ? value.split('|')[0]
+                                    optionName === 'Fabric Color'
+                                      ? value.split('|')[0].trim()
                                       : value;
                                     return (
                                       <>
                                         <span className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7F7F7F]" key={idx}>
-                                          {optionName}
+                                        {`${optionName}: `}
                                         </span>
                                         <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
-                                          {' '}
                                           {updatedValue}
+                                        </span>
+                                        <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                                          {pipeLineData}
                                         </span>
                                       </>
                                     );
