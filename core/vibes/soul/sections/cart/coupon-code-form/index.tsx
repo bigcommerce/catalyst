@@ -56,12 +56,6 @@ export function CouponCodeForm({
       if (submission.status !== 'success') return prevState;
 
       switch (submission.value.intent) {
-        case 'apply': {
-          const { couponCode } = submission.value;
-
-          return [couponCode];
-        }
-
         case 'delete': {
           return [];
         }
@@ -92,7 +86,7 @@ export function CouponCodeForm({
   });
 
   return (
-    <div className="space-y-3 border-t border-contrast-100 pb-5 pt-4">
+    <div className="space-y-2 border-t border-contrast-100 pb-5 pt-4">
       <form {...getFormProps(form)} action={formAction} className="space-y-2">
         <label htmlFor={fields.couponCode.id}>{label}</label>
         <div className="flex gap-1.5">
@@ -110,22 +104,24 @@ export function CouponCodeForm({
           <SubmitButton disabled={disabled}>{ctaLabel}</SubmitButton>
         </div>
       </form>
-      <div className="flex flex-wrap gap-1.5">
-        {optimisticCouponCodes.map((couponCode) => (
-          <CouponChip
-            action={formAction}
-            couponCode={couponCode}
-            key={couponCode}
-            onSubmit={(formData) => {
-              startTransition(() => {
-                formAction(formData);
-                setOptimisticCouponCodes(formData);
-              });
-            }}
-            removeLabel={removeLabel}
-          />
-        ))}
-      </div>
+      {optimisticCouponCodes.length > 0 && (
+        <div className="flex flex-wrap gap-1.5">
+          {optimisticCouponCodes.map((couponCode) => (
+            <CouponChip
+              action={formAction}
+              couponCode={couponCode}
+              key={couponCode}
+              onSubmit={(formData) => {
+                startTransition(() => {
+                  formAction(formData);
+                  setOptimisticCouponCodes(formData);
+                });
+              }}
+              removeLabel={removeLabel}
+            />
+          ))}
+        </div>
+      )}
       {form.errors?.map((error, index) => <FieldError key={index}>{error}</FieldError>)}
     </div>
   );
