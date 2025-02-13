@@ -64,6 +64,7 @@ export const createSessionIdCookie = async (localMachineInformation: any, fullUr
   const CartId = cookieStore.get('cartId');
   const refferalId = cookieStore.get('referrerId');
   const getCustomerData = await getSessionUserDetails();
+  
   let response = null;
   if (getCustomerData?.user?.email) {
     response = await findCustomerDetails({

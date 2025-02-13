@@ -537,10 +537,10 @@ export const CartItem = async ({
                     </div>
                   ) : (
                     <div className="mb-0">
-                      {product?.UpdatePriceForMSRP &&
+                      {product?.UpdatePriceForMSRP && product?.listPrice &&
                         (product?.UpdatePriceForMSRP?.warrantyApplied ? (
                           <p className="text-left sm:text-right">
-                            {format.number(product.UpdatePriceForMSRP.updatedPrice, {
+                            {format.number(product.listPrice.value, {
                               style: 'currency',
                               currency: currencyCode,
                             })}
@@ -548,7 +548,7 @@ export const CartItem = async ({
                         ) : product?.UpdatePriceForMSRP.hasDiscount === true ? (
                           <>
                             <p className="text-left sm:text-right">
-                              {format.number(product.UpdatePriceForMSRP.updatedPrice, {
+                              {format.number(product.listPrice.value, {
                                 style: 'currency',
                                 currency: currencyCode,
                               })}
@@ -606,7 +606,7 @@ export const CartItem = async ({
           {product?.updatedAccessories &&
             product?.updatedAccessories?.map((item: any, index: number) => {
               let oldPriceAccess = item?.UpdatePriceForMSRP?.originalPrice;
-              let salePriceAccess = item?.UpdatePriceForMSRP?.updatedPrice;
+              let salePriceAccess = item?.listPrice?.value;
               let discountedPrice: any = Number(
                 100 - (salePriceAccess * 100) / oldPriceAccess,
               )?.toFixed(2);
@@ -633,9 +633,9 @@ export const CartItem = async ({
                         <div className="flex flex-wrap items-center gap-[0px_10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                           {item?.UpdatePriceForMSRP?.originalPrice &&
                           item?.UpdatePriceForMSRP?.originalPrice !==
-                            item?.UpdatePriceForMSRP?.updatedPrice ? (
+                          item?.listPrice?.value ? (
                             <p className="flex items-center tracking-[0.25px] line-through">
-                              {format.number(oldPriceAccess * item.quantity, {
+                                {format.number(oldPriceAccess * item.quantity, {
                                 style: 'currency',
                                 currency: currencyCode,
                               })}

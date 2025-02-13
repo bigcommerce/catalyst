@@ -430,54 +430,61 @@ export const calculateProductPrice = async (
       discount = 0;
     }
 
-    if (type === "pdp") {
+    if (type === 'pdp') {
       if (warrantyPrice.value > updatedPrice) {
         updatedPrice = warrantyPrice.value;
-        warrantyApplied=true; 
+        warrantyApplied = true;
       }
-    }else if(type === "cart") {
-      if (listPrice.value > updatedPrice) {
+    } else if (type === 'cart') {
+      if (listPrice?.value >= updatedPrice) {
         updatedPrice = listPrice.value;
-        warrantyApplied=true;
+        warrantyApplied = listPrice.value > updatedPrice;
       }
     }
 
     hasDiscount = discount > 0;
-
-    discountRules.forEach(
-      (rule: {
-        amount: string;
-        type: string;
-        category_id: string;
-        method: string;
-        product_id: string;
-      }) => {
-        let amount = Math.round(parseInt(rule.amount, 10));
-        if (
-          rule.type === 'category' &&
-          rule.category_id &&
-          categoryIds?.some((id: number) => id === parseInt(rule.category_id, 10))
-        ) {
-          if (rule.method === 'price') {
-            updatedPrice -= amount;
-          } else if (rule.method === 'percent') {
-            updatedPrice -= (updatedPrice * amount) / 100;
-          }
-        } else if (
-          rule.type === 'product' &&
-          rule.product_id &&
-          productId === parseInt(rule.product_id, 10)
-        ) {
-          if (rule.method === 'price') {
-            updatedPrice -= amount;
-          } else if (rule.method === 'percent') {
-            updatedPrice -= (updatedPrice * amount) / 100;
-          }
-        }
-        discount = Math.round(((originalPrice - updatedPrice) / originalPrice) * 100);
-        hasDiscount = originalPrice > updatedPrice;
-      },
-    );
+    if (
+      discountRules &&
+      Array.isArray(discountRules) &&
+      discountRules.length > 0 &&
+      type !== 'cart'
+    ){
+ discountRules?.forEach(
+   (rule: {
+     amount: string;
+     type: string;
+     category_id: string;
+     method: string;
+     product_id: string;
+   }) => {
+     let amount = Math.round(parseInt(rule.amount, 10));
+     if (
+       rule.type === 'category' &&
+       rule.category_id &&
+       categoryIds?.some((id: number) => id === parseInt(rule.category_id, 10))
+     ) {
+       if (rule.method === 'price') {
+         updatedPrice -= amount;
+       } else if (rule.method === 'percent') {
+         updatedPrice -= (updatedPrice * amount) / 100;
+       }
+     } else if (
+       rule.type === 'product' &&
+       rule.product_id &&
+       productId === parseInt(rule.product_id, 10)
+     ) {
+       if (rule.method === 'price') {
+         updatedPrice -= amount;
+       } else if (rule.method === 'percent') {
+         updatedPrice -= (updatedPrice * amount) / 100;
+       }
+     }
+     discount = Math.round(((originalPrice - updatedPrice) / originalPrice) * 100);
+     hasDiscount = originalPrice > updatedPrice;
+   },
+ );
+    }
+     
 
     // Creating the final object
     const convertedObject = {

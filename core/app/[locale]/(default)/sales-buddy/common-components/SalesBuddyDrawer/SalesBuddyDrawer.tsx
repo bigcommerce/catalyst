@@ -44,7 +44,7 @@ export default function DrawerModal({
         </div>
 
         {/* Modal Content */}
-        <div className="bg-[#f3f4f5] px-[20px] py-[40px]">{children}</div>
+        <div className="bg-[#f3f4f5] px-[20px] ">{children}</div>
       </div>
     </div>
   );
