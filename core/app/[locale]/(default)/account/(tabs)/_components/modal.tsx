@@ -45,7 +45,7 @@ export const Modal = ({
             <DialogPrimitive.Cancel asChild>
               <Button className="ms-auto w-min p-2" type="button" variant="subtle">
                 <X>
-                  <title>{abortText}</title>
+                  <title>{cancelText}</title>
                 </X>
               </Button>
             </DialogPrimitive.Cancel>
