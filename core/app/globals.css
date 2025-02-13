@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('@alto-avios/alto-tokens/web-ssr/avios/light.css');
+@import url('@alto-avios/alto-tokens/web-ssr/avios/dark.css');
+@import url('@alto-avios/alto-tokens/web-ssr/avios/fonts.css');
+
 :root {
   --primary: 96 100% 68%;
   --accent: 96 100% 88%;
@@ -16,6 +20,8 @@
   --contrast-300: 0 0% 70%;
   --contrast-400: 0 0% 54%;
   --contrast-500: 0 0% 34%;
+  --font-family-body: 'Poppins';
+  --font-family-heading: 'Bw Mitga';
   --font-variation-settings-body: 'slnt' 0;
   --font-variation-settings-heading: 'slnt' 0;
   --font-size-xs: 0.75rem;
