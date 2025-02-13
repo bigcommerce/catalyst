@@ -445,7 +445,7 @@ export const EditAddressForm = ({
 
         <div className="mt-8 flex flex-col justify-stretch gap-2 md:flex-row md:justify-between md:gap-0">
           <FormSubmit asChild>
-            <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
+            <SubmitButton messages={{ submit: t('save'), submitting: t('submitting') }} />
           </FormSubmit>
           <Button asChild className="items-center px-8 md:ms-6 md:w-fit" variant="secondary">
             <Link href="/account/addresses">{t('cancel')}</Link>
