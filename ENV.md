@@ -19,6 +19,8 @@ Follow the instructions here:
 
 ## Clone the Repository
 
+**Make sure you are using Node v20.x.x**
+
 Clone the repository and navigate into your project folder:
 
 ```sh
@@ -66,20 +68,31 @@ Until we connect to the WF Store, use the test store. Contact the Software Dev t
 
 ## Configuration
 
-This process will create an `.env.local` file. Copy it to the `core` directory:
+This process will create an `.env.local` file.
+
+Next build the monprepo environment. This builds the graphql client, schema and some dist files used in the application
 
 ```sh
-cp .env.local ./core
+pnpm run build
 ```
 
-Navigate to the `core` directory and start the local development server:
+Navigate to the `core` directory and start the local SST development environment:
 
 ```sh
 cd core
-pnpm run sst:dev
 ```
 
-This runs a local instance of Catalyst pointing to our test storefront.
+Then on first development server run add the `--set-secrets` flag
+
+```sh
+npm run sst:dev --set-secrets
+```
+
+This will read the .env.local file created earlier and with the SST Secrets feature <https://sst.dev/docs/component/secret> to prevent environment variables being passed in via deploy commands.
+
+Subsequent server starts you can omit the `--set-secrets` flag.
+
+The SST console will run in the terminal and allows local development while using cloud features of your app.
 
 ## Deploy Ephemeral environment to AWS
 
