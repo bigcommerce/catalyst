@@ -25,7 +25,6 @@ import { cn } from '~/lib/utils';
 
 import { Open_Sans, Roboto_Mono } from 'next/font/google';
 
-import Script from 'next/script';
 import { SiteVibesIntegration } from '~/belami/components/sitevibes';
 import { SiteVibesJS } from '~/belami/components/sitevibes/sitevibes-js';
 import { DatadogInit } from '~/belami/components/datadog';
