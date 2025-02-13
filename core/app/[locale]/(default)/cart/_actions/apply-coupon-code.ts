@@ -1,17 +1,11 @@
 'use server';
 
 import { revalidateTag } from 'next/cache';
-import { z } from 'zod';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
-
-const ApplyCouponCodeSchema = z.object({
-  checkoutEntityId: z.string(),
-  couponCode: z.string(),
-});
 
 const ApplyCheckoutCouponMutation = graphql(`
   mutation ApplyCheckoutCouponMutation($applyCheckoutCouponInput: ApplyCheckoutCouponInput!) {
@@ -35,19 +29,13 @@ interface Props {
 export const applyCouponCode = async ({ checkoutEntityId, couponCode }: Props) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  // TODO: parse data from somewhere else?
-  const parsedData = ApplyCouponCodeSchema.parse({
-    checkoutEntityId,
-    couponCode,
-  });
-
   const response = await client.fetch({
     document: ApplyCheckoutCouponMutation,
     variables: {
       applyCheckoutCouponInput: {
-        checkoutEntityId: parsedData.checkoutEntityId,
+        checkoutEntityId,
         data: {
-          couponCode: parsedData.couponCode,
+          couponCode,
         },
       },
     },
