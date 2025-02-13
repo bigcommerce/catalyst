@@ -9,6 +9,7 @@ import { OrderDetailsType } from '~/app/[locale]/(default)/account/(tabs)/order/
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ProductItemFragment, ProductPageQuery } from '~/app/[locale]/(default)/product/[slug]/page-data';
 import { ProductPageSKUQuery } from '~/app/[locale]/(default)/product/[slug]/page-data';
+import { cookies } from 'next/headers';
 
 const ProductMetaFieldsQuery = graphql(
     `
@@ -365,3 +366,7 @@ export const getProductBySku = async (variables: SkuVariables) => {
 
   return data.site.product as any;
 };
+
+export const getCookieData = async() => {
+  return await cookies();
+}
