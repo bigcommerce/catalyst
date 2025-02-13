@@ -639,7 +639,7 @@ export const CartItem = async ({
                           item?.UpdatePriceForMSRP?.originalPrice !==
                             item?.listPrice ? (
                             <p className="flex items-center tracking-[0.25px] line-through">
-                              {format.number(oldPriceAccess * item.quantity, {
+                                {format.number(oldPriceAccess * item.quantity, {
                                 style: 'currency',
                                 currency: currencyCode,
                               })}

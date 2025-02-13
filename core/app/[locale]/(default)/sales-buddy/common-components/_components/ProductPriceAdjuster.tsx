@@ -66,10 +66,7 @@ const PriceEditor = ({
         <button
           className="relative mb-2 w-full rounded bg-[#1DB14B] px-4 py-2 text-white"
           onClick={handleSubmit}
-          disabled={
-            (agentRole === 'agent' || agentRole === null) &&
-            parseFloat(newCost) < initialCost * initialFloor
-          }
+         
         >
           {loading && (
             <div className="absolute inset-0 flex items-center justify-center">
@@ -129,7 +126,8 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
 }) => {
   const [isEditingParent, setIsEditingParent] = useState<boolean>(false);
   const [isEditingAccessory, setIsEditingAccessory] = useState<number | null>(null);
-  const [newCost, setNewCost] = useState<string>('');
+  const [newParentCost, setNewParentCost] = useState<string>('');
+  const [newAccessoryCost, setNewAccessoryCost] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const { agentRole } = useCompareDrawerContext();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -137,12 +135,20 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
 
   useEffect(() => {
     if (!isEditingParent && isEditingAccessory === null) {
-      setNewCost('');
+      setNewParentCost('');
+      setNewAccessoryCost('');
+      setErrorMessage(null);
+    }
+    if (isEditingParent || isEditingAccessory !== null) {
+      setNewParentCost('');
+      setNewAccessoryCost('');
       setErrorMessage(null);
     }
   }, [isEditingParent, isEditingAccessory]);
 
   const handleSubmit = async (isAccessory: boolean = false, accessoryIndex: number = -1) => {
+    const newCost = isAccessory ? newAccessoryCost : newParentCost;
+    
     const numericValue = parseFloat(newCost);
     if (newCost.length > 6) {
       setErrorMessage('Price cannot be more than 6 digits');
@@ -160,7 +166,7 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
       ? accessoriesData[accessoryIndex]?.originalPrice?.value
       : initialCost;
     const floorPrice = currentCost * initialFloor;
-
+    
     if ((agentRole === 'agent' || agentRole === null) && numericValue < floorPrice) {
       setErrorMessage('Price cannot be less than floor price');
       return;
@@ -169,14 +175,15 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
     try {
       setLoading(true);
       const currentSku = isAccessory ? accessoriesData[accessoryIndex].sku : sku;
-      const CheckProductID = isAccessory ? accessoriesData[accessoryIndex].productEntityId : productId
+      const CheckProductID = isAccessory ? accessoriesData[accessoryIndex].productEntityId : productId;
       const res = await updateProductPrice(numericValue, cartId, CheckProductID, ProductType, currentSku);
 
       if (res.status === 200) {
-        setNewCost('');
         if (isAccessory) {
+          setNewAccessoryCost('');
           setIsEditingAccessory(null);
         } else {
+          setNewParentCost('');
           setIsEditingParent(false);
         }
         router.refresh();
@@ -190,10 +197,15 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
     }
   };
 
-  const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleCostChange = (e: React.ChangeEvent<HTMLInputElement>, isAccessory: boolean = false) => {
+    
     const value = e.target.value;
     if (/^\d*\.?\d*$/.test(value)) {
-      setNewCost(value);
+      if (isAccessory) {
+        setNewAccessoryCost(value);
+      } else {
+        setNewParentCost(value);
+      }
       setErrorMessage(null);
     }
   };
@@ -219,8 +231,8 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
         <PriceEditor
           isEditing={isEditingParent}
           setIsEditing={setIsEditingParent}
-          newCost={newCost}
-          handleCostChange={handleCostChange}
+          newCost={newParentCost}
+          handleCostChange={(e) => handleCostChange(e, false)}
           errorMessage={errorMessage}
           handleSubmit={() => handleSubmit(false)}
           loading={loading}
@@ -252,8 +264,8 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
                 <PriceEditor
                   isEditing={isEditingAccessory === index}
                   setIsEditing={(value) => setIsEditingAccessory(value ? index : null)}
-                  newCost={newCost}
-                  handleCostChange={handleCostChange}
+                  newCost={newAccessoryCost}
+                  handleCostChange={(e) => handleCostChange(e, true)}
                   errorMessage={errorMessage}
                   handleSubmit={() => handleSubmit(true, index)}
                   loading={loading}
