@@ -15,7 +15,7 @@ interface Props extends PropsWithChildren {
 }
 
 export const Modal = ({
-  abortText = 'Cancel',
+  abortText,
   actionHandler,
   confirmationText = 'OK',
   descriptionText,
@@ -23,7 +23,7 @@ export const Modal = ({
   children,
 }: Props) => {
   const id = useId();
-
+  const cancelText = abortText || 'Cancel';
   return (
     <DialogPrimitive.Root>
       <DialogPrimitive.Trigger aria-controls={id} asChild>
@@ -37,8 +37,9 @@ export const Modal = ({
           className="data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] w-full translate-x-[-50%] translate-y-[-50%] bg-white shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none sm:w-11/12 md:w-8/12 lg:w-6/12 xl:w-5/12"
           id={id}
         >
-          <div className="flex justify-between gap-4 p-6">
-            <DialogPrimitive.Title className="w-5/6 grow font-semibold">
+        <div className="flex justify-center gap-2 p-4">
+
+            <DialogPrimitive.Title className="w-5/6 grow text-center font-semibold">
               {title}
             </DialogPrimitive.Title>
             <DialogPrimitive.Cancel asChild>
@@ -54,9 +55,9 @@ export const Modal = ({
             <DialogPrimitive.Description>{descriptionText}</DialogPrimitive.Description>
           )}
 
-          <div className="flex flex-col gap-2 p-6 lg:flex-row lg:gap-4">
+          <div className="flex flex-col items-center justify-center gap-2 p-4 lg:flex-row lg:gap-4">
             <DialogPrimitive.Action asChild>
-              <Button className="w-full px-2.5 lg:w-auto" onClick={actionHandler} variant="primary">
+              <Button className="w-full px-2.5 lg:w-auto bg-[#008BB7] " onClick={actionHandler} variant="primary">
                 <Trash2 size={16} className="mr-[5px]" />
                 {confirmationText}
               </Button>
@@ -64,7 +65,7 @@ export const Modal = ({
 
             <DialogPrimitive.Cancel asChild>
               <Button className="w-full px-2.5 lg:w-auto" variant="subtle">
-                {abortText}
+                {cancelText}
               </Button>
             </DialogPrimitive.Cancel>
           </div>

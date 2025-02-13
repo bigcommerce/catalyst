@@ -73,8 +73,9 @@ const AddressChangeButtons = ({ addressId, isAddressRemovable, onDelete }: Addre
     </Button>
     <Modal
       actionHandler={handleDeleteAddress}
-      confirmationText={t('confirmDeleteAddress')}
+      confirmationText={t('yesDelete')}
       title={t('deleteModalTitle')}
+ abortText= {t('noDelete')}
     >
       <Button
         className="flex items-center justify-center gap-2 rounded-md bg-[#03465c] px-4 py-2 text-sm font-medium uppercase leading-6 tracking-wider text-white hover:bg-[#03465c]/90 sm:w-auto"
@@ -115,7 +116,7 @@ export const AddressBook = ({
         </Message>
       )}
       
-      <div className=" gap-[30px]">
+      <div className=" gap-[30px] px-4 py-3">
       {!addressesCount && <p className="border-t py-12 text-center">{t('emptyAddresses')}</p>}
       <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {addressBook.map(

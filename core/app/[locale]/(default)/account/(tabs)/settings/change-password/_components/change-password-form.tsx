@@ -124,6 +124,16 @@ export const ChangePasswordForm = () => {
         // isLoggedIn:false
       });
     }
+
+
+    if (state.status === 'error') {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+    }
+   
+
   }, [state, setAccountState, t]);
 
   let messageText = '';
