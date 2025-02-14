@@ -203,6 +203,7 @@ export default async function ProductPage(props: Props) {
       product.productOptions?.edges?.some((option: any) => option.node.isVariantOption) || false;
 
     let variantMetaFields: MetaField[] = [];
+    let variantMetaFields1: MetaField[] = [];
     const variants = product.variants.edges?.map((edge: any) => edge.node) || [];
 
     // Determine `selectedVariantId`
@@ -216,7 +217,30 @@ export default async function ProductPage(props: Props) {
         selectedVariantId,
         '',
       );
+      variantMetaFields1 = await GetProductVariantMetaFields(
+        product.entityId,
+        selectedVariantId,
+        'product_images',
+      );
     }
+    const valueString = variantMetaFields1[0]?.value;
+    const baseURL = "https://imgprd.1stoplighting.com";
+    let extractedImagePairs:any
+// Step 2: Parse the "value" field as JSON
+if (valueString) {
+    try {
+        const imageData = JSON.parse(valueString);
+
+        // Step 3: Extract URL and Alt text pairs
+        const extractedPairs = imageData?.map(item => ({
+            src: `${baseURL}${item.url}`,
+            altText: item.alt_text || "" // Handle empty alt_text
+        }));
+        extractedImagePairs=extractedPairs
+    } catch (error) {
+        console.error("Error parsing JSON:", error);
+    }
+}
 
     // Function to extract nsoid or upid
     const extractIdentifier = (fields: MetaField[]) => {
@@ -340,6 +364,7 @@ export default async function ProductPage(props: Props) {
                       bannerIcon={assets.bannerIcon}
                       galleryExpandIcon={assets.galleryExpandIcon}
                       productMpn={product.mpn}
+                      extractedImagePairs={extractedImagePairs}
                     />
                   </Suspense>
                 </div>
