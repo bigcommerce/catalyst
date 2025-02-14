@@ -195,7 +195,7 @@ export const MultipleChoiceField = ({
           onClick={() => setShowAll(false)}
           className="show-all view-more-button view-all w-full rounded-[50px] !p-[0.4rem] !py-[0px] text-center text-[14px] font-medium leading-[24px] tracking-[0.25px] text-[#008BB7] !shadow-none xl:mt-3"
         >
-          View Less
+          Show Fewer
         </button>
       )}
     </div>

@@ -316,10 +316,15 @@ export const Details = ({
                                   const selectedValue = getSelectedValue(
                                     option as MultipleChoiceOption,
                                   );
+                                  const displayValue = option.displayName === 'Fabric Color' 
+                                  ? selectedValue.split('|')[0]?.trim()
+                                  : selectedValue;
+                                  console.log("sticky--",displayValue);
+                                  
                                   return (
                                     <span key={option.entityId}>
                                       <span className="font-bold">{option.displayName}:</span>
-                                      <span className="text-[15px]"> {selectedValue}</span>
+                                      <span className="text-[15px]"> {displayValue}</span>
                                       {index < filteredArray.length - 1 && (
                                         <span className="mx-1">|</span>
                                       )}

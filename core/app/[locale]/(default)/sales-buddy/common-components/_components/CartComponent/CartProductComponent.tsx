@@ -110,7 +110,7 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
                     </p>
                     {changeTheProtectedPosition?.map((selectedOption: any, index: number) => {
                       let pipeLineData = '';
-                      if (index < changeTheProtectedPosition.length - 2) {
+                      if (index < changeTheProtectedPosition.length - 1) {
                         pipeLineData = '|';
                       }
                       switch (selectedOption.__typename) {
@@ -118,7 +118,7 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
                           return (
                             <div key={selectedOption.entityId} className="flex items-center">
                               <span className="text-left text-[0.875rem] font-bold leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                {selectedOption?.name}:
+                              {`${selectedOption?.name}: `}
                               </span>
                               <span className="ml-1.5 mr-1.5 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#7F7F7F]">
                                 {selectedOption?.value}
@@ -136,7 +136,7 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
                           return (
                             <div key={selectedOption.entityId} className="flex items-center">
                               <span className="text-left text-[0.875rem] font-bold leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                {selectedOption?.name}:
+                              {`${selectedOption?.name}: `}
                               </span>
                               <span className="ml-1.5 mr-1.5 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#7F7F7F]">
                                 {selectedOption?.value}
@@ -154,7 +154,7 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
                         case 'CartSelectedNumberFieldOption':
                           return (
                             <div key={selectedOption.entityId} className="flex items-center">
-                              <span className="font-semibold">{selectedOption?.name}:</span>
+                              <span className="font-semibold"> {`${selectedOption?.name}: `}</span>
                               <span>{selectedOption?.number}</span>
                               {pipeLineData && (
                                 <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
@@ -169,7 +169,7 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
                         case 'CartSelectedTextFieldOption':
                           return (
                             <div key={selectedOption.entityId} className="flex items-center">
-                              <span className="font-semibold">{selectedOption?.name}:</span>
+                              <span className="font-semibold"> {`${selectedOption?.name}: `}</span>
                               <span>{selectedOption?.text}</span>
                               {pipeLineData && (
                                 <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
@@ -183,7 +183,7 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
                         case 'CartSelectedDateFieldOption':
                           return (
                             <div key={selectedOption?.entityId} className="flex items-center">
-                              <span className="font-semibold">{selectedOption?.name}:</span>
+                              <span className="font-semibold"> {`${selectedOption?.name}: `}</span>
                               <span>{format.dateTime(new Date(selectedOption?.date.utc))}</span>
                               {pipeLineData && (
                                 <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
