@@ -21,6 +21,7 @@ import { GetProductMetaFields } from '~/components/management-apis';
 import { ReviewSummary } from '~/belami/components/reviews';
 import Image from 'next/image';
 import noImage from '~/public/no-image.svg';
+import { CompareProductDetails } from './_components/compare-product-details';
 
 interface MetaField {
   key: string;
@@ -125,6 +126,7 @@ export default async function Compare(props: Props) {
 
   const products = removeEdgesAndNodes(data.site.products).map((product) => ({
     ...product,
+    metafields: [],
     productOptions: removeEdgesAndNodes(product.productOptions),
   }));
 
@@ -140,6 +142,7 @@ export default async function Compare(props: Props) {
 
     products.map((product: any) => {
       const productMetaFields = metafields[product.entityId] ?? null;
+      product.metafields = productMetaFields;
 
       // Process Review Ratings
       const averageRatingMetaField = productMetaFields?.find(
@@ -154,13 +157,10 @@ export default async function Compare(props: Props) {
         product.reviewSummary.averageRating = averageRatingMetaField.value ?? 0;
       }
 
-      return {
-        ...product,
-        metafields: productMetaFields,
-      }
+      return product;
     });
   }
-
+ 
   if (!products.length) {
     return (
       <div className="w-full justify-center py-16 align-middle">
@@ -172,6 +172,8 @@ export default async function Compare(props: Props) {
     );
   }
 
+  console.log(products[0]);
+
   return (
     <>
       <h1 className="mb-4 text-2xl lg:mb-0 text-center">
@@ -182,11 +184,12 @@ export default async function Compare(props: Props) {
         <table className="mx-auto w-full max-w-full table-fixed text-base md:w-fit">
           <caption className="sr-only">{t('Table.caption')}</caption>
           <colgroup>
-            <col className="w-80" span={products.length} />
+            <col className="w-80" span={products.length + 1} />
           </colgroup>
 
           <thead>
             <tr>
+              <th className="sr-only" key={0} scope="col">&nbsp;</th>
               {products.map((product) => (
                 <th className="sr-only" key={product.entityId} scope="col">
                   {product.name}
@@ -194,6 +197,7 @@ export default async function Compare(props: Props) {
               ))}
             </tr>
             <tr>
+              <td key={0}></td>
               {products.map((product) => (
                 <td key={product.entityId}>
                   <div className="px-4">
@@ -223,6 +227,7 @@ export default async function Compare(props: Props) {
               ))}
             </tr>
             <tr>
+              <td key={0}></td>
               {products.map((product) => (
                 <td className="px-4 mt-2 text-center" key={product.entityId}>
                   {product.brand?.name}
@@ -230,6 +235,7 @@ export default async function Compare(props: Props) {
               ))}
             </tr>
             <tr>
+              <td key={0}></td>
               {products.map((product) => (
                 <td className="px-4 mt-2 text-center text-base font-medium" key={product.entityId}>
                   <Link href={product.path} className="!inline !text-center !leading-6 !tracking-normal">{product.name}</Link>
@@ -237,9 +243,9 @@ export default async function Compare(props: Props) {
               ))}
             </tr>
             <tr>
+              <td key={0}></td>
               {products.map((product) => (
                 <td className="px-4" key={product.entityId}>
-                  {JSON.stringify(product.reviewSummary)}
                   {product.reviewSummary.numberOfReviews > 0 && (
                     <ReviewSummary
                       numberOfReviews={product.reviewSummary.numberOfReviews}
@@ -250,11 +256,11 @@ export default async function Compare(props: Props) {
                 </td>
               ))}
             </tr>
-
           </thead>
+          <CompareProductDetails products={products} />
         </table>
       </div>
-
+{/*
       <div className="-mx-6 overflow-auto overscroll-x-contain px-4 sm:-mx-10 sm:px-10 lg:-mx-12 lg:px-12">
         <table className="mx-auto w-full max-w-full table-fixed text-base md:w-fit">
           <caption className="sr-only">{t('Table.caption')}</caption>
@@ -489,6 +495,7 @@ export default async function Compare(props: Props) {
           </tbody>
         </table>
       </div>
+*/}
     </>
   );
 }
