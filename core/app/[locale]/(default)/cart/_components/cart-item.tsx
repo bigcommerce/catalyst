@@ -22,9 +22,6 @@ import { CheckProductFreeShipping } from '~/components/management-apis';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { Promotion } from '../../product/[slug]/_components/promotion';
-import { ProductPrice } from '~/belami/components/search/product-price';
-import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
-import { cookies } from 'next/headers';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -335,21 +332,10 @@ export const CartItem = async ({
 
   product = { ...product, updatedAccessories };
 
-  const cookieStore = await cookies();
-  const priceMaxCookie = cookieStore.get('pmx');
-  const priceMaxTriggers = priceMaxCookie?.value
-    ? JSON.parse(atob(priceMaxCookie?.value))
-    : undefined;
-
-  const priceMaxRules =
-    priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
-      ? await getPriceMaxRules(priceMaxTriggers)
-      : null;
-
   const promotions = await getActivePromotions(true);
 
   const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());
-  const categoryIds = product?.categories?.edges?.map((edge:any) => edge.node.entityId) || [];
+  const categoryIds = product?.categories?.edges?.map((edge: any) => edge.node.entityId) || [];
 
   return (
     <li className="mb-[24px] border border-gray-200">
@@ -402,6 +388,16 @@ export const CartItem = async ({
                   </div>
                 )}
 
+                {/* promotion */}
+
+                {/* <Promotion
+                  promotions={promotions}
+                  product_id={product.entityId}
+                  brand_id={brandId}
+                  category_ids={categoryIds}
+                  free_shipping={isFreeShipping}
+                /> */}
+
                 {changeTheProtectedPosition?.length > 0 && (
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2">
                     <div className="cart-options">
@@ -444,7 +440,7 @@ export const CartItem = async ({
                             return (
                               <div key={selectedOption.entityId} className="inline">
                                 <span className="text-left text-[0.875rem] font-bold leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                {`${selectedOption?.name}: `}
+                                  {`${selectedOption?.name}: `}
                                 </span>
                                 <span className="ml-1.5 mr-1.5 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#7F7F7F]">
                                   {displayValue}
@@ -461,7 +457,10 @@ export const CartItem = async ({
                           case 'CartSelectedNumberFieldOption':
                             return (
                               <div key={selectedOption.entityId} className="inline">
-                                <span className="font-semibold"> {`${selectedOption?.name}: `}</span>
+                                <span className="font-semibold">
+                                  {' '}
+                                  {`${selectedOption?.name}: `}
+                                </span>
                                 <span>{selectedOption?.number}</span>
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
@@ -475,7 +474,10 @@ export const CartItem = async ({
                           case 'CartSelectedTextFieldOption':
                             return (
                               <div key={selectedOption.entityId} className="flex items-center">
-                                <span className="font-semibold"> {`${selectedOption?.name}: `}</span>
+                                <span className="font-semibold">
+                                  {' '}
+                                  {`${selectedOption?.name}: `}
+                                </span>
                                 <span>{selectedOption?.text}</span>
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
@@ -488,7 +490,10 @@ export const CartItem = async ({
                           case 'CartSelectedDateFieldOption':
                             return (
                               <div key={selectedOption?.entityId} className="flex items-center">
-                                <span className="font-semibold"> {`${selectedOption?.name}: `}</span>
+                                <span className="font-semibold">
+                                  {' '}
+                                  {`${selectedOption?.name}: `}
+                                </span>
                                 <span>{format.dateTime(new Date(selectedOption?.date.utc))}</span>
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
@@ -518,7 +523,7 @@ export const CartItem = async ({
               <div className="">
                 <div className="cart-deleteIcon relative flex flex-col gap-0 text-right sm:gap-2 md:items-end [&_.cart-item-delete]:absolute [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:sm:static [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0">
                   <RemoveItem currency={currencyCode} product={product} />
-                  {cookie_agent_login_status ? (
+                  {cookie_agent_login_status == true ? (
                     <div className="mb-0">
                       <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
                         {product?.originalPrice.value &&
@@ -530,6 +535,9 @@ export const CartItem = async ({
                             })}
                           </p>
                         ) : null}
+                        {/* <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                          {discountPriceText}
+                        </p> */}
                       </div>
                       <p className="text-left sm:text-right">
                         {format.number(product?.extendedSalePrice?.value, {
@@ -541,63 +549,45 @@ export const CartItem = async ({
                   ) : (
                     <div className="mb-0">
                       {product?.UpdatePriceForMSRP &&
-                        (() => {
-                          const baseSkuMatch = product.sku.match(/(.+?)(?:[A-Z]{2})?$/);
-                          const baseSku = baseSkuMatch ? baseSkuMatch[1] : product.sku;
-
-                          const matchingRule = priceMaxRules?.find(
-                            (r: any) =>
-                              (r.bc_brand_ids &&
-                                (r.bc_brand_ids.includes(
-                                  product?.baseCatalogProduct?.brand?.entityId,
-                                ) ||
-                                  r.bc_brand_ids.includes(
-                                    String(product?.baseCatalogProduct?.brand?.entityId),
-                                  ))) ||
-                              (r.skus && r.skus.some((ruleSku) => ruleSku.includes(baseSku))),
-                          );
-
-                          const priceWithQuantity = (price: number) =>
-                            price * (product.quantity || 1);
-
-                          return (
-                            <ProductPrice
-                              defaultPrice={priceWithQuantity(
-                                product.UpdatePriceForMSRP.originalPrice || 0,
-                              )}
-                              defaultSalePrice={
-                                product?.UpdatePriceForMSRP.hasDiscount
-                                  ? priceWithQuantity(product.UpdatePriceForMSRP.updatedPrice)
-                                  : product?.UpdatePriceForMSRP.warrantyApplied
-                                    ? priceWithQuantity(product.UpdatePriceForMSRP.updatedPrice)
-                                    : null
-                              }
-                              priceMaxRule={matchingRule}
-                              currency={currencyCode}
-                              format={format}
-                              showMSRP={product.UpdatePriceForMSRP.showDecoration}
-                              warrantyApplied={product.UpdatePriceForMSRP.warrantyApplied}
-                              options={{
-                                useAsyncMode: false,
-                                useDefaultPrices: true,
-                              }}
-                              classNames={{
-                                root: 'product-price flex items-center gap-[0.5em] text-center xl:text-left',
-                                newPrice:
-                                  'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                                oldPrice:
-                                  'inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
-                                discount:
-                                  'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
-                                price:
-                                  'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                                msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500',
-                              }}
-                            />
-                          );
-                        })()}
+                        product?.listPrice &&
+                        (product?.UpdatePriceForMSRP?.warrantyApplied ? (
+                          <p className="text-left sm:text-right">
+                            {format.number(product.listPrice.value, {
+                              style: 'currency',
+                              currency: currencyCode,
+                            })}
+                          </p>
+                        ) : product?.UpdatePriceForMSRP.hasDiscount === true ? (
+                          <>
+                            <p className="text-left sm:text-right">
+                              {format.number(product.listPrice.value, {
+                                style: 'currency',
+                                currency: currencyCode,
+                              })}
+                            </p>
+                            <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                              <p className="line-through">
+                                {format.number(product.UpdatePriceForMSRP.originalPrice, {
+                                  style: 'currency',
+                                  currency: currencyCode,
+                                })}
+                              </p>
+                              <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                                {product.UpdatePriceForMSRP.discount}% Off
+                              </p>
+                            </div>
+                          </>
+                        ) : (
+                          <p className="text-left sm:text-right">
+                            {format.number(product.UpdatePriceForMSRP.originalPrice, {
+                              style: 'currency',
+                              currency: currencyCode,
+                            })}
+                          </p>
+                        ))}
                     </div>
                   )}
+
                   <ItemQuantity product={product} />
                 </div>
               </div>
@@ -654,10 +644,9 @@ export const CartItem = async ({
                         <div>{item.name}</div>
                         <div className="flex flex-wrap items-center gap-[0px_10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                           {item?.UpdatePriceForMSRP?.originalPrice &&
-                          item?.UpdatePriceForMSRP?.originalPrice !==
-                            item?.listPrice ? (
+                          item?.UpdatePriceForMSRP?.originalPrice !== item?.listPrice ? (
                             <p className="flex items-center tracking-[0.25px] line-through">
-                                {format.number(oldPriceAccess * item.quantity, {
+                              {format.number(oldPriceAccess * item.quantity, {
                                 style: 'currency',
                                 currency: currencyCode,
                               })}
