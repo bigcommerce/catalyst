@@ -293,7 +293,6 @@ if (valueString) {
       collectionValue,
     );
 
-console.log("pro",product)
     // Process Categories
     const categories = removeEdgesAndNodes(product.categories) as CategoryNode[];
     const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
