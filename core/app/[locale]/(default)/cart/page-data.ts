@@ -136,6 +136,11 @@ const CartPageQuery = graphql(
           entityId
           version
           currencyCode
+          discounts {
+            discountedAmount {
+              ...MoneyFieldsFragment
+            }
+          }
           lineItems {
             physicalItems {
               ...PhysicalItemFragment
@@ -159,9 +164,6 @@ const CartPageQuery = graphql(
           }
           cart {
             currencyCode
-            discountedAmount {
-              ...MoneyFieldsFragment
-            }
           }
           coupons {
             code

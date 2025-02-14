@@ -88,6 +88,14 @@ export default async function Cart() {
     variantEntityId: item.variantEntityId,
   }));
 
+  const discounts = cart.discounts.map((discount) => ({
+    value: `-${format.number(discount.discountedAmount.value, {
+      style: 'currency',
+      currency: cart.currencyCode,
+    })}`,
+    label: t('CheckoutSummary.discounts'),
+  }));
+
   return (
     <>
       <CartComponent
@@ -106,13 +114,7 @@ export default async function Cart() {
                 currency: cart.currencyCode,
               }),
             },
-            {
-              label: t('CheckoutSummary.discounts'),
-              value: `-${format.number(checkout?.cart?.discountedAmount.value ?? 0, {
-                style: 'currency',
-                currency: cart.currencyCode,
-              })}`,
-            },
+            ...discounts,
             checkout?.taxTotal && {
               label: t('CheckoutSummary.tax'),
               value: format.number(checkout.taxTotal.value, {
