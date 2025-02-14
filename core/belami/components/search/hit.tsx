@@ -386,7 +386,7 @@ function RatingCertifications({ data }: any) {
 function AmountUnitValue({ data }: any) {
   const value =
     typeof data === 'string' && (data.includes('{') || data.includes('[')) ? JSON.parse(data) : data;
-  if (typeof data === 'object') {
+  if (typeof value === 'object') {
     const amount: number | null = value && value.amount ? Number(value.amount) : null;
     const unit: string | null = value && value.unit ? value.unit.toLowerCase() : null;
     return <>{amount ? amount + (unit ? ' ' + unit : '') : null}</>;
