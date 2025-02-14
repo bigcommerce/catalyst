@@ -25,10 +25,11 @@ import { cn } from '~/lib/utils';
 
 import { Open_Sans, Roboto_Mono } from 'next/font/google';
 
-import Script from 'next/script';
 import { SiteVibesIntegration } from '~/belami/components/sitevibes';
+import { SiteVibesJS } from '~/belami/components/sitevibes/sitevibes-js';
 import { DatadogInit } from '~/belami/components/datadog';
 import { KlaviyoJS } from '~/belami/components/klaviyo/klaviyo-js';
+import { LiveChat } from '~/belami/components/livechat/livechat';
 
 import '~/lib/makeswift/components';
 import { MakeswiftProvider } from '~/lib/makeswift/provider';
@@ -143,11 +144,7 @@ export default async function RootLayout({ params, children }: Props) {
       </head>
       <body className="flex h-screen min-w-[375px] flex-col">
         <DatadogInit />
-        <Script
-          id="sv-pixel-script"
-          src="https://app.sitevibes.com/js/pixel.js?key=e0feae51-26fd-453a-8e67-f9a1a74c8d69"
-          strategy="afterInteractive"
-        />
+        <SiteVibesJS />
         <Suspense>
           <SiteVibesIntegration />
         </Suspense>
@@ -159,6 +156,7 @@ export default async function RootLayout({ params, children }: Props) {
         </MakeswiftProvider>
         <VercelComponents />
         <KlaviyoJS />
+        <LiveChat />
       </body>
     </html>
   );
