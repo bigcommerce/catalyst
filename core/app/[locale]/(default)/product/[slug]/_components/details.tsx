@@ -11,7 +11,7 @@ import CertificationsAndRatings from '~/components/ui/pdp/belami-certification-r
 import { PayPalPayLater } from '~/components/ui/pdp/belami-payment-pdp';
 import { RequestQuote } from '~/components/ui/pdp/belami-request-a-quote-pdp';
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import { FreeDelivery } from './belami-product-free-shipping-pdp';
+import { DeliveryMessage } from './belami-product-free-shipping-pdp';
 import { ProductForm } from './product-form';
 import { ProductFormFragment } from './product-form/fragment';
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
@@ -27,6 +27,7 @@ import { ProductPrice } from '~/belami/components/search/product-price';
 import { Promotion } from '~/belami/components/search/hit';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import RequestQuoteButton from '../../../sales-buddy/quote/_components/RequestQuoteButton';
+import { CloseOut } from './closeOut';
 
 interface ProductOptionValue {
   entityId: number;
@@ -187,6 +188,7 @@ export const Details = ({
 
   const searchParams = useSearchParams();
   const customFields = removeEdgesAndNodes(product.customFields);
+  console.log(customFields, "custom")
   const productOptions = removeEdgesAndNodes(product.productOptions);
   const variants = removeEdgesAndNodes(product.variants);
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
@@ -518,8 +520,8 @@ export const Details = ({
           </div>
           <ReviewSummary data={product} />
         </div>
-
-        {updatedPriceForMSRP && (
+        <div className = "flex flex-row gap-[10px] items-center justify-center xl:justify-start">
+        {product?.UpdatePriceForMSRP && (
           <ProductPrice
             defaultPrice={updatedPriceForMSRP?.originalPrice || 0}
             defaultSalePrice={
@@ -545,7 +547,7 @@ export const Details = ({
               useDefaultPrices: true,
             }}
             classNames={{
-              root: 'product-price mt-2 flex items-center gap-[0.5em] text-center xl:text-left',
+              root: 'product-price mt-2 flex items-center gap-[0.5em] text-center max-w-fit xl:text-left',
               newPrice:
                 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
               oldPrice:
@@ -557,7 +559,15 @@ export const Details = ({
             }}
           />
         )}
-
+        <div>
+          <CloseOut 
+          entityId={product.entityId} 
+          variantId={selectedVariantId} 
+          isFromPDP={true} 
+          isFromCart={false}
+        />
+        </div>
+        </div>
         <Promotion
           promotions={promotions}
           product_id={productId}
@@ -567,7 +577,7 @@ export const Details = ({
         />
         <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
           {selectedVariantId && (
-            <FreeDelivery
+            <DeliveryMessage
               entityId={product.entityId}
               variantId={selectedVariantId}
               isFromPDP={true}
