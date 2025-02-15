@@ -216,10 +216,6 @@ const WishlistsQuery = graphql(
                                 value
                                 currencyCode
                               }
-                              retailPrice {
-                                value
-                                currencyCode
-                              }
                             }
                           }
                         }
