@@ -281,7 +281,7 @@ export const ProductFlyout = ({
                         pipeLineData = ',';
                       }
                       let displayValue = selectedOption.value;
-                      if (selectedOption.name === 'Fabric Color') {
+                      if (selectedOption.name === "Fabric Color" || "Select Fabric Color") {
                         displayValue = selectedOption.value.split('|')[0].trim();
                       }
                       return (

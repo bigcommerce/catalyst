@@ -398,6 +398,17 @@ export const checkZeroTaxCouponAmount = async (checkoutData: any) => {
   return zeroTaxCoupon;
 };
 
+export const getDiscountPercentage = (originalPrice: any, updatedPrice: any): number => {
+  const originalPriceNum = Number(originalPrice);
+  const updatedPriceNum = Number(updatedPrice);
+
+  if (!isNaN(originalPriceNum) && !isNaN(updatedPriceNum) && originalPriceNum > 0) {
+    return Math.round(((originalPriceNum - updatedPriceNum) / originalPriceNum) * 100);
+  }
+
+  return 0;
+};
+
 export const calculateProductPrice = async (
   products: any,
   type: String,
@@ -433,15 +444,15 @@ export const calculateProductPrice = async (
     if (salePrice && retailPrice) {
       originalPrice = retailPrice * quantity;
       updatedPrice = salePrice * quantity;
-      discount = Math.round(((retailPrice - salePrice) / retailPrice) * 100);
+      discount = getDiscountPercentage(retailPrice, salePrice);
     } else if (retailPrice && basePrice) {
       originalPrice = retailPrice * quantity;
       updatedPrice = basePrice * quantity;
-      discount = Math.round(((retailPrice - basePrice) / retailPrice) * 100);
+      discount = getDiscountPercentage(retailPrice, basePrice);
     } else if (salePrice && basePrice) {
       originalPrice = basePrice * quantity;
       updatedPrice = salePrice * quantity;
-      discount = Math.round(((basePrice - salePrice) / basePrice) * 100);
+      discount = getDiscountPercentage(basePrice, salePrice);
     } else if (basePrice) {
       originalPrice = basePrice * quantity;
       updatedPrice = basePrice * quantity;
@@ -459,43 +470,55 @@ export const calculateProductPrice = async (
         warrantyApplied = listPrice.value > updatedPrice;
       }
     }
-    //hasDiscount = discount > 0;
+
     if (discountRules && Array.isArray(discountRules) && discountRules.length > 0) {
-    discountRules?.forEach(
-      (rule: {
-        amount: string;
-        type: string;
-        category_id: string;
-        method: string;
-        product_id: string;
-      }) => {
-        let amount = Math.round(parseInt(rule.amount, 10));
-        if (
-          rule.type === 'category' &&
-          rule.category_id &&
-          categoryIds?.some((id: number) => id === parseInt(rule.category_id, 10))
-        ) {
-          if (rule.method === 'price') {
-            updatedPrice -= amount;
-          } else if (rule.method === 'percent') {
-            updatedPrice -= (updatedPrice * amount) / 100;
+      discountRules.forEach(
+        (rule: {
+          amount: string;
+          type: string;
+          category_id: string;
+          method: string;
+          product_id: string;
+        }) => {
+          let amount = Math.round(parseInt(rule.amount, 10));
+          if (
+            rule.type === 'category' &&
+            rule.category_id &&
+            categoryIds?.some((id: number) => id === parseInt(rule.category_id, 10))
+          ) {
+            if (rule.method === 'price') {
+              updatedPrice -= amount;
+            } else if (rule.method === 'percent') {
+              updatedPrice -= (updatedPrice * amount) / 100;
+            } else if (rule.method === 'fixed') {
+              updatedPrice = amount;
+            }
+          } else if (
+            rule.type === 'product' &&
+            rule.product_id &&
+            productId === parseInt(rule.product_id, 10)
+          ) {
+            if (rule.method === 'price') {
+              updatedPrice -= amount;
+            } else if (rule.method === 'percent') {
+              updatedPrice -= (updatedPrice * amount) / 100;
+            } else if (rule.method === 'fixed') {
+              updatedPrice = amount;
+            }
+          } else if (rule.type === 'all') {
+            if (rule.method === 'price') {
+              updatedPrice -= amount;
+            } else if (rule.method === 'percent') {
+              updatedPrice -= (updatedPrice * amount) / 100;
+            } else if (rule.method === 'fixed') {
+              updatedPrice = amount;
+            }
           }
-        } else if (
-          rule.type === 'product' &&
-          rule.product_id &&
-          productId === parseInt(rule.product_id, 10)
-        ) {
-          if (rule.method === 'price') {
-            updatedPrice -= amount;
-          } else if (rule.method === 'percent') {
-            updatedPrice -= (updatedPrice * amount) / 100;
-          }
-        }
-        discount = Math.round(((originalPrice - updatedPrice) / originalPrice) * 100);
-        hasDiscount = originalPrice > updatedPrice;
-      },
-    );
-  }
+          discount = getDiscountPercentage(originalPrice, updatedPrice);
+          hasDiscount = originalPrice > updatedPrice;
+        },
+      );
+    }
 
     const convertedObject = {
       UpdatePriceForMSRP: {

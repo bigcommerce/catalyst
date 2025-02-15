@@ -10,15 +10,28 @@ import { Description } from '~/app/[locale]/(default)/product/[slug]/_components
 import { getProductBySku } from '../graphql-apis';
 import { QuickViewGallery } from './Quickviewgallery';
 import { client } from '~/client';
+import { calculateProductPrice } from '../common-functions';
+import { CustomerGroupServer } from '~/belami/components/customergroup/customergroup';
 
 const QuickView = ({ product }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [productInfo, setProductInfo] = useState(product);
+  const [priceUpdatedProduct, setPriceUpdatedProduct] = useState([]);
 
   const openQuickView = async () => {
     const productData = await getProductBySku({
       sku: product?.sku,
     });
+    const categories = productData?.categories;
+    const customerGroupDetails = await CustomerGroupServer();
+    const discountRules = customerGroupDetails?.discount_rules;
+
+    const categoryIds = categories?.edges?.map(
+      (edge: { node: { entityId: any } }) => edge.node.entityId,) || [];
+    
+    const updatedProduct = await calculateProductPrice(productData, "pdp", discountRules, categoryIds);
+
+    setPriceUpdatedProduct(updatedProduct[0]);
     setProductInfo(productData);
     setIsOpen(true);
   };
@@ -85,6 +98,7 @@ const QuickView = ({ product }) => {
                       priceMaxRules={undefined}
                       getAllCommonSettinngsValues={undefined}
                       isFromQuickView ={true}
+                      priceUpdatedProduct={priceUpdatedProduct}
                     />
                   </div>
                   <div className="lg:col-span-2" id="tabsection1">
