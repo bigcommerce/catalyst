@@ -201,7 +201,6 @@ const prodModifierOptionLabel = productSelectedOpt?.filter(item => item?.type ==
                 bc_modifier_id:prodModifierId,
                 bc_modifier_option:prodModifierOptionId,
                 options:prodModifierOptionLabel,
-                Test:optio
               }
             }
 
