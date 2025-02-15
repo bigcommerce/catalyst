@@ -19,6 +19,7 @@ interface ProductPriceAdjusterProps {
   ProductType: string;
   accessoriesData: any[];
   quantity: number;
+  variantId:any;
 }
 
 const EditIcon = () => {
@@ -122,13 +123,15 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
   cartId,
   ProductType,
   quantity,
-  accessoriesData
+  accessoriesData,
+  variantId,
 }) => {
   const [isEditingParent, setIsEditingParent] = useState<boolean>(false);
   const [isEditingAccessory, setIsEditingAccessory] = useState<number | null>(null);
   const [newParentCost, setNewParentCost] = useState<string>('');
   const [newAccessoryCost, setNewAccessoryCost] = useState<string>('');
-  const [loading, setLoading] = useState(false);
+  const [loadingParent, setLoadingParent] = useState(false);
+  const [loadingAccessory, setLoadingAccessory] = useState<number | null>(null);
   const { agentRole } = useCompareDrawerContext();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
@@ -173,10 +176,23 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
     }
 
     try {
-      setLoading(true);
+      if (isAccessory) {
+        setLoadingAccessory(accessoryIndex);
+        
+      } else {
+        setLoadingParent(true);
+      }
+      
       const currentSku = isAccessory ? accessoriesData[accessoryIndex].sku : sku;
       const CheckProductID = isAccessory ? accessoriesData[accessoryIndex].productEntityId : productId;
-      const res = await updateProductPrice(numericValue, cartId, CheckProductID, ProductType, currentSku);
+      var res
+      if(isAccessory){
+        res = await updateProductPrice(numericValue, cartId, accessoriesData[accessoryIndex].lineItemId, "accessories", currentSku, accessoriesData[accessoryIndex].variantEntityId);
+      }else if(ProductType == "product"){
+        res = await updateProductPrice(numericValue, cartId, CheckProductID, ProductType, currentSku, variantId)
+      }else{
+        res = await updateProductPrice(numericValue, cartId, CheckProductID, ProductType, currentSku, variantId);
+      }
 
       if (res.status === 200) {
         if (isAccessory) {
@@ -193,7 +209,11 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
     } catch (error) {
       setErrorMessage('An error occurred while updating the price');
     } finally {
-      setLoading(false);
+      if (isAccessory) {
+        setLoadingAccessory(null);
+      } else {
+        setLoadingParent(false);
+      }
     }
   };
 
@@ -232,10 +252,10 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
           isEditing={isEditingParent}
           setIsEditing={setIsEditingParent}
           newCost={newParentCost}
-          handleCostChange={(e) => handleCostChange(e, false)}
+          handleCostChange={(e:any) => handleCostChange(e, false)}
           errorMessage={errorMessage}
           handleSubmit={() => handleSubmit(false)}
-          loading={loading}
+          loading={loadingParent}
           agentRole={agentRole}
           initialCost={initialCost}
           initialFloor={initialFloor}
@@ -263,12 +283,12 @@ const ProductPriceAdjuster: React.FC<ProductPriceAdjusterProps> = ({
 
                 <PriceEditor
                   isEditing={isEditingAccessory === index}
-                  setIsEditing={(value) => setIsEditingAccessory(value ? index : null)}
-                  newCost={newAccessoryCost}
-                  handleCostChange={(e) => handleCostChange(e, true)}
+                  setIsEditing={(value:any) => setIsEditingAccessory(value ? index : null)}
+                  newCost={isEditingAccessory === index ? newAccessoryCost : ''}
+                  handleCostChange={(e:any) => handleCostChange(e, true)}
                   errorMessage={errorMessage}
                   handleSubmit={() => handleSubmit(true, index)}
-                  loading={loading}
+                  loading={loadingAccessory === index}
                   agentRole={agentRole}
                   initialCost={accessory?.originalPrice?.value}
                   initialFloor={initialFloor}
