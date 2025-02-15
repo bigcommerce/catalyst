@@ -135,7 +135,7 @@ const ManageOrderButtons = ({
         </Button>
       )}
       <Button
-        className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37]"
+        className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50"
         aria-label={t('viewOrderDetails')}
         onClick={() => getOrderDetails()}
       >
@@ -145,7 +145,7 @@ const ManageOrderButtons = ({
         <Button
           aria-label={t('returnOrder')}
           asChild
-          className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37]"
+          className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50"
           variant="secondary"
         >
           <Link href={{ pathname: '' }}>{t('returnOrder')}</Link>
