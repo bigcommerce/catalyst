@@ -22,9 +22,10 @@ interface Props {
   bannerIcon: string;
   galleryExpandIcon: string;
   productMpn?: string | null;
+  extractedImagePairs:any;
 }
 
-export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: Props) => {
+export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn,extractedImagePairs }: Props) => {
   const searchParams = useSearchParams();
   const images: Image[] = removeEdgesAndNodes(product.images) as Image[];
   const videos: Video[] = removeEdgesAndNodes(product.videos) as Video[];
@@ -73,6 +74,8 @@ export const Gallery = ({ product, bannerIcon, galleryExpandIcon, productMpn }: 
         productMpn={productMpn}
         selectedVariantId={variantId}
         product={product}
+        extractedImagePairs={extractedImagePairs}
+        
       />
     </div>
   );

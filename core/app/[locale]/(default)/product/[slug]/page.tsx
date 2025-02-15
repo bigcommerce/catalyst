@@ -116,16 +116,17 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     title: pageTitle || product.name,
     description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
-    openGraph: url && typeof url === 'string'
-      ? {
-          images: [
-            {
-              url: url.replace('{:size}', '386x513'),
-              alt,
-            },
-          ],
-        }
-      : null,
+    openGraph:
+      url && typeof url === 'string'
+        ? {
+            images: [
+              {
+                url: url.replace('{:size}', '386x513'),
+                alt,
+              },
+            ],
+          }
+        : null,
   };
 }
 export default async function ProductPage(props: Props) {
@@ -135,10 +136,10 @@ export default async function ProductPage(props: Props) {
     let customerGroupDetails: CustomerGroup = {
       discount_rules: [],
     };
-    if(sessionUser){
-     const customerGroupId = sessionUser?.customerGroupId;
-     customerGroupDetails = await GetCustomerGroupById(customerGroupId);
-     }
+    if (sessionUser) {
+      const customerGroupId = sessionUser?.customerGroupId;
+      customerGroupDetails = await GetCustomerGroupById(customerGroupId);
+    }
     const searchParams = await props.searchParams;
     const params = await props.params;
     const productSku: any = searchParams?.sku;
@@ -176,12 +177,11 @@ export default async function ProductPage(props: Props) {
         useDefaultOptionSelections: optionValueIds.length === 0 ? true : undefined,
       });
     }
-
     if (!product) {
       return notFound();
     }
-    let swatchOptions:any
-    swatchOptions= await getMultipleChoiceOptions(productId)
+    let swatchOptions: any;
+    swatchOptions = await getMultipleChoiceOptions(productId);
     // Asset URLs
     const assets = {
       bannerIcon: imageManagerImageUrl('example-1.png', '50w'),
@@ -195,7 +195,7 @@ export default async function ProductPage(props: Props) {
       closeIcon: imageManagerImageUrl('close.png', '14w'),
       blankAddImg: imageManagerImageUrl('notneeded-1.jpg', '150w'),
     };
-  
+
     // Get MetaFields
     const productMetaFields = await GetProductMetaFields(product.entityId, '');
 
@@ -203,6 +203,7 @@ export default async function ProductPage(props: Props) {
       product.productOptions?.edges?.some((option: any) => option.node.isVariantOption) || false;
 
     let variantMetaFields: MetaField[] = [];
+    let variantMetaFields1: MetaField[] = [];
     const variants = product.variants.edges?.map((edge: any) => edge.node) || [];
 
     // Determine `selectedVariantId`
@@ -216,6 +217,29 @@ export default async function ProductPage(props: Props) {
         selectedVariantId,
         '',
       );
+    }
+    const productImagesNode = variantMetaFields.find((node) => node.namespace === 'product_images');
+    const valueString = productImagesNode?.value; // Extract value if the node is found
+
+    // const valueString = variantMetaFields[0]?.value;
+    const baseURL = 'https://imgprd.1stoplighting.com';
+    let extractedImagePairs: any;
+    // Step 2: Parse the "value" field as JSON
+
+    if (valueString) {
+      try {
+        const parsedValue = JSON.parse(valueString); // Parse the JSON string
+
+        // Extract only objects that have 'url' and 'alt_text'
+        extractedImagePairs = parsedValue
+          ?.filter((item) => item?.url && item?.alt_text) // Ensure 'url' and 'alt_text' exist
+          ?.map((item) => ({
+            src: `${baseURL}${item?.url}`,
+            altText: item?.alt_text || '',
+          }));
+      } catch (error) {
+        console.error('Error parsing JSON:', error);
+      }
     }
 
     // Function to extract nsoid or upid
@@ -315,7 +339,6 @@ export default async function ProductPage(props: Props) {
       priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
         ? await getPriceMaxRules(priceMaxTriggers)
         : null;
-
     const promotions = await getActivePromotions(true);
 
     const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());
@@ -341,6 +364,7 @@ export default async function ProductPage(props: Props) {
                       bannerIcon={assets.bannerIcon}
                       galleryExpandIcon={assets.galleryExpandIcon}
                       productMpn={product.mpn}
+                      extractedImagePairs={extractedImagePairs}
                     />
                   </Suspense>
                 </div>
@@ -451,7 +475,18 @@ export default async function ProductPage(props: Props) {
           <ProductViewed product={product} />
           <ProductSchema product={product} identifier={newIdentifier} productSku={productSku} />
 
-          <KlaviyoTrackViewedProduct product={product} user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
+          <KlaviyoTrackViewedProduct
+            product={product}
+            user={
+              sessionUser && sessionUser.user && sessionUser.user?.email
+                ? ({
+                    email: sessionUser.user.email,
+                    first_name: sessionUser.user?.firstName,
+                    last_name: sessionUser.user?.lastName,
+                  } as any)
+                : null
+            }
+          />
         </ProductProvider>
       </div>
     );

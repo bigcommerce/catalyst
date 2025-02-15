@@ -18,6 +18,7 @@ const InternalButton = ({ icon }: { icon: string }) => {
         width={60}
         height={25}
         className="w-[45px] h-[20px]"
+        unoptimized={true}
         src={icon}
       />
     </Button>

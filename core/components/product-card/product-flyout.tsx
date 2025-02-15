@@ -273,12 +273,16 @@ export const ProductFlyout = ({
                       {productData?.name}
                     </p>
                     <p className="popup-box1-div2-sku text-center text-[12px] leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:text-left ssm:tracking-[0.015625rem]">
-                      SKU: {product?.mpn}
+                      SKU: {product?.mpn}, 
                     </p>
                     {productData?.selectedOptions?.map((selectedOption: any, index: number) => {
                       let pipeLineData = '';
-                      if (index < productData?.selectedOptions?.length - 2) {
+                      if (index < productData?.selectedOptions?.length - 1) {
                         pipeLineData = ',';
+                      }
+                      let displayValue = selectedOption.value;
+                      if (selectedOption.name === "Fabric Color" || "Select Fabric Color") {
+                        displayValue = selectedOption.value.split('|')[0].trim();
                       }
                       return (
                         <div
@@ -286,14 +290,13 @@ export const ProductFlyout = ({
                           className="text-center inline ssm:text-start"
                         >
                           <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
-                            {selectedOption.name}:
+                            {`${selectedOption.name}: `} 
                           </span>
                           <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
-                            {selectedOption.value}
+                          {displayValue}
                           </span>
                           {pipeLineData && (
                             <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
-                              {' '}
                               {pipeLineData}
                             </span>
                           )}

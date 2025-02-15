@@ -13,14 +13,11 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 import { AccessoriesInputPlusMinus } from '~/components/form-fields/accessories-input-plus-minus';
 import { get_product_by_entity_id_in_cart } from '../_actions/get-product-by-entityid';
 import { Button } from '~/components/ui/button';
-import { calculateProductPrice, retrieveMpnData } from '~/components/common-functions';
+import { calculateProductPrice, getDiscountPercentage, retrieveMpnData } from '~/components/common-functions';
 import { commonSettinngs } from '~/components/common-functions';
 import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
 import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
-import { getSessionUserDetails } from '~/auth';
-import {
-  CheckProductFreeShipping,
-} from '~/components/management-apis';
+import { CheckProductFreeShipping } from '~/components/management-apis';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { Promotion } from '../../product/[slug]/_components/promotion';
@@ -333,7 +330,6 @@ export const CartItem = async ({
   }
 
   product = { ...product, updatedAccessories };
-
   const promotions = await getActivePromotions(true);
 
   const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());
@@ -541,7 +537,7 @@ export const CartItem = async ({
                         {product?.UpdatePriceForMSRP && product?.listPrice &&
                           (product?.UpdatePriceForMSRP?.warrantyApplied ? (
                             <p className="text-left sm:text-right">
-                              {format.number(product.listPrice.value, {
+                              {format.number(product.extendedSalePrice.value, {
                                 style: 'currency',
                                 currency: currencyCode,
                               })}

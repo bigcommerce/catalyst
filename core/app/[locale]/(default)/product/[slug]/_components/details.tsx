@@ -72,6 +72,7 @@ interface Props {
   priceMaxRules: any;
   getAllCommonSettinngsValues: any;
   isFromQuickView: boolean;
+  priceUpdatedProduct:any;
   customerGroupDetails: any;
   swatchOptions:any;
   sessionUser: any;
@@ -172,6 +173,7 @@ export const Details = ({
   children5,
   priceMaxRules,
   isFromQuickView,
+  priceUpdatedProduct,
   swatchOptions,
   sessionUser
 }: Props) => {
@@ -207,9 +209,9 @@ export const Details = ({
   useEffect(() => {
     // Scroll handlers
 
-    //Dont remove this function this is for salesbuddy  app 
+    //Dont remove this function this is for salesbuddy  app
     store_pdp_product_in_localstorage(product);
-    //Dont remove this function this is for salesbuddy  app 
+    //Dont remove this function this is for salesbuddy  app
 
     const handleScroll = () => {
       setShowStickyHeader(window.scrollY > 1500);
@@ -265,6 +267,11 @@ export const Details = ({
     const defaultValue = values.find((value) => value.isDefault);
     return defaultValue?.label || 'Select';
   };
+  
+  const updatedPriceForMSRP = isFromQuickView 
+  ? priceUpdatedProduct?.UpdatePriceForMSRP 
+  : product?.UpdatePriceForMSRP;
+
   return (
     <div className="">
       {showStickyHeader && (
@@ -316,10 +323,14 @@ export const Details = ({
                                   const selectedValue = getSelectedValue(
                                     option as MultipleChoiceOption,
                                   );
+                                  const displayValue = option.displayStyle === 'Swatch' 
+                                  ? selectedValue.split('|')[0]?.trim()
+                                  : selectedValue;
+                                                                    
                                   return (
                                     <span key={option.entityId}>
                                       <span className="font-bold">{option.displayName}:</span>
-                                      <span className="text-[15px]"> {selectedValue}</span>
+                                      <span className="text-[15px]"> {displayValue}</span>
                                       {index < filteredArray.length - 1 && (
                                         <span className="mx-1">|</span>
                                       )}
@@ -336,10 +347,10 @@ export const Details = ({
                 <div className="flex items-center gap-4">
                   {product?.UpdatePriceForMSRP && (
                     <ProductPrice
-                      defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
-                      defaultSalePrice={
-                        product?.UpdatePriceForMSRP.hasDiscount
-                          ? product.UpdatePriceForMSRP.updatedPrice
+                    defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
+                    defaultSalePrice={
+                      product?.UpdatePriceForMSRP.hasDiscount
+                        ? product.UpdatePriceForMSRP.updatedPrice
                           : null
                       }
                       priceMaxRule={priceMaxRules?.find(
@@ -418,8 +429,9 @@ export const Details = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-              } px-[20px] pt-[20px]`}
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
+              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+            } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
@@ -506,14 +518,14 @@ export const Details = ({
           <ReviewSummary data={product} />
         </div>
 
-        {product?.UpdatePriceForMSRP && (
+        {updatedPriceForMSRP && (
           <ProductPrice
-            defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
+            defaultPrice={updatedPriceForMSRP?.originalPrice || 0}
             defaultSalePrice={
-              product?.UpdatePriceForMSRP.hasDiscount
-                ? product.UpdatePriceForMSRP.updatedPrice
-                : product?.UpdatePriceForMSRP.warrantyApplied
-                  ? product.UpdatePriceForMSRP.updatedPrice
+              updatedPriceForMSRP?.hasDiscount
+                ? updatedPriceForMSRP?.updatedPrice
+                : updatedPriceForMSRP?.warrantyApplied
+                  ? updatedPriceForMSRP?.updatedPrice
                   : null
             }
             priceMaxRule={priceMaxRules?.find(
@@ -523,10 +535,10 @@ export const Details = ({
                     r.bc_brand_ids.includes(String(product?.brand?.entityId)))) ||
                 (r.skus && r.skus.includes(product?.parent?.sku)),
             )}
-            currency={product.UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'}
+            currency={updatedPriceForMSRP?.currencyCode?.currencyCode || 'USD'}
             format={format}
-            showMSRP={product.UpdatePriceForMSRP.showDecoration}
-            warrantyApplied={product.UpdatePriceForMSRP.warrantyApplied}
+            showMSRP={updatedPriceForMSRP?.showDecoration}
+            warrantyApplied={updatedPriceForMSRP?.warrantyApplied}
             options={{
               useAsyncMode: false,
               useDefaultPrices: true,
@@ -642,7 +654,8 @@ export const Details = ({
         </div>
 
         {/* <ProductSchema product={product} /> */}
-        <div className={`${isFromQuickView ? "hidden" : "block"}`}>
+        {!isFromQuickView &&
+        <div>
           <PayPalPayLater
             amount={product?.prices?.price?.value?.toString() || '0'}
             currency={product?.prices?.price?.currencyCode || 'USD'}
@@ -652,8 +665,14 @@ export const Details = ({
           {/* <RequestQuote children={children3} /> */}
           <RequestQuoteButton/>
           <CertificationsAndRatings
-            certificationIcon={certificationIcon} product={product} children={children4} triggerLabel={triggerLabel4} />
-          <ProductDetailDropdown product={product} dropdownSheetIcon={dropdownSheetIcon}
+            certificationIcon={certificationIcon}
+            product={product}
+            children={children4}
+            triggerLabel={triggerLabel4}
+          />
+          <ProductDetailDropdown
+            product={product}
+            dropdownSheetIcon={dropdownSheetIcon}
             triggerLabel={triggerLabel5}
             children={children5}
           />
@@ -665,7 +684,7 @@ export const Details = ({
 
             <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
           </div>
-        </div>
+        </div>}
       </div>
     </div>
   );
