@@ -154,6 +154,15 @@ export default async function ProductPage(props: Props) {
       ? JSON.parse(atob(priceMaxCookie?.value))
       : undefined;
 
+
+      const priceMaxRules =
+      priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
+        ? await getPriceMaxRules(priceMaxTriggers)
+        : null;
+
+// console.log(JSON.stringify(priceMaxRules) + "priceMaxRules");
+
+
     const useDefaultPrices = !customerAccessToken;
     const { locale, slug } = params;
 
@@ -335,10 +344,7 @@ if (valueString) {
     var brandId = product?.brand?.entityId;
     var CommonSettinngsValues = await commonSettinngs([brandId]);
 
-    const priceMaxRules =
-      priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
-        ? await getPriceMaxRules(priceMaxTriggers)
-        : null;
+
     const promotions = await getActivePromotions(true);
 
     const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());

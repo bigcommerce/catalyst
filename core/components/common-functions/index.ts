@@ -7,6 +7,7 @@ import {
   generateCouponPromotion,
   generateCouponCodeInPromotion,
   updateCouponPromotion,
+  updateCartItemMaxPriceRuleDisccount,
 } from '../management-apis';
 import { getCookieData } from '../graphql-apis';
 
@@ -353,11 +354,11 @@ export const getMetaFieldsByProduct = async (
 
 export const commonSettinngs = async (brand_ids: any) => {
   brand_ids = [...new Set(brand_ids.filter((id: any) => id !== undefined))];
-  if(brand_ids !== undefined && brand_ids.length > 0) {
+  if (brand_ids !== undefined && brand_ids.length > 0) {
     var res = await getCommonSettingByBrandChannel(brand_ids);
     return res.output;
-  }else{
-    return {status:500,output:[]}
+  } else {
+    return { status: 500, output: [] };
   }
 };
 export const retrieveMpnData = (product: any, productid: Number, variantId: Number) => {
@@ -398,6 +399,17 @@ export const checkZeroTaxCouponAmount = async (checkoutData: any) => {
   return zeroTaxCoupon;
 };
 
+export const getDiscountPercentage = (originalPrice: any, updatedPrice: any): number => {
+  const originalPriceNum = Number(originalPrice);
+  const updatedPriceNum = Number(updatedPrice);
+
+  if (!isNaN(originalPriceNum) && !isNaN(updatedPriceNum) && originalPriceNum > 0) {
+    return Math.round(((originalPriceNum - updatedPriceNum) / originalPriceNum) * 100);
+  }
+
+  return 0;
+};
+
 export const calculateProductPrice = async (
   products: any,
   type: String,
@@ -433,15 +445,15 @@ export const calculateProductPrice = async (
     if (salePrice && retailPrice) {
       originalPrice = retailPrice * quantity;
       updatedPrice = salePrice * quantity;
-      discount = Math.round(((retailPrice - salePrice) / retailPrice) * 100);
+      discount = getDiscountPercentage(retailPrice, salePrice);
     } else if (retailPrice && basePrice) {
       originalPrice = retailPrice * quantity;
       updatedPrice = basePrice * quantity;
-      discount = Math.round(((retailPrice - basePrice) / retailPrice) * 100);
+      discount = getDiscountPercentage(retailPrice, basePrice);
     } else if (salePrice && basePrice) {
       originalPrice = basePrice * quantity;
       updatedPrice = salePrice * quantity;
-      discount = Math.round(((basePrice - salePrice) / basePrice) * 100);
+      discount = getDiscountPercentage(basePrice, salePrice);
     } else if (basePrice) {
       originalPrice = basePrice * quantity;
       updatedPrice = basePrice * quantity;
@@ -459,43 +471,55 @@ export const calculateProductPrice = async (
         warrantyApplied = listPrice.value > updatedPrice;
       }
     }
-    //hasDiscount = discount > 0;
+
     if (discountRules && Array.isArray(discountRules) && discountRules.length > 0) {
-    discountRules?.forEach(
-      (rule: {
-        amount: string;
-        type: string;
-        category_id: string;
-        method: string;
-        product_id: string;
-      }) => {
-        let amount = Math.round(parseInt(rule.amount, 10));
-        if (
-          rule.type === 'category' &&
-          rule.category_id &&
-          categoryIds?.some((id: number) => id === parseInt(rule.category_id, 10))
-        ) {
-          if (rule.method === 'price') {
-            updatedPrice -= amount;
-          } else if (rule.method === 'percent') {
-            updatedPrice -= (updatedPrice * amount) / 100;
+      discountRules.forEach(
+        (rule: {
+          amount: string;
+          type: string;
+          category_id: string;
+          method: string;
+          product_id: string;
+        }) => {
+          let amount = Math.round(parseInt(rule.amount, 10));
+          if (
+            rule.type === 'category' &&
+            rule.category_id &&
+            categoryIds?.some((id: number) => id === parseInt(rule.category_id, 10))
+          ) {
+            if (rule.method === 'price') {
+              updatedPrice -= amount;
+            } else if (rule.method === 'percent') {
+              updatedPrice -= (updatedPrice * amount) / 100;
+            } else if (rule.method === 'fixed') {
+              updatedPrice = amount;
+            }
+          } else if (
+            rule.type === 'product' &&
+            rule.product_id &&
+            productId === parseInt(rule.product_id, 10)
+          ) {
+            if (rule.method === 'price') {
+              updatedPrice -= amount;
+            } else if (rule.method === 'percent') {
+              updatedPrice -= (updatedPrice * amount) / 100;
+            } else if (rule.method === 'fixed') {
+              updatedPrice = amount;
+            }
+          } else if (rule.type === 'all') {
+            if (rule.method === 'price') {
+              updatedPrice -= amount;
+            } else if (rule.method === 'percent') {
+              updatedPrice -= (updatedPrice * amount) / 100;
+            } else if (rule.method === 'fixed') {
+              updatedPrice = amount;
+            }
           }
-        } else if (
-          rule.type === 'product' &&
-          rule.product_id &&
-          productId === parseInt(rule.product_id, 10)
-        ) {
-          if (rule.method === 'price') {
-            updatedPrice -= amount;
-          } else if (rule.method === 'percent') {
-            updatedPrice -= (updatedPrice * amount) / 100;
-          }
-        }
-        discount = Math.round(((originalPrice - updatedPrice) / originalPrice) * 100);
-        hasDiscount = originalPrice > updatedPrice;
-      },
-    );
-  }
+          discount = getDiscountPercentage(originalPrice, updatedPrice);
+          hasDiscount = originalPrice > updatedPrice;
+        },
+      );
+    }
 
     const convertedObject = {
       UpdatePriceForMSRP: {
@@ -546,7 +570,7 @@ export const zeroTaxCalculation = async (cartObject: any) => {
           postDataArray.push({
             id: item?.entityId,
             discounted_amount: taxAmountEachProduct?.toFixed(2),
-            prodId: item?.productEntityId
+            prodId: item?.productEntityId,
           });
           productIdsArray.push(item?.productEntityId);
         }
@@ -556,30 +580,38 @@ export const zeroTaxCalculation = async (cartObject: any) => {
       let finalDiscountAmount: any = (overAllTaxAmount - zeroTaxCouponAmount)?.toFixed(2);
       const cookieStore = await getCookieData();
       const getCartZTCpn = cookieStore.get('ztcpn_data')?.value;
-      if(!getCartZTCpn) {
-        let couponCodeZerotax: string = 'Zero_Tax_'+generateRandomString(8);
-        let createPromotionData = await generateCouponPromotion(finalDiscountAmount, postDataArray, couponCodeZerotax);
-        if(createPromotionData?.data?.id) {
+      if (!getCartZTCpn) {
+        let couponCodeZerotax: string = 'Zero_Tax_' + generateRandomString(8);
+        let createPromotionData = await generateCouponPromotion(
+          finalDiscountAmount,
+          postDataArray,
+          couponCodeZerotax,
+        );
+        if (createPromotionData?.data?.id) {
           await generateCouponCodeInPromotion(couponCodeZerotax, createPromotionData?.data?.id);
           await addCouponCodeToCart(cartId, couponCodeZerotax);
           return {
             id: createPromotionData?.data?.id,
             amount: finalDiscountAmount,
             code: couponCodeZerotax,
-            action: 'create'
-          }
+            action: 'create',
+          };
         }
       } else {
-        let promoData = (getCartZTCpn) ? JSON.parse(getCartZTCpn): [];
-        if(promoData?.id) {
-          let updatePromotionData = await updateCouponPromotion(finalDiscountAmount, postDataArray, promoData?.id);
-          if(updatePromotionData?.data?.id) {
+        let promoData = getCartZTCpn ? JSON.parse(getCartZTCpn) : [];
+        if (promoData?.id) {
+          let updatePromotionData = await updateCouponPromotion(
+            finalDiscountAmount,
+            postDataArray,
+            promoData?.id,
+          );
+          if (updatePromotionData?.data?.id) {
             return {
               id: updatePromotionData?.data?.id,
               amount: finalDiscountAmount,
               code: promoData?.code,
-              action: 'update'
-            }
+              action: 'update',
+            };
           }
         }
       }
@@ -677,3 +709,26 @@ export const manageDeletedProducts = {
     return deletedProducts.some((item: any) => item.productId === productId);
   },
 };
+
+// cookie-discounted-price
+interface PriceUpdateData {
+  cartId: string;
+  price: number;
+  productId: string;
+  quantity: number;
+}
+
+export async function callforMaxPriceRuleDiscountFunction(data: any) {
+  try {
+    const result = await updateCartItemMaxPriceRuleDisccount({
+      cartId: data.cartId,
+      price: data.price,
+      productId: data.productId,
+      quantity: data.quantity,
+    });
+    return result;
+  } catch (error) {
+    console.error('Error in max price rule update:', error);
+    throw error;
+  }
+}

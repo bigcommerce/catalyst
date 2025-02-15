@@ -13,11 +13,14 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 import { AccessoriesInputPlusMinus } from '~/components/form-fields/accessories-input-plus-minus';
 import { get_product_by_entity_id_in_cart } from '../_actions/get-product-by-entityid';
 import { Button } from '~/components/ui/button';
-import { calculateProductPrice, retrieveMpnData } from '~/components/common-functions';
+import {
+  calculateProductPrice,
+  getDiscountPercentage,
+  retrieveMpnData,
+} from '~/components/common-functions';
 import { commonSettinngs } from '~/components/common-functions';
 import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
 import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
-import { getSessionUserDetails } from '~/auth';
 import { CheckProductFreeShipping } from '~/components/management-apis';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
@@ -331,6 +334,7 @@ export const CartItem = async ({
   }
 
   product = { ...product, updatedAccessories };
+  console.log('cart item---', product);
 
   const promotions = await getActivePromotions(true);
 
@@ -415,7 +419,7 @@ export const CartItem = async ({
                           pipeLineData = '|';
                         }
                         let displayValue = selectedOption.value;
-                        if (selectedOption.name === 'Fabric Color') {
+                        if (selectedOption.name === 'Fabric Color' || 'Select Fabric Color') {
                           displayValue = selectedOption.value.split('|')[0]?.trim();
                         }
                         switch (selectedOption.__typename) {
@@ -549,18 +553,19 @@ export const CartItem = async ({
                   ) : (
                     <div className="mb-0">
                       {product?.UpdatePriceForMSRP &&
-                        product?.listPrice &&
+                        product?.extendedSalePrice &&
                         (product?.UpdatePriceForMSRP?.warrantyApplied ? (
                           <p className="text-left sm:text-right">
-                            {format.number(product.listPrice.value, {
+                            {format.number(product.extendedSalePrice.value, {
                               style: 'currency',
                               currency: currencyCode,
                             })}
                           </p>
-                        ) : product?.UpdatePriceForMSRP.hasDiscount === true ? (
+                        ) : product?.UpdatePriceForMSRP.hasDiscount === true ||
+                          product?.discountedAmount?.value > 0 ? (
                           <>
                             <p className="text-left sm:text-right">
-                              {format.number(product.listPrice.value, {
+                              {format.number(product.extendedSalePrice.value, {
                                 style: 'currency',
                                 currency: currencyCode,
                               })}
@@ -573,7 +578,11 @@ export const CartItem = async ({
                                 })}
                               </p>
                               <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                                {product.UpdatePriceForMSRP.discount}% Off
+                                {getDiscountPercentage(
+                                  product.UpdatePriceForMSRP.originalPrice,
+                                  product.extendedSalePrice.value,
+                                )}
+                                % Off
                               </p>
                             </div>
                           </>
@@ -618,7 +627,7 @@ export const CartItem = async ({
           {product?.updatedAccessories &&
             product?.updatedAccessories?.map((item: any, index: number) => {
               let oldPriceAccess = item?.UpdatePriceForMSRP?.originalPrice;
-              let salePriceAccess = item?.listPrice.value;
+              let salePriceAccess = item?.extendedSalePrice.value;
               let discountedPrice: any = Number(
                 100 - (salePriceAccess * 100) / oldPriceAccess,
               )?.toFixed(2);
@@ -644,7 +653,7 @@ export const CartItem = async ({
                         <div>{item.name}</div>
                         <div className="flex flex-wrap items-center gap-[0px_10px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
                           {item?.UpdatePriceForMSRP?.originalPrice &&
-                          item?.UpdatePriceForMSRP?.originalPrice !== item?.listPrice ? (
+                          item?.UpdatePriceForMSRP?.originalPrice !== item?.extendedSalePrice ? (
                             <p className="flex items-center tracking-[0.25px] line-through">
                               {format.number(oldPriceAccess * item.quantity, {
                                 style: 'currency',
