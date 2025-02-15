@@ -280,7 +280,7 @@ const ProductCard = ({
                 <span>{variantDetails.mpn}</span>
               </p>
               {updatedWishlist[0]?.UpdatePriceForMSRP && (
-                <div className='flex flex-row gap-[10px] items-center w-full'>
+                <div className='flex flex-col gap-[5px] items-center'>
                   <ProductPrice
                     defaultPrice={updatedWishlist[0].UpdatePriceForMSRP.originalPrice || 0}
                     defaultSalePrice={
