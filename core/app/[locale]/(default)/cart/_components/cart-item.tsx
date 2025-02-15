@@ -330,8 +330,6 @@ export const CartItem = async ({
   }
 
   product = { ...product, updatedAccessories };
-  console.log("cart item---",product);
-
   const promotions = await getActivePromotions(true);
 
   const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());
