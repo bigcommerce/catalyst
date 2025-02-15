@@ -154,7 +154,7 @@ export default async function Trade() {
   );
 
   return (
-    <div className="trade-register-section min-h-screen bg-white pb-8">
+    <div className="trade-register-section min-h-screen bg-white pb-8 border-t-[10px] border-t-[#008BB7]">
       <div className="registeration-breadcrumbs-heading [&_.network-for-tab]:mt-0">
         {/* Breadcrumbs */}
 
@@ -167,7 +167,7 @@ export default async function Trade() {
 
           {/* Right Side Registration Form */}
           <div className="w-full lg:w-1/2">
-            <div className="mt-[35px] flex items-center space-x-2">
+            <div className="mt-[35px] flex items-center space-x-2 justify-center lg:justify-start">
               <a
                 href="/trade-account/trade-step1/"
                 className="text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-black"

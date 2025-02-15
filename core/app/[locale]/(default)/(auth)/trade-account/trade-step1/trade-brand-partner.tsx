@@ -46,7 +46,7 @@ const Testimonial: React.FC<TestimonialData> = ({
       </span>
 
       <span className="text-left text-base font-medium italic leading-8 tracking-wider text-[#008BB7]">
-        {position}
+        {' '}{position}
       </span>
     </div>
   </div>
