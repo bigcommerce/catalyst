@@ -56,7 +56,7 @@ const reversedOrder = [...addresses].reverse();
   return (
     <div className='flex flex-col  [&_.login-div]:hidden [&_.login-div]:lg:hidden'>
       <div>
-      <ComponentsBreadcrumbs className="mb-5" breadcrumbs={breadcrumbs} />
+      <ComponentsBreadcrumbs className="mb-5 px-8" breadcrumbs={breadcrumbs} />
       <TabHeading heading="addresses" />
       </div>
       <AddressBook addressesCount={addressesCount} customerAddresses={reversedOrder} key={endCursor}>

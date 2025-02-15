@@ -268,7 +268,7 @@ const OrderList = ({
                                   pipeLineData = '';
                                 }
                                 const updatedValue =
-                                  lineData?.name === 'Fabric Color'
+                                  lineData?.name === "Fabric Color" || "Select Fabric Color"
                                     ? lineData?.value.split('|')[0]?.trim()
                                     : lineData?.value;
                                 return (
@@ -561,7 +561,7 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
                                       pipeLineData = '';
                                     }
                                     const updatedValue =
-                                      optionName === 'Fabric Color'
+                                      optionName === "Fabric Color" || "Select Fabric Color"
                                         ? value.split('|')[0].trim()
                                         : value;
                                     return (

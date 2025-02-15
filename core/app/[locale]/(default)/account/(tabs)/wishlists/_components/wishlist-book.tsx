@@ -1,17 +1,24 @@
-// wishlist-book
 'use client';
 
 import { useRouter } from 'next/navigation';
 import { useFormatter, useTranslations } from 'next-intl';
-import { PropsWithChildren, SetStateAction, useEffect, useRef, useState } from 'react';
+import {
+  memo,
+  PropsWithChildren,
+  SetStateAction,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import Link from 'next/link';
 import { Button } from '~/components/ui/button';
 import { Message } from '~/components/ui/message/message';
 import { Modal } from '../../_components/modal';
 import { DeleteWishlistForm } from './delete-wishlist-form';
 import { CreateWishlistDialog } from './create-wishlist-form';
-import { useCommonContext } from '~/components/common-context/common-provider';
 import { useAccountStatusContext } from '../../_components/account-status-provider';
+import { manageDeletedProducts, storageUtils } from '~/components/common-functions';
 
 const WISHLISTS_PER_PAGE = 100;
 
@@ -20,10 +27,7 @@ interface ProductImage {
   altText: string;
   isDefault: boolean;
 }
-interface DeletedProduct {
-  wishlistId: number;
-  productId: number;
-}
+
 interface ProductVariant {
   name: string;
   hex: string;
@@ -90,17 +94,8 @@ interface WishlistMenuProps {
 type Wishlists = Wishlist[];
 type NewWishlist = any;
 type WishlistArray = Array<NewWishlist | Wishlists[number]>;
-interface DeletedProduct {
-  wishlistId: number;
-  productId: number;
-}
 
-const WishlistMenu: React.FC<WishlistMenuProps> = ({
-  entityId,
-  name,
-  onWishlistDeleted,
-  wishlist,
-}) => {
+const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: WishlistMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const { setAccountState } = useAccountStatusContext();
@@ -108,7 +103,8 @@ const WishlistMenu: React.FC<WishlistMenuProps> = ({
 
   const toggleModal = () => setIsOpen(!isOpen);
 
-  const handleWishlistDeleted = () => {
+  // Move handlers outside of render
+  const handleWishlistDeleted = useCallback(() => {
     onWishlistDeleted();
     setAccountState((prevState) => ({
       ...prevState,
@@ -117,12 +113,12 @@ const WishlistMenu: React.FC<WishlistMenuProps> = ({
     }));
     setDeleteModalOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, [onWishlistDeleted, setAccountState, t, name]);
 
-  const handleEditClick = () => {
+  const handleEditClick = useCallback(() => {
     localStorage.setItem('selectedWishlist', JSON.stringify(wishlist));
-    toggleModal();
-  };
+    setIsOpen(false);
+  }, [wishlist]);
 
   return (
     <div className="relative block lg:hidden">
@@ -226,126 +222,131 @@ const WishlistMenu: React.FC<WishlistMenuProps> = ({
       )}
     </div>
   );
-};
+});
 
-const Wishlist = ({
-  setWishlistBook,
-  wishlist,
-  onCompare,
-  onRemove,
-  onColorSelect,
-}: WishlistProps) => {
-  const [deleteWishlistModalOpen, setDeleteWishlistModalOpen] = useState(false);
-  const { setAccountState } = useAccountStatusContext();
-  const { deletedProductIds } = useCommonContext();
-  const t = useTranslations('Account.Wishlist');
-  const { entityId, name } = wishlist;
-  const items = 'items' in wishlist ? wishlist.items : [];
+const Wishlist = memo(
+  ({ setWishlistBook, wishlist, onCompare, onRemove, onColorSelect }: WishlistProps) => {
+    const [deleteWishlistModalOpen, setDeleteWishlistModalOpen] = useState(false);
+    const { setAccountState } = useAccountStatusContext();
+    const t = useTranslations('Account.Wishlist');
+    const { entityId, name } = wishlist;
+    const items = 'items' in wishlist ? wishlist.items : [];
 
-  const filteredItems = items.filter(
-    (item: WishlistItem) =>
-      !deletedProductIds.some(
-        (deletion: DeletedProduct) =>
-          deletion.wishlistId === entityId && deletion.productId === item.product.entityId,
-      ),
-  );
+    // Use manageDeletedProducts to filter items
+    const deletedProducts = manageDeletedProducts.getDeletedProducts();
+    const filteredItems = useMemo(() => {
+      const items = 'items' in wishlist ? wishlist.items : [];
+      const deletedProducts = manageDeletedProducts.getDeletedProducts();
+      return items.filter(
+        (item: WishlistItem) =>
+          !deletedProducts.some(
+            (deletedItem: { productId: number; wishlistItemId: number }) =>
+              deletedItem.productId === item.product.entityId &&
+              deletedItem.wishlistItemId === item.entityId,
+          ),
+      );
+    }, [wishlist]);
 
-  const handleWishlistDeleted = () => {
-    setWishlistBook((prev) => prev.filter((item) => item.entityId !== entityId));
-    setAccountState((prevState) => ({
-      ...prevState,
-      status: 'success',
-      message: t('messages.deleted', { name }),
-    }));
-    setDeleteWishlistModalOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+    const handleWishlistDeleted = useCallback(() => {
+      setWishlistBook((prev) => prev.filter((item) => item.entityId !== entityId));
+      setAccountState((prevState) => ({
+        ...prevState,
+        status: 'success',
+        message: t('messages.deleted', { name }),
+      }));
+      setDeleteWishlistModalOpen(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, [entityId, name, setWishlistBook, setAccountState, t]);
 
-  const handleWishlistClick = () => {
-    const filteredWishlist = {
-      ...wishlist,
-      items: filteredItems,
-    };
-    localStorage.setItem('selectedWishlist', JSON.stringify(filteredWishlist));
-    localStorage.setItem('deletedProductIds', JSON.stringify(deletedProductIds));
-  };
+    const handleWishlistClick = useCallback(() => {
+      const filteredWishlist = {
+        ...wishlist,
+        items: filteredItems,
+      };
+      localStorage.setItem('selectedWishlist', JSON.stringify(filteredWishlist));
+    }, [wishlist, filteredItems]);
 
-  return (
-    <div className="wishlist-item flex w-full items-center gap-4 bg-white lg:gap-6">
-      <div className="flex h-[9em] w-[9em] items-center justify-center bg-[#80C5DA]">
-        <svg
-          className="h-16 w-16 text-white"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-        >
-          <path
-            d="M12 6L9.5 3.5C7.5 1.5 4 2 2.5 4.5C1 7 2 10 4.5 12L12 19L19.5 12C22 10 23 7 21.5 4.5C20 2 16.5 1.5 14.5 3.5L12 6Z"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        </svg>
-      </div>
-
-      <div className="flex-1">
-        <Link href="/account/wishlists/wishlist-product" onClick={handleWishlistClick}>
-          <h3 className="wishlist-name mb-[4px] text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#000000]">
-            {name}
-          </h3>
-        </Link>
-        <p className="mb-[12px] text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#000000]">
-          {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'}
-        </p>
-        <div className="flex hidden w-[30%] gap-2 lg:block">
-          <Link
-            href="/account/wishlists/wishlist-product"
-            onClick={handleWishlistClick}
-            className="rounded-[3px] border border-[#B4DDE9] p-[10px] text-left text-[14px] font-medium uppercase !leading-5 tracking-wider text-[#002A37]"
+    return (
+      <div className="wishlist-item flex w-full items-center gap-4 bg-white lg:gap-6">
+        <div className="flex h-[9em] w-[9em] items-center justify-center bg-[#80C5DA]">
+          <svg
+            className="h-16 w-16 text-white"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
           >
-            EDIT DETAILS
-          </Link>
+            <path
+              d="M12 6L9.5 3.5C7.5 1.5 4 2 2.5 4.5C1 7 2 10 4.5 12L12 19L19.5 12C22 10 23 7 21.5 4.5C20 2 16.5 1.5 14.5 3.5L12 6Z"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          </svg>
         </div>
-      </div>
 
-      {name !== t('favorites') && (
-        <div className="delete-wishlist block h-[10em]">
-          <div className="delete-wishlist hidden lg:block">
-            <Modal
-              onClose={() => setDeleteWishlistModalOpen(false)}
-              showCancelButton={false}
-              title={t('deleteTitle', { name })}
-              trigger={
-                <Button variant="secondary" size="sm" className="text-gray-500 hover:text-red-600">
-                  <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                    />
-                  </svg>
-                </Button>
-              }
+        <div className="flex-1">
+          <Link href="/account/wishlists/wishlist-product" onClick={handleWishlistClick}>
+            <h3 className="wishlist-name mb-[4px] text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-[#000000]">
+              {name}
+            </h3>
+          </Link>
+          <p className="mb-[12px] text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-[#000000]">
+            {filteredItems.length} {filteredItems.length === 1 ? 'item' : 'items'}
+          </p>
+          <div className="flex hidden w-[30%] gap-2 lg:block">
+            <Link
+              href="/account/wishlists/wishlist-product"
+              onClick={handleWishlistClick}
+              className="rounded-[3px] border border-[#B4DDE9] p-[10px] text-left text-[14px] font-medium uppercase !leading-5 tracking-wider text-[#002A37]"
             >
-              <DeleteWishlistForm
-                id={entityId}
-                name={name}
-                onWishistDeleted={handleWishlistDeleted}
-              />
-            </Modal>
+              EDIT DETAILS
+            </Link>
           </div>
-          <WishlistMenu
-            entityId={entityId}
-            name={name}
-            onWishlistDeleted={handleWishlistDeleted}
-            wishlist={wishlist as Wishlist}
-          />
         </div>
-      )}
-    </div>
-  );
-};
+
+        {name !== t('favorites') && (
+          <div className="delete-wishlist block h-[10em]">
+            <div className="delete-wishlist hidden lg:block">
+              <Modal
+                onClose={() => setDeleteWishlistModalOpen(false)}
+                showCancelButton={false}
+                title={t('deleteTitle', { name })}
+                trigger={
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className="text-gray-500 hover:text-red-600"
+                  >
+                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                      />
+                    </svg>
+                  </Button>
+                }
+              >
+                <DeleteWishlistForm
+                  id={entityId}
+                  name={name}
+                  onWishistDeleted={handleWishlistDeleted}
+                />
+              </Modal>
+            </div>
+            <WishlistMenu
+              entityId={entityId}
+              name={name}
+              onWishlistDeleted={handleWishlistDeleted}
+              wishlist={wishlist as Wishlist}
+            />
+          </div>
+        )}
+      </div>
+    );
+  },
+);
 
 export const WishlistBook = ({
   children,
@@ -355,22 +356,22 @@ export const WishlistBook = ({
   onRemove,
   onColorSelect,
 }: PropsWithChildren<WishlistBookProps>) => {
-  const t = useTranslations('Account.Wishlist');
   const [wishlistBook, setWishlistBook] = useState<WishlistArray>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const { accountState } = useAccountStatusContext();
   const [createWishlistModalOpen, setCreateWishlistModalOpen] = useState(false);
   const router = useRouter();
-  const { deletedProductIds } = useCommonContext();
-  const [isLoading, setIsLoading] = useState(true);
 
-  const filterWishlists = (currentWishlists: Wishlists, deletions: DeletedProduct[]) => {
-    return currentWishlists.map((wishlist) => {
+  // Memoize filtered wishlists calculation
+  const filteredWishlists = useMemo(() => {
+    const deletedProducts = manageDeletedProducts.getDeletedProducts();
+    return wishlists.map((wishlist) => {
       const filteredItems = wishlist.items.filter(
         (item: WishlistItem) =>
-          !deletions.some(
-            (deletion) =>
-              deletion.wishlistId === wishlist.entityId &&
-              deletion.productId === item.product.entityId,
+          !deletedProducts.some(
+            (deletedItem: { productId: number; wishlistItemId: number }) =>
+              deletedItem.productId === item.product.entityId &&
+              deletedItem.wishlistItemId === item.entityId,
           ),
       );
 
@@ -380,113 +381,29 @@ export const WishlistBook = ({
         itemCount: filteredItems.length,
       };
     });
-  };
+  }, [wishlists]);
 
   useEffect(() => {
-    let isMounted = true;
+    setWishlistBook(filteredWishlists);
+    setIsLoading(false);
 
-    const initDB = async () => {
-      try {
-        const dbRequest = indexedDB.open('WishlistDB', 5);
+    storageUtils.setToStorage(
+      'wishlistData',
+      JSON.stringify({
+        wishlists: filteredWishlists,
+        lastUpdated: Date.now(),
+      }),
+    );
 
-        dbRequest.onupgradeneeded = (event: IDBVersionChangeEvent) => {
-          const db = (event.target as IDBOpenDBRequest).result;
-          if (!db.objectStoreNames.contains('deletedProducts')) {
-            const store = db.createObjectStore('deletedProducts', {
-              keyPath: ['wishlistId', 'productId'],
-            });
-            store.createIndex('by_ids', ['wishlistId', 'productId'], { unique: true });
-          }
-        };
-
-        const db = await new Promise<IDBDatabase>((resolve, reject) => {
-          dbRequest.onsuccess = () => resolve(dbRequest.result);
-          dbRequest.onerror = () => reject(dbRequest.error);
-        });
-
-        const transaction = db.transaction(['deletedProducts'], 'readwrite');
-        const store = transaction.objectStore('deletedProducts');
-
-        for (const deletion of deletedProductIds) {
-          store.put({
-            ...deletion,
-            timestamp: Date.now(),
-          });
-        }
-
-        const getAllRequest = store.getAll();
-        getAllRequest.onsuccess = () => {
-          if (!isMounted) return;
-
-          const allDeletions = getAllRequest.result;
-          const filteredWishlists = filterWishlists(wishlists, allDeletions);
-
-          localStorage.setItem(
-            'wishlistData',
-            JSON.stringify({
-              wishlists: filteredWishlists,
-              deletions: allDeletions,
-              lastUpdated: Date.now(),
-            }),
-          );
-
-          setWishlistBook(filteredWishlists);
-          setIsLoading(false);
-        };
-
-        transaction.oncomplete = () => db.close();
-      } catch (error) {
-        if (isMounted) {
-          setWishlistBook(wishlists);
-          setIsLoading(false);
-        }
-      }
-    };
-
-    initDB();
-    return () => {
-      isMounted = false;
-    };
-  }, [wishlists, deletedProductIds]);
-
-  useEffect(() => {
-    if (!isLoading) {
-      const filteredWishlists = wishlists.map((wishlist) => ({
-        ...wishlist,
-        items: wishlist.items.filter(
-          (item) =>
-            !deletedProductIds.some(
-              (deletion) =>
-                deletion.wishlistId === wishlist.entityId &&
-                deletion.productId === item.product.entityId,
-            ),
-        ),
-      }));
-
-      setWishlistBook(filteredWishlists);
-
-      // Update localStorage
-      localStorage.setItem(
-        'wishlistData',
-        JSON.stringify({
-          wishlists: filteredWishlists,
-          deletions: deletedProductIds,
-          lastUpdated: Date.now(),
-        }),
-      );
-    }
-  }, [wishlists, deletedProductIds, isLoading]);
-
-  useEffect(() => {
-    if (hasPreviousPage && wishlistBook.length === 0) {
+    if (hasPreviousPage && filteredWishlists.length === 0) {
       const timer = setTimeout(() => {
         router.back();
       }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [hasPreviousPage, router, wishlistBook.length]);
+  }, [filteredWishlists, hasPreviousPage, router]);
 
-  const handleWishlistCreated = (newWishlist: NewWishlist) => {
+  const handleWishlistCreated = useCallback((newWishlist: NewWishlist) => {
     setWishlistBook((prev) => {
       if (prev.length < WISHLISTS_PER_PAGE) {
         return [...prev, newWishlist];
@@ -495,7 +412,7 @@ export const WishlistBook = ({
     });
     setCreateWishlistModalOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  }, []);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -560,3 +477,5 @@ export const WishlistBook = ({
     </div>
   );
 };
+
+export default WishlistBook;

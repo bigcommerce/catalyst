@@ -1,4 +1,3 @@
-
 'use client';
 import React, { useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
@@ -7,18 +6,38 @@ import { Details } from '~/app/[locale]/(default)/product/[slug]/_components/det
 
 import { Warranty } from '~/app/[locale]/(default)/product/[slug]/_components/warranty';
 import { Description } from '~/app/[locale]/(default)/product/[slug]/_components/description';
-import { getProductBySku } from '../graphql-apis';
+import { getMultipleChoiceOptions, getProductBySku } from '../graphql-apis';
 import { QuickViewGallery } from './Quickviewgallery';
 import { client } from '~/client';
+import { calculateProductPrice } from '../common-functions';
+import { CustomerGroupServer } from '~/belami/components/customergroup/customergroup';
 
 const QuickView = ({ product }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [productInfo, setProductInfo] = useState(product);
+  const [priceUpdatedProduct, setPriceUpdatedProduct] = useState([]);
 
+  const [swatchOptions, setSwatchOptions] = useState<any>([]);
+  let productData: any;
+  let swatchOpt: any;
   const openQuickView = async () => {
-    const productData = await getProductBySku({
+    productData = await getProductBySku({
       sku: product?.sku,
     });
+    const categories = productData?.categories;
+    const customerGroupDetails = await CustomerGroupServer();
+    const discountRules = customerGroupDetails?.discount_rules;
+
+    const categoryIds = categories?.edges?.map(
+      (edge: { node: { entityId: any } }) => edge.node.entityId,) || [];
+    
+    const updatedProduct = await calculateProductPrice(productData, "pdp", discountRules, categoryIds);
+
+    setPriceUpdatedProduct(updatedProduct[0]);
+    const entityId = productData?.entityId;
+
+    swatchOpt = await getMultipleChoiceOptions(entityId);
+    setSwatchOptions(swatchOpt);
     setProductInfo(productData);
     setIsOpen(true);
   };
@@ -50,7 +69,7 @@ const QuickView = ({ product }) => {
       <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm" />
-          <Dialog.Content className="fixed left-[50%] top-[50%] z-50 w-[90vw] max-h-[101vh] h-[101vh] max-w-4xl translate-x-[-50%] translate-y-[-50%] overflow-y-auto rounded-lg bg-white shadow-lg quickview">
+          <Dialog.Content className="quickview fixed left-[50%] top-[50%] z-50 h-[101vh] max-h-[101vh] w-[90vw] max-w-4xl translate-x-[-50%] translate-y-[-50%] overflow-y-auto rounded-lg bg-white shadow-lg">
             <div className="p-8">
               <Dialog.Close className="absolute right-4 top-4 rounded-full p-2 hover:bg-gray-100">
                 <X className="h-6 w-6" />
@@ -60,18 +79,21 @@ const QuickView = ({ product }) => {
               {isOpen && (
                 <div className="grid grid-cols-1 gap-8">
                   <div className="a1 mb-12 mt-4 lg:grid lg:grid-cols-2 lg:gap-8">
-                    <QuickViewGallery 
+                    <QuickViewGallery
                       product={productInfo}
                       className="w-full"
-                      images={productInfo?.images?.edges?.map(edge => ({
-                        src: edge.node.url,
-                        altText: edge.node.altText,
-                        isDefault: edge.node.isDefault
-                      })) || []}
+                      images={
+                        productInfo?.images?.edges?.map((edge) => ({
+                          src: edge.node.url,
+                          altText: edge.node.altText,
+                          isDefault: edge.node.isDefault,
+                        })) || []
+                      }
                       videos={[]}
                     />
-                    <Details 
+                    <Details
                       product={productInfo}
+                      swatchOptions={swatchOptions}
                       triggerLabel1={undefined}
                       children1={undefined}
                       triggerLabel2={undefined}
@@ -85,6 +107,7 @@ const QuickView = ({ product }) => {
                       priceMaxRules={undefined}
                       getAllCommonSettinngsValues={undefined}
                       isFromQuickView ={true}
+                      priceUpdatedProduct={priceUpdatedProduct}
                     />
                   </div>
                   <div className="lg:col-span-2" id="tabsection1">
@@ -101,5 +124,3 @@ const QuickView = ({ product }) => {
 };
 
 export default QuickView;
-
-

@@ -69,7 +69,7 @@ const QuickViewGallery = ({
 
       {/* View Full Details Link */}
       <div className="text-center mt-4">
-        <a href="#" className="text-blue-600 hover:underline text-sm">
+        <a href="#" className="text-center text-[16px] font-normal leading-[32px] tracking-[0.15px] underline decoration-solid decoration-[auto] underline-offset-auto decoration-from-font text-[#008BB7] font-[Open\ Sans] hover:underline ">
           View Full Details
         </a>
       </div>
