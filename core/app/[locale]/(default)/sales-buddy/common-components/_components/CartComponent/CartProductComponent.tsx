@@ -60,6 +60,7 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
                 src={product?.image_url}
                 width={144}
                 className="flex items-center justify-center"
+              
               />
             ) : (
               <div className=" flex items-center justify-center" >
@@ -235,13 +236,14 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
           </div>
         </div>
       </div>
-      <div className="w-full md:w-[280px] text-white  shrink-0">
 
       {/* <div className="flex w-full max-w-[300px] flex-col md:flex-row md:items-center md:justify-between"> */}
 
 
       {/* <div className="md:w-[calc((425/1600)*100vw)] lgg:min-w-[calc((250/1200)*100vw)] xl:w-[unset] xl:min-w-[calc((250/1600)*100vw)]"> */}
-        {cookie_agent_login_status == true && <ProductPriceAdjuster
+        {cookie_agent_login_status == true && 
+      <div className="w-full md:w-[280px] text-white  shrink-0">
+        <ProductPriceAdjuster
           parentSku={priceAdjustData?.parent_sku}
           sku={sku}
           quantity={quantity}
@@ -253,8 +255,9 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
           productId={priceAdjustData?.id}
           cartId={cartId}
           ProductType={ProductType}
-        />}
+          />
       </div>
+      }
     </li>
 
   );
