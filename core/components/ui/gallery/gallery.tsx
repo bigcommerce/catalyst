@@ -67,7 +67,7 @@ interface Props {
   productMpn?: string | null;
   selectedVariantId?: string | null;
   product: FragmentOf<typeof ProductItemFragment>;
-  extractedImagePairs:any
+  extractedImagePairs: any;
 }
 
 const Gallery = ({
@@ -80,7 +80,7 @@ const Gallery = ({
   productMpn,
   selectedVariantId,
   product,
-  extractedImagePairs
+  extractedImagePairs,
 }: Props) => {
   const [currentVariantId, setCurrentVariantId] = useState<number | undefined>();
   const [selectedIndex, setSelectedIndex] = useState(defaultImageIndex);
@@ -171,20 +171,22 @@ const Gallery = ({
     }
   }, [product?.sku, product?.variants?.edges]);
 
-
   const { mediaItems, selectedItem } = useMemo(() => {
     const filteredImages = (() => {
-      let filtered = Array.isArray(extractedImagePairs) ? extractedImagePairs : images;
-      if (selectedVariantId && !extractedImagePairs) {
-        const variantImages = filtered.filter((img) => img.variantId === selectedVariantId);
+      let filtered =
+        extractedImagePairs?.length > 0 ? extractedImagePairs : Array.isArray(images) ? images : [];
+      if (selectedVariantId && extractedImagePairs?.length === 0) {
+        const variantImages = filtered?.filter((img: any) => img.variantId === selectedVariantId);
         filtered =
-          variantImages.length > 0 ? variantImages : filtered.filter((img) => !img.variantId);
+          variantImages?.length > 0
+            ? variantImages
+            : filtered?.filter((img: any) => !img.variantId);
       }
-      if (productMpn && !extractedImagePairs) {
-        const mpnImages = filtered?.filter((img) =>
-          img.altText?.toLowerCase()?.includes(productMpn.toLowerCase()),
+      if (productMpn && extractedImagePairs?.length === 0) {
+        const mpnImages = filtered?.filter((img: any) =>
+          img.altText?.toLowerCase()?.includes(productMpn?.toLowerCase()),
         );
-        if (mpnImages.length > 0) filtered = mpnImages;
+        if (mpnImages?.length > 0) filtered = mpnImages;
       }
       return filtered;
     })();

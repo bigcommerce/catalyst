@@ -314,7 +314,7 @@ const ProductCard = ({
               )}
               {variantDetails.option_values.map((option, index) => {
                 const updatedValue =
-                  option.option_display_name === 'Fabric Color'
+                  option.option_display_name === "Fabric Color" || "Select Fabric Color"
                     ? option.label.split('|')[0]?.trim()
                     : option.label;
                 return (

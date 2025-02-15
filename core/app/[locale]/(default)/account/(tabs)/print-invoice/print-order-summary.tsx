@@ -238,7 +238,7 @@ export default function PrintOrderSummary({ data, innerRef }: { data: any, inner
                                       pipeLineData = '';
                                     }
                                     const updatedValue =
-                                    optionName === 'Fabric Color'
+                                    optionName === "Fabric Color" || "Select Fabric Color"
                                       ? value.split('|')[0].trim()
                                       : value;
                                     return (

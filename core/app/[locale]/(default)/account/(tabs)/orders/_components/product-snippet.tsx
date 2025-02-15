@@ -239,7 +239,7 @@ export const ProductSnippet = async ({
                  if (idx === product?.productOptions.length - 1) {
                    pipeLineData = '';
                  }
-                 const updatedValue = optionName === "Fabric Color"
+                 const updatedValue = optionName === "Fabric Color" || "Select Fabric Color"
                  ? value.split("|")[0]?.trim()
                  : value;
                 return (

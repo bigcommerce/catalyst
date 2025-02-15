@@ -1,4 +1,3 @@
-
 'use client';
 
 import React from 'react';
@@ -7,7 +6,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import noImage from '~/public/no-image.svg';
-import { Carousel, CarouselButtons, CarouselContent, CarouselItem, CarouselScrollbar } from '~/belami/components/carousel';
+import {
+  Carousel,
+  CarouselButtons,
+  CarouselContent,
+  CarouselItem,
+  CarouselScrollbar,
+} from '~/belami/components/carousel';
 import { useFormatter } from 'next-intl';
 import { ProductPrice } from '~/belami/components/search/product-price';
 import { ReviewSummary } from '~/belami/components/reviews';
@@ -75,37 +80,37 @@ function ColorSwatches({ variants, onImageClick }: any) {
 
   return (
     <div className="mx-auto mt-4 flex h-8 items-center justify-center space-x-2">
-      {items && items.slice(0, 5).map((item: string) => (
-        <button
-          key={item}
-          type="button"
-          title={item}
-          className="h-8 w-8 cursor-auto rounded-full border border-gray-500"
-          style={
-            searchColorsHEX[item] && searchColorsHEX[item].indexOf('.svg') !== -1
-              ? {
-                  backgroundImage: `url("/swatches/${searchColorsHEX[item]}")`,
-                  backgroundSize: `cover`,
-                  backgroundRepeat: `no-repeat`,
-                }
-              : { backgroundColor: searchColorsHEX[item] ?? 'transparent' }
-          }
-          onClick={() => (imageUrls[item] ? onImageClick(imageUrls[item]) : null)}
-        />
-      ))}
+      {items &&
+        items.slice(0, 5).map((item: string) => (
+          <button
+            key={item}
+            type="button"
+            title={item}
+            className="h-8 w-8 cursor-auto rounded-full border border-gray-500"
+            style={
+              searchColorsHEX[item] && searchColorsHEX[item].indexOf('.svg') !== -1
+                ? {
+                    backgroundImage: `url("/swatches/${searchColorsHEX[item]}")`,
+                    backgroundSize: `cover`,
+                    backgroundRepeat: `no-repeat`,
+                  }
+                : { backgroundColor: searchColorsHEX[item] ?? 'transparent' }
+            }
+            onClick={() => (imageUrls[item] ? onImageClick(imageUrls[item]) : null)}
+          />
+        ))}
       {items && items.length > 5 && <span>+{items.length - 5}</span>}
     </div>
   );
 }
 
-
-function CustomItem({ 
-  hit, 
-  priceMaxRules = null, 
-  useDefaultPrices = false, 
-  price = null, 
-  salePrice = null, 
-  isLoading = false, 
+function CustomItem({
+  hit,
+  priceMaxRules = null,
+  useDefaultPrices = false,
+  price = null,
+  salePrice = null,
+  isLoading = false,
   isLoaded = false,
   dropdownSheetIcon,
   cartHeader,
@@ -118,7 +123,7 @@ function CustomItem({
   bannerIcon,
   galleryExpandIcon,
   getAllCommonSettinngsValues,
-  productImages 
+  productImages,
 }: any) {
   const format = useFormatter();
   const currency = 'USD';
@@ -206,7 +211,7 @@ function CustomItem({
           )}
         </div>
         <div className="mt-4 hidden p-4 lg:block">
-          <QuickView 
+          <QuickView
             product={{
               ...hit,
               dropdownSheetIcon,
@@ -220,8 +225,8 @@ function CustomItem({
               bannerIcon,
               galleryExpandIcon,
               getAllCommonSettinngsValues,
-              productImages
-            }} 
+              productImages,
+            }}
           />
         </div>
       </div>
@@ -229,10 +234,9 @@ function CustomItem({
   );
 }
 
-export function RelatedProducts({ 
-  productId, 
-  products, 
-  useDefaultPrices = false, 
+export function RelatedProducts({
+  products,
+  useDefaultPrices = false,
   priceMaxRules,
   dropdownSheetIcon,
   cartHeader,
@@ -245,7 +249,7 @@ export function RelatedProducts({
   bannerIcon,
   galleryExpandIcon,
   getAllCommonSettinngsValues,
-  productImages
+  productImages,
 }: Props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);

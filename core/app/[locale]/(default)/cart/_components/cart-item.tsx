@@ -13,11 +13,7 @@ import { imageManagerImageUrl } from '~/lib/store-assets';
 import { AccessoriesInputPlusMinus } from '~/components/form-fields/accessories-input-plus-minus';
 import { get_product_by_entity_id_in_cart } from '../_actions/get-product-by-entityid';
 import { Button } from '~/components/ui/button';
-import {
-  calculateProductPrice,
-  getDiscountPercentage,
-  retrieveMpnData,
-} from '~/components/common-functions';
+import { calculateProductPrice, getDiscountPercentage, retrieveMpnData } from '~/components/common-functions';
 import { commonSettinngs } from '~/components/common-functions';
 import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
 import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
@@ -334,8 +330,6 @@ export const CartItem = async ({
   }
 
   product = { ...product, updatedAccessories };
-  console.log('cart item---', product);
-
   const promotions = await getActivePromotions(true);
 
   const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());
@@ -419,7 +413,7 @@ export const CartItem = async ({
                           pipeLineData = '|';
                         }
                         let displayValue = selectedOption.value;
-                        if (selectedOption.name === 'Fabric Color' || 'Select Fabric Color') {
+                        if (selectedOption.name === "Fabric Color" || "Select Fabric Color") {
                           displayValue = selectedOption.value.split('|')[0]?.trim();
                         }
                         switch (selectedOption.__typename) {
@@ -561,8 +555,7 @@ export const CartItem = async ({
                               currency: currencyCode,
                             })}
                           </p>
-                        ) : product?.UpdatePriceForMSRP.hasDiscount === true ||
-                          product?.discountedAmount?.value > 0 ? (
+                        ) : product?.UpdatePriceForMSRP.hasDiscount === true || product?.discountedAmount?.value > 0? (
                           <>
                             <p className="text-left sm:text-right">
                               {format.number(product.extendedSalePrice.value, {
@@ -578,11 +571,7 @@ export const CartItem = async ({
                                 })}
                               </p>
                               <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                                {getDiscountPercentage(
-                                  product.UpdatePriceForMSRP.originalPrice,
-                                  product.extendedSalePrice.value,
-                                )}
-                                % Off
+                                {getDiscountPercentage(product.UpdatePriceForMSRP.originalPrice, product.extendedSalePrice.value)}% Off
                               </p>
                             </div>
                           </>
