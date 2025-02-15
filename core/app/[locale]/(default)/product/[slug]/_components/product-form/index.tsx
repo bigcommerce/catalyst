@@ -255,7 +255,7 @@ export const ProductForm = ({
 
      const quoteResult = await handleRequestQuote(data, product);
      console.log(quoteResult,"requestQuoteData");
-      localStorage.setItem("Q_R_data",JSON.stringify(quoteResult));
+      localStorage.setItem("Q_R_data",JSON.stringify(quoteResult?.data?.qr_product));
 
       if (quoteResult.error) {
         toast.error(`Error requesting quote: ${quoteResult.error}`);

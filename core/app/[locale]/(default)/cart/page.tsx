@@ -41,6 +41,7 @@ import { Flyout } from '~/components/common-flyout';
 import PromotionCookie from './_components/promotion-cookie';
 
 import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
+import RequestQuoteButton from '../sales-buddy/quote/_components/RequestQuoteButton';
 
 interface Params {
   locale: string;
@@ -411,10 +412,10 @@ export default async function Cart({ params }: Props) {
           </p>
         </div>
       </div>
-
       <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
 
       <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
+      <RequestQuoteButton/>
     </div>
   );
 }

@@ -7,257 +7,376 @@ import { Button } from '~/components/ui/button';
 import { BcImage } from '~/components/bc-image';
 import closeIcon from '~/public/add-to-cart/flyoutCloseIcon.svg';
 import { customerInfo } from '../actions/handleRequestQuote';
+import { CreateQuote } from '../actions/CreateQuote';
+import { usePathname } from 'next/navigation';
+import { GetCartDetials } from '../actions/GetCartDetials';
 
 interface FlyoutFormProps {
-    isOpen?: boolean; 
-    onOpenChange: (open: boolean) => void; 
+  isOpen?: boolean;
+  onOpenChange: (open: boolean) => void;
 }
 
 interface FormData {
-    firstName: string;
-    lastName: string;
-    contact: string;
-    email: string;
-    companyName: string;
+  first_name: string;
+  last_name: string;
+  phone_number: string;
+  email_id: string;
+  company_name: string;
 }
 
 interface CustomerData {
-    first_name?: string;
-    last_name?: string;
-    contact?: string;
-    email?: string;
-    company_name?: string;
+  id?: string;
+  first_name?: string;
+  last_name?: string;
+  phone_number?: string;
+  email?: string;
+  company_name?: string;
 }
 
+interface ProductOption {
+    type: string;
+    label: string;
+    modifierId?: string;
+    modifierOptionId?: string;
+  }
+  interface CartData {
+    bc_product_id: string|number;
+    bc_sku: string;
+    bc_product_name: string;
+    bc_variant_id: string|number;
+    bc_variant_sku: string;
+    bc_variant_name: string;
+    bc_modifier_id: string|number;
+    bc_modifier_option: string|number;
+    options: string;
+  }
 const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
-    const [formData, setFormData] = useState<FormData>({
-        firstName: '',
-        lastName: '',
-        contact: '',
-        email: '',
-        companyName: ''
-    });
-    const [customerData, setCustomerData] = useState<CustomerData | null>(null);
-    const [qReqPdata, setQReqPdata] = useState(null);
-    const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [formData, setFormData] = useState<FormData>({
+    first_name: '',
+    last_name: '',
+    phone_number: '',
+    email_id: '',
+    company_name: '',
+  });
+  const [customerData, setCustomerData] = useState<CustomerData | null>(null);
+  const [quoteProductData, setQuoteProductData] = useState(null);
+  const [existingSessionId, setExistingSessionId] = useState<string | null>(null);
+  const [errors, setErrors] = useState<Partial<FormData>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [quoteCartData, setquoteCartData] = useState<CartData[]>();
 
-
-    useEffect(() => {
-    let storedQuote = localStorage.getItem("Q_R_data");
-        if (storedQuote){
-            const parsedQuote = JSON.parse(storedQuote);
-            const dataSize = new Blob([parsedQuote]).size;
-// console.log(`Size of stringified object: ${dataSize} bytes`);
-            setQReqPdata(parsedQuote);
-        }
-        const loginCustomer = async () => {
-            const cData = await customerInfo();
-            if (cData) {
-                setCustomerData(cData as any);
-                console.log(cData,"DataTest");
-            }
+  const pageName = usePathname();
+  if (pageName !== '/cart/'){
+      useEffect(() => {
+        const fetchStoredQuote = () => {
+          const storedQuote = localStorage.getItem('Q_R_data');
+          if (storedQuote) {
+            setQuoteProductData(JSON.parse(storedQuote));
+          }
         };
-
-        loginCustomer();
-
-    },[]);
-
-
-useEffect(() => {
-
-    if (customerData) {
-        setFormData({
-            firstName: customerData.first_name || '',
-            lastName: customerData.last_name || '',
-            contact: customerData.contact || '',
-            email: customerData.email || '',
-            companyName: customerData.company_name || '',
-        });
-    }
-}, [customerData]);
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-
-        setErrors(prev => ({
-            ...prev,
-            [name]: ''
-        }));
-    };
     
-    const validateForm = () => {
+        fetchStoredQuote();
+    
+        const handleStorageChange = (event: StorageEvent) => {
+          if (event.key === 'Q_R_data') {
+            fetchStoredQuote();
+          }
+        };
+    
+        window.addEventListener('storage', handleStorageChange);
+    
+        return () => {
+          window.removeEventListener('storage', handleStorageChange);
+        };
+      }, []);
+  } 
 
-        const newErrors: Partial<FormData> = {};
-
-        // First Name Validation
-        if (!formData.firstName.trim()) {
-            newErrors.firstName = 'First Name is required';
-        } else if (formData.firstName.length < 2) {
-            newErrors.firstName = 'Must be at least 2 characters';
+  useEffect(() => {
+    const loadInitialData = async () => {
+      try {
+        const storedSessionId = localStorage.getItem('session_id$');
+        if (storedSessionId) {
+          setExistingSessionId(storedSessionId);
         }
+        
+        const cData = await customerInfo();
+        if (cData) {
+          setCustomerData(cData as CustomerData);
+        }
+      } catch (error) {
+        console.error('Error loading initial data:', error);
+      }
+
+    };
+
+    loadInitialData();
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      const fetchCartData = async () => {
+        try {
+          const CartItemsData: any = await GetCartDetials();
+          const cartLineItems = CartItemsData?.lineItems?.physicalItems || [];
+  
+          if (cartLineItems.length > 0) {
+            const lineItemsData = cartLineItems.map((item: any) => {
+              const selectedOptions = item?.selectedOptions || [];
+  
+              const productSelectedOpt = selectedOptions
+                ?.map((option: any) => {
+                  if (Array.isArray(item?.baseCatalogProduct?.productOptions?.edges)) {
+                    const optionFromProduct = item?.baseCatalogProduct?.productOptions?.edges.find(
+                      (prodOption: any) => prodOption.node.entityId === option.entityId
+                    );
+  
+                    if (optionFromProduct) {
+                      const selectedValue = optionFromProduct?.node?.values?.edges.find(
+                        (valueItem: any) => valueItem.node.entityId === option.valueEntityId
+                      );
+  
+                      if (selectedValue) {
+                        const isVariant = optionFromProduct.node.isVariantOption ?? false;
+  
+                        if (isVariant) {
+                          return { type: "variant", label: selectedValue.node.label };
+                        } else {
+                          return {
+                            type: "modifier",
+                            label: selectedValue.node.label,
+                            modifierId: optionFromProduct.node.entityId,
+                            modifierOptionId: selectedValue.node.entityId,
+                          };
+                        }
+                      }
+                    }
+                  }
+                  return undefined;
+                })
+                .filter(Boolean);
+  
+              const variantLabels = productSelectedOpt
+                ?.filter((item: any) => item?.type === "variant")
+                .map((item: any) => item?.label)
+                .join(", ");
+  
+              return {
+                bc_product_id: item.productEntityId,
+                bc_sku: item.sku,
+                bc_product_name: item.name,
+                bc_variant_id: item.variantEntityId,
+                bc_variant_sku: item?.sku,
+                bc_variant_name: variantLabels || "",
+                options: productSelectedOpt.map((opt: any) => opt.label).join(", "),
+              };
+            });
+  
+            setquoteCartData(lineItemsData);
+          } else {
+            setquoteCartData([]);
+          }
+
+        } catch (error) {
+          console.error("Error fetching updated cart data:", error);
+        }
+      };
+  
+      fetchCartData();
+    }
+  }, [isOpen]);
+  
+
+  useEffect(() => {
+    if (customerData) {
+      setFormData({
+        first_name: customerData.first_name || '',
+        last_name: customerData.last_name || '',
+        phone_number: customerData.phone_number || '',
+        email_id: customerData.email || '',
+        company_name: customerData.company_name || '',
+      });
+    }
+  }, [customerData]);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+    setErrors((prev) => ({
+      ...prev,
+      [name]: '',
+    }));
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: Partial<FormData> = {};
 
         // Last Name Validation
-        if (!formData.lastName.trim()) {
-            newErrors.lastName = 'Last Name is required';
-        } else if (formData.lastName.length < 2) {
-            newErrors.lastName = 'Must be at least 2 characters';
-        }
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = 'First Name is required';
+    } else if (formData.first_name.length < 2) {
+      newErrors.first_name = 'Must be at least 2 characters';
+    }
 
-        // Email Validation
-        if (!formData.email.trim()) {
-            newErrors.email = 'Email is required';
-        } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-            newErrors.email = 'Invalid email format';
-        }
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = 'Last Name is required';
+    } else if (formData.last_name.length < 2) {
+      newErrors.last_name = 'Must be at least 2 characters';
+    }
 
-        // Contact Validation (if entered, must be valid)
-        if (formData.contact.trim() && !/^\d{10,}$/.test(formData.contact)) {
-            newErrors.contact = 'Must be at least 10 digits';
-        }
+    if (!formData.email_id.trim()) {
+      newErrors.email_id = 'Email is required';
+    } else if (!/^\S+@\S+\.\S+$/.test(formData.email_id)) {
+      newErrors.email_id = 'Invalid email format';
+    }
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
+    if (formData.phone_number.trim() && !/^\d{10,}$/.test(formData.phone_number)) {
+      newErrors.phone_number = 'Must be at least 10 digits';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const generateSessionId = (): string => {
+    return `session_${new Date().getTime()}`;
+  };
+
+
+
+
+  const createQuoteRequest = async (sessionId: string, isNewQuote: boolean = true,cartData: CartData[]) => {
+
+    const quoteType = isNewQuote ? '' : 'old';
+
+    const dataToSend = {
+        quote_id: sessionId,
+        bc_customer_id: customerData?.id,
+        quote_type: quoteType,
+        qr_customer: formData,
+        qr_product: pageName === '/cart/' ? cartData : [quoteProductData],  
+        page_type: pageName === '/cart/' ? 'cart' : 'pdp',
     };
-
-
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-
-        if (!validateForm()) {
-            return;
+    console.log("Sending Data:", dataToSend);
+    try {
+      setIsSubmitting(true);
+      const result = await CreateQuote(dataToSend);
+      console.log(result, dataToSend, 'Submitted Result');
+      if (result) {
+        setSubmitStatus('success');
+        if (isNewQuote) {
+          localStorage.setItem('session_id$', sessionId);
+          setExistingSessionId(sessionId);
         }
+        onOpenChange(false);
+      } else {
+        setSubmitStatus('error');
+      }
+    } catch (error) {
+      console.error('Error creating quote:', error);
+      setSubmitStatus('error');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
-        console.log('Form submitted:', formData);
-        onOpenChange(false); 
-    };
-    
-    return (
-        <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
-            <Dialog.Portal>
-                <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
-                <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow left-[50%] sm:left-[unset] fixed right-[unset] sm:right-[0] top-[50%] z-[100] flex h-[100vh] w-[90vw] max-w-[610px] [transform:translate(-50%,-50%)] sm:translate-y-[-50%] animate-mobSlideInFromLeft sm:animate-slideInFromLeft flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-                    <div className="flex flex-col">
-                        <div className="flex flex-col items-center justify-center gap-[20px]">
-                            <Dialog.Close asChild>
-                                <button
-                                    aria-modal
-                                    className="text-violet11 inline-flex h-full appearance-none items-center justify-center rounded-full"
-                                    aria-label="Close"
-                                >
-                                    <BcImage
-                                        alt="Close Icon"
-                                        width={14}
-                                        height={14}
-                                        unoptimized={true}
-                                        className=""
-                                        src={closeIcon}
-                                    />
-                                </button>
-                            </Dialog.Close>
-                        </div>
-                        
-                        <Dialog.Content className="!pointer-events-auto">
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="firstName">First Name</Label>
-                                    <Input
-                                        id="firstName"
-                                        name="firstName"
-                                        type="text"
-                                        value={formData.firstName}
-                                        onChange={handleChange}
-                                        placeholder="Enter your first name"
-                                        className="w-full border rounded"
-                                        required
-                                    />
-                                     {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
-                                </div>
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!validateForm()) return;
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="lastName">Last Name</Label>
-                                    <Input
-                                        id="lastName"
-                                        name="lastName"
-                                        type="text"
-                                        value={formData.lastName}
-                                        onChange={handleChange}
-                                        placeholder="Enter your last name"
-                                        className="w-full border rounded"
-                                        required
-                                    />
-                                     {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
-                                </div>
+    const newSessionId = generateSessionId();
+    await createQuoteRequest(newSessionId,true, quoteCartData as CartData[]);
+  };
 
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input
-                                        id="email"
-                                        name="email"
-                                        type="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        placeholder="Enter your email"
-                                        className="w-full border rounded"
-                                        required
-                                    />
-                                    {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="companyName">Company Name</Label>
-                                    <Input
-                                        id="companyName"
-                                        name="companyName"
-                                        type="text"
-                                        value={formData.companyName}
-                                        onChange={handleChange}
-                                        placeholder="Enter your Company Name"
-                                        className="w-full border rounded"
-                                    />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="contact">Contact Number</Label>
-                                    <Input
-                                        id="contact"
-                                        name="contact"
-                                        type="tel"
-                                        value={formData.contact}
-                                        onChange={handleChange}
-                                        placeholder="Enter your contact number"
-                                        className="w-full border rounded"
-                                    />
-                                    {errors.contact && <p className="text-red-500 text-sm">{errors.contact}</p>}
-                                </div>
+  const handleAddToExistingQuote = async () => {
+    if (!existingSessionId || !validateForm()) return;
+    await createQuoteRequest(existingSessionId,false,quoteCartData as CartData[]);
+  };
 
+  return (
+    <Dialog.Root open={isOpen} onOpenChange={onOpenChange}>
+      <Dialog.Portal>
+        <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
+        <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow fixed left-[50%] right-[unset] top-[50%] z-[100] flex h-[100vh] w-[90vw] max-w-[610px] animate-mobSlideInFromLeft flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] [transform:translate(-50%,-50%)] focus:outline-none sm:left-[unset] sm:right-[0] sm:translate-y-[-50%] sm:animate-slideInFromLeft">
+          <div className="flex items-center justify-between">
+            <h2 className="text-xl font-semibold">Request Quote</h2>
+            <Dialog.Close asChild>
+              <button className="rounded-full p-2 hover:bg-gray-100">
+                <BcImage alt="Close" src={closeIcon} width={14} height={14} unoptimized={true} />
+              </button>
+            </Dialog.Close>
+          </div>
 
-                                <div className="flex justify-end space-x-2 pt-4">
-                                    <Dialog.Close asChild>
-                                        <Button variant="primary" className="bg-gray-100">
-                                            Cancel
-                                        </Button>
-                                    </Dialog.Close>
-                                    <Button type="submit" className="bg-blue-600 text-white">
-                                        Submit
-                                    </Button>
-                                </div>
-                            </form>
-                        </Dialog.Content>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-4">
+              {Object.entries({
+                firstName: { label: 'First Name', name: 'first_name', type: 'text' },
+                lastName: { label: 'Last Name', name: 'last_name', type: 'text' },
+                email: { label: 'Email', name: 'email_id', type: 'email' },
+                companyName: { label: 'Company Name', name: 'company_name', type: 'text' },
+                contact: { label: 'Contact Number', name: 'phone_number', type: 'tel' },
+              }).map(([key, field]) => (
+                <div key={key} className="space-y-2">
+                  <Label htmlFor={key}>{field.label}</Label>
+                  <Input
+                    id={key}
+                    name={field.name}
+                    type={field.type}
+                    value={formData[field.name as keyof FormData]}
+                    onChange={handleChange}
+                    placeholder={`Enter your ${field.label.toLowerCase()}`}
+                    className="w-full rounded border"
+                    required={field.name !== 'company_name' && field.name !== 'phone_number'}
+                  />
+                  {errors[field.name as keyof FormData] && (
+                    <p className="text-sm text-red-500">{errors[field.name as keyof FormData]}</p>
+                  )}
+                </div>
+              ))}
+            </div>
 
-                        <Dialog.Close asChild>
-                            <button
-                                aria-modal
-                                className="text-violet11 hover:bg-violet4 focus:shadow-violet7 absolute right-[10px] top-[10px] inline-flex h-[25px] w-[25px] appearance-none items-center justify-center rounded-full"
-                                aria-label="Close"
-                            ></button>
-                        </Dialog.Close>
-                    </div>
-                </Dialog.Content>
-            </Dialog.Portal>
-        </Dialog.Root>
-    );
+            <div className="flex justify-end space-x-2 pt-4">
+              <Dialog.Close asChild>
+                <Button type="button" variant="primary" className="bg-gray-100">
+                  Cancel
+                </Button>
+              </Dialog.Close>
+
+              {existingSessionId && (
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="bg-yellow-500 text-white hover:bg-yellow-600"
+                  onClick={handleAddToExistingQuote}
+                  disabled={isSubmitting}
+                >
+                    {isSubmitting ? 'Adding...' : 'Add to Existing Quote'}
+                  
+                </Button>
+              )}
+
+              <Button
+                type="submit"
+                className="bg-blue-600 text-white hover:bg-blue-700"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? 'Submitting...' : 'Submit'}
+              </Button>
+            </div>
+          </form>
+
+          {submitStatus === 'error' && (
+            <p className="mt-2 text-sm text-red-500">
+              There was an error submitting your quote. Please try again.
+            </p>
+          )}
+        </Dialog.Content>
+      </Dialog.Portal>
+    </Dialog.Root>
+  );
 };
 
 export default FlyoutForm;

@@ -5,7 +5,7 @@ import { FragmentOf, graphql } from '~/client/graphql';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cookies } from 'next/headers';
 import { getSessionUserDetails } from '~/auth';
-import { findCustomerDetails } from '../../_actions/find-customer';
+import { findCustomerDetails } from './FindCustomerDetails';
 
 
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
@@ -13,7 +13,6 @@ type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOp
 
 export const customerInfo = async () => {
   const getCustomerData = await getSessionUserDetails();
-console.log(getCustomerData,"customer");
   let response = null;
     if (getCustomerData?.user?.email) {
       response = await findCustomerDetails({
@@ -32,7 +31,6 @@ console.log(getCustomerData,"customer");
     };
 
     return responseData;
-
 }
 
 export const handleRequestQuote = async ( data: ProductFormData,
@@ -202,7 +200,8 @@ const prodModifierOptionLabel = productSelectedOpt?.filter(item => item?.type ==
                 bc_variant_name:variantLabels,
                 bc_modifier_id:prodModifierId,
                 bc_modifier_option:prodModifierOptionId,
-                bc_modifier_option_name:prodModifierOptionLabel
+                options:prodModifierOptionLabel,
+                Test:optio
               }
             }
 
