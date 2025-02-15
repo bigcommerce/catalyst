@@ -21,6 +21,8 @@ import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_components/review-summary';
 import { getWishlists } from '~/components/graphql-apis';
 
+import { CloseOut } from '~/app/[locale]/(default)/product/[slug]/_components/closeOut';
+
 interface OptionValue {
   entityId: number;
   label: string;
@@ -163,9 +165,7 @@ const ProductCard = ({
             option_values: variant.option_values,
           });
         }
-      } catch (error) {
-        console.error('Error fetching variant details:', error);
-      }
+      } catch (error) { }
     };
 
     const fetchData = async () => {
@@ -280,37 +280,46 @@ const ProductCard = ({
                 <span>{variantDetails.mpn}</span>
               </p>
               {updatedWishlist[0]?.UpdatePriceForMSRP && (
-                <ProductPrice
-                  defaultPrice={updatedWishlist[0].UpdatePriceForMSRP.originalPrice || 0}
-                  defaultSalePrice={
-                    updatedWishlist[0]?.UpdatePriceForMSRP.hasDiscount
-                      ? updatedWishlist[0].UpdatePriceForMSRP.updatedPrice
-                      : updatedWishlist[0]?.UpdatePriceForMSRP.warrantyApplied
+                <div className='flex flex-col gap-[5px] items-center'>
+                  <ProductPrice
+                    defaultPrice={updatedWishlist[0].UpdatePriceForMSRP.originalPrice || 0}
+                    defaultSalePrice={
+                      updatedWishlist[0]?.UpdatePriceForMSRP.hasDiscount
                         ? updatedWishlist[0].UpdatePriceForMSRP.updatedPrice
-                        : null
-                  }
-                  currency={
-                    updatedWishlist[0].UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'
-                  }
-                  format={format}
-                  warrantyApplied={updatedWishlist[0].UpdatePriceForMSRP.warrantyApplied}
-                  options={{
-                    useAsyncMode: false,
-                    useDefaultPrices: true,
-                  }}
-                  classNames={{
-                    root: 'product-price mt-2 flex justify-center items-center gap-[0.5em] text-center xl:text-center',
-                    newPrice:
-                      'text-center text-[18px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                    oldPrice:
-                      'inline-flex items-baseline text-center text-[14px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
-                    discount:
-                      'whitespace-nowrap text-center text-[14px] font-normal leading-8 tracking-[0.15px] text-brand-400',
-                    price:
-                      'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px] text-brand-400',
-                    msrp: '-ml-[0.5em] mb-1 text-[10px] text-gray-500',
-                  }}
-                />
+                        : updatedWishlist[0]?.UpdatePriceForMSRP.warrantyApplied
+                          ? updatedWishlist[0].UpdatePriceForMSRP.updatedPrice
+                          : null
+                    }
+                    currency={
+                      updatedWishlist[0].UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'
+                    }
+                    format={format}
+                    // showMSRP={updatedWishlist[0].UpdatePriceForMSRP.showDecoration}
+                    warrantyApplied={updatedWishlist[0].UpdatePriceForMSRP.warrantyApplied}
+                    options={{
+                      useAsyncMode: false,
+                      useDefaultPrices: true,
+                    }}
+                    classNames={{
+                      root: 'product-price mt-2 flex justify-center items-center gap-[0.5em] text-center xl:text-center',
+                      newPrice:
+                        'text-center text-[18px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                      oldPrice:
+                        'inline-flex items-baseline text-center text-[14px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
+                      discount:
+                        'whitespace-nowrap text-center text-[14px] font-normal leading-8 tracking-[0.15px] text-brand-400',
+                      price:
+                        'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px] text-brand-400',
+                      msrp: '-ml-[0.5em] mb-1 text-[10px] text-gray-500',
+                    }}
+                  />
+                  <CloseOut
+                    entityId={item.productEntityId}
+                    variantId={item.variantEntityId}
+                    isFromPDP={true}
+                    isFromCart={false}
+                  />
+                </div>
               )}
               {variantDetails.option_values.map((option, index) => {
                 const updatedValue =

@@ -36,7 +36,7 @@ const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['s
 
   return (
     <>
-      <div className="flex w-1/2 flex-col gap-[3px] text-[16px] font-normal leading-[32px] tracking-[0.5px]">
+      <div className="flex w-full  xl:w-1/2 flex-col gap-[3px] text-[16px] font-normal leading-[32px] tracking-[0.5px]">
         <div className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#002A37]">
           {t('orderTotal')}: {format.number(grandTotal.value, {
             style: 'currency',
@@ -275,7 +275,7 @@ export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:a
 
   return (
     <div className="mt-[1rem] mb-[2rem] w-[100%] flex justify-center text-[#353535]">
-      <div className="flex w-[88%] flex-col gap-[20px]">
+      <div className="flex w-full mx-5 xl:mx-0 xl:w-[88%] flex-col gap-[20px]">
         <div className='hidden xl:block'>
           <ComponentsBreadcrumbs breadcrumbs={breadcrumbs} />
         </div>
@@ -348,8 +348,8 @@ export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:a
               {t('orderSummary')}
             </div>
           </div>
-          <div className="flex justify-between gap-[30px]">
-            <div className="flex w-1/2 flex-col gap-[30px]">
+          <div className="flex flex-col xl:flex-row justify-between gap-[30px] -mt-[10px] xl:mt-0">
+            <div className="flex w-1/2 flex-col gap-[20px] xl:gap-[30px]">
               <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
                 <div>
                   {t('confirmationNumber')}: <span className="font-[700]">{orderState?.orderId}</span>

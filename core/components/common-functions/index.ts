@@ -7,6 +7,7 @@ import {
   generateCouponPromotion,
   generateCouponCodeInPromotion,
   updateCouponPromotion,
+  updateCartItemMaxPriceRuleDisccount,
 } from '../management-apis';
 import { getCookieData } from '../graphql-apis';
 
@@ -353,11 +354,11 @@ export const getMetaFieldsByProduct = async (
 
 export const commonSettinngs = async (brand_ids: any) => {
   brand_ids = [...new Set(brand_ids.filter((id: any) => id !== undefined))];
-  if(brand_ids !== undefined && brand_ids.length > 0) {
+  if (brand_ids !== undefined && brand_ids.length > 0) {
     var res = await getCommonSettingByBrandChannel(brand_ids);
     return res.output;
-  }else{
-    return {status:500,output:[]}
+  } else {
+    return { status: 500, output: [] };
   }
 };
 export const retrieveMpnData = (product: any, productid: Number, variantId: Number) => {
@@ -569,7 +570,7 @@ export const zeroTaxCalculation = async (cartObject: any) => {
           postDataArray.push({
             id: item?.entityId,
             discounted_amount: taxAmountEachProduct?.toFixed(2),
-            prodId: item?.productEntityId
+            prodId: item?.productEntityId,
           });
           productIdsArray.push(item?.productEntityId);
         }
@@ -579,30 +580,38 @@ export const zeroTaxCalculation = async (cartObject: any) => {
       let finalDiscountAmount: any = (overAllTaxAmount - zeroTaxCouponAmount)?.toFixed(2);
       const cookieStore = await getCookieData();
       const getCartZTCpn = cookieStore.get('ztcpn_data')?.value;
-      if(!getCartZTCpn) {
-        let couponCodeZerotax: string = 'Zero_Tax_'+generateRandomString(8);
-        let createPromotionData = await generateCouponPromotion(finalDiscountAmount, postDataArray, couponCodeZerotax);
-        if(createPromotionData?.data?.id) {
+      if (!getCartZTCpn) {
+        let couponCodeZerotax: string = 'Zero_Tax_' + generateRandomString(8);
+        let createPromotionData = await generateCouponPromotion(
+          finalDiscountAmount,
+          postDataArray,
+          couponCodeZerotax,
+        );
+        if (createPromotionData?.data?.id) {
           await generateCouponCodeInPromotion(couponCodeZerotax, createPromotionData?.data?.id);
           await addCouponCodeToCart(cartId, couponCodeZerotax);
           return {
             id: createPromotionData?.data?.id,
             amount: finalDiscountAmount,
             code: couponCodeZerotax,
-            action: 'create'
-          }
+            action: 'create',
+          };
         }
       } else {
-        let promoData = (getCartZTCpn) ? JSON.parse(getCartZTCpn): [];
-        if(promoData?.id) {
-          let updatePromotionData = await updateCouponPromotion(finalDiscountAmount, postDataArray, promoData?.id);
-          if(updatePromotionData?.data?.id) {
+        let promoData = getCartZTCpn ? JSON.parse(getCartZTCpn) : [];
+        if (promoData?.id) {
+          let updatePromotionData = await updateCouponPromotion(
+            finalDiscountAmount,
+            postDataArray,
+            promoData?.id,
+          );
+          if (updatePromotionData?.data?.id) {
             return {
               id: updatePromotionData?.data?.id,
               amount: finalDiscountAmount,
               code: promoData?.code,
-              action: 'update'
-            }
+              action: 'update',
+            };
           }
         }
       }
@@ -700,3 +709,26 @@ export const manageDeletedProducts = {
     return deletedProducts.some((item: any) => item.productId === productId);
   },
 };
+
+// cookie-discounted-price
+interface PriceUpdateData {
+  cartId: string;
+  price: number;
+  productId: string;
+  quantity: number;
+}
+
+export async function callforMaxPriceRuleDiscountFunction(data: any) {
+  try {
+    const result = await updateCartItemMaxPriceRuleDisccount({
+      cartId: data.cartId,
+      price: data.price,
+      productId: data.productId,
+      quantity: data.quantity,
+    });
+    return result;
+  } catch (error) {
+    console.error('Error in max price rule update:', error);
+    throw error;
+  }
+}

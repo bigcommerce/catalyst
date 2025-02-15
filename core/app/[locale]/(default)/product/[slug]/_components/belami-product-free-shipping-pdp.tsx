@@ -1,5 +1,5 @@
 'use client';
-import { getDeliveryMessage } from "~/components/management-apis";
+import { getMetaFieldValue } from "~/components/management-apis";
 import React, { useState, useEffect } from "react";
 import { Spinner } from "@/vibes/soul/primitives/spinner";
 
@@ -9,7 +9,7 @@ interface DeliveryMessageProps {
   isFromPDP: boolean;
 }
 
-export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
+export const DeliveryMessage: React.FC<DeliveryMessageProps> = ({
   entityId,
   variantId,
   isFromPDP,
@@ -21,7 +21,7 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
     const fetchMessage = async () => {
       try {
         setLoading(true);
-        const message = await getDeliveryMessage(entityId, variantId);
+        const message = await getMetaFieldValue(entityId, variantId, "delivery_message");
         setDeliveryMessage(message);
       } catch (err) {
         ('');
@@ -54,6 +54,8 @@ export const FreeDelivery: React.FC<DeliveryMessageProps> = ({
           </div>
         )
       }
+      
     </div>
+    
   );
 };

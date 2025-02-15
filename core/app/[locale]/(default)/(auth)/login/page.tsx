@@ -137,7 +137,7 @@ export default async function Login({ params }: Props) {
               Shopping for a Business?
             </p>
  
-            <button className="box-border flex max-w-[258px] flex-row items-center justify-center gap-1 px-[10px] py-[2px] rounded border border-[#4EAECC] bg-white xl:px-6 xl:py-2 xl:border-[#B4DDE9]">
+            <button className="box-border flex max-w-[258px] flex-row items-center justify-center gap-1 px-[10px] py-[2px] rounded border border-[#4EAECC] bg-white xl:px-6 xl:py-2 xl:border-[#B4DDE9] hover:bg-brand-50">
               <div className="flex items-center text-[14px] font-medium tracking-wide text-[#002A37]">
                 <Link className="text-[16px]" href="/trade-account/trade-step1/">
                   OPEN A TRADE ACCOUNT
@@ -156,7 +156,7 @@ export default async function Login({ params }: Props) {
           </div>
  
           <div className="login-sec-child mx-[1px] flex w-[calc(90vw)] flex-grow flex-col gap-[20px] self-center rounded-[5px] p-0 mt-[7rem] sm:mt-[-2rem] md:mt-[7rem] lg:mt-[2.5rem] xl:mt-0 xl:w-[calc(35.28vw)] xl:items-center xl:self-auto">
-            <div className="flex w-full flex-col gap-[20px] rounded-[5px] bg-[#008BB7] p-[40px] text-white">
+            <div className="flex w-full flex-col gap-[20px] rounded-[5px] bg-brand-400 p-[40px] text-white">
               <h3 className="flex items-center justify-center text-center text-[34px] font-bold tracking-[0.25px]">
                 {t('CreateAccount.heading')}
               </h3>
