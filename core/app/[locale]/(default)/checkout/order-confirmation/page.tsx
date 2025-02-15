@@ -28,8 +28,8 @@ const mapOrderData = (order: OrderDetailsType) => {
     ? removeEdgesAndNodes(order.consignments.shipping).map(
       ({ shipments, lineItems, ...otherItems }) => ({
         ...otherItems,
-        lineItems: removeEdgesAndNodes(lineItems),
-        shipments: removeEdgesAndNodes(shipments),
+        lineItems: lineItems && removeEdgesAndNodes(lineItems),
+        shipments: shipments && removeEdgesAndNodes(shipments),
       }),
     )
     : undefined;

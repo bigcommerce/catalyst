@@ -16,11 +16,15 @@ import { Button } from '~/components/ui/button';
 import { calculateProductPrice, getDiscountPercentage, retrieveMpnData } from '~/components/common-functions';
 import { commonSettinngs } from '~/components/common-functions';
 import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
-import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
-import { CheckProductFreeShipping } from '~/components/management-apis';
+import { DeliveryMessage } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
+import { getSessionUserDetails } from '~/auth';
+import {
+  CheckProductFreeShipping,
+} from '~/components/management-apis';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { Promotion } from '../../product/[slug]/_components/promotion';
+import { CloseOut } from '../../product/[slug]/_components/closeOut';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -364,11 +368,10 @@ export const CartItem = async ({
           <div className="flex-1">
             <p className="hidden text-base text-gray-500">{product?.brand}</p>
             <div
-              className={`grid grid-cols-1 gap-1 sm:grid-cols-[auto_auto] ${
-                cookie_agent_login_status == true
-                  ? 'xl:grid-cols-[40%_20%_40%]'
-                  : 'xl:grid-cols-[60%_40%]'
-              }`}
+              className={`grid grid-cols-1 gap-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
+                ? 'xl:grid-cols-[40%_20%_40%]'
+                : 'xl:grid-cols-[60%_40%]'
+                }`}
             >
               <div className="">
                 <Link href={product?.url}>
@@ -376,6 +379,16 @@ export const CartItem = async ({
                     {product?.name}
                   </p>
                 </Link>
+                <div className='block sm:hidden'>
+                  {product.variantEntityId && (
+                    <CloseOut
+                      entityId={product.productEntityId}
+                      variantId={product.variantEntityId}
+                      isFromPDP={false}
+                      isFromCart={true}
+                    />
+                  )}
+                </div>
                 {changeTheProtectedPosition?.length == 0 && (
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
                     <div className="cart-options flex flex-wrap gap-2">
@@ -506,15 +519,26 @@ export const CartItem = async ({
                         }
                       })}
 
-                      {product.variantEntityId && (
-                        <FreeDelivery
-                          entityId={product.productEntityId}
-                          variantId={product.variantEntityId}
-                          isFromPDP={false}
-                        />
-                      )}
+
                     </div>
                   </div>
+                )}
+                {product.variantEntityId && (
+                  <>
+                    <div className='hidden sm:block'>
+                      <CloseOut
+                        entityId={product.productEntityId}
+                        variantId={product.variantEntityId}
+                        isFromPDP={false}
+                        isFromCart={true}
+                      />
+                    </div>
+                    <DeliveryMessage
+                      entityId={product.productEntityId}
+                      variantId={product.variantEntityId}
+                      isFromPDP={false}
+                    />
+                  </>
                 )}
               </div>
 
@@ -525,7 +549,7 @@ export const CartItem = async ({
                     <div className="mb-0">
                       <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
                         {product?.originalPrice.value &&
-                        product?.originalPrice.value !== product?.listPrice.value ? (
+                          product?.originalPrice.value !== product?.listPrice.value ? (
                           <p className="line-through">
                             {format.number(product?.originalPrice?.value * product?.quantity, {
                               style: 'currency',

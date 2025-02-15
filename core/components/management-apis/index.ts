@@ -118,15 +118,33 @@ export const GetProductMetaFields = async (entityId: number, nameSpace: string) 
   return metaFieldsArray;
 };
 
-export const getDeliveryMessage = async (entityId: number, variantId: number) => {
-  let metaFields: any = await getMetaFieldsByProductVariant(
-    entityId,
-    variantId,
-    'delivery_message',
-  );
-  if (metaFields?.data?.length > 0) {
-    const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
-    const deliveryKey = deliveryMessages.join(',');
+export const getMetaFieldValue = async (
+  entityId: number,
+  variantId: number,
+  namespace: string
+) => {
+  // Function to fetch and parse meta fields
+  const getMetaFields = async (entityId: number, variantId: number, namespace: string) => {
+    let metaFields: any = await getMetaFieldsByProductVariant(entityId, variantId, namespace);
+    if (metaFields?.data?.length > 0) {
+      return metaFields.data.map((item: any) => item.value);
+    }
+
+    metaFields = await getMetaFieldsByProduct(entityId, namespace);
+    if (metaFields?.data?.length > 0) {
+      return metaFields.data.map((item: any) => item.value);
+    }
+    return null;
+  };
+
+  // Fetch closeout or delivery message based on namespace
+  const metaFieldValues = await getMetaFields(entityId, variantId, namespace);
+
+  if (metaFieldValues && namespace === 'Details') {
+    
+    return metaFieldValues;
+  } else if (metaFieldValues && namespace === 'delivery_message') {
+    const deliveryKey = metaFieldValues.join(',');
     try {
       const parsedValue = JSON?.parse(deliveryKey);
       return parsedValue;
@@ -134,17 +152,7 @@ export const getDeliveryMessage = async (entityId: number, variantId: number) =>
       return null;
     }
   }
-  await getMetaFieldsByProduct(entityId, 'delivery_message');
-  if (metaFields?.data?.length > 0) {
-    const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
-    const deliveryKey = deliveryMessages.join(',');
-    try {
-      const parsedValue = JSON?.parse(deliveryKey);
-      return parsedValue;
-    } catch (error) {
-      return null;
-    }
-  }
+
   return null;
 };
 
