@@ -22,7 +22,6 @@ import { useFormatter } from 'next-intl';
 import { ReviewSummary } from '~/belami/components/reviews';
 import { Compare } from '~/components/ui/product-card/compare';
 import WishlistAddToList from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
-import { useWishlists } from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/hooks';
 import { ProductPrice } from './product-price';
 
 const useAsyncMode = process.env.NEXT_PUBLIC_USE_ASYNC_MODE === 'true';
@@ -454,7 +453,6 @@ export function Hit({
   isLoaded = false,
   view = 'grid',
 }: HitProps) {
-  const { wishlists } = useWishlists();
 
   const format = useFormatter();
   const currency = 'USD';
@@ -530,7 +528,6 @@ export function Hit({
           </figure>
 
           <WishlistAddToList
-            wishlists={wishlists}
             hasPreviousPage={false}
             product={{
               entityId: parseInt(hit.objectID.toString()),
@@ -700,7 +697,7 @@ export function Hit({
               </figure>
 
               <WishlistAddToList
-                wishlists={wishlists}
+            
                 hasPreviousPage={false}
                 product={{
                   entityId: parseInt(hit.objectID.toString()),

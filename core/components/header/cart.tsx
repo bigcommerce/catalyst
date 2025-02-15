@@ -7,7 +7,7 @@ import { Link } from '~/components/link';
 import { CartIcon } from './cart-icon';
 
 export const CartLink = ({ children }: { children: ReactNode }) => (
-  <Link className="relative flex justify-between p-3 font-semibold pl-0" href="/cart">
+  <Link className="relative flex justify-between p-3 pl-0 font-semibold" href="/cart">
     {children}
   </Link>
 );

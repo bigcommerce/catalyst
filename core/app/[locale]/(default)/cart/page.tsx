@@ -170,9 +170,8 @@ export default async function Cart({ params }: Props) {
       return [{ error: 'Failed to retrive data' }];
     }
   };
-  const product_data_in_cart = cookie_agent_login_status == "true"
-    ? await get_product_price_data_in_cart(cartId)
-    : [];
+  const product_data_in_cart =
+    cookie_agent_login_status == 'true' ? await get_product_price_data_in_cart(cartId) : [];
   const lineItems: any = [
     ...cart.lineItems.physicalItems,
     ...cart.lineItems.digitalItems,
@@ -201,7 +200,9 @@ export default async function Cart({ params }: Props) {
             !accessoriesSkuArray?.includes(getInfo?.variantId)
               ? accessoriesSkuArray.push(getInfo?.variantId)
               : '';
-            let accessoriesInfo = lineItems?.find((line: any) => line?.variantEntityId == getInfo?.variantId);
+            let accessoriesInfo = lineItems?.find(
+              (line: any) => line?.variantEntityId == getInfo?.variantId,
+            );
             if (accessoriesInfo) {
               let accessSpreadData: any = { ...accessoriesInfo };
               if (accessSpreadData) {
@@ -330,7 +331,6 @@ export default async function Cart({ params }: Props) {
 
       <div className="cart-right-side-details px-18 w-full pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
         <ul className="cart-details-item col-span-2 lg:w-full">
-
           {updatedProduct.map((product: any) => (
             <CartItem
               brandId={product?.baseCatalogProduct?.brand?.entityId}
@@ -346,8 +346,7 @@ export default async function Cart({ params }: Props) {
               discountRules={discountRules}
             />
           ))}
-          {
-            CustomItems.length > 0 &&
+          {CustomItems.length > 0 &&
             CustomItems?.map((data) => {
               return (
                 <CartProductComponent

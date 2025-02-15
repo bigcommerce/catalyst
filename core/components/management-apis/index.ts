@@ -418,6 +418,36 @@ export const GetOrderMetaFields = async (orderId: number) => {
   }
 };
 
+export const UpdateOrderData = async (
+  orderId: number,
+  staffNotes: string,
+) => {
+  try {
+    const postData={
+      staff_notes:staffNotes
+    };
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/orders/${orderId}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: JSON.stringify(postData),
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export const GetVariantsByProductId = async (entityId: Number) => {
   try {
     let { data } = await fetch(
