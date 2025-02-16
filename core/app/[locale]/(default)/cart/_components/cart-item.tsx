@@ -562,10 +562,10 @@ export const CartItem = async ({
                       </div>
                     ) : (
                       <div className="mb-0">
-                        {product?.UpdatePriceForMSRP && product?.listPrice &&
+                        {product?.UpdatePriceForMSRP && product?.extendedSalePrice &&
                           (product?.UpdatePriceForMSRP?.warrantyApplied ? (
                             <p className="text-left sm:text-right">
-                              {format.number(product.listPrice.value, {
+                              {format.number(product.extendedSalePrice.value, {
                                 style: 'currency',
                                 currency: currencyCode,
                               })}
@@ -573,7 +573,7 @@ export const CartItem = async ({
                           ) : product?.UpdatePriceForMSRP.hasDiscount === true ? (
                             <>
                               <p className="text-left sm:text-right">
-                                {format.number(product.listPrice.value, {
+                                {format.number(product.extendedSalePrice.value, {
                                   style: 'currency',
                                   currency: currencyCode,
                                 })}
@@ -586,7 +586,7 @@ export const CartItem = async ({
                                   })}
                                 </p>
                                 <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                                  {product.UpdatePriceForMSRP.discount}% Off
+                                {getDiscountPercentage(product.UpdatePriceForMSRP.originalPrice, product.extendedSalePrice.value)}% Off
                                 </p>
                               </div>
                             </>
