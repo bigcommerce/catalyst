@@ -29,7 +29,9 @@ const RequestQuoteButton = () => {
   return (
     <div className="custom-class relative mt-3 flex items-center justify-between bg-[#E7F5F8] p-4 xl:mt-[1.5em]">
       <div className="flex flex-1 justify-center">
-        {cusData === 7 || cusData === 8 || cusData === 4 ? (
+        {cusData
+        // cusData === 7 || cusData === 8 || cusData === 4
+         ? (
           <p className="text-center text-[0.75rem] font-normal leading-[1.125rem] tracking-[0.025rem] text-[#000000]">
             <span className="block xl:contents">{t('heading')}</span>
             <span className="border-b border-[#006380] text-[#006380]">
