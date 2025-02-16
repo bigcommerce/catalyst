@@ -28,8 +28,8 @@ const mapOrderData = (order: OrderDetailsType) => {
     ? removeEdgesAndNodes(order.consignments.shipping).map(
       ({ shipments, lineItems, ...otherItems }) => ({
         ...otherItems,
-        lineItems: removeEdgesAndNodes(lineItems),
-        shipments: removeEdgesAndNodes(shipments),
+        lineItems: lineItems && removeEdgesAndNodes(lineItems),
+        shipments: shipments && removeEdgesAndNodes(shipments),
       }),
     )
     : undefined;
@@ -130,7 +130,7 @@ export default async function OrderConfirmation() {
                   ? accessoriesSkuArray.push(getInfo?.variantId)
                   : '';
                 let accessoriesInfo = data.map((line: any) => {
-                  const variants = removeEdgesAndNodes(line?.baseCatalogProduct?.variants);
+                  const variants = line?.baseCatalogProduct?.variants && removeEdgesAndNodes(line?.baseCatalogProduct?.variants);
                   if (variants) {
                     const matchingVariants = variants.filter((id: any) =>
                       id?.entityId == getInfo?.variantId)

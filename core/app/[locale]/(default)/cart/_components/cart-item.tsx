@@ -16,11 +16,15 @@ import { Button } from '~/components/ui/button';
 import { calculateProductPrice, getDiscountPercentage, retrieveMpnData } from '~/components/common-functions';
 import { commonSettinngs } from '~/components/common-functions';
 import { NoShipCanada } from '../../product/[slug]/_components/belami-product-no-shipping-canada';
-import { FreeDelivery } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
-import { CheckProductFreeShipping } from '~/components/management-apis';
+import { DeliveryMessage } from '../../product/[slug]/_components/belami-product-free-shipping-pdp';
+import { getSessionUserDetails } from '~/auth';
+import {
+  CheckProductFreeShipping,
+} from '~/components/management-apis';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { Promotion } from '../../product/[slug]/_components/promotion';
+import { CloseOut } from '../../product/[slug]/_components/closeOut';
 
 const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -362,26 +366,39 @@ export const CartItem = async ({
               )}
             </div>
 
-            <div className="flex-1">
-              <p className="hidden text-base text-gray-500">{product?.brand}</p>
-              <div
-                className={`grid grid-cols-1 gap-1 sm:grid-cols-[auto_auto] xl:grid-cols-[60%_40%]`}
-              >
-                <div className="">
-                  <Link href={product?.url}>
-                    <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
-                      {product?.name}
-                    </p>
-                  </Link>
-                  {changeTheProtectedPosition?.length == 0 && (
-                    <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
-                      <div className="cart-options flex flex-wrap gap-2">
-                        <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                          SKU: {product?.sku}
-                        </p>
-                      </div>
-                    </div>
+          <div className="flex-1">
+            <p className="hidden text-base text-gray-500">{product?.brand}</p>
+            <div
+              className={`grid grid-cols-1 gap-1 sm:grid-cols-[auto_auto] ${cookie_agent_login_status == true
+                ? 'xl:grid-cols-[40%_20%_40%]'
+                : 'xl:grid-cols-[60%_40%]'
+                }`}
+            >
+              <div className="">
+                <Link href={product?.url}>
+                  <p className="text-left text-[1rem] font-normal leading-[2rem] tracking-[0.009375rem] text-[#353535]">
+                    {product?.name}
+                  </p>
+                </Link>
+                <div className='block sm:hidden'>
+                  {product.variantEntityId && (
+                    <CloseOut
+                      entityId={product.productEntityId}
+                      variantId={product.variantEntityId}
+                      isFromPDP={false}
+                      isFromCart={true}
+                    />
                   )}
+                </div>
+                {changeTheProtectedPosition?.length == 0 && (
+                  <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
+                    <div className="cart-options flex flex-wrap gap-2">
+                      <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
+                        SKU: {product?.sku}
+                      </p>
+                    </div>
+                  </div>
+                )}
 
                   {/* promotion */}
 
@@ -494,34 +511,45 @@ export const CartItem = async ({
                           }
                         })}
 
-                        {product.variantEntityId && (
-                          <FreeDelivery
-                            entityId={product.productEntityId}
-                            variantId={product.variantEntityId}
-                            isFromPDP={false}
-                          />
-                        )}
-                      </div>
-                    </div>
-                  )}
-                </div>
 
-                <div className="">
-                  <div className="cart-deleteIcon relative flex flex-col gap-0 text-right sm:gap-2 md:items-end [&_.cart-item-delete]:absolute [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:sm:static [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0">
-                    <RemoveItem currency={currencyCode} product={product} />
-                    {cookie_agent_login_status == true ? (
-                      <div className="mb-0">
-                        <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-                          {product?.originalPrice.value &&
-                            product?.originalPrice.value !== product?.listPrice.value ? (
-                            <p className="line-through">
-                              {format.number(product?.originalPrice?.value * product?.quantity, {
-                                style: 'currency',
-                                currency: currencyCode,
-                              })}
-                            </p>
-                          ) : null}
-                          {/* <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
+                    </div>
+                  </div>
+                )}
+                {product.variantEntityId && (
+                  <>
+                    <div className='hidden sm:block'>
+                      <CloseOut
+                        entityId={product.productEntityId}
+                        variantId={product.variantEntityId}
+                        isFromPDP={false}
+                        isFromCart={true}
+                      />
+                    </div>
+                    <DeliveryMessage
+                      entityId={product.productEntityId}
+                      variantId={product.variantEntityId}
+                      isFromPDP={false}
+                    />
+                  </>
+                )}
+              </div>
+
+              <div className="">
+                <div className="cart-deleteIcon relative flex flex-col gap-0 text-right sm:gap-2 md:items-end [&_.cart-item-delete]:absolute [&_.cart-item-delete]:right-0 [&_.cart-item-delete]:top-[50px] [&_.cart-item-delete]:sm:static [&_.cart-item-quantity]:mt-5 [&_.cart-item-quantity]:sm:mt-0">
+                  <RemoveItem currency={currencyCode} product={product} />
+                  {cookie_agent_login_status == true ? (
+                    <div className="mb-0">
+                      <div className="flex items-center gap-[3px] text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
+                        {product?.originalPrice.value &&
+                          product?.originalPrice.value !== product?.listPrice.value ? (
+                          <p className="line-through">
+                            {format.number(product?.originalPrice?.value * product?.quantity, {
+                              style: 'currency',
+                              currency: currencyCode,
+                            })}
+                          </p>
+                        ) : null}
+                        {/* <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
                           {discountPriceText}
                         </p> */}
                         </div>
@@ -534,10 +562,10 @@ export const CartItem = async ({
                       </div>
                     ) : (
                       <div className="mb-0">
-                        {product?.UpdatePriceForMSRP && product?.listPrice &&
+                        {product?.UpdatePriceForMSRP && product?.extendedSalePrice &&
                           (product?.UpdatePriceForMSRP?.warrantyApplied ? (
                             <p className="text-left sm:text-right">
-                              {format.number(product.listPrice.value, {
+                              {format.number(product.extendedSalePrice.value, {
                                 style: 'currency',
                                 currency: currencyCode,
                               })}
@@ -545,7 +573,7 @@ export const CartItem = async ({
                           ) : product?.UpdatePriceForMSRP.hasDiscount === true ? (
                             <>
                               <p className="text-left sm:text-right">
-                                {format.number(product.listPrice.value, {
+                                {format.number(product.extendedSalePrice.value, {
                                   style: 'currency',
                                   currency: currencyCode,
                                 })}
@@ -558,7 +586,7 @@ export const CartItem = async ({
                                   })}
                                 </p>
                                 <p className="text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#5C5C5C]">
-                                  {product.UpdatePriceForMSRP.discount}% Off
+                                {getDiscountPercentage(product.UpdatePriceForMSRP.originalPrice, product.extendedSalePrice.value)}% Off
                                 </p>
                               </div>
                             </>

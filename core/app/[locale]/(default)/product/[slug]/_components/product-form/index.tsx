@@ -173,6 +173,65 @@ export const ProductForm = ({
 
       return;
     }
+      const matchedPriceRule = priceMaxRules?.find(
+        (r: PriceMaxRule) => r.skus && r.skus.includes(product?.parent?.sku || ''),
+      );
+
+      // Calculate discounted price
+      const originalPrice = product?.UpdatePriceForMSRP?.originalPrice || 0;
+      let finalPrice = originalPrice;
+      if (matchedPriceRule) {
+        const discountPercent = Number(matchedPriceRule.discount);
+        finalPrice = originalPrice - originalPrice * (discountPercent / 100);
+      }
+
+      // Add price max rule info to data
+      const modifiedData = {
+        ...data,
+        quantity,
+        priceMaxDiscount: matchedPriceRule?.discount || null,
+        originalPrice: originalPrice,
+        discountedPrice: finalPrice,
+      };
+
+      console.log('Data being passed to handleAddToCart:', modifiedData);
+
+      // Get result from handleAddToCart first
+      const result = await handleAddToCart(modifiedData, product);
+      console.log('Add to cart response:', JSON.stringify(result));
+
+      // If max price rule exists and cart was created successfully, update the price
+      if (result.status === 'success' && matchedPriceRule && result.data?.entityId) {
+        const priceUpdateData = {
+          cartId: result.data.entityId,
+          price: finalPrice,
+          productId: data.product_id,
+          quantity: quantity,
+        };
+
+        try {
+          const priceUpdateResult = await callforMaxPriceRuleDiscountFunction(priceUpdateData);
+          console.log('Price update result:', priceUpdateResult);
+        } catch (error) {
+          console.error('Error updating price:', error);
+        }
+      }
+
+      // Get and log cart ID
+      const cartId = await getCartIdCookie();
+
+      if (cartId && typeof cartId === 'object' && 'value' in cartId && cartId.value === undefined) {
+        setCartIdForCheck(result?.data?.entityId);
+        // console.log('Set cart ID for check:', result?.data?.entityId);
+      }
+
+      if (result.error) {
+        toast.error(t('error'), {
+          icon: <AlertCircle className="text-error-secondary" />,
+        });
+        cart.decrement(quantity);
+        return;
+      }
 
     toast.success(
       () => (
@@ -217,26 +276,85 @@ export const ProductForm = ({
         });
       }
     }
+      toast.success(
+        () => (
+          <div className="flex items-center gap-3">
+            <span>
+              {t.rich('success', {
+                cartItems: quantity,
+                cartLink: (chunks) => (
+                  <Link
+                    className="hover:text-secondary font-semibold text-primary"
+                    href="/cart"
+                    prefetch="viewport"
+                    prefetchKind="full"
+                  >
+                    {chunks}
+                  </Link>
+                ),
+              })}
+            </span>
+          </div>
+        ),
+        { icon: <Check className="text-success-secondary" /> },
+      );
 
-    const transformedProduct = productItemTransform(product);
+      if (result?.data?.entityId) {
+        let cartData = await getCartData(result?.data?.entityId);
+        console.log('Cart Data:', {
+          cartId: result.data.entityId,
+          cartItems: cartData?.data?.lineItems?.physicalItems,
+        });
 
-    // Track Add To Cart action...
-    if (product && product.prices) {
-      KlaviyoTrackAddToCart({ product: product as any, user: sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null });
+        if (cartData?.data?.lineItems?.physicalItems) {
+          productFlyout.setCartDataFn(cartData?.data);
+          cartData?.data?.lineItems?.physicalItems?.forEach((items: any) => {
+            if (items?.productEntityId == data?.product_id) {
+              let selectedOptions = items?.selectedOptions;
+              let productSelection = true;
+              selectedOptions?.some((selOptions: any) => {
+                if (data?.['attribute_' + selOptions?.entityId] != selOptions?.valueEntityId) {
+                  productSelection = false;
+                  return true;
+                }
+              });
+              if (productSelection) {
+                productFlyout.setProductDataFn(items);
+              }
+            }
+          });
+        }
+      }
 
-      aa('addedToCartObjectIDs', {
-        eventName: 'Product Added To Cart',
-        index: indexName,
-        objectIDs: [String(transformedProduct.product_id)],
-        objectData: [
-          {
-            price: transformedProduct.purchase_price,
-            quantity: quantity,
-          },
-        ],
-        currency: transformedProduct.currency,
-      });
-    }
+      const transformedProduct = productItemTransform(product);
+
+      // Track Add To Cart action...
+      if (product && product.prices) {
+        KlaviyoTrackAddToCart({
+          product: product as any,
+          user:
+            sessionUser && sessionUser.user && sessionUser.user?.email
+              ? ({
+                  email: sessionUser.user.email,
+                  first_name: sessionUser.user?.firstName,
+                  last_name: sessionUser.user?.lastName,
+                } as any)
+              : null,
+        });
+
+        aa('addedToCartObjectIDs', {
+          eventName: 'Product Added To Cart',
+          index: indexName,
+          objectIDs: [String(transformedProduct.product_id)],
+          objectData: [
+            {
+              price: transformedProduct.purchase_price,
+              quantity: quantity,
+            },
+          ],
+          currency: transformedProduct.currency,
+        });
+      }
 
     bodl.cart.productAdded({
       product_value: transformedProduct.purchase_price * quantity,
@@ -256,13 +374,29 @@ export const ProductForm = ({
      const quoteResult = await handleRequestQuote(data, product);
      console.log(quoteResult,"requestQuoteData");
       localStorage.setItem("Q_R_data",JSON.stringify(quoteResult?.data?.qr_product));
+      bodl.cart.productAdded({
+        product_value: transformedProduct.purchase_price * quantity,
+        currency: transformedProduct.currency,
+        line_items: [
+          {
+            ...transformedProduct,
+            quantity,
+          },
+        ],
+      });
+    } else if (action === 'requestQuote') {
+      // quotebutton handle
+      const quoteResult = await handleRequestQuote(data, product);
+      console.log(quoteResult, 'requestQuoteData');
+
+      localStorage.setItem('Q_R_data', JSON.stringify(quoteResult));
 
       if (quoteResult.error) {
         toast.error(`Error requesting quote: ${quoteResult.error}`);
         return;
       }
-  }
-}
+    }
+  };
 
   // If showing in sticky header, return only the Submit component
   if (showInSticky) {
@@ -289,6 +423,12 @@ export const ProductForm = ({
           <Submit data={product} isSticky={true} />
           <button type="submit"  onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote') )}>Request Quote</button>
 
+          <button
+            type="submit"
+            onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}
+          >
+            Request Quote
+          </button>
         </form>
       </FormProvider>
     );
@@ -434,7 +574,14 @@ export const ProductForm = ({
           <QuantityField />
 
           <div className="mt-0 flex flex-col gap-4 @md:flex-row">
-          <button type="submit" className='hidden' id='custom-quote'  onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}>Request Quote</button>
+            <button
+              type="submit"
+              className="hidden"
+              id="custom-quote"
+              onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}
+            >
+              Request Quote
+            </button>
             <Submit data={product} />
             <div className="hidden w-full">
               <Button disabled type="submit" variant="secondary">

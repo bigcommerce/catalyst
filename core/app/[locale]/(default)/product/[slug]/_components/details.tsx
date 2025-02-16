@@ -11,7 +11,7 @@ import CertificationsAndRatings from '~/components/ui/pdp/belami-certification-r
 import { PayPalPayLater } from '~/components/ui/pdp/belami-payment-pdp';
 import { RequestQuote } from '~/components/ui/pdp/belami-request-a-quote-pdp';
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import { FreeDelivery } from './belami-product-free-shipping-pdp';
+import { DeliveryMessage } from './belami-product-free-shipping-pdp';
 import { ProductForm } from './product-form';
 import { ProductFormFragment } from './product-form/fragment';
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
@@ -27,6 +27,7 @@ import { ProductPrice } from '~/belami/components/search/product-price';
 import { Promotion } from '~/belami/components/search/hit';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import RequestQuoteButton from '../../../sales-buddy/quote/_components/RequestQuoteButton';
+import { CloseOut } from './closeOut';
 
 interface ProductOptionValue {
   entityId: number;
@@ -72,9 +73,9 @@ interface Props {
   priceMaxRules: any;
   getAllCommonSettinngsValues: any;
   isFromQuickView: boolean;
-  priceUpdatedProduct:any;
+  priceUpdatedProduct: any;
   customerGroupDetails: any;
-  swatchOptions:any;
+  swatchOptions: any;
   sessionUser: any;
 }
 
@@ -175,7 +176,7 @@ export const Details = ({
   isFromQuickView,
   priceUpdatedProduct,
   swatchOptions,
-  sessionUser
+  sessionUser,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -187,6 +188,7 @@ export const Details = ({
 
   const searchParams = useSearchParams();
   const customFields = removeEdgesAndNodes(product.customFields);
+  console.log(customFields, "custom")
   const productOptions = removeEdgesAndNodes(product.productOptions);
   const variants = removeEdgesAndNodes(product.variants);
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
@@ -267,10 +269,10 @@ export const Details = ({
     const defaultValue = values.find((value) => value.isDefault);
     return defaultValue?.label || 'Select';
   };
-  
-  const updatedPriceForMSRP = isFromQuickView 
-  ? priceUpdatedProduct?.UpdatePriceForMSRP 
-  : product?.UpdatePriceForMSRP;
+
+  const updatedPriceForMSRP = isFromQuickView
+    ? priceUpdatedProduct?.UpdatePriceForMSRP
+    : product?.UpdatePriceForMSRP;
 
   return (
     <div className="">
@@ -315,42 +317,43 @@ export const Details = ({
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
-                          <div className="inline text-[14px] font-normal">
-                            {productOptions
-                              .filter((option) => option.__typename === 'MultipleChoiceOption')
-                              .map((option, index, filteredArray) => {
-                                if (option.__typename === 'MultipleChoiceOption') {
-                                  const selectedValue = getSelectedValue(
-                                    option as MultipleChoiceOption,
-                                  );
-                                  const displayValue = option.displayStyle === 'Swatch' 
-                                  ? selectedValue.split('|')[0]?.trim()
-                                  : selectedValue;
-                                                                    
-                                  return (
-                                    <span key={option.entityId}>
-                                      <span className="font-bold">{option.displayName}:</span>
-                                      <span className="text-[15px]"> {displayValue}</span>
-                                      {index < filteredArray.length - 1 && (
-                                        <span className="mx-1">|</span>
-                                      )}
-                                    </span>
-                                  );
-                                }
-                                return null;
-                              })}
-                          </div>
-                        )}
+                        <div className="inline text-[14px] font-normal">
+                          {productOptions
+                            .filter((option) => option.__typename === 'MultipleChoiceOption')
+                            .map((option, index, filteredArray) => {
+                              if (option.__typename === 'MultipleChoiceOption') {
+                                const selectedValue = getSelectedValue(
+                                  option as MultipleChoiceOption,
+                                );
+                                const displayValue =
+                                  option.displayStyle === 'Swatch'
+                                    ? selectedValue.split('|')[0]?.trim()
+                                    : selectedValue;
+
+                                return (
+                                  <span key={option.entityId}>
+                                    <span className="font-bold">{option.displayName}:</span>
+                                    <span className="text-[15px]"> {displayValue}</span>
+                                    {index < filteredArray.length - 1 && (
+                                      <span className="mx-1">|</span>
+                                    )}
+                                  </span>
+                                );
+                              }
+                              return null;
+                            })}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
                   {product?.UpdatePriceForMSRP && (
                     <ProductPrice
-                    defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
-                    defaultSalePrice={
-                      product?.UpdatePriceForMSRP.hasDiscount
-                        ? product.UpdatePriceForMSRP.updatedPrice
+                      defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
+                      defaultSalePrice={
+                        product?.UpdatePriceForMSRP.hasDiscount
+                          ? product.UpdatePriceForMSRP.updatedPrice
                           : null
                       }
                       priceMaxRule={priceMaxRules?.find(
@@ -517,8 +520,8 @@ export const Details = ({
           </div>
           <ReviewSummary data={product} />
         </div>
-
-        {updatedPriceForMSRP && (
+        <div className = "flex flex-row gap-[10px] items-center justify-center xl:justify-start">
+        {product?.UpdatePriceForMSRP && (
           <ProductPrice
             defaultPrice={updatedPriceForMSRP?.originalPrice || 0}
             defaultSalePrice={
@@ -544,7 +547,7 @@ export const Details = ({
               useDefaultPrices: true,
             }}
             classNames={{
-              root: 'product-price mt-2 flex items-center gap-[0.5em] text-center xl:text-left',
+              root: 'product-price mt-2 flex items-center gap-[0.5em] text-center max-w-fit xl:text-left',
               newPrice:
                 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
               oldPrice:
@@ -556,7 +559,15 @@ export const Details = ({
             }}
           />
         )}
-
+        <div>
+          <CloseOut 
+          entityId={product.entityId} 
+          variantId={selectedVariantId} 
+          isFromPDP={true} 
+          isFromCart={false}
+        />
+        </div>
+        </div>
         <Promotion
           promotions={promotions}
           product_id={productId}
@@ -566,7 +577,7 @@ export const Details = ({
         />
         <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
           {selectedVariantId && (
-            <FreeDelivery
+            <DeliveryMessage
               entityId={product.entityId}
               variantId={selectedVariantId}
               isFromPDP={true}
@@ -593,6 +604,7 @@ export const Details = ({
             customerGroupDetails={customerGroupDetails}
             swatchOptions={swatchOptions}
             sessionUser={sessionUser}
+            priceMaxRules={priceMaxRules}
           />
         </div>
 
@@ -654,37 +666,37 @@ export const Details = ({
         </div>
 
         {/* <ProductSchema product={product} /> */}
-        {!isFromQuickView &&
-        <div>
-          <PayPalPayLater
-            amount={product?.prices?.price?.value?.toString() || '0'}
-            currency={product?.prices?.price?.currencyCode || 'USD'}
-          />
+        {!isFromQuickView && (
+          <div>
+            <PayPalPayLater
+              amount={product?.prices?.price?.value?.toString() || '0'}
+              currency={product?.prices?.price?.currencyCode || 'USD'}
+            />
 
+            {/* <RequestQuote children={children3} /> */}
+            <RequestQuoteButton />
+            <CertificationsAndRatings
+              certificationIcon={certificationIcon}
+              product={product}
+              children={children4}
+              triggerLabel={triggerLabel4}
+            />
+            <ProductDetailDropdown
+              product={product}
+              dropdownSheetIcon={dropdownSheetIcon}
+              triggerLabel={triggerLabel5}
+              children={children5}
+            />
 
-          {/* <RequestQuote children={children3} /> */}
-          <RequestQuoteButton/>
-          <CertificationsAndRatings
-            certificationIcon={certificationIcon}
-            product={product}
-            children={children4}
-            triggerLabel={triggerLabel4}
-          />
-          <ProductDetailDropdown
-            product={product}
-            dropdownSheetIcon={dropdownSheetIcon}
-            triggerLabel={triggerLabel5}
-            children={children5}
-          />
+            {/* <ShippingReturns /> */}
 
-          {/* <ShippingReturns /> */}
+            <div className="flex justify-center gap-4 xl:mt-7">
+              <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
 
-          <div className="flex justify-center gap-4 xl:mt-7">
-            <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
-
-            <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
+              <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
+            </div>
           </div>
-        </div>}
+        )}
       </div>
     </div>
   );

@@ -14,6 +14,11 @@ import TeamMembersSection from './trade-team-member';
 import HappyProsSection from './trade-testimonial';
 import type { FormField } from '../_components/register-form1';
 
+import TradeBannerDesk from '~/public/tradeAccount/trade_desk.png';
+import TradeBannerTab from '~/public/tradeAccount/trade_tab.png';
+import TradeBannerMob from '~/public/tradeAccount/trade_mob.png';
+import Trade20 from '~/public/tradeAccount/20_desk.png';
+
 const FALLBACK_COUNTRY = {
   entityId: 226,
   name: 'United States',
@@ -66,13 +71,13 @@ export interface RegisterForm1Props {
   reCaptchaSettings: any;
 }
 
-import patjoheatAndShade from '~/public/accountIcons/patjoheatAndShade.svg'
-import baileyStreet from '~/public/accountIcons/baileyStreet.svg'
-import OneStopLightning from '~/public/accountIcons/oneStopLightning.svg'
-import lunaWarehouse from '~/public/accountIcons/lunaWarehouse.svg'
-import canadaLightning from '~/public/accountIcons/canadaLightning.svg'
-import homeclickBlack from '~/public/accountIcons/homeclickBlack.svg'
-import tradeCheckCircle from '~/public/accountIcons/tradeCheckCircle.svg'
+import patjoheatAndShade from '~/public/accountIcons/patjoheatAndShade.svg';
+import baileyStreet from '~/public/accountIcons/baileyStreet.svg';
+import OneStopLightning from '~/public/accountIcons/oneStopLightning.svg';
+import lunaWarehouse from '~/public/accountIcons/lunaWarehouse.svg';
+import canadaLightning from '~/public/accountIcons/canadaLightning.svg';
+import homeclickBlack from '~/public/accountIcons/homeclickBlack.svg';
+import tradeCheckCircle from '~/public/accountIcons/tradeCheckCircle.svg';
 
 const imageUrls = {
   tradeAccountHeader: imageManagerImageUrl('trade-account-header.png', 'original'),
@@ -229,18 +234,51 @@ export default async function Trade() {
 
   return (
     <div className="trade-register-section bg-[#d3d3d338]">
-      <div className="registeration-breadcrumbs-heading">
+      <div className="registeration-breadcrumbs-heading border-t-[10px] border-t-[#008BB7]">
         {/* Hero Image Section */}
-        <div className="relative w-full">
-          <div className="trade-banner mb-[30px] lg:mb-[0px]">
-            <BcImage
-              alt="Hero Background"
-              width={1600}
-              height={300}
-              unoptimized={true}
-              src={imageUrls.tradeAccountHeader}
-              className="trade-banner-image"
-            />
+        <div className="relative w-full xl:border-t xl:border-t-white">
+          <div className="trade-banner mb-[30px] xl:mb-[0px]">
+            <div className="relative bg-black/50 xl:bg-[unset]">
+              <BcImage
+                src={TradeBannerDesk}
+                width={1600}
+                height={173}
+                unoptimized={true}
+                alt="Hero Background"
+                className="hidden w-full xl:block"
+              />
+              <BcImage
+                src={TradeBannerTab}
+                width={744}
+                height={194}
+                unoptimized={true}
+                alt="Hero Background"
+                className="h-[194px] w-full hidden sm:block xl:hidden"
+              />
+
+              <BcImage
+                src={TradeBannerMob}
+                width={375}
+                height={194}
+                unoptimized={true}
+                alt="Hero Background"
+                className="h-[194px] w-full block sm:hidden"
+              />
+              <BcImage
+                src={Trade20}
+                width={170}
+                height={140}
+                unoptimized={true}
+                alt="20 Years"
+                className="absolute left-1/2 right-[unset] top-[10%] h-[84px] w-[97px] -translate-x-[50%] -translate-y-[10%] xl:left-[unset] xl:right-[10%] xl:top-1/2 xl:block xl:h-[140px] xl:w-[170px] xl:-translate-y-[50%]"
+              />
+              <div className="absolute flex h-[116px] w-full -translate-y-[50%] items-center justify-center bg-[unset] text-center top-[calc(10%+105px)] sm:top-[calc(10%+105px)] xl:top-1/2 xl:bg-black/50">
+                <div className="xl:text-[20px] text-[14px] font-[400] xl:font-[500] leading-[24px] xl:leading-[32px] tracking-[0.25px] xl:tracking-[0.15px] text-white w-[95%] sm:w-[90%] xl:w-[calc((710/1600)*100vw)]">
+                  20+ Years Providing Quality Experiences to Builders, Multi-Family, Residential and
+                  Light Commercial Professionals.
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -286,4 +324,4 @@ export default async function Trade() {
   );
 }
 
-export const runtime = 'edge';
+// export const runtime = 'edge';

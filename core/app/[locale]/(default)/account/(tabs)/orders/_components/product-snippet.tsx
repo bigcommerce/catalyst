@@ -202,8 +202,8 @@ export const ProductSnippet = async ({
           </button>
         </div>
       )}
-      <div className={`flex w-full flex-row items-center justify-between p-0 px-[10px] pb-[10px] ${from == 'order' ? 'mt-[10px]' : ''}`}>
-        <div className={`flex-row items-center gap-[20px] p-0  ${from == 'order' ? 'w-full pr-0 grid [grid-template-columns:88px_auto] sm:flex' : 'w-2/3 pr-[20px] flex'}`}>
+      <div className={`flex w-full flex-col xl:flex-row items-start gap-[20px] xl:gap-0 xl:items-center justify-start xl:justify-between p-0 px-5 pb-5 xl:px-[10px] xl:pb-[10px] ${from == 'order' ? 'mt-[10px]' : ''}`}>
+        <div className={`flex-row items-center gap-[20px] p-0  ${from == 'order' ? 'w-full pr-0 grid [grid-template-columns:88px_auto] sm:flex' : 'xl:w-2/3 pr-[20px] xl:flex grid grid-cols-1 sm:grid-cols-[auto_auto] w-full'}`}>
           <div>
             {isImageAvailable && (
               <BcImage
@@ -261,12 +261,12 @@ export const ProductSnippet = async ({
               {t('qty')}: {product.quantity}
             </div>
           </div>
-          <div className="flex min-w-[25%] flex-col justify-center text-right">
+          <div className="flex min-w-[unset] sm:[grid-column:1_/_span_2] xl:min-w-[25%] flex-col justify-center text-left xl:text-right">
             <Price price={price} />
           </div>
         </div>
         {from != 'order' && (
-          <div className="w-1/3">
+          <div className="w-full xl:w-1/3">
             <div className="flex flex-col gap-[5px]">
               {/*<button className="flex w-full flex-row items-center justify-center gap-[5px] rounded-[3px] bg-[#008BB7] p-[5px] px-[10px] text-[14px] font-medium leading-[32px] tracking-[1.25px] text-white">
               CANCEL ORDER
@@ -274,10 +274,10 @@ export const ProductSnippet = async ({
             <div className="h-[42px] self-center text-center text-[12px] font-normal leading-[18px] tracking-[0.4px] text-[#000000]">
               Eligible Through mm/dd/yy
             </div>
-            <button className="flex h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-[#ffffff] p-[5px_10px] text-[14px] font-[500] leading-[32px] tracking-[1.25px] text-[#002A37]">
+            <button className="flex h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-[#ffffff] p-[5px_10px] text-[14px] font-[500] leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50">
               LEAVE A REVIEW
             </button>*/}
-              <button className="flex h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-[#ffffff] p-[5px_10px] text-[14px] font-[500] leading-[32px] tracking-[1.25px] text-[#002A37]">
+              <button className="flex h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-[#ffffff] p-[5px_10px] text-[14px] font-[500] leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50">
                 REPLACE ITEMS
               </button>
             </div>

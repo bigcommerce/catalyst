@@ -136,11 +136,11 @@ export default async function Cart({ params }: Props) {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const sessionUser = await getSessionUserDetails();
   let customerGroupDetails: CustomerGroup = {
-    discount_rules: []
+    discount_rules: [],
   };
-  if(sessionUser){
-   const customerGroupId = sessionUser?.customerGroupId;
-   customerGroupDetails = customerGroupId ? await GetCustomerGroupById(customerGroupId) : null;
+  if (sessionUser) {
+    const customerGroupId = sessionUser?.customerGroupId;
+    customerGroupDetails = customerGroupId ? await GetCustomerGroupById(customerGroupId) : null;
   }
 
   const { data } = await client.fetch({
@@ -247,13 +247,10 @@ export default async function Cart({ params }: Props) {
       return currentLength > longestLength ? current : longest;
     }, categories[0]);
 
-    return categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map(
-      (edge) => edge.node.entityId
-    ) || [];
-  }
+    return categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
+  };
 
   const discountRules = customerGroupDetails?.discount_rules;
-
 
   var getBrandIds = lineItems?.map((item: any) => {
     return item?.baseCatalogProduct?.brand?.entityId;
@@ -264,13 +261,13 @@ export default async function Cart({ params }: Props) {
     return {
       ...product,
       categoryIds: getCategoryIds(product),
-    }
+    };
   });
 
   const updatedProduct: any[][] = [];
   let checkZeroTax: any = await zeroTaxCalculation(data.site);
-  
-  if(checkZeroTax?.id) {
+
+  if (checkZeroTax?.id) {
     const { data } = await client.fetch({
       document: CheckoutPageQuery,
       variables: { cartId },
@@ -286,7 +283,12 @@ export default async function Cart({ params }: Props) {
   }
 
   for (const eachProduct of updatedLineItemWithoutAccessories) {
-    const price = await calculateProductPrice(eachProduct, "cart", discountRules, eachProduct.categoryIds);
+    const price = await calculateProductPrice(
+      eachProduct,
+      'cart',
+      discountRules,
+      eachProduct.categoryIds,
+    );
     updatedProduct.push(...price);
   }
 
@@ -308,7 +310,7 @@ export default async function Cart({ params }: Props) {
       <div className="text-center lg:hidden">
         <ScrollButton targetId="order-summary" />
       </div>
-      {checkZeroTax && (<PromotionCookie promoObj={checkZeroTax} />)}
+      {checkZeroTax && <PromotionCookie promoObj={checkZeroTax} />}
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
 
       <h1 className="cart-heading pt-0 text-center text-[24px] font-normal leading-[32px] lg:text-left lg:text-[24px]">
@@ -416,6 +418,7 @@ export default async function Cart({ params }: Props) {
 
       <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
       <RequestQuoteButton/>
+
     </div>
   );
 }
