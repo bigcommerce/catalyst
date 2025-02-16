@@ -41,6 +41,7 @@ import { BcImage } from '~/components/bc-image';
 import { Label } from '~/components/ui/form';
 import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
 import SkyxFlyout from '~/components/skyx-flyout/skyxFlyout';
+import { callforMaxPriceRuleDiscountFunction } from '~/components/common-functions';
 
 aa('init', {
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
@@ -109,7 +110,8 @@ export const ProductForm = ({
   customerGroupDetails,
   showInSticky = false,
   swatchOptions,
-  sessionUser = null
+  sessionUser = null,
+  priceMaxRules
 }: Props) => {
   
   const t = useTranslations('Product.Form');
@@ -159,20 +161,6 @@ export const ProductForm = ({
     cart.increment(quantity);
 
     if (action === 'addToCart') {
-    const result = await handleAddToCart(data, product);
-    const cartId = await getCartIdCookie();
-    if (cartId?.value == undefined) {
-      setCartIdForCheck(result?.data?.entityId);
-    }
-    if (result.error) {
-      toast.error(t('error'), {
-        icon: <AlertCircle className="text-error-secondary" />,
-      });
-
-      cart.decrement(quantity);
-
-      return;
-    }
       const matchedPriceRule = priceMaxRules?.find(
         (r: PriceMaxRule) => r.skus && r.skus.includes(product?.parent?.sku || ''),
       );
