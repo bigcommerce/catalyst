@@ -17,6 +17,8 @@ import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
 import { getProductData } from './page-data';
 
+export const revalidate = 3600;
+
 const cachedProductDataVariables = cache(
   async (productId: string, searchParams: Props['searchParams']) => {
     const options = await searchParams;
@@ -192,6 +194,14 @@ interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
+
+// export async function generateStaticParams() {
+//   const slugs = await getProductSlugs();
+
+//   console.log();
+
+//   return slugs;
+// }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug } = await props.params;

@@ -33,7 +33,7 @@ try {
 }
 
 // Define the path to the .env.local file
-const envFilePath = path.resolve(__dirname, '.env.local');
+const envFilePath = path.resolve(__dirname, '../.env.local');
 
 if (!fs.existsSync(envFilePath)) {
   console.error('Error: .env.local file not found.');
