@@ -7,7 +7,7 @@
   margin-block: 2cm;
 }
 
-.popup-container-parent ~ div[data-radix-popper-content-wrapper] div{
+.popup-container-parent ~ div[data-radix-popper-content-wrapper] div {
   width: var(--radix-popper-anchor-width) !important;
 }
 
@@ -117,7 +117,19 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+/* promotion */
+.promotion-pdp .promotion-plp {
+  text-align: left;
+  background: unset;
+}
+.promotion-pdp .promotion-plp {
+  padding-top: 0px;
+  margin: 0px;
+}
+.promotion-icon svg {
+  position: relative;
+  top: 0.5px;
+}
 /* Desktop */
 .Open_Sans {
   font-family: var(--font-Open_Sans);
@@ -551,8 +563,8 @@ button.show-all {
   .ais-RefinementList-item--selected
   .ais-RefinementList-checkbox,
 .ais-RefinementList:not(.number-of-blades)
-.ais-RefinementList-item--selected
-.ais-RefinementList-checkbox,
+  .ais-RefinementList-item--selected
+  .ais-RefinementList-checkbox,
 .ais-GeoSearch-input:checked {
   background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E') !important;
   background-color: var(--brand-400) !important;
