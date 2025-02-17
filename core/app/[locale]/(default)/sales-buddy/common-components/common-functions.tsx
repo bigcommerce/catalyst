@@ -1,4 +1,7 @@
-import { get_cart_price_adjuster_data, get_product_by_entity_id } from '../_actions/get-product-by-entityid';
+import {
+  get_cart_price_adjuster_data,
+  get_product_by_entity_id,
+} from '../_actions/get-product-by-entityid';
 import { updateProductQuantity } from '../_actions/update-quantity';
 
 let overAllProductData: never[] = [];
@@ -7,8 +10,8 @@ export const validateInput = (type: string, value: string | any[], action: strin
   switch (type) {
     case 'phone': {
       // Phone number validation: not empty, length between 7 and 25, only digits
-      let min_length = action == 'find' ? 0 : 7
-      let max_length = 25
+      let min_length = action == 'find' ? 0 : 7;
+      let max_length = 25;
       const phoneRegex = new RegExp(`^\\d{${min_length},${max_length}}$`);
       if (!value && action != 'find') return 'Phone number cannot be empty.';
       return phoneRegex.test(value)
@@ -41,18 +44,22 @@ export const validateInput = (type: string, value: string | any[], action: strin
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       if (!value && action != 'find') return 'Email cannot be empty.';
 
-      return value == '' && action == 'find' ? "" : emailRegex.test(value) ? '' : 'Enter a valid email address.';
+      return value == '' && action == 'find'
+        ? ''
+        : emailRegex.test(value)
+          ? ''
+          : 'Enter a valid email address.';
     }
 
     case 'company': {
       // Company name validation: not empty, length between 1 and 50
-      if (!value) return 
+      if (!value) return;
       return value.length <= 50 ? '' : 'Company name must be 50 characters or less.';
     }
     case 'cart-id': {
       // Company name validation: not empty, length between 1 and 50
       if (!value) return '';
-      return value.length != 17 ?  'Enter Valid Session Id' : '';
+      return value.length != 17 ? 'Enter Valid Session Id' : '';
     }
     case 'session-id': {
       // Company name validation: not empty, length between 1 and 50
@@ -85,7 +92,6 @@ export const get_product_data = async (entityId: any) => {
     return [{ error: 'Failed to retrive data' }];
   }
 };
-
 
 // -------- onclick session id get all available data of user and machine-----------------
 
@@ -140,24 +146,26 @@ export interface SystemInfo {
     platform: string;
     deviceType: 'Mobile' | 'Desktop';
   };
-  connection: {
-    effectiveType?: string;
-    downlink?: number;
-    rtt?: number;
-    saveData?: boolean;
-  } | 'Network Information API not supported';
+  connection:
+    | {
+        effectiveType?: string;
+        downlink?: number;
+        rtt?: number;
+        saveData?: boolean;
+      }
+    | 'Network Information API not supported';
 }
 
 export async function getEnhancedSystemInfo(): Promise<SystemInfo> {
   const systemInfo: SystemInfo = {
     network: {
       ip: 'Loading...',
-      location: {}
+      location: {},
     },
     geolocation: {
       latitude: null,
       longitude: null,
-      accuracy: null
+      accuracy: null,
     },
     browser: {
       userAgent: navigator.userAgent,
@@ -178,24 +186,26 @@ export async function getEnhancedSystemInfo(): Promise<SystemInfo> {
       availHeight: window.screen.availHeight,
       colorDepth: window.screen.colorDepth,
       pixelDepth: window.screen.pixelDepth,
-      orientation: screen.orientation ? screen.orientation.type : 'unknown'
+      orientation: screen.orientation ? screen.orientation.type : 'unknown',
     },
     timezone: {
       timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      timezoneOffset: new Date().getTimezoneOffset()
+      timezoneOffset: new Date().getTimezoneOffset(),
     },
     hardware: {
       deviceMemory: (navigator as any).deviceMemory,
       hardwareConcurrency: navigator.hardwareConcurrency,
       platform: navigator.platform,
-      deviceType: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop'
+      deviceType: /Mobile|Android|iPhone/i.test(navigator.userAgent) ? 'Mobile' : 'Desktop',
     },
-    connection: (navigator as any).connection ? {
-      effectiveType: (navigator as any).connection.effectiveType,
-      downlink: (navigator as any).connection.downlink,
-      rtt: (navigator as any).connection.rtt,
-      saveData: (navigator as any).connection.saveData
-    } : 'Network Information API not supported'
+    connection: (navigator as any).connection
+      ? {
+          effectiveType: (navigator as any).connection.effectiveType,
+          downlink: (navigator as any).connection.downlink,
+          rtt: (navigator as any).connection.rtt,
+          saveData: (navigator as any).connection.saveData,
+        }
+      : 'Network Information API not supported',
   };
 
   if (Number(process.env.NEXT_PUBLIC_SALES_BUDDY_API_IP_LOCATION_PERMISSION) === 1) {
@@ -220,7 +230,7 @@ export async function getEnhancedSystemInfo(): Promise<SystemInfo> {
         city: locationData.city,
         zip: locationData.zip,
         isp: locationData.isp,
-        org: locationData.org
+        org: locationData.org,
       };
     } catch (error) {
       systemInfo.network.ip = 'Failed to fetch IP';
@@ -240,13 +250,13 @@ export async function getEnhancedSystemInfo(): Promise<SystemInfo> {
           accuracy: position.coords.accuracy,
           altitude: position.coords.altitude,
           heading: position.coords.heading,
-          speed: position.coords.speed
+          speed: position.coords.speed,
         };
       } catch (error) {
         systemInfo.geolocation = {
           latitude: null,
           longitude: null,
-          accuracy: null
+          accuracy: null,
         };
       }
     }
@@ -256,15 +266,15 @@ export async function getEnhancedSystemInfo(): Promise<SystemInfo> {
 }
 
 export const updateCustomProductQuantity = async (cartId: any, productQuantity: any, sku: any) => {
-  const status = await updateProductQuantity(cartId, productQuantity, sku)
+  const status = await updateProductQuantity(cartId, productQuantity, sku);
 
   console.log(status.output?.data?.line_items?.custom_items);
   let result = status?.output?.data?.line_items?.custom_items;
-  let updatedCustomQuantity = result?.find((data: { sku: any; quantity: any; }) => {
+  let updatedCustomQuantity = result?.find((data: { sku: any; quantity: any }) => {
     if (data?.sku == sku) {
-      return data?.quantity
+      return data?.quantity;
     }
-  })
+  });
 
-  return updatedCustomQuantity
-}
+  return updatedCustomQuantity;
+};

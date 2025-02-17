@@ -41,7 +41,6 @@ import { BcImage } from '~/components/bc-image';
 import { Label } from '~/components/ui/form';
 import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
 import SkyxFlyout from '~/components/skyx-flyout/skyxFlyout';
-import { updateCartItemMaxPriceRuleDisccount } from '~/components/management-apis';
 import { callforMaxPriceRuleDiscountFunction } from '~/components/common-functions';
 
 aa('init', {
@@ -52,15 +51,7 @@ aa('init', {
 const indexName: string = process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME || '';
 
 interface Props {
-  data: FragmentOf<typeof ProductItemFragment> & {
-    UpdatePriceForMSRP: {
-      originalPrice: number;
-      updatedPrice: number;
-    };
-    parent?: {
-      sku: string;
-    };
-  };
+  data: FragmentOf<typeof ProductItemFragment>;
   multipleOptionIcon: string;
   closeIcon: string;
   fanPopup: string;
@@ -70,23 +61,8 @@ interface Props {
   customerGroupDetails?: any;
   swatchOptions?: any;
   sessionUser?: any;
-  priceMaxRules?: PriceMaxRule[]; // Add this
 }
 
-// Add PriceMaxRule interface
-interface PriceMaxRule {
-  price_max_activation_code_id: number;
-  activation_code: string;
-  discount: string;
-  skus: string[];
-  status: boolean;
-}
-// At the top of your file
-interface ExtendedProductFormData extends ProductFormData {
-  priceMaxDiscount?: string | null;
-  originalPrice?: number;
-  discountedPrice?: number;
-}
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
   const category = removeEdgesAndNodes(p.categories).at(0);
   const breadcrumbs = category ? removeEdgesAndNodes(category.breadcrumbs) : [];
@@ -134,7 +110,7 @@ export const ProductForm = ({
   customerGroupDetails,
   showInSticky = false,
   swatchOptions,
-  sessionUser = null, // Add comma here
+  sessionUser = null,
   priceMaxRules,
 }: Props) => {
   const t = useTranslations('Product.Form');
@@ -182,6 +158,7 @@ export const ProductForm = ({
     const quantity = Number(data.quantity);
     // Optimistic update
     cart.increment(quantity);
+
     if (action === 'addToCart') {
       const matchedPriceRule = priceMaxRules?.find(
         (r: PriceMaxRule) => r.skus && r.skus.includes(product?.parent?.sku || ''),
@@ -243,6 +220,49 @@ export const ProductForm = ({
         return;
       }
 
+      toast.success(
+        () => (
+          <div className="flex items-center gap-3">
+            <span>
+              {t.rich('success', {
+                cartItems: quantity,
+                cartLink: (chunks) => (
+                  <Link
+                    className="hover:text-secondary font-semibold text-primary"
+                    href="/cart"
+                    prefetch="viewport"
+                    prefetchKind="full"
+                  >
+                    {chunks}
+                  </Link>
+                ),
+              })}
+            </span>
+          </div>
+        ),
+        { icon: <Check className="text-success-secondary" /> },
+      );
+      if (result?.data?.entityId) {
+        let cartData = await getCartData(result?.data?.entityId);
+        if (cartData?.data?.lineItems?.physicalItems) {
+          productFlyout.setCartDataFn(cartData?.data);
+          cartData?.data?.lineItems?.physicalItems?.forEach((items: any) => {
+            if (items?.productEntityId == data?.product_id) {
+              let selectedOptions = items?.selectedOptions;
+              let productSelection = true;
+              selectedOptions?.some((selOptions: any) => {
+                if (data?.['attribute_' + selOptions?.entityId] != selOptions?.valueEntityId) {
+                  productSelection = false;
+                  return true;
+                }
+              });
+              if (productSelection) {
+                productFlyout.setProductDataFn(items);
+              }
+            }
+          });
+        }
+      }
       toast.success(
         () => (
           <div className="flex items-center gap-3">
@@ -335,6 +355,22 @@ export const ProductForm = ({
       });
     } else if (action === 'requestQuote') {
       // quotebutton handle
+
+      const quoteResult = await handleRequestQuote(data, product);
+      console.log(quoteResult, 'requestQuoteData');
+      localStorage.setItem('Q_R_data', JSON.stringify(quoteResult?.data?.qr_product));
+      bodl.cart.productAdded({
+        product_value: transformedProduct.purchase_price * quantity,
+        currency: transformedProduct.currency,
+        line_items: [
+          {
+            ...transformedProduct,
+            quantity,
+          },
+        ],
+      });
+    } else if (action === 'requestQuote') {
+      // quotebutton handle
       const quoteResult = await handleRequestQuote(data, product);
       console.log(quoteResult, 'requestQuoteData');
 
@@ -370,6 +406,13 @@ export const ProductForm = ({
             return null;
           })}
           <Submit data={product} isSticky={true} />
+          <button
+            type="submit"
+            onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}
+          >
+            Request Quote
+          </button>
+
           <button
             type="submit"
             onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}

@@ -331,7 +331,7 @@ export function Promotion({
   return (
     <>
       {promotion ? (
-        <div className="mt-4 bg-gray-100 p-2 text-center">
+        <div className="promotion-plp mt-4 bg-gray-100 p-2 text-center">
           {getPromotionDecoration(promotion, free_shipping)}
         </div>
       ) : null}
@@ -366,7 +366,13 @@ function RatingCertifications({ data }: any) {
       {items
         ? items
             .filter((item: any) =>
-              ['Wet Rated', 'Damp Rated', 'Energy Star Certified', 'Dark Sky Friendly', 'Coastal Quality'].includes(item.label),
+              [
+                'Wet Rated',
+                'Damp Rated',
+                'Energy Star Certified',
+                'Dark Sky Friendly',
+                'Coastal Quality',
+              ].includes(item.label),
             )
             .map((item: any, index: number) => (
               <Image
@@ -385,7 +391,9 @@ function RatingCertifications({ data }: any) {
 
 function AmountUnitValue({ data }: any) {
   const value =
-    typeof data === 'string' && (data.includes('{') || data.includes('[')) ? JSON.parse(data) : data;
+    typeof data === 'string' && (data.includes('{') || data.includes('['))
+      ? JSON.parse(data)
+      : data;
   if (typeof value === 'object') {
     const amount: number | null = value && value.amount ? Number(value.amount) : null;
     const unit: string | null = value && value.unit ? value.unit.toLowerCase() : null;
@@ -453,7 +461,6 @@ export function Hit({
   isLoaded = false,
   view = 'grid',
 }: HitProps) {
-
   const format = useFormatter();
   const currency = 'USD';
 
@@ -466,10 +473,7 @@ export function Hit({
   }
 
   return view === 'grid' ? (
-    <article
-      data-id={hit.objectID}
-      className="product flex h-full w-full flex-col "
-    >
+    <article data-id={hit.objectID} className="product flex h-full w-full flex-col">
       <div className="flex min-h-[60px] items-start overflow-x-hidden p-4">
         <div className="compare-product mr-4 hidden md:block">
           <Compare
@@ -566,7 +570,8 @@ export function Hit({
             }}
             classNames={{
               root: 'absolute bottom-2 right-2',
-              button: 'inline-flex items-center justify-center rounded-full p-1.5 focus:outline-none bg-gray-100',
+              button:
+                'inline-flex items-center justify-center rounded-full p-1.5 focus:outline-none bg-gray-100',
               icon: 'w-6 h-6',
             }}
           />
@@ -697,7 +702,6 @@ export function Hit({
               </figure>
 
               <WishlistAddToList
-            
                 hasPreviousPage={false}
                 product={{
                   entityId: parseInt(hit.objectID.toString()),
@@ -706,7 +710,7 @@ export function Hit({
                   sku: hit.variants?.[0]?.sku || hit.sku || '',
                   brand: {
                     name: hit.brand_name,
-                    path: ''
+                    path: '',
                   },
                   images: [],
                   mpn: '',
@@ -736,7 +740,8 @@ export function Hit({
                 }}
                 classNames={{
                   root: 'absolute bottom-2 right-2',
-                  button: 'inline-flex items-center justify-center rounded-full p-1.5 focus:outline-none bg-gray-100',
+                  button:
+                    'inline-flex items-center justify-center rounded-full p-1.5 focus:outline-none bg-gray-100',
                   icon: 'w-6 h-6',
                 }}
               />
@@ -931,49 +936,99 @@ export function Hit({
               </h3>
             )}
           </div>
-          {hit.metafields && 
-            hit.metafields.Details && 
-            (Object.keys(hit.metafields.Details).filter(key => ['Depth', 'Height', 'Length', 'Width', 'Minimum Mounting Height', 'Fuel Source', 'Heating Area', 'Wattage', 'Number of Bulbs', 'Lift', 'Lamp Base Type', 'Voltage'].includes(key)).length > 2 
-              || !hit.description 
-              || hit.description.length == 0
-            ) ? (
+          {hit.metafields &&
+          hit.metafields.Details &&
+          (Object.keys(hit.metafields.Details).filter((key) =>
+            [
+              'Depth',
+              'Height',
+              'Length',
+              'Width',
+              'Minimum Mounting Height',
+              'Fuel Source',
+              'Heating Area',
+              'Wattage',
+              'Number of Bulbs',
+              'Lift',
+              'Lamp Base Type',
+              'Voltage',
+            ].includes(key),
+          ).length > 2 ||
+            !hit.description ||
+            hit.description.length == 0) ? (
             <div className="product-details mt-2 leading-6">
               <ul>
                 {hit.metafields.Details.Depth ? (
-                  <li><span className="label">Depth: </span><AmountUnitValue data={hit.metafields.Details.Depth} /></li>
+                  <li>
+                    <span className="label">Depth: </span>
+                    <AmountUnitValue data={hit.metafields.Details.Depth} />
+                  </li>
                 ) : null}
                 {hit.metafields.Details.Height ? (
-                  <li><span className="label">Height: </span><AmountUnitValue data={hit.metafields.Details.Height} /></li>
+                  <li>
+                    <span className="label">Height: </span>
+                    <AmountUnitValue data={hit.metafields.Details.Height} />
+                  </li>
                 ) : null}
                 {hit.metafields.Details.Length ? (
-                  <li><span className="label">Length: </span><AmountUnitValue data={hit.metafields.Details.Length} /></li>
+                  <li>
+                    <span className="label">Length: </span>
+                    <AmountUnitValue data={hit.metafields.Details.Length} />
+                  </li>
                 ) : null}
                 {hit.metafields.Details.Width ? (
-                  <li><span className="label">Width/Diameter: </span><AmountUnitValue data={hit.metafields.Details.Width} /></li>
+                  <li>
+                    <span className="label">Width/Diameter: </span>
+                    <AmountUnitValue data={hit.metafields.Details.Width} />
+                  </li>
                 ) : null}
                 {hit.metafields.Details['Minimum Mounting Height'] ? (
-                  <li><span className="label">Min. Mounting Height: </span>{hit.metafields.Details['Minimum Mounting Height']}</li>
+                  <li>
+                    <span className="label">Min. Mounting Height: </span>
+                    {hit.metafields.Details['Minimum Mounting Height']}
+                  </li>
                 ) : null}
                 {hit.metafields.Details['Fuel Source'] ? (
-                  <li><span className="label">Fuel Source: </span>{hit.metafields.Details['Fuel Source']}</li>
+                  <li>
+                    <span className="label">Fuel Source: </span>
+                    {hit.metafields.Details['Fuel Source']}
+                  </li>
                 ) : null}
                 {hit.metafields.Details['Heating Area'] ? (
-                  <li><span className="label">Heating Area: </span>{hit.metafields.Details['Heating Area']}</li>
+                  <li>
+                    <span className="label">Heating Area: </span>
+                    {hit.metafields.Details['Heating Area']}
+                  </li>
                 ) : null}
                 {hit.metafields.Details.Wattage ? (
-                  <li><span className="label">Wattage: </span><AmountUnitValue data={hit.metafields.Details.Wattage} /></li>
+                  <li>
+                    <span className="label">Wattage: </span>
+                    <AmountUnitValue data={hit.metafields.Details.Wattage} />
+                  </li>
                 ) : null}
                 {hit.metafields.Details['Number of Bulbs'] ? (
-                  <li><span className="label">Number of Lights: </span>{hit.metafields.Details['Number of Bulbs']}</li>
+                  <li>
+                    <span className="label">Number of Lights: </span>
+                    {hit.metafields.Details['Number of Bulbs']}
+                  </li>
                 ) : null}
                 {hit.metafields.Details.Lift ? (
-                  <li><span className="label">Lift: </span>{hit.metafields.Details.Lift}</li>
+                  <li>
+                    <span className="label">Lift: </span>
+                    {hit.metafields.Details.Lift}
+                  </li>
                 ) : null}
                 {hit.metafields.Details['Lamp Base Type'] ? (
-                  <li><span className="label">Lamp Type: </span>{hit.metafields.Details['Lamp Base Type']}</li>
+                  <li>
+                    <span className="label">Lamp Type: </span>
+                    {hit.metafields.Details['Lamp Base Type']}
+                  </li>
                 ) : null}
                 {hit.metafields.Details.Voltage ? (
-                  <li><span className="label">Voltage: </span><AmountUnitValue data={hit.metafields.Details.Voltage} /></li>
+                  <li>
+                    <span className="label">Voltage: </span>
+                    <AmountUnitValue data={hit.metafields.Details.Voltage} />
+                  </li>
                 ) : null}
               </ul>
             </div>

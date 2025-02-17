@@ -118,11 +118,7 @@ export const GetProductMetaFields = async (entityId: number, nameSpace: string) 
   return metaFieldsArray;
 };
 
-export const getMetaFieldValue = async (
-  entityId: number,
-  variantId: number,
-  namespace: string
-) => {
+export const getMetaFieldValue = async (entityId: number, variantId: number, namespace: string) => {
   // Function to fetch and parse meta fields
   const getMetaFields = async (entityId: number, variantId: number, namespace: string) => {
     let metaFields: any = await getMetaFieldsByProductVariant(entityId, variantId, namespace);
@@ -141,7 +137,6 @@ export const getMetaFieldValue = async (
   const metaFieldValues = await getMetaFields(entityId, variantId, namespace);
 
   if (metaFieldValues && namespace === 'Details') {
-    
     return metaFieldValues;
   } else if (metaFieldValues && namespace === 'delivery_message') {
     const deliveryKey = metaFieldValues.join(',');
@@ -422,13 +417,10 @@ export const GetOrderMetaFields = async (orderId: number) => {
   }
 };
 
-export const UpdateOrderData = async (
-  orderId: number,
-  staffNotes: string,
-) => {
+export const UpdateOrderData = async (orderId: number, staffNotes: string) => {
   try {
-    const postData={
-      staff_notes:staffNotes
+    const postData = {
+      staff_notes: staffNotes,
     };
     let { data } = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/orders/${orderId}`,
