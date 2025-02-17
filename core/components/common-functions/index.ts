@@ -8,6 +8,7 @@ import {
   generateCouponCodeInPromotion,
   updateCouponPromotion,
   updateCartItemMaxPriceRuleDisccount,
+  deleteCouponCodeFromCart,
 } from '../management-apis';
 import { getCookieData } from '../graphql-apis';
 
@@ -540,11 +541,20 @@ export const calculateProductPrice = async (
 
   return convertedPrices;
 };
+export const checkCouponCodeIsApplied = async (checkoutData: any) => {
+  let couponCodeArray: any = checkoutData?.coupons;
+  let couponIsAvailable: number = 0;
+  if (couponCodeArray?.length > 0) {
+    couponIsAvailable = 1;
+  }
+  return couponIsAvailable;
+}
 
 export const zeroTaxCalculation = async (cartObject: any) => {
   let checkoutData: any = cartObject?.checkout;
   let cartData: any = cartObject?.cart;
   let cartId: string = cartData?.entityId;
+  let couponAppliedData: any = [];
   if (await checkZeroTaxCouponIsApplied(checkoutData)) {
     let taxPercentage: any = 0;
     let subTotalAmount: any = checkoutData?.subtotal?.value || 0;
@@ -576,19 +586,17 @@ export const zeroTaxCalculation = async (cartObject: any) => {
         }
       }
     }
+    couponAppliedData = checkoutData?.coupons?.[0];
     if (postDataArray?.length > 0) {
       let finalDiscountAmount: any = (overAllTaxAmount - zeroTaxCouponAmount)?.toFixed(2);
       const cookieStore = await getCookieData();
       const getCartZTCpn = cookieStore.get('ztcpn_data')?.value;
       if (!getCartZTCpn) {
-        let couponCodeZerotax: string = 'Zero_Tax_' + generateRandomString(8);
-        let createPromotionData = await generateCouponPromotion(
-          finalDiscountAmount,
-          postDataArray,
-          couponCodeZerotax,
-        );
+        let couponCodeZerotax: string = couponAppliedData?.code + '_' + generateRandomString(8);
+        let createPromotionData = await generateCouponPromotion(finalDiscountAmount, postDataArray, couponCodeZerotax, 'Zero_Tax_Addon_');
         if (createPromotionData?.data?.id) {
           await generateCouponCodeInPromotion(couponCodeZerotax, createPromotionData?.data?.id);
+          await deleteCouponCodeFromCart(cartId, couponAppliedData?.code);
           await addCouponCodeToCart(cartId, couponCodeZerotax);
           return {
             id: createPromotionData?.data?.id,
@@ -598,13 +606,9 @@ export const zeroTaxCalculation = async (cartObject: any) => {
           };
         }
       } else {
-        let promoData = getCartZTCpn ? JSON.parse(getCartZTCpn) : [];
+        let promoData = (getCartZTCpn) ? JSON.parse(getCartZTCpn) : [];
         if (promoData?.id) {
-          let updatePromotionData = await updateCouponPromotion(
-            finalDiscountAmount,
-            postDataArray,
-            promoData?.id,
-          );
+          let updatePromotionData = await updateCouponPromotion(finalDiscountAmount, postDataArray, promoData?.id, 'Zero_Tax_Addon_');
           if (updatePromotionData?.data?.id) {
             return {
               id: updatePromotionData?.data?.id,
@@ -629,6 +633,199 @@ export function generateRandomString(length: number) {
     counter += 1;
   }
   return result?.toUpperCase();
+}
+
+export const floorPriceCalculation = async (cartObject: any) => {
+  let brandArrayIds: any = [];
+  let productDataArray: any = [];
+  let checkoutData: any = cartObject?.checkout;
+  let cartData: any = cartObject?.cart;
+  let cartId: string = cartData?.entityId;
+  let couponAppliedData: any = [];
+  cartObject?.cart?.lineItems.physicalItems?.forEach((item: any) => {
+    let couponDiscount: any = item?.couponAmount;
+    if (couponDiscount?.value > 0) {
+      brandArrayIds.push(item?.baseCatalogProduct?.brand?.entityId);
+    }
+  });
+  let floorPercentUrl = process.env.COMMON_SETTING_URL + 'api/get-floor-price';
+  try {
+    let data = await fetch(floorPercentUrl,
+      {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          "brand_ids": brandArrayIds,
+          "channel_id": process.env.BIGCOMMERCE_CHANNEL_ID
+        }),
+        next: {
+          revalidate: 3600,
+        },
+      },
+    ).then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    let priceFloorHappened: number = 0;
+    let sumOfCouponAmount: number = 0;
+    if (data?.output) {
+      let discountAmountItemWise: any = 0;
+      couponAppliedData = checkoutData?.coupons?.[0];
+      cartObject?.cart?.lineItems.physicalItems?.forEach((item: any) => {
+        let productVariants: any = (item?.baseCatalogProduct?.variants) ? removeEdgesAndNodes(item?.baseCatalogProduct?.variants) : [];
+        let currentProductVariant: any = productVariants?.filter((variant: any) => item?.variantEntityId == variant?.entityId);
+        let couponAmountData: any = item?.couponAmount;
+        let itemCouponAmount: number = (couponAmountData?.value > 0) ? couponAmountData?.value : 0;
+        let itemProductPrice: any = item?.extendedSalePrice?.value;
+        if (currentProductVariant?.[0]?.metafields) {
+          let productVariantMeta: any = removeEdgesAndNodes(currentProductVariant?.[0]?.metafields);
+          if (productVariantMeta?.[0]?.key == "adjusted_cost") {
+            let getBrandFactor: any = Object.values(data?.output)?.find((factor: any) => factor?.brand_id == item?.baseCatalogProduct?.brand?.entityId);
+            if (getBrandFactor?.floor_price) {
+              let floorPrice: any = (getBrandFactor?.floor_price * productVariantMeta?.[0]?.value * item?.quantity);
+              let isFloorCheck: number = 0;
+              let remainDiscount: number = 0;
+              let availableDiscount: number = 0;
+              if (floorPrice > (itemProductPrice - itemCouponAmount)) {
+                discountAmountItemWise = (itemProductPrice - floorPrice)?.toFixed(2);
+                discountAmountItemWise = (discountAmountItemWise > 0) ? discountAmountItemWise * 1 : 0;
+                remainDiscount = (itemCouponAmount - discountAmountItemWise);
+                availableDiscount = 0;
+                priceFloorHappened = 1;
+                isFloorCheck = 1;
+              } else {
+                discountAmountItemWise = (itemProductPrice - floorPrice)?.toFixed(2);
+                remainDiscount = 0;
+                availableDiscount = Math.abs(itemCouponAmount - discountAmountItemWise);
+                discountAmountItemWise = (discountAmountItemWise > itemCouponAmount) ? itemCouponAmount : discountAmountItemWise;
+
+              }
+              sumOfCouponAmount += discountAmountItemWise;
+              let remainDisc: any = remainDiscount?.toFixed(2);
+              productDataArray.push({
+                id: item?.entityId,
+                discounted_amount: discountAmountItemWise * 1,
+                prodId: item?.productEntityId,
+                itemDiscount: itemCouponAmount,
+                isFloorHit: isFloorCheck,
+                floorPrice: floorPrice,
+                itemPrice: itemProductPrice,
+                remainDiscount: Math.abs(remainDisc),
+                availableDiscount: availableDiscount
+              });
+            }
+          } else {
+            sumOfCouponAmount += (itemCouponAmount * 1);
+            productDataArray.push({
+              id: item?.entityId,
+              discounted_amount: itemCouponAmount?.toFixed(2),
+              prodId: item?.productEntityId,
+              itemDiscount: itemCouponAmount,
+              isFloorHit: 0,
+              itemPrice: itemProductPrice,
+              remainDiscount: Math.abs(itemCouponAmount),
+              availableDiscount: 0
+            });
+          }
+        } else {
+          sumOfCouponAmount += (itemCouponAmount * 1);
+          productDataArray.push({
+            id: item?.entityId,
+            discounted_amount: itemCouponAmount?.toFixed(2),
+            prodId: item?.productEntityId,
+            itemDiscount: itemCouponAmount,
+            isFloorHit: 0,
+            itemPrice: itemProductPrice,
+            remainDiscount: Math.abs(itemCouponAmount),
+            availableDiscount: 0
+          });
+        }
+      });
+    }
+    if (priceFloorHappened == 1) {
+      let priceFloorApportion: any = await apportionateRemainingDiscount(productDataArray, couponAppliedData?.discountedAmount?.value, sumOfCouponAmount);
+      if (priceFloorApportion?.length > 0) {
+        const cookieStore = await getCookieData();
+        const getCartPFLCpn = cookieStore.get('pr_flr_data')?.value;
+        let finalDiscountAmount: any = couponAppliedData?.discountedAmount?.value;
+        let couponCodePFCode: string = couponAppliedData?.code + '_' + generateRandomString(8);
+        if (!getCartPFLCpn) {
+          let createPromotionData = await generateCouponPromotion(finalDiscountAmount, priceFloorApportion, couponCodePFCode, couponAppliedData?.code + '_');
+          if (createPromotionData?.data?.id) {
+            await generateCouponCodeInPromotion(couponCodePFCode, createPromotionData?.data?.id);
+            await deleteCouponCodeFromCart(cartId, couponAppliedData?.code);
+            await addCouponCodeToCart(cartId, couponCodePFCode);
+            return {
+              id: createPromotionData?.data?.id,
+              amount: finalDiscountAmount,
+              code: couponCodePFCode,
+              action: 'create'
+            }
+          }
+        } else {
+          let promoData = (getCartPFLCpn) ? JSON.parse(getCartPFLCpn) : [];
+          if (promoData?.id) {
+            let updatePromotionData = await updateCouponPromotion(finalDiscountAmount, priceFloorApportion, promoData?.id, 'FL_Price_');
+            if (updatePromotionData?.data?.id) {
+              return {
+                id: updatePromotionData?.data?.id,
+                amount: finalDiscountAmount,
+                code: promoData?.code,
+                action: 'update'
+              }
+            }
+          }
+        }
+      }
+    } else {
+      return {
+        'action': 'no_floor'
+      }
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export const apportionateRemainingDiscount = async (productDataArray: any, couponAmount: any, sumOfCouponAmount: any) => {
+  const initialAvailValue = 0;
+  const availableDiscountValue = productDataArray?.reduce(
+    (accumulator, currentValue) => accumulator + currentValue?.availableDiscount,
+    initialAvailValue,
+  );
+  const initialRemainValue = 0;
+  const remainingDiscountValue = productDataArray?.reduce(
+    (accumulator, currentValue) => accumulator + Math.abs(currentValue?.remainDiscount),
+    initialRemainValue,
+  );
+
+  if(availableDiscountValue > 0 && remainingDiscountValue > 0) {
+    productDataArray?.forEach((newData: any) => {
+      let newDiscountData: any = newData?.remainDiscount;
+      if(newDiscountData > 0) {
+        productDataArray?.forEach((data: any) => {
+          if(data?.availableDiscount > 0) {
+            if(data?.availableDiscount >= newDiscountData) {
+              newData['remainDiscount'] = 0;
+            } else if (newDiscountData > data?.availableDiscount) {
+              newData['remainDiscount'] -= data?.availableDiscount;
+            }
+            if(data?.availableDiscount >= newDiscountData) {
+              let availDiscount: any = data?.availableDiscount - newDiscountData;
+              data['discounted_amount'] += (data?.availableDiscount - availDiscount)
+              data['availableDiscount'] = availDiscount;
+            } else if (newDiscountData > data?.availableDiscount) {
+              let availDiscount: any = newDiscountData - data?.availableDiscount;
+              data['availableDiscount'] = availDiscount;
+            }
+          }
+        });
+      }
+    });
+  }
+  return productDataArray;
 }
 
 // delete-product-wishlist
