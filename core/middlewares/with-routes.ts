@@ -205,6 +205,10 @@ const updateStatusCache = async (
 };
 
 const clearLocaleFromPath = (path: string, locale: string) => {
+  if (path === `/${locale}` || path === `/${locale}/`) {
+    return '/';
+  }
+
   if (path.startsWith(`/${locale}/`)) {
     return path.replace(`/${locale}`, '');
   }
