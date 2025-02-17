@@ -140,24 +140,24 @@ const MoneyFieldFragment = graphql(`
                   ...MoneyFieldFragment
                 }
                 baseCatalogProduct {
-                productOptions(first: 10) {
+                  productOptions(first: 10) {
                     edges {
-                    node {
+                      node {
                         __typename
                         entityId
                         displayName
                         isRequired
                         isVariantOption
-                         ...MultipleChoiceFieldFragment
+                        ...MultipleChoiceFieldFragment
                         ...CheckboxFieldFragment
                         ...NumberFieldFragment
                         ...TextFieldFragment
                         ...MultiLineTextFieldFragment
                         ...DateFieldFragment
+                      }
                     }
-                    }
-                   }
-                 }
+                  }
+                }
                 selectedOptions {
                   __typename
                   entityId
@@ -234,6 +234,17 @@ const MoneyFieldFragment = graphql(`
                   }
                 }
               }
+              customItems {
+                name
+                sku
+                entityId
+                quantity
+
+                listPrice {
+                  currencyCode
+                  value
+                }
+              }
             }
             amount {
               ...MoneyFieldFragment
@@ -246,14 +257,14 @@ const MoneyFieldFragment = graphql(`
       }
     `,
     [
-    MoneyFieldFragment,
-    MultipleChoiceFieldFragment,
-    CheckboxFieldFragment,
-    NumberFieldFragment,
-    TextFieldFragment,
-    MultiLineTextFieldFragment,
-    DateFieldFragment
-    ]
+      MoneyFieldFragment,
+      MultipleChoiceFieldFragment,
+      CheckboxFieldFragment,
+      NumberFieldFragment,
+      TextFieldFragment,
+      MultiLineTextFieldFragment,
+      DateFieldFragment,
+    ],
   );
           
 

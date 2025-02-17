@@ -28,13 +28,14 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import SettingFlyout from './_components/SettingFlyout';
 import PopOverClick from './_components/PopOverClick';
+import { GetAllQuoteList } from './actions/GetAllQuoteList';
 
 const page = () => {
   const router = useRouter();
   const menuRefs = useRef<{ [key: string]: HTMLElement | null }>({});
   const [activeTab, setActiveTab] = useState('All');
   const [showEdit, setShowEdit] = useState<{ [key: string]: boolean }>({});
-
+  const [data,setData]=useState([]);
   const [showFilters, setShowFilters] = useState(false);
 
   const tabs = [
@@ -77,6 +78,27 @@ const page = () => {
       });
     };
 
+    const formatDate = (dateString: string) => {
+      const options: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
+    const GetAllQuoteData= async () => {
+      var result =await GetAllQuoteList();
+      console.log(result.output);
+      var data = result.output;
+      const formattedData = data.map((quote:any) => ({
+        id: `QI-${quote.qr_id}`,  // Prefixing ID with 'QI-'
+        name: `${quote.first_name} ${quote.last_name}`, // Combining first and last name
+        company: quote.company_name || "N/A",  // Default if null
+        email: quote.email_id || "N/A",  // Default if null
+        date: formatDate(quote.requested_date), // Format the date
+        quote_id: quote.quote_id,  // Quote ID
+      }));
+      setData(formattedData);
+
+    }
+    GetAllQuoteData()
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
@@ -91,37 +113,6 @@ const page = () => {
   const handleEditClick = (rowId: string) => {
     router.push(`/sales-buddy/quote/${rowId}`);
   };
-
-  const data = [
-    {
-      id: 'QI-62',
-      name: 'Bala S',
-      company: 'Arizon Digital	',
-      email: 'balashanmugam@arizon.digital',
-      date: '02/07/2025',
-    },
-    {
-      id: 'QI-63',
-      name: 'Bala S',
-      company: 'Arizon Digital	',
-      email: 'balashanmugam@arizon.digital',
-      date: '02/07/2025',
-    },
-    {
-      id: 'QI-64',
-      name: 'Bala S',
-      company: 'Arizon Digital	',
-      email: 'balashanmugam@arizon.digital',
-      date: '02/07/2025',
-    },
-    {
-      id: 'QI-65',
-      name: 'Bala S',
-      company: 'Arizon Digital	',
-      email: 'balashanmugam@arizon.digital',
-      date: '02/07/2025',
-    },
-  ];
 
   return (
     <div className="my-[2rem] flex justify-center text-[#353535]">
@@ -402,7 +393,7 @@ const page = () => {
                       </td>
                       <td>
                         <div className="flex items-center justify-center gap-1 text-[#555]">
-                          <PopOverClick hrefLink={`${row.id}`} popOverContents={popOverContents} from='quote'>
+                          <PopOverClick hrefLink={`${row.quote_id}`} popOverContents={popOverContents} from='quote'>
                             <Ellipsis className="cursor-pointer text-[#555]" />
                           </PopOverClick>
                           

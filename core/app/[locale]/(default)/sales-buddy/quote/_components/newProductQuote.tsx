@@ -7,10 +7,27 @@ import { BcImage } from '~/components/bc-image';
 
 interface NewProductQuoteProps {
   children: React.ReactNode;
+  onAddProduct: (product: any) => void;
 }
 
-const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children }) => {
-  const [customerType, setCustomerType] = useState<string>('');
+const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children, onAddProduct }) => {
+  const [productData, setProductData] = useState({
+    brand: '102',
+    name: 'Shirt',
+    sku: 'sku12345',
+    quantity: '1',
+    price: '100'
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProductData({ ...productData, [name]: value });
+  };
+
+  const handleSave = () => {
+    onAddProduct(productData);
+    setProductData({ brand: '', name: '', sku: '', quantity: '', price: '' });
+  };
 
   return (
     <Dialog.Root>
@@ -31,49 +48,62 @@ const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children }) => {
                   <div>
                     <select
                       className="w-full border-b border-b-black p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
-                      name=""
-                      id=""
+                      name="brand"
+                      value={productData.brand}
+                      onChange={handleChange}
                     >
-                      <option value="">Brand 1</option>
+                      <option value="">Select Brand</option>
+                      <option value="Brand 1">Brand 1</option>
                       <option value="Brand 2">Brand 2</option>
                       <option value="Brand 3">Brand 3</option>
                     </select>
                   </div>
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="" className="text-[12px] text-[rgba(0,0,0,0.54)]">
+                  <label htmlFor="name" className="text-[12px] text-[rgba(0,0,0,0.54)]">
                     Name
                   </label>
                   <input
-                    type="email"
+                    type="text"
+                    name="name"
+                    value={productData.name}
+                    onChange={handleChange}
                     className="w-full border-b border-b-black p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="" className="text-[12px] text-[rgba(0,0,0,0.54)]">
+                  <label htmlFor="sku" className="text-[12px] text-[rgba(0,0,0,0.54)]">
                     SKU
                   </label>
                   <input
-                    type="number"
+                    type="text"
+                    name="sku"
+                    value={productData.sku}
+                    onChange={handleChange}
                     className="w-full border-b border-b-black p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
                   />
                 </div>
                 <div className="flex flex-col">
-                  <label htmlFor="" className="text-[12px] text-[rgba(0,0,0,0.54)]">
+                  <label htmlFor="quantity" className="text-[12px] text-[rgba(0,0,0,0.54)]">
                     Quantity
                   </label>
                   <input
                     type="number"
+                    name="quantity"
+                    value={productData.quantity}
+                    onChange={handleChange}
                     className="w-full border-b border-b-black p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
                   />
                 </div>
-
                 <div className="flex flex-col">
-                  <label htmlFor="" className="text-[12px] text-[rgba(0,0,0,0.54)]">
+                  <label htmlFor="price" className="text-[12px] text-[rgba(0,0,0,0.54)]">
                     Price
                   </label>
                   <input
                     type="text"
+                    name="price"
+                    value={productData.price}
+                    onChange={handleChange}
                     className="w-full border-b border-b-black p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
                   />
                 </div>
@@ -85,7 +115,10 @@ const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children }) => {
                   </button>
                 </Dialog.Close>
                 <Dialog.Close asChild>
-                  <button className="bg-[rgb(60,100,244)] text-[14px] font-semibold text-white hover:bg-transparent hover:text-[rgb(60,100,244)]">
+                  <button
+                    onClick={handleSave}
+                    className="bg-[rgb(60,100,244)] text-[14px] font-semibold text-white hover:bg-transparent hover:text-[rgb(60,100,244)]"
+                  >
                     Save
                   </button>
                 </Dialog.Close>

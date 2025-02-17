@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 export const RequestQuoteFlyout = () => {
   
   const pathname = usePathname();
-  const [isShippingOpen, setIsShippingOpen] = useState(false);
+  const [isShippingOpen, setIsShippingOpen] = useState(true);
 
   const handleOpenChange = (open: boolean) => { 
    setIsShippingOpen(open);

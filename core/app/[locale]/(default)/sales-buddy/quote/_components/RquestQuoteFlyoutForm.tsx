@@ -119,7 +119,17 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
         try {
           const CartItemsData: any = await GetCartDetials();
           const cartLineItems = CartItemsData?.lineItems?.physicalItems || [];
-  
+          const customItmes= CartItemsData?.lineItems?.customItems || [];
+          const formattedCutomItemData = customItmes.map(item => ({
+            bc_sku: item.sku,
+            bc_product_name: item.name,
+            bc_product_id: 0,
+            bc_variant_id: "custom",
+            bc_variant_sku: item.entityId,
+            bc_variant_name: "custom",
+            options: "custom",
+            type: "custom",
+          }));
           if (cartLineItems.length > 0) {
             const lineItemsData = cartLineItems.map((item: any) => {
               const selectedOptions = item?.selectedOptions || [];
@@ -169,10 +179,11 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
                 bc_variant_sku: item?.sku,
                 bc_variant_name: variantLabels || "",
                 options: productSelectedOpt.map((opt: any) => opt.label).join(", "),
+                type: "product",
               };
             });
-  
-            setquoteCartData(lineItemsData);
+            const finalLineItems = [...lineItemsData, ...formattedCutomItemData];
+            setquoteCartData(finalLineItems);
           } else {
             setquoteCartData([]);
           }
