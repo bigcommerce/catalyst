@@ -1,3 +1,3 @@
 'use client';
 
-export * from '../node_modules/@alto-avios/alto-ui';
+export * from '@alto-avios/alto-ui';
