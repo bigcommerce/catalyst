@@ -10,6 +10,7 @@ import { useState } from 'react';
 interface OrdersListProps {
   customerOrders: Orders;
   ordersCount?: number;
+  userEmail?: string;
 }
  
 interface ManageOrderButtonsProps {
@@ -17,6 +18,7 @@ interface ManageOrderButtonsProps {
   orderId: number;
   orderTrackingUrl?: string;
   orderStatus: string | null;
+  userEmail?: string;
 }
  
 const ManageOrderButtons = ({
@@ -24,6 +26,7 @@ const ManageOrderButtons = ({
   orderId,
   orderStatus,
   orderTrackingUrl,
+  userEmail,
 }: ManageOrderButtonsProps) => {
   const t = useTranslations('Account.Orders');
  
@@ -49,14 +52,14 @@ const ManageOrderButtons = ({
           {t('viewOrderDetails')}
         </Link>
       </Button>
-      {Boolean(orderStatus) && orderStatus === 'SHIPPED' && (
+      {Boolean(orderStatus) && (orderStatus === 'SHIPPED' || orderStatus === 'COMPLETED') && (
         <Button
           aria-label={t('returnOrder')}
           asChild
           className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50"
           variant="secondary"
         >
-          <Link href={{ pathname: '' }}>{t('returnOrder')}</Link>
+          <Link href={`/returns?orderId=${orderId}&email=${userEmail}`}>{t('returnOrder')}</Link>
         </Button>
       )}
     </div>
@@ -141,7 +144,8 @@ const OrderDetails = ({
   );
 };
  
-export const OrdersList = ({ customerOrders }: OrdersListProps) => {
+export const OrdersList = ({ customerOrders, userEmail 
+ }: OrdersListProps) => {
   return (
     <>
       {customerOrders.map(({ entityId, orderedAt, status, totalIncTax, consignments }) => {
@@ -260,6 +264,7 @@ export const OrdersList = ({ customerOrders }: OrdersListProps) => {
                 orderId={entityId}
                 orderStatus={status.value}
                 orderTrackingUrl={trackingUrl}
+                userEmail={userEmail}
               />
             </div>
           </div>

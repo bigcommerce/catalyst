@@ -167,6 +167,8 @@ interface Props {
   imagePriority?: boolean;
   isExtended?: boolean;
   from?: string;
+  userEmail?:any;
+  orderId?:number;
 }
 
 export const ProductSnippet = async ({
@@ -177,6 +179,8 @@ export const ProductSnippet = async ({
   brandSize,
   productSize,
   from,
+  userEmail,
+  orderId
 }: Props) => {
   const { name, defaultImage, brand, productId, prices, accessories } = product;
 
@@ -278,7 +282,7 @@ export const ProductSnippet = async ({
               LEAVE A REVIEW
             </button>*/}
               <button className="flex h-[42px] flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-[#ffffff] p-[5px_10px] text-[14px] font-[500] leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50">
-                REPLACE ITEMS
+                <Link href={`/returns?orderId=${orderId}&email=${userEmail}`}>REPLACE ITEMS</Link>
               </button>
             </div>
           </div>
