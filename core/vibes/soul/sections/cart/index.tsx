@@ -13,7 +13,7 @@ export function Cart<LineItem extends CartLineItem>({
   title = 'Cart',
   summaryTitle = 'Summary',
   ...rest
-}: CartProps<LineItem> & {
+}: Omit<CartProps<LineItem>, 'cart'> & {
   cart: Streamable<CartData<LineItem>>;
 }) {
   return (
