@@ -80,13 +80,15 @@ export const CouponCode = ({ checkout }: Props) => {
   };
 
   const onSubmitRemoveCouponCode = async (formData: FormData) => {
-    document.cookie = 'ztcpn_data=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     const { status } = await removeCouponCode(formData);
 
     if (status === 'error') {
       toast.error(t('couponCodeRemoveFailed'), {
         icon: <AlertCircle className="text-error-secondary" />,
       });
+    } else {
+      document.cookie = 'ztcpn_data=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      document.cookie = 'pr_flr_data=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     }
   };
 
