@@ -64,7 +64,6 @@ export const GetEmailId = async (email: string) => {
         next: {
           revalidate: 3600,
         },
-
       },
     )
       .then((res) => res.json())
@@ -119,18 +118,33 @@ export const GetProductMetaFields = async (entityId: number, nameSpace: string) 
   return metaFieldsArray;
 };
 
-export const getDeliveryMessage = async (
+export const getMetaFieldValue = async (
   entityId: number,
-  variantId: number
+  variantId: number,
+  namespace: string
 ) => {
-  let metaFields: any = await getMetaFieldsByProductVariant(
-    entityId,
-    variantId,
-    'delivery_message',
-  );
-  if (metaFields?.data?.length > 0) {
-    const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
-    const deliveryKey = deliveryMessages.join(',');
+  // Function to fetch and parse meta fields
+  const getMetaFields = async (entityId: number, variantId: number, namespace: string) => {
+    let metaFields: any = await getMetaFieldsByProductVariant(entityId, variantId, namespace);
+    if (metaFields?.data?.length > 0) {
+      return metaFields.data.map((item: any) => item.value);
+    }
+
+    metaFields = await getMetaFieldsByProduct(entityId, namespace);
+    if (metaFields?.data?.length > 0) {
+      return metaFields.data.map((item: any) => item.value);
+    }
+    return null;
+  };
+
+  // Fetch closeout or delivery message based on namespace
+  const metaFieldValues = await getMetaFields(entityId, variantId, namespace);
+
+  if (metaFieldValues && namespace === 'Details') {
+    
+    return metaFieldValues;
+  } else if (metaFieldValues && namespace === 'delivery_message') {
+    const deliveryKey = metaFieldValues.join(',');
     try {
       const parsedValue = JSON?.parse(deliveryKey);
       return parsedValue;
@@ -138,17 +152,7 @@ export const getDeliveryMessage = async (
       return null;
     }
   }
-  await getMetaFieldsByProduct(entityId, "delivery_message");
-  if (metaFields?.data?.length > 0) {
-    const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
-    const deliveryKey = deliveryMessages.join(','); 
-    try {
-      const parsedValue = JSON?.parse(deliveryKey);
-      return parsedValue; 
-    } catch (error) {
-      return null; 
-    }
-  }
+
   return null;
 };
 
@@ -371,7 +375,7 @@ export const GetCartMetaFields = async (entityId: string, nameSpace?: string) =>
   }
 };
 
-export const CreateOrderMetaFields = async (orderId: number, postData: any)=>{
+export const CreateOrderMetaFields = async (orderId: number, postData: any) => {
   try {
     let { data } = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/orders/${orderId}/metafields`,
@@ -393,7 +397,7 @@ export const CreateOrderMetaFields = async (orderId: number, postData: any)=>{
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 export const GetOrderMetaFields = async (orderId: number) => {
   try {
@@ -405,6 +409,36 @@ export const GetOrderMetaFields = async (orderId: number) => {
           'Content-Type': 'application/json',
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
         },
+        cache: 'no-store',
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const UpdateOrderData = async (
+  orderId: number,
+  staffNotes: string,
+) => {
+  try {
+    const postData={
+      staff_notes:staffNotes
+    };
+    let { data } = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/orders/${orderId}`,
+      {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        body: JSON.stringify(postData),
         cache: 'no-store',
       },
     )
@@ -511,7 +545,6 @@ export const getCommonSettingByBrandChannel = async (brand: any) => {
       body: JSON.stringify(postData),
     });
 
-
     const data = await response.json();
     return data;
   } catch (error) {
@@ -602,7 +635,7 @@ export const addCouponCodeToCart = async (checkoutId: string, couponCode: string
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
         },
         body: JSON.stringify({
-          coupon_code: couponCode
+          coupon_code: couponCode,
         }),
         cache: 'no-store',
       },
@@ -639,7 +672,7 @@ export const getGuestOrderDetailsFromAPI = async (orderId: any) => {
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 export const createGiftCardCoupon = async (amount: string, code: string) => {
   try {
@@ -653,14 +686,14 @@ export const createGiftCardCoupon = async (amount: string, code: string) => {
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
         },
         body: JSON.stringify({
-          "to_name": "Kathir",
-          "to_email": "kathir@arizon.digital",
-          "from_name": "YuvaSri",
-          "from_email": "yuvasri@arizon.digital",
-          "amount": amount,
-          "code": code,
-          "status": "active",
-          "currency_code": "USD"
+          to_name: 'Kathir',
+          to_email: 'kathir@arizon.digital',
+          from_name: 'YuvaSri',
+          from_email: 'yuvasri@arizon.digital',
+          amount: amount,
+          code: code,
+          status: 'active',
+          currency_code: 'USD',
         }),
         cache: 'no-store',
       },
@@ -686,13 +719,13 @@ export const processGiftCertificate = async (giftCode: string) => {
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN, // Replace with the Payment Access Token
         },
         body: JSON.stringify({
-          "payment": {
-            "instrument": {
-              "type": "gift_certificate",
-              "gift_certificate_code": giftCode
+          payment: {
+            instrument: {
+              type: 'gift_certificate',
+              gift_certificate_code: giftCode,
             },
-            "payment_method_id": "bigcommerce.gift_certificate"
-          }
+            payment_method_id: 'bigcommerce.gift_certificate',
+          },
         }),
         cache: 'no-store',
       },
@@ -705,7 +738,7 @@ export const processGiftCertificate = async (giftCode: string) => {
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 export const generateCouponPromotion = async (amount: string, productIds: any, code: string) => {
   try {
@@ -766,7 +799,7 @@ export const generateCouponPromotion = async (amount: string, productIds: any, c
       {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN, // Replace with the Payment Access Token
         },
@@ -782,7 +815,7 @@ export const generateCouponPromotion = async (amount: string, productIds: any, c
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 export const generateCouponCodeInPromotion = async (code: string, promoId: number) => {
   try {
@@ -796,7 +829,7 @@ export const generateCouponCodeInPromotion = async (code: string, promoId: numbe
       {
         method: 'POST',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN, // Replace with the Payment Access Token
         },
@@ -812,7 +845,7 @@ export const generateCouponCodeInPromotion = async (code: string, promoId: numbe
   } catch (error) {
     console.error(error);
   }
-}
+};
 
 export const updateCouponPromotion = async (amount: any, productIds: any, id: number) => {
   try {
@@ -873,7 +906,7 @@ export const updateCouponPromotion = async (amount: any, productIds: any, id: nu
       {
         method: 'PUT',
         headers: {
-          'Accept': 'application/json',
+          Accept: 'application/json',
           'Content-Type': 'application/json',
           'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN, // Replace with the Payment Access Token
         },
@@ -889,4 +922,72 @@ export const updateCouponPromotion = async (amount: any, productIds: any, id: nu
   } catch (error) {
     console.error(error);
   }
+};
+
+// cookie-discounted-price-api
+interface PriceUpdateData {
+  cartId: string;
+  price: number;
+  productId: string;
+  quantity: number;
+}
+
+// Main API function
+export async function updateCartItemMaxPriceRuleDisccount(data: PriceUpdateData) {
+  const url = `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${data.cartId}/items`;
+
+  try {
+    const lineItem = await getlineItem(data.productId, data.cartId);
+    if (!lineItem) {
+      throw new Error('Line item not found');
+    }
+
+    const updateUrl = `${url}/${lineItem.id}`;
+    const response = await fetch(updateUrl, {
+      method: 'PUT',
+      headers: {
+        'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        line_item: {
+          quantity: data.quantity,
+          list_price: data.price,
+          product_id: data.productId,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Price update successful:', result);
+    return result;
+  } catch (error) {
+    console.error('Error updating cart price:', error);
+    throw error;
+  }
+}
+
+// Helper function
+async function getlineItem(productId: string, cartId: string) {
+  const url = `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${cartId}`;
+
+  const response = await fetch(url, {
+    headers: {
+      'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+      'Content-Type': 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+
+  const data = await response.json();
+  const lineItems = data.data.line_items.physical_items;
+
+  return lineItems.find((item: any) => Number(item.product_id) === Number(productId));
 }

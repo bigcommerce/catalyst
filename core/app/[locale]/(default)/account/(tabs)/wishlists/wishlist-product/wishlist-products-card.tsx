@@ -1,6 +1,6 @@
 'use client';
- 
-import React, { useEffect, useState, useTransition } from 'react';
+
+import React, { memo, useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Button } from '~/components/ui/button';
 import Link from 'next/link';
@@ -14,20 +14,21 @@ import {
   GetProductMetaFields,
   GetVariantsByProductId,
 } from '~/components/management-apis';
-import { useCommonContext } from '~/components/common-context/common-provider';
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { calculateProductPrice } from '~/components/common-functions';
+import { calculateProductPrice, manageDeletedProducts } from '~/components/common-functions';
 import { ProductPrice } from '~/belami/components/search/product-price';
 import { Promotion } from '~/belami/components/search/hit';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_components/review-summary';
- 
+import { getWishlists } from '~/components/graphql-apis';
+
+import { CloseOut } from '~/app/[locale]/(default)/product/[slug]/_components/closeOut';
+
 interface OptionValue {
   entityId: number;
   label: string;
   isDefault: boolean;
 }
- 
+
 interface ProductOption {
   __typename: string;
   entityId: number;
@@ -36,7 +37,7 @@ interface ProductOption {
   isVariantOption: boolean;
   values: OptionValue[];
 }
- 
+
 interface ProductVariant {
   entityId: number;
   sku: string;
@@ -45,8 +46,10 @@ interface ProductVariant {
     price: { value: number; currencyCode: string };
     basePrice: { value: number; currencyCode: string };
     salePrice: { value: number; currencyCode: string } | null;
+    retailPrice: { value: number; currencyCode: string } | null;
   };
 }
+
 interface CategoryNode {
   name: string;
   path: string | null;
@@ -60,7 +63,7 @@ interface CategoryNode {
     }> | null;
   };
 }
- 
+
 interface WishlistProduct {
   categories: CategoryNode;
   entityId: number;
@@ -68,9 +71,12 @@ interface WishlistProduct {
   sku: string;
   mpn: string;
   path: string;
-  availabilityV2: string;
+  availabilityV2: {
+    status: string;
+    description: string;
+  };
   brand?: {
-    entityId: Number;
+    entityId: number;
     name: string;
     path: string;
   };
@@ -82,22 +88,37 @@ interface WishlistProduct {
     price: { value: number; currencyCode: string };
     basePrice: { value: number; currencyCode: string };
     salePrice: { value: number; currencyCode: string } | null;
+    retailPrice: { value: number; currencyCode: string } | null;
+  };
+  reviewSummary?: {
+    numberOfReviews: string;
+    averageRating: string;
   };
   productOptions?: ProductOption[];
   variants: ProductVariant[];
 }
-interface MetaField {
-  key: string;
-  value: string;
-  namespace: string;
-}
+
 interface WishlistItem {
   entityId: number;
   productEntityId: number;
   variantEntityId: number;
   product: WishlistProduct;
 }
- 
+
+interface DeletedProductInfo {
+  productId: number;
+  wishlistItemId: number;
+  deletionDate: string;
+  productName?: string;
+  remainingItems: number;
+}
+
+interface MetaField {
+  key: string;
+  value: string;
+  namespace: string;
+}
+
 const ProductCard = ({
   item,
   wishlistEntityId,
@@ -109,7 +130,6 @@ const ProductCard = ({
   onDelete: (productId: number, wishlistItemId: number) => void;
   discountRules: any;
 }) => {
-  const { setDeletedProductId } = useCommonContext();
   const format = useFormatter();
   const [isLoading, setIsLoading] = useState(false);
   const [updatedWishlist, setUpdatedWishlist] = useState<any[]>([]);
@@ -117,7 +137,6 @@ const ProductCard = ({
   const [isFreeShipping, setIsFreeShipping] = useState(false);
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
   const [hasActivePromotion, setHasActivePromotion] = useState(false);
- 
   const [variantDetails, setVariantDetails] = useState<{
     mpn: string;
     calculated_price: number;
@@ -126,13 +145,11 @@ const ProductCard = ({
       label: string;
     }>;
   } | null>(null);
- 
+
   const handleDeleteWishlist = () => {
-    const productId = item.productEntityId;
-    setDeletedProductId(productId, wishlistEntityId);
-    onDelete(productId, item.entityId);
+    onDelete(item.product.entityId, item.entityId);
   };
- 
+
   useEffect(() => {
     const fetchVariantDetails = async () => {
       try {
@@ -140,7 +157,7 @@ const ProductCard = ({
         const variant = item.variantEntityId
           ? allVariantData.find((v: any) => v.id === item.variantEntityId)
           : allVariantData[0];
- 
+
         if (variant) {
           setVariantDetails({
             mpn: variant.mpn,
@@ -148,16 +165,18 @@ const ProductCard = ({
             option_values: variant.option_values,
           });
         }
-      } catch (error) {}
+      } catch (error) { }
     };
 
     const fetchData = async () => {
       try {
         const promotions = await getActivePromotions(true);
         const freeShipping = await CheckProductFreeShipping(item.productEntityId.toString());
-        const cats = item.product?.categories?.edges?.map((edge) => edge.node.entityId) || [];
+        const cats =
+          item.product?.categories?.edges?.map(
+            (edge: { node: { entityId: any } }) => edge.node.entityId,
+          ) || [];
 
-        // Check if there are any active promotions
         const hasPromo = promotions && (Object.keys(promotions).length > 0 || freeShipping);
 
         setPromotionsData(promotions);
@@ -165,7 +184,7 @@ const ProductCard = ({
         setCategoryIds(cats);
         setHasActivePromotion(hasPromo);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error('Error fetching promotions data:', error);
         setHasActivePromotion(false);
       }
     };
@@ -173,7 +192,7 @@ const ProductCard = ({
     fetchData();
     fetchVariantDetails();
   }, [item, discountRules]);
- 
+
   function handlePriceUpdatedProduct(product: any[]) {
     if (Array.isArray(product) && JSON.stringify(updatedWishlist) !== JSON.stringify(product)) {
       setUpdatedWishlist((prevWishlist) => {
@@ -184,6 +203,7 @@ const ProductCard = ({
       });
     }
   }
+
   calculateProductPrice(item.product, 'wishlist', discountRules, categoryIds)
     .then((result) => {
       const priceUpdatedProduct = result;
@@ -192,7 +212,7 @@ const ProductCard = ({
     .catch((error) => {
       console.error('Error calculating product price:', error);
     });
-   
+
   return (
     <div className="flex h-full flex-col">
       <div className="relative mb-4 flex h-full flex-col justify-between border border-gray-300 pb-0">
@@ -260,74 +280,81 @@ const ProductCard = ({
                 <span>{variantDetails.mpn}</span>
               </p>
               {updatedWishlist[0]?.UpdatePriceForMSRP && (
-                <ProductPrice
-                  defaultPrice={updatedWishlist[0].UpdatePriceForMSRP.originalPrice || 0}
-                  defaultSalePrice={
-                    updatedWishlist[0]?.UpdatePriceForMSRP.hasDiscount
-                      ? updatedWishlist[0].UpdatePriceForMSRP.updatedPrice
-                      : updatedWishlist[0]?.UpdatePriceForMSRP.warrantyApplied
+                <div className='flex flex-col gap-[5px] items-center'>
+                  <ProductPrice
+                    defaultPrice={updatedWishlist[0].UpdatePriceForMSRP.originalPrice || 0}
+                    defaultSalePrice={
+                      updatedWishlist[0]?.UpdatePriceForMSRP.hasDiscount
                         ? updatedWishlist[0].UpdatePriceForMSRP.updatedPrice
-                        : null
-                  }
-                  currency={
-                    updatedWishlist[0].UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'
-                  }
-                  format={format}
-                  // showMSRP={updatedWishlist[0].UpdatePriceForMSRP.showDecoration}
-                  warrantyApplied={updatedWishlist[0].UpdatePriceForMSRP.warrantyApplied}
-                  options={{
-                    useAsyncMode: false,
-                    useDefaultPrices: true,
-                  }}
-                  classNames={{
-                    root: 'product-price mt-2 flex justify-center items-center gap-[0.5em] text-center xl:text-center',
-                    newPrice:
-                      'text-center text-[18px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                    oldPrice:
-                      'inline-flex items-baseline text-center text-[14px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
-                    discount:
-                      'whitespace-nowrap text-center text-[14px] font-normal leading-8 tracking-[0.15px] text-brand-400',
-                    price:
-                      'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px] text-brand-400',
-                    msrp: '-ml-[0.5em] mb-1 text-[10px] text-gray-500',
-                  }}
-                />
+                        : updatedWishlist[0]?.UpdatePriceForMSRP.warrantyApplied
+                          ? updatedWishlist[0].UpdatePriceForMSRP.updatedPrice
+                          : null
+                    }
+                    currency={
+                      updatedWishlist[0].UpdatePriceForMSRP.currencyCode?.currencyCode || 'USD'
+                    }
+                    format={format}
+                    // showMSRP={updatedWishlist[0].UpdatePriceForMSRP.showDecoration}
+                    warrantyApplied={updatedWishlist[0].UpdatePriceForMSRP.warrantyApplied}
+                    options={{
+                      useAsyncMode: false,
+                      useDefaultPrices: true,
+                    }}
+                    classNames={{
+                      root: 'product-price mt-2 flex justify-center items-center gap-[0.5em] text-center xl:text-center',
+                      newPrice:
+                        'text-center text-[18px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                      oldPrice:
+                        'inline-flex items-baseline text-center text-[14px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
+                      discount:
+                        'whitespace-nowrap text-center text-[14px] font-normal leading-8 tracking-[0.15px] text-brand-400',
+                      price:
+                        'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px] text-brand-400',
+                      msrp: '-ml-[0.5em] mb-1 text-[10px] text-gray-500',
+                    }}
+                  />
+                  <CloseOut
+                    entityId={item.productEntityId}
+                    variantId={item.variantEntityId}
+                    isFromPDP={true}
+                    isFromCart={false}
+                  />
+                </div>
               )}
               {variantDetails.option_values.map((option, index) => {
                 const updatedValue =
-                  option.option_display_name === 'Select Fabric Color'
-                    ? option.label.split('|')[0]
+                  option.option_display_name === "Fabric Color" || "Select Fabric Color"
+                    ? option.label.split('|')[0]?.trim()
                     : option.label;
                 return (
                   <p key={index} className="text-sm">
-                    <span className="font-semibold">{option.option_display_name}: </span>
+                    <span className="font-semibold">{`${option.option_display_name}: `} </span>
                     <span>{updatedValue}</span>
                   </p>
                 );
               })}
             </div>
           )}
-          {/* Only render promotion section if there are active promotions */}
         </div>
         {hasActivePromotion && (
-            <div className="text-center">
-              <Promotion
-                promotions={promotionsData}
-                product_id={item.productEntityId}
-                brand_id={Number(item.product.brand?.entityId)}
-                category_ids={categoryIds}
-                free_shipping={isFreeShipping}
-              />
-            </div>
-          )}
+          <div className="text-center">
+            <Promotion
+              promotions={promotionsData}
+              product_id={item.productEntityId}
+              brand_id={Number(item.product.brand?.entityId)}
+              category_ids={categoryIds}
+              free_shipping={isFreeShipping}
+            />
+          </div>
+        )}
       </div>
- 
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
           setIsLoading(true);
           const formData = new FormData(e.currentTarget);
- 
+
           addToCart(formData)
             .then((result) => {
               if (result.error) {
@@ -346,7 +373,7 @@ const ProductCard = ({
       >
         <input name="product_id" type="hidden" value={item.productEntityId} />
         <input name="variant_id" type="hidden" value={item.variantEntityId} />
- 
+
         {item.product.availabilityV2.status === 'Unavailable' ? (
           <div className="flex flex-col items-center">
             <Button
@@ -381,87 +408,121 @@ const ProductCard = ({
 };
 
 export function WishlistProductCard(customerGroupDetails: { discount_rules: any }): JSX.Element {
-  const [wishlistData, setWishlistData] = useState<{
-    entityId: number;
-    name: string;
-    items: WishlistItem[];
-  } | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [wishlistState, setWishlistState] = useState({
+    wishlistData: null as any,
+    deletedProductsHistory: [] as DeletedProductInfo[],
+    isLoading: true,
+    error: null as string | null,
+  });
   const router = useRouter();
 
   const discountRules = customerGroupDetails?.customerGroupDetails?.discount_rules;
 
-  const handleDelete = (productId: number, wishlistItemId: number) => {
-    if (!wishlistData) return;
-
-    const updatedItems = wishlistData.items.filter((item) => item.product.entityId !== productId);
-
-    const updatedWishlist = {
-      ...wishlistData,
-      items: updatedItems,
-    };
-
-    setWishlistData(updatedWishlist);
-    localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
-  };
   useEffect(() => {
-    const loadWishlist = async () => {
+    let isMounted = true;
+
+    const initializeWishlist = async () => {
       try {
+        // Load deletion history
+        const savedHistory = localStorage.getItem('wishlistDeletionHistory');
+        const deletionHistory = savedHistory ? JSON.parse(savedHistory) : [];
+
+        // Load wishlist data
         const savedWishlist = localStorage.getItem('selectedWishlist');
-        if (savedWishlist) {
-          const parsedWishlist = JSON.parse(savedWishlist);
-
-          // Process each item to get review data
-          Promise.all(
-            parsedWishlist.items.map(async (item: WishlistItem) => {
-              try {
-                const productMetaFields = await GetProductMetaFields(item.productEntityId, '');
-                const averageRatingMetaField = productMetaFields?.find(
-                  (field: MetaField) => field?.key === 'sv-average-rating',
-                );
-                const totalReviewsMetaField = productMetaFields?.find(
-                  (field: MetaField) => field?.key === 'sv-total-reviews',
-                );
-
-                return {
-                  ...item,
-                  product: {
-                    ...item.product,
-                    reviewSummary: {
-                      numberOfReviews: totalReviewsMetaField?.value || '0',
-                      averageRating: averageRatingMetaField?.value || '0',
-                    },
-                  },
-                };
-              } catch (error) {
-                console.error('Error fetching meta fields:', error);
-                return item; // Return original item if meta fields fetch fails
-              }
-            }),
-          )
-            .then((updatedItems) => {
-              setWishlistData({
-                ...parsedWishlist,
-                items: updatedItems,
-              });
-            })
-            .catch((error) => {
-              console.error('Error processing items:', error);
-              setWishlistData(parsedWishlist);
-            });
-        } else {
+        if (!savedWishlist) {
           router.push('/account/wishlists');
+          return;
+        }
+
+        const parsedWishlist = JSON.parse(savedWishlist);
+        const freshData = await getWishlists({ limit: 50 });
+        const currentWishlist = freshData?.wishlists?.find(
+          (w: any) => w.entityId === parsedWishlist.entityId,
+        );
+
+        if (currentWishlist && isMounted) {
+          // Transform items
+          const transformedItems = await Promise.all(
+            currentWishlist.items.map(async (item: any) => {
+              const productMetaFields = await GetProductMetaFields(item.productEntityId, '');
+
+              return {
+                entityId: item.entityId,
+                productEntityId: item.productEntityId,
+                variantEntityId: item.variantEntityId,
+                product: {
+                  ...item.product,
+                  reviewSummary: {
+                    numberOfReviews:
+                      productMetaFields?.find(
+                        (field: MetaField) => field?.key === 'sv-total-reviews',
+                      )?.value || '0',
+                    averageRating:
+                      productMetaFields?.find(
+                        (field: MetaField) => field?.key === 'sv-average-rating',
+                      )?.value || '0',
+                  },
+                },
+              };
+            }),
+          );
+
+          if (isMounted) {
+            setWishlistState((prev) => ({
+              ...prev,
+              wishlistData: {
+                entityId: currentWishlist.entityId,
+                name: currentWishlist.name,
+                items: transformedItems,
+              },
+              deletedProductsHistory: deletionHistory,
+              isLoading: false,
+            }));
+          }
         }
       } catch (error) {
-        setError('Failed to load wishlist data');
-      } finally {
-        setIsLoading(false);
+        if (isMounted) {
+          setWishlistState((prev) => ({
+            ...prev,
+            error: 'Failed to load wishlist data',
+            isLoading: false,
+          }));
+        }
       }
     };
 
-    loadWishlist();
+    initializeWishlist();
+
+    return () => {
+      isMounted = false;
+    };
   }, [router]);
+
+  const handleDelete = useCallback((productId: number, wishlistItemId: number) => {
+    setWishlistState((prev) => {
+      if (!prev.wishlistData) return prev;
+
+      manageDeletedProducts.addDeletedProduct(productId, wishlistItemId);
+
+      const updatedItems = prev.wishlistData.items.filter(
+        (item: { entityId: number }) => item.entityId !== wishlistItemId,
+      );
+
+      const updatedWishlist = {
+        ...prev.wishlistData,
+        items: updatedItems,
+      };
+
+      localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
+
+      return {
+        ...prev,
+        wishlistData: updatedWishlist,
+      };
+    });
+  }, []);
+
+  const { wishlistData, isLoading, error } = wishlistState;
 
   if (isLoading) {
     return (
@@ -470,15 +531,15 @@ export function WishlistProductCard(customerGroupDetails: { discount_rules: any 
       </div>
     );
   }
- 
+
   if (error) {
     return <div className="flex items-center justify-center p-8 text-red-500">{error}</div>;
   }
- 
+
   if (!wishlistData) {
     return <div></div>;
   }
- 
+
   return (
     <div className="container m-auto mx-auto mb-12 w-[80%] px-4">
       <ComponentsBreadcrumbs
@@ -494,7 +555,7 @@ export function WishlistProductCard(customerGroupDetails: { discount_rules: any 
           },
         ]}
       />
- 
+
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="mb-2 text-left text-xl font-medium leading-8 tracking-[0.15px] text-black">
@@ -511,9 +572,9 @@ export function WishlistProductCard(customerGroupDetails: { discount_rules: any 
           SHARE FAVORITES
         </Button>
       </div>
- 
+
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 2xl:grid-cols-4">
-        {wishlistData?.items.map((item) => (
+        {wishlistData?.items.map((item: WishlistItem) => (
           <ProductCard
             key={item.entityId}
             item={item}
@@ -526,7 +587,5 @@ export function WishlistProductCard(customerGroupDetails: { discount_rules: any 
     </div>
   );
 }
- 
-export default WishlistProductCard;
- 
- 
+
+export default memo(WishlistProductCard);

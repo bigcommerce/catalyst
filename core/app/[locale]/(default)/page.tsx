@@ -19,7 +19,9 @@ export default async function Home({ params }: Props) {
   const { locale } = await params;
 
   return <>
+    <div className='[&_.css-99zmsg]:!list-outside [&_::marker]:!text-white [@media_(width<640px)]:[&_.css-gbfzu]:!my-0'>
     <MakeswiftPage locale={locale} path="/" />
+    </div>
     <KlaviyoForm /> 
   </>;
 }

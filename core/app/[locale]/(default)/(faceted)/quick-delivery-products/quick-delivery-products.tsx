@@ -13,7 +13,8 @@ import {
   //Pagination,
   //SortBy,
   //Stats,
-  useSearchBox
+  useSearchBox, 
+  useRefinementList
 } from 'react-instantsearch';
 import { InstantSearchNext } from 'react-instantsearch-nextjs';
 import type { RefinementListProps } from 'react-instantsearch';
@@ -96,6 +97,11 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
 
     if (typeof (Storage) !== 'undefined')
       localStorage.setItem('algolia-results-view', currentValue === 'grid' ? 'list' : 'grid');
+  }
+
+  function VirtualRefinementList(props: any) {
+    useRefinementList(props);
+    return null;
   }
 
   return (
@@ -303,6 +309,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
               ]} />
             </Facet>
             <DynamicWidgets maxValuesPerFacet={1000}>
+              <VirtualRefinementList attribute="inventory_range" />
               <Facet title="Brand">
                 <RefinementList attribute="brand_name" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} classNames={{
                   showMore: 'flex items-center justify-center w-full text-center !px-4 !h-10 !bg-white !hover:bg-gray-30 uppercase rounded border !border-brand-400 !shadow-none'

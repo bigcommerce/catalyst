@@ -37,7 +37,7 @@ const SubmitButton = () => {
   
   return (
     <Button
-      className="!important h-[50px] !w-full bg-[rgb(45,177,219)] text-[14px] font-normal uppercase tracking-[1.25px] transition-colors duration-500 hover:bg-[rgb(75,200,240)] md:w-auto"
+      className="!important h-[50px] !w-full bg-brand-400 text-[14px] font-normal uppercase tracking-[1.25px] transition-colors duration-500 hover:bg-brand-300 md:w-auto"
       loading={pending}
       loadingText={t('Form.submitting')}
       variant="primary"

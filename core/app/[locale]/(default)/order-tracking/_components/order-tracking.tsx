@@ -10,7 +10,7 @@ import { BcImage } from '~/components/bc-image';
 import { PrintOrder } from '../../checkout/print/print-order';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import chevronRight from '~/public/orders/chevronRight.svg';
- 
+
 interface ManageOrderButtonsProps {
   className: string;
   orderId: number;
@@ -19,14 +19,14 @@ interface ManageOrderButtonsProps {
   orderData: any;
   setShowOrderSummary: any;
 }
- 
+
 const OrderDetails = ({
   orderId,
   orderDate,
   orderPrice,
   orderStatus,
   cartId,
-  guestUserCheck
+  guestUserCheck,
 }: {
   orderId: number;
   orderDate: string;
@@ -40,7 +40,7 @@ const OrderDetails = ({
 }) => {
   const t = useTranslations('Account.Orders');
   const format = useFormatter();
- 
+
   const statusBgClassMap: { [key: string]: string } = {
     processed: 'bg-[#E7F5F8]',
     delayed: 'bg-[#E5BFBC]',
@@ -50,21 +50,21 @@ const OrderDetails = ({
     'return started': 'bg-[#FBF4E9]',
     returned: 'bg-[#002A37]',
   };
- 
+
   const statusTextClassMap: { [key: string]: string } = {
     'return started': 'text-[#6A4C1E]',
     shipped: 'text-white',
     delivered: 'text-white',
     returned: 'text-white',
   };
- 
+
   const buttonBgClass = statusBgClassMap[orderStatus.toLowerCase()] || 'bg-[#E7F5F8]';
   const buttonTextClass = statusTextClassMap[orderStatus.toLowerCase()] || 'text-[#353535]';
- 
+
   return (
     <>
       <div className="w-full bg-[#03465C] p-[10px]">
-      <button
+        <button
           className={`flex h-[32px] flex-row items-center justify-center gap-[10px] rounded-full p-[0px_10px] text-[16px] font-normal leading-[32px] ${buttonBgClass} ${buttonTextClass}`}
         >
           {orderStatus}
@@ -108,7 +108,7 @@ const OrderDetails = ({
     </>
   );
 };
- 
+
 const ManageOrderButtons = ({
   className,
   orderId,
@@ -121,7 +121,7 @@ const ManageOrderButtons = ({
   const getOrderDetails = () => {
     setShowOrderSummary(1);
   };
- 
+
   return (
     <div className="flex w-full flex-[0.5] flex-col gap-[5px] xl:w-[unset]">
       {Boolean(orderTrackingUrl) && (
@@ -135,7 +135,7 @@ const ManageOrderButtons = ({
         </Button>
       )}
       <Button
-        className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37]"
+        className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50"
         aria-label={t('viewOrderDetails')}
         onClick={() => getOrderDetails()}
       >
@@ -145,7 +145,7 @@ const ManageOrderButtons = ({
         <Button
           aria-label={t('returnOrder')}
           asChild
-          className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37]"
+          className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50"
           variant="secondary"
         >
           <Link href={{ pathname: '' }}>{t('returnOrder')}</Link>
@@ -154,7 +154,7 @@ const ManageOrderButtons = ({
     </div>
   );
 };
- 
+
 const OrderList = ({
   orderData,
   cartId,
@@ -171,19 +171,19 @@ const OrderList = ({
   // NOTE: tracking url will be supported later
   const trackingUrl = shippingConsignments
     ? shippingConsignments
-      .flatMap(({ shipments }) =>
-        shipments.map((shipment) => {
-          if (
-            shipment.tracking?.__typename === 'OrderShipmentNumberAndUrlTracking' ||
-            shipment.tracking?.__typename === 'OrderShipmentUrlOnlyTracking'
-          ) {
-            return shipment.tracking.url;
-          }
- 
-          return null;
-        }),
-      )
-      .find((url: any) => url !== null)
+        .flatMap(({ shipments }) =>
+          shipments.map((shipment) => {
+            if (
+              shipment.tracking?.__typename === 'OrderShipmentNumberAndUrlTracking' ||
+              shipment.tracking?.__typename === 'OrderShipmentUrlOnlyTracking'
+            ) {
+              return shipment.tracking.url;
+            }
+
+            return null;
+          }),
+        )
+        .find((url: any) => url !== null)
     : undefined;
   return (
     <>
@@ -223,11 +223,13 @@ const OrderList = ({
                   height = 65;
                   productCount = 4;
                 } else if (itemsCount == 2) {
-                  className = 'flex h-[150px] w-[150px] [&>img]:w-[70px] xl:[&>img]:w-[150px] xl:w-[310px] flex-row gap-[10px]';
+                  className =
+                    'flex h-[150px] w-[150px] [&>img]:w-[70px] xl:[&>img]:w-[150px] xl:w-[310px] flex-row gap-[10px]';
                   width = 150;
                   productCount = 2;
                 } else if (itemsCount == 1) {
-                  className = 'product-count-1 flex h-[150px] sm:w-[150px] flex-row gap-[10px] w-full';
+                  className =
+                    'product-count-1 flex h-[150px] sm:w-[150px] flex-row gap-[10px] w-full';
                   width = 150;
                 }
                 return (
@@ -257,19 +259,26 @@ const OrderList = ({
                           {lineItems?.[0]?.name}
                         </div>
                         <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7f7f7f]">
-                          <span>SKU: {lineItems?.[0]?.sku}</span>{' '}
+                          <span>SKU: {lineItems?.[0]?.sku}</span>
                           {lineItems?.[0]?.productOptions?.length > 0 &&
-                            lineItems?.[0]?.productOptions?.map((lineData) => {
-                              const updatedValue =
-                                lineData?.name === 'Select Fabric Color'
-                                  ? lineData?.value.split('|')[0]
-                                  : lineData?.value;
-                              return(
-                              <span>
-                                | {lineData?.name}:{' '}
-                                <span className="font-[400]">{lineData?.updatedValue}</span>
-                              </span>
-                            )}
+                            lineItems?.[0]?.productOptions?.map(
+                              (lineData: { name: string; value: string }, index: number) => {
+                                let pipeLineData = ' | ';
+                                if (index === lineItems[0].productOptions.length - 1) {
+                                  pipeLineData = '';
+                                }
+                                const updatedValue =
+                                  lineData?.name === "Fabric Color" || "Select Fabric Color"
+                                    ? lineData?.value.split('|')[0]?.trim()
+                                    : lineData?.value;
+                                return (
+                                  <span>
+                                    {pipeLineData}
+                                    {`${lineData?.name}: `}
+                                    <span className="font-[400]">{updatedValue}</span>
+                                  </span>
+                                );
+                              },
                             )}
                         </div>
                         <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#353535]">
@@ -295,7 +304,7 @@ const OrderList = ({
     </>
   );
 };
- 
+
 const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
   const { orderState, summaryInfo, consignments, paymentInfo } = orderData;
   const t = useTranslations('Account.Orders');
@@ -319,7 +328,7 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
     regSubTotal -= discountedAmount.value;
     youSave += discountedAmount.value;
   });
- 
+
   return (
     <>
       <div className="border-b border-b-[#E8E7E7]">
@@ -461,9 +470,9 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
               <div>
                 {shipping.value > 0
                   ? format.number(shipping.value, {
-                    style: 'currency',
-                    currency: shipping.currencyCode,
-                  })
+                      style: 'currency',
+                      currency: shipping.currencyCode,
+                    })
                   : 'FREE'}
               </div>
             </div>
@@ -547,21 +556,27 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
                                 <span>SKU: ABC-1234DE</span>{' '}
                                 {shipment?.productOptions?.map(
                                   ({ name: optionName, value }, idx) => {
-                                const updatedValue =
-                                 optionName === 'Select Fabric Color'
-                                  ? value.split('|')[0]
-                                  : value;
+                                    let pipeLineData = ' | ';
+                                    if (idx === shipment.productOptions.length - 1) {
+                                      pipeLineData = '';
+                                    }
+                                    const updatedValue =
+                                      optionName === "Fabric Color" || "Select Fabric Color"
+                                        ? value.split('|')[0].trim()
+                                        : value;
                                     return (
                                       <>
                                         <span
                                           className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7F7F7F]"
                                           key={idx}
                                         >
-                                          {optionName}
+                                          {`${optionName}: `}
                                         </span>
                                         <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
-                                          {' '}
                                           {updatedValue}
+                                        </span>
+                                        <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                                          {pipeLineData}
                                         </span>
                                       </>
                                     );
@@ -601,7 +616,7 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
     </>
   );
 };
- 
+
 export default function OrderTracking({
   icon,
   guestUserCheck,
@@ -618,31 +633,31 @@ export default function OrderTracking({
   const [cartId, setCartId] = useState('');
   const [showOrderSummary, setShowOrderSummary] = useState(0);
   const [guestFlow, setGuestFlow] = useState(1);
- 
+
   const onNumberChange = (e: any) => {
     setNumber(e.target.value);
     validateForm();
   };
- 
+
   const onEmailChange = (e: any) => {
     setEmail(e.target.value);
     validateForm();
   };
- 
+
   // Validate form
   const validateForm = () => {
     let errors: any = {};
- 
+
     if (!number) {
       errors.number = 'Order Number is required.';
     }
- 
+
     if (!email) {
       errors.email = 'Email is required.';
     } else if (!/\S+@\S+\.\S+/.test(email)) {
       errors.email = 'Email is invalid.';
     }
- 
+
     setErrors(errors);
     setIsFormValid(Object.keys(errors).length === 0);
   };
@@ -681,7 +696,7 @@ export default function OrderTracking({
         orderInfoData = await getGuestOrderDetailsFromAPI(orderId);
         if (orderInfoData?.billing_address?.email == email) {
           setCartId(orderInfoData?.cart_id);
-          let guestFlowCheck = (orderInfoData?.customer_id > 0) ? 0 : 1;
+          let guestFlowCheck = orderInfoData?.customer_id > 0 ? 0 : 1;
           setGuestFlow(guestFlowCheck);
           await getOrderData(Number(orderId), orderInfoData?.cart_id, guestFlowCheck);
         } else {
@@ -695,40 +710,42 @@ export default function OrderTracking({
       console.log('Form has errors. Please correct them.');
     }
   };
- 
+
   const breadcrumbs: any = [
     {
       label: 'Find an Order',
       href: '#',
     },
   ];
- 
+
   return (
     <div className="flex justify-center">
-      <div className="w-full px-5 xl:p-0 xl:w-[70%]">
+      <div className="w-full px-5 xl:w-[70%] xl:p-0">
         <div className="my-[2rem] flex flex-col gap-[20px] text-[#353535]">
           <div className="flex flex-col gap-[20px] p-0">
-          <div className="flex items-center justify-center gap-[5px] xl:hidden">
-            <div>
-              <BcImage
-                src={chevronRight}
-                width={8}
-                height={12}
-                alt="Chevron Right"
-                unoptimized={true}
-              />
+            <div className="flex items-center justify-center gap-[5px] xl:hidden">
+              <div>
+                <BcImage
+                  src={chevronRight}
+                  width={8}
+                  height={12}
+                  alt="Chevron Right"
+                  unoptimized={true}
+                />
+              </div>
+              <Link
+                href="/"
+                className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#006380]"
+              >
+                Account Center
+              </Link>
             </div>
-            <Link
-              href="/"
-              className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#006380]"
-            >
-              Account Center
-            </Link>
-          </div>
-          <ComponentsBreadcrumbs className="hidden xl:block" breadcrumbs={breadcrumbs} />
-            <div className="text-[24px] font-[400] leading-[32px] text-[#000] text-center xl:text-left">Find Your Order</div>
+            <ComponentsBreadcrumbs className="hidden xl:block" breadcrumbs={breadcrumbs} />
+            <div className="text-center text-[24px] font-[400] leading-[32px] text-[#000] xl:text-left">
+              Find Your Order
+            </div>
             <StillNeedContactUs icon={icon} />
-            <div className="flex flex-col xl:flex-row xl:items-end gap-[20px] p-0 text-center xl:text-left">
+            <div className="flex flex-col gap-[20px] p-0 text-center xl:flex-row xl:items-end xl:text-left">
               <div className="flex flex-1 flex-col gap-[20px]">
                 <div className="text-[20px] font-[500] leading-[32px] tracking-[0.15px] text-[#008BB7]">
                   Order Number (Required)
@@ -739,7 +756,7 @@ export default function OrderTracking({
                     className={`mb-[30px] flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_10px] focus-visible:outline-none disabled:bg-gray-100 disabled:hover:border-gray-200 ${errors.number ? 'hover:border hover:border-[#A71F23] focus:border focus:border-[#A71F23] focus-visible:border focus-visible:border-[#A71F23]' : 'hover:border hover:border-[#008bb7] focus:border focus:border-[#008bb7] focus-visible:border focus-visible:border-[#008bb7]'}`}
                     onChange={(e) => onNumberChange(e)}
                   />
- 
+
                   {errors.number && (
                     <p className="absolute bottom-0 text-sm text-[#A71F23]">{errors.number} </p>
                   )}
@@ -755,7 +772,7 @@ export default function OrderTracking({
                     className={`mb-[30px] flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_10px] focus-visible:outline-none disabled:bg-gray-100 disabled:hover:border-gray-200 ${errors.email ? 'hover:border hover:border-[#A71F23] focus:border focus:border-[#A71F23] focus-visible:border focus-visible:border-[#A71F23]' : 'hover:border hover:border-[#008bb7] focus:border focus:border-[#008bb7] focus-visible:border focus-visible:border-[#008bb7]'}`}
                     onChange={(e) => onEmailChange(e)}
                   />
- 
+
                   {errors.email && (
                     <p className="absolute bottom-0 text-sm text-[#A71F23]">{errors.email} </p>
                   )}
@@ -763,7 +780,7 @@ export default function OrderTracking({
               </div>
               <div>
                 <button
-                  className="mb-[30px] flex h-[42px] cursor-pointer flex-row items-center justify-center gap-[5px] rounded bg-[#03465C] p-[5px_10px] text-sm font-[500] leading-8 tracking-[1.25px] text-[#ffffff] hover:bg-[#03465C]/90 w-full xl:w-[unset]"
+                  className="mb-[30px] flex h-[42px] w-full cursor-pointer flex-row items-center justify-center gap-[5px] rounded bg-[#03465C] p-[5px_10px] text-sm font-[500] leading-8 tracking-[1.25px] text-[#ffffff] hover:bg-[#03465C]/90 xl:w-[unset]"
                   disabled={!isFormValid}
                   onClick={handleSubmit}
                 >
@@ -774,9 +791,15 @@ export default function OrderTracking({
           </div>
           <div className="flex flex-col gap-[20px] p-0">
             {errors.orderError || showOrderInfo || showOrderSummary ? (
-              <div className="text-[24px] font-normal leading-[32px] text-[#000] xl:text-left text-center">Results</div>
+              <div className="text-center text-[24px] font-normal leading-[32px] text-[#000] xl:text-left">
+                Results
+              </div>
             ) : null}
-            {errors.orderError && <p className='text-center xl:text-left text-sm text-[#353535] leading-[32px]'>{errors.orderError} </p>}
+            {errors.orderError && (
+              <p className="text-center text-sm leading-[32px] text-[#353535] xl:text-left">
+                {errors.orderError}{' '}
+              </p>
+            )}
             {showOrderInfo && orderData?.orderState?.orderId ? (
               <OrderList
                 setShowOrderSummary={setShowOrderSummary}

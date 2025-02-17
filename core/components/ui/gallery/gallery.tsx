@@ -4,9 +4,7 @@ import { cn } from '~/lib/utils';
 import { GalleryModel } from './belami-gallery-view-all-model-pdp';
 import { Banner } from './belami-banner-pdp';
 import ProductImage from './product-zoom';
-import { useCommonContext } from '~/components/common-context/common-provider';
 import WishlistAddToList from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/wishlist-add-to-list';
-import { useWishlists } from '~/app/[locale]/(default)/account/(tabs)/wishlists/wishlist-add-to-list/hooks';
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { FragmentOf } from '~/client/graphql';
 
@@ -69,6 +67,7 @@ interface Props {
   productMpn?: string | null;
   selectedVariantId?: string | null;
   product: FragmentOf<typeof ProductItemFragment>;
+  extractedImagePairs: any;
 }
 
 const Gallery = ({
@@ -81,9 +80,8 @@ const Gallery = ({
   productMpn,
   selectedVariantId,
   product,
+  extractedImagePairs,
 }: Props) => {
-  const { wishlists } = useWishlists();
-  const { setCurrentMainMedia } = useCommonContext();
   const [currentVariantId, setCurrentVariantId] = useState<number | undefined>();
   const [selectedIndex, setSelectedIndex] = useState(defaultImageIndex);
   const [viewAll, setViewAll] = useState(false);
@@ -175,17 +173,20 @@ const Gallery = ({
 
   const { mediaItems, selectedItem } = useMemo(() => {
     const filteredImages = (() => {
-      let filtered = Array.isArray(images) ? images : [];
-      if (selectedVariantId) {
-        const variantImages = filtered.filter((img) => img.variantId === selectedVariantId);
+      let filtered =
+        extractedImagePairs?.length > 0 ? extractedImagePairs : Array.isArray(images) ? images : [];
+      if (selectedVariantId && extractedImagePairs?.length === 0) {
+        const variantImages = filtered?.filter((img: any) => img.variantId === selectedVariantId);
         filtered =
-          variantImages.length > 0 ? variantImages : filtered.filter((img) => !img.variantId);
+          variantImages?.length > 0
+            ? variantImages
+            : filtered?.filter((img: any) => !img.variantId);
       }
-      if (productMpn) {
-        const mpnImages = filtered.filter((img) =>
-          img.altText?.toLowerCase()?.includes(productMpn.toLowerCase()),
+      if (productMpn && extractedImagePairs?.length === 0) {
+        const mpnImages = filtered?.filter((img: any) =>
+          img.altText?.toLowerCase()?.includes(productMpn?.toLowerCase()),
         );
-        if (mpnImages.length > 0) filtered = mpnImages;
+        if (mpnImages?.length > 0) filtered = mpnImages;
       }
       return filtered;
     })();
@@ -215,24 +216,6 @@ const Gallery = ({
       selectedItem: items[selectedIndex] || null,
     };
   }, [images, videos, selectedVariantId, productMpn, selectedIndex]);
-
-  useEffect(() => {
-    if (!selectedItem) return;
-
-    const currentMediaKey = `${selectedItem.type}-${
-      selectedItem.type === 'image' ? selectedItem.src : selectedItem.url
-    }`;
-    if (prevMediaRef.current !== currentMediaKey) {
-      prevMediaRef.current = currentMediaKey;
-      setCurrentMainMedia({
-        type: selectedItem.type,
-        src: selectedItem.type === 'image' ? selectedItem.src : undefined,
-        url: selectedItem.type === 'video' ? selectedItem.url : undefined,
-        altText: selectedItem.type === 'image' ? selectedItem.altText : undefined,
-        title: selectedItem.type === 'video' ? selectedItem.title : undefined,
-      });
-    }
-  }, [selectedItem, setCurrentMainMedia]);
 
   useEffect(() => {
     setSelectedIndex(0);
@@ -504,7 +487,6 @@ const Gallery = ({
               {product && (
                 <div className="absolute right-4 top-4 z-10">
                   <WishlistAddToList
-                    wishlists={wishlists}
                     hasPreviousPage={false}
                     product={{
                       entityId: product.entityId,

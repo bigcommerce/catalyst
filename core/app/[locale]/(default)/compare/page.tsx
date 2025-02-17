@@ -17,6 +17,18 @@ import { cn } from '~/lib/utils';
 import { AddToCart } from './_components/add-to-cart';
 import { AddToCartFragment } from './_components/add-to-cart/fragment';
 
+import { GetProductMetaFields } from '~/components/management-apis';
+import { ReviewSummary } from '~/belami/components/reviews';
+import Image from 'next/image';
+import noImage from '~/public/no-image.svg';
+import { CompareProductDetails } from './_components/compare-product-details';
+
+interface MetaField {
+  key: string;
+  value: string;
+  namespace: string;
+}
+
 const MAX_COMPARE_LIMIT = 10;
 
 const CompareParamsSchema = z.object({
@@ -114,27 +126,141 @@ export default async function Compare(props: Props) {
 
   const products = removeEdgesAndNodes(data.site.products).map((product) => ({
     ...product,
+    metafields: [],
     productOptions: removeEdgesAndNodes(product.productOptions),
   }));
 
+  if (products && products.length > 0) {
+    // Get MetaFields
+    const metafieldsPromises = products.map(async (product: any) => {
+      const productMetaFields = await GetProductMetaFields(product.entityId, '');
+      return { [product.entityId]: productMetaFields };
+    });
+
+    const metafieldsArray = await Promise.all(metafieldsPromises);
+    const metafields = metafieldsArray.reduce((acc, curr) => ({ ...acc, ...curr }), {});
+
+    products.map((product: any) => {
+      const productMetaFields = metafields[product.entityId] ?? null;
+      product.metafields = productMetaFields;
+
+      // Process Review Ratings
+      const averageRatingMetaField = productMetaFields?.find(
+        (field: MetaField) => field?.key === 'sv-average-rating',
+      );
+      const totalReviewsMetaField = productMetaFields?.find(
+        (field: MetaField) => field?.key === 'sv-total-reviews',
+      );
+
+      if (averageRatingMetaField && totalReviewsMetaField) {
+        product.reviewSummary.numberOfReviews = totalReviewsMetaField.value ?? 0;
+        product.reviewSummary.averageRating = averageRatingMetaField.value ?? 0;
+      }
+
+      return product;
+    });
+  }
+ 
   if (!products.length) {
     return (
-      <div className="flex w-full justify-center py-16 align-middle">
-        <div className="flex max-w-2xl flex-col gap-8 pb-8">
-          <h1 className="text-4xl font-black lg:text-5xl">{t('nothingToCompare')}</h1>
-          <p className="text-lg">{t('helpingText')}</p>
-          <SearchForm />
+      <div className="w-full justify-center py-16 align-middle">
+        <div className="pb-8">
+          <h1 className="mb-4 text-2xl lg:mb-0 text-center">{t('nothingToCompare')}</h1>
+          <p className="text-lg text-center">{t('helpingText')}</p>
         </div>
       </div>
     );
   }
 
+  console.log(products[0]);
+
   return (
     <>
-      <h1 className="pb-8 text-4xl font-black lg:text-5xl">
+      <h1 className="mb-4 text-2xl lg:mb-0 text-center">
         {t('heading', { quantity: products.length })}
       </h1>
 
+      <div className="TBD">
+        <table className="mx-auto w-full max-w-full table-fixed text-base md:w-fit">
+          <caption className="sr-only">{t('Table.caption')}</caption>
+          <colgroup>
+            <col className="w-80" span={products.length + 1} />
+          </colgroup>
+
+          <thead>
+            <tr>
+              <th className="sr-only" key={0} scope="col">&nbsp;</th>
+              {products.map((product) => (
+                <th className="sr-only" key={product.entityId} scope="col">
+                  {product.name}
+                </th>
+              ))}
+            </tr>
+            <tr>
+              <td key={0}></td>
+              {products.map((product) => (
+                <td key={product.entityId}>
+                  <div className="px-4">
+                    <div className="pb-full relative mx-auto my-0 flex h-auto w-full overflow-hidden pb-[100%]">
+                      <figure className="absolute left-0 top-0 h-full w-full">
+                        <Link aria-label={product.name} href={product.path} className="flex h-full w-full items-center justify-center align-middle">
+                        {product.defaultImage ? (
+                          <BcImage
+                            alt={product.defaultImage.altText}
+                            height={300}
+                            src={product.defaultImage.url}
+                            width={300}
+                            className="relative m-auto inline-block h-auto max-h-full w-auto max-w-full align-middle"
+                          />
+                        ) : (
+                          <Image
+                            src={noImage}
+                            alt="No Image"
+                            className="relative m-auto inline-block h-auto max-h-full w-auto max-w-full align-middle"
+                          />
+                        )}
+                        </Link>
+                      </figure>
+                    </div>
+                  </div>
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <td key={0}></td>
+              {products.map((product) => (
+                <td className="px-4 mt-2 text-center" key={product.entityId}>
+                  {product.brand?.name}
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <td key={0}></td>
+              {products.map((product) => (
+                <td className="px-4 mt-2 text-center text-base font-medium" key={product.entityId}>
+                  <Link href={product.path} className="!inline !text-center !leading-6 !tracking-normal">{product.name}</Link>
+                </td>
+              ))}
+            </tr>
+            <tr>
+              <td key={0}></td>
+              {products.map((product) => (
+                <td className="px-4" key={product.entityId}>
+                  {product.reviewSummary.numberOfReviews > 0 && (
+                    <ReviewSummary
+                      numberOfReviews={product.reviewSummary.numberOfReviews}
+                      averageRating={product.reviewSummary.averageRating}
+                      className="mx-auto mt-2 justify-center"
+                    />
+                  )}
+                </td>
+              ))}
+            </tr>
+          </thead>
+          <CompareProductDetails products={products} />
+        </table>
+      </div>
+{/*
       <div className="-mx-6 overflow-auto overscroll-x-contain px-4 sm:-mx-10 sm:px-10 lg:-mx-12 lg:px-12">
         <table className="mx-auto w-full max-w-full table-fixed text-base md:w-fit">
           <caption className="sr-only">{t('Table.caption')}</caption>
@@ -369,8 +495,9 @@ export default async function Compare(props: Props) {
           </tbody>
         </table>
       </div>
+*/}
     </>
   );
 }
 
-export const runtime = 'edge';
+//export const runtime = 'edge';
