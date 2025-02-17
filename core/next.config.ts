@@ -24,6 +24,9 @@ const LocaleQuery = graphql(`
 
 export default async (): Promise<NextConfig> => {
   let nextConfig: NextConfig = {
+    logging: {
+      fetches: { fullUrl: true },
+    },
     reactStrictMode: true,
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
