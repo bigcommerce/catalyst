@@ -1,6 +1,5 @@
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
-import { clsx } from 'clsx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Script from 'next/script';
@@ -11,7 +10,6 @@ import { PropsWithChildren } from 'react';
 
 import '../globals.css';
 
-import { fonts } from '~/app/fonts';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -93,7 +91,7 @@ export default async function RootLayout({ params, children }: Props) {
   const messages = await getMessages();
 
   return (
-    <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+    <html lang={locale}>
       <Script crossOrigin="anonymous" src="https://kit.fontawesome.com/ea4747af9a.js" />
       <body>
         <Notifications />
