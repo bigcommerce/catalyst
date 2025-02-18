@@ -183,10 +183,10 @@ const ProductDetailDropdown: React.FC<ProductDetailDropdownProps> = ({
         style={{ transitionTimingFunction: 'ease' }}
       >
         {isOpen && (
-          <div className="mt-6 w-full rounded border border-gray-300 bg-white p-8 shadow-lg">
-            <div className="mb-4 flex items-center justify-between">
-              <span className="text-lg font-semibold text-gray-900">{t('whatsInTheBox')}</span>
-              <span className="text-sm text-gray-600">SKU: {product?.mpn || t('sku')}</span>
+          <div className="mt-6 w-full rounded border border-gray-300 bg-white p-2 md:p-6 shadow-lg">
+            <div className="mb-4 ">
+            <p className="text-sm text-right my-0 text-gray-600">SKU: {product?.mpn || t('sku')}</p>
+              <p className="text-lg font-semibold text-gray-900">{t('whatsInTheBox')}</p>
             </div>
 
             <div className="product-detail-canopy mb-2">
