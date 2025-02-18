@@ -2,6 +2,7 @@ import { clsx } from 'clsx';
 
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
@@ -110,7 +111,7 @@ export function ProductCard({
             </div>
           )}
           {badge != null && badge !== '' && (
-            <Badge className="absolute left-3 top-3" variant="rounded">
+            <Badge className="absolute left-3 top-3" shape="rounded">
               {badge}
             </Badge>
           )}
@@ -119,7 +120,7 @@ export function ProductCard({
 
       <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
         <div className="flex-1">
-          <Link className="group text-base" href={href} tabIndex={-1}>
+          <Link className="group text-sm @[16rem]:text-base" href={href} tabIndex={-1}>
             <span
               className={clsx(
                 'block font-semibold',
@@ -164,23 +165,30 @@ export function ProductCard({
   );
 }
 
-export function ProductCardSkeleton({ className }: { className?: string }) {
+export function ProductCardSkeleton({
+  className,
+  aspectRatio = '5:6',
+}: {
+  aspectRatio?: '5:6' | '3:4' | '1:1';
+  className?: string;
+}) {
   return (
-    <div className={className}>
-      <div className="flex aspect-[5/6] flex-col gap-2 rounded-xl bg-contrast-100 @md:rounded-2xl" />
+    <div className={clsx('@container', className)}>
+      <Skeleton.Box
+        className={clsx(
+          'rounded-xl @md:rounded-2xl',
+          {
+            '5:6': 'aspect-[5/6]',
+            '3:4': 'aspect-[3/4]',
+            '1:1': 'aspect-square',
+          }[aspectRatio],
+        )}
+      />
       <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
-        <div className="flex-1">
-          <div className="flex flex-col text-base">
-            <div className="flex h-[1lh] items-center">
-              <span className="block h-[1ex] w-[10ch] rounded-sm bg-contrast-100" />
-            </div>
-            <div className="mb-2 flex h-[1lh] items-center text-sm font-normal text-contrast-400">
-              <span className="block h-[1ex] w-[8ch] rounded-sm bg-contrast-100" />
-            </div>
-            <div className="flex h-[1lh] items-center">
-              <span className="block h-[1ex] w-[5ch] rounded-sm bg-contrast-100" />
-            </div>
-          </div>
+        <div className="w-full text-sm @[16rem]:text-base">
+          <Skeleton.Text characterCount={10} className="rounded" />
+          <Skeleton.Text characterCount={8} className="rounded" />
+          <Skeleton.Text characterCount={6} className="rounded" />
         </div>
       </div>
     </div>

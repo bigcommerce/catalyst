@@ -64,7 +64,7 @@ interface Destination {
 export interface Order {
   id: string;
   status: string;
-  statusColor?: 'success' | 'warning' | 'danger' | 'info';
+  statusColor?: 'success' | 'warning' | 'error' | 'info';
   date: string;
   destinations: Destination[];
   summary: Summary;
@@ -99,7 +99,7 @@ export function OrderDetailsSection({
         <div className="space-y-1">
           <div className="flex items-center gap-3">
             <h1 className="text-4xl">{title}</h1>
-            <Badge color={order.statusColor}>{order.status}</Badge>
+            <Badge variant={order.statusColor}>{order.status}</Badge>
           </div>
           <p>{order.date}</p>
         </div>
