@@ -51,9 +51,6 @@ export default async function Account() {
   const t = await getTranslations('Account.Home');
   const ts = await getTranslations('Account.SalesHours');
 
-  //const t = useTranslations('Account.Home');
-  //const ts = useTranslations('Account.SalesHours');
-
   const breadcrumbs: any = [
     {
       label: 'Account Center',
@@ -108,13 +105,6 @@ export default async function Account() {
             <Image src={emailPrefIcon} alt={t('emailPreferences')} width={70} height={70} />
           </AccountItem>
 
-          <AccountItem
-            href="/returns"
-            title="Returns"
-            description={t('emailPreferencesMsg')}
-          >
-            <Image src={emailPrefIcon} alt={t('emailPreferences')} width={70} height={70} />
-          </AccountItem>
         </div>
         <div className="flex w-max flex-col gap-[10px]">
           <div className="text-[20px] font-[500] leading-[32px] tracking-[0.15px]">
