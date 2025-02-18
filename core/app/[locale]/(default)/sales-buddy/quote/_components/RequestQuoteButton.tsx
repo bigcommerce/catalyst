@@ -29,32 +29,31 @@ const RequestQuoteButton = () => {
   return (
     <div className="custom-class relative mt-3 flex items-center justify-between bg-[#E7F5F8] p-4 xl:mt-[1.5em]">
       <div className="flex flex-1 justify-center">
-        {!cusData
-        // cusData === 7 || cusData === 8 || cusData === 4
-         ? (
-          <p className="text-center text-[0.75rem] font-normal leading-[1.125rem] tracking-[0.025rem] text-[#000000]">
-            <span className="block xl:contents">{t('heading')}</span>
-            <span className="border-b border-[#006380] text-[#006380]">
-              <RequestQuoteFlyout />
-            </span>
-            {/* <span className="mx-1">{t('or')}</span>
+        {cusData && cusData === 7 || cusData === 8 || cusData === 4
+          ? (
+            <p className="text-center text-[0.75rem] font-normal leading-[1.125rem] tracking-[0.025rem] text-[#000000]">
+              <span className="block xl:contents">{t('heading')}</span>
+              <span className="border-b border-[#006380] text-[#006380]">
+                <RequestQuoteFlyout />
+              </span>
+              {/* <span className="mx-1">{t('or')}</span>
             <span className="border-b border-[#006380] text-[#006380]">
               <Link href="/trade-account/trade-step1">{t('createTradeAccountLink')}</Link>
             </span> */}
-          </p>
-        ) : (
-          <p className="text-center text-[0.75rem] font-normal leading-[1.125rem] tracking-[0.025rem] text-[#000000]">
-            {/* <span className="block xl:contents">{t('heading')}</span>
+            </p>
+          ) : (
+            <p className="text-center text-[0.75rem] font-normal leading-[1.125rem] tracking-[0.025rem] text-[#000000]">
+              {/* <span className="block xl:contents">{t('heading')}</span>
               <span className="border-b border-[#006380] text-[#006380]">
                   <RequestQuoteFlyout />
               </span>
               <span className="mx-1">{t('or')}</span> */}
-            <span className="block xl:contents">To Request A Quote: </span>
-            <span className="border-b border-[#006380] text-[#006380]">
-              <Link href="/trade-account/trade-step1">{t('createTradeAccountLink')}</Link>
-            </span>
-          </p>
-        )}
+              <span className="block xl:contents">To Request A Quote: </span>
+              <span className="border-b border-[#006380] text-[#006380]">
+                <Link href="/trade-account/trade-step1">{t('createTradeAccountLink')}</Link>
+              </span>
+            </p>
+          )}
       </div>
       {cusData === 7 || cusData === 8 || cusData === 4 ? (
         <div className="request-quote-hands-icon absolute right-[8px] top-1/2 xl:top-[10px] flex-shrink-0 items-start">
@@ -72,7 +71,7 @@ const RequestQuoteButton = () => {
           </svg>
         </div>
       ) : (
-          <div className="request-quote-hands-icon absolute right-[8px] top-1/2 xl:top-[10px] flex-shrink-0 items-start">
+        <div className="request-quote-hands-icon absolute right-[8px] top-1/2 xl:top-[10px] flex-shrink-0 items-start">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
