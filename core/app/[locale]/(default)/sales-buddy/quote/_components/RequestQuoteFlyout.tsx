@@ -5,9 +5,10 @@ import { usePathname } from 'next/navigation';
 
 
 export const RequestQuoteFlyout = () => {
-  
+
   const pathname = usePathname();
-  const [isShippingOpen, setIsShippingOpen] = useState(true);
+  
+  const [isShippingOpen, setIsShippingOpen] = useState(false);
 
   const handleOpenChange = (open: boolean) => { 
    setIsShippingOpen(open);
@@ -19,7 +20,7 @@ export const RequestQuoteFlyout = () => {
 
   return (
     <>
-    <button onClick={() => handleOpenChange(true)}>Request A Quote</button>
+    <button id="Request-quote" onClick={() => handleOpenChange(true)}>{ pathname === '/sales-buddy/quote/' ? "Create a quote" : "Request A Quote" }</button>
       <FlyoutForm 
        isOpen={isShippingOpen}
        onOpenChange={() => handleOpenChange(false)}

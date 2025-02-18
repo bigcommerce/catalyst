@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Accordions } from '../Accordin/index';
 import { Button } from '~/components/ui/button';
 import { Input } from '~/components/ui/form';
@@ -9,8 +9,8 @@ import NotesIcons from '../../assets/add_notes.png';
 import { get_product_data, PdpProduct } from '../common-functions';
 import Loader from './Spinner';
 import { useRouter } from 'next/navigation';
-import ProductQuoteCart from '../Quote/QuoteCart';
-import QuoteRequestPage from '../Quote/RequestForQuote';
+import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
+import { CreateQuote } from '../../quote/actions/CreateQuote';
 // Utility for styles
 const TailwindCustomCssValues = {
   font: 'font-open-sans',
@@ -38,6 +38,8 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
     cost: false,
     inventory: false,
   });
+  const [pDataAgent, setPDataAgent ] = useState([]);
+  const quoteInputRef = useRef<HTMLInputElement>(null);
   // const toggleAccordion = (index: number) => {
   //   setOpenAccordions((prev) =>
   //     prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
@@ -54,7 +56,6 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
       try {
         const data = await get_product_data(retrievedProductData.productId);
         if (data.status === 200) {
-          console.log(data?.data?.output);
           
           costPricingTableData(data?.data?.output);
           setLoading((prev) => ({ ...prev, cost: false }));
@@ -67,11 +68,75 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
     fetchData(); // Call the async function
   }, []);
 
+  useEffect(() => {
+    const fetchStoredQuote = () => {
+      const storedQuote = localStorage.getItem("Q_R_data");
+      if (storedQuote) {
+        setPDataAgent((prevData) => {
+          const latestData = JSON.parse(localStorage.getItem('Q_R_data') || '[]');
+          return latestData.length > 0 ? latestData : prevData;
+        });
+      }
+    };
+  
+    fetchStoredQuote();
+  
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === "Q_R_data") {
+        fetchStoredQuote();
+      }
+    };
+  
+    window.addEventListener("storage", handleStorageChange);
+  
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, []);
+  
   const handleRedirect = () => {
-    const locale = 'en'; // Replace with the actual locale you want to use
+    const locale = 'en';
     router.push(`/${locale}/sales-buddy/common-components/Quote/QuoteCart`);
   };
   
+  const handleAddToQuote = async() => {
+    const quoteButton = document.getElementById("custom-quote");
+    if (!quoteButton) {
+      console.warn("custom-quote button not found in DOM.");
+      return; 
+    }
+    const updatedPDataAgent = JSON.parse(localStorage.getItem('Q_R_data') || '[]');
+    if (updatedPDataAgent.length === 0) {
+      console.warn("No product data available to add to the quote.");
+    }
+    quoteButton.click();
+    if (quoteInputRef.current) {
+
+    const quoteValue = quoteInputRef.current.value;
+    console.log("Quote Value:", quoteValue);
+ 
+    const dataToSend = {
+      quote_id: quoteValue,
+      quote_type: 'old',
+      quote_by:"agent",
+      bc_customer_id: '',
+      qr_customer: '',
+      qr_product: [updatedPDataAgent],
+      page_type: 'pdp',
+    };
+
+    console.log("Sending data to CreateQuote:", dataToSend);
+
+      try {
+        const result = await CreateQuote(dataToSend);
+        // handleRedirect();  
+      } catch (error) {
+        console.error("Error while requesting a quote:", error);
+      }
+    }
+  };
+  
+
   const ACCORDION_DATA = {
     existingQuote: {
       title: (
@@ -84,8 +149,8 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
       ),
       content: (
         <div className="mt-3 w-full bg-white">
-          <Input id="quote" placeholder="Quote#" className="mb-4" />
-          <Button onClick={() => { handleRedirect() }}
+          <Input id="quote" placeholder="Quote#" className="mb-4" ref={quoteInputRef} />
+          <Button onClick={handleAddToQuote}
             className={`${TailwindCustomCssValues.font} w-full bg-[#1DB14B] font-normal text-white`}
           >
             ADD TO QUOTE

@@ -60,6 +60,7 @@ export const handleRequestQuote = async (
           optionLabelName:
             option.values.edges?.find((valueItem) => valueItem.node.entityId == optionValueEntityId)
               ?.node.label || null,
+          name:option?.displayName
         };
 
         if (accum.multipleChoices) {
@@ -167,13 +168,15 @@ export const handleRequestQuote = async (
               const isVariant = optionFromProduct.node.isVariantOption ?? false;
 
               if (isVariant) {
-                return { type: 'variant', label: selectedValue.node.label };
+                return { type: 'variant', name: optionFromProduct?.node?.displayName, value: selectedValue.node.label, option_id: optionFromProduct.node.entityId,
+                  option_value: selectedValue.node.entityId, };
               } else {
                 return {
                   type: 'modifier',
-                  label: selectedValue.node.label,
-                  modifierId: optionFromProduct.node.entityId,
-                  modifierOptionId: selectedValue.node.entityId,
+                  name: optionFromProduct?.node?.displayName,
+                  value: selectedValue.node.label,
+                  option_id: optionFromProduct.node.entityId,
+                  option_value: selectedValue.node.entityId,
                 };
               }
             }
@@ -185,21 +188,31 @@ export const handleRequestQuote = async (
 
     const variantLabels = productSelectedOpt
       ?.filter((item) => item?.type === 'variant')
-      .map((item) => item?.label)
-      .join(', ');
+      .map((item) => item?.value)
+      .join(' || ');
     const prodModifierId = productSelectedOpt
       ?.filter((item) => item?.type === 'modifier')
-      .map((item) => item?.modifierId)
-      .join(', ');
+      .map((item) => item?.option_id)
+      .join(' || ');
     const prodModifierOptionId = productSelectedOpt
       ?.filter((item) => item?.type === 'modifier')
-      .map((item) => item?.modifierOptionId)
-      .join(', ');
+      .map((item) => item?.option_value)
+      .join(' || ');
     const prodModifierOptionLabel = productSelectedOpt
       ?.filter((item) => item?.type === 'modifier')
-      .map((item) => item?.label)
-      .join(', ');
+      .map((item) => item?.value)
+      .join(' || ');
 
+
+     const selectedVariantsVal = selectedOptions?.multipleChoices?.map((field:any)=>(
+        {
+          option_id: field.optionEntityId,
+          option_value: field.optionValueEntityId,
+          name:field?.name,
+          value: field.optionLabelName,
+        }
+      ));
+      
     const reqQuoteItems = {
       qr_product: {
         bc_product_id: productEntityId,
@@ -208,9 +221,10 @@ export const handleRequestQuote = async (
         bc_variant_id: variantSku?.node?.entityId,
         bc_variant_sku: variantSku?.node?.sku,
         bc_variant_name: variantLabels,
-        bc_modifier_id: prodModifierId,
-        bc_modifier_option: prodModifierOptionId,
-        options: prodModifierOptionLabel,
+        option_selections: JSON.stringify(selectedVariantsVal),
+        bc_modifier_option: '',
+        bc_modifier_id: '',
+        options: ''
       },
     };
 
