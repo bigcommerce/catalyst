@@ -42,7 +42,7 @@ import { Label } from '~/components/ui/form';
 import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
 import SkyxFlyout from '~/components/skyx-flyout/skyxFlyout';
 import { callforMaxPriceRuleDiscountFunction } from '~/components/common-functions';
-import { ifError } from 'node:assert';
+import { updateCartLineItemPrice } from '~/components/management-apis';
 
 aa('init', {
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
@@ -197,10 +197,34 @@ export const ProductForm = ({
           productId: data.product_id,
           quantity: quantity,
         };
+        let itemAddedRecently: any = '';
+        if (result?.data?.entityId) {
+          let cartData = await getCartData(result?.data?.entityId);
+          if (cartData?.data?.lineItems?.physicalItems) {
+            productFlyout.setCartDataFn(cartData?.data);
+            cartData?.data?.lineItems?.physicalItems?.forEach((items: any) => {
+              if (items?.productEntityId == data?.product_id) {
+                let selectedOptions = items?.selectedOptions;
+                let productSelection = true;
+                selectedOptions?.some((selOptions: any) => {
+                  if (data?.['attribute_' + selOptions?.entityId] != selOptions?.valueEntityId) {
+                    productSelection = false;
+                    return true;
+                  }
+                });
+                if (productSelection) {
+                  itemAddedRecently = items;
+                  productFlyout.setProductDataFn(items);
+                }
+              }
+            });
+          }
+        }
 
         try {
-          const priceUpdateResult = await callforMaxPriceRuleDiscountFunction(priceUpdateData);
-          console.log('Price update result:', priceUpdateResult);
+          if(itemAddedRecently?.entityId) {
+            const priceUpdateResult = await updateCartLineItemPrice(priceUpdateData, itemAddedRecently?.entityId);
+          }
         } catch (error) {
           console.error('Error updating price:', error);
         }
@@ -244,27 +268,6 @@ export const ProductForm = ({
       ),
       { icon: <Check className="text-success-secondary" /> },
     );
-    if (result?.data?.entityId) {
-      let cartData = await getCartData(result?.data?.entityId);
-      if (cartData?.data?.lineItems?.physicalItems) {
-        productFlyout.setCartDataFn(cartData?.data);
-        cartData?.data?.lineItems?.physicalItems?.forEach((items: any) => {
-          if (items?.productEntityId == data?.product_id) {
-            let selectedOptions = items?.selectedOptions;
-            let productSelection = true;
-            selectedOptions?.some((selOptions: any) => {
-              if (data?.['attribute_' + selOptions?.entityId] != selOptions?.valueEntityId) {
-                productSelection = false;
-                return true;
-              }
-            });
-            if (productSelection) {
-              productFlyout.setProductDataFn(items);
-            }
-          }
-        });
-      }
-    }
 
       const transformedProduct = productItemTransform(product);
 

@@ -985,3 +985,35 @@ async function getlineItem(productId: string, cartId: string) {
 
   return lineItems.find((item: any) => Number(item.product_id) === Number(productId));
 }
+
+export async function updateCartLineItemPrice(data: PriceUpdateData, lineItemId: string) {
+  const url = `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${data.cartId}/items/${lineItemId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        line_item: {
+          quantity: data.quantity,
+          list_price: data.price,
+          product_id: data.productId,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error updating cart price:', error);
+    throw error;
+  }
+}
