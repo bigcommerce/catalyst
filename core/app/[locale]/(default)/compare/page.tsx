@@ -17,6 +17,10 @@ import { cn } from '~/lib/utils';
 import { AddToCart } from './_components/add-to-cart';
 import { AddToCartFragment } from './_components/add-to-cart/fragment';
 
+import { cookies, headers } from 'next/headers';
+
+import { getPriceMaxRules } from '~/belami/lib/fetch-price-max-rules';
+
 import { GetProductMetaFields } from '~/components/management-apis';
 import { ReviewSummary } from '~/belami/components/reviews';
 import Image from 'next/image';
@@ -172,15 +176,26 @@ export default async function Compare(props: Props) {
     );
   }
 
-  console.log(products[0]);
+  const cookieStore = await cookies();
+  const priceMaxCookie = cookieStore.get('pmx');
+  const priceMaxTriggers = priceMaxCookie?.value
+    ? JSON.parse(atob(priceMaxCookie?.value))
+    : undefined;
+
+  const useDefaultPrices = !customerAccessToken;
+
+  const priceMaxRules =
+    priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
+      ? await getPriceMaxRules(priceMaxTriggers)
+      : null;
 
   return (
-    <>
+    <div className="group pt-4 pb-10">
       <h1 className="mb-4 text-2xl lg:mb-0 text-center">
         {t('heading', { quantity: products.length })}
       </h1>
 
-      <div className="TBD">
+      <div className="mx-auto max-w-[93.5%] overflow-auto overscroll-x-contain">
         <table className="mx-auto w-full max-w-full table-fixed text-base md:w-fit">
           <caption className="sr-only">{t('Table.caption')}</caption>
           <colgroup>
@@ -257,7 +272,29 @@ export default async function Compare(props: Props) {
               ))}
             </tr>
           </thead>
-          <CompareProductDetails products={products} />
+          <tbody>
+            <CompareProductDetails products={products} priceMaxRules={priceMaxRules} useDefaultPrices={useDefaultPrices}/>
+            <tr>
+              <td key={0}></td>
+              {products.map((product) => {
+                if (product.productOptions.length) {
+                  return (
+                    <td className="px-4 pb-8 pt-8" key={product.entityId}>
+                      <Button aria-label={product.name} asChild className="bg-brand-400 hover:text-white">
+                        <Link href={product.path}>{t('Table.viewOptions')}</Link>
+                      </Button>
+                    </td>
+                  );
+                }
+
+                return (
+                  <td className="px-4 pb-8 pt-8" key={product.entityId}>
+                    <AddToCart data={product} />
+                  </td>
+                );
+              })}
+            </tr>
+          </tbody>
         </table>
       </div>
 {/*
@@ -496,7 +533,7 @@ export default async function Compare(props: Props) {
         </table>
       </div>
 */}
-    </>
+    </div>
   );
 }
 
