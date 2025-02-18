@@ -35,8 +35,18 @@ const page = () => {
   const menuRefs = useRef<{ [key: string]: HTMLElement | null }>({});
   const [activeTab, setActiveTab] = useState('All');
   const [showEdit, setShowEdit] = useState<{ [key: string]: boolean }>({});
-  const [data,setData]=useState([]);
+  const [data, setData] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
+  const [filterValues, setFilterValues] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    company: '',
+    dateFrom: '',
+    dateTo: '',
+    phone: '',
+    qouteId:''
+  });
 
   const tabs = [
     { name: 'All', icon: <Menu width={26} height={26} stroke="#000" /> },
@@ -83,20 +93,19 @@ const page = () => {
       return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
-    const GetAllQuoteData= async () => {
-      var result =await GetAllQuoteList();
-      console.log(result.output);
+    const GetAllQuoteData = async () => {
+      var result = await GetAllQuoteList({});
       var data = result.output;
-      const formattedData = data.map((quote:any) => ({
+      const formattedData = data.map((quote: any) => ({
         id: `QI-${quote.qr_id}`,  // Prefixing ID with 'QI-'
         name: `${quote.first_name} ${quote.last_name}`, // Combining first and last name
         company: quote.company_name || "N/A",  // Default if null
         email: quote.email_id || "N/A",  // Default if null
         date: formatDate(quote.requested_date), // Format the date
         quote_id: quote.quote_id,  // Quote ID
+        status: quote.quote_status,  // Status
       }));
       setData(formattedData);
-
     }
     GetAllQuoteData()
     document.addEventListener('mousedown', handleClickOutside);
@@ -110,8 +119,31 @@ const page = () => {
     }));
   };
 
-  const handleEditClick = (rowId: string) => {
-    router.push(`/sales-buddy/quote/${rowId}`);
+  const handleEditClick = (rowId: string, mode: string) => {
+    router.push(`/sales-buddy/quote/${rowId}?mode=${mode}`);
+  };
+
+  const handleFilterChange = (e) => {
+    const { name, value } = e.target;
+    setFilterValues((prev) => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const applyFilters = async() => {
+    var result = await GetAllQuoteList(filterValues);
+    var data = result.output;
+    const formattedData = data.map((quote: any) => ({
+      id: `QR-${quote.qr_id}`,  // Prefixing ID with 'QI-'
+      name: `${quote.first_name} ${quote.last_name}`, // Combining first and last name
+      company: quote.company_name || "N/A",  // Default if null
+      email: quote.email_id || "N/A",  // Default if null
+      date: formatDate(quote.requested_date), // Format the date
+      quote_id: quote.quote_id,  // Quote ID
+    }));
+    setData(formattedData);
+    // Call your function with filterValues here
   };
 
   return (
@@ -151,45 +183,70 @@ const page = () => {
                 <div className="flex flex-col gap-[20px] bg-neutral-100 p-[20px] [&_input]:text-[14px] [&_label]:text-[12px] [&_select]:text-[14px]">
                   <div className="grid grid-cols-3 gap-[20px_10px] [&_input]:border [&_input]:border-gray-200 [&_select]:border [&_select]:border-gray-200">
                     <div className="flex flex-col items-start gap-1">
-                      <label htmlFor="">First Name</label>
+                      <label htmlFor="firstName">First Name</label>
                       <input
                         type="text"
+                        name="firstName"
+                        value={filterValues.firstName}
+                        onChange={handleFilterChange}
                         className="w-full rounded-[5px] border border-black p-2 outline-none"
                       />
                     </div>
                     <div className="flex flex-col items-start gap-1">
-                      <label htmlFor="">Last Name</label>
+                      <label htmlFor="lastName">Last Name</label>
                       <input
                         type="text"
+                        name="lastName"
+                        value={filterValues.lastName}
+                        onChange={handleFilterChange}
                         className="w-full rounded-[5px] border border-black p-2 outline-none"
                       />
                     </div>
                     <div className="flex flex-col items-start gap-1">
-                      <label htmlFor="">Email</label>
+                      <label htmlFor="email">Email</label>
                       <input
                         type="email"
+                        name="email"
+                        value={filterValues.email}
+                        onChange={handleFilterChange}
                         className="w-full rounded-[5px] border border-black p-2 outline-none"
                       />
                     </div>
                     <div className="flex flex-col items-start gap-1">
-                      <label htmlFor="">Company</label>
+                      <label htmlFor="company">Company</label>
                       <input
                         type="text"
+                        name="company"
+                        value={filterValues.company}
+                        onChange={handleFilterChange}
                         className="w-full rounded-[5px] border border-black p-2 outline-none"
                       />
                     </div>
                     <div className="flex flex-col items-start gap-1">
-                      <label htmlFor="">Date created</label>
+                      <label htmlFor="dateFrom">Date created</label>
                       <div className="flex w-full items-center justify-between gap-[20px]">
-                        <DatePicker placeholder="From" />
+                        <DatePicker
+                          placeholder="From"
+                          name="dateFrom"
+                          value={filterValues.dateFrom}
+                          onChange={handleFilterChange}
+                        />
                         to
-                        <DatePicker placeholder="To" />
+                        <DatePicker
+                          placeholder="To"
+                          name="dateTo"
+                          value={filterValues.dateTo}
+                          onChange={handleFilterChange}
+                        />
                       </div>
                     </div>
                     <div className="flex flex-col items-start gap-1">
-                      <label htmlFor="">Phone</label>
+                      <label htmlFor="phone">Phone</label>
                       <input
                         type="text"
+                        name="phone"
+                        value={filterValues.phone}
+                        onChange={handleFilterChange}
                         className="w-full rounded-[5px] border border-black p-2 outline-none"
                       />
                     </div>
@@ -198,7 +255,10 @@ const page = () => {
                     <button className="bg-transparent text-[14px] font-semibold text-[rgb(60,100,244)] hover:bg-[rgb(60,100,244)] hover:text-white">
                       Clear
                     </button>
-                    <button className="bg-[rgb(60,100,244)] text-[14px] font-semibold text-white hover:bg-transparent hover:text-[rgb(60,100,244)]">
+                    <button
+                      className="bg-[rgb(60,100,244)] text-[14px] font-semibold text-white hover:bg-transparent hover:text-[rgb(60,100,244)]"
+                      onClick={applyFilters}
+                    >
                       Apply
                     </button>
                   </div>
@@ -315,57 +375,36 @@ const page = () => {
                     <th className="">
                       <div className="flex items-center justify-center gap-1 text-[#5C5C5C]">
                         <div>Quote Number</div>
-                        {/* <div>
-                      <ArrowUpDown className="text-brand-500" width={16} height={16} />
-                    </div> */}
                       </div>
                     </th>
                     <th className="">
                       <div className="flex items-center justify-center gap-1 text-[#5C5C5C]">
                         <div>Name</div>
-                        {/* <div>
-                      <ArrowUpDown className="text-brand-500" width={16} height={16} />
-                    </div> */}
                       </div>
                     </th>
                     <th className="">
                       <div className="flex items-center justify-center gap-1 text-[#5C5C5C]">
                         <div>Company</div>
-                        {/* <div>
-                      <ArrowUpDown className="text-brand-500" width={16} height={16} />
-                    </div> */}
                       </div>
                     </th>
                     <th className="">
                       <div className="flex items-center justify-center gap-1 text-[#5C5C5C]">
                         <div>Customer Email</div>
-                        {/* <div>
-                      <ArrowUpDown className="text-brand-500" width={16} height={16} />
-                    </div> */}
                       </div>
                     </th>
                     <th className="">
                       <div className="flex items-center justify-center gap-1 text-[#5C5C5C]">
                         <div>Date Request</div>
-                        {/* <div>
-                      <ArrowUpDown className="text-brand-500" width={16} height={16} />
-                    </div> */}
                       </div>
                     </th>
                     <th className="">
                       <div className="flex items-center justify-center gap-1 text-[#5C5C5C]">
                         <div>Date Updated</div>
-                        {/* <div>
-                      <ArrowUpDown className="text-brand-500" width={16} height={16} />
-                    </div> */}
                       </div>
                     </th>
                     <th className="">
                       <div className="flex items-center justify-center gap-1 text-[#5C5C5C]">
                         <div>Status</div>
-                        {/* <div>
-                      <ArrowUpDown className="text-brand-500" width={16} height={16} />
-                    </div> */}
                       </div>
                     </th>
                     <th className="">
@@ -374,7 +413,7 @@ const page = () => {
                   </tr>
                 </thead>
                 <tbody className="[&_td]:p-[12px] [&_td]:text-center [&_td]:text-[13px] [&_td]:font-normal [&_tr:last-child]:[border-bottom:none;] [&_tr:last-child_td:last-child_.tooltip]:top-0 [&_tr:last-child_td:last-child_.tooltip]:translate-y-[-100%] [&_tr]:border-b [&_tr]:border-b-[#f6f7fb]">
-                  {data.map((row) => (
+                  { data.map((row) => (
                     <tr key={row.id}>
                       <td>
                         <input type="checkbox" className="h-[20px] w-[20px]" name="" id="" />
@@ -386,17 +425,20 @@ const page = () => {
                       <td className="text-[#000]">{row.date}</td>
                       <td className="text-[#000]">-</td>
                       <td>
-                        {/* new -> text-[rgb(0,86,179)] */}
                         <div className="text-[14px] font-bold uppercase text-[rgb(171,134,22)]">
-                          In Process
+                          {row.status}
                         </div>
                       </td>
                       <td>
                         <div className="flex items-center justify-center gap-1 text-[#555]">
-                          <PopOverClick hrefLink={`${row.quote_id}`} popOverContents={popOverContents} from='quote'>
+                          <PopOverClick
+                            hrefLink={`${row.quote_id}`}
+                            popOverContents={popOverContents}
+                            from='quote'
+                            onClick={(key) => handleEditClick(row.quote_id, key)}
+                          >
                             <Ellipsis className="cursor-pointer text-[#555]" />
                           </PopOverClick>
-                          
                         </div>
                       </td>
                     </tr>

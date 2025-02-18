@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 
-export const GetAllQuoteList = async () => {
+export const GetAllQuoteList = async (inputData:any) => {
   const cookieStore = await cookies();
   const cartId = cookieStore.get('cartId')?.value;
   try {
@@ -12,12 +12,19 @@ export const GetAllQuoteList = async () => {
     const accessId = process.env.QUOTE_ACCESS_ID;
     const bc_channel_id = process.env.BIGCOMMERCE_CHANNEL_ID;
     console.log(apiUrl, apiPath);
-    
-    let data = await fetch('http://localhost:3003/quote-api/v1/get-all-quote', {
+    const inputs = {
+      quote_id: inputData.qouteId ?? '',
+      company_name: inputData.company ?? '',
+      first_name: inputData.firstName ?? '',
+      last_name: inputData.lastName ?? '',
+      requested_date: inputData.dateFrom ?? '',
+    };
+    let data = await fetch('http://localhost:3003/quote-api/v1/list-quote', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
+      body: JSON.stringify(inputs),
     })
       .then((res) => res.json())
       .then((jsonData) => {

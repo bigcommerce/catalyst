@@ -15,8 +15,8 @@ const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children, onAddProduc
     brand: '102',
     name: 'Shirt',
     sku: 'sku12345',
-    quantity: '1',
-    price: '100'
+    quantity: 1,
+    price: 100
   });
 
   const handleChange = (e) => {
@@ -26,7 +26,7 @@ const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children, onAddProduc
 
   const handleSave = () => {
     onAddProduct(productData);
-    setProductData({ brand: '', name: '', sku: '', quantity: '', price: '' });
+    setProductData({ brand: '', name: '', sku: '', quantity: 0, price: 0 });
   };
 
   return (

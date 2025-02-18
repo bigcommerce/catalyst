@@ -10,11 +10,14 @@ import PopOverClick from '../_components/PopOverClick';
 import NewProductQuote from '../_components/newProductQuote';
 import { GetQuoteBasedOnID } from '../actions/get-quote-basedon-id';
 import { UpdateQuote } from '../actions/update-quote';
+import { CreateQuote } from '../actions/CreateQuote';
+
 const popOverContents = [
   { key: 'refresh-product', label: 'Refresh Product' },
   { key: 'delete', label: 'Delete' },
 ];
-const QuotePage = ({ formData, handleAddCustomProduct, handleProductChange }) => {
+
+const QuotePage = ({ formData, handleAddCustomProduct, handleProductChange, isViewMode }) => {
   return (
     <div className="flex flex-row w-full gap-6">
       <div className="flex-1">
@@ -29,14 +32,16 @@ const QuotePage = ({ formData, handleAddCustomProduct, handleProductChange }) =>
             <button className="px-6 py-3 text-xs uppercase hover:text-[#3C64F4] hover:border-b-2 hover:border-[#3C64F4] min-w-[150px]">
               CUSTOM PRODUCT
             </button>
-            <NewProductQuote onAddProduct={handleAddCustomProduct}>
-              <button
-                type="button"
-                className="rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90 my-auto"
-              >
-                New +
-              </button>
-            </NewProductQuote>
+            {!isViewMode && (
+              <NewProductQuote onAddProduct={handleAddCustomProduct}>
+                <button
+                  type="button"
+                  className="rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90 my-auto"
+                >
+                  New +
+                </button>
+              </NewProductQuote>
+            )}
           </div>
         </div>
         <div className="border rounded-lg">
@@ -63,11 +68,6 @@ const QuotePage = ({ formData, handleAddCustomProduct, handleProductChange }) =>
                     <th className="">
                       <div className="flex items-center justify-center gap-1">
                         <div>Unit Price</div>
-                      </div>
-                    </th>
-                    <th className="">
-                      <div className="flex items-center justify-center gap-1">
-                        <div>Extended Price</div>
                       </div>
                     </th>
                     <th className="">
@@ -113,6 +113,7 @@ const QuotePage = ({ formData, handleAddCustomProduct, handleProductChange }) =>
                             value={product.qty}
                             onChange={(e) => handleProductChange(index, e)}
                             className="w-full border-b border-b-black outline-none text-center"
+                            disabled={isViewMode}
                           />
                         </div>
                       </td>
@@ -124,17 +125,7 @@ const QuotePage = ({ formData, handleAddCustomProduct, handleProductChange }) =>
                             value={product.unitPrice}
                             onChange={(e) => handleProductChange(index, e)}
                             className="w-full border-b border-b-black outline-none text-center"
-                          />
-                        </div>
-                      </td>
-                      <td className="">
-                        <div>
-                          <input
-                            type="number"
-                            name="extendedPrice"
-                            value={product.extendedPrice}
-                            onChange={(e) => handleProductChange(index, e)}
-                            className="w-full border-b border-b-black outline-none text-center"
+                            disabled={isViewMode}
                           />
                         </div>
                       </td>
@@ -183,10 +174,10 @@ const page = () => {
       notes: '',
       video: '',
       attachment: '',
-      agent_id: '',
+      agent_id: 0,
       agent_approval: '',
       agent_approval_date: '',
-      agent_manager_id: '',
+      agent_manager_id: 0,
       agent_manager_approval: '',
       agent_manager_approval_date: '',
       quote_status: ''
@@ -210,35 +201,45 @@ const page = () => {
   const handleProductChange = (index, e) => {
     const { name, value } = e.target;
     const updatedProducts = [...formData.qr_product];
-    updatedProducts[index] = { ...updatedProducts[index], [name]: value };
-    updatedProducts[index].extendedPrice = updatedProducts[index].unitPrice * updatedProducts[index].qty;
+    updatedProducts[index] = { ...updatedProducts[index], [name]: parseInt(value, 10) };
     setFormData({ ...formData, qr_product: updatedProducts });
   };
 
   const handleAddProduct = () => {
-    setFormData({ ...formData, qr_product: [...formData.qr_product, { bc_product_id: '', bc_sku: '', bc_product_name: '', bc_variant_id: '', bc_variant_sku: '', bc_variant_name: '', bc_modifier_id: '', bc_modifier_option: '', options: '', qty: '', extendedPrice: '' }] });
+    setFormData({ ...formData, qr_product: [...formData.qr_product, { bc_product_id: '', bc_sku: '', bc_product_name: '', bc_variant_id: '', bc_variant_sku: '', bc_variant_name: '', bc_modifier_id: '', bc_modifier_option: '', options: '', qty: 0, unitPrice: 0 }] });
   };
 
   const handleFileChange = (e) => {
     setFormData({ ...formData, attachments: [...e.target.files] });
   };
 
-  const handleAddCustomProduct = (product) => {
-    setFormData({
-      ...formData,
-      qr_product: [
-        ...formData.qr_product,
-        {
-          type: 'custom',
-          agent_name: 'Agent Name',
-          bc_product_name: product.name,
-          bc_sku: product.sku,
-          qty: product.quantity,
-          unitPrice: product.price,
-          extendedPrice: product.price * product.quantity
-        }
-      ]
-    });
+  const handleAddCustomProduct = async (product) => {
+    
+    const dataToSend = {
+      quote_id: formData.quote_id,
+      bc_customer_id: formData.bc_customer_id,
+      quote_type: "old",
+      qr_customer: formData.qr_customer,
+      qr_product: [{
+        bc_product_id: 0, // Default or dynamic value
+        bc_product_name: product.name,
+        bc_sku: product.sku,
+        bc_variant_id: product.bc_variant_id || 0,
+        bc_variant_name: product.bc_variant_name || "custom",
+        bc_variant_sku: "custom",
+        bc_modifier_id: "custom",
+        bc_modifier_option: "custom",
+        options: "custom",
+        qty: product.quantity,
+        unitPrice: product.price
+      }],
+      page_type: 'agent_app',
+    };
+    try {
+      const result = await CreateQuote(dataToSend);
+    } catch (error) {
+      console.error("Error submitting quote:", error);
+    }
   };
 
   const validate = () => {
@@ -256,7 +257,6 @@ const page = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (validate()) {
-      console.log(formData);
       // Submit form data
     }
   };
@@ -265,16 +265,16 @@ const page = () => {
     const payload = {
       quote_id: formData.quote_id,
       qr_customer: {
-        sub_total: formData.qr_customer.sub_total,
-        total: formData.qr_customer.total,
+        sub_total: formData.qr_customer.sub_total ?? 0,
+        total: formData.qr_customer.total ?? 0,
         expires: formData.qr_customer.expires,
         notes: formData.qr_customer.notes,
         video: formData.qr_customer.video,
         attachment: formData.qr_customer.attachment,
-        agent_id: formData.qr_customer.agent_id,
+        agent_id: formData.qr_customer.agent_id ?? 0,
         agent_approval: formData.qr_customer.agent_approval,
         agent_approval_date: formData.qr_customer.agent_approval_date,
-        agent_manager_id: formData.qr_customer.agent_manager_id,
+        agent_manager_id: formData.qr_customer.agent_manager_id ?? 0,
         agent_manager_approval: formData.qr_customer.agent_manager_approval,
         agent_manager_approval_date: formData.qr_customer.agent_manager_approval_date,
         quote_status: formData.qr_customer.quote_status
@@ -282,31 +282,18 @@ const page = () => {
       qr_product: formData.qr_product.map(product => ({
         qr_item_id: product.qr_item_id,
         qty: product.qty,
-        unit_price: product.unitPrice,
-        total_price: product.extendedPrice
+        unit_price: product.price,
+        total_price: product.price * product.qty
       }))
     };
     var updateQuoteData = await UpdateQuote(payload);
-    console.log("Update Quote Data:", updateQuoteData);
-    console.log("Update Payload:", payload);
   };
 
   const callToGetQuoteDataBasedOnQuoteId = async () => {
     if (!quoteId) return; // Ensure quoteId is available
-
-    console.log("Fetching data for quoteId:", quoteId);
     let result = await GetQuoteBasedOnID(quoteId);
-
-    console.log("API Response:", result);
-
-    // Ensure result.output is an array
     if (Array.isArray(result.output) && result.output.length > 0) {
       const firstItem = result.output[0]; // Use the first object as the main quote details
-      console.log("First Item:", firstItem);
-      result.output.map((item) => {
-        console.log("Item:", item);
-      });
-
       setFormData({
         quote_id: firstItem.quote_id || '',
         bc_channel_id: firstItem.bc_channel_id || '',
@@ -325,12 +312,12 @@ const page = () => {
           notes: firstItem.notes || '',
           video: firstItem.video || '',
           attachment: firstItem.attachment || '',
-          agent_id: firstItem.agent_id || '',
+          agent_id: firstItem.agent_id || 0,
           agent_approval: firstItem.agent_approval || '',
-          agent_approval_date: firstItem.agent_approval_date || '',
-          agent_manager_id: firstItem.agent_manager_id || '',
+          agent_approval_date: firstItem.agent_approval_date || new Date(),
+          agent_manager_id: firstItem.agent_manager_id || 0,
           agent_manager_approval: firstItem.agent_manager_approval || '',
-          agent_manager_approval_date: firstItem.agent_manager_approval_date || '',
+          agent_manager_approval_date: firstItem.agent_manager_approval_date || new Date(),
           quote_status: firstItem.quote_status || ''
         },
         qr_product: result.output.map((item) => ({
@@ -341,8 +328,7 @@ const page = () => {
           bc_sku: item.bc_sku,
           bc_variant_name: item.bc_variant_name,
           bc_product_id: item.bc_product_id,
-          unitPrice: item.unit_price,
-          extendedPrice: item.total_price
+          unitPrice: item.unit_price
         }))
       });
     }
@@ -353,7 +339,6 @@ const page = () => {
   }, [quoteId]);
 
   useEffect(() => {
-    console.log("Updated formData:", formData);
   }, [formData]);
 
   const calculateTotalPrice = () => {
@@ -362,11 +347,11 @@ const page = () => {
 
   useEffect(() => {
     const query = new URLSearchParams(window.location.search);
-    const modeParam = query.get('mode');
-    if (modeParam) {
-      setMode(modeParam);
-    }
+    var getMode = localStorage.getItem('QoutepageType');
+    setMode(getMode);
   }, []);
+
+  const isViewMode = mode === 'view';
 
   return (
     <div className="flex justify-center bg-[#f7f8fc] py-[2rem] text-[#353535]">
@@ -382,6 +367,7 @@ const page = () => {
                   name="company_name"
                   value={formData.qr_customer.company_name}
                   onChange={handleChange}
+                  disabled={isViewMode}
                 >
                   <option value="">No Account</option>
                 </select>
@@ -397,6 +383,7 @@ const page = () => {
                 value={formData.qr_customer.first_name}
                 onChange={handleChange}
                 className="w-full border-b border-b-gray-400 p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
+                disabled={isViewMode}
               />
               {errors.first_name && <span className="text-red-500">{errors.first_name}</span>}
             </div>
@@ -410,6 +397,7 @@ const page = () => {
                 value={formData.qr_customer.last_name}
                 onChange={handleChange}
                 className="w-full border-b border-b-gray-400 p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
+                disabled={isViewMode}
               />
               {errors.last_name && <span className="text-red-500">{errors.last_name}</span>}
             </div>
@@ -423,6 +411,7 @@ const page = () => {
                 value={formData.qr_customer.email_id}
                 onChange={handleChange}
                 className="w-full border-b border-b-gray-400 p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
+                disabled={isViewMode}
               />
               {errors.email_id && <span className="text-red-500">{errors.email_id}</span>}
             </div>
@@ -436,6 +425,7 @@ const page = () => {
                 value={formData.qr_customer.company_name}
                 onChange={handleChange}
                 className="w-full border-b border-b-gray-400 p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
+                disabled={isViewMode}
               />
               {errors.company_name && <span className="text-red-500">{errors.company_name}</span>}
             </div>
@@ -449,6 +439,7 @@ const page = () => {
                 value={formData.expirationDate}
                 onChange={handleChange}
                 className="w-full border-b border-b-gray-400 p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
+                disabled={isViewMode}
               />
               {errors.expirationDate && <span className="text-red-500">{errors.expirationDate}</span>}
             </div>
@@ -462,9 +453,11 @@ const page = () => {
                 value={formData.qr_customer.phone_number}
                 onChange={handleChange}
                 className="w-full border-b border-b-gray-400 p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
+                disabled={isViewMode}
               />
               {errors.phone_number && <span className="text-red-500">{errors.phone_number}</span>}
             </div>
+            
           </div>
           <div>
             <button
@@ -475,15 +468,70 @@ const page = () => {
             </button>
           </div>
         </div>
+        {/* <div className="flex flex-col gap-1 bg-white p-4">
+          <div className="flex flex-row gap-[20px]">
+            <div className="text-[20px] text-[#313440]">Address</div>
+            <button className="rounded-[5px] border border-gray-200 p-[3px_10px] text-[12px] uppercase hover:bg-gray-100">
+              Edit
+            </button>
+          </div>
+          <div className="flex flex-row items-center justify-start">
+            <div className="flex flex-1 flex-col gap-[10px] text-[14px]">
+              <div className="font-bold">Shipping Address</div>
+              <div className="text-[12px]">
+                <div>Rachel Liu</div>
+                <div>3650 36th Street NW</div>
+                <div>Calgary, Alberta T2L2L1</div>
+                <div>Canada</div>
+                <div>14033385248</div>
+              </div>
+            </div>
+            <div className="flex-1 text-[14px]">
+              <div className="flex flex-1 flex-col gap-[10px] text-[14px]">
+                <div className="font-bold">Billing Address</div>
+                <div className="text-[12px]">
+                  <div>Rachel Liu</div>
+                  <div>3650 36th Street NW</div>
+                  <div>Calgary, Alberta T2L2L1</div>
+                  <div>Canada</div>
+                  <div>14033385248</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> */}
         <div className="flex flex-col gap-5 bg-white p-4">
           <div className="flex flex-row items-center justify-between gap-[20px]">
             <div className="text-[20px] font-bold">Add product to quote</div>
             <div className="mr-5 flex flex-row items-center gap-5 text-[14px]">
-              <div>Currency: CAD</div>
-              <hr className="h-auto w-[1px] self-stretch bg-[rgba(0,0,0,0.12)]" />
-              <div>
-                <RotateCw className="cursor-pointer text-gray-400" />
+              <div className="flex flex-col">
+                <label htmlFor="quote_status" className="text-[12px] text-[rgba(0,0,0,0.54)]">
+                  Quote Status
+                </label>
+                <select
+                  name="quote_status"
+                  value={formData.qr_customer.quote_status}
+                  onChange={handleChange}
+                  className="w-full border-b border-b-gray-400 p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
+                  disabled={isViewMode}
+                >
+                  <option value="">Select Status</option>
+                  <option value="pending">Pending</option>
+                  <option value="approved">Approved</option>
+                  <option value="rejected">Rejected</option>
+                </select>
+                {errors.quote_status && <span className="text-red-500">{errors.quote_status}</span>}
               </div>
+              {!isViewMode && (
+                <NewProductQuote onAddProduct={handleAddCustomProduct}>
+                  <button
+                    type="button"
+                    className="rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90 my-auto"
+                  >
+                    Add Custom Product +
+                  </button>
+                </NewProductQuote>
+              )}
             </div>
           </div>
           <div className="w-full overflow-x-auto">
@@ -505,11 +553,7 @@ const page = () => {
                       <div>Unit Price</div>
                     </div>
                   </th>
-                  <th className="">
-                    <div className="flex items-center justify-center gap-1">
-                      <div>Extended Price</div>
-                    </div>
-                  </th>
+                 
                   <th className="">
                     <div className="flex items-center justify-center gap-1">
                       <div>Total Price</div>
@@ -524,7 +568,6 @@ const page = () => {
                 {formData.qr_product.map((product, index) => (
                   <tr key={index}>
                     <td className="min-w-[200px] max-w-[300px] [word-break:break-word]">
-                    {console.log()}
                       <div className="flex flex-row items-start gap-1">
                         <div className="min-h-[60px] min-w-[60px]">
                           <BcImage
@@ -554,6 +597,7 @@ const page = () => {
                           value={product.qty}
                           onChange={(e) => handleProductChange(index, e)}
                           className="w-full border-b border-b-black outline-none text-center"
+                          disabled={isViewMode}
                         />
                       </div>
                     </td>
@@ -565,20 +609,11 @@ const page = () => {
                           value={product.unitPrice}
                           onChange={(e) => handleProductChange(index, e)}
                           className="w-full border-b border-b-black outline-none text-center"
+                          disabled={isViewMode}
                         />
                       </div>
                       </td>
-                    <td className="">
-                      <div>
-                        <input
-                          type="number"
-                          name="extendedPrice"
-                          value={product.extendedPrice}
-                          onChange={(e) => handleProductChange(index, e)}
-                          className="w-full border-b border-b-black outline-none text-center"
-                        />
-                      </div>
-                    </td>
+
                     <td className="">
                       <div>
                         ${(product.unitPrice * product.qty).toFixed(2)}
@@ -599,50 +634,8 @@ const page = () => {
           <div>
           
           </div>
-          <div className="flex flex-row">
-            <div className="flex flex-1 flex-col gap-[20px]">
-              {/* <div className="box-border flex flex-row justify-start bg-[#ededed] text-[12px] [&>button]:min-w-[150px] [&>button]:p-[12px] [&>button]:uppercase">
-                <button className="hover:border-b-2 hover:border-b-[#3C64F4] hover:text-[#3C64F4]">Search</button>
-                <button className="hover:border-b-2 hover:border-b-[#3C64F4] hover:text-[#3C64F4]">
-                  Search By SKU
-                </button>
-                <button className="hover:border-b-2 hover:border-b-[#3C64F4] hover:text-[#3C64F4]">
-                  Custom Product
-                </button>
-              </div> */}
-              {/* <div className="flex flex-row items-center justify-start gap-[30px]">
-                <div className="flex w-fit min-w-[300px] flex-row items-center justify-between gap-[10px] rounded-[5px] border border-gray-200 p-[5px] text-[12px]">
-                  <div className="relative w-full">
-                    <input
-                      type="text"
-                      className="w-full pr-5 outline-none"
-                      placeholder="Search for products with keywords"
-                    />
-                    <X
-                      width={16}
-                      height={16}
-                      className="absolute right-0 top-1/2 -translate-y-1/2 text-gray-400 hover:cursor-pointer"
-                    />
-                  </div>
-                  <div className="flex flex-row items-center gap-[10px]">
-                    <hr className="h-auto w-[1px] self-stretch bg-[rgba(0,0,0,0.12)]" />
-                    <Search className="cursor-pointer" />
-                  </div>
-                </div>
-                <div>
-                  <NewProductQuote onAddProduct={handleAddCustomProduct}>
-                    <button
-                      type="button"
-                      className="rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
-                    >
-                      New +
-                    </button>
-                  </NewProductQuote>
-                </div>
-              </div> */}
-                <QuotePage formData={formData} handleAddCustomProduct={handleAddCustomProduct} handleProductChange={handleProductChange} />
-              
-            </div>
+          <div className="flex flex-row justify-end ">
+           
             <div className="flex min-w-[340px] flex-col justify-end gap-[16px] p-[16px] text-[12px]">
               <div className="flex flex-row items-center justify-between">
                 <label htmlFor="">Original Total</label>
@@ -694,6 +687,7 @@ const page = () => {
             value={formData.qr_customer.quote_remarks}
             onChange={handleChange}
             className="h-[100px] w-full resize-none rounded-[5px] border border-gray-200 p-3 outline-none"
+            disabled={isViewMode}
           ></textarea>
           {errors.quote_remarks && <span className="text-red-500">{errors.quote_remarks}</span>}
           <button
