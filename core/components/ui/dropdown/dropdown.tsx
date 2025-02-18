@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import { ReactNode, useState } from 'react';
@@ -8,8 +8,8 @@ import { Link as CustomLink } from '~/components/link';
 import { Button } from '../button';
 import { BcImage } from '~/components/bc-image';
 
-import callIcon from '~/public/home/callIcon.svg'
-import messageIcon from '~/public/home/messageIcon.svg'
+import callIcon from '~/public/home/callIcon.svg';
+import messageIcon from '~/public/home/messageIcon.svg';
 
 interface Link {
   href: string;
@@ -45,7 +45,6 @@ const Dropdown = ({
   getCustomerData,
   from,
 }: Props) => {
-
   const [isOpen, setIsOpen] = useState('');
 
   return (
@@ -63,10 +62,12 @@ const Dropdown = ({
           {getCustomerData && from === 'account-dropdown' && (
             <DropdownMenu.Item>
               <CustomLink
-                className="block whitespace-nowrap font-medium text-[#03465c]"
+                className="block whitespace-nowrap break-words font-medium text-[#03465c]"
                 href="/account"
               >
-                Hi, {getCustomerData?.user?.name}
+                <span className="block w-full whitespace-normal break-words">
+                  Hi, {getCustomerData?.user?.name}
+                </span>
               </CustomLink>
             </DropdownMenu.Item>
           )}
@@ -109,38 +110,57 @@ const Dropdown = ({
                 </div>
               </DropdownMenu.Item> */}
 
-              <div className={`flex-col gap-[9px] flex`}>
-              <DropdownMenu.Item className='mt-[9px]'>
-                <CustomLink
-                  href="/support/contact"
-                  className=" block text-[14px] font-normal leading-[10px] tracking-[0.25px]"
-                >
-                  <div>
-                    <div className='flex flex-row gap-[10px] items-center'>
-                      <BcImage src={callIcon} alt='tel' width={14} height={14} unoptimized={true} />
-                      <div className='font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#008bb7]'>Call an Agent</div>
+              <div className={`flex flex-col gap-[9px]`}>
+                <DropdownMenu.Item className="mt-[9px]">
+                  <CustomLink
+                    href="/support/contact"
+                    className="block text-[14px] font-normal leading-[10px] tracking-[0.25px]"
+                  >
+                    <div>
+                      <div className="flex flex-row items-center gap-[10px]">
+                        <BcImage
+                          src={callIcon}
+                          alt="tel"
+                          width={14}
+                          height={14}
+                          unoptimized={true}
+                        />
+                        <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#008bb7]">
+                          Call an Agent
+                        </div>
+                      </div>
+                      <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7f7f7f]">
+                        Mon-Fri 6am-5pm PST
+                      </div>
                     </div>
-                    <div className='font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#7f7f7f]'>Mon-Fri 6am-5pm PST</div>
-                  </div>
-                </CustomLink>
-              </DropdownMenu.Item>
+                  </CustomLink>
+                </DropdownMenu.Item>
 
-              <DropdownMenu.Item>
-                <CustomLink
-                  href="/support/contact"
-                  className="mt-[9px] block text-[14px] font-normal leading-[10px] tracking-[0.25px] text-[#353535]"
-                >
-                  <div>
-                    <div className='flex flex-row gap-[10px] items-center'>
-                      <BcImage src={messageIcon} alt='tel' width={14} height={14} unoptimized={true} />
-                      <div className='font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#008bb7]'>Online Chat</div>
+                <DropdownMenu.Item>
+                  <CustomLink
+                    href="/support/contact"
+                    className="mt-[9px] block text-[14px] font-normal leading-[10px] tracking-[0.25px] text-[#353535]"
+                  >
+                    <div>
+                      <div className="flex flex-row items-center gap-[10px]">
+                        <BcImage
+                          src={messageIcon}
+                          alt="tel"
+                          width={14}
+                          height={14}
+                          unoptimized={true}
+                        />
+                        <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#008bb7]">
+                          Online Chat
+                        </div>
+                      </div>
+                      <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#7f7f7f]">
+                        Sat-Sun 6am-3pm PST
+                      </div>
                     </div>
-                    <div className='font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#7f7f7f]'>Sat-Sun 6am-3pm PST</div>
-                  </div>
-                </CustomLink>
-              </DropdownMenu.Item>
+                  </CustomLink>
+                </DropdownMenu.Item>
               </div>
-
             </>
           )}
         </DropdownMenu.Content>

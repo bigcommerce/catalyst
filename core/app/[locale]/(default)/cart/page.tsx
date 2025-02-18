@@ -26,7 +26,7 @@ import CartProductComponent from '../sales-buddy/common-components/_components/C
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
 import ScrollButton from './_components/ScrollButton';
 import { NoShipCanada } from '../product/[slug]/_components/belami-product-no-shipping-canada';
-import { commonSettinngs } from '~/components/common-functions';
+import { checkCouponCodeIsApplied, checkZeroTaxCouponIsApplied, commonSettinngs, floorPriceCalculation } from '~/components/common-functions';
 import { zeroTaxCalculation } from '~/components/common-functions';
 import { calculateProductPrice } from '~/components/common-functions';
 import { GetCustomerGroupById } from '~/components/management-apis';
@@ -41,6 +41,7 @@ import { Flyout } from '~/components/common-flyout';
 import PromotionCookie from './_components/promotion-cookie';
 
 import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
+import RequestQuoteButton from '../sales-buddy/quote/_components/RequestQuoteButton';
 
 interface Params {
   locale: string;
@@ -154,12 +155,44 @@ export default async function Cart({ params }: Props) {
     },
   });
 
-  const cart = data.site.cart;
+  let cart = data.site.cart;
   let checkout = data.site.checkout;
   const geography = data.geography;
 
   if (!cart) {
     return <EmptyCart />;
+  }
+  let checkZeroFLPTax: any = '';
+  let checkFloorIsAvailable: number = 0;
+  let loadCartCheckoutQuery: number = 0;
+  let checkfloorIsSet: number = 0;
+  if(await checkZeroTaxCouponIsApplied(checkout)) {
+    checkZeroFLPTax = await zeroTaxCalculation(data.site);
+    loadCartCheckoutQuery = 1;
+  } else if (await checkCouponCodeIsApplied(checkout)) {
+    checkZeroFLPTax = await floorPriceCalculation(data.site);
+    checkFloorIsAvailable = 1;
+    loadCartCheckoutQuery = 1;
+  }
+
+  if(loadCartCheckoutQuery) {
+    if(checkZeroFLPTax?.id) {
+      const { data } = await client.fetch({
+        document: CartPageQuery,
+        variables: { cartId },
+        customerAccessToken,
+        fetchOptions: {
+          cache: 'no-store',
+          next: {
+            tags: [TAGS.cart, TAGS.checkout],
+          },
+        },
+      });
+      checkout = data.site.checkout;
+      cart = data.site.cart;
+    } else if(checkZeroFLPTax?.action == 'no_floor') {
+      //Floor is hit
+    }
   }
   const CustomItems = cart?.lineItems?.customItems;
   const get_product_price_data_in_cart = async (cartId: any) => {
@@ -264,22 +297,6 @@ export default async function Cart({ params }: Props) {
   });
 
   const updatedProduct: any[][] = [];
-  let checkZeroTax: any = await zeroTaxCalculation(data.site);
-
-  if (checkZeroTax?.id) {
-    const { data } = await client.fetch({
-      document: CheckoutPageQuery,
-      variables: { cartId },
-      customerAccessToken,
-      fetchOptions: {
-        cache: 'no-store',
-        next: {
-          tags: [TAGS.checkout],
-        },
-      },
-    });
-    checkout = data.site.checkout;
-  }
 
   for (const eachProduct of updatedLineItemWithoutAccessories) {
     const price = await calculateProductPrice(
@@ -292,7 +309,7 @@ export default async function Cart({ params }: Props) {
   }
 
   return (
-    <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
+    <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-0 sm:pt-2 lg:pt-8">
       <div className="sticky top-2 z-50">
         <ContinuetocheckoutButton cartId={cartId} />
       </div>
@@ -309,7 +326,7 @@ export default async function Cart({ params }: Props) {
       <div className="text-center lg:hidden">
         <ScrollButton targetId="order-summary" />
       </div>
-      {checkZeroTax && <PromotionCookie promoObj={checkZeroTax} />}
+      {checkZeroFLPTax && (<PromotionCookie promoObj={checkZeroFLPTax} isFloor={checkFloorIsAvailable} />)}
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
 
       <h1 className="cart-heading pt-0 text-center text-[24px] font-normal leading-[32px] lg:text-left lg:text-[24px]">
@@ -380,19 +397,10 @@ export default async function Cart({ params }: Props) {
           <PaypalButton cartId={cartId} icon={paypalIcon} />
           <div className="pt-1"></div>
 
-          <Flyout
-            triggerLabel={
-              <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
-                Shipping Policy
-              </p>
-            }
-          >
-            <MakeswiftPage locale={locale} path="/content/shipping-flyout" />
-          </Flyout>
           <div>
             <Flyout
               triggerLabel={
-                <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
+                <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-2">
                   Return Policy
                 </p>
               }
@@ -400,7 +408,18 @@ export default async function Cart({ params }: Props) {
               <MakeswiftPage locale={locale} path="/content/returns-flyout" />
             </Flyout>
           </div>
-          <p className="flex items-center pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
+
+          <Flyout
+            triggerLabel={
+              <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-2">
+                Shipping Policy
+              </p>
+            }
+          >
+            <MakeswiftPage locale={locale} path="/content/shipping-flyout" />
+          </Flyout>
+          
+          <p className="flex items-center pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-2">
             <BcImage
               alt="Agent Icon"
               width={10}
@@ -413,20 +432,11 @@ export default async function Cart({ params }: Props) {
           </p>
         </div>
       </div>
-
       <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
 
-      <KlaviyoIdentifyUser
-        user={
-          sessionUser && sessionUser.user && sessionUser.user?.email
-            ? ({
-                email: sessionUser.user.email,
-                first_name: sessionUser.user?.firstName,
-                last_name: sessionUser.user?.lastName,
-              } as any)
-            : null
-        }
-      />
+      <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
+      <RequestQuoteButton/>
+
     </div>
   );
 }

@@ -75,17 +75,17 @@ const Footer = ({
             </h3>
           )}
           {customerService.map((customer, index)=>(
-            <CustomLink
+            <Link
             key={index}
             href={customer.href}
             className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
           >
             {customer.label}
-          </CustomLink>
+          </Link>
           ))}
         </div>
         {Boolean(contactInformation?.phone) && (
-          <CustomLink
+          <Link
             className="flex flex-col gap-[10px] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
             href={`tel:${contactInformation?.phone}`}
           >
@@ -97,7 +97,7 @@ const Footer = ({
             </p>
 
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-              Monday - friday 6am - 5pm PST
+              Monday - Friday 6am - 5pm PST
             </p>
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-[#80c5da]">
               (####) ###-###
@@ -112,7 +112,7 @@ const Footer = ({
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
               Saturday & Sunday 6am - 3pm PST
             </p>
-          </CustomLink>
+          </Link>
         )}
       </div>
       {sections.map((section, index) => (
@@ -124,12 +124,12 @@ const Footer = ({
             {section.links.map((link, index) => (
               <li key={`${link.label}-${index}`} className="">
                 {link.href != '#' ? (
-                  <CustomLink
+                  <Link
                     className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
                     href={link.href}
                   >
                     {link.label}
-                  </CustomLink>
+                  </Link>
                 ) : (
                   link.label
                 )}
@@ -180,12 +180,12 @@ const Footer = ({
               {section.links.map((link, index) => (
                 <li key={`${link.label}-${index}`} className="">
                   {link.href != '#' ? (
-                    <CustomLink
+                    <Link
                       className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
                       href={link.href}
                     >
-                      {link.label}
-                    </CustomLink>
+                      <span className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">{link.label}</span>
+                    </Link>
                   ) : (
                     link.label
                   )}
@@ -198,7 +198,7 @@ const Footer = ({
       </div>
       <div className="flex flex-col gap-[30px] [&>*:nth-child(2)]:hidden [&>*:nth-child(3)]:hidden">
         {Boolean(contactInformation?.phone) && (
-          <CustomLink
+          <Link
             className="flex flex-col gap-[10px] hover:text-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
             href={`tel:${contactInformation?.phone}`}
           >
@@ -210,7 +210,7 @@ const Footer = ({
             </p>
 
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-              Monday - friday 6am - 5pm PST
+              Monday - Friday 6am - 5pm PST
             </p>
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-[#80c5da]">
               (####) ###-###
@@ -225,7 +225,7 @@ const Footer = ({
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
               Saturday & Sunday 6am - 3pm PST
             </p>
-          </CustomLink>
+          </Link>
         )}
         {sections.map((section, index) => (
           <div key={`${section.title}-${index}`} className="flex h-fit flex-col gap-[10px]">
@@ -236,12 +236,12 @@ const Footer = ({
               {section.links.map((link, index) => (
                 <li key={`${link.label}-${index}`} className="">
                   {link.href != '#' ? (
-                    <CustomLink
+                    <Link
                       className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
                       href={link.href}
                     >
                       {link.label}
-                    </CustomLink>
+                    </Link>
                   ) : (
                     link.label
                   )}

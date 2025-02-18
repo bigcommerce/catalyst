@@ -1,11 +1,23 @@
 import React from 'react';
 import Returns from './ReturnIframe';
-  // Import the Returns component
 
-const ReturnsPage: React.FC = () => {
-  const returnUrl = `${process?.env?.NEXT_PUBLIC_RETURN_URL}` as string;
+interface returnsProps{
+  searchParams: { orderId?: string; email?: string };
+}
 
-  return <Returns returnUrl={returnUrl || ''} />;
+const ReturnsPage = ({searchParams}:returnsProps) => {
+
+  const orderId = searchParams.orderId || '';
+  const email = searchParams.email || '';
+
+  let returnUrl: any
+  if(orderId && email){
+    returnUrl = `${process?.env?.AFTERSHIP_ORDER_STATUS}?order-number=${orderId}&email=${email}`;
+  } else {
+    returnUrl = `${process?.env?.NEXT_PUBLIC_RETURN_URL}`;
+  }
+  
+  return <Returns returnUrl={returnUrl} />;
 };
 
 export default ReturnsPage;

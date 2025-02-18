@@ -18,6 +18,7 @@ interface ManageOrderButtonsProps {
   orderStatus: string | null;
   orderData: any;
   setShowOrderSummary: any;
+  userEmail?:string;
 }
 
 const OrderDetails = ({
@@ -116,6 +117,7 @@ const ManageOrderButtons = ({
   orderTrackingUrl,
   orderData,
   setShowOrderSummary,
+  userEmail
 }: ManageOrderButtonsProps) => {
   const t = useTranslations('Account.Orders');
   const getOrderDetails = () => {
@@ -148,7 +150,7 @@ const ManageOrderButtons = ({
           className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50"
           variant="secondary"
         >
-          <Link href={{ pathname: '' }}>{t('returnOrder')}</Link>
+         <Link href={`/returns?orderId=${orderId}&email=${userEmail}`}>{t('returnOrder')}</Link>
         </Button>
       )}
     </div>
@@ -160,11 +162,13 @@ const OrderList = ({
   cartId,
   setShowOrderSummary,
   guestUserCheck,
+  userEmail,
 }: {
   orderData: any;
   cartId: string;
   setShowOrderSummary: any;
   guestUserCheck: Number;
+  userEmail?:string;
 }) => {
   let { orderState, paymentInfo, summaryInfo, consignments } = orderData;
   const shippingConsignments = consignments?.shipping;
@@ -297,6 +301,7 @@ const OrderList = ({
               orderTrackingUrl={trackingUrl}
               orderData={orderData}
               setShowOrderSummary={setShowOrderSummary}
+              userEmail={userEmail}
             />
           </div>
         </div>
@@ -336,8 +341,8 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
           {t('orderSummary')}
         </div>
       </div>
-      <div className="flex justify-between gap-[30px]">
-        <div className="flex w-1/2 flex-col gap-[30px]">
+      <div className="flex xl:flex-row flex-col justify-between gap-[30px]">
+        <div className="flex w-full  xl:w-1/2 flex-col gap-[30px]">
           <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
             <div>
               {t('confirmationNumber')}: <span className="font-[700]">{orderState?.orderId}</span>
@@ -403,7 +408,7 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
                 </div> */}
           </div>
         </div>
-        <div className="flex w-1/2 flex-col gap-[3px] text-[16px] font-normal leading-[32px] tracking-[0.5px]">
+        <div className="flex w-full xl:w-1/2 flex-col gap-[3px] text-[16px] font-normal leading-[32px] tracking-[0.5px]">
           <div className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#002A37]">
             {t('orderTotal')}:{' '}
             {format.number(grandTotal.value, {
@@ -525,8 +530,8 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
                         className="border border-[#cccbcb] p-[20px] [@media_print]:break-inside-avoid [@media_print]:[page-break-inside:avoid]"
                         key={shipment?.entityId}
                       >
-                        <div className="flex items-center justify-between gap-[20px]">
-                          <div className="flex flex-1 items-center gap-[20px]">
+                        <div className="flex xl:flex-row flex-col items-start xl:items-center xl:justify-between gap-[20px]">
+                          <div className="flex flex-1 sm:flex-row flex-col items-start sm:items-center gap-[20px]">
                             <div className="bg-[#d9d9d9]">
                               {isImageAvailable && (
                                 <BcImage
@@ -620,9 +625,11 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
 export default function OrderTracking({
   icon,
   guestUserCheck,
+  userEmail,
 }: {
   icon: any;
   guestUserCheck: Number;
+  userEmail?:string;
 }) {
   const [number, setNumber] = useState('');
   const [email, setEmail] = useState('');
@@ -806,6 +813,7 @@ export default function OrderTracking({
                 orderData={orderData}
                 cartId={cartId}
                 guestUserCheck={guestFlow}
+                userEmail={userEmail}
               />
             ) : null}
             {showOrderSummary && orderData?.orderState?.orderId ? (

@@ -18,11 +18,11 @@ import SystemInfoComponent from './SystemInformationComponent';
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import CompactUserCard from './SystemInformationComponent/CustomerDetailUsingSessionId';
 import { setCustomerIdViaSessionId } from '../../_actions/update-customer-id';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { CreateCartMetaFields } from '~/components/management-apis';
 function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
   const path = usePathname();
-  
+  const router = useRouter();
   const [customerDetails, setCustomerDetails] = useState({});
   const [customerDetailsBasedOnSessionId, setCustomerDetailsBasedOnSessionId] = useState([]);
   const [cartErrorMessage, setCartErrorMessage] = useState<string | null>('');
@@ -533,6 +533,15 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
         break;
     }
   };
+  
+
+  const HandleQouteChange = () => {
+    setLoading((prev) => ({ ...prev, show4: true }));
+    router.push("/sales-buddy/quote");
+    setLoading((prev) => ({ ...prev, show4: false }));
+
+    // Perform any function call you need
+  };
 
   const accordions = [
     {
@@ -674,6 +683,20 @@ function CustomerSupportPage({ toggleAccordion, openIndexes, setOpenIndexes }) {
           openIndexes={openIndexes}
           setOpenIndexes={setOpenIndexes}
         />
+        <div>
+          <button
+            type="button"
+            className="relative mt-[10px] flex h-[42px] w-full items-center justify-center rounded bg-[#1DB14B] tracking-[1.25px] text-white hover:bg-[#178B3E]"
+            onClick={HandleQouteChange}
+          >
+            <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">
+              QUOTE DASHBOARD
+            </p>
+            <div className="absolute inset-0 flex items-center justify-center">
+              {loading.show4 && <Loader />}
+            </div>
+          </button>
+        </div>
       </div>
     </div>
   );
