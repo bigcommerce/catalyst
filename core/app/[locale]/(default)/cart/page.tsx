@@ -395,6 +395,7 @@ export default async function Cart({ params }: Props) {
           <CheckoutButton cartId={cartId} />
           <ApplepayButton cartId={cartId} icon={applePayIcon} />
           <PaypalButton cartId={cartId} icon={paypalIcon} />
+
           <div className="pt-1"></div>
 
           <div>
@@ -430,15 +431,20 @@ export default async function Cart({ params }: Props) {
             />{' '}
             Talk to an Agent
           </p>
+          <div className='my-5'>
+            <RequestQuoteButton />
+          </div>
+          
         </div>
+       
       </div>
       <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
 
       <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
-      <RequestQuoteButton/>
+      
 
     </div>
   );
 }
 
-export const runtime = 'edge';
+// export const runtime = 'edge';
