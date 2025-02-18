@@ -18,7 +18,7 @@ import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumb
 import { PrintInvoice } from '../../../print-invoice/print-invoice';
 import { StillNeedContactUs } from '../../../orders/_components/stillneed-contactus';
 
-const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['summaryInfo'] }) => {
+const OrderSummaryInfo = async ({ summaryInfo, }: { summaryInfo: OrderDataType['summaryInfo'] }) => {
   const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { subtotal, shipping, tax, discounts, grandTotal, handlingCost } = summaryInfo;
@@ -253,7 +253,7 @@ const ShippingInfo = async ({
   );
 };
 
-export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:any }) => {
+export const OrderDetails = async ({ data, icon, userEmail }: { data: OrderDataType, icon:any, userEmail? :string }) => {
   const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { orderState, summaryInfo, consignments, paymentInfo } = data;
@@ -332,6 +332,8 @@ export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:a
                                 imageSize="square"
                                 isExtended={true}
                                 product={assembleProductData(shipment)}
+                                userEmail={userEmail}
+                                orderId={orderState?.orderId}
                               />
                             </Suspense>
                           </li>
@@ -403,7 +405,7 @@ export const OrderDetails = async ({ data, icon }: { data: OrderDataType, icon:a
                 </div> */}
               </div>
             </div>
-            <OrderSummaryInfo summaryInfo={summaryInfo} />
+            <OrderSummaryInfo userEmail={userEmail} summaryInfo={summaryInfo} />
           </div>
         </div>
       </div>
