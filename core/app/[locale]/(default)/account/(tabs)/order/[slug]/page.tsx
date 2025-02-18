@@ -6,6 +6,7 @@ import { ExistingResultType } from '~/client/util';
 import { OrderDetails } from './_components/order-details';
 import { getOrderDetails, OrderDetailsType } from './page-data';
 import { imageManagerImageUrl } from '~/lib/store-assets';
+import { getSessionUserDetails } from "~/auth";
 
 import wavingHandIcon from '~/public/pdp-icons/wavingHandIcon.svg'
 interface Props {
@@ -54,6 +55,8 @@ export type OrderDataType = ExistingResultType<typeof mapOrderData>;
 
 export default async function Order(props: Props) {
 
+  const sessionUser = await getSessionUserDetails();
+  const userEmail = sessionUser?.user?.email || '';
 
   const { slug } = await props.params;
   const entityId = Number(slug);
@@ -70,7 +73,7 @@ export default async function Order(props: Props) {
 
   const data = mapOrderData(order);
 
-  return <OrderDetails data={data} icon={wavingHandIcon} />;
+  return <OrderDetails userEmail={userEmail} data={data} icon={wavingHandIcon} />;
 }
 
-export const runtime = 'edge';
+// export const runtime = 'edge';

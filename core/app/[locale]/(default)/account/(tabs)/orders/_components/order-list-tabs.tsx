@@ -17,7 +17,7 @@ const tabList = ['all', 'inprogress', 'delivered'] as const;
 
 export type TabType = (typeof tabList)[number];
 
-export const OrderListTabs = ({ orders, pageInfo, icon }: { orders: any, pageInfo: any, icon: any }) => {
+export const OrderListTabs = ({ orders, pageInfo, icon, userEmail }: { orders: any, pageInfo: any, icon: any, userEmail?: string }) => {
   const t = useTranslations('Account.Orders');
   const pathname = usePathname();
   const [orderData, setOrderData] = useState(orders);
@@ -91,7 +91,7 @@ export const OrderListTabs = ({ orders, pageInfo, icon }: { orders: any, pageInf
           <div className="mx-auto w-fit">{t('noOrders')}</div>
         ) : (
           <>
-            <OrdersList customerOrders={orderData} key={endCursor} />
+            <OrdersList userEmail={userEmail} customerOrders={orderData} key={endCursor} />
             <Pagination
               className="my-0 flex justify-center text-center"
               endCursor={endCursor ?? undefined}

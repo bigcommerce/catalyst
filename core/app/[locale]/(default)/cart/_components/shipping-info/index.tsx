@@ -38,7 +38,7 @@ const SubmitButton = () => {
 
   return (
     <Button
-      className="flex h-[44px] items-center !mt-0 justify-center border border-[#4eaecc] bg-[#ffffff] px-[10px] text-[14px] font-[500] leading-[24px] tracking-[1.25px] text-[#002a37]"
+      className="flex h-[44px] items-center !mt-0 justify-center border border-[#4eaecc] bg-[#ffffff] px-[10px] text-[14px] font-[500] leading-[24px] tracking-[1.25px] text-[#002a37] hover:bg-brand-50"
       loading={pending}
       loadingText={t('spinnerText')}
       variant="secondary"
