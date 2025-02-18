@@ -68,6 +68,17 @@ const PhysicalItemFragment = graphql(`
             sku
             entityId
             isPurchasable
+            metafields(namespace: "pdp_info_for_agent", keys: "adjusted_cost") {
+              edges {
+                cursor
+                node {
+                  entityId
+                  id
+                  key
+                  value
+                }
+              }
+            }
           }
         }
       }
