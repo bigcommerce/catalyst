@@ -311,7 +311,6 @@ export const ProductForm = ({
     else if (action === 'requestQuote'){
     const quoteResult = await handleRequestQuote(data, product);
     localStorage.setItem("Q_R_data",JSON.stringify(quoteResult?.data?.qr_product))
-      toast.success("Quote Requested Successfully" );
     }
   };
 
