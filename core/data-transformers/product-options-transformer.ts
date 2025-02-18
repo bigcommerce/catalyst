@@ -7,8 +7,11 @@ import { ProductFormFragment } from '~/app/[locale]/(default)/product/[slug]/pag
 
 export const productOptionsTransformer = async (
   productOptions: ResultOf<typeof ProductFormFragment>['productOptions'],
+  locale: string,
 ) => {
-  const t = await getTranslations('Product.ProductDetails');
+  'use cache';
+
+  const t = await getTranslations({ locale, namespace: 'Product.ProductDetails' });
 
   return removeEdgesAndNodes(productOptions)
     .map<Field | null>((option) => {
