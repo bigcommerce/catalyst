@@ -15,7 +15,7 @@ export const UpdateQuote = async (dataToSend: any) => {
     const bc_channel_id = process.env.BIGCOMMERCE_CHANNEL_ID;
 
     console.log('API URL:', apiUrl, 'API Path:', apiPath);
-
+    console.log('UpdateQuote API:', `${apiUrl}${apiEnv}${apiPath}update-quote`);
     // Prepare payload
     let postData = JSON.stringify({
       quote_id,

@@ -20,6 +20,7 @@ export const GetAllQuoteList = async (inputData:any) => {
       last_name: inputData.lastName ?? '',
       requested_date: inputData.dateFrom ?? '',
     };
+    console.log('GetAllQuoteList Api-----------------', `${apiUrl}${apiEnv}${apiPath}list-quote`);
      let data = await fetch(`${apiUrl}${apiEnv}${apiPath}list-quote`, {
        method: 'POST',
        headers: {
