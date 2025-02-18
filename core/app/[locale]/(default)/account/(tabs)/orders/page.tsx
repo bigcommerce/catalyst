@@ -12,7 +12,8 @@ import wavingHandIcon from '~/public/pdp-icons/wavingHandIcon.svg';
 import { Link as CustomLink } from '~/components/link';
 import { BcImage } from '~/components/bc-image';
 import chevronRight from '~/public/orders/chevronRight.svg';
- 
+import { getSessionUserDetails } from "~/auth";
+
 interface Props {
   searchParams: Promise<{
     [key: string]: string | string[] | undefined;
@@ -24,6 +25,9 @@ interface Props {
 export type Orders = ExistingResultType<typeof getCustomerOrders>['orders'];
  
 export default async function Orders({ searchParams }: Props) {
+  const sessionUser = await getSessionUserDetails();
+  const userEmail = sessionUser?.user?.email || '';
+
   const { before, after } = await searchParams;
   const t = await getTranslations('Account.Orders');
  
@@ -72,7 +76,7 @@ export default async function Orders({ searchParams }: Props) {
             {orders.length === 0 ? (
               <div className="mx-auto w-fit">{t('noOrders')}</div>
             ) : (
-              <>{<OrderListTabs orders={orders} pageInfo={pageInfo} icon={wavingHandIcon} />}</>
+              <>{<OrderListTabs userEmail={userEmail} orders={orders} pageInfo={pageInfo} icon={wavingHandIcon} />}</>
             )}
           </div>
         </div>

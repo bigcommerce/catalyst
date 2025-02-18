@@ -41,6 +41,7 @@ import { Flyout } from '~/components/common-flyout';
 import PromotionCookie from './_components/promotion-cookie';
 
 import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
+import RequestQuoteButton from '../sales-buddy/quote/_components/RequestQuoteButton';
 
 interface Params {
   locale: string;
@@ -308,7 +309,7 @@ export default async function Cart({ params }: Props) {
   }
 
   return (
-    <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-8">
+    <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-0 sm:pt-2 lg:pt-8">
       <div className="sticky top-2 z-50">
         <ContinuetocheckoutButton cartId={cartId} />
       </div>
@@ -396,19 +397,10 @@ export default async function Cart({ params }: Props) {
           <PaypalButton cartId={cartId} icon={paypalIcon} />
           <div className="pt-1"></div>
 
-          <Flyout
-            triggerLabel={
-              <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
-                Shipping Policy
-              </p>
-            }
-          >
-            <MakeswiftPage locale={locale} path="/content/shipping-flyout" />
-          </Flyout>
           <div>
             <Flyout
               triggerLabel={
-                <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
+                <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-2">
                   Return Policy
                 </p>
               }
@@ -416,7 +408,18 @@ export default async function Cart({ params }: Props) {
               <MakeswiftPage locale={locale} path="/content/returns-flyout" />
             </Flyout>
           </div>
-          <p className="flex items-center pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-4">
+
+          <Flyout
+            triggerLabel={
+              <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-2">
+                Shipping Policy
+              </p>
+            }
+          >
+            <MakeswiftPage locale={locale} path="/content/shipping-flyout" />
+          </Flyout>
+          
+          <p className="flex items-center pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-2">
             <BcImage
               alt="Agent Icon"
               width={10}
@@ -429,20 +432,11 @@ export default async function Cart({ params }: Props) {
           </p>
         </div>
       </div>
-
       <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
 
-      <KlaviyoIdentifyUser
-        user={
-          sessionUser && sessionUser.user && sessionUser.user?.email
-            ? ({
-                email: sessionUser.user.email,
-                first_name: sessionUser.user?.firstName,
-                last_name: sessionUser.user?.lastName,
-              } as any)
-            : null
-        }
-      />
+      <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
+      <RequestQuoteButton/>
+
     </div>
   );
 }
