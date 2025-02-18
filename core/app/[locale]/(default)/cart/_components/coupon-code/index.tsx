@@ -141,7 +141,7 @@ export const CouponCode = ({ checkout }: Props) => {
                 type="text"
               />
             </FieldControl>
-            <FieldMessage className="text-xs text-error" match="valueMissing">
+            <FieldMessage className="text-xs text-[#A71F23]" match="valueMissing">
               {t('couponCodeRequired')}
             </FieldMessage>
           </Field>
