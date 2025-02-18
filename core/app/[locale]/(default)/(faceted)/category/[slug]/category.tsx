@@ -28,6 +28,14 @@ import { createBrowserLocalStorageCache } from "@algolia/cache-browser-local-sto
 
 import { cn } from '~/lib/utils';
 
+import { Minus } from 'lucide-react';
+import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
+//import { Link } from '~/components/link';
+import Link from 'next/link';
+import Image from 'next/image';
+//import { BcImage } from '~/components/bc-image';
+import noImage from '~/public/no-image.svg';
+
 const searchClient = algoliasearch(
   process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
   process.env.NEXT_PUBLIC_ALGOLIA_API_KEY || '',
@@ -70,6 +78,9 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
 
   const [showSidebar, _setShowSidebar] = useState(false);
   const [showViewResultsButton, setShowViewResultsButton] = useState(false);
+
+  const [showCompareSidebar, setShowCompareSidebar] = useState(false);
+  const { products, setProducts } = useCompareDrawerContext();
 
   const ruleContexts = [];
   if (userContext?.isCaliforniaIp)
@@ -539,6 +550,66 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
         </div>
       </aside>
 
+      {showCompareSidebar &&
+        <div className="hidden sm:block fixed inset-0 w-full h-full pointer-events-auto z-[9995] bg-black bg-opacity-60 backdrop-blur-sm opacity-100" onClick={() => setShowCompareSidebar(false)}></div>
+      }
+      <aside className={cn(
+        'fixed p-8 z-[9999] pointer-events-auto bg-white box-border w-full top-0 left-0 facets sm:max-w-[450px] max-h-full h-screen duration-300 ease-in-out overflow-y-auto',
+        showCompareSidebar ? 'shadow-2xl shadow-blue-gray-900/10 translate-x-0' : '-translate-x-full'
+      )}>
+        <button title="Close" type="button" onClick={() => setShowCompareSidebar(false)} className="ml-auto flex text-xl justify-center"><Minus /></button>
+        {/* <h3 className="text-center text-2xl">Compare Products</h3> */}
+        <ul className="mt-5">
+          {products.map((product) => {
+            return (
+              <li
+                className="mb-4 p-4 flex items-center space-x-4 border border-gray-200"
+                key={product.id}
+              >
+                <div className="w-48">
+                  <div className="pb-full relative mx-auto my-0 flex h-auto w-full overflow-hidden pb-[100%]">
+                    <figure className="absolute left-0 top-0 h-full w-full">
+                      <div className="flex h-full w-full items-center justify-center align-middle">
+                        {product.image && product.image.src ? (
+                          <img
+                            src={product.image.src}
+                            alt={product.image.altText}
+                            className="relative m-auto inline-block h-auto max-h-full w-auto max-w-full align-middle"
+                          />
+                        ) : (
+                          <Image
+                            src={noImage}
+                            alt="No Image"
+                            className="relative m-auto inline-block h-auto max-h-full w-auto max-w-full align-middle"
+                          />
+                        )}
+                      </div>
+                    </figure>
+                  </div>
+                </div>
+                <div>{product.name}</div>
+                <button title="Remove" onClick={() => setProducts(products.filter(({ id }) => id !== product.id))}>
+                  <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 18C2.45 18 1.97917 17.8042 1.5875 17.4125C1.19583 17.0208 1 16.55 1 16V3H0V1H5V0H11V1H16V3H15V16C15 16.55 14.8042 17.0208 14.4125 17.4125C14.0208 17.8042 13.55 18 13 18H3ZM13 3H3V16H13V3ZM5 14H7V5H5V14ZM9 14H11V5H9V14Z" fill="currentColor" /></svg>
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+        <div className="mt-5 flex items-center space-x-4">
+          <button 
+            onClick={() => { setProducts([]); setShowCompareSidebar(false) } }
+            className="flex items-center justify-center w-full text-center px-4 h-10 bg-white hover:bg-gray-30 uppercase rounded border border-brand-400 shadow-none"
+          >Clear All</button>
+          {products?.length > 1 &&
+          <Link 
+            href={{ pathname: '/compare', query: { ids: products.map(({ id }) => id).join(',') } }} 
+            onClick={() => setShowCompareSidebar(false)}
+            className="flex items-center justify-center space-x-2 px-4 h-10 bg-brand-600 uppercase whitespace-nowrap text-white rounded border border-brand-600 cursor-pointer hover:bg-brand-400 hover:border-brand-400"
+          >Compare Items ({products.length})</Link>
+          }
+        </div>
+      </aside>
+
       <div id="catalog" className={showSidebar ? 'overflow-hidden h-0 sm:overflow-auto sm:h-auto' : ''}>
 
         <div className="mt-2 lg:flex md:space-x-4 items-center">
@@ -561,6 +632,12 @@ export const Category = ({ category, promotions, useDefaultPrices = false, price
           </div>
 
           <div className="mt-2 lg:mt-0 flex-1 hidden lg:flex space-x-4 items-center">
+            {products?.length > 0 &&
+              <button type="button" className="flex-none md:ml-auto flex items-center space-x-2 px-4 h-10 rounded text-white bg-brand-500 border border-brand-500 cursor-pointer" onClick={() => setShowCompareSidebar(true)}>
+                <span>Compare ({products.length})</span>
+                <svg width="18" height="22" viewBox="0 0 18 22" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M7 22V20H2C1.45 20 0.979167 19.8042 0.5875 19.4125C0.195833 19.0208 0 18.55 0 18V4C0 3.45 0.195833 2.97917 0.5875 2.5875C0.979167 2.19583 1.45 2 2 2H7V0H9V22H7ZM2 17H7V11L2 17ZM11 20V11L16 17V4H11V2H16C16.55 2 17.0208 2.19583 17.4125 2.5875C17.8042 2.97917 18 3.45 18 4V18C18 18.55 17.8042 19.0208 17.4125 19.4125C17.0208 19.8042 16.55 20 16 20H11Z" fill="currentColor" /></svg>
+              </button>
+            }
             <button type="button" className="flex-none md:ml-auto flex items-center space-x-2 px-4 h-10 rounded border border-gray-300 cursor-pointer" onClick={() => toggleView()}>
               <span>View:</span>
               {view === 'list' &&

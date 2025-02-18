@@ -280,7 +280,7 @@ export default async function Compare(props: Props) {
                 if (product.productOptions.length) {
                   return (
                     <td className="px-4 pb-8 pt-8" key={product.entityId}>
-                      <Button aria-label={product.name} asChild className="hover:text-white">
+                      <Button aria-label={product.name} asChild className="bg-brand-400 hover:text-white">
                         <Link href={product.path}>{t('Table.viewOptions')}</Link>
                       </Button>
                     </td>
