@@ -23,7 +23,9 @@ export const findCustomerDetails = async (payload: {
     const apiUrl = process.env.SALES_BUDDY_API_URL!;
     const apiEnv = process.env.SALES_BUDDY_API_ENV!;
     const apiPath = process.env.SALES_BUDDY_API_PATH!;
+    
     const fullApiUrl = `${apiUrl}${apiEnv}${apiPath}find-customer`;
+    console.log("1111111111111111111111111111111111111111111-------------",fullApiUrl);
 
     // Make the API call
     const response = await fetch(fullApiUrl, {
