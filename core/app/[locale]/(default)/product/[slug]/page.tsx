@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { createSearchParamsCache, parseAsString } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
@@ -14,8 +15,10 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
-import { Reviews } from './_components/reviews';
+import { PaginationSearchParamNames, Reviews } from './_components/reviews';
 import { getProductData } from './page-data';
+
+export const revalidate = 3600;
 
 const cachedProductDataVariables = cache(
   async (productId: string, searchParams: Props['searchParams']) => {
@@ -193,6 +196,14 @@ interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
+// export async function generateStaticParams() {
+//   const slugs = await getProductSlugs();
+
+//   console.log();
+
+//   return slugs;
+// }
+
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug } = await props.params;
 
@@ -220,6 +231,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
+const searchParamsCache = createSearchParamsCache({
+  [PaginationSearchParamNames.BEFORE]: parseAsString,
+  [PaginationSearchParamNames.AFTER]: parseAsString,
+});
+
 export default async function Product(props: Props) {
   const { locale, slug } = await props.params;
 
@@ -229,6 +245,7 @@ export default async function Product(props: Props) {
 
   const productId = Number(slug);
   const variables = await cachedProductDataVariables(slug, props.searchParams);
+  const parsedSearchParams = searchParamsCache.parse(props.searchParams);
 
   return (
     <>
@@ -257,7 +274,7 @@ export default async function Product(props: Props) {
         title={t('RelatedProducts.title')}
       />
 
-      <Reviews productId={productId} />
+      <Reviews productId={productId} searchParams={parsedSearchParams} />
 
       <Stream fallback={null} value={getProductData(variables)}>
         {(product) => (

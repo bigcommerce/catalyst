@@ -273,3 +273,41 @@ export const getProductData = cache(async (variables: Variables) => {
 
   return product;
 });
+
+const GetProductSlugsQuery = graphql(`
+  query GetProductSlugs($first: Int!) {
+    site {
+      products(first: $first) {
+        edges {
+          node {
+            entityId
+            path # The product slug
+          }
+        }
+      }
+    }
+  }
+`);
+
+export const getProductSlugs = cache(async () => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  // const currencyCode = await getPreferredCurrencyCode();
+
+  const { data } = await client.fetch({
+    document: GetProductSlugsQuery,
+    variables: { first: 50 },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  // ✅ Ensure `data` and `edges` exist
+  const products = data.site.products.edges ?? [];
+
+  if (products.length === 0) {
+    console.warn('No products found in BigCommerce response.');
+
+    return [];
+  }
+
+  return products;
+});
