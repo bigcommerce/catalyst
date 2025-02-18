@@ -83,24 +83,25 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
     [FieldNameToFieldId.password]: true,
   });
   const [emailError, setEmailError] = useState<string>('');
-  const [emailExists,setEmailExists] = useState<string>('');
+  const [emailExists, setEmailExists] = useState<string>('');
   const [passwordError, setPasswordError] = useState<string>('');
 
   const validatePassword = (password: string) => {
-    const passwordRegex = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~])[A-Za-z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{8,}$/;
+    const passwordRegex =
+      /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~])[A-Za-z\d!"#$%&'()*+,-./:;<=>?@[\]^_`{|}~]{8,}$/;
 
-      if (!password.trim()) {
-        setPasswordError('');
-        return true;
-      }
-
-      if (!passwordRegex.test(password)) {
-        setPasswordError('Include uppercase, lowercase, number, symbol (8+ chars).');
-        return false;
-      }
-
+    if (!password.trim()) {
       setPasswordError('');
       return true;
+    }
+
+    if (!passwordRegex.test(password)) {
+      setPasswordError('Include uppercase, lowercase, number, symbol (8+ chars).');
+      return false;
+    }
+
+    setPasswordError('');
+    return true;
   };
 
   const validateEmail = (email: string) => {
@@ -156,14 +157,13 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
     try {
       const result = await GetEmailId(email);
       const isEmailExists = result && result.data.length > 0;
-      if(isEmailExists){
+      if (isEmailExists) {
         setEmailError('');
-        setEmailExists("Email address already in use");
-      return false;
-      } 
+        setEmailExists('Email address already in use');
+        return false;
+      }
       setEmailExists('');
       return true;
-
     } catch (error) {
       console.error('Error checking email:', error);
     }
@@ -288,18 +288,19 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
 
   const renderPasswordField = (field: PasswordFormField, fieldName: string) => (
     <FieldWrapper fieldId={field.entityId} key={field.entityId}>
-      <div onBlur={(e) => {
-         if (field.label.toLowerCase().includes('password')) {
-          validatePassword((e.target as HTMLInputElement).value);
-        }
+      <div
+        onBlur={(e) => {
+          if (field.label.toLowerCase().includes('password')) {
+            validatePassword((e.target as HTMLInputElement).value);
+          }
         }}
       >
-      <Password
-        field={field}
-        isValid={passwordValid[FieldNameToFieldId.password]}
-        name={fieldName}
-        onChange={handlePasswordValidation}
-      />
+        <Password
+          field={field}
+          isValid={passwordValid[FieldNameToFieldId.password]}
+          name={fieldName}
+          onChange={handlePasswordValidation}
+        />
       </div>
     </FieldWrapper>
   );

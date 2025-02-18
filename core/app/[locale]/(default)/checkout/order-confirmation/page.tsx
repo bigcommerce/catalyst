@@ -105,8 +105,9 @@ export default async function OrderConfirmation() {
       youSave += discountedAmount.value;
     });
 
-    const updateCustomerApi = await UpdateCustomerId(getCustomerIdfromCookie, orderState?.orderId)
-
+    const updateCustomerApi =
+      getCustomerIdfromCookie !== undefined &&
+      (await UpdateCustomerId(getCustomerIdfromCookie, orderState?.orderId));  
     const lineItems = shippingConsignments?.map((consignment: any) => consignment.lineItems) || [];
     let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
     let updatedLineItemInfo: any = [];
