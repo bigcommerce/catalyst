@@ -1,6 +1,6 @@
 'use client';
 import { getMetaFieldValue } from "~/components/management-apis";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Spinner } from "@/vibes/soul/primitives/spinner";
 
 interface DeliveryMessageProps {
@@ -19,24 +19,25 @@ export const CloseOut: React.FC<DeliveryMessageProps> = ({
   const [closeOut, setCloseOut] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
 
-  useEffect(() => {
-    const fetchCloseOut = async () => {
+  const fetchCloseOut = useMemo(() => {
+    return async () => {
       try {
         setLoading(true);
-        const closeOutValue = await getMetaFieldValue (entityId, variantId, "Details");
-        console.log("closeOutValue", closeOutValue)
+        const closeOutValue = await getMetaFieldValue(entityId, variantId, "Details");
         setCloseOut(closeOutValue);
       } catch (err) {
-        ('');
+        ""
       } finally {
         setLoading(false);
       }
     };
+  }, [entityId, variantId]);
 
+  useEffect(() => {
     if (entityId && variantId) {
       fetchCloseOut();
     }
-  }, [entityId, variantId]);
+  }, [fetchCloseOut, entityId, variantId]);
 
   if (loading) {
     return (
@@ -45,7 +46,6 @@ export const CloseOut: React.FC<DeliveryMessageProps> = ({
       </div>
     )
   }
-
   return (
     <>
       <div className={`${isFromPDP ? 'flex' : 'hidden'} sm:justify-start`}>

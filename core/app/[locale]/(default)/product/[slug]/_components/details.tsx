@@ -519,7 +519,7 @@ export const Details = ({
           </div>
           <ReviewSummary data={product} />
         </div>
-        <div className="flex flex-row items-center justify-center gap-[10px] xl:justify-start">
+        <div className="flex flex-row items-center mt-[30px] mb-[10px] justify-center gap-[10px] xl:justify-start">
           {product?.UpdatePriceForMSRP && (
             <ProductPrice
               defaultPrice={updatedPriceForMSRP?.originalPrice || 0}
@@ -546,7 +546,7 @@ export const Details = ({
                 useDefaultPrices: true,
               }}
               classNames={{
-                root: 'product-price mt-[30px] flex items-center gap-[0.5em] text-center max-w-fit xl:text-left',
+                root: 'product-price flex items-center gap-[0.5em] text-center max-w-fit xl:text-left',
                 newPrice:
                   'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
                 oldPrice:

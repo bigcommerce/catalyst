@@ -119,7 +119,6 @@ export const GetProductMetaFields = async (entityId: number, nameSpace: string) 
 };
 
 export const getMetaFieldValue = async (entityId: number, variantId: number, namespace: string) => {
-  // Function to fetch and parse meta fields
   const getMetaFields = async (entityId: number, variantId: number, namespace: string) => {
     let metaFields: any = await getMetaFieldsByProductVariant(entityId, variantId, namespace);
     if (metaFields?.data?.length > 0) {
@@ -140,17 +139,6 @@ export const getMetaFieldValue = async (entityId: number, variantId: number, nam
     return metaFieldValues;
   } else if (metaFieldValues && namespace === 'delivery_message') {
     const deliveryKey = metaFieldValues.join(',');
-    try {
-      const parsedValue = JSON?.parse(deliveryKey);
-      return parsedValue;
-    } catch (error) {
-      return null;
-    }
-  }
-  await getMetaFieldsByProduct(entityId, "delivery_message");
-  if (metaFields?.data?.length > 0) {
-    const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
-    const deliveryKey = deliveryMessages.join(',');
     try {
       const parsedValue = JSON?.parse(deliveryKey);
       return parsedValue;
