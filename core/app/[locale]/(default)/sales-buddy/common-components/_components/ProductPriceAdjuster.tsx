@@ -101,7 +101,7 @@ const ProductInfoRow = ({ label, value }: { label: string; value: string | numbe
     <div
       className={`${isLongValue ? 'grid grid-cols-1' : 'grid grid-cols-2'} items-center border-b border-[#cccbcb] py-1`}
     >
-      <p className="break-words text-sm font-bold tracking-wide">{label}</p>
+      <p className="break-words text-sm font-bold tracking-wide text-start">{label}</p>
       <p
         className={`text-sm font-normal tracking-wide ${isLongValue ? 'mt-1 text-right' : 'text-right'}`}
       >

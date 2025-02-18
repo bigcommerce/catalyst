@@ -10,7 +10,8 @@ export const UpdateQuote = async (dataToSend: any) => {
     const { quote_id, bc_customer_id, quote_type, qr_customer, qr_product, page_type } = dataToSend;
 
     const apiUrl = process.env.SALES_BUDDY_API_URL!;
-    const apiPath = process.env.SALES_BUDDY_API_PATH!;
+    const apiPath = process.env.QUOTE_API_PATH!;
+    const apiEnv = process.env.SALES_BUDDY_API_ENV!;
     const accessId = process.env.QUOTE_ACCESS_ID;
     const bc_channel_id = process.env.BIGCOMMERCE_CHANNEL_ID;
 
@@ -29,7 +30,7 @@ export const UpdateQuote = async (dataToSend: any) => {
     });
 
     // Send request to backend API
-    const response = await fetch("http://localhost:3003/quote-api/v1/update-quote", {
+    const response = await fetch(`${apiUrl}${apiEnv}${apiPath}update-quote`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
