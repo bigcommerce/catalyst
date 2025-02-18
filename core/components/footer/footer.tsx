@@ -29,6 +29,7 @@ import paymentIcon from '~/public/footerIcons/paymentIcon.svg';
 import discoverIcon from '~/public/footerIcons/discoverIcon.svg';
 import amexIcon from '~/public/footerIcons/amexIcon.svg';
 import brainTreeIcon from '~/public/footerIcons/brainTreeIcon.svg';
+import Link from 'next/link';
 
 const socialIcons: Record<string, { icon: JSX.Element; link: string }> = {
   Pinterest: {
@@ -90,10 +91,6 @@ export const Footer = async () => {
           href: '/content/terms-of-use',
         },
         {
-          label: <span className="footer-link about-link">Affiliate Program</span>,
-          href: '/#',
-        },
-        {
           label: <span className="footer-link about-link">Accessibility</span>,
           href: '/content/accessibility-statement',
         },
@@ -108,7 +105,7 @@ export const Footer = async () => {
               Be the first to know about new arrivals, sales, and more.
             </span>
           ),
-          href: '/path-1',
+          href: '/',
         },
         {
           label: (
@@ -138,16 +135,18 @@ export const Footer = async () => {
               <span className="privacy-text text-left text-xs font-normal leading-[18px] tracking-[0.4px]">
                 View our
               </span>
+              <Link href={'/content/privacy-and-security/'}>
               <span className="privacy-link privacy-policy-label ml-2 text-left text-xs font-normal leading-[18px] tracking-[0.4px] underline">
                 Privacy Policy
               </span>
+              </Link>
             </div>
           ),
-          href: '/path-6',
+          href: '/content/privacy-and-security/',
         },
         {
           label: <span className="footer-social-title font-normal text-xs leading-[18px] tracking-[0.4px] mb-[4px]" >FOLLOW US</span>,
-          href: '/path-6',
+          href: '/',
         },
         {
           label: (
