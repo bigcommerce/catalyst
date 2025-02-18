@@ -42,6 +42,7 @@ import { Label } from '~/components/ui/form';
 import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
 import SkyxFlyout from '~/components/skyx-flyout/skyxFlyout';
 import { callforMaxPriceRuleDiscountFunction } from '~/components/common-functions';
+import { ifError } from 'node:assert';
 
 aa('init', {
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
@@ -118,7 +119,6 @@ export const ProductForm = ({
   const cart = useCart();
   const productFlyout: any = useCommonContext();
   const productOptions = removeEdgesAndNodes(product.productOptions);
-  const { cartIdForCheck, setCartIdForCheck } = useCompareDrawerContext();
 
   if (productOptions?.length > 0) {
     const router = useRouter();
@@ -154,6 +154,7 @@ export const ProductForm = ({
   }
 
   const { handleSubmit, register, ...methods } = useProductForm();
+  const { setPDataAgent } = useCompareDrawerContext();
 
   const productFormSubmit = async (data: ProductFormData, action: 'addToCart' | 'requestQuote') => {
     const quantity = Number(data.quantity);
@@ -397,48 +398,17 @@ export const ProductForm = ({
         },
       ],
     });
+
     }
     else if (action === 'requestQuote'){
 
-    // quotebutton handle
-
-     const quoteResult = await handleRequestQuote(data, product);
-     console.log(quoteResult,"requestQuoteData");
-      localStorage.setItem("Q_R_data",JSON.stringify(quoteResult?.data?.qr_product));
-      bodl.cart.productAdded({
-        product_value: transformedProduct.purchase_price * quantity,
-        currency: transformedProduct.currency,
-        line_items: [
-          {
-            ...transformedProduct,
-            quantity,
-          },
-        ],
-      });
-    } else if (action === 'requestQuote') {
-      // quotebutton handle
-
       const quoteResult = await handleRequestQuote(data, product);
-      console.log(quoteResult, 'requestQuoteData');
-      localStorage.setItem('Q_R_data', JSON.stringify(quoteResult?.data?.qr_product));
-      bodl.cart.productAdded({
-        product_value: transformedProduct.purchase_price * quantity,
-        currency: transformedProduct.currency,
-        line_items: [
-          {
-            ...transformedProduct,
-            quantity,
-          },
-        ],
-      });
-    } else if (action === 'requestQuote') {
-      // quotebutton handle
-      const quoteResult = await handleRequestQuote(data, product);
-      console.log(quoteResult, 'requestQuoteData');
 
-      localStorage.setItem('Q_R_data', JSON.stringify(quoteResult));
+      if (quoteResult?.data?.qr_product) {
+        localStorage.setItem("Q_R_data", JSON.stringify(quoteResult.data.qr_product)); 
+      }
 
-      if (quoteResult.error) {
+      if(quoteResult.error) {
         toast.error(`Error requesting quote: ${quoteResult.error}`);
         return;
       }
@@ -468,8 +438,6 @@ export const ProductForm = ({
             return null;
           })}
           <Submit data={product} isSticky={true} />
-          <button type="submit"  onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote') )}>Request Quote</button>
-
           <button
             type="submit"
             onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}

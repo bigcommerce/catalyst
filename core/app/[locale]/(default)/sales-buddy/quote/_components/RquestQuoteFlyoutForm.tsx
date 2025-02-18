@@ -51,11 +51,13 @@ interface ProductOption {
     options: string;
   }
 const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
+    if (!isOpen) return null;
+
   const [formData, setFormData] = useState<FormData>({
     first_name: '',
-    last_name: '',
+    last_name: '', //
     phone_number: '',
-    email_id: '',
+    email_id: '', //
     company_name: '',
   });
   const [customerData, setCustomerData] = useState<CustomerData | null>(null);
@@ -101,7 +103,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
         }
         
         const cData = await customerInfo();
-        if (cData) {
+        if (cData && pageName !== '/sales-buddy/quote/') {
           setCustomerData(cData as CustomerData);
         }
       } catch (error) {
@@ -253,7 +255,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
   };
 
   const generateSessionId = (): string => {
-    return `session_${new Date().getTime()}`;
+    return `QR_${new Date().getTime()}`;
   };
 
 
@@ -262,20 +264,28 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
   const createQuoteRequest = async (sessionId: string, isNewQuote: boolean = true,cartData: CartData[]) => {
 
     const quoteType = isNewQuote ? '' : 'old';
-
-    const dataToSend = {
-        quote_id: sessionId,
-        bc_customer_id: customerData?.id,
-        quote_type: quoteType,
-        qr_customer: formData,
-        qr_product: pageName === '/cart/' ? cartData : [quoteProductData],  
-        page_type: pageName === '/cart/' ? 'cart' : 'pdp',
-    };
-    console.log("Sending Data:", dataToSend);
+    let dataToSend;
+    if(pageName === '/sales-buddy/quote/') {
+         dataToSend = {
+            quote_id: sessionId,
+            qr_customer: formData,
+            bc_customer_id:"",
+            qr_product: []  
+        };
+    } else {
+         dataToSend = {
+            quote_id: sessionId,
+            bc_customer_id: customerData?.id,
+            quote_type: quoteType,
+            qr_customer: formData,
+            qr_product: pageName === '/cart/' ? cartData : [quoteProductData],  
+            page_type: pageName === '/cart/' ? 'cart' : 'pdp',
+        };
+    }
+    
     try {
       setIsSubmitting(true);
       const result = await CreateQuote(dataToSend);
-      console.log(result, dataToSend, 'Submitted Result');
       if (result) {
         setSubmitStatus('success');
         if (isNewQuote) {
@@ -296,6 +306,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
     if (!validateForm()) return;
 
     const newSessionId = generateSessionId();
@@ -313,9 +324,9 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
         <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
         <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow fixed left-[50%] right-[unset] top-[50%] z-[100] flex h-[100vh] w-[90vw] max-w-[610px] animate-mobSlideInFromLeft flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] [transform:translate(-50%,-50%)] focus:outline-none sm:left-[unset] sm:right-[0] sm:translate-y-[-50%] sm:animate-slideInFromLeft">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">Request Quote</h2>
+            <h2 className="text-xl font-semibold">{pageName === '/sales-buddy/quote/' ? "Create A Quote" : "Request Quote"}</h2>
             <Dialog.Close asChild>
-              <button className="rounded-full p-2 hover:bg-gray-100">
+              <button className="rounded-full p-2 hover:bg-gray-100"  onClick={() => onOpenChange(false)}>
                 <BcImage alt="Close" src={closeIcon} width={14} height={14} unoptimized={true} />
               </button>
             </Dialog.Close>
@@ -356,7 +367,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
                 </Button>
               </Dialog.Close>
 
-              {existingSessionId && (
+              {existingSessionId && pageName !== "/sales-buddy/quote/" && (
                 <Button
                   type="button"
                   variant="secondary"

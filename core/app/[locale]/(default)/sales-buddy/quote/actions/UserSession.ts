@@ -56,14 +56,15 @@ export const createSession = async (Userdata: any) => {
 };
 
 
-export const 
-createSessionIdCookie = async () => {
+export const createSessionIdCookie = async () => {
   const cookieStore = await cookies();
   const hasCookie = cookieStore.has('UserSessionId');
   console.log("Existing Session Cookie:", hasCookie);
   const CartId = cookieStore.get('cartId');
   const refferalId = cookieStore.get('referrerId');
   const getCustomerData = await getSessionUserDetails();
+  console.log("getCustomerData-------------",getCustomerData);
+  
   let response = null;
   if (getCustomerData?.user?.email) {
     response = await findCustomerDetails({
