@@ -10,6 +10,7 @@ import { customerInfo } from '../actions/handleRequestQuote';
 import { CreateQuote } from '../actions/CreateQuote';
 import { usePathname } from 'next/navigation';
 import { GetCartDetials } from '../actions/GetCartDetials';
+import toast from 'react-hot-toast';
 
 interface FlyoutFormProps {
   isOpen?: boolean;
@@ -34,24 +35,24 @@ interface CustomerData {
 }
 
 interface ProductOption {
-    type: string;
-    label: string;
-    modifierId?: string;
-    modifierOptionId?: string;
-  }
-  interface CartData {
-    bc_product_id: string|number;
-    bc_sku: string;
-    bc_product_name: string;
-    bc_variant_id: string|number;
-    bc_variant_sku: string;
-    bc_variant_name: string;
-    bc_modifier_id: string|number;
-    bc_modifier_option: string|number;
-    options: string;
-  }
+  type: string;
+  label: string;
+  modifierId?: string;
+  modifierOptionId?: string;
+}
+interface CartData {
+  bc_product_id: string | number;
+  bc_sku: string;
+  bc_product_name: string;
+  bc_variant_id: string | number;
+  bc_variant_sku: string;
+  bc_variant_name: string;
+  bc_modifier_id: string | number;
+  bc_modifier_option: string | number;
+  options: string;
+}
 const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
-    if (!isOpen) return null;
+  if (!isOpen) return null;
 
   const [formData, setFormData] = useState<FormData>({
     first_name: '',
@@ -69,30 +70,30 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
   const [quoteCartData, setquoteCartData] = useState<CartData[]>();
 
   const pageName = usePathname();
-  if (pageName !== '/cart/'){
-      useEffect(() => {
-        const fetchStoredQuote = () => {
-          const storedQuote = localStorage.getItem('Q_R_data');
-          if (storedQuote) {
-            setQuoteProductData(JSON.parse(storedQuote));
-          }
-        };
-    
-        fetchStoredQuote();
-    
-        const handleStorageChange = (event: StorageEvent) => {
-          if (event.key === 'Q_R_data') {
-            fetchStoredQuote();
-          }
-        };
-    
-        window.addEventListener('storage', handleStorageChange);
-    
-        return () => {
-          window.removeEventListener('storage', handleStorageChange);
-        };
-      }, []);
-  } 
+  if (pageName !== '/cart/') {
+    useEffect(() => {
+      const fetchStoredQuote = () => {
+        const storedQuote = localStorage.getItem('Q_R_data');
+        if (storedQuote) {
+          setQuoteProductData(JSON.parse(storedQuote));
+        }
+      };
+
+      fetchStoredQuote();
+
+      const handleStorageChange = (event: StorageEvent) => {
+        if (event.key === 'Q_R_data') {
+          fetchStoredQuote();
+        }
+      };
+
+      window.addEventListener('storage', handleStorageChange);
+
+      return () => {
+        window.removeEventListener('storage', handleStorageChange);
+      };
+    }, []);
+  }
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -101,9 +102,9 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
         if (storedSessionId) {
           setExistingSessionId(storedSessionId);
         }
-        
+
         const cData = await customerInfo();
-        if (cData && pageName !== '/sales-buddy/quote/') {
+        if (cData && pageName !== '/sales-buddy/quote') {
           setCustomerData(cData as CustomerData);
         }
       } catch (error) {
@@ -121,7 +122,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
         try {
           const CartItemsData: any = await GetCartDetials();
           const cartLineItems = CartItemsData?.lineItems?.physicalItems || [];
-          const customItmes= CartItemsData?.lineItems?.customItems || [];
+          const customItmes = CartItemsData?.lineItems?.customItems || [];
           const formattedCutomItemData = customItmes.map(item => ({
             bc_sku: item.sku,
             bc_product_name: item.name,
@@ -135,22 +136,22 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
           if (cartLineItems.length > 0) {
             const lineItemsData = cartLineItems.map((item: any) => {
               const selectedOptions = item?.selectedOptions || [];
-  
+
               const productSelectedOpt = selectedOptions
                 ?.map((option: any) => {
                   if (Array.isArray(item?.baseCatalogProduct?.productOptions?.edges)) {
                     const optionFromProduct = item?.baseCatalogProduct?.productOptions?.edges.find(
                       (prodOption: any) => prodOption.node.entityId === option.entityId
                     );
-  
+
                     if (optionFromProduct) {
                       const selectedValue = optionFromProduct?.node?.values?.edges.find(
                         (valueItem: any) => valueItem.node.entityId === option.valueEntityId
                       );
-  
+
                       if (selectedValue) {
                         const isVariant = optionFromProduct.node.isVariantOption ?? false;
-  
+
                         if (isVariant) {
                           return { type: "variant", label: selectedValue.node.label };
                         } else {
@@ -167,12 +168,12 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
                   return undefined;
                 })
                 .filter(Boolean);
-  
+
               const variantLabels = productSelectedOpt
                 ?.filter((item: any) => item?.type === "variant")
                 .map((item: any) => item?.label)
                 .join(", ");
-  
+
               return {
                 bc_product_id: item.productEntityId,
                 bc_sku: item.sku,
@@ -194,11 +195,11 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
           console.error("Error fetching updated cart data:", error);
         }
       };
-  
+
       fetchCartData();
     }
   }, [isOpen]);
-  
+
 
   useEffect(() => {
     if (customerData) {
@@ -227,7 +228,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
   const validateForm = (): boolean => {
     const newErrors: Partial<FormData> = {};
 
-        // Last Name Validation
+    // Last Name Validation
     if (!formData.first_name.trim()) {
       newErrors.first_name = 'First Name is required';
     } else if (formData.first_name.length < 2) {
@@ -261,28 +262,28 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
 
 
 
-  const createQuoteRequest = async (sessionId: string, isNewQuote: boolean = true,cartData: CartData[]) => {
+  const createQuoteRequest = async (sessionId: string, isNewQuote: boolean = true, cartData: CartData[]) => {
 
     const quoteType = isNewQuote ? '' : 'old';
     let dataToSend;
-    if(pageName === '/sales-buddy/quote/') {
-         dataToSend = {
-            quote_id: sessionId,
-            qr_customer: formData,
-            bc_customer_id:"",
-            qr_product: []  
-        };
+    if (pageName === '/sales-buddy/quote') {
+      dataToSend = {
+        quote_id: sessionId,
+        qr_customer: formData,
+        bc_customer_id: "",
+        qr_product: []
+      };
     } else {
-         dataToSend = {
-            quote_id: sessionId,
-            bc_customer_id: customerData?.id,
-            quote_type: quoteType,
-            qr_customer: formData,
-            qr_product: pageName === '/cart/' ? cartData : [quoteProductData],  
-            page_type: pageName === '/cart/' ? 'cart' : 'pdp',
-        };
+      dataToSend = {
+        quote_id: sessionId,
+        bc_customer_id: customerData?.id,
+        quote_type: quoteType,
+        qr_customer: formData,
+        qr_product: pageName === '/cart/' ? cartData : [quoteProductData],
+        page_type: pageName === '/cart/' ? 'cart' : 'pdp',
+      };
     }
-    
+
     try {
       setIsSubmitting(true);
       const result = await CreateQuote(dataToSend);
@@ -291,6 +292,10 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
         if (isNewQuote) {
           localStorage.setItem('session_id$', sessionId);
           setExistingSessionId(sessionId);
+        }
+        if (pageName !== '/sales-buddy/quote') {
+
+          toast.success("Quote Requested Successfully");
         }
         onOpenChange(false);
       } else {
@@ -310,12 +315,12 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
     if (!validateForm()) return;
 
     const newSessionId = generateSessionId();
-    await createQuoteRequest(newSessionId,true, quoteCartData as CartData[]);
+    await createQuoteRequest(newSessionId, true, quoteCartData as CartData[]);
   };
 
   const handleAddToExistingQuote = async () => {
     if (!existingSessionId || !validateForm()) return;
-    await createQuoteRequest(existingSessionId,false,quoteCartData as CartData[]);
+    await createQuoteRequest(existingSessionId, false, quoteCartData as CartData[]);
   };
 
   return (
@@ -324,9 +329,9 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
         <Dialog.Overlay className="bg-blackA6 data-[state=open]:animate-overlayShow fixed inset-0" />
         <Dialog.Content className="popup-container-parent data-[state=open]:animate-contentShow fixed left-[50%] right-[unset] top-[50%] z-[100] flex h-[100vh] w-[90vw] max-w-[610px] animate-mobSlideInFromLeft flex-col gap-[20px] overflow-auto rounded-[6px] bg-white px-[40px] py-[20px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] [transform:translate(-50%,-50%)] focus:outline-none sm:left-[unset] sm:right-[0] sm:translate-y-[-50%] sm:animate-slideInFromLeft">
           <div className="flex items-center justify-between">
-            <h2 className="text-xl font-semibold">{pageName === '/sales-buddy/quote/' ? "Create A Quote" : "Request Quote"}</h2>
+            <h2 className="text-xl font-semibold">{pageName === '/sales-buddy/quote' ? "Create A Quote" : "Request Quote"}</h2>
             <Dialog.Close asChild>
-              <button className="rounded-full p-2 hover:bg-gray-100"  onClick={() => onOpenChange(false)}>
+              <button className="rounded-full p-2 hover:bg-gray-100" onClick={() => onOpenChange(false)}>
                 <BcImage alt="Close" src={closeIcon} width={14} height={14} unoptimized={true} />
               </button>
             </Dialog.Close>
@@ -367,7 +372,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
                 </Button>
               </Dialog.Close>
 
-              {existingSessionId && pageName !== "/sales-buddy/quote/" && (
+              {existingSessionId && pageName !== "/sales-buddy/quote" && (
                 <Button
                   type="button"
                   variant="secondary"
@@ -375,8 +380,8 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
                   onClick={handleAddToExistingQuote}
                   disabled={isSubmitting}
                 >
-                    {isSubmitting ? 'Adding...' : 'Add to Existing Quote'}
-                  
+                  {isSubmitting ? 'Adding...' : 'Add to Existing Quote'}
+
                 </Button>
               )}
 

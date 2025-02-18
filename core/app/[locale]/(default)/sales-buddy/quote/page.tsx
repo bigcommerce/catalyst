@@ -106,16 +106,20 @@ const page = () => {
 
     const GetAllQuoteData = async () => {
       var result = await GetAllQuoteList({});
-      var data = result.output;
-      const formattedData = data?.map((quote:any) => ({
-        id: `QR-${quote.qr_id}`,  // Prefixing ID with 'QI-'
-        name: `${quote.first_name} ${quote.last_name}`, // Combining first and last name
-        company: quote.company_name || "N/A",  // Default if null
-        email: quote.email_id || "N/A",  // Default if null
-        date: formatDate(quote.requested_date), // Format the date
-        quote_id: quote.quote_id,  // Quote ID
-        status: quote.quote_status,  // Status
+      var outputResult = result?.output.output;
+      console.log("data-----------------------------------", outputResult.output);
+      
+      const formattedData = outputResult.map((quote: any) => ({
+        id: `QR-${quote?.qr_id}`,  // Prefixing ID with 'QI-'
+        name: `${quote?.first_name} ${quote?.last_name}`, // Combining first and last name
+        company: quote?.company_name || "N/A",  // Default if null
+        email: quote?.email_id || "N/A",  // Default if null
+        date: formatDate(quote?.requested_date), // Format the date
+        quote_id: quote?.quote_id,  // Quote ID
+        status: quote?.quote_status,  // Status
       }));
+      console.log("formattedData-----------------------------------", formattedData);
+
       setData(formattedData);
     }
     GetAllQuoteData()
@@ -143,19 +147,27 @@ const page = () => {
   };
 
   const applyFilters = async() => {
+    console.log("data----------------------------------(((((((((((((((((((((-");
     var result = await GetAllQuoteList(filterValues);
-    var data = result.output;
-    const formattedData = data?.map((quote: any) => ({
-      id: `QR-${quote.qr_id}`,  // Prefixing ID with 'QI-'
-      name: `${quote.first_name} ${quote.last_name}`, // Combining first and last name
-      company: quote.company_name || "N/A",  // Default if null
-      email: quote.email_id || "N/A",  // Default if null
-      date: formatDate(quote.requested_date), // Format the date
-      quote_id: quote.quote_id,  // Quote ID
-    }));
-    setData(formattedData);
+    var data = result?.output;
+  
+    if (Array.isArray(data)) {
+      const formattedData = data.map((quote: any) => ({
+        id: `QR-${quote?.qr_id}`,  // Prefixing ID with 'QI-'
+        name: `${quote?.first_name} ${quote.last_name}`, // Combining first and last name
+        company: quote?.company_name || "N/A",  // Default if null
+        email: quote?.email_id || "N/A",  // Default if null
+        date: formatDate(quote?.requested_date), // Format the date
+        quote_id: quote?.quote_id,  // Quote ID
+      }));
+      setData(formattedData);
+    } else {
+      setData([]);
+    }
     // Call your function with filterValues here
   };
+  console.log("outter data ---", data);
+  
 
   return (
     <div className="my-[2rem] flex justify-center text-[#353535]">
@@ -204,7 +216,7 @@ const page = () => {
                       <input
                         type="text"
                         name="firstName"
-                        value={filterValues.firstName}
+                        value={filterValues?.firstName}
                         onChange={handleFilterChange}
                         className="w-full rounded-[5px] border border-black p-2 outline-none"
                       />
@@ -214,7 +226,7 @@ const page = () => {
                       <input
                         type="text"
                         name="lastName"
-                        value={filterValues.lastName}
+                        value={filterValues?.lastName}
                         onChange={handleFilterChange}
                         className="w-full rounded-[5px] border border-black p-2 outline-none"
                       />
@@ -224,7 +236,7 @@ const page = () => {
                       <input
                         type="email"
                         name="email"
-                        value={filterValues.email}
+                        value={filterValues?.email}
                         onChange={handleFilterChange}
                         className="w-full rounded-[5px] border border-black p-2 outline-none"
                       />
@@ -234,7 +246,7 @@ const page = () => {
                       <input
                         type="text"
                         name="company"
-                        value={filterValues.company}
+                        value={filterValues?.company}
                         onChange={handleFilterChange}
                         className="w-full rounded-[5px] border border-black p-2 outline-none"
                       />
@@ -245,14 +257,14 @@ const page = () => {
                         <DatePicker
                           placeholder="From"
                           name="dateFrom"
-                          value={filterValues.dateFrom}
+                          value={filterValues?.dateFrom}
                           onChange={handleFilterChange}
                         />
                         to
                         <DatePicker
                           placeholder="To"
                           name="dateTo"
-                          value={filterValues.dateTo}
+                          value={filterValues?.dateTo}
                           onChange={handleFilterChange}
                         />
                       </div>

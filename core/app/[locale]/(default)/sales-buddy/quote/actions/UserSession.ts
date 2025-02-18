@@ -34,6 +34,8 @@ export const createSession = async (Userdata: any) => {
     const apiUrl = process.env.SALES_BUDDY_API_URL!;
     const apiPath = process.env.QUOTE_API_PATH!;
     const apiEnv = process.env.SALES_BUDDY_API_ENV!;
+    console.log('Create Session API:', `${apiUrl}${apiEnv}${apiPath}create-session-id`);
+    
     let data = await fetch(apiUrl + apiEnv + apiPath + 'create-session-id', {
       method: 'POST',
       headers: {

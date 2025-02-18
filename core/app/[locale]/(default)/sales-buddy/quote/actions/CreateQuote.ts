@@ -13,6 +13,8 @@ export const CreateQuote = async (dataToSend:any) => {
      const apiEnv = process.env.SALES_BUDDY_API_ENV!;
     const accessId = process.env.QUOTE_ACCESS_ID;
     const bc_channel_id = process.env.BIGCOMMERCE_CHANNEL_ID;
+    console.log('{apiUrl}${apiEnv}${apiPath}create-quote',`${apiUrl}${apiEnv}${apiPath}create-quote`);
+    
     console.log(apiUrl, apiPath);
     let postData = JSON.stringify({
         quote_id: quote_id,
