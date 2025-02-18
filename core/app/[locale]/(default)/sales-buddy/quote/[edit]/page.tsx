@@ -291,10 +291,21 @@ const page = () => {
   };
 
   const callToGetQuoteDataBasedOnQuoteId = async () => {
-    if (!quoteId) return; // Ensure quoteId is available
-    let result = await GetQuoteBasedOnID(quoteId);
-    if (Array.isArray(result.output) && result.output.length > 0) {
-      const firstItem = result.output[0]; // Use the first object as the main quote details
+    if (!quoteId || quoteId.trim() === "") return; // Ensure quoteId is valid
+
+    try {
+      let result = await GetQuoteBasedOnID(quoteId);
+      console.log("API Response:", result);
+
+      // Ensure API response is valid
+      if (!result?.output?.output || !Array.isArray(result.output.output) || result.output.output.length === 0) {
+        console.error("Invalid API response:", result);
+        return;
+      }
+
+      const firstItem = result.output.output[0]; // Get first item
+      console.log("First Item:", firstItem);
+
       setFormData({
         quote_id: firstItem.quote_id || '',
         bc_channel_id: firstItem.bc_channel_id || '',
@@ -321,7 +332,7 @@ const page = () => {
           agent_manager_approval_date: firstItem.agent_manager_approval_date || new Date(),
           quote_status: firstItem.quote_status || ''
         },
-        qr_product: result?.output?.map((item) => ({
+        qr_product: result.output.output.map((item) => ({
           qr_id: item.qr_id,
           qr_item_id: item.qr_item_id,
           qty: item.qty,
@@ -332,12 +343,22 @@ const page = () => {
           unitPrice: item.unit_price
         }))
       });
+
+    } catch (error) {
+      console.error("Error fetching quote data:", error);
     }
   };
 
+  // Log updated formData
+  useEffect(() => {
+    console.log("Updated formData:", formData);
+  }, [formData]);
+
+  // Fetch data when quoteId changes
   useEffect(() => {
     callToGetQuoteDataBasedOnQuoteId();
   }, [quoteId]);
+
 
   useEffect(() => {
   }, [formData]);
