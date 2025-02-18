@@ -188,7 +188,6 @@ export const Details = ({
 
   const searchParams = useSearchParams();
   const customFields = removeEdgesAndNodes(product.customFields);
-  console.log(customFields, 'custom');
   const productOptions = removeEdgesAndNodes(product.productOptions);
   const variants = removeEdgesAndNodes(product.variants);
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');

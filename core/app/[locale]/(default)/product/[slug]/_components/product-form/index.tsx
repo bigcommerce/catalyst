@@ -181,11 +181,11 @@ export const ProductForm = ({
         discountedPrice: finalPrice,
       };
 
-      console.log('Data being passed to handleAddToCart:', modifiedData);
+      //console.log('Data being passed to handleAddToCart:', modifiedData);
 
       // Get result from handleAddToCart first
       const result = await handleAddToCart(modifiedData, product);
-      console.log('Add to cart response:', JSON.stringify(result));
+      //console.log('Add to cart response:', JSON.stringify(result));
 
       // If max price rule exists and cart was created successfully, update the price
       if (result.status === 'success' && matchedPriceRule && result.data?.entityId) {
