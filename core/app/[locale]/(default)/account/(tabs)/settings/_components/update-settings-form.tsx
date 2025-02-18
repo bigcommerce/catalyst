@@ -44,6 +44,7 @@ type AddressFields = ExistingResultType<typeof getCustomerSettingsQuery>['addres
 
 interface FormProps {
   addressFields: AddressFields;
+  showFeilds?:boolean;
   customerInfo: CustomerInfo;
   customerFields: CustomerFields;
   reCaptchaSettings?: {
@@ -100,6 +101,7 @@ export const UpdateSettingsForm = ({
   customerFields,
   customerInfo,
   reCaptchaSettings,
+  showFeilds=true,
 }: FormProps) => {
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
@@ -248,7 +250,7 @@ export const UpdateSettingsForm = ({
               
             />
           </div>
-          {customerFields
+          { showFeilds && customerFields
             .filter(({ isBuiltIn }) => !isBuiltIn)
             .map((field) => {
               const fieldId = field.entityId;

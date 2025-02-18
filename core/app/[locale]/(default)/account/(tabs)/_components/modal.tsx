@@ -58,7 +58,7 @@ export const Modal = ({
           <div className="flex flex-col items-center justify-center gap-2 p-4 lg:flex-row lg:gap-4">
             <DialogPrimitive.Action asChild>
               <Button className="w-full px-2.5 lg:w-auto bg-[#008BB7] " onClick={actionHandler} variant="primary">
-                <Trash2 size={16} className="mr-[5px]" />
+                {/* <Trash2 size={16} className="mr-[5px]" /> */}
                 {confirmationText}
               </Button>
             </DialogPrimitive.Action>
