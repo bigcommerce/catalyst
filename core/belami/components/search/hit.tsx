@@ -331,7 +331,21 @@ export function Promotion({
   return (
     <>
       {promotion ? (
-        <div className="promotion-plp mt-4 bg-gray-100 p-2 text-center">
+        <div className="promotion-plp mt-4 flex items-center justify-center bg-gray-100 p-2 text-center">
+          <div className="promotion-icon mr-[5px] hidden">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="14"
+              viewBox="0 0 22 14"
+              fill="none"
+            >
+              <path
+                d="M2.13341 0C1.56759 0 1.02495 0.184374 0.62486 0.512563C0.224769 0.840752 0 1.28587 0 1.75V5.25C1.18404 5.25 2.13341 6.0375 2.13341 7C2.13341 7.46413 1.90864 7.90925 1.50855 8.23744C1.10845 8.56563 0.565814 8.75 0 8.75V12.25C0 12.7141 0.224769 13.1592 0.62486 13.4874C1.02495 13.8156 1.56759 14 2.13341 14H19.2007C19.7665 14 20.3091 13.8156 20.7092 13.4874C21.1093 13.1592 21.3341 12.7141 21.3341 12.25V8.75C20.7682 8.75 20.2256 8.56563 19.8255 8.23744C19.4254 7.90925 19.2007 7.46413 19.2007 7C19.2007 6.02875 20.1607 5.25 21.3341 5.25V1.75C21.3341 0.77875 20.374 0 19.2007 0H2.13341ZM14.4005 2.625L16.0005 3.9375L6.93357 11.375L5.33351 10.0625L14.4005 2.625ZM7.26425 2.66C8.30962 2.66 9.15231 3.35125 9.15231 4.20875C9.15231 4.6195 8.95339 5.01343 8.59931 5.30388C8.24523 5.59433 7.76499 5.7575 7.26425 5.7575C6.21888 5.7575 5.37618 5.06625 5.37618 4.20875C5.37618 3.798 5.5751 3.40407 5.92918 3.11362C6.28326 2.82317 6.7635 2.66 7.26425 2.66ZM14.0698 8.2425C15.1152 8.2425 15.9579 8.93375 15.9579 9.79125C15.9579 10.202 15.759 10.5959 15.4049 10.8864C15.0508 11.1768 14.5706 11.34 14.0698 11.34C13.0244 11.34 12.1817 10.6487 12.1817 9.79125C12.1817 9.3805 12.3807 8.98657 12.7347 8.69612C13.0888 8.40567 13.5691 8.2425 14.0698 8.2425Z"
+                fill="#353535"
+              />
+            </svg>
+          </div>
           {getPromotionDecoration(promotion, free_shipping)}
         </div>
       ) : null}
@@ -791,121 +805,6 @@ export function Hit({
               }}
             />
           </div>
-
-          {/*
-          {useAsyncMode && !useDefaultPrices ? (
-            <div className="mx-auto mt-2 flex flex-wrap items-center space-x-2">
-              {hit.on_clearance && (
-                <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
-                  Clearance
-                </span>
-              )}
-              {!isLoading && (price || salePrice) ? (
-                <div className="mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start">
-                  {salePrice && salePrice > 0 ? (
-                    <s className="order-1">
-                      {format.number(price || 0, { style: 'currency', currency: currency })}
-                    </s>
-                  ) : (
-                    <span className="order-1">
-                      {format.number(price || 0, { style: 'currency', currency: currency })}
-                    </span>
-                  )}
-                  {price && salePrice && salePrice > 0 ? (
-                    <strong className="order-3 whitespace-nowrap font-bold text-brand-400 md:order-2">
-                      Save {getDiscount(price, salePrice)}%
-                    </strong>
-                  ) : null}
-                  {salePrice && salePrice > 0 ? (
-                    <span className="order-2 md:order-3">
-                      {format.number(salePrice || 0, { style: 'currency', currency: currency })}
-                    </span>
-                  ) : null}
-                </div>
-              ) : !isLoading && isLoaded ? (
-                hit.prices ? (
-                  <div className="mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start">
-                    {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                    hit.on_sale ? (
-                      <s className="order-1">
-                        {format.number(hit.prices.USD || 0, {
-                          style: 'currency',
-                          currency: currency,
-                        })}
-                      </s>
-                    ) : (
-                      <span className="order-1">
-                        {format.number(hit.prices.USD || 0, {
-                          style: 'currency',
-                          currency: currency,
-                        })}
-                      </span>
-                    )}
-                    {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                    hit.on_sale ? (
-                      <strong className="order-3 whitespace-nowrap font-bold text-brand-400 md:order-2">
-                        Save{' '}
-                        {getDiscount(
-                          hit.prices.USD ?? hit.price,
-                          hit.sales_prices.USD ?? hit.newPrice,
-                        )}
-                        %
-                      </strong>
-                    ) : null}
-                    {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                    hit.on_sale ? (
-                      <span className="order-2 md:order-3">
-                        {format.number(hit.sales_prices.USD || 0, {
-                          style: 'currency',
-                          currency: currency,
-                        })}
-                      </span>
-                    ) : null}
-                  </div>
-                ) : null
-              ) : (
-                'Loading...'
-              )}
-            </div>
-          ) : hit.prices ? (
-            <div className="mx-auto mt-2 flex flex-wrap items-center space-x-2">
-              {hit.on_clearance && (
-                <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
-                  Clearance
-                </span>
-              )}
-              <div className="mt-2 flex flex-wrap items-center justify-center space-x-2 md:justify-start">
-                {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                hit.on_sale ? (
-                  <s className="order-1">
-                    {format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}
-                  </s>
-                ) : (
-                  <span className="order-1">
-                    {format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}
-                  </span>
-                )}
-                {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                hit.on_sale ? (
-                  <strong className="order-3 whitespace-nowrap font-bold text-brand-400 md:order-2">
-                    Save{' '}
-                    {getDiscount(hit.prices.USD ?? hit.price, hit.sales_prices.USD ?? hit.newPrice)}
-                    %
-                  </strong>
-                ) : null}
-                {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) ||
-                hit.on_sale ? (
-                  <span className="order-2 md:order-3">
-                    {format.number(hit.sales_prices.USD || 0, {
-                      style: 'currency',
-                      currency: currency,
-                    })}
-                  </span>
-                ) : null}
-              </div>
-            </div>
-          ) : null}
-          */}
           {hit.reviews_count > 0 && (
             <ReviewSummary
               numberOfReviews={hit.reviews_count}

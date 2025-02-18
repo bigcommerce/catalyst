@@ -89,7 +89,7 @@ const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   return (
     <CompareDrawerContext.Provider value={{ customerLoginEmailData,setCustomerLoginEmailData,products, setProducts, agentLoginStatus, setAgentLoginStatus, agentRole, setAgentRole, setAgentName, agentName, context_session_id, setContext_Session_id, cart_interface_session_id, setCart_interface_session_id, cart_interface_refferal_id, setCart_interface_Refferal_id, cartIdForCheck, setCartIdForCheck }}>
       {children}
-      <CompareDrawer />
+      {/* <CompareDrawer /> */}
     </CompareDrawerContext.Provider>
   );
 };

@@ -34,6 +34,14 @@ const AddDialog: React.FC<DialogQuoteProps> = ({ children }) => {
             <div className="flex flex-col gap-[20px] text-[14px]">
               <div className="text-center text-[20px] font-bold">Add Product</div>
               <div className="grid grid-cols-[20%_74%] gap-[20px_3px] px-5 items-center">
+              <div className='font-bold'>Product Brand</div>
+                <div className="flex justify-center">
+                  <select name="" id="" className='w-[80%] bg-neutral-200 p-[10px_5px] outline-none'>
+                    <option value="">Brand 1</option>
+                    <option value="Brand 2">Brand 2</option>
+                    <option value="Brand 3">Brand 3</option>
+                  </select>
+                </div>
                 <div className='font-bold'>Product Name</div>
                 <div className="flex justify-center">
                   <input
@@ -49,18 +57,10 @@ const AddDialog: React.FC<DialogQuoteProps> = ({ children }) => {
                     type="text"
                     placeholder="Product SKU"
                   />
-                </div>
-                <div className='font-bold'>Product Brand</div>
-                <div className="flex justify-center">
-                  <select name="" id="" className='w-[80%] bg-neutral-200 p-[10px_5px] outline-none'>
-                    <option value="">Brand 1</option>
-                    <option value="Brand 2">Brand 2</option>
-                    <option value="Brand 3">Brand 3</option>
-                  </select>
-                </div>
+                </div>                
               </div>
               <div className='flex justify-center mt-[10px]'>
-                <button className="flex cursor-pointer items-center justify-center rounded-[20px] border border-brand-600 bg-brand-600 p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600">
+                <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e]">
                   Add Product
                 </button>
               </div>
