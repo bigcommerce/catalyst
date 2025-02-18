@@ -57,7 +57,9 @@ export function CouponCodeForm({
 
       switch (submission.value.intent) {
         case 'delete': {
-          return [];
+          const couponCode = submission.value.couponCode;
+
+          return prevState.filter((code) => code !== couponCode);
         }
 
         default:
