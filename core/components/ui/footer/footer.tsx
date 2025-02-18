@@ -97,7 +97,7 @@ const Footer = ({
             </p>
 
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-              Monday - friday 6am - 5pm PST
+              Monday - Friday 6am - 5pm PST
             </p>
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-[#80c5da]">
               (####) ###-###
@@ -184,7 +184,7 @@ const Footer = ({
                       className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white"
                       href={link.href}
                     >
-                      {link.label}
+                      <span className="text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">{link.label}</span>
                     </Link>
                   ) : (
                     link.label
@@ -210,7 +210,7 @@ const Footer = ({
             </p>
 
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-white">
-              Monday - friday 6am - 5pm PST
+              Monday - Friday 6am - 5pm PST
             </p>
             <p className="Footertxt text-left text-[14px] font-normal leading-[32px] tracking-[0.25px] text-[#80c5da]">
               (####) ###-###

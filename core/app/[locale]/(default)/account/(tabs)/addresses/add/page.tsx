@@ -93,7 +93,7 @@ export default async function AddPage() {
   const recaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
 
   return (
-    <div className="mx-auto px-10 mb-14 lg:w-2/3">
+    <div className="mx-auto mb-14 px-10 lg:w-2/3">
       <h1 className="mb-8 text-3xl font-black lg:text-4xl">{t('heading')}</h1>
       <AddAddressForm
         addressFields={addressFields}
