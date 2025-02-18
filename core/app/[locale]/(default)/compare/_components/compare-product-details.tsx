@@ -151,7 +151,7 @@ export function CompareProductDetails({
     <tr>
       <td key={0} className="px-0 py-2">
         <label className="show-only-differences-label flex items-center justify-center space-x-2 px-4 h-10 rounded border border-brand-600 cursor-pointer bg-brand-600 text-white">
-          <input className="show-only-differences-checkbox" type="checkbox" value="1" onChange={() => setShowOnlyDifferences(!showOnlyDifferences)} checked={showOnlyDifferences} /><span className="whitespace-nowrap">Show Only Differences</span>
+          <input className="show-only-differences-checkbox" type="checkbox" value="1" onChange={() => setShowOnlyDifferences(!showOnlyDifferences)} checked={showOnlyDifferences} /><span>Show Only Differences</span>
         </label>
       </td>
       {products.map((product) => (
