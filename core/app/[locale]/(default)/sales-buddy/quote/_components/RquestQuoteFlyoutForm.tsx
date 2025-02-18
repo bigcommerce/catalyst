@@ -293,7 +293,10 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
           localStorage.setItem('session_id$', sessionId);
           setExistingSessionId(sessionId);
         }
-        toast.success("Quote Requested Successfully");
+        if (pageName !== '/sales-buddy/quote') {
+
+          toast.success("Quote Requested Successfully");
+        }
         onOpenChange(false);
       } else {
         setSubmitStatus('error');
