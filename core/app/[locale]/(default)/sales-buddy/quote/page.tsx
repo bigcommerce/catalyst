@@ -96,7 +96,7 @@ const page = () => {
     const GetAllQuoteData = async () => {
       var result = await GetAllQuoteList({});
       var data = result.output;
-      const formattedData = data.map((quote: any) => ({
+      const formattedData = data?.map((quote: any) => ({
         id: `QI-${quote.qr_id}`,  // Prefixing ID with 'QI-'
         name: `${quote.first_name} ${quote.last_name}`, // Combining first and last name
         company: quote.company_name || "N/A",  // Default if null
@@ -134,7 +134,7 @@ const page = () => {
   const applyFilters = async() => {
     var result = await GetAllQuoteList(filterValues);
     var data = result.output;
-    const formattedData = data.map((quote: any) => ({
+    const formattedData = data?.map((quote: any) => ({
       id: `QR-${quote.qr_id}`,  // Prefixing ID with 'QI-'
       name: `${quote.first_name} ${quote.last_name}`, // Combining first and last name
       company: quote.company_name || "N/A",  // Default if null
@@ -413,7 +413,7 @@ const page = () => {
                   </tr>
                 </thead>
                 <tbody className="[&_td]:p-[12px] [&_td]:text-center [&_td]:text-[13px] [&_td]:font-normal [&_tr:last-child]:[border-bottom:none;] [&_tr:last-child_td:last-child_.tooltip]:top-0 [&_tr:last-child_td:last-child_.tooltip]:translate-y-[-100%] [&_tr]:border-b [&_tr]:border-b-[#f6f7fb]">
-                  { data.map((row) => (
+                  { data?.map((row) => (
                     <tr key={row.id}>
                       <td>
                         <input type="checkbox" className="h-[20px] w-[20px]" name="" id="" />

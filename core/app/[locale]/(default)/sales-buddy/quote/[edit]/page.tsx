@@ -81,7 +81,7 @@ const QuotePage = ({ formData, handleAddCustomProduct, handleProductChange, isVi
                   </tr>
                 </thead>
                 <tbody className="[&_td]:p-[12px] [&_td]:text-center [&_td]:text-[12px] [&_td]:font-normal [&_tr:last-child]:[border-bottom:none;] [&_tr:last-child_td:last-child_.tooltip]:top-0 [&_tr:last-child_td:last-child_.tooltip]:translate-y-[-100%] [&_tr]:border-b [&_tr]:border-b-[#f6f7fb]">
-                  {formData.qr_product.map((product, index) => (
+                  {formData?.qr_product?.map((product, index) => (
                     <tr key={index}>
                       <td className="min-w-[200px] max-w-[300px] [word-break:break-word]">
                         <div className="flex flex-row items-start gap-1">
@@ -279,7 +279,7 @@ const page = () => {
         agent_manager_approval_date: formData.qr_customer.agent_manager_approval_date,
         quote_status: formData.qr_customer.quote_status
       },
-      qr_product: formData.qr_product.map(product => ({
+      qr_product: formData?.qr_product?.map(product => ({
         qr_item_id: product.qr_item_id,
         qty: product.qty,
         unit_price: product.price,
@@ -320,7 +320,7 @@ const page = () => {
           agent_manager_approval_date: firstItem.agent_manager_approval_date || new Date(),
           quote_status: firstItem.quote_status || ''
         },
-        qr_product: result.output.map((item) => ({
+        qr_product: result?.output?.map((item) => ({
           qr_id: item.qr_id,
           qr_item_id: item.qr_item_id,
           qty: item.qty,
@@ -565,7 +565,7 @@ const page = () => {
                 </tr>
               </thead>
               <tbody className="[&_td]:p-[12px] [&_td]:text-center [&_td]:text-[12px] [&_td]:font-normal [&_tr:last-child]:[border-bottom:none;] [&_tr:last-child_td:last-child_.tooltip]:top-0 [&_tr:last-child_td:last-child_.tooltip]:translate-y-[-100%] [&_tr]:border-b [&_tr]:border-b-[#f6f7fb]">
-                {formData.qr_product.map((product, index) => (
+                {formData?.qr_product?.map((product, index) => (
                   <tr key={index}>
                     <td className="min-w-[200px] max-w-[300px] [word-break:break-word]">
                       <div className="flex flex-row items-start gap-1">
