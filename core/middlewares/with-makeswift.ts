@@ -1,7 +1,12 @@
 import { NextRequest } from 'next/server';
 import { parse as parseSetCookie } from 'set-cookie-parser';
 
+import { routing } from '~/i18n/routing';
+
 import { MiddlewareFactory } from './compose-middlewares';
+
+const localeCookieName = ({ localeCookie }: { localeCookie?: boolean | { name?: string } }) =>
+  (typeof localeCookie === 'object' ? localeCookie.name : undefined) ?? 'NEXT_LOCALE';
 
 export const withMakeswift: MiddlewareFactory = (middleware) => {
   return async (request, event) => {
@@ -32,6 +37,15 @@ export const withMakeswift: MiddlewareFactory = (middleware) => {
         'x-makeswift-draft-data',
         JSON.stringify({ makeswift: true, siteVersion: 'Working' }),
       );
+
+      if (routing.localeCookie) {
+        // If the i18n middleware is configured to use a cookie, it will first try to derive the
+        // locale from the existing request cookie before attempting to match the URL against the
+        // locale routes. The locale switcher in the Makeswift Builder expects the host to always
+        // determine the locale from the URL, though, so we have to erase the cookie from the
+        // proxied request to force that behavior.
+        proxiedRequest.cookies.delete(localeCookieName(routing));
+      }
 
       return middleware(proxiedRequest, event);
     }
