@@ -57,7 +57,7 @@ const RequestQuoteButton = () => {
         )}
       </div>
       {cusData === 7 || cusData === 8 || cusData === 4 ? (
-        <div className="request-quote-hands-icon absolute right-[100px] flex-shrink-0 items-start">
+        <div className="request-quote-hands-icon absolute right-[8px] top-1/2 xl:top-[10px] flex-shrink-0 items-start">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -72,7 +72,7 @@ const RequestQuoteButton = () => {
           </svg>
         </div>
       ) : (
-        <div className="request-quote-hands-icon absolute right-[70px] flex-shrink-0 items-start">
+          <div className="request-quote-hands-icon absolute right-[8px] top-1/2 xl:top-[10px] flex-shrink-0 items-start">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"

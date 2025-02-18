@@ -29,7 +29,13 @@ import Link from 'next/link';
 import SettingFlyout from './_components/SettingFlyout';
 import PopOverClick from './_components/PopOverClick';
 import { GetAllQuoteList } from './actions/GetAllQuoteList';
+import { RequestQuoteFlyout } from './_components/RequestQuoteFlyout';
 
+
+
+interface IFlyoutProps {
+  onClose: (event: Event) => void;
+}
 const page = () => {
   const router = useRouter();
   const menuRefs = useRef<{ [key: string]: HTMLElement | null }>({});
@@ -47,6 +53,11 @@ const page = () => {
     phone: '',
     qouteId:''
   });
+  const [isShippingOpen, setIsShippingOpen] = useState(false);
+
+  const handleOpenChange = (open: boolean) => {
+    setIsShippingOpen(open);
+  };
 
   const tabs = [
     { name: 'All', icon: <Menu width={26} height={26} stroke="#000" /> },
@@ -96,8 +107,8 @@ const page = () => {
     const GetAllQuoteData = async () => {
       var result = await GetAllQuoteList({});
       var data = result.output;
-      const formattedData = data?.map((quote: any) => ({
-        id: `QI-${quote.qr_id}`,  // Prefixing ID with 'QI-'
+      const formattedData = data?.map((quote:any) => ({
+        id: `QR-${quote.qr_id}`,  // Prefixing ID with 'QI-'
         name: `${quote.first_name} ${quote.last_name}`, // Combining first and last name
         company: quote.company_name || "N/A",  // Default if null
         email: quote.email_id || "N/A",  // Default if null
@@ -153,7 +164,13 @@ const page = () => {
           <div className='flex flex-row justify-between gap-[30px] items-center'>
             <div className='text-[30px] font-semibold text-[rgb(79,82,92)]'>Quotes</div>
             <div className=''>
-              <button className='bg-[rgb(60,100,244)] text-[14px] font-semibold text-white hover:bg-transparent hover:text-[rgb(60,100,244)] p-[6px_16px] rounded-[5px] mr-5'>Create a quote</button>
+              <button  onClick={() => handleOpenChange(true)}
+              className="bg-[rgb(60,100,244)] text-[14px] font-semibold text-white hover:bg-transparent hover:text-[rgb(60,100,244)] p-[6px_16px] rounded-[5px] mr-5"
+            >
+            <RequestQuoteFlyout />
+
+            </button>
+
             </div>
           </div>
           <div className="flex flex-col gap-[30px] rounded-[10px] p-2 [box-shadow:0px_0px_20px_#ddd;]">
