@@ -188,7 +188,7 @@ export const Details = ({
 
   const searchParams = useSearchParams();
   const customFields = removeEdgesAndNodes(product.customFields);
-  console.log(customFields, "custom")
+  console.log(customFields, 'custom');
   const productOptions = removeEdgesAndNodes(product.productOptions);
   const variants = removeEdgesAndNodes(product.variants);
   const fanPopup = imageManagerImageUrl('grey-image.png', '150w');
@@ -520,62 +520,83 @@ export const Details = ({
           </div>
           <ReviewSummary data={product} />
         </div>
-        <div className = "flex flex-row gap-[10px] items-center justify-center xl:justify-start">
-        {product?.UpdatePriceForMSRP && (
-          <ProductPrice
-            defaultPrice={updatedPriceForMSRP?.originalPrice || 0}
-            defaultSalePrice={
-              updatedPriceForMSRP?.hasDiscount
-                ? updatedPriceForMSRP?.updatedPrice
-                : updatedPriceForMSRP?.warrantyApplied
+        <div className="flex flex-row items-center justify-center gap-[10px] xl:justify-start">
+          {product?.UpdatePriceForMSRP && (
+            <ProductPrice
+              defaultPrice={updatedPriceForMSRP?.originalPrice || 0}
+              defaultSalePrice={
+                updatedPriceForMSRP?.hasDiscount
                   ? updatedPriceForMSRP?.updatedPrice
-                  : null
-            }
-            priceMaxRule={priceMaxRules?.find(
-              (r: any) =>
-                (r.bc_brand_ids &&
-                  (r.bc_brand_ids.includes(product?.brand?.entityId) ||
-                    r.bc_brand_ids.includes(String(product?.brand?.entityId)))) ||
-                (r.skus && r.skus.includes(product?.parent?.sku)),
-            )}
-            currency={updatedPriceForMSRP?.currencyCode?.currencyCode || 'USD'}
-            format={format}
-            showMSRP={updatedPriceForMSRP?.showDecoration}
-            warrantyApplied={updatedPriceForMSRP?.warrantyApplied}
-            options={{
-              useAsyncMode: false,
-              useDefaultPrices: true,
-            }}
-            classNames={{
-              root: 'product-price mt-2 flex items-center gap-[0.5em] text-center max-w-fit xl:text-left',
-              newPrice:
-                'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-              oldPrice:
-                'inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
-              discount:
-                'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
-              price: 'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-              msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500',
-            }}
-          />
-        )}
-        <div>
-          <CloseOut 
-          entityId={product.entityId} 
-          variantId={selectedVariantId} 
-          isFromPDP={true} 
-          isFromCart={false}
-        />
+                  : updatedPriceForMSRP?.warrantyApplied
+                    ? updatedPriceForMSRP?.updatedPrice
+                    : null
+              }
+              priceMaxRule={priceMaxRules?.find(
+                (r: any) =>
+                  (r.bc_brand_ids &&
+                    (r.bc_brand_ids.includes(product?.brand?.entityId) ||
+                      r.bc_brand_ids.includes(String(product?.brand?.entityId)))) ||
+                  (r.skus && r.skus.includes(product?.parent?.sku)),
+              )}
+              currency={updatedPriceForMSRP?.currencyCode?.currencyCode || 'USD'}
+              format={format}
+              showMSRP={updatedPriceForMSRP?.showDecoration}
+              warrantyApplied={updatedPriceForMSRP?.warrantyApplied}
+              options={{
+                useAsyncMode: false,
+                useDefaultPrices: true,
+              }}
+              classNames={{
+                root: 'product-price mt-[30px] flex items-center gap-[0.5em] text-center max-w-fit xl:text-left',
+                newPrice:
+                  'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                oldPrice:
+                  'inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
+                discount:
+                  'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
+                price:
+                  'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500',
+              }}
+            />
+          )}
+          <div>
+            <CloseOut
+              entityId={product.entityId}
+              variantId={selectedVariantId}
+              isFromPDP={true}
+              isFromCart={false}
+            />
+          </div>
         </div>
+
+        <div className="promotion-pdp mt-[5px] flex">
+          <div className="promotion-icon">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="14"
+              viewBox="0 0 22 14"
+              fill="none"
+            >
+              <path
+                d="M2.13341 0C1.56759 0 1.02495 0.184374 0.62486 0.512563C0.224769 0.840752 0 1.28587 0 1.75V5.25C1.18404 5.25 2.13341 6.0375 2.13341 7C2.13341 7.46413 1.90864 7.90925 1.50855 8.23744C1.10845 8.56563 0.565814 8.75 0 8.75V12.25C0 12.7141 0.224769 13.1592 0.62486 13.4874C1.02495 13.8156 1.56759 14 2.13341 14H19.2007C19.7665 14 20.3091 13.8156 20.7092 13.4874C21.1093 13.1592 21.3341 12.7141 21.3341 12.25V8.75C20.7682 8.75 20.2256 8.56563 19.8255 8.23744C19.4254 7.90925 19.2007 7.46413 19.2007 7C19.2007 6.02875 20.1607 5.25 21.3341 5.25V1.75C21.3341 0.77875 20.374 0 19.2007 0H2.13341ZM14.4005 2.625L16.0005 3.9375L6.93357 11.375L5.33351 10.0625L14.4005 2.625ZM7.26425 2.66C8.30962 2.66 9.15231 3.35125 9.15231 4.20875C9.15231 4.6195 8.95339 5.01343 8.59931 5.30388C8.24523 5.59433 7.76499 5.7575 7.26425 5.7575C6.21888 5.7575 5.37618 5.06625 5.37618 4.20875C5.37618 3.798 5.5751 3.40407 5.92918 3.11362C6.28326 2.82317 6.7635 2.66 7.26425 2.66ZM14.0698 8.2425C15.1152 8.2425 15.9579 8.93375 15.9579 9.79125C15.9579 10.202 15.759 10.5959 15.4049 10.8864C15.0508 11.1768 14.5706 11.34 14.0698 11.34C13.0244 11.34 12.1817 10.6487 12.1817 9.79125C12.1817 9.3805 12.3807 8.98657 12.7347 8.69612C13.0888 8.40567 13.5691 8.2425 14.0698 8.2425Z"
+                fill="#353535"
+              />
+            </svg>
+          </div>
+          <div className="relative bottom-[5px]">
+            <Promotion
+              promotions={promotions}
+              product_id={productId}
+              brand_id={brandId}
+              category_ids={categoryIds}
+              free_shipping={isFreeShipping}
+            />
+          </div>
         </div>
-        <Promotion
-          promotions={promotions}
-          product_id={productId}
-          brand_id={brandId}
-          category_ids={categoryIds}
-          free_shipping={isFreeShipping}
-        />
-        <div className="free-shipping-detail mb-[25px] mt-[10px] text-center xl:text-left">
+
+        <div className="free-shipping-detail mb-[30px] text-center xl:text-left">
           {selectedVariantId && (
             <DeliveryMessage
               entityId={product.entityId}

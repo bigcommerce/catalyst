@@ -1,6 +1,6 @@
 'use client';
 
-import { findApplicablePromotion, getPromotionDecoration } from "~/belami/components/search/hit";
+import { findApplicablePromotion, getPromotionDecoration } from '~/belami/components/search/hit';
 
 interface PromotionProps {
   promotions: any[] | null;
@@ -22,7 +22,7 @@ export function Promotion({
   return (
     <>
       {promotion ? (
-        <div className="mt-4 bg-gray-100 p-2 text-center">
+        <div className="promotion-common mt-4 bg-gray-100 p-2 text-center">
           {getPromotionDecoration(promotion, free_shipping)}
         </div>
       ) : null}

@@ -155,14 +155,12 @@ export default async function ProductPage(props: Props) {
       ? JSON.parse(atob(priceMaxCookie?.value))
       : undefined;
 
-
-      const priceMaxRules =
+    const priceMaxRules =
       priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
         ? await getPriceMaxRules(priceMaxTriggers)
         : null;
 
-// console.log(JSON.stringify(priceMaxRules) + "priceMaxRules");
-
+    // console.log(JSON.stringify(priceMaxRules) + "priceMaxRules");
 
     const useDefaultPrices = !customerAccessToken;
     const { locale, slug } = params;
@@ -343,7 +341,6 @@ export default async function ProductPage(props: Props) {
     const productImages = removeEdgesAndNodes(product.images);
     var brandId = product?.brand?.entityId;
     var CommonSettinngsValues = await commonSettinngs([brandId]);
-
 
     const promotions = await getActivePromotions(true);
 

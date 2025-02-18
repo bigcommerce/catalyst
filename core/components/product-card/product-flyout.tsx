@@ -115,21 +115,26 @@ export const ProductFlyout = ({
   showFlyout,
   showFlyoutFn,
   discountRules,
+  priceMaxRules,
 }: {
   data: any;
   fanPopup: string;
   blankAddImg: string;
   from: string;
-  showFlyout?: Boolean;
+  showFlyout?: boolean;
   showFlyoutFn?: any;
   discountRules?: any;
+  priceMaxRules?: any;
 }) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [commonSettingsValues, setCommonSettingsValues] = useState<any>([]);
+  const [calculatedPrice, setCalculatedPrice] = useState<any>(null);
   const format = useFormatter();
   const productFlyout = useCommonContext();
+
   let productData = productFlyout.productData;
   let cartItemsData = productFlyout.cartData;
+
   let open;
   let setOpen;
   let currencyCode: any;
@@ -174,9 +179,11 @@ export const ProductFlyout = ({
           setVariantProductData([]);
           const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
           if (!storedSkus.includes(product?.sku)) {
-
-            setSkusWithoutAccessories(prev => [...prev, product?.sku]);
-            localStorage.setItem('skusWithoutAccessories', JSON.stringify([...storedSkus, product?.sku]));
+            setSkusWithoutAccessories((prev) => [...prev, product?.sku]);
+            localStorage.setItem(
+              'skusWithoutAccessories',
+              JSON.stringify([...storedSkus, product?.sku]),
+            );
           }
         } else {
           const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
@@ -184,11 +191,13 @@ export const ProductFlyout = ({
           localStorage.setItem('skusWithoutAccessories', JSON.stringify(updatedSkus));
         }
         if (from == 'pdp') {
-          var getAllCommonSettingsValues = await commonSettinngs([product?.brand?.entityId]); 
+          var getAllCommonSettingsValues = await commonSettinngs([product?.brand?.entityId]);
         } else {
-          var getAllCommonSettingsValues = await commonSettinngs([product?.baseCatalogProduct?.brand?.entityId]); 
+          var getAllCommonSettingsValues = await commonSettinngs([
+            product?.baseCatalogProduct?.brand?.entityId,
+          ]);
         }
-         setCommonSettingsValues(getAllCommonSettingsValues);
+        setCommonSettingsValues(getAllCommonSettingsValues);
       };
 
       if (variantProduct) {
@@ -206,8 +215,11 @@ export const ProductFlyout = ({
           setVariantProductData([]);
           const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
           if (!storedSkus?.includes(product?.sku)) {
-            setSkusWithoutAccessories(prev => [...prev, product?.sku]);
-            localStorage?.setItem('skusWithoutAccessories', JSON?.stringify([...storedSkus, product?.sku]));
+            setSkusWithoutAccessories((prev) => [...prev, product?.sku]);
+            localStorage?.setItem(
+              'skusWithoutAccessories',
+              JSON?.stringify([...storedSkus, product?.sku]),
+            );
           }
         } else {
           const storedSkus = JSON.parse(localStorage.getItem('skusWithoutAccessories') || '[]');
@@ -273,7 +285,7 @@ export const ProductFlyout = ({
                       {productData?.name}
                     </p>
                     <p className="popup-box1-div2-sku text-center text-[12px] leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:text-left ssm:tracking-[0.015625rem]">
-                      SKU: {product?.mpn}, 
+                      SKU: {product?.mpn},
                     </p>
                     {productData?.selectedOptions?.map((selectedOption: any, index: number) => {
                       let pipeLineData = '';
@@ -281,19 +293,19 @@ export const ProductFlyout = ({
                         pipeLineData = ',';
                       }
                       let displayValue = selectedOption.value;
-                      if (selectedOption.name === "Fabric Color" || "Select Fabric Color") {
+                      if (selectedOption.name === 'Fabric Color' || 'Select Fabric Color') {
                         displayValue = selectedOption.value.split('|')[0].trim();
                       }
                       return (
                         <div
                           key={selectedOption.entityId}
-                          className="text-center inline ssm:text-start"
+                          className="inline text-center ssm:text-start"
                         >
                           <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
-                            {`${selectedOption.name}: `} 
+                            {`${selectedOption.name}: `}
                           </span>
                           <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
-                          {displayValue}
+                            {displayValue}
                           </span>
                           {pipeLineData && (
                             <span className="popup-box1-div2-sku text-[12px] font-normal leading-[1.5rem] tracking-[0.4px] text-[#5C5C5C] ssm:tracking-[0.015625rem]">
@@ -305,8 +317,8 @@ export const ProductFlyout = ({
                     })}
                     <div className="md:flex-row">
                       {productData?.originalPrice?.value &&
-                        productData?.selectedOptions?.length === 0 &&
-                        productData?.originalPrice?.value !== productData?.listPrice?.value ? (
+                      productData?.selectedOptions?.length === 0 &&
+                      productData?.originalPrice?.value !== productData?.listPrice?.value ? (
                         <div className="">
                           {format.number(
                             productData?.originalPrice?.value * productData?.quantity,
@@ -335,11 +347,12 @@ export const ProductFlyout = ({
                   </div>
                 </Dialog.Content>
               )}
-              {variantProductData && variantProductData?.length > 0 &&
-                 ((from == 'pdp' 
-                  ? commonSettingsValues?.[product?.brand?.entityId] 
-                  : commonSettingsValues?.[product?.baseCatalogProduct?.brand?.entityId])?.use_accessories)
-                && (
+              {variantProductData &&
+                variantProductData?.length > 0 &&
+                (from == 'pdp'
+                  ? commonSettingsValues?.[product?.brand?.entityId]
+                  : commonSettingsValues?.[product?.baseCatalogProduct?.brand?.entityId]
+                )?.use_accessories && (
                   <>
                     <hr className="my-[20px] border-[#93cfa1]" />
                     <div className="pop-up-text flex flex-col gap-4">
@@ -406,7 +419,7 @@ export const ProductFlyout = ({
                           href="/cart"
                         >
                           View Cart
-                        </Link> 
+                        </Link>
                       </Dialog.Close>
                       <CheckoutButton cartId={cartItemsData?.entityId} />
                     </div>

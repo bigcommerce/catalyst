@@ -118,11 +118,7 @@ export const GetProductMetaFields = async (entityId: number, nameSpace: string) 
   return metaFieldsArray;
 };
 
-export const getMetaFieldValue = async (
-  entityId: number,
-  variantId: number,
-  namespace: string
-) => {
+export const getMetaFieldValue = async (entityId: number, variantId: number, namespace: string) => {
   // Function to fetch and parse meta fields
   const getMetaFields = async (entityId: number, variantId: number, namespace: string) => {
     let metaFields: any = await getMetaFieldsByProductVariant(entityId, variantId, namespace);
@@ -141,7 +137,6 @@ export const getMetaFieldValue = async (
   const metaFieldValues = await getMetaFields(entityId, variantId, namespace);
 
   if (metaFieldValues && namespace === 'Details') {
-    
     return metaFieldValues;
   } else if (metaFieldValues && namespace === 'delivery_message') {
     const deliveryKey = metaFieldValues.join(',');
@@ -152,7 +147,17 @@ export const getMetaFieldValue = async (
       return null;
     }
   }
-
+  await getMetaFieldsByProduct(entityId, "delivery_message");
+  if (metaFields?.data?.length > 0) {
+    const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
+    const deliveryKey = deliveryMessages.join(',');
+    try {
+      const parsedValue = JSON?.parse(deliveryKey);
+      return parsedValue;
+    } catch (error) {
+      return null;
+    }
+  }
   return null;
 };
 
@@ -422,13 +427,10 @@ export const GetOrderMetaFields = async (orderId: number) => {
   }
 };
 
-export const UpdateOrderData = async (
-  orderId: number,
-  staffNotes: string,
-) => {
+export const UpdateOrderData = async (orderId: number, staffNotes: string) => {
   try {
-    const postData={
-      staff_notes:staffNotes
+    const postData = {
+      staff_notes: staffNotes
     };
     let { data } = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/orders/${orderId}`,
@@ -740,40 +742,42 @@ export const processGiftCertificate = async (giftCode: string) => {
   }
 };
 
-export const generateCouponPromotion = async (amount: string, productIds: any, code: string) => {
+export const generateCouponPromotion = async (amount: string, productIds: any, code: string, name: string) => {
   try {
     let rulesObject: any = [];
     productIds?.forEach((product: any) => {
-      rulesObject.push(`{
-            "action": {
-              "cart_items": {
-                "discount": {
-                  "fixed_amount": "${product?.discounted_amount}"
-                },
-                "strategy": "LEAST_EXPENSIVE",
-                "add_free_item": false,
-                "as_total": true,
-                "include_items_considered_by_condition": true,
-                "exclude_items_on_sale": false,
-                "items": {
-                  "products": [${product?.prodId}]
-                }
-              }
-            },
-            "apply_once": true,
-            "stop": false,
-            "condition": {
-              "cart": {
-                "items": {
-                  "products": [${product?.prodId}]
-                },
-                "minimum_quantity": 1
+      if (product?.discounted_amount > 0) {
+        rulesObject.push(`{
+          "action": {
+            "cart_items": {
+              "discount": {
+                "fixed_amount": "${product?.discounted_amount}"
+              },
+              "strategy": "LEAST_EXPENSIVE",
+              "add_free_item": false,
+              "as_total": true,
+              "include_items_considered_by_condition": true,
+              "exclude_items_on_sale": false,
+              "items": {
+                "products": [${product?.prodId}]
               }
             }
-          }`);
+          },
+          "apply_once": true,
+          "stop": false,
+          "condition": {
+            "cart": {
+              "items": {
+                "products": [${product?.prodId}]
+              },
+              "minimum_quantity": 1
+            }
+          }
+        }`);
+      }
     });
     let promotionPayload = `{
-        "name": "ZeroTax-Addon-${amount}",
+        "name": "${name}-${amount}",
         "channels": [
           {
             "id": ${process.env.BIGCOMMERCE_CHANNEL_ID}
@@ -792,7 +796,7 @@ export const generateCouponPromotion = async (amount: string, productIds: any, c
         "status": "ENABLED",
         "can_be_used_with_other_promotions": true,
         "coupon_overrides_automatic_when_offering_higher_discounts": false,
-        "display_name": "ZeroTax-Addon-${amount}"
+        "display_name": "${name}-${amount}"
     }`;
     let data = await fetch(
       ` https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/promotions`,
@@ -847,40 +851,42 @@ export const generateCouponCodeInPromotion = async (code: string, promoId: numbe
   }
 };
 
-export const updateCouponPromotion = async (amount: any, productIds: any, id: number) => {
+export const updateCouponPromotion = async (amount: any, productIds: any, id: number, name: string) => {
   try {
     let rulesObject: any = [];
     productIds?.forEach((product: any) => {
-      rulesObject.push(`{
-            "action": {
-              "cart_items": {
-                "discount": {
-                  "fixed_amount": "${product?.discounted_amount}"
-                },
-                "strategy": "LEAST_EXPENSIVE",
-                "add_free_item": false,
-                "as_total": true,
-                "include_items_considered_by_condition": true,
-                "exclude_items_on_sale": false,
-                "items": {
-                  "products": [${product?.prodId}]
+      if (product?.discounted_amount > 0) {
+        rulesObject.push(`{
+              "action": {
+                "cart_items": {
+                  "discount": {
+                    "fixed_amount": "${product?.discounted_amount}"
+                  },
+                  "strategy": "LEAST_EXPENSIVE",
+                  "add_free_item": false,
+                  "as_total": true,
+                  "include_items_considered_by_condition": true,
+                  "exclude_items_on_sale": false,
+                  "items": {
+                    "products": [${product?.prodId}]
+                  }
+                }
+              },
+              "apply_once": true,
+              "stop": false,
+              "condition": {
+                "cart": {
+                  "items": {
+                    "products": [${product?.prodId}]
+                  },
+                  "minimum_quantity": 1
                 }
               }
-            },
-            "apply_once": true,
-            "stop": false,
-            "condition": {
-              "cart": {
-                "items": {
-                  "products": [${product?.prodId}]
-                },
-                "minimum_quantity": 1
-              }
-            }
-          }`);
+       }`);
+      }
     });
     let promotionPayload = `{
-        "name": "ZeroTax-Addon-${amount}",
+        "name": "${name}-${amount}",
         "channels": [
           {
             "id": ${process.env.BIGCOMMERCE_CHANNEL_ID}
@@ -899,7 +905,7 @@ export const updateCouponPromotion = async (amount: any, productIds: any, id: nu
         "status": "ENABLED",
         "can_be_used_with_other_promotions": true,
         "coupon_overrides_automatic_when_offering_higher_discounts": false,
-        "display_name": "ZeroTax-Addon-${amount}"
+        "display_name": "${name}-${amount}"
     }`;
     let data = await fetch(
       ` https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/promotions/${id}`,

@@ -26,7 +26,7 @@ import CartProductComponent from '../sales-buddy/common-components/_components/C
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
 import ScrollButton from './_components/ScrollButton';
 import { NoShipCanada } from '../product/[slug]/_components/belami-product-no-shipping-canada';
-import { commonSettinngs } from '~/components/common-functions';
+import { checkCouponCodeIsApplied, checkZeroTaxCouponIsApplied, commonSettinngs, floorPriceCalculation } from '~/components/common-functions';
 import { zeroTaxCalculation } from '~/components/common-functions';
 import { calculateProductPrice } from '~/components/common-functions';
 import { GetCustomerGroupById } from '~/components/management-apis';
@@ -155,12 +155,44 @@ export default async function Cart({ params }: Props) {
     },
   });
 
-  const cart = data.site.cart;
+  let cart = data.site.cart;
   let checkout = data.site.checkout;
   const geography = data.geography;
 
   if (!cart) {
     return <EmptyCart />;
+  }
+  let checkZeroFLPTax: any = '';
+  let checkFloorIsAvailable: number = 0;
+  let loadCartCheckoutQuery: number = 0;
+  let checkfloorIsSet: number = 0;
+  if(await checkZeroTaxCouponIsApplied(checkout)) {
+    checkZeroFLPTax = await zeroTaxCalculation(data.site);
+    loadCartCheckoutQuery = 1;
+  } else if (await checkCouponCodeIsApplied(checkout)) {
+    checkZeroFLPTax = await floorPriceCalculation(data.site);
+    checkFloorIsAvailable = 1;
+    loadCartCheckoutQuery = 1;
+  }
+
+  if(loadCartCheckoutQuery) {
+    if(checkZeroFLPTax?.id) {
+      const { data } = await client.fetch({
+        document: CartPageQuery,
+        variables: { cartId },
+        customerAccessToken,
+        fetchOptions: {
+          cache: 'no-store',
+          next: {
+            tags: [TAGS.cart, TAGS.checkout],
+          },
+        },
+      });
+      checkout = data.site.checkout;
+      cart = data.site.cart;
+    } else if(checkZeroFLPTax?.action == 'no_floor') {
+      //Floor is hit
+    }
   }
   const CustomItems = cart?.lineItems?.customItems;
   const get_product_price_data_in_cart = async (cartId: any) => {
@@ -265,22 +297,6 @@ export default async function Cart({ params }: Props) {
   });
 
   const updatedProduct: any[][] = [];
-  let checkZeroTax: any = await zeroTaxCalculation(data.site);
-
-  if (checkZeroTax?.id) {
-    const { data } = await client.fetch({
-      document: CheckoutPageQuery,
-      variables: { cartId },
-      customerAccessToken,
-      fetchOptions: {
-        cache: 'no-store',
-        next: {
-          tags: [TAGS.checkout],
-        },
-      },
-    });
-    checkout = data.site.checkout;
-  }
 
   for (const eachProduct of updatedLineItemWithoutAccessories) {
     const price = await calculateProductPrice(
@@ -310,7 +326,7 @@ export default async function Cart({ params }: Props) {
       <div className="text-center lg:hidden">
         <ScrollButton targetId="order-summary" />
       </div>
-      {checkZeroTax && <PromotionCookie promoObj={checkZeroTax} />}
+      {checkZeroFLPTax && (<PromotionCookie promoObj={checkZeroFLPTax} isFloor={checkFloorIsAvailable} />)}
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
 
       <h1 className="cart-heading pt-0 text-center text-[24px] font-normal leading-[32px] lg:text-left lg:text-[24px]">
