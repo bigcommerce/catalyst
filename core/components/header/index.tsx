@@ -239,7 +239,7 @@ export const Header = async ({ cart }: Props) => {
                 { href: '/order-tracking', label: 'Track My Order' },
                 { href: '/support/contact', label: 'Replace Items' },
                 { href: '/support/contact', label: 'Gift Certificates' },
-                { href: '/support/contact', label: 'Visit Our Help Center' },
+                { href: '/content/help-center', label: 'Visit Our Help Center' },
                 { href: '/support/contact', label: 'New Orders' },
                 { href: '/support/contact', label: 'Contact ' },
               ]
