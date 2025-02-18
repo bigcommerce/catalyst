@@ -118,18 +118,28 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 /* promotion */
-.promotion-pdp .promotion-plp {
-  text-align: left;
-  background: unset;
-}
+/* 
+
+.promotion-icon svg {
+  position: relative;
+  top: 0.5px;
+} */
+
+
+
 .promotion-pdp .promotion-plp {
   padding-top: 0px;
   margin: 0px;
 }
-.promotion-icon svg {
-  position: relative;
-  top: 0.5px;
+.promotion-pdp .promotion-plp {
+  padding: 0px;
+  text-align: left;
+  background: unset;
 }
+.promotion-pdp .promotion-plp .promotion-icon {
+  display: block;
+}
+
 /* Desktop */
 .Open_Sans {
   font-family: var(--font-Open_Sans);

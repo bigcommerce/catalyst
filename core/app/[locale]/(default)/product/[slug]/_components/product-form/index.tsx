@@ -412,13 +412,6 @@ export const ProductForm = ({
           >
             Request Quote
           </button>
-
-          <button
-            type="submit"
-            onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}
-          >
-            Request Quote
-          </button>
         </form>
       </FormProvider>
     );
@@ -585,3 +578,4 @@ export const ProductForm = ({
     </>
   );
 };
+
