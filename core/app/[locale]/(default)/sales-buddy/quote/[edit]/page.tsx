@@ -11,6 +11,7 @@ import NewProductQuote from '../_components/newProductQuote';
 import { GetQuoteBasedOnID } from '../actions/get-quote-basedon-id';
 import { UpdateQuote } from '../actions/update-quote';
 import { CreateQuote } from '../actions/CreateQuote';
+import ProductPriceAdjuster from '../../common-components/_components/ProductPriceAdjuster';
 
 const popOverContents = [
   { key: 'refresh-product', label: 'Refresh Product' },
@@ -619,6 +620,19 @@ const page = () => {
                         ${(product.unitPrice * product.qty).toFixed(2)}
                       </div>
                     </td>
+                    {/* <td className="">
+                      <div>
+                        <ProductPriceAdjuster
+                          parentSku={product?.bc_sku}
+                          sku={product?.bc_sku}
+                          oem_sku={product?.bc_sku}
+                          productPrice={product?.unitPrice}
+                          quantity={product?.qty}
+                          onPriceChange={(newPrice) => handleProductChange(index, { target: { name: 'unitPrice', value: newPrice } })}
+                          onQuantityChange={(newQty) => handleProductChange(index, { target: { name: 'qty', value: newQty } })}
+                        />
+                      </div>
+                    </td> */}
                     <td>
                       <div className="flex items-center justify-center gap-1 text-[#555]">
                         <PopOverClick popOverContents={popOverContents} from="edit">
