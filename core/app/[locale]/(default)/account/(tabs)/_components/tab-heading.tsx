@@ -21,7 +21,7 @@ export const TabHeading = async ({ heading }: { heading: TabType }) => {
           breadcrumbs={breadcrumbs}
         />
 
-        <h2 className="mb-[20px] text-center text-[24px] font-normal leading-[32px] text-[#353535] xl:mb-[30px] xl:text-left">
+        <h2 className="mb-[20px] text-[24px] font-normal leading-[32px] text-[#353535] xl:mb-[30px] xl:text-left">
           {t(heading)}
         </h2>
       </div>

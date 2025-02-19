@@ -122,6 +122,7 @@ export const EditAddressForm = ({
   const form = useRef<HTMLFormElement>(null);
   const [formStatus, setFormStatus] = useState<FormStatus | null>(null);
   const t = useTranslations('Account.Addresses.Edit.Form');
+  const g = useTranslations('Account.Addresses');
 
   const reCaptchaRef = useRef<ReCaptcha>(null);
   const router = useRouter();
@@ -452,8 +453,10 @@ export const EditAddressForm = ({
           </Button>
           <Modal
             actionHandler={onDeleteAddress}
-            confirmationText={t('confirmDeleteAddress')}
-            title={t('deleteModalTitle')}
+            confirmationText={g('yesDelete')}
+            title={g('deleteModalTitle')}
+       abortText= {g('noDelete')}
+
           >
             <Button
               className="ms-auto items-center px-8 md:w-fit"

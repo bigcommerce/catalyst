@@ -118,18 +118,28 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 /* promotion */
-.promotion-pdp .promotion-plp {
-  text-align: left;
-  background: unset;
-}
+/* 
+
+.promotion-icon svg {
+  position: relative;
+  top: 0.5px;
+} */
+
+
+
 .promotion-pdp .promotion-plp {
   padding-top: 0px;
   margin: 0px;
 }
-.promotion-icon svg {
-  position: relative;
-  top: 0.5px;
+.promotion-pdp .promotion-plp {
+  padding: 0px;
+  text-align: left;
+  background: unset;
 }
+.promotion-pdp .promotion-plp .promotion-icon {
+  display: block;
+}
+
 /* Desktop */
 .Open_Sans {
   font-family: var(--font-Open_Sans);
@@ -659,7 +669,7 @@ button.show-all {
 .compare-product .gap-3 {
   gap: 0 !important;
 }
-.compare-product button[role='checkbox'] {
+.compare-product button[role='checkbox'], .show-only-differences-checkbox {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -676,6 +686,9 @@ button.show-all {
   margin: 0 0.5rem 0 0 !important;
   min-width: 1rem;
 }
+.show-only-differences-checkbox {
+  background-color: white;
+}
 .compare-product button[role='checkbox']:hover {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5' /%3E%3C/svg%3E");
   /*
@@ -686,7 +699,7 @@ button.show-all {
   color: var(--background) !important;
   border: 2px solid var(--gray-200) !important;
 }
-.compare-product button[data-state='checked'] {
+.compare-product button[data-state='checked'], .show-only-differences-checkbox:checked {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5' /%3E%3C/svg%3E");
   /*
   background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E') !important;

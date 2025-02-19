@@ -119,7 +119,6 @@ export const GetProductMetaFields = async (entityId: number, nameSpace: string) 
 };
 
 export const getMetaFieldValue = async (entityId: number, variantId: number, namespace: string) => {
-  // Function to fetch and parse meta fields
   const getMetaFields = async (entityId: number, variantId: number, namespace: string) => {
     let metaFields: any = await getMetaFieldsByProductVariant(entityId, variantId, namespace);
     if (metaFields?.data?.length > 0) {
@@ -140,17 +139,6 @@ export const getMetaFieldValue = async (entityId: number, variantId: number, nam
     return metaFieldValues;
   } else if (metaFieldValues && namespace === 'delivery_message') {
     const deliveryKey = metaFieldValues.join(',');
-    try {
-      const parsedValue = JSON?.parse(deliveryKey);
-      return parsedValue;
-    } catch (error) {
-      return null;
-    }
-  }
-  await getMetaFieldsByProduct(entityId, "delivery_message");
-  if (metaFields?.data?.length > 0) {
-    const deliveryMessages: string[] = metaFields?.data?.map((item: any) => item?.value);
-    const deliveryKey = deliveryMessages.join(',');
     try {
       const parsedValue = JSON?.parse(deliveryKey);
       return parsedValue;
@@ -996,4 +984,36 @@ async function getlineItem(productId: string, cartId: string) {
   const lineItems = data.data.line_items.physical_items;
 
   return lineItems.find((item: any) => Number(item.product_id) === Number(productId));
+}
+
+export async function updateCartLineItemPrice(data: PriceUpdateData, lineItemId: string) {
+  const url = `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${data.cartId}/items/${lineItemId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        line_item: {
+          quantity: data.quantity,
+          list_price: data.price,
+          product_id: data.productId,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error updating cart price:', error);
+    throw error;
+  }
 }

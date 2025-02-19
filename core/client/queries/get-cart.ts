@@ -31,6 +31,35 @@ const GetCartQuery = graphql(
               quantity
               productEntityId
               variantEntityId
+              catalogProductWithOptionSelections {
+                prices {
+                 retailPrice {
+                   value
+                 }
+                 salePrice {
+                   value
+                 }
+                 basePrice {
+                  value
+                }
+               }
+              }
+              baseCatalogProduct {
+                categories {
+                  edges {
+                   node {
+                    breadcrumbs(depth: 10) {
+                      edges {
+                        node {
+                          entityId
+                          name
+                      }
+                    }
+                   }
+                 }
+                }
+               }
+              }
               extendedListPrice {
                 ...MoneyFieldFragment
               }

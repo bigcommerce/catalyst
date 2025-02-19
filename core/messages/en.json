@@ -285,7 +285,7 @@
       "emptyAddresses": "No addresses added",
       "deleteButton": "Delete",
       "yesDelete":"Yes, Delete",
-      "noDelete":"No,Delete",
+      "noDelete":"No,Cancel",
       "confirmDeleteAddress": "Delete address",
       "deleteModalTitle": "Delete this address?",
       "Add": {

@@ -20,6 +20,19 @@ import { GetVariantsByProductSKU } from '~/components/graphql-apis';
 import { InputPlusMinus } from '../form-fields/input-plus-minus';
 import closeIcon from '~/public/add-to-cart/flyoutCloseIcon.svg';
 import { calculateProductPrice, commonSettinngs } from '../common-functions';
+interface CategoryNode {
+  name: string;
+  path: string | null;
+  breadcrumbs?: {
+    edges: Array<{
+      node: {
+        entityId: any;
+        name: string;
+        path: string | null;
+      };
+    }> | null;
+  };
+}
 
 const getVariantProductInfo = async (metaData: any, discountRules: any) => {
   let variantProductInfo: any = [],
@@ -129,6 +142,7 @@ export const ProductFlyout = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [commonSettingsValues, setCommonSettingsValues] = useState<any>([]);
   const [calculatedPrice, setCalculatedPrice] = useState<any>(null);
+  const [priceUpdatedData,setPriceUpdatedData] = useState<any>(null);
   const format = useFormatter();
   const productFlyout = useCommonContext();
 
@@ -231,6 +245,32 @@ export const ProductFlyout = ({
       setProductQty(productQtyData);
     }, [productId, productQtyData]);
   }
+  const fetchData = async () => { 
+    const updatedData = {...productData,quantity:productQty}; 
+    const categories = removeEdgesAndNodes(productData?.baseCatalogProduct?.categories);
+    
+    if (categories?.length > 0) {
+      const categoryWithMostBreadcrumbs = categories?.reduce((longest, current) => {
+        const longestLength = longest?.breadcrumbs?.edges?.length || 0;
+        const currentLength = current?.breadcrumbs?.edges?.length || 0;
+        return currentLength > longestLength ? current : longest;
+      }, categories[0]);
+
+      const categoryIds = categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
+      const updatedProductData = await calculateProductPrice(updatedData, "flyout", discountRules, categoryIds);
+      setPriceUpdatedData(updatedProductData[0]); 
+    }
+  };
+
+  useEffect(() => {
+    if (!productData) return;
+    fetchData();
+  }, [productData, productQty, discountRules]);
+
+  const handleQuantityChange = (newQuantity: number) => {
+    setProductQty(newQuantity);  // Update the productQty state whenever the quantity changes
+    fetchData();  // Call fetchData to re-fetch the data whenever the quantity changes
+  };
 
   return (
     <>
@@ -329,13 +369,14 @@ export const ProductFlyout = ({
                           )}
                         </div>
                       ) : null}
-                      {productData?.extendedSalePrice?.value ? (
+                      {productData?.extendedSalePrice?.value && priceUpdatedData?.UpdatePriceForMSRP ? (
+                        
                         <div className="text-center text-[14px] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] ssm:text-right">
-                          {format.number(productData?.extendedSalePrice?.value, {
+                          {format.number(priceUpdatedData?.UpdatePriceForMSRP?.updatedPrice, {
                             style: 'currency',
                             currency: productData?.extendedSalePrice?.currencyCode,
                           })}
-                        </div>
+                        </div>                      
                       ) : null}
                     </div>
                     <InputPlusMinus
@@ -343,6 +384,7 @@ export const ProductFlyout = ({
                       isLoading={isLoading}
                       setIsLoading={setIsLoading}
                       productData={productData}
+                      onQuantityChange={handleQuantityChange}
                     />
                   </div>
                 </Dialog.Content>

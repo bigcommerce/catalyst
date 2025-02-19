@@ -105,7 +105,7 @@ export const Footer = async () => {
               Be the first to know about new arrivals, sales, and more.
             </span>
           ),
-          href: '/',
+          href: '#',
         },
         {
           label: (
@@ -120,7 +120,7 @@ export const Footer = async () => {
                 />
                 <button
                   type="submit"
-                  className="subscription-button relative h-[40px] w-[80px] bg-[#006380] text-center text-[14px] font-normal uppercase text-white"
+                  className="subscription-button relative h-[40px] w-[80px] bg-brand-400 xl:bg-[#006380] text-center text-[14px] font-normal uppercase text-white"
                 >
                   Sign Up
                 </button>
@@ -187,7 +187,7 @@ export const Footer = async () => {
       }
       logo={data.settings ? logoTransformer(data.settings) : undefined}
       paymentIcons={[
-        <div className="flex items-center gap-[10px]">
+        <div className="flex items-center gap-[10px] justify-center flex-wrap">
           <BcImage
             src={bbbIcon}
             className="h-[24px] w-[63px]"

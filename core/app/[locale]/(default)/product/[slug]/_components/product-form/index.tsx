@@ -18,7 +18,7 @@ import { Button } from '~/components/ui/button';
 import { bodl } from '~/lib/bodl';
 
 import { handleAddToCart } from './_actions/add-to-cart';
-
+ 
 import { handleRequestQuote } from '~/app/[locale]/(default)/sales-buddy/quote/actions/handleRequestQuote';
 
 import { CheckboxField } from './fields/checkbox-field';
@@ -42,6 +42,7 @@ import { Label } from '~/components/ui/form';
 import exclamatryIcon from '~/public/pdp-icons/exclamatryIcon.svg';
 import SkyxFlyout from '~/components/skyx-flyout/skyxFlyout';
 import { callforMaxPriceRuleDiscountFunction } from '~/components/common-functions';
+import { updateCartLineItemPrice } from '~/components/management-apis';
 
 aa('init', {
   appId: process.env.NEXT_PUBLIC_ALGOLIA_APP_ID || '',
@@ -59,7 +60,7 @@ interface Props {
   productMpn: string | null;
   showInSticky?: boolean;
   customerGroupDetails?: any;
-  swatchOptions?: any;
+  swatchOptions?:any;
   sessionUser?: any;
 }
 
@@ -111,13 +112,13 @@ export const ProductForm = ({
   showInSticky = false,
   swatchOptions,
   sessionUser = null,
-  priceMaxRules,
+  priceMaxRules
 }: Props) => {
+  
   const t = useTranslations('Product.Form');
   const cart = useCart();
   const productFlyout: any = useCommonContext();
   const productOptions = removeEdgesAndNodes(product.productOptions);
-  const { cartIdForCheck, setCartIdForCheck } = useCompareDrawerContext();
 
   if (productOptions?.length > 0) {
     const router = useRouter();
@@ -153,6 +154,7 @@ export const ProductForm = ({
   }
 
   const { handleSubmit, register, ...methods } = useProductForm();
+  const { setPDataAgent } = useCompareDrawerContext();
 
   const productFormSubmit = async (data: ProductFormData, action: 'addToCart' | 'requestQuote') => {
     const quantity = Number(data.quantity);
@@ -181,11 +183,11 @@ export const ProductForm = ({
         discountedPrice: finalPrice,
       };
 
-      console.log('Data being passed to handleAddToCart:', modifiedData);
+      //console.log('Data being passed to handleAddToCart:', modifiedData);
 
       // Get result from handleAddToCart first
       const result = await handleAddToCart(modifiedData, product);
-      console.log('Add to cart response:', JSON.stringify(result));
+      //console.log('Add to cart response:', JSON.stringify(result));
 
       // If max price rule exists and cart was created successfully, update the price
       if (result.status === 'success' && matchedPriceRule && result.data?.entityId) {
@@ -195,10 +197,34 @@ export const ProductForm = ({
           productId: data.product_id,
           quantity: quantity,
         };
+        let itemAddedRecently: any = '';
+        if (result?.data?.entityId) {
+          let cartData = await getCartData(result?.data?.entityId);
+          if (cartData?.data?.lineItems?.physicalItems) {
+            productFlyout.setCartDataFn(cartData?.data);
+            cartData?.data?.lineItems?.physicalItems?.forEach((items: any) => {
+              if (items?.productEntityId == data?.product_id) {
+                let selectedOptions = items?.selectedOptions;
+                let productSelection = true;
+                selectedOptions?.some((selOptions: any) => {
+                  if (data?.['attribute_' + selOptions?.entityId] != selOptions?.valueEntityId) {
+                    productSelection = false;
+                    return true;
+                  }
+                });
+                if (productSelection) {
+                  itemAddedRecently = items;
+                  productFlyout.setProductDataFn(items);
+                }
+              }
+            });
+          }
+        }
 
         try {
-          const priceUpdateResult = await callforMaxPriceRuleDiscountFunction(priceUpdateData);
-          console.log('Price update result:', priceUpdateResult);
+          if(itemAddedRecently?.entityId) {
+            const priceUpdateResult = await updateCartLineItemPrice(priceUpdateData, itemAddedRecently?.entityId);
+          }
         } catch (error) {
           console.error('Error updating price:', error);
         }
@@ -220,98 +246,28 @@ export const ProductForm = ({
         return;
       }
 
-      toast.success(
-        () => (
-          <div className="flex items-center gap-3">
-            <span>
-              {t.rich('success', {
-                cartItems: quantity,
-                cartLink: (chunks) => (
-                  <Link
-                    className="hover:text-secondary font-semibold text-primary"
-                    href="/cart"
-                    prefetch="viewport"
-                    prefetchKind="full"
-                  >
-                    {chunks}
-                  </Link>
-                ),
-              })}
-            </span>
-          </div>
-        ),
-        { icon: <Check className="text-success-secondary" /> },
-      );
-      if (result?.data?.entityId) {
-        let cartData = await getCartData(result?.data?.entityId);
-        if (cartData?.data?.lineItems?.physicalItems) {
-          productFlyout.setCartDataFn(cartData?.data);
-          cartData?.data?.lineItems?.physicalItems?.forEach((items: any) => {
-            if (items?.productEntityId == data?.product_id) {
-              let selectedOptions = items?.selectedOptions;
-              let productSelection = true;
-              selectedOptions?.some((selOptions: any) => {
-                if (data?.['attribute_' + selOptions?.entityId] != selOptions?.valueEntityId) {
-                  productSelection = false;
-                  return true;
-                }
-              });
-              if (productSelection) {
-                productFlyout.setProductDataFn(items);
-              }
-            }
-          });
-        }
-      }
-      toast.success(
-        () => (
-          <div className="flex items-center gap-3">
-            <span>
-              {t.rich('success', {
-                cartItems: quantity,
-                cartLink: (chunks) => (
-                  <Link
-                    className="hover:text-secondary font-semibold text-primary"
-                    href="/cart"
-                    prefetch="viewport"
-                    prefetchKind="full"
-                  >
-                    {chunks}
-                  </Link>
-                ),
-              })}
-            </span>
-          </div>
-        ),
-        { icon: <Check className="text-success-secondary" /> },
-      );
-
-      if (result?.data?.entityId) {
-        let cartData = await getCartData(result?.data?.entityId);
-        console.log('Cart Data:', {
-          cartId: result.data.entityId,
-          cartItems: cartData?.data?.lineItems?.physicalItems,
-        });
-
-        if (cartData?.data?.lineItems?.physicalItems) {
-          productFlyout.setCartDataFn(cartData?.data);
-          cartData?.data?.lineItems?.physicalItems?.forEach((items: any) => {
-            if (items?.productEntityId == data?.product_id) {
-              let selectedOptions = items?.selectedOptions;
-              let productSelection = true;
-              selectedOptions?.some((selOptions: any) => {
-                if (data?.['attribute_' + selOptions?.entityId] != selOptions?.valueEntityId) {
-                  productSelection = false;
-                  return true;
-                }
-              });
-              if (productSelection) {
-                productFlyout.setProductDataFn(items);
-              }
-            }
-          });
-        }
-      }
+    toast.success(
+      () => (
+        <div className="flex items-center gap-3">
+          <span>
+            {t.rich('success', {
+              cartItems: quantity,
+              cartLink: (chunks) => (
+                <Link
+                  className="hover:text-secondary font-semibold text-primary"
+                  href="/cart"
+                  prefetch="viewport"
+                  prefetchKind="full"
+                >
+                  {chunks}
+                </Link>
+              ),
+            })}
+          </span>
+        </div>
+      ),
+      { icon: <Check className="text-success-secondary" /> },
+    );
 
       const transformedProduct = productItemTransform(product);
 
@@ -343,43 +299,21 @@ export const ProductForm = ({
         });
       }
 
-      bodl.cart.productAdded({
-        product_value: transformedProduct.purchase_price * quantity,
-        currency: transformedProduct.currency,
-        line_items: [
-          {
-            ...transformedProduct,
-            quantity,
-          },
-        ],
-      });
-    } else if (action === 'requestQuote') {
-      // quotebutton handle
+    bodl.cart.productAdded({
+      product_value: transformedProduct.purchase_price * quantity,
+      currency: transformedProduct.currency,
+      line_items: [
+        {
+          ...transformedProduct,
+          quantity,
+        },
+      ],
+    });
 
-      const quoteResult = await handleRequestQuote(data, product);
-      console.log(quoteResult, 'requestQuoteData');
-      localStorage.setItem('Q_R_data', JSON.stringify(quoteResult?.data?.qr_product));
-      bodl.cart.productAdded({
-        product_value: transformedProduct.purchase_price * quantity,
-        currency: transformedProduct.currency,
-        line_items: [
-          {
-            ...transformedProduct,
-            quantity,
-          },
-        ],
-      });
-    } else if (action === 'requestQuote') {
-      // quotebutton handle
-      const quoteResult = await handleRequestQuote(data, product);
-      console.log(quoteResult, 'requestQuoteData');
-
-      localStorage.setItem('Q_R_data', JSON.stringify(quoteResult));
-
-      if (quoteResult.error) {
-        toast.error(`Error requesting quote: ${quoteResult.error}`);
-        return;
-      }
+    }
+    else if (action === 'requestQuote'){
+    const quoteResult = await handleRequestQuote(data, product);
+    localStorage.setItem("Q_R_data",JSON.stringify(quoteResult?.data?.qr_product))
     }
   };
 
@@ -406,13 +340,6 @@ export const ProductForm = ({
             return null;
           })}
           <Submit data={product} isSticky={true} />
-          <button
-            type="submit"
-            onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}
-          >
-            Request Quote
-          </button>
-
           <button
             type="submit"
             onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}
@@ -585,3 +512,4 @@ export const ProductForm = ({
     </>
   );
 };
+

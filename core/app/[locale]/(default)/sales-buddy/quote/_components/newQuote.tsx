@@ -14,8 +14,6 @@ const NewQuote: React.FC<DialogQuoteProps> = ({ children }) => {
     { name: 'firstName', label: 'First Name', type: 'text', required: true },
     { name: 'lastName', label: 'Last Name', type: 'text', required: true },
     { name: 'email', label: 'Email', type: 'email', required: true },
-    { name: 'password', label: 'Password', type: 'password', required: true },
-    { name: 'confirmPassword', label: 'Confirm Password', type: 'password', required: true },
     { name: 'company', label: 'Company', type: 'text', required: false },
     { name: 'phoneNumber', label: 'Phone Number', type: 'text', required: false },
   ];
@@ -103,7 +101,7 @@ const NewQuote: React.FC<DialogQuoteProps> = ({ children }) => {
               </div>
               {customerType && (
                 <div className="mt-[10px] flex justify-center">
-                  <button className="flex cursor-pointer items-center justify-center rounded-[20px] border border-brand-600 bg-brand-600 p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-brand-600">
+                  <button className="flex cursor-pointer items-center justify-center rounded-[5px] border-[#8c57ff] border bg-[#8c57ff] p-[5px_25px] text-[13px] text-white hover:bg-white hover:text-[#000] hover:border hover:border-[#1e1e1e]">
                     Add Product
                   </button>
                 </div>

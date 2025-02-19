@@ -41,6 +41,7 @@ import { Flyout } from '~/components/common-flyout';
 import PromotionCookie from './_components/promotion-cookie';
 
 import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
+import RequestQuoteButton from '../sales-buddy/quote/_components/RequestQuoteButton';
 
 interface Params {
   locale: string;
@@ -394,6 +395,8 @@ export default async function Cart({ params }: Props) {
           <CheckoutButton cartId={cartId} />
           <ApplepayButton cartId={cartId} icon={applePayIcon} />
           <PaypalButton cartId={cartId} icon={paypalIcon} />
+            <RequestQuoteButton />
+
           <div className="pt-1"></div>
 
           <div>
@@ -429,24 +432,18 @@ export default async function Cart({ params }: Props) {
             />{' '}
             Talk to an Agent
           </p>
+          
+          
         </div>
+       
       </div>
-
       <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
 
-      <KlaviyoIdentifyUser
-        user={
-          sessionUser && sessionUser.user && sessionUser.user?.email
-            ? ({
-                email: sessionUser.user.email,
-                first_name: sessionUser.user?.firstName,
-                last_name: sessionUser.user?.lastName,
-              } as any)
-            : null
-        }
-      />
+      <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
+      
+
     </div>
   );
 }
 
-export const runtime = 'edge';
+// export const runtime = 'edge';

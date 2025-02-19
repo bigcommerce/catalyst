@@ -85,7 +85,7 @@ export function Hits({
     };
 
     return (
-      <div className="product-card w-full">
+      <div className="product-card w-full h-full">
        
         <div className="relative group/image">
           
@@ -210,7 +210,7 @@ export function HitsAsync({
     };
 
     return (
-      <div className="product-card w-full">
+      <div className="product-card w-full h-full">
         <div className="relative group/image">
           <div className="absolute left-0 right-0 flex justify-center z-10 opacity-0 group-hover/image:opacity-100 transition-opacity mt-32">
             <div className="w-48">

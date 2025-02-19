@@ -432,7 +432,7 @@ export const calculateProductPrice = async (
     const productId =
       type === 'accessories'
         ? product.product_id
-        : type === 'pdp' || type === 'wishlist'
+        : type === 'pdp' || type === 'wishlist' || type === 'flyout'
           ? product.entityId
           : product.productEntityId;
 

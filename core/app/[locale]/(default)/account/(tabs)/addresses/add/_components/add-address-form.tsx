@@ -208,12 +208,12 @@ export const AddAddressForm = ({
   return (
     <>
       {formStatus && (
-        <Message className="mx-auto  w-full" variant={formStatus.status}>
+        <Message className="mx-auto w-full" variant={formStatus.status}>
           <p>{formStatus.message}</p>
         </Message>
       )}
       <Form action={onSubmit} onClick={preSubmitFieldsValidation} ref={form}>
-        <div className="px-4 py-3 grid grid-cols-1 gap-y-3 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-x-4">
+        <div className="grid grid-cols-1 gap-x-4 gap-y-3 px-4 py-3 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 xl:grid-cols-2">
           {addressFields.map((field) => {
             const fieldId = field.entityId;
             const fieldName = createFieldName(field, 'address');
@@ -369,7 +369,7 @@ export const AddAddressForm = ({
                 sitekey={reCaptchaSettings.siteKey}
               />
               {!isReCaptchaValid && (
-                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-[rgb(167,31,35)] ">
+                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-[rgb(167,31,35)]">
                   {t('recaptchaText')}
                 </span>
               )}
@@ -377,7 +377,7 @@ export const AddAddressForm = ({
           )}
         </div>
 
-        <div className="mt- 8 px-4 py-3 flex flex-col justify-stretch gap-2 md:flex-row md:justify-start md:gap-6">
+        <div className="mt- 8 flex flex-col justify-stretch gap-2 px-4 py-3 md:flex-row md:justify-start md:gap-6">
           <FormSubmit asChild>
             <SubmitButton messages={{ submit: t('submit'), submitting: t('submitting') }} />
           </FormSubmit>
