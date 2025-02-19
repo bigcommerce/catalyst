@@ -98,10 +98,6 @@ function CustomItem({ hit, priceMaxRules = null, useDefaultPrices = false, price
           <h2 className="text-base font-medium mt-2 leading-6"><Link href={hit.url}>{hit.name}</Link></h2>
 
           <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
-            {!!hit.on_clearance &&
-              <span className="mt-2 inline-block px-1 py-0.5 bg-gray-400 text-white text-xs uppercase tracking-wider">Clearance</span>
-            }
-
             <ProductPrice 
               defaultPrice={hit?.prices?.USD || 0} 
               defaultSalePrice={hit?.sales_prices?.USD || null} 
@@ -121,46 +117,10 @@ function CustomItem({ hit, priceMaxRules = null, useDefaultPrices = false, price
                 discount: 'font-bold text-brand-400 whitespace-nowrap',
               }}
             />
+            {!!hit.on_clearance &&
+              <span className="mt-2 inline-block px-1 py-0.5 bg-gray-400 text-white text-xs uppercase tracking-wider">Clearance</span>
+            }
           </div>
-
-          {/*
-          {useAsyncMode && !useDefaultPrices ? (
-            <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
-              {hit.on_clearance &&
-                <span className="mt-2 inline-block px-1 py-0.5 bg-gray-400 text-white text-xs uppercase tracking-wider">Clearance</span>
-              }
-
-              {!isLoading && (price || salePrice) ?
-                <div className="mt-2 flex space-x-2 items-center">
-                  {salePrice && salePrice > 0 ? <s>{format.number(price || 0, { style: 'currency', currency: currency })}</s> : <span>{format.number(price || 0, { style: 'currency', currency: currency })}</span>}
-                  {price && salePrice && salePrice > 0 ? <strong className="font-bold text-brand-400 whitespace-nowrap">Save {getDiscount(price, salePrice)}%</strong> : null}
-                  {salePrice && salePrice > 0 ? <span>{format.number(salePrice || 0, { style: 'currency', currency: currency })}</span> : null}
-                </div> :
-                (!isLoading && isLoaded ? (
-                  hit.prices ?
-                    <div className="mt-2 flex space-x-2 items-center">
-                        {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) || hit.on_sale ? <s>{format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}</s> : <span>{format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}</span>}
-                        {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) || hit.on_sale ? <strong className="font-bold text-brand-400 whitespace-nowrap">Save {getDiscount(hit.prices.USD ?? hit.price, hit.sales_prices.USD ?? hit.newPrice)}%</strong> : null}
-                        {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) || hit.on_sale ? <span>{format.number(hit.sales_prices.USD || 0, { style: 'currency', currency: currency })}</span> : null}
-                    </div> : null
-                )
-                  : 'Loading...')
-              }
-            </div>
-          ) : (
-            hit.prices ?
-              <div className="mx-auto mt-2 flex flex-wrap space-x-2 items-center justify-center">
-                {hit.on_clearance &&
-                  <span className="mt-2 inline-block px-1 py-0.5 bg-gray-400 text-white text-xs uppercase tracking-wider">Clearance</span>
-                }
-                <div className="mt-2 flex space-x-2 items-center">
-                  {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) || hit.on_sale ? <s>{format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}</s> : <span>{format.number(hit.prices.USD || 0, { style: 'currency', currency: currency })}</span>}
-                  {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) || hit.on_sale ? <strong className="font-bold text-brand-400 whitespace-nowrap">Save {getDiscount(hit.prices.USD ?? hit.price, hit.sales_prices.USD ?? hit.newPrice)}%</strong> : null}
-                  {(hit.sales_prices && hit.sales_prices.USD && hit.sales_prices.USD > 0) || hit.on_sale ? <span>{format.number(hit.sales_prices.USD || 0, { style: 'currency', currency: currency })}</span> : null}
-                </div>
-              </div> : null
-          )}
-          */}
 
           {hit.reviews_count > 0 &&
             <ReviewSummary numberOfReviews={hit.reviews_count} averageRating={hit.reviews_rating_sum} className="mx-auto mt-2 justify-center" />
