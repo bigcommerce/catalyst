@@ -10,8 +10,9 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
-import { ReactNode, useActionState, useCallback, useEffect } from 'react';
+// import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
+// import { parseAsString, useQueryStates } from 'nuqs';
+import { ReactNode, useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
@@ -26,7 +27,7 @@ import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
-import { usePathname, useRouter } from '~/i18n/routing';
+// import { usePathname, useRouter } from '~/i18n/routing';
 
 import { Field, schema, SchemaRawShape } from './schema';
 
@@ -61,33 +62,34 @@ export function ProductDetailForm<F extends Field>({
   incrementLabel = 'Increase quantity',
   decrementLabel = 'Decrease quantity',
   ctaDisabled = false,
-  prefetch = false,
+  // prefetch = false,
 }: Props<F>) {
-  const router = useRouter();
-  const pathname = usePathname();
+  // const router = useRouter();
+  // const pathname = usePathname();
 
-  const searchParams = fields.reduce<Record<string, typeof parseAsString>>((acc, field) => {
-    return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;
-  }, {});
+  // const searchParams = fields.reduce<Record<string, typeof parseAsString>>((acc, field) => {
+  //   return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;
+  // }, {});
 
-  const [params] = useQueryStates(searchParams, { shallow: false });
+  // const [params] = useQueryStates(searchParams, { shallow: false });
 
-  const onPrefetch = (fieldName: string, value: string) => {
-    if (prefetch) {
-      const serialize = createSerializer(searchParams);
+  // const onPrefetch = (fieldName: string, value: string) => {
+  //   if (prefetch) {
+  //     const serialize = createSerializer(searchParams);
 
-      const newUrl = serialize(pathname, { ...params, [fieldName]: value });
+  //     const newUrl = serialize(pathname, { ...params, [fieldName]: value });
 
-      router.prefetch(newUrl);
-    }
-  };
+  //     router.prefetch(newUrl);
+  //   }
+  // };
 
   const defaultValue = fields.reduce<{
     [Key in keyof SchemaRawShape]?: z.infer<SchemaRawShape[Key]>;
   }>(
     (acc, field) => ({
       ...acc,
-      [field.name]: params[field.name] ?? field.defaultValue ?? '',
+      // [field.name]: params[field.name] ?? field.defaultValue ?? '',
+      [field.name]: field.defaultValue ?? '',
     }),
     { quantity: 1 },
   );
@@ -131,7 +133,7 @@ export function ProductDetailForm<F extends Field>({
                 formField={formFields[field.name]!}
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 key={formFields[field.name]!.id}
-                onPrefetch={onPrefetch}
+                // onPrefetch={onPrefetch}
               />
             );
           })}
@@ -180,31 +182,31 @@ function SubmitButton({ children, disabled }: { children: React.ReactNode; disab
 function FormField({
   field,
   formField,
-  onPrefetch,
+  // onPrefetch,
 }: {
   field: Field;
   formField: FieldMetadata<string | number | boolean | Date | undefined>;
-  onPrefetch: (fieldName: string, value: string) => void;
+  // onPrefetch: (fieldName: string, value: string) => void;
 }) {
   const controls = useInputControl(formField);
 
-  const [, setParams] = useQueryStates(
-    field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
-  );
+  // const [, setParams] = useQueryStates(
+  //   field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
+  // );
 
-  const handleChange = useCallback(
-    (value: string) => {
-      void setParams({ [field.name]: value });
-      controls.change(value);
-    },
-    [setParams, field, controls],
-  );
+  // const handleChange = useCallback(
+  //   (value: string) => {
+  //     void setParams({ [field.name]: value });
+  //     controls.change(value);
+  //   },
+  //   [setParams, field, controls],
+  // );
 
-  const handleOnOptionMouseEnter = (value: string) => {
-    if (field.persist === true) {
-      onPrefetch(field.name, value);
-    }
-  };
+  // const handleOnOptionMouseEnter = (value: string) => {
+  //   if (field.persist === true) {
+  //     onPrefetch(field.name, value);
+  //   }
+  // };
 
   switch (field.type) {
     case 'number':
@@ -217,7 +219,7 @@ function FormField({
           label={field.label}
           name={formField.name}
           onBlur={controls.blur}
-          onChange={(e) => handleChange(e.currentTarget.value)}
+          // onChange={(e) => handleChange(e.currentTarget.value)}
           onFocus={controls.focus}
           required={formField.required}
           value={controls.value ?? ''}
@@ -232,7 +234,7 @@ function FormField({
           label={field.label}
           name={formField.name}
           onBlur={controls.blur}
-          onChange={(e) => handleChange(e.currentTarget.value)}
+          // onChange={(e) => handleChange(e.currentTarget.value)}
           onFocus={controls.focus}
           required={formField.required}
           value={controls.value ?? ''}
@@ -247,7 +249,7 @@ function FormField({
           label={field.label}
           name={formField.name}
           onBlur={controls.blur}
-          onCheckedChange={(value) => handleChange(String(value))}
+          // onCheckedChange={(value) => handleChange(String(value))}
           onFocus={controls.focus}
           required={formField.required}
           value={controls.value ?? 'false'}
@@ -263,8 +265,8 @@ function FormField({
           name={formField.name}
           onBlur={controls.blur}
           onFocus={controls.focus}
-          onOptionMouseEnter={handleOnOptionMouseEnter}
-          onValueChange={handleChange}
+          // onOptionMouseEnter={handleOnOptionMouseEnter}
+          // onValueChange={handleChange}
           options={field.options}
           required={formField.required}
           value={controls.value ?? ''}
@@ -280,8 +282,8 @@ function FormField({
           name={formField.name}
           onBlur={controls.blur}
           onFocus={controls.focus}
-          onOptionMouseEnter={handleOnOptionMouseEnter}
-          onValueChange={handleChange}
+          // onOptionMouseEnter={handleOnOptionMouseEnter}
+          // onValueChange={handleChange}
           options={field.options}
           required={formField.required}
           value={controls.value ?? ''}
@@ -297,8 +299,8 @@ function FormField({
           name={formField.name}
           onBlur={controls.blur}
           onFocus={controls.focus}
-          onOptionMouseEnter={handleOnOptionMouseEnter}
-          onValueChange={handleChange}
+          // onOptionMouseEnter={handleOnOptionMouseEnter}
+          // onValueChange={handleChange}
           options={field.options}
           required={formField.required}
           value={controls.value ?? ''}
@@ -314,8 +316,8 @@ function FormField({
           name={formField.name}
           onBlur={controls.blur}
           onFocus={controls.focus}
-          onOptionMouseEnter={handleOnOptionMouseEnter}
-          onValueChange={handleChange}
+          // onOptionMouseEnter={handleOnOptionMouseEnter}
+          // onValueChange={handleChange}
           options={field.options}
           required={formField.required}
           value={controls.value ?? ''}
@@ -331,8 +333,8 @@ function FormField({
           name={formField.name}
           onBlur={controls.blur}
           onFocus={controls.focus}
-          onOptionMouseEnter={handleOnOptionMouseEnter}
-          onValueChange={handleChange}
+          // onOptionMouseEnter={handleOnOptionMouseEnter}
+          // onValueChange={handleChange}
           options={field.options}
           required={formField.required}
           value={controls.value ?? ''}

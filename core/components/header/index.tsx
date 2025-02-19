@@ -1,13 +1,13 @@
 import { getLocale, getTranslations } from 'next-intl/server';
-import PLazy from 'p-lazy';
 import { cache } from 'react';
 
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { HeaderSection } from '@/vibes/soul/sections/header-section';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, readFragment } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+// import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { routing } from '~/i18n/routing';
@@ -33,18 +33,22 @@ const GetCartCountQuery = graphql(`
 `);
 
 const getLayoutData = cache(async () => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
+  'use cache';
+
+  // const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    // customerAccessToken,
+    // fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   return readFragment(HeaderFragment, response).site;
 });
 
 const getLinks = async () => {
+  'use cache';
+
   const data = await getLayoutData();
 
   /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
@@ -68,6 +72,8 @@ const getLinks = async () => {
 };
 
 const getLogo = async () => {
+  'use cache';
+
   const data = await getLayoutData();
 
   return data.settings ? logoTransformer(data.settings) : '';
@@ -123,16 +129,25 @@ const getCurrencies = async () => {
 export const Header = async () => {
   const t = await getTranslations('Components.Header');
   const locale = await getLocale();
-  const currencyCode = await getPreferredCurrencyCode();
 
   const locales = routing.locales.map((enabledLocales) => ({
     id: enabledLocales,
     label: enabledLocales.toLocaleUpperCase(),
   }));
 
-  const currencies = await getCurrencies();
-  const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
-  const activeCurrencyId = currencyCode ?? defaultCurrency?.id;
+  const streamableCurrencies = Streamable.from(() => getCurrencies());
+  const streamableDefaultCurrency = Streamable.from(async () => {
+    const currencies = await streamableCurrencies;
+
+    return currencies.find(({ isDefault }) => isDefault);
+  });
+  const streamableActiveCurrencyId = Streamable.from(async () => {
+    const currencyCode = await getPreferredCurrencyCode();
+    const defaultCurrency = await streamableDefaultCurrency;
+
+    return currencyCode ?? defaultCurrency?.id ?? null;
+  });
+  const streamableCartCount = Streamable.from(() => getCartCount());
 
   return (
     <HeaderSection
@@ -145,17 +160,17 @@ export const Header = async () => {
         searchLabel: t('Icons.search'),
         searchParamName: 'term',
         searchAction: search,
-        links: getLinks(),
-        logo: getLogo(),
+        links: Streamable.from(getLinks),
+        logo: Streamable.from(getLogo),
         mobileMenuTriggerLabel: t('toggleNavigation'),
         openSearchPopupLabel: t('Search.openSearchPopup'),
         logoLabel: t('home'),
-        cartCount: PLazy.from(getCartCount),
+        cartCount: streamableCartCount,
         activeLocaleId: locale,
         locales,
         localeAction: switchLocale,
-        currencies,
-        activeCurrencyId,
+        currencies: streamableCurrencies,
+        activeCurrencyId: streamableActiveCurrencyId,
         currencyAction: switchCurrency,
       }}
     />

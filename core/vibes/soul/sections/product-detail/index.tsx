@@ -31,12 +31,12 @@ interface Props<F extends Field> {
   breadcrumbs?: Streamable<Breadcrumb[]>;
   product: Streamable<ProductDetailProduct | null>;
   action: ProductDetailFormAction<F>;
-  fields: Streamable<F[]>;
+  fields: F[];
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;
-  ctaLabel?: Streamable<string | null>;
-  ctaDisabled?: Streamable<boolean | null>;
+  ctaLabel?: string | null;
+  ctaDisabled?: boolean | null;
   prefetch?: boolean;
   thumbnailLabel?: string;
   additionalInformationLabel?: string;
@@ -106,28 +106,17 @@ export function ProductDetail<F extends Field>({
                     }
                   </Stream>
 
-                  <Stream
-                    fallback={<ProductDetailFormSkeleton />}
-                    value={Streamable.all([
-                      streamableFields,
-                      streamableCtaLabel,
-                      streamableCtaDisabled,
-                    ])}
-                  >
-                    {([fields, ctaLabel, ctaDisabled]) => (
-                      <ProductDetailForm
-                        action={action}
-                        ctaDisabled={ctaDisabled ?? undefined}
-                        ctaLabel={ctaLabel ?? undefined}
-                        decrementLabel={decrementLabel}
-                        fields={fields}
-                        incrementLabel={incrementLabel}
-                        prefetch={prefetch}
-                        productId={product.id}
-                        quantityLabel={quantityLabel}
-                      />
-                    )}
-                  </Stream>
+                  <ProductDetailForm
+                    action={action}
+                    ctaDisabled={streamableCtaDisabled ?? undefined}
+                    ctaLabel={streamableCtaLabel ?? undefined}
+                    decrementLabel={decrementLabel}
+                    fields={streamableFields}
+                    incrementLabel={incrementLabel}
+                    prefetch={prefetch}
+                    productId={product.id}
+                    quantityLabel={quantityLabel}
+                  />
 
                   <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
                     {(description) =>
@@ -198,7 +187,11 @@ function ProductGallerySkeleton() {
 }
 
 function PriceLabelSkeleton() {
-  return <div className="my-4 h-4 w-20 animate-pulse rounded-md bg-contrast-100" />;
+  return (
+    <span className="my-3 inline-flex h-[1lh] animate-pulse items-center text-xl font-semibold @xl:text-2xl">
+      <span className="h-[1ex] w-[5ch] rounded-md bg-contrast-100" />
+    </span>
+  );
 }
 
 function RatingSkeleton() {

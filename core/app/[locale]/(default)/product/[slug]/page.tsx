@@ -16,7 +16,7 @@ import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { PaginationSearchParamNames, Reviews } from './_components/reviews';
-import { getProductData } from './page-data';
+import { getProductData, getProductDetailData } from './page-data';
 
 const cachedProductDataVariables = cache(
   async (productId: string, searchParams: Props['searchParams']) => {
@@ -97,121 +97,99 @@ export default async function Product(props: Props) {
     getProductData(await streamableVariables),
   );
 
-  const streamableCtaDisabled = Streamable.from(async () => {
+  const format = await getFormatter();
+  const productDetail = await getProductDetailData(productId);
+
+  let ctaDisabled: boolean;
+
+  if (productDetail.availabilityV2.status === 'Unavailable') {
+    ctaDisabled = true;
+  } else if (productDetail.availabilityV2.status === 'Preorder') {
+    ctaDisabled = false;
+  } else if (!productDetail.inventory.isInStock) {
+    ctaDisabled = true;
+  } else {
+    ctaDisabled = false;
+  }
+
+  let ctaLabel: string;
+
+  if (productDetail.availabilityV2.status === 'Unavailable') {
+    ctaLabel = t('ProductDetails.Submit.unavailable');
+  } else if (productDetail.availabilityV2.status === 'Preorder') {
+    ctaLabel = t('ProductDetails.Submit.preorder');
+  } else if (!productDetail.inventory.isInStock) {
+    ctaLabel = t('ProductDetails.Submit.outOfStock');
+  } else {
+    ctaLabel = t('ProductDetails.Submit.addToCart');
+  }
+
+  const fields = await productOptionsTransformer(productDetail.productOptions, locale);
+
+  const images = removeEdgesAndNodes(productDetail.images).map((image) => ({
+    src: image.url,
+    alt: image.altText,
+  }));
+
+  const customFields = removeEdgesAndNodes(productDetail.customFields);
+
+  const specifications = [
+    {
+      name: t('ProductDetails.Accordions.sku'),
+      value: productDetail.sku,
+    },
+    {
+      name: t('ProductDetails.Accordions.weight'),
+      value: `${productDetail.weight?.value} ${productDetail.weight?.unit}`,
+    },
+    {
+      name: t('ProductDetails.Accordions.condition'),
+      value: productDetail.condition,
+    },
+    ...customFields.map((field) => ({
+      name: field.name,
+      value: field.value,
+    })),
+  ];
+
+  const accordions = [
+    ...(specifications.length
+      ? [
+          {
+            title: t('ProductDetails.Accordions.specifications'),
+            content: (
+              <div className="prose @container">
+                <dl className="flex flex-col gap-4">
+                  {specifications.map((field, index) => (
+                    <div className="grid grid-cols-1 gap-2 @lg:grid-cols-2" key={index}>
+                      <dt>
+                        <strong>{field.name}</strong>
+                      </dt>
+                      <dd>{field.value}</dd>
+                    </div>
+                  ))}
+                </dl>
+              </div>
+            ),
+          },
+        ]
+      : []),
+    ...(productDetail.warranty
+      ? [
+          {
+            title: t('Product.ProductDetails.Accordions.warranty'),
+            content: (
+              <div className="prose" dangerouslySetInnerHTML={{ __html: productDetail.warranty }} />
+            ),
+          },
+        ]
+      : []),
+  ];
+
+  const streamablePrice = Streamable.from(async () => {
     const product = await streamableProductData;
 
-    if (product.availabilityV2.status === 'Unavailable') {
-      return true;
-    }
-
-    if (product.availabilityV2.status === 'Preorder') {
-      return false;
-    }
-
-    if (!product.inventory.isInStock) {
-      return true;
-    }
-
-    return false;
-  });
-
-  const streamableCtaLabel = Streamable.from(async () => {
-    const product = await streamableProductData;
-
-    if (product.availabilityV2.status === 'Unavailable') {
-      return t('ProductDetails.Submit.unavailable');
-    }
-
-    if (product.availabilityV2.status === 'Preorder') {
-      return t('ProductDetails.Submit.preorder');
-    }
-
-    if (!product.inventory.isInStock) {
-      return t('ProductDetails.Submit.outOfStock');
-    }
-
-    return t('ProductDetails.Submit.addToCart');
-  });
-
-  const streamableProduct = Streamable.from(async () => {
-    const format = await getFormatter();
-    const product = await streamableProductData;
-
-    const images = removeEdgesAndNodes(product.images).map((image) => ({
-      src: image.url,
-      alt: image.altText,
-    }));
-
-    const customFields = removeEdgesAndNodes(product.customFields);
-
-    const specifications = [
-      {
-        name: t('ProductDetails.Accordions.sku'),
-        value: product.sku,
-      },
-      {
-        name: t('ProductDetails.Accordions.weight'),
-        value: `${product.weight?.value} ${product.weight?.unit}`,
-      },
-      {
-        name: t('ProductDetails.Accordions.condition'),
-        value: product.condition,
-      },
-      ...customFields.map((field) => ({
-        name: field.name,
-        value: field.value,
-      })),
-    ];
-
-    const accordions = [
-      ...(specifications.length
-        ? [
-            {
-              title: t('ProductDetails.Accordions.specifications'),
-              content: (
-                <div className="prose @container">
-                  <dl className="flex flex-col gap-4">
-                    {specifications.map((field, index) => (
-                      <div className="grid grid-cols-1 gap-2 @lg:grid-cols-2" key={index}>
-                        <dt>
-                          <strong>{field.name}</strong>
-                        </dt>
-                        <dd>{field.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
-              ),
-            },
-          ]
-        : []),
-      ...(product.warranty
-        ? [
-            {
-              title: t('Product.ProductDetails.Accordions.warranty'),
-              content: (
-                <div className="prose" dangerouslySetInnerHTML={{ __html: product.warranty }} />
-              ),
-            },
-          ]
-        : []),
-    ];
-
-    return {
-      id: product.entityId.toString(),
-      title: product.name,
-      description: (
-        <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />
-      ),
-      href: product.path,
-      images: product.defaultImage
-        ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
-        : images,
-      price: pricesTransformer(product.prices, format),
-      subtitle: product.brand?.name,
-      rating: product.reviewSummary.averageRating,
-      accordions,
-    };
+    return pricesTransformer(product.prices, format) ?? null;
   });
 
   return (
@@ -219,17 +197,33 @@ export default async function Product(props: Props) {
       <ProductDetail
         action={addToCart}
         additionalInformationLabel={t('ProductDetails.additionalInformation')}
-        ctaDisabled={streamableCtaDisabled}
-        ctaLabel={streamableCtaLabel}
+        ctaDisabled={ctaDisabled}
+        ctaLabel={ctaLabel}
         decrementLabel={t('ProductDetails.decreaseQuantity')}
-        fields={Streamable.from(async () => {
-          const product = await streamableProductData;
-
-          return await productOptionsTransformer(product.productOptions);
-        })}
+        fields={fields}
         incrementLabel={t('ProductDetails.increaseQuantity')}
         prefetch={true}
-        product={streamableProduct}
+        product={{
+          id: productDetail.entityId.toString(),
+          title: productDetail.name,
+          description: (
+            <div
+              className="prose"
+              dangerouslySetInnerHTML={{ __html: productDetail.description }}
+            />
+          ),
+          href: productDetail.path,
+          images: productDetail.defaultImage
+            ? [
+                { src: productDetail.defaultImage.url, alt: productDetail.defaultImage.altText },
+                ...images,
+              ]
+            : images,
+          price: streamablePrice,
+          subtitle: productDetail.brand?.name,
+          rating: productDetail.reviewSummary.averageRating,
+          accordions,
+        }}
         quantityLabel={t('ProductDetails.quantity')}
         thumbnailLabel={t('ProductDetails.thumbnail')}
       />
@@ -241,7 +235,6 @@ export default async function Product(props: Props) {
         nextLabel={t('RelatedProducts.nextProducts')}
         previousLabel={t('RelatedProducts.previousProducts')}
         products={Streamable.from(async () => {
-          const format = await getFormatter();
           const product = await streamableProductData;
 
           const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
