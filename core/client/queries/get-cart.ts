@@ -33,6 +33,9 @@ const GetCartQuery = graphql(
               variantEntityId
               catalogProductWithOptionSelections {
                 prices {
+                 price {
+                   value
+                 }
                  retailPrice {
                    value
                  }
