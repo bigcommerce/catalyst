@@ -39,9 +39,6 @@ import agentIcon from '~/public/cart/agentIcon.svg';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { Flyout } from '~/components/common-flyout';
 import PromotionCookie from './_components/promotion-cookie';
-import { getReferralIdCookie } from "~/app/[locale]/(default)/sales-buddy/_actions/referral";
-
-
 import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
 import RequestQuoteButton from '../sales-buddy/quote/_components/RequestQuoteButton';
 
@@ -220,9 +217,6 @@ export default async function Cart({ params }: Props) {
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
 
-  let cookieValue = await getReferralIdCookie();
-  const referrerId = cookieValue?.value;
-
   let getCartMetaFields: any = await GetCartMetaFields(cartId);
 
   let accessoryMetaField;
@@ -233,23 +227,7 @@ export default async function Cart({ params }: Props) {
     if(item.namespace === "accessories_data"){
       accessoryMetaField=item;
     }
-    if(item.namespace === "referrer_data") {
-      referrerDataExists = true;
-      referrerMetaField = item;
-    }
-  }
-
-  if (!referrerDataExists) {
-    let referrerMeta = {
-      permission_set: 'write_and_sf_access',
-      namespace: 'referrer_data',
-      key: 'referrerId',
-      description: 'Id of referrer',
-      value: referrerId,
-    };
-    await CreateCartMetaFields(cartId, referrerMeta);
-  }
-  
+  }  
   let updatedLineItemInfo: any = [];
   let updatedLineItemWithoutAccessories: any = [];
   let accessoriesSkuArray: any = [];

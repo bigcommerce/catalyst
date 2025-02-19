@@ -134,9 +134,7 @@ export default async function OrderConfirmation(request:any) {
     const accessoriesMetaField = getCartMetaFields.filter(
       (metaField: any) => metaField.namespace === 'accessories_data',
     );
-    const referrerMetaField = getCartMetaFields
-      .filter((metafield: any) => metafield.namespace === 'referrer_data')
-      .map((metafield: any) => metafield.value)[0];
+    const referrerId = cookieStore.get('referrerId')?.value;
 
     const OrderCommentsByAgent = getCartMetaFields.filter((metaField: any) => metaField.namespace === 'order_comments_by_agent')
     .map((metaField: any)=> metaField.value)[0];
@@ -163,7 +161,7 @@ export default async function OrderConfirmation(request:any) {
       Custom4: 'quote id',
       Custom5: 'vertical name',
       Custom6: 'who placed the order',
-      Custom7: referrerMetaField,
+      Custom7: referrerId,
       Custom8: '',
       Custom9: '',
       Custom10: '',
@@ -192,7 +190,7 @@ export default async function OrderConfirmation(request:any) {
           Custom5: 'closeout',
         };
       }),
-    };
+    };   
 
     let existingOrderMeta: any = await GetOrderMetaFields(orderId);
 
