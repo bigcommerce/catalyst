@@ -12,6 +12,7 @@ interface Props extends PropsWithChildren {
   descriptionText?: string;
   confirmationText?: string;
   abortText?: string;
+  from?:string
 }
 
 export const Modal = ({
@@ -21,6 +22,7 @@ export const Modal = ({
   descriptionText,
   title,
   children,
+  from
 }: Props) => {
   const id = useId();
   const cancelText = abortText || 'Cancel';
@@ -57,14 +59,14 @@ export const Modal = ({
 
           <div className="flex flex-col items-center justify-center gap-2 p-4 lg:flex-row lg:gap-4">
             <DialogPrimitive.Action asChild>
-              <Button className="w-full px-2.5 lg:w-auto bg-[#008BB7] " onClick={actionHandler} variant="primary">
+              <Button className="w-full px-2.5 lg:w-auto  bg-[#008BB7] " onClick={actionHandler} variant="primary">
                 {/* <Trash2 size={16} className="mr-[5px]" /> */}
                 {confirmationText}
               </Button>
             </DialogPrimitive.Action>
 
             <DialogPrimitive.Cancel asChild>
-              <Button className="w-full px-2.5 lg:w-auto" variant="subtle">
+              <Button className="w-full px-2.5 lg:w-auto border border-[#B4DDE9] " variant="subtle">
                 {cancelText}
               </Button>
             </DialogPrimitive.Cancel>
