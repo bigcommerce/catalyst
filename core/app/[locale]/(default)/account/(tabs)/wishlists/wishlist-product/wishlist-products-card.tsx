@@ -412,13 +412,13 @@ const ProductCard = ({
                     classNames={{
                       root: 'product-price mt-[30px] flex justify-center items-center gap-[0.5em] text-center xl:text-center',
                       newPrice:
-                        'text-center text-[18px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                        'text-center text-[18px] font-medium leading-8 tracking-[0.15px]',
                       oldPrice:
                         'inline-flex items-baseline text-center text-[14px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
                       discount:
                         'whitespace-nowrap text-center text-[14px] font-normal leading-8 tracking-[0.15px] text-brand-400',
                       price:
-                        'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px] text-brand-400',
+                        'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px]',
                       msrp: '-ml-[0.5em] mb-1 text-[10px] text-gray-500',
                     }}
                   />
