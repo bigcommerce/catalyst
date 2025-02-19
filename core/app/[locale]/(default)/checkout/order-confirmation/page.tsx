@@ -192,9 +192,7 @@ export default async function OrderConfirmation(request:any) {
         };
       }),
     };   
-    console.log("order page data---",orderPageData);
     let existingOrderMeta: any = await GetOrderMetaFields(orderId);
-    console.log("existing order meta-------",existingOrderMeta);
 
     if (!existingOrderMeta || existingOrderMeta.length === 0) {
         const postData = {
