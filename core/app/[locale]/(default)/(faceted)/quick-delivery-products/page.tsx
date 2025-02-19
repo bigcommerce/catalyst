@@ -74,7 +74,7 @@ export default async function QuickDeliveryProductsPage(props: Props) {
     <div className="group py-4 px-4 xl:px-12">
       <Breadcrumbs category={{breadcrumbs: {edges: [{node: {entityId: 0, name: t('title'), path: '/quick-delivery-products'}}]}}} />
       <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
-        <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{t('title')}</h1>
+        <h1 className="mb-4 text-2xl lg:mb-0">{t('title')}</h1>
       </div>
 
       {!!snapshot &&

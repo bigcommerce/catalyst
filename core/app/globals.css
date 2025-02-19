@@ -563,16 +563,12 @@ button.show-all {
 .aa-SourceHeaderLine {
   border-bottom: 1px solid var(--gray-400);
 }
-.ais-RefinementList:not(.number-of-lights) .ais-RefinementList-checkbox,
-.ais-RefinementList:not(.number-of-blades) .ais-RefinementList-checkbox,
+.ais-RefinementList:not(.number-of-lights):not(.number-of-blades) .ais-RefinementList-checkbox,
 .ais-GeoSearch-input {
   box-shadow: none !important;
   border: 1px solid var(--gray-500) !important;
 }
-.ais-RefinementList:not(.number-of-lights)
-  .ais-RefinementList-item--selected
-  .ais-RefinementList-checkbox,
-.ais-RefinementList:not(.number-of-blades)
+.ais-RefinementList:not(.number-of-lights):not(.number-of-blades)
   .ais-RefinementList-item--selected
   .ais-RefinementList-checkbox,
 .ais-GeoSearch-input:checked {
