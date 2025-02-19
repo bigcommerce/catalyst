@@ -1,8 +1,17 @@
+'use client';
 import { useTranslations } from 'next-intl';
 import Link from 'next/link';
+import { useEffect } from 'react';
 
 export const EmptyCart = () => {
   const t = useTranslations('Cart');
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      document.cookie = 'ztcpn_data=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+      document.cookie = 'pr_flr_data=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    }
+  }, [])
 
   return (
     <div className="h-[400px] xl:h-[85vh] flex justify-center items-center">

@@ -395,6 +395,7 @@ export default async function Cart({ params }: Props) {
           <CheckoutButton cartId={cartId} />
           <ApplepayButton cartId={cartId} icon={applePayIcon} />
           <PaypalButton cartId={cartId} icon={paypalIcon} />
+            <RequestQuoteButton />
 
           <div className="pt-1"></div>
 
@@ -431,9 +432,7 @@ export default async function Cart({ params }: Props) {
             />{' '}
             Talk to an Agent
           </p>
-          <div className='my-5'>
-            <RequestQuoteButton />
-          </div>
+          
           
         </div>
        
