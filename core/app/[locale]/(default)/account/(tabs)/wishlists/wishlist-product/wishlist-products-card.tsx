@@ -26,6 +26,7 @@ import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_componen
 import { getWishlists } from '~/components/graphql-apis';
 
 import { CloseOut } from '~/app/[locale]/(default)/product/[slug]/_components/closeOut';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 interface OptionValue {
   entityId: number;
@@ -121,6 +122,19 @@ interface MetaField {
   key: string;
   value: string;
   namespace: string;
+}
+interface CategoryNode {
+  name: string;
+  path: string | null;
+  breadcrumbs?: {
+    edges: Array<{
+      node: {
+        entityId: any;
+        name: string;
+        path: string | null;
+      };
+    }> | null;
+  };
 }
 interface PriceMaxRule {
   price_max_activation_code_id: number;
@@ -289,16 +303,20 @@ const ProductCard = ({
       try {
         const promotions = await getActivePromotions(true);
         const freeShipping = await CheckProductFreeShipping(item.productEntityId.toString());
-        const cats =
-          item.product?.categories?.edges?.map(
-            (edge: { node: { entityId: any } }) => edge.node.entityId,
-          ) || [];
+        const categories = item?.product?.categories && removeEdgesAndNodes(item?.product?.categories) as CategoryNode[];
+        const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
+        const longestLength = longest?.breadcrumbs?.edges?.length || 0;
+        const currentLength = current?.breadcrumbs?.edges?.length || 0;
+        return currentLength > longestLength ? current : longest;
+      }, categories[0]);
 
+      const categoryId =
+        categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
         const hasPromo = promotions && (Object.keys(promotions).length > 0 || freeShipping);
 
         setPromotionsData(promotions);
         setIsFreeShipping(freeShipping);
-        setCategoryIds(cats);
+        setCategoryIds(categoryId);
         setHasActivePromotion(hasPromo);
       } catch (error) {
         console.error('Error fetching promotions data:', error);
@@ -412,13 +430,13 @@ const ProductCard = ({
                     classNames={{
                       root: 'product-price mt-[30px] flex justify-center items-center gap-[0.5em] text-center xl:text-center',
                       newPrice:
-                        'text-center text-[18px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                        'text-center text-[18px] font-medium leading-8 tracking-[0.15px]',
                       oldPrice:
                         'inline-flex items-baseline text-center text-[14px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
                       discount:
                         'whitespace-nowrap text-center text-[14px] font-normal leading-8 tracking-[0.15px] text-brand-400',
                       price:
-                        'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px] text-brand-400',
+                        'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px]',
                       msrp: '-ml-[0.5em] mb-1 text-[10px] text-gray-500',
                     }}
                   />

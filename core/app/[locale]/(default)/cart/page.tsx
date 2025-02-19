@@ -21,7 +21,7 @@ import { EmptyCart } from './_components/empty-cart';
 import { GeographyFragment } from './_components/shipping-estimator/fragment';
 import { SaveCart } from './_components/save-cart';
 import { RemoveCart } from './_components/remove-cart';
-import { GetCartMetaFields } from '~/components/management-apis';
+import { CreateCartMetaFields, GetCartMetaFields } from '~/components/management-apis';
 import CartProductComponent from '../sales-buddy/common-components/_components/CartComponent/CartProductComponent';
 import { get_cart_price_adjuster_data } from '../sales-buddy/_actions/get-product-by-entityid';
 import ScrollButton from './_components/ScrollButton';
@@ -39,7 +39,6 @@ import agentIcon from '~/public/cart/agentIcon.svg';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 import { Flyout } from '~/components/common-flyout';
 import PromotionCookie from './_components/promotion-cookie';
-
 import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
 import RequestQuoteButton from '../sales-buddy/quote/_components/RequestQuoteButton';
 
@@ -217,15 +216,25 @@ export default async function Cart({ params }: Props) {
   const deleteIcon = imageManagerImageUrl('delete.png', '20w');
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
-  let getCartMetaFields: any = await GetCartMetaFields(cartId, 'accessories_data');
 
+  let getCartMetaFields: any = await GetCartMetaFields(cartId);
+
+  let accessoryMetaField;
+  let referrerMetaField;
+  let referrerDataExists = false;
+
+  for(let item of getCartMetaFields){
+    if(item.namespace === "accessories_data"){
+      accessoryMetaField=item;
+    }
+  }  
   let updatedLineItemInfo: any = [];
   let updatedLineItemWithoutAccessories: any = [];
   let accessoriesSkuArray: any = [];
-  if (getCartMetaFields?.length > 0) {
+  if (accessoryMetaField) {
     lineItems?.forEach((item: any) => {
       let accessoriesData: any = [];
-      let findAccessories = getCartMetaFields?.find((acces: any) => acces?.key == item?.entityId);
+      let findAccessories = accessoryMetaField?.key === item?.entityId ? accessoryMetaField : undefined;
       if (findAccessories) {
         let getAccessoriesInfo = findAccessories?.value ? JSON?.parse(findAccessories?.value) : [];
         if (getAccessoriesInfo?.length > 0) {
@@ -395,6 +404,7 @@ export default async function Cart({ params }: Props) {
           <CheckoutButton cartId={cartId} />
           <ApplepayButton cartId={cartId} icon={applePayIcon} />
           <PaypalButton cartId={cartId} icon={paypalIcon} />
+            <RequestQuoteButton />
 
           <div className="pt-1"></div>
 
@@ -431,9 +441,7 @@ export default async function Cart({ params }: Props) {
             />{' '}
             Talk to an Agent
           </p>
-          <div className='my-5'>
-            <RequestQuoteButton />
-          </div>
+          
           
         </div>
        
@@ -447,4 +455,4 @@ export default async function Cart({ params }: Props) {
   );
 }
 
-// export const runtime = 'edge';
+//export const runtime = 'edge';

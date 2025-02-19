@@ -116,7 +116,7 @@ export const CreateWishlistDialog = ({ onWishlistCreated }: CreateWishlistDialog
       </DialogPrimitive.Trigger>
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="data-[state=open]:animate-overlayShow fixed inset-0 bg-black/40" />
-        <DialogPrimitive.Content className="data-[state=open]:animate-contentShow fixed left-1/2 top-1/2 w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6 pb-[45px] pl-[45px] pr-[45px] pt-[40px] shadow-xl">
+        <DialogPrimitive.Content className="data-[state=open]:animate-contentShow fixed left-1/2 top-1/2 w-[90vw] max-w-[500px] -translate-x-1/2 -translate-y-1/2  bg-white p-6 pb-[45px] pl-[45px] pr-[45px] pt-[40px] shadow-xl">
           <div className="flex flex-col items-center">
             <DialogPrimitive.Cancel asChild className="">
               <button className="mb-2 text-[16px] font-[600] text-black">✕</button>

@@ -56,7 +56,7 @@ const SubmitButton = ({ messages }: SubmitMessages) => {
 
   return (
     <Button
-      className="create-account-button relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2"
+      className="create-account-button relative mt-8 w-fit items-center !bg-[#008BB7] px-8 py-2 !transition-colors !duration-500 hover:!bg-brand-300"
       loading={pending}
       loadingText={messages.submitting}
       variant="primary"
@@ -263,7 +263,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
               name="remember-me"
               value="1"
             />
-            <div className="mt-0 flex w-full justify-between gap-1 xl:justify-start">
+            <div className="mt-0 flex w-full justify-between gap-1 xl:justify-start items-center">
               <Label
                 className="ml-2 mt-0 w-[15em] cursor-pointer space-y-2 pb-2 pl-1 text-left text-sm font-normal leading-6 tracking-[0.25px] md:my-0 md:w-auto"
                 htmlFor="remember-me"
@@ -273,7 +273,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
               </Label>
               <Link
                 href="#"
-                className="xl:ml-2 text-center text-sm font-normal leading-6 tracking-tight text-[#008BB7]"
+                className="text-center text-sm font-normal leading-6 tracking-tight text-[#008BB7]"
               >
                 Privacy Policy
               </Link>

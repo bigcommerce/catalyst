@@ -26,6 +26,8 @@ import '~/belami/components/product-card-carousel/product-card-carousel.makeswif
 import '~/belami/components/mega-menu/mega-menu.makeswift';
 import '~/belami/components/button-group/ButtonGroup.makeswift';
 import '~/belami/components/flex-text-box-group/FlexTextBoxGroup.makeswift'
+import '~/belami/components/article-grid/ArticleGrid.makeswift'
+import '~/belami/components/login-btn/LoginBtn.makeswift'
 
 import { MakeswiftComponentType } from '@makeswift/runtime';
 

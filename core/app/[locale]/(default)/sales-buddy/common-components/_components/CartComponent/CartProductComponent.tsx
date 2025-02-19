@@ -101,7 +101,6 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
                         SKU: {product?.sku}
                         {changeTheProtectedPosition?.length > 0 && (
                           <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                            {' '}
                             |
                           </span>
                         )}
@@ -124,8 +123,7 @@ export default function CartProductComponent({ currencyCode, product, cartId, pr
 
                                 {pipeLineData && (
                                   <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                    {' '}
-                                    {pipeLineData}
+                                    {`${pipeLineData} `}
                                   </span>
                                 )}
                               </div>

@@ -415,10 +415,13 @@ export const GetOrderMetaFields = async (orderId: number) => {
   }
 };
 
-export const UpdateOrderData = async (orderId: number, staffNotes: string) => {
+export const UpdateOrderData = async (
+  orderId: number,
+  staffNotes: string,
+) => {
   try {
-    const postData = {
-      staff_notes: staffNotes
+    const postData={
+      staff_notes:staffNotes
     };
     let { data } = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/orders/${orderId}`,
@@ -441,6 +444,32 @@ export const UpdateOrderData = async (orderId: number, staffNotes: string) => {
     console.error(error);
   }
 };
+
+export const GetOrderDetailsFromAPI = async (orderId : Number) => {
+  try {
+    let orderDetails = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/orders/${orderId}?include=consignments.line_items`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        next: {
+          revalidate: 3600,
+        },
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return orderDetails;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export const GetVariantsByProductId = async (entityId: Number) => {
   try {
@@ -984,4 +1013,36 @@ async function getlineItem(productId: string, cartId: string) {
   const lineItems = data.data.line_items.physical_items;
 
   return lineItems.find((item: any) => Number(item.product_id) === Number(productId));
+}
+
+export async function updateCartLineItemPrice(data: PriceUpdateData, lineItemId: string) {
+  const url = `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/carts/${data.cartId}/items/${lineItemId}`;
+
+  try {
+    const response = await fetch(url, {
+      method: 'PUT',
+      headers: {
+        'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        line_item: {
+          quantity: data.quantity,
+          list_price: data.price,
+          product_id: data.productId,
+        },
+      }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error updating cart price:', error);
+    throw error;
+  }
 }

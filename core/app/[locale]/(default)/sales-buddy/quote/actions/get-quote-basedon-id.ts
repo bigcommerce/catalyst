@@ -15,6 +15,8 @@ export const GetQuoteBasedOnID = async (QuoteId) => {
     const apiEnv = process.env.SALES_BUDDY_API_ENV!;
     const accessId = process.env.QUOTE_ACCESS_ID;
     const bc_channel_id = process.env.BIGCOMMERCE_CHANNEL_ID;
+    console.log('get Quote Api-----------------', `${apiUrl}${apiEnv}${apiPath}get-quote`);
+
     var Inputdata = JSON.stringify({ quote_id: QuoteId });
     let data = await fetch(`${apiUrl}${apiEnv}${apiPath}get-quote`, {
       method: 'POST',

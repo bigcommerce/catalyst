@@ -510,7 +510,7 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   .div-product-rectangleboxes div button {
     padding: 8px;
     font-size: 12px;
-    width: 33%;
+    /* width: 33%; */
   }
   .div-product-dropdownlist {
     margin-top: -10px;
@@ -518,11 +518,11 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   .div-product-radiobuttons div label {
     text-align: left;
   }
-  .request-quote-hands-icon {
+  /* .request-quote-hands-icon {
     position: relative;
     top: -0.75rem;
     right: -0.375rem;
-  }
+  } */
   div#relatedproduct-carousel {
     display: none;
   }

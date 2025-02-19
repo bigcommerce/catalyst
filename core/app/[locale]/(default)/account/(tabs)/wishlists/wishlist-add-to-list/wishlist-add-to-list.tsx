@@ -563,7 +563,7 @@ const WishlistAddToList = memo(
 
         {uiState.isOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="relative w-full max-w-[20em] rounded-lg bg-white px-[2.5em] py-[1.5em] pb-[3em] shadow-2xl md:max-w-[35em]">
+            <div className="relative w-full max-w-[20em] bg-white px-[2.5em] py-[1.5em] pb-[3em] shadow-2xl md:max-w-[35em]">
               <button
                 title='Close "Add to List" modal'
                 onClick={handleClose}
@@ -671,7 +671,7 @@ const WishlistAddToList = memo(
                   >
                     <span className="ml-[2px] mr-2 text-[28px] font-[500] text-[#0C89A6] group-hover:text-[#03465C]">
                       {uiState.showCreateForm ? (
-                        <span className="text-[16px] text-black">NEW LIST</span>
+                        <span className="text-[16px] text-[#353535]">New List</span>
                       ) : (
                         <span className="text-black">
                           <span className="mr-2 text-[29px]">+</span>
