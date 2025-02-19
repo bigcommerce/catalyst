@@ -563,6 +563,30 @@ button.show-all {
 .aa-SourceHeaderLine {
   border-bottom: 1px solid var(--gray-400);
 }
+
+.ais-RefinementList-showMore {
+  padding: .5rem 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: none !important;
+  border-radius: 0 !important;
+  color: var(--brand-400) !important;
+  text-decoration: underline !important;
+  height: auto !important;
+  line-height: 1.5rem !important;
+  text-transform: none !important;
+  font-size: 1rem !important;
+  text-align: left !important;
+  display: inline-block !important;
+  width: auto !important;
+}
+.ais-RefinementList-showMore:hover {
+  box-shadow: none !important;
+  background: none !important;
+  color: var(--brand-500) !important;
+}
+
 .ais-RefinementList:not(.number-of-lights):not(.number-of-blades) .ais-RefinementList-checkbox,
 .ais-GeoSearch-input {
   box-shadow: none !important;
