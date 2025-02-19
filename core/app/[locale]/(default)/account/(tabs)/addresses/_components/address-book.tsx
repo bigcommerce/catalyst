@@ -62,33 +62,37 @@ const AddressChangeButtons = ({ addressId, isAddressRemovable, onDelete }: Addre
   
 
   return (
-    <div className=" max-w-fit  flex justify-center  gap-4 flex-wrap">
+    <div className="flex gap-4 w-full max-w-full  justify-center ">
     <Button
-      className="flex items-center justify-center gap-2 rounded-md bg-[#03465c] px-4 py-2 text-sm font-medium uppercase leading-6 tracking-wider text-white hover:bg-[#03465c]/90 sm:w-auto"
+      className="flex-1 basis-0 flex items-center justify-center gap-2 rounded-md bg-[#008BB7] px-4 py-2 text-sm font-medium uppercase leading-6 tracking-wider text-white hover:bg-[#03465c]/90 w-[150px] min-w-[120px] text-center"
       aria-label={t('editButton')}
       asChild
-      variant="secondary"
+      variant="secondary" 
     >
-      <Link style={{maxWidth:150}} href={`/account/addresses/edit/${addressId}`}>{t('editButton')}</Link>
+      <Link className="w-full text-center" href={`/account/addresses/edit/${addressId}`}>
+        {t('editButton')}
+      </Link>
     </Button>
+  
     <Modal
       actionHandler={handleDeleteAddress}
-      confirmationText={t('yesDelete')}
+      confirmationText={t('yesDelete')} 
       title={t('deleteModalTitle')}
- abortText= {t('noDelete')}
+      abortText={t('noDelete')}
+      from="address"
     >
       <Button
-        className="flex items-center justify-center gap-2 rounded-md bg-[#03465c] px-4 py-2 text-sm font-medium uppercase leading-6 tracking-wider text-white hover:bg-[#03465c]/90 sm:w-auto"
+        className="flex-[1_0_1%] flex items-center  justify-center gap-2 text-[#002A37] rounded-md bg-[#FFF] px-4 py-2 text-sm font-medium uppercase leading-6 tracking-wider hover:bg-gray-100 w-[150px] min-w-[120px] text-center border border-gray-300"
         aria-label={t('deleteButton')}
         disabled={!isAddressRemovable}
         variant="subtle"
-        style={{maxWidth:150}}
-        // onClick={scrollToTop}
       >
         {t('deleteButton')}
       </Button>
     </Modal>
   </div>
+  
+  
   
   
   );
@@ -116,17 +120,17 @@ export const AddressBook = ({
         </Message>
       )}
       
-      <div className=" gap-[30px] px-4 py-3">
+      <div className=" gap-[30px] px-10 py-3">
       {!addressesCount && <p className="border-t py-12 text-center">{t('emptyAddresses')}</p>}
-      <ul className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <ul className="grid grid-cols-1 sm:grid-cols-1  md:grid-cols-1 lg:grid-cols-3 gap-4">
         {addressBook.map(
           ({
             entityId,
             firstName,
-            lastName,
+            lastName,  
             address1,
             address2,
-            city,
+            city, 
             stateOrProvince,
             postalCode,
             countryCode,
@@ -138,12 +142,12 @@ export const AddressBook = ({
               {/* Container div for text and buttons */}
               <div className="flex h-full w-full flex-col gap-4 sm:gap-6">
                 {/* Name */}
-                <p className="text-lg font-medium leading-[28px] tracking-wide text-black sm:text-xl sm:leading-[32px]">
+                <p className="text-lg font-medium break-all leading-[28px] tracking-wide text-black sm:text-xl sm:leading-[32px]">
                   {firstName} {lastName}
                 </p>
 
                 {/* Address details */}
-                <div className="flex-grow text-sm font-normal leading-[24px] tracking-wide text-black sm:text-base sm:leading-[28px]">
+                <div className="flex-grow text-sm font-normalbreak-all  leading-[24px] tracking-wide text-black sm:text-base sm:leading-[28px]">
                   <p>{address1}</p>
                   {Boolean(address2) && <p>{address2}</p>}
                   <p>
@@ -166,7 +170,7 @@ export const AddressBook = ({
         )}
       </ul>
 
-        <Button aria-label={t('addNewAddress')} asChild className="w-fit mt-[30px]">
+        <Button aria-label={t('addNewAddress')} asChild className="w-fit bg-[#03465C] mt-[30px]">
           <Link href="/account/addresses/add">{t('addNewAddress')}</Link>
         </Button>
         {children}

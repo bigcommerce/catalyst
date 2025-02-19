@@ -45,7 +45,7 @@ const Button = forwardRef<ElementRef<'button'>, Props>(
       >
         {loading ? (
           <>
-            <span className="absolute loading-span z-10 flex h-full w-full items-center justify-center">
+            <span className="absolute inset-0 loading-span z-10 flex h-full w-full items-center justify-center">
               <Spinner aria-hidden="true" className="animate-spin" />
               <span className="sr-only">{loadingText}</span>
             </span>
