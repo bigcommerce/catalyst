@@ -9,6 +9,7 @@ import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
+import { cookies } from 'next/headers';
 
 const GetRouteQuery = graphql(`
   query getRoute($path: String!) {
@@ -259,7 +260,9 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
 export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
     const locale = request.headers.get('x-bc-locale') ?? '';
-
+    const cookieStore = await cookies();
+    const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
+    cookieStore.set('domainName', host);
     const { route, status } = await getRouteInfo(request, event);
 
     if (status === 'MAINTENANCE') {

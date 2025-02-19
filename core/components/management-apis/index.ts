@@ -415,10 +415,13 @@ export const GetOrderMetaFields = async (orderId: number) => {
   }
 };
 
-export const UpdateOrderData = async (orderId: number, staffNotes: string) => {
+export const UpdateOrderData = async (
+  orderId: number,
+  staffNotes: string,
+) => {
   try {
-    const postData = {
-      staff_notes: staffNotes
+    const postData={
+      staff_notes:staffNotes
     };
     let { data } = await fetch(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/orders/${orderId}`,
@@ -441,6 +444,32 @@ export const UpdateOrderData = async (orderId: number, staffNotes: string) => {
     console.error(error);
   }
 };
+
+export const GetOrderDetailsFromAPI = async (orderId : Number) => {
+  try {
+    let orderDetails = await fetch(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/orders/${orderId}?include=consignments.line_items`,
+      {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+          'X-Auth-Token': process.env.BIGCOMMERCE_ACCESS_TOKEN,
+        },
+        next: {
+          revalidate: 3600,
+        },
+      },
+    )
+      .then((res) => res.json())
+      .then((jsonData) => {
+        return jsonData;
+      });
+    return orderDetails;
+  } catch (error) {
+    console.error(error);
+  }
+}
 
 export const GetVariantsByProductId = async (entityId: Number) => {
   try {
