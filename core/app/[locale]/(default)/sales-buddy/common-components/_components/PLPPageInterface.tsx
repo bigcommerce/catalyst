@@ -24,6 +24,13 @@ function PLPPageInterface({ toggleAccordion, openIndexes, setOpenIndexes }: PLPP
   const handleFilterChange = (filter: string) => {
     setSelectedFilter(filter);
   };
+  const removeFiltersDataFromUrl=()=>{
+    // const urlParams = new URLSearchParams(window.location.search);
+    setSelectedFilter(null)
+    const url = new URL(window.location.href);
+    url.search = ""; // Remove all query parameters
+    window.history.pushState({}, "", url);
+  }
 
   // Update the URL when filter changes
   useEffect(() => {
@@ -35,23 +42,15 @@ function PLPPageInterface({ toggleAccordion, openIndexes, setOpenIndexes }: PLPP
         "Medium Stock 10 - 30": "Medium%20Stock%2010-30",
         "High Stock 30 +": "High%20Stock%2030+",
       };
-      const encodedFilter = encodeURIComponent(selectedFilter).replace(/\+/g,'%20'); // Encode spaces correctly
-      // const newUrl = `https://www.graciousgarage.com/search?inventory_range[0]=${encodedFilter}`;
-      // window.history.replaceState(null, '', newUrl);
-
-      // const encodedFilter = encodeURIComponent(selectedFilter).replace(/\+/g, '%20');; // Encode spaces correctly
-      // const decodedFilter = decodeURIComponent(selectedFilter); // Decode first to prevent double encoding
-      // const encodedFilter = encodeURIComponent(decodedFilter).replace(/\+/g, '%20');
-      // console.log(encodedFilter);
-      
-      // const url = new URL(`${window.location.href}${'search'}`);
-      // url.searchParams.set('inventory_range[0]', encodedFilter);
-      // window.history.replaceState({}, '', url.toString());
+      const encodedFilter = selectedFilter
+      const url = new URL(`${window.location.href}`);
+      url.searchParams.set('inventory_range[0]', encodedFilter);
+      window.history.replaceState({}, '', url.toString());
     }
   }, [selectedFilter]);
 
   return (
-    <div className="mt-5 w-[460px] bg-[#f3f4f5]">
+    <div className="my-5 w-[460px] bg-[#f3f4f5]">
       <h2 className="mb-4 text-[24px] font-normal text-[#353535]">Internal Search</h2>
 
       <div className="bg-white p-[20px]">
@@ -60,7 +59,7 @@ function PLPPageInterface({ toggleAccordion, openIndexes, setOpenIndexes }: PLPP
           {selectedFilter ? (
             <span className="flex items-center rounded-full bg-gray-200 px-3 py-1 text-xs">
               {selectedFilter}
-              <button onClick={() => setSelectedFilter(null)} className="ml-1 text-gray-600 hover:text-gray-800">
+              <button onClick={() => removeFiltersDataFromUrl()} className="ml-1 text-gray-600 hover:text-gray-800">
                 ✕
               </button>
             </span>
