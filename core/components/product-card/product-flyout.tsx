@@ -247,7 +247,7 @@ export const ProductFlyout = ({
   }
   const fetchData = async () => { 
     const updatedData = {...productData,quantity:productQty}; 
-    const categories = removeEdgesAndNodes(productData?.baseCatalogProduct?.categories);
+    const categories = productData?.baseCatalogProduct?.categories && removeEdgesAndNodes(productData?.baseCatalogProduct?.categories);
     
     if (categories?.length > 0) {
       const categoryWithMostBreadcrumbs = categories?.reduce((longest, current) => {

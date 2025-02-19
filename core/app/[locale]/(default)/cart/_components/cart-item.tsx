@@ -61,6 +61,28 @@ const PhysicalItemFragment = graphql(`
         entityId
         id
       }
+      closeOutParentData: metafields(namespace: "Details", keys: "closeout") {
+        edges {
+          cursor
+          node {
+            entityId
+            id
+            key
+            value
+          }
+        }
+      }
+      deliveryMessageParentData: metafields(namespace: "delivery_message") {
+        edges {
+          cursor
+          node {
+            entityId
+            id
+            key
+            value
+          }
+        }
+      }
       variants {
         edges {
           node {
@@ -69,6 +91,28 @@ const PhysicalItemFragment = graphql(`
             entityId
             isPurchasable
             metafields(namespace: "pdp_info_for_agent", keys: "adjusted_cost") {
+              edges {
+                cursor
+                node {
+                  entityId
+                  id
+                  key
+                  value
+                }
+              }
+            }
+            closeOutData: metafields(namespace: "Details", keys: "closeout") {
+              edges {
+                cursor
+                node {
+                  entityId
+                  id
+                  key
+                  value
+                }
+              }
+            }
+            deliveryMessageData: metafields(namespace: "delivery_message") {
               edges {
                 cursor
                 node {
@@ -160,6 +204,7 @@ const PhysicalItemFragment = graphql(`
     }
   }
 `);
+
 const CustomItemFragment = graphql(`
   fragment CustomItemFragment on CartCustomItem {
     name
@@ -438,7 +483,7 @@ export const CartItem = async ({
                             pipeLineData = '|';
                           }
                           let displayValue = selectedOption.value;
-                          if (selectedOption.name === 'Fabric Color') {
+                          if (selectedOption.name === 'Fabric Color' || "Select Fabric Color") {
                             displayValue = selectedOption.value.split('|')[0]?.trim();
                           }
                           switch (selectedOption.__typename) {
@@ -454,7 +499,7 @@ export const CartItem = async ({
 
                                   {pipeLineData && (
                                     <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                                      {pipeLineData}
+                                     {`${pipeLineData} `}
                                     </span>
                                   )}
                                 </div>

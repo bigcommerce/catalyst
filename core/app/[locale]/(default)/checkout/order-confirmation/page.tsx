@@ -24,6 +24,7 @@ import {
   GetOrderMetaFields,
 } from '~/components/management-apis';
 import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
+import { getCart } from '../../cart/page-data';
 
 const emailImg = imageManagerImageUrl('emailicon.png', '16w');
 const facebookImg = imageManagerImageUrl('facebook.png', '23w');
@@ -80,7 +81,7 @@ export default async function OrderConfirmation(request:any) {
   if (sessionUser) {
     const customerGroupId = sessionUser?.customerGroupId;
     const customerGroupDetails = await GetCustomerGroupById(customerGroupId);
-    const parsedData = JSON.parse(customerGroupDetails);
+    const parsedData = customerGroupDetails && JSON.parse(customerGroupDetails);
     customerGroup = parsedData.name;
   }else{
     customerGroup = "Guest";
@@ -131,15 +132,15 @@ export default async function OrderConfirmation(request:any) {
     const lineItems = shippingConsignments?.map((consignment: any) => consignment.lineItems) || [];
 
     let getCartMetaFields: any = await GetCartMetaFields(cartId);
-    const accessoriesMetaField = getCartMetaFields.filter(
+    const accessoriesMetaField = getCartMetaFields.length>0 && getCartMetaFields.filter(
       (metaField: any) => metaField.namespace === 'accessories_data',
     );
     const referrerId = cookieStore.get('referrerId')?.value;
 
-    const OrderCommentsByAgent = getCartMetaFields.filter((metaField: any) => metaField.namespace === 'order_comments_by_agent')
+    const OrderCommentsByAgent = getCartMetaFields.length>0 && getCartMetaFields.filter((metaField: any) => metaField.namespace === 'order_comments_by_agent')
     .map((metaField: any)=> metaField.value)[0];
 
-    const agentInfo = JSON.parse(getCartMetaFields.filter((metaField: any)=> metaField.namespace === 'agent_cart_information')
+    const agentInfo = getCartMetaFields.length>0 && JSON.parse(getCartMetaFields.filter((metaField: any)=> metaField.namespace === 'agent_cart_information')
     .map((metaField: any)=> metaField.value)[0]);
 
     const orderDetails = await GetOrderDetailsFromAPI(orderId);
@@ -165,7 +166,7 @@ export default async function OrderConfirmation(request:any) {
       Custom8: '',
       Custom9: '',
       Custom10: '',
-      accessoriesData: accessoriesMetaField.map((eachAccessory: any) => ({
+      accessoriesData: accessoriesMetaField.length>0 && accessoriesMetaField.map((eachAccessory: any) => ({
         key: eachAccessory.key,
         value: eachAccessory.value,
       })),
@@ -191,7 +192,6 @@ export default async function OrderConfirmation(request:any) {
         };
       }),
     };   
-
     let existingOrderMeta: any = await GetOrderMetaFields(orderId);
 
     if (!existingOrderMeta || existingOrderMeta.length === 0) {
@@ -214,7 +214,7 @@ export default async function OrderConfirmation(request:any) {
     let accessoriesSkuArray: any = [];
     let productId: any;
 
-    if (getCartMetaFields?.length > 0) {
+    if (accessoriesMetaField?.length > 0) {
       lineItems.map((data: any) => {
         data?.forEach((item: any) => {
           let accessoriesData: any = [];
