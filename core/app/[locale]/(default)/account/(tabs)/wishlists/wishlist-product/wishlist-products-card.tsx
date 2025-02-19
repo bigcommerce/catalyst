@@ -338,6 +338,7 @@ const ProductCard = ({
       });
     }
   }
+  console.log(updatedWishlist[0]);
 
   return (
     <div className="flex h-full flex-col">
@@ -421,7 +422,7 @@ const ProductCard = ({
                     )}
                     currency="USD"
                     format={format}
-                    showMSRP={true}
+                    showMSRP={updatedWishlist[0].UpdatePriceForMSRP?.showDecoration}
                     warrantyApplied={false}
                     options={{
                       useAsyncMode: false,
