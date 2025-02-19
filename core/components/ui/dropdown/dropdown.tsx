@@ -114,7 +114,7 @@ const Dropdown = ({
                 <DropdownMenu.Item className="mt-[9px]">
                   <CustomLink
                     href="/support/contact"
-                    className="block text-[14px] font-normal leading-[10px] tracking-[0.25px]"
+                    className="block text-[14px] font-normal leading-[10px] outline-none tracking-[0.25px]"
                   >
                     <div>
                       <div className="flex flex-row items-center gap-[10px]">
@@ -139,7 +139,7 @@ const Dropdown = ({
                 <DropdownMenu.Item>
                   <CustomLink
                     href="/support/contact"
-                    className="mt-[9px] block text-[14px] font-normal leading-[10px] tracking-[0.25px] text-[#353535]"
+                    className="mt-[9px] block text-[14px] font-normal leading-[10px] tracking-[0.25px] text-[#353535] outline-none"
                   >
                     <div>
                       <div className="flex flex-row items-center gap-[10px]">
