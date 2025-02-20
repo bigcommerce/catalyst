@@ -18,7 +18,7 @@ import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumb
 import { PrintInvoice } from '../../../print-invoice/print-invoice';
 import { StillNeedContactUs } from '../../../orders/_components/stillneed-contactus';
 
-const OrderSummaryInfo = async ({ summaryInfo, }: { summaryInfo: OrderDataType['summaryInfo'] }) => {
+const OrderSummaryInfo = async ({ summaryInfo }: { summaryInfo: OrderDataType['summaryInfo'] }) => {
   const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { subtotal, shipping, tax, discounts, grandTotal, handlingCost } = summaryInfo;
@@ -36,9 +36,10 @@ const OrderSummaryInfo = async ({ summaryInfo, }: { summaryInfo: OrderDataType['
 
   return (
     <>
-      <div className="flex w-full  xl:w-1/2 flex-col gap-[3px] text-[16px] font-normal leading-[32px] tracking-[0.5px]">
+      <div className="flex w-full flex-col gap-[3px] text-[16px] font-normal leading-[32px] tracking-[0.5px] xl:w-1/2">
         <div className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#002A37]">
-          {t('orderTotal')}: {format.number(grandTotal.value, {
+          {t('orderTotal')}:{' '}
+          {format.number(grandTotal.value, {
             style: 'currency',
             currency: grandTotal.currencyCode,
           })}
@@ -50,7 +51,8 @@ const OrderSummaryInfo = async ({ summaryInfo, }: { summaryInfo: OrderDataType['
               {format.number(subtotal.value, {
                 style: 'currency',
                 currency: subtotal.currencyCode,
-              })}</div>
+              })}
+            </div>
           </div>
           {nonCouponDiscountTotal.value > 0 && (
             <div className="flex justify-between border-b border-b-[#E8E7E7]">
@@ -77,15 +79,16 @@ const OrderSummaryInfo = async ({ summaryInfo, }: { summaryInfo: OrderDataType['
             </div>
           ))}
           {youSave > 0 && (
-          <div className="flex justify-between border-b border-b-[#E8E7E7]">
-            <div>You Save</div>
-            <div className="text-[#008BB7]">
-              {format.number(youSave, {
-                style: 'currency',
-                currency: subtotal.currencyCode,
-              })}
+            <div className="flex justify-between border-b border-b-[#E8E7E7]">
+              <div>You Save</div>
+              <div className="text-[#008BB7]">
+                {format.number(youSave, {
+                  style: 'currency',
+                  currency: subtotal.currencyCode,
+                })}
+              </div>
             </div>
-          </div>)}
+          )}
           <div className="flex justify-between border-b border-b-[#E8E7E7]">
             <div>{t('orderSubtotal')}</div>
             <div>
@@ -97,10 +100,13 @@ const OrderSummaryInfo = async ({ summaryInfo, }: { summaryInfo: OrderDataType['
           </div>
           <div className="flex justify-between border-b border-b-[#E8E7E7]">
             <div>{t('orderShipping')}</div>
-            <div>{shipping.value > 0 ? format.number(shipping.value, {
-              style: 'currency',
-              currency: shipping.currencyCode,
-            }) : 'FREE'}
+            <div>
+              {shipping.value > 0
+                ? format.number(shipping.value, {
+                    style: 'currency',
+                    currency: shipping.currencyCode,
+                  })
+                : 'FREE'}
             </div>
           </div>
           {handlingCost.value > 0 && (
@@ -253,7 +259,15 @@ const ShippingInfo = async ({
   );
 };
 
-export const OrderDetails = async ({ data, icon, userEmail }: { data: OrderDataType, icon:any, userEmail? :string }) => {
+export const OrderDetails = async ({
+  data,
+  icon,
+  userEmail,
+}: {
+  data: OrderDataType;
+  icon: any;
+  userEmail?: string;
+}) => {
   const t = await getTranslations('Account.Orders');
   const format = await getFormatter();
   const { orderState, summaryInfo, consignments, paymentInfo } = data;
@@ -264,49 +278,54 @@ export const OrderDetails = async ({ data, icon, userEmail }: { data: OrderDataT
     (accumulator, item) => accumulator + item?.quantity,
     sumWithInitial,
   );
-  const breadcrumbs: any = [{
-    label: "Orders",
-    href: '/account/orders'
-  }, {
-    label: "Order #" + orderState?.orderId,
-    href: "#"
-  }];
+  const breadcrumbs: any = [
+    {
+      label: 'Orders',
+      href: '/account/orders',
+    },
+    {
+      label: 'Order #' + orderState?.orderId,
+      href: '#',
+    },
+  ];
   let shippingAddressData = shippingConsignments?.[0]?.shippingAddress;
 
   return (
-    <div className="mt-[1rem] mb-[2rem] w-[100%] flex justify-center text-[#353535]">
-      <div className="flex w-full mx-5 xl:mx-0 xl:w-[88%] flex-col gap-[20px]">
-        <div className='hidden xl:block'>
+    <div className="mb-[2rem] mt-[1rem] flex w-[100%] justify-center text-[#353535]">
+      <div className="mx-5 flex w-full flex-col gap-[20px] xl:mx-0 xl:w-[88%]">
+        <div className="hidden xl:block">
           <ComponentsBreadcrumbs breadcrumbs={breadcrumbs} />
         </div>
         <div className="flex items-center justify-center gap-[5px] xl:hidden">
-            <div>
-              <BcImage
-                src={chevronRight}
-                width={8}
-                height={12}
-                alt="Chevron Right"
-                unoptimized={true}
-              />
-            </div>
-            <CustomLink
-              href="/account/order"
-              className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#006380]"
-            >
-              Account Center
-            </CustomLink>
+          <div>
+            <BcImage
+              src={chevronRight}
+              width={8}
+              height={12}
+              alt="Chevron Right"
+              unoptimized={true}
+            />
           </div>
+          <CustomLink
+            href="/account/order"
+            className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#006380]"
+          >
+            Account Center
+          </CustomLink>
+        </div>
         <div className="flex flex-col gap-[30px]">
-          <div className="flex flex-col xl:flex-row gap-[10px] items-center justify-between">
-            <div className="text-[24px] font-normal leading-[32px]">Order #{orderState?.orderId}</div>
-            <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#008BB7] flex gap-[10px] items-center">
+          <div className="flex flex-col items-center justify-between gap-[10px] xl:flex-row">
+            <div className="text-[24px] font-normal leading-[32px]">
+              Order #{orderState?.orderId}
+            </div>
+            <div className="flex items-center gap-[10px] text-[16px] font-normal leading-[32px] tracking-[0.15px] text-[#008BB7]">
               <PrintInvoice orderId={orderState?.orderId} key={orderState?.orderId} />
             </div>
           </div>
           <StillNeedContactUs icon={icon} />
           <div className="flex flex-col gap-[30px]">
             <div>
-              <p className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#000000] text-center xl:text-left">
+              <p className="text-center text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#000000] xl:text-left">
                 Items In This Order ({noOfItems})
               </p>
             </div>
@@ -341,7 +360,7 @@ export const OrderDetails = async ({ data, icon, userEmail }: { data: OrderDataT
                       })}
                     </ul>
                   </>
-                )
+                );
               })}
             </div>
           </div>
@@ -350,14 +369,16 @@ export const OrderDetails = async ({ data, icon, userEmail }: { data: OrderDataT
               {t('orderSummary')}
             </div>
           </div>
-          <div className="flex flex-col xl:flex-row justify-between gap-[30px] -mt-[10px] xl:mt-0">
+          <div className="-mt-[10px] flex flex-col justify-between gap-[30px] xl:mt-0 xl:flex-row">
             <div className="flex w-1/2 flex-col gap-[20px] xl:gap-[30px]">
               <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
                 <div>
-                  {t('confirmationNumber')}: <span className="font-[700]">{orderState?.orderId}</span>
+                  {t('confirmationNumber')}:{' '}
+                  <span className="font-[700]">{orderState?.orderId}</span>
                 </div>
                 <div>
-                  Order Date: <span className="font-[700]">
+                  Order Date:{' '}
+                  <span className="font-[700]">
                     {format.dateTime(new Date(orderState?.orderDate?.utc), {
                       year: 'numeric',
                       month: 'numeric',
@@ -380,10 +401,15 @@ export const OrderDetails = async ({ data, icon, userEmail }: { data: OrderDataT
                     {t('shippingAddress')}
                   </div>
                   <div>
-                    <div>{shippingAddressData?.firstName} {shippingAddressData?.lastName}</div>
+                    <div>
+                      {shippingAddressData?.firstName} {shippingAddressData?.lastName}
+                    </div>
                     <div>{shippingAddressData?.address1}</div>
                     <div>{shippingAddressData?.city}</div>
-                    <div>{shippingAddressData?.stateOrProvince}, {shippingAddressData?.countryCode} {shippingAddressData?.postalCode}</div>
+                    <div>
+                      {shippingAddressData?.stateOrProvince}, {shippingAddressData?.countryCode}{' '}
+                      {shippingAddressData?.postalCode}
+                    </div>
                   </div>
                 </div>
                 <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">
@@ -391,10 +417,17 @@ export const OrderDetails = async ({ data, icon, userEmail }: { data: OrderDataT
                     {t('billingAddress')}
                   </div>
                   <div>
-                    <div>{paymentInfo?.billingAddress?.firstName} {paymentInfo?.billingAddress?.lastName}</div>
+                    <div>
+                      {paymentInfo?.billingAddress?.firstName}{' '}
+                      {paymentInfo?.billingAddress?.lastName}
+                    </div>
                     <div>{paymentInfo?.billingAddress?.address1}</div>
                     <div>{paymentInfo?.billingAddress?.city}</div>
-                    <div>{paymentInfo?.billingAddress?.stateOrProvince}, {paymentInfo?.billingAddress?.countryCode} {paymentInfo?.billingAddress?.postalCode}</div>
+                    <div>
+                      {paymentInfo?.billingAddress?.stateOrProvince},{' '}
+                      {paymentInfo?.billingAddress?.countryCode}{' '}
+                      {paymentInfo?.billingAddress?.postalCode}
+                    </div>
                   </div>
                 </div>
                 {/*<div className="text-[14px] font-normal leading-[24px] tracking-[0.25px] text-black">

@@ -26,6 +26,7 @@ import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_componen
 import { getWishlists } from '~/components/graphql-apis';
 
 import { CloseOut } from '~/app/[locale]/(default)/product/[slug]/_components/closeOut';
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 interface OptionValue {
   entityId: number;
@@ -122,6 +123,7 @@ interface MetaField {
   value: string;
   namespace: string;
 }
+
 interface PriceMaxRule {
   price_max_activation_code_id: number;
   activation_code: string;
@@ -136,26 +138,29 @@ interface PriceMaxRule {
   status: boolean;
 }
 
-const ProductCard = ({
+interface ProductCardProps {
+  item: WishlistItem;
+  wishlistEntityId: number;
+  onDelete: (productId: number, wishlistItemId: number, variantEntityId: number) => void;
+  discountRules: any;
+  priceMaxRules: PriceMaxRule[] | null;
+}
+
+const ProductCard: React.FC<ProductCardProps> = ({
   item,
   wishlistEntityId,
   onDelete,
   discountRules,
-  priceMaxRules, // Add priceMaxRules to props
-}: {
-  item: WishlistItem;
-  wishlistEntityId: number;
-  onDelete: (productId: number, wishlistItemId: number) => void;
-  discountRules: any;
-  priceMaxRules: PriceMaxRule[] | null; // Add type
+  priceMaxRules,
 }) => {
   const format = useFormatter();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isDeleting, setIsDeleting] = useState<boolean>(false);
   const [updatedWishlist, setUpdatedWishlist] = useState<any[]>([]);
   const [promotionsData, setPromotionsData] = useState<any>(null);
-  const [isFreeShipping, setIsFreeShipping] = useState(false);
+  const [isFreeShipping, setIsFreeShipping] = useState<boolean>(false);
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
-  const [hasActivePromotion, setHasActivePromotion] = useState(false);
+  const [hasActivePromotion, setHasActivePromotion] = useState<boolean>(false);
   const [variantDetails, setVariantDetails] = useState<{
     mpn: string;
     calculated_price: number;
@@ -169,42 +174,38 @@ const ProductCard = ({
   const normalizeSku = (sku: string): string => {
     // Remove only trailing letters after numbers
     const normalized = sku.replace(/[A-Za-z]+$/, '');
-    console.log(`SKU Normalization:
-    Original SKU: ${sku}
-    Normalized SKU: ${normalized}
-  `);
     return normalized;
   };
 
   const doesSkuMatch = (productSku: string, ruleSku: string): boolean => {
-    console.log(`\nStarting SKU Comparison:
-    Product SKU: ${productSku}
-    Rule SKU: ${ruleSku}`);
-
     const normalizedProductSku = normalizeSku(productSku);
     const normalizedRuleSku = normalizeSku(ruleSku);
-
     const matches = normalizedProductSku === normalizedRuleSku;
-
-    console.log(`Match Result:
-    Normalized Product SKU: ${normalizedProductSku}
-    Normalized Rule SKU: ${normalizedRuleSku}
-    Matches: ${matches}
-  `);
-
     return matches;
   };
 
-  const handleDeleteWishlist = () => {
-    onDelete(item.product.entityId, item.entityId);
+  const handleDeleteWishlist = (): void => {
+    try {
+      setIsDeleting(true);
+      toast.loading('Removing item...');
+
+      // Add to global deletion tracking
+      onDelete(item.product.entityId, item.entityId, item.variantEntityId);
+
+      toast.dismiss();
+      toast.success('Item removed from favorites');
+    } catch (error) {
+      console.error('Error removing wishlist item:', error);
+      toast.dismiss();
+      toast.error('Failed to remove item');
+    } finally {
+      setIsDeleting(false);
+    }
   };
 
   useEffect(() => {
-    const fetchVariantDetails = async () => {
+    const fetchVariantDetails = async (): Promise<void> => {
       try {
-        console.log('\n=== Starting Price Calculations ===');
-        console.log('Product SKU:', item.product.sku);
-
         const allVariantData = await GetVariantsByProductId(item.productEntityId);
         const variant = item.variantEntityId
           ? allVariantData.find((v: any) => v.id === item.variantEntityId)
@@ -219,7 +220,6 @@ const ProductCard = ({
             );
 
             if (matchingRule) {
-              console.log('Found Price Max Rule:', matchingRule);
               const basePrice =
                 item.product.prices.retailPrice?.value || item.product.prices.basePrice.value;
               const discountPercent = parseInt(matchingRule.discount) / 100;
@@ -238,18 +238,11 @@ const ProductCard = ({
                   },
                 },
               ]);
-
-              console.log('Price Max Calculation:', {
-                originalPrice: basePrice,
-                discountPercent: matchingRule.discount + '%',
-                finalPrice,
-              });
             }
           }
 
           // If no price max discount, calculate regular price
           if (!hasPriceMaxDiscount) {
-            console.log('Calculating Regular Price');
             const regularPriceResult = await calculateProductPrice(
               item.product,
               'wishlist',
@@ -257,7 +250,6 @@ const ProductCard = ({
               categoryIds,
             );
             setUpdatedWishlist(regularPriceResult);
-            console.log('Regular Price Result:', regularPriceResult);
           }
 
           // Set variant details
@@ -285,20 +277,26 @@ const ProductCard = ({
       }
     };
 
-    const fetchData = async () => {
+    const fetchData = async (): Promise<void> => {
       try {
         const promotions = await getActivePromotions(true);
         const freeShipping = await CheckProductFreeShipping(item.productEntityId.toString());
-        const cats =
-          item.product?.categories?.edges?.map(
-            (edge: { node: { entityId: any } }) => edge.node.entityId,
-          ) || [];
+        const categories =
+          item?.product?.categories &&
+          (removeEdgesAndNodes(item?.product?.categories) as CategoryNode[]);
+        const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
+          const longestLength = longest?.breadcrumbs?.edges?.length || 0;
+          const currentLength = current?.breadcrumbs?.edges?.length || 0;
+          return currentLength > longestLength ? current : longest;
+        }, categories[0]);
 
+        const categoryId =
+          categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
         const hasPromo = promotions && (Object.keys(promotions).length > 0 || freeShipping);
 
         setPromotionsData(promotions);
         setIsFreeShipping(freeShipping);
-        setCategoryIds(cats);
+        setCategoryIds(categoryId);
         setHasActivePromotion(hasPromo);
       } catch (error) {
         console.error('Error fetching promotions data:', error);
@@ -308,18 +306,7 @@ const ProductCard = ({
 
     fetchData();
     fetchVariantDetails();
-  }, [item, discountRules, priceMaxRules]);
-
-  function handlePriceUpdatedProduct(product: any[]) {
-    if (Array.isArray(product) && JSON.stringify(updatedWishlist) !== JSON.stringify(product)) {
-      setUpdatedWishlist((prevWishlist) => {
-        if (JSON.stringify(prevWishlist) !== JSON.stringify(product)) {
-          return product;
-        }
-        return prevWishlist;
-      });
-    }
-  }
+  }, [item, discountRules, priceMaxRules, categoryIds]);
 
   return (
     <div className="flex h-full flex-col">
@@ -340,19 +327,23 @@ const ProductCard = ({
               className="wishlist-product-delete-icon flex w-fit cursor-pointer justify-end rounded-full bg-[#E7F5F8]"
               onClick={handleDeleteWishlist}
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="35"
-                height="35"
-                viewBox="0 0 21 19"
-                fill="none"
-                className="p-[7px]"
-              >
-                <path
-                  d="M10.3257 18.35L8.87568 17.03C3.72568 12.36 0.325684 9.27 0.325684 5.5C0.325684 2.41 2.74568 0 5.82568 0C7.56568 0 9.23568 0.81 10.3257 2.08C11.4157 0.81 13.0857 0 14.8257 0C17.9057 0 20.3257 2.41 20.3257 5.5C20.3257 9.27 16.9257 12.36 11.7757 17.03L10.3257 18.35Z"
-                  fill="#008BB7"
-                />
-              </svg>
+              {isDeleting ? (
+                <Loader2 className="h-[35px] w-[35px] animate-spin p-[7px] text-[#008BB7]" />
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="35"
+                  height="35"
+                  viewBox="0 0 21 19"
+                  fill="none"
+                  className="p-[7px]"
+                >
+                  <path
+                    d="M10.3257 18.35L8.87568 17.03C3.72568 12.36 0.325684 9.27 0.325684 5.5C0.325684 2.41 2.74568 0 5.82568 0C7.56568 0 9.23568 0.81 10.3257 2.08C11.4157 0.81 13.0857 0 14.8257 0C17.9057 0 20.3257 2.41 20.3257 5.5C20.3257 9.27 16.9257 12.36 11.7757 17.03L10.3257 18.35Z"
+                    fill="#008BB7"
+                  />
+                </svg>
+              )}
             </div>
           </div>
 
@@ -403,7 +394,7 @@ const ProductCard = ({
                     )}
                     currency="USD"
                     format={format}
-                    showMSRP={true}
+                    showMSRP={updatedWishlist[0].UpdatePriceForMSRP?.showDecoration}
                     warrantyApplied={false}
                     options={{
                       useAsyncMode: false,
@@ -411,14 +402,13 @@ const ProductCard = ({
                     }}
                     classNames={{
                       root: 'product-price mt-[30px] flex justify-center items-center gap-[0.5em] text-center xl:text-center',
-                      newPrice:
-                        'text-center text-[18px] font-medium leading-8 tracking-[0.15px] text-brand-400',
+                      newPrice: 'text-center text-[18px] font-medium leading-8 tracking-[0.15px]',
                       oldPrice:
                         'inline-flex items-baseline text-center text-[14px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
                       discount:
                         'whitespace-nowrap text-center text-[14px] font-normal leading-8 tracking-[0.15px] text-brand-400',
                       price:
-                        'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px] text-brand-400',
+                        'text-center text-[18px] w-full font-medium leading-8 tracking-[0.15px]',
                       msrp: '-ml-[0.5em] mb-1 text-[10px] text-gray-500',
                     }}
                   />
@@ -458,8 +448,6 @@ const ProductCard = ({
         )}
       </div>
 
-      {/* Inside ProductCard component */}
-
       <form
         onSubmit={async (e) => {
           e.preventDefault();
@@ -467,24 +455,13 @@ const ProductCard = ({
           const formData = new FormData(e.currentTarget);
 
           try {
-            console.log('\n=== Starting Add to Cart Process ===');
-
             // Check if we have a matching price max rule
             const matchingRule = priceMaxRules?.find((rule) =>
               rule.skus.some((ruleSku) => doesSkuMatch(item.product.sku, ruleSku)),
             );
 
-            // Log initial state
-            console.log('Initial State:', {
-              productSku: item.product.sku,
-              originalPrice: variantDetails?.calculated_price,
-              hasMatchingRule: !!matchingRule,
-              discountPercent: matchingRule?.discount,
-            });
-
             // First add item to cart
             const cartResult = await addToCart(formData);
-            console.log('Cart Add Result:', cartResult);
 
             if (cartResult.error) {
               throw new Error(cartResult.error);
@@ -501,24 +478,14 @@ const ProductCard = ({
               const originalPrice = updatedWishlist[0].UpdatePriceForMSRP.originalPrice;
               const discountedPrice = updatedWishlist[0].UpdatePriceForMSRP.updatedPrice;
 
-              console.log('Applying Price Update:', {
-                cartId,
-                productId: item.productEntityId,
-                originalPrice,
-                discountedPrice,
-                discountPercent: matchingRule.discount + '%',
-              });
-
               // Update cart price
-              const priceUpdateResult = await callforMaxPriceRuleDiscountFunction({
+              await callforMaxPriceRuleDiscountFunction({
                 cartId,
                 price: discountedPrice,
                 productId: item.productEntityId.toString(),
                 quantity: 1,
                 originalPrice,
               });
-
-              console.log('Price Update Result:', priceUpdateResult);
             }
 
             toast.success('Item added to cart');
@@ -580,32 +547,74 @@ const ProductCard = ({
   );
 };
 
+interface WishlistProductCardProps {
+  customerGroupDetails: { discount_rules: any };
+  priceMaxRules: PriceMaxRule[] | null;
+}
+
 export function WishlistProductCard({
   customerGroupDetails,
   priceMaxRules,
-}: {
-  customerGroupDetails: { discount_rules: any };
-  priceMaxRules: PriceMaxRule[] | null;
-}): JSX.Element {
-  const [wishlistState, setWishlistState] = useState({
-    wishlistData: null as any,
-    deletedProductsHistory: [] as DeletedProductInfo[],
+}: WishlistProductCardProps): JSX.Element {
+  const [wishlistState, setWishlistState] = useState<{
+    wishlistData: any | null;
+    isLoading: boolean;
+    error: string | null;
+  }>({
+    wishlistData: null,
     isLoading: true,
-    error: null as string | null,
+    error: null,
   });
+
   const router = useRouter();
+  // Fixed to correctly access discount_rules
+  const discountRules = customerGroupDetails?.discount_rules;
 
-  const discountRules = customerGroupDetails?.customerGroupDetails?.discount_rules;
+  // Storage event listener for cross-tab synchronization
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent): void => {
+      if (event.key === manageDeletedProducts.STORAGE_KEY) {
+        // Refresh the wishlist items when deleted items change
+        refreshWishlistItems();
+      }
+    };
 
+    window.addEventListener('storage', handleStorageChange);
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
+  // Filter deleted items from the wishlist data
+  const filterDeletedItems = (items: WishlistItem[]): WishlistItem[] => {
+    if (!items) return [];
+    return items.filter((item) => !manageDeletedProducts.isWishlistItemDeleted(item.entityId));
+  };
+
+  // Refresh wishlist items (filtering out deleted ones)
+  const refreshWishlistItems = useCallback((): void => {
+    setWishlistState((prev) => {
+      if (!prev.wishlistData) return prev;
+
+      const filteredItems = filterDeletedItems(prev.wishlistData.items);
+
+      return {
+        ...prev,
+        wishlistData: {
+          ...prev.wishlistData,
+          items: filteredItems,
+        },
+      };
+    });
+  }, []);
+
+  // Initial data loading
   useEffect(() => {
     let isMounted = true;
 
-    const initializeWishlist = async () => {
+    const initializeWishlist = async (): Promise<void> => {
       try {
-        // Load deletion history
-        const savedHistory = localStorage.getItem('wishlistDeletionHistory');
-        const deletionHistory = savedHistory ? JSON.parse(savedHistory) : [];
-
         // Load wishlist data
         const savedWishlist = localStorage.getItem('selectedWishlist');
         if (!savedWishlist) {
@@ -620,9 +629,14 @@ export function WishlistProductCard({
         );
 
         if (currentWishlist && isMounted) {
-          // Transform items
-          const transformedItems = await Promise.all(
+          // Transform items and filter out deleted ones
+          let transformedItems = await Promise.all(
             currentWishlist.items.map(async (item: any) => {
+              // Skip processing items that are already deleted
+              if (manageDeletedProducts.isWishlistItemDeleted(item.entityId)) {
+                return null;
+              }
+
               const productMetaFields = await GetProductMetaFields(item.productEntityId, '');
 
               return {
@@ -646,26 +660,34 @@ export function WishlistProductCard({
             }),
           );
 
+          // Remove null items (deleted ones)
+          transformedItems = transformedItems.filter((item) => item !== null);
+
           if (isMounted) {
-            setWishlistState((prev) => ({
-              ...prev,
-              wishlistData: {
-                entityId: currentWishlist.entityId,
-                name: currentWishlist.name,
-                items: transformedItems,
-              },
-              deletedProductsHistory: deletionHistory,
+            const updatedWishlist = {
+              entityId: currentWishlist.entityId,
+              name: currentWishlist.name,
+              items: transformedItems,
+            };
+
+            setWishlistState({
+              wishlistData: updatedWishlist,
               isLoading: false,
-            }));
+              error: null,
+            });
+
+            // Update localStorage
+            localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
           }
         }
       } catch (error) {
+        console.error('Failed to load wishlist:', error);
         if (isMounted) {
-          setWishlistState((prev) => ({
-            ...prev,
-            error: 'Failed to load wishlist data',
+          setWishlistState({
+            wishlistData: null,
             isLoading: false,
-          }));
+            error: 'Failed to load wishlist data',
+          });
         }
       }
     };
@@ -677,32 +699,41 @@ export function WishlistProductCard({
     };
   }, [router]);
 
-  const handleDelete = useCallback((productId: number, wishlistItemId: number) => {
-    setWishlistState((prev) => {
-      if (!prev.wishlistData) return prev;
+  // Handle deleting items
+  const handleDelete = useCallback(
+    (productId: number, wishlistItemId: number, variantEntityId: number): void => {
+      // Add to global deleted items tracking
+      manageDeletedProducts.addDeletedProduct(productId, wishlistItemId, variantEntityId);
 
-      manageDeletedProducts.addDeletedProduct(productId, wishlistItemId);
+      // Update local state
+      setWishlistState((prev) => {
+        if (!prev.wishlistData) return prev;
 
-      const updatedItems = prev.wishlistData.items.filter(
-        (item: { entityId: number }) => item.entityId !== wishlistItemId,
-      );
+        // Filter out the deleted item
+        const updatedItems = prev.wishlistData.items.filter(
+          (item: { entityId: number }) => item.entityId !== wishlistItemId,
+        );
 
-      const updatedWishlist = {
-        ...prev.wishlistData,
-        items: updatedItems,
-      };
+        const updatedWishlist = {
+          ...prev.wishlistData,
+          items: updatedItems,
+        };
 
-      localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
+        // Update localStorage
+        localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
 
-      return {
-        ...prev,
-        wishlistData: updatedWishlist,
-      };
-    });
-  }, []);
+        return {
+          ...prev,
+          wishlistData: updatedWishlist,
+        };
+      });
+    },
+    [],
+  );
 
   const { wishlistData, isLoading, error } = wishlistState;
 
+  // Loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -711,14 +742,65 @@ export function WishlistProductCard({
     );
   }
 
+  // Error state
   if (error) {
-    return <div className="flex items-center justify-center p-8 text-red-500">{error}</div>;
+    return (
+      <div className="flex items-center justify-center p-8 text-red-500">
+        <div className="text-center">
+          <p className="mb-4">{error}</p>
+          <Button
+            onClick={() => window.location.reload()}
+            className="bg-[#008BB7] text-white hover:bg-[#007a9e]"
+          >
+            Reload Page
+          </Button>
+        </div>
+      </div>
+    );
   }
 
+  // Empty state
   if (!wishlistData) {
     return <div></div>;
   }
 
+  // Empty wishlist
+  if (wishlistData.items.length === 0) {
+    return (
+      <div className="container m-auto mx-auto mb-12 w-[80%] px-4">
+        <ComponentsBreadcrumbs
+          className="login-div login-breadcrumb mx-auto mb-2 mt-2 hidden px-[1px] lg:block"
+          breadcrumbs={[
+            {
+              label: 'Favorites and Lists',
+              href: '/account/wishlists',
+            },
+            {
+              label: wishlistData?.name || 'Loading...',
+              href: '#',
+            },
+          ]}
+        />
+
+        <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+          <div>
+            <h1 className="mb-2 text-left text-xl font-medium leading-8 tracking-[0.15px] text-black">
+              {wishlistData?.name}
+            </h1>
+            <p className="text-left text-base leading-8 tracking-[0.15px] text-black">0 items</p>
+          </div>
+          <Button
+            variant="secondary"
+            className="h-10 !w-auto bg-[#008BB7] px-6 text-[14px] font-medium uppercase tracking-wider text-white hover:bg-[#007a9e]"
+          >
+            SHARE FAVORITES
+          </Button>
+        </div>
+      </div>
+    );
+  }
+
+  // Render wishlist with items
   return (
     <div className="container m-auto mx-auto mb-12 w-[80%] px-4">
       <ComponentsBreadcrumbs

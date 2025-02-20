@@ -427,8 +427,8 @@ export const calculateProductPrice = async (
     const retailPrice = type === 'accessories' ? product.retail_price : prices?.retailPrice?.value;
     const salePrice = type === 'accessories' ? product.sale_price : prices?.salePrice?.value;
     const basePrice = type === 'accessories' ? product.price : prices?.basePrice?.value;
-    const warrantyPrice = type === 'pdp' && product?.prices?.price;
-    const listPrice = type === 'cart' && product?.listPrice;
+    const warrantyPrice = prices && prices.price ? prices.price : null;
+
     const productId =
       type === 'accessories'
         ? product.product_id
@@ -461,65 +461,68 @@ export const calculateProductPrice = async (
       discount = 0;
     }
 
-    if (type === 'pdp') {
-      if (warrantyPrice.value > updatedPrice) {
-        updatedPrice = warrantyPrice.value;
+    if (type === 'pdp' || type === "flyout") {
+      if (warrantyPrice.value*quantity > updatedPrice) {
+        updatedPrice = warrantyPrice.value*quantity;
         warrantyApplied = true;
       }
-    } else if (type === 'cart') {
-      if (listPrice?.value >= updatedPrice) {
-        updatedPrice = listPrice.value;
-        warrantyApplied = listPrice.value > updatedPrice;
-      }
     }
-
     if (discountRules && Array.isArray(discountRules) && discountRules.length > 0) {
-      discountRules.forEach(
-        (rule: {
-          amount: string;
-          type: string;
-          category_id: string;
-          method: string;
-          product_id: string;
-        }) => {
-          let amount = Math.round(parseInt(rule.amount, 10));
-          if (
-            rule.type === 'category' &&
-            rule.category_id &&
-            categoryIds?.some((id: number) => id === parseInt(rule.category_id, 10))
-          ) {
-            if (rule.method === 'price') {
-              updatedPrice -= amount;
-            } else if (rule.method === 'percent') {
-              updatedPrice -= (updatedPrice * amount) / 100;
-            } else if (rule.method === 'fixed') {
-              updatedPrice = amount;
-            }
-          } else if (
-            rule.type === 'product' &&
-            rule.product_id &&
-            productId === parseInt(rule.product_id, 10)
-          ) {
-            if (rule.method === 'price') {
-              updatedPrice -= amount;
-            } else if (rule.method === 'percent') {
-              updatedPrice -= (updatedPrice * amount) / 100;
-            } else if (rule.method === 'fixed') {
-              updatedPrice = amount;
-            }
-          } else if (rule.type === 'all') {
-            if (rule.method === 'price') {
-              updatedPrice -= amount;
-            } else if (rule.method === 'percent') {
-              updatedPrice -= (updatedPrice * amount) / 100;
-            } else if (rule.method === 'fixed') {
-              updatedPrice = amount;
-            }
-          }
-          discount = getDiscountPercentage(originalPrice, updatedPrice);
-          hasDiscount = originalPrice > updatedPrice;
-        },
+      const productLevelDiscounts = discountRules.filter(
+        (eachItem: any) => eachItem.type === 'product',
       );
+      const categoryLevelDiscounts = discountRules.filter(
+        (eachItem: any) => eachItem.type === 'category',
+      );
+      const storeWideDiscounts = discountRules.filter((eachItem: any) => eachItem.type === 'all');
+
+      let isProductDiscountApplied = false;
+      let isCategoryDiscountApplied = false;
+      let isStoreWideDiscountApplied = false;
+
+      const applyDiscount = (method: string, amount: number) => {
+        if (method === 'price') {
+          updatedPrice -= amount;
+        } else if (method === 'percent') {
+          updatedPrice -= (updatedPrice * amount) / 100;
+        } else if (method === 'fixed') {
+          updatedPrice = amount;
+        }
+        discount = getDiscountPercentage(originalPrice, updatedPrice);
+        hasDiscount = originalPrice > updatedPrice;
+      };
+
+      if (!isProductDiscountApplied) {
+        productLevelDiscounts &&
+          productLevelDiscounts.forEach((rule: any) => {
+            if (rule.product_id && productId === parseInt(rule.product_id, 10)) {
+              let amount = Math.round(parseInt(rule.amount, 10));
+              applyDiscount(rule.method, amount);
+              isProductDiscountApplied = true;
+            }
+          });
+      }
+      if (!isProductDiscountApplied && !isCategoryDiscountApplied) {
+        categoryLevelDiscounts &&
+          categoryLevelDiscounts.forEach((rule: any) => {
+            if (
+              rule.category_id &&
+              categoryIds?.some((id: number) => id === parseInt(rule.category_id, 10))
+            ) {
+              let amount = Math.round(parseInt(rule.amount, 10));
+              applyDiscount(rule.method, amount);
+              isCategoryDiscountApplied = true;
+            }
+          });
+      }
+      if (!isProductDiscountApplied && !isCategoryDiscountApplied && !isStoreWideDiscountApplied) {
+        storeWideDiscounts &&
+          storeWideDiscounts.forEach((rule: any) => {
+            let amount = Math.round(parseInt(rule.amount, 10));
+            applyDiscount(rule.method, amount);
+            isStoreWideDiscountApplied = true;
+          });
+      }
     }
 
     const convertedObject = {
@@ -541,6 +544,7 @@ export const calculateProductPrice = async (
 
   return convertedPrices;
 };
+
 export const checkCouponCodeIsApplied = async (checkoutData: any) => {
   let couponCodeArray: any = checkoutData?.coupons;
   let couponIsAvailable: number = 0;
@@ -548,7 +552,7 @@ export const checkCouponCodeIsApplied = async (checkoutData: any) => {
     couponIsAvailable = 1;
   }
   return couponIsAvailable;
-}
+};
 
 export const zeroTaxCalculation = async (cartObject: any) => {
   let checkoutData: any = cartObject?.checkout;
@@ -593,7 +597,12 @@ export const zeroTaxCalculation = async (cartObject: any) => {
       const getCartZTCpn = cookieStore.get('ztcpn_data')?.value;
       if (!getCartZTCpn) {
         let couponCodeZerotax: string = couponAppliedData?.code + '_' + generateRandomString(8);
-        let createPromotionData = await generateCouponPromotion(finalDiscountAmount, postDataArray, couponCodeZerotax, 'Zero_Tax_Addon_');
+        let createPromotionData = await generateCouponPromotion(
+          finalDiscountAmount,
+          postDataArray,
+          couponCodeZerotax,
+          'Zero_Tax_Addon_',
+        );
         if (createPromotionData?.data?.id) {
           await generateCouponCodeInPromotion(couponCodeZerotax, createPromotionData?.data?.id);
           await deleteCouponCodeFromCart(cartId, couponAppliedData?.code);
@@ -606,9 +615,14 @@ export const zeroTaxCalculation = async (cartObject: any) => {
           };
         }
       } else {
-        let promoData = (getCartZTCpn) ? JSON.parse(getCartZTCpn) : [];
+        let promoData = getCartZTCpn ? JSON.parse(getCartZTCpn) : [];
         if (promoData?.id) {
-          let updatePromotionData = await updateCouponPromotion(finalDiscountAmount, postDataArray, promoData?.id, 'Zero_Tax_Addon_');
+          let updatePromotionData = await updateCouponPromotion(
+            finalDiscountAmount,
+            postDataArray,
+            promoData?.id,
+            'Zero_Tax_Addon_',
+          );
           if (updatePromotionData?.data?.id) {
             return {
               id: updatePromotionData?.data?.id,
@@ -650,21 +664,20 @@ export const floorPriceCalculation = async (cartObject: any) => {
   });
   let floorPercentUrl = process.env.COMMON_SETTING_URL + 'api/get-floor-price';
   try {
-    let data = await fetch(floorPercentUrl,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          "brand_ids": brandArrayIds,
-          "channel_id": process.env.BIGCOMMERCE_CHANNEL_ID
-        }),
-        next: {
-          revalidate: 3600,
-        },
+    let data = await fetch(floorPercentUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    ).then((res) => res.json())
+      body: JSON.stringify({
+        brand_ids: brandArrayIds,
+        channel_id: process.env.BIGCOMMERCE_CHANNEL_ID,
+      }),
+      next: {
+        revalidate: 3600,
+      },
+    })
+      .then((res) => res.json())
       .then((jsonData) => {
         return jsonData;
       });
@@ -674,24 +687,32 @@ export const floorPriceCalculation = async (cartObject: any) => {
       let discountAmountItemWise: any = 0;
       couponAppliedData = checkoutData?.coupons?.[0];
       cartObject?.cart?.lineItems.physicalItems?.forEach((item: any) => {
-        let productVariants: any = (item?.baseCatalogProduct?.variants) ? removeEdgesAndNodes(item?.baseCatalogProduct?.variants) : [];
-        let currentProductVariant: any = productVariants?.filter((variant: any) => item?.variantEntityId == variant?.entityId);
+        let productVariants: any = item?.baseCatalogProduct?.variants
+          ? removeEdgesAndNodes(item?.baseCatalogProduct?.variants)
+          : [];
+        let currentProductVariant: any = productVariants?.filter(
+          (variant: any) => item?.variantEntityId == variant?.entityId,
+        );
         let couponAmountData: any = item?.couponAmount;
-        let itemCouponAmount: number = (couponAmountData?.value > 0) ? couponAmountData?.value : 0;
+        let itemCouponAmount: number = couponAmountData?.value > 0 ? couponAmountData?.value : 0;
         let itemProductPrice: any = item?.extendedSalePrice?.value;
         if (currentProductVariant?.[0]?.metafields) {
           let productVariantMeta: any = removeEdgesAndNodes(currentProductVariant?.[0]?.metafields);
-          if (productVariantMeta?.[0]?.key == "adjusted_cost") {
-            let getBrandFactor: any = Object.values(data?.output)?.find((factor: any) => factor?.brand_id == item?.baseCatalogProduct?.brand?.entityId);
+          if (productVariantMeta?.[0]?.key == 'adjusted_cost') {
+            let getBrandFactor: any = Object.values(data?.output)?.find(
+              (factor: any) => factor?.brand_id == item?.baseCatalogProduct?.brand?.entityId,
+            );
             if (getBrandFactor?.floor_price) {
-              let floorPrice: any = (getBrandFactor?.floor_price * productVariantMeta?.[0]?.value * item?.quantity);
+              let floorPrice: any =
+                getBrandFactor?.floor_price * productVariantMeta?.[0]?.value * item?.quantity;
               let isFloorCheck: number = 0;
               let remainDiscount: number = 0;
               let availableDiscount: number = 0;
-              if (floorPrice > (itemProductPrice - itemCouponAmount)) {
+              if (floorPrice > itemProductPrice - itemCouponAmount) {
                 discountAmountItemWise = (itemProductPrice - floorPrice)?.toFixed(2);
-                discountAmountItemWise = (discountAmountItemWise > 0) ? discountAmountItemWise * 1 : 0;
-                remainDiscount = (itemCouponAmount - discountAmountItemWise);
+                discountAmountItemWise =
+                  discountAmountItemWise > 0 ? discountAmountItemWise * 1 : 0;
+                remainDiscount = itemCouponAmount - discountAmountItemWise;
                 availableDiscount = 0;
                 priceFloorHappened = 1;
                 isFloorCheck = 1;
@@ -699,8 +720,10 @@ export const floorPriceCalculation = async (cartObject: any) => {
                 discountAmountItemWise = (itemProductPrice - floorPrice)?.toFixed(2);
                 remainDiscount = 0;
                 availableDiscount = Math.abs(itemCouponAmount - discountAmountItemWise);
-                discountAmountItemWise = (discountAmountItemWise > itemCouponAmount) ? itemCouponAmount : discountAmountItemWise;
-
+                discountAmountItemWise =
+                  discountAmountItemWise > itemCouponAmount
+                    ? itemCouponAmount
+                    : discountAmountItemWise;
               }
               sumOfCouponAmount += discountAmountItemWise;
               let remainDisc: any = remainDiscount?.toFixed(2);
@@ -713,11 +736,11 @@ export const floorPriceCalculation = async (cartObject: any) => {
                 floorPrice: floorPrice,
                 itemPrice: itemProductPrice,
                 remainDiscount: Math.abs(remainDisc),
-                availableDiscount: availableDiscount
+                availableDiscount: availableDiscount,
               });
             }
           } else {
-            sumOfCouponAmount += (itemCouponAmount * 1);
+            sumOfCouponAmount += itemCouponAmount * 1;
             productDataArray.push({
               id: item?.entityId,
               discounted_amount: itemCouponAmount?.toFixed(2),
@@ -726,11 +749,11 @@ export const floorPriceCalculation = async (cartObject: any) => {
               isFloorHit: 0,
               itemPrice: itemProductPrice,
               remainDiscount: Math.abs(itemCouponAmount),
-              availableDiscount: 0
+              availableDiscount: 0,
             });
           }
         } else {
-          sumOfCouponAmount += (itemCouponAmount * 1);
+          sumOfCouponAmount += itemCouponAmount * 1;
           productDataArray.push({
             id: item?.entityId,
             discounted_amount: itemCouponAmount?.toFixed(2),
@@ -739,20 +762,29 @@ export const floorPriceCalculation = async (cartObject: any) => {
             isFloorHit: 0,
             itemPrice: itemProductPrice,
             remainDiscount: Math.abs(itemCouponAmount),
-            availableDiscount: 0
+            availableDiscount: 0,
           });
         }
       });
     }
     if (priceFloorHappened == 1) {
-      let priceFloorApportion: any = await apportionateRemainingDiscount(productDataArray, couponAppliedData?.discountedAmount?.value, sumOfCouponAmount);
+      let priceFloorApportion: any = await apportionateRemainingDiscount(
+        productDataArray,
+        couponAppliedData?.discountedAmount?.value,
+        sumOfCouponAmount,
+      );
       if (priceFloorApportion?.length > 0) {
         const cookieStore = await getCookieData();
         const getCartPFLCpn = cookieStore.get('pr_flr_data')?.value;
         let finalDiscountAmount: any = couponAppliedData?.discountedAmount?.value;
         let couponCodePFCode: string = couponAppliedData?.code + '_' + generateRandomString(8);
         if (!getCartPFLCpn) {
-          let createPromotionData = await generateCouponPromotion(finalDiscountAmount, priceFloorApportion, couponCodePFCode, couponAppliedData?.code + '_');
+          let createPromotionData = await generateCouponPromotion(
+            finalDiscountAmount,
+            priceFloorApportion,
+            couponCodePFCode,
+            couponAppliedData?.code + '_',
+          );
           if (createPromotionData?.data?.id) {
             await generateCouponCodeInPromotion(couponCodePFCode, createPromotionData?.data?.id);
             await deleteCouponCodeFromCart(cartId, couponAppliedData?.code);
@@ -761,35 +793,44 @@ export const floorPriceCalculation = async (cartObject: any) => {
               id: createPromotionData?.data?.id,
               amount: finalDiscountAmount,
               code: couponCodePFCode,
-              action: 'create'
-            }
+              action: 'create',
+            };
           }
         } else {
-          let promoData = (getCartPFLCpn) ? JSON.parse(getCartPFLCpn) : [];
+          let promoData = getCartPFLCpn ? JSON.parse(getCartPFLCpn) : [];
           if (promoData?.id) {
-            let updatePromotionData = await updateCouponPromotion(finalDiscountAmount, priceFloorApportion, promoData?.id, 'FL_Price_');
+            let updatePromotionData = await updateCouponPromotion(
+              finalDiscountAmount,
+              priceFloorApportion,
+              promoData?.id,
+              'FL_Price_',
+            );
             if (updatePromotionData?.data?.id) {
               return {
                 id: updatePromotionData?.data?.id,
                 amount: finalDiscountAmount,
                 code: promoData?.code,
-                action: 'update'
-              }
+                action: 'update',
+              };
             }
           }
         }
       }
     } else {
       return {
-        'action': 'no_floor'
-      }
+        action: 'no_floor',
+      };
     }
   } catch (error) {
     console.error(error);
   }
-}
+};
 
-export const apportionateRemainingDiscount = async (productDataArray: any, couponAmount: any, sumOfCouponAmount: any) => {
+export const apportionateRemainingDiscount = async (
+  productDataArray: any,
+  couponAmount: any,
+  sumOfCouponAmount: any,
+) => {
   const initialAvailValue = 0;
   const availableDiscountValue = productDataArray?.reduce(
     (accumulator, currentValue) => accumulator + currentValue?.availableDiscount,
@@ -801,20 +842,20 @@ export const apportionateRemainingDiscount = async (productDataArray: any, coupo
     initialRemainValue,
   );
 
-  if(availableDiscountValue > 0 && remainingDiscountValue > 0) {
+  if (availableDiscountValue > 0 && remainingDiscountValue > 0) {
     productDataArray?.forEach((newData: any) => {
       let newDiscountData: any = newData?.remainDiscount;
-      if(newDiscountData > 0) {
+      if (newDiscountData > 0) {
         productDataArray?.forEach((data: any) => {
-          if(data?.availableDiscount > 0) {
-            if(data?.availableDiscount >= newDiscountData) {
+          if (data?.availableDiscount > 0) {
+            if (data?.availableDiscount >= newDiscountData) {
               newData['remainDiscount'] = 0;
             } else if (newDiscountData > data?.availableDiscount) {
               newData['remainDiscount'] -= data?.availableDiscount;
             }
-            if(data?.availableDiscount >= newDiscountData) {
+            if (data?.availableDiscount >= newDiscountData) {
               let availDiscount: any = data?.availableDiscount - newDiscountData;
-              data['discounted_amount'] += (data?.availableDiscount - availDiscount)
+              data['discounted_amount'] += data?.availableDiscount - availDiscount;
               data['availableDiscount'] = availDiscount;
             } else if (newDiscountData > data?.availableDiscount) {
               let availDiscount: any = newDiscountData - data?.availableDiscount;
@@ -826,85 +867,6 @@ export const apportionateRemainingDiscount = async (productDataArray: any, coupo
     });
   }
   return productDataArray;
-}
-
-// delete-product-wishlist
-export const storageUtils = {
-  getFromStorage: (key: string) => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(key);
-    }
-    return null;
-  },
-
-  setToStorage: (key: string, value: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(key, value);
-    }
-  },
-
-  removeFromStorage: (key: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(key);
-    }
-  },
-};
-
-// Initialize deleted products array
-let deletedProducts: DeletedProduct[] = [];
-
-// Initialize from storage if available
-if (typeof window !== 'undefined') {
-  const savedProducts = storageUtils.getFromStorage('deletedWishlistProducts');
-  if (savedProducts) {
-    deletedProducts = JSON.parse(savedProducts);
-  }
-}
-
-export const manageDeletedProducts = {
-  addDeletedProduct: (productId: number, wishlistItemId: number) => {
-    const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
-    // Check if product is already in deleted list
-    const existingIndex = deletedProducts.findIndex(
-      (item: any) => item.productId === productId && item.wishlistItemId === wishlistItemId,
-    );
-
-    if (existingIndex === -1) {
-      deletedProducts.push({
-        productId,
-        wishlistItemId,
-        deletionDate: new Date().toISOString(),
-      });
-
-      localStorage.setItem('deletedProducts', JSON.stringify(deletedProducts));
-      window.dispatchEvent(
-        new StorageEvent('storage', {
-          key: 'deletedProducts',
-        }),
-      );
-    }
-  },
-
-  removeDeletedProduct: (productId: number) => {
-    const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
-    const updatedProducts = deletedProducts.filter((item: any) => item.productId !== productId);
-
-    localStorage.setItem('deletedProducts', JSON.stringify(updatedProducts));
-    window.dispatchEvent(
-      new StorageEvent('storage', {
-        key: 'deletedProducts',
-      }),
-    );
-  },
-
-  getDeletedProducts: () => {
-    return JSON.parse(localStorage.getItem('deletedProducts') || '[]');
-  },
-
-  isProductDeleted: (productId: number) => {
-    const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
-    return deletedProducts.some((item: any) => item.productId === productId);
-  },
 };
 
 // cookie-discounted-price
@@ -929,3 +891,107 @@ export async function callforMaxPriceRuleDiscountFunction(data: any) {
     throw error;
   }
 }
+
+// wishlist-delete-product
+interface DeletedProductRecord {
+  productId: number;
+  wishlistItemId: number;
+  variantEntityId: number | null;
+  deletionDate: string;
+}
+
+export const manageDeletedProducts = {
+  STORAGE_KEY: 'deletedWishlistItems',
+
+  addDeletedProduct: (
+    productId: number,
+    wishlistItemId: number,
+    variantEntityId: number | null = null,
+  ): boolean => {
+    try {
+      const existingItems: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
+
+      const deletionRecord: DeletedProductRecord = {
+        productId: Number(productId),
+        wishlistItemId: Number(wishlistItemId),
+        variantEntityId: variantEntityId ? Number(variantEntityId) : null,
+        deletionDate: new Date().toISOString(),
+      };
+
+      const existingIndex = existingItems.findIndex(
+        (item) => Number(item.wishlistItemId) === Number(wishlistItemId),
+      );
+
+      if (existingIndex >= 0) {
+        existingItems[existingIndex] = {
+          ...existingItems[existingIndex],
+          ...deletionRecord,
+        };
+      } else {
+        existingItems.push(deletionRecord);
+      }
+      localStorage.setItem(manageDeletedProducts.STORAGE_KEY, JSON.stringify(existingItems));
+
+      window.dispatchEvent(
+        new StorageEvent('storage', {
+          key: manageDeletedProducts.STORAGE_KEY,
+        }),
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Failed to add deleted product:', error);
+      return false;
+    }
+  },
+
+  getDeletedItems: (): DeletedProductRecord[] => {
+    try {
+      const items = localStorage.getItem(manageDeletedProducts.STORAGE_KEY);
+      return items ? JSON.parse(items) : [];
+    } catch (error) {
+      console.error('Failed to get deleted items:', error);
+      return [];
+    }
+  },
+
+  isWishlistItemDeleted: (wishlistItemId: number): boolean => {
+    const items: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
+    return items.some((item) => Number(item.wishlistItemId) === Number(wishlistItemId));
+  },
+
+  isProductDeleted: (productId: number): boolean => {
+    const items: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
+    return items.some((item) => Number(item.productId) === Number(productId));
+  },
+
+  restoreWishlistItem: (wishlistItemId: number): boolean => {
+    try {
+      const items: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
+      const updatedItems = items.filter(
+        (item) => Number(item.wishlistItemId) !== Number(wishlistItemId),
+      );
+
+      localStorage.setItem(manageDeletedProducts.STORAGE_KEY, JSON.stringify(updatedItems));
+      window.dispatchEvent(
+        new StorageEvent('storage', {
+          key: manageDeletedProducts.STORAGE_KEY,
+        }),
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Failed to restore wishlist item:', error);
+      return false;
+    }
+  },
+
+  clearAllDeletedItems: (): void => {
+    localStorage.removeItem(manageDeletedProducts.STORAGE_KEY);
+    window.dispatchEvent(
+      new StorageEvent('storage', {
+        key: manageDeletedProducts.STORAGE_KEY,
+      }),
+    );
+  },
+};

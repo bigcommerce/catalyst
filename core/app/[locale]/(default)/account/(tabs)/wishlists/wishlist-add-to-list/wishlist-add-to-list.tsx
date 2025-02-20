@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, memo } from 'react';
+import React, { useState, useEffect, useCallback, memo, useMemo } from 'react';
 import { Heart, X, Check, Loader2, AlertCircle, Plus } from 'lucide-react';
 import { Button } from '~/components/ui/button';
 import { useTranslations } from 'next-intl';
@@ -16,7 +16,12 @@ import heartIcon from '~/public/wishlistIcons/heartIcon.svg';
 import { cn } from '~/lib/utils';
 import Link from 'next/link';
 import { manageDeletedProducts } from '~/components/common-functions';
-
+// Define the interface for added items
+interface AddedWishlistItem {
+  listId: number;
+  productId: number;
+  wishlistItemId: number;
+}
 interface ProductImage {
   url: string;
   altText: string;
@@ -120,40 +125,49 @@ const WishlistAddToList = memo(
       newListName: '',
     });
 
+    // Check if product is currently deleted
+    const isProductDeleted = useCallback(() => {
+      return manageDeletedProducts.isProductDeleted(product.entityId);
+    }, [product.entityId]);
+
+    // Filter function to remove deleted items
+    const filterDeletedItems = useCallback((wishlists: Wishlist[]): Wishlist[] => {
+      return wishlists.map((wishlist) => ({
+        ...wishlist,
+        items: wishlist.items.filter(
+          (item) => !manageDeletedProducts.isWishlistItemDeleted(item.entityId),
+        ),
+      }));
+    }, []);
+
     useEffect(() => {
       let isMounted = true;
 
       const loadWishlists = async () => {
         try {
-          const deletedProducts = manageDeletedProducts.getDeletedProducts();
           const data = await getWishlists({ limit: 50 });
 
           if (data?.wishlists && isMounted) {
+            // First transform the data
             const transformedWishlists = data.wishlists.map((wishlist: any) => ({
               entityId: wishlist.entityId,
               name: wishlist.name,
-              items: wishlist.items
-                .filter((item: any) => {
-                  const isDeleted = deletedProducts.some(
-                    (deletedProduct: any) =>
-                      deletedProduct.productId === item.product.entityId &&
-                      deletedProduct.wishlistItemId === item.entityId,
-                  );
-                  return !isDeleted;
-                })
-                .map((item: any) => ({
-                  entityId: item.entityId,
-                  product: {
-                    ...item.product,
-                    images: item.product.images || [],
-                    variants: item.product.variants || { edges: [] },
-                  },
-                })),
+              items: wishlist.items.map((item: any) => ({
+                entityId: item.entityId,
+                product: {
+                  ...item.product,
+                  images: item.product.images || [],
+                  variants: item.product.variants || { edges: [] },
+                },
+              })),
             }));
+
+            // Then filter out deleted items using the common function
+            const filteredWishlists = filterDeletedItems(transformedWishlists);
 
             setWishlistState((prev) => ({
               ...prev,
-              currentWishlists: transformedWishlists,
+              currentWishlists: filteredWishlists,
             }));
           }
         } catch (error) {
@@ -161,9 +175,10 @@ const WishlistAddToList = memo(
         }
       };
 
-      // Handle storage changes
+      // Handle storage changes from other components
       const handleStorageChange = (e: StorageEvent) => {
-        if (e.key === 'deletedProducts' || e.key === 'selectedWishlist') {
+        if (e.key === manageDeletedProducts.STORAGE_KEY) {
+          // Refresh wishlists when deletion events occur in other components
           loadWishlists();
         }
       };
@@ -183,7 +198,7 @@ const WishlistAddToList = memo(
         window.removeEventListener('storage', handleStorageChange);
         document.body.style.overflow = 'unset';
       };
-    }, [uiState.isOpen]);
+    }, [uiState.isOpen, filterDeletedItems]);
 
     const handleHeartClick = useCallback(async () => {
       const data = await getWishlists({ limit: 1 });
@@ -284,6 +299,7 @@ const WishlistAddToList = memo(
           const isExistingItem = wishlist.items.some(
             (item) => item.product.entityId === product.entityId,
           );
+
           if (isExistingItem) {
             setUiState((prev) => ({
               ...prev,
@@ -296,6 +312,7 @@ const WishlistAddToList = memo(
           }
 
           if (isPendingAdd) {
+            // Remove from pending items
             setWishlistState((prev) => ({
               ...prev,
               tempAddedItems: prev.tempAddedItems.filter(
@@ -312,6 +329,7 @@ const WishlistAddToList = memo(
               message: null,
             }));
           } else {
+            // Add to pending items
             const productToAdd = {
               listId: wishlist.entityId,
               product: {
@@ -332,13 +350,14 @@ const WishlistAddToList = memo(
               justAddedToList: wishlist.entityId,
               message: null,
             }));
-          }
 
-          console.log('Updated tempAddedItems:', {
-            isPendingAdd,
-            wishlistId: wishlist.entityId,
-            productId: product.entityId,
-          });
+            // If this product was previously deleted, we should restore it
+            if (isProductDeleted()) {
+              // Note: We don't actually remove from deleted products yet
+              // This happens when we save
+              console.log('Product was previously deleted, will be restored on save');
+            }
+          }
         } catch (error) {
           console.error('Error toggling wishlist item:', error);
           setUiState((prev) => ({
@@ -356,8 +375,16 @@ const WishlistAddToList = memo(
           }));
         }
       },
-      [product, uiState.loadingListId, uiState.isAddToListLoading, wishlistState.tempAddedItems],
+      [
+        product,
+        uiState.loadingListId,
+        uiState.isAddToListLoading,
+        wishlistState.tempAddedItems,
+        isProductDeleted,
+      ],
     );
+
+    // Fix for WishlistAddToList handleSave function
 
     const handleSave = useCallback(async () => {
       const data = await getWishlists({ limit: 1 });
@@ -372,7 +399,8 @@ const WishlistAddToList = memo(
       }));
 
       try {
-        const successfullyAddedItems: { listId: number; productId: number }[] = [];
+        // Properly typed array
+        const successfullyAddedItems: AddedWishlistItem[] = [];
 
         for (const item of wishlistState.tempAddedItems) {
           try {
@@ -383,11 +411,35 @@ const WishlistAddToList = memo(
             );
 
             if (result.status === 'success') {
-              successfullyAddedItems.push({
+              const addedItem: AddedWishlistItem = {
                 listId: item.listId,
                 productId: item.product.entityId,
-              });
-              manageDeletedProducts.removeDeletedProduct(item.product.entityId);
+                wishlistItemId: result.data?.entityId || Date.now(),
+              };
+              successfullyAddedItems.push(addedItem);
+
+              // CRITICAL FIX: Check if this product was previously deleted
+              if (manageDeletedProducts.isProductDeleted(item.product.entityId)) {
+                console.log(`Restoring previously deleted product: ${item.product.entityId}`);
+
+                // We need to find all deleted items with this product ID and restore them
+                const deletedItems = manageDeletedProducts.getDeletedItems();
+                const itemsToRestore = deletedItems.filter(
+                  (deletedItem) => deletedItem.productId === item.product.entityId,
+                );
+
+                // Restore each item that matches this product
+                for (const itemToRestore of itemsToRestore) {
+                  manageDeletedProducts.restoreWishlistItem(itemToRestore.wishlistItemId);
+                }
+
+                // Dispatch storage event to notify other components
+                window.dispatchEvent(
+                  new StorageEvent('storage', {
+                    key: manageDeletedProducts.STORAGE_KEY,
+                  }),
+                );
+              }
             }
           } catch (error) {
             console.error('Error adding item to wishlist:', error);
@@ -395,34 +447,51 @@ const WishlistAddToList = memo(
           }
         }
 
-        setWishlistState((prev) => ({
-          ...prev,
-          currentWishlists: prev.currentWishlists.map((wishlist) => {
-            const addedToThisWishlist = successfullyAddedItems.find(
+        // Update local wishlist state
+        setWishlistState((prev) => {
+          const updatedWishlists = prev.currentWishlists.map((wishlist) => {
+            const addedToThisWishlist = successfullyAddedItems.filter(
               (item) => item.listId === wishlist.entityId,
             );
 
-            if (addedToThisWishlist) {
-              const newItem = {
-                entityId: Date.now(),
-                product: product,
-                productEntityId: product.entityId,
-                variantEntityId: product.variantEntityId || 0,
-              };
+            if (addedToThisWishlist.length > 0) {
+              // Create new wishlist items for valid additions
+              const newItems: WishlistItem[] = [];
 
-              const itemExists = wishlist.items.some(
-                (item) => item.product.entityId === product.entityId,
-              );
+              for (const addition of addedToThisWishlist) {
+                // Only add if it doesn't exist already
+                const itemExists = wishlist.items.some(
+                  (item) => item.product.entityId === addition.productId,
+                );
 
-              return {
-                ...wishlist,
-                items: itemExists ? wishlist.items : [...wishlist.items, newItem],
-              };
+                if (!itemExists) {
+                  newItems.push({
+                    entityId: addition.wishlistItemId,
+                    product: {
+                      ...product,
+                      entityId: product.entityId,
+                    },
+                  });
+                }
+              }
+
+              // Only update if we have new items
+              if (newItems.length > 0) {
+                return {
+                  ...wishlist,
+                  items: [...wishlist.items, ...newItems],
+                };
+              }
             }
             return wishlist;
-          }),
-          tempAddedItems: [],
-        }));
+          });
+
+          return {
+            ...prev,
+            currentWishlists: updatedWishlists,
+            tempAddedItems: [],
+          };
+        });
 
         setUiState((prev) => ({
           ...prev,
@@ -432,18 +501,29 @@ const WishlistAddToList = memo(
           },
         }));
 
+        // Refresh wishlists after a short delay
         const refreshWishlists = async () => {
           try {
             const refreshedData = await getWishlists({ limit: 50 });
             if (refreshedData?.wishlists) {
+              const transformedWishlists = refreshedData.wishlists.map((wishlist: any) => ({
+                entityId: wishlist.entityId,
+                name: wishlist.name,
+                items: wishlist.items || [],
+              }));
+
+              // No need to filter here since we're about to call handleStorageChange
               setWishlistState((prev) => ({
                 ...prev,
-                currentWishlists: refreshedData.wishlists.map((wishlist: any) => ({
-                  entityId: wishlist.entityId,
-                  name: wishlist.name,
-                  items: wishlist.items || [],
-                })),
+                currentWishlists: transformedWishlists,
               }));
+
+              // Force a storage event to ensure all components update
+              window.dispatchEvent(
+                new StorageEvent('storage', {
+                  key: manageDeletedProducts.STORAGE_KEY,
+                }),
+              );
             }
           } catch (error) {
             console.error('Error refreshing wishlists:', error);
@@ -466,7 +546,7 @@ const WishlistAddToList = memo(
           isSaving: false,
         }));
       }
-    }, [wishlistState.tempAddedItems, product, router, onGuestClick]);
+    }, [wishlistState.tempAddedItems, product, onGuestClick]);
 
     const handleCreateSubmit = useCallback(
       async (e: React.FormEvent<HTMLFormElement>) => {
@@ -500,6 +580,9 @@ const WishlistAddToList = memo(
               name: trimmedName,
               items: [],
             };
+
+            // If the product was previously deleted, we'll restore it when saving
+            const wasDeleted = isProductDeleted();
 
             setWishlistState((prev) => ({
               ...prev,
@@ -538,8 +621,28 @@ const WishlistAddToList = memo(
           }));
         }
       },
-      [wishlistState.newListName, product],
+      [wishlistState.newListName, product, isProductDeleted],
     );
+
+    // Determine button appearance - show special indicator if it's a previously deleted product
+    const heartIndicator = useMemo(() => {
+      const wasDeleted = isProductDeleted();
+
+      // You can modify this to show a different icon/style for previously deleted products
+      return (
+        <BcImage
+          alt="wishlist-heart"
+          width={35}
+          height={35}
+          unoptimized={true}
+          src={heartIcon}
+          className={cn(
+            classNames?.icon || 'h-[30px] w-[30px]',
+            wasDeleted ? 'opacity-60' : '', // Optional: dim the icon if it was deleted
+          )}
+        />
+      );
+    }, [classNames?.icon, isProductDeleted]);
 
     return (
       <div className={cn(classNames?.root || 'relative')}>
@@ -551,19 +654,12 @@ const WishlistAddToList = memo(
               'inline-flex items-center justify-center rounded-full bg-[#F3F4F5] p-[10px] text-sm font-medium text-white focus:outline-none',
           )}
         >
-          <BcImage
-            alt="wishlist-heart"
-            width={35}
-            height={35}
-            unoptimized={true}
-            src={heartIcon}
-            className={cn(classNames?.icon || 'h-[30px] w-[30px]')}
-          />
+          {heartIndicator}
         </button>
 
         {uiState.isOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="relative w-full max-w-[20em] rounded-lg bg-white px-[2.5em] py-[1.5em] pb-[3em] shadow-2xl md:max-w-[35em]">
+            <div className="relative w-full max-w-[20em] bg-white px-[2.5em] py-[1.5em] pb-[3em] shadow-2xl md:max-w-[35em]">
               <button
                 title='Close "Add to List" modal'
                 onClick={handleClose}
@@ -608,7 +704,9 @@ const WishlistAddToList = memo(
                 </div>
               )}
 
-              <h2 className="mb-1 text-center text-xl font-[500] xl:text-left">Add to List</h2>
+              <h2 className="mb-1 text-center text-xl font-[500] xl:text-left">
+                {isProductDeleted() ? 'Restore to List' : 'Add to List'}
+              </h2>
 
               <div className="flex flex-col">
                 <div className="flex-1">
@@ -671,7 +769,7 @@ const WishlistAddToList = memo(
                   >
                     <span className="ml-[2px] mr-2 text-[28px] font-[500] text-[#0C89A6] group-hover:text-[#03465C]">
                       {uiState.showCreateForm ? (
-                        <span className="text-[16px] text-black">NEW LIST</span>
+                        <span className="text-[16px] text-[#353535]">New List</span>
                       ) : (
                         <span className="text-black">
                           <span className="mr-2 text-[29px]">+</span>
@@ -749,6 +847,8 @@ const WishlistAddToList = memo(
                           <Loader2 className="h-4 w-4 animate-spin" />
                           SAVING...
                         </div>
+                      ) : isProductDeleted() ? (
+                        'RESTORE'
                       ) : (
                         'SAVE'
                       )}

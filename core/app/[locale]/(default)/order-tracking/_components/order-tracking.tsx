@@ -136,6 +136,16 @@ const ManageOrderButtons = ({
           <Link href={{ pathname: orderTrackingUrl }}>{t('trackOrder')}</Link>
         </Button>
       )}
+      {(!orderTrackingUrl && Boolean(orderStatus) && orderStatus !== 'SHIPPED' && orderStatus !== 'COMPLETED') && (
+        <Button
+        aria-label={t('cancelOrder')}
+        asChild
+        className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#fff]"
+        variant="secondary"
+      >
+        <Link href={`https://belamihelpdesk.powerappsportals.com/request/CancelOrder/`} target="_blank">{t('cancelOrder')}</Link>
+      </Button>
+      )}
       <Button
         className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50"
         aria-label={t('viewOrderDetails')}
@@ -143,7 +153,7 @@ const ManageOrderButtons = ({
       >
         {t('viewOrderDetails')}
       </Button>
-      {Boolean(orderStatus) && orderStatus === 'SHIPPED' && (
+      {Boolean(orderStatus) && (orderStatus === 'SHIPPED' || orderStatus === 'COMPLETED') && (
         <Button
           aria-label={t('returnOrder')}
           asChild

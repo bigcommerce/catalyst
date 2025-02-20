@@ -223,7 +223,7 @@ export const ProductForm = ({
         }
 
         try {
-          if(itemAddedRecently?.entityId && matchedPriceRule ) {
+          if(itemAddedRecently?.entityId && matchedPriceRule) {
             const priceUpdateResult = await updateCartLineItemPrice(priceUpdateData, itemAddedRecently?.entityId);
           }
         } catch (error) {
