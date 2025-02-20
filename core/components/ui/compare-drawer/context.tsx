@@ -52,7 +52,11 @@ const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
   const [cart_interface_session_id,setCart_interface_session_id] = useState<string | null>('');
   const [cartIdForCheck, setCartIdForCheck] = useState<string | null>(null);
   const [customerLoginEmailData, setCustomerLoginEmailData] = useState<string | null>(null);
-  
+  const [storeProductDetailsForQuote, setStoreProductDetailsForQuote] =  useState<Product[]>([])
+  const StoreProductDetailsFunctionForQoute=(data)=>{
+    setStoreProductDetailsForQuote(data)
+   return data
+  }
   useEffect(() => {
    const CheckAgentLoginStatusFromCookies=async()=>{
      const getStatus = await getAgentLoginStatusFromCookies()
@@ -87,7 +91,7 @@ const CompareDrawerProvider = ({ children }: PropsWithChildren) => {
     sessionStorage.setItem('compareProducts', JSON.stringify(products));
   }, [products]);
   return (
-    <CompareDrawerContext.Provider value={{ customerLoginEmailData,setCustomerLoginEmailData,products, setProducts, agentLoginStatus, setAgentLoginStatus, agentRole, setAgentRole, setAgentName, agentName, context_session_id, setContext_Session_id, cart_interface_session_id, setCart_interface_session_id, cart_interface_refferal_id, setCart_interface_Refferal_id, cartIdForCheck, setCartIdForCheck }}>
+    <CompareDrawerContext.Provider value={{StoreProductDetailsFunctionForQoute, customerLoginEmailData,setCustomerLoginEmailData,products, setProducts, agentLoginStatus, setAgentLoginStatus, agentRole, setAgentRole, setAgentName, agentName, context_session_id, setContext_Session_id, cart_interface_session_id, setCart_interface_session_id, cart_interface_refferal_id, setCart_interface_Refferal_id, cartIdForCheck, setCartIdForCheck ,storeProductDetailsForQuote, setStoreProductDetailsForQuote}}>
       {children}
       {/* <CompareDrawer /> */}
     </CompareDrawerContext.Provider>

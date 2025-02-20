@@ -20,12 +20,11 @@ export const RequestQuoteFlyout = () => {
 
   return (
     <>
-      <button id="Request-quote" onClick={() => handleOpenChange(true)}>{pathname === '/sales-buddy/quote' ? "Create a quote" : "Request A Quote"}</button>
-      <FlyoutForm
-        isOpen={isShippingOpen}
-        onOpenChange={() => handleOpenChange(false)}
-      />
-    </>
-
+    <button id="Request-quote" onClick={() => handleOpenChange(true)}>{ pathname === '/sales-buddy/quote' ? "Create a quote" : "Request A Quote" }</button>
+      <FlyoutForm 
+       isOpen={isShippingOpen}
+       onOpenChange={() => handleOpenChange(false)}
+       />
+      </>
   );
 };
