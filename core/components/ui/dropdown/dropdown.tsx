@@ -10,6 +10,7 @@ import { BcImage } from '~/components/bc-image';
 
 import callIcon from '~/public/home/callIcon.svg';
 import messageIcon from '~/public/home/messageIcon.svg';
+import Link from 'next/link';
 
 interface Link {
   href: string;
@@ -61,25 +62,25 @@ const Dropdown = ({
         >
           {getCustomerData && from === 'account-dropdown' && (
             <DropdownMenu.Item>
-              <CustomLink
+              <Link
                 className="block whitespace-nowrap break-words font-medium text-[#03465c]"
                 href="/account"
               >
                 <span className="block w-full whitespace-normal break-words">
                   Hi, {getCustomerData?.user?.name}
                 </span>
-              </CustomLink>
+              </Link>
             </DropdownMenu.Item>
           )}
           {items.map((item, index) =>
             'href' in item ? (
               <DropdownMenu.Item asChild key={`${item.href}-${index}`}>
-                <CustomLink
+                <Link
                   className={item?.classNameCss ? item?.classNameCss : 'block whitespace-nowrap'}
                   href={item.href}
                 >
                   {item.label}
-                </CustomLink>
+                </Link>
               </DropdownMenu.Item>
             ) : (
               // text-left leading-[32px] tracking-[0.5px] block whitespace-nowrap p-3 hover:focus-visible:ring-0
@@ -112,7 +113,7 @@ const Dropdown = ({
 
               <div className={`flex flex-col gap-[9px]`}>
                 <DropdownMenu.Item className="mt-[9px]">
-                  <CustomLink
+                  <Link
                     href="/support/contact"
                     className="block text-[14px] font-normal leading-[10px] outline-none tracking-[0.25px]"
                   >
@@ -133,11 +134,11 @@ const Dropdown = ({
                         Mon-Fri 6am-5pm PST
                       </div>
                     </div>
-                  </CustomLink>
+                  </Link>
                 </DropdownMenu.Item>
 
                 <DropdownMenu.Item>
-                  <CustomLink
+                  <Link
                     href="/support/contact"
                     className="mt-[9px] block text-[14px] font-normal leading-[10px] tracking-[0.25px] text-[#353535] outline-none"
                   >
@@ -158,7 +159,7 @@ const Dropdown = ({
                         Sat-Sun 6am-3pm PST
                       </div>
                     </div>
-                  </CustomLink>
+                  </Link>
                 </DropdownMenu.Item>
               </div>
             </>

@@ -136,6 +136,7 @@ export default async function ProductPage(props: Props) {
     let customerGroupDetails: CustomerGroup = {
       discount_rules: [],
     };
+    // console.log(JSON.stringify(customerGroupDetails, null, 2), 'FULL CUSTOMER GROUP DETAILS');
     if (sessionUser) {
       const customerGroupId = sessionUser?.customerGroupId;
       customerGroupDetails = await GetCustomerGroupById(customerGroupId);
@@ -155,12 +156,34 @@ export default async function ProductPage(props: Props) {
       ? JSON.parse(atob(priceMaxCookie?.value))
       : undefined;
 
-    const priceMaxRules =
-      priceMaxTriggers && Object.values(priceMaxTriggers).length > 0
-        ? await getPriceMaxRules(priceMaxTriggers)
-        : null;
+    let priceMaxRules = null;
+    const RESIDENTIAL_GROUP_ID = 6;
+    const RESIDENTIAL_GROUP_NAME = 'Residential Member';
+    const isNotAuthenticated = !sessionUser;
+    const isPriceMaxEligible =
+      isNotAuthenticated || (sessionUser && sessionUser.customerGroupId === RESIDENTIAL_GROUP_ID);
 
-    // console.log(JSON.stringify(priceMaxRules) + "priceMaxRules");
+    if (priceMaxTriggers && Object.values(priceMaxTriggers).length > 0) {
+      if (isPriceMaxEligible) {
+        priceMaxRules = await getPriceMaxRules(priceMaxTriggers);
+
+        const userStatus = isNotAuthenticated
+          ? 'Non-authenticated visitor'
+          : `${RESIDENTIAL_GROUP_NAME} (ID: ${RESIDENTIAL_GROUP_ID})`;
+
+        if (priceMaxRules && priceMaxRules.length > 0) {
+          priceMaxRules.forEach((rule) => {
+            console.log(
+              `Price Max Rule discount: ${rule.discount}% - Applied to SKUs: ${JSON.stringify(rule.skus)}`,
+            );
+          });
+        }
+      } else {
+        console.log(
+          `Price Max Rules not applied - user is in group ID ${sessionUser.customerGroupId} (not eligible)`,
+        );
+      }
+    }
 
     const useDefaultPrices = !customerAccessToken;
     const { locale, slug } = params;

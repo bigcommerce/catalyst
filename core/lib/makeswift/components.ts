@@ -29,6 +29,8 @@ import '~/belami/components/flex-text-box-group/FlexTextBoxGroup.makeswift'
 import '~/belami/components/article-grid/ArticleGrid.makeswift'
 import '~/belami/components/login-btn/LoginBtn.makeswift'
 import '~/belami/components/blog-UI/BlogUi.makeswift'
+import '~/belami/components/metadata-generator/MetaDataGenerator.makeswift'
+import '~/belami/components/share-blog/ShareBlog.makeswift'
 
 import { MakeswiftComponentType } from '@makeswift/runtime';
 
