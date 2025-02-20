@@ -62,6 +62,7 @@ interface Props {
   customerGroupDetails?: any;
   swatchOptions?:any;
   sessionUser?: any;
+  priceMaxRules?: any;
 }
 
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
@@ -119,6 +120,7 @@ export const ProductForm = ({
   const cart = useCart();
   const productFlyout: any = useCommonContext();
   const productOptions = removeEdgesAndNodes(product.productOptions);
+  const { setCartIdForCheck,setStoreProductDetailsForQuote,StoreProductDetailsFunctionForQoute } = useCompareDrawerContext();
 
   if (productOptions?.length > 0) {
     const router = useRouter();
@@ -154,7 +156,6 @@ export const ProductForm = ({
   }
 
   const { handleSubmit, register, ...methods } = useProductForm();
-  const { setPDataAgent } = useCompareDrawerContext();
 
   const productFormSubmit = async (data: ProductFormData, action: 'addToCart' | 'requestQuote') => {
     const quantity = Number(data.quantity);
@@ -165,6 +166,7 @@ export const ProductForm = ({
       const matchedPriceRule = priceMaxRules?.find(
         (r: PriceMaxRule) => r.skus && r.skus.includes(product?.parent?.sku || ''),
       );
+      console.log(matchedPriceRule,"price");
 
       // Calculate discounted price
       const originalPrice = product?.UpdatePriceForMSRP?.originalPrice || 0;
@@ -187,10 +189,9 @@ export const ProductForm = ({
 
       // Get result from handleAddToCart first
       const result = await handleAddToCart(modifiedData, product);
-      //console.log('Add to cart response:', JSON.stringify(result));
 
       // If max price rule exists and cart was created successfully, update the price
-      if (result.status === 'success' && matchedPriceRule && result.data?.entityId) {
+      if (result.status === 'success' && result.data?.entityId) {
         const priceUpdateData = {
           cartId: result.data.entityId,
           price: finalPrice,
@@ -222,7 +223,7 @@ export const ProductForm = ({
         }
 
         try {
-          if(itemAddedRecently?.entityId) {
+          if(itemAddedRecently?.entityId && matchedPriceRule ) {
             const priceUpdateResult = await updateCartLineItemPrice(priceUpdateData, itemAddedRecently?.entityId);
           }
         } catch (error) {
@@ -312,8 +313,13 @@ export const ProductForm = ({
 
     }
     else if (action === 'requestQuote'){
+      
     const quoteResult = await handleRequestQuote(data, product);
-    localStorage.setItem("Q_R_data",JSON.stringify(quoteResult?.data?.qr_product))
+      var  getRelatimeData=StoreProductDetailsFunctionForQoute(quoteResult?.data?.qr_product)
+          
+      
+      setStoreProductDetailsForQuote(getRelatimeData)
+      localStorage.setItem("Q_R_data",JSON.stringify(getRelatimeData))
     }
   };
 
