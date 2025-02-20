@@ -12,6 +12,7 @@ import { GetQuoteBasedOnID } from '../actions/get-quote-basedon-id';
 import { UpdateQuote } from '../actions/update-quote';
 import { CreateQuote } from '../actions/CreateQuote';
 import ProductPriceAdjuster from '../../common-components/_components/ProductPriceAdjuster';
+import { CreateCartForQouteItems } from '../actions/send-mail';
 
 const popOverContents = [
   { key: 'refresh-product', label: 'Refresh Product' },
@@ -189,11 +190,17 @@ const page = () => {
   const [quoteId, setQuoteId] = useState(edit);
   const [errors, setErrors] = useState({});
   const [mode, setMode] = useState('edit'); // Default to 'edit' mode
+  const [showSendEmailButton, setShowSendEmailButton] = useState(false); // New state for showing the Send Email button
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     if (name in formData.qr_customer) {
       setFormData({ ...formData, qr_customer: { ...formData.qr_customer, [name]: value } });
+      if (name === 'quote_status' && (value === 'approved' || value === 'rejected')) {
+        setShowSendEmailButton(true);
+      } else {
+        setShowSendEmailButton(false);
+      }
     } else {
       setFormData({ ...formData, [name]: value });
     }
@@ -215,7 +222,6 @@ const page = () => {
   };
 
   const handleAddCustomProduct = async (product) => {
-    
     const dataToSend = {
       quote_id: formData.quote_id,
       bc_customer_id: formData.bc_customer_id,
@@ -283,8 +289,8 @@ const page = () => {
       qr_product: formData?.qr_product?.map(product => ({
         qr_item_id: product.qr_item_id,
         qty: product.qty,
-        unit_price: product.price,
-        total_price: product.price * product.qty
+        unit_price: product.unitPrice,
+        total_price: product.unitPrice * product.qty
       }))
     };
     var updateQuoteData = await UpdateQuote(payload);
@@ -295,17 +301,12 @@ const page = () => {
 
     try {
       let result = await GetQuoteBasedOnID(quoteId);
-      console.log("API Response:", result);
 
-      // Ensure API response is valid
-      if (!result?.output?.output || !Array.isArray(result.output.output) || result.output.output.length === 0) {
+      if (!result?.output || !Array.isArray(result.output) || result.output.length === 0) {
         console.error("Invalid API response:", result);
         return;
       }
-
-      const firstItem = result.output.output[0]; // Get first item
-      console.log("First Item:", firstItem);
-
+      const firstItem = result.output[0]; // Get first item
       setFormData({
         quote_id: firstItem.quote_id || '',
         bc_channel_id: firstItem.bc_channel_id || '',
@@ -330,9 +331,9 @@ const page = () => {
           agent_manager_id: firstItem.agent_manager_id || 0,
           agent_manager_approval: firstItem.agent_manager_approval || '',
           agent_manager_approval_date: firstItem.agent_manager_approval_date || new Date(),
-          quote_status: firstItem.quote_status || ''
+          quote_status: firstItem.quote_status || "Open"
         },
-        qr_product: result.output.output.map((item) => ({
+        qr_product: result.output.map((item) => ({
           qr_id: item.qr_id,
           qr_item_id: item.qr_item_id,
           qty: item.qty,
@@ -343,15 +344,19 @@ const page = () => {
           unitPrice: item.unit_price
         }))
       });
+      
 
     } catch (error) {
       console.error("Error fetching quote data:", error);
     }
   };
 
+  const sendEmail = async() => {
+    var result = await CreateCartForQouteItems(formData.quote_id)    
+  };
+
   // Log updated formData
   useEffect(() => {
-    console.log("Updated formData:", formData);
   }, [formData]);
 
   // Fetch data when quoteId changes
@@ -532,12 +537,12 @@ const page = () => {
                 </label>
                 <select
                   name="quote_status"
-                  value={formData.qr_customer.quote_status}
+                  value={formData.qr_customer.quote_status == "" || formData.qr_customer.quote_status == "null" ? "Open" : formData.qr_customer.quote_status}
                   onChange={handleChange}
                   className="w-full border-b border-b-gray-400 p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
                   disabled={isViewMode}
                 >
-                  <option value="">Select Status</option>
+                  <option value="">{formData.qr_customer.quote_status == "" || formData.qr_customer.quote_status == "null" ? "Open" : formData.qr_customer.quote_status }</option>
                   <option value="pending">Pending</option>
                   <option value="approved">Approved</option>
                   <option value="rejected">Rejected</option>
@@ -782,6 +787,15 @@ const page = () => {
             className="w-fit self-end rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
           >
             Update
+          </button>
+        )}
+        {showSendEmailButton && (
+          <button
+            type="button"
+            onClick={sendEmail}
+            className="w-fit self-end rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
+          >
+            Send Email
           </button>
         )}
       </form>
