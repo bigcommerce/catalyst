@@ -307,7 +307,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
     fetchData();
     fetchVariantDetails();
   }, [item, discountRules, priceMaxRules, categoryIds]);
-  console.log('hello');
 
   return (
     <div className="flex h-full flex-col">
