@@ -411,7 +411,7 @@ export default async function Cart({ params }: Props) {
           <div>
             <Flyout
               triggerLabel={
-                <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-2">
+                <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-1">
                   Return Policy
                 </p>
               }
@@ -422,7 +422,7 @@ export default async function Cart({ params }: Props) {
 
           <Flyout
             triggerLabel={
-              <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-2">
+              <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-1">
                 Shipping Policy
               </p>
             }
@@ -430,7 +430,7 @@ export default async function Cart({ params }: Props) {
             <MakeswiftPage locale={locale} path="/content/shipping-flyout" />
           </Flyout>
           
-          <p className="flex items-center pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-2">
+          <p className="flex items-center pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-1">
             <BcImage
               alt="Agent Icon"
               width={10}
