@@ -268,8 +268,8 @@ export const ProductFlyout = ({
   }, [productData, productQty, discountRules]);
 
   const handleQuantityChange = (newQuantity: number) => {
-    setProductQty(newQuantity);  // Update the productQty state whenever the quantity changes
-    fetchData();  // Call fetchData to re-fetch the data whenever the quantity changes
+    setProductQty(newQuantity); 
+    fetchData();  
   };
 
   return (

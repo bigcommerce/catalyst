@@ -605,11 +605,6 @@ export function Hit({
           </h2>
 
           <div className="mx-auto mt-2 flex flex-wrap items-center justify-center space-x-2">
-            {!!hit.on_clearance && (
-              <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
-                Clearance
-              </span>
-            )}
             <ProductPrice
               defaultPrice={hit?.prices?.USD || 0}
               defaultSalePrice={hit?.sales_prices?.USD || null}
@@ -635,6 +630,11 @@ export function Hit({
                 discount: 'whitespace-nowrap font-bold text-brand-400',
               }}
             />
+            {!!hit.on_clearance && (
+              <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
+                Clearance
+              </span>
+            )}
           </div>
           {hit.reviews_count > 0 && (
             <ReviewSummary
@@ -774,11 +774,6 @@ export function Hit({
           </h2>
 
           <div className="mx-auto mt-2 flex flex-wrap items-center space-x-2">
-            {!!hit.on_clearance && (
-              <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
-                Clearance
-              </span>
-            )}
             <ProductPrice
               defaultPrice={hit?.prices?.USD || 0}
               defaultSalePrice={hit?.sales_prices?.USD || null}
@@ -804,6 +799,11 @@ export function Hit({
                 discount: 'whitespace-nowrap font-bold text-brand-400',
               }}
             />
+            {!!hit.on_clearance && (
+              <span className="mt-2 inline-block bg-gray-400 px-1 py-0.5 text-xs uppercase tracking-wider text-white">
+                Clearance
+              </span>
+            )}
           </div>
           {hit.reviews_count > 0 && (
             <ReviewSummary
