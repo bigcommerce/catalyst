@@ -64,13 +64,12 @@ export default async function SearchPage(props: Props) {
   return (
     <div className="group py-4 px-4 xl:px-12">
       <Breadcrumbs category={{breadcrumbs: {edges: [{node: {entityId: 0, name: t('title'), path: '/search'}}]}}} />
-      <div className="md:mb-8 lg:flex lg:flex-row lg:items-center lg:justify-between">
+      <div className="mb-0 lg:flex lg:flex-row lg:items-center lg:justify-between">
         {searchTerm 
-          ? <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{t('searchResults')}: <b className="text-2xl font-bold lg:text-3xl">"{searchTerm}"</b></h1>
-          : <h1 className="mb-4 text-4xl font-black lg:mb-0 lg:text-5xl">{t('title')}</h1>
+          ? <h1 className="mb-4 text-2xl lg:mb-0">{t('searchResults')}: <b className="text-2xl font-bold lg:text-3xl">"{searchTerm}"</b></h1>
+          : <h1 className="mb-4 text-2xl lg:mb-0">{t('title')}</h1>
         }
       </div>
-
       <Search 
         query={searchTerm} 
         promotions={promotions} 

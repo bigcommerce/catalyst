@@ -172,10 +172,10 @@ export default async function OrderConfirmation(request:any) {
       })),
       OrderComments: OrderCommentsByAgent,
       OrderItems: lineItemDetails.map((item: any) => {
-        let custom2Value = item?.variant_id || ''; 
+        let selectedVariantOption = item?.variant_id || ''; 
         item.product_options?.forEach((option: any) => {
           if (option.display_name === "Finish Color") {
-            custom2Value += (custom2Value ? '/' : '') + option.display_value;
+            selectedVariantOption += (selectedVariantOption ? '/' : '') + option.display_value;
           }
         });
         return {
@@ -185,7 +185,7 @@ export default async function OrderConfirmation(request:any) {
           SKU: item?.sku,
           Price: Number(item?.price_ex_tax).toFixed(2),
           Custom1: item.name,
-          Custom2: custom2Value,  
+          Custom2: selectedVariantOption,  
           Custom3: item.brand,
           Custom4: 'extimated delivery date',
           Custom5: 'closeout',

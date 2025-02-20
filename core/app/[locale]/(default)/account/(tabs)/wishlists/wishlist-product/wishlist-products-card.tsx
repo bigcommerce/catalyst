@@ -395,7 +395,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     )}
                     currency="USD"
                     format={format}
-                    showMSRP={true}
+                    showMSRP={updatedWishlist[0].UpdatePriceForMSRP?.showDecoration}
                     warrantyApplied={false}
                     options={{
                       useAsyncMode: false,

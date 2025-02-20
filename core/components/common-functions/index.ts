@@ -427,7 +427,8 @@ export const calculateProductPrice = async (
     const retailPrice = type === 'accessories' ? product.retail_price : prices?.retailPrice?.value;
     const salePrice = type === 'accessories' ? product.sale_price : prices?.salePrice?.value;
     const basePrice = type === 'accessories' ? product.price : prices?.basePrice?.value;
-    const warrantyPrice = type === 'pdp' && product?.prices?.price;
+    const warrantyPrice = prices && prices.price ? prices.price : null;
+
     const productId =
       type === 'accessories'
         ? product.product_id
@@ -460,9 +461,9 @@ export const calculateProductPrice = async (
       discount = 0;
     }
 
-    if (type === 'pdp') {
-      if (warrantyPrice.value > updatedPrice) {
-        updatedPrice = warrantyPrice.value;
+    if (type === 'pdp' || type === "flyout") {
+      if (warrantyPrice.value*quantity > updatedPrice) {
+        updatedPrice = warrantyPrice.value*quantity;
         warrantyApplied = true;
       }
     }
