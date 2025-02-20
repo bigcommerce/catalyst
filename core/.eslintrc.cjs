@@ -58,6 +58,16 @@ const config = {
       },
     ],
   },
+  overrides: [
+    {
+      files: ['**/*.test.ts', '**/*.test.tsx'],
+      rules: {
+        '@typescript-eslint/no-empty-function': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+      },
+    },
+  ],
   ignorePatterns: [
     'client/generated/**/*.ts',
     'playwright-report/**',

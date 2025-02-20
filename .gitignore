@@ -1,7 +1,6 @@
 node_modules
 dist
 .turbo
-.vscode/**/*
 !.vscode/settings.example.json
 .idea
 .vercel
