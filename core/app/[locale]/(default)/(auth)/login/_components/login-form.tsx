@@ -25,16 +25,15 @@ import { login, getRememberMeCookie, deleteRememberCookie } from '../_actions/lo
 import { IconProps } from '../../fragments';
 import { cn } from '~/lib/utils';
 
-import facebookLogo from '~/public/accountIcons/faceBookIcon.svg'
-import appleLogo from '~/public/accountIcons/appleIcon.svg'
-import googleLogo from '~/public/accountIcons/googleIcon.svg'
+import facebookLogo from '~/public/accountIcons/faceBookIcon.svg';
+import appleLogo from '~/public/accountIcons/appleIcon.svg';
+import googleLogo from '~/public/accountIcons/googleIcon.svg';
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 
 const SubmitButton = () => {
   const { pending } = useFormStatus();
   const t = useTranslations('Login');
 
-  
   return (
     <Button
       className="!important h-[50px] !w-full bg-brand-400 text-[14px] font-normal uppercase tracking-[1.25px] transition-colors duration-500 hover:bg-brand-300 md:w-auto"
@@ -47,12 +46,10 @@ const SubmitButton = () => {
   );
 };
 
-export const LoginForm = ({
-  passwordHide,
-}: IconProps & { passwordHide: string }) => {
+export const LoginForm = ({ passwordHide }: IconProps & { passwordHide: string }) => {
   const t = useTranslations('Login');
   // const { customerLoginEmail, setCustomerLoginEmail } = useCompareDrawerContext();
-  const [customerLoginEmail, setCustomerLoginEmail] =useState('')
+  const [customerLoginEmail, setCustomerLoginEmail] = useState('');
   const [isEmailValid, setIsEmailValid] = useState(true);
   const [isPasswordValid, setIsPasswordValid] = useState(true);
   const [state, formAction] = useActionState(login, { status: 'idle' });
@@ -135,7 +132,7 @@ export const LoginForm = ({
         </Message>
       )}
 
-      <Form action={formAction} className="mb-14 flex flex-col gap-3 lg:p-0">
+      <Form action={formAction} className=" flex flex-col gap-3 lg:p-0">
         <Field className="relative flex flex-col items-start gap-2 space-y-2" name="email">
           {cookieIsSet === 1 && (
             <div className="flex flex-col items-center justify-center">
@@ -189,7 +186,7 @@ export const LoginForm = ({
             {t('Form.enterEmailMessage')}
           </FieldMessage>
         </Field>
-        {emailError && <div className="text-[#A71F23] text-sm font-normal">{emailError}</div>}
+        {emailError && <div className="text-sm font-normal text-[#A71F23]">{emailError}</div>}
         <Field className="pb- relative flex flex-col items-start gap-2 space-y-2" name="password">
           <FieldLabel
             className="login-label flex items-center tracking-[0.15px]"
@@ -236,50 +233,49 @@ export const LoginForm = ({
             Sign up With an Existing Account
           </p>
         </div>
-
-        <div className="flex items-center justify-center pt-0">
-          <div className="login-in-buttons flex h-[54px] w-full flex-col justify-between gap-[20px] sm:flex-row sm:gap-[20px] md:flex-col lg:flex-col lg:gap-[20px] xl:flex-row">
-            <button className="flex h-[54px] w-full items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px] sm:w-full md:w-full lg:w-full xl:w-[170px]">
-              <BcImage
-                alt="Facebook logo"
-                className="Login-logo h-[24px] w-[24px]"
-                src={facebookLogo}
-                width={24}
-                height={24}
-                priority={true}
-                unoptimized={true}
-              />
-              <p className="text-[20px] font-medium text-[#1877F2]">Facebook</p>
-            </button>
-
-            <button className="flex h-[54px] w-full items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px] sm:w-full md:w-full lg:w-full xl:w-[170px]">
-              <BcImage
-                alt="Google logo"
-                className="Login-logo h-[24px] w-[24px]"
-                src={googleLogo}
-                width={24}
-                height={24}
-                priority={true}
-                unoptimized={true}
-              />
-              <p className="text-[20px] font-medium text-[#757575]">Google</p>
-            </button>
-
-            <button className="flex h-[54px] w-full items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px] sm:w-full md:w-full lg:w-full xl:w-[170px]">
-              <BcImage
-                alt="Apple logo"
-                className="Login-logo w-[24px] h-[24px]"
-                src={appleLogo}
-                width={24}
-                height={24}
-                priority={true}
-                unoptimized={true}
-              />
-              <p className="text-[20px] font-medium text-[#353535]">Apple</p>
-            </button>
-          </div>
-        </div>
       </Form>
+      <div className="flex items-center justify-center pt-0 mb-14 mt-3">
+        <div className="login-in-buttons flex h-[54px] sm:h-[unset] md:h-[54px] w-full flex-col justify-between gap-[20px] sm:gap-[20px] lg:gap-[20px] xl:flex-row">
+          <button className="flex h-[54px] w-full items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px] sm:w-full xl:w-[170px]">
+            <BcImage
+              alt="Facebook logo"
+              className="Login-logo h-[24px] w-[24px]"
+              src={facebookLogo}
+              width={24}
+              height={24}
+              priority={true}
+              unoptimized={true}
+            />
+            <p className="text-[20px] font-medium text-[#1877F2]">Facebook</p>
+          </button>
+
+          <button className="flex h-[54px] w-full items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px] sm:w-full md:w-full lg:w-full xl:w-[170px]">
+            <BcImage
+              alt="Google logo"
+              className="Login-logo h-[24px] w-[24px]"
+              src={googleLogo}
+              width={24}
+              height={24}
+              priority={true}
+              unoptimized={true}
+            />
+            <p className="text-[20px] font-medium text-[#757575]">Google</p>
+          </button>
+
+          <button className="flex h-[54px] w-full items-center justify-center gap-[10px] rounded-[3px] border border-[#d7d7d7] bg-[#FFFFFF] p-[15px] sm:w-full md:w-full lg:w-full xl:w-[170px]">
+            <BcImage
+              alt="Apple logo"
+              className="Login-logo h-[24px] w-[24px]"
+              src={appleLogo}
+              width={24}
+              height={24}
+              priority={true}
+              unoptimized={true}
+            />
+            <p className="text-[20px] font-medium text-[#353535]">Apple</p>
+          </button>
+        </div>
+      </div>
     </>
   );
 };

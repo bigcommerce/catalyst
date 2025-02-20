@@ -18,7 +18,27 @@ import { Modal } from '../../_components/modal';
 import { DeleteWishlistForm } from './delete-wishlist-form';
 import { CreateWishlistDialog } from './create-wishlist-form';
 import { useAccountStatusContext } from '../../_components/account-status-provider';
-import { manageDeletedProducts, storageUtils } from '~/components/common-functions';
+import { manageDeletedProducts } from '~/components/common-functions';
+
+// Create local storage utility since it's not exported from common-functions
+const storageUtils = {
+  getFromStorage: (key: string) => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(key);
+    }
+    return null;
+  },
+  setToStorage: (key: string, value: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(key, value);
+    }
+  },
+  removeFromStorage: (key: string) => {
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(key);
+    }
+  },
+};
 
 const WISHLISTS_PER_PAGE = 100;
 
@@ -91,9 +111,26 @@ interface WishlistMenuProps {
   wishlist: Wishlist;
 }
 
+// Modal component props
+interface ModalProps {
+  children: React.ReactNode;
+  trigger?: React.ReactNode;
+  title?: string;
+}
+
 type Wishlists = Wishlist[];
 type NewWishlist = any;
 type WishlistArray = Array<NewWishlist | Wishlists[number]>;
+
+// Helper function to filter items using the common manageDeletedProducts utility
+const filterDeletedWishlistItems = (items: WishlistItem[]): WishlistItem[] => {
+  if (!items || !items.length) return [];
+
+  return items.filter((item) => {
+    // Check if this item is in the deleted items list
+    return !manageDeletedProducts.isWishlistItemDeleted(item.entityId);
+  });
+};
 
 const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: WishlistMenuProps) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -116,7 +153,12 @@ const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: Wish
   }, [onWishlistDeleted, setAccountState, t, name]);
 
   const handleEditClick = useCallback(() => {
-    localStorage.setItem('selectedWishlist', JSON.stringify(wishlist));
+    // Apply deleted items filter when setting selectedWishlist
+    const filteredWishlist = {
+      ...wishlist,
+      items: filterDeletedWishlistItems(wishlist.items),
+    };
+    localStorage.setItem('selectedWishlist', JSON.stringify(filteredWishlist));
     setIsOpen(false);
   }, [wishlist]);
 
@@ -151,8 +193,6 @@ const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: Wish
           <div className="fixed bottom-0 left-0 right-0 z-50 flex transform justify-center rounded-t-lg bg-white p-4 transition-transform duration-300 ease-out">
             <div className="space-y-4">
               <Modal
-                onClose={() => setDeleteModalOpen(false)}
-                showCancelButton={false}
                 title={t('deleteTitle', { name })}
                 trigger={
                   <button
@@ -230,21 +270,11 @@ const Wishlist = memo(
     const { setAccountState } = useAccountStatusContext();
     const t = useTranslations('Account.Wishlist');
     const { entityId, name } = wishlist;
-    const items = 'items' in wishlist ? wishlist.items : [];
 
-    // Use manageDeletedProducts to filter items
-    const deletedProducts = manageDeletedProducts.getDeletedProducts();
+    // Use the common filter function to handle deleted items
     const filteredItems = useMemo(() => {
       const items = 'items' in wishlist ? wishlist.items : [];
-      const deletedProducts = manageDeletedProducts.getDeletedProducts();
-      return items.filter(
-        (item: WishlistItem) =>
-          !deletedProducts.some(
-            (deletedItem: { productId: number; wishlistItemId: number }) =>
-              deletedItem.productId === item.product.entityId &&
-              deletedItem.wishlistItemId === item.entityId,
-          ),
-      );
+      return filterDeletedWishlistItems(items);
     }, [wishlist]);
 
     const handleWishlistDeleted = useCallback(() => {
@@ -259,6 +289,7 @@ const Wishlist = memo(
     }, [entityId, name, setWishlistBook, setAccountState, t]);
 
     const handleWishlistClick = useCallback(() => {
+      // Store filtered wishlist in localStorage
       const filteredWishlist = {
         ...wishlist,
         items: filteredItems,
@@ -308,15 +339,9 @@ const Wishlist = memo(
           <div className="delete-wishlist block h-[10em]">
             <div className="delete-wishlist hidden lg:block">
               <Modal
-                onClose={() => setDeleteWishlistModalOpen(false)}
-                showCancelButton={false}
                 title={t('deleteTitle', { name })}
                 trigger={
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className="text-gray-500 hover:text-red-600"
-                  >
+                  <Button variant="secondary" className="text-gray-500 hover:text-red-600">
                     <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path
                         strokeLinecap="round"
@@ -362,18 +387,34 @@ export const WishlistBook = ({
   const [createWishlistModalOpen, setCreateWishlistModalOpen] = useState(false);
   const router = useRouter();
 
-  // Memoize filtered wishlists calculation
+  // Listen for storage events from other components
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent): void => {
+      if (event.key === manageDeletedProducts.STORAGE_KEY) {
+        // Refresh wishlists when deletion events occur in other components
+        setWishlistBook((prevWishlists) => {
+          return prevWishlists.map((wishlist) => {
+            const items = 'items' in wishlist ? wishlist.items : [];
+            const filteredItems = filterDeletedWishlistItems(items);
+
+            return {
+              ...wishlist,
+              items: filteredItems,
+              itemCount: filteredItems.length,
+            };
+          });
+        });
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Memoize filtered wishlists calculation using the common function
   const filteredWishlists = useMemo(() => {
-    const deletedProducts = manageDeletedProducts.getDeletedProducts();
     return wishlists.map((wishlist) => {
-      const filteredItems = wishlist.items.filter(
-        (item: WishlistItem) =>
-          !deletedProducts.some(
-            (deletedItem: { productId: number; wishlistItemId: number }) =>
-              deletedItem.productId === item.product.entityId &&
-              deletedItem.wishlistItemId === item.entityId,
-          ),
-      );
+      const filteredItems = filterDeletedWishlistItems(wishlist.items);
 
       return {
         ...wishlist,
@@ -426,7 +467,7 @@ export const WishlistBook = ({
         </Message>
       )}
 
-      <div className="mb-8 block flex flex-row-reverse justify-center md:hidden">
+      <div className="mb-8 block md:hidden">
         <Modal
           trigger={
             <Button
@@ -459,7 +500,7 @@ export const WishlistBook = ({
         ))}
       </ul>
 
-      <div className="create-wishlist-mobile-display mb-16 !flex flex-row-reverse justify-between xl:block">
+      <div className="create-wishlist-mobile-display mb-16 xl:block">
         <Modal
           trigger={
             <Button

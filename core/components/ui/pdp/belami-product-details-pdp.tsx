@@ -183,9 +183,9 @@ const ProductDetailDropdown: React.FC<ProductDetailDropdownProps> = ({
         style={{ transitionTimingFunction: 'ease' }}
       >
         {isOpen && (
-          <div className="mt-6 w-full rounded border border-gray-300 bg-white p-2 md:p-6 shadow-lg">
+          <div className="mt-2 md:mt-0 w-full rounded border border-gray-300 bg-white p-3 sm:p-6 shadow-lg">
             <div className="mb-4 ">
-            <p className="text-sm text-right my-0 text-gray-600">SKU: {product?.mpn || t('sku')}</p>
+            <p className="text-xs md:text-sm text-right my-0 text-gray-600">SKU: {product?.mpn || t('sku')}</p>
               <p className="text-lg font-semibold text-gray-900">{t('whatsInTheBox')}</p>
             </div>
 

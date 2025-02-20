@@ -869,85 +869,6 @@ export const apportionateRemainingDiscount = async (
   return productDataArray;
 };
 
-// delete-product-wishlist
-export const storageUtils = {
-  getFromStorage: (key: string) => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(key);
-    }
-    return null;
-  },
-
-  setToStorage: (key: string, value: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(key, value);
-    }
-  },
-
-  removeFromStorage: (key: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(key);
-    }
-  },
-};
-
-// Initialize deleted products array
-let deletedProducts: DeletedProduct[] = [];
-
-// Initialize from storage if available
-if (typeof window !== 'undefined') {
-  const savedProducts = storageUtils.getFromStorage('deletedWishlistProducts');
-  if (savedProducts) {
-    deletedProducts = JSON.parse(savedProducts);
-  }
-}
-
-export const manageDeletedProducts = {
-  addDeletedProduct: (productId: number, wishlistItemId: number) => {
-    const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
-    // Check if product is already in deleted list
-    const existingIndex = deletedProducts.findIndex(
-      (item: any) => item.productId === productId && item.wishlistItemId === wishlistItemId,
-    );
-
-    if (existingIndex === -1) {
-      deletedProducts.push({
-        productId,
-        wishlistItemId,
-        deletionDate: new Date().toISOString(),
-      });
-
-      localStorage.setItem('deletedProducts', JSON.stringify(deletedProducts));
-      window.dispatchEvent(
-        new StorageEvent('storage', {
-          key: 'deletedProducts',
-        }),
-      );
-    }
-  },
-
-  removeDeletedProduct: (productId: number) => {
-    const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
-    const updatedProducts = deletedProducts.filter((item: any) => item.productId !== productId);
-
-    localStorage.setItem('deletedProducts', JSON.stringify(updatedProducts));
-    window.dispatchEvent(
-      new StorageEvent('storage', {
-        key: 'deletedProducts',
-      }),
-    );
-  },
-
-  getDeletedProducts: () => {
-    return JSON.parse(localStorage.getItem('deletedProducts') || '[]');
-  },
-
-  isProductDeleted: (productId: number) => {
-    const deletedProducts = JSON.parse(localStorage.getItem('deletedProducts') || '[]');
-    return deletedProducts.some((item: any) => item.productId === productId);
-  },
-};
-
 // cookie-discounted-price
 interface PriceUpdateData {
   cartId: string;
@@ -970,3 +891,107 @@ export async function callforMaxPriceRuleDiscountFunction(data: any) {
     throw error;
   }
 }
+
+// wishlist-delete-product
+interface DeletedProductRecord {
+  productId: number;
+  wishlistItemId: number;
+  variantEntityId: number | null;
+  deletionDate: string;
+}
+
+export const manageDeletedProducts = {
+  STORAGE_KEY: 'deletedWishlistItems',
+
+  addDeletedProduct: (
+    productId: number,
+    wishlistItemId: number,
+    variantEntityId: number | null = null,
+  ): boolean => {
+    try {
+      const existingItems: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
+
+      const deletionRecord: DeletedProductRecord = {
+        productId: Number(productId),
+        wishlistItemId: Number(wishlistItemId),
+        variantEntityId: variantEntityId ? Number(variantEntityId) : null,
+        deletionDate: new Date().toISOString(),
+      };
+
+      const existingIndex = existingItems.findIndex(
+        (item) => Number(item.wishlistItemId) === Number(wishlistItemId),
+      );
+
+      if (existingIndex >= 0) {
+        existingItems[existingIndex] = {
+          ...existingItems[existingIndex],
+          ...deletionRecord,
+        };
+      } else {
+        existingItems.push(deletionRecord);
+      }
+      localStorage.setItem(manageDeletedProducts.STORAGE_KEY, JSON.stringify(existingItems));
+
+      window.dispatchEvent(
+        new StorageEvent('storage', {
+          key: manageDeletedProducts.STORAGE_KEY,
+        }),
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Failed to add deleted product:', error);
+      return false;
+    }
+  },
+
+  getDeletedItems: (): DeletedProductRecord[] => {
+    try {
+      const items = localStorage.getItem(manageDeletedProducts.STORAGE_KEY);
+      return items ? JSON.parse(items) : [];
+    } catch (error) {
+      console.error('Failed to get deleted items:', error);
+      return [];
+    }
+  },
+
+  isWishlistItemDeleted: (wishlistItemId: number): boolean => {
+    const items: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
+    return items.some((item) => Number(item.wishlistItemId) === Number(wishlistItemId));
+  },
+
+  isProductDeleted: (productId: number): boolean => {
+    const items: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
+    return items.some((item) => Number(item.productId) === Number(productId));
+  },
+
+  restoreWishlistItem: (wishlistItemId: number): boolean => {
+    try {
+      const items: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
+      const updatedItems = items.filter(
+        (item) => Number(item.wishlistItemId) !== Number(wishlistItemId),
+      );
+
+      localStorage.setItem(manageDeletedProducts.STORAGE_KEY, JSON.stringify(updatedItems));
+      window.dispatchEvent(
+        new StorageEvent('storage', {
+          key: manageDeletedProducts.STORAGE_KEY,
+        }),
+      );
+
+      return true;
+    } catch (error) {
+      console.error('Failed to restore wishlist item:', error);
+      return false;
+    }
+  },
+
+  clearAllDeletedItems: (): void => {
+    localStorage.removeItem(manageDeletedProducts.STORAGE_KEY);
+    window.dispatchEvent(
+      new StorageEvent('storage', {
+        key: manageDeletedProducts.STORAGE_KEY,
+      }),
+    );
+  },
+};
