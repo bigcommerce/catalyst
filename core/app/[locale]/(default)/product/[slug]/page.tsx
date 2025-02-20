@@ -111,7 +111,6 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const { pageTitle, metaDescription, metaKeywords } = product.seo;
   const { url, altText: alt } = product.defaultImage || {};
-
   return {
     title: pageTitle || product.name,
     description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
@@ -146,7 +145,6 @@ export default async function ProductPage(props: Props) {
     const productSku: any = searchParams?.sku;
 
     if (!params || !searchParams) {
-      console.error('Missing required params:', { params, searchParams });
       return null;
     }
 
@@ -210,6 +208,45 @@ export default async function ProductPage(props: Props) {
     if (!product) {
       return notFound();
     }
+  let selectedSku : any;
+  let variantSku : any;
+  const productsArray = [];
+  productsArray.push(product);
+  const combinedData = productsArray?.map((item: any) => {
+    selectedSku = item?.sku;
+    let deliveryMessageData = [
+      ...(item?.variants?.edges?.flatMap((variant: any) => {
+        variantSku = variant?.node?.sku;
+        if (selectedSku === variantSku) {
+        return variant?.node?.deliveryMessageData?.edges?.map((messageEdge: any) => messageEdge?.node?.value);
+      }
+       return [];
+      }) || []),
+      ...(item?.deliveryMessageParentData?.edges?.flatMap((variant: any) => {
+        return variant?.node?.value
+      }) || [])
+    ];
+
+    let closeOutValue = [
+      ...(item?.variants?.edges?.flatMap((variant: any) => {
+        if (selectedSku === variantSku) {
+        return variant?.node?.closeOutData?.edges?.map((messageEdge: any) =>  messageEdge?.node?.value);
+        }
+        return [];
+      }) || []),
+      ...(item?.closeOutParentData?.edges?.flatMap((variant: any) => {
+        return variant?.node?.value
+      }) || [])
+    ];
+
+    return {
+      selectedSku,
+      variantSku,
+      deliveryEstimatedTexts: deliveryMessageData || [],
+      closeOutData: closeOutValue || []
+    };
+  });
+  
     let swatchOptions: any;
     swatchOptions = await getMultipleChoiceOptions(productId);
     // Asset URLs
@@ -262,8 +299,8 @@ export default async function ProductPage(props: Props) {
 
         // Extract only objects that have 'url' and 'alt_text'
         extractedImagePairs = parsedValue
-          ?.filter((item) => item?.url && item?.alt_text) // Ensure 'url' and 'alt_text' exist
-          ?.map((item) => ({
+          ?.filter((item:any) => item?.url && item?.alt_text) // Ensure 'url' and 'alt_text' exist
+          ?.map((item:any) => ({
             src: `${baseURL}${item?.url}`,
             altText: item?.alt_text || '',
           }));
@@ -395,7 +432,7 @@ export default async function ProductPage(props: Props) {
                   </Suspense>
                 </div>
               </div>
-
+              
               <div className="PDP xl:relative xl:flex-1">
                 <Details
                   promotions={promotions}
@@ -415,6 +452,7 @@ export default async function ProductPage(props: Props) {
                   productImages={productImages}
                   customerGroupDetails={customerGroupDetails}
                   categoryIds={breadcrumbEntityIds}
+                  combinedData={combinedData[0]}
                   triggerLabel1={
                     <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#008BB7] underline underline-offset-4">
                       Shipping Policy

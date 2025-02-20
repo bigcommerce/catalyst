@@ -340,10 +340,63 @@ export const ProductPageQuery = graphql(
             url: urlTemplate(lossy: true)
             altText
           }
+          variants {
+        edges {
+          node {
+            mpn
+            sku
+            entityId
+            closeOutData: metafields(namespace: "Details", keys: "closeout") {
+              edges {
+                cursor
+                node {
+                  entityId
+                  id
+                  key
+                  value
+                }
+              }
+            }
+            deliveryMessageData: metafields(namespace: "delivery_message") {
+              edges {
+                cursor
+                node {
+                  entityId
+                  id
+                  key
+                  value
+                }
+              }
+            }
+          }
+        }
+      }
           categories {
             edges {
               node {
                 ...BreadcrumbsFragment
+              }
+            }
+          }
+          closeOutParentData: metafields(namespace: "Details", keys: "closeout") {
+           edges {
+            cursor
+              node {
+              entityId
+              id
+              key
+              value
+            }
+           }
+          }
+          deliveryMessageParentData: metafields(namespace: "delivery_message") {
+            edges {
+              cursor
+              node {
+                entityId
+                id
+                key
+                value
               }
             }
           }
