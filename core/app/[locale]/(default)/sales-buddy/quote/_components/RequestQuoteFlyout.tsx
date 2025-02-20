@@ -7,16 +7,16 @@ import { usePathname } from 'next/navigation';
 export const RequestQuoteFlyout = () => {
 
   const pathname = usePathname();
-  
+
   const [isShippingOpen, setIsShippingOpen] = useState(false);
 
-  const handleOpenChange = (open: boolean) => { 
-   setIsShippingOpen(open);
-   const quoteButton = document.getElementById("custom-quote");
-      if (quoteButton) {
-        quoteButton.click();
-      }
-   }
+  const handleOpenChange = (open: boolean) => {
+    setIsShippingOpen(open);
+    const quoteButton = document.getElementById("custom-quote");
+    if (quoteButton) {
+      quoteButton.click();
+    }
+  }
 
   return (
     <>
@@ -26,6 +26,5 @@ export const RequestQuoteFlyout = () => {
        onOpenChange={() => handleOpenChange(false)}
        />
       </>
-
   );
 };
