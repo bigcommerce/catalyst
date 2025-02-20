@@ -34,15 +34,15 @@ import Link from 'next/link';
 const socialIcons: Record<string, { icon: JSX.Element; link: string }> = {
   Pinterest: {
     icon: <SiPinterest title="pinterest" color="#ffffff" />,
-    link: 'https://www.pinterest.com/homeclick/',
+    link: process.env.NEXT_PUBLIC_PINTEREST || '',
   },
-  YouTube: { icon: <SiYoutube title="YouTube" color="#ffffff" />, link: 'https://www.youtube.com/c/Homeclick/videos' },
+  YouTube: { icon: <SiYoutube title="YouTube" color="#ffffff" />, link: process.env.NEXT_PUBLIC_YOUTUBE || '' },
   Instagram: {
     icon: <SiInstagram title="Instagram" color="#ffffff" />,
-    link: 'https://www.instagram.com/homeclickdesigns/',
+    link: process.env.NEXT_PUBLIC_INSTAGRAM || '',
   },
-  Twitter: { icon: <SiX title="Twitter" color="#ffffff" />, link: 'https://x.com/homeclick' },
-  Facebook: { icon: <SiFacebook title="Facebook" color="#ffffff" />, link: 'https://www.facebook.com/homeclick/' },
+  Twitter: { icon: <SiX title="Twitter" color="#ffffff" />, link: process.env.NEXT_PUBLIC_TWITTER || '' },
+  Facebook: { icon: <SiFacebook title="Facebook" color="#ffffff" />, link: process.env.NEXT_PUBLIC_FACEBOOK || '' },
 };
 
 export const Footer = async () => {
