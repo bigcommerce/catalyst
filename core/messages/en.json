@@ -224,6 +224,7 @@
       "totalPrice": "Total",
       "viewDetails": "View Details",
       "trackOrder": "Track your order",
+      "cancelOrder": "Cancel order",
       "returnOrder": "Replace items",
       "orderSummary": "Order Summary",
       "confirmationNumber": "Confirmation Number",

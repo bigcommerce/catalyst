@@ -190,7 +190,7 @@ export const ProductForm = ({
       //console.log('Add to cart response:', JSON.stringify(result));
 
       // If max price rule exists and cart was created successfully, update the price
-      if (result.status === 'success' && matchedPriceRule && result.data?.entityId) {
+      if (result.status === 'success' && result.data?.entityId) {
         const priceUpdateData = {
           cartId: result.data.entityId,
           price: finalPrice,
@@ -222,7 +222,7 @@ export const ProductForm = ({
         }
 
         try {
-          if(itemAddedRecently?.entityId) {
+          if(itemAddedRecently?.entityId && matchedPriceRule) {
             const priceUpdateResult = await updateCartLineItemPrice(priceUpdateData, itemAddedRecently?.entityId);
           }
         } catch (error) {

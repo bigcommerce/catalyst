@@ -116,24 +116,24 @@ export const Header = async ({ cart }: Props) => {
           <Dropdown
             getCustomerData={getCustomerData as any}
             items={[
-              { href: '/#', label: 'Existing Order', classNameCss:'block font-normal text-[16px] leading-[32px] tracking-[0.15px] text-[#006380]'},
-              { href: '/order-tracking', label: 'Track My Order', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]'},
-              { href: '/returns', label: 'Replace Items', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535]'},
-              { href: '/content/help-center', label: 'Visit Our Help Center', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] mb-[5px]'},
-              { href: '/#', label: 'New Orders', classNameCss:'block font-normal text-[16px]leading-[32px] tracking-[0.15px] text-[#006380] '}
+              { href: '/#', label: 'Existing Order', classNameCss:'block font-normal text-[16px] leading-[32px] tracking-[0.15px] text-[#006380] outline-none'},
+              { href: '/order-tracking', label: 'Track My Order', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] outline-none'},
+              { href: '/returns', label: 'Replace Items', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] outline-none'},
+              { href: '/content/help-center', label: 'Visit Our Help Center', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] mb-[5px] outline-none'},
+              { href: '/#', label: 'New Orders', classNameCss:'block font-normal text-[16px]leading-[32px] tracking-[0.15px] text-[#006380]  outline-none'}
             ]}
             from='support'
             trigger={
               <Button
                 aria-label={'Support'}
-                className="p-3 text-black hover:bg-transparent hover:text-primary"
+                className="p-3 text-black hover:bg-transparent hover:text-primary outline-none"
                 variant="subtle"
               >
                 {/* <Hand className="mr-2" /> */}
 
                 <BcImage
                   alt="an assortment of brandless products against a blank background"
-                  className="mr-2"
+                  className="mr-2 outline-none"
                   height={28}
                   priority={true}
                   src={wavingHandIcon}
@@ -153,29 +153,29 @@ export const Header = async ({ cart }: Props) => {
             items={
               customerAccessToken
                 ? [
-                  { href: '/account/', label: 'Account Center', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
-                  { href: '/account/wishlists', label: 'Favourites & Lists', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
-                  { href: '/account/orders', label: 'Orders', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
+                  { href: '/account/', label: 'Account Center', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535] outline-none'},
+                  { href: '/account/wishlists', label: 'Favourites & Lists', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535] outline-none'},
+                  { href: '/account/orders', label: 'Orders', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535] outline-none'},
                   { action: logout, name: 'Sign Out' },
                   ]
                 : [
-                  { href: '/login', label: 'Account', classNameCss:'block font-normal text-[16px] leading-[32px] tracking-[0.25px] text-[#006380] text-center'},
-                  { href: '/login', label: 'Account Center', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
-                  { href: '/login', label: 'Favorites & Lists', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
-                  { href: '/login', label: 'Orders', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535]'},
-                  { href: '/login', label: 'LOG IN', classNameCss:'flex flex-row justify-center items-center p-[0px_8px] gap-[5px] border border-[#b4dde9] rounded-[3px] h-[32px] font-[500] text-[14px] leading-[32px] text-[#002a37] tracking-[1.25px]'},
-                  { href: '/register', label: <span>New? <span className='font-[600] underline'>Create Account</span></span>, classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#008BB7]'},
+                  { href: '/login', label: 'Account', classNameCss:'block font-normal text-[16px] leading-[32px] tracking-[0.25px] text-[#006380] text-center outline-none'},
+                  { href: '/login', label: 'Account Center', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535] outline-none'},
+                  { href: '/login', label: 'Favorites & Lists', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535] outline-none'},
+                  { href: '/login', label: 'Orders', classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] color-[#353535] outline-none'},
+                  { href: '/login', label: 'LOG IN', classNameCss:'flex flex-row justify-center items-center p-[0px_8px] gap-[5px] border border-[#b4dde9] rounded-[3px] h-[32px] font-[500] text-[14px] leading-[32px] text-[#002a37] tracking-[1.25px] outline-none hover:bg-brand-50'},
+                  { href: '/register', label: <span>New? <span className='font-[600] underline outline-none'>Create Account</span></span>, classNameCss:'block font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#008BB7] outline-none'},
                   ]
             }
             trigger={
               <Button
                 aria-label={t('Account.account')}
-                className="p-3 text-black hover:bg-transparent hover:text-primary"
+                className="p-3 text-black hover:bg-transparent hover:text-primary outline-none"
                 variant="subtle"
               >
                 <BcImage
                   className="mr-2"
-                  alt="an assortment of brandless products against a blank background"
+                  alt="an assortment of brandless products against a blank background outline-none outline-none"
                   height={16}
                   priority={true}
                   src={personIcon}
@@ -190,7 +190,7 @@ export const Header = async ({ cart }: Props) => {
       }
       activeLocale={locale}
       cart={
-        <p role="status" className="header-cart-icon flex items-center">
+        <div role="status" className="header-cart-icon flex items-center outline-none">
           <Suspense
             fallback={
               <CartLink>
@@ -200,7 +200,7 @@ export const Header = async ({ cart }: Props) => {
           >
             {cart}
           </Suspense>
-        </p>
+        </div>
       }
       links={links}
       locales={localeLanguageRegionMap}

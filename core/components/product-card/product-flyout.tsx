@@ -247,7 +247,7 @@ export const ProductFlyout = ({
   }
   const fetchData = async () => { 
     const updatedData = {...productData,quantity:productQty}; 
-    const categories = removeEdgesAndNodes(productData?.baseCatalogProduct?.categories);
+    const categories = productData?.baseCatalogProduct?.categories && removeEdgesAndNodes(productData?.baseCatalogProduct?.categories);
     
     if (categories?.length > 0) {
       const categoryWithMostBreadcrumbs = categories?.reduce((longest, current) => {
@@ -268,8 +268,8 @@ export const ProductFlyout = ({
   }, [productData, productQty, discountRules]);
 
   const handleQuantityChange = (newQuantity: number) => {
-    setProductQty(newQuantity);  // Update the productQty state whenever the quantity changes
-    fetchData();  // Call fetchData to re-fetch the data whenever the quantity changes
+    setProductQty(newQuantity); 
+    fetchData();  
   };
 
   return (
