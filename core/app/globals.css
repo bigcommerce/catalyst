@@ -117,15 +117,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-/* promotion */
-/* 
-
-.promotion-icon svg {
-  position: relative;
-  top: 0.5px;
-} */
-
-
 
 .promotion-pdp .promotion-plp {
   padding-top: 0px;
@@ -518,11 +509,6 @@ button.relative.flex.w-full.rounded.items-center.justify-center.px-\[30px\].py-2
   .div-product-radiobuttons div label {
     text-align: left;
   }
-  /* .request-quote-hands-icon {
-    position: relative;
-    top: -0.75rem;
-    right: -0.375rem;
-  } */
   div#relatedproduct-carousel {
     display: none;
   }
@@ -669,7 +655,8 @@ button.show-all {
 .compare-product .gap-3 {
   gap: 0 !important;
 }
-.compare-product button[role='checkbox'], .show-only-differences-checkbox {
+.compare-product button[role='checkbox'],
+.show-only-differences-checkbox {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
@@ -699,7 +686,8 @@ button.show-all {
   color: var(--background) !important;
   border: 2px solid var(--gray-200) !important;
 }
-.compare-product button[data-state='checked'], .show-only-differences-checkbox:checked {
+.compare-product button[data-state='checked'],
+.show-only-differences-checkbox:checked {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M20 6 9 17l-5-5' /%3E%3C/svg%3E");
   /*
   background-image: url('data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2024%2024%22%20fill%3D%22none%22%20stroke%3D%22%23ffffff%22%20stroke-width%3D%222%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%3Cpolyline%20points%3D%2220%206%209%2017%204%2012%22%3E%3C%2Fpolyline%3E%3C%2Fsvg%3E') !important;
