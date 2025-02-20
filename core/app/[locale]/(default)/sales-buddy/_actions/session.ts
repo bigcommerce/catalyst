@@ -14,6 +14,15 @@ export const getCartIdCookie = async () => {
 
   return cookieStore.get('cartId');
 };
+export const getPMXFromCookies = async () => {
+  const cookieStore = await cookies();
+  if (cookieStore.get('pmx')?.value == undefined) {
+    return ""
+  }else{
+    return cookieStore.get('pmx')?.value;
+  }
+};
+// pmx
 
 export const RemoveSessionIdCookie = async () => {
   const cookieStore = await cookies();
@@ -21,6 +30,7 @@ export const RemoveSessionIdCookie = async () => {
 };
 
 export const createSession = async (Userdata: any) => {
+  var  pmxdata=await getPMXFromCookies()  
   try {
     let postData = JSON.stringify({
       cart_id: Userdata?.cart_id,
@@ -30,6 +40,7 @@ export const createSession = async (Userdata: any) => {
       customer_name: Userdata?.customerDetails?.first_name+" "+ Userdata?.customerDetails?.last_name ,
       customer_emailid: Userdata?.customerDetails?.email ?? "",
       shopper_information: Userdata?.shopper_information,
+      pmx: pmxdata,
       access_id: process.env.SALES_BUDDY_ACCESS_ID,
     });
     const apiUrl = process.env.SALES_BUDDY_API_URL!;
