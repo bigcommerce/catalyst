@@ -21,6 +21,9 @@ import {
   Search,
   ListFilter,
   Settings,
+  Trash2,
+  PenLineIcon,
+  FilePenLine,
 } from 'lucide-react';
 import DatePicker from './_components';
 import NewQuote from './_components/newQuote';
@@ -106,9 +109,7 @@ const page = () => {
 
     const GetAllQuoteData = async () => {
       var result = await GetAllQuoteList({});
-      var outputResult = result?.output.output;
-      console.log("data-----------------------------------", outputResult.output);
-      
+      var outputResult = result?.output;
       const formattedData = outputResult.map((quote: any) => ({
         id: `QR-${quote?.qr_id}`,  // Prefixing ID with 'QI-'
         name: `${quote?.first_name} ${quote?.last_name}`, // Combining first and last name
@@ -118,8 +119,6 @@ const page = () => {
         quote_id: quote?.quote_id,  // Quote ID
         status: quote?.quote_status,  // Status
       }));
-      console.log("formattedData-----------------------------------", formattedData);
-
       setData(formattedData);
     }
     GetAllQuoteData()
@@ -135,6 +134,7 @@ const page = () => {
   };
 
   const handleEditClick = (rowId: string, mode: string) => {
+    localStorage.setItem('QoutepageType', mode);
     router.push(`/sales-buddy/quote/${rowId}?mode=${mode}`);
   };
 
@@ -437,7 +437,7 @@ const page = () => {
                       </div>
                     </th>
                     <th className="">
-                      <div className="text-[#5C5C5C]"> </div>
+                      <div className="text-[#5C5C5C]">Actions </div>
                     </th>
                   </tr>
                 </thead>
@@ -455,19 +455,22 @@ const page = () => {
                       <td className="text-[#000]">-</td>
                       <td>
                         <div className="text-[14px] font-bold uppercase text-[rgb(171,134,22)]">
-                          {row.status}
+                          {row.status == null ? "OPEN" : row.status}
                         </div>
                       </td>
                       <td>
-                        <div className="flex items-center justify-center gap-1 text-[#555]">
-                          <PopOverClick
+                        <div className="flex items-center justify-space-between gap-1 text-[#555]">
+                          {/* <PopOverClick
                             hrefLink={`${row.quote_id}`}
                             popOverContents={popOverContents}
                             from='quote'
                             onClick={(key) => handleEditClick(row.quote_id, key)}
                           >
                             <Ellipsis className="cursor-pointer text-[#555]" />
-                          </PopOverClick>
+                          </PopOverClick> */}
+                          <Eye onClick={() => handleEditClick(row.quote_id, 'view')} style={{ cursor: "pointer" }} />
+                          <FilePenLine onClick={() => handleEditClick(row.quote_id, 'edit')  } style={{ cursor: "pointer" }} />
+                          <Trash2 onClick={() => console.log("Delete")} style={{ cursor: "pointer" }} />
                         </div>
                       </td>
                     </tr>
