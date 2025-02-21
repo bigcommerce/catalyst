@@ -247,7 +247,7 @@ export const EditAddressForm = ({
   return (
     <>
       {formStatus && (
-        <Message className="mx-auto  w-full" variant={formStatus.status}>
+        <Message className="mx-auto w-full" variant={formStatus.status}>
           <p>{formStatus.message}</p>
         </Message>
       )}
@@ -436,7 +436,7 @@ export const EditAddressForm = ({
                 sitekey={reCaptchaSettings.siteKey}
               />
               {!isReCaptchaValid && (
-                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-[rgb(167,31,35)] ">
+                <span className="absolute inset-x-0 bottom-0 inline-flex w-full text-xs font-normal text-[rgb(167,31,35)]">
                   {t('recaptchaText')}
                 </span>
               )}
@@ -455,8 +455,8 @@ export const EditAddressForm = ({
             actionHandler={onDeleteAddress}
             confirmationText={g('yesDelete')}
             title={g('deleteModalTitle')}
-       abortText= {g('noDelete')}
-
+            abortText={g('noDelete')}
+            from="address"
           >
             <Button
               className="ms-auto items-center px-8 md:w-fit"

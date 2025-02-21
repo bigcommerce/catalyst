@@ -130,7 +130,7 @@ const ManageOrderButtons = ({
         <Button
           aria-label={t('trackOrder')}
           asChild
-          className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#fff]"
+          className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#fff] hover:bg-brand-300"
           variant="secondary"
         >
           <Link href={{ pathname: orderTrackingUrl }}>{t('trackOrder')}</Link>
@@ -140,7 +140,7 @@ const ManageOrderButtons = ({
         <Button
         aria-label={t('cancelOrder')}
         asChild
-        className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#fff]"
+        className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#fff] hover:bg-brand-300"
         variant="secondary"
       >
         <Link href={`https://belamihelpdesk.powerappsportals.com/request/CancelOrder/`} target="_blank">{t('cancelOrder')}</Link>
@@ -738,8 +738,8 @@ export default function OrderTracking({
   return (
     <div className="flex justify-center">
       <div className="w-full px-5 xl:w-[70%] xl:p-0">
-        <div className="my-[2rem] flex flex-col gap-[20px] text-[#353535]">
-          <div className="flex flex-col gap-[20px] p-0">
+        <div className="mt-[2rem] flex flex-col gap-[20px] text-[#353535]">
+          <div className="flex flex-col gap-[20px] p-0 [&_contact-us]:font-bold">
             <div className="flex items-center justify-center gap-[5px] xl:hidden">
               <div>
                 <BcImage
