@@ -210,10 +210,26 @@ const Gallery = ({
         videoType: video.type,
       })),
     ];
-
+    const reorderMedia = (items:any) => {
+      const images = items.filter((item:any) => item?.type === "image");
+      const video = items.find((item:any) => item?.type === "video");
+    
+      if (!video) return items; // If no video, return original array
+    
+      let reorderedArray = [...images];
+    
+      if (reorderedArray.length >= 4) {
+        reorderedArray.splice(3, 0, video); // Place video at the 4th position
+      } else {
+        reorderedArray.push(video); // Place video at the end if less than 4 images
+      }
+    
+      return reorderedArray;
+    };
+  const items1= reorderMedia(items);
     return {
-      mediaItems: items,
-      selectedItem: items[selectedIndex] || null,
+      mediaItems: items1,
+      selectedItem: items1[selectedIndex] || null,
     };
   }, [images, videos, selectedVariantId, productMpn, selectedIndex]);
 
@@ -467,10 +483,10 @@ const Gallery = ({
               <button
                 aria-label="View all items"
                 className="gallery-thumbnail relative h-[3.6em] w-[3.6em] flex-shrink-0 border-2 border-gray-200 transition-colors duration-200 hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 md:h-[8em] md:w-[8em] lg:h-[10em] lg:w-[10em] xl:h-[7.2em] xl:w-[7em]"
-                onClick={() => openPopup(3)}
+                onClick={() => openPopup(4)}
               >
                 <div className="relative h-full w-full">
-                  {getThumbnailContent(mediaItems[3])}
+                  {getThumbnailContent(mediaItems[4])}
                   <div className="absolute inset-0 flex flex-col items-center justify-center text-white">
                     <span className="text-[0.625rem] xl:text-lg">VIEW ALL</span>
                     <span className="mt-1 text-[0.625rem] xl:text-sm">{`(+${remainingItemsCount})`}</span>
