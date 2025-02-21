@@ -12,148 +12,15 @@ import { GetQuoteBasedOnID } from '../actions/get-quote-basedon-id';
 import { UpdateQuote } from '../actions/update-quote';
 import { CreateQuote } from '../actions/CreateQuote';
 import ProductPriceAdjuster from '../../common-components/_components/ProductPriceAdjuster';
-import { CreateCartForQouteItems } from '../actions/send-mail';
+import { CreateCartForQouteItems } from '../actions/create-cart-for-quote';
+import { sendEmailToCustomer } from '../actions/SendEmailToCustomer';
 
 const popOverContents = [
   { key: 'refresh-product', label: 'Refresh Product' },
   { key: 'delete', label: 'Delete' },
 ];
 
-const QuotePage = ({ formData, handleAddCustomProduct, handleProductChange, isViewMode }) => {
-  return (
-    <div className="flex flex-row w-full gap-6">
-      <div className="flex-1">
-        <div className="bg-[#ededed] mb-6">
-          <div className="flex ">
-            <button className="px-6 py-3 text-xs uppercase hover:text-[#3C64F4] hover:border-b-2 hover:border-[#3C64F4] min-w-[150px]">
-              SEARCH
-            </button>
-            <button className="px-6 py-3 text-xs uppercase hover:text-[#3C64F4] hover:border-b-2 hover:border-[#3C64F4] min-w-[150px]">
-              SEARCH BY SKU
-            </button>
-            <button className="px-6 py-3 text-xs uppercase hover:text-[#3C64F4] hover:border-b-2 hover:border-[#3C64F4] min-w-[150px]">
-              CUSTOM PRODUCT
-            </button>
-            {!isViewMode && (
-              <NewProductQuote onAddProduct={handleAddCustomProduct}>
-                <button
-                  type="button"
-                  className="rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90 my-auto"
-                >
-                  New +
-                </button>
-              </NewProductQuote>
-            )}
-          </div>
-        </div>
-        <div className="border rounded-lg">
-          {formData.qr_product.length === 0 ? (
-            <div className="h-32 flex flex-col items-center justify-center">
-              <p className="text-gray-400 text-sm mb-2">No Products Added</p>
-              <p className="text-[#3C64F4] text-base">Use search to add products</p>
-            </div>
-          ) : (
-            <div className="w-full overflow-x-auto">
-              <table className="w-full table-auto border-collapse border">
-                <thead className="bg-[#ededed] [&_th]:p-[12px] [&_th]:text-[12px]">
-                  <tr className="border-b-[#c9c9cb] uppercase hover:[&>th]:cursor-pointer">
-                    <th className="">
-                      <div className="flex items-center justify-center gap-1">
-                        <div>Line Items</div>
-                      </div>
-                    </th>
-                    <th className="">
-                      <div className="flex items-center justify-center gap-1">
-                        <div>Qty</div>
-                      </div>
-                    </th>
-                    <th className="">
-                      <div className="flex items-center justify-center gap-1">
-                        <div>Unit Price</div>
-                      </div>
-                    </th>
-                    <th className="">
-                      <div className="flex items-center justify-center gap-1">
-                        <div>Total Price</div>
-                      </div>
-                    </th>
-                    <th className="">
-                      <div className="text-[#5C5C5C]">Action</div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="[&_td]:p-[12px] [&_td]:text-center [&_td]:text-[12px] [&_td]:font-normal [&_tr:last-child]:[border-bottom:none;] [&_tr:last-child_td:last-child_.tooltip]:top-0 [&_tr:last-child_td:last-child_.tooltip]:translate-y-[-100%] [&_tr]:border-b [&_tr]:border-b-[#f6f7fb]">
-                  {formData?.qr_product?.map((product:any, index:number) => (
-                    <tr key={index}>
-                      <td className="min-w-[200px] max-w-[300px] [word-break:break-word]">
-                        <div className="flex flex-row items-start gap-1">
-                          <div className="min-h-[60px] min-w-[60px]">
-                            <BcImage
-                              width={60}
-                              height={60}
-                              unoptimized={true}
-                              alt="product image"
-                              src={CartIcon}
-                            />
-                          </div>
-                          <div className="flex flex-col gap-[2px] text-left text-[12px]">
-                            <div>
-                              {product.bc_product_name}
-                            </div>
-                            <div className="font-bold">
-                              <span>SKU: </span>
-                              <span>{product.bc_sku}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="cursor-pointer">
-                        <div>
-                          <input
-                            type="number"
-                            name="qty"
-                            value={product.qty}
-                            onChange={(e) => handleProductChange(index, e)}
-                            className="w-full border-b border-b-black outline-none text-center"
-                            disabled={isViewMode}
-                          />
-                        </div>
-                      </td>
-                      <td className="">
-                        <div>
-                          <input
-                            type="number"
-                            name="unitPrice"
-                            value={product.unitPrice}
-                            onChange={(e) => handleProductChange(index, e)}
-                            className="w-full border-b border-b-black outline-none text-center"
-                            disabled={isViewMode}
-                          />
-                        </div>
-                      </td>
-                      <td className="">
-                        <div>
-                          ${(product.unitPrice * product.qty).toFixed(2)}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="flex items-center justify-center gap-1 text-[#555]">
-                          <PopOverClick popOverContents={popOverContents} from="edit">
-                            <Ellipsis className="cursor-pointer text-[#555]" />
-                          </PopOverClick>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+
 
 const page = () => {
   const router = useRouter();
@@ -238,12 +105,14 @@ const page = () => {
         bc_modifier_option: "custom",
         options: "custom",
         qty: product.quantity,
-        unitPrice: product.price
+        unitPrice: product.price,
+        brand: product.brand,
       }],
       page_type: 'agent_app',
     };
     try {
       const result = await CreateQuote(dataToSend);
+      callToGetQuoteDataBasedOnQuoteId();
     } catch (error) {
       console.error("Error submitting quote:", error);
     }
@@ -294,6 +163,7 @@ const page = () => {
       }))
     };
     var updateQuoteData = await UpdateQuote(payload);
+    callToGetQuoteDataBasedOnQuoteId()
   };
 
   const callToGetQuoteDataBasedOnQuoteId = async () => {
@@ -309,7 +179,7 @@ const page = () => {
       const firstItem = result.output[0]; // Get first item
       setFormData({
         quote_id: firstItem.quote_id || '',
-        bc_channel_id: firstItem.bc_channel_id || '',
+        bc_channel_id: firstItem.bc_channel_id || 0,
         bc_customer_id: firstItem.bc_customer_id || '',
         quote_type: firstItem.quote_type || '',
         qr_customer: {
@@ -352,7 +222,25 @@ const page = () => {
   };
 
   const sendEmail = async() => {
-    var result = await CreateCartForQouteItems(formData.quote_id)    
+    var result = await CreateCartForQouteItems(formData.quote_id)   
+    console.log("result", result);
+    
+    var getCartItemID=result.data.id;
+    console.log("data-====", result.data);
+    let dataToSend = {
+      quote_id: quoteId,
+      bc_channel_id: formData.bc_channel_id,
+      email_template_type: "approval_template",
+      store: 1,
+      qr_customer: formData.qr_customer,
+      qr_product: formData.qr_product,
+      quote_type: formData.quote_type,
+      cart_url: `http://localhost:3000/cart?${getCartItemID}`
+    };
+    const emailResult = await sendEmailToCustomer(dataToSend);
+    console.log("emailResult", emailResult);
+    
+    
   };
 
   // Log updated formData
