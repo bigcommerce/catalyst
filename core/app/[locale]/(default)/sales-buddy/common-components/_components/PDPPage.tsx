@@ -8,9 +8,12 @@ import { Input } from '~/components/ui/form';
 import NotesIcons from '../../assets/add_notes.png';
 import { get_product_data, PdpProduct } from '../common-functions';
 import Loader from './Spinner';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useCompareDrawerContext } from '~/components/ui/compare-drawer';
 import { CreateQuote } from '../../quote/actions/CreateQuote';
+import { sendEmailToCustomer } from '../../quote/actions/SendEmailToCustomer';
+import { CartData } from '../../quote/_components/RquestQuoteFlyoutForm';
+import { GetCartDetials } from '../../quote/actions/GetCartDetials';
 // Utility for styles
 const TailwindCustomCssValues = {
   font: 'font-open-sans',
@@ -34,17 +37,20 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
   const retrievedProductData = JSON.parse(localStorage.getItem('productInfo') || '{}');
   const [openAccordions, setOpenAccordions] = useState<number[]>([]);
   const [quoteNumber, setQuoteNumber] = useState('');
+  const { storeProductDetailsForQuote } = useCompareDrawerContext();
+
   const [loading, setLoading] = useState({
     cost: false,
     inventory: false,
   });
-  const [pDataAgent, setPDataAgent ] = useState([]);
   const quoteInputRef = useRef<HTMLInputElement>(null);
+  const [quoteCartData, setquoteCartData] = useState<CartData[]>();
   // const toggleAccordion = (index: number) => {
   //   setOpenAccordions((prev) =>
   //     prev.includes(index) ? prev.filter((i) => i !== index) : [...prev, index],
   //   );
   // };
+  const pageName = usePathname();
   const router = useRouter();
   const costPricingTableData = (data) => {
     setChildSku(data.child_sku)
@@ -68,71 +74,216 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
     fetchData(); // Call the async function
   }, []);
 
-  useEffect(() => {
-    const fetchStoredQuote = () => {
-      const storedQuote = localStorage.getItem("Q_R_data");
-      if (storedQuote) {
-        setPDataAgent((prevData) => {
-          const latestData = JSON.parse(localStorage.getItem('Q_R_data') || '[]');
-          return latestData.length > 0 ? latestData : prevData;
-        });
-      }
-    };
-  
-    fetchStoredQuote();
-  
-    const handleStorageChange = (event: StorageEvent) => {
-      if (event.key === "Q_R_data") {
-        fetchStoredQuote();
-      }
-    };
-  
-    window.addEventListener("storage", handleStorageChange);
-  
-    return () => {
-      window.removeEventListener("storage", handleStorageChange);
-    };
-  }, []);
-  
   const handleRedirect = () => {
     const locale = 'en';
     router.push(`/${locale}/sales-buddy/common-components/Quote/QuoteCart`);
   };
+
+
+  const fetchCartData = async () => {
+    try {
+      const CartItemsData: any = await GetCartDetials();
+      const cartLineItems = CartItemsData?.lineItems?.physicalItems || [];
+      const customItmes = CartItemsData?.lineItems?.customItems || [];
   
-  const handleAddToQuote = async() => {
+      const formattedCutomItemData = customItmes.map(item => ({
+        bc_sku: item.sku,
+        bc_product_name: item.name,
+        bc_product_id: 0,
+        bc_variant_id: "custom",
+        bc_variant_sku: item.entityId,
+        bc_variant_name: "custom",
+        options: "custom",
+        type: "custom",
+      }));
+  
+      if (cartLineItems.length > 0) {
+        const lineItemsData = cartLineItems.map((item: any) => {
+          const selectedOptions = item?.selectedOptions || [];
+  
+          const productSelectedOpt = selectedOptions
+            ?.map((option: any) => {
+              if (Array.isArray(item?.baseCatalogProduct?.productOptions?.edges)) {
+                const optionFromProduct = item?.baseCatalogProduct?.productOptions?.edges.find(
+                  (prodOption: any) => prodOption.node.entityId === option.entityId
+                );
+  
+                if (optionFromProduct) {
+                  const selectedValue = optionFromProduct?.node?.values?.edges.find(
+                    (valueItem: any) => valueItem.node.entityId === option.valueEntityId
+                  );
+  
+                  if (selectedValue) {
+                    const isVariant = optionFromProduct.node.isVariantOption ?? false;
+  
+                    if (isVariant) {
+                      return { type: "variant", label: selectedValue.node.label };
+                    } else {
+                      return {
+                        type: "modifier",
+                        label: selectedValue.node.label,
+                        modifierId: optionFromProduct.node.entityId,
+                        modifierOptionId: selectedValue.node.entityId,
+                      };
+                    }
+                  }
+                }
+              }
+              return undefined;
+            })
+            .filter(Boolean);
+  
+          const variantLabels = productSelectedOpt
+            ?.filter((item: any) => item?.type === "variant")
+            .map((item: any) => item?.label)
+            .join(", ");
+  
+          return {
+            bc_product_id: item.productEntityId,
+            bc_sku: item.sku,
+            bc_product_name: item.name,
+            bc_variant_id: item.variantEntityId,
+            bc_variant_sku: item?.sku,
+            bc_variant_name: variantLabels || "",
+            options: productSelectedOpt.map((opt: any) => opt.label).join(", "),
+            type: "product",
+          };
+        });
+  
+        const finalLineItems = [...lineItemsData, ...formattedCutomItemData];
+        setquoteCartData(finalLineItems);
+        return finalLineItems; 
+      } else {
+        setquoteCartData([]);
+        return [];
+      }
+    } catch (error) {
+      console.error("Error fetching updated cart data:", error);
+      return [];
+    }
+  };
+  
+
+  const handleAddToQuote = async () => {
+    // Find the quote button
     const quoteButton = document.getElementById("custom-quote");
     if (!quoteButton) {
       console.warn("custom-quote button not found in DOM.");
-      return; 
+      return;
     }
-    const updatedPDataAgent = JSON.parse(localStorage.getItem('Q_R_data') || '[]');
-    if (updatedPDataAgent.length === 0) {
-      console.warn("No product data available to add to the quote.");
+  
+    // Validate quote input early
+    if (!quoteInputRef.current || !quoteInputRef.current.value) {
+      console.warn("Quote input is empty.");
+      return;
     }
-    quoteButton.click();
-    if (quoteInputRef.current) {
-
     const quoteValue = quoteInputRef.current.value;
     console.log("Quote Value:", quoteValue);
- 
-    const dataToSend = {
-      quote_id: quoteValue,
-      quote_type: 'old',
-      quote_by:"agent",
-      bc_customer_id: '',
-      qr_customer: '',
-      qr_product: [updatedPDataAgent],
-      page_type: 'pdp',
+  
+    try {
+      // Handle quote button click if not on cart page
+        
+      if (pageName === '/cart/') {
+        await fetchCartData();
+      }  
+
+        await handleQuoteButtonClick(quoteButton);
+        console.log('Click processing completed');
+  
+      // Wait for local storage to be updated
+      const getLatestQuoteData = () => {
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            const latestQuoteData = JSON.parse(localStorage.getItem("Q_R_data") || "{}");
+           
+            resolve(latestQuoteData);
+          }, 3000);
+        });
+      };
+  
+      // Get the latest quote data
+      const latestQuoteData = await getLatestQuoteData();
+  
+      // Create the quote request
+      await createQuoteRequest(quoteValue, quoteCartData as CartData[], latestQuoteData);
+  
+    } catch (error) {
+      console.error('Error during quote processing:', error);
+    }
+  };
+  
+  // Helper function to handle the quote button click
+  async function handleQuoteButtonClick(quoteButton: HTMLElement) {
+    return new Promise((resolve) => {
+      let isProcessingComplete = false;
+      
+      const handleProcessingComplete = () => {
+        isProcessingComplete = true;
+        observer.disconnect();
+        resolve();
+      };
+  
+      const observer = new MutationObserver((mutations) => {
+        // Add your specific conditions here to determine when processing is complete
+        // For example, waiting for a specific element to appear/disappear
+        const processingComplete = mutations.some(mutation => {
+          // Customize this condition based on your DOM changes
+          // Example: check for a success message or updated cart state
+          return mutation.target.classList.contains('quote-added') || 
+                 mutation.target.getAttribute('data-quote-status') === 'complete';
+        });
+  
+        if (processingComplete) {
+          handleProcessingComplete();
+        }
+      });
+  
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true,
+        attributes: true,
+        attributeFilter: ['class', 'data-quote-status']
+      });
+  
+      quoteButton.click();
+  
+      // Safety timeout
+      setTimeout(() => {
+        if (!isProcessingComplete) {
+          handleProcessingComplete();
+        }
+      }, 5000);
+    });
+  }
+  
+  const createQuoteRequest = async (quoteId: string, cartData: CartData[], latestQuoteData: any) => {
+    console.log("localData>>>", latestQuoteData);
+    console.log("localCartData>>>", cartData);
+    const UpdatelatestQuoteData = JSON.parse(localStorage.getItem("Q_R_data") || "{}");
+      console.log("UpdatelatestQuoteData------------------,", UpdatelatestQuoteData);
+    let dataToSend = {
+      quote_id: quoteId, 
+      bc_customer_id: '',  
+      quote_type:"old", 
+      qr_customer:'', 
+      quote_by: "agent",
+      qr_product: pageName === '/cart/' ? cartData : [UpdatelatestQuoteData],
+      page_type: pageName === '/cart/' ? 'cart' : 'pdp',
     };
+  
+    try {
+      const result = await CreateQuote(dataToSend);
+      console.log("Quote successfully", result);
+      if (result) {
+        console.log("Quote successfully created:", dataToSend);
 
-    console.log("Sending data to CreateQuote:", dataToSend);
-
-      try {
-        const result = await CreateQuote(dataToSend);
-        // handleRedirect();  
-      } catch (error) {
-        console.error("Error while requesting a quote:", error);
+        const emailResult = await sendEmailToCustomer(dataToSend);
+        console.log("Email sent successfully:", emailResult);
+      } else {
+        console.error("Failed to create quote.");
       }
+    } catch (error) {
+      console.error("Error creating quote:", error);
     }
   };
   
