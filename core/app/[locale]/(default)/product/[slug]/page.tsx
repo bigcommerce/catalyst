@@ -64,6 +64,7 @@ interface MetaField {
 }
 
 interface CustomerGroup {
+  name: any;
   discount_rules: Array<{
     amount: string;
     type: string;
@@ -154,39 +155,21 @@ export default async function ProductPage(props: Props) {
       ? JSON.parse(atob(priceMaxCookie?.value))
       : undefined;
 
-    // Fetch price max rules if user is not authenticated OR is in Residential Member group (ID 6)
+    // Fetch price max rules if user is not authenticated OR is in Residential Member group
     let priceMaxRules = null;
-    const RESIDENTIAL_GROUP_ID = 6;
-    const RESIDENTIAL_GROUP_NAME = 'Residential Member ';
+    const RESIDENTIAL_GROUP_NAME =
+      process.env.NEXT_PUBLIC_RESIDENTIAL_MEMBER_GROUP || 'Residential Member';
+
     const isNotAuthenticated = !sessionUser;
     const isPriceMaxEligible =
-      isNotAuthenticated || (sessionUser && sessionUser.customerGroupId === RESIDENTIAL_GROUP_ID);
+      isNotAuthenticated ||
+      (sessionUser && customerGroupDetails?.name?.trim() === RESIDENTIAL_GROUP_NAME.trim());
 
     if (priceMaxTriggers && Object.values(priceMaxTriggers).length > 0) {
       if (isPriceMaxEligible) {
         priceMaxRules = await getPriceMaxRules(priceMaxTriggers);
-
-        const userStatus = isNotAuthenticated
-          ? 'Non-authenticated visitor'
-          : `${RESIDENTIAL_GROUP_NAME} (ID: ${RESIDENTIAL_GROUP_ID})`;
-
-        console.log(`Price Max Rules fetched for: ${userStatus}`);
-
-        if (priceMaxRules && priceMaxRules.length > 0) {
-          priceMaxRules.forEach((rule) => {
-            console.log(
-              `Price Max Rule discount: ${rule.discount}% - Applied to SKUs: ${JSON.stringify(rule.skus)}`,
-            );
-          });
-        }
-      } else {
-        console.log(
-          `Price Max Rules not applied - user is in group ID ${sessionUser.customerGroupId} (not eligible)`,
-        );
       }
     }
-
-    console.log(priceMaxRules, ' priceMaxRules');
 
     const useDefaultPrices = !customerAccessToken;
     const { locale, slug } = params;
@@ -213,45 +196,49 @@ export default async function ProductPage(props: Props) {
     if (!product) {
       return notFound();
     }
-  let selectedSku : any;
-  let variantSku : any;
-  const productsArray = [];
-  productsArray.push(product);
-  const combinedData = productsArray?.map((item: any) => {
-    selectedSku = item?.sku;
-    let deliveryMessageData = [
-      ...(item?.variants?.edges?.flatMap((variant: any) => {
-        variantSku = variant?.node?.sku;
-        if (selectedSku === variantSku) {
-        return variant?.node?.deliveryMessageData?.edges?.map((messageEdge: any) => messageEdge?.node?.value);
-      }
-       return [];
-      }) || []),
-      ...(item?.deliveryMessageParentData?.edges?.flatMap((variant: any) => {
-        return variant?.node?.value
-      }) || [])
-    ];
+    let selectedSku: any;
+    let variantSku: any;
+    const productsArray = [];
+    productsArray.push(product);
+    const combinedData = productsArray?.map((item: any) => {
+      selectedSku = item?.sku;
+      let deliveryMessageData = [
+        ...(item?.variants?.edges?.flatMap((variant: any) => {
+          variantSku = variant?.node?.sku;
+          if (selectedSku === variantSku) {
+            return variant?.node?.deliveryMessageData?.edges?.map(
+              (messageEdge: any) => messageEdge?.node?.value,
+            );
+          }
+          return [];
+        }) || []),
+        ...(item?.deliveryMessageParentData?.edges?.flatMap((variant: any) => {
+          return variant?.node?.value;
+        }) || []),
+      ];
 
-    let closeOutValue = [
-      ...(item?.variants?.edges?.flatMap((variant: any) => {
-        if (selectedSku === variantSku) {
-        return variant?.node?.closeOutData?.edges?.map((messageEdge: any) =>  messageEdge?.node?.value);
-        }
-        return [];
-      }) || []),
-      ...(item?.closeOutParentData?.edges?.flatMap((variant: any) => {
-        return variant?.node?.value
-      }) || [])
-    ];
+      let closeOutValue = [
+        ...(item?.variants?.edges?.flatMap((variant: any) => {
+          if (selectedSku === variantSku) {
+            return variant?.node?.closeOutData?.edges?.map(
+              (messageEdge: any) => messageEdge?.node?.value,
+            );
+          }
+          return [];
+        }) || []),
+        ...(item?.closeOutParentData?.edges?.flatMap((variant: any) => {
+          return variant?.node?.value;
+        }) || []),
+      ];
 
-    return {
-      selectedSku,
-      variantSku,
-      deliveryEstimatedTexts: deliveryMessageData || [],
-      closeOutData: closeOutValue || []
-    };
-  });
-  
+      return {
+        selectedSku,
+        variantSku,
+        deliveryEstimatedTexts: deliveryMessageData || [],
+        closeOutData: closeOutValue || [],
+      };
+    });
+
     let swatchOptions: any;
     swatchOptions = await getMultipleChoiceOptions(productId);
     // Asset URLs
@@ -304,8 +291,8 @@ export default async function ProductPage(props: Props) {
 
         // Extract only objects that have 'url' and 'alt_text'
         extractedImagePairs = parsedValue
-          ?.filter((item:any) => item?.url && item?.alt_text) // Ensure 'url' and 'alt_text' exist
-          ?.map((item:any) => ({
+          ?.filter((item: any) => item?.url && item?.alt_text) // Ensure 'url' and 'alt_text' exist
+          ?.map((item: any) => ({
             src: `${baseURL}${item?.url}`,
             altText: item?.alt_text || '',
           }));
@@ -437,7 +424,7 @@ export default async function ProductPage(props: Props) {
                   </Suspense>
                 </div>
               </div>
-              
+
               <div className="PDP xl:relative xl:flex-1">
                 <Details
                   promotions={promotions}

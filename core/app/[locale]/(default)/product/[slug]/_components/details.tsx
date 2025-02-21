@@ -545,10 +545,6 @@ export const Details = ({
             </span>
 
             <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
-              SKU: <span>{product.sku}</span>
-            </span>
-
-            <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
               by{' '}
               <Link
                 href={product.brand?.path ?? ''}
@@ -587,8 +583,11 @@ export const Details = ({
                     : null
               }
               // Apply priceMaxRule if user is not authenticated OR if user is in Residential Member group
+
               priceMaxRule={
-                !sessionUser || customerGroupDetails?.name === 'Residential Member '
+                !sessionUser ||
+                customerGroupDetails?.name?.trim() ===
+                  (process.env.NEXT_PUBLIC_RESIDENTIAL_MEMBER_GROUP || 'Residential Member').trim()
                   ? priceMaxRules?.find(
                       (r: any) =>
                         (r.bc_brand_ids &&

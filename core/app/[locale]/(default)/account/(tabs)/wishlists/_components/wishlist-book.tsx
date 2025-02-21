@@ -501,7 +501,7 @@ export const WishlistBook = ({
         ))}
       </ul>
 
-      <div className="flex  justify-between create-wishlist-mobile-display mb-16 xl:block">
+      <div className="flex  justify-between create-wishlist-mobile-display mb-16">
       {children}
 
         <Modal
