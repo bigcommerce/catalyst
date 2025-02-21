@@ -18,7 +18,7 @@ import { Button } from '~/components/ui/button';
 import { bodl } from '~/lib/bodl';
 
 import { handleAddToCart } from './_actions/add-to-cart';
- 
+
 import { handleRequestQuote } from '~/app/[locale]/(default)/sales-buddy/quote/actions/handleRequestQuote';
 
 import { CheckboxField } from './fields/checkbox-field';
@@ -60,7 +60,7 @@ interface Props {
   productMpn: string | null;
   showInSticky?: boolean;
   customerGroupDetails?: any;
-  swatchOptions?:any;
+  swatchOptions?: any;
   sessionUser?: any;
   priceMaxRules?: any;
 }
@@ -113,14 +113,14 @@ export const ProductForm = ({
   showInSticky = false,
   swatchOptions,
   sessionUser = null,
-  priceMaxRules
+  priceMaxRules,
 }: Props) => {
-  
   const t = useTranslations('Product.Form');
   const cart = useCart();
   const productFlyout: any = useCommonContext();
   const productOptions = removeEdgesAndNodes(product.productOptions);
-  const { setCartIdForCheck,setStoreProductDetailsForQuote,StoreProductDetailsFunctionForQoute } = useCompareDrawerContext();
+  const { setCartIdForCheck, setStoreProductDetailsForQuote, StoreProductDetailsFunctionForQoute } =
+    useCompareDrawerContext();
 
   if (productOptions?.length > 0) {
     const router = useRouter();
@@ -166,7 +166,7 @@ export const ProductForm = ({
       const matchedPriceRule = priceMaxRules?.find(
         (r: PriceMaxRule) => r.skus && r.skus.includes(product?.parent?.sku || ''),
       );
-      console.log(matchedPriceRule,"price");
+      console.log(matchedPriceRule, 'price');
 
       // Calculate discounted price
       const originalPrice = product?.UpdatePriceForMSRP?.originalPrice || 0;
@@ -176,19 +176,7 @@ export const ProductForm = ({
         finalPrice = originalPrice - originalPrice * (discountPercent / 100);
       }
 
-      // Add price max rule info to data
-      const modifiedData = {
-        ...data,
-        quantity,
-        priceMaxDiscount: matchedPriceRule?.discount || null,
-        originalPrice: originalPrice,
-        discountedPrice: finalPrice,
-      };
-
-      //console.log('Data being passed to handleAddToCart:', modifiedData);
-
-      // Get result from handleAddToCart first
-      const result = await handleAddToCart(modifiedData, product);
+      const result = await handleAddToCart(data, product);
 
       // If max price rule exists and cart was created successfully, update the price
       if (result.status === 'success' && result.data?.entityId) {
@@ -223,8 +211,11 @@ export const ProductForm = ({
         }
 
         try {
-          if(itemAddedRecently?.entityId && matchedPriceRule) {
-            const priceUpdateResult = await updateCartLineItemPrice(priceUpdateData, itemAddedRecently?.entityId);
+          if (itemAddedRecently?.entityId && matchedPriceRule) {
+            const priceUpdateResult = await updateCartLineItemPrice(
+              priceUpdateData,
+              itemAddedRecently?.entityId,
+            );
           }
         } catch (error) {
           console.error('Error updating price:', error);
@@ -236,7 +227,6 @@ export const ProductForm = ({
 
       if (cartId && typeof cartId === 'object' && 'value' in cartId && cartId.value === undefined) {
         setCartIdForCheck(result?.data?.entityId);
-        // console.log('Set cart ID for check:', result?.data?.entityId);
       }
 
       if (result.error) {
@@ -247,28 +237,28 @@ export const ProductForm = ({
         return;
       }
 
-    toast.success(
-      () => (
-        <div className="flex items-center gap-3">
-          <span>
-            {t.rich('success', {
-              cartItems: quantity,
-              cartLink: (chunks) => (
-                <Link
-                  className="hover:text-secondary font-semibold text-primary"
-                  href="/cart"
-                  prefetch="viewport"
-                  prefetchKind="full"
-                >
-                  {chunks}
-                </Link>
-              ),
-            })}
-          </span>
-        </div>
-      ),
-      { icon: <Check className="text-success-secondary" /> },
-    );
+      toast.success(
+        () => (
+          <div className="flex items-center gap-3">
+            <span>
+              {t.rich('success', {
+                cartItems: quantity,
+                cartLink: (chunks) => (
+                  <Link
+                    className="hover:text-secondary font-semibold text-primary"
+                    href="/cart"
+                    prefetch="viewport"
+                    prefetchKind="full"
+                  >
+                    {chunks}
+                  </Link>
+                ),
+              })}
+            </span>
+          </div>
+        ),
+        { icon: <Check className="text-success-secondary" /> },
+      );
 
       const transformedProduct = productItemTransform(product);
 
@@ -300,26 +290,22 @@ export const ProductForm = ({
         });
       }
 
-    bodl.cart.productAdded({
-      product_value: transformedProduct.purchase_price * quantity,
-      currency: transformedProduct.currency,
-      line_items: [
-        {
-          ...transformedProduct,
-          quantity,
-        },
-      ],
-    });
+      bodl.cart.productAdded({
+        product_value: transformedProduct.purchase_price * quantity,
+        currency: transformedProduct.currency,
+        line_items: [
+          {
+            ...transformedProduct,
+            quantity,
+          },
+        ],
+      });
+    } else if (action === 'requestQuote') {
+      const quoteResult = await handleRequestQuote(data, product);
+      var getRelatimeData = StoreProductDetailsFunctionForQoute(quoteResult?.data?.qr_product);
 
-    }
-    else if (action === 'requestQuote'){
-      
-    const quoteResult = await handleRequestQuote(data, product);
-      var  getRelatimeData=StoreProductDetailsFunctionForQoute(quoteResult?.data?.qr_product)
-          
-      
-      setStoreProductDetailsForQuote(getRelatimeData)
-      localStorage.setItem("Q_R_data",JSON.stringify(getRelatimeData))
+      setStoreProductDetailsForQuote(getRelatimeData);
+      localStorage.setItem('Q_R_data', JSON.stringify(getRelatimeData));
     }
   };
 
@@ -518,4 +504,3 @@ export const ProductForm = ({
     </>
   );
 };
-
