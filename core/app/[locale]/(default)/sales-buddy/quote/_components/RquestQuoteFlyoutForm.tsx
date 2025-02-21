@@ -64,41 +64,16 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
   });
 
   const [customerData, setCustomerData] = useState<CustomerData | null>(null);
-  const [quoteProductData, setQuoteProductData] = useState<any>();
   const [existingSessionId, setExistingSessionId] = useState<string | null>(null);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAddingToExisting, setIsAddingToExisting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [quoteCartData, setquoteCartData] = useState<CartData[]>();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const pageName = usePathname();
-  useEffect(() => {
-    const fetchStoredQuote = () => {
-      if (pageName !== '/cart/' && typeof window !== "undefined") {
-        let storedQuote = localStorage.getItem("Q_R_data");
   
-        if (storedQuote) {
-          try {
-            const parsedData = JSON.parse(storedQuote);
-            setQuoteProductData(parsedData);
-          } catch (error) {
-            console.error("Error parsing local storage data:", error);
-            setQuoteProductData([]); 
-          }
-        } else {
-          console.warn("No data found in localStorage for 'Q_R_data'");
-          setQuoteProductData([]); 
-        }
-      }
-    };
-  
-    fetchStoredQuote();
-
-  }, [pageName]);
-  
-
-
   useEffect(() => {
     const loadInitialData = async () => {
       try {
@@ -125,6 +100,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
       const fetchCartData = async () => {
         try {
           const CartItemsData: any = await GetCartDetials();
+          console.log(CartItemsData);
           const cartLineItems = CartItemsData?.lineItems?.physicalItems || [];
           const customItmes = CartItemsData?.lineItems?.customItems || [];
           const formattedCutomItemData = customItmes.map(item => ({
@@ -267,7 +243,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
 
 
   const createQuoteRequest = async (sessionId: string, isNewQuote: boolean = true, cartData: CartData[],latestQuoteData: any) => {
-
+console.log("createQuoteRequest",cartData)
     const quoteType = isNewQuote ? 'New' : 'old';
     let dataToSend;
     if (pageName === '/sales-buddy/quote') {
@@ -289,12 +265,13 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
     }
 
     try {
-      setIsSubmitting(true);
       const result = await CreateQuote(dataToSend);
       if (result) {
         setSubmitStatus('success');
-        setSuccessMessage('Quote requested successfully!');
+        setSuccessMessage('Quote Added successfully!');
         if (isNewQuote) {
+          setIsSubmitting(true);
+          setSuccessMessage('Quote requested successfully!');
           localStorage.setItem('session_id$', sessionId);
           setExistingSessionId(sessionId);
         }
@@ -306,7 +283,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
         setTimeout(() => {
           setSuccessMessage(null);
           onOpenChange(false);
-        }, 2000);
+        }, 400);
       } else {
         setSubmitStatus('error');
       }
@@ -332,6 +309,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
 
   const handleAddToExistingQuote = async () => {
     if (!existingSessionId || !validateForm()) return;
+    setIsAddingToExisting(true); 
     const storedQuote = localStorage.getItem("Q_R_data");
     let latestQuoteData = storedQuote ? JSON.parse(storedQuote) : [];
     await createQuoteRequest(existingSessionId, false, quoteCartData as CartData[],latestQuoteData);
@@ -392,14 +370,13 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
                   variant="secondary"
                   className="bg-yellow-500 text-white hover:bg-yellow-600"
                   onClick={handleAddToExistingQuote}
-                  disabled={isSubmitting}
+                  disabled={isAddingToExisting}
                 >
-                  {isSubmitting ? 'Add to Existing Quote' : 'Add to Existing Quote'}
-
+                  {isAddingToExisting ? 'Adding...' : 'Add to Existing Quote'}
                 </Button>
               )}
               <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-700" disabled={isSubmitting}>
-                {isSubmitting ? 'Submitting...' : 'Submit'}
+                 {isSubmitting ? 'Submitting...' : 'Submit'}
               </Button>
             </div>
           </form>

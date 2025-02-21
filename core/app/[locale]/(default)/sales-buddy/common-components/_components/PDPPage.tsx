@@ -165,14 +165,12 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
   
 
   const handleAddToQuote = async () => {
-    // Find the quote button
     const quoteButton = document.getElementById("custom-quote");
     if (!quoteButton) {
       console.warn("custom-quote button not found in DOM.");
       return;
     }
   
-    // Validate quote input early
     if (!quoteInputRef.current || !quoteInputRef.current.value) {
       console.warn("Quote input is empty.");
       return;
@@ -181,7 +179,6 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
     console.log("Quote Value:", quoteValue);
   
     try {
-      // Handle quote button click if not on cart page
         
       if (pageName === '/cart/') {
         await fetchCartData();
@@ -190,7 +187,6 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
         await handleQuoteButtonClick(quoteButton);
         console.log('Click processing completed');
   
-      // Wait for local storage to be updated
       const getLatestQuoteData = () => {
         return new Promise((resolve) => {
           setTimeout(() => {
@@ -201,10 +197,8 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
         });
       };
   
-      // Get the latest quote data
       const latestQuoteData = await getLatestQuoteData();
   
-      // Create the quote request
       await createQuoteRequest(quoteValue, quoteCartData as CartData[], latestQuoteData);
   
     } catch (error) {
@@ -212,7 +206,6 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
     }
   };
   
-  // Helper function to handle the quote button click
   async function handleQuoteButtonClick(quoteButton: HTMLElement) {
     return new Promise((resolve) => {
       let isProcessingComplete = false;
@@ -224,11 +217,9 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
       };
   
       const observer = new MutationObserver((mutations) => {
-        // Add your specific conditions here to determine when processing is complete
-        // For example, waiting for a specific element to appear/disappear
+        
         const processingComplete = mutations.some(mutation => {
-          // Customize this condition based on your DOM changes
-          // Example: check for a success message or updated cart state
+         
           return mutation.target.classList.contains('quote-added') || 
                  mutation.target.getAttribute('data-quote-status') === 'complete';
         });
@@ -247,7 +238,6 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
   
       quoteButton.click();
   
-      // Safety timeout
       setTimeout(() => {
         if (!isProcessingComplete) {
           handleProcessingComplete();
@@ -260,7 +250,6 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
     console.log("localData>>>", latestQuoteData);
     console.log("localCartData>>>", cartData);
     const UpdatelatestQuoteData = JSON.parse(localStorage.getItem("Q_R_data") || "{}");
-      console.log("UpdatelatestQuoteData------------------,", UpdatelatestQuoteData);
     let dataToSend = {
       quote_id: quoteId, 
       bc_customer_id: '',  
@@ -273,9 +262,7 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
   
     try {
       const result = await CreateQuote(dataToSend);
-      console.log("Quote successfully", result);
       if (result) {
-        console.log("Quote successfully created:", dataToSend);
         if(dataToSend?.qr_customer != ''){
           const emailResult = await sendEmailToCustomer(dataToSend);
           console.log("Email sent successfully:", emailResult);
