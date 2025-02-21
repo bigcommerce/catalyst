@@ -11,6 +11,7 @@ import { CreateQuote } from '../actions/CreateQuote';
 import { usePathname } from 'next/navigation';
 import { GetCartDetials } from '../actions/GetCartDetials';
 import toast from 'react-hot-toast';
+import { sendEmailToCustomer } from '../actions/SendEmailToCustomer';
 
 interface FlyoutFormProps {
   isOpen?: boolean;
@@ -40,7 +41,7 @@ interface ProductOption {
   modifierId?: string;
   modifierOptionId?: string;
 }
-interface CartData {
+export interface CartData {
   bc_product_id: string | number;
   bc_sku: string;
   bc_product_name: string;
@@ -56,44 +57,47 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
 
   const [formData, setFormData] = useState<FormData>({
     first_name: '',
-    last_name: '', //
+    last_name: '', 
     phone_number: '',
-    email_id: '', //
+    email_id: '', 
     company_name: '',
   });
+
   const [customerData, setCustomerData] = useState<CustomerData | null>(null);
-  const [quoteProductData, setQuoteProductData] = useState(null);
+  const [quoteProductData, setQuoteProductData] = useState<any>();
   const [existingSessionId, setExistingSessionId] = useState<string | null>(null);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [quoteCartData, setquoteCartData] = useState<CartData[]>();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const pageName = usePathname();
-  if (pageName !== '/cart/') {
-    useEffect(() => {
-      const fetchStoredQuote = () => {
-        const storedQuote = localStorage.getItem('Q_R_data');
+  useEffect(() => {
+    const fetchStoredQuote = () => {
+      if (pageName !== '/cart/' && typeof window !== "undefined") {
+        let storedQuote = localStorage.getItem("Q_R_data");
+  
         if (storedQuote) {
-          setQuoteProductData(JSON.parse(storedQuote));
+          try {
+            const parsedData = JSON.parse(storedQuote);
+            setQuoteProductData(parsedData);
+          } catch (error) {
+            console.error("Error parsing local storage data:", error);
+            setQuoteProductData([]); 
+          }
+        } else {
+          console.warn("No data found in localStorage for 'Q_R_data'");
+          setQuoteProductData([]); 
         }
-      };
+      }
+    };
+  
+    fetchStoredQuote();
 
-      fetchStoredQuote();
+  }, [pageName]);
+  
 
-      const handleStorageChange = (event: StorageEvent) => {
-        if (event.key === 'Q_R_data') {
-          fetchStoredQuote();
-        }
-      };
-
-      window.addEventListener('storage', handleStorageChange);
-
-      return () => {
-        window.removeEventListener('storage', handleStorageChange);
-      };
-    }, []);
-  }
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -262,15 +266,15 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
 
 
 
-  const createQuoteRequest = async (sessionId: string, isNewQuote: boolean = true, cartData: CartData[]) => {
+  const createQuoteRequest = async (sessionId: string, isNewQuote: boolean = true, cartData: CartData[],latestQuoteData: any) => {
 
-    const quoteType = isNewQuote ? '' : 'old';
+    const quoteType = isNewQuote ? 'New' : 'old';
     let dataToSend;
     if (pageName === '/sales-buddy/quote') {
       dataToSend = {
         quote_id: sessionId,
         qr_customer: formData,
-        bc_customer_id: "",
+        bc_customer_id: customerData?.id,
         qr_product: []
       };
     } else {
@@ -279,7 +283,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
         bc_customer_id: customerData?.id,
         quote_type: quoteType,
         qr_customer: formData,
-        qr_product: pageName === '/cart/' ? cartData : [quoteProductData],
+        qr_product: pageName === '/cart/' ? cartData : [latestQuoteData],
         page_type: pageName === '/cart/' ? 'cart' : 'pdp',
       };
     }
@@ -289,15 +293,20 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
       const result = await CreateQuote(dataToSend);
       if (result) {
         setSubmitStatus('success');
+        setSuccessMessage('Quote requested successfully!');
         if (isNewQuote) {
           localStorage.setItem('session_id$', sessionId);
           setExistingSessionId(sessionId);
         }
         if (pageName !== '/sales-buddy/quote') {
 
-          toast.success("Quote Requested Successfully");
+          const emailResult = await sendEmailToCustomer(dataToSend);
         }
-        onOpenChange(false);
+
+        setTimeout(() => {
+          setSuccessMessage(null);
+          onOpenChange(false);
+        }, 2000);
       } else {
         setSubmitStatus('error');
       }
@@ -314,13 +323,18 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
 
     if (!validateForm()) return;
 
+    const storedQuote = localStorage.getItem("Q_R_data");
+    let latestQuoteData = storedQuote ? JSON.parse(storedQuote) : [];
+
     const newSessionId = generateSessionId();
-    await createQuoteRequest(newSessionId, true, quoteCartData as CartData[]);
+    await createQuoteRequest(newSessionId, true, quoteCartData as CartData[],latestQuoteData);
   };
 
   const handleAddToExistingQuote = async () => {
     if (!existingSessionId || !validateForm()) return;
-    await createQuoteRequest(existingSessionId, false, quoteCartData as CartData[]);
+    const storedQuote = localStorage.getItem("Q_R_data");
+    let latestQuoteData = storedQuote ? JSON.parse(storedQuote) : [];
+    await createQuoteRequest(existingSessionId, false, quoteCartData as CartData[],latestQuoteData);
   };
 
   return (
@@ -380,21 +394,19 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
                   onClick={handleAddToExistingQuote}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Adding...' : 'Add to Existing Quote'}
+                  {isSubmitting ? 'Add to Existing Quote' : 'Add to Existing Quote'}
 
                 </Button>
               )}
-
-              <Button
-                type="submit"
-                className="bg-blue-600 text-white hover:bg-blue-700"
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-700" disabled={isSubmitting}>
                 {isSubmitting ? 'Submitting...' : 'Submit'}
               </Button>
             </div>
           </form>
 
+          {submitStatus === 'success' &&
+                <p className="mt-2 text-center text-sm text-green-600">{successMessage}</p>
+          }
           {submitStatus === 'error' && (
             <p className="mt-2 text-sm text-red-500">
               There was an error submitting your quote. Please try again.

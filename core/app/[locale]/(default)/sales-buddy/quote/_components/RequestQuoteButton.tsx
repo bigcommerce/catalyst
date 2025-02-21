@@ -13,7 +13,6 @@ const RequestQuoteButton = () => {
     const loadInitialData = async () => {
       try {
         const dataCustomer = await createSessionIdCookie();
-        console.log(dataCustomer, '>>>CustomerData');
         if (dataCustomer) {
           setCusData(dataCustomer?.customerDetails?.customer_group_id);
         }

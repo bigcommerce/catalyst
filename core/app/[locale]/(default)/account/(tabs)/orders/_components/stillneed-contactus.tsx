@@ -12,7 +12,7 @@ export const StillNeedContactUs = ({icon}:{icon: any}) => {
         <BcImage src={icon} alt="Hand Icon" width={24} height={24} unoptimized={true} className="h-[24px] w-[24px] brightness-0" />
       </div>
       <div>{t('stillNeedHelp')} </div>
-      <Link href="#" className="text-base font-semibold text-[#008BB7]">
+      <Link href="#" className="text-base font-bold text-[#008BB7]">
         {t('contact')}
       </Link>
     </div>
