@@ -493,6 +493,11 @@ export const Details = ({
             <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
               SKU: <span>{product.mpn}</span>
             </span>
+
+            <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+              SKU: <span>{product.sku}</span>
+            </span>
+
             <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
               by{' '}
               <Link
@@ -520,56 +525,6 @@ export const Details = ({
           <ReviewSummary data={product} />
         </div>
 
-        {/* <div className="flex flex-row items-center mt-[30px] mb-[10px] justify-center gap-[10px] xl:justify-start">
-          {product?.UpdatePriceForMSRP && (
-            <ProductPrice
-              defaultPrice={updatedPriceForMSRP?.originalPrice || 0}
-              defaultSalePrice={
-                updatedPriceForMSRP?.hasDiscount
-                  ? updatedPriceForMSRP?.updatedPrice
-                  : updatedPriceForMSRP?.warrantyApplied
-                    ? updatedPriceForMSRP?.updatedPrice
-                    : null
-              }
-              priceMaxRule={priceMaxRules?.find(
-                (r: any) =>
-                  (r.bc_brand_ids &&
-                    (r.bc_brand_ids.includes(product?.brand?.entityId) ||
-                      r.bc_brand_ids.includes(String(product?.brand?.entityId)))) ||
-                  (r.skus && r.skus.includes(product?.parent?.sku)),
-              )}
-              currency={updatedPriceForMSRP?.currencyCode?.currencyCode || 'USD'}
-              format={format}
-              showMSRP={updatedPriceForMSRP?.showDecoration}
-              warrantyApplied={updatedPriceForMSRP?.warrantyApplied}
-              options={{
-                useAsyncMode: false,
-                useDefaultPrices: true,
-              }}
-              classNames={{
-                root: 'product-price flex items-center gap-[0.5em] text-center max-w-fit xl:text-left',
-                newPrice:
-                  'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                oldPrice:
-                  'inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
-                discount:
-                  'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
-                price:
-                  'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500',
-              }}
-            />
-          )}
-          <div>
-            <CloseOut
-              entityId={product.entityId}
-              variantId={selectedVariantId}
-              isFromPDP={true}
-              isFromCart={false}
-            />
-          </div>
-        </div> */}
-
         <div className="mb-[10px] mt-[30px] flex flex-row items-center justify-center gap-[10px] xl:justify-start">
           {product?.UpdatePriceForMSRP && (
             <ProductPrice
@@ -581,53 +536,16 @@ export const Details = ({
                     ? updatedPriceForMSRP?.updatedPrice
                     : null
               }
-              // Apply priceMaxRule if user is not authenticated OR if user is in Residential Group (ID 6)
+              // Apply priceMaxRule if user is not authenticated OR if user is in Residential Member group
               priceMaxRule={
-                !sessionUser || sessionUser?.customerGroupId === 6
-                  ? priceMaxRules?.find((r: any) => {
-                      if (r.skus) {
-                        const productMpn = product?.mpn || '';
-                        const productSku = product?.sku || '';
-                        const parentSku = product?.parent?.sku;
-                        const fullSkuMatch = r.skus.includes(productSku);
-                        const mpnMatch = r.skus.includes(productMpn);
-                        const parentSkuMatch = parentSku && r.skus.includes(parentSku);
-
-                        const prefixedSkuMatch = r.skus.some((ruleSku) => {
-                          if (ruleSku.includes('_')) {
-                            const skuPart = ruleSku.split('_')[1];
-                            return skuPart === productSku || skuPart === productMpn;
-                          }
-                          return false;
-                        });
-
-                        if (fullSkuMatch || mpnMatch || parentSkuMatch || prefixedSkuMatch) {
-                          const userStatus = !sessionUser
-                            ? 'Non-authenticated visitor'
-                            : 'Residential Member (ID: 6)';
-                          console.log(
-                            `Price Max Rule applied to product: ${productSku || productMpn} for ${userStatus}`,
-                          );
-                          return true;
-                        }
-                      }
-                      if (
-                        r.bc_brand_ids &&
-                        (r.bc_brand_ids.includes(product?.brand?.entityId) ||
-                          r.bc_brand_ids.includes(String(product?.brand?.entityId)))
-                      ) {
-                        const userStatus = !sessionUser
-                          ? 'Non-authenticated visitor'
-                          : 'Residential Member (ID: 6)';
-
-                        console.log(
-                          `Price Max Rule applied to brand: ${product?.brand?.name} for ${userStatus}`,
-                        );
-                        return true;
-                      }
-
-                      return false;
-                    })
+                !sessionUser || customerGroupDetails?.name === 'Residential Member '
+                  ? priceMaxRules?.find(
+                      (r: any) =>
+                        (r.bc_brand_ids &&
+                          (r.bc_brand_ids.includes(product?.brand?.entityId) ||
+                            r.bc_brand_ids.includes(String(product?.brand?.entityId)))) ||
+                        (r.skus && r.skus.includes(product?.parent?.sku)),
+                    )
                   : null
               }
               currency={updatedPriceForMSRP?.currencyCode?.currencyCode || 'USD'}

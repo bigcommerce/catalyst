@@ -156,9 +156,10 @@ export default async function ProductPage(props: Props) {
       ? JSON.parse(atob(priceMaxCookie?.value))
       : undefined;
 
+    // Fetch price max rules if user is not authenticated OR is in Residential Member group (ID 6)
     let priceMaxRules = null;
     const RESIDENTIAL_GROUP_ID = 6;
-    const RESIDENTIAL_GROUP_NAME = 'Residential Member';
+    const RESIDENTIAL_GROUP_NAME = 'Residential Member ';
     const isNotAuthenticated = !sessionUser;
     const isPriceMaxEligible =
       isNotAuthenticated || (sessionUser && sessionUser.customerGroupId === RESIDENTIAL_GROUP_ID);
@@ -170,6 +171,8 @@ export default async function ProductPage(props: Props) {
         const userStatus = isNotAuthenticated
           ? 'Non-authenticated visitor'
           : `${RESIDENTIAL_GROUP_NAME} (ID: ${RESIDENTIAL_GROUP_ID})`;
+
+        console.log(`Price Max Rules fetched for: ${userStatus}`);
 
         if (priceMaxRules && priceMaxRules.length > 0) {
           priceMaxRules.forEach((rule) => {
@@ -184,6 +187,8 @@ export default async function ProductPage(props: Props) {
         );
       }
     }
+
+    console.log(priceMaxRules, ' priceMaxRules');
 
     const useDefaultPrices = !customerAccessToken;
     const { locale, slug } = params;
