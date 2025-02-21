@@ -274,7 +274,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
       dataToSend = {
         quote_id: sessionId,
         qr_customer: formData,
-        bc_customer_id: customerData?.id,
+        bc_customer_id: customerData?.id ?? 0,
         qr_product: []
       };
     } else {
