@@ -754,20 +754,36 @@ export function WishlistProductCard({
         ]}
       />
 
-      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
+      <div className="mb-8 flex flex-col sm:flex-row flex-wrap items-center justify-between gap-4">
         <div>
           <h1 className="mb-2 text-left text-xl font-medium leading-8 tracking-[0.15px] text-black">
             {wishlistData?.name}
           </h1>
-          <p className="text-left text-base leading-8 tracking-[0.15px] text-black">
+          <p className="text-center sm:text-left text-base leading-8 tracking-[0.15px] text-black">
             {wishlistData?.items.length} {wishlistData?.items.length === 1 ? 'item' : 'items'}
           </p>
         </div>
+
         <Button
           variant="secondary"
-          className="h-10 !w-auto bg-[#008BB7] px-6 text-[14px] font-medium uppercase tracking-wider text-white hover:bg-[#007a9e]"
+          className="h-10 !w-auto bg-white sm:bg-[#008BB7] px-6 text-[14px] font-medium uppercase tracking-wider text-base sm:text-white sm:hover:bg-[#007a9e]"
         >
-          SHARE FAVORITES
+      <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    className="sm:hidden mx-2" 
+  >
+    <mask id="mask0_10545_6748" style={{ maskType: "alpha" }} maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
+      <rect width="24" height="24" fill="#D9D9D9"/>
+    </mask>
+    <g mask="url(#mask0_10545_6748)">
+      <path d="M6 23C5.45 23 4.97917 22.8042 4.5875 22.4125C4.19583 22.0208 4 21.55 4 21V10C4 9.45 4.19583 8.97917 4.5875 8.5875C4.97917 8.19583 5.45 8 6 8H9V10H6V21H18V10H15V8H18C18.55 8 19.0208 8.19583 19.4125 8.5875C19.8042 8.97917 20 9.45 20 10V21C20 21.55 19.8042 22.0208 19.4125 22.4125C19.0208 22.8042 18.55 23 18 23H6ZM11 16V4.825L9.4 6.425L8 5L12 1L16 5L14.6 6.425L13 4.825V16H11Z" fill="#000000"/>
+    </g>
+  </svg>
+        <span>SHARE FAVORITES</span>
         </Button>
       </div>
 
