@@ -154,6 +154,43 @@ export default async function Cart({ params }: Props) {
     },
   });
 
+  let selectedvariantId = Number;
+  let variantId = Number;
+  const combinedData = data?.site?.cart?.lineItems?.physicalItems?.map((item: any) => {
+    selectedvariantId = item?.variantEntityId;
+    let deliveryMessageData = [
+      ...(item?.baseCatalogProduct?.variants?.edges?.flatMap((variant: any) => {
+        variantId = variant?.node?.entityId;
+        if (selectedvariantId == variantId) {
+        return variant?.node?.deliveryMessageData?.edges?.map((messageEdge: any) => messageEdge?.node?.value);
+      }
+       return [];
+      }) || []),
+      ...(item?.baseCatalogProduct?.deliveryMessageParentData?.edges?.flatMap((variant: any) => {
+        return variant?.node?.value
+      }) || [])
+    ];
+
+    let closeOutValue = [
+      ...(item?.baseCatalogProduct?.variants?.edges?.flatMap((variant: any) => {
+        if (selectedvariantId == variantId) {
+        return variant?.node?.closeOutData?.edges?.map((messageEdge: any) =>  messageEdge?.node?.value);
+        }
+        return [];
+      }) || []),
+      ...(item?.baseCatalogProduct?.closeOutParentData?.edges?.flatMap((variant: any) => {
+        return variant?.node?.value
+      }) || [])
+    ];
+
+    return {
+      selectedvariantId,
+      variantId,
+      deliveryEstimatedTexts: deliveryMessageData || [],
+      closeOutData: closeOutValue || []
+    };
+  });
+
   let cart = data.site.cart;
   let checkout = data.site.checkout;
   const geography = data.geography;
@@ -165,7 +202,7 @@ export default async function Cart({ params }: Props) {
   let checkFloorIsAvailable: number = 0;
   let loadCartCheckoutQuery: number = 0;
   let checkfloorIsSet: number = 0;
-  if(await checkZeroTaxCouponIsApplied(checkout)) {
+  if (await checkZeroTaxCouponIsApplied(checkout)) {
     checkZeroFLPTax = await zeroTaxCalculation(data.site);
     loadCartCheckoutQuery = 1;
   } else if (await checkCouponCodeIsApplied(checkout)) {
@@ -174,8 +211,8 @@ export default async function Cart({ params }: Props) {
     loadCartCheckoutQuery = 1;
   }
 
-  if(loadCartCheckoutQuery) {
-    if(checkZeroFLPTax?.id) {
+  if (loadCartCheckoutQuery) {
+    if (checkZeroFLPTax?.id) {
       const { data } = await client.fetch({
         document: CartPageQuery,
         variables: { cartId },
@@ -189,7 +226,7 @@ export default async function Cart({ params }: Props) {
       });
       checkout = data.site.checkout;
       cart = data.site.cart;
-    } else if(checkZeroFLPTax?.action == 'no_floor') {
+    } else if (checkZeroFLPTax?.action == 'no_floor') {
       //Floor is hit
     }
   }
@@ -205,8 +242,8 @@ export default async function Cart({ params }: Props) {
   const product_data_in_cart =
     cookie_agent_login_status == 'true' ? await get_product_price_data_in_cart(cartId) : [];
   const lineItems: any = [
-    ...cart.lineItems.physicalItems,
-    ...cart.lineItems.digitalItems,
+    ...cart?.lineItems?.physicalItems,
+    ...cart?.lineItems?.digitalItems,
     // ...cart.lineItems.customItems,
   ];
   let cartQty = lineItems?.reduce(function (total: number, cartItems: any) {
@@ -316,7 +353,6 @@ export default async function Cart({ params }: Props) {
     );
     updatedProduct.push(...price);
   }
-
   return (
     <div className="cart-page mx-auto mb-[2rem] max-w-[93.5%] pt-0 sm:pt-2 lg:pt-8">
       <div className="sticky top-2 z-50">
@@ -352,18 +388,22 @@ export default async function Cart({ params }: Props) {
             <SaveCart cartItems={lineItems} saveCartIcon={heartIcon} />
           </div>
           <div className="delete-icon-empty-cart-hidden w-auto text-right">
-            <RemoveCart cartId={cart.entityId} icon={deleteIcon} deleteIcon={closeIcon} />
+            <RemoveCart cartId={cart?.entityId} icon={deleteIcon} deleteIcon={closeIcon} />
           </div>
         </div>
       </div>
 
       <div className="cart-right-side-details px-18 w-full pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
         <ul className="cart-details-item col-span-2 lg:w-full">
-          {updatedProduct.map((product: any) => (
+          {updatedProduct.map((product: any) => {
+            const productCombinedData = combinedData?.find(
+              (item: any) => item?.selectedvariantId === product?.variantEntityId
+            );
+            return(
             <CartItem
               brandId={product?.baseCatalogProduct?.brand?.entityId}
-              currencyCode={cart.currencyCode}
-              key={product.entityId}
+              currencyCode={cart?.currencyCode}
+              key={product?.entityId}
               product={product}
               deleteIcon={deleteIcon}
               cartId={cart?.entityId}
@@ -372,17 +412,20 @@ export default async function Cart({ params }: Props) {
               cookie_agent_login_status={cookie_agent_login_status === 'true' ? true : false}
               getAllCommonSettinngsValues={getAllCommonSettinngsValues}
               discountRules={discountRules}
+              combinedData={productCombinedData}
             />
-          ))}
+            )
+          }
+          )}
           {CustomItems.length > 0 &&
             CustomItems?.map((data) => {
               return (
                 <CartProductComponent
-                  key={data.entityId}
-                  cartId={cart.entityId}
-                  currencyCode={cart.currencyCode}
-                  sku={data.sku}
-                  quantity={data.quantity}
+                  key={data?.entityId}
+                  cartId={cart?.entityId}
+                  currencyCode={cart?.currencyCode}
+                  sku={data?.sku}
+                  quantity={data?.quantity}
                   product={data}
                   priceAdjustData={
                     product_data_in_cart?.custom_items &&
@@ -391,6 +434,7 @@ export default async function Cart({ params }: Props) {
                   ProductType={'custom'}
                   cookie_agent_login_status={cookie_agent_login_status === 'true' ? true : false}
                 />
+
               );
             })}
         </ul>
@@ -429,8 +473,8 @@ export default async function Cart({ params }: Props) {
           >
             <MakeswiftPage locale={locale} path="/content/shipping-flyout" />
           </Flyout>
-          
-          <p className="flex items-center pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-1">
+
+          <p className="flex items-center pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-2">
             <BcImage
               alt="Agent Icon"
               width={10}
@@ -441,15 +485,17 @@ export default async function Cart({ params }: Props) {
             />{' '}
             Talk to an Agent
           </p>
-          
-          
+          <div className='my-5'>
+            <RequestQuoteButton />
+          </div>
+
         </div>
-       
+
       </div>
       <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
 
-      <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? {email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName} as any : null} />
-      
+      <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? { email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName } as any : null} />
+
 
     </div>
   );

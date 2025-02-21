@@ -10,6 +10,7 @@ import { BcImage } from '~/components/bc-image';
 
 import callIcon from '~/public/home/callIcon.svg';
 import messageIcon from '~/public/home/messageIcon.svg';
+import Link from 'next/link';
 
 interface Link {
   href: string;
@@ -60,37 +61,37 @@ const Dropdown = ({
           sideOffset={4}
         >
           {getCustomerData && from === 'account-dropdown' && (
-            <DropdownMenu.Item>
-              <CustomLink
-                className="block whitespace-nowrap break-words font-medium text-[#03465c]"
+            <DropdownMenu.Item className='outline-none'> 
+              <Link
+                className="block whitespace-nowrap break-words font-medium text-[#03465c] outline-none"
                 href="/account"
               >
                 <span className="block w-full whitespace-normal break-words">
                   Hi, {getCustomerData?.user?.name}
                 </span>
-              </CustomLink>
+              </Link>
             </DropdownMenu.Item>
           )}
           {items.map((item, index) =>
             'href' in item ? (
-              <DropdownMenu.Item asChild key={`${item.href}-${index}`}>
-                <CustomLink
+              <DropdownMenu.Item asChild key={`${item.href}-${index}`} className='outline-none'>
+                <Link
                   className={item?.classNameCss ? item?.classNameCss : 'block whitespace-nowrap'}
                   href={item.href}
                 >
                   {item.label}
-                </CustomLink>
+                </Link>
               </DropdownMenu.Item>
             ) : (
               // text-left leading-[32px] tracking-[0.5px] block whitespace-nowrap p-3 hover:focus-visible:ring-0
               <DropdownMenu.Item
                 asChild
                 key={item.name}
-                className="[&_button.Logout-label]:justify-start [&_button.Logout-label]:whitespace-nowrap [&_button.Logout-label]:font-medium [&_button.Logout-label]:leading-[32px] [&_button.Logout-label]:tracking-[0.5px] [&_button.Logout-label]:text-[#008BB7]"
+                className="[&_button.Logout-label]:justify-start [&_button.Logout-label]:whitespace-nowrap [&_button.Logout-label]:font-medium [&_button.Logout-label]:leading-[32px] [&_button.Logout-label]:tracking-[0.5px] [&_button.Logout-label]:text-[#008BB7] outline-none"
               >
-                <form action={item.action} className="">
+                <form action={item.action} className="outline-none">
                   <Button
-                    className="Logout-label block p-0 text-left text-[14px] font-[600] underline hover:bg-transparent hover:text-primary"
+                    className="Logout-label block p-0 text-left text-[14px] font-[600] underline hover:bg-transparent hover:text-primary outline-none"
                     type="submit"
                     variant="subtle"
                   >
@@ -111,8 +112,8 @@ const Dropdown = ({
               </DropdownMenu.Item> */}
 
               <div className={`flex flex-col gap-[9px]`}>
-                <DropdownMenu.Item className="mt-[9px]">
-                  <CustomLink
+                <DropdownMenu.Item className="mt-[9px] outline-none">
+                  <Link
                     href="/support/contact"
                     className="block text-[14px] font-normal leading-[10px] outline-none tracking-[0.25px]"
                   >
@@ -133,11 +134,11 @@ const Dropdown = ({
                         Mon-Fri 6am-5pm PST
                       </div>
                     </div>
-                  </CustomLink>
+                  </Link>
                 </DropdownMenu.Item>
 
-                <DropdownMenu.Item>
-                  <CustomLink
+                <DropdownMenu.Item className='outline-none'>
+                  <Link
                     href="/support/contact"
                     className="mt-[9px] block text-[14px] font-normal leading-[10px] tracking-[0.25px] text-[#353535] outline-none"
                   >
@@ -158,7 +159,7 @@ const Dropdown = ({
                         Sat-Sun 6am-3pm PST
                       </div>
                     </div>
-                  </CustomLink>
+                  </Link>
                 </DropdownMenu.Item>
               </div>
             </>

@@ -467,7 +467,9 @@ export const WishlistBook = ({
         </Message>
       )}
 
-      <div className="mb-8 block md:hidden">
+      <div className="flex justify-between mb-8 md:hidden">
+      {children}
+
         <Modal
           trigger={
             <Button
@@ -480,7 +482,6 @@ export const WishlistBook = ({
         >
           <CreateWishlistDialog onWishlistCreated={handleWishlistCreated} />
         </Modal>
-        {children}
       </div>
 
       <ul className="mb-8">
@@ -500,7 +501,9 @@ export const WishlistBook = ({
         ))}
       </ul>
 
-      <div className="create-wishlist-mobile-display mb-16 xl:block">
+      <div className="flex  justify-between create-wishlist-mobile-display mb-16">
+      {children}
+
         <Modal
           trigger={
             <Button
@@ -513,7 +516,6 @@ export const WishlistBook = ({
         >
           <CreateWishlistDialog onWishlistCreated={handleWishlistCreated} />
         </Modal>
-        {children}
       </div>
     </div>
   );
