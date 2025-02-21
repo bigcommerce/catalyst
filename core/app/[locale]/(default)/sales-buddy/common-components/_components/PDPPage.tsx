@@ -277,9 +277,11 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
       console.log("Quote successfully", result);
       if (result) {
         console.log("Quote successfully created:", dataToSend);
-
-        const emailResult = await sendEmailToCustomer(dataToSend);
-        console.log("Email sent successfully:", emailResult);
+        if(dataToSend?.qr_customer != ''){
+          const emailResult = await sendEmailToCustomer(dataToSend);
+          console.log("Email sent successfully:", emailResult);
+        }
+        
       } else {
         console.error("Failed to create quote.");
       }
