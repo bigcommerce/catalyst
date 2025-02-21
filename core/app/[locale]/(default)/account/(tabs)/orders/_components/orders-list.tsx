@@ -36,7 +36,7 @@ const ManageOrderButtons = ({
         <Button
           aria-label={t('trackOrder')}
           asChild
-          className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#fff]"
+          className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#fff] hover:bg-brand-300"
           variant="secondary"
         >
           <Link href={{ pathname: orderTrackingUrl }}>{t('trackOrder')}</Link>
@@ -46,7 +46,7 @@ const ManageOrderButtons = ({
         <Button
         aria-label={t('cancelOrder')}
         asChild
-        className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#fff]"
+        className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#fff] hover:bg-brand-300"
         variant="secondary"
       >
         <Link href={`https://belamihelpdesk.powerappsportals.com/request/CancelOrder/`} target="_blank">{t('cancelOrder')}</Link>
