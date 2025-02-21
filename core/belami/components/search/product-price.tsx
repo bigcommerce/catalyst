@@ -42,28 +42,37 @@ export function ProductPrice({
     isLoaded?: boolean;
   };
 }) {
+
   if (priceMaxRule && !!priceMaxRule.discount) {
     const discount = Number(priceMaxRule.discount);
     if (options?.useDefaultPrices && !!defaultPrice) {
-      const originalPrice =
-        priceMaxRule.is_sale_included && defaultSalePrice && Number(defaultSalePrice) > 0
-          ? defaultSalePrice
-          : defaultPrice;
-      const originalSalePrice = defaultSalePrice;
-      const discountedPrice = originalPrice - (originalPrice * discount) / 100;
-      defaultSalePrice =
-        !!originalSalePrice && Number(originalSalePrice) < discountedPrice
-          ? originalSalePrice
-          : Number(discountedPrice.toFixed(2));
+      if (!priceMaxRule.is_sale_included && defaultSalePrice && Number(defaultSalePrice) > 0) {
+        // Skip price update
+      } else {
+        const originalPrice =
+          priceMaxRule.is_sale_included && defaultSalePrice && Number(defaultSalePrice) > 0
+            ? defaultSalePrice
+            : defaultPrice; // discount on the top of sale or base price
+        const originalSalePrice = defaultSalePrice;
+        const discountedPrice = originalPrice - (originalPrice * discount) / 100;
+        defaultSalePrice =
+          !!originalSalePrice && Number(originalSalePrice) < discountedPrice
+            ? originalSalePrice
+            : Number(discountedPrice.toFixed(2));
+      }
     } else if (!options?.useDefaultPrices && !!price) {
-      const originalPrice =
-        priceMaxRule.is_sale_included && salePrice && Number(salePrice) > 0 ? salePrice : price;
-      const originalSalePrice = salePrice;
-      const discountedPrice = originalPrice - (originalPrice * discount) / 100;
-      salePrice =
-        !!originalSalePrice && Number(originalSalePrice) < discountedPrice
-          ? originalSalePrice
-          : Number(discountedPrice.toFixed(2));
+      if (!priceMaxRule.is_sale_included && salePrice && Number(salePrice) > 0) {
+        // Skip price update
+      } else {
+        const originalPrice =
+          priceMaxRule.is_sale_included && salePrice && Number(salePrice) > 0 ? salePrice : price; // discount on the top of sale or base price
+        const originalSalePrice = salePrice;
+        const discountedPrice = originalPrice - (originalPrice * discount) / 100;
+        salePrice =
+          !!originalSalePrice && Number(originalSalePrice) < discountedPrice
+            ? originalSalePrice
+            : Number(discountedPrice.toFixed(2));
+      }
     }
   }
 
