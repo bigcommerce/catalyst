@@ -77,7 +77,7 @@ interface Props {
   customerGroupDetails: any;
   swatchOptions: any;
   sessionUser: any;
-  combinedData?: { 
+  combinedData?: {
     selectedSku: string;
     variantSku: string;
     deliveryEstimatedTexts: string[];
@@ -366,33 +366,33 @@ export const Details = ({
                       {productOptions.filter(
                         (option) => option.__typename === 'MultipleChoiceOption',
                       ).length > 0 && (
-                          <div className="inline text-[14px] font-normal">
-                            {productOptions
-                              .filter((option) => option.__typename === 'MultipleChoiceOption')
-                              .map((option, index, filteredArray) => {
-                                if (option.__typename === 'MultipleChoiceOption') {
-                                  const selectedValue = getSelectedValue(
-                                    option as MultipleChoiceOption,
-                                  );
-                                  const displayValue =
-                                    option.displayStyle === 'Swatch'
-                                      ? selectedValue.split('|')[0]?.trim()
-                                      : selectedValue;
+                        <div className="inline text-[14px] font-normal">
+                          {productOptions
+                            .filter((option) => option.__typename === 'MultipleChoiceOption')
+                            .map((option, index, filteredArray) => {
+                              if (option.__typename === 'MultipleChoiceOption') {
+                                const selectedValue = getSelectedValue(
+                                  option as MultipleChoiceOption,
+                                );
+                                const displayValue =
+                                  option.displayStyle === 'Swatch'
+                                    ? selectedValue.split('|')[0]?.trim()
+                                    : selectedValue;
 
-                                  return (
-                                    <span key={option.entityId}>
-                                      <span className="font-bold">{option.displayName}:</span>
-                                      <span className="text-[15px]"> {displayValue}</span>
-                                      {index < filteredArray.length - 1 && (
-                                        <span className="mx-1">|</span>
-                                      )}
-                                    </span>
-                                  );
-                                }
-                                return null;
-                              })}
-                          </div>
-                        )}
+                                return (
+                                  <span key={option.entityId}>
+                                    <span className="font-bold">{option.displayName}:</span>
+                                    <span className="text-[15px]"> {displayValue}</span>
+                                    {index < filteredArray.length - 1 && (
+                                      <span className="mx-1">|</span>
+                                    )}
+                                  </span>
+                                );
+                              }
+                              return null;
+                            })}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -431,8 +431,8 @@ export const Details = ({
                         price:
                           'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
                         msrp: '-ml-[0.5em] mb-1 mr-2 text-left text-[12px] text-gray-500',
-                      }} 
-                      />
+                      }}
+                    />
                   )}
 
                   {productAvailability === 'Unavailable' ? (
@@ -481,8 +481,9 @@ export const Details = ({
           </div>
 
           <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-              } px-[20px] pt-[20px]`}
+            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
+              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+            } px-[20px] pt-[20px]`}
           >
             {/* Mobile View Button */}
             {productAvailability === 'Unavailable' ? (
@@ -574,58 +575,6 @@ export const Details = ({
           <ReviewSummary data={product} />
         </div>
 
-        {/* <div className="flex flex-row items-center mt-[30px] mb-[10px] justify-center gap-[10px] xl:justify-start">
-          {product?.UpdatePriceForMSRP && (
-            <ProductPrice
-              defaultPrice={updatedPriceForMSRP?.originalPrice || 0}
-              defaultSalePrice={
-                updatedPriceForMSRP?.hasDiscount
-                  ? updatedPriceForMSRP?.updatedPrice
-                  : updatedPriceForMSRP?.warrantyApplied
-                    ? updatedPriceForMSRP?.updatedPrice
-                    : null
-              }
-              priceMaxRule={priceMaxRules?.find(
-                (r: any) =>
-                  (r.bc_brand_ids &&
-                    (r.bc_brand_ids.includes(product?.brand?.entityId) ||
-                      r.bc_brand_ids.includes(String(product?.brand?.entityId)))) ||
-                  (r.skus && r.skus.includes(product?.parent?.sku)),
-              )}
-              currency={updatedPriceForMSRP?.currencyCode?.currencyCode || 'USD'}
-              format={format}
-              showMSRP={updatedPriceForMSRP?.showDecoration}
-              warrantyApplied={updatedPriceForMSRP?.warrantyApplied}
-              options={{
-                useAsyncMode: false,
-                useDefaultPrices: true,
-              }}
-              classNames={{
-                root: 'product-price flex items-center gap-[0.5em] text-center max-w-fit xl:text-left',
-                newPrice:
-                  'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                oldPrice:
-                  'inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
-                discount:
-                  'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
-                price:
-                  'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500',
-              }}
-            />
-          )}
-          <div>
-             {combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
-                      <div className="closeout-messages">
-                        <div className="bg-[#B4B4B5] content-center px-[10px] max-w-fit text-[#ffffff] tracking-[1.25px] leading-[32px] text-[14px]">
-                        CLEARANCE
-                        </div>
-                      </div>
-                    )}
-
-          </div>
-        </div> */}
-
         <div className="mb-[10px] mt-[30px] flex flex-row items-center justify-center gap-[10px] xl:justify-start">
           {product?.UpdatePriceForMSRP && (
             <ProductPrice
@@ -672,12 +621,13 @@ export const Details = ({
             />
           )}
           <div>
-            <CloseOut
-              entityId={product.entityId}
-              variantId={selectedVariantId}
-              isFromPDP={true}
-              isFromCart={false}
-            />
+            {combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === 'True' && (
+              <div className="closeout-messages">
+                <div className="max-w-fit content-center bg-[#B4B4B5] px-[10px] text-[14px] leading-[32px] tracking-[1.25px] text-[#ffffff]">
+                  CLEARANCE
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -697,19 +647,20 @@ export const Details = ({
         )}
 
         <div className="free-shipping-detail mb-[30px] text-center xl:text-left">
-          {combinedData?.deliveryEstimatedTexts?.length > 0 && (
-                    combinedData?.deliveryEstimatedTexts?.map((message, index) => {
-                      const parsedMessages = JSON.parse(message);
-                      const firstMessage = parsedMessages[0];
-                      return firstMessage ? (
-                        <div key={index} className= "justify-center xl:justify-start">
-                          <div className={`${firstMessage?.qty === 0 ? 'bg-[#FBF4E9] px-[10px] text-[#6A4C1E]' : 'bg-transparent'} mt-[5px] w-fit`}>
-                            {firstMessage?.delivery_estimated_text}
-                          </div>
-                        </div>
-                      ) : null;
-                    })
-                  )}
+          {combinedData?.deliveryEstimatedTexts?.length > 0 &&
+            combinedData?.deliveryEstimatedTexts?.map((message, index) => {
+              const parsedMessages = JSON.parse(message);
+              const firstMessage = parsedMessages[0];
+              return firstMessage ? (
+                <div key={index} className="justify-center xl:justify-start">
+                  <div
+                    className={`${firstMessage?.qty === 0 ? 'bg-[#FBF4E9] px-[10px] text-[#6A4C1E]' : 'bg-transparent'} mt-[5px] w-fit`}
+                  >
+                    {firstMessage?.delivery_estimated_text}
+                  </div>
+                </div>
+              ) : null;
+            })}
           {product?.brand?.entityId &&
             getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
               <NoShipCanada
