@@ -10,3 +10,4 @@ export { ProductPrice } from './product-price';
 export { Hit } from './hit';
 export { RatingMenu } from './rating-menu';
 export { Stats } from './stats';
+export { CategoryRefinementList } from './category-refinement-list';

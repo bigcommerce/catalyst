@@ -129,6 +129,11 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
             return {
               query: indexUiState.query,
               categories: indexUiState.hierarchicalMenu?.['categories.lvl0'],
+              categories_without_path: indexUiState.refinementList?.['categories_without_path'],
+              categories_lvl0: indexUiState.refinementList?.['categories.lvl0'],
+              categories_lvl1: indexUiState.refinementList?.['categories.lvl1'],
+              categories_lvl2: indexUiState.refinementList?.['categories.lvl2'],
+              categories_lvl3: indexUiState.refinementList?.['categories.lvl3'],
               brand_name: indexUiState.refinementList?.['brand_name'],
               prices: indexUiState.refinementList?.['prices.USD'],
               price_range: indexUiState.refinementList?.['price_range'],
@@ -187,6 +192,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
               on_clearance: indexUiState.toggle?.['on_clearance'] === null || indexUiState.toggle?.['on_clearance'] === undefined ? undefined : indexUiState.toggle?.['on_clearance'] as any,
               is_new: indexUiState.toggle?.['is_new'] === null || indexUiState.toggle?.['is_new'] === undefined ? undefined : indexUiState.toggle?.['is_new'] as any,
               in_stock: indexUiState.toggle?.['in_stock'] === null || indexUiState.toggle?.['in_stock'] === undefined ? undefined : indexUiState.toggle?.['in_stock'] as any,
+              is_top_seller: indexUiState.toggle?.['is_top_seller'] === null || indexUiState.toggle?.['is_top_seller'] === undefined ? undefined : indexUiState.toggle?.['is_top_seller'] as any,
               free_shipping: indexUiState.toggle?.['free_shipping'] === null || indexUiState.toggle?.['free_shipping'] === undefined ? undefined : indexUiState.toggle?.['free_shipping'] as any,
               controls_included: indexUiState.toggle?.['metafields.Details.Controls Included'] === null || indexUiState.toggle?.['metafields.Details.Controls Included'] === undefined ? undefined : indexUiState.toggle?.['metafields.Details.Controls Included'] as any,
               photocell_included: indexUiState.toggle?.['metafields.Details.Photocell Included'] === null || indexUiState.toggle?.['metafields.Details.Photocell Included'] === undefined ? undefined : indexUiState.toggle?.['metafields.Details.Photocell Included'] as any,
@@ -204,6 +210,11 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
                   'categories.lvl0': routeState?.categories
                 },
                 refinementList: {
+                  'categories_without_path': routeState?.categories_without_path,
+                  'categories.lvl0': routeState?.categories_lvl0,
+                  'categories.lvl1': routeState?.categories_lvl1,
+                  'categories.lvl2': routeState?.categories_lvl2,
+                  'categories.lvl3': routeState?.categories_lvl3,
                   'brand_name': routeState?.brand_name,
                   'prices.USD': routeState?.prices,
                   'price_range': routeState?.price_range,
@@ -265,6 +276,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
                   'on_sale': routeState?.on_sale == null || routeState?.on_sale == undefined ? undefined : (routeState?.on_sale === 'true' || routeState?.on_sale === true),
                   'on_clearance': routeState?.on_clearance == null || routeState?.on_clearance == undefined ? undefined : (routeState?.on_clearance === 'true' || routeState?.on_clearance === true),
                   'in_stock': routeState?.in_stock == null || routeState?.in_stock == undefined ? undefined : (routeState?.in_stock === 'true' || routeState?.in_stock === true),
+                  'is_top_seller': routeState?.is_top_seller == null || routeState?.is_top_seller == undefined ? undefined : (routeState?.is_top_seller === 'true' || routeState?.is_top_seller === true),
                   'metafields.Details.Controls Included': routeState?.controls_included == null || routeState?.controls_included == undefined ? undefined : (routeState?.controls_included === 'true' || routeState?.controls_included === true),
                   'metafields.Details.Photocell Included': routeState?.photocell_included == null || routeState?.photocell_included == undefined ? undefined : (routeState?.photocell_included === 'true' || routeState?.photocell_included === true),
                   'metafields.Details.Can be Recessed': routeState?.can_be_recessed == null || routeState?.can_be_recessed == undefined ? undefined : (routeState?.can_be_recessed === 'true' || routeState?.can_be_recessed === true),
@@ -321,6 +333,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
             </Facet>
             <DynamicWidgets maxValuesPerFacet={1000}>
               <VirtualRefinementList attribute="inventory_range" />
+              <VirtualRefinementList attribute="categories_without_path" />
               <Facet title="Brand">
                 <RefinementList attribute="brand_name" searchable={true} searchablePlaceholder="Quick Lookup" limit={10} showMore={true} showMoreLimit={100} />
               </Facet>
@@ -528,6 +541,7 @@ export const QuickDeliveryProducts = ({ promotions, useDefaultPrices = false, pr
               */}
               <ToggleRefinement attribute="free_shipping" label="Free Shipping" />
               <ToggleRefinement attribute="is_new" label="Is New" />
+              <ToggleRefinement attribute="is_top_seller" label="Is Top Seller" />
               <ToggleRefinement attribute="on_sale" label="On Sale" />
               <ToggleRefinement attribute="on_clearance" label="On Clearance" />
               <ToggleRefinement attribute="in_stock" label="In Stock" />
