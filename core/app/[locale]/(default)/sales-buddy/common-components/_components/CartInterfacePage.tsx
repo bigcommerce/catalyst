@@ -492,9 +492,13 @@ export default function CartInterface({ toggleAccordion, openIndexes, setOpenInd
           </div>
         </div>
       </div>
+      <div className="mt-[15px] space-y-3 bg-white">
+
+      <Input id="quote" placeholder="Quote#" className="mb-4" />
       <Button className="font-open-sans w-full bg-[#1DB14B] font-normal tracking-[1.25px] text-white">
         CREATE QUOTE
       </Button>
+      </div>
     </>
   );
 }
