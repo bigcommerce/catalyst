@@ -312,6 +312,12 @@ interface Props {
   cookie_agent_login_status: boolean;
   getAllCommonSettinngsValues: any;
   discountRules: any;
+  combinedData?: { 
+    selectedvariantId: number;
+    variantId: number;
+    deliveryEstimatedTexts: string[];
+    closeOutData: string[];
+  };
 }
 
 interface CategoryNode {
@@ -347,6 +353,7 @@ export const CartItem = async ({
   cookie_agent_login_status,
   getAllCommonSettinngsValues,
   discountRules,
+  combinedData
 }: Props) => {
   const closeIcon = imageManagerImageUrl('close.png', '14w');
   const blankAddImg = imageManagerImageUrl('notneeded-1.jpg', '150w');
@@ -368,6 +375,7 @@ export const CartItem = async ({
     const promises = product.accessories.map(async (item: any, index: number) => {
       const categories = removeEdgesAndNodes(item.baseCatalogProduct.categories) as CategoryNode[];
       const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
+
         const longestLength = longest?.breadcrumbs?.edges?.length || 0;
         const currentLength = current?.breadcrumbs?.edges?.length || 0;
         return currentLength > longestLength ? current : longest;
@@ -437,15 +445,14 @@ export const CartItem = async ({
                   </p>
                 </Link>
                 <div className='block sm:hidden'>
-                  {product.variantEntityId && (
-                    <CloseOut
-                      entityId={product.productEntityId}
-                      variantId={product.variantEntityId}
-                      isFromPDP={false}
-                      isFromCart={true}
-                    />
-                  )}
-                </div>
+                    {combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
+                      <div className="closeout-messages">
+                        <div className="bg-[#FBF4E9] flex justify-center content-center px-[10px] mt-[5px] w-full text-[#6A4C1E] tracking-[0.25px] leading-[24px] text-[14px] sm:max-w-fit">
+                          Final Sale
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 {changeTheProtectedPosition?.length == 0 && (
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
                     <div className="cart-options flex flex-wrap gap-2">
@@ -571,23 +578,27 @@ export const CartItem = async ({
                     </div>
                   </div>
                 )}
-                {product.variantEntityId && (
-                  <>
+               {combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
                     <div className='hidden sm:block'>
-                      <CloseOut
-                        entityId={product.productEntityId}
-                        variantId={product.variantEntityId}
-                        isFromPDP={false}
-                        isFromCart={true}
-                      />
+                      <div className="bg-[#FBF4E9] flex justify-center content-center px-[10px] mt-[5px] w-full text-[#6A4C1E] tracking-[0.25px] leading-[24px] text-[14px] sm:max-w-fit">
+                        Final Sale
+                      </div>
                     </div>
-                    <DeliveryMessage
-                      entityId={product.productEntityId}
-                      variantId={product.variantEntityId}
-                      isFromPDP={false}
-                    />
-                  </>
-                )}
+                  )}
+
+                  {combinedData?.deliveryEstimatedTexts?.length > 0 && (
+                    combinedData?.deliveryEstimatedTexts?.map((message, index) => {
+                      const parsedMessages = JSON.parse(message);
+                      const firstMessage = parsedMessages[0];
+                      return firstMessage ? (
+                        <div key={index}>
+                          <div className={`${firstMessage?.qty === 0 ? 'bg-[#FBF4E9] px-[10px] text-[#6A4C1E]' : 'bg-transparent'} mt-[5px] w-fit`}>
+                            {firstMessage?.delivery_estimated_text}
+                          </div>
+                        </div>
+                      ) : null;
+                    })
+                  )}
               </div>
 
               <div className="">
