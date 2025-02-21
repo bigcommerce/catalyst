@@ -11,7 +11,7 @@ import CertificationsAndRatings from '~/components/ui/pdp/belami-certification-r
 import { PayPalPayLater } from '~/components/ui/pdp/belami-payment-pdp';
 import { RequestQuote } from '~/components/ui/pdp/belami-request-a-quote-pdp';
 import { imageManagerImageUrl } from '~/lib/store-assets';
-import { DeliveryMessage } from './belami-product-free-shipping-pdp';
+// import { DeliveryMessage } from './belami-product-free-shipping-pdp';
 import { ProductForm } from './product-form';
 import { ProductFormFragment } from './product-form/fragment';
 import { ProductSchema, ProductSchemaFragment } from './product-schema';
@@ -27,7 +27,7 @@ import { ProductPrice } from '~/belami/components/search/product-price';
 import { Promotion } from '~/belami/components/search/hit';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import RequestQuoteButton from '../../../sales-buddy/quote/_components/RequestQuoteButton';
-import { CloseOut } from './closeOut';
+// import { CloseOut } from './closeOut';
 
 interface ProductOptionValue {
   entityId: number;
@@ -77,6 +77,12 @@ interface Props {
   customerGroupDetails: any;
   swatchOptions: any;
   sessionUser: any;
+  combinedData?: {
+    selectedSku: string;
+    variantSku: string;
+    deliveryEstimatedTexts: string[];
+    closeOutData: string[];
+  };
 }
 
 export const DetailsFragment = graphql(
@@ -106,6 +112,28 @@ export const DetailsFragment = graphql(
           }
         }
       }
+      metafields(namespace: "Details", keys: "closeout") {
+        edges {
+          cursor
+          node {
+            entityId
+            id
+            key
+            value
+          }
+        }
+      }
+      deliveryMessageParentData: metafields(namespace: "delivery_message") {
+        edges {
+          cursor
+          node {
+            entityId
+            id
+            key
+            value
+          }
+        }
+      }
       variants {
         edges {
           node {
@@ -113,6 +141,28 @@ export const DetailsFragment = graphql(
             defaultImage {
               url(width: 64)
               altText
+            }
+            closeOutData: metafields(namespace: "Details", keys: "closeout") {
+              edges {
+                cursor
+                node {
+                  entityId
+                  id
+                  key
+                  value
+                }
+              }
+            }
+            deliveryMessageData: metafields(namespace: "delivery_message") {
+              edges {
+                cursor
+                node {
+                  entityId
+                  id
+                  key
+                  value
+                }
+              }
             }
           }
         }
@@ -151,7 +201,6 @@ export const DetailsFragment = graphql(
     PricingFragment,
   ],
 );
-
 export const Details = ({
   promotions = null,
   isFreeShipping,
@@ -177,6 +226,7 @@ export const Details = ({
   priceUpdatedProduct,
   swatchOptions,
   sessionUser,
+  combinedData,
 }: Props) => {
   const t = useTranslations('Product.Details');
   const format = useFormatter();
@@ -493,6 +543,11 @@ export const Details = ({
             <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
               SKU: <span>{product.mpn}</span>
             </span>
+
+            <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
+              SKU: <span>{product.sku}</span>
+            </span>
+
             <span className="OpenSans text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.25px] text-[#353535] lg:text-left xl:text-[0.875rem] xl:leading-[1.5rem] xl:tracking-[0.25px]">
               by{' '}
               <Link
@@ -520,56 +575,6 @@ export const Details = ({
           <ReviewSummary data={product} />
         </div>
 
-        {/* <div className="flex flex-row items-center mt-[30px] mb-[10px] justify-center gap-[10px] xl:justify-start">
-          {product?.UpdatePriceForMSRP && (
-            <ProductPrice
-              defaultPrice={updatedPriceForMSRP?.originalPrice || 0}
-              defaultSalePrice={
-                updatedPriceForMSRP?.hasDiscount
-                  ? updatedPriceForMSRP?.updatedPrice
-                  : updatedPriceForMSRP?.warrantyApplied
-                    ? updatedPriceForMSRP?.updatedPrice
-                    : null
-              }
-              priceMaxRule={priceMaxRules?.find(
-                (r: any) =>
-                  (r.bc_brand_ids &&
-                    (r.bc_brand_ids.includes(product?.brand?.entityId) ||
-                      r.bc_brand_ids.includes(String(product?.brand?.entityId)))) ||
-                  (r.skus && r.skus.includes(product?.parent?.sku)),
-              )}
-              currency={updatedPriceForMSRP?.currencyCode?.currencyCode || 'USD'}
-              format={format}
-              showMSRP={updatedPriceForMSRP?.showDecoration}
-              warrantyApplied={updatedPriceForMSRP?.warrantyApplied}
-              options={{
-                useAsyncMode: false,
-                useDefaultPrices: true,
-              }}
-              classNames={{
-                root: 'product-price flex items-center gap-[0.5em] text-center max-w-fit xl:text-left',
-                newPrice:
-                  'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                oldPrice:
-                  'inline-flex items-baseline text-left text-[16px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
-                discount:
-                  'whitespace-nowrap text-left text-[16px] font-normal leading-8 tracking-[0.15px] text-brand-400',
-                price:
-                  'text-left text-[20px] font-medium leading-8 tracking-[0.15px] text-brand-400',
-                msrp: '-ml-[0.5em] mb-1 text-[12px] text-gray-500',
-              }}
-            />
-          )}
-          <div>
-            <CloseOut
-              entityId={product.entityId}
-              variantId={selectedVariantId}
-              isFromPDP={true}
-              isFromCart={false}
-            />
-          </div>
-        </div> */}
-
         <div className="mb-[10px] mt-[30px] flex flex-row items-center justify-center gap-[10px] xl:justify-start">
           {product?.UpdatePriceForMSRP && (
             <ProductPrice
@@ -581,53 +586,16 @@ export const Details = ({
                     ? updatedPriceForMSRP?.updatedPrice
                     : null
               }
-              // Apply priceMaxRule if user is not authenticated OR if user is in Residential Group (ID 6)
+              // Apply priceMaxRule if user is not authenticated OR if user is in Residential Member group
               priceMaxRule={
-                !sessionUser || sessionUser?.customerGroupId === 6
-                  ? priceMaxRules?.find((r: any) => {
-                      if (r.skus) {
-                        const productMpn = product?.mpn || '';
-                        const productSku = product?.sku || '';
-                        const parentSku = product?.parent?.sku;
-                        const fullSkuMatch = r.skus.includes(productSku);
-                        const mpnMatch = r.skus.includes(productMpn);
-                        const parentSkuMatch = parentSku && r.skus.includes(parentSku);
-
-                        const prefixedSkuMatch = r.skus.some((ruleSku) => {
-                          if (ruleSku.includes('_')) {
-                            const skuPart = ruleSku.split('_')[1];
-                            return skuPart === productSku || skuPart === productMpn;
-                          }
-                          return false;
-                        });
-
-                        if (fullSkuMatch || mpnMatch || parentSkuMatch || prefixedSkuMatch) {
-                          const userStatus = !sessionUser
-                            ? 'Non-authenticated visitor'
-                            : 'Residential Member (ID: 6)';
-                          console.log(
-                            `Price Max Rule applied to product: ${productSku || productMpn} for ${userStatus}`,
-                          );
-                          return true;
-                        }
-                      }
-                      if (
-                        r.bc_brand_ids &&
-                        (r.bc_brand_ids.includes(product?.brand?.entityId) ||
-                          r.bc_brand_ids.includes(String(product?.brand?.entityId)))
-                      ) {
-                        const userStatus = !sessionUser
-                          ? 'Non-authenticated visitor'
-                          : 'Residential Member (ID: 6)';
-
-                        console.log(
-                          `Price Max Rule applied to brand: ${product?.brand?.name} for ${userStatus}`,
-                        );
-                        return true;
-                      }
-
-                      return false;
-                    })
+                !sessionUser || customerGroupDetails?.name === 'Residential Member '
+                  ? priceMaxRules?.find(
+                      (r: any) =>
+                        (r.bc_brand_ids &&
+                          (r.bc_brand_ids.includes(product?.brand?.entityId) ||
+                            r.bc_brand_ids.includes(String(product?.brand?.entityId)))) ||
+                        (r.skus && r.skus.includes(product?.parent?.sku)),
+                    )
                   : null
               }
               currency={updatedPriceForMSRP?.currencyCode?.currencyCode || 'USD'}
@@ -653,12 +621,13 @@ export const Details = ({
             />
           )}
           <div>
-            <CloseOut
-              entityId={product.entityId}
-              variantId={selectedVariantId}
-              isFromPDP={true}
-              isFromCart={false}
-            />
+            {combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === 'True' && (
+              <div className="closeout-messages">
+                <div className="max-w-fit content-center bg-[#B4B4B5] px-[10px] text-[14px] leading-[32px] tracking-[1.25px] text-[#ffffff]">
+                  CLEARANCE
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -678,13 +647,20 @@ export const Details = ({
         )}
 
         <div className="free-shipping-detail mb-[30px] text-center xl:text-left">
-          {selectedVariantId && (
-            <DeliveryMessage
-              entityId={product.entityId}
-              variantId={selectedVariantId}
-              isFromPDP={true}
-            />
-          )}
+          {combinedData?.deliveryEstimatedTexts?.length > 0 &&
+            combinedData?.deliveryEstimatedTexts?.map((message, index) => {
+              const parsedMessages = JSON.parse(message);
+              const firstMessage = parsedMessages[0];
+              return firstMessage ? (
+                <div key={index} className="justify-center xl:justify-start">
+                  <div
+                    className={`${firstMessage?.qty === 0 ? 'bg-[#FBF4E9] px-[10px] text-[#6A4C1E]' : 'bg-transparent'} mt-[5px] w-fit`}
+                  >
+                    {firstMessage?.delivery_estimated_text}
+                  </div>
+                </div>
+              ) : null;
+            })}
           {product?.brand?.entityId &&
             getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
               <NoShipCanada
