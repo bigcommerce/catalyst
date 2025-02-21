@@ -274,17 +274,19 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
       dataToSend = {
         quote_id: sessionId,
         qr_customer: formData,
-        bc_customer_id: customerData?.id,
-        qr_product: []
+        bc_customer_id: customerData?.id ?? 0,
+        qr_product: [],
+        cart_url: ""
       };
     } else {
       dataToSend = {
         quote_id: sessionId,
-        bc_customer_id: customerData?.id,
+        bc_customer_id: customerData?.id ?? 0,
         quote_type: quoteType,
         qr_customer: formData,
         qr_product: pageName === '/cart/' ? cartData : [latestQuoteData],
         page_type: pageName === '/cart/' ? 'cart' : 'pdp',
+        cart_url: ""
       };
     }
 

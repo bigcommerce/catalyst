@@ -269,6 +269,7 @@ export default function SalesBuddyProductPage({ toggleAccordion, openIndexes, se
       quote_by: "agent",
       qr_product: pageName === '/cart/' ? cartData : [UpdatelatestQuoteData],
       page_type: pageName === '/cart/' ? 'cart' : 'pdp',
+      cart_url: ""
     };
   
     try {
