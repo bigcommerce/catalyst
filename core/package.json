@@ -53,7 +53,7 @@
     "lucide-react": "^0.474.0",
     "next": "15.2.0-canary.74",
     "next-auth": "5.0.0-beta.25",
-    "next-intl": "^3.26.3",
+    "next-intl": "4.0.0-beta-021e874",
     "nuqs": "^2.3.1",
     "p-lazy": "^5.0.0",
     "react": "^19.0.0",
