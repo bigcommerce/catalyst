@@ -1,6 +1,7 @@
 import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { ChevronDown, X } from 'lucide-react';
 import { useLocale, useTranslations } from 'next-intl';
+import { Suspense } from 'react';
 
 import { Image } from '~/components/image';
 import { Link as CustomLink } from '~/components/link';
@@ -65,7 +66,7 @@ const Product = ({ product, onDismiss }: { product: Product; onDismiss: () => vo
   );
 };
 
-const CompareDrawer = () => {
+export const DynamicCompareDrawer = () => {
   const pathname = usePathname();
 
   const { products, setProducts } = useCompareDrawerContext();
@@ -118,4 +119,10 @@ const CompareDrawer = () => {
   );
 };
 
-export { CompareDrawer };
+export function CompareDrawer() {
+  return (
+    <Suspense fallback={null}>
+      <DynamicCompareDrawer />
+    </Suspense>
+  );
+}

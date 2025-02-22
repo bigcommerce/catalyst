@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
 
@@ -239,11 +239,13 @@ async function getBreadcrumbs(): Promise<Breadcrumb[]> {
 }
 
 interface Props {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Search');
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Search' });
 
   return {
     title: t('title'),
@@ -251,6 +253,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Search(props: Props) {
+  const { locale } = await props.params;
+
+  setRequestLocale(locale);
+
   return (
     <ProductsListSection
       breadcrumbs={getBreadcrumbs()}

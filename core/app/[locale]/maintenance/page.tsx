@@ -45,6 +45,8 @@ const Container = ({ children }: { children: ReactNode }) => (
 );
 
 export default async function Maintenance({ params }: Props) {
+  'use cache';
+
   const { locale } = await params;
 
   setRequestLocale(locale);

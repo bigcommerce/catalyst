@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
 import { getCartId } from '~/lib/cart';
@@ -11,15 +11,24 @@ import { updateLineItem } from './_actions/update-line-item';
 import { CartViewed } from './_components/cart-viewed';
 import { getCart } from './page-data';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Cart');
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'Cart' });
 
   return {
     title: t('title'),
   };
 }
 
-export default async function Cart() {
+export default async function Cart({ params }: Props) {
+  const { locale } = await params;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('Cart');
   const format = await getFormatter();
   const cartId = await getCartId();

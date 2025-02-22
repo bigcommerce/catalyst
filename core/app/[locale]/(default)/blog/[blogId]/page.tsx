@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getFormatter } from 'next-intl/server';
+import { getFormatter, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
@@ -11,7 +11,7 @@ import { getBlogPageData } from './page-data';
 const cachedBlogPageDataVariables = cache((blogId: string) => ({ entityId: Number(blogId) }));
 
 interface Props {
-  params: Promise<{ blogId: string }>;
+  params: Promise<{ locale: string; blogId: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -94,7 +94,11 @@ async function getBlogPostBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
   ];
 }
 
-export default function Blog(props: Props) {
+export default async function Blog(props: Props) {
+  const { locale } = await props.params;
+
+  setRequestLocale(locale);
+
   return (
     <BlogPostContent blogPost={getBlogPost(props)} breadcrumbs={getBlogPostBreadcrumbs(props)} />
   );
