@@ -276,13 +276,13 @@ export function getPromotionDecoration(
           rule.action.cart_items.discount.percentage_amount &&
           Number(rule.action.cart_items.discount.percentage_amount) > 0
             ? `${Number(rule.action.cart_items.discount.percentage_amount)}% Off`
-            : `$${Number(rule.action.cart_items.discount.percentage_amount)} Off`;
+            : `$${Number(rule.action.cart_items.discount.fixed_amount)} Off`;
       } else if (promotion.redemption_type === 'COUPON') {
         decoration =
           rule.action.cart_items.discount.percentage_amount &&
           Number(rule.action.cart_items.discount.percentage_amount) > 0
             ? `${Number(rule.action.cart_items.discount.percentage_amount)}% Off with Code${promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : ''}`
-            : `$${Number(rule.action.cart_items.discount.percentage_amount)} Off with Code${promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : ''}`;
+            : `$${Number(rule.action.cart_items.discount.fixed_amount)} Off with Code${promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : ''}`;
       }
     } else if (rule.action.cart_value && rule.action.cart_value.discount) {
       if (promotion.redemption_type === 'AUTOMATIC') {
@@ -290,13 +290,13 @@ export function getPromotionDecoration(
           rule.action.cart_value.discount.percentage_amount &&
           Number(rule.action.cart_value.discount.percentage_amount) > 0
             ? `${Number(rule.action.cart_value.discount.percentage_amount)}% Off in the Cart`
-            : `$${Number(rule.action.cart_value.discount.percentage_amount)} Off in the Cart`;
+            : `$${Number(rule.action.cart_value.discount.fixed_amount)} Off in the Cart`;
       } else if (promotion.redemption_type === 'COUPON') {
         decoration =
           rule.action.cart_value.discount.percentage_amount &&
           Number(rule.action.cart_value.discount.percentage_amount) > 0
             ? `${Number(rule.action.cart_value.discount.percentage_amount)}% Off in the Cart with Code${promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : ''}`
-            : `$${Number(rule.action.cart_value.discount.percentage_amount)} Off in the Cart with Code${promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : ''}`;
+            : `$${Number(rule.action.cart_value.discount.fixed_amount)} Off in the Cart with Code${promotion.coupons && promotion.coupons[0]?.code ? ': ' + promotion.coupons[0]?.code : ''}`;
       }
     }
   }
