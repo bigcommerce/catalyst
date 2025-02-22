@@ -20,26 +20,6 @@ import { CreateWishlistDialog } from './create-wishlist-form';
 import { useAccountStatusContext } from '../../_components/account-status-provider';
 import { manageDeletedProducts } from '~/components/common-functions';
 
-// Create local storage utility since it's not exported from common-functions
-const storageUtils = {
-  getFromStorage: (key: string) => {
-    if (typeof window !== 'undefined') {
-      return localStorage.getItem(key);
-    }
-    return null;
-  },
-  setToStorage: (key: string, value: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(key, value);
-    }
-  },
-  removeFromStorage: (key: string) => {
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem(key);
-    }
-  },
-};
-
 const WISHLISTS_PER_PAGE = 100;
 
 interface ProductImage {
@@ -111,25 +91,14 @@ interface WishlistMenuProps {
   wishlist: Wishlist;
 }
 
-// Modal component props
-interface ModalProps {
-  children: React.ReactNode;
-  trigger?: React.ReactNode;
-  title?: string;
-}
-
 type Wishlists = Wishlist[];
 type NewWishlist = any;
 type WishlistArray = Array<NewWishlist | Wishlists[number]>;
 
-// Helper function to filter items using the common manageDeletedProducts utility
+// Helper function to filter deleted items
 const filterDeletedWishlistItems = (items: WishlistItem[]): WishlistItem[] => {
   if (!items || !items.length) return [];
-
-  return items.filter((item) => {
-    // Check if this item is in the deleted items list
-    return !manageDeletedProducts.isWishlistItemDeleted(item.entityId);
-  });
+  return items.filter((item) => !manageDeletedProducts.isWishlistItemDeleted(item.entityId));
 };
 
 const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: WishlistMenuProps) => {
@@ -140,7 +109,6 @@ const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: Wish
 
   const toggleModal = () => setIsOpen(!isOpen);
 
-  // Move handlers outside of render
   const handleWishlistDeleted = useCallback(() => {
     onWishlistDeleted();
     setAccountState((prevState) => ({
@@ -153,7 +121,6 @@ const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: Wish
   }, [onWishlistDeleted, setAccountState, t, name]);
 
   const handleEditClick = useCallback(() => {
-    // Apply deleted items filter when setting selectedWishlist
     const filteredWishlist = {
       ...wishlist,
       items: filterDeletedWishlistItems(wishlist.items),
@@ -271,7 +238,6 @@ const Wishlist = memo(
     const t = useTranslations('Account.Wishlist');
     const { entityId, name } = wishlist;
 
-    // Use the common filter function to handle deleted items
     const filteredItems = useMemo(() => {
       const items = 'items' in wishlist ? wishlist.items : [];
       return filterDeletedWishlistItems(items);
@@ -289,7 +255,6 @@ const Wishlist = memo(
     }, [entityId, name, setWishlistBook, setAccountState, t]);
 
     const handleWishlistClick = useCallback(() => {
-      // Store filtered wishlist in localStorage
       const filteredWishlist = {
         ...wishlist,
         items: filteredItems,
@@ -387,35 +352,10 @@ export const WishlistBook = ({
   const [createWishlistModalOpen, setCreateWishlistModalOpen] = useState(false);
   const router = useRouter();
 
-  // Listen for storage events from other components
-  useEffect(() => {
-    const handleStorageChange = (event: StorageEvent): void => {
-      if (event.key === manageDeletedProducts.STORAGE_KEY) {
-        // Refresh wishlists when deletion events occur in other components
-        setWishlistBook((prevWishlists) => {
-          return prevWishlists.map((wishlist) => {
-            const items = 'items' in wishlist ? wishlist.items : [];
-            const filteredItems = filterDeletedWishlistItems(items);
-
-            return {
-              ...wishlist,
-              items: filteredItems,
-              itemCount: filteredItems.length,
-            };
-          });
-        });
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
-  }, []);
-
-  // Memoize filtered wishlists calculation using the common function
+  // Memoize filtered wishlists calculation
   const filteredWishlists = useMemo(() => {
     return wishlists.map((wishlist) => {
       const filteredItems = filterDeletedWishlistItems(wishlist.items);
-
       return {
         ...wishlist,
         items: filteredItems,
@@ -428,7 +368,7 @@ export const WishlistBook = ({
     setWishlistBook(filteredWishlists);
     setIsLoading(false);
 
-    storageUtils.setToStorage(
+    localStorage.setItem(
       'wishlistData',
       JSON.stringify({
         wishlists: filteredWishlists,
