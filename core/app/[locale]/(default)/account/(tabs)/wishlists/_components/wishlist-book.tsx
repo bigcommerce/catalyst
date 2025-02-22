@@ -467,8 +467,8 @@ export const WishlistBook = ({
         </Message>
       )}
 
-      <div className="flex justify-between mb-8 md:hidden">
-      {children}
+      <div className="mb-8 flex justify-between md:hidden">
+        {children}
 
         <Modal
           trigger={
@@ -501,8 +501,8 @@ export const WishlistBook = ({
         ))}
       </ul>
 
-      <div className="flex  justify-between create-wishlist-mobile-display mb-16">
-      {children}
+      <div className="create-wishlist-mobile-display mb-16 flex justify-between">
+        {children}
 
         <Modal
           trigger={

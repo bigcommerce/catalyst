@@ -24,7 +24,6 @@ import { Promotion } from '~/belami/components/search/hit';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_components/review-summary';
 import { getWishlists } from '~/components/graphql-apis';
-
 import { CloseOut } from '~/app/[locale]/(default)/product/[slug]/_components/closeOut';
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
@@ -110,14 +109,6 @@ interface WishlistItem {
   product: WishlistProduct;
 }
 
-interface DeletedProductInfo {
-  productId: number;
-  wishlistItemId: number;
-  deletionDate: string;
-  productName?: string;
-  remainingItems: number;
-}
-
 interface MetaField {
   key: string;
   value: string;
@@ -146,6 +137,12 @@ interface ProductCardProps {
   priceMaxRules: PriceMaxRule[] | null;
 }
 
+interface WishlistProductCardProps {
+  customerGroupDetails: { discount_rules: any };
+  priceMaxRules: PriceMaxRule[] | null;
+}
+
+// ProductCard Component Implementation
 const ProductCard: React.FC<ProductCardProps> = ({
   item,
   wishlistEntityId,
@@ -170,28 +167,21 @@ const ProductCard: React.FC<ProductCardProps> = ({
     }>;
   } | null>(null);
 
-  // Helper functions for SKU matching
   const normalizeSku = (sku: string): string => {
-    // Remove only trailing letters after numbers
-    const normalized = sku.replace(/[A-Za-z]+$/, '');
-    return normalized;
+    return sku.replace(/[A-Za-z]+$/, '');
   };
 
   const doesSkuMatch = (productSku: string, ruleSku: string): boolean => {
     const normalizedProductSku = normalizeSku(productSku);
     const normalizedRuleSku = normalizeSku(ruleSku);
-    const matches = normalizedProductSku === normalizedRuleSku;
-    return matches;
+    return normalizedProductSku === normalizedRuleSku;
   };
 
   const handleDeleteWishlist = (): void => {
     try {
       setIsDeleting(true);
       toast.loading('Removing item...');
-
-      // Add to global deletion tracking
       onDelete(item.product.entityId, item.entityId, item.variantEntityId);
-
       toast.dismiss();
       toast.success('Item removed from favorites');
     } catch (error) {
@@ -212,7 +202,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           : allVariantData[0];
 
         if (variant) {
-          // First check for price max rule
           let hasPriceMaxDiscount = false;
           if (priceMaxRules?.length) {
             const matchingRule = priceMaxRules.find((rule) =>
@@ -241,7 +230,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             }
           }
 
-          // If no price max discount, calculate regular price
           if (!hasPriceMaxDiscount) {
             const regularPriceResult = await calculateProductPrice(
               item.product,
@@ -252,7 +240,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
             setUpdatedWishlist(regularPriceResult);
           }
 
-          // Set variant details
           setVariantDetails({
             mpn: variant.mpn,
             calculated_price: variant.calculated_price,
@@ -261,8 +248,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
         }
       } catch (error) {
         console.error('Error in fetchVariantDetails:', error);
-
-        // If error occurs, still try to calculate regular price
         try {
           const regularPriceResult = await calculateProductPrice(
             item.product,
@@ -284,6 +269,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
         const categories =
           item?.product?.categories &&
           (removeEdgesAndNodes(item?.product?.categories) as CategoryNode[]);
+
         const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
           const longestLength = longest?.breadcrumbs?.edges?.length || 0;
           const currentLength = current?.breadcrumbs?.edges?.length || 0;
@@ -427,7 +413,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
                     : option.label;
                 return (
                   <p key={index} className="text-sm">
-                    <span className="font-semibold">{`${option.option_display_name}: `} </span>
+                    <span className="font-semibold">{`${option.option_display_name}: `}</span>
                     <span>{updatedValue}</span>
                   </p>
                 );
@@ -435,6 +421,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </div>
           )}
         </div>
+
         {hasActivePromotion && (
           <div className="text-center">
             <Promotion
@@ -455,30 +442,25 @@ const ProductCard: React.FC<ProductCardProps> = ({
           const formData = new FormData(e.currentTarget);
 
           try {
-            // Check if we have a matching price max rule
             const matchingRule = priceMaxRules?.find((rule) =>
               rule.skus.some((ruleSku) => doesSkuMatch(item.product.sku, ruleSku)),
             );
 
-            // First add item to cart
             const cartResult = await addToCart(formData);
 
             if (cartResult.error) {
               throw new Error(cartResult.error);
             }
 
-            // Get cart ID
             const cartId = cartResult.data?.entityId;
             if (!cartId) {
               throw new Error('Cart ID not found in response');
             }
 
-            // If we have a matching rule, update the cart price
             if (matchingRule && updatedWishlist[0]?.UpdatePriceForMSRP?.hasDiscount) {
               const originalPrice = updatedWishlist[0].UpdatePriceForMSRP.originalPrice;
               const discountedPrice = updatedWishlist[0].UpdatePriceForMSRP.updatedPrice;
 
-              // Update cart price
               await callforMaxPriceRuleDiscountFunction({
                 cartId,
                 price: discountedPrice,
@@ -497,11 +479,9 @@ const ProductCard: React.FC<ProductCardProps> = ({
           }
         }}
       >
-        {/* Product and variant IDs */}
         <input name="product_id" type="hidden" value={item.productEntityId} />
         <input name="variant_id" type="hidden" value={item.variantEntityId} />
 
-        {/* Price max rule info */}
         {updatedWishlist[0]?.UpdatePriceForMSRP?.hasDiscount && (
           <>
             <input type="hidden" name="has_price_max" value="true" />
@@ -513,7 +493,6 @@ const ProductCard: React.FC<ProductCardProps> = ({
           </>
         )}
 
-        {/* Submit button */}
         {item.product.availabilityV2.status === 'Unavailable' ? (
           <div className="flex flex-col items-center">
             <Button
@@ -547,11 +526,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   );
 };
 
-interface WishlistProductCardProps {
-  customerGroupDetails: { discount_rules: any };
-  priceMaxRules: PriceMaxRule[] | null;
-}
-
+// WishlistProductCard Component
 export function WishlistProductCard({
   customerGroupDetails,
   priceMaxRules,
@@ -567,38 +542,18 @@ export function WishlistProductCard({
   });
 
   const router = useRouter();
-  // Fixed to correctly access discount_rules
   const discountRules = customerGroupDetails?.discount_rules;
 
-  // Storage event listener for cross-tab synchronization
-  useEffect(() => {
-    const handleStorageChange = (event: StorageEvent): void => {
-      if (event.key === manageDeletedProducts.STORAGE_KEY) {
-        // Refresh the wishlist items when deleted items change
-        refreshWishlistItems();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleStorageChange);
-    };
-  }, []);
-
-  // Filter deleted items from the wishlist data
   const filterDeletedItems = (items: WishlistItem[]): WishlistItem[] => {
     if (!items) return [];
     return items.filter((item) => !manageDeletedProducts.isWishlistItemDeleted(item.entityId));
   };
 
-  // Refresh wishlist items (filtering out deleted ones)
   const refreshWishlistItems = useCallback((): void => {
     setWishlistState((prev) => {
       if (!prev.wishlistData) return prev;
 
       const filteredItems = filterDeletedItems(prev.wishlistData.items);
-
       return {
         ...prev,
         wishlistData: {
@@ -609,13 +564,40 @@ export function WishlistProductCard({
     });
   }, []);
 
-  // Initial data loading
+  const handleDelete = useCallback(
+    (productId: number, wishlistItemId: number, variantEntityId: number): void => {
+      manageDeletedProducts.addDeletedProduct(productId, wishlistItemId, variantEntityId);
+
+      setWishlistState((prev) => {
+        if (!prev.wishlistData) return prev;
+
+        const updatedItems = prev.wishlistData.items.filter(
+          (item: { entityId: number }) => item.entityId !== wishlistItemId,
+        );
+
+        const updatedWishlist = {
+          ...prev.wishlistData,
+          items: updatedItems,
+        };
+
+        localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
+
+        return {
+          ...prev,
+          wishlistData: updatedWishlist,
+        };
+      });
+
+      refreshWishlistItems();
+    },
+    [refreshWishlistItems],
+  );
+
   useEffect(() => {
     let isMounted = true;
 
     const initializeWishlist = async (): Promise<void> => {
       try {
-        // Load wishlist data
         const savedWishlist = localStorage.getItem('selectedWishlist');
         if (!savedWishlist) {
           router.push('/account/wishlists');
@@ -629,10 +611,8 @@ export function WishlistProductCard({
         );
 
         if (currentWishlist && isMounted) {
-          // Transform items and filter out deleted ones
           let transformedItems = await Promise.all(
             currentWishlist.items.map(async (item: any) => {
-              // Skip processing items that are already deleted
               if (manageDeletedProducts.isWishlistItemDeleted(item.entityId)) {
                 return null;
               }
@@ -660,7 +640,6 @@ export function WishlistProductCard({
             }),
           );
 
-          // Remove null items (deleted ones)
           transformedItems = transformedItems.filter((item) => item !== null);
 
           if (isMounted) {
@@ -676,7 +655,6 @@ export function WishlistProductCard({
               error: null,
             });
 
-            // Update localStorage
             localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
           }
         }
@@ -699,41 +677,8 @@ export function WishlistProductCard({
     };
   }, [router]);
 
-  // Handle deleting items
-  const handleDelete = useCallback(
-    (productId: number, wishlistItemId: number, variantEntityId: number): void => {
-      // Add to global deleted items tracking
-      manageDeletedProducts.addDeletedProduct(productId, wishlistItemId, variantEntityId);
-
-      // Update local state
-      setWishlistState((prev) => {
-        if (!prev.wishlistData) return prev;
-
-        // Filter out the deleted item
-        const updatedItems = prev.wishlistData.items.filter(
-          (item: { entityId: number }) => item.entityId !== wishlistItemId,
-        );
-
-        const updatedWishlist = {
-          ...prev.wishlistData,
-          items: updatedItems,
-        };
-
-        // Update localStorage
-        localStorage.setItem('selectedWishlist', JSON.stringify(updatedWishlist));
-
-        return {
-          ...prev,
-          wishlistData: updatedWishlist,
-        };
-      });
-    },
-    [],
-  );
-
   const { wishlistData, isLoading, error } = wishlistState;
 
-  // Loading state
   if (isLoading) {
     return (
       <div className="flex items-center justify-center p-8">
@@ -742,7 +687,6 @@ export function WishlistProductCard({
     );
   }
 
-  // Error state
   if (error) {
     return (
       <div className="flex items-center justify-center p-8 text-red-500">
@@ -759,12 +703,10 @@ export function WishlistProductCard({
     );
   }
 
-  // Empty state
   if (!wishlistData) {
     return <div></div>;
   }
 
-  // Empty wishlist
   if (wishlistData.items.length === 0) {
     return (
       <div className="container m-auto mx-auto mb-12 w-[80%] px-4">
@@ -800,7 +742,6 @@ export function WishlistProductCard({
     );
   }
 
-  // Render wishlist with items
   return (
     <div className="container m-auto mx-auto mb-12 w-[80%] px-4">
       <ComponentsBreadcrumbs
@@ -817,36 +758,47 @@ export function WishlistProductCard({
         ]}
       />
 
-      <div className="mb-8 flex flex-col sm:flex-row flex-wrap items-center justify-between gap-4">
+      <div className="mb-8 flex flex-col flex-wrap items-center justify-between gap-4 sm:flex-row">
         <div>
           <h1 className="mb-2 text-left text-xl font-medium leading-8 tracking-[0.15px] text-black">
             {wishlistData?.name}
           </h1>
-          <p className="text-center sm:text-left text-base leading-8 tracking-[0.15px] text-black">
+          <p className="text-center text-base leading-8 tracking-[0.15px] text-black sm:text-left">
             {wishlistData?.items.length} {wishlistData?.items.length === 1 ? 'item' : 'items'}
           </p>
         </div>
 
         <Button
           variant="secondary"
-          className="h-10 !w-auto bg-white sm:bg-[#008BB7] px-6 text-[14px] font-medium uppercase tracking-wider text-base sm:text-white sm:hover:bg-[#007a9e]"
+          className="h-10 !w-auto bg-white px-6 text-[14px] text-base font-medium uppercase tracking-wider sm:bg-[#008BB7] sm:text-white sm:hover:bg-[#007a9e]"
         >
-      <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    className="sm:hidden mx-2" 
-  >
-    <mask id="mask0_10545_6748" style={{ maskType: "alpha" }} maskUnits="userSpaceOnUse" x="0" y="0" width="24" height="24">
-      <rect width="24" height="24" fill="#D9D9D9"/>
-    </mask>
-    <g mask="url(#mask0_10545_6748)">
-      <path d="M6 23C5.45 23 4.97917 22.8042 4.5875 22.4125C4.19583 22.0208 4 21.55 4 21V10C4 9.45 4.19583 8.97917 4.5875 8.5875C4.97917 8.19583 5.45 8 6 8H9V10H6V21H18V10H15V8H18C18.55 8 19.0208 8.19583 19.4125 8.5875C19.8042 8.97917 20 9.45 20 10V21C20 21.55 19.8042 22.0208 19.4125 22.4125C19.0208 22.8042 18.55 23 18 23H6ZM11 16V4.825L9.4 6.425L8 5L12 1L16 5L14.6 6.425L13 4.825V16H11Z" fill="#000000"/>
-    </g>
-  </svg>
-        <span>SHARE FAVORITES</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            className="mx-2 sm:hidden"
+          >
+            <mask
+              id="mask0_10545_6748"
+              style={{ maskType: 'alpha' }}
+              maskUnits="userSpaceOnUse"
+              x="0"
+              y="0"
+              width="24"
+              height="24"
+            >
+              <rect width="24" height="24" fill="#D9D9D9" />
+            </mask>
+            <g mask="url(#mask0_10545_6748)">
+              <path
+                d="M6 23C5.45 23 4.97917 22.8042 4.5875 22.4125C4.19583 22.0208 4 21.55 4 21V10C4 9.45 4.19583 8.97917 4.5875 8.5875C4.97917 8.19583 5.45 8 6 8H9V10H6V21H18V10H15V8H18C18.55 8 19.0208 8.19583 19.4125 8.5875C19.8042 8.97917 20 9.45 20 10V21C20 21.55 19.8042 22.0208 19.4125 22.4125C19.0208 22.8042 18.55 23 18 23H6ZM11 16V4.825L9.4 6.425L8 5L12 1L16 5L14.6 6.425L13 4.825V16H11Z"
+                fill="#000000"
+              />
+            </g>
+          </svg>
+          <span>SHARE FAVORITES</span>
         </Button>
       </div>
 
