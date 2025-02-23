@@ -27,6 +27,7 @@ import { ProductPrice } from '~/belami/components/search/product-price';
 import { Promotion } from '~/belami/components/search/hit';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import RequestQuoteButton from '../../../sales-buddy/quote/_components/RequestQuoteButton';
+import { CloseOut } from './closeOut';
 // import { CloseOut } from './closeOut';
 
 interface ProductOptionValue {
@@ -547,7 +548,7 @@ export const Details = ({
         </div>
 
         <div className="mb-[10px] mt-[30px] flex flex-row items-center justify-center gap-[10px] xl:justify-start">
-          {product?.UpdatePriceForMSRP && (
+          {updatedPriceForMSRP && (
             <ProductPrice
               defaultPrice={updatedPriceForMSRP?.originalPrice || 0}
               defaultSalePrice={
