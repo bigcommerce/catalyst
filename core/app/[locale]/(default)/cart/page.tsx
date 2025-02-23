@@ -5,7 +5,7 @@ import { getSessionCustomerAccessToken, getSessionUserDetails } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
-
+ 
 import { BcImage } from '~/components/bc-image';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import { imageManagerImageUrl } from '~/lib/store-assets';
@@ -30,7 +30,7 @@ import { checkCouponCodeIsApplied, checkZeroTaxCouponIsApplied, commonSettinngs,
 import { zeroTaxCalculation } from '~/components/common-functions';
 import { calculateProductPrice } from '~/components/common-functions';
 import { GetCustomerGroupById } from '~/components/management-apis';
-
+ 
 import heartIcon from '~/public/cart/heartIcon.svg';
 import applePayIcon from '~/public/cart/applePayIcon.svg';
 import paypalIcon from '~/public/cart/paypalIcon.svg';
@@ -41,11 +41,11 @@ import { Flyout } from '~/components/common-flyout';
 import PromotionCookie from './_components/promotion-cookie';
 import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
 import RequestQuoteButton from '../sales-buddy/quote/_components/RequestQuoteButton';
-
+ 
 interface Params {
   locale: string;
 }
-
+ 
 interface CategoryNode {
   name: string;
   path: string | null;
@@ -59,12 +59,12 @@ interface CategoryNode {
     }> | null;
   };
 }
-
+ 
 interface Props {
   params: Promise<Params> | Params; // Support both Promise and object
   sku?: string | null; // Add sku property
 }
-
+ 
 interface CustomerGroup {
   discount_rules: Array<{
     amount: string;
@@ -74,7 +74,7 @@ interface CustomerGroup {
     method: string;
   }>;
 }
-
+ 
 const CartPageQuery = graphql(
   `
     query CartPageQuery($cartId: String) {
@@ -97,7 +97,7 @@ const CartPageQuery = graphql(
   `,
   [CartItemFragment, CheckoutSummaryFragment, GeographyFragment],
 );
-
+ 
 const CheckoutPageQuery = graphql(
   `
     query CartPageQuery($cartId: String) {
@@ -110,28 +110,28 @@ const CheckoutPageQuery = graphql(
   `,
   [CheckoutSummaryFragment],
 );
-
+ 
 export async function generateMetadata() {
   const t = await getTranslations('Cart');
-
+ 
   return {
     title: t('title'),
   };
 }
-
+ 
 export default async function Cart({ params }: Props) {
   const { locale } = await params;
   const cookieStore = await cookies();
-
+ 
   const cartId = cookieStore.get('cartId')?.value;
   const cookie_agent_login_status = cookieStore.get('agent_login')?.value;
-
+ 
   if (!cartId) {
     return <EmptyCart />;
   }
-
+ 
   const t = await getTranslations('Cart');
-
+ 
   const customerAccessToken = await getSessionCustomerAccessToken();
   const sessionUser = await getSessionUserDetails();
   let customerGroupDetails: CustomerGroup = {
@@ -141,7 +141,7 @@ export default async function Cart({ params }: Props) {
     const customerGroupId = sessionUser?.customerGroupId;
     customerGroupDetails = customerGroupId ? await GetCustomerGroupById(customerGroupId) : null;
   }
-
+ 
   const { data } = await client.fetch({
     document: CartPageQuery,
     variables: { cartId },
@@ -153,7 +153,7 @@ export default async function Cart({ params }: Props) {
       },
     },
   });
-
+ 
   let selectedvariantId = Number;
   let variantId = Number;
   const combinedData = data?.site?.cart?.lineItems?.physicalItems?.map((item: any) => {
@@ -170,7 +170,7 @@ export default async function Cart({ params }: Props) {
         return variant?.node?.value
       }) || [])
     ];
-
+ 
     let closeOutValue = [
       ...(item?.baseCatalogProduct?.variants?.edges?.flatMap((variant: any) => {
         if (selectedvariantId == variantId) {
@@ -182,7 +182,7 @@ export default async function Cart({ params }: Props) {
         return variant?.node?.value
       }) || [])
     ];
-
+ 
     return {
       selectedvariantId,
       variantId,
@@ -191,10 +191,12 @@ export default async function Cart({ params }: Props) {
     };
   });
 
+  console.log("combined data--------",combinedData);
+ 
   let cart = data.site.cart;
   let checkout = data.site.checkout;
   const geography = data.geography;
-
+ 
   if (!cart) {
     return <EmptyCart />;
   }
@@ -210,7 +212,7 @@ export default async function Cart({ params }: Props) {
     checkFloorIsAvailable = 1;
     loadCartCheckoutQuery = 1;
   }
-
+ 
   if (loadCartCheckoutQuery) {
     if (checkZeroFLPTax?.id) {
       const { data } = await client.fetch({
@@ -253,18 +255,36 @@ export default async function Cart({ params }: Props) {
   const deleteIcon = imageManagerImageUrl('delete.png', '20w');
   const closeIcon = imageManagerImageUrl('close.png', '25w');
   const format = await getFormatter();
-
+ 
   let getCartMetaFields: any = await GetCartMetaFields(cartId);
-
+ 
   let accessoryMetaField;
-  let referrerMetaField;
-  let referrerDataExists = false;
-
+  let cartItemsMetaField;
+  let cartItemExists = false;
+ 
+ 
   for(let item of getCartMetaFields){
     if(item.namespace === "accessories_data"){
       accessoryMetaField=item;
     }
-  }  
+    if(item.namespace === "cart_line_items"){
+      cartItemsMetaField = item;
+      cartItemExists = true;
+    }
+  }
+
+    if(!cartItemExists){
+      let cartLineItems ={
+        permission_set: 'write_and_sf_access',
+        namespace: 'cart_line_items',
+        key: 'cartLineItems',
+        description: 'Item level delivery message and closeout info',
+        value: JSON.stringify(combinedData),
+      };
+      console.log("cartLineItems----------",cartLineItems,cartId);
+      await CreateCartMetaFields(cartId, cartLineItems);
+    }
+   
   let updatedLineItemInfo: any = [];
   let updatedLineItemWithoutAccessories: any = [];
   let accessoriesSkuArray: any = [];
@@ -316,34 +336,34 @@ export default async function Cart({ params }: Props) {
       href: '#',
     },
   ];
-
+ 
   const getCategoryIds = (product: any) => {
-    const categories = removeEdgesAndNodes(product.baseCatalogProduct.categories) as CategoryNode[];
-    const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
+    const categories = product?.baseCatalogProduct?.categories && removeEdgesAndNodes(product.baseCatalogProduct.categories) as CategoryNode[];
+    const categoryWithMostBreadcrumbs = categories && categories.reduce((longest, current) => {
       const longestLength = longest?.breadcrumbs?.edges?.length || 0;
       const currentLength = current?.breadcrumbs?.edges?.length || 0;
       return currentLength > longestLength ? current : longest;
     }, categories[0]);
-
+ 
     return categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
   };
-
+ 
   const discountRules = customerGroupDetails?.discount_rules;
-
+ 
   var getBrandIds = lineItems?.map((item: any) => {
     return item?.baseCatalogProduct?.brand?.entityId;
   });
   var getAllCommonSettinngsValues = await commonSettinngs(getBrandIds);
-
+ 
   updatedLineItemWithoutAccessories = updatedLineItemWithoutAccessories.map((product: any) => {
     return {
       ...product,
       categoryIds: getCategoryIds(product),
     };
   });
-
+ 
   const updatedProduct: any[][] = [];
-
+ 
   for (const eachProduct of updatedLineItemWithoutAccessories) {
     const price = await calculateProductPrice(
       eachProduct,
@@ -358,7 +378,7 @@ export default async function Cart({ params }: Props) {
       <div className="sticky top-2 z-50">
         <ContinuetocheckoutButton cartId={cartId} />
       </div>
-
+ 
       <div className="pt-6 text-center lg:hidden">
         <div className="inline-flex items-center gap-2 text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#002A37]">
           Subtotal{' '}
@@ -373,15 +393,15 @@ export default async function Cart({ params }: Props) {
       </div>
       {checkZeroFLPTax && (<PromotionCookie promoObj={checkZeroFLPTax} isFloor={checkFloorIsAvailable} />)}
       <ComponentsBreadcrumbs className="mt-1" breadcrumbs={breadcrumbs} />
-
+ 
       <h1 className="cart-heading pt-0 text-center text-[24px] font-normal leading-[32px] lg:text-left lg:text-[24px]">
         {`${t('heading')} (${cartQty} ${cartItemsText})`}
       </h1>
-
+ 
       <div className="hidden lg:flex lg:items-center lg:space-x-8">
         <SaveCart cartItems={lineItems} saveCartIcon={heartIcon} />
       </div>
-
+ 
       <div className="save-cart pb-8 md:grid md:grid-cols-2 md:gap-8 lg:grid-cols-6">
         <div className="flex w-full items-center justify-center gap-4 lg:hidden">
           <div className="cart-save-item w-auto text-left">
@@ -392,7 +412,7 @@ export default async function Cart({ params }: Props) {
           </div>
         </div>
       </div>
-
+ 
       <div className="cart-right-side-details px-18 w-full pb-0 md:grid md:grid-cols-2 md:!gap-[6rem] lg:grid-cols-3 [@media_(min-width:1200px)]:pb-[40px]">
         <ul className="cart-details-item col-span-2 lg:w-full">
           {updatedProduct.map((product: any) => {
@@ -403,7 +423,7 @@ export default async function Cart({ params }: Props) {
             <CartItem
               brandId={product?.baseCatalogProduct?.brand?.entityId}
               currencyCode={cart?.currencyCode}
-              key={product?.entityId}
+              key={product.entityId}
               product={product}
               deleteIcon={deleteIcon}
               cartId={cart?.entityId}
@@ -413,11 +433,11 @@ export default async function Cart({ params }: Props) {
               getAllCommonSettinngsValues={getAllCommonSettinngsValues}
               discountRules={discountRules}
               combinedData={productCombinedData}
-            />
-            )
-          }
-          )}
-          {CustomItems.length > 0 &&
+              />
+          )
+          })}    
+         
+          {CustomItems?.length > 0 &&
             CustomItems?.map((data) => {
               return (
                 <CartProductComponent
@@ -434,24 +454,24 @@ export default async function Cart({ params }: Props) {
                   ProductType={'custom'}
                   cookie_agent_login_status={cookie_agent_login_status === 'true' ? true : false}
                 />
-
+ 
               );
             })}
         </ul>
-
+ 
         <div
           id="order-summary"
           className="cart-right-side sticky top-0 col-span-1 col-start-2 -mt-[9em] h-[100px] min-h-[800px] border-t border-[#CCCBCB] py-[1.4em] lg:col-start-3"
         >
           {checkout && <CheckoutSummary checkout={checkout} geography={geography} />}
-
+ 
           <CheckoutButton cartId={cartId} />
           <ApplepayButton cartId={cartId} icon={applePayIcon} />
           <PaypalButton cartId={cartId} icon={paypalIcon} />
             <RequestQuoteButton />
-
+ 
           <div className="pt-1"></div>
-
+ 
           <div>
             <Flyout
               triggerLabel={
@@ -463,7 +483,7 @@ export default async function Cart({ params }: Props) {
               <MakeswiftPage locale={locale} path="/content/returns-flyout" />
             </Flyout>
           </div>
-
+ 
           <Flyout
             triggerLabel={
               <p className="pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-1">
@@ -473,7 +493,7 @@ export default async function Cart({ params }: Props) {
           >
             <MakeswiftPage locale={locale} path="/content/shipping-flyout" />
           </Flyout>
-
+ 
           <p className="flex items-center pt-2 text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#002A37] underline underline-offset-2">
             <BcImage
               alt="Agent Icon"
@@ -488,17 +508,17 @@ export default async function Cart({ params }: Props) {
           <div className='my-5'>
             <RequestQuoteButton />
           </div>
-
+ 
         </div>
-
+ 
       </div>
       <CartViewed currencyCode={cart.currencyCode} lineItems={lineItems} />
-
+ 
       <KlaviyoIdentifyUser user={sessionUser && sessionUser.user && sessionUser.user?.email ? { email: sessionUser.user.email, first_name: sessionUser.user?.firstName, last_name: sessionUser.user?.lastName } as any : null} />
-
-
+ 
+ 
     </div>
   );
 }
-
-//export const runtime = 'edge';
+ 
+export const runtime = 'edge';
