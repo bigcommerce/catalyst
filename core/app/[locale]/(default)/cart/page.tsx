@@ -190,8 +190,6 @@ export default async function Cart({ params }: Props) {
       closeOutData: closeOutValue || []
     };
   });
-
-  console.log("combined data--------",combinedData);
  
   let cart = data.site.cart;
   let checkout = data.site.checkout;
