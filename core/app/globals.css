@@ -10,6 +10,15 @@
 .popup-container-parent ~ div[data-radix-popper-content-wrapper] div {
   width: var(--radix-popper-anchor-width) !important;
 }
+.PDP-sticky .request-a-quote {
+  display: none;
+}
+.PDP-sticky form {
+  width: 220px;
+}
+.pdp-sticky-mobile form {
+  width: 100% !important;
+}
 
 .pdp-wishlist-input input:hover {
   border-color: var(--gray-200);
@@ -551,7 +560,7 @@ button.show-all {
 }
 
 .ais-RefinementList-showMore {
-  padding: .5rem 0 !important;
+  padding: 0.5rem 0 !important;
   margin: 0 !important;
   border: 0 !important;
   box-shadow: none !important;

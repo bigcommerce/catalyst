@@ -18,7 +18,7 @@ export default async function NotFound() {
           }
         />
       </Suspense>
-      <main>
+      <main className='[&_li]:list-outside'>
         <MakeswiftPage locale={'en'} path="/not-found"/>
      </main>
       <Suspense>

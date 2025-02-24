@@ -24,7 +24,6 @@ import {
   GetOrderMetaFields,
 } from '~/components/management-apis';
 import { KlaviyoIdentifyUser } from '~/belami/components/klaviyo/klaviyo-identify-user';
-import { getCart } from '../../cart/page-data';
 
 const emailImg = imageManagerImageUrl('emailicon.png', '16w');
 const facebookImg = imageManagerImageUrl('facebook.png', '23w');
@@ -81,8 +80,7 @@ export default async function OrderConfirmation(request:any) {
   if (sessionUser) {
     const customerGroupId = sessionUser?.customerGroupId;
     const customerGroupDetails = await GetCustomerGroupById(customerGroupId);
-    const parsedData = customerGroupDetails && JSON.parse(customerGroupDetails);
-    customerGroup = parsedData.name;
+    customerGroup = customerGroupDetails.name;
   }else{
     customerGroup = "Guest";
   }
@@ -140,12 +138,50 @@ export default async function OrderConfirmation(request:any) {
     const OrderCommentsByAgent = getCartMetaFields.length>0 && getCartMetaFields.filter((metaField: any) => metaField.namespace === 'order_comments_by_agent')
     .map((metaField: any)=> metaField.value)[0];
 
-    const agentInfo = getCartMetaFields.length>0 && JSON.parse(getCartMetaFields.filter((metaField: any)=> metaField.namespace === 'agent_cart_information')
-    .map((metaField: any)=> metaField.value)[0]);
+    const agentInfo = getCartMetaFields.length > 0 && 
+    getCartMetaFields
+        .filter((metaField: any) => metaField.namespace === 'agent_cart_information')
+        .map((metaField: any) => metaField.value)[0];
 
+    const parsedAgentInfo = agentInfo ? JSON.parse(agentInfo) : null;
+
+    const cartLineItems = getCartMetaFields.length>0 && (getCartMetaFields.filter((metaFiled: any)=> metaFiled.namespace === 'cart_line_items')
+    .map((metaField:any)=> metaField.value)[0]);
+    const parsedCartLineItems = cartLineItems ? JSON.parse(cartLineItems):null;
+
+    const closeoutAndDeliveryInfo = parsedCartLineItems.map((item: { selectedvariantId: any; variantId: any; deliveryEstimatedTexts: any; closeOutData: any; }) => ({
+      selectedvariantId : item.selectedvariantId,
+      variantId : item.variantId,
+      deliveryEstimatedTexts : item.deliveryEstimatedTexts,
+      closeOutData : item.closeOutData,
+    }));
+
+    const getDataByVariantId = (variantId: any, dataKey: 'closeOutData' | 'deliveryEstimatedTexts') => {
+      const matchedItem = closeoutAndDeliveryInfo.find((item: { selectedvariantId: any }) => item.selectedvariantId === variantId);
+      if (matchedItem) {
+        const value = matchedItem[dataKey];
+        if (dataKey === 'closeOutData' && Array.isArray(value) && value[0] === 'True') {
+          return 'CloseOut/Non Returnable';
+        }
+        return value || null;
+      }
+      return null;
+    };
+    
     const orderDetails = await GetOrderDetailsFromAPI(orderId);
     const shippingDetails = orderDetails?.consignments[0]?.shipping[0];
     const lineItemDetails = shippingDetails.line_items;
+
+    const getItemLevelPriceAdjustments = (orderItem: any) =>{
+      const appliedDiscounts = orderItem.applied_discounts.map((discount: any,index: any)=>({
+        id: index,
+        discountType : discount.id==="coupon"?"Coupon":"Promotion",
+        discountName : discount.name,
+        couponCode : discount.code,
+        discountedAmount : Number(discount.amount).toFixed(2),
+      }));
+      return appliedDiscounts;
+    }
   
     const orderPageData = {
       OrderNumber: orderData?.orderState?.orderId,
@@ -156,8 +192,8 @@ export default async function OrderConfirmation(request:any) {
       ShippingMethod: shippingDetails?.shipping_method,
       ShippingInstructions: null,
       OrderSource: domainName+"/"+orderDetails?.channel_id,
-      Custom1: customerGroup,
-      Custom2: agentInfo?.name,
+      Custom1: "customerGroup",
+      Custom2: parsedAgentInfo?.name,
       Custom3: null,
       Custom4: 'quote id',
       Custom5: 'vertical name',
@@ -183,15 +219,16 @@ export default async function OrderConfirmation(request:any) {
           OrderItemTypeID: item.product_id === 0 ? 'CustomItem' : 'Regular Item',
           GTIN: null,
           SKU: item?.sku,
-          Price: Number(item?.price_ex_tax).toFixed(2),
+          Price: getItemLevelPriceAdjustments(item),
           Custom1: item.name,
           Custom2: selectedVariantOption,  
           Custom3: item.brand,
-          Custom4: 'extimated delivery date',
-          Custom5: 'closeout',
+          Custom4: getDataByVariantId(item.variant_id, 'deliveryEstimatedTexts'),
+          Custom5: getDataByVariantId(item.variant_id, 'closeOutData'),
         };
       }),
     };   
+
     let existingOrderMeta: any = await GetOrderMetaFields(orderId);
 
     if (!existingOrderMeta || existingOrderMeta.length === 0) {
