@@ -333,6 +333,7 @@ export const ProductForm = ({
           })}
           <Submit data={product} isSticky={true} />
           <button
+          className='request-a-quote'
             type="submit"
             onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}
           >

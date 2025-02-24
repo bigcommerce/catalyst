@@ -461,9 +461,9 @@ export const calculateProductPrice = async (
       discount = 0;
     }
 
-    if (type === 'pdp' || type === "flyout") {
-      if (warrantyPrice.value*quantity > updatedPrice) {
-        updatedPrice = warrantyPrice.value*quantity;
+    if (type === 'pdp' || type === 'flyout') {
+      if (warrantyPrice.value * quantity > updatedPrice) {
+        updatedPrice = warrantyPrice.value * quantity;
         warrantyApplied = true;
       }
     }
@@ -892,7 +892,7 @@ export async function callforMaxPriceRuleDiscountFunction(data: any) {
   }
 }
 
-// wishlist-delete-product
+// wishlist-delete-product.ts
 interface DeletedProductRecord {
   productId: number;
   wishlistItemId: number;
@@ -901,8 +901,6 @@ interface DeletedProductRecord {
 }
 
 export const manageDeletedProducts = {
-  STORAGE_KEY: 'deletedWishlistItems',
-
   addDeletedProduct: (
     productId: number,
     wishlistItemId: number,
@@ -930,14 +928,8 @@ export const manageDeletedProducts = {
       } else {
         existingItems.push(deletionRecord);
       }
-      localStorage.setItem(manageDeletedProducts.STORAGE_KEY, JSON.stringify(existingItems));
 
-      window.dispatchEvent(
-        new StorageEvent('storage', {
-          key: manageDeletedProducts.STORAGE_KEY,
-        }),
-      );
-
+      localStorage.setItem('deletedWishlistItems', JSON.stringify(existingItems));
       return true;
     } catch (error) {
       console.error('Failed to add deleted product:', error);
@@ -947,7 +939,7 @@ export const manageDeletedProducts = {
 
   getDeletedItems: (): DeletedProductRecord[] => {
     try {
-      const items = localStorage.getItem(manageDeletedProducts.STORAGE_KEY);
+      const items = localStorage.getItem('deletedWishlistItems');
       return items ? JSON.parse(items) : [];
     } catch (error) {
       console.error('Failed to get deleted items:', error);
@@ -972,13 +964,7 @@ export const manageDeletedProducts = {
         (item) => Number(item.wishlistItemId) !== Number(wishlistItemId),
       );
 
-      localStorage.setItem(manageDeletedProducts.STORAGE_KEY, JSON.stringify(updatedItems));
-      window.dispatchEvent(
-        new StorageEvent('storage', {
-          key: manageDeletedProducts.STORAGE_KEY,
-        }),
-      );
-
+      localStorage.setItem('deletedWishlistItems', JSON.stringify(updatedItems));
       return true;
     } catch (error) {
       console.error('Failed to restore wishlist item:', error);
@@ -987,11 +973,6 @@ export const manageDeletedProducts = {
   },
 
   clearAllDeletedItems: (): void => {
-    localStorage.removeItem(manageDeletedProducts.STORAGE_KEY);
-    window.dispatchEvent(
-      new StorageEvent('storage', {
-        key: manageDeletedProducts.STORAGE_KEY,
-      }),
-    );
+    localStorage.removeItem('deletedWishlistItems');
   },
 };

@@ -27,6 +27,7 @@ import { ProductPrice } from '~/belami/components/search/product-price';
 import { Promotion } from '~/belami/components/search/hit';
 import { store_pdp_product_in_localstorage } from '../../../sales-buddy/common-components/common-functions';
 import RequestQuoteButton from '../../../sales-buddy/quote/_components/RequestQuoteButton';
+import { CloseOut } from './closeOut';
 // import { CloseOut } from './closeOut';
 
 interface ProductOptionValue {
@@ -396,7 +397,7 @@ export const Details = ({
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-4">
+                <div className="PDP-sticky flex items-center gap-4">
                   {product?.UpdatePriceForMSRP && (
                     <ProductPrice
                       defaultPrice={product.UpdatePriceForMSRP.originalPrice || 0}
@@ -439,7 +440,7 @@ export const Details = ({
                     <div className="flex flex-col items-center">
                       <button
                         id="add-to-cart"
-                        className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                        className="group relative flex h-[3.5em] w-[220px] items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
                         disabled
                       >
                         <span>ADD TO CART</span>
@@ -449,83 +450,64 @@ export const Details = ({
                       </p>
                     </div>
                   ) : (
-                    <button
-                      className="group relative flex h-[3em] w-[14em] items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white transition-all duration-300 hover:bg-[#03465C]/90"
-                      onClick={() => {
-                        const addToCartButton = productFormRef.current?.querySelector(
-                          'button[type="submit"]',
-                        ) as HTMLButtonElement | null;
-                        if (addToCartButton) {
-                          addToCartButton.click();
-                        }
-                      }}
-                    >
-                      <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                        ADD TO CART
-                      </span>
-                      <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-[2.5em]">
-                        <Image
-                          src={addToCart}
-                          className=""
-                          alt="Add to Cart"
-                          unoptimized={true}
-                          width={44}
-                          height={44}
-                        />
-                      </div>
-                    </button>
+                    <ProductForm
+                      data={product}
+                      productMpn={product.mpn || ''}
+                      multipleOptionIcon={multipleOptionIcon}
+                      blankAddImg={blankAddImg || ''}
+                      productImages={productImages}
+                      fanPopup={fanPopup}
+                      closeIcon={closeIcon || ''}
+                      customerGroupDetails={customerGroupDetails}
+                      swatchOptions={swatchOptions}
+                      sessionUser={sessionUser}
+                      priceMaxRules={priceMaxRules}
+                      showInSticky={true}
+                    />
                   )}
                 </div>
               </div>
             </div>
           </div>
 
-          <div
-            className={`fixed bottom-0 left-0 right-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
-              isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
-            } px-[20px] pt-[20px]`}
-          >
-            {/* Mobile View Button */}
-            {productAvailability === 'Unavailable' ? (
-              <div className="flex flex-col items-center">
-                <button
-                  id="add-to-cart"
-                  className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
-                  disabled
-                >
-                  <span>ADD TO CART</span>
-                </button>
-                <p className="text-center text-[12px] text-[#2e2e2e]">
-                  This product is currently unavailable
-                </p>
-              </div>
-            ) : (
-              <button
-                className="group relative flex h-[3em] w-full items-center justify-center overflow-hidden bg-[#03465C] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-white"
-                onClick={() => {
-                  const addToCartButton = productFormRef.current?.querySelector(
-                    'button[type="submit"]',
-                  ) as HTMLButtonElement | null;
-                  if (addToCartButton) {
-                    addToCartButton.click();
-                  }
-                }}
-              >
-                <span className="transition-transform duration-300 group-hover:-translate-x-2">
-                  ADD TO CART
-                </span>
-                <div className="absolute right-0 flex h-full w-0 items-center justify-center bg-[#006380] transition-all duration-300 group-hover:w-12">
-                  <Image
-                    src={addToCart}
-                    className=""
-                    alt="Add to Cart"
-                    unoptimized={true}
-                    width={44}
-                    height={44}
-                  />
+          {/* Mobile sticky header remains unchanged */}
+
+          <div className="PDP-sticky pdp-sticky-mobile">
+            <div
+              className={`fixed left-0 right-0 top-0 z-50 block w-full border-t border-gray-200 bg-white transition-all duration-300 xl:hidden ${
+                isScrollingUp ? 'pb-[40px] md:pb-[20px]' : 'pb-[20px] md:pb-[20px]'
+              } px-[20px] pt-[20px]`}
+            >
+              {productAvailability === 'Unavailable' ? (
+                <div className="flex flex-col items-center">
+                  <button
+                    id="add-to-cart"
+                    className="group relative flex h-[3.5em] w-full items-center justify-center overflow-hidden rounded-[4px] !bg-[#b1b9bc] text-center text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#353535] transition-all duration-300 hover:bg-[#03465c]/90 disabled:opacity-50"
+                    disabled
+                  >
+                    <span>ADD TO CART</span>
+                  </button>
+                  <p className="text-center text-[12px] text-[#2e2e2e]">
+                    This product is currently unavailable
+                  </p>
                 </div>
-              </button>
-            )}
+              ) : (
+                <ProductForm
+                  data={product}
+                  productMpn={product.mpn || ''}
+                  multipleOptionIcon={multipleOptionIcon}
+                  blankAddImg={blankAddImg || ''}
+                  productImages={productImages}
+                  fanPopup={fanPopup}
+                  closeIcon={closeIcon || ''}
+                  customerGroupDetails={customerGroupDetails}
+                  swatchOptions={swatchOptions}
+                  sessionUser={sessionUser}
+                  priceMaxRules={priceMaxRules}
+                  showInSticky={true}
+                />
+              )}
+            </div>
           </div>
         </>
       )}
@@ -572,7 +554,7 @@ export const Details = ({
         </div>
 
         <div className="mb-[10px] mt-[30px] flex flex-row items-center justify-center gap-[10px] xl:justify-start">
-          {product?.UpdatePriceForMSRP && (
+          {updatedPriceForMSRP && (
             <ProductPrice
               defaultPrice={updatedPriceForMSRP?.originalPrice || 0}
               defaultSalePrice={
