@@ -126,7 +126,7 @@ export const ChangePasswordForm = ({ customerId, customerToken }: Props) => {
             />
           </FieldControl>
           <FieldMessage className="mt-0 text-[14px] font-normal leading-[24px] tracking-[0.25px] text-[#353535]">
-            Include uppercase, lowercase, number, symbol (8+ chars).
+            Include uppercase, lowercase, number, symbol (8+ characters).
           </FieldMessage>
           <FieldMessage
             className={`absolute inset-x-0 bottom-0 inline-flex w-full text-xs text-[rgb(167,31,35)] ${!isNewPasswordValid ? 'hidden' : ''}`}
