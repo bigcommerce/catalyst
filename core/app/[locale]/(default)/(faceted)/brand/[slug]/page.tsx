@@ -19,10 +19,16 @@ import { Brand } from './brand';
 import { cookies, headers } from 'next/headers';
 
 import { Page as MakeswiftPage } from '@makeswift/runtime/next';
-import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { defaultLocale } from '~/i18n/routing';
-import { client } from '~/lib/makeswift/client';
-import '~/lib/makeswift/components';
+
+import { Suspense } from 'react';
+import { MakeswiftComponent } from '@makeswift/runtime/next';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
+import { client as makeswiftClient } from '~/lib/makeswift/client';
+
+import { MegaBannerContextProvider } from '~/belami/components/mega-banner';
+
+//import '~/lib/makeswift/components';
 
 import { SmoothScroll } from '~/belami/components/smooth-scroll';
 
@@ -88,9 +94,13 @@ export default async function BrandPage(props: Props) {
     notFound();
   }
 
-  const snapshot = await client.getPageSnapshot(brand.path, {
+  const snapshot = await makeswiftClient.getPageSnapshot(brand.path, {
     siteVersion: await getSiteVersion(),
     locale: locale === defaultLocale ? undefined : locale,
+  });
+
+  const megaBannerSnapshot = await makeswiftClient.getComponentSnapshot('belami-mega-banner', {
+    siteVersion: await getSiteVersion()
   });
 
   const promotions = await getActivePromotions(true);
@@ -156,6 +166,12 @@ export default async function BrandPage(props: Props) {
       {!!snapshot &&
         <MakeswiftPage snapshot={snapshot} />
       }
+
+      <Suspense fallback={<></>}>
+        <MegaBannerContextProvider value={{ location: 'brand-above-products' }}>
+          <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
+        </MegaBannerContextProvider>
+      </Suspense>
 
       <div className="mb-0 lg:flex lg:flex-row lg:items-center lg:justify-between">
         <h1 className="mb-4 lg:mb-0 text-2xl">{brand.name}</h1>
