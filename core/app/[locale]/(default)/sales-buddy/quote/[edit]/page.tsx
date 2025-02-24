@@ -14,6 +14,9 @@ import { CreateQuote } from '../actions/CreateQuote';
 import ProductPriceAdjuster from '../../common-components/_components/ProductPriceAdjuster';
 import { CreateCartForQouteItems } from '../actions/create-cart-for-quote';
 import { sendEmailToCustomer } from '../actions/SendEmailToCustomer';
+import { storeFileInS3Bucket } from '../actions/upload-file-s3-bucket';
+import Loader from '../_components/Spinner';
+import toast from 'react-hot-toast';
 
 const popOverContents = [
   { key: 'refresh-product', label: 'Refresh Product' },
@@ -25,6 +28,12 @@ const popOverContents = [
 const page = () => {
   const router = useRouter();
   const { edit } = useParams(); // Extracting the dynamic ID
+  const [storeFile,setStoreFile] = useState(null);
+  const [loader,setLoader]=useState({
+    uploadFile:false,
+    updateAndExit:false,
+    updateAndSendEmail:false
+  })
   const [formData, setFormData] = useState({
     quote_id: '',
     bc_channel_id: '',
@@ -85,7 +94,10 @@ console.log(formData,"product<<<")
   };
 
   const handleFileChange = (e) => {
+    setStoreFile(e.target.files[0]);
     setFormData({ ...formData, attachments: [...e.target.files] });
+    
+
   };
 
   const handleAddCustomProduct = async (product) => {
@@ -123,9 +135,10 @@ console.log(formData,"product<<<")
     if (!formData.qr_customer.first_name) tempErrors.first_name = "First Name is required";
     if (!formData.qr_customer.last_name) tempErrors.last_name = "Last Name is required";
     if (!formData.qr_customer.email_id) tempErrors.email_id = "Email is required";
-    if (!formData.qr_customer.company_name) tempErrors.company_name = "Company Name is required";
-    if (!formData.qr_customer.phone_number) tempErrors.phone_number = "Phone Number is required";
-    if (!formData.qr_customer.quote_remarks) tempErrors.quote_remarks = "Quote Remarks are required";
+    // if (!formData.qr_customer.company_name) tempErrors.company_name = "Company Name is required";
+    // if (!formData.qr_customer.phone_number) tempErrors.phone_number = "Phone Number is required";
+    // if (!formData.qr_customer.quote_remarks) tempErrors.
+    // quote_remarks = "Quote Remarks are required";
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
@@ -138,43 +151,62 @@ console.log(formData,"product<<<")
   };
 
   const handleUpdate = async () => {
-    const payload = {
-      quote_id: formData.quote_id,
-      qr_customer: {
-        sub_total: formData.qr_customer.sub_total ?? 0,
-        total: formData.qr_customer.total ?? 0,
-        expires: formData.qr_customer.expires,
-        notes: formData.qr_customer.notes,
-        video: formData.qr_customer.video,
-        attachment: formData.qr_customer.attachment,
-        agent_id: formData.qr_customer.agent_id ?? 0,
-        agent_approval: formData.qr_customer.agent_approval,
-        agent_approval_date: formData.qr_customer.agent_approval_date,
-        agent_manager_id: formData.qr_customer.agent_manager_id ?? 0,
-        agent_manager_approval: formData.qr_customer.agent_manager_approval,
-        agent_manager_approval_date: formData.qr_customer.agent_manager_approval_date,
-        quote_status: formData.qr_customer.quote_status
-      },
-      qr_product: formData?.qr_product?.map(product => ({
-        qr_item_id: product.qr_item_id,
-        qty: product.qty,
-        unit_price: product.unitPrice,
-        total_price: product.unitPrice * product.qty
-      }))
-    };
-    var updateQuoteData = await UpdateQuote(payload);
-    callToGetQuoteDataBasedOnQuoteId()
+    setLoader((prev) => ({ ...prev, updateAndSendEmail: true }));
+    try {
+
+      const payload = {
+        quote_id: formData.quote_id,
+        qr_customer: {
+          sub_total: formData.qr_customer.sub_total ?? 0,
+          total: formData.qr_customer.total ?? 0,
+          expires: formData.qr_customer.expires,
+          notes: formData.qr_customer.notes,
+          video: formData.qr_customer.video,
+          attachment: formData.qr_customer.attachment,
+          agent_id: formData.qr_customer.agent_id ?? 0,
+          agent_approval: formData.qr_customer.agent_approval,
+          agent_approval_date: formData.qr_customer.agent_approval_date,
+          agent_manager_id: formData.qr_customer.agent_manager_id ?? 0,
+          agent_manager_approval: formData.qr_customer.agent_manager_approval,
+          agent_manager_approval_date: formData.qr_customer.agent_manager_approval_date,
+          quote_status: formData.qr_customer.quote_status
+        },
+        qr_product: formData?.qr_product?.map(product => ({
+          qr_item_id: product.qr_item_id,
+          qty: product.qty,
+          unit_price: product.unitPrice,
+          total_price: product.unitPrice * product.qty
+        }))
+      };
+
+      const updateQuoteData = await UpdateQuote(payload);
+      toast.success('Quote updated successfully');
+      setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
+      if (updateQuoteData) {
+        callToGetQuoteDataBasedOnQuoteId();
+      } else {
+        console.error("Error updating quote:", updateQuoteData);
+
+      }
+    } catch (error) {
+      console.error("An error occurred while updating the quote:", error);
+    } finally {
+      setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
+    }
   };
+
 
   const callToGetQuoteDataBasedOnQuoteId = async () => {
     if (!quoteId || quoteId.trim() === "") return; // Ensure quoteId is valid
 
     try {
       let result = await GetQuoteBasedOnID(quoteId);
-      if (!result?.output || !Array.isArray(result.output) || result.output.length === 0) {
-        console.error("Invalid API response:", result);
-        return;
-      }
+      console.log(result);
+      
+      // if (!result?.output || !Array.isArray(result.output) || result.output.length === 0) {
+      //   console.error("Invalid API response:", result);
+      //   return;
+      // }
       const firstItem = result.output[0]; // Get first item
 console.log(firstItem,"AJAY");
 
@@ -190,8 +222,8 @@ console.log(firstItem,"AJAY");
           company_name: firstItem.company_name || '',
           phone_number: firstItem.phone_number || '',
           quote_remarks: firstItem.quote_remarks || '',
-          sub_total: firstItem.sub_total || 0,
-          total: firstItem.total || 0,
+          sub_total: calculateTotalPrice() || 0,
+          total: calculateTotalPrice() || 0,
           expires: firstItem.expires || '',
           notes: firstItem.notes || '',
           video: firstItem.video || '',
@@ -225,26 +257,42 @@ console.log(firstItem,"AJAY");
     }
   };
 
-  const sendEmail = async() => {
-    var result = await CreateCartForQouteItems(formData.quote_id)   
-    console.log("result>>", result);
-    
-    var getCartItemID=result.data.id;
-    console.log("data-====", result.data);
-    let dataToSend = {
-      quote_id: quoteId,
-      bc_channel_id: formData.bc_channel_id,
-      email_template_type: "approval_template",
-      store: 1,
-      qr_customer: formData.qr_customer,
-      qr_product: formData.qr_product,
-      quote_type: formData.quote_type,
-      cart_url: `http://localhost:3000/cart?${getCartItemID}`
-    };
-    const emailResult = await sendEmailToCustomer(dataToSend);
-    console.log("emailResult", emailResult);
-    
-    
+  const sendEmail = async () => {
+    setLoader((prev) => ({ ...prev, updateAndSendEmail: true }));
+    try {
+      const result = await CreateCartForQouteItems(formData.quote_id);
+      console.log("result---------",result);
+      // var storeCreatedCartId = result.output.data.id
+      // console.log("storeCreatedCartId---", storeCreatedCartId);
+      
+      // if (!result || !result.output.data || !result.output.data.id) {
+      //   setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
+      //   throw new Error("Failed to create cart for quote items.");
+      // }
+      var updateQuoteCall=await handleUpdate()
+      console.log("update--------",updateQuoteCall);
+      
+      const getCartItemID = result.output.data.id;
+      const dataToSend = {
+        quote_id: quoteId,
+        bc_channel_id: formData.bc_channel_id,
+        email_template_type: "agent_approval_template",
+        store: 1,
+        qr_customer: formData.qr_customer,
+        qr_product: formData.qr_product,
+        quote_type: formData.quote_type,
+        cart_url: `http://localhost:3000/cart?${getCartItemID}`,
+      };
+      console.log("dataToSend---", dataToSend);
+      
+      const emailResult = await sendEmailToCustomer(dataToSend);
+      console.log("Email sent successfully:", emailResult);
+      
+      setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
+    } catch (error) {
+      setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
+      console.error("Error occurred while sending email:", error.message || error);
+    }
   };
 
   // Log updated formData
@@ -255,12 +303,16 @@ console.log(firstItem,"AJAY");
   useEffect(() => {
     callToGetQuoteDataBasedOnQuoteId();
   }, [quoteId]);
-
-
-  useEffect(() => {
-  }, [formData]);
-
+  // setFormData((prev) => ({
+  //   ...prev,
+  //   qr_customer: {
+  //     ...prev.qr_customer,
+  //     sub_total: formData.qr_product.reduce((total, product) => total + (product.unitPrice * product.qty), 0),
+  //     total: formData.qr_product.reduce((total, product) => total + (product.unitPrice * product.qty), 0)
+  //   }
+  // }));
   const calculateTotalPrice = () => {
+    
     return formData.qr_product.reduce((total, product) => total + (product.unitPrice * product.qty), 0);
   };
 
@@ -272,6 +324,14 @@ console.log(firstItem,"AJAY");
 
   const isViewMode = mode === 'view';
 
+  
+  async function handleUploadFileToBucket (){    
+    var uploadFileToBucked =await storeFileInS3Bucket(storeFile)
+    if (uploadFileToBucked.success){
+      setFormData({ ...formData, qr_customer: { ...formData.qr_customer, attachment: uploadFileToBucked.fileUrl } });
+    }    
+  }
+  
   return (
     <div className={`flex justify-center ${isViewMode ? "pointer-events-none" : ""} bg-[#f7f8fc] py-[2rem] text-[#353535]`}>
       <form onSubmit={handleSubmit} className="relative flex w-[90%] flex-col gap-[10px]">
@@ -438,7 +498,7 @@ console.log(firstItem,"AJAY");
                   className="w-full border-b border-b-gray-400 p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
                   disabled={isViewMode}
                 >
-                  <option value="">{formData.qr_customer.quote_status == "" || formData.qr_customer.quote_status == "null" ? "Open" : formData.qr_customer.quote_status }</option>
+                  {/* <option value="">{formData.qr_customer.quote_status == "" || formData.qr_customer.quote_status == "null" ? "Open" : formData.qr_customer.quote_status }</option> */}
                   <option value="pending">Pending</option>
                   <option value="approved">Approved</option>
                   <option value="rejected">Rejected</option>
@@ -672,12 +732,15 @@ console.log(firstItem,"AJAY");
             <div className="flex flex-1 flex-col justify-between gap-[20px]">
               <div className="relative">
                 <input type="file" id="upload-file" className="z-10 h-full w-full cursor-pointer" onChange={handleFileChange} />
-                <label
-                  htmlFor="upload-file"
+                <button
                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-[5px] bg-[#3C64F4] p-[4px_16px] uppercase text-white hover:bg-[#3C64F4]/80"
+                  onClick={()=>{handleUploadFileToBucket()}}
                 >
-                  Upload File
-                </label>
+                  <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">Upload File</p>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {loader.uploadFile && <Loader />}
+                    </div>
+                </button>
               </div>
               <div>No Attachments</div>
             </div>
@@ -695,7 +758,11 @@ console.log(firstItem,"AJAY");
                 <input
                   type="text"
                   id="upload-file"
+                  name="video"
+                  value={formData.qr_customer.video}
+                  onChange={handleChange}
                   className="flex-1 cursor-pointer border-b border-b-black p-[5px] outline-none"
+
                 />
                 <button className="cursor-pointer rounded-[5px] bg-[#3C64F4] p-[4px_16px] uppercase text-white hover:bg-[#3C64F4]/80">
                   Upload URL
@@ -709,24 +776,35 @@ console.log(firstItem,"AJAY");
             </div>
           </div>
         </div>
-        {mode === 'edit' && (
-          <button
-            type="button"
-            onClick={handleUpdate}
-            className="w-fit self-end rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
-          >
-            Save
-          </button>
-        )}
-        {showSendEmailButton && (
-          <button
-            type="button"
-            onClick={sendEmail}
-            className="w-fit self-end rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
-          >
-            Send Email
-          </button>
-        )}
+        <div className='flex justify-end space-x-2'>
+          {mode === 'edit' && (
+            <button
+              type="button"
+              onClick={handleUpdate}
+              className="relative w-fit self-end rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
+            >
+              <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">Update and Exit</p>
+              <div className="absolute inset-0 flex items-center justify-center">
+                {loader.updateAndExit && <Loader />}
+              </div>
+            </button>
+          )}
+          {showSendEmailButton && (
+            <button
+              type="button"
+              onClick={sendEmail}
+              className="relative w-fit self-end rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
+            >
+              <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">Update and Send Email</p>
+              <div className="absolute inset-0 flex items-center justify-center">
+                {loader.updateAndSendEmail && <Loader />}
+              </div>
+              
+            </button>
+
+
+          )}
+        </div>
       </form>
     </div>
   );

@@ -216,7 +216,7 @@ const clearLocaleFromPath = (path: string, locale: string) => {
 const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   const locale = request.headers.get('x-bc-locale') ?? '';
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
-
+  
   try {
     const pathname = clearLocaleFromPath(request.nextUrl.pathname, locale);
 
@@ -264,6 +264,17 @@ export const withRoutes: MiddlewareFactory = () => {
     const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || '';
     cookieStore.set('domainName', host);
     const { route, status } = await getRouteInfo(request, event);
+    var quoteCartId=request.url
+      if (quoteCartId.includes('/cart/?')) {
+        const queryString = quoteCartId.split('?')[1]; // Get everything after the "?"
+        const keyValue = queryString.split('=')[0]; // Extract the key before "="
+        cookieStore.set('cartId', keyValue ?? '', {
+          httpOnly: true,
+          sameSite: 'lax',
+          secure: true,
+          path: '/',
+        });
+      }
 
     if (status === 'MAINTENANCE') {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
