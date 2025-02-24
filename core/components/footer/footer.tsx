@@ -132,14 +132,12 @@ export const Footer = async () => {
         {
           label: (
             <div className="footer-privacy-section">
-              <span className="privacy-text text-left text-xs font-normal leading-[18px] tracking-[0.4px]">
+              <div className="inline privacy-text text-left text-xs font-normal leading-[18px] tracking-[0.4px]">
                 View our
-              </span>
-              <Link href={'/content/privacy-and-security/'}>
-              <span className="privacy-link privacy-policy-label ml-2 text-left text-xs font-normal leading-[18px] tracking-[0.4px] underline">
+              </div>
+              <div className="inline privacy-link privacy-policy-label ml-2 text-left text-xs font-normal leading-[18px] tracking-[0.4px] underline">
                 Privacy Policy
-              </span>
-              </Link>
+              </div>
             </div>
           ),
           href: '/content/privacy-and-security/',

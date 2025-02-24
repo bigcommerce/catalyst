@@ -143,11 +143,13 @@ const PhysicalItemFragment = graphql(`
     }
     catalogProductWithOptionSelections {
       prices {
+        price{
+         currencyCode
+         value
+        }
         retailPrice {
           currencyCode
           value
-          formatted
-          ...MoneyFields
         }
         salePrice {
           currencyCode
