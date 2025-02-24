@@ -3,7 +3,7 @@
 export const sendEmailToCustomer = async (dataToSend:any) => {
     try {
 
-        const { quote_id, bc_customer_id, quote_type, qr_customer, qr_product,cart_url,page_type } = dataToSend; 
+        const { quote_id, bc_customer_id, quote_type, qr_customer, qr_product} = dataToSend; 
 
         const apiUrl = process.env.SALES_BUDDY_API_URL!;
         const apiPath = process.env.QUOTE_API_PATH!;
@@ -21,7 +21,7 @@ export const sendEmailToCustomer = async (dataToSend:any) => {
         bc_customer_id: bc_customer_id,
         qr_customer:qr_customer,
         qr_product: qr_product,
-        quote_type:quote_type,
+        quote_type:quote_type
     });
     console.log("{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{dataEmail",postData);
 // `${apiUrl}${apiEnv}${apiPath}send-mail`

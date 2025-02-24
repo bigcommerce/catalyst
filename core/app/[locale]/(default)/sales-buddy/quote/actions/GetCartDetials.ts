@@ -125,6 +125,7 @@ const MoneyFieldFragment = graphql(`
                 entityId
                 quantity
                 sku
+                url
                 productEntityId
                 variantEntityId
                 catalogProductWithOptionSelections {

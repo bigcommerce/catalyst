@@ -7,7 +7,7 @@ import { AlertCircle, Check, Heart, ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { AddToCartButton } from '~/components/add-to-cart-button';
@@ -124,12 +124,17 @@ export const ProductForm = ({
   const { setCartIdForCheck, setStoreProductDetailsForQuote, StoreProductDetailsFunctionForQoute } =
     useCompareDrawerContext();
     const [isQuoteSubmitting, setIsQuoteSubmitting] = useState(false);
-
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const pdpUrl = useMemo(() => {
+      if (typeof window !== 'undefined') {
+        return `${window.location.origin}${pathname}?${searchParams.toString()}`;
+      }
+      return '';
+    }, [pathname, searchParams]);
 
   if (productOptions?.length > 0) {
     const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
     const handleInteraction = (urlParamArray: any) => {
       const optionSearchParams = new URLSearchParams(searchParams.toString());
       urlParamArray?.forEach((urlData: any) => {
@@ -308,7 +313,8 @@ export const ProductForm = ({
         setIsQuoteSubmitting(true);
         const quoteResult = await handleRequestQuote(data, product);
         console.log(quoteResult);
-        var getRelatimeData = StoreProductDetailsFunctionForQoute(quoteResult?.data?.qr_product);
+        
+        var getRelatimeData = StoreProductDetailsFunctionForQoute(quoteResult?.data?.qr_product ? {...quoteResult.data.qr_product, bc_product_url: pdpUrl } : null);
         setStoreProductDetailsForQuote(getRelatimeData);
         localStorage.setItem('Q_R_data', JSON.stringify(getRelatimeData));
       } catch (error) {

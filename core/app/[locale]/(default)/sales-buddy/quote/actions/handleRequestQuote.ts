@@ -1,4 +1,3 @@
-import { Value } from '@radix-ui/react-select';
 'use server';
 import { ProductFormData } from './../../../product/[slug]/_components/product-form/use-product-form';
 import { ProductFormFragment } from './../../../product/[slug]/_components/product-form/fragment';
@@ -7,6 +6,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cookies } from 'next/headers';
 import { getSessionUserDetails } from '~/auth';
 import { findCustomerDetails } from './FindCustomerDetails';
+import { headers } from 'next/headers';
 
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
 
@@ -215,12 +215,13 @@ export const handleRequestQuote = async (
       ));
       const pImageUrl = product?.defaultImage?.url;
       const updatedUrl = pImageUrl.replace("{:size}", "original");
+  
     const reqQuoteItems = {
       qr_product: {
         bc_product_id: productEntityId,
         bc_sku: product.sku,
         bc_product_name: product.name,
-        bc_qty:1,
+        bc_product_qty:1,
         bc_product_image: updatedUrl ?? '',
         bc_product_price: product?.prices?.retailPrice?.value ?? product?.UpdatePriceForMSRP?.originalPrice,
         bc_product_sale_price: product?.UpdatePriceForMSRP?.updatedPrice ?? product?.prices?.price?.value,

@@ -17,7 +17,8 @@ import { sendEmailToCustomer } from '../actions/SendEmailToCustomer';
 import { storeFileInS3Bucket } from '../actions/upload-file-s3-bucket';
 import Loader from '../_components/Spinner';
 import toast from 'react-hot-toast';
-
+import { SquareArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
 const popOverContents = [
   { key: 'refresh-product', label: 'Refresh Product' },
   { key: 'delete', label: 'Delete' },
@@ -240,9 +241,11 @@ console.log(firstItem,"AJAY");
           qr_id: item.qr_id,
           qr_item_id: item.qr_item_id,
           qty: item.qty,
+          bc_product_qty:item.bc_product_qty,
           bc_product_name: item.bc_product_name,
           bc_product_price: item?.bc_product_price,
           bc_product_sale_price:item?.bc_product_sale_price,
+          bc_product_url: item.bc_product_url,
           bc_product_image:item.bc_product_image,
           bc_sku: item.bc_sku,
           bc_variant_name: item.bc_variant_name,
@@ -538,6 +541,11 @@ console.log(firstItem,"AJAY");
                   </th>
                   <th className="">
                     <div className="flex items-center justify-center gap-1">
+                      <div>Selected Qty</div>
+                    </div>
+                  </th>
+                  <th className="">
+                    <div className="flex items-center justify-center gap-1">
                       <div>Qty</div>
                     </div>
                   </th>
@@ -578,7 +586,10 @@ console.log(firstItem,"AJAY");
                             src={product?.bc_product_image}
                           />
                         </div>
-                        <div className="flex flex-col gap-[2px] text-left text-[12px]">
+                        <div className="flex flex-col gap-[2px] text-left text-[12px] relative">
+                        <Link href={product.bc_product_url} passHref target="_blank" rel="noopener noreferrer">
+                          <SquareArrowUpRight size={12} className="cursor-pointer text-[#555] absolute right-[0px] hover:text-[#5b5fc7]" />
+                        </Link>
                           <div>
                             {product.bc_product_name}
                           </div>
@@ -597,6 +608,11 @@ console.log(firstItem,"AJAY");
                     <td>
                       <div className="text-green-600 font-bold">
                         ${product?.bc_product_sale_price}
+                      </div>
+                    </td>
+                    <td className="">
+                      <div className='font-bold'>
+                        {product?.bc_product_qty}
                       </div>
                     </td>
                     <td className="cursor-pointer">
