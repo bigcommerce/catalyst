@@ -24,7 +24,7 @@ import { Promotion } from '~/belami/components/search/hit';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_components/review-summary';
 import { getWishlists } from '~/components/graphql-apis';
-import { CloseOut } from '~/app/[locale]/(default)/product/[slug]/_components/closeOut';
+
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 interface OptionValue {
@@ -168,7 +168,6 @@ export const ProductCard = memo(
         toast.dismiss();
         toast.success('Item removed from favorites');
       } catch (error) {
-        console.error('Error removing wishlist item:', error);
         toast.dismiss();
         toast.error('Failed to remove item');
       } finally {
@@ -216,7 +215,31 @@ export const ProductCard = memo(
       },
       [item, priceMaxRules, normalizeSku, state.updatedWishlist],
     );
-
+    let selectedSku : any;
+    const productsArray = [];
+    productsArray.push(item?.product);
+    const combinedData = productsArray?.map((item: any) => {
+      selectedSku = item?.sku;
+      const optionsValue = item?.options?.edges?.length || 0;
+      let closeOutValue = [];
+        const variantCloseout = item?.variants?.flatMap((variant: any) => {
+         const variantSku = variant?.sku;
+          if (selectedSku == variantSku) {
+            return variant?.closeOutData?.edges[0]?.node?.value
+          }
+          return [];
+        });
+        const productCloseout = item?.closeOutParentData?.edges?.map((variant: any) => variant?.node?.value);
+        if (optionsValue > 0) {
+          closeOutValue = variantCloseout.length > 0 ? variantCloseout : productCloseout;
+        } else {
+          closeOutValue =  productCloseout;
+        }
+      return {
+        selectedSku,
+        closeOutData: closeOutValue || []
+      };
+    });
     useEffect(() => {
       let mounted = true;
 
@@ -340,54 +363,54 @@ export const ProductCard = memo(
         <div className="relative mb-4 flex h-full flex-col border border-gray-300 pb-0">
           <div className="product-card-details pb-[0em] text-center">
 
-          <div className="wishlist-product-details pl-[15px] pr-[15px]">
+            <div className="wishlist-product-details pl-[15px] pr-[15px]">
 
-            {/* Image and Delete Button */}
-            <div className="relative aspect-square overflow-hidden">
-              <Link href={item.product.path}>
-                <img
-                  src={item.product.defaultImage.url.replace('{:size}', '500x500')}
-                  alt={item.product.defaultImage.altText || item.product.name}
-                  className="h-full w-full object-cover"
-                />
-              </Link>
-            </div>
-<div className='wishlist-product-brand-delete'>
+              {/* Image and Delete Button */}
+              <div className="relative aspect-square overflow-hidden">
+                <Link href={item.product.path}>
+                  <img
+                    src={item.product.defaultImage.url.replace('{:size}', '500x500')}
+                    alt={item.product.defaultImage.altText || item.product.name}
+                    className="h-full w-full object-cover"
+                  />
+                </Link>
+              </div>
+              <div className='wishlist-product-brand-delete'>
 
-            <div className="flex justify-end">
-              <div
-                className="wishlist-product-delete-icon mb-[1em] flex w-fit cursor-pointer justify-end rounded-full bg-[#E7F5F8]"
-                onClick={handleDeleteWishlist}
-              >
-                {state.isDeleting ? (
-                  <Loader2 className="h-[35px] w-[35px] animate-spin p-[7px] text-[#008BB7]" />
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="35"
-                    height="35"
-                    viewBox="0 0 21 19"
-                    fill="none"
-                    className="p-[7px]"
+                <div className="flex justify-end">
+                  <div
+                    className="wishlist-product-delete-icon mb-[1em] flex w-fit cursor-pointer justify-end rounded-full bg-[#E7F5F8]"
+                    onClick={handleDeleteWishlist}
                   >
-                    <path
-                      d="M10.3257 18.35L8.87568 17.03C3.72568 12.36 0.325684 9.27 0.325684 5.5C0.325684 2.41 2.74568 0 5.82568 0C7.56568 0 9.23568 0.81 10.3257 2.08C11.4157 0.81 13.0857 0 14.8257 0C17.9057 0 20.3257 2.41 20.3257 5.5C20.3257 9.27 16.9257 12.36 11.7757 17.03L10.3257 18.35Z"
-                      fill="#008BB7"
-                    />
-                  </svg>
-                )}
-              </div>
-            </div>
+                    {state.isDeleting ? (
+                      <Loader2 className="h-[35px] w-[35px] animate-spin p-[7px] text-[#008BB7]" />
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="35"
+                        height="35"
+                        viewBox="0 0 21 19"
+                        fill="none"
+                        className="p-[7px]"
+                      >
+                        <path
+                          d="M10.3257 18.35L8.87568 17.03C3.72568 12.36 0.325684 9.27 0.325684 5.5C0.325684 2.41 2.74568 0 5.82568 0C7.56568 0 9.23568 0.81 10.3257 2.08C11.4157 0.81 13.0857 0 14.8257 0C17.9057 0 20.3257 2.41 20.3257 5.5C20.3257 9.27 16.9257 12.36 11.7757 17.03L10.3257 18.35Z"
+                          fill="#008BB7"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </div>
 
-          
-              {/* Brand */}
-              <div className="flex justify-center">
-                {item.product.brand && (
-                  <p className="mb-2 flex justify-center text-sm text-gray-600">
-                    {item.product.brand.name}
-                  </p>
-                )}
-              </div>
+
+                {/* Brand */}
+                <div className="flex justify-center">
+                  {item.product.brand && (
+                    <p className="mb-2 flex justify-center text-sm text-gray-600">
+                      {item.product.brand.name}
+                    </p>
+                  )}
+                </div>
 
 
 
@@ -434,12 +457,17 @@ export const ProductCard = memo(
                         msrp: '-ml-[0.5em] mb-1 text-[10px] text-gray-500',
                       }}
                     />
-                    <CloseOut
-                      entityId={item.productEntityId}
-                      variantId={item.variantEntityId}
-                      isFromPDP={true}
-                      isFromCart={false}
-                    />
+                    {combinedData.map((value:any) => {
+                    if(value?.closeOutData[0] === "True"){
+                      return (
+                        <div className="closeout-messages">
+                          <div className="bg-[#B4B4B5] content-center px-[10px] max-w-fit text-[#ffffff] tracking-[1.25px] leading-[32px] text-[14px]">
+                        CLEARANCE
+                        </div>
+                      </div>
+                      )
+                    }
+                  })}
                   </div>
                 </div>
               )}
@@ -454,7 +482,7 @@ export const ProductCard = memo(
                     ) => {
                       const label =
                         option.option_display_name === 'Fabric Color' ||
-                        option.option_display_name === 'Select Fabric Color'
+                          option.option_display_name === 'Select Fabric Color'
                           ? option.label.split('|')[0]?.trim()
                           : option.label;
                       return (

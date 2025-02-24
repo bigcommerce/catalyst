@@ -340,6 +340,22 @@ export const ProductPageQuery = graphql(
             url: urlTemplate(lossy: true)
             altText
           }
+          options {
+          edges {
+            node {
+              displayName
+              entityId
+              values {
+                edges {
+                  node {
+                    entityId
+                    label
+                  }
+                }
+              }
+            }
+          }
+      }
           variants {
         edges {
           node {
