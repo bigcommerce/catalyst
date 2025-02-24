@@ -63,7 +63,7 @@ export const ProductAccessories = ({
     }) => ({
       value: id,
       label: `(+$${sale_price}) ${sku}  ${name}`,
-      purchasing_disabled: purchasing_disabled,
+      purchasing_disabled: purchasing_disabled.toString(),
     }),
   );
   const [isPending, startTransition] = useTransition();
