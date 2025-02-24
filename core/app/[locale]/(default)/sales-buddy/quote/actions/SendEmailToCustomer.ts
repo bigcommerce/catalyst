@@ -23,8 +23,6 @@ export const sendEmailToCustomer = async (dataToSend:any) => {
         qr_product: qr_product,
         quote_type:quote_type
     });
-    console.log("{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{dataEmail",postData);
-// `${apiUrl}${apiEnv}${apiPath}send-mail`
 
 
       const response = await fetch(`https://tukf5296i6.execute-api.us-east-1.amazonaws.com/dev/quote-api/v1/send-mail`, {

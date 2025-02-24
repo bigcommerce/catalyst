@@ -151,7 +151,6 @@ export const ProductForm = ({
         const selectedValue = option.entityId;
         if (selectedValue) {
           const defaultValue = values.find((value: any) => value.isDefault)?.entityId.toString();
-          // console.log(defaultValue,">>Default value");
           urlParamArray.push({
             selectedValue: selectedValue,
             defaultValue: defaultValue,
@@ -175,7 +174,6 @@ export const ProductForm = ({
       const matchedPriceRule = priceMaxRules?.find(
         (r: PriceMaxRule) => r.skus && r.skus.includes(product?.parent?.sku || ''),
       );
-      console.log(matchedPriceRule, 'price');
 
       // Calculate discounted price
       const originalPrice = product?.UpdatePriceForMSRP?.originalPrice || 0;
@@ -311,9 +309,7 @@ export const ProductForm = ({
     } else if (action === 'requestQuote') {
       try {
         setIsQuoteSubmitting(true);
-        const quoteResult = await handleRequestQuote(data, product);
-        console.log(quoteResult);
-        
+        const quoteResult = await handleRequestQuote(data, product);        
         var getRelatimeData = StoreProductDetailsFunctionForQoute(quoteResult?.data?.qr_product ? {...quoteResult.data.qr_product, bc_product_url: pdpUrl } : null);
         setStoreProductDetailsForQuote(getRelatimeData);
         localStorage.setItem('Q_R_data', JSON.stringify(getRelatimeData));

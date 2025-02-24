@@ -89,7 +89,6 @@ const page = () => {
     updatedProducts[index] = { ...updatedProducts[index], [name]: parseInt(value, 10) };
     setFormData({ ...formData, qr_product: updatedProducts });
   };
-console.log(formData,"product<<<")
   const handleAddProduct = () => {
     setFormData({ ...formData, qr_product: [...formData.qr_product, { bc_product_id: '', bc_sku: '', bc_product_name: '', bc_variant_id: '', bc_variant_sku: '', bc_variant_name: '', bc_modifier_id: '', bc_modifier_option: '', options: '', qty: 0, unitPrice: 0 }] });
   };
@@ -202,14 +201,12 @@ console.log(formData,"product<<<")
 
     try {
       let result = await GetQuoteBasedOnID(quoteId);
-      console.log(result);
       
       // if (!result?.output || !Array.isArray(result.output) || result.output.length === 0) {
       //   console.error("Invalid API response:", result);
       //   return;
       // }
       const firstItem = result.output[0]; // Get first item
-console.log(firstItem,"AJAY");
 
       setFormData({
         quote_id: firstItem.quote_id || '',
@@ -245,7 +242,7 @@ console.log(firstItem,"AJAY");
           bc_product_name: item.bc_product_name,
           bc_product_price: item?.bc_product_price,
           bc_product_sale_price:item?.bc_product_sale_price,
-          bc_product_url: item.bc_product_url,
+          bc_product_url: item?.bc_product_url != null ? item?.bc_product_url : '#',
           bc_product_image:item.bc_product_image,
           bc_sku: item.bc_sku,
           bc_variant_name: item.bc_variant_name,
@@ -264,7 +261,6 @@ console.log(firstItem,"AJAY");
     setLoader((prev) => ({ ...prev, updateAndSendEmail: true }));
     try {
       const result = await CreateCartForQouteItems(formData.quote_id);
-      console.log("result---------",result);
       // var storeCreatedCartId = result.output.data.id
       // console.log("storeCreatedCartId---", storeCreatedCartId);
       
@@ -273,7 +269,6 @@ console.log(firstItem,"AJAY");
       //   throw new Error("Failed to create cart for quote items.");
       // }
       var updateQuoteCall=await handleUpdate()
-      console.log("update--------",updateQuoteCall);
       
       const getCartItemID = result.output.data.id;
       const dataToSend = {
@@ -286,10 +281,8 @@ console.log(firstItem,"AJAY");
         quote_type: formData.quote_type,
         cart_url: `http://localhost:3000/cart?${getCartItemID}`,
       };
-      console.log("dataToSend---", dataToSend);
       
       const emailResult = await sendEmailToCustomer(dataToSend);
-      console.log("Email sent successfully:", emailResult);
       
       setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
     } catch (error) {
@@ -587,9 +580,13 @@ console.log(firstItem,"AJAY");
                           />
                         </div>
                         <div className="flex flex-col gap-[2px] text-left text-[12px] relative">
-                        <Link href={product.bc_product_url} passHref target="_blank" rel="noopener noreferrer">
-                          <SquareArrowUpRight size={12} className="cursor-pointer text-[#555] absolute right-[0px] hover:text-[#5b5fc7]" />
-                        </Link>
+                          {
+                            product.bc_product_url &&
+                          <Link href={product?.bc_product_url} passHref target="_blank" rel="noopener noreferrer">
+                            <SquareArrowUpRight size={12} className="cursor-pointer text-[#555] absolute right-[0px] hover:text-[#5b5fc7]" />
+                          </Link>
+                          }
+                        
                           <div>
                             {product.bc_product_name}
                           </div>

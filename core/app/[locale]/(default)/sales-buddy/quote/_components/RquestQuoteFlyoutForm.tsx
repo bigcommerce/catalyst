@@ -12,7 +12,6 @@ import { usePathname } from 'next/navigation';
 import { GetCartDetials } from '../actions/GetCartDetials';
 import toast from 'react-hot-toast';
 import { sendEmailToCustomer } from '../actions/SendEmailToCustomer';
-import { log } from 'console';
 
 interface FlyoutFormProps {
   isOpen?: boolean;
@@ -101,7 +100,6 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
       const fetchCartData = async () => {
         try {
           const CartItemsData: any = await GetCartDetials();
-          console.log(CartItemsData);
           const cartLineItems = CartItemsData?.lineItems?.physicalItems || [];
           const customItmes = CartItemsData?.lineItems?.customItems || [];
           const formattedCutomItemData = customItmes?.map(item => ({
@@ -258,8 +256,6 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
 
 
   const createQuoteRequest = async (sessionId: string, isNewQuote: boolean = true, cartData: CartData[],latestQuoteData: any) => {
-console.log("createQuoteRequest",cartData);
-console.log(quoteCartData,"lineItemsData>>>")
 
     const quoteType = isNewQuote ? 'New' : 'old';
     let dataToSend;
@@ -284,7 +280,6 @@ console.log(quoteCartData,"lineItemsData>>>")
     }
 
     try {
-      console.log(dataToSend,"data......")
       const result = await CreateQuote(dataToSend);
       if (result) {
         setSubmitStatus('success');
@@ -298,7 +293,6 @@ console.log(quoteCartData,"lineItemsData>>>")
         if (pageName !== '/sales-buddy/quote') {
 
           const emailResult = await sendEmailToCustomer(dataToSend);
-          console.log(emailResult)
         }
 
         setTimeout(() => {
