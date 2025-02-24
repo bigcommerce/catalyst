@@ -20,10 +20,11 @@ const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children, onAddProduc
     price: 100
   });
   const [brands, setBrands] = useState([]);
-
+  const [selectedBrand, setSelectedBrand] = useState("");
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductData({ ...productData, [name]: value });
+    setSelectedBrand(value);
   };
 
   const handleSave = () => {
@@ -68,6 +69,7 @@ const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children, onAddProduc
                       value={productData.brand}
                       onChange={handleChange}
                     >
+                      <option  value={""}>{"select option"}</option>
                       {
                         brands.map((brand) => (
                           <option key={brand.id} value={brand.id}>{brand.name}</option>

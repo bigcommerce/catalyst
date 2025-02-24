@@ -16,6 +16,7 @@ import { CreateCartForQouteItems } from '../actions/create-cart-for-quote';
 import { sendEmailToCustomer } from '../actions/SendEmailToCustomer';
 import { storeFileInS3Bucket } from '../actions/upload-file-s3-bucket';
 import Loader from '../_components/Spinner';
+import toast from 'react-hot-toast';
 
 const popOverContents = [
   { key: 'refresh-product', label: 'Refresh Product' },
@@ -150,8 +151,8 @@ const page = () => {
   };
 
   const handleUpdate = async () => {
+    setLoader((prev) => ({ ...prev, updateAndSendEmail: true }));
     try {
-      setLoader((prev) => ({ ...prev, updateAndSendEmail: true }));
 
       const payload = {
         quote_id: formData.quote_id,
@@ -179,11 +180,13 @@ const page = () => {
       };
 
       const updateQuoteData = await UpdateQuote(payload);
-
+      toast.success('Quote updated successfully');
+      setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
       if (updateQuoteData) {
         callToGetQuoteDataBasedOnQuoteId();
       } else {
         console.error("Error updating quote:", updateQuoteData);
+
       }
     } catch (error) {
       console.error("An error occurred while updating the quote:", error);
@@ -198,11 +201,12 @@ const page = () => {
 
     try {
       let result = await GetQuoteBasedOnID(quoteId);
-
-      if (!result?.output || !Array.isArray(result.output) || result.output.length === 0) {
-        console.error("Invalid API response:", result);
-        return;
-      }
+      console.log(result);
+      
+      // if (!result?.output || !Array.isArray(result.output) || result.output.length === 0) {
+      //   console.error("Invalid API response:", result);
+      //   return;
+      // }
       const firstItem = result.output[0]; // Get first item
       setFormData({
         quote_id: firstItem.quote_id || '',
@@ -216,8 +220,8 @@ const page = () => {
           company_name: firstItem.company_name || '',
           phone_number: firstItem.phone_number || '',
           quote_remarks: firstItem.quote_remarks || '',
-          sub_total: firstItem.sub_total || 0,
-          total: firstItem.total || 0,
+          sub_total: calculateTotalPrice() || 0,
+          total: calculateTotalPrice() || 0,
           expires: firstItem.expires || '',
           notes: firstItem.notes || '',
           video: firstItem.video || '',
@@ -252,23 +256,33 @@ const page = () => {
     setLoader((prev) => ({ ...prev, updateAndSendEmail: true }));
     try {
       const result = await CreateCartForQouteItems(formData.quote_id);
-      if (!result || !result.data || !result.data.id) {
-        setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
-        throw new Error("Failed to create cart for quote items.");
-      }
-      const getCartItemID = result.data.id;
+      console.log("result---------",result);
+      // var storeCreatedCartId = result.output.data.id
+      // console.log("storeCreatedCartId---", storeCreatedCartId);
+      
+      // if (!result || !result.output.data || !result.output.data.id) {
+      //   setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
+      //   throw new Error("Failed to create cart for quote items.");
+      // }
+      var updateQuoteCall=await handleUpdate()
+      console.log("update--------",updateQuoteCall);
+      
+      const getCartItemID = result.output.data.id;
       const dataToSend = {
         quote_id: quoteId,
         bc_channel_id: formData.bc_channel_id,
-        email_template_type: "approval_template",
+        email_template_type: "agent_approval_template",
         store: 1,
         qr_customer: formData.qr_customer,
         qr_product: formData.qr_product,
         quote_type: formData.quote_type,
         cart_url: `http://localhost:3000/cart?${getCartItemID}`,
       };
+      console.log("dataToSend---", dataToSend);
+      
       const emailResult = await sendEmailToCustomer(dataToSend);
-
+      console.log("Email sent successfully:", emailResult);
+      
       setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
     } catch (error) {
       setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
@@ -284,12 +298,16 @@ const page = () => {
   useEffect(() => {
     callToGetQuoteDataBasedOnQuoteId();
   }, [quoteId]);
-
-
-  useEffect(() => {
-  }, [formData]);
-
+  // setFormData((prev) => ({
+  //   ...prev,
+  //   qr_customer: {
+  //     ...prev.qr_customer,
+  //     sub_total: formData.qr_product.reduce((total, product) => total + (product.unitPrice * product.qty), 0),
+  //     total: formData.qr_product.reduce((total, product) => total + (product.unitPrice * product.qty), 0)
+  //   }
+  // }));
   const calculateTotalPrice = () => {
+    
     return formData.qr_product.reduce((total, product) => total + (product.unitPrice * product.qty), 0);
   };
 
@@ -301,6 +319,7 @@ const page = () => {
 
   const isViewMode = mode === 'view';
 
+  
   async function handleUploadFileToBucket (){    
     var uploadFileToBucked =await storeFileInS3Bucket(storeFile)
     if (uploadFileToBucked.success){
@@ -470,7 +489,7 @@ const page = () => {
                   className="w-full border-b border-b-gray-400 p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
                   disabled={isViewMode}
                 >
-                  <option value="">{formData.qr_customer.quote_status == "" || formData.qr_customer.quote_status == "null" ? "Open" : formData.qr_customer.quote_status }</option>
+                  {/* <option value="">{formData.qr_customer.quote_status == "" || formData.qr_customer.quote_status == "null" ? "Open" : formData.qr_customer.quote_status }</option> */}
                   <option value="pending">Pending</option>
                   <option value="approved">Approved</option>
                   <option value="rejected">Rejected</option>
@@ -675,7 +694,7 @@ const page = () => {
                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-[5px] bg-[#3C64F4] p-[4px_16px] uppercase text-white hover:bg-[#3C64F4]/80"
                   onClick={()=>{handleUploadFileToBucket()}}
                 >
-                  <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">Update and Exit</p>
+                  <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">Upload File</p>
                   <div className="absolute inset-0 flex items-center justify-center">
                     {loader.uploadFile && <Loader />}
                     </div>
