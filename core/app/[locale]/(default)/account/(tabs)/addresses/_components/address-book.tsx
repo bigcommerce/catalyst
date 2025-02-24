@@ -134,6 +134,8 @@ export const AddressBook = ({
             stateOrProvince,
             postalCode,
             countryCode,
+            company,
+            phone
           }) => (
             <li
               className="flex w-full flex-col items-start gap-1 rounded-lg bg-[#E8E7E7] p-5 sm:flex-row sm:p-8"
@@ -147,13 +149,15 @@ export const AddressBook = ({
                 </p>
 
                 {/* Address details */}
-                <div className="flex-grow text-sm font-normalbreak-all  leading-[24px] tracking-wide text-black sm:text-base sm:leading-[28px]">
+                <div className="flex-grow text-sm font-normal break-all  leading-[24px] tracking-wide text-black sm:text-base sm:leading-[28px]">
                   <p>{address1}</p>
                   {Boolean(address2) && <p>{address2}</p>}
                   <p>
                     {city}, {stateOrProvince} {postalCode}
                   </p>
                   <p>{countryCode}</p>
+                  <p>{company}</p>
+                  <p>{phone}</p>
                 </div>
 
                 {/* Address change buttons */}

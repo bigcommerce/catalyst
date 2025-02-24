@@ -14,6 +14,7 @@ declare module 'react-instantsearch' {
   export type UseSortByProps = UseSortByProps;
   export type UseHitsPerPageProps = UseHitsPerPageProps;
   export type UseStatsProps = UseStatsProps;
+  export type UseRefinementListProps = UseRefinementListProps;
   export function RefinementList(props: RefinementListProps): ReactNode;
   export function ToggleRefinement(props: ToggleRefinementProps): ReactNode;
   export function RangeInput(props: RangeInputProps): ReactNode;
