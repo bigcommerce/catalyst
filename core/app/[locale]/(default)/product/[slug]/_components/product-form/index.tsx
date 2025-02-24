@@ -7,7 +7,7 @@ import { AlertCircle, Check, Heart, ShoppingCart } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { FormProvider, useFormContext } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { ProductItemFragment } from '~/client/fragments/product-item';
 import { AddToCartButton } from '~/components/add-to-cart-button';
@@ -64,7 +64,6 @@ interface Props {
   sessionUser?: any;
   priceMaxRules?: any;
 }
-
 const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
   const category = removeEdgesAndNodes(p.categories).at(0);
   const breadcrumbs = category ? removeEdgesAndNodes(category.breadcrumbs) : [];
@@ -87,15 +86,18 @@ const productItemTransform = (p: FragmentOf<typeof ProductItemFragment>) => {
 export const Submit = ({
   data: product,
   isSticky = false,
+  isQuoteSubmitting = false
 }: {
   data: Props['data'];
   isSticky?: boolean;
+  isQuoteSubmitting?:boolean;
+
 }) => {
   const { formState } = useFormContext();
   const { isSubmitting } = formState;
 
   return (
-    <AddToCartButton data={product} loading={isSubmitting}>
+    <AddToCartButton data={product} loading={isSubmitting && !isQuoteSubmitting}>
       {/* Remove the ShoppingCart icon completely */}
       {isSticky ? '' : ''}
     </AddToCartButton>
@@ -121,11 +123,18 @@ export const ProductForm = ({
   const productOptions = removeEdgesAndNodes(product.productOptions);
   const { setCartIdForCheck, setStoreProductDetailsForQuote, StoreProductDetailsFunctionForQoute } =
     useCompareDrawerContext();
+    const [isQuoteSubmitting, setIsQuoteSubmitting] = useState(false);
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    const pdpUrl = useMemo(() => {
+      if (typeof window !== 'undefined') {
+        return `${window.location.origin}${pathname}?${searchParams.toString()}`;
+      }
+      return '';
+    }, [pathname, searchParams]);
 
   if (productOptions?.length > 0) {
     const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
     const handleInteraction = (urlParamArray: any) => {
       const optionSearchParams = new URLSearchParams(searchParams.toString());
       urlParamArray?.forEach((urlData: any) => {
@@ -142,7 +151,6 @@ export const ProductForm = ({
         const selectedValue = option.entityId;
         if (selectedValue) {
           const defaultValue = values.find((value: any) => value.isDefault)?.entityId.toString();
-          // console.log(defaultValue,">>Default value");
           urlParamArray.push({
             selectedValue: selectedValue,
             defaultValue: defaultValue,
@@ -166,7 +174,6 @@ export const ProductForm = ({
       const matchedPriceRule = priceMaxRules?.find(
         (r: PriceMaxRule) => r.skus && r.skus.includes(product?.parent?.sku || ''),
       );
-      console.log(matchedPriceRule, 'price');
 
       // Calculate discounted price
       const originalPrice = product?.UpdatePriceForMSRP?.originalPrice || 0;
@@ -262,7 +269,6 @@ export const ProductForm = ({
 
       const transformedProduct = productItemTransform(product);
 
-      // Track Add To Cart action...
       if (product && product.prices) {
         KlaviyoTrackAddToCart({
           product: product as any,
@@ -301,11 +307,17 @@ export const ProductForm = ({
         ],
       });
     } else if (action === 'requestQuote') {
-      const quoteResult = await handleRequestQuote(data, product);
-      var getRelatimeData = StoreProductDetailsFunctionForQoute(quoteResult?.data?.qr_product);
-
-      setStoreProductDetailsForQuote(getRelatimeData);
-      localStorage.setItem('Q_R_data', JSON.stringify(getRelatimeData));
+      try {
+        setIsQuoteSubmitting(true);
+        const quoteResult = await handleRequestQuote(data, product);        
+        var getRelatimeData = StoreProductDetailsFunctionForQoute(quoteResult?.data?.qr_product ? {...quoteResult.data.qr_product, bc_product_url: pdpUrl } : null);
+        setStoreProductDetailsForQuote(getRelatimeData);
+        localStorage.setItem('Q_R_data', JSON.stringify(getRelatimeData));
+      } catch (error) {
+        console.error('Error submitting quote:', error);
+      } finally {
+        setIsQuoteSubmitting(false); 
+      }
     }
   };
 
@@ -332,13 +344,6 @@ export const ProductForm = ({
             return null;
           })}
           <Submit data={product} isSticky={true} />
-          <button
-          className='request-a-quote'
-            type="submit"
-            onClick={handleSubmit((data) => productFormSubmit(data, 'requestQuote'))}
-          >
-            Request Quote
-          </button>
         </form>
       </FormProvider>
     );
@@ -492,7 +497,7 @@ export const ProductForm = ({
             >
               Request Quote
             </button>
-            <Submit data={product} />
+            <Submit data={product} isQuoteSubmitting={isQuoteSubmitting}/>
             <div className="hidden w-full">
               <Button disabled type="submit" variant="secondary">
                 <Heart aria-hidden="true" className="mr-2" />

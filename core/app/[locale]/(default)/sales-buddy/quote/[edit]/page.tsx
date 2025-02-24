@@ -12,152 +12,29 @@ import { GetQuoteBasedOnID } from '../actions/get-quote-basedon-id';
 import { UpdateQuote } from '../actions/update-quote';
 import { CreateQuote } from '../actions/CreateQuote';
 import ProductPriceAdjuster from '../../common-components/_components/ProductPriceAdjuster';
-import { CreateCartForQouteItems } from '../actions/send-mail';
-
+import { CreateCartForQouteItems } from '../actions/create-cart-for-quote';
+import { sendEmailToCustomer } from '../actions/SendEmailToCustomer';
+import { storeFileInS3Bucket } from '../actions/upload-file-s3-bucket';
+import Loader from '../_components/Spinner';
+import toast from 'react-hot-toast';
+import { SquareArrowUpRight } from 'lucide-react';
+import Link from 'next/link';
 const popOverContents = [
   { key: 'refresh-product', label: 'Refresh Product' },
   { key: 'delete', label: 'Delete' },
 ];
 
-const QuotePage = ({ formData, handleAddCustomProduct, handleProductChange, isViewMode }) => {
-  return (
-    <div className="flex flex-row w-full gap-6">
-      <div className="flex-1">
-        <div className="bg-[#ededed] mb-6">
-          <div className="flex ">
-            <button className="px-6 py-3 text-xs uppercase hover:text-[#3C64F4] hover:border-b-2 hover:border-[#3C64F4] min-w-[150px]">
-              SEARCH
-            </button>
-            <button className="px-6 py-3 text-xs uppercase hover:text-[#3C64F4] hover:border-b-2 hover:border-[#3C64F4] min-w-[150px]">
-              SEARCH BY SKU
-            </button>
-            <button className="px-6 py-3 text-xs uppercase hover:text-[#3C64F4] hover:border-b-2 hover:border-[#3C64F4] min-w-[150px]">
-              CUSTOM PRODUCT
-            </button>
-            {!isViewMode && (
-              <NewProductQuote onAddProduct={handleAddCustomProduct}>
-                <button
-                  type="button"
-                  className="rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90 my-auto"
-                >
-                  New +
-                </button>
-              </NewProductQuote>
-            )}
-          </div>
-        </div>
-        <div className="border rounded-lg">
-          {formData.qr_product.length === 0 ? (
-            <div className="h-32 flex flex-col items-center justify-center">
-              <p className="text-gray-400 text-sm mb-2">No Products Added</p>
-              <p className="text-[#3C64F4] text-base">Use search to add products</p>
-            </div>
-          ) : (
-            <div className="w-full overflow-x-auto">
-              <table className="w-full table-auto border-collapse border">
-                <thead className="bg-[#ededed] [&_th]:p-[12px] [&_th]:text-[12px]">
-                  <tr className="border-b-[#c9c9cb] uppercase hover:[&>th]:cursor-pointer">
-                    <th className="">
-                      <div className="flex items-center justify-center gap-1">
-                        <div>Line Items</div>
-                      </div>
-                    </th>
-                    <th className="">
-                      <div className="flex items-center justify-center gap-1">
-                        <div>Qty</div>
-                      </div>
-                    </th>
-                    <th className="">
-                      <div className="flex items-center justify-center gap-1">
-                        <div>Unit Price</div>
-                      </div>
-                    </th>
-                    <th className="">
-                      <div className="flex items-center justify-center gap-1">
-                        <div>Total Price</div>
-                      </div>
-                    </th>
-                    <th className="">
-                      <div className="text-[#5C5C5C]">Action</div>
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="[&_td]:p-[12px] [&_td]:text-center [&_td]:text-[12px] [&_td]:font-normal [&_tr:last-child]:[border-bottom:none;] [&_tr:last-child_td:last-child_.tooltip]:top-0 [&_tr:last-child_td:last-child_.tooltip]:translate-y-[-100%] [&_tr]:border-b [&_tr]:border-b-[#f6f7fb]">
-                  {formData?.qr_product?.map((product:any, index:number) => (
-                    <tr key={index}>
-                      <td className="min-w-[200px] max-w-[300px] [word-break:break-word]">
-                        <div className="flex flex-row items-start gap-1">
-                          <div className="min-h-[60px] min-w-[60px]">
-                            <BcImage
-                              width={60}
-                              height={60}
-                              unoptimized={true}
-                              alt="product image"
-                              src={CartIcon}
-                            />
-                          </div>
-                          <div className="flex flex-col gap-[2px] text-left text-[12px]">
-                            <div>
-                              {product.bc_product_name}
-                            </div>
-                            <div className="font-bold">
-                              <span>SKU: </span>
-                              <span>{product.bc_sku}</span>
-                            </div>
-                          </div>
-                        </div>
-                      </td>
-                      <td className="cursor-pointer">
-                        <div>
-                          <input
-                            type="number"
-                            name="qty"
-                            value={product.qty}
-                            onChange={(e) => handleProductChange(index, e)}
-                            className="w-full border-b border-b-black outline-none text-center"
-                            disabled={isViewMode}
-                          />
-                        </div>
-                      </td>
-                      <td className="">
-                        <div>
-                          <input
-                            type="number"
-                            name="unitPrice"
-                            value={product.unitPrice}
-                            onChange={(e) => handleProductChange(index, e)}
-                            className="w-full border-b border-b-black outline-none text-center"
-                            disabled={isViewMode}
-                          />
-                        </div>
-                      </td>
-                      <td className="">
-                        <div>
-                          ${(product.unitPrice * product.qty).toFixed(2)}
-                        </div>
-                      </td>
-                      <td>
-                        <div className="flex items-center justify-center gap-1 text-[#555]">
-                          <PopOverClick popOverContents={popOverContents} from="edit">
-                            <Ellipsis className="cursor-pointer text-[#555]" />
-                          </PopOverClick>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
-};
+
 
 const page = () => {
   const router = useRouter();
   const { edit } = useParams(); // Extracting the dynamic ID
+  const [storeFile,setStoreFile] = useState(null);
+  const [loader,setLoader]=useState({
+    uploadFile:false,
+    updateAndExit:false,
+    updateAndSendEmail:false
+  })
   const [formData, setFormData] = useState({
     quote_id: '',
     bc_channel_id: '',
@@ -212,13 +89,15 @@ const page = () => {
     updatedProducts[index] = { ...updatedProducts[index], [name]: parseInt(value, 10) };
     setFormData({ ...formData, qr_product: updatedProducts });
   };
-
   const handleAddProduct = () => {
     setFormData({ ...formData, qr_product: [...formData.qr_product, { bc_product_id: '', bc_sku: '', bc_product_name: '', bc_variant_id: '', bc_variant_sku: '', bc_variant_name: '', bc_modifier_id: '', bc_modifier_option: '', options: '', qty: 0, unitPrice: 0 }] });
   };
 
   const handleFileChange = (e) => {
+    setStoreFile(e.target.files[0]);
     setFormData({ ...formData, attachments: [...e.target.files] });
+    
+
   };
 
   const handleAddCustomProduct = async (product) => {
@@ -238,12 +117,14 @@ const page = () => {
         bc_modifier_option: "custom",
         options: "custom",
         qty: product.quantity,
-        unitPrice: product.price
+        unitPrice: product.price,
+        brand: product.brand,
       }],
       page_type: 'agent_app',
     };
     try {
       const result = await CreateQuote(dataToSend);
+      callToGetQuoteDataBasedOnQuoteId();
     } catch (error) {
       console.error("Error submitting quote:", error);
     }
@@ -254,9 +135,10 @@ const page = () => {
     if (!formData.qr_customer.first_name) tempErrors.first_name = "First Name is required";
     if (!formData.qr_customer.last_name) tempErrors.last_name = "Last Name is required";
     if (!formData.qr_customer.email_id) tempErrors.email_id = "Email is required";
-    if (!formData.qr_customer.company_name) tempErrors.company_name = "Company Name is required";
-    if (!formData.qr_customer.phone_number) tempErrors.phone_number = "Phone Number is required";
-    if (!formData.qr_customer.quote_remarks) tempErrors.quote_remarks = "Quote Remarks are required";
+    // if (!formData.qr_customer.company_name) tempErrors.company_name = "Company Name is required";
+    // if (!formData.qr_customer.phone_number) tempErrors.phone_number = "Phone Number is required";
+    // if (!formData.qr_customer.quote_remarks) tempErrors.
+    // quote_remarks = "Quote Remarks are required";
     setErrors(tempErrors);
     return Object.keys(tempErrors).length === 0;
   };
@@ -269,47 +151,66 @@ const page = () => {
   };
 
   const handleUpdate = async () => {
-    const payload = {
-      quote_id: formData.quote_id,
-      qr_customer: {
-        sub_total: formData.qr_customer.sub_total ?? 0,
-        total: formData.qr_customer.total ?? 0,
-        expires: formData.qr_customer.expires,
-        notes: formData.qr_customer.notes,
-        video: formData.qr_customer.video,
-        attachment: formData.qr_customer.attachment,
-        agent_id: formData.qr_customer.agent_id ?? 0,
-        agent_approval: formData.qr_customer.agent_approval,
-        agent_approval_date: formData.qr_customer.agent_approval_date,
-        agent_manager_id: formData.qr_customer.agent_manager_id ?? 0,
-        agent_manager_approval: formData.qr_customer.agent_manager_approval,
-        agent_manager_approval_date: formData.qr_customer.agent_manager_approval_date,
-        quote_status: formData.qr_customer.quote_status
-      },
-      qr_product: formData?.qr_product?.map(product => ({
-        qr_item_id: product.qr_item_id,
-        qty: product.qty,
-        unit_price: product.unitPrice,
-        total_price: product.unitPrice * product.qty
-      }))
-    };
-    var updateQuoteData = await UpdateQuote(payload);
+    setLoader((prev) => ({ ...prev, updateAndSendEmail: true }));
+    try {
+
+      const payload = {
+        quote_id: formData.quote_id,
+        qr_customer: {
+          sub_total: formData.qr_customer.sub_total ?? 0,
+          total: formData.qr_customer.total ?? 0,
+          expires: formData.qr_customer.expires,
+          notes: formData.qr_customer.notes,
+          video: formData.qr_customer.video,
+          attachment: formData.qr_customer.attachment,
+          agent_id: formData.qr_customer.agent_id ?? 0,
+          agent_approval: formData.qr_customer.agent_approval,
+          agent_approval_date: formData.qr_customer.agent_approval_date,
+          agent_manager_id: formData.qr_customer.agent_manager_id ?? 0,
+          agent_manager_approval: formData.qr_customer.agent_manager_approval,
+          agent_manager_approval_date: formData.qr_customer.agent_manager_approval_date,
+          quote_status: formData.qr_customer.quote_status
+        },
+        qr_product: formData?.qr_product?.map(product => ({
+          qr_item_id: product.qr_item_id,
+          qty: product.qty,
+          unit_price: product.unitPrice,
+          total_price: product.unitPrice * product.qty
+        }))
+      };
+
+      const updateQuoteData = await UpdateQuote(payload);
+      toast.success('Quote updated successfully');
+      setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
+      if (updateQuoteData) {
+        callToGetQuoteDataBasedOnQuoteId();
+      } else {
+        console.error("Error updating quote:", updateQuoteData);
+
+      }
+    } catch (error) {
+      console.error("An error occurred while updating the quote:", error);
+    } finally {
+      setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
+    }
   };
+
 
   const callToGetQuoteDataBasedOnQuoteId = async () => {
     if (!quoteId || quoteId.trim() === "") return; // Ensure quoteId is valid
 
     try {
       let result = await GetQuoteBasedOnID(quoteId);
-
-      if (!result?.output || !Array.isArray(result.output) || result.output.length === 0) {
-        console.error("Invalid API response:", result);
-        return;
-      }
+      
+      // if (!result?.output || !Array.isArray(result.output) || result.output.length === 0) {
+      //   console.error("Invalid API response:", result);
+      //   return;
+      // }
       const firstItem = result.output[0]; // Get first item
+
       setFormData({
         quote_id: firstItem.quote_id || '',
-        bc_channel_id: firstItem.bc_channel_id || '',
+        bc_channel_id: firstItem.bc_channel_id || 0,
         bc_customer_id: firstItem.bc_customer_id || '',
         quote_type: firstItem.quote_type || '',
         qr_customer: {
@@ -319,8 +220,8 @@ const page = () => {
           company_name: firstItem.company_name || '',
           phone_number: firstItem.phone_number || '',
           quote_remarks: firstItem.quote_remarks || '',
-          sub_total: firstItem.sub_total || 0,
-          total: firstItem.total || 0,
+          sub_total: calculateTotalPrice() || 0,
+          total: calculateTotalPrice() || 0,
           expires: firstItem.expires || '',
           notes: firstItem.notes || '',
           video: firstItem.video || '',
@@ -337,7 +238,12 @@ const page = () => {
           qr_id: item.qr_id,
           qr_item_id: item.qr_item_id,
           qty: item.qty,
+          bc_product_qty:item.bc_product_qty,
           bc_product_name: item.bc_product_name,
+          bc_product_price: item?.bc_product_price,
+          bc_product_sale_price:item?.bc_product_sale_price,
+          bc_product_url: item?.bc_product_url != null ? item?.bc_product_url : '#',
+          bc_product_image:item.bc_product_image,
           bc_sku: item.bc_sku,
           bc_variant_name: item.bc_variant_name,
           bc_product_id: item.bc_product_id,
@@ -351,8 +257,38 @@ const page = () => {
     }
   };
 
-  const sendEmail = async() => {
-    var result = await CreateCartForQouteItems(formData.quote_id)    
+  const sendEmail = async () => {
+    setLoader((prev) => ({ ...prev, updateAndSendEmail: true }));
+    try {
+      const result = await CreateCartForQouteItems(formData.quote_id);
+      // var storeCreatedCartId = result.output.data.id
+      // console.log("storeCreatedCartId---", storeCreatedCartId);
+      
+      // if (!result || !result.output.data || !result.output.data.id) {
+      //   setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
+      //   throw new Error("Failed to create cart for quote items.");
+      // }
+      var updateQuoteCall=await handleUpdate()
+      
+      const getCartItemID = result.output.data.id;
+      const dataToSend = {
+        quote_id: quoteId,
+        bc_channel_id: formData.bc_channel_id,
+        email_template_type: "agent_approval_template",
+        store: 1,
+        qr_customer: formData.qr_customer,
+        qr_product: formData.qr_product,
+        quote_type: formData.quote_type,
+        cart_url: `http://localhost:3000/cart?${getCartItemID}`,
+      };
+      
+      const emailResult = await sendEmailToCustomer(dataToSend);
+      
+      setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
+    } catch (error) {
+      setLoader((prev) => ({ ...prev, updateAndSendEmail: false }));
+      console.error("Error occurred while sending email:", error.message || error);
+    }
   };
 
   // Log updated formData
@@ -363,12 +299,16 @@ const page = () => {
   useEffect(() => {
     callToGetQuoteDataBasedOnQuoteId();
   }, [quoteId]);
-
-
-  useEffect(() => {
-  }, [formData]);
-
+  // setFormData((prev) => ({
+  //   ...prev,
+  //   qr_customer: {
+  //     ...prev.qr_customer,
+  //     sub_total: formData.qr_product.reduce((total, product) => total + (product.unitPrice * product.qty), 0),
+  //     total: formData.qr_product.reduce((total, product) => total + (product.unitPrice * product.qty), 0)
+  //   }
+  // }));
   const calculateTotalPrice = () => {
+    
     return formData.qr_product.reduce((total, product) => total + (product.unitPrice * product.qty), 0);
   };
 
@@ -380,8 +320,16 @@ const page = () => {
 
   const isViewMode = mode === 'view';
 
+  
+  async function handleUploadFileToBucket (){    
+    var uploadFileToBucked =await storeFileInS3Bucket(storeFile)
+    if (uploadFileToBucked.success){
+      setFormData({ ...formData, qr_customer: { ...formData.qr_customer, attachment: uploadFileToBucked.fileUrl } });
+    }    
+  }
+  
   return (
-    <div className="flex justify-center bg-[#f7f8fc] py-[2rem] text-[#353535]">
+    <div className={`flex justify-center ${isViewMode ? "pointer-events-none" : ""} bg-[#f7f8fc] py-[2rem] text-[#353535]`}>
       <form onSubmit={handleSubmit} className="relative flex w-[90%] flex-col gap-[10px]">
         <div className="flex flex-col gap-5 bg-white p-4">
           <div className="text-[20px] font-bold text-[#313440]">Quote Information</div>
@@ -486,7 +434,9 @@ const page = () => {
             </div>
             
           </div>
-          <div>
+          {
+            !isViewMode &&
+            <div>
             <button
               type="submit"
               className="rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
@@ -494,6 +444,8 @@ const page = () => {
               continue
             </button>
           </div>
+          }
+
         </div>
         {/* <div className="flex flex-col gap-1 bg-white p-4">
           <div className="flex flex-row gap-[20px]">
@@ -542,7 +494,7 @@ const page = () => {
                   className="w-full border-b border-b-gray-400 p-[5px] text-[14px] outline-none hover:border-b-[#3C64F4]"
                   disabled={isViewMode}
                 >
-                  <option value="">{formData.qr_customer.quote_status == "" || formData.qr_customer.quote_status == "null" ? "Open" : formData.qr_customer.quote_status }</option>
+                  {/* <option value="">{formData.qr_customer.quote_status == "" || formData.qr_customer.quote_status == "null" ? "Open" : formData.qr_customer.quote_status }</option> */}
                   <option value="pending">Pending</option>
                   <option value="approved">Approved</option>
                   <option value="rejected">Rejected</option>
@@ -572,20 +524,42 @@ const page = () => {
                   </th>
                   <th className="">
                     <div className="flex items-center justify-center gap-1">
+                      <div>Original Price</div>
+                    </div>
+                  </th>
+                  <th className="">
+                    <div className="flex items-center justify-center gap-1">
+                      <div>Sale Price</div>
+                    </div>
+                  </th>
+                  <th className="">
+                    <div className="flex items-center justify-center gap-1">
+                      <div>Selected Qty</div>
+                    </div>
+                  </th>
+                  <th className="">
+                    <div className="flex items-center justify-center gap-1">
                       <div>Qty</div>
                     </div>
                   </th>
-                  <th className="">
+                 { !isViewMode &&
+                   (       
+                    <>
+                    <th className="">
                     <div className="flex items-center justify-center gap-1">
-                      <div>Unit Price</div>
+                    <div>Unit Price</div>
                     </div>
-                  </th>
+                    </th>
+
+                    <th className="">
+                    <div className="flex items-center justify-center gap-1">
+                    <div>Total Price</div>
+                    </div>
+                    </th>
+                    </>            
+                    )
+                 }
                  
-                  <th className="">
-                    <div className="flex items-center justify-center gap-1">
-                      <div>Total Price</div>
-                    </div>
-                  </th>
                   <th className="">
                     <div className="text-[#5C5C5C]">Action</div>
                   </th>
@@ -602,10 +576,17 @@ const page = () => {
                             height={60}
                             unoptimized={true}
                             alt="product image"
-                            src={CartIcon}
+                            src={product?.bc_product_image}
                           />
                         </div>
-                        <div className="flex flex-col gap-[2px] text-left text-[12px]">
+                        <div className="flex flex-col gap-[2px] text-left text-[12px] relative">
+                          {
+                            product.bc_product_url &&
+                          <Link href={product?.bc_product_url} passHref target="_blank" rel="noopener noreferrer">
+                            <SquareArrowUpRight size={12} className="cursor-pointer text-[#555] absolute right-[0px] hover:text-[#5b5fc7]" />
+                          </Link>
+                          }
+                        
                           <div>
                             {product.bc_product_name}
                           </div>
@@ -614,6 +595,21 @@ const page = () => {
                             <span>{product.bc_sku}</span>
                           </div>
                         </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="text-gray-500 line-through">
+                        ${product?.bc_product_price}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="text-green-600 font-bold">
+                        ${product?.bc_product_sale_price}
+                      </div>
+                    </td>
+                    <td className="">
+                      <div className='font-bold'>
+                        {product?.bc_product_qty}
                       </div>
                     </td>
                     <td className="cursor-pointer">
@@ -628,6 +624,7 @@ const page = () => {
                         />
                       </div>
                     </td>
+                    {!isViewMode && (
                     <td className="">
                       <div>
                         <input
@@ -640,12 +637,14 @@ const page = () => {
                         />
                       </div>
                       </td>
-
+                       )}
+                     {!isViewMode && (
                     <td className="">
                       <div>
                         ${(product.unitPrice * product.qty).toFixed(2)}
                       </div>
                     </td>
+                     )}
                     {/* <td className="">
                       <div>
                         <ProductPriceAdjuster
@@ -674,19 +673,22 @@ const page = () => {
           <div>
           
           </div>
+          { !isViewMode &&
           <div className="flex flex-row justify-end ">
            
-            <div className="flex min-w-[340px] flex-col justify-end gap-[16px] p-[16px] text-[12px]">
-              <div className="flex flex-row items-center justify-between">
-                <label htmlFor="">Original Total</label>
-                <div className="text-left">${calculateTotalPrice().toFixed(2)}</div>
-              </div>
-              <div className="flex flex-row items-center justify-between">
-                <label htmlFor="">Original Total</label>
-                <div className="text-left">${calculateTotalPrice().toFixed(2)}</div>
-              </div>
+          <div className="flex min-w-[340px] flex-col justify-end gap-[16px] p-[16px] text-[12px]">
+            <div className="flex flex-row items-center justify-between">
+              <label htmlFor="">Original Total</label>
+              <div className="text-left">${calculateTotalPrice().toFixed(2)}</div>
+            </div>
+            <div className="flex flex-row items-center justify-between">
+              <label htmlFor="">Original Total</label>
+              <div className="text-left">${calculateTotalPrice().toFixed(2)}</div>
             </div>
           </div>
+        </div>
+          }
+
         </div>
         <div className="flex flex-col gap-5 bg-white p-4">
           <div className="flex flex-row items-center gap-[20px]">
@@ -743,12 +745,15 @@ const page = () => {
             <div className="flex flex-1 flex-col justify-between gap-[20px]">
               <div className="relative">
                 <input type="file" id="upload-file" className="z-10 h-full w-full cursor-pointer" onChange={handleFileChange} />
-                <label
-                  htmlFor="upload-file"
+                <button
                   className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 cursor-pointer rounded-[5px] bg-[#3C64F4] p-[4px_16px] uppercase text-white hover:bg-[#3C64F4]/80"
+                  onClick={()=>{handleUploadFileToBucket()}}
                 >
-                  Upload File
-                </label>
+                  <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">Upload File</p>
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    {loader.uploadFile && <Loader />}
+                    </div>
+                </button>
               </div>
               <div>No Attachments</div>
             </div>
@@ -766,7 +771,11 @@ const page = () => {
                 <input
                   type="text"
                   id="upload-file"
+                  name="video"
+                  value={formData.qr_customer.video}
+                  onChange={handleChange}
                   className="flex-1 cursor-pointer border-b border-b-black p-[5px] outline-none"
+
                 />
                 <button className="cursor-pointer rounded-[5px] bg-[#3C64F4] p-[4px_16px] uppercase text-white hover:bg-[#3C64F4]/80">
                   Upload URL
@@ -780,24 +789,35 @@ const page = () => {
             </div>
           </div>
         </div>
-        {mode === 'edit' && (
-          <button
-            type="button"
-            onClick={handleUpdate}
-            className="w-fit self-end rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
-          >
-            Update
-          </button>
-        )}
-        {showSendEmailButton && (
-          <button
-            type="button"
-            onClick={sendEmail}
-            className="w-fit self-end rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
-          >
-            Send Email
-          </button>
-        )}
+        <div className='flex justify-end space-x-2'>
+          {mode === 'edit' && (
+            <button
+              type="button"
+              onClick={handleUpdate}
+              className="relative w-fit self-end rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
+            >
+              <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">Update and Exit</p>
+              <div className="absolute inset-0 flex items-center justify-center">
+                {loader.updateAndExit && <Loader />}
+              </div>
+            </button>
+          )}
+          {showSendEmailButton && (
+            <button
+              type="button"
+              onClick={sendEmail}
+              className="relative w-fit self-end rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
+            >
+              <p className="font-open-sans text-[14px] font-medium tracking-[1.25px]">Update and Send Email</p>
+              <div className="absolute inset-0 flex items-center justify-center">
+                {loader.updateAndSendEmail && <Loader />}
+              </div>
+              
+            </button>
+
+
+          )}
+        </div>
       </form>
     </div>
   );
