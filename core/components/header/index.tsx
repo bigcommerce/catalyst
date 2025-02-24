@@ -44,7 +44,6 @@ const homeLogoMobileFirst = imageManagerImageUrl('logo-mark.png', '150w');
 import { MakeswiftComponent } from '@makeswift/runtime/next';
 import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { client as makeswiftClient } from '~/lib/makeswift/client';
-import { Props } from '@makeswift/runtime/prop-controllers';
 
 import { MegaMenuContextProvider } from '~/belami/components/mega-menu';
 

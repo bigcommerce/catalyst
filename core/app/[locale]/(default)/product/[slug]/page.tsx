@@ -38,6 +38,12 @@ import { useTranslations } from 'next-intl';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { getMultipleChoiceOptions } from '~/components/graphql-apis';
 
+import { MakeswiftComponent } from '@makeswift/runtime/next';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
+import { client as makeswiftClient } from '~/lib/makeswift/client';
+
+import { MegaBannerContextProvider } from '~/belami/components/mega-banner';
+
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -398,6 +404,10 @@ export default async function ProductPage(props: Props) {
 
     const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());
 
+    const megaBannerSnapshot = await makeswiftClient.getComponentSnapshot('belami-mega-banner', {
+      siteVersion: await getSiteVersion()
+    });
+
     return (
       <div className="products-detail-page mx-auto max-w-[93.5%] pt-5">
         <div className="breadcrumbs-container hidden md:block">
@@ -421,6 +431,11 @@ export default async function ProductPage(props: Props) {
                       productMpn={product.mpn}
                       extractedImagePairs={extractedImagePairs}
                     />
+                  </Suspense>
+                  <Suspense fallback={<></>}>
+                    <MegaBannerContextProvider value={{ location: 'pdp-under-gallery' }}>
+                      <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
+                    </MegaBannerContextProvider>
                   </Suspense>
                 </div>
               </div>
@@ -504,6 +519,11 @@ export default async function ProductPage(props: Props) {
                 priceMaxRules={priceMaxRules}
               />
               <Promotion />
+              <Suspense fallback={<></>}>
+                <MegaBannerContextProvider value={{ location: 'pdp-promotion' }}>
+                  <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
+                </MegaBannerContextProvider>
+              </Suspense>
               <RelatedProducts
                 productId={product.entityId}
                 products={relatedProducts}
