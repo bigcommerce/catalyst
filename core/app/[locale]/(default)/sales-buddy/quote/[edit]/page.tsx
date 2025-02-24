@@ -19,6 +19,7 @@ import Loader from '../_components/Spinner';
 import toast from 'react-hot-toast';
 import { SquareArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
+import CustomItemImage from '../../assets/custom-product-image.png';
 const popOverContents = [
   { key: 'refresh-product', label: 'Refresh Product' },
   { key: 'delete', label: 'Delete' },
@@ -110,6 +111,11 @@ const page = () => {
         bc_product_id: 0, // Default or dynamic value
         bc_product_name: product.name,
         bc_sku: product.sku,
+        bc_product_price:'',
+        bc_product_sale_price:"",
+        bc_product_image:"",
+        bc_product_url:"",
+        bc_product_qty:1,
         bc_variant_id: product.bc_variant_id || 0,
         bc_variant_name: product.bc_variant_name || "custom",
         bc_variant_sku: "custom",
@@ -291,11 +297,9 @@ const page = () => {
     }
   };
 
-  // Log updated formData
   useEffect(() => {
   }, [formData]);
 
-  // Fetch data when quoteId changes
   useEffect(() => {
     callToGetQuoteDataBasedOnQuoteId();
   }, [quoteId]);
@@ -571,13 +575,26 @@ const page = () => {
                     <td className="min-w-[200px] max-w-[300px] [word-break:break-word]">
                       <div className="flex flex-row items-start gap-1">
                         <div className="min-h-[60px] min-w-[60px]">
-                          <BcImage
+                          {
+                            product?.bc_product_image === '' ? (
+                            <BcImage
                             width={60}
                             height={60}
                             unoptimized={true}
                             alt="product image"
-                            src={product?.bc_product_image}
-                          />
+                            src={CustomItemImage}
+                            />
+                            ) :(
+                              <BcImage
+                              width={60}
+                              height={60}
+                              unoptimized={true}
+                              alt="product image"
+                              src={product?.bc_product_image}
+                            />
+                            )
+                          }
+                          
                         </div>
                         <div className="flex flex-col gap-[2px] text-left text-[12px] relative">
                           {

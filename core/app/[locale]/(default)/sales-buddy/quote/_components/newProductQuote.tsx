@@ -28,6 +28,7 @@ const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children, onAddProduc
   };
 
   const handleSave = () => {
+    console.log("productData---------", productData);
     
     onAddProduct(productData);
     setProductData({ brand: '', name: '', sku: '', quantity: 0, price: 0 });
@@ -39,7 +40,11 @@ const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children, onAddProduc
     setBrands(getBrandData.output)
     
   }
+  useEffect(() => {
 
+    console.log("getProductBrands---------", getProductBrands());
+  }, []);
+  
 
   return (
     <Dialog.Root>
