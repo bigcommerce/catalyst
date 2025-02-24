@@ -314,7 +314,7 @@ export const ProductForm = ({
       } catch (error) {
         console.error('Error submitting quote:', error);
       } finally {
-        setIsQuoteSubmitting(false); // Reset the quote submission state
+        setIsQuoteSubmitting(false); 
       }
     }
   };

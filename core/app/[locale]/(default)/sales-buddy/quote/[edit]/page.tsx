@@ -79,7 +79,7 @@ const page = () => {
     updatedProducts[index] = { ...updatedProducts[index], [name]: parseInt(value, 10) };
     setFormData({ ...formData, qr_product: updatedProducts });
   };
-
+console.log(formData,"product<<<")
   const handleAddProduct = () => {
     setFormData({ ...formData, qr_product: [...formData.qr_product, { bc_product_id: '', bc_sku: '', bc_product_name: '', bc_variant_id: '', bc_variant_sku: '', bc_variant_name: '', bc_modifier_id: '', bc_modifier_option: '', options: '', qty: 0, unitPrice: 0 }] });
   };
@@ -171,12 +171,13 @@ const page = () => {
 
     try {
       let result = await GetQuoteBasedOnID(quoteId);
-
       if (!result?.output || !Array.isArray(result.output) || result.output.length === 0) {
         console.error("Invalid API response:", result);
         return;
       }
       const firstItem = result.output[0]; // Get first item
+console.log(firstItem,"AJAY");
+
       setFormData({
         quote_id: firstItem.quote_id || '',
         bc_channel_id: firstItem.bc_channel_id || 0,
@@ -208,6 +209,9 @@ const page = () => {
           qr_item_id: item.qr_item_id,
           qty: item.qty,
           bc_product_name: item.bc_product_name,
+          bc_product_price: item?.bc_product_price,
+          bc_product_sale_price:item?.bc_product_sale_price,
+          bc_product_image:item.bc_product_image,
           bc_sku: item.bc_sku,
           bc_variant_name: item.bc_variant_name,
           bc_product_id: item.bc_product_id,
@@ -223,7 +227,7 @@ const page = () => {
 
   const sendEmail = async() => {
     var result = await CreateCartForQouteItems(formData.quote_id)   
-    console.log("result", result);
+    console.log("result>>", result);
     
     var getCartItemID=result.data.id;
     console.log("data-====", result.data);
@@ -269,7 +273,7 @@ const page = () => {
   const isViewMode = mode === 'view';
 
   return (
-    <div className="flex justify-center bg-[#f7f8fc] py-[2rem] text-[#353535]">
+    <div className={`flex justify-center ${isViewMode ? "pointer-events-none" : ""} bg-[#f7f8fc] py-[2rem] text-[#353535]`}>
       <form onSubmit={handleSubmit} className="relative flex w-[90%] flex-col gap-[10px]">
         <div className="flex flex-col gap-5 bg-white p-4">
           <div className="text-[20px] font-bold text-[#313440]">Quote Information</div>
@@ -374,7 +378,9 @@ const page = () => {
             </div>
             
           </div>
-          <div>
+          {
+            !isViewMode &&
+            <div>
             <button
               type="submit"
               className="rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
@@ -382,6 +388,8 @@ const page = () => {
               continue
             </button>
           </div>
+          }
+
         </div>
         {/* <div className="flex flex-col gap-1 bg-white p-4">
           <div className="flex flex-row gap-[20px]">
@@ -460,20 +468,37 @@ const page = () => {
                   </th>
                   <th className="">
                     <div className="flex items-center justify-center gap-1">
+                      <div>Original Price</div>
+                    </div>
+                  </th>
+                  <th className="">
+                    <div className="flex items-center justify-center gap-1">
+                      <div>Sale Price</div>
+                    </div>
+                  </th>
+                  <th className="">
+                    <div className="flex items-center justify-center gap-1">
                       <div>Qty</div>
                     </div>
                   </th>
-                  <th className="">
+                 { !isViewMode &&
+                   (       
+                    <>
+                    <th className="">
                     <div className="flex items-center justify-center gap-1">
-                      <div>Unit Price</div>
+                    <div>Unit Price</div>
                     </div>
-                  </th>
+                    </th>
+
+                    <th className="">
+                    <div className="flex items-center justify-center gap-1">
+                    <div>Total Price</div>
+                    </div>
+                    </th>
+                    </>            
+                    )
+                 }
                  
-                  <th className="">
-                    <div className="flex items-center justify-center gap-1">
-                      <div>Total Price</div>
-                    </div>
-                  </th>
                   <th className="">
                     <div className="text-[#5C5C5C]">Action</div>
                   </th>
@@ -490,7 +515,7 @@ const page = () => {
                             height={60}
                             unoptimized={true}
                             alt="product image"
-                            src={CartIcon}
+                            src={product?.bc_product_image}
                           />
                         </div>
                         <div className="flex flex-col gap-[2px] text-left text-[12px]">
@@ -502,6 +527,16 @@ const page = () => {
                             <span>{product.bc_sku}</span>
                           </div>
                         </div>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="text-gray-500 line-through">
+                        ${product?.bc_product_price}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="text-green-600 font-bold">
+                        ${product?.bc_product_sale_price}
                       </div>
                     </td>
                     <td className="cursor-pointer">
@@ -516,6 +551,7 @@ const page = () => {
                         />
                       </div>
                     </td>
+                    {!isViewMode && (
                     <td className="">
                       <div>
                         <input
@@ -528,12 +564,14 @@ const page = () => {
                         />
                       </div>
                       </td>
-
+                       )}
+                     {!isViewMode && (
                     <td className="">
                       <div>
                         ${(product.unitPrice * product.qty).toFixed(2)}
                       </div>
                     </td>
+                     )}
                     {/* <td className="">
                       <div>
                         <ProductPriceAdjuster
@@ -562,19 +600,22 @@ const page = () => {
           <div>
           
           </div>
+          { !isViewMode &&
           <div className="flex flex-row justify-end ">
            
-            <div className="flex min-w-[340px] flex-col justify-end gap-[16px] p-[16px] text-[12px]">
-              <div className="flex flex-row items-center justify-between">
-                <label htmlFor="">Original Total</label>
-                <div className="text-left">${calculateTotalPrice().toFixed(2)}</div>
-              </div>
-              <div className="flex flex-row items-center justify-between">
-                <label htmlFor="">Original Total</label>
-                <div className="text-left">${calculateTotalPrice().toFixed(2)}</div>
-              </div>
+          <div className="flex min-w-[340px] flex-col justify-end gap-[16px] p-[16px] text-[12px]">
+            <div className="flex flex-row items-center justify-between">
+              <label htmlFor="">Original Total</label>
+              <div className="text-left">${calculateTotalPrice().toFixed(2)}</div>
+            </div>
+            <div className="flex flex-row items-center justify-between">
+              <label htmlFor="">Original Total</label>
+              <div className="text-left">${calculateTotalPrice().toFixed(2)}</div>
             </div>
           </div>
+        </div>
+          }
+
         </div>
         <div className="flex flex-col gap-5 bg-white p-4">
           <div className="flex flex-row items-center gap-[20px]">
@@ -674,7 +715,7 @@ const page = () => {
             onClick={handleUpdate}
             className="w-fit self-end rounded-[5px] bg-[#3C64F4] p-[6px_16px] text-[12px] uppercase text-white hover:bg-[#3C64F4]/90"
           >
-            Update
+            Save
           </button>
         )}
         {showSendEmailButton && (

@@ -3,7 +3,7 @@
 export const sendEmailToCustomer = async (dataToSend:any) => {
     try {
 
-        const { quote_id, bc_customer_id, quote_type, qr_customer, qr_product } = dataToSend; 
+        const { quote_id, bc_customer_id, quote_type, qr_customer, qr_product,cart_url,page_type } = dataToSend; 
 
         const apiUrl = process.env.SALES_BUDDY_API_URL!;
         const apiPath = process.env.QUOTE_API_PATH!;
@@ -11,7 +11,7 @@ export const sendEmailToCustomer = async (dataToSend:any) => {
        const accessId = process.env.QUOTE_ACCESS_ID;
        const bc_channel_id = process.env.BIGCOMMERCE_CHANNEL_ID;
 
-    const email_template_type = quote_type === "New" ? "new_quote_template" : "old_quote_template";
+    const email_template_type = quote_type === "New" || "old" ? "new_quote_template" : "old_quote_template";
 
        let postData = JSON.stringify({
         store: 1,
@@ -23,7 +23,7 @@ export const sendEmailToCustomer = async (dataToSend:any) => {
         qr_product: qr_product,
         quote_type:quote_type,
     });
-    console.log("{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{dataEmail",email_template_type);
+    console.log("{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{{dataEmail",postData);
 // `${apiUrl}${apiEnv}${apiPath}send-mail`
 
 

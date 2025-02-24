@@ -1,3 +1,4 @@
+import { Value } from '@radix-ui/react-select';
 'use server';
 import { ProductFormData } from './../../../product/[slug]/_components/product-form/use-product-form';
 import { ProductFormFragment } from './../../../product/[slug]/_components/product-form/fragment';
@@ -212,20 +213,22 @@ export const handleRequestQuote = async (
           value: field.optionLabelName,
         }
       ));
-      
+      const pImageUrl = product?.defaultImage?.url;
+      const updatedUrl = pImageUrl.replace("{:size}", "original");
     const reqQuoteItems = {
       qr_product: {
         bc_product_id: productEntityId,
         bc_sku: product.sku,
         bc_product_name: product.name,
-        bc_product_image: product?.defaultImage?.url ?? '',
-        bc_product_price: product?.price?.value ?? 0,
-        bc_product_sale_price: product?.retailPrice?.value ?? 0,
+        bc_qty:1,
+        bc_product_image: updatedUrl ?? '',
+        bc_product_price: product?.prices?.retailPrice?.value ?? product?.UpdatePriceForMSRP?.originalPrice,
+        bc_product_sale_price: product?.UpdatePriceForMSRP?.updatedPrice ?? product?.prices?.price?.value,
         bc_variant_id: variantSku?.node?.entityId,
         bc_variant_sku: variantSku?.node?.sku,
         bc_variant_name: variantLabels,
         option_selections: JSON.stringify(selectedVariantsVal),
-        bc_modifier_option: '',
+        bc_modifier_option: "",
         bc_modifier_id: '',
         options: ''
       },

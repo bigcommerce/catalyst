@@ -12,6 +12,7 @@ import { usePathname } from 'next/navigation';
 import { GetCartDetials } from '../actions/GetCartDetials';
 import toast from 'react-hot-toast';
 import { sendEmailToCustomer } from '../actions/SendEmailToCustomer';
+import { log } from 'console';
 
 interface FlyoutFormProps {
   isOpen?: boolean;
@@ -103,7 +104,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
           console.log(CartItemsData);
           const cartLineItems = CartItemsData?.lineItems?.physicalItems || [];
           const customItmes = CartItemsData?.lineItems?.customItems || [];
-          const formattedCutomItemData = customItmes.map(item => ({
+          const formattedCutomItemData = customItmes?.map(item => ({
             bc_sku: item.sku,
             bc_product_name: item.name,
             bc_product_id: 0,
@@ -116,7 +117,6 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
           if (cartLineItems.length > 0) {
             const lineItemsData = cartLineItems.map((item: any) => {
               const selectedOptions = item?.selectedOptions || [];
-
               const productSelectedOpt = selectedOptions
                 ?.map((option: any) => {
                   if (Array.isArray(item?.baseCatalogProduct?.productOptions?.edges)) {
@@ -149,23 +149,37 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
                 })
                 .filter(Boolean);
 
+                const selectedVariantsVal = selectedOptions?.map((field:any)=>(
+                  {
+                    option_id: field.entityId,
+                    option_value: field.value,
+                    name:field?.name,
+                    value: field.optionLabelName,
+                  }
+                ));
+
               const variantLabels = productSelectedOpt
                 ?.filter((item: any) => item?.type === "variant")
                 .map((item: any) => item?.label)
                 .join(", ");
 
               return {
+                bc_product_price: item?.catalogProductWithOptionSelections?.prices?.retailPrice?.value ?? item?.originalPrice?.value,
+                bc_product_sale_price:item?.extendedSalePrice?.value ?? item?.listPrice?.value,
                 bc_product_id: item.productEntityId,
                 bc_sku: item.sku,
+                bc_qty:item?.quantity ?? 1,
+                bc_product_image:item?.imageUrl,
                 bc_product_name: item.name,
                 bc_variant_id: item.variantEntityId,
                 bc_variant_sku: item?.sku,
                 bc_variant_name: variantLabels || "",
+                option_selections: JSON.stringify(selectedVariantsVal),
                 options: productSelectedOpt.map((opt: any) => opt.label).join(", "),
                 type: "product",
               };
             });
-            const finalLineItems = [...lineItemsData, ...formattedCutomItemData];
+            const finalLineItems = customItmes.length > 0 ? [...lineItemsData, ...formattedCutomItemData] : [...lineItemsData];
             setquoteCartData(finalLineItems);
           } else {
             setquoteCartData([]);
@@ -243,7 +257,9 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
 
 
   const createQuoteRequest = async (sessionId: string, isNewQuote: boolean = true, cartData: CartData[],latestQuoteData: any) => {
-console.log("createQuoteRequest",cartData)
+console.log("createQuoteRequest",cartData);
+console.log(quoteCartData,"lineItemsData>>>")
+
     const quoteType = isNewQuote ? 'New' : 'old';
     let dataToSend;
     if (pageName === '/sales-buddy/quote') {
@@ -267,6 +283,7 @@ console.log("createQuoteRequest",cartData)
     }
 
     try {
+      console.log(dataToSend,"data......")
       const result = await CreateQuote(dataToSend);
       if (result) {
         setSubmitStatus('success');
@@ -280,6 +297,7 @@ console.log("createQuoteRequest",cartData)
         if (pageName !== '/sales-buddy/quote') {
 
           const emailResult = await sendEmailToCustomer(dataToSend);
+          console.log(emailResult)
         }
 
         setTimeout(() => {
@@ -360,27 +378,36 @@ console.log("createQuoteRequest",cartData)
             </div>
 
             <div className="flex justify-end space-x-2 pt-4">
-              <Dialog.Close asChild>
-                <Button type="button" variant="primary" className="bg-gray-100">
-                  Cancel
-                </Button>
-              </Dialog.Close>
+  <Dialog.Close asChild>
+    <Button
+      type="button"
+      variant="primary"
+      className="bg-black text-white hover:bg-red-600 px-3 py-3 text-sm"
+    >
+      Cancel
+    </Button>
+  </Dialog.Close>
 
-              {existingSessionId && pageName !== "/sales-buddy/quote" && (
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="bg-yellow-500 text-white hover:bg-yellow-600"
-                  onClick={handleAddToExistingQuote}
-                  disabled={isAddingToExisting}
-                >
-                  {isAddingToExisting ? 'Adding...' : 'Add to Existing Quote'}
-                </Button>
-              )}
-              <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-700" disabled={isSubmitting}>
-                 {isSubmitting ? 'Submitting...' : 'Submit'}
-              </Button>
-            </div>
+  {existingSessionId && pageName !== "/sales-buddy/quote" && (
+    <Button
+      type="button"
+      variant="secondary"
+      className="bg-yellow-500 text-white hover:bg-yellow-600 px-3 py-3 text-sm"
+      onClick={handleAddToExistingQuote}
+      disabled={isAddingToExisting}
+    >
+      {isAddingToExisting ? "Adding..." : "Add to Existing Quote"}
+    </Button>
+  )}
+
+  <Button
+    type="submit"
+    className="bg-blue-600 text-white hover:bg-blue-700 px-3 py-3 text-sm"
+    disabled={isSubmitting}
+  >
+    {isSubmitting ? "Submitting..." : "Submit"}
+  </Button>
+</div>
           </form>
 
           {submitStatus === 'success' &&

@@ -18,6 +18,8 @@ export const GetQuoteBasedOnID = async (QuoteId) => {
     console.log('get Quote Api-----------------', `${apiUrl}${apiEnv}${apiPath}get-quote`);
 
     var Inputdata = JSON.stringify({ quote_id: QuoteId });
+    console.log(Inputdata);
+    
     let data = await fetch(`${apiUrl}${apiEnv}${apiPath}get-quote`, {
       method: 'POST',
       headers: {
