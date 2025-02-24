@@ -11,7 +11,7 @@ export const sendEmailToCustomer = async (dataToSend:any) => {
        const accessId = process.env.QUOTE_ACCESS_ID;
        const bc_channel_id = process.env.BIGCOMMERCE_CHANNEL_ID;
 
-        const email_template_type = quote_type === "New" ? "new_quote_template" : quote_type == "" ? "agent_approval_template" : "old_quote_template";
+        const email_template_type = quote_type === "New" ? "create_quote_template":quote_type === "old" ? "existing_quote_template" : quote_type == "" ? "agent_approval_template" : "old_quote_template";
 
        let postData = JSON.stringify({
         store: 1,
@@ -34,7 +34,6 @@ export const sendEmailToCustomer = async (dataToSend:any) => {
       });
   
       const result = await response.json();
-      console.log("?????????????????????????????????",result);
       
       if (response.ok) {
         return result;
