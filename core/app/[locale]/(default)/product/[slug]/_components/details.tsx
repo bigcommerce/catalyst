@@ -253,14 +253,9 @@ export const Details = ({
   const categoryIds = product?.categories?.edges?.map((edge) => edge.node.entityId) || [];
   const productId = product?.entityId;
   const brandId = product.brand?.entityId || 0;
-
-  // At the top with other state declarations
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
 
-  // Single useEffect for handling scroll and image updates
   useEffect(() => {
-    // Scroll handlers
-
     //Dont remove this function this is for salesbuddy  app
     store_pdp_product_in_localstorage(product);
     //Dont remove this function this is for salesbuddy  app
@@ -323,7 +318,6 @@ export const Details = ({
   const updatedPriceForMSRP = isFromQuickView
     ? priceUpdatedProduct?.UpdatePriceForMSRP
     : product?.UpdatePriceForMSRP;
-
   return (
     <div className="">
       {showStickyHeader && (

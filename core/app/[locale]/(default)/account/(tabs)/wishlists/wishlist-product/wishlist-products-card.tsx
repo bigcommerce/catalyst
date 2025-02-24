@@ -330,10 +330,19 @@ export const ProductCard = memo(
       };
     }, [item.productEntityId, item.variantEntityId]);
 
+    const hasVariantOptions = state.variantDetails?.option_values?.length > 0;
+    const hasPrice = state.updatedWishlist[0]?.UpdatePriceForMSRP;
+    const isUnavailable = item.product.availabilityV2.status === 'Unavailable';
+
     return (
       <div className="flex h-full flex-col">
-        <div className="relative mb-4 flex h-full flex-col justify-between border border-gray-300 pb-0">
-          <div className="product-card-details p-[1em]">
+        {/* Main Card Content */}
+        <div className="relative mb-4 flex h-full flex-col border border-gray-300 pb-0">
+          <div className="product-card-details pb-[0em] text-center">
+
+          <div className="wishlist-product-details pl-[15px] pr-[15px]">
+
+            {/* Image and Delete Button */}
             <div className="relative aspect-square overflow-hidden">
               <Link href={item.product.path}>
                 <img
@@ -343,10 +352,11 @@ export const ProductCard = memo(
                 />
               </Link>
             </div>
+<div className='wishlist-product-brand-delete'>
 
             <div className="flex justify-end">
               <div
-                className="wishlist-product-delete-icon flex w-fit cursor-pointer justify-end rounded-full bg-[#E7F5F8]"
+                className="wishlist-product-delete-icon mb-[1em] flex w-fit cursor-pointer justify-end rounded-full bg-[#E7F5F8]"
                 onClick={handleDeleteWishlist}
               >
                 {state.isDeleting ? (
@@ -369,37 +379,31 @@ export const ProductCard = memo(
               </div>
             </div>
 
-            <div className="flex justify-center">
-              {item.product.brand && (
-                <p className="mb-2 flex justify-center text-sm text-gray-600">
-                  {item.product.brand.name}
-                </p>
-              )}
-            </div>
+          
+              {/* Brand */}
+              <div className="flex justify-center">
+                {item.product.brand && (
+                  <p className="mb-2 flex justify-center text-sm text-gray-600">
+                    {item.product.brand.name}
+                  </p>
+                )}
+              </div>
 
-            <Link href={item.product.path}>
-              <h3 className="text-center font-medium text-black hover:text-gray-700">
-                {item.product.name}
-              </h3>
-            </Link>
 
-            <p className="mt-2 text-center text-sm text-gray-600">SKU: {item.product.sku}</p>
 
-            <div className="flex justify-center">
-              <ReviewSummary
-                data={{
-                  reviewSummary: {
-                    numberOfReviews: item.product.reviewSummary?.numberOfReviews || '0',
-                    averageRating: item.product.reviewSummary?.averageRating || '0',
-                  },
-                }}
-              />
-            </div>
+              </div>
 
-            {state.variantDetails && (
-              <div className="mt-2 space-y-2 text-center">
-                {state.updatedWishlist[0]?.UpdatePriceForMSRP && (
-                  <div className="flex flex-col items-center gap-[5px]">
+              {/* Product Name */}
+              <Link href={item.product.path}>
+                <h3 className="text-center font-medium text-black hover:text-gray-700">
+                  {item.product.name}
+                </h3>
+              </Link>
+
+              {/* Price and Options */}
+              {hasPrice && (
+                <div className="mt-2 space-y-2 text-center">
+                  <div className="mb-[15px] flex flex-col items-center gap-[8px]">
                     <ProductPrice
                       defaultPrice={state.updatedWishlist[0].UpdatePriceForMSRP.originalPrice}
                       defaultSalePrice={
@@ -419,7 +423,7 @@ export const ProductCard = memo(
                         useDefaultPrices: true,
                       }}
                       classNames={{
-                        root: 'product-price mt-[30px] flex justify-center items-center gap-[0.5em] text-center xl:text-center',
+                        root: 'product-price flex justify-center items-center gap-[0.5em] text-center xl:text-center',
                         newPrice: 'text-center text-[18px] font-medium leading-8 tracking-[0.15px]',
                         oldPrice:
                           'inline-flex items-baseline text-center text-[14px] font-medium leading-8 tracking-[0.15px] text-gray-600 line-through sm:mr-0',
@@ -437,36 +441,62 @@ export const ProductCard = memo(
                       isFromCart={false}
                     />
                   </div>
-                )}
-                {state.variantDetails.option_values.map((option, index) => {
-                  const updatedValue =
-                    option.option_display_name === 'Fabric Color' || 'Select Fabric Color'
-                      ? option.label.split('|')[0]?.trim()
-                      : option.label;
-                  return (
-                    <p key={index} className="text-sm">
-                      <span className="font-semibold">{`${option.option_display_name}: `}</span>
-                      <span>{updatedValue}</span>
-                    </p>
-                  );
-                })}
+                </div>
+              )}
+
+              {/* Variant Options */}
+              {hasVariantOptions && (
+                <div className="mt-2 space-y-2 text-center">
+                  {state.variantDetails.option_values.map(
+                    (
+                      option: { option_display_name: string; label: string },
+                      index: React.Key | null | undefined,
+                    ) => {
+                      const label =
+                        option.option_display_name === 'Fabric Color' ||
+                        option.option_display_name === 'Select Fabric Color'
+                          ? option.label.split('|')[0]?.trim()
+                          : option.label;
+                      return (
+                        <p key={index} className="text-sm">
+                          <span className="font-semibold">{`${option.option_display_name}: `}</span>
+                          <span>{label}</span>
+                        </p>
+                      );
+                    },
+                  )}
+                </div>
+              )}
+
+              {/* Reviews */}
+              <div className="flex justify-center">
+                <ReviewSummary
+                  data={{
+                    reviewSummary: {
+                      numberOfReviews: item.product.reviewSummary?.numberOfReviews || '0',
+                      averageRating: item.product.reviewSummary?.averageRating || '0',
+                    },
+                  }}
+                />
+              </div>
+            </div>
+
+            {/* Promotions */}
+            {state.hasActivePromotion && (
+              <div className="text-center">
+                <Promotion
+                  promotions={state.promotionsData}
+                  product_id={item.productEntityId}
+                  brand_id={Number(item.product.brand?.entityId)}
+                  category_ids={state.categoryIds}
+                  free_shipping={state.isFreeShipping}
+                />
               </div>
             )}
           </div>
-
-          {state.hasActivePromotion && (
-            <div className="text-center">
-              <Promotion
-                promotions={state.promotionsData}
-                product_id={item.productEntityId}
-                brand_id={Number(item.product.brand?.entityId)}
-                category_ids={state.categoryIds}
-                free_shipping={state.isFreeShipping}
-              />
-            </div>
-          )}
         </div>
 
+        {/* Add to Cart Form - Outside the main card */}
         <form onSubmit={handleAddToCart}>
           <input name="product_id" type="hidden" value={item.productEntityId} />
           <input name="variant_id" type="hidden" value={item.variantEntityId} />
@@ -482,7 +512,7 @@ export const ProductCard = memo(
             </>
           )}
 
-          {item.product.availabilityV2.status === 'Unavailable' ? (
+          {isUnavailable ? (
             <div className="flex flex-col items-center">
               <Button
                 id="add-to-cart"
@@ -515,6 +545,8 @@ export const ProductCard = memo(
     );
   },
 );
+
+ProductCard.displayName = 'ProductCard';
 
 export const WishlistProductCard = memo(
   ({ customerGroupDetails, priceMaxRules }: WishlistProductCardProps) => {
