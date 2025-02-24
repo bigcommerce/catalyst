@@ -298,6 +298,8 @@
         "increment": "Öka kvantiteten",
         "decrement": "Minska kvantitet",
         "removeItem": "Ta bort vara",
+        "cartCombined": "Vi märkte att du hade varor sparade i en tidigare kundvagn, så vi har lagt till dem i din nuvarande kundvagn åt dig.",
+        "cartRestored": "Du startade en kundvagn på en annan enhet, och vi har återställt den här så att du kan fortsätta där du slutade.",
         "CheckoutSummary": {
             "title": "Summering",
             "subTotal": "Delsumma",
@@ -312,14 +314,21 @@
             "spinnerText": "Tar bort ...",
             "couponCodeRemoveFailed": "Det gick inte att ta bort kupongkoden. Försök igen.",
             "tax": "Beskatta",
-            "grandTotal": "Totalsumma",
+            "total": "Total",
             "shipping": "Frakt",
             "shippingCost": "Fraktkostnad",
             "handlingCost": "Hanteringskostnader:",
             "add": "Lägg till",
             "change": "Ändra",
             "cancel": "Annullera",
-            "errorMessage": "Det gick inte att hitta kundvagnsöversikten. Försök igen."
+            "errorMessage": "Det gick inte att hitta kundvagnsöversikten. Försök igen.",
+            "CouponCode": {
+                "apply": "Tillämpa",
+                "couponCode": "Kupongkod",
+                "removeCouponCode": "Ta bort kupongkod",
+                "invalidCouponCode": "Ange en giltig kupongkod",
+                "cartNotFound": "Ingen cartId-kaka hittades."
+            }
         },
         "ShippingInfo": {
             "country": "Land",
