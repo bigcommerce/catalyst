@@ -83,6 +83,22 @@ const PhysicalItemFragment = graphql(`
           }
         }
       }
+         options {
+        edges {
+          node {
+            displayName
+            entityId
+            values {
+              edges {
+                node {
+                  entityId
+                  label
+                }
+              }
+            }
+          }
+        }
+      }
       variants {
         edges {
           node {
@@ -580,7 +596,7 @@ export const CartItem = async ({
                     </div>
                   </div>
                 )}
-               {combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
+               {Array.isArray(combinedData?.closeOutData) && combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
                     <div className='hidden sm:block'>
                       <div className="bg-[#FBF4E9] flex justify-center content-center px-[10px] mt-[5px] w-full text-[#6A4C1E] tracking-[0.25px] leading-[24px] text-[14px] sm:max-w-fit">
                         Final Sale
@@ -588,17 +604,21 @@ export const CartItem = async ({
                     </div>
                   )}
 
-                  {combinedData?.deliveryEstimatedTexts?.length > 0 && (
-                    combinedData?.deliveryEstimatedTexts?.map((message, index) => {
-                      const parsedMessages = JSON.parse(message);
-                      const firstMessage = parsedMessages[0];
-                      return firstMessage ? (
-                        <div key={index}>
-                          <div className={`${firstMessage?.qty === 0 ? 'bg-[#FBF4E9] px-[10px] text-[#6A4C1E]' : 'bg-transparent'} mt-[5px] w-fit`}>
-                            {firstMessage?.delivery_estimated_text}
+                  {Array.isArray(combinedData?.closeOutData) && combinedData?.deliveryEstimatedTexts?.length > 0 && (
+                    combinedData?.deliveryEstimatedTexts?.map((message:any, index:any) => {
+                      try {
+                        const parsedMessages = JSON.parse(message);
+                        const firstMessage = parsedMessages[0];
+                        return firstMessage ? (
+                          <div key={index}>
+                            <div className={`${firstMessage?.qty === 0 ? 'bg-[#FBF4E9] px-[10px] text-[#6A4C1E]' : 'bg-transparent'} mt-[5px] w-fit`}>
+                              {firstMessage?.delivery_estimated_text}
+                            </div>
                           </div>
-                        </div>
-                      ) : null;
+                        ) : null;
+                      } catch (error) {
+                        return null;
+                      }
                     })
                   )}
               </div>

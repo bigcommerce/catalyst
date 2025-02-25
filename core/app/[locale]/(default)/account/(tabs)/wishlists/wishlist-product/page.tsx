@@ -29,7 +29,6 @@ async function getPageData() {
         const priceMaxTriggers = JSON.parse(atob(priceMaxCookie.value));
         if (Object.values(priceMaxTriggers).length > 0) {
           priceMaxRules = await getPriceMaxRules(priceMaxTriggers);
-          console.log('Price Max Rules loaded:', priceMaxRules);
         }
       } catch (parseError) {
         console.error('Error parsing price max cookie:', parseError);

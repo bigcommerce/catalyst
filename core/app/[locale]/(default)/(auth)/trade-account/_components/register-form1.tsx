@@ -96,7 +96,7 @@ export const RegisterForm1 = ({ customerFields, addressFields }: RegisterForm1Pr
     }
 
     if (!passwordRegex.test(password)) {
-      setPasswordError('Include uppercase, lowercase, number, symbol (8+ chars).');
+      setPasswordError('Include uppercase, lowercase, number, symbol (8+ characters).');
       return false;
     }
 

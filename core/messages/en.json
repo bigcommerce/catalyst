@@ -195,7 +195,9 @@
       "requestAQuoteMsg":"Get our best offer on what you need.",
       "accountMsg":"Username, password, and contact information.",
       "favListMsg":"Your saved products and collections of products.",
-      "emailPreferencesMsg":"Update how frequently we contact you and about what."
+      "emailPreferencesMsg":"Update how frequently we contact you and about what.",
+      "welcomeMessagePop":"Welcome! All products have been updated to reflect our B2B/Trade pricing.",
+      "tradePricingPop":"Trade pricing may override select discounts."
     },
     "SalesHours":{
       "salesHours":"Sales Hours",
@@ -361,7 +363,7 @@
         "spinnerText": "Submitting...",
         "submitText": "Change password",
         "newPasswordValidationMessage":
-        "New password must differ, Include uppercase, lowercase, number, symbol (8+ chars)."
+        "New password must differ, Include uppercase, lowercase, number, symbol (8+ characters)."
       },
       "UpdateCustomer": {
         "Errors": {

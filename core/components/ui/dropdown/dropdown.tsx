@@ -1,7 +1,7 @@
 'use client';
 
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import { ReactNode, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 
 import { Link as CustomLink } from '~/components/link';
 
@@ -48,6 +48,12 @@ const Dropdown = ({
 }: Props) => {
   const [isOpen, setIsOpen] = useState('');
 
+  useEffect(() => {
+    if (!getCustomerData && localStorage.getItem('account_popup')) {
+      localStorage.removeItem('account_popup');
+    }
+  }, [getCustomerData]);
+
   return (
     <DropdownMenu.Root>
       <DropdownMenu.Trigger asChild className={className}>
@@ -61,7 +67,7 @@ const Dropdown = ({
           sideOffset={4}
         >
           {getCustomerData && from === 'account-dropdown' && (
-            <DropdownMenu.Item className='outline-none'> 
+            <DropdownMenu.Item className="outline-none">
               <Link
                 className="block whitespace-nowrap break-words font-medium text-[#03465c] outline-none"
                 href="/account"
@@ -74,7 +80,7 @@ const Dropdown = ({
           )}
           {items.map((item, index) =>
             'href' in item ? (
-              <DropdownMenu.Item asChild key={`${item.href}-${index}`} className='outline-none'>
+              <DropdownMenu.Item asChild key={`${item.href}-${index}`} className="outline-none">
                 <Link
                   className={item?.classNameCss ? item?.classNameCss : 'block whitespace-nowrap'}
                   href={item.href}
@@ -87,11 +93,11 @@ const Dropdown = ({
               <DropdownMenu.Item
                 asChild
                 key={item.name}
-                className="[&_button.Logout-label]:justify-start [&_button.Logout-label]:whitespace-nowrap [&_button.Logout-label]:font-medium [&_button.Logout-label]:leading-[32px] [&_button.Logout-label]:tracking-[0.5px] [&_button.Logout-label]:text-[#008BB7] outline-none"
+                className="outline-none [&_button.Logout-label]:justify-start [&_button.Logout-label]:whitespace-nowrap [&_button.Logout-label]:font-medium [&_button.Logout-label]:leading-[32px] [&_button.Logout-label]:tracking-[0.5px] [&_button.Logout-label]:text-[#008BB7]"
               >
                 <form action={item.action} className="outline-none">
                   <Button
-                    className="Logout-label block p-0 text-left text-[14px] font-[600] underline hover:bg-transparent hover:text-primary outline-none"
+                    className="Logout-label block p-0 text-left text-[14px] font-[600] underline outline-none hover:bg-transparent hover:text-primary"
                     type="submit"
                     variant="subtle"
                   >
@@ -115,7 +121,7 @@ const Dropdown = ({
                 <DropdownMenu.Item className="mt-[9px] outline-none">
                   <Link
                     href="/support/contact"
-                    className="block text-[14px] font-normal leading-[10px] outline-none tracking-[0.25px]"
+                    className="block text-[14px] font-normal leading-[10px] tracking-[0.25px] outline-none"
                   >
                     <div>
                       <div className="flex flex-row items-center gap-[10px]">
@@ -137,7 +143,7 @@ const Dropdown = ({
                   </Link>
                 </DropdownMenu.Item>
 
-                <DropdownMenu.Item className='outline-none'>
+                <DropdownMenu.Item className="outline-none">
                   <Link
                     href="/support/contact"
                     className="mt-[9px] block text-[14px] font-normal leading-[10px] tracking-[0.25px] text-[#353535] outline-none"
