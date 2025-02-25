@@ -16,8 +16,7 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { routing } from '~/i18n/routing';
 
-import { getToastNotification } from '../../lib/server-toast';
-import { CookieNotifications, Notifications } from '../notifications';
+import { Notifications } from '../notifications';
 import { Providers } from '../providers';
 
 const RootLayoutMetadataQuery = graphql(`
@@ -83,7 +82,6 @@ interface Props extends PropsWithChildren {
 
 export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
-  const toastNotificationCookieData = await getToastNotification();
 
   if (!routing.locales.includes(locale)) {
     notFound();
@@ -99,12 +97,7 @@ export default async function RootLayout({ params, children }: Props) {
         <Notifications />
         <NextIntlClientProvider>
           <NuqsAdapter>
-            <Providers>
-              {toastNotificationCookieData && (
-                <CookieNotifications {...toastNotificationCookieData} />
-              )}
-              {children}
-            </Providers>
+            <Providers>{children}</Providers>
           </NuqsAdapter>
         </NextIntlClientProvider>
         <VercelComponents />
