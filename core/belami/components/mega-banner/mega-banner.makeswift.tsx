@@ -39,6 +39,7 @@ runtime.registerComponent(
             imageSrc: Image({ label: 'Image' }),
             imageMobileSrc: Image({ label: 'Alt. Image (Mobile)' }),
             //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
+            imageCss: TextInput({ label: 'Image CSS', defaultValue: '' }),
             link: Link({ label: 'Link' }),
             //content: RichText({ mode: RichText.Mode.Block }),
             content: TextArea({ label: "Content", defaultValue: '' }),

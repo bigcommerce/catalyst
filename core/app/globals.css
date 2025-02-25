@@ -1384,10 +1384,7 @@ body:has(.mega-menu-sidebar-fade) > footer {
   width: 100%;
 }
 .mega-banner .mega-banner-image, .mega-banner .mega-banner-image-mobile {
+  margin: 0 auto;
   max-width: 100%;
   height: auto;
 }
-.mega-banner-under-header .mega-banner-image, .mega-banner-under-header .mega-banner-image-mobile {
-  width: 100%;
-}
-
