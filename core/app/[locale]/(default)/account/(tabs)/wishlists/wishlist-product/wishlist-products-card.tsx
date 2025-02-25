@@ -24,7 +24,7 @@ import { Promotion } from '~/belami/components/search/hit';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_components/review-summary';
 import { getWishlists } from '~/components/graphql-apis';
-import { CloseOut } from '~/app/[locale]/(default)/product/[slug]/_components/closeOut';
+
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 
 interface OptionValue {
@@ -168,7 +168,6 @@ export const ProductCard = memo(
         toast.dismiss();
         toast.success('Item removed from favorites');
       } catch (error) {
-        console.error('Error removing wishlist item:', error);
         toast.dismiss();
         toast.error('Failed to remove item');
       } finally {
@@ -216,7 +215,31 @@ export const ProductCard = memo(
       },
       [item, priceMaxRules, normalizeSku, state.updatedWishlist],
     );
-
+    let selectedSku : any;
+    const productsArray = [];
+    productsArray.push(item?.product);
+    const combinedData = productsArray?.map((item: any) => {
+      selectedSku = item?.sku;
+      const optionsValue = item?.options?.edges?.length || 0;
+      let closeOutValue = [];
+        const variantCloseout = item?.variants?.flatMap((variant: any) => {
+         const variantSku = variant?.sku;
+          if (selectedSku == variantSku) {
+            return variant?.closeOutData?.edges[0]?.node?.value
+          }
+          return [];
+        });
+        const productCloseout = item?.closeOutParentData?.edges?.map((variant: any) => variant?.node?.value);
+        if (optionsValue > 0) {
+          closeOutValue = variantCloseout.length > 0 ? variantCloseout : productCloseout;
+        } else {
+          closeOutValue =  productCloseout;
+        }
+      return {
+        selectedSku,
+        closeOutData: closeOutValue || []
+      };
+    });
     useEffect(() => {
       let mounted = true;
 
@@ -339,7 +362,9 @@ export const ProductCard = memo(
         {/* Main Card Content */}
         <div className="relative mb-4 flex h-full flex-col border border-gray-300 pb-0">
           <div className="product-card-details pb-[0em] text-center">
+
             <div className="wishlist-product-details pl-[15px] pr-[15px]">
+
               {/* Image and Delete Button */}
               <div className="relative aspect-square overflow-hidden">
                 <Link href={item.product.path}>
@@ -350,7 +375,8 @@ export const ProductCard = memo(
                   />
                 </Link>
               </div>
-              <div className="wishlist-product-brand-delete">
+              <div className='wishlist-product-brand-delete'>
+
                 <div className="flex justify-end">
                   <div
                     className="wishlist-product-delete-icon mb-[1em] flex w-fit cursor-pointer justify-end rounded-full bg-[#E7F5F8]"
@@ -376,6 +402,7 @@ export const ProductCard = memo(
                   </div>
                 </div>
 
+
                 {/* Brand */}
                 <div className="flex justify-center">
                   {item.product.brand && (
@@ -384,6 +411,9 @@ export const ProductCard = memo(
                     </p>
                   )}
                 </div>
+
+
+
               </div>
 
               {/* Product Name */}
@@ -427,12 +457,17 @@ export const ProductCard = memo(
                         msrp: '-ml-[0.5em] mb-1 text-[10px] text-gray-500',
                       }}
                     />
-                    <CloseOut
-                      entityId={item.productEntityId}
-                      variantId={item.variantEntityId}
-                      isFromPDP={true}
-                      isFromCart={false}
-                    />
+                    {combinedData.map((value:any) => {
+                    if(value?.closeOutData[0] === "True"){
+                      return (
+                        <div className="closeout-messages">
+                          <div className="bg-[#B4B4B5] content-center px-[10px] max-w-fit text-[#ffffff] tracking-[1.25px] leading-[32px] text-[14px]">
+                        CLEARANCE
+                        </div>
+                      </div>
+                      )
+                    }
+                  })}
                   </div>
                 </div>
               )}
@@ -447,7 +482,7 @@ export const ProductCard = memo(
                     ) => {
                       const label =
                         option.option_display_name === 'Fabric Color' ||
-                        option.option_display_name === 'Select Fabric Color'
+                          option.option_display_name === 'Select Fabric Color'
                           ? option.label.split('|')[0]?.trim()
                           : option.label;
                       return (

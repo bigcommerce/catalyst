@@ -12,6 +12,13 @@ import { Search } from './search';
 
 import { cookies, headers } from 'next/headers';
 
+import { Suspense } from 'react';
+import { MakeswiftComponent } from '@makeswift/runtime/next';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
+import { client as makeswiftClient } from '~/lib/makeswift/client';
+
+import { MegaBannerContextProvider } from '~/belami/components/mega-banner';
+
 export async function generateMetadata() {
   const t = await getTranslations('Search');
 
@@ -55,6 +62,10 @@ export default async function SearchPage(props: Props) {
   const promotions = await getActivePromotions(true);
   const priceMaxRules = priceMaxTriggers && Object.values(priceMaxTriggers).length > 0 ? await getPriceMaxRules(priceMaxTriggers) : null;  
 
+  const megaBannerSnapshot = await makeswiftClient.getComponentSnapshot('belami-mega-banner', {
+    siteVersion: await getSiteVersion()
+  });
+
   /*
   if (!searchTerm) {
     return <EmptySearch />;
@@ -70,6 +81,13 @@ export default async function SearchPage(props: Props) {
           : <h1 className="mb-4 text-2xl lg:mb-0">{t('title')}</h1>
         }
       </div>
+
+      <Suspense fallback={<></>}>
+        <MegaBannerContextProvider value={{ location: 'above-products' }}>
+          <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
+        </MegaBannerContextProvider>
+      </Suspense>
+
       <Search 
         query={searchTerm} 
         promotions={promotions} 

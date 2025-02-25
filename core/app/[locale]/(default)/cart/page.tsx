@@ -155,37 +155,40 @@ export default async function Cart({ params }: Props) {
   });
  
   let selectedvariantId = Number;
-  let variantId = Number;
   const combinedData = data?.site?.cart?.lineItems?.physicalItems?.map((item: any) => {
     selectedvariantId = item?.variantEntityId;
-    let deliveryMessageData = [
-      ...(item?.baseCatalogProduct?.variants?.edges?.flatMap((variant: any) => {
-        variantId = variant?.node?.entityId;
-        if (selectedvariantId == variantId) {
-        return variant?.node?.deliveryMessageData?.edges?.map((messageEdge: any) => messageEdge?.node?.value);
-      }
-       return [];
-      }) || []),
-      ...(item?.baseCatalogProduct?.deliveryMessageParentData?.edges?.flatMap((variant: any) => {
-        return variant?.node?.value
-      }) || [])
-    ];
- 
-    let closeOutValue = [
-      ...(item?.baseCatalogProduct?.variants?.edges?.flatMap((variant: any) => {
-        if (selectedvariantId == variantId) {
-        return variant?.node?.closeOutData?.edges?.map((messageEdge: any) =>  messageEdge?.node?.value);
+    const optionsValue = item?.baseCatalogProduct?.options?.edges?.length || 0;
+    let deliveryMessageData = [];
+      const variantDeliveryMessage = item?.baseCatalogProduct?.variants?.edges?.flatMap((variant: any) => {
+       const variantId = variant?.node?.entityId;
+        if (selectedvariantId === variantId) {
+          return variant?.node?.deliveryMessageData?.edges[0]?.node?.value
         }
         return [];
-      }) || []),
-      ...(item?.baseCatalogProduct?.closeOutParentData?.edges?.flatMap((variant: any) => {
-        return variant?.node?.value
-      }) || [])
-    ];
- 
+      });
+      const productDeliveryMessage = item?.baseCatalogProduct?.deliveryMessageParentData?.edges[0]?.node?.value || []
+      if (optionsValue > 0) {
+        deliveryMessageData =  variantDeliveryMessage?.length > 0 ? variantDeliveryMessage : productDeliveryMessage;
+      } else {
+        deliveryMessageData = productDeliveryMessage?.length > 0 ? productDeliveryMessage : [];
+      }
+
+    let closeOutValue = [];
+      const variantCloseout = item?.baseCatalogProduct?.variants?.edges?.flatMap((variant: any) => {
+        const variantId = variant?.node?.entityId;
+        if (selectedvariantId === variantId) {
+          return variant?.node?.closeOutData?.edges[0]?.node?.value
+        }
+        return [];
+      });
+      const productCloseout = item?.baseCatalogProduct?.closeOutParentData?.edges.map((id:any) => id?.node?.value);
+      if (optionsValue > 0) {
+        closeOutValue = variantCloseout.length > 0 ? variantCloseout : productCloseout;
+      } else {
+        closeOutValue =  productCloseout;
+      }
     return {
       selectedvariantId,
-      variantId,
       deliveryEstimatedTexts: deliveryMessageData || [],
       closeOutData: closeOutValue || []
     };
@@ -279,7 +282,6 @@ export default async function Cart({ params }: Props) {
         description: 'Item level delivery message and closeout info',
         value: JSON.stringify(combinedData),
       };
-      console.log("cartLineItems----------",cartLineItems,cartId);
       await CreateCartMetaFields(cartId, cartLineItems);
     }
    

@@ -11,6 +11,12 @@ import { cookies, headers } from 'next/headers';
 import { ReferrerId } from '~/belami/components/referrer-id';
 import { isBadUserAgent } from '~/belami/lib/bot-detection';
 
+import { MakeswiftComponent } from '@makeswift/runtime/next';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
+import { client as makeswiftClient } from '~/lib/makeswift/client';
+
+import { MegaBannerContextProvider } from '~/belami/components/mega-banner';
+
 const flagSalesBuddy = Number(process.env.SALES_BUDDY_FLAG);
 
 interface Props extends PropsWithChildren {
@@ -30,6 +36,10 @@ export default async function DefaultLayout({ params, children }: Props) {
   const ua = headersList.get('user-agent') || '';
   const isMakeSwift = !!headersList.get('x-makeswift-draft-mode');
 
+  const megaBannerSnapshot = await makeswiftClient.getComponentSnapshot('belami-mega-banner', {
+    siteVersion: await getSiteVersion()
+  });
+
   return (
     <>
       {(
@@ -41,12 +51,33 @@ export default async function DefaultLayout({ params, children }: Props) {
         ? <ReferrerId sid={Number(process.env.SITE_CONFIG_ID ?? 0)} referrerId={referrerIdCookie?.value || null} ip={ip} ua={ua} referrer={referrer} />
         : null
       }
+
+      <Suspense fallback={<></>}>
+        <MegaBannerContextProvider value={{ location: 'top' }}>
+          <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
+        </MegaBannerContextProvider>
+      </Suspense>
+
       <Suspense fallback={<HeaderSkeleton />}>
         <Header cart={<Cart />} />
       </Suspense>
+
+      <Suspense fallback={<></>}>
+        <MegaBannerContextProvider value={{ location: 'under-header' }}>
+          <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
+        </MegaBannerContextProvider>
+      </Suspense>
+
       <main className="main-slider mt-[2em] md:mt-0">
         {children}
       </main>
+
+      <Suspense fallback={<></>}>
+        <MegaBannerContextProvider value={{ location: 'before-footer' }}>
+          <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
+        </MegaBannerContextProvider>
+      </Suspense>
+
       <Suspense>
         <Footer />
         <SalesBuddyPage />

@@ -273,7 +273,7 @@ export const RegisterCustomerForm = ({ addressFields, customerFields }: Register
               </Label>
               <Link
                 href="#"
-                className="text-center text-sm font-normal leading-6 tracking-tight text-[#008BB7]"
+                className="text-center text-sm font-normal pb-2 leading-6 tracking-tight text-[#008BB7]"
               >
                 Privacy Policy
               </Link>

@@ -38,7 +38,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
       }
 
       if (!passwordRegex.test(password)) {
-        setPasswordError('Include uppercase, lowercase, number, symbol (8+ chars).');
+        setPasswordError('Include uppercase, lowercase, number, symbol (8+ characters).');
         return false;
       }
 
@@ -71,7 +71,7 @@ export const Password = ({ defaultValue, field, isValid, name, onChange }: Passw
           }}
         />
       </FieldControl>
-      <FieldMessage className='font-normal text-[14px] leading-[24px] tracking-[0.25px] mt-0 text-[#353535]'>Include uppercase, lowercase, number, symbol (8+ chars).</FieldMessage>
+      <FieldMessage className='font-normal text-[14px] leading-[24px] tracking-[0.25px] mt-0 text-[#353535]'>Include uppercase, lowercase, number, symbol (8+ characters).</FieldMessage>
       {passwordError && 
       <div className='w-full text-xs font-normal text-[#A71F23] absolute bottom-[7%]'>{passwordError}</div>
       }

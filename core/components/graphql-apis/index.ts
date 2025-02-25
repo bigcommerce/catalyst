@@ -156,12 +156,12 @@ const OrderShipmentFragment = graphql(`
 const mapOrderData = (order: OrderDetailsType) => {
   const shipping = order.consignments?.shipping
     ? removeEdgesAndNodes(order.consignments.shipping).map(
-        ({ shipments, lineItems, ...otherItems }) => ({
-          ...otherItems,
-          lineItems: removeEdgesAndNodes(lineItems),
-          shipments: removeEdgesAndNodes(shipments),
-        }),
-      )
+      ({ shipments, lineItems, ...otherItems }) => ({
+        ...otherItems,
+        lineItems: removeEdgesAndNodes(lineItems),
+        shipments: removeEdgesAndNodes(shipments),
+      }),
+    )
     : undefined;
 
   return {
@@ -367,7 +367,7 @@ export const getProductBySku = async (variables: SkuVariables) => {
   return data.site.product as any;
 };
 
-export const getCookieData = async() => {
+export const getCookieData = async () => {
   return await cookies();
 }
 
@@ -625,6 +625,26 @@ const WishlistsQuery = graphql(
                           }
                         }
                       }
+                      options {
+                              edges {
+                                node {
+                                  displayName
+                                  entityId
+                                  isRequired
+                                }
+                              }
+                            }
+                      closeOutParentData: metafields(namespace: "Details", keys: "closeout") {
+                          edges {
+                            cursor
+                              node {
+                              entityId
+                              id
+                              key
+                              value
+                            }
+                          }
+                        }
                       availabilityV2 {
                         status
                         description
@@ -646,6 +666,17 @@ const WishlistsQuery = graphql(
                                   displayName
                                   entityId
                                   isRequired
+                                }
+                              }
+                            }
+                            closeOutData: metafields(namespace: "Details", keys: "closeout") {
+                              edges {
+                                cursor
+                                node {
+                                  entityId
+                                  id
+                                  key
+                                  value
                                 }
                               }
                             }
@@ -725,9 +756,9 @@ function transformWishlistData(data: WishlistResponse) {
           ...item.product,
           variants: item.product.variants
             ? removeEdgesAndNodes(item.product.variants).map((variant: ProductVariant) => ({
-                ...variant,
-                options: variant.options ? removeEdgesAndNodes(variant.options) : [],
-              }))
+              ...variant,
+              options: variant.options ? removeEdgesAndNodes(variant.options) : [],
+            }))
             : [],
         },
       })),

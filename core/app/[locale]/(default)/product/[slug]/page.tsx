@@ -38,6 +38,12 @@ import { useTranslations } from 'next-intl';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { getMultipleChoiceOptions } from '~/components/graphql-apis';
 
+import { MakeswiftComponent } from '@makeswift/runtime/next';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
+import { client as makeswiftClient } from '~/lib/makeswift/client';
+
+import { MegaBannerContextProvider } from '~/belami/components/mega-banner';
+
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -119,13 +125,13 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
     openGraph:
       url && typeof url === 'string'
         ? {
-            images: [
-              {
-                url: url.replace('{:size}', '386x513'),
-                alt,
-              },
-            ],
-          }
+          images: [
+            {
+              url: url.replace('{:size}', '386x513'),
+              alt,
+            },
+          ],
+        }
         : null,
   };
 }
@@ -136,7 +142,6 @@ export default async function ProductPage(props: Props) {
     let customerGroupDetails: CustomerGroup = {
       discount_rules: [],
     };
-    // console.log(JSON.stringify(customerGroupDetails, null, 2), 'FULL CUSTOMER GROUP DETAILS');
     if (sessionUser) {
       const customerGroupId = sessionUser?.customerGroupId;
       customerGroupDetails = await GetCustomerGroupById(customerGroupId);
@@ -197,97 +202,95 @@ export default async function ProductPage(props: Props) {
       return notFound();
     }
     let selectedSku: any;
-    let variantSku: any;
     const productsArray = [];
     productsArray.push(product);
     const combinedData = productsArray?.map((item: any) => {
       selectedSku = item?.sku;
-      let deliveryMessageData = [
-        ...(item?.variants?.edges?.flatMap((variant: any) => {
-          variantSku = variant?.node?.sku;
-          if (selectedSku === variantSku) {
-            return variant?.node?.deliveryMessageData?.edges?.map(
-              (messageEdge: any) => messageEdge?.node?.value,
-            );
-          }
-          return [];
-        }) || []),
-        ...(item?.deliveryMessageParentData?.edges?.flatMap((variant: any) => {
-          return variant?.node?.value;
-        }) || []),
-      ];
+      let deliveryMessageData = [];
+      const optionsValue = item?.options?.edges?.length || 0;
+      const variantDeliveryMessage = item?.variants?.edges?.flatMap((variant: any) => {
+        const variantSku = variant?.node?.sku; 
+        if (selectedSku === variantSku) {
+          return variant?.node?.deliveryMessageData?.edges[0]?.node?.value
+        }
+        return [];
+      });
+      const productDeliveryMessage = item?.deliveryMessageParentData?.edges[0]?.node?.value || []
+      if (optionsValue > 0) {
+        deliveryMessageData =  variantDeliveryMessage?.length > 0 ? variantDeliveryMessage : productDeliveryMessage;
+      } else {
+        deliveryMessageData = productDeliveryMessage?.length > 0 ? productDeliveryMessage : [];
+      }
 
-      let closeOutValue = [
-        ...(item?.variants?.edges?.flatMap((variant: any) => {
-          if (selectedSku === variantSku) {
-            return variant?.node?.closeOutData?.edges?.map(
-              (messageEdge: any) => messageEdge?.node?.value,
-            );
-          }
-          return [];
-        }) || []),
-        ...(item?.closeOutParentData?.edges?.flatMap((variant: any) => {
-          return variant?.node?.value;
-        }) || []),
-      ];
-
-      return {
-        selectedSku,
-        variantSku,
-        deliveryEstimatedTexts: deliveryMessageData || [],
-        closeOutData: closeOutValue || [],
-      };
-    });
-
-    let swatchOptions: any;
-    swatchOptions = await getMultipleChoiceOptions(productId);
-    // Asset URLs
-    const assets = {
-      bannerIcon: imageManagerImageUrl('example-1.png', '50w'),
-      galleryExpandIcon: imageManagerImageUrl('pan-zoom.png', '20w'),
-      dropdownSheetIcon: imageManagerImageUrl('icons8-download-symbol-16.png', '15w'),
-      cartHeader: imageManagerImageUrl('cartheader.png', '20w'),
-      couponIcon: imageManagerImageUrl('vector-2-.png', '20w'),
-      paywithGoogle: imageManagerImageUrl('apple-xxl.png', '20w'),
-      payPal: imageManagerImageUrl('fill-11.png', '20w'),
-      requestQuote: imageManagerImageUrl('waving-hand-1-.png', '30w'),
-      closeIcon: imageManagerImageUrl('close.png', '14w'),
-      blankAddImg: imageManagerImageUrl('notneeded-1.jpg', '150w'),
+    let closeOutValue = [];
+      const variantCloseout = item?.variants?.edges?.flatMap((variant: any) => {
+        const variantSku = variant?.node?.sku; 
+        if (selectedSku === variantSku) {
+          return variant?.node?.closeOutData?.edges[0]?.node?.value
+        }
+        return [];
+      });
+      const productCloseout = item?.closeOutParentData?.edges.map((id:any) => id?.node?.value);
+      if (optionsValue > 0) {
+        closeOutValue = variantCloseout.length > 0 ? variantCloseout : productCloseout;
+      } else {
+        closeOutValue =  productCloseout;
+      }
+    return {
+      selectedSku,
+      deliveryEstimatedTexts: deliveryMessageData || [],
+      closeOutData: closeOutValue
     };
+  });
+  let swatchOptions: any;
+  swatchOptions = await getMultipleChoiceOptions(productId);
+  // Asset URLs
+  const assets = {
+    bannerIcon: imageManagerImageUrl('example-1.png', '50w'),
+    galleryExpandIcon: imageManagerImageUrl('pan-zoom.png', '20w'),
+    dropdownSheetIcon: imageManagerImageUrl('icons8-download-symbol-16.png', '15w'),
+    cartHeader: imageManagerImageUrl('cartheader.png', '20w'),
+    couponIcon: imageManagerImageUrl('vector-2-.png', '20w'),
+    paywithGoogle: imageManagerImageUrl('apple-xxl.png', '20w'),
+    payPal: imageManagerImageUrl('fill-11.png', '20w'),
+    requestQuote: imageManagerImageUrl('waving-hand-1-.png', '30w'),
+    closeIcon: imageManagerImageUrl('close.png', '14w'),
+    blankAddImg: imageManagerImageUrl('notneeded-1.jpg', '150w'),
+  };
 
-    // Get MetaFields
-    const productMetaFields = await GetProductMetaFields(product.entityId, '');
+  // Get MetaFields
+  const productMetaFields = await GetProductMetaFields(product.entityId, '');
 
-    const isVariantOption =
-      product.productOptions?.edges?.some((option: any) => option.node.isVariantOption) || false;
+  const isVariantOption =
+    product.productOptions?.edges?.some((option: any) => option.node.isVariantOption) || false;
 
-    let variantMetaFields: MetaField[] = [];
-    let variantMetaFields1: MetaField[] = [];
-    const variants = product.variants.edges?.map((edge: any) => edge.node) || [];
+  let variantMetaFields: MetaField[] = [];
+  let variantMetaFields1: MetaField[] = [];
+  const variants = product.variants.edges?.map((edge: any) => edge.node) || [];
 
-    // Determine `selectedVariantId`
-    const selectedVariantId =
-      variants.find((v: any) => v.sku === product.sku)?.entityId || variants[0]?.entityId;
+  // Determine `selectedVariantId`
+  const selectedVariantId =
+    variants.find((v: any) => v.sku === product.sku)?.entityId || variants[0]?.entityId;
 
-    if (isVariantOption && selectedVariantId) {
-      // Fetch variant meta fields only if `isVariantOption` is true
-      variantMetaFields = await GetProductVariantMetaFields(
-        product.entityId,
-        selectedVariantId,
-        '',
-      );
-    }
-    const productImagesNode = variantMetaFields.find((node) => node.namespace === 'product_images');
-    const valueString = productImagesNode?.value; // Extract value if the node is found
+  if (isVariantOption && selectedVariantId) {
+    // Fetch variant meta fields only if `isVariantOption` is true
+    variantMetaFields = await GetProductVariantMetaFields(
+      product.entityId,
+      selectedVariantId,
+      '',
+    );
+  }
+  const productImagesNode = variantMetaFields.find((node) => node.namespace === 'product_images');
+  const valueString = productImagesNode?.value; // Extract value if the node is found
 
-    // const valueString = variantMetaFields[0]?.value;
-    const baseURL = 'https://imgprd.1stoplighting.com';
-    let extractedImagePairs: any;
-    // Step 2: Parse the "value" field as JSON
+  // const valueString = variantMetaFields[0]?.value;
+  const baseURL = 'https://imgprd.1stoplighting.com';
+  let extractedImagePairs: any;
+  // Step 2: Parse the "value" field as JSON
 
-    if (valueString) {
-      try {
-        const parsedValue = JSON.parse(valueString); // Parse the JSON string
+  if (valueString) {
+    try {
+      const parsedValue = JSON.parse(valueString); // Parse the JSON string
 
         // Extract only objects that have 'url' and 'alt_text'
         extractedImagePairs = parsedValue
@@ -301,112 +304,116 @@ export default async function ProductPage(props: Props) {
       }
     }
 
-    // Function to extract nsoid or upid
-    const extractIdentifier = (fields: MetaField[]) => {
-      const nsoidField = fields.find((field) => field?.key === 'nsoid');
-      const upidField = fields.find((field) => field?.key === 'upid');
-      return nsoidField?.value || upidField?.value || null;
-    };
+  // Function to extract nsoid or upid
+  const extractIdentifier = (fields: MetaField[]) => {
+    const nsoidField = fields.find((field) => field?.key === 'nsoid');
+    const upidField = fields.find((field) => field?.key === 'upid');
+    return nsoidField?.value || upidField?.value || null;
+  };
 
-    // **Final Logic:**
-    // If `isVariantOption` is TRUE, use `variantMetaFields`
-    // Otherwise, use `productMetaFields`
-    const newIdentifier = isVariantOption
-      ? extractIdentifier(variantMetaFields)
-      : extractIdentifier(productMetaFields);
+  // **Final Logic:**
+  // If `isVariantOption` is TRUE, use `variantMetaFields`
+  // Otherwise, use `productMetaFields`
+  const newIdentifier = isVariantOption
+    ? extractIdentifier(variantMetaFields)
+    : extractIdentifier(productMetaFields);
 
-    // Process Collection Value
-    let collectionValue = '';
-    let collectionMetaField = variantMetaFields?.find(
+  // Process Collection Value
+  let collectionValue = '';
+  let collectionMetaField = variantMetaFields?.find(
+    (field: MetaField) => field?.key?.toLowerCase() === 'collection',
+  );
+
+  if (!collectionMetaField?.value) {
+    collectionMetaField = productMetaFields?.find(
       (field: MetaField) => field?.key?.toLowerCase() === 'collection',
     );
+  }
 
-    if (!collectionMetaField?.value) {
-      collectionMetaField = productMetaFields?.find(
-        (field: MetaField) => field?.key?.toLowerCase() === 'collection',
-      );
-    }
+  if (collectionMetaField?.value) {
+    collectionValue = collectionMetaField.value;
+  }
 
-    if (collectionMetaField?.value) {
-      collectionValue = collectionMetaField.value;
-    }
+  // Process Review Ratings
+  const averageRatingMetaField = productMetaFields?.find(
+    (field: MetaField) => field?.key === 'sv-average-rating',
+  );
+  const totalReviewsMetaField = productMetaFields?.find(
+    (field: MetaField) => field?.key === 'sv-total-reviews',
+  );
 
-    // Process Review Ratings
-    const averageRatingMetaField = productMetaFields?.find(
-      (field: MetaField) => field?.key === 'sv-average-rating',
-    );
-    const totalReviewsMetaField = productMetaFields?.find(
-      (field: MetaField) => field?.key === 'sv-total-reviews',
-    );
+  if (averageRatingMetaField && totalReviewsMetaField) {
+    product.reviewSummary.numberOfReviews = totalReviewsMetaField.value ?? 0;
+    product.reviewSummary.averageRating = averageRatingMetaField.value ?? 0;
+  }
 
-    if (averageRatingMetaField && totalReviewsMetaField) {
-      product.reviewSummary.numberOfReviews = totalReviewsMetaField.value ?? 0;
-      product.reviewSummary.averageRating = averageRatingMetaField.value ?? 0;
-    }
+  // Get Related Products
+  const relatedProducts = await getRelatedProducts(product.entityId);
+  const collectionProducts = await getCollectionProducts(
+    product.entityId,
+    product.brand?.name ?? '',
+    collectionValue,
+  );
 
-    // Get Related Products
-    const relatedProducts = await getRelatedProducts(product.entityId);
-    const collectionProducts = await getCollectionProducts(
-      product.entityId,
-      product.brand?.name ?? '',
-      collectionValue,
-    );
+  // Process Categories
+  const categories = removeEdgesAndNodes(product.categories) as CategoryNode[];
+  const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
+    const longestLength = longest?.breadcrumbs?.edges?.length || 0;
+    const currentLength = current?.breadcrumbs?.edges?.length || 0;
+    return currentLength > longestLength ? current : longest;
+  }, categories[0]);
 
-    // Process Categories
-    const categories = removeEdgesAndNodes(product.categories) as CategoryNode[];
-    const categoryWithMostBreadcrumbs = categories.reduce((longest, current) => {
-      const longestLength = longest?.breadcrumbs?.edges?.length || 0;
-      const currentLength = current?.breadcrumbs?.edges?.length || 0;
-      return currentLength > longestLength ? current : longest;
-    }, categories[0]);
+  const breadcrumbEntityIds =
+    categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
 
-    const breadcrumbEntityIds =
-      categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
-
-    const categoryWithBreadcrumbs = categoryWithMostBreadcrumbs
-      ? {
-          ...categoryWithMostBreadcrumbs,
-          breadcrumbs: {
-            edges: [
-              ...(categoryWithMostBreadcrumbs?.breadcrumbs?.edges || []),
-              {
-                node: {
-                  name: product.mpn || '',
-                  path: '#',
-                  entityId: '#',
-                },
-              },
-            ].filter(Boolean),
+  const categoryWithBreadcrumbs = categoryWithMostBreadcrumbs
+    ? {
+      ...categoryWithMostBreadcrumbs,
+      breadcrumbs: {
+        edges: [
+          ...(categoryWithMostBreadcrumbs?.breadcrumbs?.edges || []),
+          {
+            node: {
+              name: product.mpn || '',
+              path: '#',
+              entityId: '#',
+            },
           },
-        }
-      : null;
+        ].filter(Boolean),
+      },
+    }
+    : null;
 
-    const discountRules = customerGroupDetails?.discount_rules;
+  const discountRules = customerGroupDetails?.discount_rules;
 
-    const [updatedProduct] = await calculateProductPrice(
-      product,
-      'pdp',
-      discountRules,
-      breadcrumbEntityIds,
-    );
+  const [updatedProduct] = await calculateProductPrice(
+    product,
+    'pdp',
+    discountRules,
+    breadcrumbEntityIds,
+  );
 
-    const productImages = removeEdgesAndNodes(product.images);
-    var brandId = product?.brand?.entityId;
-    var CommonSettinngsValues = await commonSettinngs([brandId]);
+  const productImages = removeEdgesAndNodes(product.images);
+  var brandId = product?.brand?.entityId;
+  var CommonSettinngsValues = await commonSettinngs([brandId]);
 
-    const promotions = await getActivePromotions(true);
+  const promotions = await getActivePromotions(true);
 
     const isFreeShipping = await CheckProductFreeShipping(product.entityId.toString());
 
-    return (
-      <div className="products-detail-page mx-auto max-w-[93.5%] pt-5">
-        <div className="breadcrumbs-container hidden md:block">
-          {categoryWithBreadcrumbs && (
-            <div className="breadcrumb-row mb-5 flex justify-center xl:justify-start">
-              <Breadcrumbs category={categoryWithBreadcrumbs} />
-            </div>
-          )}
-        </div>
+    const megaBannerSnapshot = await makeswiftClient.getComponentSnapshot('belami-mega-banner', {
+      siteVersion: await getSiteVersion()
+    });
+
+  return (
+    <div className="products-detail-page mx-auto max-w-[93.5%] pt-5">
+      <div className="breadcrumbs-container hidden md:block">
+        {categoryWithBreadcrumbs && (
+          <div className="breadcrumb-row mb-5 flex justify-center xl:justify-start">
+            <Breadcrumbs category={categoryWithBreadcrumbs} />
+          </div>
+        )}
+      </div>
 
         <ProductProvider getMetaFields={productMetaFields}>
           <div className="mb-4 xl:mb-12 xl:gap-8">
@@ -421,6 +428,11 @@ export default async function ProductPage(props: Props) {
                       productMpn={product.mpn}
                       extractedImagePairs={extractedImagePairs}
                     />
+                  </Suspense>
+                  <Suspense fallback={<></>}>
+                    <MegaBannerContextProvider value={{ location: 'pdp-under-gallery' }}>
+                      <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
+                    </MegaBannerContextProvider>
                   </Suspense>
                 </div>
               </div>
@@ -480,11 +492,11 @@ export default async function ProductPage(props: Props) {
               </div>
             </div>
 
-            <div className="flex flex-col">
-              <hr className="mb-4 border border-gray-200" />
-              <Description product={product} />
-              <hr className="mb-[55px] mt-[20px] border border-gray-200" />
-              {/*
+          <div className="flex flex-col">
+            <hr className="mb-4 border border-gray-200" />
+            <Description product={product} />
+            <hr className="mb-[55px] mt-[20px] border border-gray-200" />
+            {/*
               <CollectionProducts
                 collection={collectionValue}
                 products={collectionProducts.hits}
@@ -528,30 +540,30 @@ export default async function ProductPage(props: Props) {
             </div>
           </div>
 
-          <ProductViewed product={product} />
-          <ProductSchema product={product} identifier={newIdentifier} productSku={productSku} />
+        <ProductViewed product={product} />
+        <ProductSchema product={product} identifier={newIdentifier} productSku={productSku} />
 
-          <KlaviyoTrackViewedProduct
-            product={product}
-            user={
-              sessionUser && sessionUser.user && sessionUser.user?.email
-                ? ({
-                    email: sessionUser.user.email,
-                    first_name: sessionUser.user?.firstName,
-                    last_name: sessionUser.user?.lastName,
-                  } as any)
-                : null
-            }
-          />
-        </ProductProvider>
-      </div>
-    );
-  } catch (error) {
-    return (
-      <div className="p-4 text-center">
-        <h2>Error loading product</h2>
-        <p>Please try refreshing the page</p>
-      </div>
-    );
-  }
+        <KlaviyoTrackViewedProduct
+          product={product}
+          user={
+            sessionUser && sessionUser.user && sessionUser.user?.email
+              ? ({
+                email: sessionUser.user.email,
+                first_name: sessionUser.user?.firstName,
+                last_name: sessionUser.user?.lastName,
+              } as any)
+              : null
+          }
+        />
+      </ProductProvider>
+    </div>
+  );
+} catch (error) {
+  return (
+    <div className="p-4 text-center">
+      <h2>Error loading product</h2>
+      <p>Please try refreshing the page</p>
+    </div>
+  );
+}
 }

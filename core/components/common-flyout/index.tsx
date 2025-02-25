@@ -4,10 +4,11 @@ import CommonFlyout from './flyouts';
 type FlyoutProps = {
   triggerLabel: React.ReactNode;
   children: React.ReactNode;
+  from?:string;
 };
 
 
-export const Flyout: React.FC<FlyoutProps> = ({triggerLabel,children}) => {
+export const Flyout: React.FC<FlyoutProps> = ({triggerLabel,children, from}) => {
 
   const [isShippingOpen, setIsShippingOpen] = useState(false);
 
@@ -15,7 +16,7 @@ export const Flyout: React.FC<FlyoutProps> = ({triggerLabel,children}) => {
    setIsShippingOpen(open);}
   return (
     <>
-    <button onClick={() => handleOpenChange(true)}>{triggerLabel}</button>
+    <button className={`${from === 'warning-california' ? 'w-full' : ''}`} onClick={() => handleOpenChange(true)}>{triggerLabel}</button>
       <CommonFlyout
         isOpen={isShippingOpen}
         onOpenChange={() => handleOpenChange(false)}

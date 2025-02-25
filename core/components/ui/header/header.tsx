@@ -5,8 +5,8 @@ import { ChevronDown } from 'lucide-react';
 import { ComponentPropsWithoutRef, ReactNode, useState, useRef, useEffect } from 'react';
 
 import { BcImage } from '~/components/bc-image';
-import { Link as CustomLink } from '~/components/link';
 import { cn } from '~/lib/utils';
+import Link from 'next/link';
 
 import { type Locale, LocaleSwitcher } from './locale-switcher';
 import { MobileNav } from './mobile-nav';
@@ -97,7 +97,7 @@ const Header = ({
     <div className={cn('relative', className)}>
       <header className="main-header flex h-[92px] !max-w-[100%] items-center justify-between gap-1 overflow-y-visible bg-white p-[0px_4em] !px-[40px] 2xl:container sm:px-10 lg:gap-6 lg:px-12 2xl:mx-auto 2xl:px-0 mb-[10px] lg:mb-[33px] md:mb-[46px] sm:mb-[10px] xl:mb-0">
         <div className="flex items-center space-x-4">
-          <CustomLink className="home-logo-one w-[155px] overflow-hidden text-ellipsis py-3 hidden lg:block" href="/">
+          <Link className="home-logo-one w-[155px] overflow-hidden text-ellipsis py-3 hidden lg:block" href="/">
             {typeof logo === 'object' ? (
               <div className="hidden items-center space-x-2 lg:flex">
                 <BcImage
@@ -112,9 +112,9 @@ const Header = ({
             ) : (
               <span className="truncate text-2xl font-black">{logo}</span>
             )}
-          </CustomLink>
+          </Link>
 
-          <CustomLink className="home-logo-two w-[30px] overflow-hidden text-ellipsis pt-3 lg:pl-5 block lg:hidden" href="/">
+          <Link className="home-logo-two w-[30px] overflow-hidden text-ellipsis pt-3 lg:pl-5 block lg:hidden" href="/">
             {typeof logo === 'object' && homeLogoMobileFirst ? (
               <div className="second-home-logo block lg:hidden">
                 <BcImage
@@ -131,7 +131,7 @@ const Header = ({
             ) : (
               <span className="truncate text-2xl font-black">{imageIconList.homeLogo}</span>
             )}
-          </CustomLink>
+          </Link>
         </div>
 
         <div className="header-search-bar flex flex-grow items-center gap-2 lg:gap-4 justify-end">

@@ -250,7 +250,7 @@ export const Details = ({
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
 
-  const categoryIds = product?.categories?.edges?.map((edge) => edge.node.entityId) || [];
+  const categoryIds = product?.categories?.edges?.map((edge) => edge?.node?.entityId) || [];
   const productId = product?.entityId;
   const brandId = product.brand?.entityId || 0;
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
@@ -264,7 +264,7 @@ export const Details = ({
       setShowStickyHeader(window.scrollY > 1500);
     };
 
-    const handleCustomScroll = (e) => {
+    const handleCustomScroll = (e:any) => {
       setShowStickyHeader(e.detail.scrollY > 1500);
     };
 
@@ -272,8 +272,8 @@ export const Details = ({
     window.addEventListener('customScroll', handleCustomScroll);
 
     // Update variant image
-    const variantImages = product.images?.edges?.map((edge) => edge.node) || [];
-    const matchingVariant = variants.find((variant) => variant.sku === product.sku);
+    const variantImages = product.images?.edges?.map((edge) => edge?.node) || [];
+    const matchingVariant = variants.find((variant) => variant?.sku === product?.sku);
 
     if (matchingVariant) {
       setSelectedVariantId(matchingVariant.entityId);
@@ -595,20 +595,18 @@ export const Details = ({
               }}
             />
           )}
-          <div>
-            {combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === 'True' && (
-              <div className="closeout-messages">
-                <div className="max-w-fit content-center bg-[#B4B4B5] px-[10px] text-[14px] leading-[32px] tracking-[1.25px] text-[#ffffff]">
-                  CLEARANCE
-                </div>
+          {Array.isArray(combinedData?.closeOutData) && combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
+            <div className="closeout-messages">
+              <div className="bg-[#B4B4B5] content-center px-[10px] max-w-fit text-[#ffffff] tracking-[1.25px] leading-[32px] text-[14px]">
+                CLEARANCE
               </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* promotion */}
         {promotions && Array.isArray(promotions) && promotions.length > 0 && (
-          <div className="promotion-pdp mt-[5px] flex">
+          <div className="promotion-pdp mt-[5px] flex justify-center xl:justify-start">
             <div className="relative bottom-[5px]">
               <Promotion
                 promotions={promotions}
@@ -620,138 +618,144 @@ export const Details = ({
             </div>
           </div>
         )}
-
-        <div className="free-shipping-detail mb-[30px] text-center xl:text-left">
-          {combinedData?.deliveryEstimatedTexts?.length > 0 &&
-            combinedData?.deliveryEstimatedTexts?.map((message, index) => {
-              const parsedMessages = JSON.parse(message);
-              const firstMessage = parsedMessages[0];
-              return firstMessage ? (
-                <div key={index} className="justify-center xl:justify-start">
-                  <div
-                    className={`${firstMessage?.qty === 0 ? 'bg-[#FBF4E9] px-[10px] text-[#6A4C1E]' : 'bg-transparent'} mt-[5px] w-fit`}
-                  >
-                    {firstMessage?.delivery_estimated_text}
-                  </div>
-                </div>
-              ) : null;
-            })}
-          {product?.brand?.entityId &&
-            getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
-              <NoShipCanada
-                description={
-                  getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message
-                }
-              />
-            )}
-        </div>
-
-        <div ref={productFormRef}>
-          <ProductForm
-            data={product}
-            productMpn={product.mpn || ''}
-            multipleOptionIcon={multipleOptionIcon}
-            blankAddImg={blankAddImg || ''}
-            productImages={productImages}
-            fanPopup={fanPopup}
-            closeIcon={closeIcon || ''}
-            customerGroupDetails={customerGroupDetails}
-            swatchOptions={swatchOptions}
-            sessionUser={sessionUser}
-            priceMaxRules={priceMaxRules}
-          />
-        </div>
-
-        <div className="div-product-description my-12 hidden">
-          <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {Boolean(product.sku) && (
-              <div>
-                <h3 className="font-semibold">{t('sku')}</h3>
-                <p>{product.sku}</p>
-              </div>
-            )}
-            {Boolean(product.upc) && (
-              <div>
-                <h3 className="font-semibold">{t('upc')}</h3>
-                <p>{product.upc}</p>
-              </div>
-            )}
-            {Boolean(product.minPurchaseQuantity) && (
-              <div>
-                <h3 className="font-semibold">{t('minPurchase')}</h3>
-                <p>{product.minPurchaseQuantity}</p>
-              </div>
-            )}
-            {Boolean(product.maxPurchaseQuantity) && (
-              <div>
-                <h3 className="font-semibold">{t('maxPurchase')}</h3>
-                <p>{product.maxPurchaseQuantity}</p>
-              </div>
-            )}
-            {Boolean(product.availabilityV2.description) && (
-              <div>
-                <h3 className="font-semibold">{t('availability')}</h3>
-                <p>{product.availabilityV2.description}</p>
-              </div>
-            )}
-            {Boolean(product.condition) && (
-              <div>
-                <h3 className="font-semibold">{t('condition')}</h3>
-                <p>{product.condition}</p>
-              </div>
-            )}
-            {Boolean(product.weight) && (
-              <div>
-                <h3 className="font-semibold">{t('weight')}</h3>
-                <p>
-                  {product.weight?.value} {product.weight?.unit}
-                </p>
-              </div>
-            )}
-            {Boolean(customFields) &&
-              customFields.map((customField) => (
-                <div key={customField.entityId}>
-                  <h3 className="font-semibold">{customField.name}</h3>
-                  <p>{customField.value}</p>
-                </div>
-              ))}
-          </div>
-        </div>
-
-        {/* <ProductSchema product={product} /> */}
-        {!isFromQuickView && (
-          <div>
-            <PayPalPayLater
-              amount={product?.prices?.price?.value?.toString() || '0'}
-              currency={product?.prices?.price?.currencyCode || 'USD'}
-            />
-
-            {/* <RequestQuote children={children3} /> */}
-            <RequestQuoteButton />
-            <CertificationsAndRatings
-              certificationIcon={certificationIcon}
-              product={product}
-              children={children4}
-              triggerLabel={triggerLabel4}
-            />
-            <ProductDetailDropdown
-              product={product}
-              dropdownSheetIcon={dropdownSheetIcon}
-              triggerLabel={triggerLabel5}
-              children={children5}
-            />
-
-            {/* <ShippingReturns /> */}
-
-            <div className="flex justify-center gap-4 xl:mt-7">
-              <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
-
-              <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
+        {Array.isArray(combinedData?.closeOutData) && combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
+          <div className="closeout-messages flex items-center justify-center h-[25px] xl:justify-start">
+            <div className="font-bold font-Inter max-w-fit text-[#353535] leading-[15px] text-[12px] ">
+              Final Sale
             </div>
           </div>
         )}
+        <div className="free-shipping-detail mb-[30px] text-center xl:text-left">
+        {Array.isArray (combinedData?.closeOutData) && combinedData?.deliveryEstimatedTexts?.length > 0 && (
+          combinedData?.deliveryEstimatedTexts?.map((message, index) => {
+            const parsedMessages = JSON.parse(message);
+            const firstMessage = parsedMessages[0];
+            return firstMessage ? (
+              <div key={index} className="flex justify-center xl:justify-start">
+                <div className={`${firstMessage?.qty === 0 ? 'bg-[#FBF4E9] px-[10px] text-[#6A4C1E]' : 'bg-transparent'} mt-[5px] w-fit`}>
+                  {firstMessage?.delivery_estimated_text}
+                </div>
+              </div>
+            ) : null;
+          })
+        )}
+        {product?.brand?.entityId &&
+          getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada && (
+            <NoShipCanada
+              description={
+                getAllCommonSettinngsValues?.[product?.brand?.entityId]?.no_ship_canada_message
+              }
+            />
+          )}
       </div>
+      </div>
+      
+
+      <div ref={productFormRef}>
+        <ProductForm
+          data={product}
+          productMpn={product.mpn || ''}
+          multipleOptionIcon={multipleOptionIcon}
+          blankAddImg={blankAddImg || ''}
+          productImages={productImages}
+          fanPopup={fanPopup}
+          closeIcon={closeIcon || ''}
+          customerGroupDetails={customerGroupDetails}
+          swatchOptions={swatchOptions}
+          sessionUser={sessionUser}
+          priceMaxRules={priceMaxRules}
+        />
+      </div>
+
+      <div className="div-product-description my-12 hidden">
+        <h2 className="mb-4 text-xl font-bold md:text-2xl">{t('additionalDetails')}</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {Boolean(product.sku) && (
+            <div>
+              <h3 className="font-semibold">{t('sku')}</h3>
+              <p>{product.sku}</p>
+            </div>
+          )}
+          {Boolean(product.upc) && (
+            <div>
+              <h3 className="font-semibold">{t('upc')}</h3>
+              <p>{product.upc}</p>
+            </div>
+          )}
+          {Boolean(product.minPurchaseQuantity) && (
+            <div>
+              <h3 className="font-semibold">{t('minPurchase')}</h3>
+              <p>{product.minPurchaseQuantity}</p>
+            </div>
+          )}
+          {Boolean(product.maxPurchaseQuantity) && (
+            <div>
+              <h3 className="font-semibold">{t('maxPurchase')}</h3>
+              <p>{product.maxPurchaseQuantity}</p>
+            </div>
+          )}
+          {Boolean(product.availabilityV2.description) && (
+            <div>
+              <h3 className="font-semibold">{t('availability')}</h3>
+              <p>{product.availabilityV2.description}</p>
+            </div>
+          )}
+          {Boolean(product.condition) && (
+            <div>
+              <h3 className="font-semibold">{t('condition')}</h3>
+              <p>{product.condition}</p>
+            </div>
+          )}
+          {Boolean(product.weight) && (
+            <div>
+              <h3 className="font-semibold">{t('weight')}</h3>
+              <p>
+                {product.weight?.value} {product.weight?.unit}
+              </p>
+            </div>
+          )}
+          {Boolean(customFields) &&
+            customFields.map((customField) => (
+              <div key={customField.entityId}>
+                <h3 className="font-semibold">{customField.name}</h3>
+                <p>{customField.value}</p>
+              </div>
+            ))}
+        </div>
+      </div>
+
+      {/* <ProductSchema product={product} /> */}
+      {!isFromQuickView && (
+        <div>
+          <PayPalPayLater
+            amount={product?.prices?.price?.value?.toString() || '0'}
+            currency={product?.prices?.price?.currencyCode || 'USD'}
+          />
+
+          {/* <RequestQuote children={children3} /> */}
+          <RequestQuoteButton />
+          <CertificationsAndRatings
+            certificationIcon={certificationIcon}
+            product={product}
+            children={children4}
+            triggerLabel={triggerLabel4}
+          />
+          <ProductDetailDropdown
+            product={product}
+            dropdownSheetIcon={dropdownSheetIcon}
+            triggerLabel={triggerLabel5}
+            children={children5}
+          />
+
+          {/* <ShippingReturns /> */}
+
+          <div className="flex justify-center gap-4 xl:mt-7">
+            <Flyout triggerLabel={triggerLabel1}>{children1}</Flyout>
+
+            <Flyout triggerLabel={triggerLabel2}>{children2}</Flyout>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
