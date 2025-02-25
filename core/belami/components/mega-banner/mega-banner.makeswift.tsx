@@ -1,4 +1,4 @@
-import { Image, Link, List, Select, RichText, Group, TextInput } from '@makeswift/runtime/controls';
+import { Image, Link, List, Select, RichText, TextArea, Group, TextInput } from '@makeswift/runtime/controls';
 
 import { MegaBanner } from '.';
 import { MegaBannerProps } from './mega-banner-types';
@@ -20,8 +20,8 @@ runtime.registerComponent(
       items: List({
         label: 'Items',
         type: Group({
-          label: "Banner properties",
-          preferredLayout: Group.Layout.Popover,
+          label: "Banner Properties",
+          preferredLayout: Group.Layout.Inline,
           props: {
             title: TextInput({ label: 'Title', defaultValue: 'Title' }),
             location: Select({
@@ -36,8 +36,12 @@ runtime.registerComponent(
               ],
               defaultValue: "default",
             }),
+            imageSrc: Image({ label: 'Image' }),
+            //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
             link: Link({ label: 'Link' }),
-            content: RichText({ mode: RichText.Mode.Block }),
+            //content: RichText({ mode: RichText.Mode.Block }),
+            content: TextArea({ label: "Content", defaultValue: '' }),
+/*
             startDate: TextInput({ label: 'Start Date', defaultValue: '' }),
             endDate: TextInput({ label: 'End Date', defaultValue: '' }),
 
@@ -48,6 +52,28 @@ runtime.registerComponent(
             excludeBrandIds: TextInput({ label: 'Exclude Brand Ids', defaultValue: '' }),
             excludeCategoryIds: TextInput({ label: 'Exclude Category Ids', defaultValue: '' }),
             excludeProductIds: TextInput({ label: 'Exclude Product Ids', defaultValue: '' }),
+*/
+            schedule: Group({
+              label: "Schedule",
+              preferredLayout: Group.Layout.Popover,
+              props: {
+                startDate: TextInput({ label: 'Start Date', defaultValue: '' }),
+                endDate: TextInput({ label: 'End Date', defaultValue: '' }),
+              },
+            }),              
+            conditions: Group({
+              label: "Conditions",
+              preferredLayout: Group.Layout.Popover,
+              props: {
+                brandIds: TextInput({ label: 'Brand Ids', defaultValue: '' }),
+                categoryIds: TextInput({ label: 'Category Ids', defaultValue: '' }),
+                productIds: TextInput({ label: 'Product Ids', defaultValue: '' }),
+    
+                excludeBrandIds: TextInput({ label: 'Exclude Brand Ids', defaultValue: '' }),
+                excludeCategoryIds: TextInput({ label: 'Exclude Category Ids', defaultValue: '' }),
+                excludeProductIds: TextInput({ label: 'Exclude Product Ids', defaultValue: '' }),
+              },
+            }),
           },
         }),
         getItemLabel(menuItem) {

@@ -7,14 +7,15 @@ export interface MegaBannerItem {
   imageAlt?: string;
   link?: { href?: string; target?: string };
   content?: ReactNode | string;
-  startDate?: string;
-  endDate?: string;
-  brandIds?: string;
-  categoryIds?: string;
-  productIds?: string;
-  excludeBrandIds?: string;
-  excludeCategoryIds?: string;
-  excludeProductIds?: string;
+  schedule?: { startDate?: string; endDate?: string };
+  conditions?: {
+    brandIds?: string;
+    categoryIds?: string;
+    productIds?: string;
+    excludeBrandIds?: string;
+    excludeCategoryIds?: string;
+    excludeProductIds?: string;
+  };
 }
 
 export type MegaBannerCustomProps = {
