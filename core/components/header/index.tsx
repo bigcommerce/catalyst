@@ -16,7 +16,6 @@ import { SiteHeader as HeaderSection } from '~/lib/makeswift/components/site-hea
 
 import { search } from './_actions/search';
 import { switchCurrency } from './_actions/switch-currency';
-import { switchLocale } from './_actions/switch-locale';
 import { HeaderFragment } from './fragment';
 
 const GetCartCountQuery = graphql(`
@@ -153,7 +152,6 @@ export const Header = async () => {
         cartCount: PLazy.from(getCartCount),
         activeLocaleId: locale,
         locales,
-        localeAction: switchLocale,
         currencies,
         activeCurrencyId,
         currencyAction: switchCurrency,
