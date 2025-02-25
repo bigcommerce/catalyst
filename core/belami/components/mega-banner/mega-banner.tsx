@@ -34,8 +34,8 @@ export function MegaBanner({ items, customProps }: MegaBannerProps) {
             <Link href={filteredItems[0]?.link.href}>
               {!!filteredItems[0]?.imageMobileSrc ? (
                 <>
-                  <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image hidden md:block', filteredItems[0]?.imageCss || '')} />
-                  <img src={filteredItems[0]?.imageMobileSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image-mobile block md:hidden', filteredItems[0]?.imageCss || '')} />
+                  <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image hidden md:block', filteredItems[0]?.imageWidth === '100%' && 'w-full')} />
+                  <img src={filteredItems[0]?.imageMobileSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image-mobile block md:hidden', filteredItems[0]?.imageWidth === '100%' && 'w-full')} />
                 </>
               ) : (
                 <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} />
@@ -44,8 +44,8 @@ export function MegaBanner({ items, customProps }: MegaBannerProps) {
           ) : (
             !!filteredItems[0]?.imageMobileSrc ? (
               <>
-                <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image hidden md:block', filteredItems[0]?.imageCss || '')} />
-                <img src={filteredItems[0]?.imageMobileSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image-mobile block md:hidden', filteredItems[0]?.imageCss || '')} />
+                <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image hidden md:block', filteredItems[0]?.imageWidth === '100%' && 'w-full')} />
+                <img src={filteredItems[0]?.imageMobileSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image-mobile block md:hidden', filteredItems[0]?.imageWidth === '100%' && 'w-full')} />
               </>
             ) : (
               <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} />

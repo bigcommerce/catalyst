@@ -6,7 +6,7 @@ export interface MegaBannerItem {
   imageSrc?: string;
   imageMobileSrc?: string;
   imageAlt?: string;
-  imageCss?: string;
+  imageWidth?: string;
   link?: { href?: string; target?: string };
   content?: ReactNode | string;
   schedule?: { startDate?: string; endDate?: string };
