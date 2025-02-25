@@ -430,7 +430,7 @@ export default async function ProductPage(props: Props) {
                     />
                   </Suspense>
                   <Suspense fallback={<></>}>
-                    <MegaBannerContextProvider value={{ location: 'under-gallery' }}>
+                    <MegaBannerContextProvider value={{ location: 'under-gallery', productId: productId, categoryId: breadcrumbEntityIds ? breadcrumbEntityIds[breadcrumbEntityIds.length - 1] : null, brandId: product.brand?.entityId || null }}>
                       <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
                     </MegaBannerContextProvider>
                   </Suspense>

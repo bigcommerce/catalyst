@@ -20,9 +20,9 @@ export interface MegaBannerItem {
 
 export type MegaBannerCustomProps = {
   location?: string;
-  brandId?: string;
-  categoryId?: string;
-  productId?: string;
+  brandId?: number;
+  categoryId?: number;
+  productId?: number;
 };
 
 export type MegaBannerProps = {

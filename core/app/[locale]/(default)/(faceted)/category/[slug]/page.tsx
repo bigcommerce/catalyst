@@ -120,7 +120,7 @@ export default async function CategoryPage(props: Props) {
       {!!snapshot && <MakeswiftPage snapshot={snapshot} />}
 
       <Suspense fallback={<></>}>
-        <MegaBannerContextProvider value={{ location: 'above-products' }}>
+        <MegaBannerContextProvider value={{ location: 'above-products', categoryId: categoryId }}>
           <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
         </MegaBannerContextProvider>
       </Suspense>
