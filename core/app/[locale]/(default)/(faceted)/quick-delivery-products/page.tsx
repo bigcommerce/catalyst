@@ -15,7 +15,6 @@ import { cookies, headers } from 'next/headers';
 import { Page as MakeswiftPage } from '@makeswift/runtime/next';
 import { defaultLocale } from '~/i18n/routing';
 
-import { client } from '~/lib/makeswift/client';
 import { Suspense } from 'react';
 import { MakeswiftComponent } from '@makeswift/runtime/next';
 import { getSiteVersion } from '@makeswift/runtime/next/server';
