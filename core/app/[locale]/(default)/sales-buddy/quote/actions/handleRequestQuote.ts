@@ -6,6 +6,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cookies } from 'next/headers';
 import { getSessionUserDetails } from '~/auth';
 import { findCustomerDetails } from './FindCustomerDetails';
+import { headers } from 'next/headers';
 
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
 
@@ -212,17 +213,23 @@ export const handleRequestQuote = async (
           value: field.optionLabelName,
         }
       ));
-      
+      const pImageUrl = product?.defaultImage?.url;
+      const updatedUrl = pImageUrl.replace("{:size}", "original");
+  
     const reqQuoteItems = {
       qr_product: {
         bc_product_id: productEntityId,
         bc_sku: product.sku,
         bc_product_name: product.name,
+        bc_product_qty:1,
+        bc_product_image: updatedUrl ?? '',
+        bc_product_price: product?.prices?.retailPrice?.value ?? product?.UpdatePriceForMSRP?.originalPrice,
+        bc_product_sale_price: product?.UpdatePriceForMSRP?.updatedPrice ?? product?.prices?.price?.value,
         bc_variant_id: variantSku?.node?.entityId,
         bc_variant_sku: variantSku?.node?.sku,
         bc_variant_name: variantLabels,
         option_selections: JSON.stringify(selectedVariantsVal),
-        bc_modifier_option: '',
+        bc_modifier_option: "",
         bc_modifier_id: '',
         options: ''
       },
