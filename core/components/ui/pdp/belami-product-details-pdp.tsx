@@ -304,7 +304,7 @@ const ProductDetailDropdown: React.FC<ProductDetailDropdownProps> = ({
               onOpenChange={setIsWarningOpen}
               triggerText={t('warning')}
             /> */}
-                <Flyout triggerLabel={triggerLabel}>{children}</Flyout>
+                <Flyout from='warning-california' triggerLabel={triggerLabel}>{children}</Flyout>
 
             <button
               type="button"

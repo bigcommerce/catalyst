@@ -181,7 +181,7 @@ export default async function Trade() {
         </div>
 
         {/* Network Section */}
-        <div className="mt-[30px] px-[20px] lg:mt-[60px] lg:px-0">
+        <div className="mt-[30px] lg:mt-[60px] lg:px-0">
           <NetworkSection networkImages={networkImages} />
         </div>
       </div>
@@ -189,4 +189,4 @@ export default async function Trade() {
   );
 }
 
-// export const runtime = 'edge';
+export const runtime = 'edge';

@@ -370,7 +370,7 @@ export const OrderDetails = async ({
             </div>
           </div>
           <div className="-mt-[10px] flex flex-col justify-between gap-[30px] xl:mt-0 xl:flex-row">
-            <div className="flex w-1/2 flex-col gap-[20px] xl:gap-[30px]">
+            <div className="flex w-full xl:w-1/2 flex-col gap-[20px] xl:gap-[30px]">
               <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
                 <div>
                   {t('confirmationNumber')}:{' '}
