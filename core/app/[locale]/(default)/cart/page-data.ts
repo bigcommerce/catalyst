@@ -1,6 +1,7 @@
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql, VariablesOf } from '~/client/graphql';
+import { FragmentOf, graphql, VariablesOf } from '~/client/graphql';
+import { getShippingZones } from '~/client/management/get-shipping-zones';
 import { TAGS } from '~/client/tags';
 
 export const PhysicalItemFragment = graphql(`
@@ -128,6 +129,61 @@ const MoneyFieldsFragment = graphql(`
   }
 `);
 
+const ShippingInfoFragment = graphql(`
+  fragment ShippingInfoFragment on Checkout {
+    entityId
+    shippingConsignments {
+      entityId
+      availableShippingOptions {
+        cost {
+          value
+        }
+        description
+        entityId
+        isRecommended
+      }
+      selectedShippingOption {
+        entityId
+        description
+        cost {
+          value
+        }
+      }
+      address {
+        city
+        countryCode
+        stateOrProvince
+        postalCode
+      }
+    }
+    handlingCostTotal {
+      value
+    }
+    shippingCostTotal {
+      currencyCode
+      value
+    }
+  }
+`);
+
+const GeographyFragment = graphql(
+  `
+    fragment GeographyFragment on Geography {
+      countries {
+        entityId
+        name
+        code
+        statesOrProvinces {
+          entityId
+          name
+          abbreviation
+        }
+      }
+    }
+  `,
+  [],
+);
+
 const CartPageQuery = graphql(
   `
     query CartPageQuery($cartId: String) {
@@ -169,11 +225,21 @@ const CartPageQuery = graphql(
               ...MoneyFieldsFragment
             }
           }
+          ...ShippingInfoFragment
         }
+      }
+      geography {
+        ...GeographyFragment
       }
     }
   `,
-  [PhysicalItemFragment, DigitalItemFragment, MoneyFieldsFragment],
+  [
+    PhysicalItemFragment,
+    DigitalItemFragment,
+    MoneyFieldsFragment,
+    ShippingInfoFragment,
+    GeographyFragment,
+  ],
 );
 
 type Variables = VariablesOf<typeof CartPageQuery>;
@@ -194,4 +260,36 @@ export const getCart = async (variables: Variables) => {
   });
 
   return data;
+};
+
+export const getShippingCountries = async (geography: FragmentOf<typeof GeographyFragment>) => {
+  const hasAccessToken = Boolean(process.env.BIGCOMMERCE_ACCESS_TOKEN);
+  const shippingZones = hasAccessToken ? await getShippingZones() : [];
+  const countries = geography.countries ?? [];
+
+  const uniqueCountryZones = shippingZones.reduce<string[]>((zones, item) => {
+    item.locations.forEach(({ country_iso2 }) => {
+      if (zones.length === 0) {
+        zones.push(country_iso2);
+
+        return zones;
+      }
+
+      const isAvailable = zones.length > 0 && zones.some((zone) => zone === country_iso2);
+
+      if (!isAvailable) {
+        zones.push(country_iso2);
+      }
+
+      return zones;
+    });
+
+    return zones;
+  }, []);
+
+  return countries.filter((countryDetails) => {
+    const isCountryInTheList = uniqueCountryZones.includes(countryDetails.code);
+
+    return isCountryInTheList || !hasAccessToken;
+  });
 };
