@@ -215,7 +215,7 @@ export default async function ProductPage(props: Props) {
         }
         return [];
       });
-      const productDeliveryMessage = item?.deliveryMessageParentData?.edges[0]?.node?.value || []
+      const productDeliveryMessage = item?.deliveryMessageParentData?.edges?.map((item: any) => item?.node?.value)
       if (optionsValue > 0) {
         deliveryMessageData =  variantDeliveryMessage?.length > 0 ? variantDeliveryMessage : productDeliveryMessage;
       } else {

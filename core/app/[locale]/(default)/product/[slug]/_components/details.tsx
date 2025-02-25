@@ -626,7 +626,7 @@ export const Details = ({
           </div>
         )}
         <div className="free-shipping-detail mb-[30px] text-center xl:text-left">
-        {Array.isArray (combinedData?.closeOutData) && combinedData?.deliveryEstimatedTexts?.length > 0 && (
+        {Array.isArray (combinedData?.deliveryEstimatedTexts) && combinedData?.deliveryEstimatedTexts?.length > 0 && (
           combinedData?.deliveryEstimatedTexts?.map((message, index) => {
             const parsedMessages = JSON.parse(message);
             const firstMessage = parsedMessages[0];

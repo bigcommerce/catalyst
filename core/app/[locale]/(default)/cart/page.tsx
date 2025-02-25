@@ -166,7 +166,7 @@ export default async function Cart({ params }: Props) {
         }
         return [];
       });
-      const productDeliveryMessage = item?.baseCatalogProduct?.deliveryMessageParentData?.edges[0]?.node?.value || []
+      const productDeliveryMessage = item?.baseCatalogProduct?.deliveryMessageParentData?.edges?.map((item: any) => item?.node?.value)
       if (optionsValue > 0) {
         deliveryMessageData =  variantDeliveryMessage?.length > 0 ? variantDeliveryMessage : productDeliveryMessage;
       } else {
