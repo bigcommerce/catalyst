@@ -463,7 +463,7 @@ export const CartItem = async ({
                   </p>
                 </Link>
                 <div className='block sm:hidden'>
-                    {combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
+                    {Array.isArray(combinedData?.closeOutData) && combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
                       <div className="closeout-messages">
                         <div className="bg-[#FBF4E9] flex justify-center content-center px-[10px] mt-[5px] w-full text-[#6A4C1E] tracking-[0.25px] leading-[24px] text-[14px] sm:max-w-fit">
                           Final Sale
