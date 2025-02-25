@@ -497,7 +497,7 @@ export const ProductCard = memo(
               )}
 
               {/* Reviews */}
-              <div className="flex justify-center">
+              <div className="mb-4 flex justify-center">
                 <ReviewSummary
                   data={{
                     reviewSummary: {
@@ -511,7 +511,7 @@ export const ProductCard = memo(
 
             {/* Promotions */}
             {state.hasActivePromotion && (
-              <div className="text-center">
+              <div className="promotion-wishlist text-center">
                 <Promotion
                   promotions={state.promotionsData}
                   product_id={item.productEntityId}

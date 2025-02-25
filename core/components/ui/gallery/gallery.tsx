@@ -210,23 +210,23 @@ const Gallery = ({
         videoType: video.type,
       })),
     ];
-    const reorderMedia = (items:any) => {
-      const images = items.filter((item:any) => item?.type === "image");
-      const video = items.find((item:any) => item?.type === "video");
-    
+    const reorderMedia = (items: any) => {
+      const images = items.filter((item: any) => item?.type === 'image');
+      const video = items.find((item: any) => item?.type === 'video');
+
       if (!video) return items; // If no video, return original array
-    
+
       let reorderedArray = [...images];
-    
+
       if (reorderedArray.length >= 4) {
         reorderedArray.splice(3, 0, video); // Place video at the 4th position
       } else {
         reorderedArray.push(video); // Place video at the end if less than 4 images
       }
-    
+
       return reorderedArray;
     };
-  const items1= reorderMedia(items);
+    const items1 = reorderMedia(items);
     return {
       mediaItems: items1,
       selectedItem: items1[selectedIndex] || null,
@@ -546,7 +546,15 @@ const Gallery = ({
                           .filter(Boolean) || [],
                     }}
                     onGuestClick={() => {
-                      window.location.href = '/login';
+                      if (typeof window !== 'undefined') {
+                        const confirmLogin = window.confirm(
+                          'You need to be logged in to add items to your wishlist. Would you like to go to the login page?',
+                        );
+
+                        if (confirmLogin) {
+                          window.location.href = '/login';
+                        }
+                      }
                     }}
                   />
                 </div>
