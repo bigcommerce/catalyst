@@ -901,11 +901,17 @@ interface DeletedProductRecord {
 }
 
 export const manageDeletedProducts = {
+  isClient: (): boolean => {
+    return typeof window !== 'undefined';
+  },
+
   addDeletedProduct: (
     productId: number,
     wishlistItemId: number,
     variantEntityId: number | null = null,
   ): boolean => {
+    if (!manageDeletedProducts.isClient()) return false;
+
     try {
       const existingItems: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
 
@@ -938,6 +944,8 @@ export const manageDeletedProducts = {
   },
 
   getDeletedItems: (): DeletedProductRecord[] => {
+    if (!manageDeletedProducts.isClient()) return [];
+
     try {
       const items = localStorage.getItem('deletedWishlistItems');
       return items ? JSON.parse(items) : [];
@@ -948,16 +956,22 @@ export const manageDeletedProducts = {
   },
 
   isWishlistItemDeleted: (wishlistItemId: number): boolean => {
+    if (!manageDeletedProducts.isClient()) return false;
+
     const items: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
     return items.some((item) => Number(item.wishlistItemId) === Number(wishlistItemId));
   },
 
   isProductDeleted: (productId: number): boolean => {
+    if (!manageDeletedProducts.isClient()) return false;
+
     const items: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
     return items.some((item) => Number(item.productId) === Number(productId));
   },
 
   restoreWishlistItem: (wishlistItemId: number): boolean => {
+    if (!manageDeletedProducts.isClient()) return false;
+
     try {
       const items: DeletedProductRecord[] = manageDeletedProducts.getDeletedItems();
       const updatedItems = items.filter(
@@ -973,6 +987,10 @@ export const manageDeletedProducts = {
   },
 
   clearAllDeletedItems: (): void => {
+    if (!manageDeletedProducts.isClient()) return;
+
     localStorage.removeItem('deletedWishlistItems');
   },
 };
+
+export default manageDeletedProducts;

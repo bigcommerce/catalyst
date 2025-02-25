@@ -95,12 +95,10 @@ type Wishlists = Wishlist[];
 type NewWishlist = any;
 type WishlistArray = Array<NewWishlist | Wishlists[number]>;
 
+// Helper function to filter deleted items
 const filterDeletedWishlistItems = (items: WishlistItem[]): WishlistItem[] => {
   if (!items || !items.length) return [];
-  return items.filter((item) => {
-    if (!item?.entityId) return false;
-    return !manageDeletedProducts.isWishlistItemDeleted(item.entityId);
-  });
+  return items.filter((item) => !manageDeletedProducts.isWishlistItemDeleted(item.entityId));
 };
 
 const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: WishlistMenuProps) => {
@@ -109,13 +107,7 @@ const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: Wish
   const { setAccountState } = useAccountStatusContext();
   const t = useTranslations('Account.Wishlist');
 
-  const toggleModal = useCallback(() => {
-    setIsOpen((prev) => !prev);
-  }, []);
-
-  const handleDeleteModalOpen = useCallback(() => {
-    setDeleteModalOpen(true);
-  }, []);
+  const toggleModal = () => setIsOpen(!isOpen);
 
   const handleWishlistDeleted = useCallback(() => {
     onWishlistDeleted();
@@ -125,6 +117,7 @@ const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: Wish
       message: t('messages.deleted', { name }),
     }));
     setDeleteModalOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [onWishlistDeleted, setAccountState, t, name]);
 
   const handleEditClick = useCallback(() => {
@@ -132,13 +125,10 @@ const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: Wish
       ...wishlist,
       items: filterDeletedWishlistItems(wishlist.items),
     };
-    try {
-      localStorage.setItem('selectedWishlist', JSON.stringify(filteredWishlist));
-    } catch (error) {
-      console.error('Error saving wishlist:', error);
-    }
+    localStorage.setItem('selectedWishlist', JSON.stringify(filteredWishlist));
     setIsOpen(false);
   }, [wishlist]);
+
   return (
     <div className="relative block lg:hidden">
       <button onClick={toggleModal} className="p-2">
@@ -173,7 +163,7 @@ const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: Wish
                 title={t('deleteTitle', { name })}
                 trigger={
                   <button
-                    onClick={handleDeleteModalOpen}
+                    onClick={() => setDeleteModalOpen(true)}
                     className="flex w-full items-center gap-2 rounded-lg p-3 hover:bg-gray-50"
                   >
                     <span className="text-gray-600">
@@ -241,8 +231,6 @@ const WishlistMenu = memo(({ entityId, name, onWishlistDeleted, wishlist }: Wish
   );
 });
 
-WishlistMenu.displayName = 'WishlistMenu';
-
 const Wishlist = memo(
   ({ setWishlistBook, wishlist, onCompare, onRemove, onColorSelect }: WishlistProps) => {
     const [deleteWishlistModalOpen, setDeleteWishlistModalOpen] = useState(false);
@@ -263,18 +251,15 @@ const Wishlist = memo(
         message: t('messages.deleted', { name }),
       }));
       setDeleteWishlistModalOpen(false);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }, [entityId, name, setWishlistBook, setAccountState, t]);
 
     const handleWishlistClick = useCallback(() => {
-      try {
-        const filteredWishlist = {
-          ...wishlist,
-          items: filteredItems,
-        };
-        localStorage.setItem('selectedWishlist', JSON.stringify(filteredWishlist));
-      } catch (error) {
-        console.error('Error saving wishlist:', error);
-      }
+      const filteredWishlist = {
+        ...wishlist,
+        items: filteredItems,
+      };
+      localStorage.setItem('selectedWishlist', JSON.stringify(filteredWishlist));
     }, [wishlist, filteredItems]);
 
     return (
@@ -353,137 +338,127 @@ const Wishlist = memo(
   },
 );
 
-Wishlist.displayName = 'Wishlist';
+export const WishlistBook = ({
+  children,
+  hasPreviousPage,
+  wishlists,
+  onCompare,
+  onRemove,
+  onColorSelect,
+}: PropsWithChildren<WishlistBookProps>) => {
+  const [wishlistBook, setWishlistBook] = useState<WishlistArray>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const { accountState } = useAccountStatusContext();
+  const [createWishlistModalOpen, setCreateWishlistModalOpen] = useState(false);
+  const router = useRouter();
 
-export const WishlistBook = memo(
-  ({
-    children,
-    hasPreviousPage,
-    wishlists,
-    onCompare,
-    onRemove,
-    onColorSelect,
-  }: PropsWithChildren<WishlistBookProps>) => {
-    const [wishlistBook, setWishlistBook] = useState<WishlistArray>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const { accountState } = useAccountStatusContext();
-    const [createWishlistModalOpen, setCreateWishlistModalOpen] = useState(false);
-    const router = useRouter();
+  // Memoize filtered wishlists calculation
+  const filteredWishlists = useMemo(() => {
+    return wishlists.map((wishlist) => {
+      const filteredItems = filterDeletedWishlistItems(wishlist.items);
+      return {
+        ...wishlist,
+        items: filteredItems,
+        itemCount: filteredItems.length,
+      };
+    });
+  }, [wishlists]);
 
-    const filteredWishlists = useMemo(() => {
-      return wishlists.map((wishlist) => {
-        const filteredItems = filterDeletedWishlistItems(wishlist.items);
-        return {
-          ...wishlist,
-          items: filteredItems,
-          itemCount: filteredItems.length,
-        };
-      });
-    }, [wishlists]);
+  useEffect(() => {
+    setWishlistBook(filteredWishlists);
+    setIsLoading(false);
 
-    useEffect(() => {
-      setWishlistBook(filteredWishlists);
-      setIsLoading(false);
-
-      try {
-        localStorage.setItem(
-          'wishlistData',
-          JSON.stringify({
-            wishlists: filteredWishlists,
-            lastUpdated: Date.now(),
-          }),
-        );
-      } catch (error) {
-        console.error('Error saving wishlist data:', error);
-      }
-
-      if (hasPreviousPage && filteredWishlists.length === 0) {
-        const timer = setTimeout(() => {
-          router.back();
-        }, 3000);
-        return () => clearTimeout(timer);
-      }
-    }, [filteredWishlists, hasPreviousPage, router]);
-
-    const handleWishlistCreated = useCallback((newWishlist: NewWishlist) => {
-      setWishlistBook((prev) => {
-        if (prev.length < WISHLISTS_PER_PAGE) {
-          return [...prev, newWishlist];
-        }
-        return prev;
-      });
-      setCreateWishlistModalOpen(false);
-    }, []);
-
-    const handleModalOpen = useCallback(() => {
-      setCreateWishlistModalOpen(true);
-    }, []);
-
-    if (isLoading) {
-      return <div>Loading...</div>;
-    }
-
-    return (
-      <div className="account-wishlist m-auto w-[80%]">
-        {(accountState.status === 'error' || accountState.status === 'success') && (
-          <Message className="mb-8 w-full text-gray-500" variant={accountState.status}>
-            <p>{accountState.message}</p>
-          </Message>
-        )}
-
-        <div className="mb-8 flex justify-between md:hidden">
-          {children}
-          <Modal
-            trigger={
-              <Button
-                className="h-[45px] w-[12em] rounded-sm bg-[#03465C] text-sm font-medium leading-8 tracking-wide text-white"
-                onClick={handleModalOpen}
-              >
-                <span className="mr-[5px] text-[20px]">+</span> CREATE NEW LIST
-              </Button>
-            }
-          >
-            <CreateWishlistDialog onWishlistCreated={handleWishlistCreated} />
-          </Modal>
-        </div>
-
-        <ul className="mb-8">
-          {wishlistBook.map((wishlist) => (
-            <li
-              key={wishlist.entityId}
-              className="flex flex-wrap items-start border-b border-[#4EAECC] py-4 first:border-t"
-            >
-              <Wishlist
-                setWishlistBook={setWishlistBook}
-                wishlist={wishlist}
-                onCompare={onCompare}
-                onRemove={onRemove}
-                onColorSelect={onColorSelect}
-              />
-            </li>
-          ))}
-        </ul>
-
-        <div className="create-wishlist-mobile-display mb-16 flex justify-between">
-          {children}
-          <Modal
-            trigger={
-              <Button
-                className="h-[45px] w-[12em] rounded-sm bg-[#03465C] text-sm font-medium leading-8 tracking-wide text-white"
-                onClick={handleModalOpen}
-              >
-                <span className="mr-[5px] text-[20px]">+</span> CREATE NEW LIST
-              </Button>
-            }
-          >
-            <CreateWishlistDialog onWishlistCreated={handleWishlistCreated} />
-          </Modal>
-        </div>
-      </div>
+    localStorage.setItem(
+      'wishlistData',
+      JSON.stringify({
+        wishlists: filteredWishlists,
+        lastUpdated: Date.now(),
+      }),
     );
-  },
-);
 
-WishlistBook.displayName = 'WishlistBook';
+    if (hasPreviousPage && filteredWishlists.length === 0) {
+      const timer = setTimeout(() => {
+        router.back();
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [filteredWishlists, hasPreviousPage, router]);
 
-// export default WishlistBook;
+  const handleWishlistCreated = useCallback((newWishlist: NewWishlist) => {
+    setWishlistBook((prev) => {
+      if (prev.length < WISHLISTS_PER_PAGE) {
+        return [...prev, newWishlist];
+      }
+      return prev;
+    });
+    setCreateWishlistModalOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  return (
+    <div className="account-wishlist m-auto w-[80%]">
+      {(accountState.status === 'error' || accountState.status === 'success') && (
+        <Message className="mb-8 w-full text-gray-500" variant={accountState.status}>
+          <p>{accountState.message}</p>
+        </Message>
+      )}
+
+      <div className="mb-8 flex justify-between md:hidden">
+        {children}
+
+        <Modal
+          trigger={
+            <Button
+              className="h-[45px] w-[12em] rounded-sm bg-[#03465C] text-sm font-medium leading-8 tracking-wide text-white"
+              onClick={() => setCreateWishlistModalOpen(true)}
+            >
+              <span className="mr-[5px] text-[20px]">+</span> CREATE NEW LIST
+            </Button>
+          }
+        >
+          <CreateWishlistDialog onWishlistCreated={handleWishlistCreated} />
+        </Modal>
+      </div>
+
+      <ul className="mb-8">
+        {wishlistBook.map((wishlist) => (
+          <li
+            className="flex flex-wrap items-start border-b border-[#4EAECC] py-4 first:border-t"
+            key={wishlist.entityId}
+          >
+            <Wishlist
+              setWishlistBook={setWishlistBook}
+              wishlist={wishlist}
+              onCompare={onCompare}
+              onRemove={onRemove}
+              onColorSelect={onColorSelect}
+            />
+          </li>
+        ))}
+      </ul>
+
+      <div className="create-wishlist-mobile-display mb-16 flex justify-between">
+        {children}
+
+        <Modal
+          trigger={
+            <Button
+              className="h-[45px] w-[12em] rounded-sm bg-[#03465C] text-sm font-medium leading-8 tracking-wide text-white"
+              onClick={() => setCreateWishlistModalOpen(true)}
+            >
+              <span className="mr-[5px] text-[20px]">+</span> CREATE NEW LIST
+            </Button>
+          }
+        >
+          <CreateWishlistDialog onWishlistCreated={handleWishlistCreated} />
+        </Modal>
+      </div>
+    </div>
+  );
+};
+
+export default WishlistBook;

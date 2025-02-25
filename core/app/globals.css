@@ -140,6 +140,20 @@ body {
   display: block;
 }
 
+/* PDP - sticky */
+.PDP-sticky .request-a-quote {
+  display: none;
+}
+.promotion-wishlist .promotion-plp {
+  margin-top: 0em;
+}
+.PDP-sticky form {
+  width: 220px;
+}
+.pdp-sticky-mobile form {
+  width: 100% !important;
+}
+
 /* Desktop */
 .Open_Sans {
   font-family: var(--font-Open_Sans);

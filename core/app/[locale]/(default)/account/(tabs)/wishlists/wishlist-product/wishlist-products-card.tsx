@@ -339,58 +339,51 @@ export const ProductCard = memo(
         {/* Main Card Content */}
         <div className="relative mb-4 flex h-full flex-col border border-gray-300 pb-0">
           <div className="product-card-details pb-[0em] text-center">
-
-          <div className="wishlist-product-details pl-[15px] pr-[15px]">
-
-            {/* Image and Delete Button */}
-            <div className="relative aspect-square overflow-hidden">
-              <Link href={item.product.path}>
-                <img
-                  src={item.product.defaultImage.url.replace('{:size}', '500x500')}
-                  alt={item.product.defaultImage.altText || item.product.name}
-                  className="h-full w-full object-cover"
-                />
-              </Link>
-            </div>
-<div className='wishlist-product-brand-delete'>
-
-            <div className="flex justify-end">
-              <div
-                className="wishlist-product-delete-icon mb-[1em] flex w-fit cursor-pointer justify-end rounded-full bg-[#E7F5F8]"
-                onClick={handleDeleteWishlist}
-              >
-                {state.isDeleting ? (
-                  <Loader2 className="h-[35px] w-[35px] animate-spin p-[7px] text-[#008BB7]" />
-                ) : (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="35"
-                    height="35"
-                    viewBox="0 0 21 19"
-                    fill="none"
-                    className="p-[7px]"
+            <div className="wishlist-product-details pl-[15px] pr-[15px]">
+              {/* Image and Delete Button */}
+              <div className="relative aspect-square overflow-hidden">
+                <Link href={item.product.path}>
+                  <img
+                    src={item.product.defaultImage.url.replace('{:size}', '500x500')}
+                    alt={item.product.defaultImage.altText || item.product.name}
+                    className="h-full w-full object-cover"
+                  />
+                </Link>
+              </div>
+              <div className="wishlist-product-brand-delete">
+                <div className="flex justify-end">
+                  <div
+                    className="wishlist-product-delete-icon mb-[1em] flex w-fit cursor-pointer justify-end rounded-full bg-[#E7F5F8]"
+                    onClick={handleDeleteWishlist}
                   >
-                    <path
-                      d="M10.3257 18.35L8.87568 17.03C3.72568 12.36 0.325684 9.27 0.325684 5.5C0.325684 2.41 2.74568 0 5.82568 0C7.56568 0 9.23568 0.81 10.3257 2.08C11.4157 0.81 13.0857 0 14.8257 0C17.9057 0 20.3257 2.41 20.3257 5.5C20.3257 9.27 16.9257 12.36 11.7757 17.03L10.3257 18.35Z"
-                      fill="#008BB7"
-                    />
-                  </svg>
-                )}
-              </div>
-            </div>
+                    {state.isDeleting ? (
+                      <Loader2 className="h-[35px] w-[35px] animate-spin p-[7px] text-[#008BB7]" />
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="35"
+                        height="35"
+                        viewBox="0 0 21 19"
+                        fill="none"
+                        className="p-[7px]"
+                      >
+                        <path
+                          d="M10.3257 18.35L8.87568 17.03C3.72568 12.36 0.325684 9.27 0.325684 5.5C0.325684 2.41 2.74568 0 5.82568 0C7.56568 0 9.23568 0.81 10.3257 2.08C11.4157 0.81 13.0857 0 14.8257 0C17.9057 0 20.3257 2.41 20.3257 5.5C20.3257 9.27 16.9257 12.36 11.7757 17.03L10.3257 18.35Z"
+                          fill="#008BB7"
+                        />
+                      </svg>
+                    )}
+                  </div>
+                </div>
 
-          
-              {/* Brand */}
-              <div className="flex justify-center">
-                {item.product.brand && (
-                  <p className="mb-2 flex justify-center text-sm text-gray-600">
-                    {item.product.brand.name}
-                  </p>
-                )}
-              </div>
-
-
-
+                {/* Brand */}
+                <div className="flex justify-center">
+                  {item.product.brand && (
+                    <p className="mb-2 flex justify-center text-sm text-gray-600">
+                      {item.product.brand.name}
+                    </p>
+                  )}
+                </div>
               </div>
 
               {/* Product Name */}
@@ -469,7 +462,7 @@ export const ProductCard = memo(
               )}
 
               {/* Reviews */}
-              <div className="flex justify-center">
+              <div className="mb-4 flex justify-center">
                 <ReviewSummary
                   data={{
                     reviewSummary: {
@@ -483,7 +476,7 @@ export const ProductCard = memo(
 
             {/* Promotions */}
             {state.hasActivePromotion && (
-              <div className="text-center">
+              <div className="promotion-wishlist text-center">
                 <Promotion
                   promotions={state.promotionsData}
                   product_id={item.productEntityId}

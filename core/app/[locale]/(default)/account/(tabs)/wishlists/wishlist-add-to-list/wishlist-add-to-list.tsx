@@ -185,30 +185,61 @@ const WishlistAddToList = memo(
     }, [uiState.isOpen, filterDeletedItems]);
 
     const handleHeartClick = useCallback(async () => {
-      const data = await getWishlists({ limit: 1 });
-      if (!data) {
-        window.location.href = '/login';
-        return;
+      try {
+        if (!manageDeletedProducts.isClient()) return;
+
+        // Try to get wishlists
+        const data = await getWishlists({ limit: 1 });
+        console.log('Wishlist data:', data);
+
+        if (!data) {
+          if (onGuestClick) {
+            onGuestClick();
+          } else if (typeof window !== 'undefined') {
+            const confirmLogin = window.confirm(
+              'You need to be logged in to use wishlists. Would you like to go to the login page?',
+            );
+
+            if (confirmLogin) {
+              window.location.href = '/login';
+            }
+          }
+          return;
+        }
+
+        setUiState((prev) => ({
+          ...prev,
+          isOpen: true,
+          message: null,
+        }));
+
+        setWishlistState((prev) => ({
+          ...prev,
+          tempAddedItems: [],
+        }));
+      } catch (error) {
+        console.error('Error in handleHeartClick:', error);
+        // Show an error message to the user
+        setUiState((prev) => ({
+          ...prev,
+          message: {
+            type: 'error',
+            text: 'Failed to load wishlists. Please try again later.',
+          },
+        }));
       }
-
-      setUiState((prev) => ({
-        ...prev,
-        isOpen: true,
-        message: null,
-      }));
-
-      setWishlistState((prev) => ({
-        ...prev,
-        tempAddedItems: [],
-      }));
-    }, []);
+    }, [onGuestClick]);
 
     const handleClose = useCallback(() => {
+      // Only show the confirmation if there are unsaved changes
       if (wishlistState.tempAddedItems.length > 0) {
-        const confirmed = window.confirm(
-          'You have unsaved changes. Are you sure you want to close?',
-        );
-        if (!confirmed) return;
+        // Check if we're in the browser
+        if (typeof window !== 'undefined') {
+          const confirmed = window.confirm(
+            'You have unsaved changes. Are you sure you want to close?',
+          );
+          if (!confirmed) return;
+        }
       }
 
       setUiState((prev) => ({

@@ -580,7 +580,9 @@ export function Hit({
               ],
             }}
             onGuestClick={() => {
-              window.location.href = '/login';
+              if (typeof window !== 'undefined') {
+                window.location.href = '/login';
+              }
             }}
             classNames={{
               root: 'absolute bottom-2 right-2',
@@ -750,7 +752,9 @@ export function Hit({
                   ],
                 }}
                 onGuestClick={() => {
-                  window.location.href = '/login';
+                  if (typeof window !== 'undefined') {
+                    window.location.href = '/login';
+                  }
                 }}
                 classNames={{
                   root: 'absolute bottom-2 right-2',
