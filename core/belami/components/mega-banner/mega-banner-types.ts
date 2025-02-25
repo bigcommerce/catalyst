@@ -4,24 +4,25 @@ export interface MegaBannerItem {
   title?: string;
   location?: string;
   imageSrc?: string;
+  imageMobileSrc?: string;
   imageAlt?: string;
   link?: { href?: string; target?: string };
   content?: ReactNode | string;
   schedule?: { startDate?: string; endDate?: string };
   conditions?: {
-    brandIds?: string;
-    categoryIds?: string;
+    brandNames?: string;
+    categoryNames?: string;
     productIds?: string;
-    excludeBrandIds?: string;
-    excludeCategoryIds?: string;
+    excludeBrandNames?: string;
+    excludeCategoryNames?: string;
     excludeProductIds?: string;
   };
 }
 
 export type MegaBannerCustomProps = {
   location?: string;
-  brandId?: number;
-  categoryId?: number;
+  brandName?: string;
+  categoryNames?: string[];
   productId?: number;
 };
 
