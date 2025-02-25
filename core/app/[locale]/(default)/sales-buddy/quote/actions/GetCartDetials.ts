@@ -125,8 +125,26 @@ const MoneyFieldFragment = graphql(`
                 entityId
                 quantity
                 sku
+                url
                 productEntityId
                 variantEntityId
+                catalogProductWithOptionSelections {
+                    prices {
+                      retailPrice {
+                        currencyCode
+                        value
+                        formatted
+                      }
+                      salePrice {
+                        currencyCode
+                        value
+                      }
+                      basePrice {
+                        currencyCode
+                        value
+                      }
+                    }
+                  }
                 extendedListPrice {
                   ...MoneyFieldFragment
                 }

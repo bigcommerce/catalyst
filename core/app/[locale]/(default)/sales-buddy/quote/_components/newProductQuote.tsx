@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import closeIcon from '~/public/add-to-cart/flyoutCloseIcon.svg';
 import { BcImage } from '~/components/bc-image';
+import { getBrand } from '../actions/brand';
 
 interface NewProductQuoteProps {
   children: React.ReactNode;
@@ -12,22 +13,38 @@ interface NewProductQuoteProps {
 
 const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children, onAddProduct }) => {
   const [productData, setProductData] = useState({
-    brand: '102',
+    brand: "",
     name: 'Shirt',
     sku: 'sku12345',
     quantity: 1,
     price: 100
   });
-
+  const [brands, setBrands] = useState([]);
+  const [selectedBrand, setSelectedBrand] = useState("");
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductData({ ...productData, [name]: value });
+    setSelectedBrand(value);
   };
 
   const handleSave = () => {
+    console.log("productData---------", productData);
+    
     onAddProduct(productData);
     setProductData({ brand: '', name: '', sku: '', quantity: 0, price: 0 });
   };
+
+  const getProductBrands=async()=>{
+    var getBrandData =await getBrand()
+    console.log("getBrandData---------", getBrandData.output);
+    setBrands(getBrandData.output)
+    
+  }
+  useEffect(() => {
+
+    console.log("getProductBrands---------", getProductBrands());
+  }, []);
+  
 
   return (
     <Dialog.Root>
@@ -52,10 +69,12 @@ const NewProductQuote: React.FC<NewProductQuoteProps> = ({ children, onAddProduc
                       value={productData.brand}
                       onChange={handleChange}
                     >
-                      <option value="">Select Brand</option>
-                      <option value="Brand 1">Brand 1</option>
-                      <option value="Brand 2">Brand 2</option>
-                      <option value="Brand 3">Brand 3</option>
+                      <option  value={""}>{"select option"}</option>
+                      {
+                        brands.map((brand) => (
+                          <option key={brand.id} value={brand.id}>{brand.name}</option>
+                        ))
+                      }
                     </select>
                   </div>
                 </div>
