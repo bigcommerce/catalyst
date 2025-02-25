@@ -250,7 +250,7 @@ export const Details = ({
   const showPriceRange =
     product.prices?.priceRange?.min?.value !== product.prices?.priceRange?.max?.value;
 
-  const categoryIds = product?.categories?.edges?.map((edge) => edge.node.entityId) || [];
+  const categoryIds = product?.categories?.edges?.map((edge) => edge?.node?.entityId) || [];
   const productId = product?.entityId;
   const brandId = product.brand?.entityId || 0;
   const [currentImageUrl, setCurrentImageUrl] = useState(product.defaultImage?.url || '');
@@ -264,7 +264,7 @@ export const Details = ({
       setShowStickyHeader(window.scrollY > 1500);
     };
 
-    const handleCustomScroll = (e) => {
+    const handleCustomScroll = (e:any) => {
       setShowStickyHeader(e.detail.scrollY > 1500);
     };
 
@@ -272,8 +272,8 @@ export const Details = ({
     window.addEventListener('customScroll', handleCustomScroll);
 
     // Update variant image
-    const variantImages = product.images?.edges?.map((edge) => edge.node) || [];
-    const matchingVariant = variants.find((variant) => variant.sku === product.sku);
+    const variantImages = product.images?.edges?.map((edge) => edge?.node) || [];
+    const matchingVariant = variants.find((variant) => variant?.sku === product?.sku);
 
     if (matchingVariant) {
       setSelectedVariantId(matchingVariant.entityId);
@@ -595,7 +595,7 @@ export const Details = ({
               }}
             />
           )}
-          {combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
+          {Array.isArray(combinedData?.closeOutData) && combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
             <div className="closeout-messages">
               <div className="bg-[#B4B4B5] content-center px-[10px] max-w-fit text-[#ffffff] tracking-[1.25px] leading-[32px] text-[14px]">
                 CLEARANCE
@@ -618,7 +618,7 @@ export const Details = ({
             </div>
           </div>
         )}
-        {combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
+        {Array.isArray(combinedData?.closeOutData) && combinedData?.closeOutData?.length > 0 && combinedData?.closeOutData[0] === "True" && (
           <div className="closeout-messages flex items-center justify-center h-[25px] xl:justify-start">
             <div className="font-bold font-Inter max-w-fit text-[#353535] leading-[15px] text-[12px] ">
               Final Sale
@@ -626,7 +626,7 @@ export const Details = ({
           </div>
         )}
         <div className="free-shipping-detail mb-[30px] text-center xl:text-left">
-        {combinedData?.deliveryEstimatedTexts?.length > 0 && (
+        {Array.isArray (combinedData?.closeOutData) && combinedData?.deliveryEstimatedTexts?.length > 0 && (
           combinedData?.deliveryEstimatedTexts?.map((message, index) => {
             const parsedMessages = JSON.parse(message);
             const firstMessage = parsedMessages[0];
