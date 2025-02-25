@@ -1375,3 +1375,18 @@ body:has(.mega-menu-sidebar-fade) > footer {
 .mega-menu .sub-menu .main-sub-sub-menu-item > a:hover {
   text-decoration: underline;
 }
+
+
+.mega-banner {
+  margin: 0 auto;
+  padding: 0;
+  display:block;
+  width: 100%;
+}
+.mega-banner .mega-banner-image, .mega-banner .mega-banner-image-mobile {
+  max-width: 100%;
+  height: auto;
+}
+.mega-banner-under-header .mega-banner-image, .mega-banner-under-header .mega-banner-image-mobile {
+  width: 100%;
+}
