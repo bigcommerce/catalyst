@@ -9,7 +9,7 @@ import { schema } from '@/vibes/soul/sections/address-list-section/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
+import { doNotCachePolicy, TAGS } from "~/client/cache-policy";
 import { FieldNameToFieldId } from '~/data-transformers/form-field-transformer/utils';
 
 import { type State } from './address-action';
@@ -228,7 +228,7 @@ export async function updateAddress(prevState: Awaited<State>, formData: FormDat
     const response = await client.fetch({
       document: UpdateCustomerAddressMutation,
       customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
+      fetchOptions: doNotCachePolicy(),
       variables: {
         input,
       },

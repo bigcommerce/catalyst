@@ -8,7 +8,7 @@ import {
 } from '~/client/mutations/add-cart-line-item';
 import { assertCreateCartErrors, createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
-import { TAGS } from '~/client/tags';
+import { TAGS } from "~/client/cache-policy";
 import { getCartId, setCartId } from '~/lib/cart';
 
 export const addToCart = async (data: FormData) => {

@@ -12,6 +12,7 @@
 
 import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
+import { doNotCachePolicy } from '~/client/cache-policy';
 import { graphql } from '~/client/graphql';
 import { defaultLocale } from '~/i18n/routing';
 
@@ -44,7 +45,7 @@ export const GET = async () => {
   const { data } = await client.fetch({
     document: RobotsTxtQuery,
     channelId: getChannelIdFromLocale(defaultLocale),
-    fetchOptions: { cache: 'no-store' }, // disable caching to get the latest robots.txt at build time
+    fetchOptions: doNotCachePolicy(), // disable caching to get the latest robots.txt at build time
   });
 
   const robotsTxt = `${data.site.settings?.robotsTxt ?? ''}\nSitemap: ${baseUrl.origin}/sitemap.xml\n`;

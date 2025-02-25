@@ -5,7 +5,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { shopperCachePolicy } from '~/client/cache-policy';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
@@ -262,7 +262,7 @@ export const getProductData = cache(async (variables: Variables) => {
     document: ProductPageQuery,
     variables: { ...variables, currencyCode },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: shopperCachePolicy(customerAccessToken),
   });
 
   const product = data.site.product;

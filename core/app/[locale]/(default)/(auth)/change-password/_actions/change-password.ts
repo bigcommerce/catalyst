@@ -8,6 +8,7 @@ import { getTranslations } from 'next-intl/server';
 import { schema } from '@/vibes/soul/sections/reset-password-section/schema';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { doNotCachePolicy } from '~/client/cache-policy';
 
 const ChangePasswordMutation = graphql(`
   mutation ChangePasswordMutation($input: ResetPasswordInput!) {
@@ -47,9 +48,7 @@ export async function changePassword(
           newPassword: submission.value.password,
         },
       },
-      fetchOptions: {
-        cache: 'no-store',
-      },
+      fetchOptions: doNotCachePolicy(),
     });
 
     const result = response.data.customer.resetPassword;

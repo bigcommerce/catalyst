@@ -12,6 +12,7 @@ import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { FieldNameToFieldId } from '~/data-transformers/form-field-transformer/utils';
 import { redirect } from '~/i18n/routing';
+import { doNotCachePolicy } from '~/client/cache-policy';
 
 const RegisterCustomerMutation = graphql(`
   mutation RegisterCustomerMutation(
@@ -205,7 +206,7 @@ export async function registerCustomer<F extends Field>(
         input,
         // ...(recaptchaToken && { reCaptchaV2: { token: recaptchaToken } }),
       },
-      fetchOptions: { cache: 'no-store' },
+      fetchOptions: doNotCachePolicy(),
     });
 
     if (response.errors != null && response.errors.length > 0) {

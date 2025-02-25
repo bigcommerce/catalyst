@@ -8,7 +8,7 @@ import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { getPreferredCurrencyCode } from '~/lib/currency';
-
+import { shopperCachePolicy } from '~/client/cache-policy';
 const GetProductSearchResultsQuery = graphql(
   `
     query GetProductSearchResultsQuery(
@@ -177,7 +177,7 @@ const getProductSearchResults = cache(
       document: GetProductSearchResultsQuery,
       variables: { ...filterArgs, ...paginationArgs, currencyCode },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 300 } },
+      fetchOptions: shopperCachePolicy(customerAccessToken),
     });
 
     const { site } = response.data;

@@ -5,7 +5,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
+import { doNotCachePolicyWithEntityTags, TAGS } from "~/client/cache-policy";
 import {
   FormFieldsFragment,
   FormFieldValuesFragment,
@@ -78,7 +78,7 @@ export const getCustomerAddresses = cache(
       document: GetCustomerAddressesQuery,
       variables: { ...paginationArgs },
       customerAccessToken,
-      fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
+      fetchOptions: doNotCachePolicyWithEntityTags({ entityType: TAGS.customer }),
     });
 
     const addresses = response.data.customer?.addresses;

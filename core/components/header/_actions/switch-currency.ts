@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
+import { TAGS } from "~/client/cache-policy";
 import { getCartId, setCartId } from '~/lib/cart';
 import { setPreferredCurrencyCode } from '~/lib/currency';
 

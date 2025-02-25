@@ -1,7 +1,7 @@
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
+import { doNotCachePolicyWithEntityTags, TAGS } from "~/client/cache-policy";
 
 export const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -184,12 +184,7 @@ export const getCart = async (variables: Variables) => {
     document: CartPageQuery,
     variables,
     customerAccessToken,
-    fetchOptions: {
-      cache: 'no-store',
-      next: {
-        tags: [TAGS.cart, TAGS.checkout],
-      },
-    },
+    fetchOptions: doNotCachePolicyWithEntityTags({ entityType: TAGS.cart }),
   });
 
   return data;

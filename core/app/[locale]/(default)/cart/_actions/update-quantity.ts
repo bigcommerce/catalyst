@@ -9,6 +9,7 @@ import { graphql, VariablesOf } from '~/client/graphql';
 import { getCartId } from '~/lib/cart';
 
 import { removeItem } from './remove-item';
+import { doNotCachePolicy } from '~/client/cache-policy';
 
 const UpdateCartLineItemMutation = graphql(`
   mutation UpdateCartLineItem($input: UpdateCartLineItemInput!) {
@@ -78,7 +79,7 @@ export const updateQuantity = async ({
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
+    fetchOptions: doNotCachePolicy(),
   });
 
   const cart = response.data.cart.updateCartLineItem?.cart;

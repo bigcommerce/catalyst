@@ -10,7 +10,7 @@ import { UpdateAccountAction } from '@/vibes/soul/sections/account-settings-sect
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
+import { doNotCachePolicy, TAGS } from "~/client/cache-policy";
 
 const UpdateCustomerMutation = graphql(`
   mutation UpdateCustomerMutation($input: UpdateCustomerInput!) {
@@ -63,7 +63,7 @@ export const updateCustomer: UpdateAccountAction = async (prevState, formData) =
       variables: {
         input: submission.value,
       },
-      fetchOptions: { cache: 'no-store' },
+      fetchOptions: doNotCachePolicy(),
     });
 
     const result = response.data.customer.updateCustomer;

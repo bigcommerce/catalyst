@@ -5,7 +5,7 @@ import { cache } from 'react';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { anonymousCachePolicy } from '~/client/cache-policy';
 import { BlogPostCardFragment } from '~/components/blog-post-card/fragment';
 
 const BlogQuery = graphql(`
@@ -66,7 +66,7 @@ interface Pagination {
 export const getBlog = cache(async () => {
   const response = await client.fetch({
     document: BlogQuery,
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: anonymousCachePolicy,
   });
 
   return response.data.site.content.blog;
@@ -80,7 +80,7 @@ export const getBlogPosts = cache(
     const response = await client.fetch({
       document: BlogPostsPageQuery,
       variables: { ...filterArgs, ...paginationArgs },
-      fetchOptions: { next: { revalidate } },
+      fetchOptions: anonymousCachePolicy,
     });
 
     const { blog } = response.data.site.content;

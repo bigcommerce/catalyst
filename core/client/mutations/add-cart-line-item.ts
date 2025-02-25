@@ -2,6 +2,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
+import { doNotCachePolicy } from '../cache-policy';
 
 const AddCartLineItemMutation = graphql(`
   mutation AddCartLineItemMutation($input: AddCartLineItemsInput!) {
@@ -28,7 +29,7 @@ export const addCartLineItem = async (
     document: AddCartLineItemMutation,
     variables: { input: { cartEntityId, data } },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
+    fetchOptions: doNotCachePolicy(),
   });
 };
 

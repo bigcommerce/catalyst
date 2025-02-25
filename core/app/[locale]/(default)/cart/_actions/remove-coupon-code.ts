@@ -5,7 +5,7 @@ import { revalidateTag } from 'next/cache';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
+import { doNotCachePolicy, TAGS } from "~/client/cache-policy";
 
 const UnapplyCheckoutCouponMutation = graphql(`
   mutation UnapplyCheckoutCouponMutation($unapplyCheckoutCouponInput: UnapplyCheckoutCouponInput!) {
@@ -40,12 +40,12 @@ export const removeCouponCode = async ({ checkoutEntityId, couponCode }: Props) 
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
+    fetchOptions: doNotCachePolicy(),
   });
 
   const checkout = response.data.checkout.unapplyCheckoutCoupon?.checkout;
 
-  revalidateTag(TAGS.checkout);
+  revalidateTag(TAGS.cart);
 
   return checkout;
 };

@@ -2,6 +2,7 @@ import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
+import { doNotCachePolicy } from '~/client/cache-policy';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { FormFieldsFragment } from '~/data-transformers/form-field-transformer/fragment';
 import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
@@ -62,7 +63,7 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
       customerFilters: customer?.filters,
       customerSortBy: customer?.sortBy,
     },
-    fetchOptions: { cache: 'no-store' },
+    fetchOptions: doNotCachePolicy(),
     customerAccessToken,
   });
 

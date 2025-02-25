@@ -2,7 +2,7 @@ import { cache } from 'react';
 
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { anonymousCachePolicy } from '~/client/cache-policy';
 
 const BrandQuery = graphql(`
   query BrandQuery($entityId: Int!) {
@@ -25,7 +25,7 @@ export const getBrand = cache(async (variables: Variables) => {
   const response = await client.fetch({
     document: BrandQuery,
     variables,
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: anonymousCachePolicy(),
   });
 
   return response.data.site.brand;

@@ -2,7 +2,7 @@ import { cache } from 'react';
 
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { anonymousCachePolicy } from '~/client/cache-policy';
 
 const BlogPageQuery = graphql(`
   query BlogPageQuery($entityId: Int!) {
@@ -41,7 +41,7 @@ export const getBlogPageData = cache(async (variables: Variables) => {
   const response = await client.fetch({
     document: BlogPageQuery,
     variables,
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: anonymousCachePolicy,
   });
 
   const { blog } = response.data.site.content;

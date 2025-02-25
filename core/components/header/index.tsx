@@ -7,8 +7,7 @@ import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, readFragment } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
-import { TAGS } from '~/client/tags';
+import { revalidate, TAGS, shopperCache, doNotCache } from '~/client';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { routing } from '~/i18n/routing';
 import { getCartId } from '~/lib/cart';
@@ -38,7 +37,10 @@ const getLayoutData = cache(async () => {
   const { data: response } = await client.fetch({
     document: LayoutQuery,
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    policy: shopperCache({ 
+      customerAccessToken, 
+      cacheForCustomer: true 
+    }),
   });
 
   return readFragment(HeaderFragment, response).site;
@@ -49,75 +51,47 @@ const getLinks = async () => {
 
   /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
    To show a full list of categories, modify the `slice` method to remove the limit.
-   Will require modification of navigation menu styles to accommodate the additional categories.
    */
-  const categoryTree = data.categoryTree.slice(0, 6);
-
-  return categoryTree.map(({ name, path, children }) => ({
-    label: name,
-    href: path,
-    groups: children.map((firstChild) => ({
-      label: firstChild.name,
-      href: firstChild.path,
-      links: firstChild.children.map((secondChild) => ({
-        label: secondChild.name,
-        href: secondChild.path,
-      })),
-    })),
-  }));
+  return {
+    categories: data.categoryTree.slice(0, 6),
+    pages: data.content.pages.edges.map((edge) => edge.node),
+  };
 };
 
 const getLogo = async () => {
   const data = await getLayoutData();
 
-  return data.settings ? logoTransformer(data.settings) : '';
+  return logoTransformer(data.logo);
 };
 
 const getCartCount = async () => {
   const cartId = await getCartId();
 
   if (!cartId) {
-    return null;
+    return 0;
   }
-
-  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({
     document: GetCartCountQuery,
     variables: { cartId },
-    customerAccessToken,
-    fetchOptions: {
-      cache: 'no-store',
-      next: {
-        tags: [TAGS.cart],
-      },
-    },
+    policy: doNotCache({ 
+      entityType: TAGS.cart 
+    }),
   });
 
-  if (!response.data.site.cart) {
-    return null;
-  }
-
-  return response.data.site.cart.lineItems.totalQuantity;
+  return response.data.site.cart?.lineItems.totalQuantity ?? 0;
 };
 
 const getCurrencies = async () => {
   const data = await getLayoutData();
+  const preferredCurrencyCode = await getPreferredCurrencyCode();
 
-  if (!data.currencies.edges) {
-    return [];
-  }
-
-  const currencies = data.currencies.edges
-    // only show transactional currencies for now until cart prices can be rendered in display currencies
-    .filter(({ node }) => node.isTransactional)
-    .map(({ node }) => ({
-      id: node.code,
-      label: node.code,
-      isDefault: node.isDefault,
-    }));
-
-  return currencies;
+  return {
+    currencies: data.settings.storeCurrencies,
+    activeCurrency: data.settings.storeCurrencies.find(
+      (currency) => currency.currencyCode === preferredCurrencyCode,
+    ),
+  };
 };
 
 export const Header = async () => {
@@ -131,7 +105,7 @@ export const Header = async () => {
   }));
 
   const currencies = await getCurrencies();
-  const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
+  const defaultCurrency = currencies.currencies.find(({ isDefault }) => isDefault);
   const activeCurrencyId = currencyCode ?? defaultCurrency?.id;
 
   return (
@@ -154,7 +128,7 @@ export const Header = async () => {
         activeLocaleId: locale,
         locales,
         localeAction: switchLocale,
-        currencies,
+        currencies: currencies.currencies,
         activeCurrencyId,
         currencyAction: switchCurrency,
       }}

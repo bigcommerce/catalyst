@@ -5,7 +5,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
+import { doNotCachePolicyWithEntityTags, TAGS } from "~/client/cache-policy";
 
 import { OrderItemFragment } from './fragment';
 
@@ -93,7 +93,7 @@ export const getCustomerOrders = cache(
       document: CustomerAllOrders,
       variables: { ...paginationArgs, ...filtersArgs },
       customerAccessToken,
-      fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
+      fetchOptions: doNotCachePolicyWithEntityTags({ entityType: TAGS.customer }),
     });
 
     const orders = response.data.customer?.orders;

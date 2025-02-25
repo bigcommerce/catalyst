@@ -4,7 +4,7 @@ import { cache } from 'react';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
+import { doNotCachePolicyWithEntityTags, TAGS } from "~/client/cache-policy";
 
 import { OrderItemFragment } from '../fragment';
 
@@ -131,7 +131,7 @@ export const getCustomerOrderDetails = cache(async ({ id }: CustomerOrderDetails
         entityId: id,
       },
     },
-    fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
+    fetchOptions: doNotCachePolicyWithEntityTags({ entityType: TAGS.customer }),
     customerAccessToken,
   });
 

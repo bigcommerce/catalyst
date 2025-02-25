@@ -12,7 +12,7 @@ import { graphql } from '~/client/graphql';
 import { addCartLineItem } from '~/client/mutations/add-cart-line-item';
 import { createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
-import { TAGS } from '~/client/tags';
+import { TAGS } from "~/client/cache-policy";
 import { Link } from '~/components/link';
 import { getCartId, setCartId } from '~/lib/cart';
 

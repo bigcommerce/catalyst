@@ -4,7 +4,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 
 import { client } from '..';
 import { graphql } from '../graphql';
-import { TAGS } from '../tags';
+import { doNotCachePolicyWithEntityTags, TAGS } from "../cache-policy";
 
 const MoneyFieldFragment = graphql(`
   fragment MoneyFieldFragment on Money {
@@ -128,12 +128,7 @@ export const getCart = cache(async (cartId?: string, channelId?: string) => {
     document: GetCartQuery,
     variables: { cartId },
     customerAccessToken,
-    fetchOptions: {
-      cache: 'no-store',
-      next: {
-        tags: [TAGS.cart],
-      },
-    },
+    fetchOptions: doNotCachePolicyWithEntityTags({ entityType: TAGS.cart }),
     channelId,
   });
 

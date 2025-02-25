@@ -7,7 +7,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { shopperCachePolicy } from '~/client/cache-policy';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 import { SearchForm } from '~/components/search-form';
@@ -113,7 +113,7 @@ export default async function Compare(props: Props) {
       currencyCode,
     },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: shopperCachePolicy(customerAccessToken),
   });
 
   const products = removeEdgesAndNodes(data.site.products).map((product) => ({

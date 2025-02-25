@@ -3,7 +3,7 @@ import { cache } from 'react';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { shopperCachePolicy } from '~/client/cache-policy';
 import { BreadcrumbsCategoryFragment } from '~/components/breadcrumbs/fragment';
 
 const CategoryPageQuery = graphql(
@@ -50,7 +50,7 @@ export const getCategoryPageData = cache(async (variables: Variables) => {
     document: CategoryPageQuery,
     variables,
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: shopperCachePolicy(customerAccessToken),
   });
 
   return response.data.site;

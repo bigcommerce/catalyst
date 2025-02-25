@@ -14,7 +14,7 @@ import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { revalidate, shopperCachePolicy } from '~/client/cache-policy';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 
 import { FooterFragment } from './fragment';
@@ -48,7 +48,7 @@ const getLayoutData = cache(async () => {
 
   const { data: response } = await client.fetch({
     document: LayoutQuery,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: shopperCachePolicy(customerAccessToken, undefined, true),
   });
 
   return readFragment(FooterFragment, response).site;

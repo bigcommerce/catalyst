@@ -6,7 +6,7 @@ import { getTranslations } from 'next-intl/server';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
+import { doNotCachePolicy, TAGS } from "~/client/cache-policy";
 import { clearCartId, getCartId } from '~/lib/cart';
 
 const DeleteCartLineItemMutation = graphql(`
@@ -50,7 +50,7 @@ export async function removeItem({
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
+    fetchOptions: doNotCachePolicy(),
   });
 
   const cart = response.data.cart.deleteCartLineItem?.cart;

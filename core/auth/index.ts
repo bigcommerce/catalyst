@@ -8,6 +8,7 @@ import { z } from 'zod';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { clearCartId, getCartId, setCartId } from '~/lib/cart';
+import { doNotCachePolicy } from '~/client/cache-policy';
 import { serverToast } from '~/lib/server-toast';
 
 const LoginMutation = graphql(`
@@ -93,9 +94,7 @@ async function loginWithPassword(
   const response = await client.fetch({
     document: LoginMutation,
     variables: { email, password, cartEntityId },
-    fetchOptions: {
-      cache: 'no-store',
-    },
+    fetchOptions: doNotCachePolicy(),
   });
 
   if (response.errors && response.errors.length > 0) {
@@ -125,9 +124,7 @@ async function loginWithJwt(jwt: string, cartEntityId?: string): Promise<User | 
     document: LoginWithTokenMutation,
     variables: { jwt, cartEntityId },
     channelId,
-    fetchOptions: {
-      cache: 'no-store',
-    },
+    fetchOptions: doNotCachePolicy(),
   });
 
   if (response.errors && response.errors.length > 0) {
@@ -208,9 +205,7 @@ const config = {
             document: LogoutMutation,
             variables: {},
             customerAccessToken,
-            fetchOptions: {
-              cache: 'no-store',
-            },
+            fetchOptions: doNotCachePolicy(),
           });
 
           await clearCartId();

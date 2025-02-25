@@ -13,7 +13,7 @@ import '../globals.css';
 import { fonts } from '~/app/fonts';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { anonymousCachePolicy } from '~/client/cache-policy';
 import { routing } from '~/i18n/routing';
 
 import { getToastNotification } from '../../lib/server-toast';
@@ -38,7 +38,7 @@ const RootLayoutMetadataQuery = graphql(`
 export async function generateMetadata(): Promise<Metadata> {
   const { data } = await client.fetch({
     document: RootLayoutMetadataQuery,
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: anonymousCachePolicy(),
   });
 
   const storeName = data.site.settings?.storeName ?? '';

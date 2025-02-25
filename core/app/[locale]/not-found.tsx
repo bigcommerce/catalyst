@@ -6,7 +6,7 @@ import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-product
 import { NotFound as NotFoundSection } from '@/vibes/soul/sections/not-found';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { anonymousCachePolicy } from '~/client/cache-policy';
 import { Footer } from '~/components/footer';
 import { Header } from '~/components/header';
 import { ProductCardFragment } from '~/components/product-card/fragment';
@@ -36,7 +36,8 @@ async function getFeaturedProducts(): Promise<CarouselProduct[]> {
   const { data } = await client.fetch({
     document: NotFoundQuery,
     variables: { currencyCode },
-    fetchOptions: { next: { revalidate } },
+    // This is an anonymous version of featured products for the not found page
+    fetchOptions: anonymousCachePolicy(),
   });
 
   const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);

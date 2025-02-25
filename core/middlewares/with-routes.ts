@@ -3,7 +3,7 @@ import { z } from 'zod';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { anonymousPolicy } from '~/client/cache-policy';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { kv } from '../lib/kv';
@@ -60,7 +60,7 @@ const getRoute = async (path: string, channelId?: string) => {
   const response = await client.fetch({
     document: GetRouteQuery,
     variables: { path },
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: anonymousPolicy(),
     channelId,
   });
 
@@ -106,7 +106,7 @@ const GetStoreStatusQuery = graphql(`
 const getStoreStatus = async (channelId?: string) => {
   const { data } = await client.fetch({
     document: GetStoreStatusQuery,
-    fetchOptions: { next: { revalidate: 300 } },
+    fetchOptions: anonymousPolicy(),
     channelId,
   });
 

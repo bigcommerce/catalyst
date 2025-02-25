@@ -3,7 +3,7 @@ import { cache } from 'react';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { TAGS } from '~/client/tags';
+import { doNotCachePolicyWithEntityTags, TAGS } from "~/client/cache-policy";
 import { FormFieldsFragment } from '~/data-transformers/form-field-transformer/fragment';
 
 const CustomerSettingsQuery = graphql(
@@ -63,7 +63,7 @@ export const getCustomerSettingsQuery = cache(async ({ address, customer }: Prop
       customerFilters: customer?.filters,
       customerSortBy: customer?.sortBy,
     },
-    fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
+    fetchOptions: doNotCachePolicyWithEntityTags({ entityType: TAGS.customer }),
     customerAccessToken,
   });
 

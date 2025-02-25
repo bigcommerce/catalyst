@@ -10,7 +10,7 @@ import { SearchResult } from '@/vibes/soul/primitives/navigation';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { revalidate, shopperCachePolicy } from '~/client/cache-policy';
 import { searchResultsTransformer } from '~/data-transformers/search-results-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
@@ -88,7 +88,7 @@ export async function search(
       document: GetQuickSearchResultsQuery,
       variables: { filters: { searchTerm: submission.value.term }, currencyCode },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: shopperCachePolicy(customerAccessToken),
     });
 
     const { products } = response.data.site.search.searchProducts;

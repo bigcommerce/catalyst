@@ -7,7 +7,7 @@ import { FeaturedProductsList } from '@/vibes/soul/sections/featured-products-li
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { shopperCachePolicy } from '~/client/cache-policy';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
 import { Subscribe } from '~/components/subscribe';
@@ -47,7 +47,7 @@ const getPageData = cache(async () => {
     document: HomePageQuery,
     customerAccessToken,
     variables: { currencyCode },
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: shopperCachePolicy(customerAccessToken),
   });
 
   return data;

@@ -8,6 +8,7 @@ import { z } from 'zod';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
+import { doNotCachePolicy } from '~/client/cache-policy';
 import { graphql } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
 import { getCartId } from '~/lib/cart';
@@ -47,7 +48,7 @@ export const redirectToCheckout = async (
     const { data } = await client.fetch({
       document: CheckoutRedirectMutation,
       variables: { cartId },
-      fetchOptions: { cache: 'no-store' },
+      fetchOptions: doNotCachePolicy(),
       customerAccessToken,
     });
 

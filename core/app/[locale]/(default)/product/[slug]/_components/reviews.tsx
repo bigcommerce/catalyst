@@ -7,7 +7,7 @@ import { Reviews as ReviewsSection } from '@/vibes/soul/sections/reviews';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { anonymousCachePolicy } from '~/client/cache-policy';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
 import { ProductReviewSchemaFragment } from './product-review-schema/fragment';
@@ -66,7 +66,7 @@ const getReviewsData = cache(async (productId: number, searchParams: Promise<Sea
   const { data } = await client.fetch({
     document: ReviewsQuery,
     variables: { ...paginationArgs, entityId: productId },
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: anonymousCachePolicy,
   });
 
   return data.site.product;

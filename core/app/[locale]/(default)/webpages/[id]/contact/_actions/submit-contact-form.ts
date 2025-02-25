@@ -10,7 +10,7 @@ import { Field, FieldGroup, schema } from '@/vibes/soul/primitives/dynamic-form/
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
-
+import { doNotCachePolicy } from '~/client/cache-policy';
 const inputSchema = z.object({
   data: z.object({
     companyName: z.string().optional(),
@@ -81,7 +81,7 @@ export async function submitContactForm<F extends Field>(
         input,
         // ...(recaptchaToken && { reCaptchaV2: { token: recaptchaToken } }),
       },
-      fetchOptions: { cache: 'no-store' },
+      fetchOptions: doNotCachePolicy(),
     });
 
     const result = response.data.submitContactUs;

@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 
 // import { client } from '~/client';
 // import { graphql } from '~/client/graphql';
-// import { revalidate } from '~/client/revalidate-target';
+// import { anonymousCachePolicy } from '~/client/cache-policy';
 // import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { ForgotPasswordSection } from '@/vibes/soul/sections/forgot-password-section';
@@ -38,7 +38,7 @@ export default async function Reset() {
   // TODO: add recaptcha token
   // const { data } = await client.fetch({
   //   document: ResetPageQuery,
-  //   fetchOptions: { next: { revalidate } },
+  //   fetchOptions: anonymousCachePolicy(),
   // });
   // const recaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
 

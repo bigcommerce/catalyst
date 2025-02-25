@@ -3,7 +3,7 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { client } from '..';
 import { graphql, VariablesOf } from '../graphql';
-
+import { doNotCachePolicy } from '../cache-policy';
 const CreateCartMutation = graphql(`
   mutation CreateCartMutation($createCartInput: CreateCartInput!) {
     cart {
@@ -33,7 +33,7 @@ export const createCart = async (cartItems: LineItems) => {
       },
     },
     customerAccessToken,
-    fetchOptions: { cache: 'no-store' },
+    fetchOptions: doNotCachePolicy(),
   });
 };
 
