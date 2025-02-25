@@ -23,14 +23,14 @@ export function MegaBanner({ items, customProps }: MegaBannerProps) {
   return (filteredItems && filteredItems.length > 0) && (
     <div className={clsx('mega-banner', !!customProps?.location && 'mega-banner-' + customProps?.location)}>
       {!!filteredItems[0]?.content ? (
-        !!filteredItems[0]?.link?.href ? (
+        !!filteredItems[0]?.link?.href && filteredItems[0]?.link?.href !== '#' ? (
           <Link href={filteredItems[0]?.link.href} dangerouslySetInnerHTML={{ __html: filteredItems[0]?.content}}></Link>
         ) : (
           <div dangerouslySetInnerHTML={{ __html: filteredItems[0]?.content }}></div>
         )
       ) : (
         !!filteredItems[0]?.imageSrc && (
-          !!filteredItems[0]?.link?.href ? (
+          !!filteredItems[0]?.link?.href && filteredItems[0]?.link?.href !== '#' ? (
             <Link href={filteredItems[0]?.link.href}>
               {!!filteredItems[0]?.imageMobileSrc ? (
                 <>

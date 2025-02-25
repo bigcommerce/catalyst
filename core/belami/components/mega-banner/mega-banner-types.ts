@@ -29,4 +29,4 @@ export type MegaBannerCustomProps = {
 export type MegaBannerProps = {
   items: MegaBannerItem[];
   customProps?: MegaBannerCustomProps;
-};
+}
