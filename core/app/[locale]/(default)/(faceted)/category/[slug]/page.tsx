@@ -17,10 +17,16 @@ import { Category } from './category';
 import { cookies, headers } from 'next/headers';
 
 import { Page as MakeswiftPage } from '@makeswift/runtime/next';
-import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { defaultLocale } from '~/i18n/routing';
-import { client } from '~/lib/makeswift/client';
-import '~/lib/makeswift/components';
+
+import { Suspense } from 'react';
+import { MakeswiftComponent } from '@makeswift/runtime/next';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
+import { client as makeswiftClient } from '~/lib/makeswift/client';
+
+import { MegaBannerContextProvider } from '~/belami/components/mega-banner';
+
+//import '~/lib/makeswift/components';
 
 interface Props {
   params: Promise<{
@@ -89,9 +95,13 @@ export default async function CategoryPage(props: Props) {
     return notFound();
   }
 
-  const snapshot = await client.getPageSnapshot(category.path, {
+  const snapshot = await makeswiftClient.getPageSnapshot(category.path, {
     siteVersion: await getSiteVersion(),
     locale: locale === defaultLocale ? undefined : locale,
+  });
+
+  const megaBannerSnapshot = await makeswiftClient.getComponentSnapshot('belami-mega-banner', {
+    siteVersion: await getSiteVersion()
   });
 
   const promotions = await getActivePromotions(true);
@@ -108,6 +118,12 @@ export default async function CategoryPage(props: Props) {
       </div>
 
       {!!snapshot && <MakeswiftPage snapshot={snapshot} />}
+
+      <Suspense fallback={<></>}>
+        <MegaBannerContextProvider value={{ location: 'above-products' }}>
+          <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
+        </MegaBannerContextProvider>
+      </Suspense>
 
       <Category
         category={category}
