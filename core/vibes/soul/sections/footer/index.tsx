@@ -38,6 +38,7 @@ interface Props {
   paymentIcons?: Streamable<ReactNode[] | null>;
   socialMediaLinks?: Streamable<SocialMediaLink[] | null>;
   contactTitle?: string;
+  extraSlots?: Array<{ label: string; slot: ReactNode }>;
   className?: string;
   logoHref?: string;
   logoLabel?: string;
@@ -71,6 +72,7 @@ export const Footer = forwardRef(function Footer(
     logo,
     sections: streamableSections,
     contactTitle = 'Contact Us',
+    extraSlots = [],
     contactInformation: streamableContactInformation,
     paymentIcons: streamablePaymentIcons,
     socialMediaLinks: streamableSocialMediaLinks,
@@ -134,6 +136,10 @@ export const Footer = forwardRef(function Footer(
                           <p>{contactInformation.phone}</p>
                         )}
                       </div>
+
+                      {extraSlots.map(({ slot, label }, i) => (
+                        <div key={`${label}-${i}`}>{slot}</div>
+                      ))}
                     </div>
                   );
                 }

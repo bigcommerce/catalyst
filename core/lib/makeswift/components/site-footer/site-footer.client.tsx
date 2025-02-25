@@ -5,6 +5,7 @@ import {
   createContext,
   forwardRef,
   type PropsWithChildren,
+  ReactNode,
   type Ref,
   useContext,
 } from 'react';
@@ -16,7 +17,7 @@ import { mergeSections } from '../../utils/merge-sections';
 type FooterProps = ComponentPropsWithoutRef<typeof Footer>;
 
 // MakeswiftFooter does not support streamable sections
-type ContextProps = Omit<FooterProps, 'sections'> & {
+type ContextProps = Omit<FooterProps, 'sections' | 'extraSlots'> & {
   sections: Awaited<FooterProps['sections']>;
 };
 
@@ -47,6 +48,7 @@ interface Props {
     }>;
   }>;
   copyright?: string;
+  extraSlots?: Array<{ slot: ReactNode; label: string }>;
 }
 
 function combineSections(
@@ -64,7 +66,7 @@ function combineSections(
 }
 
 export const MakeswiftFooter = forwardRef(
-  ({ logo, sections, copyright }: Props, ref: Ref<HTMLDivElement>) => {
+  ({ logo, sections, copyright, extraSlots = [] }: Props, ref: Ref<HTMLDivElement>) => {
     const passedProps = useContext(PropsContext);
     const logoObject = logo.src ? { src: logo.src, alt: logo.alt } : passedProps.logo;
 
@@ -72,6 +74,7 @@ export const MakeswiftFooter = forwardRef(
       <Footer
         {...passedProps}
         copyright={copyright ?? passedProps.copyright}
+        extraSlots={extraSlots}
         logo={logo.show ? logoObject : undefined}
         logoHeight={logo.show ? logo.height : 0}
         logoWidth={logo.show ? logo.width : 0}

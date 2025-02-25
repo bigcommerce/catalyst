@@ -1,4 +1,13 @@
-import { Checkbox, Group, Image, Link, List, Number, TextInput } from '@makeswift/runtime/controls';
+import {
+  Checkbox,
+  Group,
+  Image,
+  Link,
+  List,
+  Number,
+  Slot,
+  TextInput,
+} from '@makeswift/runtime/controls';
 
 import { runtime } from '~/lib/makeswift/runtime';
 
@@ -48,5 +57,16 @@ runtime.registerComponent(MakeswiftFooter, {
       getItemLabel: (item) => item?.title ?? 'Section',
     }),
     copyright: TextInput({ label: 'Copyright text' }),
+    extraSlots: List({
+      label: 'Extra slots',
+      type: Group({
+        label: 'Slot',
+        props: {
+          label: TextInput({ label: 'Label', defaultValue: 'Slot', selectAll: true }),
+          slot: Slot(),
+        },
+      }),
+      getItemLabel: (item) => item?.label ?? 'Slot',
+    }),
   },
 });
