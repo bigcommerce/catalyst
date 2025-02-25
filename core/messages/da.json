@@ -298,6 +298,8 @@
         "increment": "Øg mængden",
         "decrement": "Reducer mængden",
         "removeItem": "Fjern vare",
+        "cartCombined": "Vi bemærkede, at du havde gemt varer i en tidligere indkøbskurv, så vi har føjet dem til din nuværende indkøbskurv for dig.",
+        "cartRestored": "Du startede en indkøbskurv på en anden enhed, og vi har gendannet den her, så du kan fortsætte, hvor du slap.",
         "CheckoutSummary": {
             "title": "Oversigt",
             "subTotal": "Subtotal",
@@ -312,14 +314,21 @@
             "spinnerText": "Fjerner ...",
             "couponCodeRemoveFailed": "Der opstod en fejl under fjernelse af kuponkoden. Prøv igen.",
             "tax": "Moms",
-            "grandTotal": "Samlet beløb",
+            "total": "I alt",
             "shipping": "Forsendelse",
             "shippingCost": "Forsendelsesomkostninger",
             "handlingCost": "Håndteringsomkostninger",
             "add": "Tilføj",
             "change": "Ændr",
             "cancel": "Annuller",
-            "errorMessage": "Oversigt over indkøbskurven blev ikke fundet. Prøv igen."
+            "errorMessage": "Oversigt over indkøbskurven blev ikke fundet. Prøv igen.",
+            "CouponCode": {
+                "apply": "Anvend",
+                "couponCode": "Kuponkode",
+                "removeCouponCode": "Fjern kuponkode",
+                "invalidCouponCode": "Indtast en gyldig kuponkode",
+                "cartNotFound": "Der blev ikke fundet cartId-cookie."
+            }
         },
         "ShippingInfo": {
             "country": "Land",
