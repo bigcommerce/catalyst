@@ -1,10 +1,12 @@
+import { ReactNode } from 'react';
+
 export interface MegaBannerItem {
   title?: string;
   location?: string;
   imageSrc?: string;
   imageAlt?: string;
   link?: { href?: string; target?: string };
-  content?: string;
+  content?: ReactNode | string;
   startDate?: string;
   endDate?: string;
   brandIds?: string;

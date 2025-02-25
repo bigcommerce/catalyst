@@ -430,7 +430,7 @@ export default async function ProductPage(props: Props) {
                     />
                   </Suspense>
                   <Suspense fallback={<></>}>
-                    <MegaBannerContextProvider value={{ location: 'pdp-under-gallery' }}>
+                    <MegaBannerContextProvider value={{ location: 'under-gallery' }}>
                       <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
                     </MegaBannerContextProvider>
                   </Suspense>
