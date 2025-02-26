@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 import { BcImage as Image } from '~/components/bc-image';
 
-import { Link } from '~/components/link';
+import Link from 'next/link';
 
 import noImage from '~/public/no-image.svg';
 
