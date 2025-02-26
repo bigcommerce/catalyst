@@ -649,10 +649,20 @@ export default function OrderTracking({
   guestUserCheck: Number;
   userEmail?: string;
 }) {
+  const orderSchema = z.object({
+    number: z
+      .string()
+      .min(1, { message: 'Order Number is required.' })
+      .regex(/^\d+$/, { message: 'Order Number must contain only numbers.' }),
+    email: z
+      .string()
+      .min(1, { message: 'Email is required.' })
+      .email({ message: 'Email is invalid.' }),
+  });
   const [number, setNumber] = useState('');
   const [email, setEmail] = useState('');
   const [errors, setErrors] = useState({});
-  const [isFormValid, setIsFormValid] = useState(false);
+  const [formValid, setFormValid] = useState(false);
   const [orderData, setOrderData] = useState([]);
   const [showOrderInfo, setShowOrderInfo] = useState(0);
   const [cartId, setCartId] = useState('');
@@ -660,80 +670,93 @@ export default function OrderTracking({
   const [guestFlow, setGuestFlow] = useState(1);
 
   const onNumberChange = (e: any) => {
-    setNumber(e.target.value);
-    validateForm();
+    const value = e.target.value;
+    setNumber(value);
+    validateField('number', value);
   };
 
   const onEmailChange = (e: any) => {
-    setEmail(e.target.value);
-    validateForm();
+    const value = e.target.value;
+    setEmail(value);
+    validateField('email', value);
   };
 
-  // Validate form
-  const validateForm = () => {
-    let errors: any = {};
-
-    if (!number) {
-      errors.number = 'Order Number is required.';
+  const validateField = (field: 'number' | 'email', value: string) => {
+    const result = orderSchema.shape[field].safeParse(value);
+    if (!result.success) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: result.error.errors[0].message,
+      }));
+    } else {
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
 
-    if (!email) {
-      errors.email = 'Email is required.';
-    } else if (!/\S+@\S+\.\S+/.test(email)) {
-      errors.email = 'Email is invalid.';
-    }
-
-    setErrors(errors);
-    setIsFormValid(Object.keys(errors).length === 0);
+    validateForm(field === 'number' ? value : number, field === 'email' ? value : email);
   };
+
+  const validateForm = (currentNumber: string, currentEmail: string) => {
+    const result = orderSchema.safeParse({
+      number: currentNumber,
+      email: currentEmail,
+    });
+    setFormValid(result.success);
+  };
+
   // Submit
   const handleSubmit = () => {
+    const result = orderSchema.safeParse({ number, email });
+    if (!result.success) {
+      const newErrors: Record<string, string> = {};
+      result.error.errors.forEach((err) => {
+        newErrors[err.path[0]] = err.message;
+      });
+      setErrors(newErrors);
+      return;
+    }
+
     setShowOrderSummary(0);
     setShowOrderInfo(0);
-    if (isFormValid) {
-      const getOrderData = async (orderId: any, cartId: string, guestUserCheck: Number) => {
-        let orderInfo: any = {};
-        if (guestUserCheck == 1) {
-          orderInfo = await getGuestOrderDetails({
-            filter: {
-              entityId: orderId,
-              cartEntityId: cartId,
-            },
-          });
-        } else {
-          orderInfo = await getOrderDetails({
-            filter: {
-              entityId: orderId,
-            },
-          });
-        }
-        if (!orderData) {
-          setErrors({
-            orderError: 'Order is not available.',
-          });
-        }
-        setShowOrderInfo(1);
-        setOrderData(orderInfo);
-        return orderInfo;
-      };
-      const getOrderIsValid = async (orderId: Number) => {
-        let orderInfoData: any = {};
-        orderInfoData = await getGuestOrderDetailsFromAPI(orderId);
-        if (orderInfoData?.billing_address?.email == email) {
-          setCartId(orderInfoData?.cart_id);
-          let guestFlowCheck = orderInfoData?.customer_id > 0 ? 0 : 1;
-          setGuestFlow(guestFlowCheck);
-          await getOrderData(Number(orderId), orderInfoData?.cart_id, guestFlowCheck);
-        } else {
-          setErrors({
-            orderError: 'Order is not available.',
-          });
-        }
-      };
-      getOrderIsValid(number);
-    } else {
-      console.log('Form has errors. Please correct them.');
-    }
+    const getOrderData = async (orderId: any, cartId: string, guestUserCheck: Number) => {
+      let orderInfo: any = {};
+      if (guestUserCheck == 1) {
+        orderInfo = await getGuestOrderDetails({
+          filter: {
+            entityId: orderId,
+            cartEntityId: cartId,
+          },
+        });
+      } else {
+        orderInfo = await getOrderDetails({
+          filter: {
+            entityId: orderId,
+          },
+        });
+      }
+      if (!orderData) {
+        setErrors({
+          orderError: 'Order is not available.',
+        });
+      }
+      setShowOrderInfo(1);
+      setOrderData(orderInfo);
+      return orderInfo;
+    };
+    const getOrderIsValid = async (orderId: Number) => {
+      let orderInfoData: any = {};
+      orderInfoData = await getGuestOrderDetailsFromAPI(orderId);
+      if (orderInfoData?.billing_address?.email == email) {
+        setCartId(orderInfoData?.cart_id);
+        let guestFlowCheck = orderInfoData?.customer_id > 0 ? 0 : 1;
+        setGuestFlow(guestFlowCheck);
+        await getOrderData(Number(orderId), orderInfoData?.cart_id, guestFlowCheck);
+      } else {
+        setErrors({
+          orderError: 'Order is not available.',
+        });
+      }
+    };
+    getOrderIsValid(number);
   };
 
   const breadcrumbs: any = [
@@ -783,7 +806,7 @@ export default function OrderTracking({
                   />
 
                   {errors.number && (
-                    <p className="relative bottom-0 text-sm text-[#A71F23] xl:absolute">
+                    <p className="relative bottom-0 text-left text-sm text-[#A71F23] xl:absolute">
                       {errors.number}{' '}
                     </p>
                   )}
@@ -801,7 +824,7 @@ export default function OrderTracking({
                   />
 
                   {errors.email && (
-                    <p className="relative bottom-0 text-sm text-[#A71F23] xl:absolute">
+                    <p className="relative bottom-0 text-left text-sm text-[#A71F23] xl:absolute">
                       {errors.email}{' '}
                     </p>
                   )}
@@ -809,9 +832,9 @@ export default function OrderTracking({
               </div>
               <div>
                 <button
-                  className="mb-0 flex h-[42px] w-full cursor-pointer flex-row items-center justify-center gap-[5px] rounded bg-[#03465C] p-[5px_10px] text-sm font-[500] leading-8 tracking-[1.25px] text-[#ffffff] hover:bg-[#03465C]/90 xl:mb-[20px] xl:w-[unset]"
-                  disabled={!isFormValid}
+                  className="mb-0 flex h-[42px] w-full cursor-pointer flex-row items-center justify-center gap-[5px] rounded bg-[#03465C] p-[5px_10px] text-sm font-[500] leading-8 tracking-[1.25px] text-[#ffffff] hover:bg-[#03465C]/90 disabled:cursor-not-allowed xl:mb-[20px] xl:w-[unset]"
                   onClick={handleSubmit}
+                  disabled={!formValid}
                 >
                   FIND ORDER
                 </button>
