@@ -33,7 +33,12 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
           type={effectiveType}
           {...props}
         />{' '}
-        {Boolean(error || icon || isPassword) && (
+        {Boolean(error || icon || isPassword) && (<>
+          {error && (
+      <span className="absolute end-12 top-0 flex h-full items-center pointer-events-none">
+        <AlertCircle className="text-[#A71F23]" />
+      </span>
+    )}
           <span
             className={cn(
               'eye-icon-password absolute end-4 top-0 flex h-full items-center',
@@ -49,9 +54,7 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
           >
             {' '}
             {icon ??
-              (error ? (
-                <AlertCircle className="text-[#A71F23]" />
-              ) : isPassword ? (
+              ( isPassword ? (
                 showPassword ? (
                   <>
                     {' '}
@@ -76,7 +79,7 @@ const Input = forwardRef<ElementRef<'input'>, Props>(
                 )
               ) : null)}{' '}
           </span>
-        )}{' '}
+        </>)}{' '}
       </div>
     );
   },
