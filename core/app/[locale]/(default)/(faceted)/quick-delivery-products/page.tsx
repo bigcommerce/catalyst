@@ -68,7 +68,7 @@ export default async function QuickDeliveryProductsPage(props: Props) {
 
   const t = await getTranslations('QuickDeliveryProducts');
 
-  const snapshot = await makeswiftClient.getPageSnapshot(brand.path, {
+  const snapshot = await makeswiftClient.getPageSnapshot('/quick-delivery-products', {
     siteVersion: await getSiteVersion(),
     locale: locale === defaultLocale ? undefined : locale,
   });

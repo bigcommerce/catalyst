@@ -366,6 +366,8 @@ export default async function ProductPage(props: Props) {
   const breadcrumbEntityIds =
     categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.entityId) || [];
 
+  const categoryNames = categoryWithMostBreadcrumbs?.breadcrumbs?.edges?.map((edge) => edge.node.name);
+
   const categoryWithBreadcrumbs = categoryWithMostBreadcrumbs
     ? {
       ...categoryWithMostBreadcrumbs,
@@ -430,7 +432,7 @@ export default async function ProductPage(props: Props) {
                     />
                   </Suspense>
                   <Suspense fallback={<></>}>
-                    <MegaBannerContextProvider value={{ location: 'pdp-under-gallery' }}>
+                    <MegaBannerContextProvider value={{ location: 'under-gallery', productId: productId, categoryNames: categoryNames, brandName: product?.brand?.name }}>
                       <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
                     </MegaBannerContextProvider>
                   </Suspense>
