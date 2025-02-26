@@ -32,6 +32,7 @@ import '~/belami/components/login-btn/LoginBtn.makeswift'
 import '~/belami/components/blog-UI/BlogUi.makeswift'
 import '~/belami/components/metadata-generator/MetaDataGenerator.makeswift'
 import '~/belami/components/share-blog/ShareBlog.makeswift'
+import '~/belami/components/embed-script/Embed.makeswift'
 
 import { MakeswiftComponentType } from '@makeswift/runtime';
 
