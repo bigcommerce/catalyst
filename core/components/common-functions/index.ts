@@ -693,18 +693,23 @@ export const floorPriceCalculation = async (cartObject: any) => {
         let currentProductVariant: any = productVariants?.filter(
           (variant: any) => item?.variantEntityId == variant?.entityId,
         );
+        let productParentMetafields: any = item?.baseCatalogProduct?.metafields ? removeEdgesAndNodes(item?.baseCatalogProduct?.metafields) : [];
         let couponAmountData: any = item?.couponAmount;
         let itemCouponAmount: number = couponAmountData?.value > 0 ? couponAmountData?.value : 0;
         let itemProductPrice: any = item?.extendedSalePrice?.value;
-        if (currentProductVariant?.[0]?.metafields) {
-          let productVariantMeta: any = removeEdgesAndNodes(currentProductVariant?.[0]?.metafields);
-          if (productVariantMeta?.[0]?.key == 'adjusted_cost') {
+        if (currentProductVariant?.[0]?.metafields || productParentMetafields) {
+          let productVariantMeta: any = (currentProductVariant?.[0]?.metafields) ? removeEdgesAndNodes(currentProductVariant?.[0]?.metafields): [];
+          let productPrice: any = productVariantMeta?.[0]?.value;
+          if(!productPrice) {
+            productPrice = productParentMetafields?.[0]?.value;
+          }
+          if (productPrice) {
             let getBrandFactor: any = Object.values(data?.output)?.find(
               (factor: any) => factor?.brand_id == item?.baseCatalogProduct?.brand?.entityId,
             );
             if (getBrandFactor?.floor_price) {
               let floorPrice: any =
-                getBrandFactor?.floor_price * productVariantMeta?.[0]?.value * item?.quantity;
+                getBrandFactor?.floor_price * productPrice * item?.quantity;
               let isFloorCheck: number = 0;
               let remainDiscount: number = 0;
               let availableDiscount: number = 0;
@@ -768,10 +773,20 @@ export const floorPriceCalculation = async (cartObject: any) => {
       });
     }
     if (priceFloorHappened == 1) {
+      let availableDiscArray: any = [];
+      let remainingDiscArray: any = [];
+      productDataArray?.forEach((newData: any) => {
+        if(newData?.availableDiscount > 0) {
+          availableDiscArray.push(newData);
+        } else if(newData?.remainDiscount > 0) {
+          remainingDiscArray.push(newData);
+        }
+
+      });
       let priceFloorApportion: any = await apportionateRemainingDiscount(
         productDataArray,
-        couponAppliedData?.discountedAmount?.value,
-        sumOfCouponAmount,
+        availableDiscArray,
+        remainingDiscArray,
       );
       if (priceFloorApportion?.length > 0) {
         const cookieStore = await getCookieData();
@@ -828,8 +843,8 @@ export const floorPriceCalculation = async (cartObject: any) => {
 
 export const apportionateRemainingDiscount = async (
   productDataArray: any,
-  couponAmount: any,
-  sumOfCouponAmount: any,
+  availableDiscArray: any,
+  remainingDiscArray: any,
 ) => {
   const initialAvailValue = 0;
   const availableDiscountValue = productDataArray?.reduce(
@@ -841,29 +856,35 @@ export const apportionateRemainingDiscount = async (
     (accumulator, currentValue) => accumulator + Math.abs(currentValue?.remainDiscount),
     initialRemainValue,
   );
-
   if (availableDiscountValue > 0 && remainingDiscountValue > 0) {
-    productDataArray?.forEach((newData: any) => {
-      let newDiscountData: any = newData?.remainDiscount;
-      if (newDiscountData > 0) {
-        productDataArray?.forEach((data: any) => {
-          if (data?.availableDiscount > 0) {
-            if (data?.availableDiscount >= newDiscountData) {
-              newData['remainDiscount'] = 0;
-            } else if (newDiscountData > data?.availableDiscount) {
-              newData['remainDiscount'] -= data?.availableDiscount;
-            }
-            if (data?.availableDiscount >= newDiscountData) {
-              let availDiscount: any = data?.availableDiscount - newDiscountData;
-              data['discounted_amount'] += data?.availableDiscount - availDiscount;
-              data['availableDiscount'] = availDiscount;
-            } else if (newDiscountData > data?.availableDiscount) {
-              let availDiscount: any = newDiscountData - data?.availableDiscount;
-              data['availableDiscount'] = availDiscount;
+    remainingDiscArray?.forEach((newData: any) => {
+        availableDiscArray?.forEach((data: any) => {
+          let newDiscountData: any = newData?.remainDiscount;
+          let parentItemData: any = productDataArray?.findIndex((item: any) => item?.id == newData?.id);
+          if (newDiscountData > 0) {
+            let childItemData: any = productDataArray?.findIndex((itemDat: any) => itemDat?.id == data?.id);
+            if (data?.availableDiscount > 0) {
+              if (data?.availableDiscount >= newDiscountData) {
+                newData['remainDiscount'] = 0;
+                productDataArray[parentItemData]['remainDiscount'] = 0;
+              } else if (newDiscountData > data?.availableDiscount) {
+                newData['remainDiscount'] -= data?.availableDiscount;
+                productDataArray[parentItemData]['remainDiscount'] -= data?.availableDiscount;
+              }
+              if (data?.availableDiscount >= newDiscountData) {
+                let availDiscount: any = data?.availableDiscount - newDiscountData;
+                data['discounted_amount'] += data?.availableDiscount - availDiscount;
+                data['availableDiscount'] = availDiscount;
+                productDataArray[childItemData]['discounted_amount'] += data?.availableDiscount - availDiscount;
+                productDataArray[childItemData]['availableDiscount'] = availDiscount;
+              } else if (newDiscountData > data?.availableDiscount) {
+                let availDiscount: any = newDiscountData - data?.availableDiscount;
+                data['availableDiscount'] = availDiscount;
+                productDataArray[childItemData]['availableDiscount'] = availDiscount;
+              }
             }
           }
         });
-      }
     });
   }
   return productDataArray;
