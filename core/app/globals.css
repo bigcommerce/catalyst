@@ -1388,6 +1388,17 @@ body:has(.mega-menu-sidebar-fade) > footer {
   max-width: 100%;
   height: auto;
 }
+.mega-banner-top {
+  margin:0; 
+  padding:.5rem 1rem; 
+  background-color: var(--brand-600);
+  color:#ffffff; 
+  font-size:.85rem; 
+  text-align:center;
+}
+.mega-banner-top a {
+  color:#f6f5bc;
+}
 .mega-banner-under-header .mega-banner-image, .mega-banner-under-header .mega-banner-image-mobile, 
 .mega-banner-before-footer .mega-banner-image, .mega-banner-before-footer .mega-banner-image-mobile {
   width: 100%;
