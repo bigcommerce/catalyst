@@ -1375,3 +1375,31 @@ body:has(.mega-menu-sidebar-fade) > footer {
 .mega-menu .sub-menu .main-sub-sub-menu-item > a:hover {
   text-decoration: underline;
 }
+
+
+.mega-banner {
+  margin: 0 auto;
+  padding: 0;
+  display:block;
+  width: 100%;
+}
+.mega-banner .mega-banner-image, .mega-banner .mega-banner-image-mobile {
+  margin: 0 auto;
+  max-width: 100%;
+  height: auto;
+}
+.mega-banner-top {
+  margin:0; 
+  padding:.5rem 1rem; 
+  background-color: var(--brand-600);
+  color:#ffffff; 
+  font-size:.85rem; 
+  text-align:center;
+}
+.mega-banner-top a {
+  color:#f6f5bc;
+}
+.mega-banner-under-header .mega-banner-image, .mega-banner-under-header .mega-banner-image-mobile, 
+.mega-banner-before-footer .mega-banner-image, .mega-banner-before-footer .mega-banner-image-mobile {
+  width: 100%;
+}  

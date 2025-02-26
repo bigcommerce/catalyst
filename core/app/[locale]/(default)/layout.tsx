@@ -68,7 +68,7 @@ export default async function DefaultLayout({ params, children }: Props) {
         </MegaBannerContextProvider>
       </Suspense>
 
-      <main className="main-slider mt-[2em] md:mt-0">
+      <main className="main-slider">
         {children}
       </main>
 

@@ -95,6 +95,8 @@ export default async function CategoryPage(props: Props) {
     return notFound();
   }
 
+  const categoryNames = category.breadcrumbs?.edges?.map((edge) => edge.node.name);
+
   const snapshot = await makeswiftClient.getPageSnapshot(category.path, {
     siteVersion: await getSiteVersion(),
     locale: locale === defaultLocale ? undefined : locale,
@@ -120,7 +122,7 @@ export default async function CategoryPage(props: Props) {
       {!!snapshot && <MakeswiftPage snapshot={snapshot} />}
 
       <Suspense fallback={<></>}>
-        <MegaBannerContextProvider value={{ location: 'above-products' }}>
+        <MegaBannerContextProvider value={{ location: 'above-products', categoryNames: categoryNames }}>
           <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
         </MegaBannerContextProvider>
       </Suspense>

@@ -168,7 +168,7 @@ export default async function BrandPage(props: Props) {
       }
 
       <Suspense fallback={<></>}>
-        <MegaBannerContextProvider value={{ location: 'above-products' }}>
+        <MegaBannerContextProvider value={{ location: 'above-products', brandName: brand?.name }}>
           <MakeswiftComponent snapshot={megaBannerSnapshot} label={`Mega Banner`} type='belami-mega-banner' />
         </MegaBannerContextProvider>
       </Suspense>
