@@ -387,7 +387,7 @@ export const WishlistBook = ({
   const handleWishlistCreated = useCallback((newWishlist: NewWishlist) => {
     setWishlistBook((prev) => {
       if (prev.length < WISHLISTS_PER_PAGE) {
-        return [...prev, newWishlist];
+        return [newWishlist, ...prev];
       }
       return prev;
     });
