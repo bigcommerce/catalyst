@@ -363,7 +363,7 @@ Energy star   energystar  Energy Star Certified
 Dark sky  darksky  Dark Sky Friendly
 Coastal/Marine grade  coastal  Coastal Quality
 */
-function RatingCertifications({ data }: any) {
+export function RatingCertifications ({ data }: any) {
   const badges: {
     [key: string]: any;
   } = {
@@ -980,3 +980,5 @@ export function Hit({
     <></>
   );
 }
+
+

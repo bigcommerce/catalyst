@@ -20,7 +20,7 @@ import {
   manageDeletedProducts,
 } from '~/components/common-functions';
 import { ProductPrice } from '~/belami/components/search/product-price';
-import { Promotion } from '~/belami/components/search/hit';
+import { Promotion, RatingCertifications } from '~/belami/components/search/hit';
 import { getActivePromotions } from '~/belami/lib/fetch-promotions';
 import { ReviewSummary } from '~/app/[locale]/(default)/product/[slug]/_components/review-summary';
 import { getWishlists } from '~/components/graphql-apis';
@@ -154,6 +154,7 @@ export const ProductCard = memo(
       promotionsData: null as any,
       updatedWishlist: [] as any[],
       variantDetails: null as any,
+      ratingsAndCertifications: null as any,
     });
 
     const normalizeSku = useCallback((sku: string): string => {
@@ -317,6 +318,16 @@ export const ProductCard = memo(
               setState((prev) => ({ ...prev, categoryIds: categoryId }));
             }
 
+            // Get product metafields for ratings and certifications
+            const productMetafields = await GetProductMetaFields(item.productEntityId, '');
+
+            // Look for Ratings and Certifications in the metafields
+            const ratingsAndCertifications =
+              productMetafields?.find(
+                (field: MetaField) =>
+                  field.namespace === 'Details' && field.key === 'Ratings and Certifications',
+              )?.value || null;
+
             // Get variant data
             const allVariantData = await GetVariantsByProductId(item.productEntityId);
             const variant = item.variantEntityId
@@ -340,6 +351,7 @@ export const ProductCard = memo(
                 isFreeShipping: freeShipping,
                 hasActivePromotion:
                   promotions && (Object.keys(promotions).length > 0 || freeShipping),
+                ratingsAndCertifications,
               }));
             }
           }
@@ -364,8 +376,9 @@ export const ProductCard = memo(
         {/* Main Card Content */}
         <div className="relative mb-4 flex h-full flex-col border border-gray-300 pb-0">
           <div className="product-card-details pb-[0em] text-center">
-            <div className="wishlist-product-details pl-[15px] pr-[15px]">
+            <div className="wishlist-product-details pl-[10px] pr-[10px]">
               {/* Image and Delete Button */}
+
               <div className="relative aspect-square overflow-hidden">
                 <Link href={item.product.path}>
                   <img
@@ -374,7 +387,38 @@ export const ProductCard = memo(
                     className="h-full w-full object-cover"
                   />
                 </Link>
+
+                {/* Position the SALE badge in the top right corner */}
+                {state.updatedWishlist[0]?.UpdatePriceForMSRP?.hasDiscount && (
+                  <div className="absolute right-[0em] top-[0.6em] z-10">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="66"
+                      height="28"
+                      viewBox="0 0 66 28"
+                      fill="none"
+                    >
+                      <rect width="66" height="28" fill="#008BB7" />
+                      <path
+                        d="M11.8711 21.5094C11.6834 21.5094 11.4956 21.4718 11.3079 21.3967C11.1202 21.3216 10.9512 21.209 10.801 21.0588L5.43179 15.6896C5.2816 15.5394 5.17209 15.3736 5.10325 15.1921C5.03442 15.0106 5 14.826 5 14.6383C5 14.4506 5.03442 14.2628 5.10325 14.0751C5.17209 13.8873 5.2816 13.7184 5.43179 13.5682L12.0401 6.94116C12.1777 6.80349 12.3404 6.69398 12.5282 6.61263C12.7159 6.53128 12.9099 6.4906 13.1101 6.4906H18.4981C18.9111 6.4906 19.2647 6.63766 19.5588 6.93178C19.8529 7.22589 20 7.57946 20 7.99248V13.3805C20 13.5807 19.9625 13.7716 19.8874 13.9531C19.8123 14.1345 19.7059 14.2941 19.5682 14.4318L12.9412 21.0588C12.791 21.209 12.622 21.3216 12.4343 21.3967C12.2466 21.4718 12.0588 21.5094 11.8711 21.5094ZM16.6208 10.9962C16.9337 10.9962 17.1996 10.8867 17.4186 10.6677C17.6377 10.4487 17.7472 10.1827 17.7472 9.86982C17.7472 9.55693 17.6377 9.29098 17.4186 9.07195C17.1996 8.85293 16.9337 8.74342 16.6208 8.74342C16.3079 8.74342 16.0419 8.85293 15.8229 9.07195C15.6039 9.29098 15.4944 9.55693 15.4944 9.86982C15.4944 10.1827 15.6039 10.4487 15.8229 10.6677C16.0419 10.8867 16.3079 10.9962 16.6208 10.9962Z"
+                        fill="white"
+                      />
+                      <path
+                        d="M32.0479 16.3135C32.0479 16.9059 31.8997 17.4141 31.6035 17.8379C31.3118 18.2572 30.8994 18.5785 30.3662 18.8018C29.833 19.0251 29.1995 19.1367 28.4658 19.1367C28.0967 19.1367 27.7435 19.1162 27.4062 19.0752C27.0736 19.0387 26.7637 18.984 26.4766 18.9111C26.1895 18.8382 25.9297 18.7471 25.6973 18.6377V17.3115C26.0755 17.4665 26.513 17.6123 27.0098 17.749C27.5065 17.8812 28.0192 17.9473 28.5479 17.9473C29.0081 17.9473 29.3932 17.8857 29.7031 17.7627C30.0176 17.6351 30.2546 17.4574 30.4141 17.2295C30.5736 17.0016 30.6533 16.7282 30.6533 16.4092C30.6533 16.0902 30.5758 15.8236 30.4209 15.6094C30.266 15.3906 30.0199 15.1901 29.6826 15.0078C29.3499 14.8255 28.9124 14.6318 28.3701 14.4268C27.9919 14.29 27.6478 14.1351 27.3379 13.9619C27.028 13.7842 26.7591 13.5814 26.5312 13.3535C26.3079 13.1257 26.1348 12.859 26.0117 12.5537C25.8887 12.2438 25.8271 11.8883 25.8271 11.4873C25.8271 10.9359 25.9616 10.4642 26.2305 10.0723C26.5039 9.68034 26.8844 9.38184 27.3721 9.17676C27.8597 8.96712 28.4248 8.8623 29.0674 8.8623C29.596 8.8623 30.0882 8.91471 30.5439 9.01953C31.0042 9.12435 31.4417 9.2679 31.8564 9.4502L31.4121 10.6123C31.0247 10.4528 30.6351 10.3229 30.2432 10.2227C29.8512 10.1224 29.4456 10.0723 29.0264 10.0723C28.639 10.0723 28.3109 10.1292 28.042 10.2432C27.7777 10.3571 27.5749 10.5189 27.4336 10.7285C27.2969 10.9382 27.2285 11.1865 27.2285 11.4736C27.2285 11.7972 27.3014 12.0661 27.4473 12.2803C27.5931 12.4945 27.8232 12.6882 28.1377 12.8613C28.4521 13.0345 28.8623 13.2191 29.3682 13.415C29.9378 13.6338 30.4209 13.8662 30.8174 14.1123C31.2184 14.3584 31.5238 14.6546 31.7334 15.001C31.943 15.3473 32.0479 15.7848 32.0479 16.3135ZM41.5078 19L40.4004 16.0264H36.4834L35.3896 19H33.9336L37.748 8.96484H39.1836L42.9775 19H41.5078ZM40.0107 14.8096L38.958 11.8633C38.9261 11.763 38.876 11.6126 38.8076 11.4121C38.7438 11.2116 38.6777 11.0042 38.6094 10.79C38.5456 10.5758 38.4932 10.3981 38.4521 10.2568C38.4066 10.4437 38.3542 10.6419 38.2949 10.8516C38.2357 11.0566 38.1764 11.2503 38.1172 11.4326C38.0625 11.6104 38.0169 11.7539 37.9805 11.8633L36.9141 14.8096H40.0107ZM45.5879 19V9.00586H46.9893V17.7832H51.3301V19H45.5879ZM59.915 19H54.3027V9.00586H59.915V10.209H55.7041V13.1826H59.6621V14.3721H55.7041V17.79H59.915V19Z"
+                        fill="white"
+                      />
+                    </svg>
+                  </div>
+                )}
+
+                {/* Position RatingCertifications in the top right, below SALE badge if present */}
+                {state.ratingsAndCertifications && (
+                  <div className="absolute right-0 top-[0.5em] z-10 flex items-center justify-center space-x-1">
+                    <RatingCertifications data={state.ratingsAndCertifications} />
+                  </div>
+                )}
               </div>
+
               <div className="wishlist-product-brand-delete">
                 <div className="flex justify-end">
                   <div
