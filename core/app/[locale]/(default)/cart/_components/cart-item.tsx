@@ -604,7 +604,7 @@ export const CartItem = async ({
                     </div>
                   )}
 
-                  {Array.isArray(combinedData?.closeOutData) && combinedData?.deliveryEstimatedTexts?.length > 0 && (
+                  {Array.isArray(combinedData?.deliveryEstimatedTexts) && combinedData?.deliveryEstimatedTexts?.length > 0 && (
                     combinedData?.deliveryEstimatedTexts?.map((message:any, index:any) => {
                       try {
                         const parsedMessages = JSON.parse(message);

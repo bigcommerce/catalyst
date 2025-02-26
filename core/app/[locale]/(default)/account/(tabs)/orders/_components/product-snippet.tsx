@@ -19,6 +19,22 @@ const ProductAttributes = graphql(`
     site {
       product(entityId: $entityId) {
         path
+        variants {
+          edges {
+             node {
+              sku
+                closeOutData: metafields(namespace: "Details", keys: "closeout") {
+                  edges {
+                     node {
+                      entityId
+                      key
+                      value
+                      }
+                    }
+                  }
+                }
+              }
+           }   
       }
     }
   }
@@ -33,7 +49,23 @@ export const OrderItemFragment = graphql(`
     brand
     name
     quantity
+    catalogProductWithOptionSelections {
+      entityId
+      mpn
+     sku
+    }
     baseCatalogProduct {
+      closeOutParentData: metafields(namespace: "Details", keys: "closeout") {
+        edges {
+          cursor
+          node {
+            entityId
+            id
+            key
+            value
+          }
+        }
+      }
       variants {
         edges {
           node {
@@ -170,6 +202,11 @@ interface Props {
   from?: string;
   userEmail?:any;
   orderId?:number;
+  postData?:{
+    selectedVariantSku: String,
+        optionsValue: string[],
+        closeoutValue: string[],
+  };
 }
 
 export const ProductSnippet = async ({
@@ -181,7 +218,8 @@ export const ProductSnippet = async ({
   productSize,
   from,
   userEmail,
-  orderId
+  orderId,
+  postData
 }: Props) => {
   const { name, defaultImage, brand, productId, prices, accessories } = product;
 
@@ -196,6 +234,23 @@ export const ProductSnippet = async ({
     fetchOptions: { next: { revalidate } },
   });
   const { path = '' } = data.site.product ?? {};
+
+const selectedVariantSku = postData?.map((item:any) => item?.selectedVariantSku)
+const optionsValue = postData?.map((value:any)=> value?.optionsValue) || [];
+const productCloseout = postData?.map((item:any)=> item?.closeoutValue) || [];
+let closeoutData = [];
+const variantCloseout = data?.site?.product?.variants?.edges?.map((item: any) => {
+const variantSku = item.node.sku;
+if (selectedVariantSku === variantSku) {
+  return (  item?.node?.closeOutData?.edges[0]?.node?.value
+  )}
+return [];
+})
+if (optionsValue > 0) {
+  closeoutData =  variantCloseout?.length > 0 ? variantCloseout : productCloseout;
+} else {
+  closeoutData = productCloseout
+}
 
   return (
     <div className="flex flex-col items-start gap-[15px] border border-[#CCCBCB] p-0">
@@ -231,8 +286,17 @@ export const ProductSnippet = async ({
             <div className="items-center text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
               {name}
             </div>
+            <div className = "flex flex-row items-center gap-[10px]">
             <div className={`text-[14px] leading-[24px] tracking-[0.25px] text-[#353535] ${from == 'order' ? 'font-normal' : 'font-bold'}`}>
               {t('qty')}: {product.quantity}
+            </div>
+            {closeoutData.length > 0 && closeoutData.map((id:any) => id === "True") && (
+               <div className='hidden sm:block'>
+               <div className="bg-[#FBF4E9] flex justify-center content-center px-[10px] mt-[5px] w-full text-[#6A4C1E] tracking-[0.25px] leading-[24px] text-[14px] sm:max-w-fit">
+                 Final Sale
+               </div>
+             </div>
+            )}
             </div>
           </div>
           <div className="flex min-w-[unset] sm:[grid-column:1_/_span_2] xl:min-w-[25%] flex-col justify-center text-left xl:text-right">

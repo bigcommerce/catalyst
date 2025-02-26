@@ -34,12 +34,12 @@ const tikGreenImg = imageManagerImageUrl('tikgreen.png', '20w');
 const mapOrderData = (order: OrderDetailsType) => {
   const shipping = order.consignments?.shipping
     ? removeEdgesAndNodes(order.consignments.shipping).map(
-        ({ shipments, lineItems, ...otherItems }) => ({
-          ...otherItems,
-          lineItems: lineItems && removeEdgesAndNodes(lineItems),
-          shipments: shipments && removeEdgesAndNodes(shipments),
-        }),
-      )
+      ({ shipments, lineItems, ...otherItems }) => ({
+        ...otherItems,
+        lineItems: lineItems && removeEdgesAndNodes(lineItems),
+        shipments: shipments && removeEdgesAndNodes(shipments),
+      }),
+    )
     : undefined;
 
   return {
@@ -66,7 +66,7 @@ const mapOrderData = (order: OrderDetailsType) => {
   };
 };
 
-export default async function OrderConfirmation(request:any) {
+export default async function OrderConfirmation(request: any) {
   const cookieStore = await cookies();
   const orderId: number = Number(cookieStore.get('orderId')?.value);
   const cartId: any = cookieStore.get('cartId')?.value;
@@ -81,10 +81,10 @@ export default async function OrderConfirmation(request:any) {
     const customerGroupId = sessionUser?.customerGroupId;
     const customerGroupDetails = await GetCustomerGroupById(customerGroupId);
     customerGroup = customerGroupDetails.name;
-  }else{
+  } else {
     customerGroup = "Guest";
   }
-  
+
   let guestUserCheck = 0;
 
   if (orderId) {
@@ -126,34 +126,34 @@ export default async function OrderConfirmation(request:any) {
 
     const updateCustomerApi =
       getCustomerIdfromCookie !== undefined &&
-      (await UpdateCustomerId(getCustomerIdfromCookie, orderState?.orderId));  
+      (await UpdateCustomerId(getCustomerIdfromCookie, orderState?.orderId));
     const lineItems = shippingConsignments?.map((consignment: any) => consignment.lineItems) || [];
 
     let getCartMetaFields: any = await GetCartMetaFields(cartId);
-    const accessoriesMetaField = getCartMetaFields.length>0 && getCartMetaFields.filter(
+    const accessoriesMetaField = getCartMetaFields.length > 0 && getCartMetaFields.filter(
       (metaField: any) => metaField.namespace === 'accessories_data',
     );
     const referrerId = cookieStore.get('referrerId')?.value;
 
-    const OrderCommentsByAgent = getCartMetaFields.length>0 && getCartMetaFields.filter((metaField: any) => metaField.namespace === 'order_comments_by_agent')
-    .map((metaField: any)=> metaField.value)[0];
+    const OrderCommentsByAgent = getCartMetaFields.length > 0 && getCartMetaFields.filter((metaField: any) => metaField.namespace === 'order_comments_by_agent')
+      .map((metaField: any) => metaField.value)[0];
 
-    const agentInfo = getCartMetaFields.length > 0 && 
-    getCartMetaFields
+    const agentInfo = getCartMetaFields.length > 0 &&
+      getCartMetaFields
         .filter((metaField: any) => metaField.namespace === 'agent_cart_information')
         .map((metaField: any) => metaField.value)[0];
 
     const parsedAgentInfo = agentInfo ? JSON.parse(agentInfo) : null;
 
-    const cartLineItems = getCartMetaFields.length>0 && (getCartMetaFields.filter((metaFiled: any)=> metaFiled.namespace === 'cart_line_items')
-    .map((metaField:any)=> metaField.value)[0]);
-    const parsedCartLineItems = cartLineItems ? JSON.parse(cartLineItems):null;
+    const cartLineItems = getCartMetaFields.length > 0 && (getCartMetaFields.filter((metaFiled: any) => metaFiled.namespace === 'cart_line_items')
+      .map((metaField: any) => metaField.value)[0]);
+    const parsedCartLineItems = cartLineItems ? JSON.parse(cartLineItems) : null;
 
     const closeoutAndDeliveryInfo = parsedCartLineItems.map((item: { selectedvariantId: any; variantId: any; deliveryEstimatedTexts: any; closeOutData: any; }) => ({
-      selectedvariantId : item.selectedvariantId,
-      variantId : item.variantId,
-      deliveryEstimatedTexts : item.deliveryEstimatedTexts,
-      closeOutData : item.closeOutData,
+      selectedvariantId: item.selectedvariantId,
+      variantId: item.variantId,
+      deliveryEstimatedTexts: item.deliveryEstimatedTexts,
+      closeOutData: item.closeOutData,
     }));
 
     const getDataByVariantId = (variantId: any, dataKey: 'closeOutData' | 'deliveryEstimatedTexts') => {
@@ -167,22 +167,22 @@ export default async function OrderConfirmation(request:any) {
       }
       return null;
     };
-    
+
     const orderDetails = await GetOrderDetailsFromAPI(orderId);
     const shippingDetails = orderDetails?.consignments[0]?.shipping[0];
     const lineItemDetails = shippingDetails.line_items;
 
-    const getItemLevelPriceAdjustments = (orderItem: any) =>{
-      const appliedDiscounts = orderItem.applied_discounts.map((discount: any,index: any)=>({
+    const getItemLevelPriceAdjustments = (orderItem: any) => {
+      const appliedDiscounts = orderItem.applied_discounts.map((discount: any, index: any) => ({
         id: index,
-        discountType : discount.id==="coupon"?"Coupon":"Promotion",
-        discountName : discount.name,
-        couponCode : discount.code,
-        discountedAmount : Number(discount.amount).toFixed(2),
+        discountType: discount.id === "coupon" ? "Coupon" : "Promotion",
+        discountName: discount.name,
+        couponCode: discount.code,
+        discountedAmount: Number(discount.amount).toFixed(2),
       }));
       return appliedDiscounts;
     }
-  
+
     const orderPageData = {
       OrderNumber: orderData?.orderState?.orderId,
       ExternalOrderID: null,
@@ -191,7 +191,7 @@ export default async function OrderConfirmation(request:any) {
       GiftRecipt: false,
       ShippingMethod: shippingDetails?.shipping_method,
       ShippingInstructions: null,
-      OrderSource: domainName+"/"+orderDetails?.channel_id,
+      OrderSource: domainName + "/" + orderDetails?.channel_id,
       Custom1: "customerGroup",
       Custom2: parsedAgentInfo?.name,
       Custom3: null,
@@ -202,13 +202,13 @@ export default async function OrderConfirmation(request:any) {
       Custom8: '',
       Custom9: '',
       Custom10: '',
-      accessoriesData: accessoriesMetaField.length>0 && accessoriesMetaField.map((eachAccessory: any) => ({
+      accessoriesData: accessoriesMetaField.length > 0 && accessoriesMetaField.map((eachAccessory: any) => ({
         key: eachAccessory.key,
         value: eachAccessory.value,
       })),
       OrderComments: OrderCommentsByAgent,
       OrderItems: lineItemDetails.map((item: any) => {
-        let selectedVariantOption = item?.variant_id || ''; 
+        let selectedVariantOption = item?.variant_id || '';
         item.product_options?.forEach((option: any) => {
           if (option.display_name === "Finish Color") {
             selectedVariantOption += (selectedVariantOption ? '/' : '') + option.display_value;
@@ -221,30 +221,30 @@ export default async function OrderConfirmation(request:any) {
           SKU: item?.sku,
           Price: getItemLevelPriceAdjustments(item),
           Custom1: item.name,
-          Custom2: selectedVariantOption,  
+          Custom2: selectedVariantOption,
           Custom3: item.brand,
           Custom4: getDataByVariantId(item.variant_id, 'deliveryEstimatedTexts'),
           Custom5: getDataByVariantId(item.variant_id, 'closeOutData'),
         };
       }),
-    };   
+    };
 
     let existingOrderMeta: any = await GetOrderMetaFields(orderId);
 
     if (!existingOrderMeta || existingOrderMeta.length === 0) {
-        const postData = {
-          permission_set: 'write_and_sf_access',
-          namespace: 'order_details',
-          key: 'order_details',
-          value: JSON.stringify(orderPageData),
-          description: 'order_page_details',
-        };
-        try {
-          await CreateOrderMetaFields(orderId, postData);
-        } catch (error) {
-          console.error("Error creating order meta field:", error);
-        }
+      const postData = {
+        permission_set: 'write_and_sf_access',
+        namespace: 'order_details',
+        key: 'order_details',
+        value: JSON.stringify(orderPageData),
+        description: 'order_page_details',
+      };
+      try {
+        await CreateOrderMetaFields(orderId, postData);
+      } catch (error) {
+        console.error("Error creating order meta field:", error);
       }
+    }
 
     let updatedLineItemInfo: any = [];
     let updatedLineItemWithoutAccessories: any = [];
@@ -335,6 +335,19 @@ export default async function OrderConfirmation(request:any) {
         updatedLineItemWithoutAccessories.push(item);
       }
     });
+    let selectedVariantSku = String;
+    const postData = shippingConsignments[0]?.lineItems?.map((item: any) => {
+      selectedVariantSku = item?.catalogProductWithOptionSelections?.sku;
+      const optionsValue = item?.baseCatalogProduct?.variants?.edges?.length || 0;
+      let closeoutValue = [];
+      const productCloseout = item?.baseCatalogProduct?.closeOutParentData?.edges?.map((id: any) => id?.node?.value);
+      closeoutValue = productCloseout
+      return {
+        selectedVariantSku: selectedVariantSku,
+        optionsValue: optionsValue,
+        closeoutValue: closeoutValue,
+      }
+    })
     return (
       <div className="mb-[2rem] mt-[1rem] flex flex-col justify-around gap-[30px] px-[20px] lg:mt-[3rem] lg:flex-row lg:gap-[50px]">
         <div className="flex w-full flex-col items-start gap-[30px] p-[0px] lg:w-[calc((800/1600)*100vw)] lg:p-[0px_40px]">
@@ -356,10 +369,10 @@ export default async function OrderConfirmation(request:any) {
               user={
                 sessionUser && sessionUser.user && sessionUser.user?.email
                   ? ({
-                      email: sessionUser.user.email,
-                      first_name: sessionUser.user?.firstName,
-                      last_name: sessionUser.user?.lastName,
-                    } as any)
+                    email: sessionUser.user.email,
+                    first_name: sessionUser.user?.firstName,
+                    last_name: sessionUser.user?.lastName,
+                  } as any)
                   : null
               }
             />
@@ -535,9 +548,9 @@ export default async function OrderConfirmation(request:any) {
               <span>
                 {shipping.value > 0
                   ? format.number(shipping.value, {
-                      style: 'currency',
-                      currency: shipping.currencyCode,
-                    })
+                    style: 'currency',
+                    currency: shipping.currencyCode,
+                  })
                   : 'FREE'}
               </span>
             </p>
@@ -606,6 +619,7 @@ export default async function OrderConfirmation(request:any) {
                               isExtended={true}
                               product={assembleProductData(shipment)}
                               from="order"
+                              postData = {postData}
                             />
                           </Suspense>
                         </li>
