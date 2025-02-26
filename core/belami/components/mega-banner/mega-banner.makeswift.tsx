@@ -63,10 +63,12 @@ runtime.registerComponent(
               label: "Conditions",
               preferredLayout: Group.Layout.Popover,
               props: {
+                paths: TextInput({ label: 'Paths', defaultValue: '' }),
                 brandNames: TextInput({ label: 'Brand Names', defaultValue: '' }),
                 categoryNames: TextInput({ label: 'Category Names', defaultValue: '' }),
                 productIds: TextInput({ label: 'Product Ids', defaultValue: '' }),
-    
+
+                excludePaths: TextInput({ label: 'Exclude Paths', defaultValue: '' }),
                 excludeBrandNames: TextInput({ label: 'Exclude Brand Names', defaultValue: '' }),
                 excludeCategoryNames: TextInput({ label: 'Exclude Category Names', defaultValue: '' }),
                 excludeProductIds: TextInput({ label: 'Exclude Product Ids', defaultValue: '' }),

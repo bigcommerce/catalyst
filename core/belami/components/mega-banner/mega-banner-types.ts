@@ -16,9 +16,11 @@ export interface MegaBannerItem {
   };
   schedule?: { startDate?: string; endDate?: string };
   conditions?: {
+    paths?: string;
     brandNames?: string;
     categoryNames?: string;
     productIds?: string;
+    excludePaths?: string;
     excludeBrandNames?: string;
     excludeCategoryNames?: string;
     excludeProductIds?: string;
@@ -27,6 +29,7 @@ export interface MegaBannerItem {
 
 export type MegaBannerCustomProps = {
   location?: string;
+  path?: string;
   brandName?: string;
   categoryNames?: string[];
   productId?: number;

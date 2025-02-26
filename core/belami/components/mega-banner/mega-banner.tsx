@@ -6,7 +6,8 @@ import clsx from 'clsx';
 export function MegaBanner({ items, customProps }: MegaBannerProps) {
   const locationItems = items.filter((item: MegaBannerItem) => !customProps || !customProps.location || item.location === customProps?.location);
 
-  const categoryItems = locationItems.filter((item: MegaBannerItem) => (!customProps || !customProps.categoryNames || !item.conditions || !item.conditions.categoryNames || customProps.categoryNames.some((categoryName: string) => item.conditions?.categoryNames?.toLowerCase().split(',').includes(categoryName.toLowerCase()))));
+  const pathItems = locationItems.filter((item: MegaBannerItem) => (!customProps || !customProps.path || !item.conditions || !item.conditions.paths|| item.conditions.paths.replace(/ /g, '').toLowerCase().split(',').includes(customProps.path.toLowerCase())));
+  const categoryItems = pathItems.filter((item: MegaBannerItem) => (!customProps || !customProps.categoryNames || !item.conditions || !item.conditions.categoryNames || customProps.categoryNames.some((categoryName: string) => item.conditions?.categoryNames?.toLowerCase().split(',').includes(categoryName.toLowerCase()))));
   const brandItems = categoryItems.filter((item: MegaBannerItem) => (!customProps || !customProps.brandName || !item.conditions || !item.conditions.brandNames|| item.conditions.brandNames.toLowerCase().split(',').includes(customProps.brandName.toLowerCase())));
   const productItems = brandItems.filter((item: MegaBannerItem) => (!customProps || !customProps.productId || !item.conditions || !item.conditions.productIds|| item.conditions.productIds.replace(/ /g, '').split(',').includes(String(customProps.productId))));
 
@@ -15,9 +16,12 @@ export function MegaBanner({ items, customProps }: MegaBannerProps) {
   const filteredItems = activeItems.filter((item: MegaBannerItem) => (
     !customProps || 
     !item.conditions || 
-    ((!item.conditions.excludeCategoryNames || !customProps.categoryNames || !customProps.categoryNames.some((categoryName: string) => item.conditions?.excludeCategoryNames?.toLowerCase().split(',').includes(categoryName.toLowerCase()))) && 
-    (!item.conditions.excludeBrandNames || !customProps.brandName || !item.conditions.excludeBrandNames.toLowerCase().split(',').includes(customProps.brandName.toLowerCase())) &&
-    (!item.conditions.excludeProductIds || !customProps.productId || !item.conditions.excludeProductIds.replace(/ /g, '').split(',').includes(String(customProps.productId))))
+    (
+      (!item.conditions.excludePaths || !customProps.path || !item.conditions.excludePaths.replace(/ /g, '').toLowerCase().split(',').includes(customProps.path.toLowerCase())) &&
+      (!item.conditions.excludeCategoryNames || !customProps.categoryNames || !customProps.categoryNames.some((categoryName: string) => item.conditions?.excludeCategoryNames?.toLowerCase().split(',').includes(categoryName.toLowerCase()))) && 
+      (!item.conditions.excludeBrandNames || !customProps.brandName || !item.conditions.excludeBrandNames.toLowerCase().split(',').includes(customProps.brandName.toLowerCase())) &&
+      (!item.conditions.excludeProductIds || !customProps.productId || !item.conditions.excludeProductIds.replace(/ /g, '').split(',').includes(String(customProps.productId)))
+    )
   ));
 
   return (filteredItems && filteredItems.length > 0) && (
