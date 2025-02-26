@@ -3,6 +3,7 @@
   "display": "Node",
   "compilerOptions": {
     "strict": true,
+    "lib": ["esnext"],
     "target": "es6",
     "module": "esnext",
     "moduleResolution": "bundler",

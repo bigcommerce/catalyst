@@ -20,8 +20,12 @@
   "dependencies": {
     "@commander-js/extra-typings": "^13.1.0",
     "@iarna/toml": "^2.2.5",
+    "@inquirer/core": "^10.1.6",
+    "@inquirer/figures": "^1.0.10",
     "@inquirer/prompts": "^7.2.3",
+    "@inquirer/type": "^3.0.4",
     "@segment/analytics-node": "^2.2.1",
+    "ansi-escapes": "^7.0.0",
     "chalk": "^5.4.1",
     "commander": "^13.1.0",
     "conf": "^13.1.0",
