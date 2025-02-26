@@ -10,6 +10,7 @@ import { BcImage } from '~/components/bc-image';
 import { PrintOrder } from '../../checkout/print/print-order';
 import { Breadcrumbs as ComponentsBreadcrumbs } from '~/components/ui/breadcrumbs';
 import chevronRight from '~/public/orders/chevronRight.svg';
+import { z } from 'zod';
 
 interface ManageOrderButtonsProps {
   className: string;
@@ -18,7 +19,7 @@ interface ManageOrderButtonsProps {
   orderStatus: string | null;
   orderData: any;
   setShowOrderSummary: any;
-  userEmail?:string;
+  userEmail?: string;
 }
 
 const OrderDetails = ({
@@ -97,7 +98,6 @@ const OrderDetails = ({
               |
             </span>
             <PrintOrder
-              from="order"
               orderId={orderId}
               guestUser={guestUserCheck}
               cartId={cartId}
@@ -117,7 +117,7 @@ const ManageOrderButtons = ({
   orderTrackingUrl,
   orderData,
   setShowOrderSummary,
-  userEmail
+  userEmail,
 }: ManageOrderButtonsProps) => {
   const t = useTranslations('Account.Orders');
   const getOrderDetails = () => {
@@ -136,16 +136,24 @@ const ManageOrderButtons = ({
           <Link href={{ pathname: orderTrackingUrl }}>{t('trackOrder')}</Link>
         </Button>
       )}
-      {(!orderTrackingUrl && Boolean(orderStatus) && orderStatus !== 'SHIPPED' && orderStatus !== 'COMPLETED') && (
-        <Button
-        aria-label={t('cancelOrder')}
-        asChild
-        className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#fff] hover:bg-brand-300"
-        variant="secondary"
-      >
-        <Link href={`https://belamihelpdesk.powerappsportals.com/request/CancelOrder/`} target="_blank">{t('cancelOrder')}</Link>
-      </Button>
-      )}
+      {!orderTrackingUrl &&
+        Boolean(orderStatus) &&
+        orderStatus !== 'SHIPPED' &&
+        orderStatus !== 'COMPLETED' && (
+          <Button
+            aria-label={t('cancelOrder')}
+            asChild
+            className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] bg-[#008BB7] p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#fff] hover:bg-brand-300"
+            variant="secondary"
+          >
+            <Link
+              href={`https://belamihelpdesk.powerappsportals.com/request/CancelOrder/`}
+              target="_blank"
+            >
+              {t('cancelOrder')}
+            </Link>
+          </Button>
+        )}
       <Button
         className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50"
         aria-label={t('viewOrderDetails')}
@@ -160,7 +168,7 @@ const ManageOrderButtons = ({
           className="flex min-h-[42px] w-full flex-row items-center justify-center rounded-[3px] border border-[#B4DDE9] bg-white p-[5px_10px] text-[14px] font-medium uppercase leading-[32px] tracking-[1.25px] text-[#002A37] hover:bg-brand-50"
           variant="secondary"
         >
-         <Link href={`/returns?orderId=${orderId}&email=${userEmail}`}>{t('returnOrder')}</Link>
+          <Link href={`/returns?orderId=${orderId}&email=${userEmail}`}>{t('returnOrder')}</Link>
         </Button>
       )}
     </div>
@@ -178,7 +186,7 @@ const OrderList = ({
   cartId: string;
   setShowOrderSummary: any;
   guestUserCheck: Number;
-  userEmail?:string;
+  userEmail?: string;
 }) => {
   let { orderState, paymentInfo, summaryInfo, consignments } = orderData;
   const shippingConsignments = consignments?.shipping;
@@ -282,7 +290,7 @@ const OrderList = ({
                                   pipeLineData = '';
                                 }
                                 const updatedValue =
-                                  lineData?.name === "Fabric Color" || "Select Fabric Color"
+                                  lineData?.name === 'Fabric Color' || 'Select Fabric Color'
                                     ? lineData?.value.split('|')[0]?.trim()
                                     : lineData?.value;
                                 return (
@@ -346,13 +354,118 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
 
   return (
     <>
+      <div className="flex flex-col gap-[30px]">
+        <div className="text-[20px] font-[500] leading-[32px] tracking-[0.15px] text-black">
+          Items In This Order ({noOfItems})
+        </div>
+        <div className="flex flex-col gap-[30px]">
+          <div className="flex flex-col gap-[30px]">
+            {shippingConsignments?.map((consignment, idx) => {
+              const { lineItems } = consignment;
+              return (
+                <>
+                  {lineItems.map((shipment) => {
+                    const isImageAvailable = shipment?.defaultImage !== null;
+                    return (
+                      <div
+                        className="border border-[#cccbcb] p-[20px] [@media_print]:break-inside-avoid [@media_print]:[page-break-inside:avoid]"
+                        key={shipment?.entityId}
+                      >
+                        <div className="flex flex-col items-start gap-[20px] xl:flex-row xl:items-center xl:justify-between">
+                          <div className="flex flex-1 flex-col items-start gap-[20px] sm:flex-row sm:items-center">
+                            <div className="bg-[#d9d9d9]">
+                              {isImageAvailable && (
+                                <BcImage
+                                  alt={shipment?.image?.altText || shipment?.name}
+                                  className="h-[150px] w-[150px]"
+                                  width={150}
+                                  height={150}
+                                  priority={true}
+                                  src={shipment?.image?.url}
+                                />
+                              )}
+                              {!isImageAvailable && (
+                                <div className="h-[150px] w-[150px]">
+                                  <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
+                                    <span className="text-center text-sm md:text-base">
+                                      {t('comingSoon')}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                            </div>
+                            <div className="flex flex-shrink-[50] flex-col gap-[3px]">
+                              <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
+                                {shipment?.name}
+                              </div>
+                              <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7f7f7f]">
+                                <span>SKU: ABC-1234DE</span>{' '}
+                                {shipment?.productOptions?.map(
+                                  ({ name: optionName, value }, idx) => {
+                                    let pipeLineData = ' | ';
+                                    if (idx === shipment.productOptions.length - 1) {
+                                      pipeLineData = '';
+                                    }
+                                    const updatedValue =
+                                      optionName === 'Fabric Color' || 'Select Fabric Color'
+                                        ? value.split('|')[0].trim()
+                                        : value;
+                                    return (
+                                      <>
+                                        <span
+                                          className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7F7F7F]"
+                                          key={idx}
+                                        >
+                                          {`${optionName}: `}
+                                        </span>
+                                        <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                                          {updatedValue}
+                                        </span>
+                                        <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
+                                          {pipeLineData}
+                                        </span>
+                                      </>
+                                    );
+                                  },
+                                )}
+                              </div>
+                              <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px]">
+                                QTY: {shipment?.quantity}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex flex-1 flex-col gap-[3px] text-right">
+                            {/*<div className="font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#1DB14B]">
+                                10% Coupon: <span>$81.17</span>
+                              </div>*/}
+                            <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px]">
+                              {format.number(shipment?.subTotalListPrice.value, {
+                                style: 'currency',
+                                currency: shipment?.subTotalListPrice.currencyCode,
+                              })}
+                            </div>
+                            {/*
+                              <div>
+                                <span className="font-normal text-[14px] leading-[24px] tracking-[0.25px] line-through ">$100.20</span> <span className="font-normal text-[12px] leading-[18px] tracking-[0.4px] text-[#5c5c5c]">10% Off</span>
+                              </div>*/}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </>
+              );
+            })}
+          </div>
+        </div>
+      </div>
       <div className="border-b border-b-[#E8E7E7]">
         <div className="pb-1 text-[24px] font-normal leading-[32px] text-black">
           {t('orderSummary')}
         </div>
       </div>
-      <div className="flex xl:flex-row flex-col justify-between gap-[30px]">
-        <div className="flex w-full  xl:w-1/2 flex-col gap-[30px]">
+      <div className="flex flex-col justify-between gap-[30px] xl:flex-row">
+        <div className="flex w-full flex-col gap-[30px] xl:w-1/2">
           <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
             <div>
               {t('confirmationNumber')}: <span className="font-[700]">{orderState?.orderId}</span>
@@ -418,7 +531,7 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
                 </div> */}
           </div>
         </div>
-        <div className="flex w-full xl:w-1/2 flex-col gap-[3px] text-[16px] font-normal leading-[32px] tracking-[0.5px]">
+        <div className="flex w-full flex-col gap-[3px] text-[16px] font-normal leading-[32px] tracking-[0.5px] xl:w-1/2">
           <div className="text-[20px] font-medium leading-[32px] tracking-[0.15px] text-[#002A37]">
             {t('orderTotal')}:{' '}
             {format.number(grandTotal.value, {
@@ -523,111 +636,6 @@ const OrderSummaryInfo = ({ orderData }: { orderData: any }) => {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-[30px]">
-        <div className="text-[20px] font-[500] leading-[32px] tracking-[0.15px] text-black">
-          Items In This Order ({noOfItems})
-        </div>
-        <div className="flex flex-col gap-[30px]">
-          <div className="flex flex-col gap-[30px]">
-            {shippingConsignments?.map((consignment, idx) => {
-              const { lineItems } = consignment;
-              return (
-                <>
-                  {lineItems.map((shipment) => {
-                    const isImageAvailable = shipment?.defaultImage !== null;
-                    return (
-                      <div
-                        className="border border-[#cccbcb] p-[20px] [@media_print]:break-inside-avoid [@media_print]:[page-break-inside:avoid]"
-                        key={shipment?.entityId}
-                      >
-                        <div className="flex xl:flex-row flex-col items-start xl:items-center xl:justify-between gap-[20px]">
-                          <div className="flex flex-1 sm:flex-row flex-col items-start sm:items-center gap-[20px]">
-                            <div className="bg-[#d9d9d9]">
-                              {isImageAvailable && (
-                                <BcImage
-                                  alt={shipment?.image?.altText || shipment?.name}
-                                  className="h-[150px] w-[150px]"
-                                  width={150}
-                                  height={150}
-                                  priority={true}
-                                  src={shipment?.image?.url}
-                                />
-                              )}
-                              {!isImageAvailable && (
-                                <div className="h-[150px] w-[150px]">
-                                  <div className="flex h-full w-full items-center justify-center bg-gray-200 text-gray-500">
-                                    <span className="text-center text-sm md:text-base">
-                                      {t('comingSoon')}
-                                    </span>
-                                  </div>
-                                </div>
-                              )}
-                            </div>
-                            <div className="flex flex-shrink-[50] flex-col gap-[3px]">
-                              <div className="text-[16px] font-normal leading-[32px] tracking-[0.15px] text-black">
-                                {shipment?.name}
-                              </div>
-                              <div className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7f7f7f]">
-                                <span>SKU: ABC-1234DE</span>{' '}
-                                {shipment?.productOptions?.map(
-                                  ({ name: optionName, value }, idx) => {
-                                    let pipeLineData = ' | ';
-                                    if (idx === shipment.productOptions.length - 1) {
-                                      pipeLineData = '';
-                                    }
-                                    const updatedValue =
-                                      optionName === "Fabric Color" || "Select Fabric Color"
-                                        ? value.split('|')[0].trim()
-                                        : value;
-                                    return (
-                                      <>
-                                        <span
-                                          className="text-[14px] font-bold leading-[24px] tracking-[0.25px] text-[#7F7F7F]"
-                                          key={idx}
-                                        >
-                                          {`${optionName}: `}
-                                        </span>
-                                        <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
-                                          {updatedValue}
-                                        </span>
-                                        <span className="text-[14px] font-[400] leading-[24px] tracking-[0.25px] text-[#7F7F7F]">
-                                          {pipeLineData}
-                                        </span>
-                                      </>
-                                    );
-                                  },
-                                )}
-                              </div>
-                              <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px]">
-                                QTY: {shipment?.quantity}
-                              </div>
-                            </div>
-                          </div>
-                          <div className="flex flex-1 flex-col gap-[3px] text-right">
-                            {/*<div className="font-normal text-[14px] leading-[24px] tracking-[0.25px] text-[#1DB14B]">
-                                10% Coupon: <span>$81.17</span>
-                              </div>*/}
-                            <div className="text-[14px] font-normal leading-[24px] tracking-[0.25px]">
-                              {format.number(shipment?.subTotalListPrice.value, {
-                                style: 'currency',
-                                currency: shipment?.subTotalListPrice.currencyCode,
-                              })}
-                            </div>
-                            {/*
-                              <div>
-                                <span className="font-normal text-[14px] leading-[24px] tracking-[0.25px] line-through ">$100.20</span> <span className="font-normal text-[12px] leading-[18px] tracking-[0.4px] text-[#5c5c5c]">10% Off</span>
-                              </div>*/}
-                          </div>
-                        </div>
-                      </div>
-                    );
-                  })}
-                </>
-              );
-            })}
-          </div>
-        </div>
-      </div>
     </>
   );
 };
@@ -639,7 +647,7 @@ export default function OrderTracking({
 }: {
   icon: any;
   guestUserCheck: Number;
-  userEmail?:string;
+  userEmail?: string;
 }) {
   const [number, setNumber] = useState('');
   const [email, setEmail] = useState('');
@@ -770,12 +778,14 @@ export default function OrderTracking({
                 <div className="relative">
                   <input
                     type="text"
-                    className={`mb-[30px] flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_10px] focus-visible:outline-none disabled:bg-gray-100 disabled:hover:border-gray-200 ${errors.number ? 'hover:border hover:border-[#A71F23] focus:border focus:border-[#A71F23] focus-visible:border focus-visible:border-[#A71F23]' : 'hover:border hover:border-[#008bb7] focus:border focus:border-[#008bb7] focus-visible:border focus-visible:border-[#008bb7]'}`}
+                    className={`mb-0 flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_10px] focus-visible:outline-none disabled:bg-gray-100 disabled:hover:border-gray-200 xl:mb-[20px] ${errors.number ? 'hover:border hover:border-[#A71F23] focus:border focus:border-[#A71F23] focus-visible:border focus-visible:border-[#A71F23]' : 'hover:border hover:border-[#008bb7] focus:border focus:border-[#008bb7] focus-visible:border focus-visible:border-[#008bb7]'}`}
                     onChange={(e) => onNumberChange(e)}
                   />
 
                   {errors.number && (
-                    <p className="absolute bottom-0 text-sm text-[#A71F23]">{errors.number} </p>
+                    <p className="relative bottom-0 text-sm text-[#A71F23] xl:absolute">
+                      {errors.number}{' '}
+                    </p>
                   )}
                 </div>
               </div>
@@ -786,18 +796,20 @@ export default function OrderTracking({
                 <div className="relative">
                   <input
                     type="text"
-                    className={`mb-[30px] flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_10px] focus-visible:outline-none disabled:bg-gray-100 disabled:hover:border-gray-200 ${errors.email ? 'hover:border hover:border-[#A71F23] focus:border focus:border-[#A71F23] focus-visible:border focus-visible:border-[#A71F23]' : 'hover:border hover:border-[#008bb7] focus:border focus:border-[#008bb7] focus-visible:border focus-visible:border-[#008bb7]'}`}
+                    className={`mb-0 flex h-[44px] w-full flex-col items-start justify-center gap-[10px] rounded-[3px] border border-[#CCCBCB] bg-white p-[6px_10px] focus-visible:outline-none disabled:bg-gray-100 disabled:hover:border-gray-200 xl:mb-[20px] ${errors.email ? 'hover:border hover:border-[#A71F23] focus:border focus:border-[#A71F23] focus-visible:border focus-visible:border-[#A71F23]' : 'hover:border hover:border-[#008bb7] focus:border focus:border-[#008bb7] focus-visible:border focus-visible:border-[#008bb7]'}`}
                     onChange={(e) => onEmailChange(e)}
                   />
 
                   {errors.email && (
-                    <p className="absolute bottom-0 text-sm text-[#A71F23]">{errors.email} </p>
+                    <p className="relative bottom-0 text-sm text-[#A71F23] xl:absolute">
+                      {errors.email}{' '}
+                    </p>
                   )}
                 </div>
               </div>
               <div>
                 <button
-                  className="mb-[30px] flex h-[42px] w-full cursor-pointer flex-row items-center justify-center gap-[5px] rounded bg-[#03465C] p-[5px_10px] text-sm font-[500] leading-8 tracking-[1.25px] text-[#ffffff] hover:bg-[#03465C]/90 xl:w-[unset]"
+                  className="mb-0 flex h-[42px] w-full cursor-pointer flex-row items-center justify-center gap-[5px] rounded bg-[#03465C] p-[5px_10px] text-sm font-[500] leading-8 tracking-[1.25px] text-[#ffffff] hover:bg-[#03465C]/90 xl:mb-[20px] xl:w-[unset]"
                   disabled={!isFormValid}
                   onClick={handleSubmit}
                 >

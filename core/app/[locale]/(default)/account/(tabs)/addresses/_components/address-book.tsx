@@ -164,7 +164,7 @@ export const AddressBook = ({
               
                   <AddressChangeButtons
                     addressId={entityId}
-                    isAddressRemovable={addressesCount > 1}
+                    isAddressRemovable={addressesCount > 0}
                     onDelete={setAddressBook}
                   />
              

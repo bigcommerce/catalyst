@@ -29,6 +29,7 @@
     "@datadog/browser-rum": "^6.1.0",
     "@google-pay/button-react": "^3.1.0",
     "@icons-pack/react-simple-icons": "^10.2.0",
+    "@makeswift/prop-controllers": "^0.4.1",
     "@makeswift/runtime": "^0.23.5",
     "@neondatabase/serverless": "^0.10.4",
     "@radix-ui/react-accordion": "^1.2.1",

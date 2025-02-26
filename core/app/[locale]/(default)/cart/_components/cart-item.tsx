@@ -61,6 +61,17 @@ const PhysicalItemFragment = graphql(`
         entityId
         id
       }
+      metafields(namespace: "pdp_info_for_agent", keys: "adjusted_cost") {
+        edges {
+          cursor
+          node {
+            entityId
+            id
+            key
+            value
+          }
+        }
+      }
       closeOutParentData: metafields(namespace: "Details", keys: "closeout") {
         edges {
           cursor
@@ -158,6 +169,9 @@ const PhysicalItemFragment = graphql(`
       }
     }
     catalogProductWithOptionSelections {
+      sku
+      entityId
+      mpn
       prices {
         price{
          currencyCode
@@ -475,7 +489,7 @@ export const CartItem = async ({
                   <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2 sm:min-w-[300px]">
                     <div className="cart-options flex flex-wrap gap-2">
                       <p className="text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                        SKU: {product?.sku}
+                        SKU: {product?.catalogProductWithOptionSelections?.mpn || product?.sku}
                       </p>
                     </div>
                   </div>
@@ -495,7 +509,7 @@ export const CartItem = async ({
                     <div className="modifier-options flex min-w-full max-w-[600px] flex-wrap gap-2">
                       <div className="cart-options">
                         <p className="inline text-left text-[0.875rem] font-bold uppercase leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
-                          SKU: {product.sku}
+                          SKU: {product?.catalogProductWithOptionSelections?.mpn || product?.sku}
                           {changeTheProtectedPosition.length > 0 && (
                             <span className="text-left text-[0.875rem] font-normal leading-[1.5rem] tracking-[0.015625rem] text-[#5C5C5C]">
                               |

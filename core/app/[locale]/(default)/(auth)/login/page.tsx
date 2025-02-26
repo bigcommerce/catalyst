@@ -164,7 +164,7 @@ export default async function Login({ params }: Props) {
               <div className="item-center flex flex-row justify-center">
                 <Button
                   asChild
-                  className="flex h-[42px] w-fit items-center justify-center gap-[5px] rounded-[3px] bg-white p-[5px] px-[10px] text-[#03465c] hover:text-[#03465c]"
+                  className="flex h-[42px] w-fit items-center justify-center gap-[5px] rounded-[3px] bg-white p-[5px] px-[10px] text-[#03465c] hover:text-[#03465c] hover:bg-brand-50"
                 >
 <Link href="/register">
   {' '}
