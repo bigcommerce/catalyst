@@ -21,34 +21,34 @@ export function MegaBanner({ items, customProps }: MegaBannerProps) {
   ));
 
   return (filteredItems && filteredItems.length > 0) && (
-    <div className={clsx('mega-banner', !!customProps?.location && 'mega-banner-' + customProps?.location)}>
+    <div className={clsx('mega-banner', !!customProps?.location && 'mega-banner-' + customProps?.location, filteredItems[0]?.customCss?.root)}>
       {!!filteredItems[0]?.content ? (
         !!filteredItems[0]?.link?.href && filteredItems[0]?.link?.href !== '#' ? (
-          <Link href={filteredItems[0]?.link.href} dangerouslySetInnerHTML={{ __html: filteredItems[0]?.content}}></Link>
+          <Link href={filteredItems[0]?.link.href} dangerouslySetInnerHTML={{ __html: filteredItems[0]?.content}} className={clsx('mega-banner-link', filteredItems[0]?.customCss?.link)}></Link>
         ) : (
           <div dangerouslySetInnerHTML={{ __html: filteredItems[0]?.content }}></div>
         )
       ) : (
         !!filteredItems[0]?.imageSrc && (
           !!filteredItems[0]?.link?.href && filteredItems[0]?.link?.href !== '#' ? (
-            <Link href={filteredItems[0]?.link.href}>
+            <Link href={filteredItems[0]?.link.href} className={clsx('mega-banner-link', filteredItems[0]?.customCss?.link)}>
               {!!filteredItems[0]?.imageMobileSrc ? (
                 <>
-                  <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image hidden md:block', filteredItems[0]?.imageWidth === '100%' && 'w-full')} />
-                  <img src={filteredItems[0]?.imageMobileSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image-mobile block md:hidden', filteredItems[0]?.imageWidth === '100%' && 'w-full')} />
+                  <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image hidden md:block', filteredItems[0]?.customCss?.image)} />
+                  <img src={filteredItems[0]?.imageMobileSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image-mobile block md:hidden', filteredItems[0]?.customCss?.image)} />
                 </>
               ) : (
-                <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} />
+                <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image', filteredItems[0]?.customCss?.image)} />
               )}
             </Link>
           ) : (
             !!filteredItems[0]?.imageMobileSrc ? (
               <>
-                <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image hidden md:block', filteredItems[0]?.imageWidth === '100%' && 'w-full')} />
-                <img src={filteredItems[0]?.imageMobileSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image-mobile block md:hidden', filteredItems[0]?.imageWidth === '100%' && 'w-full')} />
+                <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image hidden md:block', filteredItems[0]?.customCss?.image)} />
+                <img src={filteredItems[0]?.imageMobileSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image-mobile block md:hidden', filteredItems[0]?.customCss?.image)} />
               </>
             ) : (
-              <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} />
+              <img src={filteredItems[0]?.imageSrc} alt={filteredItems[0]?.imageAlt} className={clsx('mega-banner-image', filteredItems[0]?.customCss?.image)} />
             )
           )
         )

@@ -9,6 +9,11 @@ export interface MegaBannerItem {
   imageWidth?: string;
   link?: { href?: string; target?: string };
   content?: ReactNode | string;
+  customCss?: { 
+    root?: string; 
+    link?: string;
+    image?: string;
+  };
   schedule?: { startDate?: string; endDate?: string };
   conditions?: {
     brandNames?: string;

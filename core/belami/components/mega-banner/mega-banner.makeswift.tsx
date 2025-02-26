@@ -39,30 +39,18 @@ runtime.registerComponent(
             imageSrc: Image({ label: 'Image' }),
             imageMobileSrc: Image({ label: 'Alt. Image (Mobile)' }),
             //imageAlt: TextInput({ label: 'Image alt', defaultValue: '' }),
-            imageWidth: Select({
-              label: "Image Width",
-              labelOrientation: "horizontal",
-              options: [
-                { value: "100%", label: "100%" },
-                { value: "fixed", label: "Fixed" },
-              ],
-              defaultValue: "100%",
-            }),
             link: Link({ label: 'Link' }),
             //content: RichText({ mode: RichText.Mode.Block }),
             content: TextArea({ label: "Content", defaultValue: '' }),
-/*
-            startDate: TextInput({ label: 'Start Date', defaultValue: '' }),
-            endDate: TextInput({ label: 'End Date', defaultValue: '' }),
-
-            brandIds: TextInput({ label: 'Brand Ids', defaultValue: '' }),
-            categoryIds: TextInput({ label: 'Category Ids', defaultValue: '' }),
-            productIds: TextInput({ label: 'Product Ids', defaultValue: '' }),
-
-            excludeBrandIds: TextInput({ label: 'Exclude Brand Ids', defaultValue: '' }),
-            excludeCategoryIds: TextInput({ label: 'Exclude Category Ids', defaultValue: '' }),
-            excludeProductIds: TextInput({ label: 'Exclude Product Ids', defaultValue: '' }),
-*/
+            customCss: Group({
+              label: "Custom CSS",
+              preferredLayout: Group.Layout.Popover,
+              props: {
+                root: TextInput({ label: 'Root', defaultValue: '' }),
+                link: TextInput({ label: 'Link', defaultValue: '' }),
+                image: TextInput({ label: 'Image', defaultValue: '' }),
+              },
+            }),              
             schedule: Group({
               label: "Schedule",
               preferredLayout: Group.Layout.Popover,
