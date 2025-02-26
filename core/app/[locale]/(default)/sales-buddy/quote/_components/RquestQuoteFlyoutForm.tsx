@@ -64,41 +64,16 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
   });
 
   const [customerData, setCustomerData] = useState<CustomerData | null>(null);
-  const [quoteProductData, setQuoteProductData] = useState<any>();
   const [existingSessionId, setExistingSessionId] = useState<string | null>(null);
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAddingToExisting, setIsAddingToExisting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [quoteCartData, setquoteCartData] = useState<CartData[]>();
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const pageName = usePathname();
-  useEffect(() => {
-    const fetchStoredQuote = () => {
-      if (pageName !== '/cart/' && typeof window !== "undefined") {
-        let storedQuote = localStorage.getItem("Q_R_data");
   
-        if (storedQuote) {
-          try {
-            const parsedData = JSON.parse(storedQuote);
-            setQuoteProductData(parsedData);
-          } catch (error) {
-            console.error("Error parsing local storage data:", error);
-            setQuoteProductData([]); 
-          }
-        } else {
-          console.warn("No data found in localStorage for 'Q_R_data'");
-          setQuoteProductData([]); 
-        }
-      }
-    };
-  
-    fetchStoredQuote();
-
-  }, [pageName]);
-  
-
-
   useEffect(() => {
     const loadInitialData = async () => {
       try {
@@ -127,7 +102,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
           const CartItemsData: any = await GetCartDetials();
           const cartLineItems = CartItemsData?.lineItems?.physicalItems || [];
           const customItmes = CartItemsData?.lineItems?.customItems || [];
-          const formattedCutomItemData = customItmes.map(item => ({
+          const formattedCutomItemData = customItmes?.map(item => ({
             bc_sku: item.sku,
             bc_product_name: item.name,
             bc_product_id: 0,
@@ -140,7 +115,6 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
           if (cartLineItems.length > 0) {
             const lineItemsData = cartLineItems.map((item: any) => {
               const selectedOptions = item?.selectedOptions || [];
-
               const productSelectedOpt = selectedOptions
                 ?.map((option: any) => {
                   if (Array.isArray(item?.baseCatalogProduct?.productOptions?.edges)) {
@@ -173,23 +147,38 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
                 })
                 .filter(Boolean);
 
+                const selectedVariantsVal = selectedOptions?.map((field:any)=>(
+                  {
+                    option_id: field.entityId,
+                    option_value: field.value,
+                    name:field?.name,
+                    value: field.optionLabelName,
+                  }
+                ));
+
               const variantLabels = productSelectedOpt
                 ?.filter((item: any) => item?.type === "variant")
                 .map((item: any) => item?.label)
                 .join(", ");
 
               return {
+                bc_product_price: item?.catalogProductWithOptionSelections?.prices?.retailPrice?.value ?? item?.originalPrice?.value,
+                bc_product_sale_price:item?.extendedSalePrice?.value ?? item?.listPrice?.value,
                 bc_product_id: item.productEntityId,
                 bc_sku: item.sku,
+                bc_product_url:item?.url ?? "#",
+                bc_product_qty:item?.quantity ?? 1,
+                bc_product_image:item?.imageUrl,
                 bc_product_name: item.name,
                 bc_variant_id: item.variantEntityId,
                 bc_variant_sku: item?.sku,
                 bc_variant_name: variantLabels || "",
+                option_selections: JSON.stringify(selectedVariantsVal),
                 options: productSelectedOpt.map((opt: any) => opt.label).join(", "),
                 type: "product",
               };
             });
-            const finalLineItems = [...lineItemsData, ...formattedCutomItemData];
+            const finalLineItems = customItmes.length > 0 ? [...lineItemsData, ...formattedCutomItemData] : [...lineItemsData];
             setquoteCartData(finalLineItems);
           } else {
             setquoteCartData([]);
@@ -275,26 +264,29 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
         quote_id: sessionId,
         qr_customer: formData,
         bc_customer_id: customerData?.id ?? 0,
-        qr_product: []
+        qr_product: [],
+        cart_url: ""
       };
     } else {
       dataToSend = {
         quote_id: sessionId,
-        bc_customer_id: customerData?.id,
+        bc_customer_id: customerData?.id ?? 0,
         quote_type: quoteType,
         qr_customer: formData,
         qr_product: pageName === '/cart/' ? cartData : [latestQuoteData],
         page_type: pageName === '/cart/' ? 'cart' : 'pdp',
+        cart_url: ""
       };
     }
 
     try {
-      setIsSubmitting(true);
       const result = await CreateQuote(dataToSend);
       if (result) {
         setSubmitStatus('success');
-        setSuccessMessage('Quote requested successfully!');
+        setSuccessMessage('Quote Added successfully!');
         if (isNewQuote) {
+          setIsSubmitting(true);
+          setSuccessMessage('Quote requested successfully!');
           localStorage.setItem('session_id$', sessionId);
           setExistingSessionId(sessionId);
         }
@@ -306,7 +298,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
         setTimeout(() => {
           setSuccessMessage(null);
           onOpenChange(false);
-        }, 2000);
+        }, 400);
       } else {
         setSubmitStatus('error');
       }
@@ -332,6 +324,7 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
 
   const handleAddToExistingQuote = async () => {
     if (!existingSessionId || !validateForm()) return;
+    setIsAddingToExisting(true); 
     const storedQuote = localStorage.getItem("Q_R_data");
     let latestQuoteData = storedQuote ? JSON.parse(storedQuote) : [];
     await createQuoteRequest(existingSessionId, false, quoteCartData as CartData[],latestQuoteData);
@@ -380,28 +373,36 @@ const FlyoutForm = ({ isOpen, onOpenChange }: FlyoutFormProps) => {
             </div>
 
             <div className="flex justify-end space-x-2 pt-4">
-              <Dialog.Close asChild>
-                <Button type="button" variant="primary" className="bg-gray-100">
-                  Cancel
-                </Button>
-              </Dialog.Close>
+  <Dialog.Close asChild>
+    <Button
+      type="button"
+      variant="primary"
+      className="bg-black text-white hover:bg-red-600 px-3 py-3 text-sm"
+    >
+      Cancel
+    </Button>
+  </Dialog.Close>
 
-              {existingSessionId && pageName !== "/sales-buddy/quote" && (
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="bg-yellow-500 text-white hover:bg-yellow-600"
-                  onClick={handleAddToExistingQuote}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? 'Add to Existing Quote' : 'Add to Existing Quote'}
+  {existingSessionId && pageName !== "/sales-buddy/quote" && (
+    <Button
+      type="button"
+      variant="secondary"
+      className="bg-yellow-500 text-white hover:bg-yellow-600 px-3 py-3 text-sm"
+      onClick={handleAddToExistingQuote}
+      disabled={isAddingToExisting}
+    >
+      {isAddingToExisting ? "Adding..." : "Add to Existing Quote"}
+    </Button>
+  )}
 
-                </Button>
-              )}
-              <Button type="submit" className="bg-blue-600 text-white hover:bg-blue-700" disabled={isSubmitting}>
-                {isSubmitting ? 'Submitting...' : 'Submit'}
-              </Button>
-            </div>
+  <Button
+    type="submit"
+    className="bg-blue-600 text-white hover:bg-blue-700 px-3 py-3 text-sm"
+    disabled={isSubmitting}
+  >
+    {isSubmitting ? "Submitting..." : "Submit"}
+  </Button>
+</div>
           </form>
 
           {submitStatus === 'success' &&
