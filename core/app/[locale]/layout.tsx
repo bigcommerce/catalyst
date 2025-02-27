@@ -4,9 +4,8 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
 import type { Metadata } from 'next';
 import { draftMode } from 'next/headers';
-import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { getMessages } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
 
@@ -85,30 +84,21 @@ interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
 }
 
-export default async function RootLayout({ params, children }: Props) {
-  const { locale } = await params;
+export default async function RootLayout({ children }: Props) {
   const toastNotificationCookieData = await getToastNotification();
-
-  if (!routing.locales.includes(locale)) {
-    notFound();
-  }
-
-  // need to call this method everywhere where static rendering is enabled
-  // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
-  setRequestLocale(locale);
 
   const messages = await getMessages();
 
   return (
     <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
-      <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+      <html className={clsx(fonts.map((f) => f.variable))} lang="en">
         <head>
           <SiteTheme />
           <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
         </head>
         <body>
           <Notifications />
-          <NextIntlClientProvider locale={locale} messages={messages}>
+          <NextIntlClientProvider messages={messages}>
             <NuqsAdapter>
               <Providers>
                 {toastNotificationCookieData && (

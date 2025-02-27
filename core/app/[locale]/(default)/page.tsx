@@ -9,12 +9,6 @@ export function generateStaticParams(): Params[] {
   return locales.map((locale) => ({ locale }));
 }
 
-interface Props {
-  params: Promise<Params>;
-}
-
-export default async function Home({ params }: Props) {
-  const { locale } = await params;
-
-  return <MakeswiftPage locale={locale} path="/" />;
+export default function Home() {
+  return <MakeswiftPage locale="en" path="/" />;
 }
