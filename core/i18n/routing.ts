@@ -53,6 +53,11 @@ enum LocalePrefixes {
 export const localePrefix = LocalePrefixes.ASNEEDED;
 
 export const routing = defineRouting({
+  localeCookie: {
+    partitioned: true,
+    secure: true,
+    sameSite: 'none',
+  },
   locales: ['en', 'es', 'fr'],
   defaultLocale: 'en',
   domains: [
