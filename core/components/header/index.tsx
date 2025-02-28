@@ -155,6 +155,8 @@ export const Header = async () => {
         currencies,
         activeCurrencyId,
         currencyAction: switchCurrency,
+        prefetch: 'hover',
+        prefetchKind: 'auto',
       }}
     />
   );

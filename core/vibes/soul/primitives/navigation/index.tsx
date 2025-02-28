@@ -117,6 +117,8 @@ interface Props<S extends SearchResult> {
   openSearchPopupLabel?: string;
   searchLabel?: string;
   mobileMenuTriggerLabel?: string;
+  prefetch?: 'hover' | 'viewport' | 'none';
+  prefetchKind?: 'auto' | 'full';
 }
 
 const MobileMenuButton = forwardRef<
@@ -283,6 +285,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     openSearchPopupLabel = 'Open search popup',
     searchLabel = 'Search',
     mobileMenuTriggerLabel = 'Toggle navigation',
+    prefetch = 'hover',
+    prefetchKind = 'auto',
   }: Props<S>,
   ref: Ref<HTMLDivElement>,
 ) {
@@ -363,6 +367,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                             <Link
                               className="block rounded-lg bg-[var(--nav-mobile-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
                               href={item.href}
+                              prefetch={prefetch}
+                              prefetchKind={prefetchKind}
                             >
                               {item.label}
                             </Link>
@@ -375,6 +381,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                               <Link
                                 className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
                                 href={link.href}
+                                prefetch={prefetch}
+                                prefetchKind={prefetchKind}
                               >
                                 {link.label}
                               </Link>
@@ -453,6 +461,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                     <Link
                       className="hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
                       href={item.href}
+                      prefetch={prefetch}
+                      prefetchKind={prefetchKind}
                     >
                       {item.label}
                     </Link>
@@ -466,7 +476,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                             {group.label != null && group.label !== '' && (
                               <li>
                                 {group.href != null && group.href !== '' ? (
-                                  <Link className={navGroupClassName} href={group.href}>
+                                  <Link 
+                                    className={navGroupClassName} 
+                                    href={group.href}
+                                    prefetch={prefetch}
+                                    prefetchKind={prefetchKind}
+                                  >
                                     {group.label}
                                   </Link>
                                 ) : (
@@ -481,6 +496,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                                 <Link
                                   className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
                                   href={link.href}
+                                  prefetch={prefetch}
+                                  prefetchKind={prefetchKind}
                                 >
                                   {link.label}
                                 </Link>
@@ -533,15 +550,34 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               </Popover.Portal>
             </Popover.Root>
           ) : (
-            <Link aria-label={searchLabel} className={navButtonClassName} href={searchHref}>
+            <Link 
+              aria-label={searchLabel} 
+              className={navButtonClassName} 
+              href={searchHref}
+              prefetch={prefetch}
+              prefetchKind={prefetchKind}
+            >
               <Search size={20} strokeWidth={1} />
             </Link>
           )}
 
-          <Link aria-label={accountLabel} className={navButtonClassName} href={accountHref}>
+          <Link 
+            aria-label={accountLabel} 
+            className={navButtonClassName} 
+            href={accountHref}
+            prefetch={prefetch}
+            prefetchKind={prefetchKind}
+          >
             <User size={20} strokeWidth={1} />
           </Link>
-          <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
+          
+          <Link 
+            aria-label={cartLabel} 
+            className={navButtonClassName} 
+            href={cartHref}
+            prefetch={prefetch}
+            prefetchKind={prefetchKind}
+          >
             <ShoppingBag size={20} strokeWidth={1} />
             <Stream
               fallback={
