@@ -53,9 +53,30 @@ enum LocalePrefixes {
 export const localePrefix = LocalePrefixes.ASNEEDED;
 
 export const routing = defineRouting({
-  locales,
-  defaultLocale,
-  localePrefix,
+  locales: ['en', 'es', 'fr'],
+  defaultLocale: 'en',
+  domains: [
+    {
+      domain: 'store-l6kv6khbrl-1713351.catalyst-sandbox-vercel.store',
+      defaultLocale: 'en',
+      // Optionally restrict the locales available on this domain
+      locales: ['en']
+    },
+    {
+      domain: 'store-ptxremxmaj-1713353.catalyst-sandbox-vercel.store',
+      defaultLocale: 'es',
+      // If there are no `locales` specified on a domain,
+      // all available locales will be supported here
+      locales: ['es']
+    },
+    {
+      domain: 'store-ptxremxmaj-1713353.catalyst-sandbox-vercel.store',
+      defaultLocale: 'fr',
+      // If there are no `locales` specified on a domain,
+      // all available locales will be supported here
+      locales: ['fr']
+    },
+  ]
 });
 
 // Lightweight wrappers around Next.js' navigation APIs
