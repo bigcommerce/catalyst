@@ -76,7 +76,7 @@ function computePrefetchProp({
   }
 
   if (prefetchKind === 'auto') {
-    return undefined;
+    return true;
   }
 
   return true;
