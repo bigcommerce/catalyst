@@ -298,8 +298,8 @@
         "increment": "Aumenta la cantidad",
         "decrement": "Disminuir cantidad",
         "removeItem": "Eliminar artículo",
-        "cartCombined": "We noticed you had items saved in a previous cart, so we've added them to your current cart for you.",
-        "cartRestored": "You started a cart on another device, and we've restored it here so you can pick up where you left off.",
+        "cartCombined": "Notamos que tenías artículos guardados en un carrito anterior, así que los hemos agregado a tu carrito actual.",
+        "cartRestored": "Iniciaste un carrito en otro dispositivo y lo hemos restaurado aquí para que puedas continuar desde donde lo dejaste.",
         "CheckoutSummary": {
             "title": "Resumen",
             "subTotal": "Subtotal",
@@ -325,8 +325,8 @@
             "CouponCode": {
                 "apply": "Aplicar",
                 "couponCode": "Código de cupón",
-                "removeCouponCode": "Remove coupon code",
-                "invalidCouponCode": "Please enter a valid coupon code",
+                "removeCouponCode": "Elimina el código de cupón",
+                "invalidCouponCode": "Ingresa un código de cupón válido",
                 "cartNotFound": "No se encontró ninguna cookie de cartId."
             }
         },
