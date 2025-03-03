@@ -375,8 +375,9 @@ export function ShippingForm({
                   onFocus={shippingOptionsControl.focus}
                   onValueChange={shippingOptionsControl.change}
                   options={state.shippingOptions.map((option) => ({
-                    label: `${option.label} - ${option.price}`,
+                    label: option.label,
                     value: option.value,
+                    description: option.price,
                   }))}
                   value={shippingOptionsControl.value}
                 />
