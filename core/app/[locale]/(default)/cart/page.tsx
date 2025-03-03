@@ -201,11 +201,12 @@ export default async function Cart() {
             : undefined,
           shippingOptions: shippingConsignment?.availableShippingOptions
             ? shippingConsignment.availableShippingOptions.map((option) => ({
-                label: `${option.description} - ${format.number(option.cost.value, {
+                label: option.description,
+                value: option.entityId,
+                price: format.number(option.cost.value, {
                   style: 'currency',
                   currency: checkout?.cart?.currencyCode,
-                })}`,
-                value: option.entityId,
+                }),
               }))
             : undefined,
           shippingOption: shippingConsignment?.selectedShippingOption

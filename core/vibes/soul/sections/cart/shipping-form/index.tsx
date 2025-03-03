@@ -32,7 +32,7 @@ export interface ShippingFormState {
 interface ShippingOption {
   label: string;
   value: string;
-  price?: string;
+  price: string;
 }
 
 interface Country {
@@ -374,7 +374,10 @@ export function ShippingForm({
                   onBlur={shippingOptionsControl.blur}
                   onFocus={shippingOptionsControl.focus}
                   onValueChange={shippingOptionsControl.change}
-                  options={state.shippingOptions}
+                  options={state.shippingOptions.map((option) => ({
+                    label: `${option.label} - ${option.price}`,
+                    value: option.value,
+                  }))}
                   value={shippingOptionsControl.value}
                 />
 

@@ -59,7 +59,7 @@ interface CouponCode {
 interface ShippingOption {
   label: string;
   value: string;
-  price?: string;
+  price: string;
 }
 
 interface Country {
