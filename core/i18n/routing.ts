@@ -52,6 +52,8 @@ enum LocalePrefixes {
 
 export const localePrefix = LocalePrefixes.ASNEEDED;
 
+const isProd = process.env.NODE_ENV === 'production';
+
 export const routing = defineRouting({
   localeCookie: {
     partitioned: true,
@@ -60,29 +62,37 @@ export const routing = defineRouting({
   },
   locales: ['en', 'es', 'fr'],
   defaultLocale: 'en',
+  localePrefix,
   domains: [
     {
-      domain: 'store-l6kv6khbrl-1713351.catalyst-sandbox-vercel.store',
+      domain: isProd ? 'store-l6kv6khbrl-1713351.catalyst-sandbox-vercel.store' : 'localhost:3330',
       defaultLocale: 'en',
       // Optionally restrict the locales available on this domain
-      locales: ['en']
+      locales: ['en'],
     },
     {
-      domain: 'store-ptxremxmaj-1713353.catalyst-sandbox-vercel.store',
+      domain: isProd
+        ? 'store-xo7o2wt56o-1713352.catalyst-sandbox-vercel.store'
+        : 'es.localhost:3331',
       defaultLocale: 'es',
       // If there are no `locales` specified on a domain,
       // all available locales will be supported here
-      locales: ['es']
+      locales: ['es'],
     },
     {
-      domain: 'store-ptxremxmaj-1713353.catalyst-sandbox-vercel.store',
+      domain: isProd
+        ? 'store-ptxremxmaj-1713353.catalyst-sandbox-vercel.store'
+        : 'fr.localhost:3332',
       defaultLocale: 'fr',
       // If there are no `locales` specified on a domain,
       // all available locales will be supported here
-      locales: ['fr']
+      locales: ['fr'],
     },
-  ]
+  ],
 });
+
+export const getLocaleDomain = (locale: string): string | undefined =>
+  (routing.domains ?? []).find((d) => (d.locales as Array<string>).includes(locale))?.domain;
 
 // Lightweight wrappers around Next.js' navigation APIs
 // that will consider the routing configuration

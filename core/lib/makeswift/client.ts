@@ -3,8 +3,6 @@ import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { strict } from 'assert';
 import { getLocale } from 'next-intl/server';
 
-import { defaultLocale } from '~/i18n/routing';
-
 import { runtime } from './runtime';
 
 strict(process.env.MAKESWIFT_SITE_API_KEY, 'MAKESWIFT_SITE_API_KEY is required');
@@ -17,7 +15,7 @@ export const client = new Makeswift(process.env.MAKESWIFT_SITE_API_KEY, {
 export const getPageSnapshot = async ({ path, locale }: { path: string; locale: string }) =>
   await client.getPageSnapshot(path, {
     siteVersion: await getSiteVersion(),
-    locale: normalizeLocale(locale),
+    locale,
   });
 
 export const getComponentSnapshot = async (snapshotId: string) => {
@@ -25,10 +23,6 @@ export const getComponentSnapshot = async (snapshotId: string) => {
 
   return await client.getComponentSnapshot(snapshotId, {
     siteVersion: await getSiteVersion(),
-    locale: normalizeLocale(locale),
+    locale,
   });
 };
-
-function normalizeLocale(locale: string): string | undefined {
-  return locale === defaultLocale ? undefined : locale;
-}
