@@ -208,9 +208,13 @@ export async function registerCustomer<F extends Field>(
       fetchOptions: { cache: 'no-store' },
     });
 
-    if (response.errors != null && response.errors.length > 0) {
+    const result = response.data.customer.registerCustomer;
+
+    if (result.errors.length > 0) {
       return {
-        lastResult: submission.reply({ formErrors: response.errors.map((error) => error.message) }),
+        lastResult: submission.reply({
+          formErrors: response.data.customer.registerCustomer.errors.map((error) => error.message),
+        }),
         fields: prevState.fields,
       };
     }
