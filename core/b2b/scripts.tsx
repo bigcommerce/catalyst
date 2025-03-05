@@ -42,18 +42,17 @@ export function B2BProductionScripts({
           {`
               window.B3 = {
                 setting: {
-                  store_hash: '${process.env.BIGCOMMERCE_STORE_HASH}',
-                  channel_id: ${process.env.BIGCOMMERCE_CHANNEL_ID},
+                  store_hash: '${storeHash}',
+                  channel_id: ${channelId},
                   platform: 'catalyst',
                   cart_url: '/cart',
-                  disable_logout_button: true,
                 },
               };
           `}
         </Script>
         <Script
-          data-channelid={process.env.BIGCOMMERCE_CHANNEL_ID}
-          data-storehash={process.env.BIGCOMMERCE_STORE_HASH}
+          data-channelid={storeHash}
+          data-storehash={channelId}
           src={`${localBuyerPortalHost}/src/main.ts`}
           type="module"
         />
