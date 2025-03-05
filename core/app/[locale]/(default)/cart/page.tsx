@@ -2,10 +2,11 @@ import { Metadata } from 'next';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
+import { createWalletButtonsInitOptions } from '~/components/wallet-buttons/_actions/create-wallet-buttons-init-options';
 import { getCartId } from '~/lib/cart';
 import { exists } from '~/lib/utils';
 
-import { redirectToCheckout } from './_actions/redirect-to-checkout';
+import { redirectToCheckoutFormAction } from './_actions/redirect-to-checkout-form-action';
 import { updateCouponCode } from './_actions/update-coupon-code';
 import { updateLineItem } from './_actions/update-line-item';
 import { CartViewed } from './_components/cart-viewed';
@@ -48,6 +49,8 @@ export default async function Cart() {
       />
     );
   }
+
+  const walletButtons = await createWalletButtonsInitOptions();
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
 
@@ -124,7 +127,7 @@ export default async function Cart() {
             },
           ].filter(exists),
         }}
-        checkoutAction={redirectToCheckout}
+        checkoutAction={redirectToCheckoutFormAction}
         checkoutLabel={t('proceedToCheckout')}
         couponCode={{
           action: updateCouponCode,
@@ -145,6 +148,7 @@ export default async function Cart() {
         lineItemAction={updateLineItem}
         summaryTitle={t('CheckoutSummary.title')}
         title={t('title')}
+        walletButtons={walletButtons}
       />
       <CartViewed
         currencyCode={cart.currencyCode}

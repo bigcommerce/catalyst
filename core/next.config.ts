@@ -28,6 +28,11 @@ export default async (): Promise<NextConfig> => {
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
       ppr: 'incremental',
+      serverComponentsHmrCache: false,
+    },
+    images: {
+      domains: ['cdn.integration.zone'],
+      path: '/',
     },
     typescript: {
       ignoreBuildErrors: !!process.env.CI,
