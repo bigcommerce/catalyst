@@ -7,7 +7,7 @@ import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
 import debounce from 'lodash.debounce';
 import { ArrowRight, ChevronDown, Search, SearchIcon, ShoppingBag, User } from 'lucide-react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import React, {
   forwardRef,
   Ref,
@@ -27,7 +27,7 @@ import { Logo } from '@/vibes/soul/primitives/logo';
 import { Price } from '@/vibes/soul/primitives/price-label';
 import { ProductCard } from '@/vibes/soul/primitives/product-card';
 import { Link } from '~/components/link';
-import { usePathname, useRouter } from '~/i18n/routing';
+import { usePathname, useRouter, getLocaleDomain } from '~/i18n/routing';
 
 interface Link {
   label: string;
@@ -824,16 +824,21 @@ const useSwitchLocale = () => {
   const pathname = usePathname();
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
 
   return useCallback(
-    (locale: string) =>
-      router.push(
-        // @ts-expect-error -- TypeScript will validate that only known `params`
-        // are used in combination with a given `pathname`. Since the two will
-        // always match for the current route, we can skip runtime checks.
-        { pathname, params },
-        { locale },
-      ),
+    (locale: string) => {
+      const domain = getLocaleDomain(locale);
+      const href =
+        domain != null
+          ? new URL(
+              `//${domain}/${pathname}?${new URLSearchParams(searchParams)}`,
+              window.location.href,
+            ).toString()
+          : { pathname, params };
+
+      router.push(href, { locale });
+    },
     [pathname, params, router],
   );
 };
