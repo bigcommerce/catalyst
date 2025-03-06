@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.21.0
+
+### Minor Changes
+
+- [#1986](https://github.com/bigcommerce/catalyst/pull/1986) [`b3d55a2`](https://github.com/bigcommerce/catalyst/commit/b3d55a2f6df2de2f0ba448eebadd4b6e10e92708) Thanks [@RomanKrasinskyi](https://github.com/RomanKrasinskyi)! - Allow configuration of locales when creating a new channel
+
+### Patch Changes
+
+- [#1957](https://github.com/bigcommerce/catalyst/pull/1957) [`9e1d942`](https://github.com/bigcommerce/catalyst/commit/9e1d942f9376d4e55e92b295dc9febd2310cb22a) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Removes the ability for command injection in the CLI
+
 ## 0.20.0
 
 ### Minor Changes
