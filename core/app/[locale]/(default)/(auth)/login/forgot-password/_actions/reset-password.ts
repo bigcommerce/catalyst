@@ -56,15 +56,15 @@ export const resetPassword = async (
 
     const result = response.data.customer.requestResetPassword;
 
-    if (result.errors.length === 0) {
+    if (result.errors.length > 0) {
       return {
-        lastResult: submission.reply(),
-        successMessage: t('Form.confirmResetPassword', { email: submission.value.email }),
+        lastResult: submission.reply({ formErrors: result.errors.map((error) => error.message) }),
       };
     }
 
     return {
-      lastResult: submission.reply({ formErrors: result.errors.map((error) => error.message) }),
+      lastResult: submission.reply(),
+      successMessage: t('Form.confirmResetPassword', { email: submission.value.email }),
     };
   } catch (error) {
     // eslint-disable-next-line no-console
