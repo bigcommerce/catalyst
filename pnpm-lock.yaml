@@ -39,8 +39,8 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0(react@19.0.0)
       '@makeswift/runtime':
-        specifier: ^0.23.3
-        version: 0.23.3(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        specifier: ^0.23.8
+        version: 0.23.8(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@radix-ui/react-accordion':
         specifier: ^1.2.2
         version: 1.2.2(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
@@ -185,9 +185,6 @@ importers:
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
-      set-cookie-parser:
-        specifier: ^2.6.0
-        version: 2.7.1
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
@@ -1396,19 +1393,19 @@ packages:
     resolution: {integrity: sha512-qC72D4+CDdjGqJvkFMMEAtancHUQ7/d/tAiHf64z8MopFDmcrtbcJuerDtFceuAfQJ2pDSfCKCtbqoGBNnwg0w==}
     engines: {node: '>=8'}
 
-  '@makeswift/controls@0.1.7':
-    resolution: {integrity: sha512-DaZeA3rrtzIE9j1TcN4nu1uFUHjkA8yVSmsbNqz22PxC4bOp8DiRtblkk6brWOmoNYlMAaEq7va5ct8ZK2Cv8w==}
+  '@makeswift/controls@0.1.8':
+    resolution: {integrity: sha512-gCBNBPKXjVT4TqaBhG1C+XYfwmB06M5vr044yK7uabBiVk7SLaHn47rPDrBsco4P3yvaUvEYDsgcdfCaFamiNQ==}
 
   '@makeswift/next-plugin@0.3.1':
     resolution: {integrity: sha512-du4Z+0vw3FgGUEsE590gq5WaEeAIOeM2nv8STXpfMAzaTBvTV335RZNxm538d142JBy0SyD4EdNISJQTZ6X41g==}
     peerDependencies:
       next: ^13.4.0 || ^14.0.0 || ^15.0.0
 
-  '@makeswift/prop-controllers@0.4.0':
-    resolution: {integrity: sha512-vx+KhbIEI7ob4P9x9a1baLS9iiR8BqLgFegxKKsJRKBjfN2Ez7x/MumQwFmPtWmBXfQvgdHPDBisgpJXM17Xjw==}
+  '@makeswift/prop-controllers@0.4.1':
+    resolution: {integrity: sha512-o9FkM0czODl1aXGxvnVOpx/KMLCJQ2wy5LUnUacPGXxZRW8fbsDaF3Y3dmM6tv2fJgIQbUG+bEpHBFQd1AxZJg==}
 
-  '@makeswift/runtime@0.23.3':
-    resolution: {integrity: sha512-pxbYJRZM2DBc2VGETh0Am7d/O66Fd63LaDCjiT56JcCBEUww0iXwYq7geoDPmQBgndme/PaisVfpfZH3FBZnvw==}
+  '@makeswift/runtime@0.23.8':
+    resolution: {integrity: sha512-ut0uEZUY/BEVyQD84M6e7ukO4v4FNHEYsVV1Fxy/nrn1ZR9eIk7CBF0xmiHJF6zDvvdci1/zGnnd7TkQdl2fUA==}
     peerDependencies:
       '@types/react': ^18.0.0 || ^19.0.0
       '@types/react-dom': ^18.0.0 || ^19.0.0
@@ -2898,6 +2895,10 @@ packages:
   cookie@0.7.2:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
+
+  cookie@1.0.2:
+    resolution: {integrity: sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA==}
+    engines: {node: '>=18'}
 
   core-util-is@1.0.3:
     resolution: {integrity: sha512-ZQBvi1DcpJ4GDqanjucZ2Hj3wEO5pZDS89BWbkcrvdxksJorwUDDZamX9ldFkp9aw2lmBDLgkObEA4DWNJ9FYQ==}
@@ -4404,6 +4405,9 @@ packages:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
     engines: {node: '>= 0.4'}
 
+  memoize-one@5.2.1:
+    resolution: {integrity: sha512-zYiwtZUcYyXKo/np96AGZAckk+FWWsUdJ3cHGGmld7+AhvcWmQyGCYUh1hc4Q/pkOhb65dQR/pqCyK0cOaHz4Q==}
+
   merge-stream@2.0.0:
     resolution: {integrity: sha512-abv/qOcuPfk3URPfDzmZU1LKmuw8kT+0nIHvKrKgFrwifol/doWcdA4ZqsWQ8ENrFKkd67Mfpo/LovbIUsbt3w==}
 
@@ -5051,6 +5055,9 @@ packages:
   react-fast-compare@2.0.4:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
 
+  react-fast-compare@3.2.2:
+    resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
+
   react-google-recaptcha@3.1.0:
     resolution: {integrity: sha512-cYW2/DWas8nEKZGD7SCu9BSuVz8iOcOLHChHyi7upUuVhkpkhYG/6N3KDiTQ3XAiZ2UAZkfvYKMfAHOzBOcGEg==}
     peerDependencies:
@@ -5080,10 +5087,10 @@ packages:
   react-is@18.3.1:
     resolution: {integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==}
 
-  react-player@1.15.3:
-    resolution: {integrity: sha512-8fc0R1AipFIy7l4lKgnIg+gMU2IY32ZMxxBlINjXAq/YnN3HUP3hOaE+aQ0lQv+a1/MMZgbekWD86ZGDO7kB8g==}
+  react-player@2.16.0:
+    resolution: {integrity: sha512-mAIPHfioD7yxO0GNYVFD1303QFtI3lyyQZLY229UEAp/a10cSW+hPcakg0Keq8uWJxT2OiT/4Gt+Lc9bD6bJmQ==}
     peerDependencies:
-      react: '*'
+      react: '>=16.6.0'
 
   react-property@2.0.2:
     resolution: {integrity: sha512-+PbtI3VuDV0l6CleQMsx2gtK0JZbZKbpdu5ynr+lbsuvtmgbNcS3VM0tuY2QjFNOcWxvXeHjDpy42RO+4U2rug==}
@@ -7160,10 +7167,11 @@ snapshots:
     dependencies:
       '@lukeed/csprng': 1.1.0
 
-  '@makeswift/controls@0.1.7':
+  '@makeswift/controls@0.1.8':
     dependencies:
       color: 3.2.1
       css-box-model: 1.2.1
+      csstype: 2.6.21
       slate: 0.91.4
       ts-pattern: 5.5.0
       uuid: 9.0.1
@@ -7176,13 +7184,13 @@ snapshots:
       next: 15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       semver: 7.6.3
 
-  '@makeswift/prop-controllers@0.4.0':
+  '@makeswift/prop-controllers@0.4.1':
     dependencies:
-      '@makeswift/controls': 0.1.7
+      '@makeswift/controls': 0.1.8
       ts-pattern: 5.5.0
       zod: 3.24.1
 
-  '@makeswift/runtime@0.23.3(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@makeswift/runtime@0.23.8(@types/react-dom@19.0.3(@types/react@19.0.8))(@types/react@19.0.8)(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
       '@emotion/cache': 11.14.0
       '@emotion/css': 11.13.5
@@ -7190,9 +7198,9 @@ snapshots:
       '@emotion/server': 11.11.0(@emotion/css@11.13.5)
       '@emotion/sheet': 1.4.0
       '@emotion/utils': 1.4.2
-      '@makeswift/controls': 0.1.7
+      '@makeswift/controls': 0.1.8
       '@makeswift/next-plugin': 0.3.1(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))
-      '@makeswift/prop-controllers': 0.4.0
+      '@makeswift/prop-controllers': 0.4.1
       '@popmotion/popcorn': 0.4.4
       '@redux-devtools/extension': 3.3.0(redux@4.2.1)
       '@types/is-hotkey': 0.1.10
@@ -7200,6 +7208,7 @@ snapshots:
       '@types/uuid': 9.0.8
       '@use-gesture/react': 10.3.1(react@19.0.0)
       color: 3.2.1
+      cookie: 1.0.2
       corporate-ipsum: 1.0.1
       cors: 2.8.5
       css-box-model: 1.2.1
@@ -7218,11 +7227,12 @@ snapshots:
       polished: 3.0.3
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
-      react-player: 1.15.3(react@19.0.0)
+      react-player: 2.16.0(react@19.0.0)
       redux: 4.2.1
       redux-thunk: 2.4.2(redux@4.2.1)
       reselect: 5.1.1
       scroll-into-view-if-needed: 2.2.31
+      set-cookie-parser: 2.7.1
       slate: 0.91.4
       slate-hyperscript: 0.77.0(slate@0.91.4)
       slate-react: 0.91.11(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(slate@0.91.4)
@@ -8721,6 +8731,8 @@ snapshots:
   cookie@0.7.1: {}
 
   cookie@0.7.2: {}
+
+  cookie@1.0.2: {}
 
   core-util-is@1.0.3: {}
 
@@ -10612,6 +10624,8 @@ snapshots:
 
   math-intrinsics@1.1.0: {}
 
+  memoize-one@5.2.1: {}
+
   merge-stream@2.0.0: {}
 
   merge2@1.4.1: {}
@@ -11159,6 +11173,8 @@ snapshots:
 
   react-fast-compare@2.0.4: {}
 
+  react-fast-compare@3.2.2: {}
+
   react-google-recaptcha@3.1.0(react@19.0.0):
     dependencies:
       prop-types: 15.8.1
@@ -11187,12 +11203,14 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react-player@1.15.3(react@19.0.0):
+  react-player@2.16.0(react@19.0.0):
     dependencies:
       deepmerge: 4.3.1
       load-script: 1.0.0
+      memoize-one: 5.2.1
       prop-types: 15.8.1
       react: 19.0.0
+      react-fast-compare: 3.2.2
 
   react-property@2.0.2: {}
 
