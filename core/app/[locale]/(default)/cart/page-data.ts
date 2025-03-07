@@ -1,3 +1,5 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
@@ -175,9 +177,9 @@ const CartPageQuery = graphql(
   [PhysicalItemFragment, DigitalItemFragment, MoneyFieldsFragment],
 );
 
-type Variables = VariablesOf<typeof CartPageQuery>;
+type CartVariables = VariablesOf<typeof CartPageQuery>;
 
-export const getCart = async (variables: Variables) => {
+export const getCart = async (variables: CartVariables) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const { data } = await client.fetch({
@@ -193,4 +195,33 @@ export const getCart = async (variables: Variables) => {
   });
 
   return data;
+};
+
+const PaymentWalletsQuery = graphql(`
+  query PaymentWalletsQuery($filters: PaymentWalletsFilterInput) {
+    site {
+      paymentWallets(filter: $filters) {
+        edges {
+          node {
+            entityId
+          }
+        }
+      }
+    }
+  }
+`);
+
+type PaymentWalletsVariables = VariablesOf<typeof PaymentWalletsQuery>;
+
+export const getPaymentWallets = async (variables: PaymentWalletsVariables) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const { data } = await client.fetch({
+    document: PaymentWalletsQuery,
+    customerAccessToken,
+    fetchOptions: { cache: 'no-store' },
+    variables,
+  });
+
+  return removeEdgesAndNodes(data.site.paymentWallets).map(({ entityId }) => entityId);
 };

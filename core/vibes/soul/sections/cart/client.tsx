@@ -10,9 +10,8 @@ import { useFormStatus } from 'react-dom';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
-import { ClientWalletButtons } from 'components/wallet-buttons/_components/client-wallet-buttons';
 import { Image } from '~/components/image';
-import { InitializeButtonProps } from '~/lib/wallet-buttons/types';
+import { WalletButtons } from '~/components/wallet-buttons';
 
 import { CouponCodeForm, CouponCodeFormState } from './coupon-code-form';
 import { cartLineItemActionFormDataSchema } from './schema';
@@ -68,7 +67,7 @@ export interface Props<LineItem extends CartLineItem> {
   decrementLineItemLabel?: string;
   incrementLineItemLabel?: string;
   cart: Cart<LineItem>;
-  walletButtons?: InitializeButtonProps[];
+  walletButtons?: string[];
   couponCode?: CouponCode;
 }
 
@@ -190,7 +189,7 @@ export function CartClient<LineItem extends CartLineItem>({
           </CheckoutButton>
           {walletButtons && (
             <div className="mt-4">
-              <ClientWalletButtons walletButtons={walletButtons} />
+              <WalletButtons methodIds={walletButtons} />
             </div>
           )}
         </div>
