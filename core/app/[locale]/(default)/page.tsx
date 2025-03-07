@@ -2,8 +2,8 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
-import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
-import { FeaturedProductsList } from '@/vibes/soul/sections/featured-products-list';
+import { FeaturedProductsCarousel } from '@/vibes/avios/sections/featured-products-carousel';
+import { FeaturedProductsList } from '@/vibes/avios/sections/featured-products-list';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';

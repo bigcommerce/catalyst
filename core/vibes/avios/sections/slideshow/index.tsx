@@ -5,13 +5,10 @@ import { EmblaCarouselType } from 'embla-carousel';
 import Autoplay from 'embla-carousel-autoplay';
 import Fade from 'embla-carousel-fade';
 import useEmblaCarousel from 'embla-carousel-react';
-import { Pause, Play } from 'lucide-react';
-import { ComponentPropsWithoutRef, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { ButtonLink } from '@/vibes/soul/primitives/button-link';
+import { Button, Heading, Icon, Paragraph } from '~/alto/alto-avios';
 import { Image } from '~/components/image';
-
-type ButtonLinkProps = ComponentPropsWithoutRef<typeof ButtonLink>;
 
 interface Slide {
   title: string;
@@ -21,9 +18,6 @@ interface Slide {
   cta?: {
     label: string;
     href: string;
-    variant?: ButtonLinkProps['variant'];
-    size?: ButtonLinkProps['size'];
-    shape?: ButtonLinkProps['shape'];
   };
   showCta?: boolean;
 }
@@ -168,25 +162,19 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                 >
                   <div className="to-transparent absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-[var(--slideshow-mask,hsl(var(--foreground)/80%))]">
                     <div className="mx-auto w-full max-w-screen-2xl text-balance px-4 pb-16 pt-12 @xl:px-6 @xl:pb-20 @xl:pt-16 @4xl:px-8 @4xl:pt-20">
-                      <h1 className="text-4xl @2xl:text-5xl @4xl:text-6xl m-0 max-w-xl font-[family-name:var(--slideshow-title-font-family,var(--font-family-heading))] font-medium leading-none text-[var(--slideshow-title,hsl(var(--background)))] @2xl:leading-[.9]">
-                        {title}
-                      </h1>
-                      {showDescription && (
-                        <p className="text-base @xl:text-lg mt-2 max-w-xl font-[family-name:var(--slideshow-description-font-family,var(--font-family-body))] leading-normal text-[var(--slideshow-description,hsl(var(--background)/80%))] @xl:mt-3">
-                          {description}
-                        </p>
-                      )}
-                      {showCta && (
-                        <ButtonLink
-                          className="mt-6 @xl:mt-8"
-                          href={cta?.href ?? '#'}
-                          shape={cta?.shape ?? 'pill'}
-                          size={cta?.size ?? 'large'}
-                          variant={cta?.variant ?? 'tertiary'}
-                        >
-                          {cta?.label ?? 'Learn more'}
-                        </ButtonLink>
-                      )}
+                      <div className="max-w-screen-md space-y-xl">
+                        <Heading as="h1" fgColor="whitePrimary">
+                          {title}
+                        </Heading>
+                        {showDescription && (
+                          <Paragraph fgColor="whitePrimary">{description}</Paragraph>
+                        )}
+                        {showCta && (
+                          <Button as="a" href={cta?.href ?? '#'} size="lg">
+                            {cta?.label ?? 'Learn more'}
+                          </Button>
+                        )}
+                      </div>
                     </div>
                   </div>
 
@@ -266,9 +254,9 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
           type="button"
         >
           {isPlaying ? (
-            <Pause className="pointer-events-none" size={16} strokeWidth={1.5} />
+            <Icon iconName="pause" iconSize="lg" />
           ) : (
-            <Play className="pointer-events-none" size={16} strokeWidth={1.5} />
+            <Icon iconName="play" iconSize="lg" />
           )}
         </button>
       </div>
