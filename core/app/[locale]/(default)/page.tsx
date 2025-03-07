@@ -2,8 +2,8 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
-import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
-import { FeaturedProductsList } from '@/vibes/soul/sections/featured-products-list';
+import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
+import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -86,7 +86,7 @@ export default async function Home({ params }: Props) {
     <>
       <Slideshow />
 
-      <FeaturedProductsList
+      <FeaturedProductList
         cta={{ label: t('FeaturedProducts.cta'), href: '/shop-all' }}
         description={t('FeaturedProducts.description')}
         emptyStateSubtitle={t('FeaturedProducts.emptyStateSubtitle')}
@@ -95,7 +95,7 @@ export default async function Home({ params }: Props) {
         title={t('FeaturedProducts.title')}
       />
 
-      <FeaturedProductsCarousel
+      <FeaturedProductCarousel
         cta={{ label: t('NewestProducts.cta'), href: '/shop-all/?sort=newest' }}
         description={t('NewestProducts.description')}
         emptyStateSubtitle={t('NewestProducts.emptyStateSubtitle')}

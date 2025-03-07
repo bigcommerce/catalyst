@@ -3,9 +3,9 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { ListProduct } from '@/vibes/soul/primitives/products-list';
+import { BreadcrumbWithId } from '@/vibes/soul/sections/breadcrumbs';
+import { ListProduct } from '@/vibes/soul/sections/product-list';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
@@ -229,12 +229,12 @@ async function getEmptyStateSubtitle(): Promise<string> {
   return t('emptyStateSubtitle');
 }
 
-async function getBreadcrumbs(): Promise<Breadcrumb[]> {
+async function getBreadcrumbs(): Promise<BreadcrumbWithId[]> {
   const t = await getTranslations('Search');
 
   return [
-    { label: t('Breadcrumbs.home'), href: '/' },
-    { label: t('Breadcrumbs.search'), href: `#` },
+    { label: t('Breadcrumbs.home'), href: '/', id: 'home' },
+    { label: t('Breadcrumbs.search'), href: `#`, id: 'search' },
   ];
 }
 

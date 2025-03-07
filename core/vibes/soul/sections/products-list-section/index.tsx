@@ -2,11 +2,15 @@ import { Sliders } from 'lucide-react';
 import { Suspense } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
 import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
+import {
+  Breadcrumbs,
+  BreadcrumbsSkeleton,
+  BreadcrumbWithId,
+} from '@/vibes/soul/sections/breadcrumbs';
+import { ListProduct, ProductList } from '@/vibes/soul/sections/product-list';
 import { Filter, FiltersPanel } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import {
   Sorting,
@@ -15,13 +19,13 @@ import {
 } from '@/vibes/soul/sections/products-list-section/sorting';
 
 interface Props {
-  breadcrumbs?: Streamable<Breadcrumb[]>;
+  breadcrumbs?: Streamable<BreadcrumbWithId[]>;
   title?: Streamable<string | null>;
   totalCount: Streamable<number>;
   products: Streamable<ListProduct[]>;
   filters: Streamable<Filter[]>;
   sortOptions: Streamable<SortOption[]>;
-  compareProducts?: Streamable<ListProduct[] | null>;
+  compareProducts?: Streamable<ListProduct[]>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
   compareAction?: React.ComponentProps<'form'>['action'];
   compareLabel?: Streamable<string>;
@@ -34,8 +38,8 @@ interface Props {
   sortParamName?: string;
   sortDefaultValue?: string;
   compareParamName?: string;
-  emptyStateSubtitle?: Streamable<string | null>;
-  emptyStateTitle?: Streamable<string | null>;
+  emptyStateSubtitle?: Streamable<string>;
+  emptyStateTitle?: Streamable<string>;
   placeholderCount?: number;
 }
 
@@ -52,7 +56,7 @@ export function ProductsListSection({
   compareLabel,
   paginationInfo,
   filterLabel = 'Filters',
-  filtersPanelTitle: streamableFiltersPanelTitle,
+  filtersPanelTitle: streamableFiltersPanelTitle = 'Filters',
   resetFiltersLabel,
   rangeFilterApplyLabel,
   sortLabel: streamableSortLabel,
@@ -92,7 +96,7 @@ export function ProductsListSection({
             <div className="flex gap-2">
               <Stream
                 fallback={<SortingSkeleton />}
-                value={Promise.all([
+                value={Streamable.all([
                   streamableSortLabel,
                   streamableSortOptions,
                   streamableSortPlaceholder,
@@ -120,7 +124,7 @@ export function ProductsListSection({
                   </SidePanel.Trigger>
                   <Stream value={streamableFiltersPanelTitle}>
                     {(filtersPanelTitle) => (
-                      <SidePanel.Content title={<h2>{filtersPanelTitle}</h2>}>
+                      <SidePanel.Content title={filtersPanelTitle}>
                         <FiltersPanel
                           filters={filters}
                           paginationInfo={paginationInfo}
@@ -150,7 +154,7 @@ export function ProductsListSection({
           </aside>
 
           <div className="flex-1 group-has-[[data-pending]]/products-list-section:animate-pulse">
-            <ProductsList
+            <ProductList
               compareAction={compareAction}
               compareLabel={compareLabel}
               compareParamName={compareParamName}

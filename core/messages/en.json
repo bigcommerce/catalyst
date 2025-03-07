@@ -389,26 +389,21 @@
     }
   },
   "Compare": {
-    "title": "Compare",
-    "heading": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
-    "nothingToCompare": "Well, there's nothing to compare!",
-    "helpingText": "You somehow managed to land here, but you need to select a few products first.",
-    "Table": {
-      "caption": "Product comparison",
-      "noImage": "No image",
-      "viewOptions": "View options",
-      "description": "Description",
-      "rating": "Rating",
-      "availability": "Availability",
-      "Prices": {
-        "msrp": "MSRP",
-        "was": "Was",
-        "now": "Now"
-      }
-    },
-    "AddToCart": {
-      "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>"
-    }
+    "title": "Compare products",
+    "addToCart": "Add to cart",
+    "next": "Next products",
+    "previous": "Previous products",
+    "noProductsToCompare": "No products to compare",
+    "sku": "SKU",
+    "weight": "Weight",
+    "description": "Description",
+    "noDescription": "There is no description available.",
+    "rating": "Rating",
+    "noRatings": "There are no reviews.",
+    "otherDetails": "Other details",
+    "noOtherDetails": "There are no other details.",
+    "viewOptions": "View options",
+    "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>"
   },
   "Product": {
     "ProductDetails": {

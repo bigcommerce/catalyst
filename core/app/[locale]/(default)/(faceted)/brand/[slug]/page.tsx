@@ -4,9 +4,9 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { ListProduct } from '@/vibes/soul/primitives/products-list';
+import { BreadcrumbWithId } from '@/vibes/soul/sections/breadcrumbs';
+import { ListProduct } from '@/vibes/soul/sections/product-list';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
@@ -29,7 +29,7 @@ const cacheBrandFacetedSearch = cache((brandId: string) => {
   return { brand: [brandId] };
 });
 
-function getBreadcrumbs(): Breadcrumb[] {
+function getBreadcrumbs(): BreadcrumbWithId[] {
   return [];
 }
 
