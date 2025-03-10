@@ -17,7 +17,7 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
-import { getBrand as getBrandData } from './page-data';
+import { getBrandPageData } from './page-data';
 
 const cachedBrandDataVariables = cache((brandId: string) => {
   return {
@@ -37,11 +37,22 @@ async function getBrand(props: Props) {
   const { slug } = await props.params;
 
   const variables = cachedBrandDataVariables(slug);
-  const brand = await getBrandData(variables);
+  const data = await getBrandPageData(variables);
+
+  const brand = data.brand;
 
   if (brand == null) notFound();
 
   return brand;
+}
+
+async function getShowCompare(props: Props) {
+  const { slug } = await props.params;
+
+  const variables = cachedBrandDataVariables(slug);
+  const data = await getBrandPageData(variables);
+
+  return data.settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 }
 
 async function getTitle(props: Props): Promise<string> {
@@ -246,6 +257,7 @@ export default async function Brand(props: Props) {
       products={getListProducts(props)}
       rangeFilterApplyLabel={getRangeFilterApplyLabel()}
       resetFiltersLabel={getResetFiltersLabel()}
+      showCompare={getShowCompare(props)}
       sortDefaultValue="featured"
       sortLabel={getSortLabel()}
       sortOptions={getSortOptions()}

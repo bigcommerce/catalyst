@@ -18,7 +18,7 @@ interface ProductListProps {
   className?: string;
   colorScheme?: 'light' | 'dark';
   aspectRatio?: '5:6' | '3:4' | '1:1';
-  showCompare?: boolean;
+  showCompare?: Streamable<boolean>;
   compareAction?: ComponentProps<'form'>['action'];
   compareLabel?: Streamable<string>;
   compareParamName?: string;
@@ -48,7 +48,7 @@ export function ProductList({
   className,
   colorScheme = 'light',
   aspectRatio = '5:6',
-  showCompare = false,
+  showCompare: streamableShowCompare = false,
   compareAction,
   compareProducts: streamableCompareProducts = [],
   compareLabel: streamableCompareLabel = 'Compare',
@@ -61,9 +61,9 @@ export function ProductList({
     <>
       <Stream
         fallback={<ProductListSkeleton placeholderCount={placeholderCount} />}
-        value={Streamable.all([streamableProducts, streamableCompareLabel])}
+        value={Streamable.all([streamableProducts, streamableCompareLabel, streamableShowCompare])}
       >
-        {([products, compareLabel]) => {
+        {([products, compareLabel, showCompare]) => {
           if (products.length === 0) {
             return (
               <ProductListEmptyState

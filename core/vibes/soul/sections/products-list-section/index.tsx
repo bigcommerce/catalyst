@@ -29,6 +29,7 @@ interface Props {
   paginationInfo?: Streamable<CursorPaginationInfo>;
   compareAction?: React.ComponentProps<'form'>['action'];
   compareLabel?: Streamable<string>;
+  showCompare?: Streamable<boolean>;
   filterLabel?: string;
   filtersPanelTitle?: Streamable<string>;
   resetFiltersLabel?: Streamable<string>;
@@ -54,6 +55,7 @@ export function ProductsListSection({
   filters,
   compareAction,
   compareLabel,
+  showCompare,
   paginationInfo,
   filterLabel = 'Filters',
   filtersPanelTitle: streamableFiltersPanelTitle = 'Filters',
@@ -163,7 +165,7 @@ export function ProductsListSection({
               emptyStateTitle={emptyStateTitle}
               placeholderCount={placeholderCount}
               products={products}
-              showCompare
+              showCompare={showCompare}
             />
 
             {paginationInfo && <CursorPagination info={paginationInfo} />}

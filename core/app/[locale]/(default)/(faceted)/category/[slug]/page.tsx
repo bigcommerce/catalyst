@@ -22,14 +22,21 @@ import { fetchFacetedSearch } from '../../fetch-faceted-search';
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
 
+const cachedCategoryDataVariables = cache((categoyId: string) => {
+  return {
+    categoryId: Number(categoyId),
+  };
+});
+
 const cacheCategoryFacetedSearch = cache((categoryId: string) => {
   return { category: Number(categoryId) };
 });
 
 async function getCategory(props: Props) {
   const { slug } = await props.params;
-  const categoryId = Number(slug);
-  const data = await getCategoryPageData({ categoryId });
+
+  const variables = cachedCategoryDataVariables(slug);
+  const data = await getCategoryPageData(variables);
 
   const category = data.category;
 
@@ -93,8 +100,9 @@ async function getBreadcrumbs(props: Props): Promise<BreadcrumbWithId[]> {
 
 async function getSubCategoriesFilters(props: Props): Promise<Filter[]> {
   const { slug } = await props.params;
-  const categoryId = Number(slug);
-  const data = await getCategoryPageData({ categoryId });
+
+  const variables = cachedCategoryDataVariables(slug);
+  const data = await getCategoryPageData(variables);
   const t = await getTranslations('FacetedGroup.MobileSideNav');
 
   const categoryTree = data.categoryTree[0];
@@ -209,6 +217,15 @@ async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
   return pageInfoTransformer(search.products.pageInfo);
 }
 
+async function getShowCompare(props: Props) {
+  const { slug } = await props.params;
+
+  const variables = cachedCategoryDataVariables(slug);
+  const data = await getCategoryPageData(variables);
+
+  return data.settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+}
+
 async function getFilterLabel(): Promise<string> {
   const t = await getTranslations('FacetedGroup.FacetedSearch');
 
@@ -293,6 +310,7 @@ export default async function Category(props: Props) {
         products={getListProducts(props)}
         rangeFilterApplyLabel={getRangeFilterApplyLabel()}
         resetFiltersLabel={getResetFiltersLabel()}
+        showCompare={getShowCompare(props)}
         sortDefaultValue="featured"
         sortLabel={getSortLabel()}
         sortOptions={getSortOptions()}

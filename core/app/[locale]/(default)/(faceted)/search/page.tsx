@@ -15,6 +15,8 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { fetchFacetedSearch } from '../fetch-faceted-search';
 
+import { getSearchPageData } from './page-data';
+
 const createSearchSearchParamsCache = cache(async (props: Props) => {
   const searchParams = await props.searchParams;
   const search = await fetchFacetedSearch(searchParams);
@@ -186,6 +188,12 @@ async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
   };
 }
 
+async function getShowCompare() {
+  const data = await getSearchPageData();
+
+  return data.settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+}
+
 async function getFilterLabel(): Promise<string> {
   const t = await getTranslations('FacetedGroup.FacetedSearch');
 
@@ -264,6 +272,7 @@ export default async function Search(props: Props) {
       products={getListProducts(props)}
       rangeFilterApplyLabel={getRangeFilterApplyLabel()}
       resetFiltersLabel={getResetFiltersLabel()}
+      showCompare={getShowCompare()}
       sortDefaultValue="featured"
       sortLabel={getSortLabel()}
       sortOptions={getSortOptions()}
