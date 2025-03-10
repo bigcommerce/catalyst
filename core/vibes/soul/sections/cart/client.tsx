@@ -10,7 +10,9 @@ import { useFormStatus } from 'react-dom';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
+import { ClientWalletButtons } from 'components/wallet-buttons/_components/client-wallet-buttons';
 import { Image } from '~/components/image';
+import { InitializeButtonProps } from '~/lib/wallet-buttons/types';
 
 import { CouponCodeForm, CouponCodeFormState } from './coupon-code-form';
 import { cartLineItemActionFormDataSchema } from './schema';
@@ -118,6 +120,7 @@ export interface Props<LineItem extends CartLineItem> {
   decrementLineItemLabel?: string;
   incrementLineItemLabel?: string;
   cart: Cart<LineItem>;
+  walletButtons?: InitializeButtonProps[];
   couponCode?: CouponCode;
   shipping?: Shipping;
 }
@@ -137,6 +140,7 @@ export function CartClient<LineItem extends CartLineItem>({
   deleteLineItemLabel,
   lineItemAction,
   checkoutAction,
+  walletButtons,
   checkoutLabel = 'Checkout',
   emptyState = defaultEmptyState,
   summaryTitle,
@@ -230,6 +234,11 @@ export function CartClient<LineItem extends CartLineItem>({
             {checkoutLabel}
             <ArrowRight size={20} strokeWidth={1} />
           </CheckoutButton>
+          {walletButtons && (
+            <div className="mt-4">
+              <ClientWalletButtons walletButtons={walletButtons} />
+            </div>
+          )}
         </div>
       }
       sidebarPosition="after"
