@@ -498,6 +498,7 @@ const config = {
     require('tailwindcss-radix')(),
     require('tailwindcss-animate'),
     require('@tailwindcss/container-queries'),
+    require('@tailwindcss/typography'),
   ],
 };
 

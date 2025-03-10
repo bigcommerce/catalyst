@@ -133,7 +133,7 @@ export function ProductDetail<F extends Field>({
                     {(description) =>
                       description !== null &&
                       description !== undefined && (
-                        <div className="border-t border-contrast-100 py-8 text-contrast-500">
+                        <div className="prose prose-sm border-t border-contrast-100 py-8">
                           {description}
                         </div>
                       )

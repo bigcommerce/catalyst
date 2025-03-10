@@ -298,6 +298,8 @@
         "increment": "Augmenter la quantité :",
         "decrement": "Réduire la quantité",
         "removeItem": "Supprimer l'article",
+        "cartCombined": "Nous avons remarqué que votre panier précédent contenait des articles enregistrés. Nous avons donc ajouté ces articles à votre panier actuel.",
+        "cartRestored": "Vous avez débuté vos achats sur un autre appareil. Nous avons restauré votre panier ici pour que vous puissiez reprendre là où vous en étiez.",
         "CheckoutSummary": {
             "title": "Récapitulatif",
             "subTotal": "Sous-total",
@@ -312,14 +314,21 @@
             "spinnerText": "Retirer...",
             "couponCodeRemoveFailed": "Une erreur s'est produite dans la suppression du code promotionnel. Veuillez réessayer.",
             "tax": "Taxes",
-            "grandTotal": "Total",
+            "total": "Total",
             "shipping": "Livraison",
             "shippingCost": "Frais de port",
             "handlingCost": "Frais de traitement :",
             "add": "Ajouter",
             "change": "Modifier",
             "cancel": "Annuler",
-            "errorMessage": "Le récapitulatif du panier est introuvable. Veuillez réessayer."
+            "errorMessage": "Le récapitulatif du panier est introuvable. Veuillez réessayer.",
+            "CouponCode": {
+                "apply": "Appliquer",
+                "couponCode": "Code promotionnel",
+                "removeCouponCode": "Supprimez le code promotionnel",
+                "invalidCouponCode": "Veuillez saisir un code promotionnel valide",
+                "cartNotFound": "Aucun cookie cartId n’a été trouvé."
+            }
         },
         "ShippingInfo": {
             "country": "Pays",
