@@ -27,7 +27,7 @@ async function login({ customerId, customerAccessToken }: LoginWithB2BParams) {
     customerAccessToken,
   };
 
-  const response = await fetch(`${process.env.B2B_API_HOST || 'https://api-b2b.bigcommerce.com'}/api/io/auth/customers/storefront}`, {
+  const response = await fetch(`${process.env.B2B_API_HOST || 'https://api-b2b.bigcommerce.com'}/api/io/auth/customers/storefront`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
