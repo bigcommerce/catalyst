@@ -27,16 +27,16 @@ export const Compare = function Compare({
   label = 'Compare',
   product,
 }: Props) {
-  const [param, setParam] = useQueryState(
+  const [, setParam] = useQueryState(
     paramName,
     parseAsArrayOf(parseAsString).withOptions({ shallow: false }),
   );
 
-  const { setOptimisticItems } = useCompareDrawer();
+  const { optimisticItems, setOptimisticItems } = useCompareDrawer();
 
   return (
     <Checkbox
-      checked={param?.includes(product.id) ?? false}
+      checked={!!optimisticItems.find((item) => item.id === product.id)}
       colorScheme={colorScheme}
       label={label}
       onCheckedChange={(value) => {

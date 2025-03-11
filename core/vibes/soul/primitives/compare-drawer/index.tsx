@@ -129,8 +129,6 @@ export function CompareDrawer({
 
   const { optimisticItems, setOptimisticItems } = useCompareDrawer();
 
-  console.log('optimisticItems', optimisticItems);
-
   return (
     optimisticItems.length > 0 && (
       <Portal.Root asChild>
