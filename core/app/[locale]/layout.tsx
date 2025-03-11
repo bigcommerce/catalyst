@@ -13,7 +13,8 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { routing } from '~/i18n/routing';
 
-import { Notifications } from '../notifications';
+import { getToastNotification } from '../../lib/server-toast';
+import { CookieNotifications, Notifications } from '../notifications';
 import { Providers } from '../providers';
 import { GTM_ID, pageview } from '~/lib/gtm';
 import GTM from '../[locale]/(default)/_components/GTM';
@@ -79,6 +80,7 @@ interface Props extends PropsWithChildren {
 
 export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
+  const toastNotificationCookieData = await getToastNotification();
 
   if (!routing.locales.includes(locale)) {
     notFound();
@@ -127,7 +129,12 @@ export default async function RootLayout({ params, children }: Props) {
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <NuqsAdapter>
-            <Providers>{children}</Providers>
+            <Providers>
+              {toastNotificationCookieData && (
+                <CookieNotifications {...toastNotificationCookieData} />
+              )}
+              {children}
+            </Providers>
           </NuqsAdapter>
         </NextIntlClientProvider>
         <VercelComponents />

@@ -25,7 +25,7 @@ function getStatusColor(
 
     case 'CANCELLED':
     case 'DECLINED':
-      return 'danger';
+      return 'error';
 
     case 'COMPLETED':
     case 'PARTIALLY_REFUNDED':

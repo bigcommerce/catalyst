@@ -298,6 +298,8 @@
         "increment": "Aantal verhogen",
         "decrement": "Aantal verminderen",
         "removeItem": "Item verwijderen",
+        "cartCombined": "We hebben gezien dat je artikelen in een eerder winkelmandje had opgeslagen, dus we hebben ze voor je aan je huidige winkelmandje toegevoegd.",
+        "cartRestored": "Je bent een winkelmandje begonnen op een ander apparaat en we hebben het hier hersteld, zodat je verder kunt gaan waar je was gebleven.",
         "CheckoutSummary": {
             "title": "Overzicht",
             "subTotal": "Subtotaal",
@@ -312,14 +314,21 @@
             "spinnerText": "Verwijderen...",
             "couponCodeRemoveFailed": "Er is een fout opgetreden bij het verwijderen van de kortingscode. Probeer het opnieuw.",
             "tax": "Belasting",
-            "grandTotal": "Totaal",
+            "total": "Totaal",
             "shipping": "Verzending",
             "shippingCost": "Verzendkosten",
             "handlingCost": "Verwerkingskosten",
             "add": "Toevoegen",
             "change": "Wijzigen",
             "cancel": "Annuleren",
-            "errorMessage": "Winkelwagenoverzicht niet gevonden, probeer het opnieuw."
+            "errorMessage": "Winkelwagenoverzicht niet gevonden, probeer het opnieuw.",
+            "CouponCode": {
+                "apply": "Toepassen",
+                "couponCode": "Couponcode",
+                "removeCouponCode": "Couponcode verwijderen",
+                "invalidCouponCode": "Voer een geldige couponcode in",
+                "cartNotFound": "Geen cartId-cookie gevonden."
+            }
         },
         "ShippingInfo": {
             "country": "Land",

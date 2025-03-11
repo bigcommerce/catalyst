@@ -24,8 +24,8 @@ import { NumberInput } from '@/vibes/soul/form/number-input';
 import { RadioGroup } from '@/vibes/soul/form/radio-group';
 import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
+import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
-import { Button } from '~/alto/alto-avios';
 import { usePathname, useRouter } from '~/i18n/routing';
 
 import { Field, schema, SchemaRawShape } from './schema';
@@ -165,7 +165,13 @@ function SubmitButton({ children, disabled }: { children: React.ReactNode; disab
   const { pending } = useFormStatus();
 
   return (
-    <Button isDisabled={disabled} isLoading={pending} type="submit">
+    <Button
+      className="w-auto @xl:w-56"
+      disabled={disabled}
+      loading={pending}
+      size="medium"
+      type="submit"
+    >
       {children}
     </Button>
   );

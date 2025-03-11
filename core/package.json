@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@alto-avios/alto-tokens": "^3.0.1",
-    "@alto-avios/alto-ui": "^3.0.0",
+    "@alto-avios/alto-ui": "^3.1.0",
     "@bigcommerce/catalyst-client": "workspace:^",
     "@conform-to/react": "^1.2.2",
     "@conform-to/zod": "^1.2.2",
@@ -99,6 +99,7 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
+    "@tailwindcss/typography": "^0.5.16",
     "@types/gtag.js": "^0.0.20",
     "@types/jest": "^29.5.14",
     "@types/lodash.debounce": "^4.0.9",
