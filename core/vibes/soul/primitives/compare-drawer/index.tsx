@@ -127,7 +127,9 @@ export function CompareDrawer({
     parseAsArrayOf(parseAsString).withOptions({ shallow: false, scroll: false }),
   );
 
-  const { optimisticItems } = useCompareDrawer();
+  const { optimisticItems, setOptimisticItems } = useCompareDrawer();
+
+  console.log('optimisticItems', optimisticItems);
 
   return (
     optimisticItems.length > 0 && (
@@ -171,6 +173,8 @@ export function CompareDrawer({
                       startTransition(async () => {
                         await setParam((prev) => {
                           const next = prev?.filter((v) => v !== item.id) ?? [];
+
+                          setOptimisticItems({ type: 'remove', item });
 
                           return next.length > 0 ? next : null;
                         });
