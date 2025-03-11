@@ -7,9 +7,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
-
 import '../globals.css';
-
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -17,6 +15,8 @@ import { routing } from '~/i18n/routing';
 
 import { Notifications } from '../notifications';
 import { Providers } from '../providers';
+import { GTM_ID, pageview } from '~/lib/gtm';
+import GTM from '../[locale]/(default)/_components/GTM';
 
 const RootLayoutMetadataQuery = graphql(`
   query RootLayoutMetadataQuery {
@@ -92,8 +92,38 @@ export default async function RootLayout({ params, children }: Props) {
 
   return (
     <html lang={locale}>
+      <head>
+        {/* GTM Script */}
+        <Script
+          id="gtm-script"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(w,d,s,l,i){
+                w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(), event:'gtm.js'});
+                var f=d.getElementsByTagName(s)[0],
+                j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+                j.async=true;
+                j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
+                f.parentNode.insertBefore(j,f);
+              })(window,document,'script','dataLayer','${GTM_ID}');
+            `,
+          }}
+        />
+      </head>
       <Script crossOrigin="anonymous" src="https://kit.fontawesome.com/ea4747af9a.js" />
       <body>
+        {/* GTM Fallback for No-JS Users */}
+        <noscript>
+          <iframe
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
+            height="0"
+            width="0"
+            style={{ display: 'none', visibility: 'hidden' }}
+          />
+        </noscript>
+
+        <GTM />
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <NuqsAdapter>
