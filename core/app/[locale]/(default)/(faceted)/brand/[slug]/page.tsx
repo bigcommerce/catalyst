@@ -15,6 +15,7 @@ import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
+import { getCompareProducts as getCompareProductsData } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { getBrandPageData } from './page-data';
@@ -44,15 +45,6 @@ async function getBrand(props: Props) {
   if (brand == null) notFound();
 
   return brand;
-}
-
-async function getShowCompare(props: Props) {
-  const { slug } = await props.params;
-
-  const variables = cachedBrandDataVariables(slug);
-  const data = await getBrandPageData(variables);
-
-  return data.settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 }
 
 async function getTitle(props: Props): Promise<string> {
@@ -171,6 +163,39 @@ async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
   return pageInfoTransformer(brandSearch.products.pageInfo);
 }
 
+async function getShowCompare(props: Props) {
+  const { slug } = await props.params;
+
+  const variables = cachedBrandDataVariables(slug);
+  const data = await getBrandPageData(variables);
+
+  return data.settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+}
+
+const cachedCompareProductIds = cache(async (props: Props) => {
+  const searchParams = await props.searchParams;
+
+  const compareIds =
+    typeof searchParams.compare === 'string' ? searchParams.compare.split(',') : [];
+
+  return { entityIds: compareIds.map((id: string) => Number(id)) };
+});
+
+async function getCompareProducts(props: Props) {
+  const compareIds = await cachedCompareProductIds(props);
+
+  const products = await getCompareProductsData(compareIds);
+
+  return products.map((product) => ({
+    id: product.entityId.toString(),
+    title: product.name,
+    image: product.defaultImage
+      ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+      : undefined,
+    href: product.path,
+  }));
+}
+
 async function getFilterLabel(): Promise<string> {
   const t = await getTranslations('FacetedGroup.FacetedSearch');
 
@@ -248,6 +273,7 @@ export default async function Brand(props: Props) {
     <ProductsListSection
       breadcrumbs={getBreadcrumbs()}
       compareLabel={getCompareLabel()}
+      compareProducts={getCompareProducts(props)}
       emptyStateSubtitle={getEmptyStateSubtitle()}
       emptyStateTitle={getEmptyStateTitle()}
       filterLabel={await getFilterLabel()}

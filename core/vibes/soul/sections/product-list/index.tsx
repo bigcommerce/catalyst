@@ -1,5 +1,5 @@
 import { clsx } from 'clsx';
-import { ComponentProps } from 'react';
+// import { ComponentProps } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { CompareDrawer } from '@/vibes/soul/primitives/compare-drawer';
@@ -19,7 +19,7 @@ interface ProductListProps {
   colorScheme?: 'light' | 'dark';
   aspectRatio?: '5:6' | '3:4' | '1:1';
   showCompare?: Streamable<boolean>;
-  compareAction?: ComponentProps<'form'>['action'];
+  // compareAction?: ComponentProps<'form'>['action'];
   compareLabel?: Streamable<string>;
   compareParamName?: string;
   emptyStateTitle?: Streamable<string>;
@@ -49,7 +49,7 @@ export function ProductList({
   colorScheme = 'light',
   aspectRatio = '5:6',
   showCompare: streamableShowCompare = false,
-  compareAction,
+  // compareAction,
   compareProducts: streamableCompareProducts = [],
   compareLabel: streamableCompareLabel = 'Compare',
   compareParamName = 'compare',
@@ -98,7 +98,7 @@ export function ProductList({
         {([compareProducts, compareLabel]) =>
           compareProducts.length > 0 && (
             <CompareDrawer
-              action={compareAction}
+              // action={compareAction}
               items={compareProducts}
               paramName={compareParamName}
               submitLabel={compareLabel}

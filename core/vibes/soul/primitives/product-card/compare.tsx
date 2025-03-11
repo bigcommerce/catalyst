@@ -14,7 +14,7 @@ interface Props {
 export const Compare = function Compare({
   productId,
   colorScheme = 'light',
-  paramName = 'compare',
+  paramName = 'compare', // TODO: expose
   label = 'Compare',
 }: Props) {
   const [param, setParam] = useQueryState(
