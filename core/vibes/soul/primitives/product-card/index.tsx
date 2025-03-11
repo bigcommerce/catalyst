@@ -156,7 +156,7 @@ export function ProductCard({
               colorScheme={colorScheme}
               label={compareLabel}
               paramName={compareParamName}
-              productId={id}
+              product={{ id, title, href, image }}
             />
           </div>
         )}

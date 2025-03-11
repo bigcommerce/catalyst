@@ -3,11 +3,70 @@
 import * as Portal from '@radix-ui/react-portal';
 import { ArrowRight, X } from 'lucide-react';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
-import { ComponentProps, startTransition } from 'react';
+import {
+  ComponentProps,
+  createContext,
+  ReactNode,
+  startTransition,
+  useContext,
+  useOptimistic,
+} from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+
+interface OptimisticAction {
+  type: 'add' | 'remove';
+  item: CompareDrawerItem;
+}
+
+interface CompareDrawerContext {
+  optimisticItems: CompareDrawerItem[];
+  setOptimisticItems: (action: OptimisticAction) => void;
+}
+
+export const CompareDrawerContext = createContext<CompareDrawerContext | undefined>(undefined);
+
+export function CompareDrawerProvider({
+  children,
+  items,
+}: {
+  children: ReactNode;
+  items: CompareDrawerItem[];
+}) {
+  const [optimisticItems, setOptimisticItems] = useOptimistic(
+    items,
+    (state: CompareDrawerItem[], { type, item }: OptimisticAction) => {
+      switch (type) {
+        case 'add':
+          return [...state, item];
+
+        case 'remove':
+          return state.filter((i) => i.id !== item.id);
+
+        default:
+          return state;
+      }
+    },
+  );
+
+  return (
+    <CompareDrawerContext value={{ optimisticItems, setOptimisticItems }}>
+      {children}
+    </CompareDrawerContext>
+  );
+}
+
+export function useCompareDrawer() {
+  const context = useContext(CompareDrawerContext);
+
+  if (context === undefined) {
+    throw new Error('useCompareDrawer must be used within a CompareDrawerProvider');
+  }
+
+  return context;
+}
 
 function getInitials(name: string): string {
   return name
@@ -26,7 +85,7 @@ interface CompareDrawerItem {
 }
 
 export interface CompareDrawerProps {
-  items: CompareDrawerItem[];
+  // items: CompareDrawerItem[];
   paramName?: string;
   action?: ComponentProps<'form'>['action'];
   submitLabel?: string;
@@ -58,7 +117,7 @@ export interface CompareDrawerProps {
  * ```
  */
 export function CompareDrawer({
-  items,
+  // items,
   paramName = 'compare',
   action,
   submitLabel = 'Compare',
@@ -68,8 +127,10 @@ export function CompareDrawer({
     parseAsArrayOf(parseAsString).withOptions({ shallow: false, scroll: false }),
   );
 
+  const { optimisticItems } = useCompareDrawer();
+
   return (
-    items.length > 0 && (
+    optimisticItems.length > 0 && (
       <Portal.Root asChild>
         <div className="sticky bottom-0 z-10 w-full border-t bg-[var(--compare-drawer-background,hsl(var(--background)))] px-3 py-4 @container @md:py-5 @xl:px-6 @5xl:px-10">
           <form
@@ -77,7 +138,7 @@ export function CompareDrawer({
             className="mx-auto flex w-full max-w-7xl flex-col items-start justify-end gap-x-3 gap-y-4 @md:flex-row"
           >
             <div className="flex flex-1 flex-wrap justify-end gap-4">
-              {items.map((item) => (
+              {optimisticItems.map((item) => (
                 <div className="relative" key={item.id}>
                   <input key={item.id} name={paramName} type="hidden" value={item.id} />
                   <Link

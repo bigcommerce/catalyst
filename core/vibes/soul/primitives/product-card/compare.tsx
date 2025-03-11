@@ -1,38 +1,57 @@
 'use client';
 
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
+import { startTransition } from 'react';
 
 import { Checkbox } from '@/vibes/soul/form/checkbox';
 
+import { useCompareDrawer } from '../compare-drawer';
+
+interface CompareDrawerItem {
+  id: string;
+  image?: { src: string; alt: string };
+  href: string;
+  title: string;
+}
+
 interface Props {
-  productId: string;
   colorScheme?: 'light' | 'dark';
   paramName?: string;
   label?: string;
+  product: CompareDrawerItem;
 }
 
 export const Compare = function Compare({
-  productId,
   colorScheme = 'light',
   paramName = 'compare', // TODO: expose
   label = 'Compare',
+  product,
 }: Props) {
   const [param, setParam] = useQueryState(
     paramName,
     parseAsArrayOf(parseAsString).withOptions({ shallow: false }),
   );
 
+  const { setOptimisticItems } = useCompareDrawer();
+
   return (
     <Checkbox
-      checked={param?.includes(productId) ?? false}
+      checked={param?.includes(product.id) ?? false}
       colorScheme={colorScheme}
       label={label}
       onCheckedChange={(value) => {
         void setParam((prev) => {
           const next =
             value === true
-              ? [...(prev ?? []), productId]
-              : (prev ?? []).filter((v) => v !== productId);
+              ? [...(prev ?? []), product.id]
+              : (prev ?? []).filter((v) => v !== product.id);
+
+          startTransition(() => {
+            setOptimisticItems({
+              type: value ? 'add' : 'remove',
+              item: product,
+            });
+          });
 
           return next.length > 0 ? next : null;
         });

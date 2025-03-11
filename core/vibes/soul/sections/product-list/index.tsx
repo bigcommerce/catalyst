@@ -2,7 +2,7 @@ import { clsx } from 'clsx';
 // import { ComponentProps } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { CompareDrawer } from '@/vibes/soul/primitives/compare-drawer';
+import { CompareDrawer, CompareDrawerProvider } from '@/vibes/soul/primitives/compare-drawer';
 import {
   ProductCard,
   ProductCardSkeleton,
@@ -58,23 +58,28 @@ export function ProductList({
   placeholderCount = 8,
 }: ProductListProps) {
   return (
-    <>
-      <Stream
-        fallback={<ProductListSkeleton placeholderCount={placeholderCount} />}
-        value={Streamable.all([streamableProducts, streamableCompareLabel, streamableShowCompare])}
-      >
-        {([products, compareLabel, showCompare]) => {
-          if (products.length === 0) {
-            return (
-              <ProductListEmptyState
-                emptyStateSubtitle={emptyStateSubtitle}
-                emptyStateTitle={emptyStateTitle}
-                placeholderCount={placeholderCount}
-              />
-            );
-          }
-
+    <Stream
+      fallback={<ProductListSkeleton placeholderCount={placeholderCount} />}
+      value={Streamable.all([
+        streamableProducts,
+        streamableCompareLabel,
+        streamableShowCompare,
+        streamableCompareProducts,
+      ])}
+    >
+      {([products, compareLabel, showCompare, compareProducts]) => {
+        if (products.length === 0) {
           return (
+            <ProductListEmptyState
+              emptyStateSubtitle={emptyStateSubtitle}
+              emptyStateTitle={emptyStateTitle}
+              placeholderCount={placeholderCount}
+            />
+          );
+        }
+
+        return (
+          <CompareDrawerProvider items={compareProducts}>
             <div className={clsx('w-full @container', className)}>
               <div className="mx-auto grid grid-cols-1 gap-x-4 gap-y-6 @sm:grid-cols-2 @2xl:grid-cols-3 @2xl:gap-x-5 @2xl:gap-y-8 @5xl:grid-cols-4 @7xl:grid-cols-5">
                 {products.map((product) => (
@@ -91,22 +96,18 @@ export function ProductList({
                 ))}
               </div>
             </div>
-          );
-        }}
-      </Stream>
-      <Stream value={Streamable.all([streamableCompareProducts, streamableCompareLabel])}>
-        {([compareProducts, compareLabel]) =>
-          compareProducts.length > 0 && (
-            <CompareDrawer
-              // action={compareAction}
-              items={compareProducts}
-              paramName={compareParamName}
-              submitLabel={compareLabel}
-            />
-          )
-        }
-      </Stream>
-    </>
+            {compareProducts.length > 0 && (
+              <CompareDrawer
+                // action={compareAction}
+                // items={compareProducts}
+                paramName={compareParamName}
+                submitLabel={compareLabel}
+              />
+            )}
+          </CompareDrawerProvider>
+        );
+      }}
+    </Stream>
   );
 }
 
