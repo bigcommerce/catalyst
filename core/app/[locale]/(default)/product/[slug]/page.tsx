@@ -5,7 +5,6 @@ import { createSearchParamsCache, parseAsString } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
-// import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -18,7 +17,6 @@ import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { PaginationSearchParamNames, Reviews } from './_components/reviews';
 import { getProductData } from './page-data';
-import { Paragraph } from '@alto-avios/alto-ui';
 
 export const revalidate = 3600;
 
@@ -128,15 +126,6 @@ const getProduct = async (props: Props) => {
     accordions,
   };
 };
-
-// async function getBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
-//   const product = await getProduct(props);
-
-//   return removeEdgesAndNodes(product.accordions).map(({ name, path }) => ({
-//     label: name,
-//     href: path ?? '#',
-//   }));
-// }
 
 const getFields = async (props: Props) => {
   const { slug } = await props.params;
@@ -258,7 +247,6 @@ export default async function Product(props: Props) {
 
   return (
     <>
-    
       <ProductDetail
         action={addToCart}
         additionalInformationLabel={t('ProductDetails.additionalInformation')}
