@@ -1,8 +1,49 @@
 {
     "Home": {
+        "Slideshow": {
+            "Slide01": {
+                "title": "Des plantes naturelles pour chaque occasion",
+                "description": "Découvrez nos dernières nouveautés mêlant esthétique, fonctionnalité et inspiration. Explorez notre boutique et découvrez votre prochain coup de cœur.",
+                "alt": "Cinq petites plantes dans des pots gris foncé placés sur des blocs beiges empilés, mettant en valeur différents feuillages verts, le tout sur un fond neutre.",
+                "cta": "Acheter"
+            },
+            "Slide02": {
+                "title": "Découvrez les nouveautés",
+                "description": "Parcourez nos dernières nouveautés et trouvez quelque chose qui vous intéresse pour votre habitation.",
+                "alt": "Les mains d'une personne tendent à une autre personne une fougère verte dans un panier tressé avec un nœud décoratif, le tout sur un fond beige avec des ombres douces.",
+                "cta": "Acheter"
+            },
+            "Slide03": {
+                "title": "Quelque chose pour tous",
+                "description": "Ne manquez pas les offres exclusives valables sur nos produits les plus vendus. Passez commande dès aujourd’hui et faites de grosses économies sur les articles que vous aimez.",
+                "alt": "Gros plan sur une feuille d’un vert éclatant avec des perforations, qui met en valeur sa texture lisse et ses détails naturels.",
+                "cta": "Acheter"
+            }
+        },
         "Carousel": {
             "featuredProducts": "Produits en vedette",
             "newestProducts": "Nouveaux produits"
+        },
+        "FeaturedProducts": {
+            "title": "Collection en vedette",
+            "description": "Découvrez nos meilleurs choix dans cette collection en vedette. Trouvez le cadeau parfait ou faites-vous plaisir !",
+            "cta": "Afficher plus",
+            "emptyStateTitle": "Aucun produit trouvé",
+            "emptyStateSubtitle": "Parcourez l'intégralité de notre catalogue de produits."
+        },
+        "NewestProducts": {
+            "title": "Nouveautés",
+            "description": "Nos derniers produits sont arrivés. Découvrez ce qui est nouveau en magasin.",
+            "cta": "Tout voir",
+            "emptyStateTitle": "Aucun produit trouvé",
+            "emptyStateSubtitle": "Parcourez l'intégralité de notre catalogue de produits.",
+            "previousProducts": "Produits précédents",
+            "nextProducts": "Prochains produits"
+        },
+        "BestSellingProducts": {
+            "title": "Nos meilleures ventes",
+            "description": "Nos produits les plus vendus sont ici. Découvrez ce qui est populaire en magasin.",
+            "cta": "Tout voir"
         }
     },
     "ChangePassword": {
@@ -25,7 +66,7 @@
         "title": "Connexion",
         "heading": "Connexion",
         "Form": {
-            "error": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
+            "invalidCredentials": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
             "successful": "Vous êtes connecté(e).",
             "emailLabel": "E-mail",
             "enterEmailMessage": "Saisissez votre adresse e-mail",
@@ -33,7 +74,8 @@
             "enterPasswordMessage": "Veuillez saisir votre mot de passe.",
             "submitting": "Envoi...",
             "logIn": "Connexion",
-            "forgotPassword": "Mot de passe oublié ?"
+            "forgotPassword": "Mot de passe oublié ?",
+            "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
         },
         "CreateAccount": {
             "heading": "Nouveau client ?",
@@ -65,6 +107,7 @@
     "Register": {
         "title": "Enregistrer un compte",
         "heading": "Nouveau compte",
+        "successfulUpdate": "Le compte a été mis à jour.",
         "Form": {
             "submit": "Créer un compte",
             "submitting": "Création du compte...",
@@ -86,6 +129,10 @@
         },
         "FacetedSearch": {
             "filters": "Filtres",
+            "resetFilters": "Réinitialiser le filtre",
+            "Range": {
+                "apply": "Appliquer"
+            },
             "RefineBy": {
                 "refineBy": "Affiner par",
                 "clearAllRefinements": "Effacer tout"
@@ -119,14 +166,17 @@
     },
     "Brand": {
         "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
-        "products": "Produits"
+        "products": "Produits",
+        "emptyStateTitle": "Aucun produit dans cette marque.",
+        "emptyStateSubtitle": "Essayez différents filtres."
     },
     "Category": {
         "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
         "products": "Produits",
         "items": "articles",
         "Empty": {
-            "message": "Aucun produit dans cette catégorie",
+            "title": "Aucun produit dans cette catégorie",
+            "subtitle": "Essayez différents filtres.",
             "cta": "Retour à l’accueil"
         }
     },
@@ -135,87 +185,52 @@
         "heading": "Rechercher",
         "products": "Produits",
         "sortBy": "{items, plural, =0 {aucun article} =1 {1 article} other {# articles}}",
-        "searchResults": "Résultats de recherche pour"
+        "searchResults": "Résultats de recherche pour",
+        "emptyStateTitle": "Désolé, aucun résultat pour « {term} ».",
+        "emptyStateSubtitle": "Veuillez modifier votre recherche.",
+        "Breadcrumbs": {
+            "home": "Accueil",
+            "search": "Rechercher"
+        }
     },
     "Account": {
         "Layout": {
-            "accountTabsLabel": "Onglets Compte",
-            "orders": "Commandes",
             "addresses": "Adresses",
+            "logout": "Déconnexion",
+            "orders": "Commandes",
+            "settings": "Compte",
             "wishlists": "Listes d'envies",
-            "recentlyViewed": "Consultés récemment",
-            "settings": "Paramètres des comptes"
+            "recentlyViewed": "Consultés récemment"
         },
         "Orders": {
-            "noOrders": "Aucune commande pour l'instant",
+            "title": "Commandes",
             "orderNumber": "Commande n° ",
-            "placedDate": "Commande passée",
             "totalPrice": "Total",
             "viewDetails": "Afficher les détails",
-            "trackOrder": "Suivre la commande",
-            "returnOrder": "Retourner des articles",
-            "orderSummary": "Récapitulatif de la commande",
-            "orderContents": "Contenu de la commande",
-            "orderSubtotal": "Sous-total :",
-            "orderGrandtotal": "Total :",
-            "orderDiscount": "Remise :",
-            "orderAppliedCoupon": "Code promotionnel ({code}) :",
-            "orderShipping": "Expédition :",
-            "orderTax": "Taxes :",
-            "printInvoice": "Imprimer la facture",
-            "repurchaseOrder": "Racheter",
-            "return": "Retour",
-            "shippedDate": "Expédié le",
-            "shippingAddress": "Adresse de livraison",
-            "shippingMethod": "Mode de livraison",
-            "shipmentTitle": "Expédition",
-            "shippingTitle": "Livraison",
-            "shippingPayment": "Paiement",
-            "shippingPaymentMethod": "Mode de paiement",
-            "billingAddress": "Adresse de facturation"
+            "noOrders": "Aucune commande pour l'instant"
+        },
+        "OrderDetails": {
+            "title": "Commande n° {orderNumber}",
+            "shippingAddressLabel": "Adresse de livraison",
+            "shippingMethodLabel": "Mode de livraison",
+            "summaryTotalLabel": "Total",
+            "destinationTitle": "Destination",
+            "destinationWithCountTitle": "Destination {number}/{total}",
+            "summarySubtotalLabel": "Sous-total",
+            "summaryShippingLabel": "Livraison",
+            "summaryTaxLabel": "Taxes"
         },
         "Addresses": {
             "title": "Adresses",
-            "addNewAddress": "Ajouter une nouvelle adresse",
-            "editButton": "Modifier",
-            "emptyAddresses": "Aucune adresse ajoutée",
-            "deleteButton": "Supprimer",
-            "confirmDeleteAddress": "Supprimer l'adresse",
-            "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?",
-            "Add": {
-                "title": "Ajouter une adresse",
-                "heading": "Nouvelle adresse",
-                "Form": {
-                    "submit": "Ajouter une nouvelle adresse",
-                    "submitting": "Enregistrer l'adresse...",
-                    "cancel": "Annuler",
-                    "success": "Adresse ajoutée à votre compte.",
-                    "Errors": {
-                        "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
-                        "error": "Erreur inconnue."
-                    }
-                }
-            },
-            "Edit": {
-                "title": "Modifier l'adresse",
-                "heading": "Modifier l'adresse",
-                "Form": {
-                    "submit": "Modifier l'adresse",
-                    "submitting": "Mise à jour de l'adresse...",
-                    "cancel": "Annuler",
-                    "confirmDeleteAddress": "Supprimer l'adresse",
-                    "deleteModalTitle": "Voulez-vraiment supprimer cette adresse ?",
-                    "deleteButton": "Supprimer",
-                    "success": "L'adresse a bien été mise à jour.",
-                    "Errors": {
-                        "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
-                        "notFound": "L'adresse n'existe pas",
-                        "error": "Erreur inconnue."
-                    }
-                }
-            },
-            "Delete": {
-                "success": "Adresse supprimée de votre compte.",
+            "showAddFormLabel": "Ajouter une adresse",
+            "editLabel": "Modifier",
+            "deleteLabel": "Supprimer",
+            "cancelLabel": "Annuler",
+            "createLabel": "Créer",
+            "updateLabel": "Mettre à jour",
+            "setDefaultLabel": "Définir par défaut",
+            "Errors": {
+                "apiError": "Il semble qu'une erreur de serveur se soit produite, veuillez réessayer dans quelques minutes.",
                 "error": "Erreur inconnue."
             }
         },
@@ -262,6 +277,10 @@
     },
     "Blog": {
         "title": "Blog",
+        "Empty": {
+            "title": "Aucun article de blog n’a été trouvé",
+            "subtitle": "Pour accéder à d'autres contenus, revenez plus tard"
+        },
         "SharingLinks": {
             "share": "Partager",
             "email": "E-mail",
@@ -276,7 +295,13 @@
         "proceedToCheckout": "Procéder au paiement",
         "loading": "Chargement...",
         "spinnerText": "Mise à jour en cours…",
+        "increment": "Augmenter la quantité :",
+        "decrement": "Réduire la quantité",
+        "removeItem": "Supprimer l'article",
+        "cartCombined": "Nous avons remarqué que votre panier précédent contenait des articles enregistrés. Nous avons donc ajouté ces articles à votre panier actuel.",
+        "cartRestored": "Vous avez débuté vos achats sur un autre appareil. Nous avons restauré votre panier ici pour que vous puissiez reprendre là où vous en étiez.",
         "CheckoutSummary": {
+            "title": "Récapitulatif",
             "subTotal": "Sous-total",
             "discounts": "Remises",
             "coupon": "Code promotionnel",
@@ -289,14 +314,21 @@
             "spinnerText": "Retirer...",
             "couponCodeRemoveFailed": "Une erreur s'est produite dans la suppression du code promotionnel. Veuillez réessayer.",
             "tax": "Taxes",
-            "grandTotal": "Total",
+            "total": "Total",
             "shipping": "Livraison",
             "shippingCost": "Frais de port",
             "handlingCost": "Frais de traitement :",
             "add": "Ajouter",
             "change": "Modifier",
             "cancel": "Annuler",
-            "errorMessage": "Le récapitulatif du panier est introuvable. Veuillez réessayer."
+            "errorMessage": "Le récapitulatif du panier est introuvable. Veuillez réessayer.",
+            "CouponCode": {
+                "apply": "Appliquer",
+                "couponCode": "Code promotionnel",
+                "removeCouponCode": "Supprimez le code promotionnel",
+                "invalidCouponCode": "Veuillez saisir un code promotionnel valide",
+                "cartNotFound": "Aucun cookie cartId n’a été trouvé."
+            }
         },
         "ShippingInfo": {
             "country": "Pays",
@@ -337,6 +369,18 @@
             "remove": "Supprimer",
             "spinnerText": "Retirer...",
             "errorMessage": "Une erreur s'est produite lors de la suppression de l'article. Veuillez réessayer."
+        },
+        "Empty": {
+            "title": "Votre panier est vide.",
+            "subtitle": "Ajoutez quelques produits pour commencer.",
+            "cta": "Continuer mes achats"
+        },
+        "Errors": {
+            "cartNotFound": "Aucun cookie cartId n’a été trouvé.",
+            "lineItemNotFound": "Ligne introuvable.",
+            "failedToRedirectToCheckout": "Échec de la redirection vers le paiement.",
+            "failedToUpdateQuantity": "Échec de la mise à jour de la quantité.",
+            "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
         }
     },
     "Compare": {
@@ -362,54 +406,51 @@
         }
     },
     "Product": {
-        "loading": "Chargement...",
-        "Carousel": {
-            "relatedProducts": "Produits associés"
-        },
-        "Gallery": {
-            "previous": "Image du produit précédent",
-            "next": "Image du produit suivant",
-            "thumbnailNavigation": "Navigation par vignettes",
-            "enlarge": "Agrandir l'image du produit"
-        },
-        "Form": {
-            "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
-            "saveToWishlist": "Enregistrer dans la liste d'envies",
-            "quantityLabel": "Quantité"
-        },
-        "Description": {
-            "heading": "Description"
-        },
-        "Warranty": {
-            "heading": "Garantie"
-        },
-        "Reviews": {
-            "heading": "Avis",
-            "reviewsCount": "Compte :",
-            "unreviewed": "Ce produit n'a pas encore été évalué.",
-            "reviewRating": "Note : {rating} étoile(s) sur 5",
-            "reviewAuthor": "Publié par {author} le"
-        },
-        "Details": {
-            "additionalDetails": "Informations supplémentaires",
-            "sku": "SKU",
-            "upc": "CUP",
-            "minPurchase": "Quantité minimale d'achat",
-            "maxPurchase": "Quantité maximale d'achat",
-            "availability": "Disponibilité",
-            "condition": "Condition",
-            "comingSoon": "Prochainement disponible·s",
-            "qty": "Qté",
-            "weight": "Poids",
+        "ProductDetails": {
+            "quantity": "Quantité",
+            "increaseQuantity": "Augmenter la quantité :",
+            "decreaseQuantity": "Réduire la quantité",
+            "successMessage": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
+            "missingCart": "Panier introuvable. Veuillez réessayer plus tard !",
+            "unknownError": "Erreur inconnue. Veuillez réessayer plus tard.",
+            "increaseNumber": "Augmenter le nombre",
+            "decreaseNumber": "Réduire le nombre",
+            "thumbnail": "Voir le numéro de l’image",
+            "additionalInformation": "Informations supplémentaires",
+            "Submit": {
+                "addToCart": "Ajouter au panier",
+                "outOfStock": "En rupture de stock",
+                "preorder": "Précommander",
+                "unavailable": "Indisponible"
+            },
+            "Accordions": {
+                "specifications": "Caractéristiques",
+                "warranty": "Garantie",
+                "sku": "SKU",
+                "weight": "Poids",
+                "condition": "Condition"
+            },
             "Prices": {
                 "msrp": "PDSF",
                 "was": "était",
                 "now": "maintenant"
-            },
-            "ReviewSummary": {
-                "rating": "Note :",
-                "ratingRange": "sur 5 étoiles.",
-                "reviewsNumber": "Nombre d'avis :"
+            }
+        },
+        "RelatedProducts": {
+            "title": "Produits associés",
+            "noRelatedProducts": "Aucun produit associé n’a été trouvé",
+            "browseCatalog": "Parcourez l'intégralité de notre catalogue de produits.",
+            "cta": "Tout parcourir",
+            "previousProducts": "Produits précédents",
+            "nextProducts": "Prochains produits",
+            "scrollbar": "Barre de défilement des produits associés"
+        },
+        "Reviews": {
+            "title": "Avis",
+            "empty": "Aucun avis n’a été ajouté pour ce produit.",
+            "Pagination": {
+                "previous": "Avis précédents",
+                "next": "Avis suivants"
             }
         }
     },
@@ -417,6 +458,7 @@
         "ContactUs": {
             "Form": {
                 "success": "Merci de nous avoir contactés. Nous reviendrons vers vous bientôt.",
+                "successCta": "Continuer mes achats",
                 "error": "Erreur inconnue.",
                 "fullNameLabel": "Nom complet",
                 "companyNameLabel": "Nom de l'entreprise",
@@ -429,7 +471,12 @@
                 "commentsValidationMessage": "Veuillez fournir un commentaire valide",
                 "recaptchaText": "Réussir le test ReCAPTCHA",
                 "onSubmitText": "Envoi...",
-                "submitFormText": "Envoyer le formulaire"
+                "submitFormText": "Envoyer le formulaire",
+                "Errors": {
+                    "inputError": "Un problème est survenu lors du traitement des saisies de l'utilisateur.",
+                    "apiError": "Il semble qu'une erreur de serveur se soit produite, veuillez réessayer dans quelques minutes.",
+                    "error": "Une erreur s'est produite. Veuillez réessayer plus tard."
+                }
             }
         }
     },
@@ -455,6 +502,13 @@
     },
     "Components": {
         "Header": {
+            "home": "Accueil",
+            "toggleNavigation": "Basculer la navigation",
+            "Icons": {
+                "account": "Profil",
+                "cart": "Panier",
+                "search": "Rechercher"
+            },
             "Account": {
                 "account": "Compte",
                 "orders": "Commandes",
@@ -463,9 +517,12 @@
                 "login": "Connexion",
                 "logout": "Déconnexion"
             },
-            "LocaleSwitcher": {
-                "chooseCountryAndLanguage": "Sélectionnez le pays et la langue.",
-                "goToSite": "Accéder au site"
+            "Currency": {
+                "invalidCurrency": "Devise non valide",
+                "errorUpdatingCurrency": "Erreur lors de la mise à jour de la devise de votre panier. Veuillez réessayer."
+            },
+            "Locale": {
+                "invalidLocale": "Paramètres régionaux non valides"
             },
             "MiniCart": {
                 "cart": "Panier",
@@ -483,14 +540,24 @@
                 "products": "Produits",
                 "categories": "Catégories",
                 "brands": "Marques",
-                "noSearchResults": "Désolé, aucun résultat pour « {term} ».",
+                "noSearchResultsTitle": "Désolé, aucun résultat pour « {term} ».",
+                "noSearchResultsSubtitle": "Veuillez modifier votre recherche.",
                 "searchPlaceholder": "Recherche...",
                 "clearSearch": "Effacer la recherche",
-                "processing": "Traitement en cours…"
+                "processing": "Traitement en cours…",
+                "error": "Une erreur s'est produite. Veuillez réessayer."
             }
         },
         "Footer": {
+            "home": "Accueil",
+            "contact": "Nous contacter",
             "socialMediaLinks": "Lien vers les médias sociaux"
+        },
+        "Subscribe": {
+            "title": "Abonnez-vous à notre newsletter",
+            "placeholder": "Saisissez votre adresse e-mail",
+            "description": "Restez informé des dernières nouvelles et offres de notre magasin.",
+            "success": "Merci de l’intérêt que vous nous portez ! La fonctionnalité Newsletter sera bientôt disponible !"
         },
         "Breadcrumb": {
             "breadcrumb": "Fil d'Ariane"

@@ -1,15 +1,17 @@
 import { decodeJwt } from 'jose';
-import { cookies } from 'next/headers';
 import NextAuth, { type DefaultSession, type NextAuthConfig, User } from 'next-auth';
 import 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { clearCartId, getCartId, setCartId } from '~/lib/cart';
+import { serverToast } from '~/lib/server-toast';
 
 const LoginMutation = graphql(`
-  mutation Login($email: String!, $password: String!, $cartEntityId: String) {
+  mutation LoginMutation($email: String!, $password: String!, $cartEntityId: String) {
     login(email: $email, password: $password, guestCartEntityId: $cartEntityId) {
       customerAccessToken {
         value
@@ -20,12 +22,15 @@ const LoginMutation = graphql(`
         lastName
         email
       }
+      cart {
+        entityId
+      }
     }
   }
 `);
 
 const LoginWithTokenMutation = graphql(`
-  mutation LoginWithCustomerLoginJwt($jwt: String!, $cartEntityId: String) {
+  mutation LoginWithCustomerLoginJwtMutation($jwt: String!, $cartEntityId: String) {
     loginWithCustomerLoginJwt(jwt: $jwt, guestCartEntityId: $cartEntityId) {
       customerAccessToken {
         value
@@ -35,6 +40,9 @@ const LoginWithTokenMutation = graphql(`
         firstName
         lastName
         email
+      }
+      cart {
+        entityId
       }
     }
   }
@@ -61,6 +69,22 @@ const JwtCredentials = z.object({
 
 export const Credentials = z.discriminatedUnion('type', [PasswordCredentials, JwtCredentials]);
 
+async function handleLoginCart(guestCartId?: string, loginResultCartId?: string) {
+  const t = await getTranslations('Cart');
+
+  if (guestCartId === undefined && loginResultCartId !== undefined) {
+    await serverToast.info(t('cartRestored'), { position: 'top-center' });
+  }
+
+  if (loginResultCartId && guestCartId && loginResultCartId !== guestCartId) {
+    await serverToast.info(t('cartCombined'), { position: 'top-center' });
+  }
+
+  if (loginResultCartId) {
+    await setCartId(loginResultCartId);
+  }
+}
+
 async function loginWithPassword(
   email: string,
   password: string,
@@ -83,6 +107,8 @@ async function loginWithPassword(
   if (!result.customer || !result.customerAccessToken) {
     return null;
   }
+
+  await handleLoginCart(cartEntityId, result.cart?.entityId);
 
   return {
     name: `${result.customer.firstName} ${result.customer.lastName}`,
@@ -114,6 +140,8 @@ async function loginWithJwt(jwt: string, cartEntityId?: string): Promise<User | 
     return null;
   }
 
+  await handleLoginCart(cartEntityId, result.cart?.entityId);
+
   return {
     name: `${result.customer.firstName} ${result.customer.lastName}`,
     email: result.customer.email,
@@ -124,8 +152,7 @@ async function loginWithJwt(jwt: string, cartEntityId?: string): Promise<User | 
 
 async function authorize(credentials: unknown): Promise<User | null> {
   const parsed = Credentials.parse(credentials);
-  const cookieStore = await cookies();
-  const cartEntityId = cookieStore.get('cartId')?.value;
+  const cartEntityId = await getCartId();
 
   switch (parsed.type) {
     case 'password': {
@@ -152,6 +179,7 @@ const config = {
   pages: {
     signIn: '/login',
   },
+  trustHost: true,
   callbacks: {
     jwt: ({ token, user }) => {
       // user can actually be undefined
@@ -184,6 +212,8 @@ const config = {
               cache: 'no-store',
             },
           });
+
+          await clearCartId();
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error);
@@ -204,7 +234,12 @@ const config = {
   ],
 } satisfies NextAuthConfig;
 
-const { handlers, auth, signIn, signOut } = NextAuth(config);
+const { handlers, auth, signIn: nextAuthSignIn, signOut } = NextAuth(config);
+
+const signIn = (
+  credentials: z.infer<typeof Credentials>,
+  options: { redirect?: boolean | undefined; redirectTo?: string },
+) => nextAuthSignIn('credentials', { ...credentials, ...options });
 
 const getSessionCustomerAccessToken = async () => {
   try {

@@ -6,10 +6,12 @@ import { pathExistsSync } from 'fs-extra/esm';
 import kebabCase from 'lodash.kebabcase';
 import { join } from 'path';
 
+import { multiSelect } from '../prompts/multi-select';
 import { CliApi } from '../utils/cli-api';
 import { cloneCatalyst } from '../utils/clone-catalyst';
 import { Https } from '../utils/https';
 import { installDependencies } from '../utils/install-dependencies';
+import { getAvailableLocales } from '../utils/localization';
 import { login, storeCredentials } from '../utils/login';
 import { Telemetry } from '../utils/telemetry/telemetry';
 import { writeEnv } from '../utils/write-env';
@@ -55,10 +57,62 @@ function getPlatformCheckCommand(command: string): string {
 
 const telemetry = new Telemetry();
 
-async function handleChannelCreation(cliApi: CliApi) {
+async function handleChannelCreation(bc: Https, cliApi: CliApi) {
   const newChannelName = await input({
     message: 'What would you like to name your new channel?',
   });
+
+  let availableLocales = [];
+
+  try {
+    availableLocales = await getAvailableLocales(bc);
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(chalk.red(error.message));
+    }
+
+    process.exit(1);
+  }
+
+  const storefrontLocale = await select({
+    message: 'Which default language would you like to set for your channel?',
+    default: 'en',
+    choices: availableLocales,
+    theme: {
+      style: {
+        help: () => chalk.dim('(Select locale from the list or start typing the name)'),
+      },
+    },
+  });
+
+  const shouldAddAdditionalLocales = await select({
+    message: 'Would you like to add additional languages?',
+    choices: [
+      { name: 'Yes', value: true },
+      { name: 'No', value: false },
+    ],
+  });
+
+  let additionalLocales: string[] = [];
+
+  if (shouldAddAdditionalLocales) {
+    additionalLocales = await multiSelect({
+      choices: availableLocales.filter(({ value }) => value !== storefrontLocale),
+      message: 'Which additional languages would you like to add to your channel?',
+      theme: {
+        style: {
+          help: () => chalk.dim('(Select locale from the list or start typing the name)'),
+        },
+      },
+      validate: (selections) => {
+        if (selections.length > 4) {
+          return 'You can only select up to 4 additional languages';
+        }
+
+        return true;
+      },
+    });
+  }
 
   const shouldInstallSampleData = await select({
     message: 'Would you like to install sample data?',
@@ -68,7 +122,12 @@ async function handleChannelCreation(cliApi: CliApi) {
     ],
   });
 
-  const response = await cliApi.createChannel(newChannelName, shouldInstallSampleData);
+  const response = await cliApi.createChannel(
+    newChannelName,
+    storefrontLocale,
+    additionalLocales,
+    shouldInstallSampleData,
+  );
 
   if (!response.ok) {
     console.error(
@@ -244,7 +303,11 @@ export const create = new Command('create')
   .option('--access-token <token>', 'BigCommerce access token')
   .option('--channel-id <id>', 'BigCommerce channel ID')
   .option('--storefront-token <token>', 'BigCommerce storefront token')
-  .option('--gh-ref <ref>', 'Clone a specific ref from the source repository')
+  .option(
+    '--gh-ref <ref>',
+    'Clone a specific ref from the source repository',
+    '@bigcommerce/catalyst-core@latest',
+  )
   .option('--reset-main', 'Reset the main branch to the gh-ref')
   .option('--repository <repository>', 'GitHub repository to clone from', 'bigcommerce/catalyst')
   .option('--env <vars...>', 'Arbitrary environment variables to set in .env.local')
@@ -391,13 +454,18 @@ export const create = new Command('create')
           }
 
           if (shouldCreateChannel) {
-            const channelData = await handleChannelCreation(cliApi);
+            const channelData = await handleChannelCreation(bc, cliApi);
 
             channelId = channelData.channelId;
             storefrontToken = channelData.storefrontToken;
             envVars = { ...channelData.envVars };
 
             console.log(chalk.green(`Channel created successfully`));
+            console.warn(
+              chalk.yellow(
+                '\nNote: A preview storefront has been deployed in your BigCommerce control panel. This preview may look different from your local environment as it may be running different code.',
+              ),
+            );
           }
 
           if (!shouldCreateChannel) {

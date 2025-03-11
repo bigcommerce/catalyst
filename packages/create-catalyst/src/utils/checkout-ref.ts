@@ -1,15 +1,24 @@
-import { execSync } from 'node:child_process';
+import { sync as spawnSync } from 'cross-spawn';
 
 import { isExecException } from './is-exec-exception';
 
 export function checkoutRef(repoDir: string, ref: string): void {
   try {
     // Attempt to checkout the specified ref
-    execSync(`git checkout ${ref}`, {
+    const spawn = spawnSync('git', ['checkout', ref, '--'], {
       cwd: repoDir,
-      stdio: 'inherit',
       encoding: 'utf8',
+      // Explicitly set shell to false to avoid shell injection
+      // Don't use shell: true as it's a security risk
+      shell: false,
     });
+
+    const stderr = spawn.stderr.trim();
+
+    if (spawn.status !== 0 && stderr) {
+      throw new Error(stderr);
+    }
+
     console.log(`Checked out ref ${ref} successfully.`);
   } catch (error: unknown) {
     // Handle the error safely according to ESLint rules
@@ -26,14 +35,14 @@ export function checkoutRef(repoDir: string, ref: string): void {
       } else {
         console.error(`Error checking out ref '${ref}':`, stderr.trim());
       }
-    }
-
-    if (error instanceof Error) {
+    } else if (error instanceof Error) {
       // General error handling
       console.error(`Error checking out ref '${ref}':`, error.message);
+    } else {
+      // Unknown error type
+      console.error(`Unknown error occurred while checking out ref '${ref}'.`);
     }
 
-    // Unknown error type
-    console.error(`Unknown error occurred while checking out ref '${ref}'.`);
+    console.warn(`Falling back to the default branch.`);
   }
 }

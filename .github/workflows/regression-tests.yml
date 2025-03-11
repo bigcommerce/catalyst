@@ -6,7 +6,7 @@ on:
 
 env:
   PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
-  VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_PROTECTION_BYPASS_CATALYST_LATEST }}
+  VERCEL_PROTECTION_BYPASS: ${{ secrets.VERCEL_AUTOMATION_BYPASS_SECRET }}
   BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.BIGCOMMERCE_ACCESS_TOKEN }}
   BIGCOMMERCE_STORE_HASH: ${{ secrets.BIGCOMMERCE_STORE_HASH }}
 
@@ -15,7 +15,7 @@ jobs:
     name: Lighthouse Audit
     timeout-minutes: 30
     runs-on: ubuntu-latest
-    if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
+    if: ${{ contains(fromJson('["Production – catalyst-canary", "Preview – catalyst-canary"]'), github.event.deployment_status.environment) }}
 
     steps:
       - name: Checkout code
@@ -102,127 +102,3 @@ jobs:
             ## 📱 Mobile
             
             ${{ steps.format_lighthouse_score_mobile.outputs.comment }}
-
-  ui-tests:
-    name: Playwright UI Tests
-    timeout-minutes: 30
-    runs-on: ubuntu-latest
-    if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Pull Request Details
-        id: pr_details
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prData = require('./.github/workflows/pull-request-data.js');
-            await prData({ github, context, core });
-
-      - name: Install Playwright Browsers
-        run: |
-          cd core
-          npx playwright install --with-deps
-
-      - name: Run Playwright tests
-        run: |
-          cd core
-          npx playwright test tests/ui/ --project=tests-chromium
-
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report-ui
-          path: core/playwright-report/
-          retention-days: 30
-
-      - name: Send slack notification
-        uses: slackapi/slack-github-action@v1.26.0
-        if: ${{ steps.pr_details.outputs.draft != 'true' && steps.pr_details.outputs.pr && failure() }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          payload: |
-            {
-              "Job": "${{ github.job }}",
-              "Status": "Failed",
-              "Environment": "${{ github.event.deployment_status.environment }}",
-              "Pull_Request": "${{ steps.pr_details.outputs.url }}",
-              "Commit_Message" : "${{ steps.pr_details.outputs.title }}",
-              "Job_Run": "https://github.com/bigcommerce/catalyst/actions/runs/${{ github.run_id }}"
-            }
-
-  visual-regression-tests:
-    name: Playwright Visual Regression Tests
-    timeout-minutes: 30
-    runs-on: macos-14
-    if: ${{ contains(fromJson('["Production – catalyst-latest", "Preview – catalyst-latest"]'), github.event.deployment_status.environment) }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v3
-
-      - name: Use Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Pull Request Details
-        id: pr_details
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const prData = require('./.github/workflows/pull-request-data.js');
-            await prData({ github, context, core });
-
-      - name: Install Playwright Browsers
-        run: |
-          cd core
-          npx playwright install chromium
-
-      - name: Run Playwright tests
-        run: |
-          cd core
-          npx playwright test tests/visual-regression/components/ --project=tests-chromium
-
-      - uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: playwright-report-visual-regression
-          path: core/playwright-report/
-          retention-days: 30
-
-      - name: Send slack notification
-        uses: slackapi/slack-github-action@v1.26.0
-        if: ${{ steps.pr_details.outputs.draft != 'true' && steps.pr_details.outputs.pr && failure() }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        with:
-          payload: |
-            {
-              "Job": "${{ github.job }}",
-              "Status": "Failed",
-              "Environment": "${{ github.event.deployment_status.environment }}",
-              "Pull_Request": "${{ steps.pr_details.outputs.url }}",
-              "Commit_Message" : "${{ steps.pr_details.outputs.title }}",
-              "Job_Run": "https://github.com/bigcommerce/catalyst/actions/runs/${{ github.run_id }}"
-            }

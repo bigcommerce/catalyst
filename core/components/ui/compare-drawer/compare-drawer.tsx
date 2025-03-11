@@ -77,7 +77,7 @@ const CompareDrawer = () => {
   return (
     <div className="fixed bottom-0 start-0 w-full border-t border-gray-200 bg-white p-6 md:pe-0">
       <div className="hidden md:flex">
-        <CompareLink key={products.toString()} products={products} />
+        <CompareLink key={products.map(({ id }) => id).join('-')} products={products} />
         <ul className="flex overflow-auto">
           {products.map((product) => {
             return (
@@ -94,7 +94,7 @@ const CompareDrawer = () => {
       <AccordionPrimitive.Root className="w-full md:hidden" collapsible type="single">
         <AccordionPrimitive.Item value="compare">
           <AccordionPrimitive.Header className="flex">
-            <AccordionPrimitive.Trigger className="flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all hover:text-secondary focus-visible:text-secondary [&[data-state=open]>svg]:rotate-180">
+            <AccordionPrimitive.Trigger className="hover:text-secondary focus-visible:text-secondary flex flex-1 items-center justify-between py-[9.5px] text-lg font-bold outline-none transition-all [&[data-state=open]>svg]:rotate-180">
               <CompareLink products={products} />
               <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
             </AccordionPrimitive.Trigger>

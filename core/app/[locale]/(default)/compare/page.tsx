@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { Metadata } from 'next';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import * as z from 'zod';
 
@@ -12,6 +13,7 @@ import { Link } from '~/components/link';
 import { SearchForm } from '~/components/search-form';
 import { Button } from '~/components/ui/button';
 import { Rating } from '~/components/ui/rating';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 import { cn } from '~/lib/utils';
 
 import { AddToCart } from './_components/add-to-cart';
@@ -38,7 +40,7 @@ const CompareParamsSchema = z.object({
 
 const ComparePageQuery = graphql(
   `
-    query ComparePageQuery($entityIds: [Int!], $first: Int) {
+    query ComparePageQuery($entityIds: [Int!], $first: Int, $currencyCode: currencyCode) {
       site {
         products(entityIds: $entityIds, first: $first) {
           edges {
@@ -81,7 +83,7 @@ const ComparePageQuery = graphql(
   [AddToCartFragment, PricingFragment],
 );
 
-export async function generateMetadata() {
+export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Compare');
 
   return {
@@ -98,6 +100,7 @@ export default async function Compare(props: Props) {
   const t = await getTranslations('Compare');
   const format = await getFormatter();
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const currencyCode = await getPreferredCurrencyCode();
 
   const parsed = CompareParamsSchema.parse(searchParams);
   const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
@@ -107,6 +110,7 @@ export default async function Compare(props: Props) {
     variables: {
       entityIds: productIds ?? [],
       first: productIds?.length ? MAX_COMPARE_LIMIT : 0,
+      currencyCode,
     },
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
@@ -372,5 +376,3 @@ export default async function Compare(props: Props) {
     </>
   );
 }
-
-export const runtime = 'edge';

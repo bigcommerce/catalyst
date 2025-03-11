@@ -3,7 +3,7 @@ name: Changesets Release
 on:
   push:
     branches:
-      - main
+      - canary
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
 

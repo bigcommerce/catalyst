@@ -1,7 +1,6 @@
 'use server';
 
-import { revalidateTag } from 'next/cache';
-import { cookies } from 'next/headers';
+import { unstable_expireTag } from 'next/cache';
 
 import {
   addCartLineItem,
@@ -10,12 +9,12 @@ import {
 import { assertCreateCartErrors, createCart } from '~/client/mutations/create-cart';
 import { getCart } from '~/client/queries/get-cart';
 import { TAGS } from '~/client/tags';
+import { getCartId, setCartId } from '~/lib/cart';
 
 export const addToCart = async (data: FormData) => {
   const productEntityId = Number(data.get('product_id'));
 
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value;
+  const cartId = await getCartId();
 
   let cart;
 
@@ -40,7 +39,7 @@ export const addToCart = async (data: FormData) => {
         return { status: 'error', error: 'Failed to add product to cart.' };
       }
 
-      revalidateTag(TAGS.cart);
+      unstable_expireTag(TAGS.cart);
 
       return { status: 'success', data: cart };
     }
@@ -55,19 +54,15 @@ export const addToCart = async (data: FormData) => {
       return { status: 'error', error: 'Failed to add product to cart.' };
     }
 
-    cookieStore.set({
-      name: 'cartId',
-      value: cart.entityId,
-      httpOnly: true,
-      sameSite: 'lax',
-      secure: true,
-      path: '/',
-    });
+    await setCartId(cart.entityId);
 
-    revalidateTag(TAGS.cart);
+    unstable_expireTag(TAGS.cart);
 
     return { status: 'success', data: cart };
   } catch (error: unknown) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
     if (error instanceof Error) {
       return { status: 'error', error: error.message };
     }

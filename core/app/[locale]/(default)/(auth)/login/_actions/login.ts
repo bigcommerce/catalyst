@@ -1,42 +1,59 @@
 'use server';
 
-import { unstable_rethrow as rethrow } from 'next/navigation';
-import { getLocale } from 'next-intl/server';
+import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
+import { SubmissionResult } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
+import { AuthError } from 'next-auth';
+import { getLocale, getTranslations } from 'next-intl/server';
 
-import { Credentials, signIn } from '~/auth';
+import { schema } from '@/vibes/soul/sections/sign-in-section/schema';
+import { signIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
 
-interface LoginResponse {
-  status: 'success' | 'error';
-}
+export const login = async (_lastResult: SubmissionResult | null, formData: FormData) => {
+  const locale = await getLocale();
+  const t = await getTranslations('Login');
 
-export const login = async (formData: FormData): Promise<LoginResponse> => {
-  try {
-    const locale = await getLocale();
+  const submission = parseWithZod(formData, { schema });
 
-    const credentials = Credentials.parse({
-      type: 'password',
-      email: formData.get('email'),
-      password: formData.get('password'),
-    });
-
-    await signIn('credentials', {
-      ...credentials,
-      // We want to use next/navigation for the redirect as it
-      // follows basePath and trailing slash configurations.
-      redirect: false,
-    });
-
-    redirect({ href: '/account/orders', locale });
-
-    return {
-      status: 'success',
-    };
-  } catch (error: unknown) {
-    rethrow(error);
-
-    return {
-      status: 'error',
-    };
+  if (submission.status !== 'success') {
+    return submission.reply({ formErrors: [t('Form.error')] });
   }
+
+  try {
+    await signIn(
+      {
+        type: 'password',
+        email: submission.value.email,
+        password: submission.value.password,
+      },
+      {
+        // We want to use next/navigation for the redirect as it
+        // follows basePath and trailing slash configurations.
+        redirect: false,
+      },
+    );
+  } catch (error) {
+    // eslint-disable-next-line no-console
+    console.error(error);
+
+    if (error instanceof BigCommerceGQLError) {
+      return submission.reply({
+        formErrors: error.errors.map(({ message }) => message),
+      });
+    }
+
+    if (
+      error instanceof AuthError &&
+      error.name === 'CallbackRouteError' &&
+      error.cause &&
+      error.cause.err?.message.includes('Invalid credentials')
+    ) {
+      return submission.reply({ formErrors: [t('Form.invalidCredentials')] });
+    }
+
+    return submission.reply({ formErrors: [t('Form.somethingWentWrong')] });
+  }
+
+  return redirect({ href: '/account/orders', locale });
 };

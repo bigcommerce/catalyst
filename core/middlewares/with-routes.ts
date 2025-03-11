@@ -1,7 +1,6 @@
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -12,7 +11,7 @@ import { kv } from '../lib/kv';
 import { type MiddlewareFactory } from './compose-middlewares';
 
 const GetRouteQuery = graphql(`
-  query getRoute($path: String!) {
+  query GetRouteQuery($path: String!) {
     site {
       route(path: $path, redirectBehavior: FOLLOW) {
         redirect {
@@ -46,6 +45,9 @@ const GetRouteQuery = graphql(`
             entityId
           }
           ... on Brand {
+            entityId
+          }
+          ... on BlogPost {
             entityId
           }
         }
@@ -153,6 +155,8 @@ const NodeSchema = z.union([
   z.object({ __typename: z.literal('ContactPage'), id: z.string() }),
   z.object({ __typename: z.literal('NormalPage'), id: z.string() }),
   z.object({ __typename: z.literal('RawHtmlPage'), id: z.string() }),
+  z.object({ __typename: z.literal('Blog'), id: z.string() }),
+  z.object({ __typename: z.literal('BlogPost'), entityId: z.number() }),
 ]);
 
 const RouteSchema = z.object({
@@ -201,6 +205,10 @@ const updateStatusCache = async (
 };
 
 const clearLocaleFromPath = (path: string, locale: string) => {
+  if (path === `/${locale}` || path === `/${locale}/`) {
+    return '/';
+  }
+
   if (path.startsWith(`/${locale}/`)) {
     return path.replace(`/${locale}`, '');
   }
@@ -294,39 +302,32 @@ export const withRoutes: MiddlewareFactory = () => {
       }
     }
 
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    let postfix = '';
-
-    if (!request.nextUrl.search && !customerAccessToken && request.method === 'GET') {
-      postfix = '/static';
-    }
-
     const node = route?.node;
     let url: string;
 
     switch (node?.__typename) {
       case 'Brand': {
-        url = `/${locale}/brand/${node.entityId}${postfix}`;
+        url = `/${locale}/brand/${node.entityId}`;
         break;
       }
 
       case 'Category': {
-        url = `/${locale}/category/${node.entityId}${postfix}`;
+        url = `/${locale}/category/${node.entityId}`;
         break;
       }
 
       case 'Product': {
-        url = `/${locale}/product/${node.entityId}${postfix}`;
+        url = `/${locale}/product/${node.entityId}`;
         break;
       }
 
       case 'NormalPage': {
-        url = `/${locale}/webpages/normal/${node.id}`;
+        url = `/${locale}/webpages/${node.id}/normal/`;
         break;
       }
 
       case 'ContactPage': {
-        url = `/${locale}/webpages/contact/${node.id}`;
+        url = `/${locale}/webpages/${node.id}/contact/`;
         break;
       }
 
@@ -338,15 +339,20 @@ export const withRoutes: MiddlewareFactory = () => {
         });
       }
 
+      case 'Blog': {
+        url = `/${locale}/blog`;
+        break;
+      }
+
+      case 'BlogPost': {
+        url = `/${locale}/blog/${node.entityId}`;
+        break;
+      }
+
       default: {
         const { pathname } = new URL(request.url);
 
         const cleanPathName = clearLocaleFromPath(pathname, locale);
-
-        if (cleanPathName === '/' && postfix) {
-          url = `/${locale}${postfix}`;
-          break;
-        }
 
         url = `/${locale}${cleanPathName}`;
       }
