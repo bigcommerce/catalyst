@@ -2,22 +2,21 @@
 'use client';
 
 import Script from 'next/script';
-import { Session } from 'next-auth';
 
 import { useB2BAuth } from './use-b2b-auth';
 
 export function B2BProductionScripts({
   storeHash,
   channelId,
-  session,
+  token,
   localBuyerPortalHost,
 }: {
   storeHash: string;
   channelId: string;
-  session: Session | null;
+  token?: string;
   localBuyerPortalHost?: string;
 }) {
-  useB2BAuth(session);
+  useB2BAuth(token);
 
   if (localBuyerPortalHost) {
     return (

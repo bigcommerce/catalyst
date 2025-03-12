@@ -33,8 +33,8 @@ declare global {
         };
       };
       callbacks?: {
-        addEventListener: (event: string, callback: () => void) => void;
-        removeEventListener: (event: string, callback: () => void) => void;
+        addEventListener: (event: 'on-logout', callback: () => void) => void;
+        removeEventListener: (event: 'on-logout', callback: () => void) => void;
         dispatchEvent: (event: string) => void;
       };
     };

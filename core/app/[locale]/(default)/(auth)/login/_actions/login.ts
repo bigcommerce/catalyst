@@ -55,5 +55,5 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
     return submission.reply({ formErrors: [t('Form.somethingWentWrong')] });
   }
 
-  return redirect({ href: '/b2b', locale });
+  return redirect({ href: '/?section=orders', locale });
 };
