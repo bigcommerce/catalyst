@@ -61,3 +61,5 @@ export const client = createClient({
     };
   },
 });
+
+export { b2bClient } from './b2b-client';
