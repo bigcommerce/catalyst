@@ -40,7 +40,19 @@ export function CompareDrawerProvider({
     (state: CompareDrawerItem[], { type, item }: OptimisticAction) => {
       switch (type) {
         case 'add':
-          return [...state, item];
+          return [...state, item].sort((a, b) => {
+            const numA = Number(a.id);
+            const numB = Number(b.id);
+
+            if (!Number.isNaN(numA) && !Number.isNaN(numB)) {
+              return numA - numB;
+            }
+
+            if (!Number.isNaN(numA)) return -1;
+            if (!Number.isNaN(numB)) return 1;
+
+            return a.id < b.id ? -1 : 1;
+          });
 
         case 'remove':
           return state.filter((i) => i.id !== item.id);
