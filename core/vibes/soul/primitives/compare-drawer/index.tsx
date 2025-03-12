@@ -190,10 +190,14 @@ export function CompareDrawer({
               size="medium"
               variant="primary"
             >
-              {submitLabel} <ArrowRight absoluteStrokeWidth size={20} strokeWidth={1} />
+              <span className="inline-flex items-center gap-1">
+                {submitLabel} <ArrowRight absoluteStrokeWidth size={20} strokeWidth={1} />
+              </span>
             </ButtonLink>
             <ButtonLink className="w-full @md:hidden" href={href} size="small" variant="primary">
-              {submitLabel} <ArrowRight absoluteStrokeWidth size={16} strokeWidth={1} />
+              <span className="inline-flex items-center gap-1">
+                {submitLabel} <ArrowRight absoluteStrokeWidth size={16} strokeWidth={1} />
+              </span>
             </ButtonLink>
           </div>
         </div>

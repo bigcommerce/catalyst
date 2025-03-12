@@ -1,5 +1,4 @@
 import { clsx } from 'clsx';
-// import { ComponentProps } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { CompareDrawer, CompareDrawerProvider } from '@/vibes/soul/primitives/compare-drawer';
@@ -48,7 +47,7 @@ export function ProductList({
   className,
   colorScheme = 'light',
   aspectRatio = '5:6',
-  showCompare: streamableShowCompare = false,
+  showCompare: streamableShowCompare = true,
   compareHref,
   compareProducts: streamableCompareProducts = [],
   compareLabel: streamableCompareLabel = 'Compare',

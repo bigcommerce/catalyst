@@ -13,8 +13,7 @@ import {
   CompareCardSkeleton,
   CompareCardWithId,
 } from '@/vibes/soul/primitives/compare-card';
-
-import { CompareAddToCartAction } from '../../primitives/compare-card/add-to-cart-form';
+import { CompareAddToCartAction } from '@/vibes/soul/primitives/compare-card/add-to-cart-form';
 
 interface Props {
   className?: string;

@@ -70,6 +70,7 @@ export function FeaturedProductList({
           emptyStateTitle={emptyStateTitle}
           placeholderCount={placeholderCount}
           products={products}
+          showCompare={false}
         />
       </div>
     </StickySidebarLayout>
