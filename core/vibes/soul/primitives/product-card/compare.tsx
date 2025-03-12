@@ -23,7 +23,7 @@ interface Props {
 
 export const Compare = function Compare({
   colorScheme = 'light',
-  paramName = 'compare', // TODO: expose
+  paramName = 'compare',
   label = 'Compare',
   product,
 }: Props) {

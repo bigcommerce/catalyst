@@ -19,7 +19,7 @@ interface ProductListProps {
   colorScheme?: 'light' | 'dark';
   aspectRatio?: '5:6' | '3:4' | '1:1';
   showCompare?: Streamable<boolean>;
-  // compareAction?: ComponentProps<'form'>['action'];
+  compareHref?: string;
   compareLabel?: Streamable<string>;
   compareParamName?: string;
   emptyStateTitle?: Streamable<string>;
@@ -49,7 +49,7 @@ export function ProductList({
   colorScheme = 'light',
   aspectRatio = '5:6',
   showCompare: streamableShowCompare = false,
-  // compareAction,
+  compareHref,
   compareProducts: streamableCompareProducts = [],
   compareLabel: streamableCompareLabel = 'Compare',
   compareParamName = 'compare',
@@ -96,10 +96,9 @@ export function ProductList({
                 ))}
               </div>
             </div>
-            {compareProducts.length > 0 && (
+            {showCompare && compareProducts.length > 0 && (
               <CompareDrawer
-                // action={compareAction}
-                // items={compareProducts}
+                href={compareHref}
                 paramName={compareParamName}
                 submitLabel={compareLabel}
               />

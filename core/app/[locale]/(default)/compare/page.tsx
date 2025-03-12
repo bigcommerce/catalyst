@@ -12,7 +12,7 @@ import { addToCart } from './_actions/add-to-cart';
 import { getCompareData } from './page-data';
 
 const CompareParamsSchema = z.object({
-  ids: z
+  compare: z
     .union([z.string(), z.array(z.string()), z.undefined()])
     .transform((value) => {
       if (Array.isArray(value)) {
@@ -75,7 +75,7 @@ export default async function Compare(props: Props) {
 
   const searchParams = await props.searchParams;
   const parsed = CompareParamsSchema.parse(searchParams);
-  const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
+  const productIds = parsed.compare?.filter((id) => !Number.isNaN(id));
 
   return (
     <CompareSection

@@ -32,6 +32,10 @@ type Variables = VariablesOf<typeof CompareProductsQuery>;
 export const getCompareProducts = cache(async (variables: Variables) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
+  if (variables.entityIds?.length === 0) {
+    return [];
+  }
+
   const response = await client.fetch({
     document: CompareProductsQuery,
     variables,

@@ -3,16 +3,9 @@
 import * as Portal from '@radix-ui/react-portal';
 import { ArrowRight, X } from 'lucide-react';
 import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
-import {
-  ComponentProps,
-  createContext,
-  ReactNode,
-  startTransition,
-  useContext,
-  useOptimistic,
-} from 'react';
+import { createContext, ReactNode, startTransition, useContext, useOptimistic } from 'react';
 
-import { Button } from '@/vibes/soul/primitives/button';
+import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
@@ -97,9 +90,8 @@ interface CompareDrawerItem {
 }
 
 export interface CompareDrawerProps {
-  // items: CompareDrawerItem[];
+  href?: string;
   paramName?: string;
-  action?: ComponentProps<'form'>['action'];
   submitLabel?: string;
 }
 
@@ -129,12 +121,11 @@ export interface CompareDrawerProps {
  * ```
  */
 export function CompareDrawer({
-  // items,
+  href = '/compare',
   paramName = 'compare',
-  action,
   submitLabel = 'Compare',
 }: CompareDrawerProps) {
-  const [, setParam] = useQueryState(
+  const [params, setParam] = useQueryState(
     paramName,
     parseAsArrayOf(parseAsString).withOptions({ shallow: false, scroll: false }),
   );
@@ -145,14 +136,10 @@ export function CompareDrawer({
     optimisticItems.length > 0 && (
       <Portal.Root asChild>
         <div className="sticky bottom-0 z-10 w-full border-t bg-[var(--compare-drawer-background,hsl(var(--background)))] px-3 py-4 @container @md:py-5 @xl:px-6 @5xl:px-10">
-          <form
-            action={action}
-            className="mx-auto flex w-full max-w-7xl flex-col items-start justify-end gap-x-3 gap-y-4 @md:flex-row"
-          >
+          <div className="mx-auto flex w-full max-w-7xl flex-col items-start justify-end gap-x-3 gap-y-4 @md:flex-row">
             <div className="flex flex-1 flex-wrap justify-end gap-4">
               {optimisticItems.map((item) => (
                 <div className="relative" key={item.id}>
-                  <input key={item.id} name={paramName} type="hidden" value={item.id} />
                   <Link
                     className="group relative flex max-w-56 items-center overflow-hidden whitespace-nowrap rounded-xl border border-[var(--compare-drawer-link-border,hsl(var(--contrast-100)))] bg-[var(--compare-drawer-card-background,hsl(var(--background)))] font-semibold ring-[var(--compare-drawer-card-focus,hsl(var(--primary)))] transition-all duration-150 hover:bg-[var(--compare-drawer-card-background-hover,hsl(var(--contrast-100)))] focus:outline-none focus:ring-2"
                     href={item.href}
@@ -197,13 +184,18 @@ export function CompareDrawer({
                 </div>
               ))}
             </div>
-            <Button className="hidden @md:block" size="medium" type="submit" variant="primary">
+            <ButtonLink
+              className="hidden @md:block"
+              href={`${href}?${paramName}=${params?.toString()}`}
+              size="medium"
+              variant="primary"
+            >
               {submitLabel} <ArrowRight absoluteStrokeWidth size={20} strokeWidth={1} />
-            </Button>
-            <Button className="w-full @md:hidden" size="small" type="submit" variant="primary">
+            </ButtonLink>
+            <ButtonLink className="w-full @md:hidden" href={href} size="small" variant="primary">
               {submitLabel} <ArrowRight absoluteStrokeWidth size={16} strokeWidth={1} />
-            </Button>
-          </form>
+            </ButtonLink>
+          </div>
         </div>
       </Portal.Root>
     )
