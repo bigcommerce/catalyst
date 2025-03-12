@@ -1,76 +1,61 @@
 'use client';
 
-import { Session } from 'next-auth';
+import { useRouter } from 'next/compat/router';
+import { useSearchParams } from 'next/navigation';
 import { signOut } from 'next-auth/react';
-import { useCallback, useEffect } from 'react';
+import { useEffect } from 'react';
 
-import { usePathname } from '~/i18n/routing';
+import { useSDK } from './use-b2b-sdk';
 
-export function useB2BAuth(session: Session | null) {
-  const pathname = usePathname();
+const handleLogout = () => {
+  void signOut({
+    redirect: true,
+    redirectTo: '/login',
+  }).catch((error: unknown) => {
+    // eslint-disable-next-line no-console
+    console.error('Failed to sign out:', error);
+  });
+};
 
-  const handleB2BLogout = useCallback(async () => {
-    try {
-      await signOut({
-        redirect: true,
-        callbackUrl: '/login',
-      });
-    } catch (error) {
-      console.error('Failed to handle B2B logout:', error);
-    }
-  }, []);
+const sections: Record<string, string> = {
+  register: 'REGISTER_ACCOUNT',
+  orders: 'ORDERS',
+};
 
-  const handleLogout = useCallback(() => {
-    void handleB2BLogout();
-  }, [handleB2BLogout]);
+export function useB2BAuth(token?: string) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  const sdk = useSDK();
 
   useEffect(() => {
-    // To prevent race conditions, isCleanedUp is a flag to check
-    // for component unmount state before performing actions
-    let isCleanedUp = false;
-    const intervals: NodeJS.Timeout[] = [];
-
-    async function attemptLogin() {
-      if (isCleanedUp) return;
-
-      const b2b = window.b2b;
-
-      if (!b2b?.utils) return;
-
-      if (b2b.utils.user.getB2BToken() === session?.b2bToken) {
-        return;
-      }
-
-      if (session?.b2bToken) {
-        await b2b.utils.user.loginWithB2BStorefrontToken(session.b2bToken);
-
-        return;
-      }
-
-      console.warn('Could not initialize B2B. Trying again...');
-    }
-
-    const loginInterval = setInterval(() => {
-      void attemptLogin();
-    }, 100);
-
-    intervals.push(loginInterval);
-
-    const registerLogoutListener = setInterval(() => {
-      if (window.b2b?.callbacks?.addEventListener) {
-        window.b2b.callbacks.addEventListener('on-logout', handleLogout);
-        clearInterval(registerLogoutListener);
-      }
-    }, 100);
-
-    intervals.push(registerLogoutListener);
+    sdk?.callbacks?.addEventListener('on-logout', handleLogout);
 
     return () => {
-      isCleanedUp = true;
-      intervals.forEach(clearInterval);
-      window.b2b?.callbacks?.removeEventListener('on-logout', handleLogout);
+      sdk?.callbacks?.removeEventListener('on-logout', handleLogout);
     };
-  }, [session, pathname, handleLogout]);
+  }, [sdk]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    const section = params.get('section');
+
+    if (!section || !sdk) {
+      return;
+    }
+
+    if (sections[section]) {
+      params.delete('section');
+      window.history.replaceState({}, '', `${window.location.pathname}${params}`);
+      sdk.utils?.openPage(sections[section]);
+    }
+  }, [searchParams, sdk, router]);
+
+  useEffect(() => {
+    if (sdk && token && token !== sdk.utils?.user.getB2BToken()) {
+      void sdk.utils?.user.loginWithB2BStorefrontToken(token);
+    }
+  }, [sdk, token]);
 
   return null;
 }

@@ -16,8 +16,8 @@ export async function B2BLoader() {
     <B2BProductionScripts
       channelId={channelId}
       localBuyerPortalHost={localBuyerPortalHost}
-      session={session}
       storeHash={storeHash}
+      token={session?.b2bToken}
     />
   );
 }

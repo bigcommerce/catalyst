@@ -12,7 +12,7 @@ export const withB2B: MiddlewareFactory = (next) => {
       (request.nextUrl.pathname.includes('/account/') ||
         request.nextUrl.pathname.includes('/login'))
     ) {
-      return NextResponse.redirect(new URL('/b2b/#/orders', request.url));
+      return NextResponse.redirect(new URL('/?section=orders', request.url));
     }
 
     return next(request, event);
