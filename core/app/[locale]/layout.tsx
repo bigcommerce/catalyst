@@ -17,7 +17,7 @@ import { getToastNotification } from '../../lib/server-toast';
 import { CookieNotifications, Notifications } from '../notifications';
 import { Providers } from '../providers';
 import { GTM_ID, pageview } from '~/lib/gtm';
-import GTM from '../[locale]/(default)/_components/GTM/GTM';
+import GTM from '../[locale]/_components/GTM';
 
 const RootLayoutMetadataQuery = graphql(`
   query RootLayoutMetadataQuery {

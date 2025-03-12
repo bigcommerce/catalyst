@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
-const GTM_ID = 'GTM-KGQLWDKB';
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || '';
 
 export default function GTM() {
   const pathname = usePathname();
