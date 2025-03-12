@@ -5,6 +5,12 @@ import { usePathname } from 'next/navigation';
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || '';
 
+declare global {
+    interface Window {
+      dataLayer: Record<string, unknown>[];
+    }
+  }
+
 export default function GTM() {
   const pathname = usePathname();
 
