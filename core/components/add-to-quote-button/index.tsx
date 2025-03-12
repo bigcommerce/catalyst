@@ -1,10 +1,11 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { type B2BProductOption } from '~/b2b/types';
+import { useSDK } from '~/b2b/use-b2b-sdk';
 
 interface Props {
   productEntityId: string;
@@ -21,34 +22,39 @@ export const AddToQuoteButton = ({
   selectedOptions,
   quantity = 1,
 }: Props) => {
-  const [isB2BEnabled, setIsB2BEnabled] = useState(false);
+  const sdk = useSDK();
+  const addProducts = sdk?.utils?.quote?.addProducts;
   const t = useTranslations('Components.AddToQuoteButton');
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    setIsB2BEnabled(typeof window !== 'undefined' && !!window.b2b?.utils?.quote?.addProducts);
-  }, []);
-
-  if (!isB2BEnabled) {
+  if (!addProducts) {
     return null;
   }
 
   const handleAddToQuote = () => {
-    if (!window.b2b?.utils?.quote?.addProducts) return;
+    setLoading(true);
 
     const productOptions = Object.values(selectedOptions);
 
-    window.b2b.utils.quote.addProducts([
+    void addProducts([
       {
         sku,
         productEntityId: Number(productEntityId),
         quantity,
         selectedOptions: productOptions.length > 0 ? productOptions : undefined,
       },
-    ]);
+    ]).finally(() => setLoading(false));
   };
 
   return (
-    <Button className={className} onClick={handleAddToQuote} type="button" variant="secondary">
+    <Button
+      className={className}
+      loading={loading}
+      onClick={handleAddToQuote}
+      size="medium"
+      type="button"
+      variant="secondary"
+    >
       {t('addToQuote')}
     </Button>
   );
