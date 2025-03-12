@@ -6,7 +6,8 @@ import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
 import { client } from '~/client';
-import { graphql, ResultOf } from '~/client/graphql';
+import { b2bClient } from '~/client/b2b-client';
+import { graphql } from '~/client/graphql';
 import { clearCartId, getCartId, setCartId } from '~/lib/cart';
 import { serverToast } from '~/lib/server-toast';
 
@@ -117,8 +118,8 @@ async function loginWithPassword(
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
     ...(process.env.B2B_API_TOKEN && {
-      b2bToken: await loginWithB2B({
-        customer: result.customer,
+      b2bToken: await b2bClient.login({
+        customerId: result.customer.entityId,
         customerAccessToken: result.customerAccessToken,
       }),
     }),
@@ -156,57 +157,12 @@ async function loginWithJwt(jwt: string, cartEntityId?: string): Promise<User | 
     customerAccessToken: result.customerAccessToken.value,
     impersonatorId,
     ...(process.env.B2B_API_TOKEN && {
-      b2bToken: await loginWithB2B({
-        customer: result.customer,
+      b2bToken: await b2bClient.login({
+        customerId: result.customer.entityId,
         customerAccessToken: result.customerAccessToken,
       }),
     }),
   };
-}
-
-interface LoginWithB2BParams {
-  customer: NonNullable<ResultOf<typeof LoginMutation>['login']['customer']>;
-  customerAccessToken: NonNullable<ResultOf<typeof LoginMutation>['login']['customerAccessToken']>;
-}
-
-async function loginWithB2B({ customer, customerAccessToken }: LoginWithB2BParams) {
-  if (!process.env.B2B_API_TOKEN) {
-    throw new Error('Environment variable B2B_API_TOKEN is not set');
-  }
-
-  const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
-
-  const payload = {
-    channelId,
-    customerId: customer.entityId,
-    customerAccessToken,
-  };
-
-  const response = await fetch(`https://api-b2b.bigcommerce.com/api/io/auth/customers/storefront`, {
-    method: 'POST',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      authToken: process.env.B2B_API_TOKEN,
-    },
-    body: JSON.stringify(payload),
-  });
-
-  const B2BTokenResponseSchema = z.object({
-    data: z.object({
-      token: z.array(z.string()),
-    }),
-  });
-
-  const {
-    data: { token },
-  } = B2BTokenResponseSchema.parse(await response.json());
-
-  if (!token[0]) {
-    throw new Error('No token returned from B2B API');
-  }
-
-  return token[0];
 }
 
 async function authorize(credentials: unknown): Promise<User | null> {
