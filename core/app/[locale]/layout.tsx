@@ -16,7 +16,7 @@ import { routing } from '~/i18n/routing';
 import { getToastNotification } from '../../lib/server-toast';
 import { CookieNotifications, Notifications } from '../notifications';
 import { Providers } from '../providers';
-import GTM from '../[locale]/_components/GTM';
+import GTM from '../[locale]/_components/gtm';
 
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || '';
