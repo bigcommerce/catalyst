@@ -25,6 +25,7 @@
     "@alto-avios/alto-tokens": "^3.0.1",
     "@alto-avios/alto-ui": "^3.1.0",
     "@bigcommerce/catalyst-client": "workspace:^",
+    "@leighton-digital/contentful-client": "workspace:^",
     "@conform-to/react": "^1.2.2",
     "@conform-to/zod": "^1.2.2",
     "@icons-pack/react-simple-icons": "^11.2.0",
