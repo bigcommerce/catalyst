@@ -274,40 +274,44 @@ export const getProductData = cache(async (variables: Variables) => {
   return product;
 });
 
-const GetProductSlugsQuery = graphql(`
-  query GetProductSlugs($first: Int!) {
-    site {
-      products(first: $first) {
-        edges {
-          node {
-            entityId
-            path # The product slug
-          }
-        }
-      }
-    }
-  }
-`);
+// const GetProductSlugsQuery = graphql(`
+//   query GetProductSlugs($pageSize: Int!, $cursor: String) {
+//     site {
+//       products(first: $pageSize, after: $cursor) {
+//         pageInfo {
+//           startCursor
+//           endCursor
+//         }
+//         edges {
+//           node {
+//             entityId
+//             path # The product slug
+//           }
+//         }
+//       }
+//     }
+//   }
+// `);
 
-export const getProductSlugs = cache(async () => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  // const currencyCode = await getPreferredCurrencyCode();
+// export const getProductSlugs = cache(async () => {
+//   const customerAccessToken = await getSessionCustomerAccessToken();
+//   // const currencyCode = await getPreferredCurrencyCode();
 
-  const { data } = await client.fetch({
-    document: GetProductSlugsQuery,
-    variables: { first: 50 },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+//   const { data } = await client.fetch({
+//     document: GetProductSlugsQuery,
+//     variables: { pageSize: 50 },
+//     customerAccessToken,
+//     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+//   });
 
-  // ✅ Ensure `data` and `edges` exist
-  const products = data.site.products.edges ?? [];
+//   // ✅ Ensure `data` and `edges` exist
+//   const products = data.site.products.edges ?? [];
 
-  if (products.length === 0) {
-    console.warn('No products found in BigCommerce response.');
+//   if (products.length === 0) {
+//     // console.warn('No products found in BigCommerce response.');
 
-    return [];
-  }
+//     return [];
+//   }
 
-  return products;
-});
+//   return products;
+// });

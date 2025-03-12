@@ -3,6 +3,7 @@ import { PropsWithChildren } from 'react';
 
 import { Footer } from '~/components/footer';
 import { Header } from '~/components/header';
+import { ContentfulCard } from '~/components/ui/contentful-card/contentful-card';
 
 interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
@@ -17,7 +18,10 @@ export default async function DefaultLayout({ params, children }: Props) {
     <>
       <Header />
 
-      <main>{children}</main>
+      <main>
+        {children}
+        <ContentfulCard />
+      </main>
 
       <Footer />
     </>
