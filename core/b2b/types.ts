@@ -29,7 +29,7 @@ declare global {
               quantity?: number;
               selectedOptions?: B2BProductOption[];
             }>,
-          ) => void;
+          ) => Promise<void>;
         };
       };
       callbacks?: {
