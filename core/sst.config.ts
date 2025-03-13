@@ -26,6 +26,7 @@ export default $config({
     const AUTH_SECRET = new sst.Secret('AUTH_SECRET');
     const TURBO_REMOTE_CACHE_SIGNATURE_KEY = new sst.Secret('TURBO_REMOTE_CACHE_SIGNATURE_KEY');
     const MAKESWIFT_SITE_API_KEY = new sst.Secret('MAKESWIFT_SITE_API_KEY');
+    const NEXT_PUBLIC_GTM_ID = new sst.Secret('NEXT_PUBLIC_GTM_ID');
 
     new sst.aws.Nextjs('catalyst', {
       environment: {
@@ -37,6 +38,7 @@ export default $config({
         TURBO_REMOTE_CACHE_SIGNATURE_KEY: TURBO_REMOTE_CACHE_SIGNATURE_KEY.value,
         MAKESWIFT_SITE_API_KEY: MAKESWIFT_SITE_API_KEY.value,
         TRAILING_SLASH: 'false',
+        NEXT_PUBLIC_GTM_ID: NEXT_PUBLIC_GTM_ID.value,
       },
     });
   },
