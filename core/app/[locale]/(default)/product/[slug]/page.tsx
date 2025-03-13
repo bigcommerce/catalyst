@@ -197,8 +197,6 @@ interface Props {
 // export async function generateStaticParams() {
 //   const slugs = await getProductSlugs();
 
-//   console.log();
-
 //   return slugs;
 // }
 

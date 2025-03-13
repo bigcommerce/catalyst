@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -53,8 +49,5 @@
     ".next/types/**/*.ts",
     "tests/**/*"
   ],
-  "exclude": [
-    "node_modules",
-    ".next","sst.config.ts"
-  ]
+  "exclude": ["node_modules", ".next", "sst.config.ts"]
 }

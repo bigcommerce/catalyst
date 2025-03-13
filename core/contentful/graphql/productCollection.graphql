@@ -1,0 +1,43 @@
+query GetCarousel($slug: String!) {
+  carouselCollection(where: { slug: $slug }, limit: 10, order: order_ASC) {
+    items {
+      sys {
+        id
+      }
+      __typename
+      title
+      hideTitle
+      introduction {
+        json
+      }
+      backgroundImage {
+        url
+        description
+        title
+      }
+      carouselBgColour
+      carouselType
+      order
+      slidesCollection(limit: 10) {
+        items {
+          sys {
+            id
+          }
+          title
+          slug
+          slideColour
+          slideTextColour
+          slideDesign
+          body {
+            json
+          }
+          image {
+            url
+            title
+            description
+          }
+        }
+      }
+    }
+  }
+}
