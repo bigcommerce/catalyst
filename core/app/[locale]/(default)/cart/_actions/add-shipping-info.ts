@@ -69,10 +69,10 @@ export const addShippingInfo = async ({
 }: Props) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  let result;
+  let response;
 
   if (shippingId) {
-    const response = await client.fetch({
+    response = await client.fetch({
       document: UpdateCheckoutShippingConsignmentMutation,
       variables: {
         input: {
@@ -93,34 +93,34 @@ export const addShippingInfo = async ({
       fetchOptions: { cache: 'no-store' },
     });
 
-    result = response.data.checkout.updateCheckoutShippingConsignment?.checkout;
-  } else {
-    const response = await client.fetch({
-      document: AddCheckoutShippingConsignmentsMutation,
-      variables: {
-        input: {
-          checkoutEntityId,
-          data: {
-            consignments: [
-              {
-                address: {
-                  ...address,
-                  shouldSaveAddress: false,
-                },
-                lineItems,
+    revalidateTag(TAGS.checkout);
+
+    return response.data.checkout.updateCheckoutShippingConsignment?.checkout;
+  }
+
+  response = await client.fetch({
+    document: AddCheckoutShippingConsignmentsMutation,
+    variables: {
+      input: {
+        checkoutEntityId,
+        data: {
+          consignments: [
+            {
+              address: {
+                ...address,
+                shouldSaveAddress: false,
               },
-            ],
-          },
+              lineItems,
+            },
+          ],
         },
       },
-      customerAccessToken,
-      fetchOptions: { cache: 'no-store' },
-    });
-
-    result = response.data.checkout.addCheckoutShippingConsignments?.checkout;
-  }
+    },
+    customerAccessToken,
+    fetchOptions: { cache: 'no-store' },
+  });
 
   revalidateTag(TAGS.checkout);
 
-  return result;
+  return response.data.checkout.addCheckoutShippingConsignments?.checkout;
 };
