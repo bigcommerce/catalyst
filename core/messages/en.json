@@ -331,7 +331,8 @@
         "shippingOptions": "Shipping options",
         "updateShipping": "Update shipping",
         "addShipping": "Add shipping",
-        "cartNotFound": "No cartId cookie found."
+        "cartNotFound": "No cartId cookie found.",
+        "noShippingOptions": "There are no shipping options available for your address"
       }
     },
     "ShippingInfo": {

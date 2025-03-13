@@ -234,6 +234,7 @@ export default async function Cart() {
           shippingOptionsLabel: t('CheckoutSummary.Shipping.shippingOptions'),
           updateShippingLabel: t('CheckoutSummary.Shipping.updateShipping'),
           addShippingLabel: t('CheckoutSummary.Shipping.addShipping'),
+          noShippingOptionsLabel: t('CheckoutSummary.Shipping.noShippingOptions'),
         }}
         summaryTitle={t('CheckoutSummary.title')}
         title={t('title')}
