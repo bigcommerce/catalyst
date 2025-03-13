@@ -1,15 +1,16 @@
 'use client';
 
 import { useEffect } from 'react';
-import { usePathname } from 'next/navigation';
+
+import { usePathname } from '~/i18n/routing';
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || '';
 
 declare global {
-    interface Window {
-      dataLayer: Record<string, unknown>[];
-    }
+  interface Window {
+    dataLayer: Array<Record<string, unknown>>;
   }
+}
 
 export default function GTM() {
   const pathname = usePathname();
@@ -17,9 +18,11 @@ export default function GTM() {
   useEffect(() => {
     if (typeof window !== 'undefined') {
       window.dataLayer = window.dataLayer || [];
+
       function gtag(...args: any) {
         window.dataLayer.push(args);
       }
+
       gtag('js', new Date());
       gtag('config', GTM_ID, {
         page_path: pathname,

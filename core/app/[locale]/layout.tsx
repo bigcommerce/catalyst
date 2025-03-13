@@ -7,6 +7,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
+
 import '../globals.css';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -16,8 +17,8 @@ import { routing } from '~/i18n/routing';
 import { getToastNotification } from '../../lib/server-toast';
 import { CookieNotifications, Notifications } from '../notifications';
 import { Providers } from '../providers';
-import GTM from './_components/gtm';
 
+import Gtm from './_components/gtm';
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || '';
 
@@ -99,8 +100,6 @@ export default async function RootLayout({ params, children }: Props) {
       <head>
         {/* GTM Script */}
         <Script
-          id="gtm-script"
-          strategy="afterInteractive"
           dangerouslySetInnerHTML={{
             __html: `
               (function(w,d,s,l,i){
@@ -113,6 +112,8 @@ export default async function RootLayout({ params, children }: Props) {
               })(window,document,'script','dataLayer','${GTM_ID}');
             `,
           }}
+          id="gtm-script"
+          strategy="afterInteractive"
         />
       </head>
       <Script crossOrigin="anonymous" src="https://kit.fontawesome.com/ea4747af9a.js" />
@@ -120,14 +121,15 @@ export default async function RootLayout({ params, children }: Props) {
         {/* GTM Fallback for No-JS Users */}
         <noscript>
           <iframe
-            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
             height="0"
-            width="0"
+            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
             style={{ display: 'none', visibility: 'hidden' }}
+            title="Google Tag Manger"
+            width="0"
           />
         </noscript>
 
-        <GTM />
+        <Gtm />
         <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <NuqsAdapter>
