@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 import { getFormatter } from 'next-intl/server';
 import { cache } from 'react';
 
-import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { BlogPostContent, BlogPostContentBlogPost } from '@/vibes/soul/sections/blog-post-content';
+import { BreadcrumbWithId } from '@/vibes/soul/sections/breadcrumbs';
 
 import { getBlogPageData } from './page-data';
 
@@ -66,7 +66,7 @@ async function getBlogPost(props: Props): Promise<BlogPostContentBlogPost> {
   };
 }
 
-async function getBlogPostBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
+async function getBlogPostBreadcrumbs(props: Props): Promise<BreadcrumbWithId[]> {
   const { blogId } = await props.params;
 
   const variables = cachedBlogPageDataVariables(blogId);
@@ -82,14 +82,17 @@ async function getBlogPostBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
     {
       label: 'Home',
       href: '/',
+      id: 'home',
     },
     {
       label: blog.name,
       href: blog.path,
+      id: blog.path,
     },
     {
       label: blogPost.name,
       href: '#',
+      id: blogPost.name,
     },
   ];
 }

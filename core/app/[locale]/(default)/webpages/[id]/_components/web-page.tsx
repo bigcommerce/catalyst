@@ -1,10 +1,14 @@
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
+import {
+  Breadcrumbs,
+  BreadcrumbsSkeleton,
+  BreadcrumbWithId,
+} from '@/vibes/soul/sections/breadcrumbs';
 
 export interface WebPage {
   title: string;
   content: string;
-  breadcrumbs: Breadcrumb[];
+  breadcrumbs: BreadcrumbWithId[];
   seo: {
     pageTitle: string;
     metaDescription: string;
@@ -14,7 +18,7 @@ export interface WebPage {
 
 interface Props {
   webPage: Streamable<WebPage>;
-  breadcrumbs?: Streamable<Breadcrumb[]>;
+  breadcrumbs?: Streamable<BreadcrumbWithId[]>;
   children?: React.ReactNode;
 }
 

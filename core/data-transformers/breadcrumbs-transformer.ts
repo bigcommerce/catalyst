@@ -5,23 +5,26 @@ import {
   BreadcrumbsCategoryFragment,
   BreadcrumbsWebPageFragment,
 } from '~/components/breadcrumbs/fragment';
-import { Breadcrumb } from '~/vibes/soul/primitives/breadcrumbs';
+import { BreadcrumbWithId } from '~/vibes/soul/sections/breadcrumbs';
 
 type BreadcrumbsResult =
   | ResultOf<typeof BreadcrumbsWebPageFragment>
   | ResultOf<typeof BreadcrumbsCategoryFragment>;
 
 export const breadcrumbsTransformer = (breadcrumbs: BreadcrumbsResult['breadcrumbs']) => {
-  return removeEdgesAndNodes(breadcrumbs).reduce<Breadcrumb[]>((acc, crumb) => {
+  return removeEdgesAndNodes(breadcrumbs).reduce<BreadcrumbWithId[]>((acc, crumb) => {
     if (crumb.path) {
-      return [...acc, { label: crumb.name, href: crumb.path }];
+      return [...acc, { label: crumb.name, href: crumb.path, id: crumb.path }];
     }
 
     return acc;
   }, []);
 };
 
-export function truncateBreadcrumbs(breadcrumbs: Breadcrumb[], length: number): Breadcrumb[] {
+export function truncateBreadcrumbs(
+  breadcrumbs: BreadcrumbWithId[],
+  length: number,
+): BreadcrumbWithId[] {
   if (breadcrumbs.length < length) {
     return breadcrumbs;
   }
@@ -35,7 +38,7 @@ export function truncateBreadcrumbs(breadcrumbs: Breadcrumb[], length: number): 
     breadcrumbs.slice(middleIndex + dropLast),
   ];
 
-  last[0] = { label: '...', href: '#' };
+  last[0] = { label: '...', href: '#', id: '...' };
 
   return [...first, ...last];
 }

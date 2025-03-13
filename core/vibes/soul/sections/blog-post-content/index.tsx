@@ -1,8 +1,12 @@
 import { clsx } from 'clsx';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
+import {
+  Breadcrumbs,
+  BreadcrumbsSkeleton,
+  BreadcrumbWithId,
+} from '@/vibes/soul/sections/breadcrumbs';
 import { Image } from '~/components/image';
 
 interface Tag {
@@ -29,7 +33,7 @@ export interface BlogPostContentBlogPost {
 
 interface Props {
   blogPost: Streamable<BlogPostContentBlogPost>;
-  breadcrumbs?: Streamable<Breadcrumb[]>;
+  breadcrumbs?: Streamable<BreadcrumbWithId[]>;
   className?: string;
 }
 
