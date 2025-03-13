@@ -5,7 +5,6 @@
 
 export default $config({
   app(input) {
-    // const stage = new sst.Secret('STAGE');
     return {
       name: `catalyst`,
       removal: input.stage === 'production' ? 'retain' : 'remove',
@@ -26,6 +25,10 @@ export default $config({
     const AUTH_SECRET = new sst.Secret('AUTH_SECRET');
     const TURBO_REMOTE_CACHE_SIGNATURE_KEY = new sst.Secret('TURBO_REMOTE_CACHE_SIGNATURE_KEY');
     const MAKESWIFT_SITE_API_KEY = new sst.Secret('MAKESWIFT_SITE_API_KEY');
+    const NEXT_PUBLIC_CONTENTFUL_SPACE_ID = new sst.Secret('NEXT_PUBLIC_CONTENTFUL_SPACE_ID');
+    const NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN = new sst.Secret(
+      'NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN',
+    );
     const NEXT_PUBLIC_GTM_ID = new sst.Secret('NEXT_PUBLIC_GTM_ID');
 
     new sst.aws.Nextjs('catalyst', {
@@ -37,6 +40,8 @@ export default $config({
         AUTH_SECRET: AUTH_SECRET.value,
         TURBO_REMOTE_CACHE_SIGNATURE_KEY: TURBO_REMOTE_CACHE_SIGNATURE_KEY.value,
         MAKESWIFT_SITE_API_KEY: MAKESWIFT_SITE_API_KEY.value,
+        NEXT_PUBLIC_CONTENTFUL_SPACE_ID: NEXT_PUBLIC_CONTENTFUL_SPACE_ID.value,
+        NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN: NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN.value,
         TRAILING_SLASH: 'false',
         NEXT_PUBLIC_GTM_ID: NEXT_PUBLIC_GTM_ID.value,
       },
