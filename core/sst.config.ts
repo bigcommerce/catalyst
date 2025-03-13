@@ -5,7 +5,6 @@
 
 export default $config({
   app(input) {
-    // const stage = new sst.Secret('STAGE');
     return {
       name: `catalyst`,
       removal: input.stage === 'production' ? 'retain' : 'remove',
@@ -26,9 +25,10 @@ export default $config({
     const AUTH_SECRET = new sst.Secret('AUTH_SECRET');
     const TURBO_REMOTE_CACHE_SIGNATURE_KEY = new sst.Secret('TURBO_REMOTE_CACHE_SIGNATURE_KEY');
     const MAKESWIFT_SITE_API_KEY = new sst.Secret('MAKESWIFT_SITE_API_KEY');
-    const CONTENTFUL_SPACE_ID = new sst.Secret('CONTENTFUL_SPACE_ID');
-    const CONTENTFUL_ACCESS_TOKEN = new sst.Secret('CONTENTFUL_ACCESS_TOKEN');
-    const CONTENTFUL_ENV = new sst.Secret('CONTENTFUL_ENV');
+    const NEXT_PUBLIC_CONTENTFUL_SPACE_ID = new sst.Secret('NEXT_PUBLIC_CONTENTFUL_SPACE_ID');
+    const NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN = new sst.Secret(
+      'NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN',
+    );
 
     new sst.aws.Nextjs('catalyst', {
       environment: {
@@ -39,9 +39,8 @@ export default $config({
         AUTH_SECRET: AUTH_SECRET.value,
         TURBO_REMOTE_CACHE_SIGNATURE_KEY: TURBO_REMOTE_CACHE_SIGNATURE_KEY.value,
         MAKESWIFT_SITE_API_KEY: MAKESWIFT_SITE_API_KEY.value,
-        CONTENTFUL_SPACE_ID: CONTENTFUL_SPACE_ID.value,
-        CONTENTFUL_ACCESS_TOKEN: CONTENTFUL_ACCESS_TOKEN.value,
-        CONTENTFUL_ENV: CONTENTFUL_ENV.value,
+        NEXT_PUBLIC_CONTENTFUL_SPACE_ID: NEXT_PUBLIC_CONTENTFUL_SPACE_ID.value,
+        NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN: NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN.value,
         TRAILING_SLASH: 'false',
       },
     });
