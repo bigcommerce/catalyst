@@ -1,43 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-import { createClient } from '@leighton-digital/contentful-client';
-import { Key } from 'react';
+'use client';
 
-import { graphql } from '~/client/graphql';
+import { useGetCarouselQuery } from '~/contentful/generated/graphql';
 
-const TestQuery = graphql(
-  `query {
-    productCollection {
-      items {
-        sys {
-          id
-        },
-        title,
-        description
-      }
-    }
-  }',
-`,
-);
-
-const ContentfulCard = async () => {
-  const productData = await createClient(
-    process.env.CONTENTFUL_SPACE_ID,
-    process.env.CONTENTFUL_ACCESS_TOKEN,
-    TestQuery,
-  );
+const ContentfulCard = () => {
+  const { data } = useGetCarouselQuery({ variables: { slug: '/wine/white-wine' } });
 
   return (
     <section className="flex">
-      {productData.map(
-        (product: { title: string; description: string }, index: Key | null | undefined) => (
-          <div className="border m-3 p-3" key={index}>
-            <p className="text-lg py-3 font-bold">{product.title}</p>
-            <p className="py-1">{product.description}</p>
-          </div>
-        ),
-      )}
+      Card
+      {data?.carouselCollection?.items.map((carousel) => (
+        <div className="border m-3 p-3" key={carousel?.sys.id}>
+          <p className="text-lg py-3 font-bold">{carousel?.title}</p>
+          <p className="text-lg py-3 font-bold">{carousel?.carouselType}</p>
+        </div>
+      ))}
     </section>
   );
 };
