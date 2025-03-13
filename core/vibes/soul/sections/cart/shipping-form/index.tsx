@@ -8,6 +8,7 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import clsx from 'clsx';
 import { startTransition, useActionState, useEffect, useMemo, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -256,157 +257,164 @@ export function ShippingForm({
         )}
       </div>
 
-      {showForms && (
-        <>
-          {showAddressForm ? (
-            <form {...getFormProps(addressForm)} action={formAction} className="space-y-5">
-              {Array.isArray(countries) ? (
-                <Select
-                  errors={addressFields.country.errors}
-                  key={addressFields.country.id}
-                  label={countryLabel}
-                  name={addressFields.country.name}
-                  onBlur={countryControl.blur}
-                  onFocus={countryControl.focus}
-                  onValueChange={countryControl.change}
-                  options={countries}
-                  placeholder=""
-                  value={countryControl.value}
-                />
-              ) : (
-                <Input
-                  {...getInputProps(addressFields.country, { type: 'text' })}
-                  errors={addressFields.country.errors}
-                  key={addressFields.country.id}
-                  label={countryLabel}
-                />
-              )}
-              <Input
-                {...getInputProps(addressFields.city, { type: 'text' })}
-                errors={addressFields.city.errors}
-                key={addressFields.city.id}
-                label={cityLabel}
-              />
-              <div className="flex gap-3">
-                {Array.isArray(states) ? (
-                  <Select
-                    disabled={addressFields.country.value === undefined}
-                    errors={addressFields.state.errors}
-                    key={addressFields.state.id}
-                    label={stateLabel}
-                    name={addressFields.state.name}
-                    onBlur={stateControl.blur}
-                    onFocus={stateControl.focus}
-                    onValueChange={stateControl.change}
-                    options={
-                      states.find((s) => s.country === addressFields.country.value)?.states ?? []
-                    }
-                    placeholder=""
-                    value={stateControl.value}
-                  />
-                ) : (
-                  <Input
-                    {...getInputProps(addressFields.state, { type: 'text' })}
-                    errors={addressFields.state.errors}
-                    key={addressFields.state.id}
-                    label={stateLabel}
-                  />
-                )}
-                <Input
-                  {...getInputProps(addressFields.postalCode, { type: 'text' })}
-                  errors={addressFields.postalCode.errors}
-                  key={addressFields.postalCode.id}
-                  label={postalCodeLabel}
-                />
-              </div>
-
-              {addressForm.errors?.map((error, index) => (
-                <FormStatus key={index} type="error">
-                  {error}
-                </FormStatus>
-              ))}
-
-              <div className="flex gap-1.5">
-                <SubmitButton className="grow" name="intent" value="add-address">
-                  {state.address ? updateShippingOptionsLabel : viewShippingOptionsLabel}
-                </SubmitButton>
-                <Button
-                  className="shrink-0"
-                  onClick={() =>
-                    state.shippingOptions && state.shippingOptions.length > 0
-                      ? setShowAddressForm(false)
-                      : setShowForms(false)
-                  }
-                  size="small"
-                  type="button"
-                  variant="tertiary"
-                >
-                  {cancelLabel}
-                </Button>
-              </div>
-            </form>
+      <div className={clsx('space-y-4', { hidden: !showForms })}>
+        <form
+          {...getFormProps(addressForm)}
+          action={formAction}
+          className={clsx('space-y-5', { hidden: !showAddressForm })}
+        >
+          {Array.isArray(countries) ? (
+            <Select
+              errors={addressFields.country.errors}
+              key={addressFields.country.id}
+              label={countryLabel}
+              name={addressFields.country.name}
+              onBlur={countryControl.blur}
+              onFocus={countryControl.focus}
+              onValueChange={countryControl.change}
+              options={countries}
+              placeholder=""
+              value={countryControl.value}
+            />
           ) : (
-            <div className="space-y-2.5">
-              {formattedAddress}
-              <Button
-                onClick={() => setShowAddressForm(true)}
-                size="small"
-                type="button"
-                variant="tertiary"
-              >
-                {editAddressLabel}
-              </Button>
-            </div>
+            <Input
+              {...getInputProps(addressFields.country, { type: 'text' })}
+              errors={addressFields.country.errors}
+              key={addressFields.country.id}
+              label={countryLabel}
+            />
           )}
+          <Input
+            {...getInputProps(addressFields.city, { type: 'text' })}
+            errors={addressFields.city.errors}
+            key={addressFields.city.id}
+            label={cityLabel}
+          />
+          <div className="flex gap-3">
+            {Array.isArray(states) ? (
+              <Select
+                disabled={addressFields.country.value === undefined}
+                errors={addressFields.state.errors}
+                key={addressFields.state.id}
+                label={stateLabel}
+                name={addressFields.state.name}
+                onBlur={stateControl.blur}
+                onFocus={stateControl.focus}
+                onValueChange={stateControl.change}
+                options={
+                  states.find((s) => s.country === addressFields.country.value)?.states ?? []
+                }
+                placeholder=""
+                value={stateControl.value}
+              />
+            ) : (
+              <Input
+                {...getInputProps(addressFields.state, { type: 'text' })}
+                errors={addressFields.state.errors}
+                key={addressFields.state.id}
+                label={stateLabel}
+              />
+            )}
+            <Input
+              {...getInputProps(addressFields.postalCode, { type: 'text' })}
+              errors={addressFields.postalCode.errors}
+              key={addressFields.postalCode.id}
+              label={postalCodeLabel}
+            />
+          </div>
 
-          {state.shippingOptions && (
-            <form className="space-y-4" {...getFormProps(shippingOptionsForm)} action={formAction}>
-              <div className="space-y-3">
-                <RadioGroup
-                  {...getInputProps(shippingOptionsFields.shippingOption, {
-                    type: 'radio',
-                    required: true,
-                  })}
-                  errors={shippingOptionsFields.shippingOption.errors}
-                  key={shippingOptionsFields.shippingOption.id}
-                  label={shippingOptionsLabel}
-                  name="shippingOption"
-                  onBlur={shippingOptionsControl.blur}
-                  onFocus={shippingOptionsControl.focus}
-                  onValueChange={shippingOptionsControl.change}
-                  options={state.shippingOptions.map((option) => ({
-                    label: option.label,
-                    value: option.value,
-                    description: option.price,
-                  }))}
-                  value={shippingOptionsControl.value}
-                />
+          {addressForm.errors?.map((error, index) => (
+            <FormStatus key={index} type="error">
+              {error}
+            </FormStatus>
+          ))}
 
-                {shippingOptionsForm.errors?.map((error, index) => (
-                  <FormStatus key={index} type="error">
-                    {error}
-                  </FormStatus>
-                ))}
-              </div>
+          <div className="flex gap-1.5">
+            <SubmitButton className="grow" name="intent" value="add-address">
+              {state.address ? updateShippingOptionsLabel : viewShippingOptionsLabel}
+            </SubmitButton>
+            <Button
+              className="shrink-0"
+              onClick={() =>
+                state.shippingOptions && state.shippingOptions.length > 0
+                  ? setShowAddressForm(false)
+                  : setShowForms(false)
+              }
+              size="small"
+              type="button"
+              variant="tertiary"
+            >
+              {cancelLabel}
+            </Button>
+          </div>
+        </form>
 
-              <div className="flex gap-1.5">
-                <SubmitButton className="grow" name="intent" value="add-shipping">
-                  {shippingOption ? updateShippingLabel : addShippingLabel}
-                </SubmitButton>
-                <Button
-                  className="shrink-0"
-                  onClick={() => setShowForms(false)}
-                  size="small"
-                  type="button"
-                  variant="tertiary"
-                >
-                  {cancelLabel}
-                </Button>
-              </div>
-            </form>
-          )}
-        </>
-      )}
+        <div className={clsx('space-y-2.5', { hidden: showAddressForm })}>
+          {formattedAddress}
+          <Button
+            onClick={() => setShowAddressForm(true)}
+            size="small"
+            type="button"
+            variant="tertiary"
+          >
+            {editAddressLabel}
+          </Button>
+        </div>
+
+        <form
+          className={clsx('space-y-4', { hidden: state.shippingOptions === null })}
+          {...getFormProps(shippingOptionsForm)}
+          action={formAction}
+        >
+          <div className="space-y-3">
+            <RadioGroup
+              {...getInputProps(shippingOptionsFields.shippingOption, {
+                type: 'radio',
+                required: true,
+              })}
+              errors={shippingOptionsFields.shippingOption.errors}
+              key={shippingOptionsFields.shippingOption.id}
+              label={shippingOptionsLabel}
+              name="shippingOption"
+              onBlur={shippingOptionsControl.blur}
+              onFocus={shippingOptionsControl.focus}
+              onValueChange={shippingOptionsControl.change}
+              options={
+                state.shippingOptions?.map((option) => ({
+                  label: option.label,
+                  value: option.value,
+                  description: option.price,
+                })) ?? []
+              }
+              value={shippingOptionsControl.value}
+            />
+
+            {shippingOptionsForm.errors?.map((error, index) => (
+              <FormStatus key={index} type="error">
+                {error}
+              </FormStatus>
+            ))}
+          </div>
+
+          <div className="flex gap-1.5">
+            <SubmitButton className="grow" name="intent" value="add-shipping">
+              {shippingOption ? updateShippingLabel : addShippingLabel}
+            </SubmitButton>
+            <Button
+              className="shrink-0"
+              onClick={() => {
+                setShowForms(false);
+                setShowAddressForm(false);
+              }}
+              size="small"
+              type="button"
+              variant="tertiary"
+            >
+              {cancelLabel}
+            </Button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }
