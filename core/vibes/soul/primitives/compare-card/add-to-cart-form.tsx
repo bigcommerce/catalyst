@@ -28,9 +28,9 @@ export function AddToCartForm({
   productId,
   addToCartLabel,
   addToCartAction,
-  isPreorder,
+  isPreorder = false,
   preorderLabel,
-  disabled,
+  disabled = false,
 }: Props) {
   const [{ lastResult, successMessage }, formAction, pending] = useActionState(addToCartAction, {
     lastResult: null,

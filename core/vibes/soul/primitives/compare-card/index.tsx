@@ -76,7 +76,7 @@ export function CompareCard({
       <div className="mb-2 space-y-4 pb-4">
         <ProductCard imageSizes={imageSizes} product={product} />
         {addToCartAction &&
-          (!product.hasVariants ? (
+          (product.hasVariants !== undefined && !product.hasVariants ? (
             <AddToCartForm
               addToCartAction={addToCartAction}
               addToCartLabel={addToCartLabel}

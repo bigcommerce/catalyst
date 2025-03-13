@@ -48,7 +48,7 @@ export const Compare = function Compare({
 
           startTransition(() => {
             setOptimisticItems({
-              type: value ? 'add' : 'remove',
+              type: value === true ? 'add' : 'remove',
               item: product,
             });
           });
