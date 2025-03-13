@@ -29,6 +29,7 @@ export default $config({
     const NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN = new sst.Secret(
       'NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN',
     );
+    const NEXT_PUBLIC_GTM_ID = new sst.Secret('NEXT_PUBLIC_GTM_ID');
 
     new sst.aws.Nextjs('catalyst', {
       environment: {
@@ -42,6 +43,7 @@ export default $config({
         NEXT_PUBLIC_CONTENTFUL_SPACE_ID: NEXT_PUBLIC_CONTENTFUL_SPACE_ID.value,
         NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN: NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN.value,
         TRAILING_SLASH: 'false',
+        NEXT_PUBLIC_GTM_ID: NEXT_PUBLIC_GTM_ID.value,
       },
     });
   },
