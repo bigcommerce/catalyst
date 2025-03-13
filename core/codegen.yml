@@ -1,7 +1,7 @@
 schema:
-  - 'https://graphql.contentful.com/content/v1/spaces/uhvj8afx5bqy/environments/master':
+  - 'https://graphql.contentful.com/content/v1/spaces/${NEXT_PUBLIC_CONTENTFUL_SPACE_ID}/environments/master':
       headers:
-        Authorization: 'Bearer nSYBQN2p0ijZBmgBXwO41fRonpuUUwcLrNzI8KLCjcE'
+        Authorization: 'Bearer ${NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN}'
 
 documents: 'contentful/**/*.graphql'
 generates:
