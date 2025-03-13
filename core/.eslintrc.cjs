@@ -73,6 +73,7 @@ const config = {
     'playwright-report/**',
     'test-results/**',
     '**/google_analytics4.js',
+    'contentful/generated/**/*.ts',
   ],
 };
 

@@ -1,0 +1,22 @@
+schema:
+  - 'https://graphql.contentful.com/content/v1/spaces/uhvj8afx5bqy/environments/master':
+      headers:
+        Authorization: 'Bearer nSYBQN2p0ijZBmgBXwO41fRonpuUUwcLrNzI8KLCjcE'
+
+documents: 'contentful/**/*.graphql'
+generates:
+  contentful/generated/graphql.ts:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+    config:
+      withHooks: true
+      withHOC: false
+      withComponent: false
+      scalars:
+        DateTime: string
+        JSON: any
+hooks:
+  afterAllFileWrite:
+    - prettier --write
