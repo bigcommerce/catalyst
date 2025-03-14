@@ -14,6 +14,7 @@ import { Image } from '~/components/image';
 
 import { CouponCodeForm, CouponCodeFormState } from './coupon-code-form';
 import { cartLineItemActionFormDataSchema } from './schema';
+import { ShippingForm, ShippingFormState } from './shipping-form';
 
 import { CartEmptyState } from '.';
 
@@ -55,6 +56,57 @@ interface CouponCode {
   removeLabel?: string;
 }
 
+interface ShippingOption {
+  label: string;
+  value: string;
+  price: string;
+}
+
+interface Country {
+  label: string;
+  value: string;
+}
+
+interface States {
+  country: string;
+  states: Array<{
+    label: string;
+    value: string;
+  }>;
+}
+
+interface Address {
+  country: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+}
+
+interface Shipping {
+  action: Action<ShippingFormState, FormData>;
+  countries?: Country[];
+  states?: States[];
+  address?: Address;
+  shippingOptions?: ShippingOption[];
+  shippingOption?: ShippingOption;
+  shippingLabel?: string;
+  addLabel?: string;
+  changeLabel?: string;
+  countryLabel?: string;
+  cityLabel?: string;
+  stateLabel?: string;
+  postalCodeLabel?: string;
+  updateShippingOptionsLabel?: string;
+  viewShippingOptionsLabel?: string;
+  cancelLabel?: string;
+  editAddressLabel?: string;
+  shippingOptionsLabel?: string;
+  updateShippingLabel?: string;
+  addShippingLabel?: string;
+  showShippingForm?: boolean;
+  noShippingOptionsLabel?: string;
+}
+
 export interface Props<LineItem extends CartLineItem> {
   title?: string;
   summaryTitle?: string;
@@ -67,6 +119,7 @@ export interface Props<LineItem extends CartLineItem> {
   incrementLineItemLabel?: string;
   cart: Cart<LineItem>;
   couponCode?: CouponCode;
+  shipping?: Shipping;
 }
 
 const defaultEmptyState = {
@@ -87,6 +140,7 @@ export function CartClient<LineItem extends CartLineItem>({
   checkoutLabel = 'Checkout',
   emptyState = defaultEmptyState,
   summaryTitle,
+  shipping,
 }: Props<LineItem>) {
   const [state, formAction] = useActionState(lineItemAction, {
     lineItems: cart.lineItems,
@@ -160,19 +214,11 @@ export function CartClient<LineItem extends CartLineItem>({
                   <dd>{summaryItem.value}</dd>
                 </div>
               ))}
+
+              {shipping && <ShippingForm {...shipping} />}
             </div>
 
-            {couponCode && (
-              <CouponCodeForm
-                action={couponCode.action}
-                couponCodes={couponCode.couponCodes}
-                ctaLabel={couponCode.ctaLabel}
-                disabled={couponCode.disabled}
-                label={couponCode.label}
-                placeholder={couponCode.placeholder}
-                removeLabel={couponCode.removeLabel}
-              />
-            )}
+            {couponCode && <CouponCodeForm {...couponCode} />}
 
             <div className="flex justify-between border-t border-contrast-100 py-6 text-xl font-bold">
               <dt>{cart.totalLabel ?? 'Total'}</dt>
