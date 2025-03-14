@@ -267,18 +267,12 @@ export const getShippingCountries = async (geography: FragmentOf<typeof Geograph
   const shippingZones = hasAccessToken ? await getShippingZones() : [];
   const countries = geography.countries ?? [];
 
-  const uniqueCountryZones = shippingZones.reduce<Set<string>>((zones, item) => {
-    item.locations.forEach(({ country_iso2 }) => {
-      zones.add(country_iso2);
-    });
-
-    return zones;
-  }, new Set());
-
-  const uniqueCountryZonesArray = Array.from(uniqueCountryZones);
+  const uniqueCountryZones = new Set(
+    shippingZones.map((zone) => zone.locations.map((location) => location.country_iso2)).flat(),
+  );
 
   return countries.filter((countryDetails) => {
-    const isCountryInTheList = uniqueCountryZonesArray.includes(countryDetails.code);
+    const isCountryInTheList = uniqueCountryZones.has(countryDetails.code);
 
     return isCountryInTheList || !hasAccessToken;
   });

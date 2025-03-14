@@ -69,10 +69,8 @@ export const addShippingInfo = async ({
 }: Props) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  let response;
-
   if (shippingId) {
-    response = await client.fetch({
+    const responseWithShippingId = await client.fetch({
       document: UpdateCheckoutShippingConsignmentMutation,
       variables: {
         input: {
@@ -95,10 +93,10 @@ export const addShippingInfo = async ({
 
     revalidateTag(TAGS.checkout);
 
-    return response.data.checkout.updateCheckoutShippingConsignment?.checkout;
+    return responseWithShippingId.data.checkout.updateCheckoutShippingConsignment?.checkout;
   }
 
-  response = await client.fetch({
+  const response = await client.fetch({
     document: AddCheckoutShippingConsignmentsMutation,
     variables: {
       input: {
