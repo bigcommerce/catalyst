@@ -88,13 +88,8 @@ export default async function Cart() {
     variantEntityId: item.variantEntityId,
   }));
 
-  const discounts = cart.discounts.map((discount) => ({
-    value: `-${format.number(discount.discountedAmount.value, {
-      style: 'currency',
-      currency: cart.currencyCode,
-    })}`,
-    label: t('CheckoutSummary.discounts'),
-  }));
+  const totalCouponDiscount =
+    checkout?.coupons.reduce((sum, coupon) => sum + coupon.discountedAmount.value, 0) ?? 0;
 
   return (
     <>
@@ -114,7 +109,24 @@ export default async function Cart() {
                 currency: cart.currencyCode,
               }),
             },
-            ...discounts,
+            cart.discountedAmount.value > 0
+              ? {
+                  label: t('CheckoutSummary.discounts'),
+                  value: `-${format.number(cart.discountedAmount.value, {
+                    style: 'currency',
+                    currency: cart.currencyCode,
+                  })}`,
+                }
+              : null,
+            totalCouponDiscount > 0
+              ? {
+                  label: t('CheckoutSummary.coupon'),
+                  value: `-${format.number(totalCouponDiscount, {
+                    style: 'currency',
+                    currency: cart.currencyCode,
+                  })}`,
+                }
+              : null,
             checkout?.taxTotal && {
               label: t('CheckoutSummary.tax'),
               value: format.number(checkout.taxTotal.value, {
