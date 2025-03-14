@@ -20,6 +20,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
+// eslint-disable-next-line complexity
 export default async function Cart() {
   const t = await getTranslations('Cart');
   const format = await getFormatter();
