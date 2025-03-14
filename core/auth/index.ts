@@ -57,17 +57,13 @@ const LogoutMutation = graphql(`
 `);
 
 const PasswordCredentials = z.object({
-  type: z.literal('password'),
   email: z.string().email(),
   password: z.string().min(1),
 });
 
 const JwtCredentials = z.object({
-  type: z.literal('jwt'),
   jwt: z.string(),
 });
-
-export const Credentials = z.discriminatedUnion('type', [PasswordCredentials, JwtCredentials]);
 
 async function handleLoginCart(guestCartId?: string, loginResultCartId?: string) {
   const t = await getTranslations('Cart');
@@ -85,11 +81,10 @@ async function handleLoginCart(guestCartId?: string, loginResultCartId?: string)
   }
 }
 
-async function loginWithPassword(
-  email: string,
-  password: string,
-  cartEntityId?: string,
-): Promise<User | null> {
+async function loginWithPassword(credentials: unknown): Promise<User | null> {
+  const { email, password } = PasswordCredentials.parse(credentials);
+  const cartEntityId = await getCartId();
+
   const response = await client.fetch({
     document: LoginMutation,
     variables: { email, password, cartEntityId },
@@ -117,7 +112,10 @@ async function loginWithPassword(
   };
 }
 
-async function loginWithJwt(jwt: string, cartEntityId?: string): Promise<User | null> {
+async function loginWithJwt(credentials: unknown): Promise<User | null> {
+  const { jwt } = JwtCredentials.parse(credentials);
+  const cartEntityId = await getCartId();
+
   const claims = decodeJwt(jwt);
   const channelId = claims.channel_id?.toString() ?? process.env.BIGCOMMERCE_CHANNEL_ID;
   const impersonatorId = claims.impersonator_id?.toString() ?? null;
@@ -148,28 +146,6 @@ async function loginWithJwt(jwt: string, cartEntityId?: string): Promise<User | 
     customerAccessToken: result.customerAccessToken.value,
     impersonatorId,
   };
-}
-
-async function authorize(credentials: unknown): Promise<User | null> {
-  const parsed = Credentials.parse(credentials);
-  const cartEntityId = await getCartId();
-
-  switch (parsed.type) {
-    case 'password': {
-      const { email, password } = parsed;
-
-      return loginWithPassword(email, password, cartEntityId);
-    }
-
-    case 'jwt': {
-      const { jwt } = parsed;
-
-      return loginWithJwt(jwt, cartEntityId);
-    }
-
-    default:
-      return null;
-  }
 }
 
 const config = {
@@ -223,23 +199,24 @@ const config = {
   },
   providers: [
     CredentialsProvider({
+      id: 'password',
       credentials: {
-        type: { type: 'text' },
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
-        jwt: { type: 'text' },
       },
-      authorize,
+      authorize: loginWithPassword,
+    }),
+    CredentialsProvider({
+      id: 'jwt',
+      credentials: {
+        jwt: { label: 'JWT', type: 'text' },
+      },
+      authorize: loginWithJwt,
     }),
   ],
 } satisfies NextAuthConfig;
 
-const { handlers, auth, signIn: nextAuthSignIn, signOut } = NextAuth(config);
-
-const signIn = (
-  credentials: z.infer<typeof Credentials>,
-  options: { redirect?: boolean | undefined; redirectTo?: string },
-) => nextAuthSignIn('credentials', { ...credentials, ...options });
+const { handlers, auth, signIn, signOut } = NextAuth(config);
 
 const getSessionCustomerAccessToken = async () => {
   try {

@@ -27,7 +27,7 @@ export async function GET(request: Request, { params }: TokenParams) {
 
     // sign in with token which will check validity against BigCommerce API
     // and redirect to redirectTo
-    await signIn({ type: 'jwt', jwt: token }, { redirectTo });
+    await signIn('jwt', { jwt: token, redirectTo });
   } catch (error) {
     rethrow(error);
 
