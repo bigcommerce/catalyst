@@ -19,6 +19,7 @@ export async function deleteAccount(customerId: number) {
       },
     );
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.error(error);
   }
 }
