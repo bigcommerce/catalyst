@@ -11,7 +11,10 @@ import { getCartId } from '~/lib/cart';
 import { getCart } from '../page-data';
 
 import { addShippingCost } from './add-shipping-cost';
-import { addShippingInfo } from './add-shipping-info';
+import {
+  addCheckoutShippingConsignments,
+  updateCheckoutShippingConsignment,
+} from './add-shipping-info';
 
 export const updateShippingInfo = async (
   prevState: Awaited<ShippingFormState>,
@@ -65,20 +68,38 @@ export const updateShippingInfo = async (
 
   switch (submission.value.intent) {
     case 'add-address': {
-      let result;
-
       try {
-        result = await addShippingInfo({
-          checkoutEntityId,
-          address: {
-            countryCode: submission.value.country,
-            city: submission.value.city,
-            stateOrProvince: submission.value.state,
-            postalCode: submission.value.postalCode,
-          },
-          lineItems,
-          shippingId,
-        });
+        const result = shippingId
+          ? await updateCheckoutShippingConsignment({
+              checkoutEntityId,
+              address: {
+                countryCode: submission.value.country,
+                city: submission.value.city,
+                stateOrProvince: submission.value.state,
+                postalCode: submission.value.postalCode,
+              },
+              lineItems,
+              shippingId,
+            })
+          : await addCheckoutShippingConsignments({
+              checkoutEntityId,
+              address: {
+                countryCode: submission.value.country,
+                city: submission.value.city,
+                stateOrProvince: submission.value.state,
+                postalCode: submission.value.postalCode,
+              },
+              lineItems,
+            });
+
+        const updatedShippingConsignment = result ? result.shippingConsignments?.[0] : undefined;
+
+        if (!updatedShippingConsignment?.availableShippingOptions) {
+          return {
+            ...prevState,
+            lastResult: submission.reply({ formErrors: [t('cartNotFound')] }),
+          };
+        }
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
@@ -97,12 +118,6 @@ export const updateShippingInfo = async (
         }
 
         return { ...prevState, lastResult: submission.reply({ formErrors: [String(error)] }) };
-      }
-
-      const updatedShippingConsignment = result ? result.shippingConsignments?.[0] : undefined;
-
-      if (!updatedShippingConsignment?.availableShippingOptions) {
-        return { ...prevState, lastResult: submission.reply({ formErrors: [t('cartNotFound')] }) };
       }
 
       return {
