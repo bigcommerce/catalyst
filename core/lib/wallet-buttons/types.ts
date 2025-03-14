@@ -1,23 +1,41 @@
-export interface InitializeButtonProps {
-  [key: string]: unknown;
-  containerId: string;
-  methodId: string;
+declare global {
+  interface Window {
+    checkoutKitLoader?: CheckoutKitLoader;
+  }
 }
 
-export interface CheckoutKitLoader {
+interface CheckoutKitLoader {
   load(moduleName: string): Promise<CheckoutKitModule>;
 }
 
 interface CheckoutKitModule {
-  createHeadlessCheckoutWalletInitializer(
-    props: CreateHeadlessCheckoutButtonInitializerProps,
-  ): CheckoutHeadlessButtonInitializer;
-}
-
-interface CreateHeadlessCheckoutButtonInitializerProps {
-  host?: string;
+  createHeadlessCheckoutWalletInitializer(props: {
+    host?: string;
+  }): CheckoutHeadlessButtonInitializer;
 }
 
 interface CheckoutHeadlessButtonInitializer {
-  initializeHeadlessButton(props: InitializeButtonProps): void;
+  initializeHeadlessButton(option: Option): void;
 }
+
+interface OptionProps {
+  style: {
+    color: string;
+    label: string;
+  };
+  cartId: string;
+}
+
+interface PaypalCommerceOption {
+  methodId: 'paypalcommerce';
+  containerId: string;
+  paypalcommerce: OptionProps;
+}
+
+interface PaypalCommerceCreditOption {
+  methodId: 'paypalcommercecredit';
+  containerId: string;
+  paypalcommercecredit: OptionProps;
+}
+
+export type Option = PaypalCommerceOption | PaypalCommerceCreditOption;

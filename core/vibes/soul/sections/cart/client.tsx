@@ -12,7 +12,7 @@ import { toast } from '@/vibes/soul/primitives/toaster';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { ClientWalletButtons } from 'components/wallet-buttons/_components/client-wallet-buttons';
 import { Image } from '~/components/image';
-import { InitializeButtonProps } from '~/lib/wallet-buttons/types';
+import { Option } from '~/lib/wallet-buttons/types';
 
 import { CouponCodeForm, CouponCodeFormState } from './coupon-code-form';
 import { cartLineItemActionFormDataSchema } from './schema';
@@ -120,7 +120,7 @@ export interface Props<LineItem extends CartLineItem> {
   decrementLineItemLabel?: string;
   incrementLineItemLabel?: string;
   cart: Cart<LineItem>;
-  walletButtons?: InitializeButtonProps[];
+  walletButtons?: Option[];
   couponCode?: CouponCode;
   shipping?: Shipping;
 }

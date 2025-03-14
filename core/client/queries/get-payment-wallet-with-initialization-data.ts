@@ -3,21 +3,24 @@ import { graphql } from '~/client/graphql';
 
 import { client } from '..';
 
-export async function getPaymentWalletWithInitializationData(entityId: string) {
-  const graphQLQuery = graphql(`
-		query {
-			site {
-				paymentWalletWithInitializationData(filter: {paymentWalletEntityId: "${entityId}"}) {
-					clientToken
-					initializationData
-				}
-			}
-		}
-	`);
+const PaymentWalletWithInitializationDataQuery = graphql(`
+  query PaymentWalletWithInitializationDataQuery($entityId: String!) {
+    site {
+      paymentWalletWithInitializationData(filter: { paymentWalletEntityId: $entityId }) {
+        clientToken
+        initializationData
+      }
+    }
+  }
+`);
 
+export async function getPaymentWalletWithInitializationData(entityId: string) {
   try {
     return await client.fetch({
-      document: graphQLQuery,
+      document: PaymentWalletWithInitializationDataQuery,
+      variables: {
+        entityId,
+      },
       customerAccessToken: await getSessionCustomerAccessToken(),
       fetchOptions: { cache: 'no-store' },
     });

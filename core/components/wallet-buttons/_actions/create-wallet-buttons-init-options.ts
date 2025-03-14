@@ -1,11 +1,11 @@
 import { getTranslations } from 'next-intl/server';
 
-import { fetchPaymentWalletButtons } from '~/client/queries/get-wallet-buttons';
+import { getPaymentWallets } from '~/app/[locale]/(default)/cart/page-data';
 import { getCartId } from '~/lib/cart';
-import { InitializeButtonProps } from '~/lib/wallet-buttons/types';
+import { Option } from '~/lib/wallet-buttons/types';
 import { getWalletButtonOption } from '~/lib/wallet-buttons/utils';
 
-export const createWalletButtonsInitOptions = async (): Promise<InitializeButtonProps[]> => {
+export const createWalletButtonsInitOptions = async (): Promise<Option[]> => {
   const t = await getTranslations('Cart.Errors');
 
   const cartId = await getCartId();
@@ -14,9 +14,13 @@ export const createWalletButtonsInitOptions = async (): Promise<InitializeButton
     throw new Error(t('cartNotFound'));
   }
 
-  const availableWalletButtons = await fetchPaymentWalletButtons(cartId);
+  const methodIds = await getPaymentWallets({
+    filters: {
+      cartEntityId: cartId,
+    },
+  });
 
-  return (availableWalletButtons || [])
+  return methodIds
     .map((methodId) => {
       return getWalletButtonOption(methodId, cartId);
     })

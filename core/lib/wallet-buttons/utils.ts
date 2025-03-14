@@ -1,4 +1,4 @@
-import { InitializeButtonProps } from '~/lib/wallet-buttons/types';
+import { Option } from '~/lib/wallet-buttons/types';
 
 /**
  *
@@ -6,10 +6,7 @@ import { InitializeButtonProps } from '~/lib/wallet-buttons/types';
  *
  * */
 
-export function getWalletButtonOption(
-  paymentMethodId: string,
-  cartId: string,
-): InitializeButtonProps | undefined {
+export function getWalletButtonOption(paymentMethodId: string, cartId: string): Option | undefined {
   switch (paymentMethodId) {
     case 'paypalcommerce.paypal': {
       return {
