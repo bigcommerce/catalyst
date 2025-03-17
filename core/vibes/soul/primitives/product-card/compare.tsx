@@ -40,13 +40,13 @@ export const Compare = function Compare({
       colorScheme={colorScheme}
       label={label}
       onCheckedChange={(value) => {
-        startTransition(() => {
+        startTransition(async () => {
           setOptimisticItems({
             type: value === true ? 'add' : 'remove',
             item: product,
           });
 
-          void setParam((prev) => {
+          await setParam((prev) => {
             const next =
               value === true
                 ? [...(prev ?? []), product.id]
