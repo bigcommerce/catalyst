@@ -583,7 +583,8 @@
     },
     "ProductCard": {
       "Compare": {
-        "compare": "Compare"
+        "compare": "Compare",
+        "remove": "Remove"
       },
       "AddToCart": {
         "viewOptions": "View options",

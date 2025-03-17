@@ -214,6 +214,12 @@ async function getCompareLabel(): Promise<string> {
   return t('compare');
 }
 
+async function getRemoveLabel(): Promise<string> {
+  const t = await getTranslations('Components.ProductCard.Compare');
+
+  return t('remove');
+}
+
 async function getEmptyStateTitle(): Promise<string> {
   const t = await getTranslations('Brand');
 
@@ -282,6 +288,7 @@ export default async function Brand(props: Props) {
       paginationInfo={getPaginationInfo(props)}
       products={getListProducts(props)}
       rangeFilterApplyLabel={getRangeFilterApplyLabel()}
+      removeLabel={getRemoveLabel()}
       resetFiltersLabel={getResetFiltersLabel()}
       showCompare={getShowCompare(props)}
       sortDefaultValue="featured"

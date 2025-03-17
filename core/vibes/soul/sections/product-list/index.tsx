@@ -24,7 +24,7 @@ interface ProductListProps {
   emptyStateTitle?: Streamable<string>;
   emptyStateSubtitle?: Streamable<string>;
   placeholderCount?: number;
-  removeLabel?: string;
+  removeLabel?: Streamable<string>;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -56,7 +56,7 @@ export function ProductList({
   emptyStateTitle = 'No products found',
   emptyStateSubtitle = 'Try browsing our complete catalog of products.',
   placeholderCount = 8,
-  removeLabel,
+  removeLabel: streamableRemoveLabel,
 }: ProductListProps) {
   return (
     <Stream
@@ -66,9 +66,10 @@ export function ProductList({
         streamableCompareLabel,
         streamableShowCompare,
         streamableCompareProducts,
+        streamableRemoveLabel,
       ])}
     >
-      {([products, compareLabel, showCompare, compareProducts]) => {
+      {([products, compareLabel, showCompare, compareProducts, removeLabel]) => {
         if (products.length === 0) {
           return (
             <ProductListEmptyState

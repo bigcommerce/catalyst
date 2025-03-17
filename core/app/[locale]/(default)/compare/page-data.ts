@@ -8,7 +8,7 @@ import { revalidate } from '~/client/revalidate-target';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
-const MAX_COMPARE_LIMIT = 10;
+export const MAX_COMPARE_LIMIT = 10;
 
 export const CompareCardFragment = graphql(
   `

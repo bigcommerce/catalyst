@@ -42,6 +42,7 @@ interface Props {
   emptyStateSubtitle?: Streamable<string>;
   emptyStateTitle?: Streamable<string>;
   placeholderCount?: number;
+  removeLabel?: Streamable<string>;
 }
 
 export function ProductsListSection({
@@ -68,6 +69,7 @@ export function ProductsListSection({
   emptyStateSubtitle,
   emptyStateTitle,
   placeholderCount = 8,
+  removeLabel,
 }: Props) {
   return (
     <div className="group/products-list-section @container">
@@ -165,6 +167,7 @@ export function ProductsListSection({
               emptyStateTitle={emptyStateTitle}
               placeholderCount={placeholderCount}
               products={products}
+              removeLabel={removeLabel}
               showCompare={showCompare}
             />
 
