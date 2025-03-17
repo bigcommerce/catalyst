@@ -1,11 +1,23 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { VariablesOf } from 'gql.tada';
 import { cache } from 'react';
+import { z } from 'zod';
 
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+
+const CompareProductsSchema = z.object({
+  entityIds: z
+    .array(
+      z.preprocess(
+        (val) => (!Number.isNaN(val) ? val : undefined), // Remove NaN before validation
+        z.number().optional(),
+      ),
+    )
+    .transform((arr) => arr.filter((num) => num !== undefined)), // Remove `undefined` values
+});
 
 const CompareProductsQuery = graphql(`
   query CompareProductsQuery($entityIds: [Int!]) {
@@ -32,13 +44,15 @@ type Variables = VariablesOf<typeof CompareProductsQuery>;
 export const getCompareProducts = cache(async (variables: Variables) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  if (variables.entityIds?.length === 0) {
+  const parsedVariables = CompareProductsSchema.parse(variables);
+
+  if (parsedVariables.entityIds.length === 0) {
     return [];
   }
 
   const response = await client.fetch({
     document: CompareProductsQuery,
-    variables,
+    variables: parsedVariables,
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
