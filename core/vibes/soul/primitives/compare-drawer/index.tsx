@@ -93,6 +93,7 @@ export interface CompareDrawerProps {
   href?: string;
   paramName?: string;
   submitLabel?: string;
+  removeLabel?: string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -124,6 +125,7 @@ export function CompareDrawer({
   href = '/compare',
   paramName = 'compare',
   submitLabel = 'Compare',
+  removeLabel = 'Remove',
 }: CompareDrawerProps) {
   const [params, setParam] = useQueryState(
     paramName,
@@ -164,14 +166,14 @@ export function CompareDrawer({
                     </span>
                   </Link>
                   <button
-                    aria-label={`Remove ${item.title}`}
+                    aria-label={`${removeLabel} ${item.title}`}
                     className="hover:text-[var(--compare-drawer-dismiss-icon-hover,hsl(var(--foreground))] absolute -right-2.5 -top-2.5 flex h-7 w-7 items-center justify-center rounded-full border border-[var(--compare-drawer-dismiss-border,hsl(var(--contrast-100)))] bg-[var(--compare-drawer-dismiss-background,hsl(var(--background)))] text-[var(--compare-drawer-dismiss-icon,hsl(var(--contrast-400)))] transition-colors duration-150 hover:border-[var(--compare-drawer-dismiss-border-hover,hsl(var(--contrast-200)))] hover:bg-[var(--compare-drawer-dismiss-background-hover,hsl(var(--contrast-100)))]"
                     onClick={() => {
                       startTransition(async () => {
+                        setOptimisticItems({ type: 'remove', item });
+
                         await setParam((prev) => {
                           const next = prev?.filter((v) => v !== item.id) ?? [];
-
-                          setOptimisticItems({ type: 'remove', item });
 
                           return next.length > 0 ? next : null;
                         });

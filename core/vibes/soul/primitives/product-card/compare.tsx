@@ -40,20 +40,20 @@ export const Compare = function Compare({
       colorScheme={colorScheme}
       label={label}
       onCheckedChange={(value) => {
-        void setParam((prev) => {
-          const next =
-            value === true
-              ? [...(prev ?? []), product.id]
-              : (prev ?? []).filter((v) => v !== product.id);
-
-          startTransition(() => {
-            setOptimisticItems({
-              type: value === true ? 'add' : 'remove',
-              item: product,
-            });
+        startTransition(() => {
+          setOptimisticItems({
+            type: value === true ? 'add' : 'remove',
+            item: product,
           });
 
-          return next.length > 0 ? next : null;
+          void setParam((prev) => {
+            const next =
+              value === true
+                ? [...(prev ?? []), product.id]
+                : (prev ?? []).filter((v) => v !== product.id);
+
+            return next.length > 0 ? next : null;
+          });
         });
       }}
     />
