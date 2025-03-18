@@ -81,6 +81,14 @@ AVIOS_NPM_AUTH_TOKEN
 
 Contact a member of the team to get these variables
 
+Once you have AVIOS_NPM_AUTH_TOKEN set ypou can run to create your .npmrc giving you access to the
+
+```sh
+npm run generate:npmrc
+```
+
+Then run
+
 ```sh
 pnpm run build
 ```
