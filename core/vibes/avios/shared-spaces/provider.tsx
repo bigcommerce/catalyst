@@ -34,10 +34,7 @@ export const AviosSharedHeaderFooter = ({ children }: PropsWithChildren) => {
   };
 
   return (
-    <SharedComponentsProvider
-      cms={{ accessToken, environment: Environment.DEV }}
-      router={{ LinkComponent: Link, hrefProp: 'href' }}
-    >
+    <SharedComponentsProvider cms={{ accessToken, environment: Environment.DEV }}>
       <Header
         auth={{
           loginProps: {
