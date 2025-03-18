@@ -1,10 +1,22 @@
 module.exports = {
-  preset: 'ts-jest',
+  collectCoverage: true,
+  coveragePathIgnorePatterns: ['<rootDir>/lib'],
   testEnvironment: 'jsdom',
   testMatch: ['<rootDir>/tests/**/*.(test|spec).[jt]s?(x)'],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   transform: {
-    '^.+\\.(ts|tsx|js|jsx)$': 'babel-jest',
+    '^.+\\.(t|j)sx?$': [
+      '@swc/jest',
+      {
+        jsc: {
+          transform: {
+            react: {
+              runtime: 'automatic',
+            },
+          },
+        },
+      },
+    ],
   },
   testEnvironmentOptions: {
     customExportConditions: [''],
