@@ -6,14 +6,7 @@ import {
   Header,
   SharedComponentsProvider,
 } from '@channel/shared-header-footer';
-import { PropsWithChildren } from 'react';
-
-import { Link } from '~/components/link';
-
-import '@alto-avios/alto-tokens/web-ssr/avios/light.css';
-import '@alto-avios/alto-tokens/web-ssr/avios/dark.css';
-
-import '@channel/shared-header-footer/style.css';
+import type { PropsWithChildren } from 'react';
 
 export const AviosSharedHeaderFooter = ({ children }: PropsWithChildren) => {
   const handleLogin = () => {
