@@ -65,6 +65,12 @@ const JwtCredentials = z.object({
   jwt: z.string(),
 });
 
+const SessionSyncCredentials = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  customerAccessToken: z.string(),
+});
+
 async function handleLoginCart(guestCartId?: string, loginResultCartId?: string) {
   const t = await getTranslations('Cart');
 
@@ -148,6 +154,10 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
   };
 }
 
+function loginWithSessionSync(credentials: unknown): User {
+  return SessionSyncCredentials.parse(credentials);
+}
+
 const config = {
   session: {
     strategy: 'jwt',
@@ -212,6 +222,13 @@ const config = {
         jwt: { label: 'JWT', type: 'text' },
       },
       authorize: loginWithJwt,
+    }),
+    CredentialsProvider({
+      id: 'session-sync',
+      credentials: {
+        jwt: { label: 'JWT', type: 'text' },
+      },
+      authorize: loginWithSessionSync,
     }),
   ],
 } satisfies NextAuthConfig;
