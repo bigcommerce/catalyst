@@ -574,6 +574,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             <CurrencyForm
               action={currencyAction}
               activeCurrencyId={activeCurrencyId}
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
               currencies={currencies as [Currency, ...Currency[]]}
             />
           ) : null}
@@ -902,6 +903,7 @@ function CurrencyForm({
   const activeCurrency = currencies.find((currency) => currency.id === activeCurrencyId);
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
     if (lastResult?.error) console.log(lastResult.error);
   }, [lastResult?.error]);
 

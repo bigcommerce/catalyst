@@ -21,18 +21,14 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
   }
 
   try {
-    await signIn(
-      {
-        type: 'password',
-        email: submission.value.email,
-        password: submission.value.password,
-      },
-      {
-        // We want to use next/navigation for the redirect as it
-        // follows basePath and trailing slash configurations.
-        redirect: false,
-      },
-    );
+    await signIn('password', {
+      email: submission.value.email,
+      password: submission.value.password,
+
+      // We want to use next/navigation for the redirect as it
+      // follows basePath and trailing slash configurations.
+      redirect: false,
+    });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);

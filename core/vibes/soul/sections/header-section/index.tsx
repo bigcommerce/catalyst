@@ -21,6 +21,7 @@ export const HeaderSection = forwardRef<React.ComponentRef<'div'>, Props>(
       if (!bannerElement) return;
 
       const resizeObserver = new ResizeObserver((entries: ResizeObserverEntry[]) => {
+        // eslint-disable-next-line no-restricted-syntax
         for (const entry of entries) {
           setBannerHeight(entry.contentRect.height);
         }
