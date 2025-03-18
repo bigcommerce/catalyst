@@ -1,10 +1,10 @@
 import { graphql } from 'msw';
 
 export const handlers = [
-  graphql.query('YourContentfulQueryName', (req, res, ctx) => {
+  graphql.query('ContentfulQueryName', (req, res, ctx) => {
     return res(
       ctx.data({
-        yourContentfulContent: {
+        ContentfulContent: {
           id: 'mock-id',
           title: 'Mock Title',
           description: 'Mock Description',
@@ -12,6 +12,4 @@ export const handlers = [
       })
     );
   }),
-
-  // You can add more mocks for other queries here
 ];
