@@ -8,6 +8,8 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
+import { MAX_COMPARE_LIMIT } from '../compare/page-data';
+
 const CompareProductsSchema = z.object({
   entityIds: z
     .array(
@@ -20,9 +22,9 @@ const CompareProductsSchema = z.object({
 });
 
 const CompareProductsQuery = graphql(`
-  query CompareProductsQuery($entityIds: [Int!]) {
+  query CompareProductsQuery($entityIds: [Int!], $first: Int) {
     site {
-      products(entityIds: $entityIds) {
+      products(entityIds: $entityIds, first: $first) {
         edges {
           node {
             entityId
@@ -52,7 +54,7 @@ export const getCompareProducts = cache(async (variables: Variables) => {
 
   const response = await client.fetch({
     document: CompareProductsQuery,
-    variables: parsedVariables,
+    variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });

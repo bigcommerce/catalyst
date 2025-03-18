@@ -3,9 +3,17 @@
 import * as Portal from '@radix-ui/react-portal';
 import { ArrowRight, X } from 'lucide-react';
 import { useQueryState } from 'nuqs';
-import { createContext, ReactNode, startTransition, useContext, useOptimistic } from 'react';
+import {
+  createContext,
+  ReactNode,
+  startTransition,
+  useContext,
+  useEffect,
+  useOptimistic,
+} from 'react';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
+import { toast } from '@/vibes/soul/primitives/toaster';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
@@ -19,6 +27,7 @@ interface OptimisticAction {
 interface CompareDrawerContext {
   optimisticItems: CompareDrawerItem[];
   setOptimisticItems: (action: OptimisticAction) => void;
+  maxItems?: number;
 }
 
 export const CompareDrawerContext = createContext<CompareDrawerContext | undefined>(undefined);
@@ -26,10 +35,20 @@ export const CompareDrawerContext = createContext<CompareDrawerContext | undefin
 export function CompareDrawerProvider({
   children,
   items,
+  maxItems,
+  maxCompareLimitMessage = "You've reached the maximum number of products for comparison. Remove a product to add a new one.",
 }: {
   children: ReactNode;
   items: CompareDrawerItem[];
+  maxItems?: number;
+  maxCompareLimitMessage?: string;
 }) {
+  useEffect(() => {
+    if (maxItems !== undefined && items.length >= maxItems) {
+      toast.warning(maxCompareLimitMessage);
+    }
+  }, [items.length, maxItems, maxCompareLimitMessage]);
+
   const [optimisticItems, setOptimisticItems] = useOptimistic(
     items,
     (state: CompareDrawerItem[], { type, item }: OptimisticAction) => {
@@ -59,7 +78,7 @@ export function CompareDrawerProvider({
   );
 
   return (
-    <CompareDrawerContext value={{ optimisticItems, setOptimisticItems }}>
+    <CompareDrawerContext value={{ optimisticItems, setOptimisticItems, maxItems }}>
       {children}
     </CompareDrawerContext>
   );

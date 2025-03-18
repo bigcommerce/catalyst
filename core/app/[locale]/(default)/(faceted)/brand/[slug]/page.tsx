@@ -16,6 +16,7 @@ import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
+import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts as getCompareProductsData } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
@@ -222,6 +223,12 @@ async function getRemoveLabel(): Promise<string> {
   return t('remove');
 }
 
+async function getMaxCompareLimitMessage(): Promise<string> {
+  const t = await getTranslations('Components.ProductCard.Compare');
+
+  return t('maxCompareLimit');
+}
+
 async function getEmptyStateTitle(): Promise<string> {
   const t = await getTranslations('Brand');
 
@@ -287,6 +294,8 @@ export default async function Brand(props: Props) {
       filterLabel={await getFilterLabel()}
       filters={getFilters(props)}
       filtersPanelTitle={getFiltersPanelTitle()}
+      maxCompareLimitMessage={getMaxCompareLimitMessage()}
+      maxItems={MAX_COMPARE_LIMIT}
       paginationInfo={getPaginationInfo(props)}
       products={getListProducts(props)}
       rangeFilterApplyLabel={getRangeFilterApplyLabel()}

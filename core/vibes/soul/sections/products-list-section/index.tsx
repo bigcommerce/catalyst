@@ -43,6 +43,8 @@ interface Props {
   emptyStateTitle?: Streamable<string>;
   placeholderCount?: number;
   removeLabel?: Streamable<string>;
+  maxItems?: number;
+  maxCompareLimitMessage?: Streamable<string>;
 }
 
 export function ProductsListSection({
@@ -70,6 +72,8 @@ export function ProductsListSection({
   emptyStateTitle,
   placeholderCount = 8,
   removeLabel,
+  maxItems,
+  maxCompareLimitMessage,
 }: Props) {
   return (
     <div className="group/products-list-section @container">
@@ -165,6 +169,8 @@ export function ProductsListSection({
               compareProducts={compareProducts}
               emptyStateSubtitle={emptyStateSubtitle}
               emptyStateTitle={emptyStateTitle}
+              maxCompareLimitMessage={maxCompareLimitMessage}
+              maxItems={maxItems}
               placeholderCount={placeholderCount}
               products={products}
               removeLabel={removeLabel}
