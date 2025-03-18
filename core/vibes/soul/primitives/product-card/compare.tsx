@@ -1,11 +1,11 @@
 'use client';
 
-import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
+import { useQueryState } from 'nuqs';
 import { startTransition } from 'react';
 
 import { Checkbox } from '@/vibes/soul/form/checkbox';
-
-import { useCompareDrawer } from '../compare-drawer';
+import { useCompareDrawer } from '@/vibes/soul/primitives/compare-drawer';
+import { compareParser } from '@/vibes/soul/primitives/compare-drawer/loader';
 
 interface CompareDrawerItem {
   id: string;
@@ -27,10 +27,7 @@ export const Compare = function Compare({
   label = 'Compare',
   product,
 }: Props) {
-  const [, setParam] = useQueryState(
-    paramName,
-    parseAsArrayOf(parseAsString).withOptions({ shallow: false }),
-  );
+  const [, setParam] = useQueryState(paramName, compareParser);
 
   const { optimisticItems, setOptimisticItems } = useCompareDrawer();
 

@@ -4,6 +4,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
 
+import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { BreadcrumbWithId } from '@/vibes/soul/sections/breadcrumbs';
 import { ListProduct } from '@/vibes/soul/sections/product-list';
@@ -175,10 +176,11 @@ async function getShowCompare(props: Props) {
 const cachedCompareProductIds = cache(async (props: Props) => {
   const searchParams = await props.searchParams;
 
-  const compareIds =
-    typeof searchParams.compare === 'string' ? searchParams.compare.split(',') : [];
+  const compareLoader = createCompareLoader();
 
-  return { entityIds: compareIds.map((id: string) => Number(id)) };
+  const { compare } = compareLoader(searchParams);
+
+  return { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
 });
 
 async function getCompareProducts(props: Props) {

@@ -2,12 +2,14 @@
 
 import * as Portal from '@radix-ui/react-portal';
 import { ArrowRight, X } from 'lucide-react';
-import { parseAsArrayOf, parseAsString, useQueryState } from 'nuqs';
+import { useQueryState } from 'nuqs';
 import { createContext, ReactNode, startTransition, useContext, useOptimistic } from 'react';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+
+import { compareParser } from './loader';
 
 interface OptimisticAction {
   type: 'add' | 'remove';
@@ -127,10 +129,7 @@ export function CompareDrawer({
   submitLabel = 'Compare',
   removeLabel = 'Remove',
 }: CompareDrawerProps) {
-  const [params, setParam] = useQueryState(
-    paramName,
-    parseAsArrayOf(parseAsString).withOptions({ shallow: false, scroll: false }),
-  );
+  const [params, setParam] = useQueryState(paramName, compareParser);
 
   const { optimisticItems, setOptimisticItems } = useCompareDrawer();
 
