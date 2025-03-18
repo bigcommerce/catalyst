@@ -82,7 +82,7 @@ NEXT_PUBLIC_AVIOS_SHARED_CMS_ACCESS_TOKEN
 NEXT_PUBLIC_AVIOS_SHARED_LOGIN_CALLBACK
 NEXT_PUBLIC_AVIOS_SHARED_LOGOUT_CALLBACK
 
-Once you have AVIOS_NPM_AUTH_TOKEN set ypou can run to create your .npmrc giving you access to the
+Once you have AVIOS_NPM_AUTH_TOKEN set you can run to create your .npmrc giving you access to the private repo.
 
 ```sh
 npm run generate:npmrc
