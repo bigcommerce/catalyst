@@ -88,8 +88,6 @@
   "devDependencies": {
     "@0no-co/graphqlsp": "^1.12.16",
     "@apollo/client": "^3.13.4",
-    "@babel/preset-react": "^7.26.3",
-    "@babel/preset-typescript": "^7.26.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@faker-js/faker": "^9.4.0",
     "@gql.tada/cli-utils": "^1.6.3",
