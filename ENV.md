@@ -54,7 +54,7 @@ pnpm install
 Initialize Catalyst:
 
 ```sh
-pnpm create @bigcommerce/catalyst@latest init
+pnpm create @bigcommerce/catalyst@latest
 ```
 
 ## Authentication
@@ -71,6 +71,15 @@ Until we connect to the WF Store, use the test store. Contact the Software Dev t
 This process will create an `.env.local` file.
 
 Next build the monprepo environment. This builds the graphql client, schema and some dist files used in the application
+
+The `.env.local` should be supplemented with the following variables
+
+NEXT_PUBLIC_CONTENTFUL_SPACE_ID
+NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN
+NEXT_PUBLIC_GTM_ID
+AVIOS_NPM_AUTH_TOKEN
+
+Contact a member of the team to get these variables
 
 ```sh
 pnpm run build
