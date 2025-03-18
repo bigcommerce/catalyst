@@ -58,6 +58,8 @@ export function B2BProductionScripts({
       </>
     );
   }
+  const isStagingEnabled = process.env.STAGING_B2B_CDN_ORIGIN === 'true'
+  const environment = isStagingEnabled ? 'staging' : 'production'
 
   return (
     <>
@@ -76,7 +78,8 @@ export function B2BProductionScripts({
       <Script
         data-channelid={channelId}
         data-storehash={storeHash}
-        src="https://cdn.bundleb2b.net/b2b/production/storefront/headless.js"
+        data-environment={environment}
+        src={`https://cdn.bundleb2b.net/b2b/${environment}/storefront/headless.js`}
         type="module"
       />
     </>
