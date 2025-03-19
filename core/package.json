@@ -20,9 +20,9 @@
     "sst:remove:local": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst remove",
     "sst:remove:ephemeral": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && npx sst remove --stage $STAGE",
     "test": "jest",
-    "test:e2e": "playwright test"
+    "test:e2e": "playwright test",
     "aws:sso": "aws sso login --profile AdministratorAccess-242201303751",
-    "generate:npmrc": "node set-npmrc.js",
+    "generate:npmrc": "node set-npmrc.js"
   },
   "dependencies": {
     "@alto-avios/alto-tokens": "^3.0.1",
