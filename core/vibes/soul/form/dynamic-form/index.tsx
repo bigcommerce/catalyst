@@ -11,7 +11,7 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { startTransition, useActionState } from 'react';
+import { MouseEvent, ReactNode, startTransition, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
@@ -27,7 +27,7 @@ import { RadioGroup } from '@/vibes/soul/form/radio-group';
 import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Textarea } from '@/vibes/soul/form/textarea';
-import { Button, Props as ButtonProps } from '@/vibes/soul/primitives/button';
+import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
 
 import { Field, FieldGroup, schema } from './schema';
 
@@ -40,7 +40,7 @@ interface State<F extends Field> {
 
 export type DynamicFormAction<F extends Field> = Action<State<F>, FormData>;
 
-interface Props<F extends Field> {
+export interface DynamicFormProps<F extends Field> {
   fields: Array<F | FieldGroup<F>>;
   action: DynamicFormAction<F>;
   buttonSize?: ButtonProps['size'];
@@ -48,7 +48,7 @@ interface Props<F extends Field> {
   submitLabel?: string;
   submitName?: string;
   submitValue?: string;
-  onCancel?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  onCancel?: (e: MouseEvent<HTMLButtonElement>) => void;
 }
 
 export function DynamicForm<F extends Field>({
@@ -60,7 +60,7 @@ export function DynamicForm<F extends Field>({
   submitName,
   submitValue,
   onCancel,
-}: Props<F>) {
+}: DynamicFormProps<F>) {
   const [{ lastResult, fields }, formAction] = useActionState(action, {
     fields: defaultFields,
     lastResult: null,
@@ -156,7 +156,7 @@ function SubmitButton({
   value,
   size,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
   name?: string;
   value?: string;
   size: ButtonProps['size'];

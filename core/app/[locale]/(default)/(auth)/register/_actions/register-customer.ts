@@ -6,7 +6,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
-import { Field, FieldGroup, schema } from '@/vibes/soul/primitives/dynamic-form/schema';
+import { Field, FieldGroup, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { signIn } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
