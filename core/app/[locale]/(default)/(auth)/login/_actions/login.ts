@@ -55,5 +55,6 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
     return submission.reply({ formErrors: [t('Form.somethingWentWrong')] });
   }
 
-  return redirect({ href: '/?section=orders', locale });
+  const href = formData.get('landingLoginLocation') === '1' ? '/?section=orders' : '/';
+  return redirect({ href, locale });
 };
