@@ -1,12 +1,9 @@
 module.exports = {
   collectCoverage: true,
   coveragePathIgnorePatterns: ['<rootDir>/lib'],
-  moduleNameMapper: {
-    '^~/(.*)$': '<rootDir>/$1',
-  },
-  setupFilesAfterEnv: ['./jest.setup.ts'],
   testEnvironment: 'jsdom',
-  testPathIgnorePatterns: ['<rootDir>/tests'],
+  testMatch: ['<rootDir>/tests/**/*.(test|spec).[jt]s?(x)'],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   transform: {
     '^.+\\.(t|j)sx?$': [
       '@swc/jest',
@@ -21,4 +18,12 @@ module.exports = {
       },
     ],
   },
+  testEnvironmentOptions: {
+    customExportConditions: [''],
+  },
+  moduleNameMapper: {
+    '^~/(.*)$': '<rootDir>/$1',
+    '^@/vibes/(.*)$': '<rootDir>/vibes/$1',
+  },
+  testPathIgnorePatterns: ['/node_modules/', '/tests/visual-regression/', '/tests/ui/'],
 };

@@ -5,6 +5,7 @@ config();
 
 export default defineConfig({
   testDir: './tests',
+  testMatch: ['**/visual-regression/**/*.spec.ts', '**/ui/**/*.spec.ts'],
   expect: {
     toHaveScreenshot: {
       maxDiffPixelRatio: 0.02,
