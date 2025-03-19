@@ -1,6 +1,6 @@
 import { auth } from '~/auth';
 
-import { B2BProductionScripts } from './scripts';
+import { B2BDevScripts, B2BProductionScripts } from './scripts';
 
 export async function B2BLoader() {
   const session = await auth();
@@ -12,10 +12,23 @@ export async function B2BLoader() {
     throw new Error('BIGCOMMERCE_STORE_HASH or BIGCOMMERCE_CHANNEL_ID is not set');
   }
 
+  if (localBuyerPortalHost) {
+    return (
+      <B2BDevScripts
+        channelId={channelId}
+        hostname={localBuyerPortalHost}
+        storeHash={storeHash}
+        token={session?.b2bToken}
+      />
+    );
+  }
+
+  const environment = process.env.STAGING_B2B_CDN_ORIGIN === 'true' ? 'staging' : 'production';
+
   return (
     <B2BProductionScripts
       channelId={channelId}
-      localBuyerPortalHost={localBuyerPortalHost}
+      environment={environment}
       storeHash={storeHash}
       token={session?.b2bToken}
     />
