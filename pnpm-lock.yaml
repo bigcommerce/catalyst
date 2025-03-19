@@ -89,6 +89,9 @@ importers:
       '@vercel/analytics':
         specifier: ^1.4.1
         version: 1.4.1(next@15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(svelte@5.1.15)
+      '@vercel/catalyst-vdc':
+        specifier: ^0.0.3
+        version: 0.0.3
       '@vercel/kv':
         specifier: ^3.0.0
         version: 3.0.0
@@ -2536,6 +2539,9 @@ packages:
         optional: true
       vue-router:
         optional: true
+
+  '@vercel/catalyst-vdc@0.0.3':
+    resolution: {integrity: sha512-PXZtjIV6g74+nuW1mTerS54OXfJ00LE6vlVG7p8+sg5xd1Vu/QivTmYxo3pZice/DRluAtWBckPI/DrIkPKFlw==}
 
   '@vercel/kv@3.0.0':
     resolution: {integrity: sha512-pKT8fRnfyYk2MgvyB6fn6ipJPCdfZwiKDdw7vB+HL50rjboEBHDVBEcnwfkEpVSp2AjNtoaOUH7zG+bVC/rvSg==}
@@ -8157,6 +8163,8 @@ snapshots:
       next: 15.2.0-canary.52(@playwright/test@1.50.0)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
       svelte: 5.1.15
+
+  '@vercel/catalyst-vdc@0.0.3': {}
 
   '@vercel/kv@3.0.0':
     dependencies:
