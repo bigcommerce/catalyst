@@ -7,7 +7,7 @@ import { z } from 'zod';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { clearCartId, getCartId, setCartId } from '~/lib/cart';
+import { clearCartId, setCartId } from '~/lib/cart';
 import { serverToast } from '~/lib/server-toast';
 
 const LoginMutation = graphql(`
@@ -59,10 +59,22 @@ const LogoutMutation = graphql(`
 const PasswordCredentials = z.object({
   email: z.string().email(),
   password: z.string().min(1),
+  cartId: z.string().optional(),
+});
+
+const AnonymousCredentials = z.object({
+  cartId: z.string().optional(),
 });
 
 const JwtCredentials = z.object({
   jwt: z.string(),
+  cartId: z.string().optional(),
+});
+
+const SessionUpdate = z.object({
+  user: z.object({
+    cartId: z.string().nullable().optional(),
+  }),
 });
 
 async function handleLoginCart(guestCartId?: string, loginResultCartId?: string) {
@@ -82,12 +94,11 @@ async function handleLoginCart(guestCartId?: string, loginResultCartId?: string)
 }
 
 async function loginWithPassword(credentials: unknown): Promise<User | null> {
-  const { email, password } = PasswordCredentials.parse(credentials);
-  const cartEntityId = await getCartId();
+  const { email, password, cartId } = PasswordCredentials.parse(credentials);
 
   const response = await client.fetch({
     document: LoginMutation,
-    variables: { email, password, cartEntityId },
+    variables: { email, password, cartEntityId: cartId },
     fetchOptions: {
       cache: 'no-store',
     },
@@ -103,25 +114,25 @@ async function loginWithPassword(credentials: unknown): Promise<User | null> {
     return null;
   }
 
-  await handleLoginCart(cartEntityId, result.cart?.entityId);
+  await handleLoginCart(cartId, result.cart?.entityId);
 
   return {
     name: `${result.customer.firstName} ${result.customer.lastName}`,
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
+    cartId: result.cart?.entityId,
   };
 }
 
 async function loginWithJwt(credentials: unknown): Promise<User | null> {
-  const { jwt } = JwtCredentials.parse(credentials);
-  const cartEntityId = await getCartId();
+  const { jwt, cartId } = JwtCredentials.parse(credentials);
 
   const claims = decodeJwt(jwt);
   const channelId = claims.channel_id?.toString() ?? process.env.BIGCOMMERCE_CHANNEL_ID;
   const impersonatorId = claims.impersonator_id?.toString() ?? null;
   const response = await client.fetch({
     document: LoginWithTokenMutation,
-    variables: { jwt, cartEntityId },
+    variables: { jwt, cartEntityId: cartId },
     channelId,
     fetchOptions: {
       cache: 'no-store',
@@ -138,13 +149,22 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
     return null;
   }
 
-  await handleLoginCart(cartEntityId, result.cart?.entityId);
+  await handleLoginCart(cartId, result.cart?.entityId);
 
   return {
     name: `${result.customer.firstName} ${result.customer.lastName}`,
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
     impersonatorId,
+    cartId: result.cart?.entityId,
+  };
+}
+
+function loginWithAnonymous(credentials: unknown): User | null {
+  const { cartId } = AnonymousCredentials.parse(credentials);
+
+  return {
+    cartId: cartId ?? null,
   };
 }
 
@@ -163,18 +183,45 @@ const config = {
     signIn: '/login',
   },
   callbacks: {
-    jwt: ({ token, user }) => {
+    jwt: ({ token, user, session, trigger }) => {
       // user can actually be undefined
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (user?.customerAccessToken) {
-        token.customerAccessToken = user.customerAccessToken;
+        token.user = {
+          ...token.user,
+          customerAccessToken: user.customerAccessToken,
+        };
+      }
+
+      // user can actually be undefined
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (user?.cartId) {
+        token.user = {
+          ...token.user,
+          cartId: user.cartId,
+        };
+      }
+
+      if (trigger === 'update') {
+        const parsedSession = SessionUpdate.safeParse(session);
+
+        if (parsedSession.success) {
+          token.user = {
+            ...token.user,
+            cartId: parsedSession.data.user.cartId,
+          };
+        }
       }
 
       return token;
     },
     session({ session, token }) {
-      if (token.customerAccessToken) {
-        session.customerAccessToken = token.customerAccessToken;
+      if (token.user?.customerAccessToken) {
+        session.user.customerAccessToken = token.user.customerAccessToken;
+      }
+
+      if (token.user?.cartId !== undefined) {
+        session.user.cartId = token.user.cartId;
       }
 
       return session;
@@ -182,7 +229,8 @@ const config = {
   },
   events: {
     async signOut(message) {
-      const customerAccessToken = 'token' in message ? message.token?.customerAccessToken : null;
+      const customerAccessToken =
+        'token' in message ? message.token?.user?.customerAccessToken : null;
 
       if (customerAccessToken) {
         try {
@@ -209,42 +257,55 @@ const config = {
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
+        cartId: { type: 'text' },
       },
       authorize: loginWithPassword,
     }),
     CredentialsProvider({
+      id: 'anonymous',
+      credentials: {
+        cartId: { type: 'text' },
+      },
+      authorize: loginWithAnonymous,
+    }),
+    CredentialsProvider({
       id: 'jwt',
       credentials: {
-        jwt: { label: 'JWT', type: 'text' },
+        jwt: { type: 'text' },
+        cartId: { type: 'text' },
       },
       authorize: loginWithJwt,
     }),
   ],
 } satisfies NextAuthConfig;
 
-const { handlers, auth, signIn, signOut } = NextAuth(config);
+export const { handlers, auth, signIn, signOut, unstable_update: updateSession } = NextAuth(config);
 
-const getSessionCustomerAccessToken = async () => {
+export const getSessionCustomerAccessToken = async () => {
   try {
     const session = await auth();
 
-    return session?.customerAccessToken;
+    return session?.user?.customerAccessToken;
   } catch {
     // No empty
   }
 };
 
-export { handlers, auth, signIn, signOut, getSessionCustomerAccessToken };
+export const isLoggedIn = async () => {
+  const cat = await getSessionCustomerAccessToken();
+
+  return Boolean(cat);
+};
 
 declare module 'next-auth' {
   interface Session {
     user?: DefaultSession['user'];
-    customerAccessToken?: string;
   }
 
   interface User {
     name?: string | null;
     email?: string | null;
+    cartId?: string | null;
     customerAccessToken?: string;
     impersonatorId?: string | null;
   }
@@ -253,6 +314,6 @@ declare module 'next-auth' {
 declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
-    customerAccessToken?: string;
+    user?: DefaultSession['user'];
   }
 }
