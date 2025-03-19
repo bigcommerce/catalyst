@@ -33,8 +33,8 @@ declare global {
         };
       };
       callbacks?: {
-        addEventListener: (event: 'on-logout', callback: () => void) => void;
-        removeEventListener: (event: 'on-logout', callback: () => void) => void;
+        addEventListener: (event: 'on-logout' | 'on-registered', callback: (props: { data: Record<string,string> }) => void) => void;
+        removeEventListener: (event: 'on-logout' | 'on-registered', callback: (props: { data: Record<string,string> }) => void) => void;
         dispatchEvent: (event: string) => void;
       };
     };
