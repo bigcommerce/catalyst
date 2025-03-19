@@ -5,6 +5,7 @@
 @import url('@alto-avios/alto-tokens/web-ssr/avios/light.css');
 @import url('@alto-avios/alto-tokens/web-ssr/avios/dark.css');
 @import url('@alto-avios/alto-tokens/web-ssr/avios/fonts.css');
+@import url('@channel/shared-header-footer/style.css');
 
 /* TO REMOVE */
 :root {
