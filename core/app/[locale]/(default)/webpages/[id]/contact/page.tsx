@@ -3,10 +3,10 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
+import { DynamicForm } from '@/vibes/soul/form/dynamic-form';
+import type { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
-import { DynamicForm } from '@/vibes/soul/primitives/dynamic-form';
-import type { Field, FieldGroup } from '@/vibes/soul/primitives/dynamic-form/schema';
 import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
