@@ -3,17 +3,15 @@ import { clsx } from 'clsx';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { CompareDrawer, CompareDrawerProvider } from '@/vibes/soul/primitives/compare-drawer';
 import {
+  type Product,
   ProductCard,
   ProductCardSkeleton,
-  ProductCardWithId,
 } from '@/vibes/soul/primitives/product-card';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 
-export type ListProduct = ProductCardWithId;
-
 interface ProductListProps {
-  products: Streamable<ListProduct[]>;
-  compareProducts?: Streamable<ListProduct[]>;
+  products: Streamable<Product[]>;
+  compareProducts?: Streamable<Product[]>;
   className?: string;
   colorScheme?: 'light' | 'dark';
   aspectRatio?: '5:6' | '3:4' | '1:1';
