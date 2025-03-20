@@ -27,8 +27,9 @@ export default async (): Promise<NextConfig> => {
     reactStrictMode: true,
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
-      ppr: true,
       dynamicIO: true,
+      ppr: 'incremental',
+      nodeMiddleware: true, // required for redis adapter
     },
     typescript: {
       ignoreBuildErrors: !!process.env.CI,
