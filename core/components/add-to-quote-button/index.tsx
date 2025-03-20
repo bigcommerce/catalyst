@@ -12,6 +12,7 @@ interface Props {
   sku: string;
   className?: string;
   selectedOptions: B2BProductOption[];
+  validate: () => void
   quantity?: number;
 }
 
@@ -20,6 +21,7 @@ export const AddToQuoteButton = ({
   sku,
   className,
   selectedOptions,
+  validate,
   quantity = 1,
 }: Props) => {
   const sdk = useSDK();
@@ -33,17 +35,22 @@ export const AddToQuoteButton = ({
 
   const handleAddToQuote = () => {
     setLoading(true);
+    try {
+      validate()
+      
+      const productOptions = Object.values(selectedOptions);
 
-    const productOptions = Object.values(selectedOptions);
-
-    void addProducts([
-      {
-        sku,
-        productEntityId: Number(productEntityId),
-        quantity,
-        selectedOptions: productOptions.length > 0 ? productOptions : undefined,
-      },
-    ]).finally(() => setLoading(false));
+      void addProducts([
+        {
+          sku,
+          productEntityId: Number(productEntityId),
+          quantity,
+          selectedOptions: productOptions.length > 0 ? productOptions : undefined,
+        },
+      ]).finally(() => setLoading(false));
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
