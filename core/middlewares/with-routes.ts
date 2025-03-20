@@ -1,12 +1,8 @@
-import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
+import { NextRequest, NextResponse } from 'next/server';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
-
-import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
@@ -94,7 +90,7 @@ const getRawWebPageContent = async (id: string) => {
 };
 
 const GetStoreStatusQuery = graphql(`
-  query getStoreStatus {
+  query GetStoreStatus {
     site {
       settings {
         status
@@ -113,97 +109,6 @@ const getStoreStatus = async (channelId?: string) => {
   return data.site.settings?.status;
 };
 
-type Route = Awaited<ReturnType<typeof getRoute>>;
-type StorefrontStatusType = ReturnType<typeof graphql.scalar<'StorefrontStatusType'>>;
-
-interface RouteCache {
-  route: Route;
-  expiryTime: number;
-}
-
-interface StorefrontStatusCache {
-  status: StorefrontStatusType;
-  expiryTime: number;
-}
-
-const StorefrontStatusCacheSchema = z.object({
-  status: z.union([
-    z.literal('HIBERNATION'),
-    z.literal('LAUNCHED'),
-    z.literal('MAINTENANCE'),
-    z.literal('PRE_LAUNCH'),
-  ]),
-  expiryTime: z.number(),
-});
-
-const RedirectSchema = z.object({
-  to: z.union([
-    z.object({ __typename: z.literal('BlogPostRedirect'), path: z.string() }),
-    z.object({ __typename: z.literal('BrandRedirect'), path: z.string() }),
-    z.object({ __typename: z.literal('CategoryRedirect'), path: z.string() }),
-    z.object({ __typename: z.literal('PageRedirect'), path: z.string() }),
-    z.object({ __typename: z.literal('ProductRedirect'), path: z.string() }),
-    z.object({ __typename: z.literal('ManualRedirect') }),
-  ]),
-  toUrl: z.string(),
-});
-
-const NodeSchema = z.union([
-  z.object({ __typename: z.literal('Product'), entityId: z.number() }),
-  z.object({ __typename: z.literal('Category'), entityId: z.number() }),
-  z.object({ __typename: z.literal('Brand'), entityId: z.number() }),
-  z.object({ __typename: z.literal('ContactPage'), id: z.string() }),
-  z.object({ __typename: z.literal('NormalPage'), id: z.string() }),
-  z.object({ __typename: z.literal('RawHtmlPage'), id: z.string() }),
-  z.object({ __typename: z.literal('Blog'), id: z.string() }),
-  z.object({ __typename: z.literal('BlogPost'), entityId: z.number() }),
-]);
-
-const RouteSchema = z.object({
-  redirect: z.nullable(RedirectSchema),
-  node: z.nullable(NodeSchema),
-});
-
-const RouteCacheSchema = z.object({
-  route: z.nullable(RouteSchema),
-  expiryTime: z.number(),
-});
-
-const updateRouteCache = async (
-  pathname: string,
-  channelId: string,
-  event: NextFetchEvent,
-): Promise<RouteCache> => {
-  const routeCache: RouteCache = {
-    route: await getRoute(pathname, channelId),
-    expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
-  };
-
-  event.waitUntil(kv.set(kvKey(pathname, channelId), routeCache));
-
-  return routeCache;
-};
-
-const updateStatusCache = async (
-  channelId: string,
-  event: NextFetchEvent,
-): Promise<StorefrontStatusCache> => {
-  const status = await getStoreStatus(channelId);
-
-  if (status === undefined) {
-    throw new Error('Failed to fetch new storefront status');
-  }
-
-  const statusCache: StorefrontStatusCache = {
-    status,
-    expiryTime: Date.now() + 1000 * 60 * 5, // 5 minutes
-  };
-
-  event.waitUntil(kv.set(kvKey(STORE_STATUS_KEY, channelId), statusCache));
-
-  return statusCache;
-};
-
 const clearLocaleFromPath = (path: string, locale: string) => {
   if (path === `/${locale}` || path === `/${locale}/`) {
     return '/';
@@ -216,38 +121,21 @@ const clearLocaleFromPath = (path: string, locale: string) => {
   return path;
 };
 
-const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
+const getRouteInfo = async (request: NextRequest) => {
   const locale = request.headers.get('x-bc-locale') ?? '';
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
 
   try {
     const pathname = clearLocaleFromPath(request.nextUrl.pathname, locale);
 
-    let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
-      kvKey(pathname, channelId),
-      kvKey(STORE_STATUS_KEY, channelId),
-    );
-
-    // If caches are old, update them in the background and return the old data (SWR-like behavior)
-    // If cache is missing, update it and return the new data, but write to KV in the background
-    if (statusCache && statusCache.expiryTime < Date.now()) {
-      event.waitUntil(updateStatusCache(channelId, event));
-    } else if (!statusCache) {
-      statusCache = await updateStatusCache(channelId, event);
-    }
-
-    if (routeCache && routeCache.expiryTime < Date.now()) {
-      event.waitUntil(updateRouteCache(pathname, channelId, event));
-    } else if (!routeCache) {
-      routeCache = await updateRouteCache(pathname, channelId, event);
-    }
-
-    const parsedRoute = RouteCacheSchema.safeParse(routeCache);
-    const parsedStatus = StorefrontStatusCacheSchema.safeParse(statusCache);
+    const [route, status] = await Promise.all([
+      getRoute(pathname, channelId),
+      getStoreStatus(channelId),
+    ]);
 
     return {
-      route: parsedRoute.success ? parsedRoute.data.route : undefined,
-      status: parsedStatus.success ? parsedStatus.data.status : undefined,
+      route,
+      status,
     };
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -261,10 +149,10 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
 };
 
 export const withRoutes: MiddlewareFactory = () => {
-  return async (request, event) => {
+  return async (request) => {
     const locale = request.headers.get('x-bc-locale') ?? '';
 
-    const { route, status } = await getRouteInfo(request, event);
+    const { route, status } = await getRouteInfo(request);
 
     if (status === 'MAINTENANCE') {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
