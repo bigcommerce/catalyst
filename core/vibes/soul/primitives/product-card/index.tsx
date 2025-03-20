@@ -8,7 +8,7 @@ import { Link } from '~/components/link';
 
 import { Compare } from './compare';
 
-export interface CardProduct {
+export interface ProductCardWithId {
   id: string;
   title: string;
   href: string;
@@ -19,7 +19,7 @@ export interface CardProduct {
   rating?: number;
 }
 
-interface Props {
+interface ProductCardProps {
   className?: string;
   colorScheme?: 'light' | 'dark';
   aspectRatio?: '5:6' | '3:4' | '1:1';
@@ -28,7 +28,7 @@ interface Props {
   imageSizes?: string;
   compareLabel?: string;
   compareParamName?: string;
-  product: CardProduct;
+  product: ProductCardWithId;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -59,7 +59,7 @@ export function ProductCard({
   compareParamName,
   imagePriority = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
-}: Props) {
+}: ProductCardProps) {
   return (
     <div className={clsx('@container', className)}>
       <Link
@@ -156,7 +156,7 @@ export function ProductCard({
               colorScheme={colorScheme}
               label={compareLabel}
               paramName={compareParamName}
-              productId={id}
+              product={{ id, title, href, image }}
             />
           </div>
         )}

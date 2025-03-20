@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { cache } from 'react';
 
-import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
+import { BreadcrumbWithId } from '@/vibes/soul/sections/breadcrumbs';
 import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
@@ -34,18 +34,20 @@ const getWebPage = cache(async (id: string): Promise<WebPageData> => {
   };
 });
 
-async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
+async function getWebPageBreadcrumbs(id: string): Promise<BreadcrumbWithId[]> {
   const webpage = await getWebPage(id);
   const [, ...rest] = webpage.breadcrumbs.reverse();
   const breadcrumbs = [
     {
       label: 'Home',
       href: '/',
+      id: 'home',
     },
     ...rest.reverse(),
     {
       label: webpage.title,
       href: '#',
+      id: webpage.title,
     },
   ];
 

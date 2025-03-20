@@ -5,7 +5,7 @@ import { createSearchParamsCache, parseAsString } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
-import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
+import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
@@ -239,7 +239,7 @@ export default async function Product(props: Props) {
     <>
       <ProductDetail
         action={addToCart}
-        additionalInformationLabel={t('ProductDetails.additionalInformation')}
+        additionaInformationTitle={t('ProductDetails.additionalInformation')}
         ctaDisabled={getCtaDisabled(props)}
         ctaLabel={getCtaLabel(props)}
         decrementLabel={t('ProductDetails.decreaseQuantity')}
@@ -251,7 +251,7 @@ export default async function Product(props: Props) {
         thumbnailLabel={t('ProductDetails.thumbnail')}
       />
 
-      <FeaturedProductsCarousel
+      <FeaturedProductCarousel
         cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
         emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
         emptyStateTitle={t('RelatedProducts.noRelatedProducts')}

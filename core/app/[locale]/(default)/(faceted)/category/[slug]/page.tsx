@@ -6,9 +6,10 @@ import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Stream } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
+import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { ListProduct } from '@/vibes/soul/primitives/products-list';
+import { BreadcrumbWithId } from '@/vibes/soul/sections/breadcrumbs';
+import { ListProduct } from '@/vibes/soul/sections/product-list';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
@@ -17,10 +18,18 @@ import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
+import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
+import { getCompareProducts as getCompareProductsData } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
+
+const cachedCategoryDataVariables = cache((categoyId: string) => {
+  return {
+    categoryId: Number(categoyId),
+  };
+});
 
 const cacheCategoryFacetedSearch = cache((categoryId: string) => {
   return { category: Number(categoryId) };
@@ -28,8 +37,9 @@ const cacheCategoryFacetedSearch = cache((categoryId: string) => {
 
 async function getCategory(props: Props) {
   const { slug } = await props.params;
-  const categoryId = Number(slug);
-  const data = await getCategoryPageData({ categoryId });
+
+  const variables = cachedCategoryDataVariables(slug);
+  const data = await getCategoryPageData(variables);
 
   const category = data.category;
 
@@ -81,19 +91,21 @@ const getRefinedSearch = cache(async (props: Props) => {
   });
 });
 
-async function getBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
+async function getBreadcrumbs(props: Props): Promise<BreadcrumbWithId[]> {
   const category = await getCategory(props);
 
-  return removeEdgesAndNodes(category.breadcrumbs).map(({ name, path }) => ({
+  return removeEdgesAndNodes(category.breadcrumbs).map(({ name, path, entityId }) => ({
     label: name,
     href: path ?? '#',
+    id: entityId.toString(),
   }));
 }
 
 async function getSubCategoriesFilters(props: Props): Promise<Filter[]> {
   const { slug } = await props.params;
-  const categoryId = Number(slug);
-  const data = await getCategoryPageData({ categoryId });
+
+  const variables = cachedCategoryDataVariables(slug);
+  const data = await getCategoryPageData(variables);
   const t = await getTranslations('FacetedGroup.MobileSideNav');
 
   const categoryTree = data.categoryTree[0];
@@ -208,6 +220,40 @@ async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
   return pageInfoTransformer(search.products.pageInfo);
 }
 
+async function getShowCompare(props: Props) {
+  const { slug } = await props.params;
+
+  const variables = cachedCategoryDataVariables(slug);
+  const data = await getCategoryPageData(variables);
+
+  return data.settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+}
+
+const cachedCompareProductIds = cache(async (props: Props) => {
+  const searchParams = await props.searchParams;
+
+  const compareLoader = createCompareLoader();
+
+  const { compare } = compareLoader(searchParams);
+
+  return { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
+});
+
+async function getCompareProducts(props: Props) {
+  const compareIds = await cachedCompareProductIds(props);
+
+  const products = await getCompareProductsData(compareIds);
+
+  return products.map((product) => ({
+    id: product.entityId.toString(),
+    title: product.name,
+    image: product.defaultImage
+      ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+      : undefined,
+    href: product.path,
+  }));
+}
+
 async function getFilterLabel(): Promise<string> {
   const t = await getTranslations('FacetedGroup.FacetedSearch');
 
@@ -218,6 +264,18 @@ async function getCompareLabel(): Promise<string> {
   const t = await getTranslations('Components.ProductCard.Compare');
 
   return t('compare');
+}
+
+async function getRemoveLabel(): Promise<string> {
+  const t = await getTranslations('Components.ProductCard.Compare');
+
+  return t('remove');
+}
+
+async function getMaxCompareLimitMessage(): Promise<string> {
+  const t = await getTranslations('Components.ProductCard.Compare');
+
+  return t('maxCompareLimit');
 }
 
 async function getFiltersPanelTitle(): Promise<string> {
@@ -238,13 +296,13 @@ async function getResetFiltersLabel(): Promise<string> {
   return t('resetFilters');
 }
 
-async function getEmptyStateTitle(): Promise<string | null> {
+async function getEmptyStateTitle(): Promise<string> {
   const t = await getTranslations('Category.Empty');
 
   return t('title');
 }
 
-async function getEmptyStateSubtitle(): Promise<string | null> {
+async function getEmptyStateSubtitle(): Promise<string> {
   const t = await getTranslations('Category.Empty');
 
   return t('subtitle');
@@ -282,15 +340,20 @@ export default async function Category(props: Props) {
       <ProductsListSection
         breadcrumbs={getBreadcrumbs(props)}
         compareLabel={getCompareLabel()}
+        compareProducts={getCompareProducts(props)}
         emptyStateSubtitle={getEmptyStateSubtitle()}
         emptyStateTitle={getEmptyStateTitle()}
         filterLabel={await getFilterLabel()}
         filters={getFilters(props)}
         filtersPanelTitle={getFiltersPanelTitle()}
+        maxCompareLimitMessage={getMaxCompareLimitMessage()}
+        maxItems={MAX_COMPARE_LIMIT}
         paginationInfo={getPaginationInfo(props)}
         products={getListProducts(props)}
         rangeFilterApplyLabel={getRangeFilterApplyLabel()}
+        removeLabel={getRemoveLabel()}
         resetFiltersLabel={getResetFiltersLabel()}
+        showCompare={getShowCompare(props)}
         sortDefaultValue="featured"
         sortLabel={getSortLabel()}
         sortOptions={getSortOptions()}

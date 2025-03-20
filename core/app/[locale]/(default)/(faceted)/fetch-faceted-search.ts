@@ -148,6 +148,13 @@ const GetProductSearchResultsQuery = graphql(
             }
           }
         }
+        settings {
+          storefront {
+            catalog {
+              productComparisonsEnabled
+            }
+          }
+        }
       }
     }
   `,
