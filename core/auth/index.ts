@@ -149,13 +149,15 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
 }
 
 const config = {
+  // Set this environment variable if you want to trust the host when using `next build` & `next start`.
+  // Otherwise, this will be controlled by process.env.NODE_ENV within the library.
+  trustHost: process.env.AUTH_TRUST_HOST === 'true' ? true : undefined,
   session: {
     strategy: 'jwt',
   },
   pages: {
     signIn: '/login',
   },
-  trustHost: true,
   callbacks: {
     jwt: ({ token, user }) => {
       // user can actually be undefined
