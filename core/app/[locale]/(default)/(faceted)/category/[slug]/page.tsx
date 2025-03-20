@@ -9,7 +9,7 @@ import { Stream } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Product } from '@/vibes/soul/primitives/product-card';
-import { BreadcrumbWithId } from '@/vibes/soul/sections/breadcrumbs';
+import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
@@ -91,13 +91,12 @@ const getRefinedSearch = cache(async (props: Props) => {
   });
 });
 
-async function getBreadcrumbs(props: Props): Promise<BreadcrumbWithId[]> {
+async function getBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
   const category = await getCategory(props);
 
-  return removeEdgesAndNodes(category.breadcrumbs).map(({ name, path, entityId }) => ({
+  return removeEdgesAndNodes(category.breadcrumbs).map(({ name, path }) => ({
     label: name,
     href: path ?? '#',
-    id: entityId.toString(),
   }));
 }
 

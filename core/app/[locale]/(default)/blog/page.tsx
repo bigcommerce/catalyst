@@ -72,18 +72,16 @@ export default async function Blog(props: Props) {
     return notFound();
   }
 
-  const tagCrumb = tag ? [{ label: tag, href: '#', id: tag }] : [];
+  const tagCrumb = tag ? [{ label: tag, href: '#' }] : [];
 
   return (
     <FeaturedBlogPostList
       breadcrumbs={[
         {
-          id: 'home',
           label: 'Home',
           href: '/',
         },
         {
-          id: blog.path,
           label: blog.name,
           href: tag ? blog.path : '#',
         },

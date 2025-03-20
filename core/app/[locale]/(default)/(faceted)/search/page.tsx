@@ -6,7 +6,7 @@ import { cache } from 'react';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Product } from '@/vibes/soul/primitives/product-card';
-import { BreadcrumbWithId } from '@/vibes/soul/sections/breadcrumbs';
+import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
@@ -277,12 +277,12 @@ async function getEmptyStateSubtitle(): Promise<string> {
   return t('emptyStateSubtitle');
 }
 
-async function getBreadcrumbs(): Promise<BreadcrumbWithId[]> {
+async function getBreadcrumbs(): Promise<Breadcrumb[]> {
   const t = await getTranslations('Search');
 
   return [
-    { label: t('Breadcrumbs.home'), href: '/', id: 'home' },
-    { label: t('Breadcrumbs.search'), href: `#`, id: 'search' },
+    { label: t('Breadcrumbs.home'), href: '/' },
+    { label: t('Breadcrumbs.search'), href: `#` },
   ];
 }
 

@@ -2,7 +2,7 @@ import { Streamable } from '@/vibes/soul/lib/streamable';
 import { BlogPostCardBlogPost } from '@/vibes/soul/primitives/blog-post-card';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { BlogPostList } from '@/vibes/soul/sections/blog-post-list';
-import { Breadcrumbs, BreadcrumbWithId } from '@/vibes/soul/sections/breadcrumbs';
+import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 
 interface Props {
@@ -10,7 +10,7 @@ interface Props {
   description?: string;
   posts: Streamable<BlogPostCardBlogPost[]>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
-  breadcrumbs?: Streamable<BreadcrumbWithId[]>;
+  breadcrumbs?: Streamable<Breadcrumb[]>;
   emptyStateSubtitle?: Streamable<string | null>;
   emptyStateTitle?: Streamable<string | null>;
   placeholderCount?: number;

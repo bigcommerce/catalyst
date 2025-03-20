@@ -6,7 +6,7 @@ import { cache } from 'react';
 import { DynamicForm } from '@/vibes/soul/form/dynamic-form';
 import type { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
-import { BreadcrumbWithId } from '@/vibes/soul/sections/breadcrumbs';
+import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
@@ -65,20 +65,18 @@ const getWebPage = cache(async (id: string): Promise<ContactPage> => {
   };
 });
 
-async function getWebPageBreadcrumbs(id: string): Promise<BreadcrumbWithId[]> {
+async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
   const webpage = await getWebPage(id);
   const [, ...rest] = webpage.breadcrumbs.reverse();
   const breadcrumbs = [
     {
       label: 'Home',
       href: '/',
-      id: 'home',
     },
     ...rest.reverse(),
     {
       label: webpage.title,
       href: '#',
-      id: webpage.title,
     },
   ];
 
