@@ -4,13 +4,14 @@ import { Suspense } from 'react';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
+import { Product } from '@/vibes/soul/primitives/product-card';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
 import {
   Breadcrumbs,
   BreadcrumbsSkeleton,
   BreadcrumbWithId,
 } from '@/vibes/soul/sections/breadcrumbs';
-import { ListProduct, ProductList } from '@/vibes/soul/sections/product-list';
+import { ProductList } from '@/vibes/soul/sections/product-list';
 import { Filter, FiltersPanel } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import {
   Sorting,
@@ -22,10 +23,10 @@ interface Props {
   breadcrumbs?: Streamable<BreadcrumbWithId[]>;
   title?: Streamable<string | null>;
   totalCount: Streamable<number>;
-  products: Streamable<ListProduct[]>;
+  products: Streamable<Product[]>;
   filters: Streamable<Filter[]>;
   sortOptions: Streamable<SortOption[]>;
-  compareProducts?: Streamable<ListProduct[]>;
+  compareProducts?: Streamable<Product[]>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
   compareHref?: string;
   compareLabel?: Streamable<string>;

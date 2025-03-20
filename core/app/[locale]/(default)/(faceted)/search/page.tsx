@@ -5,8 +5,8 @@ import { cache } from 'react';
 
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
+import { Product } from '@/vibes/soul/primitives/product-card';
 import { BreadcrumbWithId } from '@/vibes/soul/sections/breadcrumbs';
-import { ListProduct } from '@/vibes/soul/sections/product-list';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
@@ -118,7 +118,7 @@ async function getFilters(props: Props): Promise<Filter[]> {
   return transformedFacets.filter((facet) => facet != null);
 }
 
-async function getListProducts(props: Props): Promise<ListProduct[]> {
+async function getListProducts(props: Props): Promise<Product[]> {
   const products = await getProducts(props);
   const format = await getFormatter();
 

@@ -10,13 +10,13 @@ import {
   CarouselScrollbar,
 } from '@/vibes/soul/primitives/carousel';
 import {
+  type Product,
   ProductCard,
   ProductCardSkeleton,
-  ProductCardWithId,
 } from '@/vibes/soul/primitives/product-card';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 
-export type CarouselProduct = ProductCardWithId;
+export type CarouselProduct = Product;
 
 export interface ProductCarouselProps {
   products: Streamable<CarouselProduct[]>;
@@ -197,7 +197,7 @@ export function ProductsCarouselEmptyState({
         <div className="mx-auto max-w-xl space-y-2 text-center @4xl:space-y-3">
           <h3
             className={clsx(
-              '@4x:leading-none font-[family-name:var(--product-carousel-empty-title-font-family,var(--font-family-heading))] text-2xl leading-tight @4xl:text-4xl',
+              'font-[family-name:var(--product-carousel-empty-title-font-family,var(--font-family-heading))] text-2xl leading-tight @4xl:text-4xl @4xl:leading-none',
               {
                 light: 'text-[var(--product-carousel-light-empty-title,hsl(var(--foreground)))]',
                 dark: 'text-[var(--product-carousel-dark-empty-title,hsl(var(--background)))]',

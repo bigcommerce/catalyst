@@ -1,17 +1,13 @@
 import { clsx } from 'clsx';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
-import {
-  ProductCard,
-  ProductCardSkeleton,
-  ProductCardWithId,
-} from '@/vibes/soul/primitives/product-card';
+import { Product, ProductCard, ProductCardSkeleton } from '@/vibes/soul/primitives/product-card';
 import { Rating } from '@/vibes/soul/primitives/rating';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 
 import { AddToCartForm, CompareAddToCartAction } from './add-to-cart-form';
 
-export interface CompareCardWithId extends ProductCardWithId {
+export interface CompareCardWithId extends Product {
   description?: string | React.ReactNode;
   customFields?: Array<{ name: string; value: string }>;
   hasVariants?: boolean;
