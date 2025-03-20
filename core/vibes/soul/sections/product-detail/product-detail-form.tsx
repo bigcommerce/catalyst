@@ -13,7 +13,7 @@ import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
 import { ReactNode, useActionState, useCallback, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { set, z } from 'zod';
+import { z } from 'zod';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
 import { CardRadioGroup } from '@/vibes/soul/form/card-radio-group';
@@ -31,7 +31,7 @@ import { AddToQuoteButton } from '~/components/add-to-quote-button';
 import { usePathname, useRouter } from '~/i18n/routing';
 
 import { Field, schema, SchemaRawShape } from './schema';
-import { useSDK } from '~/b2b/use-b2b-sdk';
+import { useB2BQuoteEnabled } from '~/b2b/use-b2b-quote-enabled';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
 
@@ -81,35 +81,9 @@ export function ProductDetailForm<F extends Field>({
   prefetch = false,
   sku,
 }: Props<F>) {
-  const [isAddToQuoteEnabled, setIsAddToQuoteEnabled] = useState(false)
+  const isAddToQuoteEnabled = useB2BQuoteEnabled()
   const router = useRouter();
   const pathname = usePathname();
-  const sdk = useSDK()
-
-  useEffect(() => {
-    if  (!sdk?.utils?.quote) return
-    const quoteConfigs = sdk?.utils?.quote?.getQuoteConfigs?.()
-    const role = sdk?.utils?.user?.getProfile()?.role
-    if (!quoteConfigs || !role) {
-      return 
-    }
-
-    const guestQuoteEnabled = quoteConfigs?.find(({ key }) => key === "quote_for_guest")?.value === "1"
-    const b2cCustomerQuoteEnabled = quoteConfigs?.find(({ key }) => key === "quote_for_individual_customer")?.value === "1"
-    const b2bCustomerQuoteEnabled = quoteConfigs?.find(({ key }) => key === "quote_for_b2b")?.value === "1"
-
-    if (role === B2BRole.GUEST && guestQuoteEnabled) {
-      setIsAddToQuoteEnabled(true)
-      return 
-    }
-
-    if (role === B2BRole.B2C && b2cCustomerQuoteEnabled) {
-      setIsAddToQuoteEnabled(true)
-      return 
-    }
-
-    setIsAddToQuoteEnabled(b2bCustomerQuoteEnabled)
-  }, [sdk])
 
   const searchParams = fields.reduce<Record<string, typeof parseAsString>>((acc, field) => {
     return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;

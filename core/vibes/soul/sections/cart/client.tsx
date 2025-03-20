@@ -16,6 +16,8 @@ import { CouponCodeForm, CouponCodeFormState } from './coupon-code-form';
 import { cartLineItemActionFormDataSchema } from './schema';
 
 import { CartEmptyState } from '.';
+import { AddCartToQuoteButton } from '~/components/add-cart-to-quote-button';
+import { useB2BQuoteEnabled } from '~/b2b/use-b2b-quote-enabled';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -39,6 +41,7 @@ export interface CartState<LineItem extends CartLineItem> {
 }
 
 export interface Cart<LineItem extends CartLineItem> {
+  cartId?: string;
   lineItems: LineItem[];
   summaryItems: CartSummaryItem[];
   total: string;
@@ -88,6 +91,7 @@ export function CartClient<LineItem extends CartLineItem>({
   emptyState = defaultEmptyState,
   summaryTitle,
 }: Props<LineItem>) {
+  const isAddToQuoteEnabled = useB2BQuoteEnabled()
   const [state, formAction] = useActionState(lineItemAction, {
     lineItems: cart.lineItems,
     lastResult: null,
@@ -180,10 +184,13 @@ export function CartClient<LineItem extends CartLineItem>({
             </div>
           </dl>
 
-          <CheckoutButton action={checkoutAction} className="mt-4 w-full">
-            {checkoutLabel}
-            <ArrowRight size={20} strokeWidth={1} />
-          </CheckoutButton>
+          <div className="flex flex-col gap-4">
+            <CheckoutButton action={checkoutAction} className="mt-4 w-full">
+              {checkoutLabel}
+              <ArrowRight size={20} strokeWidth={1} />
+            </CheckoutButton>
+            { cart.cartId && isAddToQuoteEnabled && (<AddCartToQuoteButton cartId={cart.cartId} />) }
+          </div>
         </div>
       }
       sidebarPosition="after"
