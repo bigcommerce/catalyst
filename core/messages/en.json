@@ -626,7 +626,8 @@
       }
     },
     "AddToQuoteButton": {
-      "addToQuote": "Add to Quote"
+      "addToQuote": "Add to Quote",
+      "addCartToQuote": "Add cart to Quote"
     }
   }
 }

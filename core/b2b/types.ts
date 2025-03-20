@@ -54,6 +54,7 @@ declare global {
         };
         quote?: {
           getQuoteConfigs: () => QuoteConfigProps[]; 
+          addProductsFromCartId: (cartId: string) => Promise<void>;
           addProducts: (
             products: Array<{
               sku: string;

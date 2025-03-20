@@ -91,6 +91,7 @@ export default async function Cart() {
     <>
       <CartComponent
         cart={{
+          cartId,
           lineItems: formattedLineItems,
           total: format.number(checkout?.grandTotal?.value || 0, {
             style: 'currency',
