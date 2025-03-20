@@ -10,12 +10,8 @@ export interface Breadcrumb {
   href: string;
 }
 
-export interface BreadcrumbWithId extends Breadcrumb {
-  id: string;
-}
-
 export interface BreadcrumbsProps {
-  breadcrumbs: Streamable<BreadcrumbWithId[]>;
+  breadcrumbs: Streamable<Breadcrumb[]>;
   className?: string;
 }
 
@@ -45,10 +41,10 @@ export function Breadcrumbs({ breadcrumbs: streamableBreadcrumbs, className }: B
         return (
           <nav aria-label="breadcrumb" className={clsx(className)}>
             <ol className="flex flex-wrap items-center gap-x-1.5 text-sm @xl:text-base">
-              {breadcrumbs.map(({ label, href }, idx) => {
-                if (idx < breadcrumbs.length - 1) {
+              {breadcrumbs.map(({ label, href }, index) => {
+                if (index < breadcrumbs.length - 1) {
                   return (
-                    <li className="inline-flex items-center gap-x-1.5" key={idx}>
+                    <li className="inline-flex items-center gap-x-1.5" key={href}>
                       <AnimatedLink
                         className="font-[family-name:var(--breadcrumbs-font-family,var(--font-family-body))] text-[var(--breadcrumbs-primary-text,hsl(var(--foreground)))] [background:linear-gradient(0deg,var(--breadcrumbs-hover,hsl(var(--primary))),var(--breadcrumbs-hover,hsl(var(--primary))))_no-repeat_left_bottom_/_0_2px]"
                         href={href}
@@ -68,7 +64,7 @@ export function Breadcrumbs({ breadcrumbs: streamableBreadcrumbs, className }: B
                 return (
                   <li
                     className="inline-flex items-center font-[family-name:var(--breadcrumbs-font-family,var(--font-family-body))] text-[var(--breadcrumbs-secondary-text,hsl(var(--contrast-500)))]"
-                    key={idx}
+                    key={href}
                   >
                     <span aria-current="page" aria-disabled="true" role="link">
                       {label}
