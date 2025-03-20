@@ -149,6 +149,10 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
 }
 
 const config = {
+  // Explicitly setting this value to be undefined. We want the library to handle CSRF checks when taking sensitive actions.
+  // When handling sensitive actions like sign in, sign out, etc., the library will automatically check for CSRF tokens.
+  // If you need to implement your own sensitive actions, you will need to implement CSRF checks yourself.
+  skipCSRFCheck: undefined,
   // Set this environment variable if you want to trust the host when using `next build` & `next start`.
   // Otherwise, this will be controlled by process.env.NODE_ENV within the library.
   trustHost: process.env.AUTH_TRUST_HOST === 'true' ? true : undefined,
