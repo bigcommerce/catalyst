@@ -11,9 +11,9 @@ import {
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
-import { ReactNode, useActionState, useCallback, useEffect } from 'react';
+import { ReactNode, useActionState, useCallback, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { z } from 'zod';
+import { set, z } from 'zod';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
 import { CardRadioGroup } from '@/vibes/soul/form/card-radio-group';
@@ -26,11 +26,12 @@ import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
-import { B2BProductOption } from '~/b2b/types';
+import { B2BProductOption, B2BRole } from '~/b2b/types';
 import { AddToQuoteButton } from '~/components/add-to-quote-button';
 import { usePathname, useRouter } from '~/i18n/routing';
 
 import { Field, schema, SchemaRawShape } from './schema';
+import { useSDK } from '~/b2b/use-b2b-sdk';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
 
@@ -80,8 +81,35 @@ export function ProductDetailForm<F extends Field>({
   prefetch = false,
   sku,
 }: Props<F>) {
+  const [isAddToQuoteEnabled, setIsAddToQuoteEnabled] = useState(false)
   const router = useRouter();
   const pathname = usePathname();
+  const sdk = useSDK()
+
+  useEffect(() => {
+    if  (!sdk?.utils?.quote) return
+    const quoteConfigs = sdk?.utils?.quote?.getQuoteConfigs?.()
+    const role = sdk?.utils?.user?.getProfile()?.role
+    if (!quoteConfigs || !role) {
+      return 
+    }
+
+    const guestQuoteEnabled = quoteConfigs?.find(({ key }) => key === "quote_for_guest")?.value === "1"
+    const b2cCustomerQuoteEnabled = quoteConfigs?.find(({ key }) => key === "quote_for_individual_customer")?.value === "1"
+    const b2bCustomerQuoteEnabled = quoteConfigs?.find(({ key }) => key === "quote_for_b2b")?.value === "1"
+
+    if (role === B2BRole.GUEST && guestQuoteEnabled) {
+      setIsAddToQuoteEnabled(true)
+      return 
+    }
+
+    if (role === B2BRole.B2C && b2cCustomerQuoteEnabled) {
+      setIsAddToQuoteEnabled(true)
+      return 
+    }
+
+    setIsAddToQuoteEnabled(b2bCustomerQuoteEnabled)
+  }, [sdk])
 
   const searchParams = fields.reduce<Record<string, typeof parseAsString>>((acc, field) => {
     return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;
@@ -255,14 +283,16 @@ export function ProductDetailForm<F extends Field>({
             />
             <div className="flex flex-1 gap-x-3">
               <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
-              <AddToQuoteButton
-                validate={validateQuote}
-                className="flex-1"
-                productEntityId={productId}
-                quantity={Number(quantityControl.value)}
-                selectedOptions={selectedOptions}
-                sku={sku}
-              />
+              {isAddToQuoteEnabled && (
+                <AddToQuoteButton
+                  validate={validateQuote}
+                  className="flex-1"
+                  productEntityId={productId}
+                  quantity={Number(quantityControl.value)}
+                  selectedOptions={selectedOptions}
+                  sku={sku}
+                />
+              )}
             </div>
           </div>
         </div>
