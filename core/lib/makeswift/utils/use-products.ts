@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import useSWR from 'swr';
 import { z } from 'zod';
 
@@ -40,14 +41,20 @@ export function useProducts({ collection, collectionLimit = 20, additionalProduc
     fetcher,
   );
 
-  const combinedProducts = [
-    ...(collectionData?.products.slice(0, collectionLimit) ?? []),
-    ...(additionalData?.products ?? []),
-  ];
+  const combinedProducts = useMemo(
+    () => [
+      ...(collectionData?.products.slice(0, collectionLimit) ?? []),
+      ...(additionalData?.products ?? []),
+    ],
+    [collectionData, additionalData, collectionLimit],
+  );
 
   const isLoading = isCollectionLoading || isAdditionalLoading;
 
-  const products = isLoading ? null : combinedProducts.map(bcProductToVibesProduct);
+  const products = useMemo(
+    () => (isLoading ? null : combinedProducts.map(bcProductToVibesProduct)),
+    [isLoading, combinedProducts, bcProductToVibesProduct],
+  );
 
   return { products, isLoading };
 }
