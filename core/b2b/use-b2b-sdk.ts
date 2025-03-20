@@ -7,7 +7,12 @@ export const useSDK = () => {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      if (window.b2b?.utils) {
+      const getQuoteConfigs = window.b2b?.utils?.quote?.getQuoteConfigs;
+      if (!getQuoteConfigs) {
+        return;
+      }
+
+      if (window.b2b?.utils && getQuoteConfigs().length > 0) {
         setSdk(window.b2b);
         clearInterval(interval);
       }
