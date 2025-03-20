@@ -1,7 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
-
 import { FeaturedProductsCarousel } from '@/vibes/avios/sections/featured-products-carousel';
 import { FeaturedProductsList } from '@/vibes/avios/sections/featured-products-list';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -105,8 +104,6 @@ export default async function Home({ params }: Props) {
         products={getNewestProducts()}
         title={t('NewestProducts.title')}
       />
-
-      {/* <Subscribe /> */}
     </>
   );
 }

@@ -1,10 +1,9 @@
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, Accordions } from '@/vibes/soul/primitives/accordions';
 import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
-import { Price, PriceLabel } from '@/vibes/avios/sections/price-label';
+import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
 import { Rating } from '@/vibes/soul/primitives/rating';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
-
 import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
 import { Field } from './schema';
 

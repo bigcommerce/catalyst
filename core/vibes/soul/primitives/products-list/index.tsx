@@ -1,5 +1,4 @@
 import { clsx } from 'clsx';
-
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import {
   CardProduct,
@@ -69,7 +68,7 @@ export function ProductsList({
                     imageSizes="(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw"
                     key={product.id}
                     product={product}
-                    // showCompare={showCompare}
+                    showCompare={showCompare}
                   />
                 ))}
               </div>

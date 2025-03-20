@@ -98,14 +98,14 @@ export function ProductCard({
           ) : (
             <div
               className={clsx(
-                'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
+                'text-4xl @xs:text-7xl break-words pl-5 pt-5 font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105',
                 {
                   light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
                   dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
                 }[colorScheme],
               )}
             >
-              {title}kkk
+              {title}
             </div>
           )}
           {badge != null && badge !== '' && (
@@ -118,7 +118,7 @@ export function ProductCard({
 
       <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
         <div className="flex-1">
-          <Link className="group text-sm @[16rem]:text-base" href={href} tabIndex={-1}>
+          <Link className="text-sm @[16rem]:text-base group" href={href} tabIndex={-1}>
             <span
               className={clsx(
                 'block font-semibold',
@@ -134,14 +134,14 @@ export function ProductCard({
             {subtitle != null && subtitle !== '' && (
               <span
                 className={clsx(
-                  'mb-2 block text-sm font-normal',
+                  'text-sm mb-2 block font-normal',
                   {
                     light: 'text-[var(--product-card-light-subtitle,hsl(var(--foreground)/75%))]',
                     dark: 'text-[var(--product-card-dark-subtitle,hsl(var(--background)/75%))]',
                   }[colorScheme],
                 )}
               >
-                {subtitle} hhh
+                {subtitle}
               </span>
             )}
             {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
@@ -174,7 +174,7 @@ export function ProductCardSkeleton({
     <div className={clsx('@container', className)}>
       <Skeleton.Box
         className={clsx(
-          'rounded-xl @md:rounded-2xl',
+          '@md:rounded-2xl rounded-xl',
           {
             '5:6': 'aspect-[5/6]',
             '3:4': 'aspect-[3/4]',
@@ -183,7 +183,7 @@ export function ProductCardSkeleton({
         )}
       />
       <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
-        <div className="w-full text-sm @[16rem]:text-base">
+        <div className="text-sm @[16rem]:text-base w-full">
           <Skeleton.Text characterCount={10} className="rounded" />
           <Skeleton.Text characterCount={8} className="rounded" />
           <Skeleton.Text characterCount={6} className="rounded" />
