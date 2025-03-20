@@ -1,11 +1,7 @@
 import { clsx } from 'clsx';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import {
-  CardProduct,
-  ProductCard,
-  ProductCardSkeleton,
-} from '@/vibes/soul/primitives/product-card';
+import { CardProduct, ProductCard, ProductCardSkeleton } from '@/vibes/avios/sections/product-card';
 
 import { CompareDrawer } from './compare-drawer';
 
@@ -41,6 +37,7 @@ export function ProductsList({
   placeholderCount = 6,
 }: Props) {
   return (
+    console.log('ProductsList', streamableProducts),
     <>
       <Stream
         fallback={<ProductsListSkeleton pending placeholderCount={placeholderCount} />}
@@ -69,7 +66,6 @@ export function ProductsList({
                     imageSizes="(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw"
                     key={product.id}
                     product={product}
-                    // showCompare={showCompare}
                   />
                 ))}
               </div>
@@ -136,8 +132,8 @@ export function ProductsListEmptyState({
         ))}
       </div>
       <div className="absolute inset-0 mx-auto px-3 py-16 pb-3 @4xl:px-10 @4xl:pb-10 @4xl:pt-28">
-        <div className="mx-auto max-w-xl space-y-2 text-center @4xl:space-y-3">
-          <h3 className="@4x:leading-none font-heading text-2xl leading-tight text-foreground @4xl:text-4xl">
+        <div className="space-y-2 @4xl:space-y-3 mx-auto max-w-xl text-center">
+          <h3 className="@4x:leading-none text-2xl @4xl:text-4xl font-heading leading-tight text-foreground">
             {emptyStateTitle}
           </h3>
           <p className="text-sm text-contrast-500 @4xl:text-lg">{emptyStateSubtitle}</p>

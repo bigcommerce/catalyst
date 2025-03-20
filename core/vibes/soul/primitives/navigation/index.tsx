@@ -25,7 +25,7 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Button } from '@/vibes/soul/primitives/button';
 import { Logo } from '@/vibes/soul/primitives/logo';
 import { Price } from '@/vibes/soul/primitives/price-label';
-import { ProductCard } from '@/vibes/soul/primitives/product-card';
+import { ProductCard } from '@/vibes/avios/sections/product-card';
 import { Link } from '~/components/link';
 import { usePathname, useRouter } from '~/i18n/routing';
 

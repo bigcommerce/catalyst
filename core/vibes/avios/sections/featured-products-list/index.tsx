@@ -1,5 +1,5 @@
 import { Streamable } from '@/vibes/soul/lib/streamable';
-import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
+import { ListProduct, ProductsList } from '@/vibes/avios/sections/products-list';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { Button, Heading, Paragraph } from '~/alto/alto-avios';
 

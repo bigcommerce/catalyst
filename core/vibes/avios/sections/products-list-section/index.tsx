@@ -12,6 +12,7 @@ import {
   SortingSkeleton,
   Option as SortOption,
 } from '@/vibes/avios/sections/products-list-section/sorting';
+import { SubHeading } from '~/alto/alto-avios';
 
 interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;
@@ -72,22 +73,13 @@ export function ProductsListSection({
             }
           </Stream>
           <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
-            <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
-              <Suspense
-                fallback={
-                  <span className="inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg bg-contrast-100"
-                />
-                }
-              >
+            <h1 className="text-3xl @lg:text-4xl @2xl:text-5xl flex items-center gap-2 font-heading font-medium leading-none">
+              <SubHeading as="span" foregroundColor="accentPrimary" size="xs">
                 {title}
-              </Suspense>
-              <Suspense
-                fallback={
-                  <span className="inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg bg-contrast-100" />
-                }
-              >
-                <span className="text-contrast-300">{totalCount}</span>
-              </Suspense>
+              </SubHeading>
+              <SubHeading as="span" foregroundColor="accentPrimary" size="xs">
+                {totalCount}
+              </SubHeading>
             </h1>
             <div className="flex gap-2">
               <Stream

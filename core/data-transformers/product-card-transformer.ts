@@ -1,7 +1,7 @@
 import { ResultOf } from 'gql.tada';
 import { getFormatter } from 'next-intl/server';
 
-import { CardProduct } from '@/vibes/soul/primitives/product-card';
+import { CardProduct } from '@/vibes/avios/sections/product-card';
 import { ExistingResultType } from '~/client/util';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 

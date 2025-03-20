@@ -106,7 +106,7 @@ export default async function Home({ params }: Props) {
         title={t('NewestProducts.title')}
       />
 
-      <Subscribe />
+      {/* <Subscribe /> */}
     </>
   );
 }

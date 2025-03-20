@@ -1,10 +1,8 @@
 'use client';
-
 import * as SelectPrimitive from '@radix-ui/react-select';
 import { clsx } from 'clsx';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import * as React from 'react';
-
 import { FieldError } from '@/vibes/soul/form/field-error';
 import { Label } from '@/vibes/soul/form/label';
 
