@@ -98,6 +98,22 @@ export function ProductDetailForm<F extends Field>({
       router.prefetch(newUrl);
     }
   };
+  
+  const validateQuote = () =>  {
+    const data = new FormData()
+    const formValues = {...(form.value ?? {})}
+    Object.entries(formValues).map(([key, value]) => {
+      if (typeof value === 'string') {
+        data.append(key, value)
+      }
+    })
+
+    const zodError = parseWithZod(data, { schema: schema(fields) });
+    if(zodError.status === 'error') {
+      form.validate()
+      throw new Error('Invalid form data')
+    } 
+  }
 
   const defaultValue = fields.reduce<{
     [Key in keyof SchemaRawShape]?: z.infer<SchemaRawShape[Key]>;
@@ -240,6 +256,7 @@ export function ProductDetailForm<F extends Field>({
             <div className="flex flex-1 gap-x-3">
               <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
               <AddToQuoteButton
+                validate={validateQuote}
                 className="flex-1"
                 productEntityId={productId}
                 quantity={Number(quantityControl.value)}
