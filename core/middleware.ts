@@ -7,6 +7,7 @@ import { withRoutes } from './middlewares/with-routes';
 export const middleware = composeMiddlewares(withAuth, withIntl, withChannelId, withRoutes);
 
 export const config = {
+  runtime: 'nodejs', // required for redis adapter
   matcher: [
     /*
      * Match all request paths except for the ones starting with:

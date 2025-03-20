@@ -82,6 +82,12 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 }
 
 async function createKVAdapter() {
+  if (process.env.ROUTE_CACHE_REDIS_URL) {
+    const { RedisKvAdapter } = await import('./adapters/redis');
+
+    return new RedisKvAdapter();
+  }
+
   if (process.env.BC_KV_REST_API_URL && process.env.BC_KV_REST_API_TOKEN) {
     const { BcKvAdapter } = await import('./adapters/bc');
 
