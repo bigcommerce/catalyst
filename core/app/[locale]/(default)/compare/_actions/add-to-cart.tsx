@@ -3,21 +3,18 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { unstable_expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
 import { compareAddToCartFormDataSchema } from '@/vibes/soul/primitives/compare-card/schema';
-import { addCartLineItem } from '~/client/mutations/add-cart-line-item';
-import { createCart } from '~/client/mutations/create-cart';
-import { getCart } from '~/client/queries/get-cart';
-import { TAGS } from '~/client/tags';
 import { Link } from '~/components/link';
-import { getCartId, setCartId } from '~/lib/cart';
+import { addToOrCreateCart } from '~/lib/cart';
+import { MissingCartError } from '~/lib/cart/error';
 
 interface State {
   lastResult: SubmissionResult | null;
   successMessage?: ReactNode;
+  errorMessage?: string;
 }
 
 export const addToCart = async (
@@ -38,65 +35,15 @@ export const addToCart = async (
   const productEntityId = Number(submission.value.id);
   const quantity = 1;
 
-  const cartId = await getCartId();
-
-  let cart;
-
   try {
-    cart = await getCart(cartId);
-
-    if (cart) {
-      const addCartLineItemResponse = await addCartLineItem(cart.entityId, {
-        lineItems: [
-          {
-            productEntityId,
-            quantity,
-          },
-        ],
-      });
-
-      cart = addCartLineItemResponse.data.cart.addCartLineItems?.cart;
-
-      if (!cart?.entityId) {
-        return {
-          lastResult: submission.reply({ formErrors: [t('missingCart')] }),
-        };
-      }
-
-      unstable_expireTag(TAGS.cart);
-
-      return {
-        lastResult: submission.reply(),
-        successMessage: t.rich('successMessage', {
-          cartItems: quantity,
-          cartLink: (chunks) => (
-            <Link className="underline" href="/cart" prefetch="viewport" prefetchKind="full">
-              {chunks}
-            </Link>
-          ),
-        }),
-      };
-    }
-
-    // Create cart
-    const createCartResponse = await createCart([
-      {
-        productEntityId,
-        quantity,
-      },
-    ]);
-
-    cart = createCartResponse.data.cart.createCart?.cart;
-
-    if (!cart?.entityId) {
-      return {
-        lastResult: submission.reply({ formErrors: [t('missingCart')] }),
-      };
-    }
-
-    await setCartId(cart.entityId);
-
-    unstable_expireTag(TAGS.cart);
+    await addToOrCreateCart({
+      lineItems: [
+        {
+          productEntityId,
+          quantity,
+        },
+      ],
+    });
 
     return {
       lastResult: submission.reply(),
@@ -126,6 +73,12 @@ export const addToCart = async (
             return message;
           }),
         }),
+      };
+    }
+
+    if (error instanceof MissingCartError) {
+      return {
+        lastResult: submission.reply({ formErrors: [t('missingCart')] }),
       };
     }
 
