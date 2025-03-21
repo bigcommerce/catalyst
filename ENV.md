@@ -45,47 +45,24 @@ Enable `pnpm`:
 corepack enable pnpm
 ```
 
+### Local Environment
+
+Create a .env.local file in the root of your application
+
+**Contact the Software Delivery Team for your .env.local**
+
+### Continue with .env.local added
+
+Once you have your environment variables setup create your **.npmrc** giving you access to the private repo.
+
+```sh
+npm run generate:npmrc
+```
+
 Install project dependencies:
 
 ```sh
 pnpm install
-```
-
-Initialize Catalyst:
-
-```sh
-pnpm create @bigcommerce/catalyst@latest
-```
-
-## Authentication
-
-Follow the authentication flow and log in to BigCommerce.  
-Until we connect to the WF Store, use the test store. Contact the Software Dev team for access.
-
-- **Account:** Leighton
-- **Store:** Leighton Test Store
-- **Channel:** `wf-catalyst-canary-channel`
-
-## Configuration
-
-This process will create an `.env.local` file.
-
-Next build the monprepo environment. This builds the graphql client, schema and some dist files used in the application
-
-The `.env.local` should be supplemented with the following variables
-
-NEXT_PUBLIC_CONTENTFUL_SPACE_ID
-NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN
-NEXT_PUBLIC_GTM_ID
-AVIOS_NPM_AUTH_TOKEN
-NEXT_PUBLIC_AVIOS_SHARED_CMS_ACCESS_TOKEN
-NEXT_PUBLIC_AVIOS_SHARED_LOGIN_CALLBACK
-NEXT_PUBLIC_AVIOS_SHARED_LOGOUT_CALLBACK
-
-Once you have AVIOS_NPM_AUTH_TOKEN set you can run to create your .npmrc giving you access to the private repo.
-
-```sh
-npm run generate:npmrc
 ```
 
 Then run
