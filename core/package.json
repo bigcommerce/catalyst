@@ -4,7 +4,7 @@
   "version": "1.0.0-rc",
   "private": true,
   "scripts": {
-    "dev": "npm run generate && next dev",
+    "dev": "npm run generate && next dev -p 4000",
     "generate": "dotenv -e .env.local -- node ./scripts/generate.cjs",
     "build": "npm run generate && next build",
     "build:analyze": "ANALYZE=true npm run build",
@@ -17,7 +17,7 @@
     "@conform-to/react": "^1.2.2",
     "@conform-to/zod": "^1.2.2",
     "@icons-pack/react-simple-icons": "^11.2.0",
-    "@makeswift/runtime": "^0.23.8",
+    "@makeswift/runtime": "^0.23.10",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.5",
     "@radix-ui/react-checkbox": "^1.1.3",
