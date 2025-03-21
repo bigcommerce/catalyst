@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Heading, Section } from '@alto-avios/alto-ui';
+import { Button, Section, SubHeading } from '@alto-avios/alto-ui';
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
@@ -193,10 +193,10 @@ export function CartClient<LineItem extends CartLineItem>({
     >
       <Section paddingLeft="sm">
         <div className="w-full">
-          <Heading as="h1" size="xxs" foregroundColor="default">
+          <SubHeading as="h1" foregroundColor="default" size="xs">
             {title}
-            <span className="ml-2">{optimisticQuantity}</span>
-          </Heading>
+            <span className="ml-4">{optimisticQuantity}</span>
+          </SubHeading>
 
           {/* Cart Items */}
           <ul className="mt-5 flex flex-col gap-5">
@@ -280,11 +280,11 @@ function CounterForm({
         <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
 
         {/* Counter */}
-        <div className="flex items-center rounded-lg border">
+        <div className="border flex items-center rounded-lg">
           <button
             aria-label={decrementLabel}
             className={clsx(
-              'group rounded-l-lg p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+              'focus-visible:ring-primary group rounded-l-lg p-3 focus-visible:outline-none focus-visible:ring-2',
               lineItem.quantity === 1 ? 'opacity-50' : 'hover:bg-contrast-100/50',
             )}
             disabled={lineItem.quantity === 1}
@@ -301,13 +301,13 @@ function CounterForm({
               strokeWidth={1.5}
             />
           </button>
-          <span className="flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+          <span className="focus-visible:ring-primary flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2">
             {lineItem.quantity}
           </span>
           <button
             aria-label={incrementLabel}
             className={clsx(
-              'group rounded-r-lg p-3 transition-colors duration-300 hover:bg-contrast-100/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+              'hover:bg-contrast-100/50 focus-visible:ring-primary group rounded-r-lg p-3 transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2',
             )}
             name="intent"
             type="submit"
@@ -323,7 +323,7 @@ function CounterForm({
 
         <button
           aria-label={deleteLabel}
-          className="-ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
+          className="rounded-full hover:bg-contrast-100 focus-visible:ring-primary -ml-1 flex h-8 w-8 shrink-0 items-center justify-center transition-colors duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-4"
           name="intent"
           type="submit"
           value="delete"
