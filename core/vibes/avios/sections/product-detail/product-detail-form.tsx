@@ -213,7 +213,7 @@ function FormField({
     case 'number':
       return (
         <NumberField
-          errorMessage={formField.errors?.[0] ?? ''}
+          errorMessage={formField.errors?.join(' ') || ''}
           isRequired={formField.required}
           key={formField.id}
           label={field.label}
