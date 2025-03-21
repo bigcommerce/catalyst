@@ -100,8 +100,12 @@ export function ProductDetailForm<F extends Field>({
   useEffect(() => {
     if (lastResult?.status === 'success') {
       toast.success(successMessage);
+
+      // This is needed to refresh the Data Cache after the product has been added to the cart.
+      // The cart id is not picked up after the first time the cart is created/updated.
+      router.refresh();
     }
-  }, [lastResult, successMessage]);
+  }, [lastResult, successMessage, router]);
 
   const [form, formFields] = useForm({
     lastResult,

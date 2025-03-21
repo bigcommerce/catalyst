@@ -898,6 +898,7 @@ function CurrencyForm({
   action: CurrencyAction;
   currencies: [Currency, ...Currency[]];
 }) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [lastResult, formAction] = useActionState(action, null);
   const activeCurrency = currencies.find((currency) => currency.id === activeCurrencyId);
@@ -942,6 +943,10 @@ function CurrencyForm({
 
                   formData.append('id', currency.id);
                   formAction(formData);
+
+                  // This is needed to refresh the Data Cache after the product has been added to the cart.
+                  // The cart id is not picked up after the first time the cart is created/updated.
+                  router.refresh();
                 });
               }}
             >

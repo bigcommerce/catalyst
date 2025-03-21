@@ -1,27 +1,17 @@
 'use server';
 
-import { cookies } from 'next/headers';
+import { auth, updateSession } from '~/auth';
 
 export async function getCartId(): Promise<string | undefined> {
-  const cookieStore = await cookies();
-  const cartId = cookieStore.get('cartId')?.value;
+  const session = await auth();
 
-  return cartId;
+  return session?.user?.cartId ?? undefined;
 }
 
 export async function setCartId(cartId: string): Promise<void> {
-  const cookieStore = await cookies();
-
-  cookieStore.set('cartId', cartId, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-  });
+  await updateSession({ user: { cartId } });
 }
 
 export async function clearCartId(): Promise<void> {
-  const cookieStore = await cookies();
-
-  cookieStore.delete('cartId');
+  await updateSession({ user: { cartId: null } });
 }

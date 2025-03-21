@@ -5,6 +5,7 @@ import { ReactNode, useActionState, useEffect } from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
+import { useRouter } from '~/i18n/routing';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
 
@@ -32,6 +33,7 @@ export function AddToCartForm({
   preorderLabel,
   disabled = false,
 }: Props) {
+  const router = useRouter();
   const [{ lastResult, successMessage }, formAction, pending] = useActionState(addToCartAction, {
     lastResult: null,
     successMessage: undefined,
@@ -42,8 +44,12 @@ export function AddToCartForm({
   useEffect(() => {
     if (lastResult?.status === 'success') {
       toast.success(successMessage);
+
+      // This is needed to refresh the Data Cache after the product has been added to the cart.
+      // The cart id is not picked up after the first time the cart is created/updated.
+      router.refresh();
     }
-  }, [lastResult, successMessage]);
+  }, [lastResult, successMessage, router]);
 
   useEffect(() => {
     if (form.errors) {
