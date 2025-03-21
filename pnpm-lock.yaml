@@ -30,14 +30,14 @@ importers:
         specifier: ^3.0.1
         version: 3.0.1
       '@alto-avios/alto-ui':
-        specifier: ^3.2.0
-        version: 3.2.0(@alto-avios/alto-tokens@3.0.1)(@swc/core@1.10.11(@swc/helpers@0.5.15))(@types/node@20.17.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)
+        specifier: ^3.1.0
+        version: 3.1.0(@alto-avios/alto-tokens@3.0.1)(@swc/core@1.10.11(@swc/helpers@0.5.15))(@types/node@20.17.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)
       '@bigcommerce/catalyst-client':
         specifier: workspace:^
         version: link:../packages/client
       '@channel/shared-header-footer':
         specifier: v2.1.0-alpha.4
-        version: 2.1.0-alpha.4(@alto-avios/alto-ui@3.2.0(@alto-avios/alto-tokens@3.0.1)(@swc/core@1.10.11(@swc/helpers@0.5.15))(@types/node@20.17.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
+        version: 2.1.0-alpha.4(@alto-avios/alto-ui@3.1.0(@alto-avios/alto-tokens@3.0.1)(@swc/core@1.10.11(@swc/helpers@0.5.15))(@types/node@20.17.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@conform-to/react':
         specifier: ^1.2.2
         version: 1.2.2(react@19.0.0)
@@ -558,8 +558,8 @@ packages:
   '@alto-avios/alto-tokens@3.0.1':
     resolution: {integrity: sha512-Os3UWk7pOIPCMPR5Q6luD2e3/I0sWqhCDZaHkiM7P99fy0mp7soaSBuGseiCRq61jGcVWsg2mbZUg7GCWAC99g==}
 
-  '@alto-avios/alto-ui@3.2.0':
-    resolution: {integrity: sha512-AyLEfCptfRbo067I25FNIA2RfHZuJ2M/KlbGHQzR/dKWlLfokPYyD8srXnc/v1atn5VHt0XICAT6yN/gk7IcLg==}
+  '@alto-avios/alto-ui@3.1.0':
+    resolution: {integrity: sha512-hE70GDzRAAh1mRjcjr+5aCWdrFGlPdQ6of9dhewy6L4d+4O2Jry+rJ80Ku8S+9njDEF9iT0394kol1NkVyRt2w==}
     peerDependencies:
       '@alto-avios/alto-tokens': ^3.0.1
       react: ^18.0.0
@@ -1122,6 +1122,7 @@ packages:
 
   '@channel/shared-header-footer@2.1.0-alpha.4':
     resolution: {integrity: sha512-7HPMVlxOv/DUq5gpRRKpqSIhqVXzXAGVkGv+DCWUp7o78popVLQqmllMnpFeuMPRP29X6oTO5hQ5pU8BkH31aA==, tarball: https://iagl.jfrog.io/artifactory/api/npm/chlpla-npm-virtual/@channel/shared-header-footer/-/@channel/shared-header-footer-2.1.0-alpha.4.tgz}
+    cpu: [arm64, x64]
     os: [linux, win32, darwin]
     peerDependencies:
       '@alto-avios/alto-ui': '>=3.1.0'
@@ -1365,6 +1366,7 @@ packages:
   '@faker-js/faker@9.4.0':
     resolution: {integrity: sha512-85+k0AxaZSTowL0gXp8zYWDIrWclTbRPg/pm/V0dSFZ6W6D4lhcG3uuZl4zLsEKfEvs69xDbLN2cHQudwp95JA==}
     engines: {node: '>=18.0.0', npm: '>=9.0.0'}
+    deprecated: Please update to a newer version
 
   '@floating-ui/core@1.6.9':
     resolution: {integrity: sha512-uMXCuQ3BItDUbAMhIXw7UPXRfAlOAvZzdK9BWpE60MCn+Svt3aLn9jsPTi/WNGlRUu2uI0v5S7JiIUsbsvh3fw==}
@@ -7992,7 +7994,7 @@ snapshots:
 
   '@alto-avios/alto-tokens@3.0.1': {}
 
-  '@alto-avios/alto-ui@3.2.0(@alto-avios/alto-tokens@3.0.1)(@swc/core@1.10.11(@swc/helpers@0.5.15))(@types/node@20.17.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)':
+  '@alto-avios/alto-ui@3.1.0(@alto-avios/alto-tokens@3.0.1)(@swc/core@1.10.11(@swc/helpers@0.5.15))(@types/node@20.17.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)':
     dependencies:
       '@alto-avios/alto-tokens': 3.0.1
       class-variance-authority: 0.7.1
@@ -8828,9 +8830,9 @@ snapshots:
       human-id: 1.0.2
       prettier: 2.8.8
 
-  '@channel/shared-header-footer@2.1.0-alpha.4(@alto-avios/alto-ui@3.2.0(@alto-avios/alto-tokens@3.0.1)(@swc/core@1.10.11(@swc/helpers@0.5.15))(@types/node@20.17.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
+  '@channel/shared-header-footer@2.1.0-alpha.4(@alto-avios/alto-ui@3.1.0(@alto-avios/alto-tokens@3.0.1)(@swc/core@1.10.11(@swc/helpers@0.5.15))(@types/node@20.17.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)':
     dependencies:
-      '@alto-avios/alto-ui': 3.2.0(@alto-avios/alto-tokens@3.0.1)(@swc/core@1.10.11(@swc/helpers@0.5.15))(@types/node@20.17.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)
+      '@alto-avios/alto-ui': 3.1.0(@alto-avios/alto-tokens@3.0.1)(@swc/core@1.10.11(@swc/helpers@0.5.15))(@types/node@20.17.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3)
       '@devcycle/react-client-sdk': 1.33.2(react@19.0.0)
       clsx: 2.1.1
       contentful: 11.5.0
@@ -13338,7 +13340,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.21.0(eslint@8.57.1)(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.21.0(eslint@8.57.1)(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0)(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -13370,7 +13372,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.21.0(eslint@8.57.1)(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.21.0(eslint@8.57.1)(typescript@5.7.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.7.0(eslint-plugin-import@2.31.0)(eslint@8.57.1))(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3

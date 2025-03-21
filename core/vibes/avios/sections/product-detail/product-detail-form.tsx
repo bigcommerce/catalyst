@@ -24,7 +24,7 @@ import { RadioGroup } from '@/vibes/soul/form/radio-group';
 import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { toast } from '@/vibes/soul/primitives/toaster';
-import { Button, NumberField } from '~/alto/alto-avios';
+import { Box, Button, NumberField } from '~/alto/alto-avios';
 import { usePathname, useRouter } from '~/i18n/routing';
 
 import { Field, schema, SchemaRawShape } from './schema';
@@ -139,8 +139,8 @@ export function ProductDetailForm<F extends Field>({
               {error}
             </FormStatus>
           ))}
-          <div className="grid grid-cols-1 gap-x-2 gap-y-4 @2xl:grid-cols-2">
-            <div>
+          <Box display="flex" gap="md" paddingTop="sm">
+            <Box display="flex" flexShrink={1}>
               <NumberField
                 aria-label={quantityLabel}
                 labelDecrement={decrementLabel}
@@ -152,11 +152,11 @@ export function ProductDetailForm<F extends Field>({
                 onFocus={quantityControl.focus}
                 value={Number(quantityControl.value)}
               />
-            </div>
-            <div>
+            </Box>
+            <Box alignItems="center" display="flex" justifyContent="center" width="full">
               <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
-            </div>
-          </div>
+            </Box>
+          </Box>
         </div>
       </form>
     </FormProvider>

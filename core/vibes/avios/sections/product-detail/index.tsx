@@ -2,7 +2,7 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
-import { Accordion, SubHeading } from '~/alto/alto-avios';
+import { SubHeading } from '~/alto/alto-avios'; // import { Accordion, SubHeading } from '~/alto/alto-avios';
 
 import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
 import { Field } from './schema';
@@ -133,7 +133,9 @@ export function ProductDetail<F extends Field>({
                     }
                   </Stream>
 
+                  {/* @todo: Uncomment when Accordion component is available - alto-ui 3.2.0 hotfix incoming */}
                   <h2 className="sr-only">{additionalInformationLabel}</h2>
+                  {/*
                   <Stream fallback={<ProductAccordionsSkeleton />} value={product.accordions}>
                     {(accordions) =>
                       accordions && (
@@ -146,7 +148,7 @@ export function ProductDetail<F extends Field>({
                         </div>
                       )
                     }
-                  </Stream>
+                  </Stream> */}
                 </div>
               </div>
             )
@@ -243,33 +245,35 @@ function ProductDetailFormSkeleton() {
   );
 }
 
-function ProductAccordionsSkeleton() {
-  return (
-    <div className="flex h-[600px] w-full animate-pulse flex-col gap-8 pt-4">
-      <div className="flex items-center justify-between">
-        <div className="bg-contrast-100 h-2 w-20 rounded-sm" />
-        <div className="rounded-full bg-contrast-100 h-3 w-3" />
-      </div>
-      <div className="mb-1 flex flex-col gap-4">
-        <div className="bg-contrast-100 h-3 w-full rounded-sm" />
-        <div className="bg-contrast-100 h-3 w-full rounded-sm" />
-        <div className="bg-contrast-100 h-3 w-3/5 rounded-sm" />
-      </div>
-      <div className="flex items-center justify-between">
-        <div className="bg-contrast-100 h-2 w-24 rounded-sm" />
-        <div className="rounded-full bg-contrast-100 h-3 w-3" />
-      </div>
-      <div className="flex items-center justify-between">
-        <div className="bg-contrast-100 h-2 w-20 rounded-sm" />
-        <div className="rounded-full bg-contrast-100 h-3 w-3" />
-      </div>
-      <div className="flex items-center justify-between">
-        <div className="bg-contrast-100 h-2 w-32 rounded-sm" />
-        <div className="rounded-full bg-contrast-100 h-3 w-3" />
-      </div>
-    </div>
-  );
-}
+// @todo: Uncomment when Accordion component is available - alto-ui 3.2.0 hotfix incoming
+
+// function ProductAccordionsSkeleton() {
+//   return (
+//     <div className="flex h-[600px] w-full animate-pulse flex-col gap-8 pt-4">
+//       <div className="flex items-center justify-between">
+//         <div className="bg-contrast-100 h-2 w-20 rounded-sm" />
+//         <div className="rounded-full bg-contrast-100 h-3 w-3" />
+//       </div>
+//       <div className="mb-1 flex flex-col gap-4">
+//         <div className="bg-contrast-100 h-3 w-full rounded-sm" />
+//         <div className="bg-contrast-100 h-3 w-full rounded-sm" />
+//         <div className="bg-contrast-100 h-3 w-3/5 rounded-sm" />
+//       </div>
+//       <div className="flex items-center justify-between">
+//         <div className="bg-contrast-100 h-2 w-24 rounded-sm" />
+//         <div className="rounded-full bg-contrast-100 h-3 w-3" />
+//       </div>
+//       <div className="flex items-center justify-between">
+//         <div className="bg-contrast-100 h-2 w-20 rounded-sm" />
+//         <div className="rounded-full bg-contrast-100 h-3 w-3" />
+//       </div>
+//       <div className="flex items-center justify-between">
+//         <div className="bg-contrast-100 h-2 w-32 rounded-sm" />
+//         <div className="rounded-full bg-contrast-100 h-3 w-3" />
+//       </div>
+//     </div>
+//   );
+// }
 
 function ProductDetailSkeleton() {
   return (
