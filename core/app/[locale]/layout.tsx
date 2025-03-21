@@ -9,6 +9,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
 
 import '../globals.css';
+import { AppSectionWrapper } from '@/vibes/avios/sections/app-section-wrapper';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -137,7 +138,7 @@ export default async function RootLayout({ params, children }: Props) {
               {toastNotificationCookieData && (
                 <CookieNotifications {...toastNotificationCookieData} />
               )}
-              <div className="mx-auto max-w-[1248px] px-4 sm:px-6 lg:px-8">{children}</div>
+              <AppSectionWrapper>{children}</AppSectionWrapper>
             </Providers>
           </NuqsAdapter>
         </NextIntlClientProvider>
