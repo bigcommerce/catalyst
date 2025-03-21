@@ -13,6 +13,7 @@ type Props = {
   errors?: string[];
   onSelect?: (date: Date | undefined) => void;
   selected?: Date | undefined;
+  colorScheme?: 'light' | 'dark';
 } & Omit<ComponentPropsWithoutRef<typeof Input>, 'defaultValue' | 'onSelect' | 'value' | 'type'>;
 
 const DatePicker = forwardRef<ComponentRef<typeof Input>, Props>(
@@ -25,6 +26,7 @@ const DatePicker = forwardRef<ComponentRef<typeof Input>, Props>(
       placeholder = 'MM/DD/YYYY',
       required = false,
       selected,
+      colorScheme = 'light',
       ...props
     },
     ref,
@@ -45,6 +47,7 @@ const DatePicker = forwardRef<ComponentRef<typeof Input>, Props>(
         <PopoverPrimitive.Trigger asChild>
           <Input
             {...props}
+            colorScheme={colorScheme}
             errors={errors}
             placeholder={placeholder}
             prepend={<CalendarIcon className="h-5 w-5" strokeWidth={1} />}
@@ -63,6 +66,7 @@ const DatePicker = forwardRef<ComponentRef<typeof Input>, Props>(
             sideOffset={8}
           >
             <Calendar
+              colorScheme={colorScheme}
               disabled={disabledDays}
               mode="single"
               onSelect={onSelect ?? setDate}
