@@ -137,7 +137,7 @@ export default async function RootLayout({ params, children }: Props) {
               {toastNotificationCookieData && (
                 <CookieNotifications {...toastNotificationCookieData} />
               )}
-              {children}
+              <div className="mx-auto max-w-[1248px] px-4 sm:px-6 lg:px-8">{children}</div>
             </Providers>
           </NuqsAdapter>
         </NextIntlClientProvider>
