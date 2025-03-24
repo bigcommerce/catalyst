@@ -4,13 +4,15 @@ import { Price, PriceLabel } from '@/vibes/avios/sections/price-label';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
-import { Heading, Paragraph } from '~/alto/alto-avios';
+import { Heading, Paragraph, Eyebrow } from '~/alto/alto-avios';
 import { Compare } from './compare';
 
 export interface CardProduct {
   id: string;
   title: string;
-  description?: string;
+  plainTextDescription?: string;
+  inventory?: boolean;
+  availability?: string;
   href: string;
   image?: { src: string; alt: string };
   price?: Price;
@@ -50,7 +52,18 @@ interface Props {
  * ```
  */
 export function ProductCard({
-  product: { id, title, description, subtitle, badge, price, image, href },
+  product: {
+    id,
+    title,
+    plainTextDescription,
+    availability,
+    inventory,
+    subtitle,
+    badge,
+    price,
+    image,
+    href,
+  },
   colorScheme = 'light',
   className,
   showCompare = false,
@@ -120,10 +133,23 @@ export function ProductCard({
       <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
         <div className="flex-1">
           <Link className="text-sm @[16rem]:text-base group" href={href} tabIndex={-1}>
-            <Paragraph size="md" foregroundColor="accentPrimary">
+            {/* <Heading as="span" size="xxs" foregroundColor="accentOnSubtle">
               {title}
+            </Heading>
+            <Eyebrow styleVariant={inventory ? 'collect' : 'inspiration'}>{availability}</Eyebrow> */}
+            <div className="flex items-center gap-2 mb-2">
+              <Heading as="span" size="xxs" foregroundColor="accentOnSubtle">
+                {title}
+              </Heading>
+              {availability && (
+                <Eyebrow styleVariant={inventory ? 'collect' : 'inspiration'}>
+                  {availability}
+                </Eyebrow>
+              )}
+            </div>
+            <Paragraph size="sm" foregroundColor="accentPrimary">
+              {plainTextDescription}
             </Paragraph>
-
             {subtitle != null && subtitle !== '' && (
               <Heading as="h6" size="xxs" foregroundColor="accentPrimary">
                 {subtitle}

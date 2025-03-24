@@ -145,6 +145,9 @@ async function getListProducts(props: Props): Promise<ListProduct[]> {
   return refinedSearch.products.items.map((product) => ({
     id: product.entityId.toString(),
     title: product.name,
+    plainTextDescription: product.plainTextDescription,
+    availability: product.availabilityV2.status,
+    inventory: product.inventory.isInStock,
     href: product.path,
     image: product.defaultImage
       ? { src: product.defaultImage.url, alt: product.defaultImage.altText }

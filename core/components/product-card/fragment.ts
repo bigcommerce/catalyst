@@ -6,6 +6,13 @@ export const ProductCardFragment = graphql(
     fragment ProductCardFragment on Product {
       entityId
       name
+      plainTextDescription
+      availabilityV2 {
+        status
+      }
+      inventory {
+        isInStock
+      }
       defaultImage {
         altText
         url: urlTemplate(lossy: true)
