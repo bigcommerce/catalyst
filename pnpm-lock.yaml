@@ -36,7 +36,7 @@ importers:
         specifier: workspace:^
         version: link:../packages/client
       '@channel/shared-header-footer':
-        specifier: v2.1.0-alpha.4
+        specifier: 2.1.0-alpha.4
         version: 2.1.0-alpha.4(@alto-avios/alto-ui@3.1.0(@alto-avios/alto-tokens@3.0.1)(@swc/core@1.10.11(@swc/helpers@0.5.15))(@types/node@20.17.16)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(typescript@5.7.3))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       '@conform-to/react':
         specifier: ^1.2.2
@@ -1122,6 +1122,7 @@ packages:
 
   '@channel/shared-header-footer@2.1.0-alpha.4':
     resolution: {integrity: sha512-7HPMVlxOv/DUq5gpRRKpqSIhqVXzXAGVkGv+DCWUp7o78popVLQqmllMnpFeuMPRP29X6oTO5hQ5pU8BkH31aA==, tarball: https://iagl.jfrog.io/artifactory/api/npm/chlpla-npm-virtual/@channel/shared-header-footer/-/@channel/shared-header-footer-2.1.0-alpha.4.tgz}
+    cpu: [arm64, x64]
     os: [linux, win32, darwin]
     peerDependencies:
       '@alto-avios/alto-ui': '>=3.1.0'
