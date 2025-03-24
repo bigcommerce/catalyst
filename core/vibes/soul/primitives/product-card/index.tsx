@@ -98,7 +98,7 @@ export function ProductCard({
           ) : (
             <div
               className={clsx(
-                'text-4xl @xs:text-7xl break-words pl-5 pt-5 font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105',
+                'text-4xl @xs:text-7xl @xs:text-7xl break-words pl-5 pt-5 font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105',
                 {
                   light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
                   dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',

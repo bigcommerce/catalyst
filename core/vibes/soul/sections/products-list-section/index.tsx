@@ -6,12 +6,12 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
-import { Filter, FiltersPanel } from '@/vibes/avios/sections/products-list-section/filters-panel';
+import { Filter, FiltersPanel } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import {
   Sorting,
   SortingSkeleton,
   Option as SortOption,
-} from '@/vibes/avios/sections/products-list-section/sorting';
+} from '@/vibes/soul/sections/products-list-section/sorting';
 
 interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;

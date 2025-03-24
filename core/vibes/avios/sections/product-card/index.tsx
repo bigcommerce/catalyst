@@ -133,10 +133,6 @@ export function ProductCard({
       <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
         <div className="flex-1">
           <Link className="text-sm @[16rem]:text-base group" href={href} tabIndex={-1}>
-            {/* <Heading as="span" size="xxs" foregroundColor="accentOnSubtle">
-              {title}
-            </Heading>
-            <Eyebrow styleVariant={inventory ? 'collect' : 'inspiration'}>{availability}</Eyebrow> */}
             <div className="flex items-center gap-2 mb-2">
               <Heading as="span" size="xxs" foregroundColor="accentOnSubtle">
                 {title}

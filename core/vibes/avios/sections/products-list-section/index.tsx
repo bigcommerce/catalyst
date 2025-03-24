@@ -4,14 +4,14 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
 import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { ListProduct, ProductsList } from '@/vibes/avios/sections/products-list';
+import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
-import { Filter, FiltersPanel } from '@/vibes/avios/sections/products-list-section/filters-panel';
+import { Filter, FiltersPanel } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import {
   Sorting,
   SortingSkeleton,
   Option as SortOption,
-} from '@/vibes/avios/sections/products-list-section/sorting';
+} from '@/vibes/soul/sections/products-list-section/sorting';
 import { SubHeading } from '~/alto/alto-avios';
 
 interface Props {
@@ -151,7 +151,7 @@ export function ProductsListSection({
               emptyStateTitle={emptyStateTitle}
               placeholderCount={placeholderCount}
               products={products}
-              showCompare
+              showCompare = {false}
             />
 
             {paginationInfo && <CursorPagination info={paginationInfo} />}
