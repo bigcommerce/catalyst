@@ -15,7 +15,7 @@
     "build": "tsup"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": "^20.0.0 || ^22.0.0"
   },
   "dependencies": {
     "@commander-js/extra-typings": "^13.1.0",
