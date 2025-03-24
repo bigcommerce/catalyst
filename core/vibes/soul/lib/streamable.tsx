@@ -1,11 +1,12 @@
+import PLazy from 'p-lazy';
 import { Suspense, use } from 'react';
-import { v4 as uuid } from 'uuid';
 
 export type Streamable<T> = T | Promise<T>;
 
 // eslint-disable-next-line func-names
 const stableKeys = (function () {
   const cache = new WeakMap<object, string>();
+  let keyCounter = 0;
 
   function getObjectKey(obj: object): string {
     const key = cache.get(obj);
@@ -14,7 +15,9 @@ const stableKeys = (function () {
       return key;
     }
 
-    const keyValue = uuid();
+    keyCounter += 1;
+
+    const keyValue = String(keyCounter);
 
     cache.set(obj, keyValue);
 
@@ -75,8 +78,13 @@ function all<T extends readonly unknown[] | []>(
   return result;
 }
 
+function from<T>(thunk: () => Promise<T>): Streamable<T> {
+  return PLazy.from(thunk);
+}
+
 export const Streamable = {
   all,
+  from,
 };
 
 export function useStreamable<T>(streamable: Streamable<T>): T {

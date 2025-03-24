@@ -6,6 +6,7 @@ import {
   SiX,
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
+import { connection } from 'next/server';
 import { useTranslations } from 'next-intl';
 import { cache, JSX } from 'react';
 
@@ -68,6 +69,9 @@ const getContactInformation = async () => {
 };
 
 const getCopyright = async () => {
+  // Mark this function as dynamic since we use `new Date()` below.
+  await connection();
+
   const data = await getLayoutData();
 
   if (!data.settings) {

@@ -1,10 +1,10 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { Metadata } from 'next';
+// import { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { createSearchParamsCache, parseAsString } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Stream } from '@/vibes/soul/lib/streamable';
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -16,7 +16,7 @@ import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { PaginationSearchParamNames, Reviews } from './_components/reviews';
-import { getProductData } from './page-data';
+import { getProductData, getProductDetailData } from './page-data';
 
 const cachedProductDataVariables = cache(
   async (productId: string, searchParams: Props['searchParams']) => {
@@ -41,34 +41,110 @@ const cachedProductDataVariables = cache(
   },
 );
 
-const getProduct = async (props: Props) => {
-  const t = await getTranslations('Product.ProductDetails.Accordions');
+interface Props {
+  params: Promise<{ slug: string; locale: string }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+}
+
+// export async function generateMetadata(props: Props): Promise<Metadata> {
+//   const { slug } = await props.params;
+
+//   const variables = await cachedProductDataVariables(slug, props.searchParams);
+
+//   const product = await getProductData(variables);
+
+//   const { pageTitle, metaDescription, metaKeywords } = product.seo;
+//   const { url, altText: alt } = product.defaultImage || {};
+
+//   return {
+//     title: pageTitle || product.name,
+//     description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
+//     keywords: metaKeywords ? metaKeywords.split(',') : null,
+//     openGraph: url
+//       ? {
+//           images: [
+//             {
+//               url,
+//               alt,
+//             },
+//           ],
+//         }
+//       : null,
+//   };
+// }
+
+const searchParamsCache = createSearchParamsCache({
+  [PaginationSearchParamNames.BEFORE]: parseAsString,
+  [PaginationSearchParamNames.AFTER]: parseAsString,
+});
+
+export default async function Product(props: Props) {
+  const { locale, slug } = await props.params;
+
+  setRequestLocale(locale);
+
+  const t = await getTranslations('Product');
+  const productId = Number(slug);
+
+  const streamableParsedSearchParams = Streamable.from(() =>
+    searchParamsCache.parse(props.searchParams),
+  );
+
+  const streamableVariables = Streamable.from(async () =>
+    cachedProductDataVariables(slug, props.searchParams),
+  );
+  const streamableProductData = Streamable.from(async () =>
+    getProductData(await streamableVariables),
+  );
 
   const format = await getFormatter();
+  const productDetail = await getProductDetailData(productId);
 
-  const { slug } = await props.params;
-  const variables = await cachedProductDataVariables(slug, props.searchParams);
-  const product = await getProductData(variables);
+  let ctaDisabled: boolean;
 
-  const images = removeEdgesAndNodes(product.images).map((image) => ({
+  if (productDetail.availabilityV2.status === 'Unavailable') {
+    ctaDisabled = true;
+  } else if (productDetail.availabilityV2.status === 'Preorder') {
+    ctaDisabled = false;
+  } else if (!productDetail.inventory.isInStock) {
+    ctaDisabled = true;
+  } else {
+    ctaDisabled = false;
+  }
+
+  let ctaLabel: string;
+
+  if (productDetail.availabilityV2.status === 'Unavailable') {
+    ctaLabel = t('ProductDetails.Submit.unavailable');
+  } else if (productDetail.availabilityV2.status === 'Preorder') {
+    ctaLabel = t('ProductDetails.Submit.preorder');
+  } else if (!productDetail.inventory.isInStock) {
+    ctaLabel = t('ProductDetails.Submit.outOfStock');
+  } else {
+    ctaLabel = t('ProductDetails.Submit.addToCart');
+  }
+
+  const fields = await productOptionsTransformer(productDetail.productOptions, locale);
+
+  const images = removeEdgesAndNodes(productDetail.images).map((image) => ({
     src: image.url,
     alt: image.altText,
   }));
 
-  const customFields = removeEdgesAndNodes(product.customFields);
+  const customFields = removeEdgesAndNodes(productDetail.customFields);
 
   const specifications = [
     {
-      name: t('sku'),
-      value: product.sku,
+      name: t('ProductDetails.Accordions.sku'),
+      value: productDetail.sku,
     },
     {
-      name: t('weight'),
-      value: `${product.weight?.value} ${product.weight?.unit}`,
+      name: t('ProductDetails.Accordions.weight'),
+      value: `${productDetail.weight?.value} ${productDetail.weight?.unit}`,
     },
     {
-      name: t('condition'),
-      value: product.condition,
+      name: t('ProductDetails.Accordions.condition'),
+      value: productDetail.condition,
     },
     ...customFields.map((field) => ({
       name: field.name,
@@ -80,7 +156,7 @@ const getProduct = async (props: Props) => {
     ...(specifications.length
       ? [
           {
-            title: t('specifications'),
+            title: t('ProductDetails.Accordions.specifications'),
             content: (
               <div className="prose @container">
                 <dl className="flex flex-col gap-4">
@@ -98,155 +174,56 @@ const getProduct = async (props: Props) => {
           },
         ]
       : []),
-    ...(product.warranty
+    ...(productDetail.warranty
       ? [
           {
-            title: t('warranty'),
+            title: t('Product.ProductDetails.Accordions.warranty'),
             content: (
-              <div className="prose" dangerouslySetInnerHTML={{ __html: product.warranty }} />
+              <div className="prose" dangerouslySetInnerHTML={{ __html: productDetail.warranty }} />
             ),
           },
         ]
       : []),
   ];
 
-  return {
-    id: product.entityId.toString(),
-    title: product.name,
-    description: <div dangerouslySetInnerHTML={{ __html: product.description }} />,
-    href: product.path,
-    images: product.defaultImage
-      ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
-      : images,
-    price: pricesTransformer(product.prices, format),
-    subtitle: product.brand?.name,
-    rating: product.reviewSummary.averageRating,
-    accordions,
-  };
-};
+  const streamablePrice = Streamable.from(async () => {
+    const product = await streamableProductData;
 
-const getFields = async (props: Props) => {
-  const { slug } = await props.params;
-  const variables = await cachedProductDataVariables(slug, props.searchParams);
-  const product = await getProductData(variables);
-
-  return await productOptionsTransformer(product.productOptions);
-};
-
-const getCtaLabel = async (props: Props) => {
-  const t = await getTranslations('Product.ProductDetails.Submit');
-
-  const { slug } = await props.params;
-  const variables = await cachedProductDataVariables(slug, props.searchParams);
-  const product = await getProductData(variables);
-
-  if (product.availabilityV2.status === 'Unavailable') {
-    return t('unavailable');
-  }
-
-  if (product.availabilityV2.status === 'Preorder') {
-    return t('preorder');
-  }
-
-  if (!product.inventory.isInStock) {
-    return t('outOfStock');
-  }
-
-  return t('addToCart');
-};
-
-const getCtaDisabled = async (props: Props) => {
-  const { slug } = await props.params;
-  const variables = await cachedProductDataVariables(slug, props.searchParams);
-  const product = await getProductData(variables);
-
-  if (product.availabilityV2.status === 'Unavailable') {
-    return true;
-  }
-
-  if (product.availabilityV2.status === 'Preorder') {
-    return false;
-  }
-
-  if (!product.inventory.isInStock) {
-    return true;
-  }
-
-  return false;
-};
-
-const getRelatedProducts = async (props: Props) => {
-  const format = await getFormatter();
-
-  const { slug } = await props.params;
-  const variables = await cachedProductDataVariables(slug, props.searchParams);
-  const product = await getProductData(variables);
-
-  const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
-
-  return productCardTransformer(relatedProducts, format);
-};
-
-interface Props {
-  params: Promise<{ slug: string; locale: string }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
-}
-
-export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { slug } = await props.params;
-
-  const variables = await cachedProductDataVariables(slug, props.searchParams);
-
-  const product = await getProductData(variables);
-
-  const { pageTitle, metaDescription, metaKeywords } = product.seo;
-  const { url, altText: alt } = product.defaultImage || {};
-
-  return {
-    title: pageTitle || product.name,
-    description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
-    keywords: metaKeywords ? metaKeywords.split(',') : null,
-    openGraph: url
-      ? {
-          images: [
-            {
-              url,
-              alt,
-            },
-          ],
-        }
-      : null,
-  };
-}
-
-const searchParamsCache = createSearchParamsCache({
-  [PaginationSearchParamNames.BEFORE]: parseAsString,
-  [PaginationSearchParamNames.AFTER]: parseAsString,
-});
-
-export default async function Product(props: Props) {
-  const { locale, slug } = await props.params;
-
-  setRequestLocale(locale);
-
-  const t = await getTranslations('Product');
-
-  const productId = Number(slug);
-  const variables = await cachedProductDataVariables(slug, props.searchParams);
-  const parsedSearchParams = searchParamsCache.parse(props.searchParams);
+    return pricesTransformer(product.prices, format) ?? null;
+  });
 
   return (
     <>
       <ProductDetail
         action={addToCart}
         additionaInformationTitle={t('ProductDetails.additionalInformation')}
-        ctaDisabled={getCtaDisabled(props)}
-        ctaLabel={getCtaLabel(props)}
+        ctaDisabled={ctaDisabled}
+        ctaLabel={ctaLabel}
         decrementLabel={t('ProductDetails.decreaseQuantity')}
-        fields={getFields(props)}
+        fields={fields}
         incrementLabel={t('ProductDetails.increaseQuantity')}
         prefetch={true}
-        product={getProduct(props)}
+        product={{
+          id: productDetail.entityId.toString(),
+          title: productDetail.name,
+          description: (
+            <div
+              className="prose"
+              dangerouslySetInnerHTML={{ __html: productDetail.description }}
+            />
+          ),
+          href: productDetail.path,
+          images: productDetail.defaultImage
+            ? [
+                { src: productDetail.defaultImage.url, alt: productDetail.defaultImage.altText },
+                ...images,
+              ]
+            : images,
+          price: streamablePrice,
+          subtitle: productDetail.brand?.name,
+          rating: productDetail.reviewSummary.averageRating,
+          accordions,
+        }}
         quantityLabel={t('ProductDetails.quantity')}
         thumbnailLabel={t('ProductDetails.thumbnail')}
       />
@@ -257,14 +234,20 @@ export default async function Product(props: Props) {
         emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
         nextLabel={t('RelatedProducts.nextProducts')}
         previousLabel={t('RelatedProducts.previousProducts')}
-        products={getRelatedProducts(props)}
+        products={Streamable.from(async () => {
+          const product = await streamableProductData;
+
+          const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
+
+          return productCardTransformer(relatedProducts, format);
+        })}
         scrollbarLabel={t('RelatedProducts.scrollbar')}
         title={t('RelatedProducts.title')}
       />
 
-      <Reviews productId={productId} searchParams={parsedSearchParams} />
+      <Reviews productId={productId} searchParams={streamableParsedSearchParams} />
 
-      <Stream fallback={null} value={getProductData(variables)}>
+      <Stream fallback={null} value={streamableProductData}>
         {(product) => (
           <>
             <ProductSchema product={product} />

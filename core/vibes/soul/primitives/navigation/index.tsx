@@ -96,8 +96,8 @@ interface Props<S extends SearchResult> {
   linksPosition?: 'center' | 'left' | 'right';
   locales?: Locale[];
   activeLocaleId?: string;
-  currencies?: Currency[];
-  activeCurrencyId?: string;
+  currencies?: Streamable<Currency[]>;
+  activeCurrencyId?: Streamable<string | null>;
   currencyAction?: CurrencyAction;
   logo?: Streamable<string | { src: string; alt: string } | null>;
   logoWidth?: number;
@@ -270,8 +270,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     linksPosition = 'center',
     activeLocaleId,
     locales,
-    currencies,
-    activeCurrencyId,
+    currencies: streamableCurrencies,
+    activeCurrencyId: streamableActiveCurrencyId,
     currencyAction,
     searchHref,
     searchParamName = 'query',
@@ -570,14 +570,18 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           ) : null}
 
           {/* Currency Dropdown */}
-          {currencies && currencies.length > 1 && currencyAction ? (
-            <CurrencyForm
-              action={currencyAction}
-              activeCurrencyId={activeCurrencyId}
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              currencies={currencies as [Currency, ...Currency[]]}
-            />
-          ) : null}
+          <Stream value={Streamable.all([streamableCurrencies, streamableActiveCurrencyId])}>
+            {([currencies, activeCurrencyId]) =>
+              currencies && currencies.length > 1 && currencyAction ? (
+                <CurrencyForm
+                  action={currencyAction}
+                  activeCurrencyId={activeCurrencyId}
+                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                  currencies={currencies as [Currency, ...Currency[]]}
+                />
+              ) : null
+            }
+          </Stream>
         </div>
       </div>
 
@@ -894,7 +898,7 @@ function CurrencyForm({
   currencies,
   activeCurrencyId,
 }: {
-  activeCurrencyId?: string;
+  activeCurrencyId?: string | null;
   action: CurrencyAction;
   currencies: [Currency, ...Currency[]];
 }) {

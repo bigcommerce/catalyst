@@ -4,7 +4,7 @@ import { clsx } from 'clsx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
 
@@ -16,8 +16,6 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { routing } from '~/i18n/routing';
 
-import { getToastNotification } from '../../lib/server-toast';
-import { CookieNotifications } from '../notifications';
 import { Providers } from '../providers';
 
 const RootLayoutMetadataQuery = graphql(`
@@ -36,6 +34,8 @@ const RootLayoutMetadataQuery = graphql(`
 `);
 
 export async function generateMetadata(): Promise<Metadata> {
+  'use cache';
+
   const { data } = await client.fetch({
     document: RootLayoutMetadataQuery,
     fetchOptions: { next: { revalidate } },
@@ -81,7 +81,6 @@ interface Props extends PropsWithChildren {
 
 export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
-  const toastNotificationCookieData = await getToastNotification();
 
   if (!routing.locales.includes(locale)) {
     notFound();
@@ -91,19 +90,12 @@ export default async function RootLayout({ params, children }: Props) {
   // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
   setRequestLocale(locale);
 
-  const messages = await getMessages();
-
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
       <body>
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider>
           <NuqsAdapter>
-            <Providers>
-              {toastNotificationCookieData && (
-                <CookieNotifications {...toastNotificationCookieData} />
-              )}
-              {children}
-            </Providers>
+            <Providers>{children}</Providers>
           </NuqsAdapter>
         </NextIntlClientProvider>
         <VercelComponents />
@@ -115,5 +107,3 @@ export default async function RootLayout({ params, children }: Props) {
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
-
-export const fetchCache = 'default-cache';

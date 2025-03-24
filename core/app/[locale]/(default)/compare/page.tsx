@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 import * as z from 'zod';
 
@@ -65,12 +65,17 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 interface Props {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{
     ids?: string | string[];
   }>;
 }
 
 export default async function Compare(props: Props) {
+  const { locale } = await props.params;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('Compare');
 
   const searchParams = await props.searchParams;
