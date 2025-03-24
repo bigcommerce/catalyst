@@ -2,6 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -91,7 +92,7 @@ export default async function Home({ params }: Props) {
         description={t('FeaturedProducts.description')}
         emptyStateSubtitle={t('FeaturedProducts.emptyStateSubtitle')}
         emptyStateTitle={t('FeaturedProducts.emptyStateTitle')}
-        products={getFeaturedProducts()}
+        products={Streamable.from(getFeaturedProducts)}
         title={t('FeaturedProducts.title')}
       />
 
@@ -102,7 +103,7 @@ export default async function Home({ params }: Props) {
         emptyStateTitle={t('NewestProducts.emptyStateTitle')}
         nextLabel={t('NewestProducts.nextProducts')}
         previousLabel={t('NewestProducts.previousProducts')}
-        products={getNewestProducts()}
+        products={Streamable.from(getNewestProducts)}
         title={t('NewestProducts.title')}
       />
 

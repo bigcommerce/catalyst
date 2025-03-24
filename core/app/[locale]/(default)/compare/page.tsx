@@ -4,6 +4,7 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 import * as z from 'zod';
 
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { CompareCardWithId } from '@/vibes/soul/primitives/compare-card';
 import { CompareSection } from '@/vibes/soul/sections/compare-section';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -89,7 +90,7 @@ export default async function Compare(props: Props) {
       noRatingsLabel={t('noRatings')}
       otherDetailsLabel={t('otherDetails')}
       previousLabel={t('previous')}
-      products={getProducts(productIds)}
+      products={Streamable.from(() => getProducts(productIds))}
       ratingLabel={t('rating')}
       title={t('title')}
       viewOptionsLabel={t('viewOptions')}

@@ -4,6 +4,7 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
@@ -112,7 +113,7 @@ export default async function PublicWishlist({ params, searchParams }: Props) {
           closeLabel={t('Modal.close')}
           copiedMessage={t('shareCopied')}
           disabledTooltip={t('shareDisabled')}
-          isMobileUser={isMobileUser()}
+          isMobileUser={Streamable.from(isMobileUser)}
           isPublic={wishlist.visibility.isPublic}
           label={t('share')}
           modalTitle={t('Modal.shareTitle', { name: wishlist.name })}
@@ -127,15 +128,15 @@ export default async function PublicWishlist({ params, searchParams }: Props) {
 
   return (
     <SectionLayout>
-      <Breadcrumbs breadcrumbs={getBreadcrumbs(token, searchParams)} />
+      <Breadcrumbs breadcrumbs={Streamable.from(() => getBreadcrumbs(token, searchParams))} />
 
       <WishlistDetails
         action={addWishlistItemToCart}
         className="mt-8"
         emptyStateText={t('emptyWishlist')}
         headerActions={wishlistActions}
-        paginationInfo={getPaginationInfo(token, searchParams)}
-        wishlist={getWishlist(token, t, pt, searchParams)}
+        paginationInfo={Streamable.from(() => getPaginationInfo(token, searchParams))}
+        wishlist={Streamable.from(() => getWishlist(token, t, pt, searchParams))}
       />
     </SectionLayout>
   );
