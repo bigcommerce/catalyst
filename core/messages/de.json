@@ -273,7 +273,67 @@
                     "notFound": "Kunde existiert nicht"
                 }
             }
+        },
+        "Wishlists": {
+            "title": "Wish Lists",
+            "new": "New wish list",
+            "items": "{count, plural, =1 {1 item} other {# items}}",
+            "viewWishlist": "View list",
+            "noWishlists": "You don't have any wish lists",
+            "noWishlistsSubtitle": "Create a wishlist to save your favorite products.",
+            "noWishlistsCallToAction": "Create a wishlist",
+            "emptyWishlist": "You haven't added products to this wish list.",
+            "share": "Freigeben",
+            "shareSuccess": "Wish list has been shared successfully.",
+            "shareCopied": "Wish list public URL has been copied to your clipboard.",
+            "shareDisabled": "Your wish list must be public in order to share it.",
+            "makePublic": "Make public",
+            "makePrivate": "Make private",
+            "rename": "Rename",
+            "delete": "Löschen",
+            "Visibility": {
+                "public": "Public",
+                "private": "Private"
+            },
+            "Modal": {
+                "cancel": "Abbrechen",
+                "close": "Close",
+                "copy": "Copy",
+                "create": "erstellen",
+                "save": "Save",
+                "delete": "Löschen",
+                "newTitle": "Create a new wish list",
+                "shareTitle": "Share {name}",
+                "renameTitle": "Rename {name}",
+                "deleteTitle": "Delete {name}",
+                "changeVisibilityPublicTitle": "Make {name} public?",
+                "changeVisibilityPrivateTitle": "Make {name} private?",
+                "makePublicContent": "Are you sure you want to make <bold>{name}</bold> public? This will allow others to see your wish list if they have the link.",
+                "makePrivateContent": "Are you sure you want to make <bold>{name}</bold> private? If you've shared your wish list with others, they will no longer be able to see it.",
+                "deleteContent": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone."
+            },
+            "Form": {
+                "nameLabel": "Name"
+            },
+            "Errors": {
+                "nameRequired": "Wish list name cannot be empty.",
+                "updateFailed": "Failed to update your wish list. Please try again.",
+                "deleteFailed": "Failed to delete your wish list. Please try again.",
+                "removeProductFailed": "Failed to remove the product from your wish list. Please try again.",
+                "unauthorized": "You are not authorized to perform this action. Please sign in and try again.",
+                "unexpected": "An unexpected error occurred. Please try again."
+            },
+            "Result": {
+                "createSuccess": "Wish list has been created successfully.",
+                "updateSuccess": "Wish list has been updated successfully.",
+                "deleteSuccess": "Wish list has been deleted successfully.",
+                "removeItemSuccess": "Item has been removed from your wish list."
+            }
         }
+    },
+    "PublicWishlist": {
+        "title": "Public Wish List",
+        "defaultName": "Public wish list"
     },
     "Blog": {
         "title": "Blog",
@@ -325,14 +385,14 @@
                 "city": "Ort",
                 "state": "Bundesstaat/Provinz",
                 "postalCode": "Postleitzahl",
-                "updatedShippingOptions": "Update shipping options",
-                "viewShippingOptions": "View shipping options",
+                "updatedShippingOptions": "Versandoptionen aktualisieren",
+                "viewShippingOptions": "Versandoptionen anzeigen",
                 "editAddress": "Adresse bearbeiten",
-                "shippingOptions": "Shipping options",
-                "updateShipping": "Update shipping",
-                "addShipping": "Add shipping",
+                "shippingOptions": "Versandoptionen",
+                "updateShipping": "Versand aktualisieren",
+                "addShipping": "Versand hinzufügen",
                 "cartNotFound": "Kein cartId-Cookie gefunden.",
-                "noShippingOptions": "There are no shipping options available for your address"
+                "noShippingOptions": "Für Ihre Adresse sind keine Versandoptionen verfügbar"
             }
         },
         "ShippingInfo": {
@@ -389,26 +449,21 @@
         }
     },
     "Compare": {
-        "title": "Vergleichen",
-        "heading": "Vergleich von {quantity, plural, =1 {1 Product} other {# Products}}",
-        "nothingToCompare": "Nun, es gibt nichts Vergleichbares!",
-        "helpingText": "Sie haben es irgendwie geschafft, hier zu landen, aber Sie müssen erst noch ein paar Produkte auswählen.",
-        "Table": {
-            "caption": "Produktvergleich",
-            "noImage": "Kein Bild",
-            "viewOptions": "Optionen anzeigen",
-            "description": "Beschreibung",
-            "rating": "Bewertung",
-            "availability": "Verfügbarkeit",
-            "Prices": {
-                "msrp": "Unverbindliche Preisempfehlung",
-                "was": "war",
-                "now": "jetzt"
-            }
-        },
-        "AddToCart": {
-            "success": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt"
-        }
+        "title": "Compare products",
+        "addToCart": "Zum Warenkorb hinzufügen",
+        "next": "Nächste Produkte",
+        "previous": "Vorherige Produkte",
+        "noProductsToCompare": "No products to compare",
+        "sku": "SKU",
+        "weight": "Gewicht",
+        "description": "Beschreibung",
+        "noDescription": "There is no description available.",
+        "rating": "Bewertung",
+        "noRatings": "There are no reviews.",
+        "otherDetails": "Other details",
+        "noOtherDetails": "There are no other details.",
+        "viewOptions": "Optionen anzeigen",
+        "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt"
     },
     "Product": {
         "ProductDetails": {
@@ -418,6 +473,7 @@
             "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
             "missingCart": "Warenkorb nicht gefunden. Bitte versuchen Sie es später erneut!",
             "unknownError": "Unbekannter Fehler. Bitte versuchen Sie es später erneut.",
+            "variantRequiredError": "This product requires options to be selected in order to add to the cart.",
             "increaseNumber": "Anzahl erhöhen",
             "decreaseNumber": "Anzahl verringern",
             "thumbnail": "Bildnummer anzeigen",
@@ -588,7 +644,9 @@
         },
         "ProductCard": {
             "Compare": {
-                "compare": "Vergleichen"
+                "compare": "Vergleichen",
+                "remove": "Entfernen",
+                "maxCompareLimit": "You've reached the maximum number of products for comparison. Remove a product to add a new one."
             },
             "AddToCart": {
                 "viewOptions": "Optionen anzeigen",

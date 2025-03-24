@@ -273,7 +273,67 @@
                     "notFound": "Customer does not exist"
                 }
             }
+        },
+        "Wishlists": {
+            "title": "Wish Lists",
+            "new": "New wish list",
+            "items": "{count, plural, =1 {1 item} other {# items}}",
+            "viewWishlist": "View list",
+            "noWishlists": "You don't have any wish lists",
+            "noWishlistsSubtitle": "Create a wishlist to save your favorite products.",
+            "noWishlistsCallToAction": "Create a wishlist",
+            "emptyWishlist": "You haven't added products to this wish list.",
+            "share": "共有",
+            "shareSuccess": "Wish list has been shared successfully.",
+            "shareCopied": "Wish list public URL has been copied to your clipboard.",
+            "shareDisabled": "Your wish list must be public in order to share it.",
+            "makePublic": "Make public",
+            "makePrivate": "Make private",
+            "rename": "Rename",
+            "delete": "削除する",
+            "Visibility": {
+                "public": "Public",
+                "private": "Private"
+            },
+            "Modal": {
+                "cancel": "キャンセル",
+                "close": "Close",
+                "copy": "Copy",
+                "create": "作成",
+                "save": "Save",
+                "delete": "削除する",
+                "newTitle": "Create a new wish list",
+                "shareTitle": "Share {name}",
+                "renameTitle": "Rename {name}",
+                "deleteTitle": "Delete {name}",
+                "changeVisibilityPublicTitle": "Make {name} public?",
+                "changeVisibilityPrivateTitle": "Make {name} private?",
+                "makePublicContent": "Are you sure you want to make <bold>{name}</bold> public? This will allow others to see your wish list if they have the link.",
+                "makePrivateContent": "Are you sure you want to make <bold>{name}</bold> private? If you've shared your wish list with others, they will no longer be able to see it.",
+                "deleteContent": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone."
+            },
+            "Form": {
+                "nameLabel": "Name"
+            },
+            "Errors": {
+                "nameRequired": "Wish list name cannot be empty.",
+                "updateFailed": "Failed to update your wish list. Please try again.",
+                "deleteFailed": "Failed to delete your wish list. Please try again.",
+                "removeProductFailed": "Failed to remove the product from your wish list. Please try again.",
+                "unauthorized": "You are not authorized to perform this action. Please sign in and try again.",
+                "unexpected": "An unexpected error occurred. Please try again."
+            },
+            "Result": {
+                "createSuccess": "Wish list has been created successfully.",
+                "updateSuccess": "Wish list has been updated successfully.",
+                "deleteSuccess": "Wish list has been deleted successfully.",
+                "removeItemSuccess": "Item has been removed from your wish list."
+            }
         }
+    },
+    "PublicWishlist": {
+        "title": "Public Wish List",
+        "defaultName": "Public wish list"
     },
     "Blog": {
         "title": "ブログ",
@@ -389,26 +449,21 @@
         }
     },
     "Compare": {
-        "title": "価格比較",
-        "heading": "Comparing {quantity, plural, =1 {1 Product} other {# Products}}",
-        "nothingToCompare": "Well, there's nothing to compare!",
-        "helpingText": "You somehow managed to land here, but you need to select a few products first.",
-        "Table": {
-            "caption": "Product comparison",
-            "noImage": "No image",
-            "viewOptions": "View options",
-            "description": "説明",
-            "rating": "評価",
-            "availability": "販売中",
-            "Prices": {
-                "msrp": "メーカー希望小売価格",
-                "was": "Was",
-                "now": "Now"
-            }
-        },
-        "AddToCart": {
-            "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>"
-        }
+        "title": "Compare products",
+        "addToCart": "カートに追加",
+        "next": "Next products",
+        "previous": "Previous products",
+        "noProductsToCompare": "No products to compare",
+        "sku": "SKU",
+        "weight": "重さ",
+        "description": "説明",
+        "noDescription": "There is no description available.",
+        "rating": "評価",
+        "noRatings": "There are no reviews.",
+        "otherDetails": "Other details",
+        "noOtherDetails": "There are no other details.",
+        "viewOptions": "View options",
+        "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>"
     },
     "Product": {
         "ProductDetails": {
@@ -418,6 +473,7 @@
             "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>",
             "missingCart": "Cart not found. Please try again later!",
             "unknownError": "Unknown error. Please try again later.",
+            "variantRequiredError": "This product requires options to be selected in order to add to the cart.",
             "increaseNumber": "Increase number",
             "decreaseNumber": "Decrease number",
             "thumbnail": "View image number",
@@ -588,7 +644,9 @@
         },
         "ProductCard": {
             "Compare": {
-                "compare": "価格比較"
+                "compare": "価格比較",
+                "remove": "削除",
+                "maxCompareLimit": "You've reached the maximum number of products for comparison. Remove a product to add a new one."
             },
             "AddToCart": {
                 "viewOptions": "View options",
