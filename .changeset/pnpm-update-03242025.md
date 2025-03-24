@@ -1,2 +1,0 @@
-Updates pnpm to the latest version. If you are using corepack to manage your package manager, you should be fine to continue your normal workflow. Just run `pnpm install` to update your deps and you should be good to go. If you are using a self-managed version of pnpm (i.e. global install, mise-en-place, etc...), you'll need to manually update pnpm to the latest version. See your tool-of-choice's documentation on how to upgrade.
-```
