@@ -3,6 +3,7 @@
 import { BigCommerceGQLError, removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
+import { strict } from 'assert';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -11,7 +12,13 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { searchResultsTransformer } from '~/data-transformers/search-results-transformer';
+import {
+  AlgoliaHit,
+  algoliaResultsTransformer,
+  AlgoliaSearchResults,
+  searchResultsTransformer,
+} from '~/data-transformers/search-results-transformer';
+import algoliaClient from '~/lib/algolia/client';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { SearchProductFragment } from './fragment';
@@ -79,23 +86,34 @@ export async function search(
     };
   }
 
-  const customerAccessToken = await getSessionCustomerAccessToken();
+  // const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const currencyCode = await getPreferredCurrencyCode();
+  // const currencyCode = await getPreferredCurrencyCode();
 
   try {
-    const response = await client.fetch({
-      document: GetQuickSearchResultsQuery,
-      variables: { filters: { searchTerm: submission.value.term }, currencyCode },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    strict(process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME);
+
+    const algoliaResults = await algoliaClient.searchSingleIndex<AlgoliaHit>({
+      indexName: process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME,
+      searchParams: { query: submission.value.term },
     });
 
-    const { products } = response.data.site.search.searchProducts;
+    // const response = await client.fetch({
+    //   document: GetQuickSearchResultsQuery,
+    //   variables: { filters: { searchTerm: submission.value.term }, currencyCode },
+    //   customerAccessToken,
+    //   fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    // });
+
+    // const { products } = response.data.site.search.searchProducts;
+
+    const tasdf = await algoliaResultsTransformer(algoliaResults.hits);
+
+    console.log({ tasdf });
 
     return {
       lastResult: submission.reply(),
-      searchResults: await searchResultsTransformer(removeEdgesAndNodes(products)),
+      searchResults: await algoliaResultsTransformer(algoliaResults.hits),
       emptyStateTitle,
       emptyStateSubtitle,
     };

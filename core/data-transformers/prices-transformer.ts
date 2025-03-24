@@ -16,6 +16,8 @@ export const pricesTransformer = (
   const isPriceRange = prices.priceRange.min.value !== prices.priceRange.max.value;
   const isSalePrice = prices.salePrice?.value !== prices.basePrice?.value;
 
+  console.log(prices.salePrice?.value, prices.basePrice?.value);
+
   if (isPriceRange) {
     return {
       type: 'range',
