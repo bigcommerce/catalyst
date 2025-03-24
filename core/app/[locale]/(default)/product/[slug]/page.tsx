@@ -4,9 +4,9 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { createSearchParamsCache, parseAsString } from 'nuqs/server';
 import { cache } from 'react';
 
+import { ProductDetail } from '@/vibes/avios/sections/product-detail';
 import { Stream } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
-import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
@@ -52,10 +52,12 @@ const getProduct = async (props: Props) => {
   const variables = await cachedProductDataVariables(slug, props.searchParams);
   const product = await getProductData(variables);
 
-  const images = removeEdgesAndNodes(product.images).map((image) => ({
-    src: image.url,
-    alt: image.altText,
-  }));
+  const images = removeEdgesAndNodes(product.images).map(
+    (image: { url: string; altText: string }) => ({
+      src: image.url,
+      alt: image.altText,
+    }),
+  );
 
   const customFields = removeEdgesAndNodes(product.customFields);
 
