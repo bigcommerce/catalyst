@@ -34,7 +34,7 @@ export interface ProductDetailProps<F extends Field> {
   breadcrumbs?: Streamable<Breadcrumb[]>;
   product: Streamable<ProductDetailProduct | null>;
   action: ProductDetailFormAction<F>;
-  fields: Streamable<F[]>;
+  fields: F[];
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;

@@ -206,6 +206,74 @@ const ProductDetailsFragment = graphql(
   [PricingFragment, ProductFormFragment],
 );
 
+const ProductDetailQuery = graphql(
+  `
+    query ProductDetailQuery($entityId: Int!) {
+      site {
+        product(entityId: $entityId) {
+          entityId
+          name
+          description
+          path
+          images {
+            edges {
+              node {
+                altText
+                url: urlTemplate(lossy: true)
+                isDefault
+              }
+            }
+          }
+          defaultImage {
+            altText
+            url: urlTemplate(lossy: true)
+          }
+          brand {
+            name
+          }
+          reviewSummary {
+            averageRating
+          }
+          description
+          sku
+          weight {
+            value
+            unit
+          }
+          condition
+          customFields {
+            edges {
+              node {
+                entityId
+                name
+                value
+              }
+            }
+          }
+          warranty
+          ...ProductFormFragment
+        }
+      }
+    }
+  `,
+  [ProductFormFragment],
+);
+
+export async function getProductDetailData(entityId: number) {
+  'use cache';
+
+  const { data } = await client.fetch({
+    document: ProductDetailQuery,
+    variables: { entityId },
+  });
+
+  const product = data.site.product;
+
+  if (product == null) notFound();
+
+  return product;
+}
+
 const ProductPageQuery = graphql(
   `
     query ProductPageQuery(
