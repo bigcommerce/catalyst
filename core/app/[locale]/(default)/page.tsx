@@ -1,6 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
+
 import { FeaturedProductsCarousel } from '@/vibes/avios/sections/featured-products-carousel';
 import { FeaturedProductsList } from '@/vibes/avios/sections/featured-products-list';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -9,7 +10,6 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
-import { Subscribe } from '~/components/subscribe';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 

@@ -9,7 +9,7 @@
     "build": "npm run generate && next build",
     "build:analyze": "ANALYZE=true npm run build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "next lint --quiet",
     "typecheck": "tsc --noEmit",
     "opennext:build": "npx opennext@latest build",
     "echostage": "export STAGE=$(git rev-parse --abbrev-ref HEAD | sed -E 's/^feature\\///') && echo $STAGE",
