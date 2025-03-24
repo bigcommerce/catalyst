@@ -7,7 +7,7 @@ import { cache } from 'react';
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { ListProduct } from '@/vibes/soul/primitives/products-list';
-import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
+import { ProductsListSection } from '@/vibes/avios/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import { Option as SortOption } from '@/vibes/soul/sections/products-list-section/sorting';
@@ -145,6 +145,9 @@ async function getListProducts(props: Props): Promise<ListProduct[]> {
   return refinedSearch.products.items.map((product) => ({
     id: product.entityId.toString(),
     title: product.name,
+    plainTextDescription: product.plainTextDescription,
+    availability: product.availabilityV2.status,
+    inventory: product.inventory.isInStock,
     href: product.path,
     image: product.defaultImage
       ? { src: product.defaultImage.url, alt: product.defaultImage.altText }

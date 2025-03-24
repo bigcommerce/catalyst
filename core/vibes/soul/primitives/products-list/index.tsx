@@ -5,7 +5,7 @@ import {
   CardProduct,
   ProductCard,
   ProductCardSkeleton,
-} from '@/vibes/soul/primitives/product-card';
+} from '@/vibes/avios/sections/product-card';
 
 import { CompareDrawer } from './compare-drawer';
 
@@ -31,7 +31,7 @@ export function ProductsList({
   className,
   colorScheme,
   aspectRatio,
-  showCompare,
+  showCompare ,
   compareAction,
   compareProducts: streamableCompareProducts,
   compareLabel: streamableCompareLabel,

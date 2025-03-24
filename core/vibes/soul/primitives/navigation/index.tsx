@@ -19,7 +19,6 @@ import React, {
   useTransition,
 } from 'react';
 import { useFormStatus } from 'react-dom';
-
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Button } from '@/vibes/soul/primitives/button';
@@ -141,7 +140,7 @@ const MobileMenuButton = forwardRef<
         />
         <div
           className={clsx(
-            'h-px transform rounded bg-[var(--nav-mobile-button-icon,hsl(var(--foreground)))] transition-all delay-75 duration-300',
+            'rounded h-px transform bg-[var(--nav-mobile-button-icon,hsl(var(--foreground)))] transition-all delay-75 duration-300',
             open ? 'translate-x-10' : 'w-7',
           )}
         />
@@ -316,7 +315,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     >
       <div
         className={clsx(
-          'flex items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-2 pl-3 pr-2 transition-shadow @4xl:rounded-2xl @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5',
+          '@4xl:rounded-2xl flex items-center justify-between gap-1 bg-[var(--nav-background,hsl(var(--background)))] py-2 pl-3 pr-2 transition-shadow @4xl:px-2 @4xl:pl-6 @4xl:pr-2.5',
           isFloating
             ? 'shadow-xl ring-1 ring-[var(--nav-floating-border,hsl(var(--foreground)/10%))]'
             : 'shadow-none ring-0',
@@ -335,21 +334,21 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           </Popover.Trigger>
           <Popover.Portal>
             <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popper-anchor-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-              <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
+              <div className="divide-y max-h-[inherit] divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
                 <Stream
                   fallback={
                     <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
                       <li>
-                        <span className="block h-4 w-10 rounded-md bg-contrast-100" />
+                        <span className="bg-contrast-100 block h-4 w-10 rounded-md" />
                       </li>
                       <li>
-                        <span className="block h-4 w-14 rounded-md bg-contrast-100" />
+                        <span className="bg-contrast-100 block h-4 w-14 rounded-md" />
                       </li>
                       <li>
-                        <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+                        <span className="bg-contrast-100 block h-4 w-24 rounded-md" />
                       </li>
                       <li>
-                        <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                        <span className="bg-contrast-100 block h-4 w-16 rounded-md" />
                       </li>
                     </ul>
                   }
@@ -373,7 +372,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                           .map((link, j) => (
                             <li key={j}>
                               <Link
-                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
+                                className="text-sm block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
                                 href={link.href}
                               >
                                 {link.label}
@@ -431,16 +430,16 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             fallback={
               <ul className="flex animate-pulse flex-row p-2 @4xl:gap-2 @4xl:p-5">
                 <li>
-                  <span className="block h-4 w-10 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-10 rounded-md" />
                 </li>
                 <li>
-                  <span className="block h-4 w-14 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-14 rounded-md" />
                 </li>
                 <li>
-                  <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-24 rounded-md" />
                 </li>
                 <li>
-                  <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                  <span className="bg-contrast-100 block h-4 w-16 rounded-md" />
                 </li>
               </ul>
             }
@@ -451,7 +450,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 <NavigationMenu.Item key={i} value={i.toString()}>
                   <NavigationMenu.Trigger asChild>
                     <Link
-                      className="hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
+                      className="text-sm hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
                       href={item.href}
                     >
                       {item.label}
@@ -479,7 +478,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                               // Third Level Links
                               <li key={idx}>
                                 <Link
-                                  className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
+                                  className="text-sm block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
                                   href={link.href}
                                 >
                                   {link.label}
@@ -520,7 +519,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               </Popover.Trigger>
               <Popover.Portal>
                 <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-                  <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
+                  <div className="rounded-2xl flex max-h-[inherit] flex-col bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
                     <SearchForm
                       searchAction={searchAction}
                       searchCtaLabel={searchCtaLabel}
@@ -545,14 +544,14 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             <ShoppingBag size={20} strokeWidth={1} />
             <Stream
               fallback={
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-contrast-100 text-xs text-background" />
+                <span className="rounded-full bg-contrast-100 text-xs absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center text-background" />
               }
               value={streamableCartCount}
             >
               {(cartCount) =>
                 cartCount != null &&
                 cartCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--nav-cart-count-background,hsl(var(--foreground)))] font-[family-name:var(--nav-cart-count-font-family,var(--font-family-body))] text-xs text-[var(--nav-cart-count-text,hsl(var(--background)))]">
+                  <span className="rounded-full text-xs absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center bg-[var(--nav-cart-count-background,hsl(var(--foreground)))] font-[family-name:var(--nav-cart-count-font-family,var(--font-family-body))] text-[var(--nav-cart-count-text,hsl(var(--background)))]">
                     {cartCount}
                   </span>
                 )
@@ -653,7 +652,7 @@ function SearchForm<S extends SearchResult>({
           strokeWidth={1}
         />
         <input
-          className="flex-grow bg-transparent pl-2 text-lg font-medium outline-0 focus-visible:outline-none @xl:pl-0"
+          className="bg-transparent text-lg flex-grow pl-2 font-medium outline-0 focus-visible:outline-none @xl:pl-0"
           name={searchParamName}
           onChange={(e) => {
             setQuery(e.currentTarget.value);
@@ -719,7 +718,7 @@ function SearchResults({
     if (stale) return null;
 
     return (
-      <div className="flex flex-col border-t border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-6">
+      <div className="border-t flex flex-col border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-6">
         {errors.map((error) => (
           <FormStatus key={error} type="error">
             {error}
@@ -733,7 +732,7 @@ function SearchResults({
     if (stale) return null;
 
     return (
-      <div className="flex flex-col border-t border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-6">
+      <div className="border-t flex flex-col border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-6">
         <p className="text-2xl font-medium text-[var(--nav-search-empty-title,hsl(var(--foreground)))]">
           {emptySearchTitle}
         </p>
@@ -747,7 +746,7 @@ function SearchResults({
   return (
     <div
       className={clsx(
-        'flex flex-1 flex-col overflow-y-auto border-t border-[var(--nav-search-divider,hsl(var(--contrast-100)))] @2xl:flex-row',
+        'border-t flex flex-1 flex-col overflow-y-auto border-[var(--nav-search-divider,hsl(var(--contrast-100)))] @2xl:flex-row',
         stale && 'opacity-50',
       )}
     >
@@ -757,10 +756,10 @@ function SearchResults({
             return (
               <section
                 aria-label={result.title}
-                className="flex w-full flex-col gap-1 border-b border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-5 @2xl:max-w-80 @2xl:border-b-0 @2xl:border-r"
+                className="border-b @2xl:border-b-0 @2xl:border-r flex w-full flex-col gap-1 border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-5 @2xl:max-w-80"
                 key={`result-${index}`}
               >
-                <h3 className="mb-4 font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
+                <h3 className="text-sm mb-4 font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
                   {result.title}
                 </h3>
                 <ul role="listbox">
@@ -786,7 +785,7 @@ function SearchResults({
                 className="flex w-full flex-col gap-5 p-5"
                 key={`result-${index}`}
               >
-                <h3 className="font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
+                <h3 className="text-sm font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
                   {result.title}
                 </h3>
                 <ul
@@ -853,7 +852,7 @@ function LocaleSwitcher({
     <DropdownMenu.Root>
       <DropdownMenu.Trigger
         className={clsx(
-          'flex items-center gap-1 text-xs uppercase transition-opacity [&:disabled]:opacity-30',
+          'text-xs flex items-center gap-1 uppercase transition-opacity [&:disabled]:opacity-30',
           navButtonClassName,
         )}
         disabled={isPending}
@@ -864,13 +863,13 @@ function LocaleSwitcher({
       <DropdownMenu.Portal>
         <DropdownMenu.Content
           align="end"
-          className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
+          className="@4xl:rounded-2xl z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:p-2"
           sideOffset={16}
         >
           {locales.map(({ id, label }) => (
             <DropdownMenu.Item
               className={clsx(
-                'cursor-default rounded-lg bg-[var(--nav-locale-link-background,transparent)] px-2.5 py-2 font-[family-name:var(--nav-locale-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-locale-link-text,hsl(var(--contrast-400)))] outline-none ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-locale-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-locale-link-text-hover,hsl(var(--foreground)))]',
+                'text-sm cursor-default rounded-lg bg-[var(--nav-locale-link-background,transparent)] px-2.5 py-2 font-[family-name:var(--nav-locale-link-font-family,var(--font-family-body))] font-medium text-[var(--nav-locale-link-text,hsl(var(--contrast-400)))] outline-none ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-locale-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-locale-link-text-hover,hsl(var(--foreground)))]',
                 {
                   'text-[var(--nav-locale-link-text-selected,hsl(var(--foreground)))]':
                     id === activeLocaleId,
@@ -909,7 +908,7 @@ function CurrencyForm({
     <DropdownMenu.Root>
       <DropdownMenu.Trigger
         className={clsx(
-          'flex items-center gap-1 text-xs uppercase transition-opacity [&:disabled]:opacity-30',
+          'text-xs flex items-center gap-1 uppercase transition-opacity [&:disabled]:opacity-30',
           navButtonClassName,
         )}
         disabled={isPending}
@@ -920,13 +919,13 @@ function CurrencyForm({
       <DropdownMenu.Portal>
         <DropdownMenu.Content
           align="end"
-          className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
+          className="@4xl:rounded-2xl z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:p-2"
           sideOffset={16}
         >
           {currencies.map((currency) => (
             <DropdownMenu.Item
               className={clsx(
-                'cursor-default rounded-lg bg-[var(--nav-locale-link-background,transparent)] px-2.5 py-2 font-[family-name:var(--nav-locale-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-locale-link-text,hsl(var(--contrast-400)))] outline-none ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-locale-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-locale-link-text-hover,hsl(var(--foreground)))]',
+                'text-sm cursor-default rounded-lg bg-[var(--nav-locale-link-background,transparent)] px-2.5 py-2 font-[family-name:var(--nav-locale-link-font-family,var(--font-family-body))] font-medium text-[var(--nav-locale-link-text,hsl(var(--contrast-400)))] outline-none ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-locale-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-locale-link-text-hover,hsl(var(--foreground)))]',
                 {
                   'text-[var(--nav-locale-link-text-selected,hsl(var(--foreground)))]':
                     currency.id === activeCurrencyId,
