@@ -47,7 +47,7 @@ interface ShipmentLineItem {
   title: string;
   subtitle?: string;
   price: string;
-  href: string;
+  href?: string;
   image?: { src: string; alt: string };
   quantity: number;
   metadata?: Array<{ label: string; value: string }>;
@@ -197,7 +197,7 @@ function ShipmentTracking({
 }
 
 function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
-  return (
+  return lineItem.href ? (
     <Link
       className="group grid shrink-0 cursor-pointer gap-8 rounded-xl ring-primary ring-offset-4 focus-visible:outline-0 focus-visible:ring-2 @sm:flex @sm:rounded-2xl"
       href={lineItem.href}
@@ -241,6 +241,46 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
         </div>
       </div>
     </Link>
+  ) : (
+    <div className="group grid shrink-0 gap-8 rounded-xl @sm:flex @sm:rounded-2xl" id={lineItem.id}>
+      <div className="relative aspect-square basis-40 overflow-hidden rounded-[inherit] border border-contrast-100 bg-contrast-100">
+        {lineItem.image?.src != null ? (
+          <Image
+            alt={lineItem.image.alt}
+            className="w-full scale-100 select-none bg-contrast-100 object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+            fill
+            sizes="10rem"
+            src={lineItem.image.src}
+          />
+        ) : (
+          <div className="pl-2 pt-3 text-4xl font-bold leading-[0.8] tracking-tighter text-contrast-300 transition-transform duration-500 ease-out group-hover:scale-105">
+            {lineItem.title}
+          </div>
+        )}
+      </div>
+
+      <div className="space-y-3 text-sm leading-snug">
+        <div>
+          <div className="font-semibold">{lineItem.title}</div>
+          {lineItem.subtitle != null && lineItem.subtitle !== '' && (
+            <div className="font-normal text-contrast-500">{lineItem.subtitle}</div>
+          )}
+        </div>
+        <div className="flex gap-1 text-sm">
+          <span className="font-semibold">{lineItem.price}</span>
+          <span>×</span>
+          <span className="font-semibold">{lineItem.quantity}</span>
+        </div>
+        <div>
+          {lineItem.metadata?.map((metadata, index) => (
+            <div className="flex gap-1 text-sm" key={index}>
+              <span className="font-semibold">{metadata.label}:</span>
+              <span>{metadata.value}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 }
 

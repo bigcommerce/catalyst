@@ -22,8 +22,7 @@ export const ordersTransformer = (
           return consignment.lineItems.map((lineItem) => {
             return {
               id: lineItem.entityId.toString(),
-              href:
-                lineItem.baseCatalogProduct?.path ?? `/product/${String(lineItem.productEntityId)}`,
+              href: lineItem.baseCatalogProduct?.path ?? undefined,
               title: lineItem.name,
               subtitle: lineItem.brand ?? undefined,
               price: format.number(lineItem.subTotalListPrice.value, {
