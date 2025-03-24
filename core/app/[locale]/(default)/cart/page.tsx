@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
- import { Cart as CartComponent, CartEmptyState } from '@/vibes/avios/cart';
+import { Cart as CartComponent, CartEmptyState } from '@/vibes/avios/sections/cart';
 import { getCartId } from '~/lib/cart';
 import { exists } from '~/lib/utils';
 
