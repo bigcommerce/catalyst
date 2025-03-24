@@ -8,8 +8,14 @@ const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID || '';
 
 declare global {
   interface Window {
-    dataLayer: Array<Record<string, unknown>>;
+    dataLayer?: Array<Record<string, unknown> | [string, ...unknown[]]>;
   }
+}
+
+type GtagArgs = ['js', Date] | ['config', string, Record<string, unknown>];
+
+function gtag(...args: GtagArgs) {
+  if (window.dataLayer) window.dataLayer.push(args);
 }
 
 export default function GTM() {
@@ -17,10 +23,8 @@ export default function GTM() {
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      window.dataLayer = window.dataLayer || [];
-
-      function gtag(...args: any) {
-        window.dataLayer.push(args);
+      if (!window.dataLayer) {
+        window.dataLayer = [];
       }
 
       gtag('js', new Date());
