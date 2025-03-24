@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.24.2
+
+### Patch Changes
+
+- [`8016f01`](https://github.com/bigcommerce/catalyst/commit/8016f018614691719b10f65bb88bb66170f95ddb) Thanks [@bookernath](https://github.com/bookernath)! - Bump Next.js to latest version to address CVE
+
 ## 0.24.1
 
 ### Patch Changes
