@@ -3,20 +3,26 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { WalletButtonsInitializer } from '~/lib/wallet-buttons';
-import { Option } from '~/lib/wallet-buttons/types';
+import { InitializeButtonProps } from '~/lib/wallet-buttons/types';
 
-export const ClientWalletButtons = ({ walletButtons }: { walletButtons: Option[] }) => {
+export const ClientWalletButtons = ({
+  walletButtons,
+  cartId,
+}: {
+  walletButtons: string[];
+  cartId: string;
+}) => {
   const isMountedRef = useRef(false);
-  const [buttons, setButtons] = useState<Option[]>([]);
+  const [buttons, setButtons] = useState<InitializeButtonProps[]>([]);
 
   useEffect(() => {
     if (!isMountedRef.current) {
       isMountedRef.current = true;
 
       const initWalletButtons = async () => {
-        const initializedButtons = await new WalletButtonsInitializer(
-          window.location.origin,
-        ).initialize(walletButtons);
+        const initializedButtons = await new WalletButtonsInitializer(cartId).initialize(
+          walletButtons,
+        );
 
         setButtons(initializedButtons);
       };

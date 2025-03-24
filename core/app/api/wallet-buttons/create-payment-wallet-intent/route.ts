@@ -11,7 +11,7 @@ function isPaymentWalletIntentRequestBody(data: unknown): data is PaymentWalletI
   return typeof data === 'object' && data !== null && 'walletEntityId' in data && 'cartId' in data;
 }
 
-export const createPaymentWalletIntentData = async (request: NextRequest) => {
+export const POST = async (request: NextRequest) => {
   const data: unknown = await request.json();
 
   if (isPaymentWalletIntentRequestBody(data)) {

@@ -12,7 +12,6 @@ import { toast } from '@/vibes/soul/primitives/toaster';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { ClientWalletButtons } from 'components/wallet-buttons/_components/client-wallet-buttons';
 import { Image } from '~/components/image';
-import { Option } from '~/lib/wallet-buttons/types';
 
 import { CouponCodeForm, CouponCodeFormState } from './coupon-code-form';
 import { cartLineItemActionFormDataSchema } from './schema';
@@ -120,7 +119,8 @@ export interface Props<LineItem extends CartLineItem> {
   decrementLineItemLabel?: string;
   incrementLineItemLabel?: string;
   cart: Cart<LineItem>;
-  walletButtons?: Option[];
+  walletButtons?: string[];
+  cartId: string;
   couponCode?: CouponCode;
   shipping?: Shipping;
 }
@@ -141,6 +141,7 @@ export function CartClient<LineItem extends CartLineItem>({
   lineItemAction,
   checkoutAction,
   walletButtons,
+  cartId,
   checkoutLabel = 'Checkout',
   emptyState = defaultEmptyState,
   summaryTitle,
@@ -236,7 +237,7 @@ export function CartClient<LineItem extends CartLineItem>({
           </CheckoutButton>
           {walletButtons && (
             <div className="mt-4">
-              <ClientWalletButtons walletButtons={walletButtons} />
+              <ClientWalletButtons cartId={cartId} walletButtons={walletButtons} />
             </div>
           )}
         </div>

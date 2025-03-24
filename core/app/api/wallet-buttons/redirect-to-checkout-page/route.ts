@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 import { redirectToCheckout } from '~/app/[locale]/(default)/cart/_actions/redirect-to-checkout';
 import { getCartId } from '~/lib/cart';
 
-export const redirectToCheckoutPage = async () => {
+export const GET = async () => {
   try {
     const cartId = await getCartId();
 

@@ -9,33 +9,15 @@ interface CheckoutKitLoader {
 }
 
 interface CheckoutKitModule {
-  createHeadlessCheckoutWalletInitializer(props: {
-    host?: string;
-  }): CheckoutHeadlessButtonInitializer;
+  createHeadlessCheckoutWalletInitializer(): CheckoutHeadlessButtonInitializer;
 }
 
 interface CheckoutHeadlessButtonInitializer {
-  initializeHeadlessButton(option: Option): void;
+  initializeHeadlessButton(option: InitializeButtonProps): void;
 }
 
-interface OptionProps {
-  style: {
-    color: string;
-    label: string;
-  };
-  cartId: string;
-}
-
-interface PaypalCommerceOption {
-  methodId: 'paypalcommerce';
+export interface InitializeButtonProps {
+  [key: string]: unknown;
   containerId: string;
-  paypalcommerce: OptionProps;
+  methodId: string;
 }
-
-interface PaypalCommerceCreditOption {
-  methodId: 'paypalcommercecredit';
-  containerId: string;
-  paypalcommercecredit: OptionProps;
-}
-
-export type Option = PaypalCommerceOption | PaypalCommerceCreditOption;

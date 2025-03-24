@@ -1,21 +1,35 @@
 import { InitializationError } from './error';
-import { Option } from './types';
+import { InitializeButtonProps } from './types';
+import WalletButtonOptionsInitializer from './wallet-button-options-initializer';
 
 export class WalletButtonsInitializer {
-  private checkoutSdkUrl = `${window.location.origin}/v1/loader.js`;
+  private origin = window.location.origin;
+  private checkoutSdkUrl = `${this.origin}/v1/loader.js`;
 
-  constructor(private url: string) {}
+  constructor(private cartId: string) {}
 
-  async initialize(walletButtons: Option[]): Promise<Option[]> {
+  async initialize(walletButtons: string[]): Promise<InitializeButtonProps[]> {
+    const walletButtonOptionInitializer = new WalletButtonOptionsInitializer(this.cartId);
+
     await this.initializeCheckoutKitLoader();
 
     const checkoutButtonInitializer = await this.initCheckoutButtonInitializer();
 
-    return walletButtons.map((option) => {
-      checkoutButtonInitializer.initializeHeadlessButton(option);
+    const buttonOptionsConfig = walletButtonOptionInitializer.getButtonOptionsConfig();
 
-      return option;
-    });
+    return walletButtons
+      .filter((methodId) => Object.keys(buttonOptionsConfig).includes(methodId))
+      .map((methodId) => {
+        const buttonOptions = buttonOptionsConfig[methodId]?.();
+
+        if (buttonOptions) {
+          checkoutButtonInitializer.initializeHeadlessButton(buttonOptions);
+
+          return buttonOptions;
+        }
+
+        throw new Error(`Could not initialize the checkout button with ${methodId}`);
+      });
   }
 
   private async initializeCheckoutKitLoader(): Promise<void> {
@@ -45,8 +59,6 @@ export class WalletButtonsInitializer {
 
     const checkoutButtonModule = await window.checkoutKitLoader.load('headless-checkout-wallet');
 
-    return checkoutButtonModule.createHeadlessCheckoutWalletInitializer({
-      host: this.url,
-    });
+    return checkoutButtonModule.createHeadlessCheckoutWalletInitializer();
   }
 }

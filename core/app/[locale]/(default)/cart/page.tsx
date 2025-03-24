@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
-import { createWalletButtonsInitOptions } from '~/components/wallet-buttons/_actions/create-wallet-buttons-init-options';
 import { getCartId } from '~/lib/cart';
 import { exists } from '~/lib/utils';
 
@@ -11,7 +10,7 @@ import { updateCouponCode } from './_actions/update-coupon-code';
 import { updateLineItem } from './_actions/update-line-item';
 import { updateShippingInfo } from './_actions/update-shipping-info';
 import { CartViewed } from './_components/cart-viewed';
-import { getCart, getShippingCountries } from './page-data';
+import { getCart, getPaymentWallets, getShippingCountries } from './page-data';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Cart');
@@ -52,7 +51,11 @@ export default async function Cart() {
     );
   }
 
-  const walletButtons = await createWalletButtonsInitOptions();
+  const walletButtons = await getPaymentWallets({
+    filters: {
+      cartEntityId: cartId,
+    },
+  });
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
 
@@ -163,6 +166,7 @@ export default async function Cart() {
             },
           ].filter(exists),
         }}
+        cartId={cartId}
         checkoutAction={redirectToCheckoutFormAction}
         checkoutLabel={t('proceedToCheckout')}
         couponCode={{

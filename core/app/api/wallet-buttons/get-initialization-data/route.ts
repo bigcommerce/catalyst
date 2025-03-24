@@ -12,7 +12,7 @@ function isPaymentWalletInitializationDataRequestBody(
   return typeof data === 'object' && data !== null && 'entityId' in data;
 }
 
-export const getInitializationData = async (request: NextRequest) => {
+export const POST = async (request: NextRequest) => {
   const data: unknown = await request.json();
 
   if (isPaymentWalletInitializationDataRequestBody(data)) {

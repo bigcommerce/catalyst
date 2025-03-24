@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { fetchCart } from '~/client/queries/get-cart';
 import { getCurrencyData } from '~/client/queries/get-currency-data';
 
-export const getCartInformation = async (request: NextRequest) => {
+export const GET = async (request: NextRequest) => {
   const cartId = request.nextUrl.searchParams.get('cartId');
 
   if (cartId) {
