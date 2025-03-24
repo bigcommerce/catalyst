@@ -19,7 +19,6 @@ import React, {
   useTransition,
 } from 'react';
 import { useFormStatus } from 'react-dom';
-import { InstantSearch, useHits, useSearchBox } from 'react-instantsearch';
 
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -29,7 +28,6 @@ import { Price } from '@/vibes/soul/primitives/price-label';
 import { ProductCard } from '@/vibes/soul/primitives/product-card';
 import { Link } from '~/components/link';
 import { usePathname, useRouter } from '~/i18n/routing';
-import algoliaClient from '~/lib/algolia/client';
 
 interface Link {
   label: string;
@@ -277,6 +275,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     currencyAction,
     searchHref,
     searchParamName = 'query',
+    searchAction,
     searchCtaLabel,
     searchInputPlaceholder,
     cartLabel = 'Cart',
@@ -505,37 +504,39 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             linksPosition === 'center' ? 'flex-1' : 'flex-1 @4xl:flex-none',
           )}
         >
-          <Popover.Root onOpenChange={setIsSearchOpen} open={isSearchOpen}>
-            <Popover.Anchor className="absolute left-0 right-0 top-full" />
-            <Popover.Trigger asChild>
-              <button
-                aria-label={openSearchPopupLabel}
-                className={navButtonClassName}
-                onPointerEnter={(e) => e.preventDefault()}
-                onPointerLeave={(e) => e.preventDefault()}
-                onPointerMove={(e) => e.preventDefault()}
-              >
-                <Search size={20} strokeWidth={1} />
-              </button>
-            </Popover.Trigger>
-            <Popover.Portal>
-              <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-                <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
-                  <InstantSearch
-                    indexName={process.env.NEXT_PUBLIC_ALGOLIA_INDEX_NAME}
-                    searchClient={algoliaClient}
-                  >
+          {searchAction ? (
+            <Popover.Root onOpenChange={setIsSearchOpen} open={isSearchOpen}>
+              <Popover.Anchor className="absolute left-0 right-0 top-full" />
+              <Popover.Trigger asChild>
+                <button
+                  aria-label={openSearchPopupLabel}
+                  className={navButtonClassName}
+                  onPointerEnter={(e) => e.preventDefault()}
+                  onPointerLeave={(e) => e.preventDefault()}
+                  onPointerMove={(e) => e.preventDefault()}
+                >
+                  <Search size={20} strokeWidth={1} />
+                </button>
+              </Popover.Trigger>
+              <Popover.Portal>
+                <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
+                  <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
                     <SearchForm
+                      searchAction={searchAction}
                       searchCtaLabel={searchCtaLabel}
                       searchHref={searchHref}
                       searchInputPlaceholder={searchInputPlaceholder}
                       searchParamName={searchParamName}
                     />
-                  </InstantSearch>
-                </div>
-              </Popover.Content>
-            </Popover.Portal>
-          </Popover.Root>
+                  </div>
+                </Popover.Content>
+              </Popover.Portal>
+            </Popover.Root>
+          ) : (
+            <Link aria-label={searchLabel} className={navButtonClassName} href={searchHref}>
+              <Search size={20} strokeWidth={1} />
+            </Link>
+          )}
 
           <Link aria-label={accountLabel} className={navButtonClassName} href={accountHref}>
             <User size={20} strokeWidth={1} />
@@ -558,6 +559,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               }
             </Stream>
           </Link>
+
           {/* Locale / Language Dropdown */}
           {locales && locales.length > 1 ? (
             <LocaleSwitcher
@@ -566,6 +568,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               locales={locales as [Locale, Locale, ...Locale[]]}
             />
           ) : null}
+
           {/* Currency Dropdown */}
           {currencies && currencies.length > 1 && currencyAction ? (
             <CurrencyForm
@@ -586,34 +589,28 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
 Navigation.displayName = 'Navigation';
 
-interface AlgoliaSearchResults {
-  objectID: string;
-  name: string;
-  url: string;
-  product_images: Array<{ description: string; is_thumbnail: boolean; url_thumbnail: string }>;
-  categories_without_path: string[];
-  calculated_prices: Record<string, number>;
-}
-
-function SearchForm({
+function SearchForm<S extends SearchResult>({
+  searchAction,
   searchParamName = 'query',
   searchHref = '/search',
   searchInputPlaceholder = 'Search Products',
   searchCtaLabel = 'View more',
   submitLabel = 'Submit',
 }: {
+  searchAction: SearchAction<S>;
   searchParamName?: string;
   searchHref?: string;
   searchCtaLabel?: string;
   searchInputPlaceholder?: string;
   submitLabel?: string;
 }) {
-  const { refine } = useSearchBox();
-
-  const { items } = useHits<AlgoliaSearchResults>();
-
   const [query, setQuery] = useState('');
   const [isSearching, startSearching] = useTransition();
+  const [{ searchResults, lastResult, emptyStateTitle, emptyStateSubtitle }, formAction] =
+    useActionState(searchAction, {
+      searchResults: null,
+      lastResult: null,
+    });
   const [isDebouncing, setIsDebouncing] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const isPending = isSearching || isDebouncing || isSubmitting;
@@ -621,8 +618,12 @@ function SearchForm({
     const debounced = debounce((q: string) => {
       setIsDebouncing(false);
 
+      const formData = new FormData();
+
+      formData.append(searchParamName, q);
+
       startSearching(() => {
-        refine(q);
+        formAction(formData);
       });
     }, 300);
 
@@ -631,7 +632,9 @@ function SearchForm({
 
       debounced(q);
     };
-  }, [refine]);
+  }, [formAction, searchParamName]);
+
+  const [form] = useForm({ lastResult });
 
   const handleSubmit = useCallback(() => {
     setIsSubmitting(true);
@@ -664,10 +667,13 @@ function SearchForm({
       </form>
 
       <SearchResults
+        emptySearchSubtitle={emptyStateSubtitle}
+        emptySearchTitle={emptyStateTitle}
+        errors={form.errors}
         query={query}
         searchCtaLabel={searchCtaLabel}
         searchParamName={searchParamName}
-        searchResults={items}
+        searchResults={searchResults}
         stale={isPending}
       />
     </>
@@ -703,7 +709,7 @@ function SearchResults({
   searchCtaLabel?: string;
   emptySearchTitle?: string;
   emptySearchSubtitle?: string;
-  searchResults: AlgoliaSearchResults[] | null;
+  searchResults: SearchResult[] | null;
   stale: boolean;
   errors?: string[];
 }) {
@@ -738,18 +744,6 @@ function SearchResults({
     );
   }
 
-  const navigationResults = {
-    'Shop All': '/shop-all',
-    Plants: '/plants',
-    Pots: '/pots',
-    Accessories: '/accessories',
-  };
-  const uniqueCategories = Array.from(
-    new Set(searchResults.flatMap((product) => product.categories_without_path)),
-  );
-
-  console.log({ searchResults });
-
   return (
     <div
       className={clsx(
@@ -757,57 +751,71 @@ function SearchResults({
         stale && 'opacity-50',
       )}
     >
-      <section
-        aria-label="result.title"
-        className="flex w-full flex-col gap-1 border-b border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-5 @2xl:max-w-80 @2xl:border-b-0 @2xl:border-r"
-      >
-        <h3 className="mb-4 font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
-          Categories
-        </h3>
-        <ul role="listbox">
-          {uniqueCategories.map((category, i) => (
-            <li key={i}>
-              <Link
-                className="block rounded-lg bg-[var(--nav-search-result-link-background,transparent)] px-3 py-4 font-[family-name:var(--nav-search-result-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-search-result-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-search-result-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-search-result-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
-                href={navigationResults[category] ?? `/${category.toLowerCase()}`}
-              >
-                {category}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </section>
-      <section aria-label="Products" className="flex w-full flex-col gap-5 p-5">
-        <h3 className="font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
-          Products
-        </h3>
-        <ul
-          className="grid w-full grid-cols-2 gap-5 @xl:grid-cols-4 @2xl:grid-cols-2 @4xl:grid-cols-4"
-          role="listbox"
-        >
-          {searchResults.map((product) => {
+      {searchResults.map((result, index) => {
+        switch (result.type) {
+          case 'links': {
             return (
-              <li key={product.objectID}>
-                <ProductCard
-                  imageSizes="(min-width: 42rem) 25vw, 50vw"
-                  product={{
-                    id: product.objectID,
-                    title: product.name,
-                    href: product.url,
-                    price: `$${product.calculated_prices.USD?.toFixed(2)}`,
-                    image: {
-                      src:
-                        product.product_images.find((image) => image.is_thumbnail)?.url_thumbnail ??
-                        '',
-                      alt: product.product_images[0]?.description ?? '',
-                    },
-                  }}
-                />
-              </li>
+              <section
+                aria-label={result.title}
+                className="flex w-full flex-col gap-1 border-b border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-5 @2xl:max-w-80 @2xl:border-b-0 @2xl:border-r"
+                key={`result-${index}`}
+              >
+                <h3 className="mb-4 font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
+                  {result.title}
+                </h3>
+                <ul role="listbox">
+                  {result.links.map((link, i) => (
+                    <li key={i}>
+                      <Link
+                        className="block rounded-lg bg-[var(--nav-search-result-link-background,transparent)] px-3 py-4 font-[family-name:var(--nav-search-result-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-search-result-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-search-result-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-search-result-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
+                        href={link.href}
+                      >
+                        {link.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </section>
             );
-          })}
-        </ul>
-      </section>
+          }
+
+          case 'products': {
+            return (
+              <section
+                aria-label={result.title}
+                className="flex w-full flex-col gap-5 p-5"
+                key={`result-${index}`}
+              >
+                <h3 className="font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
+                  {result.title}
+                </h3>
+                <ul
+                  className="grid w-full grid-cols-2 gap-5 @xl:grid-cols-4 @2xl:grid-cols-2 @4xl:grid-cols-4"
+                  role="listbox"
+                >
+                  {result.products.map((product) => (
+                    <li key={product.id}>
+                      <ProductCard
+                        imageSizes="(min-width: 42rem) 25vw, 50vw"
+                        product={{
+                          id: product.id,
+                          title: product.title,
+                          href: product.href,
+                          price: product.price,
+                          image: product.image,
+                        }}
+                      />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          }
+
+          default:
+            return null;
+        }
+      })}
     </div>
   );
 }
