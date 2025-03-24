@@ -6,11 +6,11 @@ import { cache } from 'react';
 
 import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { ListProduct } from '@/vibes/avios/sections/products-list';
+import { ListProduct } from '@/vibes/soul/primitives/products-list';
 import { ProductsListSection } from '@/vibes/avios/sections/products-list-section';
-import { getFilterParsers } from '@/vibes/avios/sections/products-list-section/filter-parsers';
-import { Filter } from '@/vibes/avios/sections/products-list-section/filters-panel';
-import { Option as SortOption } from '@/vibes/avios/sections/products-list-section/sorting';
+import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
+import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
+import { Option as SortOption } from '@/vibes/soul/sections/products-list-section/sorting';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
