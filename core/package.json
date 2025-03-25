@@ -81,6 +81,7 @@
     "@next/bundle-analyzer": "15.1.6",
     "@playwright/test": "^1.50.0",
     "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/postcss": "^4.0.15",
     "@tailwindcss/typography": "^0.5.16",
     "@types/gtag.js": "^0.0.20",
     "@types/lodash.debounce": "^4.0.9",
@@ -90,7 +91,6 @@
     "@types/react-google-recaptcha": "^2.1.9",
     "@types/react-headroom": "^3.2.3",
     "@types/uuid": "^10.0.0",
-    "autoprefixer": "^10.4.20",
     "dotenv": "^16.4.7",
     "dotenv-cli": "^8.0.0",
     "eslint": "^8.57.1",
@@ -98,7 +98,7 @@
     "postcss": "^8.5.1",
     "prettier": "^3.4.2",
     "prettier-plugin-tailwindcss": "^0.6.11",
-    "tailwindcss": "^3.4.16",
+    "tailwindcss": "^4.0.15",
     "tailwindcss-animate": "1.0.7",
     "typescript": "^5.7.3"
   }
