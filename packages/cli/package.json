@@ -26,15 +26,15 @@
     "commander": "^12.1.0"
   },
   "devDependencies": {
-    "@bigcommerce/eslint-config": "^2.10.0",
+    "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
-    "@types/node": "^20.17.10",
-    "@vitest/coverage-v8": "^3.0.7",
-    "@vitest/ui": "^3.0.7",
+    "@types/node": "^22.13.13",
+    "@vitest/coverage-v8": "^3.0.9",
+    "@vitest/ui": "^3.0.9",
     "eslint": "^8.57.1",
-    "prettier": "^3.4.2",
-    "tsup": "^8.3.5",
-    "typescript": "^5.7.2",
-    "vitest": "^3.0.7"
+    "prettier": "^3.5.3",
+    "tsup": "^8.4.0",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.9"
   }
 }
