@@ -32,7 +32,7 @@ const RectangleList = forwardRef<ComponentRef<typeof RadioGroupPrimitive.Root>, 
               key={`${id}-${value}`}
               {...itemProps}
               className={cn(
-                'border-2 px-6 py-2.5 font-semibold text-black hover:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-100 disabled:text-gray-400 disabled:hover:border-gray-100 data-[state=checked]:border-primary',
+                'border-2 px-6 py-2.5 font-semibold text-black hover:border-primary focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-100 disabled:text-gray-400 disabled:hover:border-gray-100 data-[state=checked]:border-primary',
                 error &&
                   'border-error-secondary focus-visible:border-error-secondary data-[state=checked]:border-error-secondary hover:border-error focus-visible:ring-error/20 disabled:border-gray-200',
               )}

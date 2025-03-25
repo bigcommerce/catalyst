@@ -27,7 +27,7 @@ export function Alert({
   return (
     <div
       className={clsx(
-        'flex min-w-[284px] max-w-[356px] items-center justify-between gap-2 rounded-xl border border-foreground/10 py-3 pe-3 ps-4 shadow-sm ring-foreground group-focus-visible:outline-none group-focus-visible:ring-2',
+        'flex min-w-[284px] max-w-[356px] items-center justify-between gap-2 rounded-xl border border-foreground/10 py-3 pe-3 ps-4 shadow-xs ring-foreground group-focus-visible:outline-hidden group-focus-visible:ring-2',
         {
           success: 'bg-success-highlight',
           warning: 'bg-warning-highlight',

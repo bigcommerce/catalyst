@@ -45,7 +45,7 @@ export const Input = React.forwardRef<
       )}
       <div
         className={clsx(
-          'relative overflow-hidden rounded-lg border transition-colors duration-200 focus:outline-none',
+          'relative overflow-hidden rounded-lg border transition-colors duration-200 focus:outline-hidden',
           {
             light:
               'border-[var(--input-light-border,hsl(var(--contrast-100)))] bg-[var(--input-light-background,hsl(var(--background)))] focus-within:border-[var(--input-light-focus,hsl(var(--foreground)))]',
@@ -61,7 +61,7 @@ export const Input = React.forwardRef<
         <input
           {...rest}
           className={clsx(
-            'w-full px-6 py-3 text-sm [appearance:textfield] placeholder:font-normal focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+            'w-full px-6 py-3 text-sm [appearance:textfield] placeholder:font-normal focus:outline-hidden [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
             {
               light:
                 'bg-[var(--input-light-background,hsl(var(--background)))] text-[var(--input-light-text,hsl(var(--foreground)))] placeholder:text-[var(--input-light-placeholder,hsl(var(--contrast-500)))]',

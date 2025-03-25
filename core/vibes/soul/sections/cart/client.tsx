@@ -250,7 +250,7 @@ export function CartClient<LineItem extends CartLineItem>({
               className="flex flex-col items-start gap-x-5 gap-y-4 @container @sm:flex-row"
               key={lineItem.id}
             >
-              <div className="relative aspect-square w-full max-w-24 overflow-hidden rounded-xl bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4">
+              <div className="relative aspect-square w-full max-w-24 overflow-hidden rounded-xl bg-contrast-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4">
                 <Image
                   alt={lineItem.image.alt}
                   className="object-cover"
@@ -259,7 +259,7 @@ export function CartClient<LineItem extends CartLineItem>({
                   src={lineItem.image.src}
                 />
               </div>
-              <div className="flex flex-grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
+              <div className="flex grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
                 <div className="flex w-full flex-1 flex-col @xl:w-1/2 @xl:pr-4">
                   <span className="font-medium">{lineItem.title}</span>
                   <span className="text-contrast-300 contrast-more:text-contrast-500">
@@ -328,7 +328,7 @@ function CounterForm({
           <button
             aria-label={decrementLabel}
             className={clsx(
-              'group rounded-l-lg p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+              'group rounded-l-lg p-3 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary',
               lineItem.quantity === 1 ? 'opacity-50' : 'hover:bg-contrast-100/50',
             )}
             disabled={lineItem.quantity === 1}
@@ -345,13 +345,13 @@ function CounterForm({
               strokeWidth={1.5}
             />
           </button>
-          <span className="flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+          <span className="flex w-8 select-none justify-center focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary">
             {lineItem.quantity}
           </span>
           <button
             aria-label={incrementLabel}
             className={clsx(
-              'group rounded-r-lg p-3 transition-colors duration-300 hover:bg-contrast-100/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+              'group rounded-r-lg p-3 transition-colors duration-300 hover:bg-contrast-100/50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary',
             )}
             name="intent"
             type="submit"
@@ -367,7 +367,7 @@ function CounterForm({
 
         <button
           aria-label={deleteLabel}
-          className="-ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
+          className="-ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-contrast-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
           name="intent"
           type="submit"
           value="delete"

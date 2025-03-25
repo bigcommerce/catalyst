@@ -20,7 +20,7 @@ export const Textarea = React.forwardRef<
       <textarea
         {...rest}
         className={clsx(
-          'placeholder-contrast-gray-500 w-full rounded-lg border bg-background p-3 text-foreground transition-colors duration-200 placeholder:font-normal focus:border-foreground focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+          'placeholder-contrast-gray-500 w-full rounded-lg border bg-background p-3 text-foreground transition-colors duration-200 placeholder:font-normal focus:border-foreground focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
           errors && errors.length > 0 ? 'border-error' : 'border-contrast-100',
         )}
         id={id}

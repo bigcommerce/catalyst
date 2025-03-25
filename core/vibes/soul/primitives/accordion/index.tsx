@@ -50,7 +50,7 @@ function AccordionItem({
     <AccordionPrimitive.Item
       {...props}
       className={clsx(
-        'focus:outline-2 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-[var(--accordion-focus,hsl(var(--primary)))] has-[:focus-visible]:ring-offset-4',
+        'focus:outline-2 has-focus-visible:ring-2 has-focus-visible:ring-(--accordion-focus,hsl(var(--primary))) has-focus-visible:ring-offset-4',
         {
           light: 'ring-offset-[var(--acordion-light-offset,hsl(var(--background)))]',
           dark: 'ring-offset-[var(--acordion-dark-offset,hsl(var(--foreground)))]',
@@ -59,7 +59,7 @@ function AccordionItem({
       )}
     >
       <AccordionPrimitive.Header>
-        <AccordionPrimitive.Trigger className="group flex w-full cursor-pointer items-start gap-8 border-none py-3 text-start focus:outline-none @md:py-4">
+        <AccordionPrimitive.Trigger className="group flex w-full cursor-pointer items-start gap-8 border-none py-3 text-start focus:outline-hidden @md:py-4">
           <div
             className={clsx(
               'flex-1 select-none font-[family-name:var(--accordion-title-font-family,var(--font-family-mono))] text-sm font-normal uppercase transition-colors duration-300 ease-out',

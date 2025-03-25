@@ -88,8 +88,8 @@ export function CartSkeleton({
               key={index}
             >
               {/* Image */}
-              <div className="relative aspect-square w-full max-w-24 overflow-hidden rounded-xl bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4" />
-              <div className="flex flex-grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
+              <div className="relative aspect-square w-full max-w-24 overflow-hidden rounded-xl bg-contrast-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4" />
+              <div className="flex grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
                 <div className="flex w-full flex-1 flex-col @xl:w-1/2 @xl:pr-4">
                   {/* Line Item Title */}
                   <div className="flex h-[1lh] w-full items-center">

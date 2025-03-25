@@ -47,7 +47,7 @@ export const SwatchRadioGroup = React.forwardRef<
           <RadioGroupPrimitive.Item
             aria-label={option.label}
             className={clsx(
-              'group relative box-content h-8 w-8 rounded-full border p-0.5 transition-colors hover:border-contrast-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:hover:border-transparent data-[disabled]:pointer-events-none data-[state=checked]:border-foreground [&:disabled>.disabled-icon]:grid',
+              'group relative box-content h-8 w-8 rounded-full border p-0.5 transition-colors hover:border-contrast-200 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary disabled:hover:border-transparent data-disabled:pointer-events-none data-[state=checked]:border-foreground [&:disabled>.disabled-icon]:grid',
               errors && errors.length > 0
                 ? 'border-error disabled:border-transparent'
                 : 'border-transparent',

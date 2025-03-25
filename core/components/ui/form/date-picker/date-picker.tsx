@@ -21,14 +21,14 @@ const Calendar = ({ ...props }: ComponentPropsWithoutRef<typeof DayPicker>) => {
         caption_label: 'text-base',
         nav: 'space-x-1 flex items-center',
         nav_button:
-          'relative flex h-8 w-8 items-center justify-center border-2 border-none border-primary bg-transparent p-0 text-base font-semibold leading-6 text-primary hover:bg-secondary hover:bg-opacity-10 hover:text-secondary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-400 disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:text-gray-400',
+          'relative flex h-8 w-8 items-center justify-center border-2 border-none border-primary bg-transparent p-0 text-base font-semibold leading-6 text-primary hover:bg-secondary hover:bg-opacity-10 hover:text-secondary focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-400 disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:text-gray-400',
         nav_button_previous: 'absolute start-1',
         nav_button_next: 'absolute end-1',
         head_row: 'flex',
         head_cell: 'text-gray-400 w-10 text-xs font-normal font-normal',
         row: 'flex w-full',
-        cell: 'relative flex h-10 w-10 items-center justify-center p-0 text-center text-xs font-normal focus-within:relative focus-within:z-20 focus-within:rounded focus-within:border focus-within:border-primary/20',
-        day: 'h-8 w-8 p-0 text-base hover:bg-secondary/10 focus-visible:outline-none aria-selected:bg-primary aria-selected:text-white aria-selected:hover:bg-primary aria-selected:hover:text-white',
+        cell: 'relative flex h-10 w-10 items-center justify-center p-0 text-center text-xs font-normal focus-within:relative focus-within:z-20 focus-within:rounded-sm focus-within:border focus-within:border-primary/20',
+        day: 'h-8 w-8 p-0 text-base hover:bg-secondary/10 focus-visible:outline-hidden aria-selected:bg-primary aria-selected:text-white aria-selected:hover:bg-primary aria-selected:hover:text-white',
 
         day_today: 'bg-secondary/10',
         day_disabled: 'text-gray-400 aria-selected:bg-gray-100 aria-selected:text-white',
@@ -90,7 +90,7 @@ const DatePicker = forwardRef<ComponentRef<'input'>, Props>(
         <PopoverPrimitive.Portal>
           <PopoverPrimitive.Content
             align="start"
-            className="z-50 bg-white p-4 text-base shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+            className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 bg-white p-4 text-base shadow-md outline-hidden"
             sideOffset={4}
           >
             <Calendar
