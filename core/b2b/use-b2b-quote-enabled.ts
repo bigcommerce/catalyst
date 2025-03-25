@@ -9,10 +9,9 @@ export const useB2BQuoteEnabled = () => {
   const sdk = useSDK()
 
   useEffect(() => {
-    if  (!sdk?.utils?.quote) return
-    const quoteConfigs = sdk.utils.quote?.getQuoteConfigs?.()
+    const quoteConfigs = sdk?.utils?.quote?.getQuoteConfigs?.()
     const role = sdk?.utils?.user?.getProfile()?.role
-    if (!quoteConfigs || !role) {
+    if (!quoteConfigs || isNaN(Number(role))) {
       return 
     }
 
