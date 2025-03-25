@@ -77,47 +77,6 @@ const config = {
           },
         },
       },
-      colors: {
-        primary: {
-          DEFAULT: 'hsl(var(--primary))',
-          highlight: 'color-mix(in oklab, hsl(var(--primary)), white 75%)',
-          shadow: 'color-mix(in oklab, hsl(var(--primary)), black 75%)',
-        },
-        accent: {
-          DEFAULT: 'hsl(var(--accent))',
-          highlight: 'color-mix(in oklab, hsl(var(--accent)), white 75%)',
-          shadow: 'color-mix(in oklab, hsl(var(--accent)), black 75%)',
-        },
-        success: {
-          DEFAULT: 'hsl(var(--success))',
-          highlight: 'color-mix(in oklab, hsl(var(--success)), white 75%)',
-          shadow: 'color-mix(in oklab, hsl(var(--success)), black 75%)',
-        },
-        error: {
-          DEFAULT: 'hsl(var(--error))',
-          highlight: 'color-mix(in oklab, hsl(var(--error)), white 75%)',
-          shadow: 'color-mix(in oklab, hsl(var(--error)), black 75%)',
-        },
-        warning: {
-          DEFAULT: 'hsl(var(--warning))',
-          highlight: 'color-mix(in oklab, hsl(var(--warning)), white 75%)',
-          shadow: 'color-mix(in oklab, hsl(var(--warning)), black 75%)',
-        },
-        info: {
-          DEFAULT: 'hsl(var(--info))',
-          highlight: 'color-mix(in oklab, hsl(var(--info)), white 75%)',
-          shadow: 'color-mix(in oklab, hsl(var(--info)), black 75%)',
-        },
-        background: 'hsl(var(--background))',
-        foreground: 'hsl(var(--foreground))',
-        contrast: {
-          100: 'hsl(var(--contrast-100))',
-          200: 'hsl(var(--contrast-200))',
-          300: 'hsl(var(--contrast-300))',
-          400: 'hsl(var(--contrast-400))',
-          500: 'hsl(var(--contrast-500))',
-        },
-      },
       fontFamily: {
         heading: [
           'var(--font-family-heading)',

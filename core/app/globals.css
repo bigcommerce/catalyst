@@ -20,6 +20,40 @@
   }
 }
 
+@theme {
+  --color-primary: hsl(var(--primary));
+  --color-primary-highlight: color-mix(in oklab, hsl(var(--primary)), white 75%);
+  --color-primary-shadow: color-mix(in oklab, hsl(var(--primary)), black 75%);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-highlight: color-mix(in oklab, hsl(var(--accent)), white 75%);
+  --color-accent-shadow: color-mix(in oklab, hsl(var(--accent)), black 75%);
+
+  --color-success: hsl(var(--success));
+  --color-success-highlight: color-mix(in oklab, hsl(var(--success)), white 75%);
+  --color-success-shadow: color-mix(in oklab, hsl(var(--success)), black 75%);
+
+  --color-error: hsl(var(--error));
+  --color-error-highlight: color-mix(in oklab, hsl(var(--error)), white 75%);
+  --color-error-shadow: color-mix(in oklab, hsl(var(--error)), black 75%);
+
+  --color-warning: hsl(var(--warning));
+  --color-warning-highlight: color-mix(in oklab, hsl(var(--warning)), white 75%);
+  --color-warning-shadow: color-mix(in oklab, hsl(var(--warning)), black 75%);
+
+  --color-info: hsl(var(--info));
+  --color-info-highlight: color-mix(in oklab, hsl(var(--info)), white 75%);
+  --color-info-shadow: color-mix(in oklab, hsl(var(--info)), black 75%);
+
+  --color-foreground: hsl(var(--foreground));
+  --color-background: hsl(var(--background));
+  --color-contrast-100: hsl(var(--contrast-100));
+  --color-contrast-200: hsl(var(--contrast-200));
+  --color-contrast-300: hsl(var(--contrast-300));
+  --color-contrast-400: hsl(var(--contrast-400));
+  --color-contrast-500: hsl(var(--contrast-500));
+}
+
 :root {
   --primary: 96 100% 68%;
   --accent: 96 100% 88%;
