@@ -60,7 +60,7 @@ runtime.registerComponent(
           { value: 'inside', label: 'Inside' },
           { value: 'outside', label: 'Outside' },
         ],
-        defaultValue: 'inside',
+        defaultValue: 'outside',
       }),
       textSize: Select({
         label: 'Text size',
