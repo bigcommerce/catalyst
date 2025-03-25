@@ -2,7 +2,7 @@ import { useFormatter } from 'next-intl';
 import { useCallback } from 'react';
 import { string, z } from 'zod';
 
-import { CardProduct } from '@/vibes/soul/primitives/product-card';
+import { Product } from '@/vibes/soul/primitives/product-card';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 const priceSchema = z.object({
@@ -32,7 +32,7 @@ export const BcProductSchema = z.object({
 
 export type BcProductSchema = z.infer<typeof BcProductSchema>;
 
-export function useBcProductToVibesProduct(): (product: BcProductSchema) => CardProduct {
+export function useBcProductToVibesProduct(): (product: BcProductSchema) => Product {
   const format = useFormatter();
 
   return useCallback(

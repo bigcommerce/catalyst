@@ -1,19 +1,28 @@
 import { clsx } from 'clsx';
 import { ArrowUpRight } from 'lucide-react';
 
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
-export interface CardProps {
-  className?: string;
+export interface CardContent {
   title: string;
   image?: { src: string; alt: string };
   href: string;
+}
+
+export interface CardProps extends CardContent {
+  className?: string;
   textColorScheme?: 'light' | 'dark';
   iconColorScheme?: 'light' | 'dark';
   aspectRatio?: '5:6' | '3:4' | '1:1';
+  imageSizes?: string;
+  textPosition?: 'inside' | 'outside';
+  textSize?: 'small' | 'medium' | 'large' | 'x-large';
+  showOverlay?: boolean;
 }
 
+// eslint-disable-next-line valid-jsdoc
 /**
  * This component supports various CSS variables for theming. Here's a comprehensive list, along
  * with their default values:
@@ -21,13 +30,16 @@ export interface CardProps {
  * ```css
  * :root {
  *   --card-focus: hsl(var(--primary));
- *   --card-border-radius: 1rem;
+ *   --card-light-offset: hsl(var(--background));
  *   --card-light-text: hsl(var(--foreground));
  *   --card-light-icon: hsl(var(--foreground));
  *   --card-light-background: hsl(var(--contrast-100));
+ *   --card-dark-offset: hsl(var(--foreground));
  *   --card-dark-text: hsl(var(--background));
  *   --card-dark-icon: hsl(var(--background));
  *   --card-dark-background: hsl(var(--contrast-500));
+ *   --card-font-family: var(--font-family-body);
+ *   --card-border-radius: 1rem;
  * }
  * ```
  */
@@ -39,14 +51,23 @@ export function Card({
   textColorScheme = 'light',
   iconColorScheme = 'light',
   aspectRatio = '5:6',
+  imageSizes = '(min-width: 42rem) 25vw, (min-width: 32rem) 33vw, (min-width: 28rem) 50vw, 100vw',
+  textPosition = 'outside',
+  textSize = 'small',
+  showOverlay = true,
 }: CardProps) {
   return (
-    <Link
+    <article
       className={clsx(
-        'group relative flex min-w-0 cursor-pointer flex-col gap-2 rounded-[var(--card-border-radius,1rem)] @container focus:outline-0 focus-visible:outline-0',
+        'group relative flex w-full min-w-0 max-w-md cursor-pointer flex-col gap-2 rounded-[var(--card-border-radius,1rem)] font-[family-name:var(--card-font-family,var(--font-family-body))] @container',
+        {
+          small: 'gap-2',
+          medium: 'gap-3',
+          large: 'gap-4',
+          'x-large': 'gap-5',
+        }[textSize],
         className,
       )}
-      href={href}
     >
       <ArrowUpRight
         className={clsx(
@@ -83,7 +104,7 @@ export function Card({
               }[textColorScheme],
             )}
             fill
-            sizes="(max-width: 768px) 70vw, 33vw"
+            sizes={imageSizes}
             src={image.src}
           />
         ) : (
@@ -99,29 +120,88 @@ export function Card({
             {title}
           </div>
         )}
+        {textPosition === 'inside' && (
+          <div
+            className={clsx(
+              'absolute inset-0 flex items-end p-6 @xs:p-8',
+              showOverlay &&
+                'bg-gradient-to-b from-foreground/0 from-50% via-foreground/0 via-50% to-foreground/50 to-100%',
+            )}
+          >
+            <h3
+              className={clsx(
+                'font-medium leading-tight',
+                {
+                  small: 'text-lg tracking-normal @xs:text-xl',
+                  medium: 'text-xl tracking-normal @xs:text-2xl',
+                  large: 'text-2xl tracking-tight @xs:text-3xl',
+                  'x-large': 'text-3xl tracking-tight @xs:text-4xl',
+                }[textSize],
+                {
+                  light: 'text-[var(--card-light-text,hsl(var(--foreground)))]',
+                  dark: 'text-[var(--card-dark-text,hsl(var(--background)))]',
+                }[textColorScheme],
+              )}
+            >
+              {title}
+            </h3>
+          </div>
+        )}
       </div>
-      <span
+      {textPosition === 'outside' && (
+        <h3
+          className={clsx(
+            'line-clamp-1 font-medium leading-tight',
+            {
+              small: 'text-lg tracking-normal @xs:text-xl',
+              medium: 'text-xl tracking-normal @xs:text-2xl',
+              large: 'text-2xl tracking-tight @xs:text-3xl',
+              'x-large': 'text-3xl tracking-tight @xs:text-4xl',
+            }[textSize],
+            {
+              light: 'text-[var(--card-light-text,hsl(var(--foreground)))]',
+              dark: 'text-[var(--card-dark-text,hsl(var(--background)))]',
+            }[textColorScheme],
+          )}
+        >
+          {title}
+        </h3>
+      )}
+      <Link
         className={clsx(
-          'line-clamp-1 text-lg font-medium',
+          'absolute inset-0 rounded-[var(--card-border-radius,1rem)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
           {
-            light: 'text-[var(--card-light-text,hsl(var(--foreground)))]',
-            dark: 'text-[var(--card-dark-text,hsl(var(--background)))]',
+            light: 'ring-offset-[var(--card-light-offset,hsl(var(--background)))]',
+            dark: 'ring-offset-[var(--card-dark-offset,hsl(var(--foreground)))]',
           }[textColorScheme],
         )}
+        href={href}
       >
-        {title}
-      </span>
-    </Link>
+        <span className="sr-only">View product</span>
+      </Link>
+    </article>
   );
 }
 
-export function CardSkeleton() {
+export function CardSkeleton({
+  aspectRatio = '5:6',
+  className,
+}: Pick<CardProps, 'aspectRatio' | 'className'>) {
   return (
-    <div className="relative flex aspect-[3/4] w-full animate-pulse flex-col gap-2 @4xl:min-w-72">
-      {/* Image */}
-      <div className="h-full w-full overflow-hidden rounded-lg bg-contrast-100 @4xl:rounded-xl" />
-      {/* Title */}
-      <div className="mb-1 line-clamp-1 h-6 w-20 rounded-lg bg-contrast-100 @4xl:absolute @4xl:bottom-5 @4xl:left-5" />
+    <div className={clsx('@container', className)}>
+      <Skeleton.Box
+        className={clsx(
+          'rounded-[var(--card-border-radius,1rem)]',
+          {
+            '5:6': 'aspect-[5/6]',
+            '3:4': 'aspect-[3/4]',
+            '1:1': 'aspect-square',
+          }[aspectRatio],
+        )}
+      />
+      <div className="mt-3">
+        <Skeleton.Text characterCount={10} className="rounded text-lg" />
+      </div>
     </div>
   );
 }
