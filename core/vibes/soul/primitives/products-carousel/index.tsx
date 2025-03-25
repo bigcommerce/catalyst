@@ -8,13 +8,9 @@ import {
   CarouselItem,
   CarouselScrollbar,
 } from '@/vibes/soul/primitives/carousel';
-import {
-  CardProduct,
-  ProductCard,
-  ProductCardSkeleton,
-} from '@/vibes/soul/primitives/product-card';
+import { Product, ProductCard, ProductCardSkeleton } from '@/vibes/soul/primitives/product-card';
 
-export type CarouselProduct = CardProduct;
+export type CarouselProduct = Product;
 
 interface Props {
   products: Streamable<CarouselProduct[]>;

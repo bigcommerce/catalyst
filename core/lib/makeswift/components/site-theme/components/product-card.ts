@@ -1,5 +1,6 @@
 import { Color, Group, Number } from '@makeswift/runtime/controls';
 
+import { FontFamily } from '~/lib/makeswift/controls/font-tokens';
 import { hsl } from '~/lib/makeswift/utils/color';
 
 import { colors } from '../base-colors';
@@ -26,6 +27,7 @@ export const productCard = Group({
   label: 'Product card',
   preferredLayout: Group.Layout.Popover,
   props: {
+    fontFamily: FontFamily({ label: 'Font', defaultValue: FontFamily.Body }),
     borderRadius: Number({ label: 'Border radius', suffix: 'px', defaultValue: 16 }),
     focus: Color({ label: 'Focus', defaultValue: hsl(colors.primary) }),
     light: colorGroup('Light', {
