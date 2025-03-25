@@ -2,6 +2,7 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
@@ -115,11 +116,11 @@ export default async function Wishlists({ searchParams }: Props) {
           );
         },
       }}
-      paginationInfo={getPaginationInfo(searchParams)}
+      paginationInfo={Streamable.from(() => getPaginationInfo(searchParams))}
       placeholderCount={1}
       title={t('title')}
       viewWishlistLabel={t('viewWishlist')}
-      wishlists={listWishlists(searchParams, t)}
+      wishlists={Streamable.from(() => listWishlists(searchParams, t))}
     />
   );
 }

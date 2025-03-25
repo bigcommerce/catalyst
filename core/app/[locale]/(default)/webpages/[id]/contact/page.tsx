@@ -5,6 +5,7 @@ import { cache } from 'react';
 
 import { DynamicForm } from '@/vibes/soul/form/dynamic-form';
 import type { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 import {
@@ -179,8 +180,8 @@ export default async function ContactPage({ params, searchParams }: Props) {
   if (success === 'true') {
     return (
       <WebPageContent
-        breadcrumbs={getWebPageBreadcrumbs(id)}
-        webPage={getWebPageWithSuccessContent(id, t('success'))}
+        breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id))}
+        webPage={Streamable.from(() => getWebPageWithSuccessContent(id, t('success')))}
       >
         <ButtonLink
           className="mt-8 @2xl:mt-12 @4xl:mt-16"
@@ -196,7 +197,10 @@ export default async function ContactPage({ params, searchParams }: Props) {
   }
 
   return (
-    <WebPageContent breadcrumbs={getWebPageBreadcrumbs(id)} webPage={getWebPage(id)}>
+    <WebPageContent
+      breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id))}
+      webPage={Streamable.from(() => getWebPage(id))}
+    >
       <div className="mt-8 @2xl:mt-12 @4xl:mt-16">
         <DynamicForm
           action={submitContactForm}

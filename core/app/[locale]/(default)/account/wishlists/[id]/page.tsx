@@ -3,6 +3,7 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Wishlist, WishlistDetails } from '@/vibes/soul/sections/wishlist-details';
 import { ExistingResultType } from '~/client/util';
@@ -98,10 +99,10 @@ export default async function WishlistPage({ params, searchParams }: Props) {
       action={addWishlistItemToCart}
       emptyStateText={t('emptyWishlist')}
       headerActions={wishlistActions}
-      paginationInfo={getPaginationInfo(id, searchParams)}
+      paginationInfo={Streamable.from(() => getPaginationInfo(id, searchParams))}
       prevHref="/account/wishlists"
       removeAction={removeWishlistItem}
-      wishlist={getWishlist(id, t, pt, searchParams)}
+      wishlist={Streamable.from(() => getWishlist(id, t, pt, searchParams))}
     />
   );
 }
