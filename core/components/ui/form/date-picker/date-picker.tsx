@@ -21,7 +21,7 @@ const Calendar = ({ ...props }: ComponentPropsWithoutRef<typeof DayPicker>) => {
         caption_label: 'text-base',
         nav: 'space-x-1 flex items-center',
         nav_button:
-          'relative flex h-8 w-8 items-center justify-center border-2 border-none border-primary bg-transparent p-0 text-base font-semibold leading-6 text-primary hover:bg-secondary hover:bg-opacity-10 hover:text-secondary focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-400 disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:text-gray-400',
+          'relative flex h-8 w-8 items-center justify-center border-2 border-none border-primary bg-transparent p-0 text-base font-semibold leading-6 text-primary hover:bg-secondary/10 hover:text-secondary focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-primary/20 disabled:border-gray-400 disabled:text-gray-400 disabled:hover:bg-transparent disabled:hover:text-gray-400',
         nav_button_previous: 'absolute start-1',
         nav_button_next: 'absolute end-1',
         head_row: 'flex',
