@@ -152,37 +152,37 @@
   --font-body-font-feature-settings: var(--font-feature-settings-body);
   --font-body-font-variation-settings: var(--font-variation-settings-body);
 
-  --font-family: var(--font-family-family);
-  --font-family-font-feature-settings: var(--font-feature-settings-family);
-  --font-family-font-variation-settings: var(--font-variation-settings-family);
+  --font-mono: var(--font-family-mono);
+  --font-mono-font-feature-settings: var(--font-feature-settings-mono);
+  --font-mono-font-variation-settings: var(--font-variation-settings-mono);
 
-  ----animate-collapse: collapse 400ms cubic-bezier(1, 0, 0.25, 1);
-  ----animate-expand: expand 400ms cubic-bezier(1, 0, 0.25, 1);
-  ----animate-marching: marching-ants 10s linear infinite;
-  ----animate-rotate: rotate 2000ms linear infinite;
-  ----animate-scroll: scroll 200ms infinite linear both;
-  ----animate-scrollLeft: scrollLeft var(--marquee-duration) linear infinite;
-  ----animate-shake: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
-  ----animate-slideIn: slideIn 800ms cubic-bezier(0.25, 1, 0, 1);
+  --animate-collapse: collapse 400ms cubic-bezier(1, 0, 0.25, 1);
+  --animate-expand: expand 400ms cubic-bezier(1, 0, 0.25, 1);
+  --animate-marching: marching-ants 10s linear infinite;
+  --animate-rotate: rotate 2000ms linear infinite;
+  --animate-scroll: scroll 200ms infinite linear both;
+  --animate-scrollLeft: scrollLeft var(--marquee-duration) linear infinite;
+  --animate-shake: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  --animate-slideIn: slideIn 800ms cubic-bezier(0.25, 1, 0, 1);
 
   @keyframes collapse {
-    from: {
+    from {
       height: var(--radix-accordion-content-height);
     }
-    to: {
+    to {
       height: 0;
     }
   }
   @keyframes expand {
-    from: {
+    from {
       height: 0;
     }
-    to: {
+    to {
       height: var(--radix-accordion-content-height);
     }
   }
   @keyframes marching-ants {
-    to: {
+    to {
       background-position:
         0 0,
         0 -1px,
@@ -192,31 +192,31 @@
     }
   }
   @keyframes rotateFade {
-    from: {
+    from {
       opacity: 1;
       transform: rotateZ(0deg) translate3d(-50%, -50%, 0);
     }
-    35%: {
+    35% {
       opacity: 0;
     }
-    70%: {
+    70% {
       opacity: 0;
     }
-    to: {
+    to {
       opacity: 1;
       transform: rotateZ(360deg) translate3d(-50%, -50%, 0);
     }
   }
   @keyframes rotate {
-    from: {
+    from {
       transform: rotateZ(0deg) translate3d(-50%, -50%, 0);
     }
-    to: {
+    to {
       transform: rotateZ(360deg) translate3d(-50%, -50%, 0);
     }
   }
   @keyframes scroll {
-    to: {
+    to {
       backgroundposition: 5px 0;
     }
   }
@@ -228,28 +228,32 @@
     }
   }
   @keyframes dotScrollLarge: {
-    to: {
+    to {
       backgroundposition:
         -8px -8px,
         -16px -16px;
     }
   }
   @keyframes scrollLeft {
-    0%: {
+    0% {
       transform: translateX(0);
     }
-    100%: {
+    100% {
       transform: translateX(-100%);
     }
   }
   @keyframes shake {
-    10%, 90%: {
+    10%,
+    90% {
       transform: translate3d(-1px, 0, 0);
     }
-    20%, 80%: {
+    20%,
+    80% {
       transform: translate3d(1px, 0, 0);
     }
-    30%, 50%, 70%: {
+    30%,
+    50%,
+    70% {
       transform: translate3d(-2px, 0, 0);
     }
     40%,

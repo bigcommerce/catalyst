@@ -195,8 +195,8 @@ importers:
         specifier: ^2.6.0
         version: 2.6.0
       tailwindcss-radix:
-        specifier: ^3.0.5
-        version: 3.0.5(tailwindcss@4.0.15)
+        specifier: ^4.0.2
+        version: 4.0.2(tailwindcss@4.0.15)
       uuid:
         specifier: ^11.0.5
         version: 11.0.5
@@ -300,7 +300,7 @@ importers:
     devDependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.10.0
-        version: 2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0(@types/node@20.17.16))(typescript@5.7.3)
+        version: 2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0)(typescript@5.7.3)
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../eslint-config-catalyst
@@ -340,7 +340,7 @@ importers:
     devDependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.10.0
-        version: 2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0(@types/node@20.17.16))(typescript@5.7.3)
+        version: 2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0)(typescript@5.7.3)
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../eslint-config-catalyst
@@ -437,7 +437,7 @@ importers:
     devDependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.10.0
-        version: 2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0(@types/node@20.17.16))(typescript@5.7.3)
+        version: 2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0)(typescript@5.7.3)
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../eslint-config-catalyst
@@ -491,7 +491,7 @@ importers:
     dependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.10.0
-        version: 2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0(@types/node@20.17.16))(typescript@5.7.3)
+        version: 2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0)(typescript@5.7.3)
       '@next/eslint-plugin-next':
         specifier: ^15.1.6
         version: 15.1.6
@@ -5700,11 +5700,11 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders'
 
-  tailwindcss-radix@3.0.5:
-    resolution: {integrity: sha512-dy5bIHixuvrmMzljDoteKD1mcLAm76Z1IPkCr7IWUN89zoxfokVepPlxMQkmWEQokYs3N9BOLsXXvn8fLZWoBg==}
-    engines: {pnpm: '9'}
+  tailwindcss-radix@4.0.2:
+    resolution: {integrity: sha512-Uoa2BUCfWKGCjQPXbj4X4Q4EWAeCsvhj0udn0IupeNcvuLbqRXvC5+bKAqsngIne5mrRUPTy/IqMXGh81YyrCA==}
+    engines: {node: '>=20'}
     peerDependencies:
-      tailwindcss: ^3.4.1
+      tailwindcss: ^3.0 || ^4.0
 
   tailwindcss@4.0.15:
     resolution: {integrity: sha512-6ZMg+hHdMJpjpeCCFasX7K+U615U9D+7k5/cDK/iRwl6GptF24+I/AbKgOnXhVKePzrEyIXutLv36n4cRsq3Sg==}
@@ -6447,7 +6447,7 @@ snapshots:
 
   '@bcoe/v8-coverage@1.0.2': {}
 
-  '@bigcommerce/eslint-config@2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0(@types/node@20.17.16))(typescript@5.7.3)':
+  '@bigcommerce/eslint-config@2.10.0(@types/eslint@9.6.1)(eslint@8.57.1)(jest@29.7.0)(typescript@5.7.3)':
     dependencies:
       '@bigcommerce/eslint-plugin': 1.3.1(@typescript-eslint/parser@8.21.0(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(typescript@5.7.3)
       '@rushstack/eslint-patch': 1.10.5
@@ -6459,7 +6459,7 @@ snapshots:
       eslint-import-resolver-typescript: 3.7.0(eslint-plugin-import@2.31.0)(eslint@8.57.1)
       eslint-plugin-gettext: 1.2.0
       eslint-plugin-import: 2.31.0(@typescript-eslint/parser@8.21.0(eslint@8.57.1)(typescript@5.7.3))(eslint-import-resolver-typescript@3.7.0)(eslint@8.57.1)
-      eslint-plugin-jest: 28.8.3(@typescript-eslint/eslint-plugin@8.21.0(@typescript-eslint/parser@8.21.0(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(jest@29.7.0(@types/node@20.17.16))(typescript@5.7.3)
+      eslint-plugin-jest: 28.8.3(@typescript-eslint/eslint-plugin@8.21.0(@typescript-eslint/parser@8.21.0(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(jest@29.7.0)(typescript@5.7.3)
       eslint-plugin-jest-dom: 5.5.0(eslint@8.57.1)
       eslint-plugin-jest-formatting: 3.1.0(eslint@8.57.1)
       eslint-plugin-jsdoc: 50.2.2(eslint@8.57.1)
@@ -9469,7 +9469,7 @@ snapshots:
     dependencies:
       eslint: 8.57.1
 
-  eslint-plugin-jest@28.8.3(@typescript-eslint/eslint-plugin@8.21.0(@typescript-eslint/parser@8.21.0(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(jest@29.7.0(@types/node@20.17.16))(typescript@5.7.3):
+  eslint-plugin-jest@28.8.3(@typescript-eslint/eslint-plugin@8.21.0(@typescript-eslint/parser@8.21.0(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(typescript@5.7.3))(eslint@8.57.1)(jest@29.7.0)(typescript@5.7.3):
     dependencies:
       '@typescript-eslint/utils': 8.21.0(eslint@8.57.1)(typescript@5.7.3)
       eslint: 8.57.1
@@ -11800,7 +11800,7 @@ snapshots:
     dependencies:
       tailwindcss: 4.0.15
 
-  tailwindcss-radix@3.0.5(tailwindcss@4.0.15):
+  tailwindcss-radix@4.0.2(tailwindcss@4.0.15):
     dependencies:
       tailwindcss: 4.0.15
 
