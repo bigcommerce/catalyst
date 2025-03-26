@@ -72,6 +72,18 @@
   --shadow-md: var(--shadow-md);
   --shadow-lg: var(--shadow-lg);
   --shadow-xl: var(--shadow-xl);
+
+  --font-heading: var(--font-family-heading);
+  --font-heading-font-feature-settings: var(--font-feature-settings-heading);
+  --font-heading-font-variation-settings: var(--font-variation-settings-heading);
+
+  --font-body: var(--font-family-body);
+  --font-body-font-feature-settings: var(--font-feature-settings-body);
+  --font-body-font-variation-settings: var(--font-variation-settings-body);
+
+  --font-family: var(--font-family-family);
+  --font-family-font-feature-settings: var(--font-feature-settings-family);
+  --font-family-font-variation-settings: var(--font-variation-settings-family);
 }
 
 :root {

@@ -77,29 +77,7 @@ const config = {
           },
         },
       },
-      fontFamily: {
-        heading: [
-          'var(--font-family-heading)',
-          {
-            fontFeatureSettings: 'var(--font-feature-settings-heading)',
-            fontVariationSettings: 'var(--font-variation-settings-heading)',
-          },
-        ],
-        body: [
-          'var(--font-family-body)',
-          {
-            fontFeatureSettings: 'var(--font-feature-settings-body)',
-            fontVariationSettings: 'var(--font-variation-settings-body)',
-          },
-        ],
-        mono: [
-          'var(--font-family-mono)',
-          {
-            fontFeatureSettings: 'var(--font-feature-settings-mono)',
-            fontVariationSettings: 'var(--font-variation-settings-mono)',
-          },
-        ],
-      },
+
       keyframes: {
         collapse: {
           from: { height: 'var(--radix-accordion-content-height)' },
