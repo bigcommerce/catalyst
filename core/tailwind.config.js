@@ -100,28 +100,6 @@ const config = {
           },
         ],
       },
-      fontSize: {
-        xs: 'var(--font-size-xs, 0.75rem)',
-        sm: 'var(--font-size-sm, 0.875rem)',
-        base: 'var(--font-size-base, 1rem)',
-        lg: 'var(--font-size-lg, 1.125rem)',
-        xl: 'var(--font-size-xl, 1.25rem)',
-        '2xl': 'var(--font-size-2xl, 1.5rem)',
-        '3xl': 'var(--font-size-3xl, 1.875rem)',
-        '4xl': 'var(--font-size-4xl, 2.25rem)',
-        '5xl': 'var(--font-size-5xl, 3rem)',
-        '6xl': 'var(--font-size-6xl, 3.75rem)',
-        '7xl': 'var(--font-size-7xl, 4.5rem)',
-        '8xl': 'var(--font-size-8xl, 6rem)',
-        '9xl': 'var(--font-size-9xl, 8rem)',
-      },
-      shadows: {
-        sm: 'var(--shadow-sm)',
-        DEFAULT: 'var(--shadow-base)',
-        md: 'var(--shadow-md)',
-        lg: 'var(--shadow-lg)',
-        xl: 'var(--shadow-xl)',
-      },
       keyframes: {
         collapse: {
           from: { height: 'var(--radix-accordion-content-height)' },

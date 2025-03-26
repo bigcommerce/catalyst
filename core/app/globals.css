@@ -52,6 +52,26 @@
   --color-contrast-300: hsl(var(--contrast-300));
   --color-contrast-400: hsl(var(--contrast-400));
   --color-contrast-500: hsl(var(--contrast-500));
+
+  --text-xs: var(--font-size-xs, 0.75rem);
+  --text-sm: var(--font-size-sm, 0.875rem);
+  --text-base: var(--font-size-base, 1rem);
+  --text-lg: var(--font-size-lg, 1.125rem);
+  --text-xl: var(--font-size-xl, 1.25rem);
+  --text-2xl: var(--font-size-2xl, 1.5rem);
+  --text-3xl: var(--font-size-3xl, 1.875rem);
+  --text-4xl: var(--font-size-4xl, 2.25rem);
+  --text-5xl: var(--font-size-5xl, 3rem);
+  --text-6xl: var(--font-size-6xl, 3.75rem);
+  --text-7xl: var(--font-size-7xl, 4.5rem);
+  --text-8xl: var(--font-size-8xl, 6rem);
+  --text-9xl: var(--font-size-9xl, 8rem);
+
+  --shadow-xs: var(--shadow-sm);
+  --shadow-sm: var(--shadow-base);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
 }
 
 :root {
