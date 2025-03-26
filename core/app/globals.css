@@ -1,6 +1,13 @@
 @import 'tailwindcss';
 
-@config '../tailwind.config.js';
+@plugin 'tailwindcss-radix';
+@plugin 'tailwindcss-animate';
+@plugin '@tailwindcss/container-queries';
+@plugin '@tailwindcss/typography';
+
+@source './app/**/*.{ts,tsx}';
+@source './components/**/*.{ts,tsx}';
+@source './vibes/**/*.{ts,tsx}';
 
 /*
   The default border color has changed to `currentColor` in Tailwind CSS v4,
@@ -17,6 +24,70 @@
   ::backdrop,
   ::file-selector-button {
     border-color: var(--color-gray-200, currentColor);
+  }
+  h1: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  ,
+  h2: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  h3: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  h4: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  h5: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  h6: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  p: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-body);
+  }
+  a: {
+    color: color-mix(in oklab, hsl(var(--primary)), black 15%);
+    textdecoration: none;
+    &:hover: {
+      textdecoration: underline;
+    }
+  }
+  ul: {
+    color: hsl(var(--contrast-500));
+    fontfamily: var(--font-family-body);
+  }
+  ol: {
+    color: hsl(var(--contrast-500));
+    fontfamily: var(--font-family-body);
+  }
+  strong: {
+    fontweight: 600;
+  }
+  blockquote: {
+    borderleftcolor: hsl(var(--contrast-300));
+    p: {
+      color: hsl(var(--contrast-500));
+      fontstyle: normal;
+      fontweight: 400;
+    }
+  }
+  code: {
+    color: hsl(var(--contrast-500));
+    fontfamily: var(--font-family-mono);
+  }
+  pre: {
+    color: hsl(var(--background));
+    backgroundcolor: hsl(var(--foreground));
+    fontfamily: var(--font-family-mono);
   }
 }
 
