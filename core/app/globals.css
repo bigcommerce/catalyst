@@ -84,6 +84,116 @@
   --font-family: var(--font-family-family);
   --font-family-font-feature-settings: var(--font-feature-settings-family);
   --font-family-font-variation-settings: var(--font-variation-settings-family);
+
+  ----animate-collapse: collapse 400ms cubic-bezier(1, 0, 0.25, 1);
+  ----animate-expand: expand 400ms cubic-bezier(1, 0, 0.25, 1);
+  ----animate-marching: marching-ants 10s linear infinite;
+  ----animate-rotate: rotate 2000ms linear infinite;
+  ----animate-scroll: scroll 200ms infinite linear both;
+  ----animate-scrollLeft: scrollLeft var(--marquee-duration) linear infinite;
+  ----animate-shake: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  ----animate-slideIn: slideIn 800ms cubic-bezier(0.25, 1, 0, 1);
+
+  @keyframes collapse {
+    from: {
+      height: var(--radix-accordion-content-height);
+    }
+    to: {
+      height: 0;
+    }
+  }
+  @keyframes expand {
+    from: {
+      height: 0;
+    }
+    to: {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes marching-ants {
+    to: {
+      background-position:
+        0 0,
+        0 -1px,
+        calc(100% + 1px) 0,
+        100% calc(100% + 1px),
+        -1px 100%;
+    }
+  }
+  @keyframes rotateFade {
+    from: {
+      opacity: 1;
+      transform: rotateZ(0deg) translate3d(-50%, -50%, 0);
+    }
+    35%: {
+      opacity: 0;
+    }
+    70%: {
+      opacity: 0;
+    }
+    to: {
+      opacity: 1;
+      transform: rotateZ(360deg) translate3d(-50%, -50%, 0);
+    }
+  }
+  @keyframes rotate {
+    from: {
+      transform: rotateZ(0deg) translate3d(-50%, -50%, 0);
+    }
+    to: {
+      transform: rotateZ(360deg) translate3d(-50%, -50%, 0);
+    }
+  }
+  @keyframes scroll {
+    to: {
+      backgroundposition: 5px 0;
+    }
+  }
+  @keyframes dotScrollSmall: {
+    to: {
+      backgroundposition:
+        -6px -6px,
+        -12px -12px;
+    }
+  }
+  @keyframes dotScrollLarge: {
+    to: {
+      backgroundposition:
+        -8px -8px,
+        -16px -16px;
+    }
+  }
+  @keyframes scrollLeft {
+    0%: {
+      transform: translateX(0);
+    }
+    100%: {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes shake {
+    10%, 90%: {
+      transform: translate3d(-1px, 0, 0);
+    }
+    20%, 80%: {
+      transform: translate3d(1px, 0, 0);
+    }
+    30%, 50%, 70%: {
+      transform: translate3d(-2px, 0, 0);
+    }
+    40%,
+    60% {
+      transform: translate3d(2px, 0, 0);
+    }
+  }
+  @keyframes slideIn: {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
 }
 
 :root {
