@@ -239,7 +239,7 @@ export default async function Product(props: Props) {
     <>
       <ProductDetail
         action={addToCart}
-        additionaInformationTitle={t('ProductDetails.additionalInformation')}
+        additionalInformationTitle={t('ProductDetails.additionalInformation')}
         ctaDisabled={Streamable.from(() => getCtaDisabled(props))}
         ctaLabel={Streamable.from(() => getCtaLabel(props))}
         decrementLabel={t('ProductDetails.decreaseQuantity')}
