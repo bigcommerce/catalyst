@@ -45,13 +45,13 @@ declare module '@bigcommerce/bodl-events' {
   type BoldEventPayload = Record<string, unknown>;
   declare type BodlEventCallback = (payload: BoldEventPayload) => void;
 
-  declare const isBodlEnabled: () => boolean;
-  declare const getBodl: () => Bodl$1 | null;
-  declare const addBodlEvent: (event: BodlEvent['name'], payload: BoldEventPayload) => void;
+  declare type isBodlEnabled = () => boolean;
+  declare type getBodl = () => Bodl$1 | null;
+  declare type addBodlEvent = (event: BodlEvent['name'], payload: BoldEventPayload) => void;
 
-  declare const Bodl_isBodlEnabled: typeof isBodlEnabled;
-  declare const Bodl_getBodl: typeof getBodl;
-  declare const Bodl_addBodlEvent: typeof addBodlEvent;
+  declare const Bodl_isBodlEnabled: isBodlEnabled;
+  declare const Bodl_getBodl: getBodl;
+  declare const Bodl_addBodlEvent: addBodlEvent;
   declare namespace Bodl {
     export {
       Bodl_isBodlEnabled as isBodlEnabled,

@@ -56,9 +56,13 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     this.defaultChannelId = config.channelId;
     this.backendUserAgent = getBackendUserAgent(config.platform, config.backendUserAgentExtensions);
-    this.getChannelId = config.getChannelId
-      ? config.getChannelId
-      : (defaultChannelId) => defaultChannelId;
+
+    this.getChannelId =
+      config.getChannelId ??
+      function defaultChannelIdFn(defaultChannelId) {
+        return defaultChannelId;
+      };
+
     this.beforeRequest = config.beforeRequest;
   }
 

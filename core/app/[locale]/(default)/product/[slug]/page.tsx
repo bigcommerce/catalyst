@@ -4,7 +4,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { createSearchParamsCache, parseAsString } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Stream } from '@/vibes/soul/lib/streamable';
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -240,13 +240,13 @@ export default async function Product(props: Props) {
       <ProductDetail
         action={addToCart}
         additionaInformationTitle={t('ProductDetails.additionalInformation')}
-        ctaDisabled={getCtaDisabled(props)}
-        ctaLabel={getCtaLabel(props)}
+        ctaDisabled={Streamable.from(() => getCtaDisabled(props))}
+        ctaLabel={Streamable.from(() => getCtaLabel(props))}
         decrementLabel={t('ProductDetails.decreaseQuantity')}
-        fields={getFields(props)}
+        fields={Streamable.from(() => getFields(props))}
         incrementLabel={t('ProductDetails.increaseQuantity')}
         prefetch={true}
-        product={getProduct(props)}
+        product={Streamable.from(() => getProduct(props))}
         quantityLabel={t('ProductDetails.quantity')}
         thumbnailLabel={t('ProductDetails.thumbnail')}
       />
@@ -257,14 +257,14 @@ export default async function Product(props: Props) {
         emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
         nextLabel={t('RelatedProducts.nextProducts')}
         previousLabel={t('RelatedProducts.previousProducts')}
-        products={getRelatedProducts(props)}
+        products={Streamable.from(() => getRelatedProducts(props))}
         scrollbarLabel={t('RelatedProducts.scrollbar')}
         title={t('RelatedProducts.title')}
       />
 
       <Reviews productId={productId} searchParams={parsedSearchParams} />
 
-      <Stream fallback={null} value={getProductData(variables)}>
+      <Stream fallback={null} value={Streamable.from(() => getProductData(variables))}>
         {(product) => (
           <>
             <ProductSchema product={product} />

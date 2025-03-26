@@ -58,6 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
     other: {
       platform: 'bigcommerce.catalyst',
       build_sha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? '',
+      store_hash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
     },
   };
 }

@@ -5,7 +5,7 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Stream } from '@/vibes/soul/lib/streamable';
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Product } from '@/vibes/soul/primitives/product-card';
@@ -337,30 +337,35 @@ export default async function Category(props: Props) {
   return (
     <>
       <ProductsListSection
-        breadcrumbs={getBreadcrumbs(props)}
-        compareLabel={getCompareLabel()}
-        compareProducts={getCompareProducts(props)}
-        emptyStateSubtitle={getEmptyStateSubtitle()}
-        emptyStateTitle={getEmptyStateTitle()}
+        breadcrumbs={Streamable.from(() => getBreadcrumbs(props))}
+        compareLabel={Streamable.from(getCompareLabel)}
+        compareProducts={Streamable.from(() => getCompareProducts(props))}
+        emptyStateSubtitle={Streamable.from(getEmptyStateSubtitle)}
+        emptyStateTitle={Streamable.from(getEmptyStateTitle)}
         filterLabel={await getFilterLabel()}
-        filters={getFilters(props)}
-        filtersPanelTitle={getFiltersPanelTitle()}
-        maxCompareLimitMessage={getMaxCompareLimitMessage()}
+        filters={Streamable.from(() => getFilters(props))}
+        filtersPanelTitle={Streamable.from(getFiltersPanelTitle)}
+        maxCompareLimitMessage={Streamable.from(getMaxCompareLimitMessage)}
         maxItems={MAX_COMPARE_LIMIT}
-        paginationInfo={getPaginationInfo(props)}
-        products={getListProducts(props)}
-        rangeFilterApplyLabel={getRangeFilterApplyLabel()}
-        removeLabel={getRemoveLabel()}
-        resetFiltersLabel={getResetFiltersLabel()}
-        showCompare={getShowCompare(props)}
+        paginationInfo={Streamable.from(() => getPaginationInfo(props))}
+        products={Streamable.from(() => getListProducts(props))}
+        rangeFilterApplyLabel={Streamable.from(getRangeFilterApplyLabel)}
+        removeLabel={Streamable.from(getRemoveLabel)}
+        resetFiltersLabel={Streamable.from(getResetFiltersLabel)}
+        showCompare={Streamable.from(() => getShowCompare(props))}
         sortDefaultValue="featured"
-        sortLabel={getSortLabel()}
-        sortOptions={getSortOptions()}
+        sortLabel={Streamable.from(getSortLabel)}
+        sortOptions={Streamable.from(getSortOptions)}
         sortParamName="sort"
-        title={getTitle(props)}
-        totalCount={getTotalCount(props)}
+        title={Streamable.from(() => getTitle(props))}
+        totalCount={Streamable.from(() => getTotalCount(props))}
       />
-      <Stream value={Promise.all([getCategory(props), getProducts(props)])}>
+      <Stream
+        value={Streamable.all([
+          Streamable.from(() => getCategory(props)),
+          Streamable.from(() => getProducts(props)),
+        ])}
+      >
         {([category, products]) => (
           <CategoryViewed category={category} categoryId={category.entityId} products={products} />
         )}
