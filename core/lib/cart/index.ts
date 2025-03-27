@@ -48,7 +48,7 @@ export async function addToOrCreateCart(
     throw new MissingCartError();
   }
 
-  // await setCartId(createResponse.data.cart.createCart.cart.entityId);
+  await setCartId(createResponse.data.cart.createCart.cart.entityId);
 
   // unstable_expireTag(TAGS.cart);
 }
