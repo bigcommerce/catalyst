@@ -37,7 +37,7 @@ export async function addToOrCreateCart(
       throw new MissingCartError();
     }
 
-    unstable_expireTag(TAGS.cart);
+    // unstable_expireTag(TAGS.cart);
 
     return;
   }
@@ -50,5 +50,5 @@ export async function addToOrCreateCart(
 
   await setCartId(createResponse.data.cart.createCart.cart.entityId);
 
-  unstable_expireTag(TAGS.cart);
+  // unstable_expireTag(TAGS.cart);
 }
