@@ -1,6 +1,6 @@
 'use server';
 
-import { unstable_expireTag } from 'next/cache';
+import { revalidateTag } from 'next/cache';
 
 import { auth, updateSession } from '~/auth';
 import { addCartLineItem, AddCartLineItemsInput } from '~/client/mutations/add-cart-line-item';
@@ -12,6 +12,8 @@ import { MissingCartError } from './error';
 
 export async function getCartId(): Promise<string | undefined> {
   const session = await auth();
+
+  console.log('getCartId called');
 
   return session?.user?.cartId ?? undefined;
 }
@@ -37,7 +39,7 @@ export async function addToOrCreateCart(
       throw new MissingCartError();
     }
 
-    // unstable_expireTag(TAGS.cart);
+    revalidateTag(TAGS.cart);
 
     return;
   }
@@ -50,5 +52,5 @@ export async function addToOrCreateCart(
 
   await setCartId(createResponse.data.cart.createCart.cart.entityId);
 
-  // unstable_expireTag(TAGS.cart);
+  revalidateTag(TAGS.cart);
 }
