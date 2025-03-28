@@ -1,0 +1,286 @@
+@import 'tailwindcss';
+
+@plugin 'tailwindcss-radix';
+@plugin 'tailwindcss-animate';
+@plugin '@tailwindcss/container-queries';
+@plugin '@tailwindcss/typography';
+
+@source './app/**/*.{ts,tsx}';
+@source './components/**/*.{ts,tsx}';
+@source './vibes/**/*.{ts,tsx}';
+
+@layer base {
+  h1: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  ,
+  h2: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  h3: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  h4: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  h5: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  h6: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-heading);
+  }
+  p: {
+    color: hsl(var(--foreground));
+    fontfamily: var(--font-family-body);
+  }
+  a: {
+    color: color-mix(in oklab, hsl(var(--primary)), black 15%);
+    textdecoration: none;
+    &:hover: {
+      textdecoration: underline;
+    }
+  }
+  ul: {
+    color: hsl(var(--contrast-500));
+    fontfamily: var(--font-family-body);
+  }
+  ol: {
+    color: hsl(var(--contrast-500));
+    fontfamily: var(--font-family-body);
+  }
+  strong: {
+    fontweight: 600;
+  }
+  blockquote: {
+    borderleftcolor: hsl(var(--contrast-300));
+    p: {
+      color: hsl(var(--contrast-500));
+      fontstyle: normal;
+      fontweight: 400;
+    }
+  }
+  code: {
+    color: hsl(var(--contrast-500));
+    fontfamily: var(--font-family-mono);
+  }
+  pre: {
+    color: hsl(var(--background));
+    backgroundcolor: hsl(var(--foreground));
+    fontfamily: var(--font-family-mono);
+  }
+}
+
+@theme {
+  --color-primary: hsl(var(--primary));
+  --color-primary-highlight: color-mix(in oklab, hsl(var(--primary)), white 75%);
+  --color-primary-shadow: color-mix(in oklab, hsl(var(--primary)), black 75%);
+
+  --color-accent: hsl(var(--accent));
+  --color-accent-highlight: color-mix(in oklab, hsl(var(--accent)), white 75%);
+  --color-accent-shadow: color-mix(in oklab, hsl(var(--accent)), black 75%);
+
+  --color-success: hsl(var(--success));
+  --color-success-highlight: color-mix(in oklab, hsl(var(--success)), white 75%);
+  --color-success-shadow: color-mix(in oklab, hsl(var(--success)), black 75%);
+
+  --color-error: hsl(var(--error));
+  --color-error-highlight: color-mix(in oklab, hsl(var(--error)), white 75%);
+  --color-error-shadow: color-mix(in oklab, hsl(var(--error)), black 75%);
+
+  --color-warning: hsl(var(--warning));
+  --color-warning-highlight: color-mix(in oklab, hsl(var(--warning)), white 75%);
+  --color-warning-shadow: color-mix(in oklab, hsl(var(--warning)), black 75%);
+
+  --color-info: hsl(var(--info));
+  --color-info-highlight: color-mix(in oklab, hsl(var(--info)), white 75%);
+  --color-info-shadow: color-mix(in oklab, hsl(var(--info)), black 75%);
+
+  --color-foreground: hsl(var(--foreground));
+  --color-background: hsl(var(--background));
+  --color-contrast-100: hsl(var(--contrast-100));
+  --color-contrast-200: hsl(var(--contrast-200));
+  --color-contrast-300: hsl(var(--contrast-300));
+  --color-contrast-400: hsl(var(--contrast-400));
+  --color-contrast-500: hsl(var(--contrast-500));
+
+  --text-xs: var(--font-size-xs, 0.75rem);
+  --text-sm: var(--font-size-sm, 0.875rem);
+  --text-base: var(--font-size-base, 1rem);
+  --text-lg: var(--font-size-lg, 1.125rem);
+  --text-xl: var(--font-size-xl, 1.25rem);
+  --text-2xl: var(--font-size-2xl, 1.5rem);
+  --text-3xl: var(--font-size-3xl, 1.875rem);
+  --text-4xl: var(--font-size-4xl, 2.25rem);
+  --text-5xl: var(--font-size-5xl, 3rem);
+  --text-6xl: var(--font-size-6xl, 3.75rem);
+  --text-7xl: var(--font-size-7xl, 4.5rem);
+  --text-8xl: var(--font-size-8xl, 6rem);
+  --text-9xl: var(--font-size-9xl, 8rem);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-md: var(--shadow-md);
+  --shadow-lg: var(--shadow-lg);
+  --shadow-xl: var(--shadow-xl);
+
+  --font-heading: var(--font-family-heading);
+  --font-heading-font-feature-settings: var(--font-feature-settings-heading);
+  --font-heading-font-variation-settings: var(--font-variation-settings-heading);
+
+  --font-body: var(--font-family-body);
+  --font-body-font-feature-settings: var(--font-feature-settings-body);
+  --font-body-font-variation-settings: var(--font-variation-settings-body);
+
+  --font-mono: var(--font-family-mono);
+  --font-mono-font-feature-settings: var(--font-feature-settings-mono);
+  --font-mono-font-variation-settings: var(--font-variation-settings-mono);
+
+  --animate-collapse: collapse 400ms cubic-bezier(1, 0, 0.25, 1);
+  --animate-expand: expand 400ms cubic-bezier(1, 0, 0.25, 1);
+  --animate-marching: marching-ants 10s linear infinite;
+  --animate-rotate: rotate 2000ms linear infinite;
+  --animate-scroll: scroll 200ms infinite linear both;
+  --animate-scrollLeft: scrollLeft var(--marquee-duration) linear infinite;
+  --animate-shake: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+  --animate-slideIn: slideIn 800ms cubic-bezier(0.25, 1, 0, 1);
+
+  @keyframes collapse {
+    from {
+      height: var(--radix-accordion-content-height);
+    }
+    to {
+      height: 0;
+    }
+  }
+  @keyframes expand {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height);
+    }
+  }
+  @keyframes marching-ants {
+    to {
+      background-position:
+        0 0,
+        0 -1px,
+        calc(100% + 1px) 0,
+        100% calc(100% + 1px),
+        -1px 100%;
+    }
+  }
+  @keyframes rotateFade {
+    from {
+      opacity: 1;
+      transform: rotateZ(0deg) translate3d(-50%, -50%, 0);
+    }
+    35% {
+      opacity: 0;
+    }
+    70% {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+      transform: rotateZ(360deg) translate3d(-50%, -50%, 0);
+    }
+  }
+  @keyframes rotate {
+    from {
+      transform: rotateZ(0deg) translate3d(-50%, -50%, 0);
+    }
+    to {
+      transform: rotateZ(360deg) translate3d(-50%, -50%, 0);
+    }
+  }
+  @keyframes scroll {
+    to {
+      backgroundposition: 5px 0;
+    }
+  }
+  @keyframes dotScrollSmall: {
+    to: {
+      backgroundposition:
+        -6px -6px,
+        -12px -12px;
+    }
+  }
+  @keyframes dotScrollLarge: {
+    to {
+      backgroundposition:
+        -8px -8px,
+        -16px -16px;
+    }
+  }
+  @keyframes scrollLeft {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+  @keyframes shake {
+    10%,
+    90% {
+      transform: translate3d(-1px, 0, 0);
+    }
+    20%,
+    80% {
+      transform: translate3d(1px, 0, 0);
+    }
+    30%,
+    50%,
+    70% {
+      transform: translate3d(-2px, 0, 0);
+    }
+    40%,
+    60% {
+      transform: translate3d(2px, 0, 0);
+    }
+  }
+  @keyframes slideIn: {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(0%);
+    }
+  }
+}
+
+:root {
+  --primary: 96 100% 68%;
+  --accent: 96 100% 88%;
+  --background: 0 0% 100%;
+  --foreground: 0 0% 7%;
+  --success: 116 78% 65%;
+  --error: 0 100% 60%;
+  --warning: 40 100% 60%;
+  --info: 220 70% 45%;
+  --contrast-100: 0 0% 93%;
+  --contrast-200: 0 0% 82%;
+  --contrast-300: 0 0% 70%;
+  --contrast-400: 0 0% 54%;
+  --contrast-500: 0 0% 34%;
+  --font-variation-settings-body: 'slnt' 0;
+  --font-variation-settings-heading: 'slnt' 0;
+  --font-size-xs: 0.75rem;
+  --font-size-sm: 0.875rem;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.125rem;
+  --font-size-xl: 1.25rem;
+  --font-size-2xl: 1.5rem;
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}

@@ -50,7 +50,7 @@ export function ButtonLink({
     <Link
       {...props}
       className={clsx(
-        'relative z-0 inline-flex h-fit select-none items-center justify-center overflow-hidden border text-center font-[family-name:var(--button-font-family)] font-semibold leading-normal after:absolute after:inset-0 after:-z-10 after:-translate-x-[105%] after:transition-[opacity,transform] after:duration-300 after:[animation-timing-function:cubic-bezier(0,0.25,0,1)] hover:after:translate-x-0 focus-visible:outline-none focus-visible:ring-2',
+        'relative z-0 inline-flex h-fit cursor-pointer items-center justify-center overflow-hidden border text-center font-[family-name:var(--button-font-family)] leading-normal font-semibold select-none after:absolute after:inset-0 after:-z-10 after:-translate-x-[105%] after:duration-300 after:[animation-timing-function:cubic-bezier(0,0.25,0,1)] hover:after:translate-x-0 focus-visible:ring-2 focus-visible:outline-hidden',
         {
           primary:
             'border-[var(--button-primary-border,hsl(var(--primary)))] bg-[var(--button-primary-background,hsl(var(--primary)))] text-[var(--button-primary-foreground)] after:bg-[var(--button-primary-background-hover,color-mix(in_oklab,hsl(var(--primary)),white_75%))]',

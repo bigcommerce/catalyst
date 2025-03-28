@@ -33,7 +33,7 @@ export const Modal = ({
       <DialogPrimitive.Portal>
         <DialogPrimitive.Overlay className="data-[state=open]:animate-overlayShow fixed inset-0 bg-black/[.2]" />
         <DialogPrimitive.Content
-          className="data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] w-full translate-x-[-50%] translate-y-[-50%] bg-white shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none sm:w-8/12 md:w-3/4 md:w-6/12 lg:w-3/5 lg:w-5/12"
+          className="data-[state=open]:animate-contentShow fixed left-[50%] top-[50%] w-full translate-x-[-50%] translate-y-[-50%] bg-white shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-hidden sm:w-8/12 md:w-3/4 md:w-6/12 lg:w-3/5 lg:w-5/12"
           id={id}
         >
           <div className="flex justify-between gap-4 p-6">

@@ -324,7 +324,7 @@ function AccordionSkeleton({ children }: { children: React.ReactNode }) {
     <div>
       <div className="items-start py-3 font-mono text-sm uppercase last:flex @md:py-4">
         <div className="inline-flex h-[1lh] items-center">
-          <div className="h-2 w-[10ch] flex-1 animate-pulse rounded-sm bg-contrast-100" />
+          <div className="h-2 w-[10ch] flex-1 animate-pulse rounded-xs bg-contrast-100" />
         </div>
       </div>
       <div className="pb-5">{children}</div>

@@ -50,7 +50,7 @@ export const Modal = ({
               'mx-3 my-10 max-h-[90%] max-w-3xl overflow-y-auto rounded-2xl bg-[var(--modal-background,hsl(var(--background)))]',
               'transition ease-out',
               'data-[state=closed]:duration-200 data-[state=open]:duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out',
-              'focus:outline-none data-[state=closed]:slide-out-to-bottom-16 data-[state=open]:slide-in-from-bottom-16',
+              'focus:outline-hidden data-[state=closed]:slide-out-to-bottom-16 data-[state=open]:slide-in-from-bottom-16',
               className,
             )}
             onEscapeKeyDown={required ? (event) => event.preventDefault() : undefined}

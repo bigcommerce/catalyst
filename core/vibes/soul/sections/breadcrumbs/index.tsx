@@ -83,15 +83,15 @@ export function Breadcrumbs({ breadcrumbs: streamableBreadcrumbs, className }: B
 export function BreadcrumbsSkeleton({ className }: Pick<BreadcrumbsProps, 'className'>) {
   return (
     <Skeleton.Root
-      className={clsx('group-has-[[data-pending]]/breadcrumbs:animate-pulse', className)}
+      className={clsx('group-has-data-pending/breadcrumbs:animate-pulse', className)}
       pending
     >
       <div className="flex flex-wrap items-center gap-x-1.5 text-sm @xl:text-base">
-        <Skeleton.Text characterCount={4} className="rounded text-lg" />
+        <Skeleton.Text characterCount={4} className="rounded-sm text-lg" />
         <Skeleton.Icon icon={<ChevronRight aria-hidden className="h-5 w-5" strokeWidth={1} />} />
-        <Skeleton.Text characterCount={6} className="rounded text-lg" />
+        <Skeleton.Text characterCount={6} className="rounded-sm text-lg" />
         <Skeleton.Icon icon={<ChevronRight aria-hidden className="h-5 w-5" strokeWidth={1} />} />
-        <Skeleton.Text characterCount={6} className="rounded text-lg" />
+        <Skeleton.Text characterCount={6} className="rounded-sm text-lg" />
       </div>
     </Skeleton.Root>
   );

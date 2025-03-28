@@ -104,7 +104,7 @@ const Counter = forwardRef<ComponentRef<'input'>, Props>(
         <button
           aria-hidden="true"
           aria-label={t('decrease')}
-          className="peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200"
+          className="peer/down absolute start-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-hidden disabled:text-gray-200"
           disabled={!canDecrement()}
           onClick={() => {
             decrement();
@@ -120,7 +120,7 @@ const Counter = forwardRef<ComponentRef<'input'>, Props>(
         <button
           aria-hidden="true"
           aria-label={t('increase')}
-          className="peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-none disabled:text-gray-200"
+          className="peer/up absolute end-0 top-0 flex h-full w-12 items-center justify-center focus-visible:outline-hidden disabled:text-gray-200"
           disabled={!canIncrement()}
           onClick={() => {
             increment();
@@ -135,9 +135,9 @@ const Counter = forwardRef<ComponentRef<'input'>, Props>(
 
         <input
           className={cn(
-            'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-primary peer-hover/up:border-primary peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
+            'peer/input w-full border-2 border-gray-200 px-12 py-2.5 text-center text-base placeholder:text-gray-500 hover:border-primary focus-visible:border-primary focus-visible:outline-hidden focus-visible:ring-4 focus-visible:ring-primary/20 disabled:bg-gray-100 disabled:hover:border-gray-200 peer-hover/down:border-primary peer-hover/up:border-primary disabled:peer-hover/down:border-gray-200 disabled:peer-hover/up:border-gray-200 [&::-webkit-inner-spin-button]:appearance-none',
             error &&
-              'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 hover:border-error disabled:border-gray-200 peer-hover/down:border-error peer-hover/up:border-error peer-hover/down:disabled:border-gray-200 peer-hover/up:disabled:border-gray-200',
+              'border-error-secondary focus-visible:border-error-secondary focus-visible:ring-error-secondary/20 hover:border-error disabled:border-gray-200 peer-hover/down:border-error peer-hover/up:border-error disabled:peer-hover/down:border-gray-200 disabled:peer-hover/up:border-gray-200',
           )}
           disabled={disabled}
           max={max}

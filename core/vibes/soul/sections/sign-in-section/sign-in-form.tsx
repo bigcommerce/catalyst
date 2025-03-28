@@ -41,7 +41,7 @@ export function SignInForm({
   });
 
   return (
-    <form {...getFormProps(form)} action={formAction} className="flex flex-grow flex-col gap-5">
+    <form {...getFormProps(form)} action={formAction} className="flex grow flex-col gap-5">
       <Input
         {...getInputProps(fields.email, { type: 'text' })}
         errors={fields.email.errors}

@@ -53,7 +53,7 @@ export function Select({
         <SelectPrimitive.Trigger
           aria-label={label}
           className={clsx(
-            'flex h-fit w-full select-none items-center justify-between gap-3 border bg-white p-2 px-5 py-3 text-sm font-medium text-foreground ring-primary transition-colors hover:border-contrast-300 hover:bg-contrast-100 focus-visible:outline-none focus-visible:ring-2',
+            'flex h-fit w-full select-none items-center justify-between gap-3 border bg-white p-2 px-5 py-3 text-sm font-medium text-foreground ring-primary transition-colors hover:border-contrast-300 hover:bg-contrast-100 focus-visible:outline-hidden focus-visible:ring-2',
             variant === 'rectangle' ? 'rounded-lg' : 'rounded-full',
             errors && errors.length > 0 ? 'border-error' : 'border-contrast-100',
           )}
@@ -76,7 +76,7 @@ export function Select({
             <SelectPrimitive.Viewport>
               {options.map((option) => (
                 <SelectPrimitive.Item
-                  className="w-full cursor-default select-none rounded-xl px-3 py-2 text-sm font-medium text-contrast-400 outline-none transition-colors hover:bg-contrast-100 hover:text-foreground focus-visible:bg-contrast-100 focus-visible:text-foreground data-[state=checked]:text-foreground @4xl:text-base"
+                  className="w-full cursor-default select-none rounded-xl px-3 py-2 text-sm font-medium text-contrast-400 outline-hidden transition-colors hover:bg-contrast-100 hover:text-foreground focus-visible:bg-contrast-100 focus-visible:text-foreground data-[state=checked]:text-foreground @4xl:text-base"
                   key={option.value}
                   onMouseEnter={() => {
                     onOptionMouseEnter?.(option.value);

@@ -38,7 +38,7 @@ export const NumberInput = React.forwardRef<
           <button
             aria-label={decrementLabel}
             className={clsx(
-              'group rounded-l-lg p-3.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+              'group rounded-l-lg p-3.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary',
               !disabled && 'hover:bg-contrast-100/50',
               disabled && 'cursor-not-allowed opacity-30',
             )}
@@ -64,7 +64,7 @@ export const NumberInput = React.forwardRef<
           <input
             {...rest}
             className={clsx(
-              'w-8 flex-1 select-none justify-center text-center [appearance:textfield] focus-visible:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+              'w-8 flex-1 select-none justify-center text-center [appearance:textfield] focus-visible:outline-hidden [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
               disabled && 'cursor-not-allowed opacity-30',
             )}
             disabled={disabled}
@@ -75,7 +75,7 @@ export const NumberInput = React.forwardRef<
           <button
             aria-label={incrementLabel}
             className={clsx(
-              'group rounded-r-lg p-3.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+              'group rounded-r-lg p-3.5 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary',
               !disabled && 'hover:bg-contrast-100/50',
               disabled && 'cursor-not-allowed opacity-30',
             )}

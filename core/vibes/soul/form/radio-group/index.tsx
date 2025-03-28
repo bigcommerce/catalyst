@@ -96,7 +96,7 @@ function RadioGroupItem({
           option.description !== undefined ? `${id}-label ${id}-description` : `${id}-label`
         }
         className={clsx(
-          'size-5 cursor-default rounded-full border outline-none data-[disabled]:pointer-events-none data-[disabled]:opacity-50 [&:disabled+label]:pointer-events-none [&:disabled+label]:opacity-50',
+          'size-5 cursor-default rounded-full border outline-hidden data-disabled:pointer-events-none data-disabled:opacity-50 [&:disabled+label]:pointer-events-none [&:disabled+label]:opacity-50',
           {
             light: 'bg-[var(--radio-group-light-background,hsl(var(--background)))]',
             dark: 'bg-[var(--radio-group-dark-background,hsl(var(--foreground)))]',
@@ -130,7 +130,7 @@ function RadioGroupItem({
       </RadioGroupPrimitive.Item>
       <label
         className={clsx(
-          'flex flex-grow justify-between pl-3 text-sm leading-none',
+          'flex grow justify-between pl-3 text-sm leading-none',
           {
             light: 'text-[var(--radio-group-light-label,hsl(var(--foreground)))]',
             dark: 'text-[var(--radio-group-dark-label,hsl(var(--background)))]',

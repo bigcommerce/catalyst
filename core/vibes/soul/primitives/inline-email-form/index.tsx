@@ -46,13 +46,13 @@ export function InlineEmailForm({
     <form {...getFormProps(form)} action={formAction} className={clsx('space-y-2', className)}>
       <div
         className={clsx(
-          'relative rounded-xl border bg-background text-base transition-colors duration-200 focus-within:border-primary focus:outline-none',
+          'relative rounded-xl border bg-background text-base transition-colors duration-200 focus-within:border-primary focus:outline-hidden',
           errors.length ? 'border-error' : 'border-black',
         )}
       >
         <input
           {...getInputProps(fields.email, { type: 'email' })}
-          className="placeholder-contrast-gray-500 h-14 w-full bg-transparent pl-5 pr-16 text-foreground placeholder:font-normal focus:outline-none"
+          className="placeholder-contrast-gray-500 h-14 w-full bg-transparent pl-5 pr-16 text-foreground placeholder:font-normal focus:outline-hidden"
           data-1p-ignore
           key={fields.email.id}
           placeholder={placeholder}
