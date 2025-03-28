@@ -1,3 +1,5 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { FragmentOf, graphql, VariablesOf } from '~/client/graphql';
@@ -195,6 +197,11 @@ const CartPageQuery = graphql(
           discountedAmount {
             ...MoneyFieldsFragment
           }
+          discounts {
+            discountedAmount {
+              ...MoneyFieldsFragment
+            }
+          }
           lineItems {
             physicalItems {
               ...PhysicalItemFragment
@@ -260,6 +267,35 @@ export const getCart = async (variables: Variables) => {
   });
 
   return data;
+};
+
+const PaymentWalletsQuery = graphql(`
+  query PaymentWalletsQuery($filters: PaymentWalletsFilterInput) {
+    site {
+      paymentWallets(filter: $filters) {
+        edges {
+          node {
+            entityId
+          }
+        }
+      }
+    }
+  }
+`);
+
+type PaymentWalletsVariables = VariablesOf<typeof PaymentWalletsQuery>;
+
+export const getPaymentWallets = async (variables: PaymentWalletsVariables) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const { data } = await client.fetch({
+    document: PaymentWalletsQuery,
+    customerAccessToken,
+    fetchOptions: { cache: 'no-store' },
+    variables,
+  });
+
+  return removeEdgesAndNodes(data.site.paymentWallets).map(({ entityId }) => entityId);
 };
 
 export const getShippingCountries = async (geography: FragmentOf<typeof GeographyFragment>) => {
