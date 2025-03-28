@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.22.0
+
+### Minor Changes
+
+- [#2136](https://github.com/bigcommerce/catalyst/pull/2136) [`e5f1ac9`](https://github.com/bigcommerce/catalyst/commit/e5f1ac9879319a66187d410a3dc6b2764b15a789) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Support node 22.
+
+### Patch Changes
+
+- [#2017](https://github.com/bigcommerce/catalyst/pull/2017) [`c1519d4`](https://github.com/bigcommerce/catalyst/commit/c1519d4098baa7d21553415e4c794c185b27ec07) Thanks [@RomanKrasinskyi](https://github.com/RomanKrasinskyi)! - Add es-419 to list of allowed locale for selecting in CLI
+
 ## 0.21.0
 
 ### Minor Changes
