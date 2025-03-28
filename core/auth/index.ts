@@ -77,6 +77,12 @@ const SessionUpdate = z.object({
   }),
 });
 
+const SessionSyncCredentials = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  customerAccessToken: z.string(),
+});
+
 async function handleLoginCart(guestCartId?: string, loginResultCartId?: string) {
   const t = await getTranslations('Cart');
 
@@ -166,6 +172,10 @@ function loginWithAnonymous(credentials: unknown): User | null {
   return {
     cartId: cartId ?? null,
   };
+}
+
+function loginWithSessionSync(credentials: unknown): User {
+  return SessionSyncCredentials.parse(credentials);
 }
 
 const config = {
@@ -275,6 +285,13 @@ const config = {
         cartId: { type: 'text' },
       },
       authorize: loginWithJwt,
+    }),
+    CredentialsProvider({
+      id: 'session-sync',
+      credentials: {
+        jwt: { label: 'JWT', type: 'text' },
+      },
+      authorize: loginWithSessionSync,
     }),
   ],
 } satisfies NextAuthConfig;
