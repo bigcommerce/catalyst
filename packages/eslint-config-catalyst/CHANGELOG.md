@@ -1,5 +1,11 @@
 # @bigcommerce/eslint-config-catalyst
 
+## 0.1.4
+
+### Patch Changes
+
+- [#1933](https://github.com/bigcommerce/catalyst/pull/1933) [`f292236`](https://github.com/bigcommerce/catalyst/commit/f2922366ba94572293856cc7f2532dade0847c86) Thanks [@dependabot](https://github.com/apps/dependabot)! - Manual changes on a dependency bumps.
+
 ## 0.1.3
 
 ### Patch Changes
