@@ -1,5 +1,5 @@
 {
-  "name": "@bigcommerce/catalyst",
+  "name": "my-store-name",
   "description": "Catalyst is BigCommerce's composable front-end framework designed for building custom ecommerce storefronts.",
   "keywords": [
     "bigcommerce",
