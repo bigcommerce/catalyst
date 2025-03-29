@@ -58,6 +58,9 @@ export const routing = defineRouting({
   localePrefix,
 });
 
+export const getLocaleDomain = (locale: string): string | undefined =>
+  (routing.domains ?? []).find((d) => (d.locales as Array<string>).includes(locale))?.domain;
+
 // Lightweight wrappers around Next.js' navigation APIs
 // that will consider the routing configuration
 // Redirect will append locale prefix even when in default locale
