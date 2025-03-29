@@ -78,6 +78,9 @@ export default async function Compare(props: Props) {
   const parsed = CompareParamsSchema.parse(searchParams);
   const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
 
+  const params = await props.params;
+  console.log('params', params, 'searchParams', searchParams);
+
   return (
     <CompareSection
       addToCartAction={addToCart}

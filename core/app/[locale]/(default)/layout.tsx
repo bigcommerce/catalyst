@@ -15,7 +15,7 @@ export default async function DefaultLayout({ params, children }: Props) {
 
   return (
     <>
-      <Header />
+      {/* <Header /> */}
 
       <main>{children}</main>
 
