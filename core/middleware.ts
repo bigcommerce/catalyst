@@ -7,6 +7,7 @@ import { withRoutes } from './middlewares/with-routes';
 export const middleware = composeMiddlewares(withAuth, withIntl, withChannelId, withRoutes);
 
 export const config = {
+  runtime: 'nodejs',
   matcher: [
     /*
      * Match all request paths except for the ones starting with:
