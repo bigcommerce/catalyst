@@ -39,7 +39,7 @@ interface Props<F extends Field> {
   ctaDisabled?: Streamable<boolean | null>;
   prefetch?: boolean;
   thumbnailLabel?: string;
-  additionaInformationTitle?: string;
+  additionalInformationTitle?: string;
 }
 
 export function ProductDetail<F extends Field>({
@@ -54,7 +54,7 @@ export function ProductDetail<F extends Field>({
   ctaDisabled: streamableCtaDisabled,
   prefetch,
   thumbnailLabel,
-  additionaInformationTitle = 'Additional information',
+  additionalInformationTitle = 'Additional information',
 }: Props<F>) {
   return (
     <section className="@container">
@@ -139,7 +139,7 @@ export function ProductDetail<F extends Field>({
                     }
                   </Stream>
 
-                  <h2 className="sr-only">{additionaInformationTitle}</h2>
+                  <h2 className="sr-only">{additionalInformationTitle}</h2>
                   <Stream fallback={<ProductAccordionsSkeleton />} value={product.accordions}>
                     {(accordions) =>
                       accordions && (
