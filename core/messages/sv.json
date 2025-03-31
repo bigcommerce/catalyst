@@ -275,65 +275,65 @@
             }
         },
         "Wishlists": {
-            "title": "Wish Lists",
-            "new": "New wish list",
-            "items": "{count, plural, =1 {1 item} other {# items}}",
-            "viewWishlist": "View list",
-            "noWishlists": "You don't have any wish lists",
-            "noWishlistsSubtitle": "Create a wishlist to save your favorite products.",
-            "noWishlistsCallToAction": "Create a wishlist",
-            "emptyWishlist": "You haven't added products to this wish list.",
+            "title": "Önskelistor",
+            "new": "Ny önskelista",
+            "items": "{count, plural, =1 {1 objekt} other {# objekt}}",
+            "viewWishlist": "Visa lista",
+            "noWishlists": "Du har inga önskelistor",
+            "noWishlistsSubtitle": "Skapa en önskelista för att spara dina favoritprodukter.",
+            "noWishlistsCallToAction": "Skapa en önskelista",
+            "emptyWishlist": "Du har inte lagt till några produkter på den här önskelistan.",
             "share": "Dela med sig",
-            "shareSuccess": "Wish list has been shared successfully.",
-            "shareCopied": "Wish list public URL has been copied to your clipboard.",
-            "shareDisabled": "Your wish list must be public in order to share it.",
-            "makePublic": "Make public",
-            "makePrivate": "Make private",
-            "rename": "Rename",
+            "shareSuccess": "Önskelistan har delats.",
+            "shareCopied": "Önskelistans offentliga URL har kopierats till urklipp.",
+            "shareDisabled": "Din önskelista måste vara offentlig för att kunna delas.",
+            "makePublic": "Gör offentlig",
+            "makePrivate": "Gör privat",
+            "rename": "Döp om",
             "delete": "Radera",
             "Visibility": {
-                "public": "Public",
-                "private": "Private"
+                "public": "Offentlig",
+                "private": "Privat"
             },
             "Modal": {
                 "cancel": "Annullera",
-                "close": "Close",
-                "copy": "Copy",
+                "close": "Stäng",
+                "copy": "Kopiera",
                 "create": "skapa",
-                "save": "Save",
+                "save": "Spara",
                 "delete": "Radera",
-                "newTitle": "Create a new wish list",
-                "shareTitle": "Share {name}",
-                "renameTitle": "Rename {name}",
-                "deleteTitle": "Delete {name}",
-                "changeVisibilityPublicTitle": "Make {name} public?",
-                "changeVisibilityPrivateTitle": "Make {name} private?",
-                "makePublicContent": "Are you sure you want to make <bold>{name}</bold> public? This will allow others to see your wish list if they have the link.",
-                "makePrivateContent": "Are you sure you want to make <bold>{name}</bold> private? If you've shared your wish list with others, they will no longer be able to see it.",
-                "deleteContent": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone."
+                "newTitle": "Skapa en ny önskelista",
+                "shareTitle": "Dela {name}",
+                "renameTitle": "Byt namn på {name}",
+                "deleteTitle": "Radera {name}",
+                "changeVisibilityPublicTitle": "Vill du göra {name} offentlig?",
+                "changeVisibilityPrivateTitle": "Vill du göra {name} privat?",
+                "makePublicContent": "Är du säker på att du vill göra <bold>{name}</bold> offentlig? Då kommer andra att kunna se din önskelista om de har länken.",
+                "makePrivateContent": "Är du säker på att du vill göra <bold>{name}</bold> privat? Om du har delat din önskelista med andra kommer de inte längre att kunna se den.",
+                "deleteContent": "Är du säker på att du vill radera <bold>{name}</bold>? Denna åtgärd kan inte ångras."
             },
             "Form": {
-                "nameLabel": "Name"
+                "nameLabel": "Namn"
             },
             "Errors": {
-                "nameRequired": "Wish list name cannot be empty.",
-                "updateFailed": "Failed to update your wish list. Please try again.",
-                "deleteFailed": "Failed to delete your wish list. Please try again.",
-                "removeProductFailed": "Failed to remove the product from your wish list. Please try again.",
-                "unauthorized": "You are not authorized to perform this action. Please sign in and try again.",
-                "unexpected": "An unexpected error occurred. Please try again."
+                "nameRequired": "Namnet på önskelistan får inte vara tomt.",
+                "updateFailed": "Det gick inte att uppdatera din önskelista. Försök igen.",
+                "deleteFailed": "Det gick inte att radera din önskelista. Försök igen.",
+                "removeProductFailed": "Det gick inte att ta bort produkten från din önskelista. Försök igen.",
+                "unauthorized": "Du har inte behörighet att utföra den här åtgärden. Logga in och försök igen.",
+                "unexpected": "Ett oväntat fel inträffade. Försök igen."
             },
             "Result": {
-                "createSuccess": "Wish list has been created successfully.",
-                "updateSuccess": "Wish list has been updated successfully.",
-                "deleteSuccess": "Wish list has been deleted successfully.",
-                "removeItemSuccess": "Item has been removed from your wish list."
+                "createSuccess": "Önskelistan har skapats.",
+                "updateSuccess": "Önskelistan har uppdaterats.",
+                "deleteSuccess": "Önskelistan har tagits bort.",
+                "removeItemSuccess": "Objektet har tagits bort från din önskelista."
             }
         }
     },
     "PublicWishlist": {
-        "title": "Public Wish List",
-        "defaultName": "Public wish list"
+        "title": "Offentlig önskelista",
+        "defaultName": "Offentlig önskelista"
     },
     "Blog": {
         "title": "Blogg",
@@ -449,19 +449,19 @@
         }
     },
     "Compare": {
-        "title": "Compare products",
+        "title": "Jämför produkter",
         "addToCart": "Lägg till i kundvagn",
         "next": "Nästa produkter",
         "previous": "Tidigare produkter",
-        "noProductsToCompare": "No products to compare",
+        "noProductsToCompare": "Inga produkter att jämföra",
         "sku": "SKU",
         "weight": "Vikt",
         "description": "Beskrivning",
-        "noDescription": "There is no description available.",
+        "noDescription": "Det finns ingen beskrivning tillgänglig.",
         "rating": "Bedömning",
-        "noRatings": "There are no reviews.",
-        "otherDetails": "Other details",
-        "noOtherDetails": "There are no other details.",
+        "noRatings": "Det finns inga recensioner.",
+        "otherDetails": "Övrig information",
+        "noOtherDetails": "Det finns inga övriga detaljer.",
         "viewOptions": "Visa alternativ",
         "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>"
     },
@@ -473,7 +473,7 @@
             "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
             "missingCart": "Kundvagnen hittades inte. Försök igen senare!",
             "unknownError": "Okänt fel. Försök igen senare.",
-            "variantRequiredError": "This product requires options to be selected in order to add to the cart.",
+            "variantRequiredError": "Denna produkt kräver att alternativ väljs för att kunna läggas till i kundvagnen.",
             "increaseNumber": "Öka antalet",
             "decreaseNumber": "Minska antalet",
             "thumbnail": "Visa bildnummer",
@@ -646,7 +646,7 @@
             "Compare": {
                 "compare": "Jämför",
                 "remove": "Ta bort",
-                "maxCompareLimit": "You've reached the maximum number of products for comparison. Remove a product to add a new one."
+                "maxCompareLimit": "Du har nått det maximala antalet produkter att jämföra. Ta bort en produkt för att lägga till en ny."
             },
             "AddToCart": {
                 "viewOptions": "Visa alternativ",
