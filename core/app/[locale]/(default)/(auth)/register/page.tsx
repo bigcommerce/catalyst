@@ -23,7 +23,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
-  const t = await getTranslations({ locale, namespace: 'Register' });
+  const t = await getTranslations({ locale, namespace: 'Auth.Register' });
 
   return {
     title: t('title'),
@@ -35,7 +35,7 @@ export default async function Register({ params }: Props) {
 
   setRequestLocale(locale);
 
-  const t = await getTranslations('Register');
+  const t = await getTranslations('Auth.Register');
 
   const registerCustomerData = await getRegisterCustomerQuery({
     address: { sortBy: 'SORT_ORDER' },
@@ -62,7 +62,7 @@ export default async function Register({ params }: Props) {
           .map(formFieldTransformer)
           .filter(exists),
       ]}
-      submitLabel={t('Form.submit')}
+      submitLabel={t('cta')}
       title={t('heading')}
     />
   );

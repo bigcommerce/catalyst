@@ -18,7 +18,7 @@ export const facetsTransformer = async ({
   allFacets: ExistingResultType<typeof fetchFacetedSearch>['facets']['items'];
   searchParams: z.input<typeof PublicSearchParamsSchema>;
 }) => {
-  const t = await getTranslations('FacetedGroup.FacetedSearch.Facets');
+  const t = await getTranslations('Faceted.FacetedSearch.Facets');
   const { filters } = PublicToPrivateParams.parse(searchParams);
 
   return allFacets.map((facet) => {

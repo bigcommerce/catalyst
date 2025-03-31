@@ -110,7 +110,7 @@ export async function deleteAddress(prevState: Awaited<State>, formData: FormDat
 
     return {
       ...prevState,
-      lastResult: submission.reply({ formErrors: [t('Errors.error')] }),
+      lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
     };
   }
 }

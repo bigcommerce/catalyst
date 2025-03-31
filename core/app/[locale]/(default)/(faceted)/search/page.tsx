@@ -85,7 +85,7 @@ async function getProducts(props: Props) {
 
 async function getTitle(props: Props): Promise<string> {
   const searchTerm = await getSearchTerm(props);
-  const t = await getTranslations('Search');
+  const t = await getTranslations('Faceted.Search');
 
   return `${t('searchResults')} "${searchTerm}"`;
 }
@@ -148,13 +148,13 @@ async function getTotalCount(props: Props): Promise<number> {
 }
 
 async function getSortLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.SortBy');
+  const t = await getTranslations('Faceted.SortBy');
 
-  return t('ariaLabel');
+  return t('sortBy');
 }
 
 async function getSortOptions(): Promise<SortOption[]> {
-  const t = await getTranslations('FacetedGroup.SortBy');
+  const t = await getTranslations('Faceted.SortBy');
 
   return [
     { value: 'featured', label: t('featuredItems') },
@@ -224,7 +224,7 @@ async function getCompareProducts(props: Props) {
 }
 
 async function getFilterLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch');
+  const t = await getTranslations('Faceted.FacetedSearch');
 
   return t('filters');
 }
@@ -248,42 +248,42 @@ async function getMaxCompareLimitMessage(): Promise<string> {
 }
 
 async function getFiltersPanelTitle(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch');
+  const t = await getTranslations('Faceted.FacetedSearch');
 
   return t('filters');
 }
 
 async function getResetFiltersLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch');
+  const t = await getTranslations('Faceted.FacetedSearch');
 
   return t('resetFilters');
 }
 
 async function getRangeFilterApplyLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch.Range');
+  const t = await getTranslations('Faceted.FacetedSearch.Range');
 
   return t('apply');
 }
 
 async function getEmptyStateTitle(props: Props): Promise<string> {
   const searchTerm = await getSearchTerm(props);
-  const t = await getTranslations('Search');
+  const t = await getTranslations('Faceted.Search.Empty');
 
   return t('emptyStateTitle', { term: searchTerm });
 }
 
 async function getEmptyStateSubtitle(): Promise<string> {
-  const t = await getTranslations('Search');
+  const t = await getTranslations('Faceted.Search.Empty');
 
   return t('emptyStateSubtitle');
 }
 
 async function getBreadcrumbs(): Promise<Breadcrumb[]> {
-  const t = await getTranslations('Search');
+  const t = await getTranslations('Faceted.Search.Breadcrumbs');
 
   return [
-    { label: t('Breadcrumbs.home'), href: '/' },
-    { label: t('Breadcrumbs.search'), href: `#` },
+    { label: t('home'), href: '/' },
+    { label: t('search'), href: `#` },
   ];
 }
 
@@ -292,10 +292,15 @@ interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
+<<<<<<< HEAD
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
   const t = await getTranslations({ locale, namespace: 'Search' });
+=======
+export async function generateMetadata(): Promise<Metadata> {
+  const t = await getTranslations('Faceted.Search');
+>>>>>>> a9f588ed (refactor: clean up en dictionary)
 
   return {
     title: t('title'),

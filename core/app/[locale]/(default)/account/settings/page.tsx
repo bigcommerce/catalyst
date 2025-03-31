@@ -27,6 +27,8 @@ export default async function Settings({ params }: Props) {
 
   setRequestLocale(locale);
 
+  const t = await getTranslations('Account.Settings');
+
   const customerSettings = await getCustomerSettingsQuery();
 
   if (!customerSettings) {
@@ -37,7 +39,14 @@ export default async function Settings({ params }: Props) {
     <AccountSettingsSection
       account={customerSettings.customerInfo}
       changePasswordAction={changePassword}
+      changePasswordSubmitLabel={t('cta')}
+      changePasswordTitle={t('changePassword')}
+      confirmPasswordLabel={t('confirmPassword')}
+      currentPasswordLabel={t('currentPassword')}
+      newPasswordLabel={t('newPassword')}
+      title={t('title')}
       updateAccountAction={updateCustomer}
+      updateAccountSubmitLabel={t('cta')}
     />
   );
 }

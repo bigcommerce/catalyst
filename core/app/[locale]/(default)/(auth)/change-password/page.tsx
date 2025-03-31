@@ -18,7 +18,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
-  const t = await getTranslations({ locale, namespace: 'ChangePassword' });
+  const t = await getTranslations({ locale, namespace: 'Auth.ChangePassword' });
 
   return {
     title: t('title'),
@@ -31,7 +31,7 @@ export default async function ChangePassword({ params, searchParams }: Props) {
   setRequestLocale(locale);
 
   const { c: customerEntityId, t: token } = await searchParams;
-  const t = await getTranslations('ChangePassword');
+  const t = await getTranslations('Auth.ChangePassword');
 
   if (!customerEntityId || !token) {
     return redirect({ href: '/login', locale });
@@ -40,9 +40,9 @@ export default async function ChangePassword({ params, searchParams }: Props) {
   return (
     <ResetPasswordSection
       action={changePassword.bind(null, { customerEntityId, token })}
-      confirmPasswordLabel={t('Form.confirmPasswordLabel')}
-      newPasswordLabel={t('Form.newPasswordLabel')}
-      title={t('heading')}
+      confirmPasswordLabel={t('confirmPassword')}
+      newPasswordLabel={t('newPassword')}
+      title={t('title')}
     />
   );
 }

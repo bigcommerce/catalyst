@@ -20,10 +20,6 @@
         "cta": "Shop Now"
       }
     },
-    "Carousel": {
-      "featuredProducts": "Featured Products",
-      "newestProducts": "Newest products"
-    },
     "FeaturedProducts": {
       "title": "Featured collection",
       "description": "Explore our top picks in this featured collection. Find the perfect gift or treat yourself!",
@@ -39,93 +35,72 @@
       "emptyStateSubtitle": "Try browsing our complete catalog of products.",
       "previousProducts": "Previous products",
       "nextProducts": "Next products"
-    },
-    "BestSellingProducts": {
-      "title": "Our best sellers",
-      "description": "Our best selling products are here. Check out what's popular in store.",
-      "cta": "See all"
     }
   },
-  "ChangePassword": {
-    "title": "Change password",
-    "heading": "Change password",
-    "Form": {
-      "newPasswordLabel": "New password",
-      "confirmPasswordLabel": "Confirm password",
-      "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
-      "successMessage": "Password has been updated successfully!",
-      "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials.",
-      "submit": "Change password",
-      "submitting": "Submitting..."
-    },
-    "Errors": {
-      "error": "Unknown error."
-    }
-  },
-  "Login": {
-    "title": "Login",
-    "heading": "Log In",
-    "Form": {
-      "invalidCredentials": "Your email address or password is incorrect. Try signing in again or reset your password",
-      "successful": "You have successfully logged in.",
-      "emailLabel": "Email",
-      "enterEmailMessage": "Enter your email",
-      "passwordLabel": "Password",
-      "enterPasswordMessage": "Enter your password",
-      "submitting": "Submitting...",
-      "logIn": "Log in",
-      "forgotPassword": "Forgot your password?",
+  "Auth": {
+    "ChangePassword": {
+      "title": "Change password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "passwordUpdated": "Password has been updated successfully!",
       "somethingWentWrong": "Something went wrong. Please try again later."
     },
-    "CreateAccount": {
-      "heading": "New customer?",
-      "accountBenefits": "Create an account with us and you'll be able to:",
-      "fastCheckout": "Check out faster",
-      "multipleAddresses": "Save multiple shipping addresses",
-      "ordersHistory": "Access your order history",
-      "ordersTracking": "Track new orders",
-      "wishlists": "Save items to your Wishlist",
-      "createLink": "Create Account "
-    },
-    "ForgotPassword": {
-      "title": "Forgot password",
-      "heading": "Forgot password",
-      "Form": {
-        "description": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
-        "emailLabel": "Email",
-        "emailValidationMessage": "Enter a valid email such as name@domain.com",
-        "recaptchaText": "Pass ReCAPTCHA check",
-        "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it.",
-        "submitting": "Submitting...",
-        "submit": "Reset password"
+    "Login": {
+      "title": "Login",
+      "heading": "Log in",
+      "forgotPassword": "Forgot your password?",
+      "cta": "Log in",
+      "invalidCredentials": "Your email address or password is incorrect. Try signing in again or reset your password",
+      "somethingWentWrong": "Something went wrong. Please try again later.",
+      "CreateAccount": {
+        "title": "New customer?",
+        "accountBenefits": "Create an account with us and you'll be able to:",
+        "fastCheckout": "Check out faster",
+        "multipleAddresses": "Save multiple shipping addresses",
+        "ordersHistory": "Access your order history",
+        "ordersTracking": "Track new orders",
+        "wishlists": "Save items to your Wishlist",
+        "cta": "Create account"
       },
-      "Errors": {
-        "error": "Unknown error."
+      "ForgotPassword": {
+        "title": "Forgot password",
+        "subtitle": "Enter the email associated with your account below. We'll send you instructions to reset your password.",
+        "confirmResetPassword": "If the email address {email} is linked to an account in our store, we have sent you a password reset email. Please check your inbox and spam folder if you don't see it.",
+        "somethingWentWrong": "Something went wrong. Please try again later."
       }
-    }
-  },
-  "Register": {
-    "title": "Register account",
-    "heading": "New account",
-    "successfulUpdate": "Account has been successfully updated.",
-    "Form": {
-      "submit": "Create account",
-      "submitting": "Creating account...",
-      "recaptchaText": "Pass ReCAPTCHA check",
-      "confirmPassword": "Passwords don't match",
-      "successMessage": "Account was successfully created."
     },
-    "Errors": {
-      "inputError": "Something went wrong with processing user input.",
-      "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
-      "error": "Something went wrong. Please try again later."
+    "Register": {
+      "title": "Register account",
+      "heading": "New account",
+      "cta": "Create account",
+      "somethingWentWrong": "Something went wrong. Please try again later."
     }
   },
-  "FacetedGroup": {
-    "MobileSideNav": {
-      "filters": "Filters",
-      "showFilters": "Show Filters",
-      "subCategories": "Categories"
+  "Faceted": {
+    "Brand": {
+      "Empty": {
+        "title": "No products in this brand",
+        "subtitle": "Try using different filters."
+      }
+    },
+    "Category": {
+      "Empty": {
+        "title": "No products in this category",
+        "subtitle": "Try using different filters."
+      }
+    },
+    "Search": {
+      "title": "Search results",
+      "searchResults": "Search results for",
+      "subCategories": "Categories",
+      "Breadcrumbs": {
+        "home": "Home",
+        "search": "Search"
+      },
+      "Empty": {
+        "title": "Sorry, no results for \"{term}\".",
+        "subtitle": "Please try another search."
+      }
     },
     "FacetedSearch": {
       "filters": "Filters",
@@ -133,26 +108,14 @@
       "Range": {
         "apply": "Apply"
       },
-      "RefineBy": {
-        "refineBy": "Refine by",
-        "clearAllRefinements": "Clear all"
-      },
       "Facets": {
-        "updatePriceButton": "Update price",
         "freeShippingLabel": "Free shipping",
         "isFeaturedLabel": "Is featured",
-        "inStockLabel": "In stock",
-        "rating": "{currentRating, plural, =1 {1 star} other {# stars}} & up",
-        "priceFilter": {
-          "minPricePlaceholder": "{currencySign} min",
-          "minPriceAriaLabel": "Minimum pricing",
-          "maxPricePlaceholder": "{currencySign} max",
-          "maxPriceAriaLabel": "Maximum pricing"
-        }
+        "inStockLabel": "In stock"
       }
     },
     "SortBy": {
-      "ariaLabel": "Sort by:",
+      "sortBy": "Sort by:",
       "featuredItems": "Featured items",
       "bestSellingItems": "Best selling items",
       "newestItems": "Newest items",
@@ -164,115 +127,51 @@
       "relevance": "Relevance"
     }
   },
-  "Brand": {
-    "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-    "products": "Products",
-    "emptyStateTitle": "No products in this brand.",
-    "emptyStateSubtitle": "Try using different filters."
-  },
-  "Category": {
-    "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-    "products": "Products",
-    "items": "items",
-    "Empty": {
-      "title": "No products in this category",
-      "subtitle": "Try using different filters.",
-      "cta": "Return to Home"
-    }
-  },
-  "Search": {
-    "title": "Search results",
-    "heading": "Search",
-    "products": "Products",
-    "sortBy": "{items, plural, =0 {no items} =1 {1 item} other {# items}}",
-    "searchResults": "Search results for",
-    "emptyStateTitle": "Sorry, no results for \"{term}\".",
-    "emptyStateSubtitle": "Please try another search.",
-    "Breadcrumbs": {
-      "home": "Home",
-      "search": "Search"
-    }
-  },
   "Account": {
     "Layout": {
       "addresses": "Addresses",
       "logout": "Logout",
       "orders": "Orders",
       "settings": "Account",
-      "wishlists": "Wish lists",
-      "recentlyViewed": "Recently viewed"
+      "wishlists": "Wish lists"
     },
     "Orders": {
       "title": "Orders",
       "orderNumber": "Order #",
       "totalPrice": "Total",
       "viewDetails": "View Details",
-      "noOrders": "No orders yet"
-    },
-    "OrderDetails": {
-      "title": "Order #{orderNumber}",
-      "shippingAddressLabel": "Shipping address",
-      "shippingMethodLabel": "Shipping method",
-      "summaryTotalLabel": "Total",
-      "destinationTitle": "Destination",
-      "destinationWithCountTitle": "Destination {number, number}/{total, number}",
-      "summarySubtotalLabel": "Subtotal",
-      "summaryShippingLabel": "Shipping",
-      "summaryTaxLabel": "Tax"
+      "Details": {
+        "title": "Order #{orderNumber}",
+        "shippingAddress": "Shipping address",
+        "shippingMethod": "Shipping method",
+        "summaryTotal": "Total",
+        "destination": "Destination",
+        "destinationWithCount": "Destination {number}/{total}",
+        "subtotal": "Subtotal",
+        "shipping": "Shipping",
+        "tax": "Tax"
+      }
     },
     "Addresses": {
       "title": "Addresses",
-      "showAddFormLabel": "Add address",
-      "editLabel": "Edit",
-      "deleteLabel": "Delete",
-      "cancelLabel": "Cancel",
-      "createLabel": "Create",
-      "updateLabel": "Update",
-      "setDefaultLabel": "Set as default",
-      "Errors": {
-        "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
-        "error": "Unknown error."
-      }
+      "cta": "Add address",
+      "edit": "Edit",
+      "delete": "Delete",
+      "cancel": "Cancel",
+      "create": "Create",
+      "update": "Update",
+      "setDefault": "Set as default",
+      "somethingWentWrong": "Something went wrong. Please try again later."
     },
     "Settings": {
       "title": "Account settings",
-      "emptyTextValidatoinMessage": "This field can not be empty",
-      "cancel": "Cancel",
       "changePassword": "Change password",
-      "submit": "Update settings",
-      "submitting": "Update settings...",
-      "successMessage": "Your account settings have been updated",
-      "validationMessages": {
-        "email": "Enter a valid email such as name@domain.com",
-        "empty": "This field can not be empty",
-        "firstName": "Enter your first name",
-        "lastName": "Enter your last name",
-        "city": "Enter a suburb / city",
-        "company": "Enter a company name",
-        "phone": "Enter a phone number"
-      },
-      "ChangePassword": {
-        "title": "Change password",
-        "success": "Password has been updated successfully.",
-        "error": "Unknown error.",
-        "currentPasswordLabel": "Current password",
-        "newPasswordLabel": "New password",
-        "confirmPasswordLabel": "Confirm password",
-        "cancel": "Cancel",
-        "confirmPasswordValidationMessage": "Entered passwords are mismatched. Please try again.",
-        "newPasswordValidationMessage": "New password must be different from the current password or/and match confirm password.",
-        "notEmptyMessage": "Field should not be empty",
-        "confirmChangePassword": "Your password has been successfully updated. Please log in using your new credentials.",
-        "spinnerText": "Submitting...",
-        "submitText": "Change password"
-      },
-      "UpdateCustomer": {
-        "successMessage": "Your account settings have been updated",
-        "Errors": {
-          "inputError": "Something went wrong with processing user input.",
-          "notFound": "Customer does not exist"
-        }
-      }
+      "passwordUpdated": "Password has been updated successfully!",
+      "somethingWentWrong": "Something went wrong. Please try again later.",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "cta": "Update"
     },
     "Wishlists": {
       "title": "Wish Lists",
@@ -337,6 +236,7 @@
   },
   "Blog": {
     "title": "Blog",
+    "home": "Home",
     "Empty": {
       "title": "No blog posts found",
       "subtitle": "Check back later for more content"
@@ -350,11 +250,7 @@
   "Cart": {
     "title": "Cart",
     "heading": "Your cart",
-    "empty": "Your cart is empty",
-    "emptyDetails": "Looks like you have not added anything to your cart. Go ahead & explore top categories",
     "proceedToCheckout": "Proceed to checkout",
-    "loading": "Loading...",
-    "spinnerText": "Updating...",
     "increment": "Increase quantity",
     "decrement": "Decrease quantity",
     "removeItem": "Remove item",
@@ -364,11 +260,8 @@
       "title": "Summary",
       "subTotal": "Subtotal",
       "discounts": "Discounts",
-      "remove": "Remove",
-      "spinnerText": "Removing...",
       "tax": "Tax",
       "total": "Total",
-      "errorMessage": "Cart summary not found, please try again.",
       "CouponCode": {
         "apply": "Apply",
         "couponCode": "Coupon code",
@@ -394,46 +287,6 @@
         "cartNotFound": "No cartId cookie found.",
         "noShippingOptions": "There are no shipping options available for your address"
       }
-    },
-    "ShippingInfo": {
-      "country": "Country",
-      "countryPlaceholder": "Select country",
-      "state": "State/province",
-      "statePlaceholder": "Select state",
-      "city": "Suburb/city",
-      "cityPlaceholder": "City",
-      "postcode": "Zip/Postcode",
-      "postcodePlaceholder": "Postal code",
-      "errorMessage": "Something went wrong, please try again."
-    },
-    "SubmitShippingInfo": {
-      "spinnerText": "Submitting...",
-      "submitText": "Estimate shipping"
-    },
-    "ShippingCost": {
-      "shippingOptions": "Available options",
-      "radioGroupAriaLabel": "Available shipping options",
-      "noAvailableOptions": "There are no available options for shipping. Please check provided details and try again!",
-      "errorMessage": "Something went wrong, please try again."
-    },
-    "SubmitShippingCost": {
-      "spinnerText": "Submitting...",
-      "submitText": "Update shipping costs"
-    },
-    "SubmitCouponCode": {
-      "spinnerText": "Submitting...",
-      "submitText": "Apply"
-    },
-    "SubmitItemQuantity": {
-      "spinnerText": "Updating...",
-      "submitReduceText": "Decrease count",
-      "submitIncreaseText": "Increase count",
-      "errorMessage": "Something went wrong while updating item quantity, please try again."
-    },
-    "SubmitRemoveItem": {
-      "remove": "Remove",
-      "spinnerText": "Removing...",
-      "errorMessage": "Something went wrong while removing item, please try again."
     },
     "Empty": {
       "title": "Your cart is empty.",
@@ -492,11 +345,6 @@
         "sku": "SKU",
         "weight": "Weight",
         "condition": "Condition"
-      },
-      "Prices": {
-        "msrp": "MSRP",
-        "was": "Was",
-        "now": "Now"
       }
     },
     "RelatedProducts": {
@@ -511,35 +359,27 @@
     "Reviews": {
       "title": "Reviews",
       "empty": "No reviews have been added for this product.",
-      "Pagination": {
-        "previous": "Previous reviews",
-        "next": "Next reviews"
-      }
+      "previous": "Previous reviews",
+      "next": "Next reviews"
     }
   },
   "WebPages": {
+    "Normal": {
+      "home": "Home"
+    },
     "ContactUs": {
       "Form": {
         "success": "Thanks for reaching out. We'll get back to you soon.",
         "successCta": "Continue shopping",
-        "error": "Unknown error.",
-        "fullNameLabel": "Full name",
-        "companyNameLabel": "Company name",
-        "phoneLabel": "Phone",
-        "orderNoLabel": "Order number",
-        "rmaLabel": "RMA number",
-        "emailLabel": "Email",
-        "emailValidationMessage": "Enter a valid email such as name@domain.com",
-        "commentsLabel": "Comments/questions",
-        "commentsValidationMessage": "Please provide a valid Comments",
-        "recaptchaText": "Pass ReCAPTCHA check",
-        "onSubmitText": "Submitting...",
-        "submitFormText": "Submit form",
-        "Errors": {
-          "inputError": "Something went wrong with processing user input.",
-          "apiError": "Looks like we are experience a server error, please try again in a few minutes.",
-          "error": "Something went wrong. Please try again later."
-        }
+        "fullName": "Full name",
+        "companyName": "Company name",
+        "phone": "Phone",
+        "orderNo": "Order number",
+        "rma": "RMA number",
+        "email": "Email",
+        "comments": "Comments/questions",
+        "cta": "Submit form",
+        "somethingWentWrong": "Something went wrong. Please try again later."
       }
     }
   },
@@ -548,20 +388,15 @@
     "message": "We are down for maintenance",
     "contactUs": "You can contact us at:"
   },
-  "StoreSelector": {
-    "title": "Store selector",
-    "heading": "Select a language and region"
-  },
   "Error": {
-    "heading": "There was a server error!",
-    "message": "Please try again later."
+    "title": "There was a server error!",
+    "subtitle": "Please try again later.",
+    "cta": "Try again"
   },
   "NotFound": {
-    "heading": "We couldn't find that page!",
-    "message": "It looks like the page you requested has moved or no longer exists.",
-    "Carousel": {
-      "featuredProducts": "Featured products"
-    }
+    "title": "We couldn't find that page!",
+    "subtitle": "It looks like the page you requested has moved or no longer exists.",
+    "featuredProducts": "Featured products"
   },
   "Components": {
     "Header": {
@@ -570,51 +405,28 @@
       "Icons": {
         "account": "Profile",
         "cart": "Cart",
-        "search": "Search"
+        "search": "Open search popup"
       },
-      "Account": {
-        "account": "Account",
-        "orders": "Orders",
-        "addresses": "Addresses",
-        "accountSettings": "Account settings",
-        "login": "Login",
-        "logout": "Log out"
-      },
-      "Currency": {
+      "SwitchCurrency": {
         "invalidCurrency": "Invalid currency",
         "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
       },
-      "Locale": {
-        "invalidLocale": "Invalid locale"
-      },
-      "MiniCart": {
-        "cart": "Cart",
-        "items": "Cart Items"
-      },
-      "Navigation": {
-        "toggle": "Toggle navigation",
-        "navigationMenu": "Navigation menu"
-      },
       "Search": {
-        "openSearchPopup": "Open search popup",
-        "closeSearchPopup": "Close search popup",
-        "searchBar": "Search bar",
-        "photo": "Photo",
         "products": "Products",
         "categories": "Categories",
         "brands": "Brands",
         "noSearchResultsTitle": "Sorry, no results for \"{term}\".",
         "noSearchResultsSubtitle": "Please try another search.",
-        "searchPlaceholder": "Search...",
-        "clearSearch": "Clear search",
-        "processing": "Processing...",
-        "error": "Something went wrong. Please try again."
+        "somethingWentWrong": "Something went wrong. Please try again."
       }
     },
     "Footer": {
       "home": "Home",
-      "contact": "Contact Us",
-      "socialMediaLinks": "Social media links"
+      "contactUs": "Contact Us",
+      "socialMediaLinks": "Social media links",
+      "categories": "Categories",
+      "brands": "Brands",
+      "navigate": "Navigate"
     },
     "Subscribe": {
       "title": "Sign up for our newsletter",
@@ -622,81 +434,11 @@
       "description": "Stay up to date with the latest news and offers from our store.",
       "success": "Thank you for your interest! Newsletter feature is coming soon!"
     },
-    "Breadcrumb": {
-      "breadcrumb": "Breadcrumb"
-    },
-    "Compare": {
-      "compareButton": "Compare ({products})",
-      "productPhoto": "Photo",
-      "removeProductAriaLabel": "Remove {product} from compare list"
-    },
-    "SearchForm": {
-      "searchProducts": "Search for products",
-      "searchPlaceholder": "Search...",
-      "search": "Search",
-      "noSearchResults": "Sorry, no results for \"{term}\".",
-      "checkSpelling": "Please check the spelling or try another search."
-    },
-    "AddToCartButton": {
-      "addToCart": "Add to cart",
-      "outOfStock": "Out of stock",
-      "preorder": "Preorder",
-      "unavailable": "Unavailable",
-      "processing": "Processing..."
-    },
     "ProductCard": {
       "Compare": {
         "compare": "Compare",
         "remove": "Remove",
         "maxCompareLimit": "You've reached the maximum number of products for comparison. Remove a product to add a new one."
-      },
-      "AddToCart": {
-        "viewOptions": "View options",
-        "success": "{cartItems, plural, =1 {1 Item} other {# Items}} added to <cartLink> your cart</cartLink>"
-      }
-    },
-    "Slideshow": {
-      "slideshow": "Interactive slide show",
-      "slide": "Slide",
-      "previousSlide": "Previous slide",
-      "nextSlide": "Next slide",
-      "slideNo": "{n} of {total}",
-      "pause": "Pause slideshow",
-      "play": "Play slideshow"
-    },
-    "Pagination": {
-      "pagination": "Pagination",
-      "previous": "Previous",
-      "next": "Next"
-    },
-    "Carousel": {
-      "carousel": "Carousel",
-      "previousProducts": "Previous products",
-      "nextProducts": "Next products",
-      "slides": "Slides",
-      "goto": "Go to slide {n}"
-    },
-    "FormFields": {
-      "Validation": {
-        "address1": "Enter an address",
-        "address2": "Enter an address",
-        "city": "Enter a suburb / city",
-        "company": "Enter a company name",
-        "confirmPassword": "Passwords don't match",
-        "email": "Enter a valid email such as name@domain.com",
-        "empty": "This field can not be empty",
-        "firstName": "Enter your first name",
-        "lastName": "Enter your last name",
-        "numbersOnly": "Enter numbers only",
-        "numbersOverflow": "Entered value exceeds max range of {max}",
-        "numbersUnderflow": "Entered value falls short of min range of {min}",
-        "password": "Enter a password",
-        "phone": "Enter a phone number",
-        "postalCode": "Enter a zip / postcode"
-      },
-      "Counter": {
-        "increase": "Increase count",
-        "decrease": "Decrease count"
       }
     }
   }

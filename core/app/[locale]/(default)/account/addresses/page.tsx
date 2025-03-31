@@ -106,15 +106,15 @@ export default async function Addresses({ params, searchParams }: Props) {
     <AddressListSection
       addressAction={addressAction}
       addresses={addresses}
-      cancelLabel={t('cancelLabel')}
-      createLabel={t('createLabel')}
-      deleteLabel={t('deleteLabel')}
-      editLabel={t('editLabel')}
+      cancelLabel={t('cancel')}
+      createLabel={t('create')}
+      deleteLabel={t('delete')}
+      editLabel={t('edit')}
       fields={[...fields, { name: 'id', type: 'hidden' }]}
-      setDefaultLabel={t('setDefaultLabel')}
-      showAddFormLabel={t('showAddFormLabel')}
+      setDefaultLabel={t('setDefault')}
+      showAddFormLabel={t('cta')}
       title={t('title')}
-      updateLabel={t('updateLabel')}
+      updateLabel={t('update')}
     />
   );
 }

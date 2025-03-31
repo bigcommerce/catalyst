@@ -34,11 +34,11 @@ interface ContactPage extends WebPage {
 }
 
 const fieldMapping = {
-  fullname: 'fullNameLabel',
-  companyname: 'companyNameLabel',
-  phone: 'phoneLabel',
-  orderno: 'orderNoLabel',
-  rma: 'rmaLabel',
+  fullname: 'fullName',
+  companyname: 'companyName',
+  phone: 'phone',
+  orderno: 'orderNo',
+  rma: 'rma',
 } as const;
 
 type ContactField = keyof typeof fieldMapping;
@@ -123,7 +123,7 @@ async function getContactFields(id: string) {
   const emailField: Field = {
     id: 'email',
     name: 'email',
-    label: `${t('emailLabel')} *`,
+    label: `${t('email')} *`,
     type: 'email',
     required: true,
   };
@@ -131,7 +131,7 @@ async function getContactFields(id: string) {
   const commentsField: Field = {
     id: 'comments',
     name: 'comments',
-    label: `${t('commentsLabel')} *`,
+    label: `${t('comments')} *`,
     type: 'textarea',
     required: true,
   };
@@ -205,7 +205,7 @@ export default async function ContactPage({ params, searchParams }: Props) {
         <DynamicForm
           action={submitContactForm}
           fields={await getContactFields(id)}
-          submitLabel={t('submitFormText')}
+          submitLabel={t('cta')}
         />
       </div>
     </WebPageContent>

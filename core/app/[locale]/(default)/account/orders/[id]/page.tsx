@@ -18,7 +18,7 @@ export default async function Order(props: Props) {
 
   setRequestLocale(locale);
 
-  const t = await getTranslations('Account.OrderDetails');
+  const t = await getTranslations('Account.Orders.Details');
   const format = await getFormatter();
 
   const order = await getCustomerOrderDetails({
@@ -33,9 +33,9 @@ export default async function Order(props: Props) {
     <OrderDetailsSection
       order={orderDetailsTransformer(order, t, format)}
       prevHref={`/${locale}/account/orders`}
-      shipmentAddressLabel={t('shippingAddressLabel')}
-      shipmentMethodLabel={t('shippingMethodLabel')}
-      summaryTotalLabel={t('summaryTotalLabel')}
+      shipmentAddressLabel={t('shippingAddress')}
+      shipmentMethodLabel={t('shippingMethod')}
+      summaryTotalLabel={t('summaryTotal')}
       title={t('title', { orderNumber: id })}
     />
   );

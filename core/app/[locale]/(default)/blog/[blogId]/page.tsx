@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getFormatter, setRequestLocale } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { BlogPostContent, BlogPostContentBlogPost } from '@/vibes/soul/sections/blog-post-content';
@@ -70,6 +70,8 @@ async function getBlogPost(props: Props): Promise<BlogPostContentBlogPost> {
 }
 
 async function getBlogPostBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
+  const t = await getTranslations('Blog');
+
   const { blogId } = await props.params;
 
   const variables = cachedBlogPageDataVariables(blogId);
@@ -83,7 +85,7 @@ async function getBlogPostBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
 
   return [
     {
-      label: 'Home',
+      label: t('home'),
       href: '/',
     },
     {

@@ -31,7 +31,7 @@ interface Props {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
-  const t = await getTranslations({ locale, namespace: 'Login.ForgotPassword' });
+  const t = await getTranslations({ locale, namespace: 'Auth.Login.ForgotPassword' });
 
   return {
     title: t('title'),
@@ -43,7 +43,7 @@ export default async function Reset(props: Props) {
 
   setRequestLocale(locale);
 
-  const t = await getTranslations('Login.ForgotPassword');
+  const t = await getTranslations('Auth.Login.ForgotPassword');
 
   // TODO: add recaptcha token
   // const { data } = await client.fetch({
@@ -53,10 +53,6 @@ export default async function Reset(props: Props) {
   // const recaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
 
   return (
-    <ForgotPasswordSection
-      action={resetPassword}
-      subtitle={t('Form.description')}
-      title={t('heading')}
-    />
+    <ForgotPasswordSection action={resetPassword} subtitle={t('subtitle')} title={t('title')} />
   );
 }

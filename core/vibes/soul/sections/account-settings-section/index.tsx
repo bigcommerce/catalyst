@@ -9,6 +9,9 @@ interface Props {
   changePasswordTitle?: string;
   changePasswordAction: ChangePasswordAction;
   changePasswordSubmitLabel?: string;
+  currentPasswordLabel?: string;
+  newPasswordLabel?: string;
+  confirmPasswordLabel?: string;
 }
 
 export function AccountSettingsSection({
