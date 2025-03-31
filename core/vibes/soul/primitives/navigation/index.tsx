@@ -574,6 +574,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             <CurrencyForm
               action={currencyAction}
               activeCurrencyId={activeCurrencyId}
+              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
               currencies={currencies as [Currency, ...Currency[]]}
             />
           ) : null}
@@ -897,11 +898,13 @@ function CurrencyForm({
   action: CurrencyAction;
   currencies: [Currency, ...Currency[]];
 }) {
+  const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [lastResult, formAction] = useActionState(action, null);
   const activeCurrency = currencies.find((currency) => currency.id === activeCurrencyId);
 
   useEffect(() => {
+    // eslint-disable-next-line no-console
     if (lastResult?.error) console.log(lastResult.error);
   }, [lastResult?.error]);
 
@@ -940,6 +943,10 @@ function CurrencyForm({
 
                   formData.append('id', currency.id);
                   formAction(formData);
+
+                  // This is needed to refresh the Data Cache after the product has been added to the cart.
+                  // The cart id is not picked up after the first time the cart is created/updated.
+                  router.refresh();
                 });
               }}
             >

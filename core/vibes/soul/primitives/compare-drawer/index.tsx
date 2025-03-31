@@ -2,8 +2,6 @@
 
 import * as Portal from '@radix-ui/react-portal';
 import { ArrowRight, X } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
 import { useQueryState } from 'nuqs';
 import {
   createContext,
@@ -16,6 +14,8 @@ import {
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { toast } from '@/vibes/soul/primitives/toaster';
+import { Image } from '~/components/image';
+import { Link } from '~/components/link';
 
 import { compareParser } from './loader';
 
@@ -32,21 +32,19 @@ interface CompareDrawerContext {
 
 export const CompareDrawerContext = createContext<CompareDrawerContext | undefined>(undefined);
 
-export interface CompareDrawerProviderProps {
+export function CompareDrawerProvider({
+  children,
+  items,
+  maxItems,
+  maxCompareLimitMessage = "You've reached the maximum number of products for comparison. Remove a product to add a new one.",
+}: {
   children: ReactNode;
   items: CompareDrawerItem[];
   maxItems?: number;
   maxCompareLimitMessage?: string;
-}
-
-export function CompareDrawerProvider({
-  children,
-  items,
-  maxItems = 12,
-  maxCompareLimitMessage = "You've reached the maximum number of products for comparison. Remove a product to add a new one.",
-}: CompareDrawerProviderProps) {
+}) {
   useEffect(() => {
-    if (items.length >= maxItems) {
+    if (maxItems !== undefined && items.length >= maxItems) {
       toast.warning(maxCompareLimitMessage);
     }
   }, [items.length, maxItems, maxCompareLimitMessage]);
@@ -119,6 +117,7 @@ export interface CompareDrawerProps {
   removeLabel?: string;
 }
 
+// eslint-disable-next-line valid-jsdoc
 /**
  * This component supports various CSS variables for theming. Here's a comprehensive list, along
  * with their default values:
@@ -207,7 +206,7 @@ export function CompareDrawer({
             </div>
             <ButtonLink
               className="hidden @md:block"
-              href={`${href}?${paramName}=${params?.toString()}`}
+              href={`${href}?ids=${params?.toString()}`}
               size="medium"
               variant="primary"
             >

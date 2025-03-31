@@ -1,6 +1,6 @@
 import { SubmissionResult } from '@conform-to/react';
 
-import { Field, FieldGroup } from '@/vibes/soul/primitives/dynamic-form/schema';
+import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
 import { Address, DefaultAddressConfiguration } from '@/vibes/soul/sections/address-list-section';
 
 import { createAddress } from './create-address';

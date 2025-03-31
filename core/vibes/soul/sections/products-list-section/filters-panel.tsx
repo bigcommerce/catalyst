@@ -12,7 +12,7 @@ import { Checkbox } from '@/vibes/soul/form/checkbox';
 import { RangeInput } from '@/vibes/soul/form/range-input';
 import { ToggleGroup } from '@/vibes/soul/form/toggle-group';
 import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
-import { Accordion, Accordions } from '@/vibes/soul/primitives/accordions';
+import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
 import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Rating } from '@/vibes/soul/primitives/rating';
@@ -67,7 +67,9 @@ interface Props {
 }
 
 function getParamCountLabel(params: Record<string, string | null | string[]>, key: string) {
-  if (Array.isArray(params[key]) && params[key].length > 0) return `(${params[key].length})`;
+  const value = params[key];
+
+  if (Array.isArray(value) && value.length > 0) return `(${value.length})`;
 
   return '';
 }
@@ -129,7 +131,9 @@ export function FiltersPanelInner({
 
   if (filters.length === 0) return null;
 
-  const linkGroupFilters = filters.filter((filter) => filter.type === 'link-group');
+  const linkGroupFilters = filters.filter(
+    (filter): filter is LinkGroupFilter => filter.type === 'link-group',
+  );
 
   return (
     <div className={clsx('space-y-5', className)} data-pending={isPending ? true : null}>
@@ -150,7 +154,7 @@ export function FiltersPanelInner({
           </ul>
         </div>
       ))}
-      <Accordions
+      <Accordion
         onValueChange={(items) =>
           setAccordionItems((prevItems) =>
             prevItems.map((prevItem) => ({
@@ -168,7 +172,7 @@ export function FiltersPanelInner({
           switch (filter.type) {
             case 'toggle-group':
               return (
-                <Accordion
+                <AccordionItem
                   key={key}
                   title={`${filter.label}${getParamCountLabel(optimisticParams, filter.paramName)}`}
                   value={value}
@@ -192,12 +196,12 @@ export function FiltersPanelInner({
                     type="multiple"
                     value={optimisticParams[filter.paramName] ?? []}
                   />
-                </Accordion>
+                </AccordionItem>
               );
 
             case 'range':
               return (
-                <Accordion key={key} title={filter.label} value={value}>
+                <AccordionItem key={key} title={filter.label} value={value}>
                   <RangeInput
                     applyLabel={rangeFilterApplyLabel}
                     disabled={filter.disabled}
@@ -230,12 +234,12 @@ export function FiltersPanelInner({
                       max: optimisticParams[filter.maxParamName] ?? null,
                     }}
                   />
-                </Accordion>
+                </AccordionItem>
               );
 
             case 'rating':
               return (
-                <Accordion key={key} title={filter.label} value={value}>
+                <AccordionItem key={key} title={filter.label} value={value}>
                   <div className="space-y-3">
                     {[5, 4, 3, 2, 1].map((rating) => (
                       <Checkbox
@@ -266,14 +270,14 @@ export function FiltersPanelInner({
                       />
                     ))}
                   </div>
-                </Accordion>
+                </AccordionItem>
               );
 
             default:
               return null;
           }
         })}
-      </Accordions>
+      </Accordion>
 
       <Button
         onClick={() => {

@@ -21,7 +21,7 @@ import { SiteTheme } from '~/lib/makeswift/components/site-theme';
 import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 import { getToastNotification } from '../../lib/server-toast';
-import { CookieNotifications, Notifications } from '../notifications';
+import { CookieNotifications } from '../notifications';
 import { Providers } from '../providers';
 
 import '~/lib/makeswift/components';
@@ -64,6 +64,7 @@ export async function generateMetadata(): Promise<Metadata> {
     other: {
       platform: 'bigcommerce.catalyst',
       build_sha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? '',
+      store_hash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
     },
   };
 }
@@ -107,7 +108,6 @@ export default async function RootLayout({ params, children }: Props) {
           <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
         </head>
         <body>
-          <Notifications />
           <NextIntlClientProvider locale={locale} messages={messages}>
             <NuqsAdapter>
               <Providers>

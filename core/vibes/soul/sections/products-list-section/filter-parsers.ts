@@ -15,10 +15,21 @@ export function getFilterParsers(filters: Filter[]): Record<string, ParserBuilde
             [filter.maxParamName]: parseAsInteger,
           };
 
-        default:
+        case 'toggle-group':
           return {
             ...acc,
             [filter.paramName]: parseAsArrayOf(parseAsString),
+          };
+
+        case 'rating':
+          return {
+            ...acc,
+            [filter.paramName]: parseAsArrayOf(parseAsString),
+          };
+
+        default:
+          return {
+            ...acc,
           };
       }
     }, {});

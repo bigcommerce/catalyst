@@ -273,7 +273,67 @@
                     "notFound": "Le client n'existe pas"
                 }
             }
+        },
+        "Wishlists": {
+            "title": "Wish Lists",
+            "new": "New wish list",
+            "items": "{count, plural, =1 {1 item} other {# items}}",
+            "viewWishlist": "View list",
+            "noWishlists": "You don't have any wish lists",
+            "noWishlistsSubtitle": "Create a wishlist to save your favorite products.",
+            "noWishlistsCallToAction": "Create a wishlist",
+            "emptyWishlist": "You haven't added products to this wish list.",
+            "share": "Partager",
+            "shareSuccess": "Wish list has been shared successfully.",
+            "shareCopied": "Wish list public URL has been copied to your clipboard.",
+            "shareDisabled": "Your wish list must be public in order to share it.",
+            "makePublic": "Make public",
+            "makePrivate": "Make private",
+            "rename": "Rename",
+            "delete": "Supprimer",
+            "Visibility": {
+                "public": "Public",
+                "private": "Private"
+            },
+            "Modal": {
+                "cancel": "Annuler",
+                "close": "Close",
+                "copy": "Copy",
+                "create": "Créer",
+                "save": "Save",
+                "delete": "Supprimer",
+                "newTitle": "Create a new wish list",
+                "shareTitle": "Share {name}",
+                "renameTitle": "Rename {name}",
+                "deleteTitle": "Delete {name}",
+                "changeVisibilityPublicTitle": "Make {name} public?",
+                "changeVisibilityPrivateTitle": "Make {name} private?",
+                "makePublicContent": "Are you sure you want to make <bold>{name}</bold> public? This will allow others to see your wish list if they have the link.",
+                "makePrivateContent": "Are you sure you want to make <bold>{name}</bold> private? If you've shared your wish list with others, they will no longer be able to see it.",
+                "deleteContent": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone."
+            },
+            "Form": {
+                "nameLabel": "Name"
+            },
+            "Errors": {
+                "nameRequired": "Wish list name cannot be empty.",
+                "updateFailed": "Failed to update your wish list. Please try again.",
+                "deleteFailed": "Failed to delete your wish list. Please try again.",
+                "removeProductFailed": "Failed to remove the product from your wish list. Please try again.",
+                "unauthorized": "You are not authorized to perform this action. Please sign in and try again.",
+                "unexpected": "An unexpected error occurred. Please try again."
+            },
+            "Result": {
+                "createSuccess": "Wish list has been created successfully.",
+                "updateSuccess": "Wish list has been updated successfully.",
+                "deleteSuccess": "Wish list has been deleted successfully.",
+                "removeItemSuccess": "Item has been removed from your wish list."
+            }
         }
+    },
+    "PublicWishlist": {
+        "title": "Public Wish List",
+        "defaultName": "Public wish list"
     },
     "Blog": {
         "title": "Blog",
@@ -304,23 +364,10 @@
             "title": "Récapitulatif",
             "subTotal": "Sous-total",
             "discounts": "Remises",
-            "coupon": "Code promotionnel",
-            "couponCode": "Code promotionnel",
-            "addCoupon": "Ajouter un code promotionnel",
-            "enterCouponCode": "Saisissez votre code promotionnel",
-            "couponCodeRequired": "Veuillez saisir un code promotionnel.",
-            "couponCodeInvalid": "Le code de réduction saisi n'est pas valide.",
             "remove": "Supprimer",
             "spinnerText": "Retirer...",
-            "couponCodeRemoveFailed": "Une erreur s'est produite dans la suppression du code promotionnel. Veuillez réessayer.",
             "tax": "Taxes",
             "total": "Total",
-            "shipping": "Livraison",
-            "shippingCost": "Frais de port",
-            "handlingCost": "Frais de traitement :",
-            "add": "Ajouter",
-            "change": "Modifier",
-            "cancel": "Annuler",
             "errorMessage": "Le récapitulatif du panier est introuvable. Veuillez réessayer.",
             "CouponCode": {
                 "apply": "Appliquer",
@@ -328,6 +375,24 @@
                 "removeCouponCode": "Supprimez le code promotionnel",
                 "invalidCouponCode": "Veuillez saisir un code promotionnel valide",
                 "cartNotFound": "Aucun cookie cartId n’a été trouvé."
+            },
+            "Shipping": {
+                "shipping": "Livraison",
+                "add": "Ajouter",
+                "change": "Modifier",
+                "cancel": "Annuler",
+                "country": "Pays",
+                "city": "Ville",
+                "state": "État/Province",
+                "postalCode": "Code postal",
+                "updatedShippingOptions": "Mettre à jour les options de livraison",
+                "viewShippingOptions": "Voir les options de livraison",
+                "editAddress": "Modifier l'adresse",
+                "shippingOptions": "Options de livraison",
+                "updateShipping": "Mettre à jour l’expédition",
+                "addShipping": "Ajouter l’expédition",
+                "cartNotFound": "Aucun cookie cartId n’a été trouvé.",
+                "noShippingOptions": "Aucune option de livraison n'est disponible pour votre adresse"
             }
         },
         "ShippingInfo": {
@@ -384,26 +449,21 @@
         }
     },
     "Compare": {
-        "title": "Comparer",
-        "heading": "Comparaison de {quantity, plural, =1 {1 produit} other {# produits}}",
-        "nothingToCompare": "Il n'y a rien à comparer !",
-        "helpingText": "Vous avez réussi à arriver jusqu'ici, mais vous devez d'abord sélectionner quelques produits.",
-        "Table": {
-            "caption": "Comparaison de produits",
-            "noImage": "Aucune image",
-            "viewOptions": "Afficher les options",
-            "description": "Description",
-            "rating": "Note",
-            "availability": "Disponibilité",
-            "Prices": {
-                "msrp": "PDSF",
-                "was": "était",
-                "now": "maintenant"
-            }
-        },
-        "AddToCart": {
-            "success": "<cartLink>{cartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>"
-        }
+        "title": "Compare products",
+        "addToCart": "Ajouter au panier",
+        "next": "Prochains produits",
+        "previous": "Produits précédents",
+        "noProductsToCompare": "No products to compare",
+        "sku": "SKU",
+        "weight": "Poids",
+        "description": "Description",
+        "noDescription": "There is no description available.",
+        "rating": "Note",
+        "noRatings": "There are no reviews.",
+        "otherDetails": "Other details",
+        "noOtherDetails": "There are no other details.",
+        "viewOptions": "Afficher les options",
+        "successMessage": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>"
     },
     "Product": {
         "ProductDetails": {
@@ -413,6 +473,7 @@
             "successMessage": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
             "missingCart": "Panier introuvable. Veuillez réessayer plus tard !",
             "unknownError": "Erreur inconnue. Veuillez réessayer plus tard.",
+            "variantRequiredError": "This product requires options to be selected in order to add to the cart.",
             "increaseNumber": "Augmenter le nombre",
             "decreaseNumber": "Réduire le nombre",
             "thumbnail": "Voir le numéro de l’image",
@@ -583,7 +644,9 @@
         },
         "ProductCard": {
             "Compare": {
-                "compare": "Comparer"
+                "compare": "Comparer",
+                "remove": "Supprimer",
+                "maxCompareLimit": "You've reached the maximum number of products for comparison. Remove a product to add a new one."
             },
             "AddToCart": {
                 "viewOptions": "Afficher les options",

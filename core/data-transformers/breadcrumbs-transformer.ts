@@ -5,7 +5,7 @@ import {
   BreadcrumbsCategoryFragment,
   BreadcrumbsWebPageFragment,
 } from '~/components/breadcrumbs/fragment';
-import { Breadcrumb } from '~/vibes/soul/primitives/breadcrumbs';
+import { Breadcrumb } from '~/vibes/soul/sections/breadcrumbs';
 
 type BreadcrumbsResult =
   | ResultOf<typeof BreadcrumbsWebPageFragment>
@@ -14,7 +14,7 @@ type BreadcrumbsResult =
 export const breadcrumbsTransformer = (breadcrumbs: BreadcrumbsResult['breadcrumbs']) => {
   return removeEdgesAndNodes(breadcrumbs).reduce<Breadcrumb[]>((acc, crumb) => {
     if (crumb.path) {
-      return [...acc, { label: crumb.name, href: crumb.path }];
+      return [...acc, { label: crumb.name, href: crumb.path, id: crumb.path }];
     }
 
     return acc;

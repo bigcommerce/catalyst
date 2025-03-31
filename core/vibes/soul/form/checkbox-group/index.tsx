@@ -1,10 +1,9 @@
 import { clsx } from 'clsx';
 import * as React from 'react';
 
+import { Checkbox } from '@/vibes/soul/form/checkbox';
 import { FieldError } from '@/vibes/soul/form/field-error';
 import { Label } from '@/vibes/soul/form/label';
-
-import { Checkbox } from '../checkbox';
 
 interface Option {
   value: string;
@@ -21,6 +20,7 @@ interface Props {
   name?: string;
   value: string[];
   onValueChange: (value: string[]) => void;
+  colorScheme?: 'light' | 'dark';
 }
 
 export function CheckboxGroup({
@@ -31,16 +31,22 @@ export function CheckboxGroup({
   name,
   value,
   onValueChange,
+  colorScheme,
 }: Props) {
   const id = React.useId();
 
   return (
     <div className={clsx('space-y-2', className)}>
-      {label !== undefined && label !== '' && <Label id={id}>{label}</Label>}
+      {label !== undefined && label !== '' && (
+        <Label colorScheme={colorScheme} id={id}>
+          {label}
+        </Label>
+      )}
       <div aria-labelledby={id} className="space-y-2">
         {options.map((option) => (
           <Checkbox
             checked={value.includes(option.value)}
+            colorScheme={colorScheme}
             key={option.value}
             label={option.label}
             name={name}

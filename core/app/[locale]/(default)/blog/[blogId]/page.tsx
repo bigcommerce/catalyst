@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 import { getFormatter } from 'next-intl/server';
 import { cache } from 'react';
 
-import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
 import { BlogPostContent, BlogPostContentBlogPost } from '@/vibes/soul/sections/blog-post-content';
+import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 
 import { getBlogPageData } from './page-data';
 

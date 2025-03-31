@@ -1,6 +1,6 @@
 import { PropsWithChildren } from 'react';
 
-import { auth } from '~/auth';
+import { isLoggedIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
 
 interface Props extends PropsWithChildren {
@@ -8,10 +8,10 @@ interface Props extends PropsWithChildren {
 }
 
 export default async function Layout({ children, params }: Props) {
-  const session = await auth();
+  const loggedIn = await isLoggedIn();
   const { locale } = await params;
 
-  if (session) {
+  if (loggedIn) {
     redirect({ href: '/account/orders', locale });
   }
 

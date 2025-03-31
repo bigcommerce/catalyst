@@ -12,17 +12,14 @@ import {
 } from '@makeswift/runtime/controls';
 import { ComponentPropsWithoutRef } from 'react';
 
-import {
-  ProductsCarousel,
-  ProductsCarouselSkeleton,
-} from '@/vibes/soul/primitives/products-carousel';
+import { ProductCarousel, ProductsCarouselSkeleton } from '@/vibes/soul/sections/product-carousel';
 import { runtime } from '~/lib/makeswift/runtime';
 
 import { searchProducts } from '../../utils/search-products';
 import { useProducts } from '../../utils/use-products';
 
 type MSProductsCarouselProps = Omit<
-  ComponentPropsWithoutRef<typeof ProductsCarousel>,
+  ComponentPropsWithoutRef<typeof ProductCarousel>,
   'products'
 > & {
   className: string;
@@ -58,7 +55,7 @@ runtime.registerComponent(
     }
 
     return (
-      <ProductsCarousel
+      <ProductCarousel
         {...props}
         className={className}
         hideOverflow={hideOverflow}

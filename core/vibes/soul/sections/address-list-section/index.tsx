@@ -6,10 +6,10 @@ import { startTransition, useActionState, useEffect, useOptimistic, useState } f
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
+import { DynamicForm } from '@/vibes/soul/form/dynamic-form';
+import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { Button } from '@/vibes/soul/primitives/button';
-import { DynamicForm } from '@/vibes/soul/primitives/dynamic-form';
-import { Field, FieldGroup } from '@/vibes/soul/primitives/dynamic-form/schema';
 import { Spinner } from '@/vibes/soul/primitives/spinner';
 import { toast } from '@/vibes/soul/primitives/toaster';
 

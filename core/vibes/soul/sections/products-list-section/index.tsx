@@ -2,11 +2,12 @@ import { Sliders } from 'lucide-react';
 import { Suspense } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
 import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
+import { Product } from '@/vibes/soul/primitives/product-card';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
+import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
+import { ProductList } from '@/vibes/soul/sections/product-list';
 import { Filter, FiltersPanel } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import {
   Sorting,
@@ -18,13 +19,14 @@ interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;
   title?: Streamable<string | null>;
   totalCount: Streamable<number>;
-  products: Streamable<ListProduct[]>;
+  products: Streamable<Product[]>;
   filters: Streamable<Filter[]>;
   sortOptions: Streamable<SortOption[]>;
-  compareProducts?: Streamable<ListProduct[] | null>;
+  compareProducts?: Streamable<Product[]>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
-  compareAction?: React.ComponentProps<'form'>['action'];
+  compareHref?: string;
   compareLabel?: Streamable<string>;
+  showCompare?: Streamable<boolean>;
   filterLabel?: string;
   filtersPanelTitle?: Streamable<string>;
   resetFiltersLabel?: Streamable<string>;
@@ -34,9 +36,12 @@ interface Props {
   sortParamName?: string;
   sortDefaultValue?: string;
   compareParamName?: string;
-  emptyStateSubtitle?: Streamable<string | null>;
-  emptyStateTitle?: Streamable<string | null>;
+  emptyStateSubtitle?: Streamable<string>;
+  emptyStateTitle?: Streamable<string>;
   placeholderCount?: number;
+  removeLabel?: Streamable<string>;
+  maxItems?: number;
+  maxCompareLimitMessage?: Streamable<string>;
 }
 
 export function ProductsListSection({
@@ -48,11 +53,12 @@ export function ProductsListSection({
   sortOptions: streamableSortOptions,
   sortDefaultValue,
   filters,
-  compareAction,
+  compareHref,
   compareLabel,
+  showCompare,
   paginationInfo,
   filterLabel = 'Filters',
-  filtersPanelTitle: streamableFiltersPanelTitle,
+  filtersPanelTitle: streamableFiltersPanelTitle = 'Filters',
   resetFiltersLabel,
   rangeFilterApplyLabel,
   sortLabel: streamableSortLabel,
@@ -62,6 +68,9 @@ export function ProductsListSection({
   emptyStateSubtitle,
   emptyStateTitle,
   placeholderCount = 8,
+  removeLabel,
+  maxItems,
+  maxCompareLimitMessage,
 }: Props) {
   return (
     <div className="group/products-list-section @container">
@@ -120,7 +129,7 @@ export function ProductsListSection({
                   </SidePanel.Trigger>
                   <Stream value={streamableFiltersPanelTitle}>
                     {(filtersPanelTitle) => (
-                      <SidePanel.Content title={<h2>{filtersPanelTitle}</h2>}>
+                      <SidePanel.Content title={filtersPanelTitle}>
                         <FiltersPanel
                           filters={filters}
                           paginationInfo={paginationInfo}
@@ -150,16 +159,19 @@ export function ProductsListSection({
           </aside>
 
           <div className="flex-1 group-has-[[data-pending]]/products-list-section:animate-pulse">
-            <ProductsList
-              compareAction={compareAction}
+            <ProductList
+              compareHref={compareHref}
               compareLabel={compareLabel}
               compareParamName={compareParamName}
               compareProducts={compareProducts}
               emptyStateSubtitle={emptyStateSubtitle}
               emptyStateTitle={emptyStateTitle}
+              maxCompareLimitMessage={maxCompareLimitMessage}
+              maxItems={maxItems}
               placeholderCount={placeholderCount}
               products={products}
-              showCompare
+              removeLabel={removeLabel}
+              showCompare={showCompare}
             />
 
             {paginationInfo && <CursorPagination info={paginationInfo} />}

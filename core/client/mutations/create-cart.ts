@@ -17,10 +17,9 @@ const CreateCartMutation = graphql(`
 `);
 
 type Variables = VariablesOf<typeof CreateCartMutation>;
-type CreateCartInput = Variables['createCartInput'];
-type LineItems = CreateCartInput['lineItems'];
+export type CreateCartInput = Variables['createCartInput'];
 
-export const createCart = async (cartItems: LineItems) => {
+export const createCart = async (data: CreateCartInput) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const currencyCode = await getPreferredCurrencyCode();
 
@@ -28,7 +27,7 @@ export const createCart = async (cartItems: LineItems) => {
     document: CreateCartMutation,
     variables: {
       createCartInput: {
-        lineItems: cartItems,
+        ...data,
         currencyCode,
       },
     },

@@ -1,8 +1,8 @@
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Accordion, Accordions } from '@/vibes/soul/primitives/accordions';
-import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
+import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
 import { Rating } from '@/vibes/soul/primitives/rating';
+import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
 
 import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
@@ -39,7 +39,7 @@ interface Props<F extends Field> {
   ctaDisabled?: Streamable<boolean | null>;
   prefetch?: boolean;
   thumbnailLabel?: string;
-  additionalInformationLabel?: string;
+  additionaInformationTitle?: string;
 }
 
 export function ProductDetail<F extends Field>({
@@ -54,7 +54,7 @@ export function ProductDetail<F extends Field>({
   ctaDisabled: streamableCtaDisabled,
   prefetch,
   thumbnailLabel,
-  additionalInformationLabel = 'Additional information',
+  additionaInformationTitle = 'Additional information',
 }: Props<F>) {
   return (
     <section className="@container">
@@ -139,17 +139,21 @@ export function ProductDetail<F extends Field>({
                     }
                   </Stream>
 
-                  <h2 className="sr-only">{additionalInformationLabel}</h2>
+                  <h2 className="sr-only">{additionaInformationTitle}</h2>
                   <Stream fallback={<ProductAccordionsSkeleton />} value={product.accordions}>
                     {(accordions) =>
                       accordions && (
-                        <Accordions className="border-t border-contrast-100 pt-4" type="multiple">
+                        <Accordion className="border-t border-contrast-100 pt-4" type="multiple">
                           {accordions.map((accordion, index) => (
-                            <Accordion key={index} title={accordion.title} value={index.toString()}>
+                            <AccordionItem
+                              key={index}
+                              title={accordion.title}
+                              value={index.toString()}
+                            >
                               {accordion.content}
-                            </Accordion>
+                            </AccordionItem>
                           ))}
-                        </Accordions>
+                        </Accordion>
                       )
                     }
                   </Stream>
