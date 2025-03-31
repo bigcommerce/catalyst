@@ -13,9 +13,9 @@ import { redirect } from '~/i18n/routing';
 import { getCartId } from '~/lib/cart';
 
 const CheckoutRedirectMutation = graphql(`
-  mutation CheckoutRedirectMutation($cartId: String!) {
+  mutation CheckoutRedirectMutation($cartId: String!, $locale: String!) {
     cart {
-      createCartRedirectUrls(input: { cartEntityId: $cartId }) {
+      createCartRedirectUrls(input: { cartEntityId: $cartId, locale: $locale }) {
         redirectUrls {
           redirectedCheckoutUrl
         }
@@ -46,7 +46,7 @@ export const redirectToCheckout = async (
   try {
     const { data } = await client.fetch({
       document: CheckoutRedirectMutation,
-      variables: { cartId },
+      variables: { cartId, locale },
       fetchOptions: { cache: 'no-store' },
       customerAccessToken,
     });
