@@ -7,6 +7,11 @@ export const buildConfigSchema = z.object({
       isDefault: z.boolean(),
     }),
   ),
+  urls: z.object({
+    vanityUrl: z.string(),
+    cdnUrl: z.string().default('cdn11.bigcommerce.com'),
+    checkoutUrl: z.string(),
+  }),
 });
 
 export type BuildConfigSchema = z.infer<typeof buildConfigSchema>;
