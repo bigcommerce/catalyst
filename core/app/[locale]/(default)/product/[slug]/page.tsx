@@ -6,11 +6,11 @@ import { cache } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
-import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { ProductDetail } from '~/lib/makeswift/components/product-detail';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
@@ -114,6 +114,7 @@ const getProduct = async (props: Props) => {
     id: product.entityId.toString(),
     title: product.name,
     description: <div dangerouslySetInnerHTML={{ __html: product.description }} />,
+    plainTextDescription: product.plainTextDescription,
     href: product.path,
     images: product.defaultImage
       ? [
@@ -250,6 +251,7 @@ export default async function Product(props: Props) {
         incrementLabel={t('ProductDetails.increaseQuantity')}
         prefetch={true}
         product={Streamable.from(() => getProduct(props))}
+        productId={productId}
         quantityLabel={t('ProductDetails.quantity')}
         thumbnailLabel={t('ProductDetails.thumbnail')}
       />

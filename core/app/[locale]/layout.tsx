@@ -1,7 +1,9 @@
+import { DraftModeScript } from '@makeswift/runtime/next/server';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
 import type { Metadata } from 'next';
+import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages, setRequestLocale } from 'next-intl/server';
@@ -15,10 +17,14 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { routing } from '~/i18n/routing';
+import { SiteTheme } from '~/lib/makeswift/components/site-theme';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
 
 import { getToastNotification } from '../../lib/server-toast';
 import { CookieNotifications } from '../notifications';
 import { Providers } from '../providers';
+
+import '~/lib/makeswift/components';
 
 const RootLayoutMetadataQuery = graphql(`
   query RootLayoutMetadataQuery {
@@ -95,21 +101,27 @@ export default async function RootLayout({ params, children }: Props) {
   const messages = await getMessages();
 
   return (
-    <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
-      <body>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <NuqsAdapter>
-            <Providers>
-              {toastNotificationCookieData && (
-                <CookieNotifications {...toastNotificationCookieData} />
-              )}
-              {children}
-            </Providers>
-          </NuqsAdapter>
-        </NextIntlClientProvider>
-        <VercelComponents />
-      </body>
-    </html>
+    <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
+      <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+        <head>
+          <SiteTheme />
+          <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
+        </head>
+        <body>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <NuqsAdapter>
+              <Providers>
+                {toastNotificationCookieData && (
+                  <CookieNotifications {...toastNotificationCookieData} />
+                )}
+                {children}
+              </Providers>
+            </NuqsAdapter>
+          </NextIntlClientProvider>
+          <VercelComponents />
+        </body>
+      </html>
+    </MakeswiftProvider>
   );
 }
 
