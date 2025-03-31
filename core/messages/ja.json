@@ -275,7 +275,7 @@
             }
         },
         "Wishlists": {
-            "title": "Wish Lists",
+            "title": "ウィッシュリスト",
             "new": "New wish list",
             "items": "{count, plural, =1 {1 item} other {# items}}",
             "viewWishlist": "View list",
@@ -289,18 +289,18 @@
             "shareDisabled": "Your wish list must be public in order to share it.",
             "makePublic": "Make public",
             "makePrivate": "Make private",
-            "rename": "Rename",
+            "rename": "名前の変更",
             "delete": "削除する",
             "Visibility": {
-                "public": "Public",
-                "private": "Private"
+                "public": "公式",
+                "private": "プライベート"
             },
             "Modal": {
                 "cancel": "キャンセル",
-                "close": "Close",
-                "copy": "Copy",
+                "close": "閉じる",
+                "copy": "コピー",
                 "create": "作成",
-                "save": "Save",
+                "save": "保存",
                 "delete": "削除する",
                 "newTitle": "Create a new wish list",
                 "shareTitle": "Share {name}",
@@ -313,7 +313,7 @@
                 "deleteContent": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone."
             },
             "Form": {
-                "nameLabel": "Name"
+                "nameLabel": "名前"
             },
             "Errors": {
                 "nameRequired": "Wish list name cannot be empty.",
@@ -459,7 +459,7 @@
         "description": "説明",
         "noDescription": "There is no description available.",
         "rating": "評価",
-        "noRatings": "There are no reviews.",
+        "noRatings": "レビューがありません。",
         "otherDetails": "Other details",
         "noOtherDetails": "There are no other details.",
         "viewOptions": "View options",
