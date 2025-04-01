@@ -38,6 +38,7 @@ export interface ProductDetailProps<F extends Field> {
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;
+  emptySelectPlaceholder?: string;
   ctaLabel?: Streamable<string | null>;
   ctaDisabled?: Streamable<boolean | null>;
   prefetch?: boolean;
@@ -68,6 +69,7 @@ export function ProductDetail<F extends Field>({
   quantityLabel,
   incrementLabel,
   decrementLabel,
+  emptySelectPlaceholder,
   ctaLabel: streamableCtaLabel,
   ctaDisabled: streamableCtaDisabled,
   prefetch,
@@ -146,6 +148,7 @@ export function ProductDetail<F extends Field>({
                           ctaDisabled={ctaDisabled ?? undefined}
                           ctaLabel={ctaLabel ?? undefined}
                           decrementLabel={decrementLabel}
+                          emptySelectPlaceholder={emptySelectPlaceholder}
                           fields={fields}
                           incrementLabel={incrementLabel}
                           prefetch={prefetch}
