@@ -36,7 +36,7 @@ const searchParamsCache = createSearchParamsCache({
 
 async function listWishlists(
   searchParamsPromise: Promise<SearchParams>,
-  t: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
 ): Promise<Wishlist[]> {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
   const formatter = await getFormatter();

@@ -34,7 +34,7 @@ export async function changePassword(
   const submission = parseWithZod(formData, { schema });
 
   if (submission.status !== 'success') {
-    return { lastResult: submission.reply({ formErrors: [t('Form.error')] }) };
+    return { lastResult: submission.reply({ formErrors: [t('Errors.error')] }) };
   }
 
   try {

@@ -144,7 +144,7 @@ export default async function Cart() {
               : null,
             totalCouponDiscount > 0
               ? {
-                  label: t('CheckoutSummary.coupon'),
+                  label: t('CheckoutSummary.CouponCode.couponCode'),
                   value: `-${format.number(totalCouponDiscount, {
                     style: 'currency',
                     currency: cart.currencyCode,

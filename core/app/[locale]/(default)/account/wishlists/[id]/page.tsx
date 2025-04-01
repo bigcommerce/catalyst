@@ -33,8 +33,8 @@ const searchParamsCache = createSearchParamsCache({
 
 async function getWishlist(
   id: string,
-  t: ExistingResultType<typeof getTranslations>,
-  pt: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
+  pt: ExistingResultType<typeof getTranslations<'Product.ProductDetails'>>,
   searchParamsPromise: Promise<SearchParams>,
 ): Promise<Wishlist> {
   const entityId = Number(id);
