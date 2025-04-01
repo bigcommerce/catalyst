@@ -36,6 +36,3 @@ export const useB2bShoppingListEnabled = () => {
   
   return isAddToShoppingListEnabled
 }
-
-// generate useB2bShoppingListEnabled
-
