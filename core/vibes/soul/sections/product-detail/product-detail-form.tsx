@@ -40,7 +40,7 @@ interface State<F extends Field> {
 
 export type ProductDetailFormAction<F extends Field> = Action<State<F>, FormData>;
 
-interface Props<F extends Field> {
+export interface ProductDetailFormProps<F extends Field> {
   fields: F[];
   action: ProductDetailFormAction<F>;
   productId: string;
@@ -62,7 +62,7 @@ export function ProductDetailForm<F extends Field>({
   decrementLabel = 'Decrease quantity',
   ctaDisabled = false,
   prefetch = false,
-}: Props<F>) {
+}: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -165,7 +165,7 @@ export function ProductDetailForm<F extends Field>({
   );
 }
 
-function SubmitButton({ children, disabled }: { children: React.ReactNode; disabled?: boolean }) {
+function SubmitButton({ children, disabled }: { children: ReactNode; disabled?: boolean }) {
   const { pending } = useFormStatus();
 
   return (
