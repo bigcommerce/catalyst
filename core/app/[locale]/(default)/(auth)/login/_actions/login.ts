@@ -15,6 +15,7 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
   const locale = await getLocale();
   const t = await getTranslations('Login');
   const cartId = await getCartId();
+  const redirectTo = formData.get('redirectTo')?.toString() || '/account/orders';
 
   const submission = parseWithZod(formData, { schema });
 
@@ -53,5 +54,5 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
     return submission.reply({ formErrors: [t('Form.somethingWentWrong')] });
   }
 
-  return redirect({ href: '/account/orders', locale });
+  return redirect({ href: redirectTo, locale });
 };

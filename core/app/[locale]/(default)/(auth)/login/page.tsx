@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { SubmissionResult } from '@conform-to/react';
 import { getTranslations } from 'next-intl/server';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
@@ -15,14 +16,28 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function Login() {
+export default async function Login({
+  searchParams,
+}: {
+  searchParams: { redirectTo?: string };
+}) {
   const t = await getTranslations('Login');
+  const { redirectTo = '/account/orders' } = searchParams;
+
+  // Create a new action with the redirectTo parameter bound to it
+  async function loginWithRedirect(lastResult: SubmissionResult | null, formData: FormData) {
+    'use server';
+    
+    // Add the redirectTo parameter to the formData
+    formData.append('redirectTo', redirectTo);
+    return login(lastResult, formData);
+  }
 
   return (
     <>
       <ForceRefresh />
       <SignInSection
-        action={login}
+        action={loginWithRedirect}
         forgotPasswordHref="/login/forgot-password"
         forgotPasswordLabel={t('Form.forgotPassword')}
         submitLabel={t('Form.logIn')}
