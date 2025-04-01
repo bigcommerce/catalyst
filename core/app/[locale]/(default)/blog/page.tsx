@@ -47,13 +47,13 @@ async function listBlogPosts(searchParamsPromise: Promise<SearchParams>) {
   return posts;
 }
 
-async function getEmptyStateTitle(): Promise<string | null> {
+async function getEmptyStateTitle(): Promise<string> {
   const t = await getTranslations('Blog.Empty');
 
   return t('title');
 }
 
-async function getEmptyStateSubtitle(): Promise<string | null> {
+async function getEmptyStateSubtitle(): Promise<string> {
   const t = await getTranslations('Blog.Empty');
 
   return t('subtitle');

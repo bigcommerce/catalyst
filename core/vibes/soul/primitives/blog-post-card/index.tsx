@@ -1,39 +1,62 @@
 import { clsx } from 'clsx';
 
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
-export interface BlogPostCardBlogPost {
-  id: string;
+export interface BlogPost {
+  title: string;
   author?: string | null;
   content: string;
   date: string;
   image?: {
     src: string;
     alt: string;
-  };
+  } | null;
   href: string;
-  title: string;
 }
 
-interface Props {
-  blogPost: BlogPostCardBlogPost;
+export interface BlogPostCardProps extends BlogPost {
   className?: string;
 }
 
-export function BlogPostCard({ blogPost, className }: Props) {
-  const { author, content, date, href, image, title } = blogPost;
-
+// eslint-disable-next-line valid-jsdoc
+/**
+ * This component supports various CSS variables for theming. Here's a comprehensive list, along
+ * with their default values:
+ *
+ * ```css
+ * :root {
+ *   --blog-post-card-focus: hsl(var(--primary));
+ *   --blog-post-card-image-background: hsl(var(--contrast-100));
+ *   --blog-post-card-empty-text: hsl(var(--foreground)/15%);
+ *   --blog-post-card-title-text: hsl(var(--foreground));
+ *   --blog-post-card-content-text: hsl(var(--contrast-400));
+ *   --blog-post-card-author-date-text: hsl(var(--foreground));
+ *   --blog-post-card-font-family: var(--font-family-body);
+ *   --blog-post-card-summary-text: hsl(var(--contrast-400));
+ *   --blog-post-card-author-date-text: hsl(var(--foreground));
+ * }
+ * ```
+ */
+export function BlogPostCard({
+  author,
+  content,
+  date,
+  href,
+  image,
+  title,
+  className,
+}: BlogPostCardProps) {
   return (
-    <Link
+    <article
       className={clsx(
-        'group max-w-full rounded-b-lg rounded-t-2xl text-foreground ring-primary ring-offset-4 @container focus:outline-0 focus-visible:ring-2',
+        'group relative w-full max-w-md font-[family-name:var(--blog-post-card-font-family,var(--font-family-body))] @container',
         className,
       )}
-      href={href}
     >
-      <div className="relative mb-4 aspect-[4/3] w-full overflow-hidden rounded-2xl bg-contrast-100">
-        {image?.src != null && image.src !== '' ? (
+      <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-[var(--blog-post-card-image-background,hsl(var(--contrast-100)))]">
+        {image != null ? (
           <Image
             alt={image.alt}
             className="object-cover transition-transform duration-500 ease-out group-hover:scale-110"
@@ -42,15 +65,18 @@ export function BlogPostCard({ blogPost, className }: Props) {
             src={image.src}
           />
         ) : (
-          <div className="p-4 text-5xl font-bold leading-none tracking-tighter text-foreground/15">
+          <div className="p-4 text-5xl font-bold leading-none tracking-tighter text-[var(--blog-post-card-empty-text,hsl(var(--foreground)/15%))]">
             {title}
           </div>
         )}
       </div>
-
-      <div className="text-lg font-medium leading-snug">{title}</div>
-      <p className="mb-3 mt-1.5 line-clamp-3 text-sm font-normal text-contrast-400">{content}</p>
-      <div className="text-sm">
+      <h5 className="mt-4 text-lg font-medium leading-snug text-[var(--blog-post-card-title-text,hsl(var(--foreground)))]">
+        {title}
+      </h5>
+      <p className="mt-1.5 line-clamp-3 text-sm font-normal text-[var(--blog-post-card-content-text,hsl(var(--contrast-400)))]">
+        {content}
+      </p>
+      <div className="mt-3 text-sm text-[var(--blog-post-card-author-date-text,hsl(var(--foreground)))]">
         <time dateTime={date}>
           {new Date(date).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -58,36 +84,52 @@ export function BlogPostCard({ blogPost, className }: Props) {
             day: 'numeric',
           })}
         </time>
-        {date !== '' && author != null && author !== '' && (
-          <span className="after:mx-2 after:content-['•']" />
+        {author != null && (
+          <>
+            <span className="after:mx-2 after:content-['•']" />
+            <span>{author}</span>
+          </>
         )}
-        {author != null && author !== '' && <span>{author}</span>}
       </div>
-    </Link>
+      <Link
+        className={clsx(
+          'absolute inset-0 rounded-b-lg rounded-t-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--blog-post-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
+        )}
+        href={href}
+      >
+        <span className="sr-only">View article</span>
+      </Link>
+    </article>
   );
 }
 
-export function BlogPostCardSkeleton({ className }: { className?: string }) {
+export function BlogPostCardSkeleton({
+  aspectRatio = '4:3',
+  className,
+}: {
+  aspectRatio?: '5:6' | '3:4' | '4:3' | '1:1';
+  className?: string;
+}) {
   return (
-    <div className={clsx('flex max-w-md animate-pulse flex-col gap-2 rounded-xl', className)}>
-      {/* Image */}
-      <div className="aspect-[4/3] overflow-hidden rounded-xl bg-contrast-100" />
-
-      {/* Title */}
-      <div className="h-4 w-24 rounded-lg bg-contrast-100" />
-
-      {/* Content */}
-      <div className="h-3 w-full rounded-lg bg-contrast-100" />
-      <div className="h-3 w-full rounded-lg bg-contrast-100" />
-      <div className="h-3 w-1/2 rounded-lg bg-contrast-100" />
-
-      <div className="flex flex-wrap items-center">
-        {/* Date */}
-        <div className="h-4 w-16 rounded-lg bg-contrast-100" />
-        <span className="after:mx-2 after:text-contrast-100 after:content-['•']" />
-        {/* Author */}
-        <div className="h-4 w-20 rounded-lg bg-contrast-100" />
+    <div className={clsx('w-full max-w-md', className)}>
+      <Skeleton.Box
+        className={clsx(
+          'mb-4 w-full rounded-2xl',
+          {
+            '5:6': 'aspect-[5/6]',
+            '3:4': 'aspect-[3/4]',
+            '4:3': 'aspect-[4/3]',
+            '1:1': 'aspect-square',
+          }[aspectRatio],
+        )}
+      />
+      <Skeleton.Text characterCount={25} className="mt-4 rounded text-lg" />
+      <div className="mt-1.5">
+        <Skeleton.Text characterCount="full" className="rounded text-sm" />
+        <Skeleton.Text characterCount="full" className="rounded text-sm" />
+        <Skeleton.Text characterCount={15} className="rounded text-sm" />
       </div>
+      <Skeleton.Text characterCount={10} className="mt-3 rounded text-sm" />
     </div>
   );
 }
