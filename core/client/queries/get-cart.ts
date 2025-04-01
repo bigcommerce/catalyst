@@ -13,6 +13,17 @@ const MoneyFieldFragment = graphql(`
   }
 `);
 
+const CheckoutCouponFieldsFragment = graphql(`
+  fragment CheckoutCouponFieldsFragment on CheckoutCoupon {
+    entityId
+    code
+    couponType
+    discountedAmount {
+      ...MoneyFieldFragment
+    }
+  }
+`);
+
 const GetCartQuery = graphql(
   `
     query GetCartQuery($cartId: String) {
@@ -21,8 +32,56 @@ const GetCartQuery = graphql(
           entityId
           isTaxIncluded
           currencyCode
+          id
+          updatedAt {
+            utc
+          }
+          createdAt {
+            utc
+          }
+          discounts {
+            entityId
+            discountedAmount {
+              currencyCode
+              value
+            }
+          }
+          baseAmount {
+            currencyCode
+            value
+          }
           lineItems {
             totalQuantity
+            customItems {
+              entityId
+              extendedListPrice {
+                value
+              }
+              listPrice {
+                value
+              }
+              name
+              quantity
+              sku
+            }
+            giftCertificates {
+              amount {
+                value
+              }
+              recipient {
+                email
+                name
+              }
+              sender {
+                email
+                name
+              }
+              theme
+              entityId
+              isTaxable
+              message
+              name
+            }
             physicalItems {
               name
               brand
@@ -31,12 +90,45 @@ const GetCartQuery = graphql(
               quantity
               productEntityId
               variantEntityId
+              couponAmount {
+                value
+                currencyCode
+              }
+              discountedAmount {
+                value
+              }
+              discounts {
+                discountedAmount {
+                  value
+                }
+                entityId
+              }
               extendedListPrice {
                 ...MoneyFieldFragment
               }
               extendedSalePrice {
                 ...MoneyFieldFragment
               }
+              giftWrapping {
+                amount {
+                  value
+                }
+                message
+                name
+              }
+              listPrice {
+                value
+              }
+              originalPrice {
+                value
+              }
+              salePrice {
+                value
+              }
+              sku
+              url
+              isShippingRequired
+              isTaxable
               selectedOptions {
                 __typename
                 entityId
@@ -115,16 +207,21 @@ const GetCartQuery = graphql(
             ...MoneyFieldFragment
           }
         }
+        checkout(entityId: $cartId) {
+          coupons {
+            ...CheckoutCouponFieldsFragment
+          }
+        }
       }
     }
   `,
-  [MoneyFieldFragment],
+  [MoneyFieldFragment, CheckoutCouponFieldsFragment],
 );
 
-export const getCart = cache(async (cartId?: string, channelId?: string) => {
+export const fetchCart = async (cartId?: string, channelId?: string) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
-  const response = await client.fetch({
+  return client.fetch({
     document: GetCartQuery,
     variables: { cartId },
     customerAccessToken,
@@ -136,8 +233,12 @@ export const getCart = cache(async (cartId?: string, channelId?: string) => {
     },
     channelId,
   });
+};
 
-  const cart = response.data.site.cart;
+export const getCart = cache(async (cartId?: string, channelId?: string) => {
+  const response = await fetchCart(cartId, channelId);
+
+  const { cart, checkout } = response.data.site;
 
   if (!cart) {
     return;
@@ -149,6 +250,7 @@ export const getCart = cache(async (cartId?: string, channelId?: string) => {
 
   return {
     ...cart,
+    ...checkout,
     totalExtendedListPrice: {
       currencyCode: cart.currencyCode,
       value: totalExtendedListPrice,

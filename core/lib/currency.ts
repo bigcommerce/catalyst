@@ -5,9 +5,9 @@ import { cookies } from 'next/headers';
 import type { CurrencyCode } from '~/components/header/fragment';
 import { CurrencyCodeSchema } from '~/components/header/schema';
 
-export async function getPreferredCurrencyCode(): Promise<CurrencyCode | undefined> {
+export async function getPreferredCurrencyCode(code?: string): Promise<CurrencyCode | undefined> {
   const cookieStore = await cookies();
-  const currencyCode = cookieStore.get('currencyCode')?.value;
+  const currencyCode = cookieStore.get('currencyCode')?.value || code;
 
   if (!currencyCode) {
     return undefined;

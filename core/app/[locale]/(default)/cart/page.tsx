@@ -5,12 +5,12 @@ import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/car
 import { getCartId } from '~/lib/cart';
 import { exists } from '~/lib/utils';
 
-import { redirectToCheckout } from './_actions/redirect-to-checkout';
+import { redirectToCheckoutFormAction } from './_actions/redirect-to-checkout-form-action';
 import { updateCouponCode } from './_actions/update-coupon-code';
 import { updateLineItem } from './_actions/update-line-item';
 import { updateShippingInfo } from './_actions/update-shipping-info';
 import { CartViewed } from './_components/cart-viewed';
-import { getCart, getShippingCountries } from './page-data';
+import { getCart, getPaymentWallets, getShippingCountries } from './page-data';
 
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Cart');
@@ -50,6 +50,12 @@ export default async function Cart() {
       />
     );
   }
+
+  const walletButtons = await getPaymentWallets({
+    filters: {
+      cartEntityId: cartId,
+    },
+  });
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
 
@@ -160,7 +166,8 @@ export default async function Cart() {
             },
           ].filter(exists),
         }}
-        checkoutAction={redirectToCheckout}
+        cartId={cartId}
+        checkoutAction={redirectToCheckoutFormAction}
         checkoutLabel={t('proceedToCheckout')}
         couponCode={{
           action: updateCouponCode,
@@ -239,6 +246,7 @@ export default async function Cart() {
         }}
         summaryTitle={t('CheckoutSummary.title')}
         title={t('title')}
+        walletButtons={walletButtons}
       />
       <CartViewed
         currencyCode={cart.currencyCode}
