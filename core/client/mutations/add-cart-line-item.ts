@@ -16,7 +16,7 @@ const AddCartLineItemMutation = graphql(`
 `);
 
 type Variables = VariablesOf<typeof AddCartLineItemMutation>;
-type AddCartLineItemsInput = Variables['input'];
+export type AddCartLineItemsInput = Variables['input'];
 
 export const addCartLineItem = async (
   cartEntityId: AddCartLineItemsInput['cartEntityId'],

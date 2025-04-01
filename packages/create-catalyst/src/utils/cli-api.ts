@@ -28,7 +28,12 @@ export class CliApi {
     });
   }
 
-  async createChannel(name: string, installSampleData = false) {
+  async createChannel(
+    name: string,
+    storefrontLocale: string,
+    additionalLocales: string[],
+    installSampleData = false,
+  ) {
     return this.client.fetch('/channels/catalyst', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -39,6 +44,8 @@ export class CliApi {
         },
         deployStorefront: true,
         devOrigin: 'http://localhost:3000',
+        storefrontLanguage: storefrontLocale,
+        additionalLocales,
       }),
     });
   }

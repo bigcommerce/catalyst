@@ -4,9 +4,10 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
+import { Streamable } from '@/vibes/soul/lib/streamable';
+import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { ListProduct } from '@/vibes/soul/primitives/products-list';
+import { Product } from '@/vibes/soul/primitives/product-card';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
@@ -15,9 +16,11 @@ import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
+import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
+import { getCompareProducts as getCompareProductsData } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
-import { getBrand as getBrandData } from './page-data';
+import { getBrandPageData } from './page-data';
 
 const cachedBrandDataVariables = cache((brandId: string) => {
   return {
@@ -29,15 +32,13 @@ const cacheBrandFacetedSearch = cache((brandId: string) => {
   return { brand: [brandId] };
 });
 
-function getBreadcrumbs(): Breadcrumb[] {
-  return [];
-}
-
 async function getBrand(props: Props) {
   const { slug } = await props.params;
 
   const variables = cachedBrandDataVariables(slug);
-  const brand = await getBrandData(variables);
+  const data = await getBrandPageData(variables);
+
+  const brand = data.brand;
 
   if (brand == null) notFound();
 
@@ -138,7 +139,7 @@ async function getSortOptions(): Promise<SortOption[]> {
   ];
 }
 
-async function getListProducts(props: Props): Promise<ListProduct[]> {
+async function getListProducts(props: Props): Promise<Product[]> {
   const refinedSearch = await getRefinedSearch(props);
   const format = await getFormatter();
 
@@ -160,6 +161,40 @@ async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
   return pageInfoTransformer(brandSearch.products.pageInfo);
 }
 
+async function getShowCompare(props: Props) {
+  const { slug } = await props.params;
+
+  const variables = cachedBrandDataVariables(slug);
+  const data = await getBrandPageData(variables);
+
+  return data.settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+}
+
+const cachedCompareProductIds = cache(async (props: Props) => {
+  const searchParams = await props.searchParams;
+
+  const compareLoader = createCompareLoader();
+
+  const { compare } = compareLoader(searchParams);
+
+  return { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
+});
+
+async function getCompareProducts(props: Props) {
+  const compareIds = await cachedCompareProductIds(props);
+
+  const products = await getCompareProductsData(compareIds);
+
+  return products.map((product) => ({
+    id: product.entityId.toString(),
+    title: product.name,
+    image: product.defaultImage
+      ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+      : undefined,
+    href: product.path,
+  }));
+}
+
 async function getFilterLabel(): Promise<string> {
   const t = await getTranslations('FacetedGroup.FacetedSearch');
 
@@ -176,6 +211,18 @@ async function getCompareLabel(): Promise<string> {
   const t = await getTranslations('Components.ProductCard.Compare');
 
   return t('compare');
+}
+
+async function getRemoveLabel(): Promise<string> {
+  const t = await getTranslations('Components.ProductCard.Compare');
+
+  return t('remove');
+}
+
+async function getMaxCompareLimitMessage(): Promise<string> {
+  const t = await getTranslations('Components.ProductCard.Compare');
+
+  return t('maxCompareLimit');
 }
 
 async function getEmptyStateTitle(): Promise<string> {
@@ -235,23 +282,27 @@ export default async function Brand(props: Props) {
 
   return (
     <ProductsListSection
-      breadcrumbs={getBreadcrumbs()}
-      compareLabel={getCompareLabel()}
-      emptyStateSubtitle={getEmptyStateSubtitle()}
-      emptyStateTitle={getEmptyStateTitle()}
+      compareLabel={Streamable.from(getCompareLabel)}
+      compareProducts={Streamable.from(() => getCompareProducts(props))}
+      emptyStateSubtitle={Streamable.from(getEmptyStateSubtitle)}
+      emptyStateTitle={Streamable.from(getEmptyStateTitle)}
       filterLabel={await getFilterLabel()}
-      filters={getFilters(props)}
-      filtersPanelTitle={getFiltersPanelTitle()}
-      paginationInfo={getPaginationInfo(props)}
-      products={getListProducts(props)}
-      rangeFilterApplyLabel={getRangeFilterApplyLabel()}
-      resetFiltersLabel={getResetFiltersLabel()}
+      filters={Streamable.from(() => getFilters(props))}
+      filtersPanelTitle={Streamable.from(getFiltersPanelTitle)}
+      maxCompareLimitMessage={Streamable.from(getMaxCompareLimitMessage)}
+      maxItems={MAX_COMPARE_LIMIT}
+      paginationInfo={Streamable.from(() => getPaginationInfo(props))}
+      products={Streamable.from(() => getListProducts(props))}
+      rangeFilterApplyLabel={Streamable.from(getRangeFilterApplyLabel)}
+      removeLabel={Streamable.from(getRemoveLabel)}
+      resetFiltersLabel={Streamable.from(getResetFiltersLabel)}
+      showCompare={Streamable.from(() => getShowCompare(props))}
       sortDefaultValue="featured"
-      sortLabel={getSortLabel()}
-      sortOptions={getSortOptions()}
+      sortLabel={Streamable.from(getSortLabel)}
+      sortOptions={Streamable.from(getSortOptions)}
       sortParamName="sort"
-      title={getTitle(props)}
-      totalCount={getTotalCount(props)}
+      title={Streamable.from(() => getTitle(props))}
+      totalCount={Streamable.from(() => getTotalCount(props))}
     />
   );
 }

@@ -25,7 +25,7 @@ function getStatusColor(
 
     case 'CANCELLED':
     case 'DECLINED':
-      return 'danger';
+      return 'error';
 
     case 'COMPLETED':
     case 'PARTIALLY_REFUNDED':
@@ -57,7 +57,7 @@ export const orderDetailsTransformer = (
                 style: 'currency',
                 currency: lineItem.subTotalListPrice.currencyCode,
               }),
-              href: lineItem.baseCatalogProduct?.path ?? `/product/${lineItem.productEntityId}`,
+              href: lineItem.baseCatalogProduct?.path ?? undefined,
               image: lineItem.image
                 ? {
                     src: lineItem.image.url,

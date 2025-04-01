@@ -273,7 +273,67 @@
                     "notFound": "Kunden findes ikke."
                 }
             }
+        },
+        "Wishlists": {
+            "title": "Ønskelister",
+            "new": "Ny ønskeliste",
+            "items": "{count, plural, =1 {1 vare} other {# varer}}",
+            "viewWishlist": "Se liste",
+            "noWishlists": "Du har ingen ønskelister",
+            "noWishlistsSubtitle": "Opret en ønskeliste for at gemme dine yndlingsprodukter.",
+            "noWishlistsCallToAction": "Opret en ønskeliste",
+            "emptyWishlist": "Du har ikke tilføjet produkter til denne ønskeliste.",
+            "share": "Del",
+            "shareSuccess": "Ønskelisten er delt.",
+            "shareCopied": "Ønskelistens offentlige URL er blevet kopieret til din udklipsholder.",
+            "shareDisabled": "Din ønskeliste skal være offentlig for at kunne dele den.",
+            "makePublic": "Gør offentlig",
+            "makePrivate": "Gør privat",
+            "rename": "Omdøb",
+            "delete": "Slet",
+            "Visibility": {
+                "public": "Offentlig",
+                "private": "Privat"
+            },
+            "Modal": {
+                "cancel": "Annuller",
+                "close": "Luk",
+                "copy": "Kopi",
+                "create": "Opret",
+                "save": "Gem",
+                "delete": "Slet",
+                "newTitle": "Opret en ny ønskeliste",
+                "shareTitle": "Del {name}",
+                "renameTitle": "Omdøb {name}",
+                "deleteTitle": "Slet {name}",
+                "changeVisibilityPublicTitle": "Vil du gøre {name} offentlig?",
+                "changeVisibilityPrivateTitle": "Vil du gøre {name} privat?",
+                "makePublicContent": "Er du sikker på du vil gøre <bold>{name}</bold> offentlig? Dette giver andre mulighed for at se din ønskeliste, hvis de har linket.",
+                "makePrivateContent": "Er du sikker på du vil gøre <bold>{name}</bold> privat? Hvis du har delt din ønskeliste med andre, vil de ikke længere kunne se den.",
+                "deleteContent": "Er du sikker på, at du vil slette <bold>{name}</bold>? Denne handling kan ikke fortrydes."
+            },
+            "Form": {
+                "nameLabel": "Navn"
+            },
+            "Errors": {
+                "nameRequired": "Navnet på ønskelisten må ikke være tomt.",
+                "updateFailed": "Din ønskeliste kunne ikke opdateres. Prøv igen.",
+                "deleteFailed": "Din ønskeliste kunne ikke slettes. Prøv igen.",
+                "removeProductFailed": "Produktet kunne ikke fjernes fra din ønskeliste. Prøv igen.",
+                "unauthorized": "Du er ikke autoriseret til at udføre denne handling. Log ind, og prøv igen.",
+                "unexpected": "Der er opstået en uventet fejl. Prøv igen."
+            },
+            "Result": {
+                "createSuccess": "Ønskelisten er oprettet.",
+                "updateSuccess": "Ønskelisten er opdateret.",
+                "deleteSuccess": "Ønskelisten er slettet.",
+                "removeItemSuccess": "Varen er blevet fjernet fra din ønskeliste."
+            }
         }
+    },
+    "PublicWishlist": {
+        "title": "Offentlig ønskeliste",
+        "defaultName": "Offentlig ønskeliste"
     },
     "Blog": {
         "title": "blog",
@@ -298,28 +358,42 @@
         "increment": "Øg mængden",
         "decrement": "Reducer mængden",
         "removeItem": "Fjern vare",
+        "cartCombined": "Vi bemærkede, at du havde gemt varer i en tidligere indkøbskurv, så vi har føjet dem til din nuværende indkøbskurv for dig.",
+        "cartRestored": "Du startede en indkøbskurv på en anden enhed, og vi har gendannet den her, så du kan fortsætte, hvor du slap.",
         "CheckoutSummary": {
             "title": "Oversigt",
             "subTotal": "Subtotal",
             "discounts": "Rabatter",
-            "coupon": "Kupon",
-            "couponCode": "Kuponkode",
-            "addCoupon": "Tilføj kupon",
-            "enterCouponCode": "Indtast din kuponkode",
-            "couponCodeRequired": "Indtast en kuponkode.",
-            "couponCodeInvalid": "Den kuponkode, du indtastede, er ikke gyldig.",
             "remove": "Fjern",
             "spinnerText": "Fjerner ...",
-            "couponCodeRemoveFailed": "Der opstod en fejl under fjernelse af kuponkoden. Prøv igen.",
             "tax": "Moms",
-            "grandTotal": "Samlet beløb",
-            "shipping": "Forsendelse",
-            "shippingCost": "Forsendelsesomkostninger",
-            "handlingCost": "Håndteringsomkostninger",
-            "add": "Tilføj",
-            "change": "Ændr",
-            "cancel": "Annuller",
-            "errorMessage": "Oversigt over indkøbskurven blev ikke fundet. Prøv igen."
+            "total": "I alt",
+            "errorMessage": "Oversigt over indkøbskurven blev ikke fundet. Prøv igen.",
+            "CouponCode": {
+                "apply": "Anvend",
+                "couponCode": "Kuponkode",
+                "removeCouponCode": "Fjern kuponkode",
+                "invalidCouponCode": "Indtast en gyldig kuponkode",
+                "cartNotFound": "Der blev ikke fundet cartId-cookie."
+            },
+            "Shipping": {
+                "shipping": "Forsendelse",
+                "add": "Tilføj",
+                "change": "Ændr",
+                "cancel": "Annuller",
+                "country": "Land",
+                "city": "By",
+                "state": "Landsdel/kommune",
+                "postalCode": "Postnummer",
+                "updatedShippingOptions": "Opdater forsendelsesmuligheder",
+                "viewShippingOptions": "Se forsendelsesmuligheder",
+                "editAddress": "Rediger adresse",
+                "shippingOptions": "Forsendelsesmuligheder",
+                "updateShipping": "Opdater forsendelse",
+                "addShipping": "Tilføj forsendelse",
+                "cartNotFound": "Der blev ikke fundet cartId-cookie.",
+                "noShippingOptions": "Der er ingen tilgængelige forsendelsesmuligheder for din adresse"
+            }
         },
         "ShippingInfo": {
             "country": "Land",
@@ -375,26 +449,21 @@
         }
     },
     "Compare": {
-        "title": "Sammenlign",
-        "heading": "Sammenligning af {quantity, plural, =1 {1 Produkt} other {# Produkter}}",
-        "nothingToCompare": "Der er ikke noget at sammenligne.",
-        "helpingText": "På en eller anden måde er det lykkedes dig at lande her, men du skal først vælge et par produkter.",
-        "Table": {
-            "caption": "Produktsammenligning",
-            "noImage": "Intet billede",
-            "viewOptions": "Se muligheder",
-            "description": "Beskrivelse",
-            "rating": "Bedømmelse",
-            "availability": "Tilgængelighed",
-            "Prices": {
-                "msrp": "Producents anbefalede detailpris",
-                "was": "var",
-                "now": "Nu"
-            }
-        },
-        "AddToCart": {
-            "success": "<cartLink>{cartItems, plural, =1 {1 varer} other {# varer}} tilføjet til din indkøbskurv</cartLink>"
-        }
+        "title": "Sammenlign produkter",
+        "addToCart": "Føj til kurv",
+        "next": "Næste produkter",
+        "previous": "Forrige produkter",
+        "noProductsToCompare": "Der er ingen produkter at sammenligne",
+        "sku": "SKU",
+        "weight": "Vægt",
+        "description": "Beskrivelse",
+        "noDescription": "Der er ingen beskrivelse tilgængelig.",
+        "rating": "Bedømmelse",
+        "noRatings": "Der er ingen anmeldelser.",
+        "otherDetails": "Andre oplysninger",
+        "noOtherDetails": "Der er ingen andre oplysninger.",
+        "viewOptions": "Se muligheder",
+        "successMessage": "<cartLink>{CartItems, plural, =1 {1 vare} other {# varer}} tilføjet til din indkøbskurv</cartLink>"
     },
     "Product": {
         "ProductDetails": {
@@ -404,6 +473,7 @@
             "successMessage": "<cartLink>{CartItems, plural, =1 {1 vare} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
             "missingCart": "Indkøbskurven blev ikke fundet. Prøv igen senere.",
             "unknownError": "Ukendt fejl. Prøv igen senere.",
+            "variantRequiredError": "Dette produkt kræver, at der vælges muligheder for at kunne lægges i indkøbskurven.",
             "increaseNumber": "Øg antallet",
             "decreaseNumber": "Reducer antallet",
             "thumbnail": "Vis billednummer",
@@ -574,7 +644,9 @@
         },
         "ProductCard": {
             "Compare": {
-                "compare": "Sammenlign"
+                "compare": "Sammenlign",
+                "remove": "Fjern",
+                "maxCompareLimit": "Du har nået det maksimale antal produkter til sammenligning. Fjern et produkt for at tilføje et nyt."
             },
             "AddToCart": {
                 "viewOptions": "Se muligheder",

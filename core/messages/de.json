@@ -273,7 +273,67 @@
                     "notFound": "Kunde existiert nicht"
                 }
             }
+        },
+        "Wishlists": {
+            "title": "Wunschlisten",
+            "new": "Neue Wunschliste",
+            "items": "{count, plural, =1 {1 Artikel} other {# Artikel}}",
+            "viewWishlist": "Liste anzeigen",
+            "noWishlists": "Sie haben keine Wunschlisten.",
+            "noWishlistsSubtitle": "Erstellen Sie eine Wunschliste, um Ihre Lieblingsprodukte zu speichern.",
+            "noWishlistsCallToAction": "Eine Wunschliste erstellen",
+            "emptyWishlist": "Sie haben keine Produkte zu dieser Wunschliste hinzugefügt.",
+            "share": "Freigeben",
+            "shareSuccess": "Die Wunschliste wurde erfolgreich geteilt.",
+            "shareCopied": "Die öffentliche URL der Wunschliste wurde in Ihre Zwischenablage kopiert.",
+            "shareDisabled": "Um Ihre Wunschliste teilen zu können, muss sie öffentlich sein.",
+            "makePublic": "Öffentlich machen",
+            "makePrivate": "Privat machen",
+            "rename": "Umbenennen",
+            "delete": "Löschen",
+            "Visibility": {
+                "public": "Öffentlich",
+                "private": "Privat"
+            },
+            "Modal": {
+                "cancel": "Abbrechen",
+                "close": "Schließen",
+                "copy": "Kopieren",
+                "create": "erstellen",
+                "save": "Speichern",
+                "delete": "Löschen",
+                "newTitle": "Eine neue Wunschliste erstellen",
+                "shareTitle": "Teilen Sie {name}",
+                "renameTitle": "{name} umbenennen",
+                "deleteTitle": "{name} löschen",
+                "changeVisibilityPublicTitle": "Möchten Sie {name} öffentlich machen?",
+                "changeVisibilityPrivateTitle": "Soll {name} auf privat gesetzt werden?",
+                "makePublicContent": "Möchten Sie <bold>{name}</bold> wirklich auf öffentlich setzen? Dadurch können andere Ihre Wunschliste sehen, wenn sie den Link haben.",
+                "makePrivateContent": "Möchten Sie <bold>{name}</bold> wirklich auf privat setzen? Wenn Sie Ihre Wunschliste mit anderen geteilt haben, können diese sie nicht mehr sehen.",
+                "deleteContent": "Möchten Sie <bold>{name}</bold> wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+            },
+            "Form": {
+                "nameLabel": "Name"
+            },
+            "Errors": {
+                "nameRequired": "Der Wunschlistenname darf nicht leer sein.",
+                "updateFailed": "Die Aktualisierung Ihrer Wunschliste ist fehlgeschlagen. Bitte versuchen Sie es erneut.",
+                "deleteFailed": "Das Löschen Ihrer Wunschliste konnte nicht durchgeführt werden. Bitte versuchen Sie es erneut.",
+                "removeProductFailed": "Das Produkt konnte nicht von Ihrer Wunschliste entfernt werden. Bitte versuchen Sie es erneut.",
+                "unauthorized": "Sie sind nicht berechtigt, diese Aktion durchzuführen. Bitte melden Sie sich an und versuchen Sie es erneut.",
+                "unexpected": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+            },
+            "Result": {
+                "createSuccess": "Die Wunschliste wurde erfolgreich erstellt.",
+                "updateSuccess": "Die Wunschliste wurde erfolgreich aktualisiert.",
+                "deleteSuccess": "Die Wunschliste wurde erfolgreich gelöscht.",
+                "removeItemSuccess": "Der Artikel wurde von Ihrer Wunschliste entfernt."
+            }
         }
+    },
+    "PublicWishlist": {
+        "title": "Öffentliche Wunschliste",
+        "defaultName": "Öffentliche Wunschliste"
     },
     "Blog": {
         "title": "Blog",
@@ -298,28 +358,42 @@
         "increment": "Menge erhöhen",
         "decrement": "Menge verringern",
         "removeItem": "Artikel entfernen",
+        "cartCombined": "Wir haben festgestellt, dass Sie Artikel in einem früheren Warenkorb gespeichert hatten, also haben wir diese Ihrem aktuellen Warenkorb hinzugefügt.",
+        "cartRestored": "Sie haben einen Warenkorb auf einem anderen Gerät angelegt, und wir haben ihn hier wiederhergestellt, damit Sie dort weitermachen können, wo Sie aufgehört haben.",
         "CheckoutSummary": {
             "title": "Übersicht",
             "subTotal": "Zwischensumme",
             "discounts": "Rabatte",
-            "coupon": "Gutschein",
-            "couponCode": "Gutschein-Code",
-            "addCoupon": "Coupon hinzufügen",
-            "enterCouponCode": "Geben Sie Ihren Gutscheincode ein",
-            "couponCodeRequired": "Bitte geben Sie einen Gutscheincode ein.",
-            "couponCodeInvalid": "Der eingegebene Gutscheincode ist ungültig.",
             "remove": "Entfernen",
             "spinnerText": "Entfernen ...",
-            "couponCodeRemoveFailed": "Beim Entfernen des Gutscheincodes ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
             "tax": "Steuern",
-            "grandTotal": "Gesamtsumme",
-            "shipping": "Versand",
-            "shippingCost": "Versandkosten",
-            "handlingCost": "Bearbeitungskosten",
-            "add": "Hinzufügen",
-            "change": "Ändern",
-            "cancel": "Abbrechen",
-            "errorMessage": "Warenkorbübersicht nicht gefunden, bitte versuchen Sie es erneut."
+            "total": "Summe",
+            "errorMessage": "Warenkorbübersicht nicht gefunden, bitte versuchen Sie es erneut.",
+            "CouponCode": {
+                "apply": "Anwenden",
+                "couponCode": "Gutschein-Code",
+                "removeCouponCode": "Gutschein-Code entfernen",
+                "invalidCouponCode": "Bitte geben Sie einen gültigen Coupon-Code ein",
+                "cartNotFound": "Kein cartId-Cookie gefunden."
+            },
+            "Shipping": {
+                "shipping": "Versand",
+                "add": "Hinzufügen",
+                "change": "Ändern",
+                "cancel": "Abbrechen",
+                "country": "Land",
+                "city": "Ort",
+                "state": "Bundesstaat/Provinz",
+                "postalCode": "Postleitzahl",
+                "updatedShippingOptions": "Versandoptionen aktualisieren",
+                "viewShippingOptions": "Versandoptionen anzeigen",
+                "editAddress": "Adresse bearbeiten",
+                "shippingOptions": "Versandoptionen",
+                "updateShipping": "Versand aktualisieren",
+                "addShipping": "Versand hinzufügen",
+                "cartNotFound": "Kein cartId-Cookie gefunden.",
+                "noShippingOptions": "Für Ihre Adresse sind keine Versandoptionen verfügbar"
+            }
         },
         "ShippingInfo": {
             "country": "Land",
@@ -375,26 +449,21 @@
         }
     },
     "Compare": {
-        "title": "Vergleichen",
-        "heading": "Vergleich von {quantity, plural, =1 {1 Product} other {# Products}}",
-        "nothingToCompare": "Nun, es gibt nichts Vergleichbares!",
-        "helpingText": "Sie haben es irgendwie geschafft, hier zu landen, aber Sie müssen erst noch ein paar Produkte auswählen.",
-        "Table": {
-            "caption": "Produktvergleich",
-            "noImage": "Kein Bild",
-            "viewOptions": "Optionen anzeigen",
-            "description": "Beschreibung",
-            "rating": "Bewertung",
-            "availability": "Verfügbarkeit",
-            "Prices": {
-                "msrp": "Unverbindliche Preisempfehlung",
-                "was": "war",
-                "now": "jetzt"
-            }
-        },
-        "AddToCart": {
-            "success": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt"
-        }
+        "title": "Produkte vergleichen",
+        "addToCart": "Zum Warenkorb hinzufügen",
+        "next": "Nächste Produkte",
+        "previous": "Vorherige Produkte",
+        "noProductsToCompare": "Keine Produkte zum Vergleichen",
+        "sku": "SKU",
+        "weight": "Gewicht",
+        "description": "Beschreibung",
+        "noDescription": "Es ist keine Beschreibung verfügbar.",
+        "rating": "Bewertung",
+        "noRatings": "Es gibt keine Bewertungen.",
+        "otherDetails": "Weitere Angaben",
+        "noOtherDetails": "Es gibt keine weiteren Details.",
+        "viewOptions": "Optionen anzeigen",
+        "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt"
     },
     "Product": {
         "ProductDetails": {
@@ -404,6 +473,7 @@
             "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
             "missingCart": "Warenkorb nicht gefunden. Bitte versuchen Sie es später erneut!",
             "unknownError": "Unbekannter Fehler. Bitte versuchen Sie es später erneut.",
+            "variantRequiredError": "Für dieses Produkt müssen Optionen ausgewählt werden, um es in den Warenkorb zu legen.",
             "increaseNumber": "Anzahl erhöhen",
             "decreaseNumber": "Anzahl verringern",
             "thumbnail": "Bildnummer anzeigen",
@@ -574,7 +644,9 @@
         },
         "ProductCard": {
             "Compare": {
-                "compare": "Vergleichen"
+                "compare": "Vergleichen",
+                "remove": "Entfernen",
+                "maxCompareLimit": "Sie haben die maximale Anzahl an Produkten zum Vergleich erreicht. Entfernen Sie ein Produkt, um ein neues hinzuzufügen."
             },
             "AddToCart": {
                 "viewOptions": "Optionen anzeigen",

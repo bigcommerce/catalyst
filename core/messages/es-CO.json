@@ -273,7 +273,67 @@
                     "notFound": "El cliente no existe"
                 }
             }
+        },
+        "Wishlists": {
+            "title": "Listas de deseos",
+            "new": "Nueva lista de deseos",
+            "items": "{count, plural, =1 {1 artículo} other {# artículos}}",
+            "viewWishlist": "Ver lista",
+            "noWishlists": "No tienes ninguna lista de deseos",
+            "noWishlistsSubtitle": "Crea una lista de deseos para guardar tus productos favoritos.",
+            "noWishlistsCallToAction": "Crea una lista de deseos",
+            "emptyWishlist": "No has agregado productos a esta lista de deseos.",
+            "share": "Compartir",
+            "shareSuccess": "La lista de deseos se compartió correctamente.",
+            "shareCopied": "La URL pública de la lista de deseos se copió a tu portapapeles.",
+            "shareDisabled": "Tu lista de deseos debe ser pública para que puedas compartirla.",
+            "makePublic": "Haz público",
+            "makePrivate": "Configurar como privada",
+            "rename": "Cambiar el nombre",
+            "delete": "Eliminar",
+            "Visibility": {
+                "public": "Público",
+                "private": "Privado"
+            },
+            "Modal": {
+                "cancel": "Cancelar",
+                "close": "Cerrar",
+                "copy": "Copiar",
+                "create": "Crear",
+                "save": "Guardar",
+                "delete": "Eliminar",
+                "newTitle": "Crea una nueva lista de deseos",
+                "shareTitle": "Comparte {name}",
+                "renameTitle": "Renombrar {name}",
+                "deleteTitle": "Borrar {name}",
+                "changeVisibilityPublicTitle": "¿Hacer {name} público?",
+                "changeVisibilityPrivateTitle": "¿Hacer {name} privado?",
+                "makePublicContent": "¿Confirmas que quieres configurar <bold>{name}</bold> como pública? Si lo haces, otras personas podrán ver tu lista de deseos si tienen un enlace para acceder a ella.",
+                "makePrivateContent": "¿Confirmas que quieres configurar <bold>{name}</bold> como privada? Las personas con quienes hayas compartido tu lista de deseos ya no podrán verla.",
+                "deleteContent": "¿Confirmas que quieres eliminar <bold>{name}</bold>? Esta acción no puede deshacerse."
+            },
+            "Form": {
+                "nameLabel": "Nombre"
+            },
+            "Errors": {
+                "nameRequired": "El nombre de la lista de deseos no puede estar vacío.",
+                "updateFailed": "No se pudo actualizar tu lista de deseos. Vuelve a intentarlo.",
+                "deleteFailed": "No se pudo eliminar tu lista de deseos. Vuelve a intentarlo.",
+                "removeProductFailed": "No se pudo eliminar el producto de tu lista de deseos. Vuelve a intentarlo.",
+                "unauthorized": "No tienes autorización para realizar esta acción. Inicia sesión y vuelve a intentarlo.",
+                "unexpected": "Ocurrió un error inesperado. Vuelva a intentarlo."
+            },
+            "Result": {
+                "createSuccess": "La lista de deseos se creó correctamente.",
+                "updateSuccess": "La lista de deseos se actualizó correctamente.",
+                "deleteSuccess": "La lista de deseos se eliminó correctamente.",
+                "removeItemSuccess": "Se eliminó el artículo de tu lista de deseos."
+            }
         }
+    },
+    "PublicWishlist": {
+        "title": "Lista de deseos pública",
+        "defaultName": "Lista pública de deseos"
     },
     "Blog": {
         "title": "Blog",
@@ -298,28 +358,42 @@
         "increment": "Aumenta la cantidad",
         "decrement": "Disminuir cantidad",
         "removeItem": "Eliminar artículo",
+        "cartCombined": "Notamos que tenías artículos guardados en un carrito anterior, así que los hemos agregado a tu carrito actual.",
+        "cartRestored": "Iniciaste un carrito en otro dispositivo y lo hemos restaurado aquí para que puedas continuar desde donde lo dejaste.",
         "CheckoutSummary": {
             "title": "Resumen",
             "subTotal": "Subtotal",
             "discounts": "Descuentos",
-            "coupon": "Cupón",
-            "couponCode": "Código de cupón",
-            "addCoupon": "Agregar cupón",
-            "enterCouponCode": "Ingresa tu código de cupón",
-            "couponCodeRequired": "Ingresa un código de cupón.",
-            "couponCodeInvalid": "El código de cupón que ingresaste no es válido.",
             "remove": "Quitar",
             "spinnerText": "Eliminando…",
-            "couponCodeRemoveFailed": "Hubo un error al eliminar el código de cupón. Vuelve a intentarlo.",
             "tax": "Impuesto",
-            "grandTotal": "Total",
-            "shipping": "Envío",
-            "shippingCost": "Costo de envío",
-            "handlingCost": "Manejo de costos",
-            "add": "Agregar",
-            "change": "Cambiar",
-            "cancel": "Cancelar",
-            "errorMessage": "No se encontró el resumen del carrito. Vuelve a intentarlo."
+            "total": "Total",
+            "errorMessage": "No se encontró el resumen del carrito. Vuelve a intentarlo.",
+            "CouponCode": {
+                "apply": "Aplicar",
+                "couponCode": "Código de cupón",
+                "removeCouponCode": "Elimina el código de cupón",
+                "invalidCouponCode": "Ingresa un código de cupón válido",
+                "cartNotFound": "No se encontró ninguna cookie de cartId."
+            },
+            "Shipping": {
+                "shipping": "Envío",
+                "add": "Agregar",
+                "change": "Cambiar",
+                "cancel": "Cancelar",
+                "country": "País",
+                "city": "Ciudad",
+                "state": "Estado/Provincia",
+                "postalCode": "Código postal",
+                "updatedShippingOptions": "Actualiza las opciones de envío",
+                "viewShippingOptions": "Ver opciones de envío",
+                "editAddress": "Editar dirección",
+                "shippingOptions": "Opciones de envío",
+                "updateShipping": "Actualizar envío",
+                "addShipping": "Agregar envío",
+                "cartNotFound": "No se encontró ninguna cookie de cartId.",
+                "noShippingOptions": "No hay opciones de envío disponibles para tu dirección"
+            }
         },
         "ShippingInfo": {
             "country": "País",
@@ -375,26 +449,21 @@
         }
     },
     "Compare": {
-        "title": "Comparar",
-        "heading": "Comparando {quantity, plural, =1 {1 producto} other {# productos}}",
-        "nothingToCompare": "No hay nada con qué comparar.",
-        "helpingText": "No sabemos cómo llegaste hasta aquí, pero primero debes seleccionar algunos productos.",
-        "Table": {
-            "caption": "Comparación de productos",
-            "noImage": "Sin imagen",
-            "viewOptions": "Opciones de visualización",
-            "description": "Descripción",
-            "rating": "Calificación",
-            "availability": "Disponibilidad",
-            "Prices": {
-                "msrp": "PVSF",
-                "was": "Era",
-                "now": "Ahora"
-            }
-        },
-        "AddToCart": {
-            "success": "{cartItems, plural, =1 {1 artículo} other {# artículos}} agregado(s) a <cartLink>tu carrito</cartLink>"
-        }
+        "title": "Comparar productos",
+        "addToCart": "Agregar al carrito",
+        "next": "Siguientes productos",
+        "previous": "Productos anteriores",
+        "noProductsToCompare": "No hay productos para comparar",
+        "sku": "SKU",
+        "weight": "Peso",
+        "description": "Descripción",
+        "noDescription": "No hay ninguna descripción disponible.",
+        "rating": "Calificación",
+        "noRatings": "No hay reseñas.",
+        "otherDetails": "Otros detalles",
+        "noOtherDetails": "No hay otros detalles.",
+        "viewOptions": "Opciones de visualización",
+        "successMessage": "{cartItems, plural, =1 {1 artículo} other {# artículos}} agregado(s) a <cartLink>tu carrito</cartLink>"
     },
     "Product": {
         "ProductDetails": {
@@ -404,6 +473,7 @@
             "successMessage": "{cartItems, plural, =1 {1 artículo} other {# artículos}} agregado(s) a <cartLink>tu carrito</cartLink>",
             "missingCart": "Carrito no encontrado. Intenta de nuevo más tarde.",
             "unknownError": "Error desconocido. Vuelva a intentarlo más tarde.",
+            "variantRequiredError": "Para añadir este producto al carrito, debes seleccionar opciones.",
             "increaseNumber": "Aumentar número",
             "decreaseNumber": "Disminuir número",
             "thumbnail": "Ver número de imagen",
@@ -574,7 +644,9 @@
         },
         "ProductCard": {
             "Compare": {
-                "compare": "Comparar"
+                "compare": "Comparar",
+                "remove": "Quitar",
+                "maxCompareLimit": "Alcanzaste el número máximo de productos para comparar. Elimina un producto para agregar uno nuevo."
             },
             "AddToCart": {
                 "viewOptions": "Opciones de visualización",

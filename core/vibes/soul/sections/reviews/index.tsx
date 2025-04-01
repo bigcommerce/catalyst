@@ -16,6 +16,8 @@ interface Props {
   averageRating: Streamable<number>;
   totalCount?: Streamable<number>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
+  nextLabel?: Streamable<string>;
+  previousLabel?: Streamable<string>;
   emptyStateMessage?: string;
   reviewsLabel?: string;
 }
@@ -25,6 +27,8 @@ export function Reviews({
   averageRating: streamableAverageRating,
   totalCount: streamableTotalCount,
   paginationInfo: streamablePaginationInfo,
+  nextLabel,
+  previousLabel,
   emptyStateMessage,
   reviewsLabel = 'Reviews',
 }: Readonly<Props>) {
@@ -90,7 +94,14 @@ export function Reviews({
 
               <Stream value={streamablePaginationInfo}>
                 {(paginationInfo) =>
-                  paginationInfo && <CursorPagination info={paginationInfo} scroll={false} />
+                  paginationInfo && (
+                    <CursorPagination
+                      info={paginationInfo}
+                      nextLabel={nextLabel}
+                      previousLabel={previousLabel}
+                      scroll={false}
+                    />
+                  )
                 }
               </Stream>
             </div>

@@ -273,7 +273,67 @@
                     "notFound": "Kunden finns inte"
                 }
             }
+        },
+        "Wishlists": {
+            "title": "Önskelistor",
+            "new": "Ny önskelista",
+            "items": "{count, plural, =1 {1 objekt} other {# objekt}}",
+            "viewWishlist": "Visa lista",
+            "noWishlists": "Du har inga önskelistor",
+            "noWishlistsSubtitle": "Skapa en önskelista för att spara dina favoritprodukter.",
+            "noWishlistsCallToAction": "Skapa en önskelista",
+            "emptyWishlist": "Du har inte lagt till några produkter på den här önskelistan.",
+            "share": "Dela med sig",
+            "shareSuccess": "Önskelistan har delats.",
+            "shareCopied": "Önskelistans offentliga URL har kopierats till urklipp.",
+            "shareDisabled": "Din önskelista måste vara offentlig för att kunna delas.",
+            "makePublic": "Gör offentlig",
+            "makePrivate": "Gör privat",
+            "rename": "Döp om",
+            "delete": "Radera",
+            "Visibility": {
+                "public": "Offentlig",
+                "private": "Privat"
+            },
+            "Modal": {
+                "cancel": "Annullera",
+                "close": "Stäng",
+                "copy": "Kopiera",
+                "create": "skapa",
+                "save": "Spara",
+                "delete": "Radera",
+                "newTitle": "Skapa en ny önskelista",
+                "shareTitle": "Dela {name}",
+                "renameTitle": "Byt namn på {name}",
+                "deleteTitle": "Radera {name}",
+                "changeVisibilityPublicTitle": "Vill du göra {name} offentlig?",
+                "changeVisibilityPrivateTitle": "Vill du göra {name} privat?",
+                "makePublicContent": "Är du säker på att du vill göra <bold>{name}</bold> offentlig? Då kommer andra att kunna se din önskelista om de har länken.",
+                "makePrivateContent": "Är du säker på att du vill göra <bold>{name}</bold> privat? Om du har delat din önskelista med andra kommer de inte längre att kunna se den.",
+                "deleteContent": "Är du säker på att du vill radera <bold>{name}</bold>? Denna åtgärd kan inte ångras."
+            },
+            "Form": {
+                "nameLabel": "Namn"
+            },
+            "Errors": {
+                "nameRequired": "Namnet på önskelistan får inte vara tomt.",
+                "updateFailed": "Det gick inte att uppdatera din önskelista. Försök igen.",
+                "deleteFailed": "Det gick inte att radera din önskelista. Försök igen.",
+                "removeProductFailed": "Det gick inte att ta bort produkten från din önskelista. Försök igen.",
+                "unauthorized": "Du har inte behörighet att utföra den här åtgärden. Logga in och försök igen.",
+                "unexpected": "Ett oväntat fel inträffade. Försök igen."
+            },
+            "Result": {
+                "createSuccess": "Önskelistan har skapats.",
+                "updateSuccess": "Önskelistan har uppdaterats.",
+                "deleteSuccess": "Önskelistan har tagits bort.",
+                "removeItemSuccess": "Objektet har tagits bort från din önskelista."
+            }
         }
+    },
+    "PublicWishlist": {
+        "title": "Offentlig önskelista",
+        "defaultName": "Offentlig önskelista"
     },
     "Blog": {
         "title": "Blogg",
@@ -298,28 +358,42 @@
         "increment": "Öka kvantiteten",
         "decrement": "Minska kvantitet",
         "removeItem": "Ta bort vara",
+        "cartCombined": "Vi märkte att du hade varor sparade i en tidigare kundvagn, så vi har lagt till dem i din nuvarande kundvagn åt dig.",
+        "cartRestored": "Du startade en kundvagn på en annan enhet, och vi har återställt den här så att du kan fortsätta där du slutade.",
         "CheckoutSummary": {
             "title": "Summering",
             "subTotal": "Delsumma",
             "discounts": "Rabatter",
-            "coupon": "Kupong",
-            "couponCode": "Kupongkod",
-            "addCoupon": "Lägg till kupong",
-            "enterCouponCode": "Ange din kupongkod",
-            "couponCodeRequired": "Ange en kupongkod.",
-            "couponCodeInvalid": "Kupongkoden du angav är inte giltig.",
             "remove": "Ta bort",
             "spinnerText": "Tar bort ...",
-            "couponCodeRemoveFailed": "Det gick inte att ta bort kupongkoden. Försök igen.",
             "tax": "Beskatta",
-            "grandTotal": "Totalsumma",
-            "shipping": "Frakt",
-            "shippingCost": "Fraktkostnad",
-            "handlingCost": "Hanteringskostnader:",
-            "add": "Lägg till",
-            "change": "Ändra",
-            "cancel": "Annullera",
-            "errorMessage": "Det gick inte att hitta kundvagnsöversikten. Försök igen."
+            "total": "Total",
+            "errorMessage": "Det gick inte att hitta kundvagnsöversikten. Försök igen.",
+            "CouponCode": {
+                "apply": "Tillämpa",
+                "couponCode": "Kupongkod",
+                "removeCouponCode": "Ta bort kupongkod",
+                "invalidCouponCode": "Ange en giltig kupongkod",
+                "cartNotFound": "Ingen cartId-kaka hittades."
+            },
+            "Shipping": {
+                "shipping": "Frakt",
+                "add": "Lägg till",
+                "change": "Ändra",
+                "cancel": "Annullera",
+                "country": "Land",
+                "city": "Stad",
+                "state": "Stat/provins",
+                "postalCode": "Postnummer",
+                "updatedShippingOptions": "Uppdatera fraktalternativ",
+                "viewShippingOptions": "Visa fraktalternativ",
+                "editAddress": "Redigera adress",
+                "shippingOptions": "Frakt alternativ",
+                "updateShipping": "Uppdatera frakt",
+                "addShipping": "Lägg till frakt",
+                "cartNotFound": "Ingen cartId-kaka hittades.",
+                "noShippingOptions": "Det finns inga tillgängliga fraktalternativ för din adress"
+            }
         },
         "ShippingInfo": {
             "country": "Land",
@@ -375,26 +449,21 @@
         }
     },
     "Compare": {
-        "title": "Jämför",
-        "heading": "Jämför {quantity, plural, =1 {1 Product} other {# Products}}",
-        "nothingToCompare": "Det finns inget att jämföra!",
-        "helpingText": "Du lyckades på något sätt landa här, men du måste välja några produkter först.",
-        "Table": {
-            "caption": "Jämförelse av produkter",
-            "noImage": "Ingen bild",
-            "viewOptions": "Visa alternativ",
-            "description": "Beskrivning",
-            "rating": "Bedömning",
-            "availability": "Tillgänglighet",
-            "Prices": {
-                "msrp": "MSRP",
-                "was": "var",
-                "now": "nu"
-            }
-        },
-        "AddToCart": {
-            "success": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>"
-        }
+        "title": "Jämför produkter",
+        "addToCart": "Lägg till i kundvagn",
+        "next": "Nästa produkter",
+        "previous": "Tidigare produkter",
+        "noProductsToCompare": "Inga produkter att jämföra",
+        "sku": "SKU",
+        "weight": "Vikt",
+        "description": "Beskrivning",
+        "noDescription": "Det finns ingen beskrivning tillgänglig.",
+        "rating": "Bedömning",
+        "noRatings": "Det finns inga recensioner.",
+        "otherDetails": "Övrig information",
+        "noOtherDetails": "Det finns inga övriga detaljer.",
+        "viewOptions": "Visa alternativ",
+        "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>"
     },
     "Product": {
         "ProductDetails": {
@@ -404,6 +473,7 @@
             "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
             "missingCart": "Kundvagnen hittades inte. Försök igen senare!",
             "unknownError": "Okänt fel. Försök igen senare.",
+            "variantRequiredError": "Denna produkt kräver att alternativ väljs för att kunna läggas till i kundvagnen.",
             "increaseNumber": "Öka antalet",
             "decreaseNumber": "Minska antalet",
             "thumbnail": "Visa bildnummer",
@@ -574,7 +644,9 @@
         },
         "ProductCard": {
             "Compare": {
-                "compare": "Jämför"
+                "compare": "Jämför",
+                "remove": "Ta bort",
+                "maxCompareLimit": "Du har nått det maximala antalet produkter att jämföra. Ta bort en produkt för att lägga till en ny."
             },
             "AddToCart": {
                 "viewOptions": "Visa alternativ",

@@ -8,6 +8,7 @@ import { Button } from '@/vibes/soul/primitives/button';
 
 interface Props {
   applyLabel?: string;
+  colorScheme?: 'light' | 'dark';
   disabled?: boolean;
   max?: number;
   maxLabel?: string;
@@ -30,6 +31,7 @@ const clamp = (value: number, min: number | null, max?: number | null) =>
 
 export function RangeInput({
   applyLabel = 'Apply',
+  colorScheme = 'light',
   disabled = false,
   max,
   maxLabel,
@@ -64,6 +66,7 @@ export function RangeInput({
     <div className="flex w-full items-center gap-2">
       <Input
         className="flex-1"
+        colorScheme={colorScheme}
         disabled={disabled}
         label={minLabel}
         max={maxStateAsNumber ?? max}
@@ -92,6 +95,7 @@ export function RangeInput({
       />
       <Input
         className="flex-1"
+        colorScheme={colorScheme}
         disabled={disabled}
         label={maxLabel}
         max={max}

@@ -12,11 +12,15 @@ export const defaultPageInfo = {
 
 export function pageInfoTransformer(
   pageInfo: ResultOf<typeof PaginationFragment>,
+  {
+    startCursorParamName = 'before',
+    endCursorParamName = 'after',
+  }: { startCursorParamName?: string; endCursorParamName?: string } = {},
 ): CursorPaginationInfo {
   return {
-    startCursorParamName: 'before',
+    startCursorParamName,
     startCursor: pageInfo.hasPreviousPage ? pageInfo.startCursor : null,
-    endCursorParamName: 'after',
+    endCursorParamName,
     endCursor: pageInfo.hasNextPage ? pageInfo.endCursor : null,
   };
 }

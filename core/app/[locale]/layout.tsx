@@ -17,7 +17,8 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { routing } from '~/i18n/routing';
 
-import { Notifications } from '../notifications';
+import { getToastNotification } from '../../lib/server-toast';
+import { CookieNotifications } from '../notifications';
 import { Providers } from '../providers';
 
 const RootLayoutMetadataQuery = graphql(`
@@ -58,6 +59,7 @@ export async function generateMetadata(): Promise<Metadata> {
     other: {
       platform: 'bigcommerce.catalyst',
       build_sha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? '',
+      store_hash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
     },
   };
 }
@@ -81,6 +83,7 @@ interface Props extends PropsWithChildren {
 
 export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
+  const toastNotificationCookieData = await getToastNotification();
 
   if (!routing.locales.includes(locale)) {
     notFound();
@@ -95,10 +98,14 @@ export default async function RootLayout({ params, children }: Props) {
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
       <body>
-        <Notifications />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <NuqsAdapter>
-            <Providers>{children}</Providers>
+            <Providers>
+              {toastNotificationCookieData && (
+                <CookieNotifications {...toastNotificationCookieData} />
+              )}
+              {children}
+            </Providers>
           </NuqsAdapter>
         </NextIntlClientProvider>
         <VercelComponents />

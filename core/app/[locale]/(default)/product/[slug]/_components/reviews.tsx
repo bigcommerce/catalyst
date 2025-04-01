@@ -1,5 +1,4 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { useTranslations } from 'next-intl';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
@@ -9,19 +8,30 @@ import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
 import { ProductReviewSchemaFragment } from './product-review-schema/fragment';
 import { ProductReviewSchema } from './product-review-schema/product-review-schema';
 
+export const PaginationSearchParamNames = {
+  BEFORE: 'reviews_before',
+  AFTER: 'reviews_after',
+} as const;
+
+interface SearchParams {
+  [PaginationSearchParamNames.BEFORE]?: string | null;
+  [PaginationSearchParamNames.AFTER]?: string | null;
+}
+
 const ReviewsQuery = graphql(
   `
-    query ReviewsQuery($entityId: Int!) {
+    query ReviewsQuery($entityId: Int!, $first: Int, $after: String, $before: String, $last: Int) {
       site {
         product(entityId: $entityId) {
           reviewSummary {
             averageRating
           }
-          reviews(first: 5) {
+          reviews(first: $first, after: $after, before: $before, last: $last) {
             pageInfo {
               ...PaginationFragment
             }
@@ -48,18 +58,22 @@ const ReviewsQuery = graphql(
   [ProductReviewSchemaFragment, PaginationFragment],
 );
 
-const getReviewsData = cache(async (productId: number) => {
+const getReviewsData = cache(async (productId: number, searchParams: Promise<SearchParams>) => {
+  const { [PaginationSearchParamNames.AFTER]: after, [PaginationSearchParamNames.BEFORE]: before } =
+    await searchParams;
+  const paginationArgs = before == null ? { first: 5, after } : { last: 5, before };
+
   const { data } = await client.fetch({
     document: ReviewsQuery,
-    variables: { entityId: productId },
+    variables: { ...paginationArgs, entityId: productId },
     fetchOptions: { next: { revalidate } },
   });
 
   return data.site.product;
 });
 
-const getReviews = async (productId: number) => {
-  const product = await getReviewsData(productId);
+const getReviews = async (productId: number, searchParams: Promise<SearchParams>) => {
+  const product = await getReviewsData(productId, searchParams);
 
   if (!product) {
     return [];
@@ -68,8 +82,8 @@ const getReviews = async (productId: number) => {
   return removeEdgesAndNodes(product.reviews);
 };
 
-const getFormattedReviews = async (productId: number) => {
-  const reviews = await getReviews(productId);
+const getFormattedReviews = async (productId: number, searchParams: Promise<SearchParams>) => {
+  const reviews = await getReviews(productId, searchParams);
   const format = await getFormatter();
 
   return reviews.map((review) => ({
@@ -86,7 +100,7 @@ const getFormattedReviews = async (productId: number) => {
 };
 
 const getAverageRating = async (productId: number) => {
-  const product = await getReviewsData(productId);
+  const product = await getReviewsData(productId, Promise.resolve({}));
 
   if (!product) {
     return 0;
@@ -95,45 +109,35 @@ const getAverageRating = async (productId: number) => {
   return product.reviewSummary.averageRating;
 };
 
-const getPaginationInfo = async (productId: number) => {
-  const t = await getTranslations('Product.Reviews.Pagination');
-  const product = await getReviewsData(productId);
+const getPaginationInfo = async (productId: number, searchParams: Promise<SearchParams>) => {
+  const product = await getReviewsData(productId, searchParams);
 
-  if (!product) {
-    return {};
-  }
-
-  const { hasNextPage, hasPreviousPage, endCursor, startCursor } = product.reviews.pageInfo;
-
-  return hasNextPage || hasPreviousPage
-    ? {
-        startCursorParamName: 'before',
-        endCursorParamName: 'after',
-        endCursor: hasNextPage ? endCursor : null,
-        startCursor: hasPreviousPage ? startCursor : null,
-        nextLabel: t('next'),
-        previousLabel: t('previous'),
-      }
-    : {};
+  return pageInfoTransformer(product?.reviews.pageInfo ?? defaultPageInfo, {
+    startCursorParamName: PaginationSearchParamNames.BEFORE,
+    endCursorParamName: PaginationSearchParamNames.AFTER,
+  });
 };
 
 interface Props {
   productId: number;
+  searchParams: Promise<SearchParams>;
 }
 
-export const Reviews = ({ productId }: Props) => {
-  const t = useTranslations('Product.Reviews');
+export const Reviews = async ({ productId, searchParams }: Props) => {
+  const t = await getTranslations('Product.Reviews');
 
   return (
     <>
       <ReviewsSection
         averageRating={getAverageRating(productId)}
         emptyStateMessage={t('empty')}
-        paginationInfo={getPaginationInfo(productId)}
-        reviews={getFormattedReviews(productId)}
+        nextLabel={t('Pagination.next')}
+        paginationInfo={getPaginationInfo(productId, searchParams)}
+        previousLabel={t('Pagination.previous')}
+        reviews={getFormattedReviews(productId, searchParams)}
         reviewsLabel={t('title')}
       />
-      <Stream fallback={null} value={getReviews(productId)}>
+      <Stream fallback={null} value={getReviews(productId, searchParams)}>
         {(reviews) =>
           reviews.length > 0 && <ProductReviewSchema productId={productId} reviews={reviews} />
         }

@@ -1,10 +1,11 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
+import { createSearchParamsCache, parseAsString } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Stream } from '@/vibes/soul/lib/streamable';
-import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
@@ -14,7 +15,7 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
-import { Reviews } from './_components/reviews';
+import { PaginationSearchParamNames, Reviews } from './_components/reviews';
 import { getProductData } from './page-data';
 
 const cachedProductDataVariables = cache(
@@ -113,12 +114,13 @@ const getProduct = async (props: Props) => {
     id: product.entityId.toString(),
     sku: product.sku,
     title: product.name,
-    description: (
-      <div className="prose" dangerouslySetInnerHTML={{ __html: product.description }} />
-    ),
+    description: <div dangerouslySetInnerHTML={{ __html: product.description }} />,
     href: product.path,
     images: product.defaultImage
-      ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
+      ? [
+          { src: product.defaultImage.url, alt: product.defaultImage.altText },
+          ...images.filter((image) => image.src !== product.defaultImage?.url),
+        ]
       : images,
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name,
@@ -221,6 +223,11 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
+const searchParamsCache = createSearchParamsCache({
+  [PaginationSearchParamNames.BEFORE]: parseAsString,
+  [PaginationSearchParamNames.AFTER]: parseAsString,
+});
+
 export default async function Product(props: Props) {
   const { locale, slug } = await props.params;
 
@@ -230,37 +237,38 @@ export default async function Product(props: Props) {
 
   const productId = Number(slug);
   const variables = await cachedProductDataVariables(slug, props.searchParams);
+  const parsedSearchParams = searchParamsCache.parse(props.searchParams);
 
   return (
     <>
       <ProductDetail
         action={addToCart}
-        additionalInformationLabel={t('ProductDetails.additionalInformation')}
-        ctaDisabled={getCtaDisabled(props)}
-        ctaLabel={getCtaLabel(props)}
+        additionalInformationTitle={t('ProductDetails.additionalInformation')}
+        ctaDisabled={Streamable.from(() => getCtaDisabled(props))}
+        ctaLabel={Streamable.from(() => getCtaLabel(props))}
         decrementLabel={t('ProductDetails.decreaseQuantity')}
-        fields={getFields(props)}
+        fields={Streamable.from(() => getFields(props))}
         incrementLabel={t('ProductDetails.increaseQuantity')}
         prefetch={true}
-        product={getProduct(props)}
+        product={Streamable.from(() => getProduct(props))}
         quantityLabel={t('ProductDetails.quantity')}
         thumbnailLabel={t('ProductDetails.thumbnail')}
       />
 
-      <FeaturedProductsCarousel
+      <FeaturedProductCarousel
         cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
         emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
         emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
         nextLabel={t('RelatedProducts.nextProducts')}
         previousLabel={t('RelatedProducts.previousProducts')}
-        products={getRelatedProducts(props)}
+        products={Streamable.from(() => getRelatedProducts(props))}
         scrollbarLabel={t('RelatedProducts.scrollbar')}
         title={t('RelatedProducts.title')}
       />
 
-      <Reviews productId={productId} />
+      <Reviews productId={productId} searchParams={parsedSearchParams} />
 
-      <Stream fallback={null} value={getProductData(variables)}>
+      <Stream fallback={null} value={Streamable.from(() => getProductData(variables))}>
         {(product) => (
           <>
             <ProductSchema product={product} />

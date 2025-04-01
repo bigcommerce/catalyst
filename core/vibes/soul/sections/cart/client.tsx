@@ -12,7 +12,9 @@ import { toast } from '@/vibes/soul/primitives/toaster';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { Image } from '~/components/image';
 
+import { CouponCodeForm, CouponCodeFormState } from './coupon-code-form';
 import { cartLineItemActionFormDataSchema } from './schema';
+import { ShippingForm, ShippingFormState } from './shipping-form';
 
 import { CartEmptyState } from '.';
 
@@ -44,6 +46,67 @@ export interface Cart<LineItem extends CartLineItem> {
   totalLabel?: string;
 }
 
+interface CouponCode {
+  action: Action<CouponCodeFormState, FormData>;
+  couponCodes?: string[];
+  ctaLabel?: string;
+  disabled?: boolean;
+  label?: string;
+  placeholder?: string;
+  removeLabel?: string;
+}
+
+interface ShippingOption {
+  label: string;
+  value: string;
+  price: string;
+}
+
+interface Country {
+  label: string;
+  value: string;
+}
+
+interface States {
+  country: string;
+  states: Array<{
+    label: string;
+    value: string;
+  }>;
+}
+
+interface Address {
+  country: string;
+  city?: string;
+  state?: string;
+  postalCode?: string;
+}
+
+interface Shipping {
+  action: Action<ShippingFormState, FormData>;
+  countries?: Country[];
+  states?: States[];
+  address?: Address;
+  shippingOptions?: ShippingOption[];
+  shippingOption?: ShippingOption;
+  shippingLabel?: string;
+  addLabel?: string;
+  changeLabel?: string;
+  countryLabel?: string;
+  cityLabel?: string;
+  stateLabel?: string;
+  postalCodeLabel?: string;
+  updateShippingOptionsLabel?: string;
+  viewShippingOptionsLabel?: string;
+  cancelLabel?: string;
+  editAddressLabel?: string;
+  shippingOptionsLabel?: string;
+  updateShippingLabel?: string;
+  addShippingLabel?: string;
+  showShippingForm?: boolean;
+  noShippingOptionsLabel?: string;
+}
+
 export interface Props<LineItem extends CartLineItem> {
   title?: string;
   summaryTitle?: string;
@@ -55,6 +118,8 @@ export interface Props<LineItem extends CartLineItem> {
   decrementLineItemLabel?: string;
   incrementLineItemLabel?: string;
   cart: Cart<LineItem>;
+  couponCode?: CouponCode;
+  shipping?: Shipping;
 }
 
 const defaultEmptyState = {
@@ -66,6 +131,7 @@ const defaultEmptyState = {
 export function CartClient<LineItem extends CartLineItem>({
   title,
   cart,
+  couponCode,
   decrementLineItemLabel,
   incrementLineItemLabel,
   deleteLineItemLabel,
@@ -74,6 +140,7 @@ export function CartClient<LineItem extends CartLineItem>({
   checkoutLabel = 'Checkout',
   emptyState = defaultEmptyState,
   summaryTitle,
+  shipping,
 }: Props<LineItem>) {
   const [state, formAction] = useActionState(lineItemAction, {
     lineItems: cart.lineItems,
@@ -147,7 +214,11 @@ export function CartClient<LineItem extends CartLineItem>({
                   <dd>{summaryItem.value}</dd>
                 </div>
               ))}
+
+              {shipping && <ShippingForm {...shipping} />}
             </div>
+
+            {couponCode && <CouponCodeForm {...couponCode} />}
 
             <div className="flex justify-between border-t border-contrast-100 py-6 text-xl font-bold">
               <dt>{cart.totalLabel ?? 'Total'}</dt>
@@ -316,11 +387,15 @@ function CheckoutButton({
 >) {
   const [lastResult, formAction] = useActionState(action, null);
 
+  const [form] = useForm({ lastResult });
+
   useEffect(() => {
-    if (lastResult?.error) {
-      console.log(lastResult.error);
+    if (form.errors) {
+      form.errors.forEach((error) => {
+        toast.error(error);
+      });
     }
-  }, [lastResult?.error]);
+  }, [form.errors]);
 
   return (
     <form action={formAction}>

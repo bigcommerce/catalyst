@@ -273,7 +273,67 @@
                     "notFound": "Klant bestaat niet"
                 }
             }
+        },
+        "Wishlists": {
+            "title": "Verlanglijstjes",
+            "new": "Nieuw verlanglijstje",
+            "items": "{count, plural, =1 {1 item} other {# items}}",
+            "viewWishlist": "Lijstje bekijken",
+            "noWishlists": "Je hebt geen verlanglijstjes.",
+            "noWishlistsSubtitle": "Maak een verlanglijstje om je favoriete producten te bewaren.",
+            "noWishlistsCallToAction": "Een verlanglijstje maken",
+            "emptyWishlist": "Je hebt nog geen producten aan dit verlanglijstje toegevoegd.",
+            "share": "Delen",
+            "shareSuccess": "Verlanglijstje is succesvol gedeeld.",
+            "shareCopied": "De openbare URL van het verlanglijstje is naar je klembord gekopieerd.",
+            "shareDisabled": "Je verlanglijstje moet openbaar zijn om het te kunnen delen.",
+            "makePublic": "Openbaar maken",
+            "makePrivate": "Privé maken",
+            "rename": "Naam wijzigen",
+            "delete": "Verwijderen",
+            "Visibility": {
+                "public": "Openbaar",
+                "private": "Privé"
+            },
+            "Modal": {
+                "cancel": "Annuleren",
+                "close": "Sluiten",
+                "copy": "Kopiëren",
+                "create": "Aanmaken",
+                "save": "Opslaan",
+                "delete": "Verwijderen",
+                "newTitle": "Een nieuw verlanglijstje maken",
+                "shareTitle": "Deel {name}",
+                "renameTitle": "Naam van {name} wijzigen",
+                "deleteTitle": "{name} verwijderen?",
+                "changeVisibilityPublicTitle": "{name} openbaar maken?",
+                "changeVisibilityPrivateTitle": "{name} privé maken?",
+                "makePublicContent": "Weet je zeker dat je <bold>{name}</bold> openbaar wilt maken? Hierdoor kunnen anderen je verlanglijstje zien als ze de link hebben.",
+                "makePrivateContent": "Weet je zeker dat je <bold>{name}</bold> privé wilt maken? Als je je verlanglijstje met anderen hebt gedeeld, kunnen ze het dan niet meer zien.",
+                "deleteContent": "Weet u zeker dat u <bold>{name}</bold> wilt verwijderen? Dit kan niet ongedaan worden gemaakt."
+            },
+            "Form": {
+                "nameLabel": "Naam"
+            },
+            "Errors": {
+                "nameRequired": "De naam van het verlanglijstje mag niet leeg zijn.",
+                "updateFailed": "Het bijwerken van je verlanglijstje is mislukt. Probeer het opnieuw.",
+                "deleteFailed": "Het verwijderen van je verlanglijstje is mislukt. Probeer het opnieuw.",
+                "removeProductFailed": "Het is niet gelukt om het product van je verlanglijstje te verwijderen. Probeer het opnieuw.",
+                "unauthorized": "U bent niet bevoegd om deze handeling uit te voeren. Log in en probeer het opnieuw.",
+                "unexpected": "Er is een onverwachte fout opgetreden. Probeer het opnieuw."
+            },
+            "Result": {
+                "createSuccess": "Verlanglijstje is succesvol aangemaakt.",
+                "updateSuccess": "Het verlanglijstje is bijgewerkt.",
+                "deleteSuccess": "Verlanglijstje is succesvol verwijderd.",
+                "removeItemSuccess": "Het artikel is verwijderd van je verlanglijstje."
+            }
         }
+    },
+    "PublicWishlist": {
+        "title": "Openbare verlanglijst",
+        "defaultName": "Openbare verlanglijst"
     },
     "Blog": {
         "title": "Blog",
@@ -298,28 +358,42 @@
         "increment": "Aantal verhogen",
         "decrement": "Aantal verminderen",
         "removeItem": "Item verwijderen",
+        "cartCombined": "We hebben gezien dat je artikelen in een eerder winkelmandje had opgeslagen, dus we hebben ze voor je aan je huidige winkelmandje toegevoegd.",
+        "cartRestored": "Je bent een winkelmandje begonnen op een ander apparaat en we hebben het hier hersteld, zodat je verder kunt gaan waar je was gebleven.",
         "CheckoutSummary": {
             "title": "Overzicht",
             "subTotal": "Subtotaal",
             "discounts": "Kortingen",
-            "coupon": "Coupon",
-            "couponCode": "Couponcode",
-            "addCoupon": "Coupon toevoegen",
-            "enterCouponCode": "Voer uw couponcode in",
-            "couponCodeRequired": "Voer een kortingscode in.",
-            "couponCodeInvalid": "De kortingscode die u hebt ingevoerd is niet geldig.",
             "remove": "Verwijderen",
             "spinnerText": "Verwijderen...",
-            "couponCodeRemoveFailed": "Er is een fout opgetreden bij het verwijderen van de kortingscode. Probeer het opnieuw.",
             "tax": "Belasting",
-            "grandTotal": "Totaal",
-            "shipping": "Verzending",
-            "shippingCost": "Verzendkosten",
-            "handlingCost": "Verwerkingskosten",
-            "add": "Toevoegen",
-            "change": "Wijzigen",
-            "cancel": "Annuleren",
-            "errorMessage": "Winkelwagenoverzicht niet gevonden, probeer het opnieuw."
+            "total": "Totaal",
+            "errorMessage": "Winkelwagenoverzicht niet gevonden, probeer het opnieuw.",
+            "CouponCode": {
+                "apply": "Toepassen",
+                "couponCode": "Couponcode",
+                "removeCouponCode": "Couponcode verwijderen",
+                "invalidCouponCode": "Voer een geldige couponcode in",
+                "cartNotFound": "Geen cartId-cookie gevonden."
+            },
+            "Shipping": {
+                "shipping": "Verzending",
+                "add": "Toevoegen",
+                "change": "Wijzigen",
+                "cancel": "Annuleren",
+                "country": "Land",
+                "city": "Plaats",
+                "state": "Staat/provincie",
+                "postalCode": "Postcode",
+                "updatedShippingOptions": "Verzendopties bijwerken",
+                "viewShippingOptions": "Verzendopties bekijken",
+                "editAddress": "Adres bewerken",
+                "shippingOptions": "Verzendopties",
+                "updateShipping": "Verzending bijwerken",
+                "addShipping": "Verzending toevoegen",
+                "cartNotFound": "Geen cartId-cookie gevonden.",
+                "noShippingOptions": "Er zijn geen verzendopties beschikbaar voor je adres"
+            }
         },
         "ShippingInfo": {
             "country": "Land",
@@ -375,26 +449,21 @@
         }
     },
     "Compare": {
-        "title": "Vergelijken",
-        "heading": "{quantity, plural, =1 {1 product} other {# producten}} vergelijken",
-        "nothingToCompare": "Er valt niets te vergelijken!",
-        "helpingText": "Op de een of andere manier ben je hier terechtgekomen, maar je moet eerst een paar producten selecteren.",
-        "Table": {
-            "caption": "Productvergelijking",
-            "noImage": "Geen afbeelding",
-            "viewOptions": "Opties weergeven",
-            "description": "Description",
-            "rating": "Beoordeling",
-            "availability": "Beschikbaarheid",
-            "Prices": {
-                "msrp": "Adviesprijs",
-                "was": "was",
-                "now": "nu"
-            }
-        },
-        "AddToCart": {
-            "success": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>"
-        }
+        "title": "Producten vergelijken",
+        "addToCart": "Toevoegen aan winkelmandje",
+        "next": "Volgende producten",
+        "previous": "Vorige producten",
+        "noProductsToCompare": "Geen producten om te vergelijken",
+        "sku": "SKU",
+        "weight": "Gewicht",
+        "description": "Description",
+        "noDescription": "Er is geen beschrijving beschikbaar.",
+        "rating": "Beoordeling",
+        "noRatings": "Er zijn geen beoordelingen.",
+        "otherDetails": "Overige details",
+        "noOtherDetails": "Er zijn geen verdere details.",
+        "viewOptions": "Opties weergeven",
+        "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>"
     },
     "Product": {
         "ProductDetails": {
@@ -404,6 +473,7 @@
             "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
             "missingCart": "Winkelmandje niet gevonden. Probeer het later opnieuw.",
             "unknownError": "Onbekende fout. Probeer het later opnieuw.",
+            "variantRequiredError": "Voor dit product moeten opties worden geselecteerd om het aan de winkelwagen toe te voegen.",
             "increaseNumber": "Aantal verhogen",
             "decreaseNumber": "Aantal verlagen",
             "thumbnail": "Bekijk het nummer van de afbeelding",
@@ -574,7 +644,9 @@
         },
         "ProductCard": {
             "Compare": {
-                "compare": "Vergelijken"
+                "compare": "Vergelijken",
+                "remove": "Verwijderen",
+                "maxCompareLimit": "Je hebt het maximale aantal producten voor vergelijking bereikt. Verwijder een product om een nieuw toe te voegen."
             },
             "AddToCart": {
                 "viewOptions": "Opties weergeven",

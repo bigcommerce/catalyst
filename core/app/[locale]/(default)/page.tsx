@@ -2,8 +2,9 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
-import { FeaturedProductsCarousel } from '@/vibes/soul/sections/featured-products-carousel';
-import { FeaturedProductsList } from '@/vibes/soul/sections/featured-products-list';
+import { Streamable } from '@/vibes/soul/lib/streamable';
+import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
+import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
@@ -86,23 +87,23 @@ export default async function Home({ params }: Props) {
     <>
       <Slideshow />
 
-      <FeaturedProductsList
+      <FeaturedProductList
         cta={{ label: t('FeaturedProducts.cta'), href: '/shop-all' }}
         description={t('FeaturedProducts.description')}
         emptyStateSubtitle={t('FeaturedProducts.emptyStateSubtitle')}
         emptyStateTitle={t('FeaturedProducts.emptyStateTitle')}
-        products={getFeaturedProducts()}
+        products={Streamable.from(getFeaturedProducts)}
         title={t('FeaturedProducts.title')}
       />
 
-      <FeaturedProductsCarousel
+      <FeaturedProductCarousel
         cta={{ label: t('NewestProducts.cta'), href: '/shop-all/?sort=newest' }}
         description={t('NewestProducts.description')}
         emptyStateSubtitle={t('NewestProducts.emptyStateSubtitle')}
         emptyStateTitle={t('NewestProducts.emptyStateTitle')}
         nextLabel={t('NewestProducts.nextProducts')}
         previousLabel={t('NewestProducts.previousProducts')}
-        products={getNewestProducts()}
+        products={Streamable.from(getNewestProducts)}
         title={t('NewestProducts.title')}
       />
 
