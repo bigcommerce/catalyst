@@ -116,7 +116,10 @@ const getProduct = async (props: Props) => {
     description: <div dangerouslySetInnerHTML={{ __html: product.description }} />,
     href: product.path,
     images: product.defaultImage
-      ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
+      ? [
+          { src: product.defaultImage.url, alt: product.defaultImage.altText },
+          ...images.filter((image) => image.src !== product.defaultImage?.url),
+        ]
       : images,
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name,
@@ -239,7 +242,7 @@ export default async function Product(props: Props) {
     <>
       <ProductDetail
         action={addToCart}
-        additionaInformationTitle={t('ProductDetails.additionalInformation')}
+        additionalInformationTitle={t('ProductDetails.additionalInformation')}
         ctaDisabled={Streamable.from(() => getCtaDisabled(props))}
         ctaLabel={Streamable.from(() => getCtaLabel(props))}
         decrementLabel={t('ProductDetails.decreaseQuantity')}

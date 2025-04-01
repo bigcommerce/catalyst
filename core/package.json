@@ -75,6 +75,7 @@
   },
   "devDependencies": {
     "@0no-co/graphqlsp": "^1.12.16",
+    "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@faker-js/faker": "^9.6.0",
     "@gql.tada/cli-utils": "^1.6.3",
