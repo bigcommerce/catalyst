@@ -470,6 +470,7 @@
             "quantity": "Quantité",
             "increaseQuantity": "Augmenter la quantité :",
             "decreaseQuantity": "Réduire la quantité",
+            "emptySelectPlaceholder": "Sélectionner une option",
             "successMessage": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
             "missingCart": "Panier introuvable. Veuillez réessayer plus tard !",
             "unknownError": "Erreur inconnue. Veuillez réessayer plus tard.",
