@@ -203,11 +203,11 @@ export function CartClient<LineItem extends CartLineItem>({
     <StickySidebarLayout
       sidebar={
         <div>
-          <h2 className="mb-10 font-heading text-4xl font-medium leading-none @xl:text-5xl">
+          <h2 className="font-heading mb-10 text-4xl leading-none font-medium @xl:text-5xl">
             {summaryTitle}
           </h2>
           <dl aria-label="Receipt Summary" className="w-full">
-            <div className="divide-y divide-contrast-100">
+            <div className="divide-contrast-100 divide-y">
               {cart.summaryItems.map((summaryItem, index) => (
                 <div className="flex justify-between py-4" key={index}>
                   <dt>{summaryItem.label}</dt>
@@ -220,7 +220,7 @@ export function CartClient<LineItem extends CartLineItem>({
 
             {couponCode && <CouponCodeForm {...couponCode} />}
 
-            <div className="flex justify-between border-t border-contrast-100 py-6 text-xl font-bold">
+            <div className="border-contrast-100 flex justify-between border-t py-6 text-xl font-bold">
               <dt>{cart.totalLabel ?? 'Total'}</dt>
               <dl>{cart.total}</dl>
             </div>
@@ -236,9 +236,9 @@ export function CartClient<LineItem extends CartLineItem>({
       sidebarSize="1/3"
     >
       <div className="w-full">
-        <h1 className="mb-10 font-heading text-4xl font-medium leading-none @xl:text-5xl">
+        <h1 className="font-heading mb-10 text-4xl leading-none font-medium @xl:text-5xl">
           {title}
-          <span className="ml-4 text-contrast-300 contrast-more:text-contrast-500">
+          <span className="text-contrast-300 contrast-more:text-contrast-500 ml-4">
             {optimisticQuantity}
           </span>
         </h1>
@@ -247,10 +247,10 @@ export function CartClient<LineItem extends CartLineItem>({
         <ul className="flex flex-col gap-5">
           {optimisticLineItems.map((lineItem) => (
             <li
-              className="flex flex-col items-start gap-x-5 gap-y-4 @container @sm:flex-row"
+              className="@container flex flex-col items-start gap-x-5 gap-y-4 @sm:flex-row"
               key={lineItem.id}
             >
-              <div className="relative aspect-square w-full max-w-24 overflow-hidden rounded-xl bg-contrast-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4">
+              <div className="bg-contrast-100 focus-visible:ring-primary relative aspect-square w-full max-w-24 overflow-hidden rounded-xl focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-hidden">
                 <Image
                   alt={lineItem.image.alt}
                   className="object-cover"
@@ -328,7 +328,7 @@ function CounterForm({
           <button
             aria-label={decrementLabel}
             className={clsx(
-              'group rounded-l-lg p-3 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary',
+              'group focus-visible:ring-primary rounded-l-lg p-3 focus-visible:ring-2 focus-visible:outline-hidden',
               lineItem.quantity === 1 ? 'opacity-50' : 'hover:bg-contrast-100/50',
             )}
             disabled={lineItem.quantity === 1}
@@ -345,20 +345,20 @@ function CounterForm({
               strokeWidth={1.5}
             />
           </button>
-          <span className="flex w-8 select-none justify-center focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary">
+          <span className="focus-visible:ring-primary flex w-8 justify-center select-none focus-visible:ring-2 focus-visible:outline-hidden">
             {lineItem.quantity}
           </span>
           <button
             aria-label={incrementLabel}
             className={clsx(
-              'group rounded-r-lg p-3 transition-colors duration-300 hover:bg-contrast-100/50 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary',
+              'group hover:bg-contrast-100/50 focus-visible:ring-primary rounded-r-lg p-3 transition-colors duration-300 focus-visible:ring-2 focus-visible:outline-hidden',
             )}
             name="intent"
             type="submit"
             value="increment"
           >
             <Plus
-              className="text-contrast-300 transition-colors duration-300 group-hover:text-foreground"
+              className="text-contrast-300 group-hover:text-foreground transition-colors duration-300"
               size={18}
               strokeWidth={1.5}
             />
@@ -367,7 +367,7 @@ function CounterForm({
 
         <button
           aria-label={deleteLabel}
-          className="-ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-contrast-100 focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4"
+          className="hover:bg-contrast-100 focus-visible:ring-primary -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-hidden"
           name="intent"
           type="submit"
           value="delete"

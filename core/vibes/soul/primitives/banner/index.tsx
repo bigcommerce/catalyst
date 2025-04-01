@@ -56,7 +56,7 @@ export const Banner = forwardRef(
     return (
       <div
         className={clsx(
-          'relative w-full overflow-hidden bg-[var(--banner-background,hsl(var(--primary)))] transition-all duration-300 ease-in @container',
+          '@container relative w-full overflow-hidden bg-[var(--banner-background,hsl(var(--primary)))] transition-all duration-300 ease-in',
           banner.dismissed ? 'pointer-events-none max-h-0' : 'max-h-32',
           className,
         )}
@@ -70,7 +70,7 @@ export const Banner = forwardRef(
         {!hideDismiss && (
           <button
             aria-label="Dismiss banner"
-            className="absolute right-3 top-3 grid h-8 w-8 place-content-center rounded-full bg-[var(--banner-close-background,transparent)] text-[var(--banner-close-icon,hsl(var(--foreground)/50%))] transition-colors duration-300 hover:bg-[var(--banner-close-background-hover,hsl(var(--background)/40%))] hover:text-[var(--banner-close-icon-hover,hsl(var(--foreground)))] focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--banner-focus,hsl(var(--foreground)))] @xl:top-1/2 @xl:-translate-y-1/2"
+            className="absolute top-3 right-3 grid h-8 w-8 place-content-center rounded-full bg-[var(--banner-close-background,transparent)] text-[var(--banner-close-icon,hsl(var(--foreground)/50%))] transition-colors duration-300 hover:bg-[var(--banner-close-background-hover,hsl(var(--background)/40%))] hover:text-[var(--banner-close-icon-hover,hsl(var(--foreground)))] focus-visible:ring-2 focus-visible:ring-[var(--banner-focus,hsl(var(--foreground)))] focus-visible:outline-hidden @xl:top-1/2 @xl:-translate-y-1/2"
             onClick={(e) => {
               e.preventDefault();
               hideBanner();

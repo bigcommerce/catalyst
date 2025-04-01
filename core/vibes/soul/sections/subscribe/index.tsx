@@ -23,7 +23,7 @@ export function Subscribe({
     <section className="bg-primary-shadow @container">
       <div className="flex flex-col items-start @4xl:flex-row @4xl:items-stretch">
         {image && (
-          <div className="relative min-h-96 w-full bg-primary/10 @4xl:flex-1">
+          <div className="bg-primary/10 relative min-h-96 w-full @4xl:flex-1">
             <Image
               alt={image.alt}
               className="object-cover"
@@ -42,7 +42,7 @@ export function Subscribe({
             )}
           >
             <div className="flex-1">
-              <h2 className="mb-4 font-heading text-2xl font-medium leading-none text-primary-highlight @xl:text-3xl @4xl:text-4xl">
+              <h2 className="font-heading text-primary-highlight mb-4 text-2xl leading-none font-medium @xl:text-3xl @4xl:text-4xl">
                 {title}
               </h2>
               <p className="text-primary-highlight opacity-75">{description}</p>

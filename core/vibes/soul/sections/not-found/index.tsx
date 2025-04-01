@@ -10,10 +10,10 @@ export function NotFound({
   return (
     <section className="@container">
       <div className="mx-auto max-w-3xl px-4 pt-10 @xl:px-6 @xl:pt-14 @4xl:px-8 @4xl:pt-20">
-        <h1 className="mb-3 font-heading text-3xl font-medium leading-none @xl:text-4xl @4xl:text-5xl">
+        <h1 className="font-heading mb-3 text-3xl leading-none font-medium @xl:text-4xl @4xl:text-5xl">
           {title}
         </h1>
-        <p className="text-lg text-contrast-500">{subtitle}</p>
+        <p className="text-contrast-500 text-lg">{subtitle}</p>
       </div>
     </section>
   );

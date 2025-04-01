@@ -46,18 +46,18 @@ export function InlineEmailForm({
     <form {...getFormProps(form)} action={formAction} className={clsx('space-y-2', className)}>
       <div
         className={clsx(
-          'relative rounded-xl border bg-background text-base transition-colors duration-200 focus-within:border-primary focus:outline-hidden',
+          'bg-background focus-within:border-primary relative rounded-xl border text-base transition-colors duration-200 focus:outline-hidden',
           errors.length ? 'border-error' : 'border-black',
         )}
       >
         <input
           {...getInputProps(fields.email, { type: 'email' })}
-          className="placeholder-contrast-gray-500 h-14 w-full bg-transparent pl-5 pr-16 text-foreground placeholder:font-normal focus:outline-hidden"
+          className="placeholder-contrast-gray-500 text-foreground h-14 w-full bg-transparent pr-16 pl-5 placeholder:font-normal focus:outline-hidden"
           data-1p-ignore
           key={fields.email.id}
           placeholder={placeholder}
         />
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 pr-2">
+        <div className="absolute top-1/2 right-0 -translate-y-1/2 pr-2">
           <Button
             aria-label={submitLabel}
             loading={isPending}
