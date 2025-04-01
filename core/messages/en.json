@@ -215,7 +215,7 @@
       "shippingMethodLabel": "Shipping method",
       "summaryTotalLabel": "Total",
       "destinationTitle": "Destination",
-      "destinationWithCountTitle": "Destination {number}/{total}",
+      "destinationWithCountTitle": "Destination {number, number}/{total, number}",
       "summarySubtotalLabel": "Subtotal",
       "summaryShippingLabel": "Shipping",
       "summaryTaxLabel": "Tax"
@@ -463,7 +463,9 @@
     "otherDetails": "Other details",
     "noOtherDetails": "There are no other details.",
     "viewOptions": "View options",
-    "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>"
+    "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>",
+    "missingCart": "Cart not found. Please try again later.",
+    "unknownError": "Unknown error. Please try again later."
   },
   "Product": {
     "ProductDetails": {

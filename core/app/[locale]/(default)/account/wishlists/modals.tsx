@@ -17,7 +17,7 @@ import { WishlistModalProps } from './_components/wishlist-actions-menu';
 const bold = (chunks: React.ReactNode) => <span className="font-bold">{chunks}</span>;
 
 export const getNewWishlistModal = (
-  t: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
 ): WishlistModalProps => ({
   children: (
     <NewWishlistModal nameLabel={t('Form.nameLabel')} requiredError={t('Errors.nameRequired')} />
@@ -38,7 +38,7 @@ export const getNewWishlistModal = (
 
 export const getRenameWishlistModal = (
   wishlist: Wishlist,
-  t: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
 ): WishlistModalProps => ({
   children: (
     <RenameWishlistModal
@@ -63,7 +63,7 @@ export const getRenameWishlistModal = (
 
 export const getChangeWishlistVisibilityModal = (
   wishlist: Wishlist,
-  t: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
 ): WishlistModalProps => {
   const name = wishlist.name;
   const title = wishlist.visibility.isPublic
@@ -108,7 +108,7 @@ export const getShareWishlistModal = (
 
 export const getDeleteWishlistModal = (
   wishlist: Wishlist,
-  t: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
 ): WishlistModalProps => ({
   children: (
     <DeleteWishlistModal

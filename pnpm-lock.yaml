@@ -153,8 +153,8 @@ importers:
         specifier: 5.0.0-beta.25
         version: 5.0.0-beta.25(next@15.3.0-canary.20(@babel/core@7.24.7)(@playwright/test@1.51.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(nodemailer@6.9.16)(react@19.0.0)
       next-intl:
-        specifier: ^3.26.5
-        version: 3.26.5(next@15.3.0-canary.20(@babel/core@7.24.7)(@playwright/test@1.51.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
+        specifier: ^4.0.2
+        version: 4.0.2(next@15.3.0-canary.20(@babel/core@7.24.7)(@playwright/test@1.51.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(typescript@5.8.2)
       nuqs:
         specifier: ^2.4.1
         version: 2.4.1(next@15.3.0-canary.20(@babel/core@7.24.7)(@playwright/test@1.51.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)
@@ -1090,8 +1090,8 @@ packages:
   '@formatjs/icu-skeleton-parser@1.8.14':
     resolution: {integrity: sha512-i4q4V4qslThK4Ig8SxyD76cp3+QJ3sAqr7f6q9VVfeGtxG9OhiAk3y9XF6Q41OymsKzsGQ6OQQoJNY4/lI8TcQ==}
 
-  '@formatjs/intl-localematcher@0.5.7':
-    resolution: {integrity: sha512-GGFtfHGQVFe/niOZp24Kal5b2i36eE2bNL0xi9Sg/yd0TR8aLjcteApZdHmismP5QQax1cMnZM9yWySUUjJteA==}
+  '@formatjs/intl-localematcher@0.5.10':
+    resolution: {integrity: sha512-af3qATX+m4Rnd9+wHcjJ4w2ijq+rAVP3CCinJQvFv1kgSu1W6jypUmvleJxcewdxmutM8dmIRZFxO/IQBZmP2Q==}
 
   '@formatjs/intl-localematcher@0.6.1':
     resolution: {integrity: sha512-ePEgLgVCqi2BBFnTMWPfIghu6FkbZnnBVhO2sSxvLfrdFw7wCHAHiDoM2h4NRgjbaY7+B7HgOLZGkK187pZTZg==}
@@ -2193,6 +2193,9 @@ packages:
 
   '@rushstack/eslint-patch@1.11.0':
     resolution: {integrity: sha512-zxnHvoMQVqewTJr/W4pKjF0bMGiKJv1WX7bSrkl46Hg0QjESbzBROWK0Wg4RphzSOS5Jiy7eFimmM3UgMrMZbQ==}
+
+  '@schummar/icu-type-parser@1.21.5':
+    resolution: {integrity: sha512-bXHSaW5jRTmke9Vd0h5P7BtWZG9Znqb8gSDxZnxaGSJnGwPLDPfS+3g0BKzeWqzgZPsIVZkM7m2tbo18cm5HBw==}
 
   '@segment/analytics-core@1.8.1':
     resolution: {integrity: sha512-EYcdBdhfi1pOYRX+Sf5orpzzYYFmDHTEu6+w0hjXpW5bWkWct+Nv6UJg1hF4sGDKEQjpZIinLTpQ4eioFM4KeQ==}
@@ -3601,8 +3604,8 @@ packages:
     resolution: {integrity: sha512-ca9pw9fomFcKPvFLXhBKUK90ZvGibiGOvRJNbjljY7s7uq/5YO4BOzcYtJqExdx99rF6aAcnRxHmcUHcz6sQsg==}
     engines: {node: '>=0.10'}
 
-  esrap@1.4.5:
-    resolution: {integrity: sha512-CjNMjkBWWZeHn+VX+gS8YvFwJ5+NDhg8aWZBSFJPR8qQduDNjbJodA2WcwCm7uQa5Rjqj+nZvVmceg1RbHFB9g==}
+  esrap@1.4.6:
+    resolution: {integrity: sha512-F/D2mADJ9SHY3IwksD4DAXjTt7qt7GWUf3/8RhCNWmC/67tyb55dpimHmy7EplakFaflV0R/PC+fdSPqrRHAQw==}
 
   esrecurse@4.3.0:
     resolution: {integrity: sha512-KmfKL3b6G+RXvP8N1vr3Tq1kL/oCFgn2NYXEtqP8/L3pKapUA4G8cFVaoF3SU323CD4XypR/ffioHmkti6/Tag==}
@@ -4609,11 +4612,15 @@ packages:
       nodemailer:
         optional: true
 
-  next-intl@3.26.5:
-    resolution: {integrity: sha512-EQlCIfY0jOhRldiFxwSXG+ImwkQtDEfQeSOEQp6ieAGSLWGlgjdb/Ck/O7wMfC430ZHGeUKVKax8KGusTPKCgg==}
+  next-intl@4.0.2:
+    resolution: {integrity: sha512-3cKVflwdrqxCOvAL+DtGN68qR802i0PEj0dttkAD5IK5XxOjugQs4yU8aSakvPMbkOrhEJ+89z5lG2EAqi7Gkw==}
     peerDependencies:
-      next: ^10.0.0 || ^11.0.0 || ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0
+      next: ^12.0.0 || ^13.0.0 || ^14.0.0 || ^15.0.0
       react: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc <19.0.0 || ^19.0.0
+      typescript: ^5.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
 
   next@15.3.0-canary.20:
     resolution: {integrity: sha512-/o2XmAE7LIvgjsuQy9HKjdZs80B4JR37k+5BanV9ftNK6WSbVIo90wAlYsGYxsrnyy2IhvCSeCKLNmtjecBnew==}
@@ -5826,10 +5833,10 @@ packages:
       '@types/react':
         optional: true
 
-  use-intl@3.26.5:
-    resolution: {integrity: sha512-OdsJnC/znPvHCHLQH/duvQNXnP1w0hPfS+tkSi3mAbfjYBGh4JnyfdwkQBfIVf7t8gs9eSX/CntxUMvtKdG2MQ==}
+  use-intl@4.0.2:
+    resolution: {integrity: sha512-6RAP/5KJMRzLMLS25/BVh2u09cRK8S6HRGc1RnZvqR547qAKZCpjYylOqMPU9eNIirAiKoGmsoUPa7JrlaA/yg==}
     peerDependencies:
-      react: ^16.8.0 || ^17.0.0 || ^18.0.0 || >=19.0.0-rc <19.0.0 || ^19.0.0
+      react: ^17.0.0 || ^18.0.0 || >=19.0.0-rc <19.0.0 || ^19.0.0
 
   use-sidecar@1.1.3:
     resolution: {integrity: sha512-Fedw0aZvkhynoPYlA5WXrMCAMm+nSWdZt6lzJQ7Ok8S6Q+VsHmHpRWndVRJ8Be0ZbkfPc5LRYH+5XrzXcEeLRQ==}
@@ -6718,7 +6725,7 @@ snapshots:
       '@formatjs/ecma402-abstract': 2.3.4
       tslib: 2.8.1
 
-  '@formatjs/intl-localematcher@0.5.7':
+  '@formatjs/intl-localematcher@0.5.10':
     dependencies:
       tslib: 2.8.1
 
@@ -7860,6 +7867,8 @@ snapshots:
   '@rushstack/eslint-patch@1.10.5': {}
 
   '@rushstack/eslint-patch@1.11.0': {}
+
+  '@schummar/icu-type-parser@1.21.5': {}
 
   '@segment/analytics-core@1.8.1':
     dependencies:
@@ -9461,7 +9470,7 @@ snapshots:
     dependencies:
       estraverse: 5.3.0
 
-  esrap@1.4.5:
+  esrap@1.4.6:
     dependencies:
       '@jridgewell/sourcemap-codec': 1.5.0
     optional: true
@@ -10657,13 +10666,15 @@ snapshots:
     optionalDependencies:
       nodemailer: 6.9.16
 
-  next-intl@3.26.5(next@15.3.0-canary.20(@babel/core@7.24.7)(@playwright/test@1.51.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0):
+  next-intl@4.0.2(next@15.3.0-canary.20(@babel/core@7.24.7)(@playwright/test@1.51.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0))(react@19.0.0)(typescript@5.8.2):
     dependencies:
-      '@formatjs/intl-localematcher': 0.5.7
+      '@formatjs/intl-localematcher': 0.5.10
       negotiator: 1.0.0
       next: 15.3.0-canary.20(@babel/core@7.24.7)(@playwright/test@1.51.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0)
       react: 19.0.0
-      use-intl: 3.26.5(react@19.0.0)
+      use-intl: 4.0.2(react@19.0.0)
+    optionalDependencies:
+      typescript: 5.8.2
 
   next@15.3.0-canary.20(@babel/core@7.24.7)(@playwright/test@1.51.1)(react-dom@19.0.0(react@19.0.0))(react@19.0.0):
     dependencies:
@@ -11580,7 +11591,7 @@ snapshots:
       aria-query: 5.3.2
       axobject-query: 4.1.0
       esm-env: 1.2.2
-      esrap: 1.4.5
+      esrap: 1.4.6
       is-reference: 3.0.3
       locate-character: 3.0.0
       magic-string: 0.30.17
@@ -11882,9 +11893,10 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.0.12
 
-  use-intl@3.26.5(react@19.0.0):
+  use-intl@4.0.2(react@19.0.0):
     dependencies:
       '@formatjs/fast-memoize': 2.2.7
+      '@schummar/icu-type-parser': 1.21.5
       intl-messageformat: 10.7.16
       react: 19.0.0
 

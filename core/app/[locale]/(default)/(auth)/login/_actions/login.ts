@@ -19,7 +19,7 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
   const submission = parseWithZod(formData, { schema });
 
   if (submission.status !== 'success') {
-    return submission.reply({ formErrors: [t('Form.error')] });
+    return submission.reply({ formErrors: [t('Form.somethingWentWrong')] });
   }
 
   try {
