@@ -131,9 +131,9 @@ export const Reviews = async ({ productId, searchParams }: Props) => {
       <ReviewsSection
         averageRating={getAverageRating(productId)}
         emptyStateMessage={t('empty')}
-        nextLabel={t('Pagination.next')}
+        nextLabel={t('next')}
         paginationInfo={getPaginationInfo(productId, searchParams)}
-        previousLabel={t('Pagination.previous')}
+        previousLabel={t('previous')}
         reviews={getFormattedReviews(productId, searchParams)}
         reviewsLabel={t('title')}
       />

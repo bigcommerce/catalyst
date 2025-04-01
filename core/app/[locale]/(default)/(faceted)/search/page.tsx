@@ -269,13 +269,13 @@ async function getEmptyStateTitle(props: Props): Promise<string> {
   const searchTerm = await getSearchTerm(props);
   const t = await getTranslations('Faceted.Search.Empty');
 
-  return t('emptyStateTitle', { term: searchTerm });
+  return t('title', { term: searchTerm });
 }
 
 async function getEmptyStateSubtitle(): Promise<string> {
   const t = await getTranslations('Faceted.Search.Empty');
 
-  return t('emptyStateSubtitle');
+  return t('subtitle');
 }
 
 async function getBreadcrumbs(): Promise<Breadcrumb[]> {

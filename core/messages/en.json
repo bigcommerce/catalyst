@@ -84,6 +84,7 @@
       }
     },
     "Category": {
+      "subCategories": "Categories",
       "Empty": {
         "title": "No products in this category",
         "subtitle": "Try using different filters."
@@ -146,7 +147,7 @@
         "shippingMethod": "Shipping method",
         "summaryTotal": "Total",
         "destination": "Destination",
-        "destinationWithCount": "Destination {number}/{total}",
+        "destinationWithCount": "Destination {number, number}/{total, number}",
         "subtotal": "Subtotal",
         "shipping": "Shipping",
         "tax": "Tax"

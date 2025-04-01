@@ -36,7 +36,7 @@ function getStatusColor(
 
 export const orderDetailsTransformer = (
   order: ExistingResultType<typeof getCustomerOrderDetails>,
-  t: ExistingResultType<typeof getTranslations<'Account.OrderDetails'>>,
+  t: ExistingResultType<typeof getTranslations<'Account.Orders.Details'>>,
   format: ExistingResultType<typeof getFormatter>,
 ): Order => {
   return {
