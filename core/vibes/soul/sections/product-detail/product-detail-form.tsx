@@ -11,7 +11,7 @@ import {
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
-import { ReactNode, useActionState, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useActionState, useCallback, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
@@ -32,6 +32,8 @@ import { usePathname, useRouter } from '~/i18n/routing';
 
 import { Field, schema, SchemaRawShape } from './schema';
 import { useB2BQuoteEnabled } from '~/b2b/use-b2b-quote-enabled';
+import { AddToShoppingListButton } from '~/components/add-to-shopping-list-button';
+import { useB2bShoppingListEnabled } from '~/b2b/use-b2b-shopping-list-enabled';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
 
@@ -82,6 +84,7 @@ export function ProductDetailForm<F extends Field>({
   sku,
 }: Props<F>) {
   const isAddToQuoteEnabled = useB2BQuoteEnabled()
+  const isAddToShoppingListEnabled = useB2bShoppingListEnabled()
   const router = useRouter();
   const pathname = usePathname();
 
@@ -269,6 +272,18 @@ export function ProductDetailForm<F extends Field>({
               )}
             </div>
           </div>
+            <div className="flex flex-1">
+              {isAddToShoppingListEnabled && (
+                <AddToShoppingListButton
+                  className="flex-1"
+                  productEntityId={productId}
+                  quantity={Number(quantityControl.value)}
+                  selectedOptions={selectedOptions}
+                  sku={sku}
+                  validate={validateQuote}
+                />
+              )}
+            </div>
         </div>
       </form>
     </FormProvider>

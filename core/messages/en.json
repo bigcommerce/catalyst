@@ -626,8 +626,11 @@
       }
     },
     "AddToQuoteButton": {
-      "addToQuote": "Add to Quote",
-      "addCartToQuote": "Add cart to Quote"
+      "addToQuote": "Add to quote",
+      "addCartToQuote": "Add cart to quote"
+    },
+    "AddToShoppingListButton": {
+      "addToShoppingList": "Add to shopping list"
     }
   }
 }
