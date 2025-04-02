@@ -366,9 +366,7 @@ export default async function Category(props: Props) {
           Streamable.from(() => getProducts(props)),
         ])}
       >
-        {([category, products]) => (
-          <CategoryViewed category={category} categoryId={category.entityId} products={products} />
-        )}
+        {([category, products]) => <CategoryViewed category={category} products={products} />}
       </Stream>
     </>
   );

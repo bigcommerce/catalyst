@@ -1,11 +1,12 @@
 'use client';
 
-import { SubmissionResult } from '@conform-to/react';
-import { useActionState, useEffect } from 'react';
-import { useFormStatus } from 'react-dom';
+import { getFormProps, SubmissionResult, useForm } from '@conform-to/react';
+import { startTransition, useActionState, useEffect } from 'react';
+import { requestFormReset, useFormStatus } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
+import { useEvents } from '~/components/analytics/events';
 
 import { WishlistItem } from '.';
 
@@ -29,8 +30,26 @@ export const WishlistItemAddToCart = ({
   variantId,
   action,
 }: Props) => {
+  const events = useEvents();
   const [{ lastResult, successMessage, errorMessage }, formAction] = useActionState(action, {
     lastResult: null,
+  });
+
+  const [form] = useForm({
+    lastResult,
+    onSubmit(event, { formData }) {
+      event.preventDefault();
+
+      startTransition(async () => {
+        requestFormReset(event.currentTarget);
+
+        const state = await action({ lastResult }, formData);
+
+        if (state.lastResult?.status === 'success') {
+          events.onAddToCart?.(formData);
+        }
+      });
+    },
   });
 
   useEffect(() => {
@@ -44,7 +63,7 @@ export const WishlistItemAddToCart = ({
   }, [lastResult, successMessage, errorMessage]);
 
   return (
-    <form action={formAction} className="flex">
+    <form {...getFormProps(form)} action={formAction} className="flex">
       <input name="productId" type="hidden" value={productId} />
       <input name="variantId" type="hidden" value={variantId} />
       <SubmitButton ctaLabel={callToAction.label} disabled={callToAction.disabled} />

@@ -11,8 +11,8 @@ import {
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
-import { ReactNode, useActionState, useCallback, useEffect } from 'react';
-import { useFormStatus } from 'react-dom';
+import { ReactNode, startTransition, useActionState, useCallback, useEffect } from 'react';
+import { requestFormReset, useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
@@ -26,6 +26,7 @@ import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
+import { useEvents } from '~/components/analytics/events';
 import { usePathname, useRouter } from '~/i18n/routing';
 
 import { Field, schema, SchemaRawShape } from './schema';
@@ -67,6 +68,7 @@ export function ProductDetailForm<F extends Field>({
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
+  const events = useEvents();
 
   const searchParams = fields.reduce<Record<string, typeof parseAsString>>((acc, field) => {
     return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;
@@ -114,6 +116,19 @@ export function ProductDetailForm<F extends Field>({
     constraint: getZodConstraint(schema(fields)),
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: schema(fields) });
+    },
+    onSubmit(event, { formData }) {
+      event.preventDefault();
+
+      startTransition(async () => {
+        requestFormReset(event.currentTarget);
+
+        const state = await action({ lastResult, fields }, formData);
+
+        if (state.lastResult?.status === 'success') {
+          events.onAddToCart?.(formData);
+        }
+      });
     },
     // @ts-expect-error: `defaultValue` types are conflicting with `onValidate`.
     defaultValue,

@@ -203,7 +203,7 @@ export const updateLineItem = async (
         lineItems: prevState.lineItems.map((lineItem) =>
           lineItem.id === item.id ? { ...lineItem, quantity: lineItem.quantity + 1 } : lineItem,
         ),
-        lastResult: submission.reply({ resetForm: true }),
+        lastResult: submission.reply(),
       };
     }
 
@@ -357,7 +357,7 @@ export const updateLineItem = async (
         lineItems: prevState.lineItems.map((lineItem) =>
           lineItem.id === item.id ? { ...lineItem, quantity: lineItem.quantity - 1 } : lineItem,
         ),
-        lastResult: submission.reply({ resetForm: true }),
+        lastResult: submission.reply(),
       };
     }
 
@@ -386,16 +386,9 @@ export const updateLineItem = async (
 
       const deletedItem = submission.value;
 
-      // TODO: add bodl
-      // bodl.cart.productRemoved({
-      //   currency,
-      //   product_value: product.listPrice.value * product.quantity,
-      //   line_items: [lineItemTransform(product)],
-      // });
-
       return {
         lineItems: prevState.lineItems.filter((item) => item.id !== deletedItem.id),
-        lastResult: submission.reply({ resetForm: true }),
+        lastResult: submission.reply(),
       };
     }
 

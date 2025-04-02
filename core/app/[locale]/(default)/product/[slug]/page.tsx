@@ -14,6 +14,7 @@ import { productOptionsTransformer } from '~/data-transformers/product-options-t
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { addToCart } from './_actions/add-to-cart';
+import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
@@ -259,34 +260,55 @@ export default async function Product(props: Props) {
     return productCardTransformer(relatedProducts, format);
   });
 
+  const streamableAnalyticsData = Streamable.from(async () => {
+    const [extendedProduct, pricingProduct] = await Streamable.all([
+      streamableProduct,
+      streamableProductPricingAndRelatedProducts,
+    ]);
+
+    return {
+      id: extendedProduct.entityId,
+      name: extendedProduct.name,
+      sku: extendedProduct.sku,
+      brand: extendedProduct.brand?.name ?? '',
+      price: pricingProduct?.prices?.price.value ?? 0,
+      currency: pricingProduct?.prices?.price.currencyCode ?? '',
+    };
+  });
+
   return (
     <>
-      <ProductDetail
-        action={addToCart}
-        additionalInformationTitle={t('ProductDetails.additionalInformation')}
-        ctaDisabled={streameableCtaDisabled}
-        ctaLabel={streameableCtaLabel}
-        decrementLabel={t('ProductDetails.decreaseQuantity')}
-        emptySelectPlaceholder={t('ProductDetails.emptySelectPlaceholder')}
-        fields={productOptionsTransformer(baseProduct.productOptions)}
-        incrementLabel={t('ProductDetails.increaseQuantity')}
-        prefetch={true}
-        product={{
-          id: baseProduct.entityId.toString(),
-          title: baseProduct.name,
-          description: (
-            <div className="prose" dangerouslySetInnerHTML={{ __html: baseProduct.description }} />
-          ),
-          href: baseProduct.path,
-          images: streamableImages,
-          price: streamablePrices,
-          subtitle: baseProduct.brand?.name,
-          rating: baseProduct.reviewSummary.averageRating,
-          accordions: streameableAccordions,
-        }}
-        quantityLabel={t('ProductDetails.quantity')}
-        thumbnailLabel={t('ProductDetails.thumbnail')}
-      />
+      <ProductAnalyticsProvider data={streamableAnalyticsData}>
+        <ProductDetail
+          action={addToCart}
+          additionalInformationTitle={t('ProductDetails.additionalInformation')}
+          ctaDisabled={streameableCtaDisabled}
+          ctaLabel={streameableCtaLabel}
+          decrementLabel={t('ProductDetails.decreaseQuantity')}
+          emptySelectPlaceholder={t('ProductDetails.emptySelectPlaceholder')}
+          fields={productOptionsTransformer(baseProduct.productOptions)}
+          incrementLabel={t('ProductDetails.increaseQuantity')}
+          prefetch={true}
+          product={{
+            id: baseProduct.entityId.toString(),
+            title: baseProduct.name,
+            description: (
+              <div
+                className="prose"
+                dangerouslySetInnerHTML={{ __html: baseProduct.description }}
+              />
+            ),
+            href: baseProduct.path,
+            images: streamableImages,
+            price: streamablePrices,
+            subtitle: baseProduct.brand?.name,
+            rating: baseProduct.reviewSummary.averageRating,
+            accordions: streameableAccordions,
+          }}
+          quantityLabel={t('ProductDetails.quantity')}
+          thumbnailLabel={t('ProductDetails.thumbnail')}
+        />
+      </ProductAnalyticsProvider>
 
       <FeaturedProductCarousel
         cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}

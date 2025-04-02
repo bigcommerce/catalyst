@@ -6,6 +6,7 @@ export const WishlistItemProductFragment = graphql(
   `
     fragment WishlistItemProductFragment on Product {
       ...ProductCardFragment
+      sku
       showCartAction
       inventory {
         isInStock
