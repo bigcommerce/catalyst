@@ -1,14 +1,19 @@
-import { getLocale } from 'next-intl/server';
+import { NextRequest } from 'next/server';
 
 import { signOut } from '~/auth';
 import { redirect } from '~/i18n/routing';
 import { setForceRefreshCookie } from '~/lib/force-refresh';
 
-export const GET = async () => {
-  const locale = await getLocale();
+export const GET = async (
+  request: NextRequest,
+  { params }: { params: Promise<{ locale: string }> },
+) => {
+  const { locale } = await params;
+  const redirectTo = request.nextUrl.searchParams.get('redirectTo') ?? '/login';
+  const redirectToPathname = new URL(redirectTo, request.nextUrl.origin);
 
   await signOut({ redirect: false });
   await setForceRefreshCookie();
 
-  redirect({ href: '/login', locale });
+  redirect({ href: redirectToPathname, locale });
 };
