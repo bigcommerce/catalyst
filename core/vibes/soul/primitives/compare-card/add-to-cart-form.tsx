@@ -1,10 +1,12 @@
 'use client';
 
-import { SubmissionResult, useForm } from '@conform-to/react';
-import { ReactNode, useActionState, useEffect } from 'react';
+import { getFormProps, SubmissionResult, useForm } from '@conform-to/react';
+import { ReactNode, startTransition, useActionState, useEffect } from 'react';
+import { requestFormReset } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
+import { useEvents } from '~/components/analytics/events';
 import { useRouter } from '~/i18n/routing';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
@@ -34,12 +36,26 @@ export function AddToCartForm({
   disabled = false,
 }: Props) {
   const router = useRouter();
+  const events = useEvents();
+
   const [{ lastResult, successMessage }, formAction, pending] = useActionState(addToCartAction, {
     lastResult: null,
     successMessage: undefined,
   });
 
-  const [form] = useForm({ lastResult });
+  const [form] = useForm({
+    lastResult,
+    onSubmit(event, { formData }) {
+      event.preventDefault();
+
+      startTransition(() => {
+        requestFormReset(event.currentTarget);
+        formAction(formData);
+
+        events.onAddToCart?.(formData);
+      });
+    },
+  });
 
   useEffect(() => {
     if (lastResult?.status === 'success') {
@@ -60,7 +76,7 @@ export function AddToCartForm({
   }, [form.errors]);
 
   return (
-    <form action={formAction}>
+    <form {...getFormProps(form)} action={formAction}>
       <input name="id" type="hidden" value={productId} />
       <Button className="w-full" disabled={disabled} loading={pending} size="medium" type="submit">
         {isPreorder ? preorderLabel : addToCartLabel}
