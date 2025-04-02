@@ -32,10 +32,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ locale
   const channelId = getChannelIdFromLocale(locale);
 
   if (!cartId) {
-    return NextResponse.json(
-      { message: 'Cart not found' },
-      { status: 404, statusText: 'Not Found' },
-    );
+    return redirect({ href: '/cart', locale });
   }
 
   try {
@@ -51,10 +48,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ locale
       data.cart.createCartRedirectUrls.errors.length > 0 ||
       !data.cart.createCartRedirectUrls.redirectUrls
     ) {
-      return NextResponse.json(
-        { message: 'Cart not found' },
-        { status: 404, statusText: 'Not Found' },
-      );
+      return redirect({ href: '/cart', locale });
     }
 
     return redirect({
