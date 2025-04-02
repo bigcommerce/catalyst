@@ -36,8 +36,8 @@ const searchParamsCache = createSearchParamsCache({
 
 async function getWishlist(
   token: string,
-  t: ExistingResultType<typeof getTranslations>,
-  pt: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
+  pt: ExistingResultType<typeof getTranslations<'Product.ProductDetails'>>,
   searchParams: Promise<SearchParams>,
 ): Promise<Wishlist> {
   const searchParamsParsed = searchParamsCache.parse(await searchParams);
