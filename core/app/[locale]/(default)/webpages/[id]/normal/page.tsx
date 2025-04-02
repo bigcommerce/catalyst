@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -14,7 +15,7 @@ import { WebPageContent, WebPage as WebPageData } from '../_components/web-page'
 import { getWebpageData } from './page-data';
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: Promise<{ locale: string; id: string }>;
 }
 
 const getWebPage = cache(async (id: string): Promise<WebPageData> => {
@@ -66,7 +67,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function WebPage({ params }: Props) {
-  const { id } = await params;
+  const { locale, id } = await params;
+
+  setRequestLocale(locale);
 
   return (
     <WebPageContent

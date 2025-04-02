@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { OrderDetailsSection } from '@/vibes/soul/sections/order-details-section';
 import { orderDetailsTransformer } from '~/data-transformers/order-details-transformer';
@@ -15,6 +15,9 @@ interface Props {
 
 export default async function Order(props: Props) {
   const { id, locale } = await props.params;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('Account.OrderDetails');
   const format = await getFormatter();
 
