@@ -55,13 +55,13 @@ function SidebarMenuSkeleton({ placeholderCount }: { placeholderCount: number })
         <div className="w-full animate-pulse">
           {Array.from({ length: placeholderCount }).map((_, index) => (
             <div className="flex h-10 items-center px-3" key={index}>
-              <div className="h-[1lh] flex-1 rounded-lg bg-contrast-100" />
+              <div className="bg-contrast-100 h-[1lh] flex-1 rounded-lg" />
             </div>
           ))}
         </div>
       </div>
       <div className="@2xl:hidden">
-        <div className="h-[50px] w-full rounded-lg bg-contrast-100" />
+        <div className="bg-contrast-100 h-[50px] w-full rounded-lg" />
       </div>
     </>
   );

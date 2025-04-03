@@ -95,7 +95,7 @@ export const WishlistShareButton = ({
         if (!isMobileUser) {
           return (
             <Modal
-              className="min-w-64 max-w-lg @lg:min-w-96"
+              className="max-w-lg min-w-64 @lg:min-w-96"
               isOpen={open}
               setOpen={setOpen}
               trigger={ShareButton}

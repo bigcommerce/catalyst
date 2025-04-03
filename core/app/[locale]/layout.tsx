@@ -8,7 +8,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
 
-import '../globals.css';
+import '../../globals.css';
 
 import { fonts } from '~/app/fonts';
 import { client } from '~/client';

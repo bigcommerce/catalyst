@@ -44,39 +44,39 @@ export function CartSkeleton({
     <StickySidebarLayout
       sidebar={
         <div>
-          <h2 className="mb-10 font-heading text-4xl font-medium leading-none @xl:text-5xl">
+          <h2 className="font-heading mb-10 text-4xl leading-none font-medium @xl:text-5xl">
             {summaryTitle}
           </h2>
           <div className="w-full">
-            <div className="divide-y divide-contrast-100">
+            <div className="divide-contrast-100 divide-y">
               {Array.from({ length: summaryPlaceholderCount }).map((_, index) => (
                 <div className="py-4" key={index}>
                   <div className="flex h-[1lh] w-full items-center justify-between">
-                    <div className="h-[1ch] w-16 rounded-md bg-contrast-100" />
-                    <div className="h-[1ch] w-9 rounded-md bg-contrast-100" />
+                    <div className="bg-contrast-100 h-[1ch] w-16 rounded-md" />
+                    <div className="bg-contrast-100 h-[1ch] w-9 rounded-md" />
                   </div>
                 </div>
               ))}
             </div>
 
-            <div className="flex justify-between border-t border-contrast-100 py-6 text-xl font-bold">
+            <div className="border-contrast-100 flex justify-between border-t py-6 text-xl font-bold">
               <div className="flex h-[1lh] w-full items-center">
-                <div className="h-[1ex] w-[5ch] rounded-md bg-contrast-100" />
+                <div className="bg-contrast-100 h-[1ex] w-[5ch] rounded-md" />
               </div>
               <div className="flex h-[1lh] w-full items-center justify-end">
-                <div className="h-[1ex] w-[5ch] rounded-md bg-contrast-100" />
+                <div className="bg-contrast-100 h-[1ex] w-[5ch] rounded-md" />
               </div>
             </div>
           </div>
 
-          <div className="mt-4 h-[58px] w-full rounded-full bg-contrast-100" />
+          <div className="bg-contrast-100 mt-4 h-[58px] w-full rounded-full" />
         </div>
       }
       sidebarPosition="after"
       sidebarSize="1/3"
     >
       <div>
-        <h1 className="mb-10 font-heading text-4xl font-medium leading-none @xl:text-5xl">
+        <h1 className="font-heading mb-10 text-4xl leading-none font-medium @xl:text-5xl">
           {title}
         </h1>
 
@@ -84,20 +84,20 @@ export function CartSkeleton({
         <ul className="flex flex-col gap-5">
           {Array.from({ length: placeholderCount }).map((_, index) => (
             <li
-              className="flex flex-col items-start gap-x-5 gap-y-4 @container @sm:flex-row"
+              className="@container flex flex-col items-start gap-x-5 gap-y-4 @sm:flex-row"
               key={index}
             >
               {/* Image */}
-              <div className="relative aspect-square w-full max-w-24 overflow-hidden rounded-xl bg-contrast-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-4" />
-              <div className="flex flex-grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
+              <div className="bg-contrast-100 focus-visible:ring-primary relative aspect-square w-full max-w-24 overflow-hidden rounded-xl focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-hidden" />
+              <div className="flex grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
                 <div className="flex w-full flex-1 flex-col @xl:w-1/2 @xl:pr-4">
                   {/* Line Item Title */}
                   <div className="flex h-[1lh] w-full items-center">
-                    <div className="h-[1ex] w-44 rounded-md bg-contrast-100" />
+                    <div className="bg-contrast-100 h-[1ex] w-44 rounded-md" />
                   </div>
                   {/* Subtitle */}
                   <div className="flex h-[1lh] w-full items-center">
-                    <div className="h-[1ex] w-32 rounded-md bg-contrast-100" />
+                    <div className="bg-contrast-100 h-[1ex] w-32 rounded-md" />
                   </div>
                 </div>
                 {/* Counter */}
@@ -105,12 +105,12 @@ export function CartSkeleton({
                   <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
                     {/* Price */}
                     <span className="flex h-[1lh] items-center @xl:ml-auto">
-                      <div className="h-[1em] w-[3ch] rounded-md bg-contrast-100" />
+                      <div className="bg-contrast-100 h-[1em] w-[3ch] rounded-md" />
                     </span>
                     {/* Counter */}
-                    <div className="h-[44px] w-[118px] rounded-lg bg-contrast-100" />
+                    <div className="bg-contrast-100 h-[44px] w-[118px] rounded-lg" />
                     {/* DeleteLineItemButton */}
-                    <div className="-ml-1 h-8 w-8 rounded-full bg-contrast-100" />
+                    <div className="bg-contrast-100 -ml-1 h-8 w-8 rounded-full" />
                   </div>
                 </div>
               </div>
@@ -134,10 +134,10 @@ export interface CartEmptyState {
 export function CartEmptyState({ title, subtitle, cta }: CartEmptyState) {
   return (
     <SectionLayout className="text-center">
-      <h1 className="mb-3 text-center font-heading text-3xl leading-none text-foreground @xl:text-4xl">
+      <h1 className="font-heading text-foreground mb-3 text-center text-3xl leading-none @xl:text-4xl">
         {title}
       </h1>
-      <p className="mb-6 text-center leading-normal text-contrast-500 @3xl:text-lg">{subtitle}</p>
+      <p className="text-contrast-500 mb-6 text-center leading-normal @3xl:text-lg">{subtitle}</p>
       <ButtonLink href={cta.href}>{cta.label}</ButtonLink>
     </SectionLayout>
   );

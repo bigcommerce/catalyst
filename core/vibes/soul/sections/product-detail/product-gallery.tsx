@@ -59,7 +59,7 @@ export function ProductGallery({
       >
         <div className="flex">
           {images.map((image, idx) => (
-            <div className="relative aspect-[4/5] w-full shrink-0 grow-0 basis-full" key={idx}>
+            <div className="relative aspect-4/5 w-full shrink-0 grow-0 basis-full" key={idx}>
               <Image
                 alt={image.alt}
                 className="bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))] object-cover"
@@ -77,7 +77,7 @@ export function ProductGallery({
           <button
             aria-label={`${thumbnailLabel} ${index + 1}`}
             className={clsx(
-              'relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-gallery-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 @md:h-16 @md:w-16',
+              'relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[var(--product-gallery-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 focus-visible:outline-none @md:h-16 @md:w-16',
               index === previewImage
                 ? 'border-[var(--product-gallery-image-border-active,hsl(var(--foreground)))]'
                 : 'border-transparent',

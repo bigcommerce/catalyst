@@ -17,7 +17,7 @@ export function Drawer({ children }: DrawerProps) {
 
   return (
     doc && (
-      <Portal.Root className="sticky bottom-0 z-10 w-full border-t bg-background px-3 py-4 @container @md:py-5 @xl:px-6 @5xl:px-10">
+      <Portal.Root className="bg-background @container sticky bottom-0 z-10 w-full border-t px-3 py-4 @md:py-5 @xl:px-6 @5xl:px-10">
         {children}
       </Portal.Root>
     )

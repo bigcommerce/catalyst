@@ -10,7 +10,7 @@ export const Spinner = function Spinner({ size = 'sm', loadingAriaLabel }: Props
     <span
       aria-label={loadingAriaLabel ?? 'Loading...'}
       className={clsx(
-        'box-border inline-block animate-spin rounded-full border-contrast-100 border-b-primary-shadow',
+        'border-contrast-100 border-b-primary-shadow box-border inline-block animate-spin rounded-full',
         {
           xs: 'h-5 w-5 border-2',
           sm: 'h-6 w-6 border-2',

@@ -47,7 +47,7 @@ export const Tooltip = ({
           <TooltipPrimitive.Content
             align={align}
             className={clsx(
-              'z-50 max-h-80 rounded-2xl border border-contrast-100 bg-[var(--tooltip-background,hsl(var(--background)))] p-3 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
+              'border-contrast-100 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 max-h-80 rounded-2xl border bg-[var(--tooltip-background,hsl(var(--background)))] p-3 shadow-xl',
               className,
             )}
             side={side}

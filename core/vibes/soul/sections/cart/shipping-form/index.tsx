@@ -227,7 +227,7 @@ export function ShippingForm({
   const stateControl = useInputControl(addressFields.state);
 
   return (
-    <div className="space-y-4 border-t border-contrast-100 pb-5 pt-4">
+    <div className="border-contrast-100 space-y-4 border-t pt-4 pb-5">
       <div>
         <div className="flex justify-between">
           <span>{shippingLabel}</span>
@@ -236,7 +236,7 @@ export function ShippingForm({
           ) : (
             !showForms && (
               <button
-                className="font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--button-focus,hsl(var(--primary)))] focus-visible:ring-offset-2"
+                className="font-semibold focus-visible:ring-2 focus-visible:ring-[var(--button-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 focus-visible:outline-hidden"
                 onClick={() => setShowForms(!showForms)}
               >
                 {addLabel}
@@ -247,10 +247,10 @@ export function ShippingForm({
 
         {state.shippingOption && (
           <div className="flex gap-1.5 text-xs">
-            <span className="font-medium text-contrast-400">{state.shippingOption.label}</span>
+            <span className="text-contrast-400 font-medium">{state.shippingOption.label}</span>
             {!showForms && (
               <button
-                className="font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--button-focus,hsl(var(--primary)))] focus-visible:ring-offset-2"
+                className="font-semibold focus-visible:ring-2 focus-visible:ring-[var(--button-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 focus-visible:outline-hidden"
                 onClick={() => setShowForms(true)}
               >
                 {changeLabel}
