@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
@@ -22,7 +22,7 @@ import { isMobileUser } from '~/lib/user-agent';
 import { getPublicWishlist } from './page-data';
 
 interface Props {
-  params: Promise<{ token: string }>;
+  params: Promise<{ locale: string; token: string }>;
   searchParams: Promise<SearchParams>;
 }
 
@@ -62,11 +62,11 @@ async function getPaginationInfo(
 }
 
 export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
-  const { token } = await params;
+  const { locale, token } = await params;
   // Even though we don't need paginated data during metadata generation, we should still pass the parameters
   // to make sure we aren't bypassing an existing cache just for the metadata generation.
   const searchParamsParsed = searchParamsCache.parse(await searchParams);
-  const t = await getTranslations('PublicWishlist');
+  const t = await getTranslations({ locale, namespace: 'PublicWishlist' });
   const wishlist = await getPublicWishlist(token, searchParamsParsed);
 
   return {
@@ -89,7 +89,10 @@ async function getBreadcrumbs(
 }
 
 export default async function PublicWishlist({ params, searchParams }: Props) {
-  const { token } = await params;
+  const { locale, token } = await params;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('Account.Wishlists');
   const pt = await getTranslations('Product.ProductDetails');
   const wishlistActions = (wishlist?: Wishlist) => {

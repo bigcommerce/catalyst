@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { SidebarMenu } from '@/vibes/soul/sections/sidebar-menu';
@@ -8,7 +9,7 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
 interface Props extends React.PropsWithChildren {
-  params: Promise<{ id: string }>;
+  params: Promise<{ locale: string; id: string }>;
 }
 
 const WebPageChildrenQuery = graphql(`
@@ -75,7 +76,9 @@ const getWebPageChildren = cache(async (id: string): Promise<PageLink[]> => {
 });
 
 export default async function WebPageLayout({ params, children }: Props) {
-  const { id } = await params;
+  const { locale, id } = await params;
+
+  setRequestLocale(locale);
 
   return (
     <StickySidebarLayout

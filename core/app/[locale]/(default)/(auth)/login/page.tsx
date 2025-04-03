@@ -1,28 +1,47 @@
+/* eslint-disable react/jsx-no-bind */
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { SignInSection } from '@/vibes/soul/sections/sign-in-section';
+import { buildConfig } from '~/build-config/reader';
 import { ForceRefresh } from '~/components/force-refresh';
 
 import { login } from './_actions/login';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Login');
+interface Props {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{
+    redirectTo?: string;
+  }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  const t = await getTranslations({ locale, namespace: 'Login' });
 
   return {
     title: t('title'),
   };
 }
 
-export default async function Login() {
+export default async function Login({ params, searchParams }: Props) {
+  const { locale } = await params;
+  const { redirectTo = '/account/orders' } = await searchParams;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('Login');
+
+  const vanityUrl = buildConfig.get('urls').vanityUrl;
+  const redirectToPathname = new URL(redirectTo, vanityUrl).pathname;
 
   return (
     <>
       <ForceRefresh />
       <SignInSection
-        action={login}
+        action={login.bind(null, { redirectTo: redirectToPathname })}
         forgotPasswordHref="/login/forgot-password"
         forgotPasswordLabel={t('Form.forgotPassword')}
         submitLabel={t('Form.logIn')}
