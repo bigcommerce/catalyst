@@ -1,13 +1,10 @@
-import { notFound } from 'next/navigation';
 import { cache } from 'react';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
-import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
 import { ProductViewedFragment } from './_components/product-viewed/fragment';
@@ -103,17 +100,6 @@ const DateFieldFragment = graphql(`
   }
 `);
 
-const AddToCartButtonFragment = graphql(`
-  fragment AddToCartButtonFragment on Product {
-    inventory {
-      isInStock
-    }
-    availabilityV2 {
-      status
-    }
-  }
-`);
-
 export const ProductFormFragment = graphql(
   `
     fragment ProductFormFragment on Product {
@@ -135,7 +121,12 @@ export const ProductFormFragment = graphql(
           }
         }
       }
-      ...AddToCartButtonFragment
+      inventory {
+        isInStock
+      }
+      availabilityV2 {
+        status
+      }
     }
   `,
   [
@@ -145,7 +136,6 @@ export const ProductFormFragment = graphql(
     TextFieldFragment,
     MultiLineTextFieldFragment,
     DateFieldFragment,
-    AddToCartButtonFragment,
   ],
 );
 
@@ -199,6 +189,66 @@ const ProductDetailsFragment = graphql(
   [PricingFragment, ProductFormFragment],
 );
 
+const StaticProductPageQuery = graphql(`
+  query StaticProductPageQuery($entityId: Int!) {
+    site {
+      product(entityId: $entityId) {
+        entityId
+        name
+        description
+        path
+        brand {
+          name
+        }
+        reviewSummary {
+          averageRating
+        }
+        description
+      }
+    }
+  }
+`);
+
+export const getStaticProductPageData = cache(async (entityId: number) => {
+  const { data } = await client.fetch({
+    document: StaticProductPageQuery,
+    variables: { entityId },
+  });
+
+  return data.site.product;
+});
+
+type Variables = VariablesOf<typeof ProductPageQuery>;
+
+const ProductMetadataQuery = graphql(`
+  query ProductMetadataQuery($entityId: Int!) {
+    site {
+      product(entityId: $entityId) {
+        name
+        defaultImage {
+          altText
+          url: urlTemplate(lossy: true)
+        }
+        seo {
+          pageTitle
+          metaDescription
+          metaKeywords
+        }
+        plainTextDescription(characterLimit: 1200)
+      }
+    }
+  }
+`);
+
+export const getProductMetadata = cache(async (entityId: number) => {
+  const { data } = await client.fetch({
+    document: ProductMetadataQuery,
+    variables: { entityId },
+  });
+
+  return data.site.product;
+});
+
 const ProductPageQuery = graphql(
   `
     query ProductPageQuery(
@@ -216,16 +266,6 @@ const ProductPageQuery = graphql(
           ...ProductDetailsFragment
           ...ProductViewedFragment
           ...ProductSchemaFragment
-          name
-          defaultImage {
-            url: urlTemplate(lossy: true)
-            altText
-          }
-          seo {
-            pageTitle
-            metaDescription
-            metaKeywords
-          }
           relatedProducts(first: 8) {
             edges {
               node {
@@ -239,30 +279,21 @@ const ProductPageQuery = graphql(
   `,
   [
     ProductDetailsFragment,
+    FeaturedProductsCarouselFragment,
     ProductViewedFragment,
     ProductSchemaFragment,
-    FeaturedProductsCarouselFragment,
   ],
 );
 
-type Variables = VariablesOf<typeof ProductPageQuery>;
+export const getProductPageData = cache(
+  async (variables: Variables, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: ProductPageQuery,
+      variables,
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
 
-export const getProductData = cache(async (variables: Variables) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  const currencyCode = await getPreferredCurrencyCode();
-
-  const { data } = await client.fetch({
-    document: ProductPageQuery,
-    variables: { ...variables, currencyCode },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
-
-  const product = data.site.product;
-
-  if (!product) {
-    return notFound();
-  }
-
-  return product;
-});
+    return data.site.product;
+  },
+);
