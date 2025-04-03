@@ -17,6 +17,7 @@ export const SiteTheme = ({ fontTokens, ...theme }: TokensProps & ThemeProps) =>
       ${fontTokensToCssVars(fontTokens).join('\n')}
       ${themeToCssVars(theme).join('\n')}
       --font-family-mono: var(--font-family-accent);
+      --button-primary-text: var(--button-primary-foreground);
     }
   `}</style>
 );

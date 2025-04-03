@@ -19,15 +19,15 @@ const getCtaLabel = (
   product: ResultOf<typeof WishlistItemFragment>['product'],
   pt: ExistingResultType<typeof getTranslations>,
 ): string => {
-  if (product.availabilityV2.status === 'Unavailable') {
+  if (product && product.availabilityV2.status === 'Unavailable') {
     return pt('Submit.unavailable');
   }
 
-  if (product.availabilityV2.status === 'Preorder') {
+  if (product && product.availabilityV2.status === 'Preorder') {
     return pt('Submit.preorder');
   }
 
-  if (!product.inventory.isInStock) {
+  if (product && !product.inventory.isInStock) {
     return pt('Submit.outOfStock');
   }
 
@@ -35,15 +35,15 @@ const getCtaLabel = (
 };
 
 const getCtaDisabled = (product: ResultOf<typeof WishlistItemFragment>['product']): boolean => {
-  if (product.availabilityV2.status === 'Unavailable') {
+  if (product && product.availabilityV2.status === 'Unavailable') {
     return true;
   }
 
-  if (product.availabilityV2.status === 'Preorder') {
+  if (product && product.availabilityV2.status === 'Preorder') {
     return false;
   }
 
-  if (!product.inventory.isInStock) {
+  if (product && !product.inventory.isInStock) {
     return true;
   }
 
@@ -55,18 +55,25 @@ function wishlistItemsTransformer(
   formatter: ExistingResultType<typeof getFormatter>,
   pt?: ExistingResultType<typeof getTranslations>,
 ): WishlistItem[] {
-  return removeEdgesAndNodes(wishlistItems).map((item) => ({
-    itemId: item.entityId.toString(),
-    productId: item.productEntityId.toString(),
-    variantId: item.variantEntityId?.toString() ?? undefined,
-    callToAction: pt
-      ? {
-          label: getCtaLabel(item.product, pt),
-          disabled: getCtaDisabled(item.product),
-        }
-      : undefined,
-    product: singleProductCardTransformer(item.product, formatter),
-  }));
+  return removeEdgesAndNodes(wishlistItems)
+    .filter(
+      (
+        item,
+      ): item is NonNullable<typeof item> & { product: NonNullable<(typeof item)['product']> } =>
+        item.product !== null,
+    )
+    .map((item) => ({
+      itemId: item.entityId.toString(),
+      productId: item.productEntityId.toString(),
+      variantId: item.variantEntityId?.toString() ?? undefined,
+      callToAction: pt
+        ? {
+            label: getCtaLabel(item.product, pt),
+            disabled: getCtaDisabled(item.product),
+          }
+        : undefined,
+      product: singleProductCardTransformer(item.product, formatter),
+    }));
 }
 
 function wishlistTransformer(
