@@ -2,6 +2,22 @@ import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
 import { ProductCardFragment } from '~/components/product-card/fragment';
 
+export const WishlistItemProductFragment = graphql(
+  `
+    fragment WishlistItemProductFragment on Product {
+      ...ProductCardFragment
+      showCartAction
+      inventory {
+        isInStock
+      }
+      availabilityV2 {
+        status
+      }
+    }
+  `,
+  [ProductCardFragment],
+);
+
 export const WishlistItemFragment = graphql(
   `
     fragment WishlistItemFragment on WishlistItem {
@@ -9,18 +25,11 @@ export const WishlistItemFragment = graphql(
       productEntityId
       variantEntityId
       product {
-        ...ProductCardFragment
-        showCartAction
-        inventory {
-          isInStock
-        }
-        availabilityV2 {
-          status
-        }
+        ...WishlistItemProductFragment
       }
     }
   `,
-  [ProductCardFragment],
+  [WishlistItemProductFragment, ProductCardFragment],
 );
 
 export const WishlistFragment = graphql(
