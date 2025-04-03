@@ -3,8 +3,15 @@ import { withAuth } from './middlewares/with-auth';
 import { withChannelId } from './middlewares/with-channel-id';
 import { withIntl } from './middlewares/with-intl';
 import { withRoutes } from './middlewares/with-routes';
+import { withWalletButtonsProxyRequests } from './middlewares/with-wallet-buttons-proxy-requests';
 
-export const middleware = composeMiddlewares(withAuth, withIntl, withChannelId, withRoutes);
+export const middleware = composeMiddlewares(
+  withWalletButtonsProxyRequests,
+  withAuth,
+  withIntl,
+  withChannelId,
+  withRoutes,
+);
 
 export const config = {
   matcher: [
