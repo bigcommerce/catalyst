@@ -71,6 +71,8 @@ export default async function Blog(props: Props) {
 
   setRequestLocale(locale);
 
+  const t = await getTranslations('Blog');
+
   const searchParamsParsed = searchParamsCache.parse(await props.searchParams);
   const { tag } = searchParamsParsed;
   const blog = await getBlog();
@@ -85,7 +87,7 @@ export default async function Blog(props: Props) {
     <FeaturedBlogPostList
       breadcrumbs={[
         {
-          label: 'Home',
+          label: t('home'),
           href: '/',
         },
         {

@@ -39,7 +39,7 @@ export const updateLineItem = async (
   if (submission.status !== 'success') {
     return {
       ...prevState,
-      lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
+      lastResult: submission.reply(),
     };
   }
 

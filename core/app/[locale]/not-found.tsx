@@ -51,12 +51,9 @@ export default async function NotFound() {
     <>
       <Header />
 
-      <NotFoundSection subtitle={t('message')} title={t('heading')} />
+      <NotFoundSection subtitle={t('subtitle')} title={t('title')} />
 
-      <FeaturedProductCarousel
-        products={getFeaturedProducts()}
-        title={t('Carousel.featuredProducts')}
-      />
+      <FeaturedProductCarousel products={getFeaturedProducts()} title={t('featuredProducts')} />
 
       <Footer />
     </>

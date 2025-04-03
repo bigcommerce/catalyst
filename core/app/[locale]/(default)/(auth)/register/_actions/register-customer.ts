@@ -186,7 +186,7 @@ export async function registerCustomer<F extends Field>(
   prevState: { lastResult: SubmissionResult | null; fields: Array<F | FieldGroup<F>> },
   formData: FormData,
 ) {
-  const t = await getTranslations('Register');
+  const t = await getTranslations('Auth.Register');
   const locale = await getLocale();
   const cartId = await getCartId();
 
@@ -250,7 +250,7 @@ export async function registerCustomer<F extends Field>(
     }
 
     return {
-      lastResult: submission.reply({ formErrors: [t('Errors.error')] }),
+      lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
       fields: prevState.fields,
     };
   }

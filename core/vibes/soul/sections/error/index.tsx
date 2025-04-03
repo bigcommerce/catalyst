@@ -1,8 +1,8 @@
 import { Button } from '@/vibes/soul/primitives/button';
 
 interface Props {
-  title?: string;
-  subtitle?: string;
+  title: string;
+  subtitle: string;
   ctaLabel?: string;
   ctaAction?: () => void | Promise<void>;
 }

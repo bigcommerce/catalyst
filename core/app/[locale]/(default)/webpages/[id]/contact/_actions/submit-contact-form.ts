@@ -113,7 +113,7 @@ export async function submitContactForm<F extends Field>(
     }
 
     return {
-      lastResult: submission.reply({ formErrors: [t('Errors.error')] }),
+      lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
       fields: prevState.fields,
     };
   }

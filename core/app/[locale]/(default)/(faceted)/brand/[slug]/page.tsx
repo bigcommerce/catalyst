@@ -124,7 +124,7 @@ async function getFilters(props: Props): Promise<Filter[]> {
 }
 
 async function getSortOptions(): Promise<SortOption[]> {
-  const t = await getTranslations('FacetedGroup.SortBy');
+  const t = await getTranslations('Faceted.SortBy');
 
   return [
     { value: 'featured', label: t('featuredItems') },
@@ -196,15 +196,15 @@ async function getCompareProducts(props: Props) {
 }
 
 async function getFilterLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch');
+  const t = await getTranslations('Faceted.FacetedSearch');
 
   return t('filters');
 }
 
 async function getSortLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.SortBy');
+  const t = await getTranslations('Faceted.SortBy');
 
-  return t('ariaLabel');
+  return t('sortBy');
 }
 
 async function getCompareLabel(): Promise<string> {
@@ -226,31 +226,31 @@ async function getMaxCompareLimitMessage(): Promise<string> {
 }
 
 async function getEmptyStateTitle(): Promise<string> {
-  const t = await getTranslations('Brand');
+  const t = await getTranslations('Faceted.Brand.Empty');
 
-  return t('emptyStateTitle');
+  return t('title');
 }
 
 async function getEmptyStateSubtitle(): Promise<string> {
-  const t = await getTranslations('Brand');
+  const t = await getTranslations('Faceted.Brand.Empty');
 
-  return t('emptyStateSubtitle');
+  return t('subtitle');
 }
 
 async function getFiltersPanelTitle(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch');
+  const t = await getTranslations('Faceted.FacetedSearch');
 
   return t('filters');
 }
 
 async function getRangeFilterApplyLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch.Range');
+  const t = await getTranslations('Faceted.FacetedSearch.Range');
 
   return t('apply');
 }
 
 async function getResetFiltersLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch');
+  const t = await getTranslations('Faceted.FacetedSearch');
 
   return t('resetFilters');
 }

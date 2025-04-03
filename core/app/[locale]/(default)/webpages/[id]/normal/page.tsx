@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { setRequestLocale } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -37,11 +37,13 @@ const getWebPage = cache(async (id: string): Promise<WebPageData> => {
 });
 
 async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
+  const t = await getTranslations('WebPages.Normal');
+
   const webpage = await getWebPage(id);
   const [, ...rest] = webpage.breadcrumbs.reverse();
   const breadcrumbs = [
     {
-      label: 'Home',
+      label: t('home'),
       href: '/',
     },
     ...rest.reverse(),
