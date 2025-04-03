@@ -292,15 +292,10 @@ interface Props {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-<<<<<<< HEAD
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
-  const t = await getTranslations({ locale, namespace: 'Search' });
-=======
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Faceted.Search');
->>>>>>> a9f588ed (refactor: clean up en dictionary)
+  const t = await getTranslations({ locale, namespace: 'Faceted.Search' });
 
   return {
     title: t('title'),
