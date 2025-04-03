@@ -48,6 +48,7 @@ export interface ProductCardProps {
  *   --product-card-dark-title: hsl(var(--background));
  *   --product-card-dark-subtitle: hsl(var(--background) / 75%);
  *   --product-card-font-family: var(--font-family-body);
+ *   --product-card-border-radius: 1rem;
  * }
  * ```
  */
@@ -65,63 +66,78 @@ export function ProductCard({
   return (
     <article
       className={clsx(
-        'group flex min-w-0 max-w-md flex-col gap-2 font-[family-name:var(--card-font-family,var(--font-family-body))] @container',
+        'group w-full max-w-md font-[family-name:var(--product-card-font-family,var(--font-family-body))] @container',
         className,
       )}
     >
-      <div className="relative">
-        <div
-          className={clsx(
-            'relative overflow-hidden rounded-xl @md:rounded-2xl',
-            {
-              '5:6': 'aspect-[5/6]',
-              '3:4': 'aspect-[3/4]',
-              '1:1': 'aspect-square',
-            }[aspectRatio],
-            {
-              light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100)))]',
-              dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500)))]',
-            }[colorScheme],
-          )}
-        >
-          {image != null ? (
-            <Image
-              alt={image.alt}
-              className={clsx(
-                'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
-                {
-                  light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
-                  dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
-                }[colorScheme],
-              )}
-              fill
-              priority={imagePriority}
-              sizes={imageSizes}
-              src={image.src}
-            />
-          ) : (
-            <div
-              className={clsx(
-                'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
-                {
-                  light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
-                  dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
-                }[colorScheme],
-              )}
-            >
-              {title}
-            </div>
-          )}
-          {badge != null && badge !== '' && (
-            <Badge className="absolute left-3 top-3" shape="rounded">
-              {badge}
-            </Badge>
-          )}
+      <div>
+        <div className="relative">
+          <div
+            className={clsx(
+              'relative overflow-hidden rounded-[var(--product-card-border-radius,1rem)]',
+              {
+                '5:6': 'aspect-[5/6]',
+                '3:4': 'aspect-[3/4]',
+                '1:1': 'aspect-square',
+              }[aspectRatio],
+              {
+                light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100)))]',
+                dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500)))]',
+              }[colorScheme],
+            )}
+          >
+            {image != null ? (
+              <Image
+                alt={image.alt}
+                className={clsx(
+                  'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+                  {
+                    light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
+                    dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
+                  }[colorScheme],
+                )}
+                fill
+                priority={imagePriority}
+                sizes={imageSizes}
+                src={image.src}
+              />
+            ) : (
+              <div
+                className={clsx(
+                  'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
+                  {
+                    light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
+                    dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
+                  }[colorScheme],
+                )}
+              >
+                {title}
+              </div>
+            )}
+            {badge != null && badge !== '' && (
+              <Badge className="absolute left-3 top-3" shape="rounded">
+                {badge}
+              </Badge>
+            )}
+          </div>
+          <Link
+            aria-label={title}
+            className={clsx(
+              'absolute inset-0 rounded-[var(--product-card-border-radius,1rem)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
+              {
+                light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
+                dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
+              }[colorScheme],
+            )}
+            href={href}
+            id={id}
+          >
+            <span className="sr-only">View product</span>
+          </Link>
         </div>
-
-        <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
-          <div className="flex-1 text-sm @[16rem]:text-base">
-            <span
+        <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @xs:flex-row">
+          <div className="relative flex-1 text-sm @[16rem]:text-base">
+            <h3
               className={clsx(
                 'block font-semibold',
                 {
@@ -131,7 +147,7 @@ export function ProductCard({
               )}
             >
               {title}
-            </span>
+            </h3>
 
             {subtitle != null && subtitle !== '' && (
               <span
@@ -146,34 +162,37 @@ export function ProductCard({
                 {subtitle}
               </span>
             )}
-            {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
+            {price != null && (
+              <PriceLabel className="mt-2" colorScheme={colorScheme} price={price} />
+            )}
+            <Link
+              aria-label={title}
+              className={clsx(
+                'absolute inset-0 rounded focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
+                {
+                  light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
+                  dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
+                }[colorScheme],
+              )}
+              href={href}
+              id={id}
+              tabIndex={-1}
+            >
+              <span className="sr-only">View product</span>
+            </Link>
           </div>
-        </div>
-        <Link
-          aria-label={title}
-          className={clsx(
-            'absolute inset-0 rounded-b-lg rounded-t-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
-            {
-              light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
-              dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
-            }[colorScheme],
+          {showCompare && (
+            <div className="shrink-0">
+              <Compare
+                colorScheme={colorScheme}
+                label={compareLabel}
+                paramName={compareParamName}
+                product={{ id, title, href, image }}
+              />
+            </div>
           )}
-          href={href}
-          id={id}
-        >
-          <span className="sr-only">View product</span>
-        </Link>
-      </div>
-      {showCompare && (
-        <div className="mt-0.5 shrink-0">
-          <Compare
-            colorScheme={colorScheme}
-            label={compareLabel}
-            paramName={compareParamName}
-            product={{ id, title, href, image }}
-          />
         </div>
-      )}
+      </div>
     </article>
   );
 }
