@@ -15,3 +15,9 @@ bigcommerce.graphql
 bigcommerce-graphql.d.ts
 .DS_Store
 coverage/
+# sst
+.sst
+
+# open-next
+.open-next
+sst-env.d.ts
