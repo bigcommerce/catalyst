@@ -1,5 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
+import { createLoader, parseAsString } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -13,10 +14,15 @@ import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-i
 import { ProductReviewSchemaFragment } from './product-review-schema/fragment';
 import { ProductReviewSchema } from './product-review-schema/product-review-schema';
 
-export const PaginationSearchParamNames = {
+const PaginationSearchParamNames = {
   BEFORE: 'reviews_before',
   AFTER: 'reviews_after',
 } as const;
+
+export const loadReviewsPaginationSearchParams = createLoader({
+  [PaginationSearchParamNames.BEFORE]: parseAsString,
+  [PaginationSearchParamNames.AFTER]: parseAsString,
+});
 
 const ReviewsQuery = graphql(
   `
