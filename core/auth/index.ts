@@ -181,6 +181,7 @@ const config = {
   },
   pages: {
     signIn: '/login',
+    signOut: '/logout',
   },
   callbacks: {
     jwt: ({ token, user, session, trigger }) => {
