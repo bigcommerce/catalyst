@@ -2,7 +2,6 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
-import { createSearchParamsCache, parseAsString } from 'nuqs/server';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
@@ -16,7 +15,7 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
-import { PaginationSearchParamNames, Reviews } from './_components/reviews';
+import { loadReviewsPaginationSearchParams, Reviews } from './_components/reviews';
 import { getProductMetadata, getProductPageData, getStaticProductPageData } from './page-data';
 
 interface Props {
@@ -230,13 +229,8 @@ export default async function Product(props: Props) {
     return productCardTransformer(relatedProducts, format);
   });
 
-  const searchParamsCache = createSearchParamsCache({
-    [PaginationSearchParamNames.BEFORE]: parseAsString,
-    [PaginationSearchParamNames.AFTER]: parseAsString,
-  });
-
-  const streamableParsedSearchParams = Streamable.from(() =>
-    searchParamsCache.parse(props.searchParams),
+  const streamableReviewsPaginationSearchParams = Streamable.from(() =>
+    loadReviewsPaginationSearchParams(props.searchParams),
   );
 
   return (
@@ -282,7 +276,7 @@ export default async function Product(props: Props) {
         title={t('RelatedProducts.title')}
       />
 
-      <Reviews productId={productId} searchParams={streamableParsedSearchParams} />
+      <Reviews productId={productId} searchParams={streamableReviewsPaginationSearchParams} />
 
       <Stream fallback={null} value={streamableProductData}>
         {(product) => (
