@@ -8,8 +8,6 @@ export const withAuth: MiddlewareFactory = (next) => {
     const authWithCallback = auth(async (req) => {
       if (!req.auth) {
         await signIn('anonymous', { redirect: false });
-
-        return next(req, event);
       }
 
       // Continue the middleware chain

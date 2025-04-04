@@ -77,6 +77,12 @@ const SessionUpdate = z.object({
   }),
 });
 
+const SessionSyncCredentials = z.object({
+  name: z.string(),
+  email: z.string().email(),
+  customerAccessToken: z.string(),
+});
+
 async function handleLoginCart(guestCartId?: string, loginResultCartId?: string) {
   const t = await getTranslations('Cart');
 
@@ -168,6 +174,10 @@ function loginWithAnonymous(credentials: unknown): User | null {
   };
 }
 
+function loginWithSessionSync(credentials: unknown): User {
+  return SessionSyncCredentials.parse(credentials);
+}
+
 const config = {
   // Explicitly setting this value to be undefined. We want the library to handle CSRF checks when taking sensitive actions.
   // When handling sensitive actions like sign in, sign out, etc., the library will automatically check for CSRF tokens.
@@ -181,6 +191,18 @@ const config = {
   },
   pages: {
     signIn: '/login',
+  },
+  cookies: {
+    callbackUrl: {
+      options: {
+        sameSite: 'none',
+      },
+    },
+    sessionToken: {
+      options: {
+        sameSite: 'none',
+      },
+    },
   },
   callbacks: {
     jwt: ({ token, user, session, trigger }) => {
@@ -275,6 +297,13 @@ const config = {
         cartId: { type: 'text' },
       },
       authorize: loginWithJwt,
+    }),
+    CredentialsProvider({
+      id: 'session-sync',
+      credentials: {
+        jwt: { label: 'JWT', type: 'text' },
+      },
+      authorize: loginWithSessionSync,
     }),
   ],
 } satisfies NextAuthConfig;
