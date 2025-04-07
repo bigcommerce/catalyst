@@ -2,31 +2,19 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
-// import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
-// import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-// import { Product } from '@/vibes/soul/primitives/product-card';
-// import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
-// import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
-// import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
-// import { facetsTransformer } from '~/data-transformers/facets-transformer';
-// import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
-// import { pricesTransformer } from '~/data-transformers/prices-transformer';
-
 import { getSessionCustomerAccessToken } from '~/auth';
+import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts as getCompareProductsData } from '../../fetch-compare-products';
-// import { fetchFacetedSearch } from '../../fetch-faceted-search';
-
-// import { CategoryViewed } from './_components/category-viewed';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { getCategoryPageData } from './page-data';
@@ -77,46 +65,6 @@ import { getCategoryPageData } from './page-data';
 //   ];
 // }
 
-// async function getTitle(props: Props): Promise<string | null> {
-//   const category = await getCategory(props);
-
-//   return category.name;
-// }
-
-// const getSearch = cache(async (props: Props) => {
-//   const search = await getRefinedSearch(props);
-
-//   return search;
-// });
-
-// async function getTotalCount(props: Props): Promise<number> {
-//   const search = await getSearch(props);
-
-//   return search.products.collectionInfo?.totalItems ?? 0;
-// }
-
-// async function getProducts(props: Props) {
-//   const search = await getSearch(props);
-
-//   return search.products.items;
-// }
-
-// async function getListProducts(props: Props): Promise<Product[]> {
-//   const products = await getProducts(props);
-//   const format = await getFormatter();
-
-//   return products.map((product) => ({
-//     id: product.entityId.toString(),
-//     title: product.name,
-//     href: product.path,
-//     image: product.defaultImage
-//       ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
-//       : undefined,
-//     price: pricesTransformer(product.prices, format),
-//     subtitle: product.brand?.name ?? undefined,
-//   }));
-// }
-
 // async function getFilters(props: Props): Promise<Filter[]> {
 //   const { slug } = await props.params;
 //   const searchParams = await props.searchParams;
@@ -143,21 +91,6 @@ import { getCategoryPageData } from './page-data';
 //   const subCategoriesFilters = await getSubCategoriesFilters(props);
 
 //   return [...subCategoriesFilters, ...filters];
-// }
-
-// async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
-//   const search = await getRefinedSearch(props);
-
-//   return pageInfoTransformer(search.products.pageInfo);
-// }
-
-// async function getShowCompare(props: Props) {
-//   const { slug } = await props.params;
-
-//   const variables = cachedCategoryDataVariables(slug);
-//   const data = await getCategoryPageData(variables);
-
-//   return data.settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 // }
 
 const cachedCompareProductIds = cache(async (props: Props) => {
@@ -224,7 +157,7 @@ export default async function Category(props: Props) {
 
   const categoryId = Number(slug);
 
-  const { category, settings } = await getCategoryPageData(categoryId);
+  const { category, settings, categoryTree } = await getCategoryPageData(categoryId);
 
   if (!category) {
     return notFound();
@@ -318,6 +251,45 @@ export default async function Category(props: Props) {
     return pageInfoTransformer(search.products.pageInfo);
   });
 
+  const streamableFilters = Streamable.from(async () => {
+    const searchParams = await props.searchParams;
+    // const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
+    const search = await streamableFacetedSearch;
+
+    const allFacets = search.facets.items.filter(
+      (facet) => facet.__typename !== 'CategorySearchFilter',
+    );
+    const refinedFacets = search.facets.items.filter(
+      (facet) => facet.__typename !== 'CategorySearchFilter',
+    );
+
+    const transformedFacets = await facetsTransformer({
+      refinedFacets,
+      allFacets,
+      // searchParams: { ...searchParams, ...parsedSearchParams },
+      searchParams,
+    });
+
+    const filters = transformedFacets.filter((facet) => facet != null);
+
+    const tree = categoryTree[0];
+    const subCategoriesFilters =
+      tree == null || tree.children.length === 0
+        ? []
+        : [
+            {
+              type: 'link-group' as const,
+              label: t('Category.subCategories'),
+              links: tree.children.map((child) => ({
+                label: child.name,
+                href: child.path,
+              })),
+            },
+          ];
+
+    return [...subCategoriesFilters, ...filters];
+  });
+
   return (
     <>
       <ProductsListSection
@@ -327,8 +299,7 @@ export default async function Category(props: Props) {
         emptyStateSubtitle={t('Category.Empty.subtitle')}
         emptyStateTitle={t('Category.Empty.title')}
         filterLabel={t('FacetedSearch.filters')}
-        // filters={Streamable.from(() => getFilters(props))}
-        filters={[]}
+        filters={streamableFilters}
         filtersPanelTitle={t('FacetedSearch.filters')}
         maxCompareLimitMessage={t('Compare.maxCompareLimit')}
         maxItems={MAX_COMPARE_LIMIT}

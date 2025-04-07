@@ -18,21 +18,21 @@ const CategoryPageQuery = graphql(
             metaKeywords
           }
         }
-        # categoryTree(rootEntityId: $entityId) {
-        #   entityId
-        #   name
-        #   path
-        #   children {
-        #     entityId
-        #     name
-        #     path
-        #     children {
-        #       entityId
-        #       name
-        #       path
-        #     }
-        #   }
-        # }
+        categoryTree(rootEntityId: $entityId) {
+          entityId
+          name
+          path
+          children {
+            entityId
+            name
+            path
+            children {
+              entityId
+              name
+              path
+            }
+          }
+        }
         settings {
           storefront {
             catalog {
