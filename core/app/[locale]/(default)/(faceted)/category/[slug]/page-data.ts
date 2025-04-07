@@ -1,16 +1,14 @@
 import { cache } from 'react';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+import { graphql } from '~/client/graphql';
 import { BreadcrumbsCategoryFragment } from '~/components/breadcrumbs/fragment';
 
 const CategoryPageQuery = graphql(
   `
-    query CategoryPageQuery($categoryId: Int!) {
+    query CategoryPageQuery($entityId: Int!) {
       site {
-        category(entityId: $categoryId) {
+        category(entityId: $entityId) {
           entityId
           name
           ...BreadcrumbsFragment
@@ -20,21 +18,21 @@ const CategoryPageQuery = graphql(
             metaKeywords
           }
         }
-        categoryTree(rootEntityId: $categoryId) {
-          entityId
-          name
-          path
-          children {
-            entityId
-            name
-            path
-            children {
-              entityId
-              name
-              path
-            }
-          }
-        }
+        # categoryTree(rootEntityId: $entityId) {
+        #   entityId
+        #   name
+        #   path
+        #   children {
+        #     entityId
+        #     name
+        #     path
+        #     children {
+        #       entityId
+        #       name
+        #       path
+        #     }
+        #   }
+        # }
         settings {
           storefront {
             catalog {
@@ -48,16 +46,12 @@ const CategoryPageQuery = graphql(
   [BreadcrumbsCategoryFragment],
 );
 
-type Variables = VariablesOf<typeof CategoryPageQuery>;
-
-export const getCategoryPageData = cache(async (variables: Variables) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
+export const getCategoryPageData = cache(async (entityId: number) => {
+  console.log('getCategoryPageData');
 
   const response = await client.fetch({
     document: CategoryPageQuery,
-    variables,
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    variables: { entityId },
   });
 
   return response.data.site;
