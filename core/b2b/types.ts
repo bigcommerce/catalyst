@@ -26,6 +26,7 @@ export enum B2BRole {
   B2C = 99,
   GUEST = 100,
 }
+
 export interface B2BProfile {
   id: number;
   phoneNumber: string;

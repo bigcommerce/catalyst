@@ -1,36 +1,45 @@
+import { z } from 'zod';
+
 import { auth } from '~/auth';
 
 import { ScriptDev } from './script-dev';
 import { ScriptProduction } from './script-production';
 
+const EnvironmentSchema = z.object({
+  BIGCOMMERCE_STORE_HASH: z.string({ message: 'BIGCOMMERCE_STORE_HASH is required' }),
+  BIGCOMMERCE_CHANNEL_ID: z.string({ message: 'BIGCOMMERCE_CHANNEL_ID is required' }),
+  LOCAL_BUYER_PORTAL_HOST: z.string().url().optional(),
+  STAGING_B2B_CDN_ORIGIN: z.string().optional(),
+});
+
 export async function B2BLoader() {
+  const {
+    BIGCOMMERCE_STORE_HASH,
+    BIGCOMMERCE_CHANNEL_ID,
+    LOCAL_BUYER_PORTAL_HOST,
+    STAGING_B2B_CDN_ORIGIN,
+  } = EnvironmentSchema.parse(process.env);
+
   const session = await auth();
-  const storeHash = process.env.BIGCOMMERCE_STORE_HASH;
-  const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
-  const localBuyerPortalHost = process.env.LOCAL_BUYER_PORTAL_HOST;
 
-  if (!storeHash || !channelId) {
-    throw new Error('BIGCOMMERCE_STORE_HASH or BIGCOMMERCE_CHANNEL_ID is not set');
-  }
-
-  if (localBuyerPortalHost) {
+  if (LOCAL_BUYER_PORTAL_HOST) {
     return (
       <ScriptDev
-        channelId={channelId}
-        hostname={localBuyerPortalHost}
-        storeHash={storeHash}
+        channelId={BIGCOMMERCE_CHANNEL_ID}
+        hostname={LOCAL_BUYER_PORTAL_HOST}
+        storeHash={BIGCOMMERCE_STORE_HASH}
         token={session?.b2bToken}
       />
     );
   }
 
-  const environment = process.env.STAGING_B2B_CDN_ORIGIN === 'true' ? 'staging' : 'production';
+  const environment = STAGING_B2B_CDN_ORIGIN === 'true' ? 'staging' : 'production';
 
   return (
     <ScriptProduction
-      channelId={channelId}
+      channelId={BIGCOMMERCE_CHANNEL_ID}
       environment={environment}
-      storeHash={storeHash}
+      storeHash={BIGCOMMERCE_STORE_HASH}
       token={session?.b2bToken}
     />
   );
