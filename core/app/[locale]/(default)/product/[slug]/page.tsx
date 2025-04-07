@@ -304,6 +304,7 @@ export default async function Product(props: Props) {
           incrementLabel={t('ProductDetails.increaseQuantity')}
           prefetch={true}
           product={{
+            sku: baseProduct.sku,
             id: baseProduct.entityId.toString(),
             title: baseProduct.name,
             description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,

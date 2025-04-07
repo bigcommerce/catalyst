@@ -157,6 +157,7 @@ export default async function Cart({ params }: Props) {
       <CartAnalyticsProvider data={Streamable.from(() => getAnalyticsData(cartId))}>
         <CartComponent
           cart={{
+            id: cartId,
             lineItems: formattedLineItems,
             total: format.number(checkout?.grandTotal?.value || 0, {
               style: 'currency',

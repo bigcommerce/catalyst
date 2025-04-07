@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Login({ params, searchParams }: Props) {
   const { locale } = await params;
-  const { redirectTo = '/account/orders' } = await searchParams;
+  const { redirectTo = '/?section=orders' } = await searchParams;
 
   setRequestLocale(locale);
 

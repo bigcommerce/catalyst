@@ -29,6 +29,11 @@ import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { useEvents } from '~/components/analytics/events';
+import { B2BProductOption } from '~/b2b/types';
+import { useB2BQuoteEnabled } from '~/b2b/use-b2b-quote-enabled';
+import { useB2bShoppingListEnabled } from '~/b2b/use-b2b-shopping-list-enabled';
+import { AddToQuoteButton } from '~/components/add-to-quote-button';
+import { AddToShoppingListButton } from '~/components/add-to-shopping-list-button';
 import { usePathname, useRouter } from '~/i18n/routing';
 
 import { Field, schema, SchemaRawShape } from './schema';
@@ -47,6 +52,7 @@ export interface ProductDetailFormProps<F extends Field> {
   fields: F[];
   action: ProductDetailFormAction<F>;
   productId: string;
+  sku: string;
   ctaLabel?: string;
   quantityLabel?: string;
   incrementLabel?: string;
@@ -55,6 +61,19 @@ export interface ProductDetailFormProps<F extends Field> {
   ctaDisabled?: boolean;
   prefetch?: boolean;
   additionalActions?: ReactNode;
+}
+
+interface FormField {
+  id: number;
+  type: string;
+  name: string;
+  value?: string | number;
+  options?: Array<{
+    id: number;
+    value: string;
+    label: string;
+    color?: string;
+  }>;
 }
 
 export function ProductDetailForm<F extends Field>({
@@ -69,7 +88,10 @@ export function ProductDetailForm<F extends Field>({
   ctaDisabled = false,
   prefetch = false,
   additionalActions,
+  sku,
 }: ProductDetailFormProps<F>) {
+  const isAddToQuoteEnabled = useB2BQuoteEnabled();
+  const isAddToShoppingListEnabled = useB2bShoppingListEnabled();
   const router = useRouter();
   const pathname = usePathname();
   const events = useEvents();
@@ -137,7 +159,94 @@ export function ProductDetailForm<F extends Field>({
     shouldRevalidate: 'onInput',
   });
 
+  function transformToB2BProductOption(field: FormField): B2BProductOption {
+    const baseOption: B2BProductOption = {
+      optionEntityId: field.id,
+      optionValueEntityId: 0, // Will be set based on type
+      entityId: field.id,
+      valueEntityId: 0, // Will be set based on type
+      text: '',
+      number: 0,
+      date: { utc: '' },
+    };
+
+    switch (field.type) {
+      case 'text':
+      case 'textarea':
+        return {
+          ...baseOption,
+          text: String(field.value || ''),
+        };
+
+      case 'number':
+        return {
+          ...baseOption,
+          number: Number(field.value || 0),
+        };
+
+      case 'date':
+        return {
+          ...baseOption,
+          date: field.value ? { utc: new Date(field.value).toISOString() } : { utc: '' },
+        };
+
+      case 'button-radio-group':
+      case 'swatch-radio-group':
+      case 'radio-group':
+      case 'card-radio-group':
+      case 'select': {
+        const selectedOption = field.options?.find((opt) => opt.value === String(field.value));
+
+        return {
+          ...baseOption,
+          optionValueEntityId: selectedOption?.id || 0,
+          valueEntityId: selectedOption?.id || 0,
+          text: selectedOption?.label || '',
+        };
+      }
+
+      default:
+        return baseOption;
+    }
+  }
+
+  const selectedOptions = fields.map((field) =>
+    transformToB2BProductOption({
+      id: Number(field.name),
+      type: field.type,
+      name: field.name,
+      value: formFields[field.name]?.value,
+      options:
+        'options' in field
+          ? field.options.map((opt) => ({
+              ...opt,
+              id: Number(opt.value),
+            }))
+          : undefined,
+    }),
+  );
+
+  console.dir(selectedOptions, { depth: null });
+
   const quantityControl = useInputControl(formFields.quantity);
+
+  const validateQuote = () => {
+    const data = new FormData();
+    const formValues = { ...(form.value ?? {}) };
+
+    Object.entries(formValues).map(([key, value]) => {
+      if (typeof value === 'string') {
+        data.append(key, value);
+      }
+    });
+
+    const zodError = parseWithZod(data, { schema: schema(fields) });
+
+    if (zodError.status === 'error') {
+      form.validate();
+      throw new Error('Invalid form data');
+    }
+  };
 
   return (
     <FormProvider context={form.context}>
@@ -176,7 +285,31 @@ export function ProductDetailForm<F extends Field>({
               required
               value={quantityControl.value}
             />
-            <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+            <div className="flex flex-1 gap-x-3">
+              <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+              {isAddToQuoteEnabled && (
+                <AddToQuoteButton
+                  className="flex-1"
+                  productEntityId={productId}
+                  quantity={Number(quantityControl.value)}
+                  selectedOptions={selectedOptions}
+                  sku={sku}
+                  validate={validateQuote}
+                />
+              )}
+            </div>
+          </div>
+          <div className="flex flex-1 gap-x-3">
+            {isAddToShoppingListEnabled && (
+              <AddToShoppingListButton
+                className="flex-1"
+                productEntityId={productId}
+                quantity={Number(quantityControl.value)}
+                selectedOptions={selectedOptions}
+                sku={sku}
+                validate={validateQuote}
+              />
+            )}
             {additionalActions}
           </div>
         </div>

@@ -12,7 +12,7 @@ export default async function Layout({ children, params }: Props) {
   const { locale } = await params;
 
   if (loggedIn) {
-    redirect({ href: '/account/orders', locale });
+    redirect({ href: '/?section=orders', locale });
   }
 
   return children;

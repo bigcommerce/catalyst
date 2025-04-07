@@ -1,10 +1,17 @@
 import { composeMiddlewares } from './middlewares/compose-middlewares';
 import { withAuth } from './middlewares/with-auth';
+import { withB2B } from './middlewares/with-b2b';
 import { withChannelId } from './middlewares/with-channel-id';
 import { withIntl } from './middlewares/with-intl';
 import { withRoutes } from './middlewares/with-routes';
 
-export const middleware = composeMiddlewares(withAuth, withIntl, withChannelId, withRoutes);
+export const middleware = composeMiddlewares(
+  withAuth,
+  withIntl,
+  withChannelId,
+  withB2B,
+  withRoutes,
+);
 
 export const config = {
   matcher: [
