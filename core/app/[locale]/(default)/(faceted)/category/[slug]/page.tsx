@@ -13,7 +13,6 @@ import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
-import { Option as SortOption } from '@/vibes/soul/sections/products-list-section/sorting';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -191,22 +190,6 @@ async function getFilters(props: Props): Promise<Filter[]> {
   return [...subCategoriesFilters, ...filters];
 }
 
-async function getSortOptions(): Promise<SortOption[]> {
-  const t = await getTranslations('Faceted.SortBy');
-
-  return [
-    { value: 'featured', label: t('featuredItems') },
-    { value: 'newest', label: t('newestItems') },
-    { value: 'best_selling', label: t('bestSellingItems') },
-    { value: 'a_to_z', label: t('aToZ') },
-    { value: 'z_to_a', label: t('zToA') },
-    { value: 'best_reviewed', label: t('byReview') },
-    { value: 'lowest_price', label: t('priceAscending') },
-    { value: 'highest_price', label: t('priceDescending') },
-    { value: 'relevance', label: t('relevance') },
-  ];
-}
-
 async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
   const search = await getRefinedSearch(props);
 
@@ -297,7 +280,17 @@ export default async function Category(props: Props) {
         showCompare={Streamable.from(() => getShowCompare(props))}
         sortDefaultValue="featured"
         sortLabel={t('SortBy.sortBy')}
-        sortOptions={Streamable.from(getSortOptions)}
+        sortOptions={[
+          { value: 'featured', label: t('SortBy.featuredItems') },
+          { value: 'newest', label: t('SortBy.newestItems') },
+          { value: 'best_selling', label: t('SortBy.bestSellingItems') },
+          { value: 'a_to_z', label: t('SortBy.aToZ') },
+          { value: 'z_to_a', label: t('SortBy.zToA') },
+          { value: 'best_reviewed', label: t('SortBy.byReview') },
+          { value: 'lowest_price', label: t('SortBy.priceAscending') },
+          { value: 'highest_price', label: t('SortBy.priceDescending') },
+          { value: 'relevance', label: t('SortBy.relevance') },
+        ]}
         sortParamName="sort"
         title={Streamable.from(() => getTitle(props))}
         totalCount={Streamable.from(() => getTotalCount(props))}
