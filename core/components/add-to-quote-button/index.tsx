@@ -24,12 +24,12 @@ export const AddToQuoteButton = ({
   validate,
   quantity = 1,
 }: Props) => {
-  const sdk = useSDK();
-  const addProducts = sdk?.utils?.quote?.addProducts;
   const t = useTranslations('Components.AddToQuoteButton');
   const [loading, setLoading] = useState(false);
 
-  if (!addProducts) {
+  const addProductsToQuote = useSDK()?.utils?.quote?.addProducts;
+
+  if (!addProductsToQuote) {
     return null;
   }
 
@@ -41,7 +41,7 @@ export const AddToQuoteButton = ({
 
       const productOptions = Object.values(selectedOptions);
 
-      await addProducts([
+      await addProductsToQuote([
         {
           sku,
           productEntityId: Number(productEntityId),

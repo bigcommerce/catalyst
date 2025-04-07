@@ -8,16 +8,6 @@ interface LoginWithB2BParams {
   };
 }
 
-type ENV_VARIABLES = 'B2B_API_TOKEN' | 'BIGCOMMERCE_CHANNEL_ID';
-
-const getEnv = (key: ENV_VARIABLES) => {
-  if (!process.env[key]) {
-    throw new Error(`Environment variable ${key} is not set`);
-  }
-
-  return process.env[key];
-};
-
 const ENV = z
   .object({
     env: z.object({

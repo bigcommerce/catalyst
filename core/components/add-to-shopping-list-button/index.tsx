@@ -24,12 +24,12 @@ export const AddToShoppingListButton = ({
   validate,
   quantity = 1,
 }: Props) => {
-  const sdk = useSDK();
-  const addProduct = sdk?.utils?.shoppingList?.addProductFromPage;
   const t = useTranslations('Components.AddToShoppingListButton');
   const [loading, setLoading] = useState(false);
 
-  if (!addProduct) {
+  const addProductToShoppingList = useSDK()?.utils?.shoppingList?.addProductFromPage;
+
+  if (!addProductToShoppingList) {
     return null;
   }
 
@@ -41,7 +41,7 @@ export const AddToShoppingListButton = ({
 
       const productOptions = Object.values(selectedOptions);
 
-      await addProduct({
+      await addProductToShoppingList({
         sku,
         productEntityId: Number(productEntityId),
         quantity,
