@@ -18,6 +18,7 @@ import { ProductsListSection } from '@/vibes/soul/sections/products-list-section
 // import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
 import { getSessionCustomerAccessToken } from '~/auth';
+import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
@@ -311,6 +312,12 @@ export default async function Category(props: Props) {
     return search.products.collectionInfo?.totalItems ?? 0;
   });
 
+  const streamablePagination = Streamable.from(async () => {
+    const search = await streamableFacetedSearch;
+
+    return pageInfoTransformer(search.products.pageInfo);
+  });
+
   return (
     <>
       <ProductsListSection
@@ -325,7 +332,7 @@ export default async function Category(props: Props) {
         filtersPanelTitle={t('FacetedSearch.filters')}
         maxCompareLimitMessage={t('Compare.maxCompareLimit')}
         maxItems={MAX_COMPARE_LIMIT}
-        // paginationInfo={Streamable.from(() => getPaginationInfo(props))}
+        paginationInfo={streamablePagination}
         products={streamableProducts}
         rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
         removeLabel={t('Compare.remove')}
