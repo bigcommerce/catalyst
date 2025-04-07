@@ -5,6 +5,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
+import { loginWithB2B } from '~/b2b/client';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { clearCartId, setCartId } from '~/lib/cart';
@@ -15,6 +16,7 @@ const LoginMutation = graphql(`
     login(email: $email, password: $password, guestCartEntityId: $cartEntityId) {
       customerAccessToken {
         value
+        expiresAt
       }
       customer {
         entityId
@@ -34,6 +36,7 @@ const LoginWithTokenMutation = graphql(`
     loginWithCustomerLoginJwt(jwt: $jwt, guestCartEntityId: $cartEntityId) {
       customerAccessToken {
         value
+        expiresAt
       }
       customer {
         entityId
@@ -116,11 +119,17 @@ async function loginWithPassword(credentials: unknown): Promise<User | null> {
 
   await handleLoginCart(cartId, result.cart?.entityId);
 
+  const b2bToken = await loginWithB2B({
+    customerId: result.customer.entityId,
+    customerAccessToken: result.customerAccessToken,
+  });
+
   return {
     name: `${result.customer.firstName} ${result.customer.lastName}`,
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
     cartId: result.cart?.entityId,
+    b2bToken,
   };
 }
 
@@ -151,12 +160,18 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
 
   await handleLoginCart(cartId, result.cart?.entityId);
 
+  const b2bToken = await loginWithB2B({
+    customerId: result.customer.entityId,
+    customerAccessToken: result.customerAccessToken,
+  });
+
   return {
     name: `${result.customer.firstName} ${result.customer.lastName}`,
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
     impersonatorId,
     cartId: result.cart?.entityId,
+    b2bToken,
   };
 }
 
@@ -196,6 +211,12 @@ const config = {
 
       // user can actually be undefined
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (user?.b2bToken) {
+        token.b2bToken = user.b2bToken;
+      }
+
+      // user can actually be undefined
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (user?.cartId) {
         token.user = {
           ...token.user,
@@ -223,6 +244,10 @@ const config = {
 
       if (token.user?.cartId !== undefined) {
         session.user.cartId = token.user.cartId;
+      }
+
+      if (token.b2bToken) {
+        session.b2bToken = token.b2bToken;
       }
 
       return session;
@@ -301,6 +326,7 @@ export const isLoggedIn = async () => {
 declare module 'next-auth' {
   interface Session {
     user?: DefaultSession['user'];
+    b2bToken?: string;
   }
 
   interface User {
@@ -309,6 +335,7 @@ declare module 'next-auth' {
     cartId?: string | null;
     customerAccessToken?: string;
     impersonatorId?: string | null;
+    b2bToken?: string;
   }
 }
 
@@ -316,5 +343,6 @@ declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
     user?: DefaultSession['user'];
+    b2bToken?: string;
   }
 }
