@@ -10,69 +10,83 @@
 @source './vibes/**/*.{ts,tsx}';
 
 @layer base {
-  h1: {
+  h1 {
     color: hsl(var(--foreground));
-    fontfamily: var(--font-family-heading);
+    font-family: var(--font-family-heading);
   }
-  ,
-  h2: {
+
+  h2 {
     color: hsl(var(--foreground));
-    fontfamily: var(--font-family-heading);
+    font-family: var(--font-family-heading);
   }
-  h3: {
+
+  h3 {
     color: hsl(var(--foreground));
-    fontfamily: var(--font-family-heading);
+    font-family: var(--font-family-heading);
   }
-  h4: {
+
+  h4 {
     color: hsl(var(--foreground));
-    fontfamily: var(--font-family-heading);
+    font-family: var(--font-family-heading);
   }
-  h5: {
+
+  h5 {
     color: hsl(var(--foreground));
-    fontfamily: var(--font-family-heading);
+    font-family: var(--font-family-heading);
   }
-  h6: {
+
+  h6 {
     color: hsl(var(--foreground));
-    fontfamily: var(--font-family-heading);
+    font-family: var(--font-family-heading);
   }
-  p: {
+
+  p {
     color: hsl(var(--foreground));
-    fontfamily: var(--font-family-body);
+    font-family: var(--font-family-body);
   }
-  a: {
+
+  a {
     color: color-mix(in oklab, hsl(var(--primary)), black 15%);
-    textdecoration: none;
-    &:hover: {
-      textdecoration: underline;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
     }
   }
-  ul: {
+
+  ul {
     color: hsl(var(--contrast-500));
-    fontfamily: var(--font-family-body);
+    font-family: var(--font-family-body);
   }
-  ol: {
+
+  ol {
     color: hsl(var(--contrast-500));
-    fontfamily: var(--font-family-body);
+    font-family: var(--font-family-body);
   }
-  strong: {
-    fontweight: 600;
+
+  strong {
+    font-weight: 600;
   }
-  blockquote: {
-    borderleftcolor: hsl(var(--contrast-300));
-    p: {
+
+  blockquote {
+    border-left-color: hsl(var(--contrast-300));
+
+    p {
       color: hsl(var(--contrast-500));
-      fontstyle: normal;
-      fontweight: 400;
+      font-style: normal;
+      font-weight: 400;
     }
   }
-  code: {
+
+  code {
     color: hsl(var(--contrast-500));
-    fontfamily: var(--font-family-mono);
+    font-family: var(--font-family-mono);
   }
-  pre: {
+
+  pre {
     color: hsl(var(--background));
-    backgroundcolor: hsl(var(--foreground));
-    fontfamily: var(--font-family-mono);
+    background-color: hsl(var(--foreground));
+    font-family: var(--font-family-mono);
   }
 }
 
@@ -154,18 +168,22 @@
     from {
       height: var(--radix-accordion-content-height);
     }
+
     to {
       height: 0;
     }
   }
+
   @keyframes expand {
     from {
       height: 0;
     }
+
     to {
       height: var(--radix-accordion-content-height);
     }
   }
+
   @keyframes marching-ants {
     to {
       background-position:
@@ -176,80 +194,98 @@
         -1px 100%;
     }
   }
+
   @keyframes rotateFade {
     from {
       opacity: 1;
       transform: rotateZ(0deg) translate3d(-50%, -50%, 0);
     }
+
     35% {
       opacity: 0;
     }
+
     70% {
       opacity: 0;
     }
+
     to {
       opacity: 1;
       transform: rotateZ(360deg) translate3d(-50%, -50%, 0);
     }
   }
+
   @keyframes rotate {
     from {
       transform: rotateZ(0deg) translate3d(-50%, -50%, 0);
     }
+
     to {
       transform: rotateZ(360deg) translate3d(-50%, -50%, 0);
     }
   }
+
   @keyframes scroll {
     to {
-      backgroundposition: 5px 0;
+      background-position: 5px 0;
     }
   }
+
   @keyframes dotScrollSmall: {
     to: {
-      backgroundposition:
+      background-position:
         -6px -6px,
         -12px -12px;
     }
   }
+
   @keyframes dotScrollLarge: {
     to {
-      backgroundposition:
+      background-position:
         -8px -8px,
         -16px -16px;
     }
   }
+
   @keyframes scrollLeft {
     0% {
       transform: translateX(0);
     }
+
     100% {
       transform: translateX(-100%);
     }
   }
+
   @keyframes shake {
+
     10%,
     90% {
       transform: translate3d(-1px, 0, 0);
     }
+
     20%,
     80% {
       transform: translate3d(1px, 0, 0);
     }
+
     30%,
     50%,
     70% {
       transform: translate3d(-2px, 0, 0);
     }
+
     40%,
     60% {
       transform: translate3d(2px, 0, 0);
     }
   }
+
   @keyframes slideIn: {
     0% {
       transform: translateX(-100%);
     }
+
     100% {
       transform: translateX(0%);
     }
