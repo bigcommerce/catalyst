@@ -146,6 +146,7 @@ export function CartClient<LineItem extends CartLineItem>({
   shipping,
 }: Props<LineItem>) {
   const isAddToQuoteEnabled = useB2BQuoteEnabled();
+
   const [state, formAction] = useActionState(lineItemAction, {
     lineItems: cart.lineItems,
     lastResult: null,
@@ -235,7 +236,9 @@ export function CartClient<LineItem extends CartLineItem>({
               {checkoutLabel}
               <ArrowRight size={20} strokeWidth={1} />
             </CheckoutButton>
-            {cart.cartId && isAddToQuoteEnabled && <AddCartToQuoteButton cartId={cart.cartId} />}
+            {typeof cart.cartId === 'string' && cart.cartId !== '' && isAddToQuoteEnabled && (
+              <AddCartToQuoteButton cartId={cart.cartId} />
+            )}
           </div>
         </div>
       }

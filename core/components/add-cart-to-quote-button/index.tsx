@@ -12,20 +12,20 @@ interface Props {
 }
 
 export const AddCartToQuoteButton = ({ cartId, className }: Props) => {
-  const sdk = useSDK();
-  const addProductsFromCartId = sdk?.utils?.quote?.addProductsFromCartId;
   const t = useTranslations('Components.AddToQuoteButton');
   const [loading, setLoading] = useState(false);
 
-  if (!addProductsFromCartId) {
+  const addCartToQuote = useSDK()?.utils?.quote?.addProductsFromCartId;
+
+  if (!addCartToQuote) {
     return null;
   }
 
-  const handleAddCartToQuote = () => {
+  const handleAddCartToQuote = async () => {
     setLoading(true);
 
     try {
-      void addProductsFromCartId(cartId).finally(() => setLoading(false));
+      await addCartToQuote(cartId);
     } finally {
       setLoading(false);
     }

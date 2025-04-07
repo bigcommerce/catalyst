@@ -8,24 +8,19 @@ interface LoginWithB2BParams {
   };
 }
 
-type ENV_VARIABLES = 'B2B_API_TOKEN' | 'BIGCOMMERCE_CHANNEL_ID';
+const EnvironmentSchema = z.object({
+  B2B_API_TOKEN: z.string({ message: 'B2B_API_TOKEN is required' }),
+  BIGCOMMERCE_CHANNEL_ID: z.string({ message: 'BIGCOMMERCE_CHANNEL_ID is required' }),
+});
 
-const getEnv = (key: ENV_VARIABLES) => {
-  if (!process.env[key]) {
-    throw new Error(`Environment variable ${key} is not set`);
-  }
-
-  return process.env[key];
-};
+const B2BTokenResponseSchema = z.object({
+  data: z.object({
+    token: z.array(z.string()),
+  }),
+});
 
 export async function loginWithB2B({ customerId, customerAccessToken }: LoginWithB2BParams) {
-  const channelId = getEnv('BIGCOMMERCE_CHANNEL_ID');
-
-  const payload = {
-    channelId,
-    customerId,
-    customerAccessToken,
-  };
+  const { BIGCOMMERCE_CHANNEL_ID, B2B_API_TOKEN } = EnvironmentSchema.parse(process.env);
 
   const response = await fetch(
     `${process.env.B2B_API_HOST || 'https://api-b2b.bigcommerce.com'}/api/io/auth/customers/storefront`,
@@ -34,25 +29,21 @@ export async function loginWithB2B({ customerId, customerAccessToken }: LoginWit
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        authToken: getEnv('B2B_API_TOKEN'),
+        authToken: B2B_API_TOKEN,
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify({
+        channelId: BIGCOMMERCE_CHANNEL_ID,
+        customerId,
+        customerAccessToken,
+      }),
     },
   );
 
-  const B2BTokenResponseSchema = z.object({
-    data: z.object({
-      token: z.array(z.string()),
-    }),
-  });
+  const token = B2BTokenResponseSchema.parse(await response.json()).data.token[0];
 
-  const {
-    data: { token },
-  } = B2BTokenResponseSchema.parse(await response.json());
-
-  if (!token[0]) {
+  if (!token) {
     throw new Error('No token returned from B2B API');
   }
 
-  return token[0];
+  return token;
 }
