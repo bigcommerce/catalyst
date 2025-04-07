@@ -1,46 +1,33 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-
 import { B2BRole } from './types';
 import { useSDK } from './use-b2b-sdk';
 
-export const useB2bShoppingListEnabled = () => {
-  const [isAddToShoppingListEnabled, setIsAddToShoppingListEnabled] = useState(false);
+export const useB2bShoppingListEnabled = (): boolean => {
   const sdk = useSDK();
 
-  useEffect(() => {
-    const quoteConfigs = sdk?.utils?.quote?.getQuoteConfigs();
-    const role = sdk?.utils?.user.getProfile().role;
+  const quoteConfigs = sdk?.utils?.quote?.getQuoteConfigs();
+  const role = sdk?.utils?.user.getProfile().role;
 
-    // eslint-disable-next-line no-restricted-globals
-    if (!quoteConfigs || isNaN(Number(role))) {
-      return;
-    }
+  if (!quoteConfigs || role === undefined) {
+    return false;
+  }
 
-    const shoppingListConfig = quoteConfigs.find(
-      ({ key }) => key === 'shopping_list_on_product_page',
-    );
+  const shoppingListConfig = quoteConfigs.find(
+    ({ key }) => key === 'shopping_list_on_product_page',
+  );
 
-    if (shoppingListConfig?.value !== '1') {
-      return;
-    }
+  if (shoppingListConfig?.value !== '1') {
+    return false;
+  }
 
-    if (role === B2BRole.GUEST && shoppingListConfig.extraFields.guest) {
-      setIsAddToShoppingListEnabled(true);
-    }
+  if (role === B2BRole.GUEST) {
+    return Boolean(shoppingListConfig.extraFields.guest);
+  }
 
-    if (role === B2BRole.B2C && shoppingListConfig.extraFields.b2c) {
-      setIsAddToShoppingListEnabled(true);
-    }
+  if (role === B2BRole.B2C) {
+    return Boolean(shoppingListConfig.extraFields.b2c);
+  }
 
-    if (
-      ![B2BRole.B2C, B2BRole.GUEST].includes(Number(role)) &&
-      shoppingListConfig.extraFields.b2b
-    ) {
-      setIsAddToShoppingListEnabled(true);
-    }
-  }, [sdk]);
-
-  return isAddToShoppingListEnabled;
+  return Boolean(shoppingListConfig.extraFields.b2b);
 };
