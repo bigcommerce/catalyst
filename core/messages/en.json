@@ -439,6 +439,20 @@
       "placeholder": "Enter your email",
       "description": "Stay up to date with the latest news and offers from our store.",
       "success": "Thank you for your interest! Newsletter feature is coming soon!"
+    },
+    "ProductCard": {
+      "Compare": {
+        "compare": "Compare",
+        "remove": "Remove",
+        "maxCompareLimit": "You've reached the maximum number of products for comparison. Remove a product to add a new one."
+      }
+    },
+    "AddToQuoteButton": {
+      "addToQuote": "Add to quote",
+      "addCartToQuote": "Add cart to quote"
+    },
+    "AddToShoppingListButton": {
+      "addToShoppingList": "Add to shopping list"
     }
   }
 }
