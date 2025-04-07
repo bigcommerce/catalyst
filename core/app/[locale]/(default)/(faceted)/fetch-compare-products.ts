@@ -3,10 +3,10 @@ import { VariablesOf } from 'gql.tada';
 import { cache } from 'react';
 import { z } from 'zod';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { CurrencyCode } from '~/components/header/fragment';
 
 import { MAX_COMPARE_LIMIT } from '../compare/page-data';
 
@@ -43,21 +43,21 @@ const CompareProductsQuery = graphql(`
 
 type Variables = VariablesOf<typeof CompareProductsQuery>;
 
-export const getCompareProducts = cache(async (variables: Variables) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
+export const getCompareProducts = cache(
+  async (variables: Variables, currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+    const parsedVariables = CompareProductsSchema.parse(variables);
 
-  const parsedVariables = CompareProductsSchema.parse(variables);
+    if (parsedVariables.entityIds.length === 0) {
+      return [];
+    }
 
-  if (parsedVariables.entityIds.length === 0) {
-    return [];
-  }
+    const response = await client.fetch({
+      document: CompareProductsQuery,
+      variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT, currencyCode },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
 
-  const response = await client.fetch({
-    document: CompareProductsQuery,
-    variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
-
-  return removeEdgesAndNodes(response.data.site.products);
-});
+    return removeEdgesAndNodes(response.data.site.products);
+  },
+);
