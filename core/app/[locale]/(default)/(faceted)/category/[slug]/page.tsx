@@ -191,12 +191,6 @@ async function getFilters(props: Props): Promise<Filter[]> {
   return [...subCategoriesFilters, ...filters];
 }
 
-async function getSortLabel(): Promise<string> {
-  const t = await getTranslations('Faceted.SortBy');
-
-  return t('sortBy');
-}
-
 async function getSortOptions(): Promise<SortOption[]> {
   const t = await getTranslations('Faceted.SortBy');
 
@@ -253,60 +247,6 @@ async function getCompareProducts(props: Props) {
   }));
 }
 
-async function getFilterLabel(): Promise<string> {
-  const t = await getTranslations('Faceted.FacetedSearch');
-
-  return t('filters');
-}
-
-async function getCompareLabel(): Promise<string> {
-  const t = await getTranslations('Components.ProductCard.Compare');
-
-  return t('compare');
-}
-
-async function getRemoveLabel(): Promise<string> {
-  const t = await getTranslations('Components.ProductCard.Compare');
-
-  return t('remove');
-}
-
-async function getMaxCompareLimitMessage(): Promise<string> {
-  const t = await getTranslations('Components.ProductCard.Compare');
-
-  return t('maxCompareLimit');
-}
-
-async function getFiltersPanelTitle(): Promise<string> {
-  const t = await getTranslations('Faceted.FacetedSearch');
-
-  return t('filters');
-}
-
-async function getRangeFilterApplyLabel(): Promise<string> {
-  const t = await getTranslations('Faceted.FacetedSearch.Range');
-
-  return t('apply');
-}
-
-async function getResetFiltersLabel(): Promise<string> {
-  const t = await getTranslations('Faceted.FacetedSearch');
-
-  return t('resetFilters');
-}
-
-async function getEmptyStateTitle(): Promise<string> {
-  const t = await getTranslations('Faceted.Category.Empty');
-
-  return t('title');
-}
-
-async function getEmptyStateSubtitle(): Promise<string> {
-  const t = await getTranslations('Faceted.Category.Empty');
-
-  return t('subtitle');
-}
-
 type SearchParams = Record<string, string | string[] | undefined>;
 
 interface Props {
@@ -334,27 +274,29 @@ export default async function Category(props: Props) {
 
   setRequestLocale(locale);
 
+  const t = await getTranslations('Faceted');
+
   return (
     <>
       <ProductsListSection
         breadcrumbs={Streamable.from(() => getBreadcrumbs(props))}
-        compareLabel={Streamable.from(getCompareLabel)}
+        compareLabel={t('Compare.compare')}
         compareProducts={Streamable.from(() => getCompareProducts(props))}
-        emptyStateSubtitle={Streamable.from(getEmptyStateSubtitle)}
-        emptyStateTitle={Streamable.from(getEmptyStateTitle)}
-        filterLabel={await getFilterLabel()}
+        emptyStateSubtitle={t('Category.Empty.subtitle')}
+        emptyStateTitle={t('Category.Empty.title')}
+        filterLabel={t('FacetedSearch.filters')}
         filters={Streamable.from(() => getFilters(props))}
-        filtersPanelTitle={Streamable.from(getFiltersPanelTitle)}
-        maxCompareLimitMessage={Streamable.from(getMaxCompareLimitMessage)}
+        filtersPanelTitle={t('FacetedSearch.filters')}
+        maxCompareLimitMessage={t('Compare.maxCompareLimit')}
         maxItems={MAX_COMPARE_LIMIT}
         paginationInfo={Streamable.from(() => getPaginationInfo(props))}
         products={Streamable.from(() => getListProducts(props))}
-        rangeFilterApplyLabel={Streamable.from(getRangeFilterApplyLabel)}
-        removeLabel={Streamable.from(getRemoveLabel)}
-        resetFiltersLabel={Streamable.from(getResetFiltersLabel)}
+        rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
+        removeLabel={t('Compare.remove')}
+        resetFiltersLabel={t('FacetedSearch.resetFilters')}
         showCompare={Streamable.from(() => getShowCompare(props))}
         sortDefaultValue="featured"
-        sortLabel={Streamable.from(getSortLabel)}
+        sortLabel={t('SortBy.sortBy')}
         sortOptions={Streamable.from(getSortOptions)}
         sortParamName="sort"
         title={Streamable.from(() => getTitle(props))}
