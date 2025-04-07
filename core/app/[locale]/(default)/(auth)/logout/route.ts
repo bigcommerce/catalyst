@@ -10,7 +10,7 @@ export const GET = async (
 ) => {
   const { locale } = await params;
   const redirectTo = request.nextUrl.searchParams.get('redirectTo') ?? '/login';
-  const redirectToPathname = new URL(redirectTo, request.nextUrl.origin);
+  const redirectToPathname = new URL(redirectTo, request.nextUrl.origin).pathname;
 
   await signOut({ redirect: false });
   await setForceRefreshCookie();
