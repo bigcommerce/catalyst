@@ -408,6 +408,8 @@ export const fetchFacetedSearch = cache(
   ) => {
     const { after, before, limit = 9, sort, filters } = PublicToPrivateParams.parse(params);
 
+    console.log('fetchFacetedSearch');
+
     return getProductSearchResults(
       {
         after,
