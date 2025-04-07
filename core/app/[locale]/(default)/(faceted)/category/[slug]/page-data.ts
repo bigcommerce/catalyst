@@ -47,8 +47,6 @@ const CategoryPageQuery = graphql(
 );
 
 export const getCategoryPageData = cache(async (entityId: number) => {
-  console.log('getCategoryPageData');
-
   const response = await client.fetch({
     document: CategoryPageQuery,
     variables: { entityId },
