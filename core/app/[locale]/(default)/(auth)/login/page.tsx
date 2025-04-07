@@ -28,14 +28,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Login({ params, searchParams }: Props) {
   const { locale } = await params;
-  const { redirectTo = '/account/orders' } = await searchParams;
+  const { redirectTo } = await searchParams;
 
   setRequestLocale(locale);
 
   const t = await getTranslations('Auth.Login');
 
   const vanityUrl = buildConfig.get('urls').vanityUrl;
-  const redirectToPathname = new URL(redirectTo, vanityUrl).pathname;
+  const redirectToPathname = redirectTo
+    ? new URL(redirectTo, vanityUrl).pathname
+    : '/?section=orders';
 
   return (
     <>
