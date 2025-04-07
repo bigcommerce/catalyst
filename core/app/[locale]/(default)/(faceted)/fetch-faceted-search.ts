@@ -178,8 +178,6 @@ const getProductSearchResults = cache(
     currencyCode?: CurrencyCode,
     customerAccessToken?: string,
   ) => {
-    // const customerAccessToken = await getSessionCustomerAccessToken();
-    // const currencyCode = await getPreferredCurrencyCode();
     const filterArgs = { filters, sort };
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
 
@@ -407,8 +405,6 @@ export const fetchFacetedSearch = cache(
     customerAccessToken?: string,
   ) => {
     const { after, before, limit = 9, sort, filters } = PublicToPrivateParams.parse(params);
-
-    console.log('fetchFacetedSearch');
 
     return getProductSearchResults(
       {

@@ -5,12 +5,11 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { getSessionCustomerAccessToken } from '~/auth';
-import { CurrencyCodeSchema } from '~/components/header/schema';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -20,6 +19,7 @@ import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts as getCompareProductsData } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
+import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
 
 const createCategorySearchParamsCache = cache(async (categoryId: number) => {
@@ -251,16 +251,15 @@ export default async function Category(props: Props) {
         title={category.name}
         totalCount={streamableTotalCount}
       />
-      {/* <Stream
-        value={Streamable.all([
-          Streamable.from(() => getCategory(props)),
-          Streamable.from(() => getProducts(props)),
-        ])}
-      >
-        {([category, products]) => (
-          <CategoryViewed category={category} categoryId={category.entityId} products={products} />
+      <Stream value={streamableFacetedSearch}>
+        {(search) => (
+          <CategoryViewed
+            category={category}
+            categoryId={category.entityId}
+            products={search.products.items}
+          />
         )}
-      </Stream> */}
+      </Stream>
     </>
   );
 }
