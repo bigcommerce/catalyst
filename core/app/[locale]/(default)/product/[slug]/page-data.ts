@@ -160,6 +160,7 @@ const ProductDetailsFragment = graphql(
   `
     fragment ProductDetailsFragment on Product {
       entityId
+      sku
       name
       description
       path
