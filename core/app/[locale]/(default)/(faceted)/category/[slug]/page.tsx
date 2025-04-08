@@ -197,6 +197,10 @@ export default async function Category(props: Props) {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const currencyCode = await getPreferredCurrencyCode();
 
+    if (!productComparisonsEnabled) {
+      return [];
+    }
+
     const compareLoader = createCompareLoader();
 
     const { compare } = compareLoader(searchParams);
