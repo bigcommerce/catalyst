@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { CurrencyCode } from '~/components/header/fragment';
 
 import { MAX_COMPARE_LIMIT } from '../compare/page-data';
 
