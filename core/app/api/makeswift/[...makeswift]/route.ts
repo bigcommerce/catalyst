@@ -1,11 +1,8 @@
-import { type Font, MakeswiftApiHandler } from '@makeswift/runtime/next/server';
-import { strict } from 'assert';
+import { Font, MakeswiftApiHandler } from '@makeswift/runtime/next/server';
+import { NextRequest } from 'next/server';
 
 import { runtime } from '~/lib/makeswift/runtime';
-
 import '~/lib/makeswift/components';
-
-strict(process.env.MAKESWIFT_SITE_API_KEY, 'MAKESWIFT_SITE_API_KEY is required');
 
 const defaultVariants: Font['variants'] = [
   {
@@ -22,29 +19,67 @@ const defaultVariants: Font['variants'] = [
   },
 ];
 
-const handler = MakeswiftApiHandler(process.env.MAKESWIFT_SITE_API_KEY, {
-  runtime,
-  apiOrigin: process.env.MAKESWIFT_API_ORIGIN,
-  appOrigin: process.env.MAKESWIFT_APP_ORIGIN,
-  getFonts() {
-    return [
-      {
-        family: 'var(--font-family-inter)',
-        label: 'Inter',
-        variants: defaultVariants,
-      },
-      {
-        family: 'var(--font-family-dm-serif-text)',
-        label: 'DM Serif Text',
-        variants: [{ weight: '400', style: 'normal' }],
-      },
-      {
-        family: 'var(--font-family-roboto-mono)',
-        label: 'Roboto Mono',
-        variants: defaultVariants,
-      },
-    ];
-  },
-});
+const getHandler = (apiKey: string, apiOrigin: string, appOrigin: string) => {
+  return MakeswiftApiHandler(apiKey, {
+    apiOrigin,
+    appOrigin,
+    runtime,
+    getFonts() {
+      return [
+        {
+          family: 'var(--font-family-inter)',
+          label: 'Inter',
+          variants: defaultVariants,
+        },
+        {
+          family: 'var(--font-family-dm-serif-text)',
+          label: 'DM Serif Text',
+          variants: [{ weight: '400', style: 'normal' }],
+        },
+        {
+          family: 'var(--font-family-roboto-mono)',
+          label: 'Roboto Mono',
+          variants: defaultVariants,
+        },
+      ];
+    },
+  });
+};
 
-export { handler as GET, handler as POST };
+export async function GET(
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: { makeswift: string };
+  },
+) {
+  const apiKey = process.env.MAKESWIFT_SITE_API_KEY;
+  const apiOrigin = process.env.MAKESWIFT_API_ORIGIN;
+  const appOrigin = process.env.MAKESWIFT_APP_ORIGIN;
+
+  if (!apiKey) {
+    throw new Error('MAKESWIFT_SITE_API_KEY is required');
+  }
+
+  return getHandler(apiKey, apiOrigin, appOrigin)(request, { params });
+}
+
+export async function POST(
+  request: NextRequest,
+  {
+    params,
+  }: {
+    params: { makeswift: string };
+  },
+) {
+  const apiKey = process.env.MAKESWIFT_SITE_API_KEY;
+  const apiOrigin = process.env.MAKESWIFT_API_ORIGIN;
+  const appOrigin = process.env.MAKESWIFT_APP_ORIGIN;
+
+  if (!apiKey) {
+    throw new Error('MAKESWIFT_SITE_API_KEY is required');
+  }
+
+  return getHandler(apiKey, apiOrigin, appOrigin)(request, { params });
+}
