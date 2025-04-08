@@ -32,14 +32,14 @@ type SwatchOption =
  *    --swatch-radio-group-focus: hsl(var(--primary));
  *    --swatch-radio-group-light-icon: hsl(var(--foreground));
  *    --swatch-radio-group-light-unchecked-border: transparent;
- *    --swatch-radio-group-light-unchecked-border-hover: hsl(var(--border-contrast-200));
+ *    --swatch-radio-group-light-unchecked-border-hover: hsl(var(--contrast-200));
  *    --swatch-radio-group-light-disabled-border: transparent;
  *    --swatch-radio-group-light-border-error: hsl(var(--error));
  *    --swatch-radio-group-light-checked-border: hsl(var(--foreground));
  *    --swatch-radio-group-light-option-border: hsl(var(--foreground) / 10%);
  *    --swatch-radio-group-dark-icon: hsl(var(--background));
  *    --swatch-radio-group-dark-unchecked-border: transparent;
- *    --swatch-radio-group-dark-unchecked-border-hover: hsl(var(--border-contrast-400));
+ *    --swatch-radio-group-dark-unchecked-border-hover: hsl(var(--contrast-400));
  *    --swatch-radio-group-dark-disabled-border: transparent;
  *    --swatch-radio-group-dark-border-error: hsl(var(--error));
  *    --swatch-radio-group-dark-checked-border: hsl(var(--background));
@@ -83,8 +83,8 @@ export const SwatchRadioGroup = React.forwardRef<
                 'group relative box-content h-8 w-8 rounded-full border p-0.5 transition-colors focus-visible:ring-2 focus-visible:ring-[var(--swatch-radio-group-focus,hsl(var(--primary)))] focus-visible:outline-hidden data-disabled:pointer-events-none [&:disabled>.disabled-icon]:grid',
                 {
                   light:
-                    'hover:border-[var(--swatch-radio-group-light-unchecked-border-hover,hsl(var(--border-contrast-200)))] data-[state=checked]:border-[var(--swatch-radio-group-light-checked-border,hsl(var(--foreground)))]',
-                  dark: 'hover:border-[var(--swatch-radio-group-dark-unchecked-border-hover,hsl(var(--border-contrast-400)))] data-[state=checked]:border-[var(--swatch-radio-group-dark-checked-border,hsl(var(--background)))]',
+                    'hover:border-[var(--swatch-radio-group-light-unchecked-border-hover,hsl(var(--contrast-200)))] data-[state=checked]:border-[var(--swatch-radio-group-light-checked-border,hsl(var(--foreground)))]',
+                  dark: 'hover:border-[var(--swatch-radio-group-dark-unchecked-border-hover,hsl(var(--contrast-400)))] data-[state=checked]:border-[var(--swatch-radio-group-dark-checked-border,hsl(var(--background)))]',
                 }[colorScheme],
                 {
                   light:
