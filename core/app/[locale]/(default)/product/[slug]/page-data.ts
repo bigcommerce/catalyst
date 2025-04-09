@@ -100,9 +100,9 @@ const DateFieldFragment = graphql(`
   }
 `);
 
-export const ProductFormFragment = graphql(
+export const ProductOptionsFragment = graphql(
   `
-    fragment ProductFormFragment on Product {
+    fragment ProductOptionsFragment on Product {
       entityId
       productOptions(first: 50) {
         edges {
@@ -120,12 +120,6 @@ export const ProductFormFragment = graphql(
             ...DateFieldFragment
           }
         }
-      }
-      inventory {
-        isInStock
-      }
-      availabilityV2 {
-        status
       }
     }
   `,
@@ -182,41 +176,53 @@ const ProductDetailsFragment = graphql(
         }
       }
       warranty
+      inventory {
+        isInStock
+      }
+      availabilityV2 {
+        status
+      }
       ...PricingFragment
-      ...ProductFormFragment
     }
   `,
-  [PricingFragment, ProductFormFragment],
+  [PricingFragment],
 );
 
-const StaticProductPageQuery = graphql(`
-  query StaticProductPageQuery($entityId: Int!) {
-    site {
-      product(entityId: $entityId) {
-        entityId
-        name
-        description
-        path
-        brand {
+const BaseProductPageQuery = graphql(
+  `
+    query BaseProductPageQuery($entityId: Int!) {
+      site {
+        product(entityId: $entityId) {
+          entityId
           name
+          description
+          path
+          brand {
+            name
+          }
+          reviewSummary {
+            averageRating
+          }
+          description
+          ...ProductOptionsFragment
         }
-        reviewSummary {
-          averageRating
-        }
-        description
       }
     }
-  }
-`);
+  `,
+  [ProductOptionsFragment],
+);
 
-export const getStaticProductPageData = cache(async (entityId: number) => {
-  const { data } = await client.fetch({
-    document: StaticProductPageQuery,
-    variables: { entityId },
-  });
+export const getBaseProductPageData = cache(
+  async (entityId: number, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: BaseProductPageQuery,
+      variables: { entityId },
+      customerAccessToken,
+    });
 
-  return data.site.product;
-});
+    return data.site.product;
+  },
+);
 
 type Variables = VariablesOf<typeof ProductPageQuery>;
 
@@ -240,10 +246,11 @@ const ProductMetadataQuery = graphql(`
   }
 `);
 
-export const getProductMetadata = cache(async (entityId: number) => {
+export const getProductMetadata = cache(async (entityId: number, customerAccessToken?: string) => {
   const { data } = await client.fetch({
     document: ProductMetadataQuery,
     variables: { entityId },
+    customerAccessToken,
   });
 
   return data.site.product;
