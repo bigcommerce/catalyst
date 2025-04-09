@@ -11,7 +11,9 @@ import { runtime } from '~/lib/makeswift/runtime';
 
 import { CustomerGroupSchema, CustomerGroupsSchema, CustomerGroupsType } from './schema';
 
-const NO_GROUP_ID = 'no-group';
+const DEFAULT_GROUP_ID = 'default-group';
+const NO_GROUP_ID = '0';
+const NOT_LOGGED_IN = 'not-logged-in';
 
 async function getAllCustomerGroups(): Promise<CustomerGroupsType | null> {
   const response = await fetch('/api/customer/groups');
@@ -39,31 +41,26 @@ async function fetchCustomerGroupData(): Promise<GetCustomerGroupResponse | unde
   return group;
 }
 
-function UntargetedGroup() {
-  return (
-    <div className="p-4 text-center text-lg text-gray-400">
-      This group needs to be added to "Targeted customer groups".
-    </div>
-  );
-}
-
 function getGroupSlot(
-  allSlots: Array<{ group?: string; slot: ReactNode }> | undefined,
+  selectedSlots: Array<{ group?: string; slot: ReactNode }> | undefined,
   simulateGroup: boolean,
-  simulatedGroup: string,
-  customerGroupId: number | undefined,
-  noGroupSlot: ReactNode,
+  simulatedGroup: string | undefined,
+  unselectedSlot: ReactNode,
+  customerGroupId: number | string = NOT_LOGGED_IN,
 ): ReactNode {
-  const simulatedSlot = allSlots?.find((s) => s.group === simulatedGroup)?.slot ?? (
-    <UntargetedGroup />
-  );
-  const actualSlot = allSlots?.find((s) => s.group === `${customerGroupId}`)?.slot ?? (
-    <UntargetedGroup />
-  );
+  const simulatedSlot =
+    selectedSlots?.find((s) => {
+      if (!s.group) return false;
 
-  if (!customerGroupId && !simulateGroup) {
-    return noGroupSlot;
-  }
+      return s.group === simulatedGroup;
+    })?.slot ?? unselectedSlot;
+
+  const actualSlot =
+    selectedSlots?.find((s) => {
+      if (!s.group) return false;
+
+      return s.group === `${customerGroupId}`;
+    })?.slot ?? unselectedSlot;
 
   return simulateGroup ? simulatedSlot : actualSlot;
 }
@@ -80,11 +77,10 @@ interface Props {
   className: string;
   slots?: Array<{ group?: string; slot: ReactNode }>;
   simulatedGroup?: string;
-  noGroupSlot: ReactNode;
+  unselectedSlot: ReactNode;
 }
 
-function CustomerGroupSlot({ className, slots, simulatedGroup = NO_GROUP_ID, noGroupSlot }: Props) {
-  const allSlots = slots?.concat({ group: NO_GROUP_ID, slot: noGroupSlot });
+function CustomerGroupSlot({ className, slots, simulatedGroup, unselectedSlot }: Props) {
   const isInBuilder = useIsInBuilder();
 
   const { data, isLoading, error } = useSWR<GetCustomerGroupResponse | undefined, Error>(
@@ -103,12 +99,13 @@ function CustomerGroupSlot({ className, slots, simulatedGroup = NO_GROUP_ID, noG
   }
 
   const customerGroupId = data?.customer?.customerGroupId;
+
   const groupSlot = getGroupSlot(
-    allSlots,
+    slots,
     isInBuilder,
     simulatedGroup,
+    unselectedSlot,
     customerGroupId,
-    noGroupSlot,
   );
 
   return <div className={className}>{groupSlot}</div>;
@@ -120,7 +117,7 @@ runtime.registerComponent(CustomerGroupSlot, {
   props: {
     className: Style(),
     slots: List({
-      label: 'Targeted customer groups',
+      label: 'Selected groups',
       type: Group({
         label: 'Group',
         props: {
@@ -132,18 +129,21 @@ runtime.registerComponent(CustomerGroupSlot, {
 
                 if (!data) return [];
 
-                return data
-                  .map((d) => ({
-                    id: `${d.id}`,
-                    label: d.name,
-                    value: `${d.id}`,
-                  }))
-                  .filter((option) => option.label.toLowerCase().includes(query.toLowerCase()));
+                return [
+                  { id: NO_GROUP_ID, label: 'No group', value: NO_GROUP_ID },
+                  { id: NOT_LOGGED_IN, label: 'Not logged in', value: NOT_LOGGED_IN },
+                  ...data
+                    .map((d) => ({
+                      id: `${d.id}`,
+                      label: d.name,
+                      value: `${d.id}`,
+                    }))
+                    .filter((option) => option.label.toLowerCase().includes(query.toLowerCase())),
+                ];
               } catch (error) {
-                // eslint-disable-next-line no-console
-                console.error('Error fetching customer group options:', error);
-
-                return [];
+                throw new Error(
+                  `Error fetching customer group options. Make sure you are using the correct Storefront API key: ${String(error)}`,
+                );
               }
             },
           }),
@@ -163,11 +163,9 @@ runtime.registerComponent(CustomerGroupSlot, {
           if (!data) return [];
 
           return [
-            {
-              id: NO_GROUP_ID,
-              label: 'No group',
-              value: NO_GROUP_ID,
-            },
+            { id: NO_GROUP_ID, label: 'No group', value: NO_GROUP_ID },
+            { id: NOT_LOGGED_IN, label: 'Not logged in', value: NOT_LOGGED_IN },
+            { id: DEFAULT_GROUP_ID, label: 'Unselected groups', value: DEFAULT_GROUP_ID },
             ...data
               .map((d) => ({
                 id: `${d.id}`,
@@ -177,13 +175,12 @@ runtime.registerComponent(CustomerGroupSlot, {
               .filter((option) => option.label.toLowerCase().includes(query.toLowerCase())),
           ];
         } catch (error) {
-          // eslint-disable-next-line no-console
-          console.error('Error fetching customer group options:', error);
-
-          return [];
+          throw new Error(
+            `Error fetching customer group options. Make sure you are using the correct Storefront API key: ${String(error)}`,
+          );
         }
       },
     }),
-    noGroupSlot: Slot(),
+    unselectedSlot: Slot(),
   },
 });
