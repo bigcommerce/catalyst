@@ -2,7 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
-import { createSearchParamsCache } from 'nuqs/server';
+import { createSearchParamsCache, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -21,6 +21,8 @@ import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
+
+const compareLoader = createCompareLoader();
 
 const createCategorySearchParamsCache = cache(async (categoryId: number) => {
   const categorySearch = await fetchFacetedSearch({ category: categoryId });
@@ -48,8 +50,6 @@ const createCategorySearchParamsCache = cache(async (categoryId: number) => {
 
   return createSearchParamsCache(filterParsers);
 });
-
-type SearchParams = Record<string, string | string[] | undefined>;
 
 interface Props {
   params: Promise<{
@@ -200,8 +200,6 @@ export default async function Category(props: Props) {
     if (!productComparisonsEnabled) {
       return [];
     }
-
-    const compareLoader = createCompareLoader();
 
     const { compare } = compareLoader(searchParams);
 
