@@ -19,7 +19,7 @@ const defaultVariants: Font['variants'] = [
   },
 ];
 
-const getHandler = (apiKey: string, apiOrigin: string, appOrigin: string) => {
+const getHandler = (apiKey: string, apiOrigin: string | undefined, appOrigin: string | undefined) => {
   return MakeswiftApiHandler(apiKey, {
     apiOrigin,
     appOrigin,
