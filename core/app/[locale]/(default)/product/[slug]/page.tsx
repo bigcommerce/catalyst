@@ -16,7 +16,7 @@ import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { loadReviewsPaginationSearchParams, Reviews } from './_components/reviews';
-import { getProductMetadata, getProductPageData, getStaticProductPageData } from './page-data';
+import { getBaseProductPageData, getProductMetadata, getProductPageData } from './page-data';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -28,7 +28,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const productId = Number(slug);
 
-  const product = await getProductMetadata(productId);
+  const customerAccessToken = await getSessionCustomerAccessToken();
+  const product = await getProductMetadata(productId, customerAccessToken);
 
   if (!product) {
     return notFound();
@@ -56,6 +57,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function Product(props: Props) {
   const { locale, slug } = await props.params;
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   setRequestLocale(locale);
 
@@ -63,9 +65,10 @@ export default async function Product(props: Props) {
   const format = await getFormatter();
 
   const productId = Number(slug);
-  const staticProduct = await getStaticProductPageData(productId);
 
-  if (!staticProduct) {
+  const baseProduct = await getBaseProductPageData(productId, customerAccessToken);
+
+  if (!baseProduct) {
     return notFound();
   }
 
@@ -89,8 +92,6 @@ export default async function Product(props: Props) {
       useDefaultOptionSelections: true,
       currencyCode,
     };
-
-    const customerAccessToken = await getSessionCustomerAccessToken();
 
     const product = await getProductPageData(variables, customerAccessToken);
 
@@ -118,12 +119,6 @@ export default async function Product(props: Props) {
     return product.defaultImage
       ? [{ src: product.defaultImage.url, alt: product.defaultImage.altText }, ...images]
       : images;
-  });
-
-  const streamableFields = Streamable.from(async () => {
-    const product = await streamableProductData;
-
-    return productOptionsTransformer(product.productOptions);
   });
 
   const streameableCtaLabel = Streamable.from(async () => {
@@ -242,23 +237,20 @@ export default async function Product(props: Props) {
         ctaLabel={streameableCtaLabel}
         decrementLabel={t('ProductDetails.decreaseQuantity')}
         emptySelectPlaceholder={t('ProductDetails.emptySelectPlaceholder')}
-        fields={streamableFields}
+        fields={productOptionsTransformer(baseProduct.productOptions)}
         incrementLabel={t('ProductDetails.increaseQuantity')}
         prefetch={true}
         product={{
-          id: staticProduct.entityId.toString(),
-          title: staticProduct.name,
+          id: baseProduct.entityId.toString(),
+          title: baseProduct.name,
           description: (
-            <div
-              className="prose"
-              dangerouslySetInnerHTML={{ __html: staticProduct.description }}
-            />
+            <div className="prose" dangerouslySetInnerHTML={{ __html: baseProduct.description }} />
           ),
-          href: staticProduct.path,
+          href: baseProduct.path,
           images: streamableImages,
           price: streamablePrice,
-          subtitle: staticProduct.brand?.name,
-          rating: staticProduct.reviewSummary.averageRating,
+          subtitle: baseProduct.brand?.name,
+          rating: baseProduct.reviewSummary.averageRating,
           accordions: streameableAccordions,
         }}
         quantityLabel={t('ProductDetails.quantity')}
