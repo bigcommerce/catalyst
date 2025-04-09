@@ -4,14 +4,42 @@ import { routing } from '~/i18n/routing';
 
 import { MiddlewareFactory } from './compose-middlewares';
 
+import { parse as parseCookie } from 'set-cookie-parser';
+import { serialize as serializeCookie } from 'cookie';
+
 if (!process.env.MAKESWIFT_SITE_API_KEY) {
   throw new Error('MAKESWIFT_SITE_API_KEY is not set');
 }
+
+const SET_COOKIE_HEADER = 'set-cookie';
+const MIDDLEWARE_SET_COOKIE_HEADER = 'x-middleware-set-cookie';
 
 const MAKESWIFT_SITE_API_KEY = process.env.MAKESWIFT_SITE_API_KEY;
 
 const localeCookieName = ({ localeCookie }: { localeCookie?: boolean | { name?: string } }) =>
   (typeof localeCookie === 'object' ? localeCookie.name : undefined) ?? 'NEXT_LOCALE';
+
+function removeLocaleCookieFromCookieString(cookieString: string): string | null {
+  const cookies = parseCookie(cookieString);
+  const serializedCookiesWithoutLocale = cookies
+    .filter((cookie) => cookie.name !== localeCookieName(routing))
+    .map((cookie) => serializeCookie(cookie.name, cookie.value));
+
+  const header = new Headers();
+  serializedCookiesWithoutLocale.forEach((cookie) => header.append(SET_COOKIE_HEADER, cookie));
+  return header.get(SET_COOKIE_HEADER);
+}
+
+function replaceOrRemoveCookieFromHeader(headers: Headers, key: string): void {
+  const currentCookies = headers.get(key);
+  if (currentCookies == null) return;
+  const cookiesWithoutLocale = removeLocaleCookieFromCookieString(currentCookies);
+  if (cookiesWithoutLocale === null) {
+    headers.delete(key);
+  } else {
+    headers.set(key, cookiesWithoutLocale);
+  }
+}
 
 export const withMakeswift: MiddlewareFactory = (middleware) => {
   return async (request, event) => {
@@ -30,7 +58,13 @@ export const withMakeswift: MiddlewareFactory = (middleware) => {
         draftRequest.cookies.delete(localeCookieName(routing));
       }
 
-      return middleware(draftRequest, event);
+      const response = await middleware(draftRequest, event);
+      if (response == null) return response;
+
+      replaceOrRemoveCookieFromHeader(response.headers, SET_COOKIE_HEADER);
+      replaceOrRemoveCookieFromHeader(response.headers, MIDDLEWARE_SET_COOKIE_HEADER);
+
+      return response;
     }
 
     return middleware(request, event);

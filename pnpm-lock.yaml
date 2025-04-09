@@ -113,6 +113,9 @@ importers:
       content-security-policy-builder:
         specifier: ^2.2.0
         version: 2.2.0
+      cookie:
+        specifier: ^1.0.2
+        version: 1.0.2
       deepmerge:
         specifier: ^4.3.1
         version: 4.3.1
@@ -188,6 +191,9 @@ importers:
       server-only:
         specifier: ^0.0.1
         version: 0.0.1
+      set-cookie-parser:
+        specifier: ^2.7.1
+        version: 2.7.1
       sharp:
         specifier: ^0.33.5
         version: 0.33.5
@@ -234,6 +240,9 @@ importers:
       '@tailwindcss/typography':
         specifier: ^0.5.16
         version: 0.5.16(tailwindcss@3.4.17)
+      '@types/cookie':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@types/gtag.js':
         specifier: ^0.0.20
         version: 0.0.20
@@ -2419,6 +2428,10 @@ packages:
 
   '@types/cookie@0.6.0':
     resolution: {integrity: sha512-4Kh9a6B2bQciAhf7FSuMRRkUWecJgJu9nPnx3yzpsfXX/c50REIqpHY4C82bXP90qrLtXtkDxTZosYO3UpOwlA==}
+
+  '@types/cookie@1.0.0':
+    resolution: {integrity: sha512-mGFXbkDQJ6kAXByHS7QAggRXgols0mAdP4MuXgloGY1tXokvzaFFM4SMqWvf7AH0oafI7zlFJwoGWzmhDqTZ9w==}
+    deprecated: This is a stub types definition. cookie provides its own type definitions, so you do not need this installed.
 
   '@types/cross-spawn@6.0.6':
     resolution: {integrity: sha512-fXRhhUkG4H3TQk5dBhQ7m/JDdSNHKwR2BBia62lhwEIq9xGiQKLxd6LymNhn47SjXhsUEPmxi+PKw2OkW4LLjA==}
@@ -8593,6 +8606,10 @@ snapshots:
       '@babel/types': 7.24.7
 
   '@types/cookie@0.6.0': {}
+
+  '@types/cookie@1.0.0':
+    dependencies:
+      cookie: 1.0.2
 
   '@types/cross-spawn@6.0.6':
     dependencies:
