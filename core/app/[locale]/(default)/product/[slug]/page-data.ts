@@ -136,10 +136,6 @@ export const ProductOptionsFragment = graphql(
 const ProductDetailsFragment = graphql(
   `
     fragment ProductDetailsFragment on Product {
-      entityId
-      name
-      description
-      path
       images {
         edges {
           node {
@@ -153,13 +149,6 @@ const ProductDetailsFragment = graphql(
         altText
         url: urlTemplate(lossy: true)
       }
-      brand {
-        name
-      }
-      reviewSummary {
-        averageRating
-      }
-      description
       sku
       weight {
         value
