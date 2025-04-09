@@ -1,4 +1,4 @@
-import { cache } from 'react';
+import { unstable_cache } from 'next/cache';
 
 import { client } from '~/client';
 import { PricingFragment } from '~/client/fragments/pricing';
@@ -188,6 +188,43 @@ const ProductDetailsFragment = graphql(
   [PricingFragment],
 );
 
+type Variables = VariablesOf<typeof ProductPageQuery>;
+
+const ProductMetadataQuery = graphql(`
+  query ProductMetadataQuery($entityId: Int!) {
+    site {
+      product(entityId: $entityId) {
+        name
+        defaultImage {
+          altText
+          url: urlTemplate(lossy: true)
+        }
+        seo {
+          pageTitle
+          metaDescription
+          metaKeywords
+        }
+        plainTextDescription(characterLimit: 1200)
+      }
+    }
+  }
+`);
+
+export const getProductMetadata = unstable_cache(
+  async (entityId: number, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: ProductMetadataQuery,
+      variables: { entityId },
+      customerAccessToken,
+      // fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    return data.site.product;
+  },
+  ['getProductMetadata'],
+  { revalidate },
+);
+
 const BaseProductPageQuery = graphql(
   `
     query BaseProductPageQuery($entityId: Int!) {
@@ -212,49 +249,20 @@ const BaseProductPageQuery = graphql(
   [ProductOptionsFragment],
 );
 
-export const getBaseProductPageData = cache(
+export const getBaseProductPageData = unstable_cache(
   async (entityId: number, customerAccessToken?: string) => {
     const { data } = await client.fetch({
       document: BaseProductPageQuery,
       variables: { entityId },
       customerAccessToken,
+      // fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     return data.site.product;
   },
+  ['getBaseProductPageData'],
+  { revalidate },
 );
-
-type Variables = VariablesOf<typeof ProductPageQuery>;
-
-const ProductMetadataQuery = graphql(`
-  query ProductMetadataQuery($entityId: Int!) {
-    site {
-      product(entityId: $entityId) {
-        name
-        defaultImage {
-          altText
-          url: urlTemplate(lossy: true)
-        }
-        seo {
-          pageTitle
-          metaDescription
-          metaKeywords
-        }
-        plainTextDescription(characterLimit: 1200)
-      }
-    }
-  }
-`);
-
-export const getProductMetadata = cache(async (entityId: number, customerAccessToken?: string) => {
-  const { data } = await client.fetch({
-    document: ProductMetadataQuery,
-    variables: { entityId },
-    customerAccessToken,
-  });
-
-  return data.site.product;
-});
 
 const ProductPageQuery = graphql(
   `
@@ -292,15 +300,17 @@ const ProductPageQuery = graphql(
   ],
 );
 
-export const getProductPageData = cache(
+export const getProductPageData = unstable_cache(
   async (variables: Variables, customerAccessToken?: string) => {
     const { data } = await client.fetch({
       document: ProductPageQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      // fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     return data.site.product;
   },
+  ['getProductPageData'],
+  { revalidate },
 );
