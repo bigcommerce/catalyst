@@ -9,84 +9,86 @@
 @source './components/**/*.{ts,tsx}';
 @source './vibes/**/*.{ts,tsx}';
 
-@layer base {
-  h1 {
-    color: hsl(var(--foreground));
-    font-family: var(--font-family-heading);
-  }
-
-  h2 {
-    color: hsl(var(--foreground));
-    font-family: var(--font-family-heading);
-  }
-
-  h3 {
-    color: hsl(var(--foreground));
-    font-family: var(--font-family-heading);
-  }
-
-  h4 {
-    color: hsl(var(--foreground));
-    font-family: var(--font-family-heading);
-  }
-
-  h5 {
-    color: hsl(var(--foreground));
-    font-family: var(--font-family-heading);
-  }
-
-  h6 {
-    color: hsl(var(--foreground));
-    font-family: var(--font-family-heading);
-  }
-
-  p {
-    color: hsl(var(--foreground));
-    font-family: var(--font-family-body);
-  }
-
-  a {
-    color: color-mix(in oklab, hsl(var(--primary)), black 15%);
-    text-decoration: none;
-
-    &:hover {
-      text-decoration: underline;
+@layer utilities {
+  .prose {
+    :where(h1):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: hsl(var(--foreground));
+      font-family: var(--font-family-heading);
     }
-  }
 
-  ul {
-    color: hsl(var(--contrast-500));
-    font-family: var(--font-family-body);
-  }
+    :where(h2):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: hsl(var(--foreground));
+      font-family: var(--font-family-heading);
+    }
 
-  ol {
-    color: hsl(var(--contrast-500));
-    font-family: var(--font-family-body);
-  }
+    :where(h3):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: hsl(var(--foreground));
+      font-family: var(--font-family-heading);
+    }
 
-  strong {
-    font-weight: 600;
-  }
+    :where(h4):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: hsl(var(--foreground));
+      font-family: var(--font-family-heading);
+    }
 
-  blockquote {
-    border-left-color: hsl(var(--contrast-300));
+    :where(h5):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: hsl(var(--foreground));
+      font-family: var(--font-family-heading);
+    }
 
-    p {
+    :where(h6):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: hsl(var(--foreground));
+      font-family: var(--font-family-heading);
+    }
+
+    :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: hsl(var(--foreground));
+      font-family: var(--font-family-body);
+    }
+
+    :where(a):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: color-mix(in oklab, hsl(var(--primary)), black 15%);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    :where(ul):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
       color: hsl(var(--contrast-500));
-      font-style: normal;
-      font-weight: 400;
+      font-family: var(--font-family-body);
     }
-  }
 
-  code {
-    color: hsl(var(--contrast-500));
-    font-family: var(--font-family-mono);
-  }
+    :where(ol):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: hsl(var(--contrast-500));
+      font-family: var(--font-family-body);
+    }
 
-  pre {
-    color: hsl(var(--background));
-    background-color: hsl(var(--foreground));
-    font-family: var(--font-family-mono);
+    :where(strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      font-weight: 600;
+    }
+
+    :where(blockquote):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      border-left-color: hsl(var(--contrast-300));
+
+      p {
+        color: hsl(var(--contrast-500));
+        font-style: normal;
+        font-weight: 400;
+      }
+    }
+
+    :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: hsl(var(--contrast-500));
+      font-family: var(--font-family-mono);
+    }
+
+    :where(pre):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+      color: hsl(var(--background));
+      background-color: hsl(var(--foreground));
+      font-family: var(--font-family-mono);
+    }
   }
 }
 
