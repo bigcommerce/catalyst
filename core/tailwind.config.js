@@ -3,6 +3,7 @@ const config = {
   content: [
     './app/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',
+    './lib/makeswift/components/**/*.{ts,tsx}',
     './vibes/**/*.{ts,tsx}',
     '!./node_modules/**', // Exclude everything in node_modules to speed up builds
   ],
