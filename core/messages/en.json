@@ -339,6 +339,8 @@
       "decreaseNumber": "Decrease number",
       "thumbnail": "View image number",
       "additionalInformation": "Additional information",
+      "addToQuote": "Add to quote",
+      "addToShoppingList": "Add to shopping list",
       "Submit": {
         "addToCart": "Add to cart",
         "outOfStock": "Out of stock",
@@ -448,11 +450,7 @@
       }
     },
     "AddToQuoteButton": {
-      "addToQuote": "Add to quote",
       "addCartToQuote": "Add cart to quote"
-    },
-    "AddToShoppingListButton": {
-      "addToShoppingList": "Add to shopping list"
     }
   }
 }
