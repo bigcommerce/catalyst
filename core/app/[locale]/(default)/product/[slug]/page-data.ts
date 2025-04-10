@@ -177,8 +177,6 @@ const ProductDetailsFragment = graphql(
   [PricingFragment],
 );
 
-type Variables = VariablesOf<typeof ProductPageQuery>;
-
 const ProductMetadataQuery = graphql(`
   query ProductMetadataQuery($entityId: Int!) {
     site {
@@ -199,24 +197,28 @@ const ProductMetadataQuery = graphql(`
   }
 `);
 
-export const getProductMetadata = unstable_cache(
-  async (entityId: number, customerAccessToken?: string) => {
-    const { data } = await client.fetch({
-      document: ProductMetadataQuery,
-      variables: { entityId },
-      customerAccessToken,
-      // fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+export const getProductMetadata = (
+  entityId: number,
+  locale: string,
+  customerAccessToken?: string,
+) =>
+  unstable_cache(
+    async () => {
+      const { data } = await client.fetch({
+        document: ProductMetadataQuery,
+        variables: { entityId },
+        customerAccessToken,
+      });
 
-    return data.site.product;
-  },
-  ['getProductMetadata'],
-  { revalidate },
-);
+      return data.site.product;
+    },
+    [entityId.toString(), locale, customerAccessToken ?? ''],
+    { revalidate: customerAccessToken ? 0 : revalidate },
+  );
 
-const BaseProductPageQuery = graphql(
+const BaseProductQuery = graphql(
   `
-    query BaseProductPageQuery($entityId: Int!) {
+    query BaseProductQuery($entityId: Int!) {
       site {
         product(entityId: $entityId) {
           entityId
@@ -238,24 +240,24 @@ const BaseProductPageQuery = graphql(
   [ProductOptionsFragment],
 );
 
-export const getBaseProductPageData = unstable_cache(
-  async (entityId: number, customerAccessToken?: string) => {
-    const { data } = await client.fetch({
-      document: BaseProductPageQuery,
-      variables: { entityId },
-      customerAccessToken,
-      // fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+export const getBaseProduct = (entityId: number, locale: string, customerAccessToken?: string) =>
+  unstable_cache(
+    async () => {
+      const { data } = await client.fetch({
+        document: BaseProductQuery,
+        variables: { entityId },
+        customerAccessToken,
+      });
 
-    return data.site.product;
-  },
-  ['getBaseProductPageData'],
-  { revalidate },
-);
+      return data.site.product;
+    },
+    [entityId.toString(), locale, customerAccessToken ?? ''],
+    { revalidate: customerAccessToken ? 0 : revalidate },
+  );
 
-const ProductPageQuery = graphql(
+const ProductQuery = graphql(
   `
-    query ProductPageQuery(
+    query ProductQuery(
       $entityId: Int!
       $optionValueIds: [OptionValueId!]
       $useDefaultOptionSelections: Boolean
@@ -289,17 +291,19 @@ const ProductPageQuery = graphql(
   ],
 );
 
-export const getProductPageData = unstable_cache(
-  async (variables: Variables, customerAccessToken?: string) => {
-    const { data } = await client.fetch({
-      document: ProductPageQuery,
-      variables,
-      customerAccessToken,
-      // fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+type Variables = VariablesOf<typeof ProductQuery>;
 
-    return data.site.product;
-  },
-  ['getProductPageData'],
-  { revalidate },
-);
+export const getProduct = (variables: Variables, locale: string, customerAccessToken?: string) =>
+  unstable_cache(
+    async () => {
+      const { data } = await client.fetch({
+        document: ProductQuery,
+        variables,
+        customerAccessToken,
+      });
+
+      return data.site.product;
+    },
+    [JSON.stringify(variables), locale, customerAccessToken ?? ''],
+    { revalidate: customerAccessToken ? 0 : revalidate },
+  );
