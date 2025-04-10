@@ -29,8 +29,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const productId = Number(slug);
 
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const query = getProductMetadata(productId, locale, customerAccessToken);
-  const product = await query();
+  const cachedGetProductMetadata = getProductMetadata(productId, locale, customerAccessToken);
+  const product = await cachedGetProductMetadata();
 
   if (!product) {
     return notFound();
@@ -67,8 +67,8 @@ export default async function Product(props: Props) {
 
   const productId = Number(slug);
 
-  const query = getBaseProduct(productId, locale, customerAccessToken);
-  const baseProduct = await query();
+  const cachedGetBaseProduct = getBaseProduct(productId, locale, customerAccessToken);
+  const baseProduct = await cachedGetBaseProduct();
 
   if (!baseProduct) {
     return notFound();
@@ -95,8 +95,8 @@ export default async function Product(props: Props) {
       currencyCode,
     };
 
-    const query2 = getProduct(variables, locale, customerAccessToken);
-    const product = await query2();
+    const cachedGetProduct = getProduct(variables, locale, customerAccessToken);
+    const product = await cachedGetProduct();
 
     if (!product) {
       return notFound();
