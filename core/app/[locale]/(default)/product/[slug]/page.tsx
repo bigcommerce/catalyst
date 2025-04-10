@@ -16,7 +16,7 @@ import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { loadReviewsPaginationSearchParams, Reviews } from './_components/reviews';
-import { getBaseProductPageData, getProductMetadata, getProductPageData } from './page-data';
+import { getBaseProduct, getProduct, getProductMetadata } from './page-data';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -24,12 +24,13 @@ interface Props {
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { slug } = await props.params;
+  const { locale, slug } = await props.params;
 
   const productId = Number(slug);
 
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const product = await getProductMetadata(productId, customerAccessToken);
+  const query = getProductMetadata(productId, locale, customerAccessToken);
+  const product = await query();
 
   if (!product) {
     return notFound();
@@ -66,7 +67,8 @@ export default async function Product(props: Props) {
 
   const productId = Number(slug);
 
-  const baseProduct = await getBaseProductPageData(productId, customerAccessToken);
+  const query = getBaseProduct(productId, locale, customerAccessToken);
+  const baseProduct = await query();
 
   if (!baseProduct) {
     return notFound();
@@ -93,7 +95,8 @@ export default async function Product(props: Props) {
       currencyCode,
     };
 
-    const product = await getProductPageData(variables, customerAccessToken);
+    const query2 = getProduct(variables, locale, customerAccessToken);
+    const product = await query2();
 
     if (!product) {
       return notFound();
