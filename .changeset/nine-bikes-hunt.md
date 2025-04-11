@@ -1,5 +1,5 @@
 ---
-"@bigcommerce/catalyst-core": minor
+"@bigcommerce/catalyst-core": patch
 ---
 
 Add core/lib/makeswift/components folder to tailwind config content property so that tailwind classes can be used in components there.
