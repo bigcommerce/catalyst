@@ -20,12 +20,14 @@ import { Label } from '@/vibes/soul/form/label';
  *   --number-input-light-icon-hover: hsl(var(--foreground));
  *   --number-input-light-button-background: hsl(var(--background));
  *   --number-input-light-button-background-hover: hsl(var(--contrast-100) / 50%);
+ *   --number-input-light-border: hsl(var(--contrast-100));
  *   --number-input-dark-background: hsl(var(--background));
  *   --number-input-dark-text: hsl(var(--background));
  *   --number-input-dark-icon: hsl(var(--contrast-300));
  *   --number-input-dark-icon-hover: hsl(var(--background));
  *   --number-input-dark-button-background: hsl(var(--foreground));
  *   --number-input-dark-button-background-hover: hsl(var(--contrast-500) / 50%);
+ *   --number-input-dark-border: hsl(var(--contrast-500));
  *  }
  * ```
  */
@@ -66,8 +68,9 @@ export const NumberInput = React.forwardRef<
           className={clsx(
             'inline-flex items-center rounded-lg border',
             {
-              light: 'bg-[var(--number-input-light-background,hsl(var(--background)))]',
-              dark: 'bg-[var(--number-input-dark-background,hsl(var(--foreground)))]',
+              light:
+                'border-[var(--number-input-light-border,hsl(var(--contrast-100)))] bg-[var(--number-input-light-background,hsl(var(--background)))]',
+              dark: 'border-[var(--number-input-dark-border,hsl(var(--contrast-500)))] bg-[var(--number-input-dark-background,hsl(var(--foreground)))]',
             }[colorScheme],
           )}
         >
