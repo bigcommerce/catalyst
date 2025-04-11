@@ -85,13 +85,10 @@ export default async function Product(props: Props) {
         (option) => !Number.isNaN(option.optionEntityId) && !Number.isNaN(option.valueEntityId),
       );
 
-    // const currencyCode = await getPreferredCurrencyCode();
-
     const variables = {
       entityId: Number(productId),
       optionValueIds,
       useDefaultOptionSelections: true,
-      // currencyCode,
     };
 
     const product = await getProduct(variables, customerAccessToken);
@@ -305,7 +302,9 @@ export default async function Product(props: Props) {
 
       <Stream
         fallback={null}
-        value={Streamable.all([streamableProduct, streamableExtendedProduct])}
+        value={Streamable.from(async () =>
+          Streamable.all([streamableProduct, streamableExtendedProduct]),
+        )}
       >
         {([product, extendedProduct]) => (
           <>
