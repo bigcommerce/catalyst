@@ -17,7 +17,12 @@ import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { loadReviewsPaginationSearchParams, Reviews } from './_components/reviews';
-import { getBaseProduct, getExtendedProduct, getProduct, getProductMetadata } from './page-data';
+import {
+  getBaseProduct,
+  getExtendedProduct,
+  getPricingAndRelatedProducts,
+  getProductMetadata,
+} from './page-data';
 
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
@@ -73,7 +78,7 @@ export default async function Product(props: Props) {
     return notFound();
   }
 
-  const streamableProduct = Streamable.from(async () => {
+  const streamableExtendedProduct = Streamable.from(async () => {
     const options = await props.searchParams;
 
     const optionValueIds = Object.keys(options)
@@ -91,7 +96,7 @@ export default async function Product(props: Props) {
       useDefaultOptionSelections: true,
     };
 
-    const product = await getProduct(variables, customerAccessToken);
+    const product = await getExtendedProduct(variables, customerAccessToken);
 
     if (!product) {
       return notFound();
@@ -100,7 +105,7 @@ export default async function Product(props: Props) {
     return product;
   });
 
-  const streamableExtendedProduct = Streamable.from(async () => {
+  const streamablePricingAndRelatedProducts = Streamable.from(async () => {
     const options = await props.searchParams;
 
     const optionValueIds = Object.keys(options)
@@ -121,11 +126,11 @@ export default async function Product(props: Props) {
       currencyCode,
     };
 
-    return await getExtendedProduct(variables, customerAccessToken);
+    return await getPricingAndRelatedProducts(variables, customerAccessToken);
   });
 
   const streamablePrices = Streamable.from(async () => {
-    const product = await streamableExtendedProduct;
+    const product = await streamablePricingAndRelatedProducts;
 
     if (!product) {
       return null;
@@ -135,7 +140,7 @@ export default async function Product(props: Props) {
   });
 
   const streamableImages = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const product = await streamableExtendedProduct;
 
     const images = removeEdgesAndNodes(product.images).map((image) => ({
       src: image.url,
@@ -148,7 +153,7 @@ export default async function Product(props: Props) {
   });
 
   const streameableCtaLabel = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const product = await streamableExtendedProduct;
 
     if (product.availabilityV2.status === 'Unavailable') {
       return t('ProductDetails.Submit.unavailable');
@@ -166,7 +171,7 @@ export default async function Product(props: Props) {
   });
 
   const streameableCtaDisabled = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const product = await streamableExtendedProduct;
 
     if (product.availabilityV2.status === 'Unavailable') {
       return true;
@@ -184,7 +189,7 @@ export default async function Product(props: Props) {
   });
 
   const streameableAccordions = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const product = await streamableExtendedProduct;
 
     const customFields = removeEdgesAndNodes(product.customFields);
 
@@ -243,7 +248,7 @@ export default async function Product(props: Props) {
   });
 
   const streameableRelatedProducts = Streamable.from(async () => {
-    const product = await streamableExtendedProduct;
+    const product = await streamablePricingAndRelatedProducts;
 
     if (!product) {
       return [];
@@ -303,13 +308,17 @@ export default async function Product(props: Props) {
       <Stream
         fallback={null}
         value={Streamable.from(async () =>
-          Streamable.all([streamableProduct, streamableExtendedProduct]),
+          Streamable.all([streamableExtendedProduct, streamablePricingAndRelatedProducts]),
         )}
       >
-        {([product, extendedProduct]) => (
+        {([extendedProduct, pricingProduct]) => (
           <>
-            <ProductSchema product={{ ...product, prices: extendedProduct?.prices ?? null }} />
-            <ProductViewed product={{ ...product, prices: extendedProduct?.prices ?? null }} />
+            <ProductSchema
+              product={{ ...extendedProduct, prices: pricingProduct?.prices ?? null }}
+            />
+            <ProductViewed
+              product={{ ...extendedProduct, prices: pricingProduct?.prices ?? null }}
+            />
           </>
         )}
       </Stream>
