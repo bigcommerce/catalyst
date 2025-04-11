@@ -133,46 +133,6 @@ export const ProductOptionsFragment = graphql(
   ],
 );
 
-const ProductDetailsFragment = graphql(`
-  fragment ProductDetailsFragment on Product {
-    images {
-      edges {
-        node {
-          altText
-          url: urlTemplate(lossy: true)
-          isDefault
-        }
-      }
-    }
-    defaultImage {
-      altText
-      url: urlTemplate(lossy: true)
-    }
-    sku
-    weight {
-      value
-      unit
-    }
-    condition
-    customFields {
-      edges {
-        node {
-          entityId
-          name
-          value
-        }
-      }
-    }
-    warranty
-    inventory {
-      isInStock
-    }
-    availabilityV2 {
-      status
-    }
-  }
-`);
-
 const ProductMetadataQuery = graphql(`
   query ProductMetadataQuery($entityId: Int!) {
     site {
@@ -239,9 +199,9 @@ export const getBaseProduct = cache(async (entityId: number, customerAccessToken
   return data.site.product;
 });
 
-const ProductQuery = graphql(
+const ExtendedProductQuery = graphql(
   `
-    query ProductQuery(
+    query ExtendedProductQuery(
       $entityId: Int!
       $optionValueIds: [OptionValueId!]
       $useDefaultOptionSelections: Boolean
@@ -252,34 +212,70 @@ const ProductQuery = graphql(
           optionValueIds: $optionValueIds
           useDefaultOptionSelections: $useDefaultOptionSelections
         ) {
-          ...ProductDetailsFragment
+          images {
+            edges {
+              node {
+                altText
+                url: urlTemplate(lossy: true)
+                isDefault
+              }
+            }
+          }
+          defaultImage {
+            altText
+            url: urlTemplate(lossy: true)
+          }
+          sku
+          weight {
+            value
+            unit
+          }
+          condition
+          customFields {
+            edges {
+              node {
+                entityId
+                name
+                value
+              }
+            }
+          }
+          warranty
+          inventory {
+            isInStock
+          }
+          availabilityV2 {
+            status
+          }
           ...ProductViewedFragment
           ...ProductSchemaFragment
         }
       }
     }
   `,
-  [ProductDetailsFragment, ProductViewedFragment, ProductSchemaFragment],
+  [ProductViewedFragment, ProductSchemaFragment],
 );
 
-type Variables = VariablesOf<typeof ProductQuery>;
+type Variables = VariablesOf<typeof ExtendedProductQuery>;
 
-export const getProduct = cache(async (variables: Variables, customerAccessToken?: string) => {
-  const { data } = await client.fetch({
-    document: ProductQuery,
-    variables,
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+export const getExtendedProduct = cache(
+  async (variables: Variables, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: ExtendedProductQuery,
+      variables,
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
 
-  return data.site.product;
-});
+    return data.site.product;
+  },
+);
 
-// Fields that require currencyCode es a query variable
+// Fields that require currencyCode as a query variable
 // Separated from the rest to cache separately
-const ExtendedProductQuery = graphql(
+const PricingAndRelatedProductsQuery = graphql(
   `
-    query ExtendedProductQuery(
+    query PricingAndRelatedProductQuery(
       $entityId: Int!
       $optionValueIds: [OptionValueId!]
       $useDefaultOptionSelections: Boolean
@@ -306,10 +302,10 @@ const ExtendedProductQuery = graphql(
   [PricingFragment, FeaturedProductsCarouselFragment],
 );
 
-export const getExtendedProduct = cache(
+export const getPricingAndRelatedProducts = cache(
   async (variables: Variables, customerAccessToken?: string) => {
     const { data } = await client.fetch({
-      document: ExtendedProductQuery,
+      document: PricingAndRelatedProductsQuery,
       variables,
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
