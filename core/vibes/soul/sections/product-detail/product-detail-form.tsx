@@ -153,8 +153,8 @@ export function ProductDetailForm<F extends Field>({
             <Stream
               fallback={
                 <div className="flex animate-pulse gap-x-3">
-                  <Skeleton.Box className="h-12 w-[120px] rounded-lg" />
-                  <Skeleton.Box className="h-12 w-[216px] rounded-full" />
+                  <Skeleton.Box className="h-[53px] w-[120px] rounded-lg" />
+                  <Skeleton.Box className="h-[50px] w-[216px] rounded-full" />
                 </div>
               }
               value={Streamable.all([streamableCtaDisabled, streamableCtaLabel])}
