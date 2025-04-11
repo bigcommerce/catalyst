@@ -1,4 +1,4 @@
-import { unstable_cache } from 'next/cache';
+import { cache } from 'react';
 
 import { client } from '~/client';
 import { PricingFragment } from '~/client/fragments/pricing';
@@ -197,24 +197,16 @@ const ProductMetadataQuery = graphql(`
   }
 `);
 
-export const getProductMetadata = (
-  entityId: number,
-  locale: string,
-  customerAccessToken?: string,
-) =>
-  unstable_cache(
-    async () => {
-      const { data } = await client.fetch({
-        document: ProductMetadataQuery,
-        variables: { entityId },
-        customerAccessToken,
-      });
+export const getProductMetadata = cache(async (entityId: number, customerAccessToken?: string) => {
+  const { data } = await client.fetch({
+    document: ProductMetadataQuery,
+    variables: { entityId },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
 
-      return data.site.product;
-    },
-    [entityId.toString(), locale, customerAccessToken ?? ''],
-    { revalidate: customerAccessToken ? 0 : revalidate },
-  );
+  return data.site.product;
+});
 
 const BaseProductQuery = graphql(
   `
@@ -240,20 +232,16 @@ const BaseProductQuery = graphql(
   [ProductOptionsFragment],
 );
 
-export const getBaseProduct = (entityId: number, locale: string, customerAccessToken?: string) =>
-  unstable_cache(
-    async () => {
-      const { data } = await client.fetch({
-        document: BaseProductQuery,
-        variables: { entityId },
-        customerAccessToken,
-      });
+export const getBaseProduct = cache(async (entityId: number, customerAccessToken?: string) => {
+  const { data } = await client.fetch({
+    document: BaseProductQuery,
+    variables: { entityId },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
 
-      return data.site.product;
-    },
-    [entityId.toString(), locale, customerAccessToken ?? ''],
-    { revalidate: customerAccessToken ? 0 : revalidate },
-  );
+  return data.site.product;
+});
 
 const ProductQuery = graphql(
   `
@@ -293,17 +281,13 @@ const ProductQuery = graphql(
 
 type Variables = VariablesOf<typeof ProductQuery>;
 
-export const getProduct = (variables: Variables, locale: string, customerAccessToken?: string) =>
-  unstable_cache(
-    async () => {
-      const { data } = await client.fetch({
-        document: ProductQuery,
-        variables,
-        customerAccessToken,
-      });
+export const getProduct = cache(async (variables: Variables, customerAccessToken?: string) => {
+  const { data } = await client.fetch({
+    document: ProductQuery,
+    variables,
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
 
-      return data.site.product;
-    },
-    [JSON.stringify(variables), locale, customerAccessToken ?? ''],
-    { revalidate: customerAccessToken ? 0 : revalidate },
-  );
+  return data.site.product;
+});

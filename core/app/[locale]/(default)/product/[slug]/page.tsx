@@ -24,13 +24,12 @@ interface Props {
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { locale, slug } = await props.params;
+  const { slug } = await props.params;
 
   const productId = Number(slug);
 
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const cachedGetProductMetadata = getProductMetadata(productId, locale, customerAccessToken);
-  const product = await cachedGetProductMetadata();
+  const product = await getProductMetadata(productId, customerAccessToken);
 
   if (!product) {
     return notFound();
@@ -67,8 +66,7 @@ export default async function Product(props: Props) {
 
   const productId = Number(slug);
 
-  const cachedGetBaseProduct = getBaseProduct(productId, locale, customerAccessToken);
-  const baseProduct = await cachedGetBaseProduct();
+  const baseProduct = await getBaseProduct(productId, customerAccessToken);
 
   if (!baseProduct) {
     return notFound();
@@ -95,8 +93,7 @@ export default async function Product(props: Props) {
       currencyCode,
     };
 
-    const cachedGetProduct = getProduct(variables, locale, customerAccessToken);
-    const product = await cachedGetProduct();
+    const product = await getProduct(variables, customerAccessToken);
 
     if (!product) {
       return notFound();
