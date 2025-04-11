@@ -2,16 +2,17 @@
 
 import { useEffect } from 'react';
 
+import { PricingFragment } from '~/client/fragments/pricing';
 import { FragmentOf } from '~/client/graphql';
 import { bodl } from '~/lib/bodl';
 
 import { ProductViewedFragment } from './fragment';
 
 interface Props {
-  product: FragmentOf<typeof ProductViewedFragment>;
+  product: FragmentOf<typeof ProductViewedFragment> & FragmentOf<typeof PricingFragment>;
 }
 
-const productItemTransform = (p: FragmentOf<typeof ProductViewedFragment>) => {
+const productItemTransform = (p: Props['product']) => {
   return {
     product_id: p.entityId.toString(),
     product_name: p.name,

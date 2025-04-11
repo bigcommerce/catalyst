@@ -133,49 +133,45 @@ export const ProductOptionsFragment = graphql(
   ],
 );
 
-const ProductDetailsFragment = graphql(
-  `
-    fragment ProductDetailsFragment on Product {
-      images {
-        edges {
-          node {
-            altText
-            url: urlTemplate(lossy: true)
-            isDefault
-          }
+const ProductDetailsFragment = graphql(`
+  fragment ProductDetailsFragment on Product {
+    images {
+      edges {
+        node {
+          altText
+          url: urlTemplate(lossy: true)
+          isDefault
         }
       }
-      defaultImage {
-        altText
-        url: urlTemplate(lossy: true)
-      }
-      sku
-      weight {
-        value
-        unit
-      }
-      condition
-      customFields {
-        edges {
-          node {
-            entityId
-            name
-            value
-          }
-        }
-      }
-      warranty
-      inventory {
-        isInStock
-      }
-      availabilityV2 {
-        status
-      }
-      ...PricingFragment
     }
-  `,
-  [PricingFragment],
-);
+    defaultImage {
+      altText
+      url: urlTemplate(lossy: true)
+    }
+    sku
+    weight {
+      value
+      unit
+    }
+    condition
+    customFields {
+      edges {
+        node {
+          entityId
+          name
+          value
+        }
+      }
+    }
+    warranty
+    inventory {
+      isInStock
+    }
+    availabilityV2 {
+      status
+    }
+  }
+`);
 
 const ProductMetadataQuery = graphql(`
   query ProductMetadataQuery($entityId: Int!) {
@@ -249,7 +245,6 @@ const ProductQuery = graphql(
       $entityId: Int!
       $optionValueIds: [OptionValueId!]
       $useDefaultOptionSelections: Boolean
-      $currencyCode: currencyCode
     ) {
       site {
         product(
@@ -260,23 +255,11 @@ const ProductQuery = graphql(
           ...ProductDetailsFragment
           ...ProductViewedFragment
           ...ProductSchemaFragment
-          relatedProducts(first: 8) {
-            edges {
-              node {
-                ...FeaturedProductsCarouselFragment
-              }
-            }
-          }
         }
       }
     }
   `,
-  [
-    ProductDetailsFragment,
-    FeaturedProductsCarouselFragment,
-    ProductViewedFragment,
-    ProductSchemaFragment,
-  ],
+  [ProductDetailsFragment, ProductViewedFragment, ProductSchemaFragment],
 );
 
 type Variables = VariablesOf<typeof ProductQuery>;
@@ -291,3 +274,47 @@ export const getProduct = cache(async (variables: Variables, customerAccessToken
 
   return data.site.product;
 });
+
+// Fields that require currencyCode es a query variable
+// Separated from the rest to cache separately
+const ExtendedProductQuery = graphql(
+  `
+    query ExtendedProductQuery(
+      $entityId: Int!
+      $optionValueIds: [OptionValueId!]
+      $useDefaultOptionSelections: Boolean
+      $currencyCode: currencyCode
+    ) {
+      site {
+        product(
+          entityId: $entityId
+          optionValueIds: $optionValueIds
+          useDefaultOptionSelections: $useDefaultOptionSelections
+        ) {
+          ...PricingFragment
+          relatedProducts(first: 8) {
+            edges {
+              node {
+                ...FeaturedProductsCarouselFragment
+              }
+            }
+          }
+        }
+      }
+    }
+  `,
+  [PricingFragment, FeaturedProductsCarouselFragment],
+);
+
+export const getExtendedProduct = cache(
+  async (variables: Variables, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: ExtendedProductQuery,
+      variables,
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    return data.site.product;
+  },
+);
