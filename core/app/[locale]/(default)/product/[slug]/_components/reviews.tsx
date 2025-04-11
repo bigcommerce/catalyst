@@ -1,7 +1,7 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { unstable_cache } from 'next/cache';
-import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations } from 'next-intl/server';
 import { createLoader, parseAsString } from 'nuqs/server';
+import { cache } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Reviews as ReviewsSection } from '@/vibes/soul/sections/reviews';
@@ -59,6 +59,16 @@ const ReviewsQuery = graphql(
   [ProductReviewSchemaFragment, PaginationFragment],
 );
 
+const getReviews = cache(async (productId: number, paginationArgs: object) => {
+  const { data } = await client.fetch({
+    document: ReviewsQuery,
+    variables: { ...paginationArgs, entityId: productId },
+    fetchOptions: { next: { revalidate } },
+  });
+
+  return data.site.product;
+});
+
 interface SearchParams {
   [PaginationSearchParamNames.BEFORE]?: string | null;
   [PaginationSearchParamNames.AFTER]?: string | null;
@@ -70,34 +80,18 @@ interface Props {
 }
 
 export const Reviews = async ({ productId, searchParams }: Props) => {
-  const locale = await getLocale();
   const t = await getTranslations('Product.Reviews');
 
   const streamableReviewsData = Streamable.from(async () => {
     const paginationSearchParams = await searchParams;
 
-    const getReviewsData = unstable_cache(
-      async () => {
-        const {
-          [PaginationSearchParamNames.AFTER]: after,
-          [PaginationSearchParamNames.BEFORE]: before,
-        } = paginationSearchParams;
-        const paginationArgs = before == null ? { first: 5, after } : { last: 5, before };
+    const {
+      [PaginationSearchParamNames.AFTER]: after,
+      [PaginationSearchParamNames.BEFORE]: before,
+    } = paginationSearchParams;
+    const paginationArgs = before == null ? { first: 5, after } : { last: 5, before };
 
-        const { data } = await client.fetch({
-          document: ReviewsQuery,
-          variables: { ...paginationArgs, entityId: productId },
-        });
-
-        return data.site.product;
-      },
-      [productId.toString(), locale, JSON.stringify(paginationSearchParams)],
-      { revalidate },
-    );
-
-    const product = await getReviewsData();
-
-    return product;
+    return getReviews(productId, paginationArgs);
   });
 
   const streamableReviews = Streamable.from(async () => {
