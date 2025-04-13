@@ -9,10 +9,11 @@ const memoryKv = new MemoryKvAdapter();
 
 class KV<Adapter extends KvAdapter> implements KvAdapter {
   private kv?: Adapter;
+  private adapterName?: string;
   private memoryKv = memoryKv;
 
   constructor(
-    private createAdapter: () => Promise<Adapter>,
+    private createAdapter: () => Promise<{ adapter: Adapter; name: string }>,
     private config: Config = {},
   ) {}
 
@@ -30,6 +31,7 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
     if (memoryValues.length === keys.length) {
       this.logger(
         `MGET - Keys: ${keys.toString()} - Value: ${JSON.stringify(memoryValues, null, 2)}`,
+        'Memory',
       );
 
       return memoryValues;
@@ -37,7 +39,10 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 
     const values = await kv.mget<Data>(...keys);
 
-    this.logger(`MGET - Keys: ${keys.toString()} - Value: ${JSON.stringify(values, null, 2)}`);
+    this.logger(
+      `MGET - Keys: ${keys.toString()} - Value: ${JSON.stringify(values, null, 2)}`,
+      'Adapter',
+    );
 
     // Store the values in memory kv
     await Promise.all(
@@ -58,7 +63,7 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
   async set<Data>(key: string, value: Data, opts?: SetCommandOptions) {
     const kv = await this.getKv();
 
-    this.logger(`SET - Key: ${key} - Value: ${JSON.stringify(value, null, 2)}`);
+    this.logger(`SET - Key: ${key} - Value: ${JSON.stringify(value, null, 2)}`, 'Adapter');
 
     await Promise.all([this.memoryKv.set(key, value, opts), kv.set(key, value, opts)]);
 
@@ -67,46 +72,51 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 
   private async getKv() {
     if (!this.kv) {
-      this.kv = await this.createAdapter();
+      const { adapter, name } = await this.createAdapter();
+
+      this.kv = adapter;
+      this.adapterName = name;
     }
 
     return this.kv;
   }
 
-  private logger(message: string) {
+  private logger(message: string, source: 'Memory' | 'Adapter' = 'Adapter') {
     if (this.config.logger) {
+      const adapterName = source === 'Memory' ? 'Memory' : this.adapterName || 'Unknown';
+
       // eslint-disable-next-line no-console
-      console.log(`[BigCommerce] KV ${message}`);
+      console.log(`[BigCommerce] KV (${adapterName}) ${message}`);
     }
   }
 }
 
-async function createKVAdapter() {
+async function createKVAdapter(): Promise<{ adapter: KvAdapter; name: string }> {
   if (process.env.REDIS_URL) {
     const { RedisKvAdapter } = await import('./adapters/redis');
 
-    return new RedisKvAdapter();
+    return { adapter: new RedisKvAdapter(), name: 'Redis' };
   }
 
   if (process.env.BC_KV_REST_API_URL && process.env.BC_KV_REST_API_TOKEN) {
     const { BcKvAdapter } = await import('./adapters/bc');
 
-    return new BcKvAdapter();
+    return { adapter: new BcKvAdapter(), name: 'BcKV' };
   }
 
   if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
     const { VercelKvAdapter } = await import('./adapters/vercel');
 
-    return new VercelKvAdapter();
+    return { adapter: new VercelKvAdapter(), name: 'Vercel' };
   }
 
   if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
     const { UpstashKvAdapter } = await import('./adapters/upstash');
 
-    return new UpstashKvAdapter();
+    return { adapter: new UpstashKvAdapter(), name: 'Upstash' };
   }
 
-  return new MemoryKvAdapter();
+  return { adapter: new MemoryKvAdapter(), name: 'Memory (Default)' };
 }
 
 const adapterInstance = new KV(createKVAdapter, {
