@@ -12,6 +12,8 @@ export const buildConfigSchema = z.object({
     cdnUrl: z.string().default('cdn11.bigcommerce.com'),
     checkoutUrl: z.string(),
   }),
+  bloomFilterJSON: z.unknown().nullable().optional(),
+  trailingSlash: z.boolean(),
 });
 
 export type BuildConfigSchema = z.infer<typeof buildConfigSchema>;

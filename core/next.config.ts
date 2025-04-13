@@ -6,6 +6,7 @@ import { writeBuildConfig } from './build-config/writer';
 import { client } from './client';
 import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
+import { generateBloomFilterJSON } from './scripts/generate-bloom-filter';
 
 const withNextIntl = createNextIntlPlugin({
   experimental: {
@@ -31,8 +32,10 @@ const SettingsQuery = graphql(`
   }
 `);
 
-async function writeSettingsToBuildConfig() {
+async function writeSettingsToBuildConfig(trailingSlash: boolean) {
   const { data } = await client.fetch({ document: SettingsQuery });
+
+  const bloomFilterJSON = await generateBloomFilterJSON(trailingSlash);
 
   return await writeBuildConfig({
     locales: data.site.settings?.locales,
@@ -40,17 +43,22 @@ async function writeSettingsToBuildConfig() {
       ...data.site.settings?.url,
       cdnUrl: process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME ?? data.site.settings?.url.cdnUrl,
     },
+    bloomFilterJSON,
+    trailingSlash,
   });
 }
 
 export default async (): Promise<NextConfig> => {
-  const settings = await writeSettingsToBuildConfig();
+  const trailingSlash = process.env.TRAILING_SLASH !== 'false';
+
+  const settings = await writeSettingsToBuildConfig(trailingSlash);
 
   let nextConfig: NextConfig = {
     reactStrictMode: true,
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
       ppr: 'incremental',
+      nodeMiddleware: true,
     },
     typescript: {
       ignoreBuildErrors: !!process.env.CI,
@@ -72,9 +80,7 @@ export default async (): Promise<NextConfig> => {
         'vibes',
       ],
     },
-    // default URL generation in BigCommerce uses trailing slash
-    trailingSlash: process.env.TRAILING_SLASH !== 'false',
-    // eslint-disable-next-line @typescript-eslint/require-await
+    trailingSlash: trailingSlash,
     async headers() {
       return [
         {
@@ -86,7 +92,7 @@ export default async (): Promise<NextConfig> => {
             },
             {
               key: 'Link',
-              value: `<https://${settings.urls.cdnUrl}>; rel=preconnect`,
+              value: settings.urls.cdnUrl ? `<https://${settings.urls.cdnUrl}>; rel=preconnect` : '',
             },
           ],
         },
@@ -94,7 +100,6 @@ export default async (): Promise<NextConfig> => {
     },
   };
 
-  // Apply withNextIntl to the config
   nextConfig = withNextIntl(nextConfig);
 
   if (process.env.ANALYZE === 'true') {

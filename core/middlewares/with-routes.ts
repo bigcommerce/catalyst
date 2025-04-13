@@ -1,3 +1,4 @@
+import { BloomFilter } from 'bloom-filters';
 import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
 import { z } from 'zod';
 
@@ -5,10 +6,30 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
+import { normalizeUrlPath } from '~/lib/url-utils';
 
+import buildConfigData from '../build-config/build-config.json';
+import { type BuildConfigSchema } from '../build-config/schema';
 import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
+
+const buildConfig = buildConfigData as BuildConfigSchema;
+
+// Initialize bloomFilter with explicit typing
+let bloomFilter: BloomFilter | null = null;
+
+if (buildConfig.bloomFilterJSON) {
+  try {
+    // The library's types require casting the input for fromJSON.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    bloomFilter = BloomFilter.fromJSON(buildConfig.bloomFilterJSON as any);
+  } catch (e) {
+    // Log initialization errors, but don't break the middleware
+    console.error('[Bloom Filter] Failed to initialize from JSON:', e);
+    bloomFilter = null;
+  }
+}
 
 const GetRouteQuery = graphql(`
   query GetRouteQuery($path: String!) {
@@ -169,6 +190,16 @@ const RouteCacheSchema = z.object({
   expiryTime: z.number(),
 });
 
+const checkBloomFilter = (pathname: string): boolean => {
+  if (!bloomFilter) {
+    return true;
+  }
+
+  const normalizedPath = normalizeUrlPath(pathname, buildConfig.trailingSlash);
+
+  return bloomFilter.has(normalizedPath);
+};
+
 const updateRouteCache = async (
   pathname: string,
   channelId: string,
@@ -223,13 +254,19 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   try {
     const pathname = clearLocaleFromPath(request.nextUrl.pathname, locale);
 
+    if (!checkBloomFilter(pathname)) {
+      return {
+        route: null,
+        status: undefined,
+        isBloomFiltered: true,
+      };
+    }
+
     let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
       kvKey(pathname, channelId),
       kvKey(STORE_STATUS_KEY, channelId),
     );
 
-    // If caches are old, update them in the background and return the old data (SWR-like behavior)
-    // If cache is missing, update it and return the new data, but write to KV in the background
     if (statusCache && statusCache.expiryTime < Date.now()) {
       event.waitUntil(updateStatusCache(channelId, event));
     } else if (!statusCache) {
@@ -248,14 +285,15 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
     return {
       route: parsedRoute.success ? parsedRoute.data.route : undefined,
       status: parsedStatus.success ? parsedStatus.data.status : undefined,
+      isBloomFiltered: false,
     };
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error(error);
+    console.error('[withRoutes] Error in getRouteInfo:', error);
 
     return {
       route: undefined,
       status: undefined,
+      isBloomFiltered: false,
     };
   }
 };
@@ -264,20 +302,20 @@ export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
     const locale = request.headers.get('x-bc-locale') ?? '';
 
-    const { route, status } = await getRouteInfo(request, event);
+    const { route, status, isBloomFiltered } = await getRouteInfo(request, event);
+
+    if (isBloomFiltered) {
+      return new NextResponse(null, { status: 404 });
+    }
 
     if (status === 'MAINTENANCE') {
-      // 503 status code not working - https://github.com/vercel/next.js/issues/50155
       return NextResponse.rewrite(new URL(`/${locale}/maintenance`, request.url), { status: 503 });
     }
 
     const redirectConfig = {
-      // Use 301 status code as it is more universally supported by crawlers
       status: 301,
       nextConfig: {
-        // Preserve the trailing slash if it was present in the original URL
-        // BigCommerce by default returns the trailing slash.
-        trailingSlash: process.env.TRAILING_SLASH !== 'false',
+        trailingSlash: buildConfig.trailingSlash,
       },
     };
 
@@ -288,15 +326,12 @@ export const withRoutes: MiddlewareFactory = () => {
         case 'CategoryRedirect':
         case 'PageRedirect':
         case 'ProductRedirect': {
-          // For dynamic redirects, assume an internal redirect and construct the URL from the path
           const redirectUrl = new URL(route.redirect.to.path, request.url);
 
           return NextResponse.redirect(redirectUrl, redirectConfig);
         }
 
         default: {
-          // For manual redirects, redirect to the full URL to handle cases
-          // where the destination URL might be external to the site.
           return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
         }
       }
@@ -322,12 +357,12 @@ export const withRoutes: MiddlewareFactory = () => {
       }
 
       case 'NormalPage': {
-        url = `/${locale}/webpages/${node.id}/normal/`;
+        url = normalizeUrlPath(`/${locale}/webpages/${node.id}/normal`, buildConfig.trailingSlash);
         break;
       }
 
       case 'ContactPage': {
-        url = `/${locale}/webpages/${node.id}/contact/`;
+        url = normalizeUrlPath(`/${locale}/webpages/${node.id}/contact`, buildConfig.trailingSlash);
         break;
       }
 
@@ -352,10 +387,21 @@ export const withRoutes: MiddlewareFactory = () => {
       default: {
         const { pathname } = new URL(request.url);
 
-        const cleanPathName = clearLocaleFromPath(pathname, locale);
+        const cleanPathName = normalizeUrlPath(
+          clearLocaleFromPath(pathname, locale),
+          buildConfig.trailingSlash,
+        );
 
         url = `/${locale}${cleanPathName}`;
+
+        if (!route) {
+          return new NextResponse(null, { status: 404 });
+        }
       }
+    }
+
+    if (url !== '/') {
+      url = normalizeUrlPath(url, buildConfig.trailingSlash);
     }
 
     const rewriteUrl = new URL(url, request.url);
