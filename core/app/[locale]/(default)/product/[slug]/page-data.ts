@@ -133,8 +133,8 @@ export const ProductOptionsFragment = graphql(
   ],
 );
 
-const ProductMetadataQuery = graphql(`
-  query ProductMetadataQuery($entityId: Int!) {
+const ProductPageMetadataQuery = graphql(`
+  query ProductPageMetadataQuery($entityId: Int!) {
     site {
       product(entityId: $entityId) {
         name
@@ -153,20 +153,22 @@ const ProductMetadataQuery = graphql(`
   }
 `);
 
-export const getProductMetadata = cache(async (entityId: number, customerAccessToken?: string) => {
-  const { data } = await client.fetch({
-    document: ProductMetadataQuery,
-    variables: { entityId },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+export const getProductPageMetadata = cache(
+  async (entityId: number, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: ProductPageMetadataQuery,
+      variables: { entityId },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
 
-  return data.site.product;
-});
+    return data.site.product;
+  },
+);
 
-const BaseProductQuery = graphql(
+const ProductQuery = graphql(
   `
-    query BaseProductQuery($entityId: Int!) {
+    query ProductQuery($entityId: Int!) {
       site {
         product(entityId: $entityId) {
           entityId
@@ -188,9 +190,9 @@ const BaseProductQuery = graphql(
   [ProductOptionsFragment],
 );
 
-export const getBaseProduct = cache(async (entityId: number, customerAccessToken?: string) => {
+export const getProduct = cache(async (entityId: number, customerAccessToken?: string) => {
   const { data } = await client.fetch({
-    document: BaseProductQuery,
+    document: ProductQuery,
     variables: { entityId },
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
@@ -199,9 +201,9 @@ export const getBaseProduct = cache(async (entityId: number, customerAccessToken
   return data.site.product;
 });
 
-const ExtendedProductQuery = graphql(
+const StreamableProductQuery = graphql(
   `
-    query ExtendedProductQuery(
+    query StreamableProductQuery(
       $entityId: Int!
       $optionValueIds: [OptionValueId!]
       $useDefaultOptionSelections: Boolean
@@ -256,12 +258,12 @@ const ExtendedProductQuery = graphql(
   [ProductViewedFragment, ProductSchemaFragment],
 );
 
-type Variables = VariablesOf<typeof ExtendedProductQuery>;
+type Variables = VariablesOf<typeof StreamableProductQuery>;
 
-export const getExtendedProduct = cache(
+export const getStreamableProduct = cache(
   async (variables: Variables, customerAccessToken?: string) => {
     const { data } = await client.fetch({
-      document: ExtendedProductQuery,
+      document: StreamableProductQuery,
       variables,
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
@@ -273,9 +275,9 @@ export const getExtendedProduct = cache(
 
 // Fields that require currencyCode as a query variable
 // Separated from the rest to cache separately
-const PricingAndRelatedProductsQuery = graphql(
+const ProductPricingAndRelatedProductsQuery = graphql(
   `
-    query PricingAndRelatedProductQuery(
+    query ProductPricingAndRelatedProductsQuery(
       $entityId: Int!
       $optionValueIds: [OptionValueId!]
       $useDefaultOptionSelections: Boolean
@@ -302,10 +304,10 @@ const PricingAndRelatedProductsQuery = graphql(
   [PricingFragment, FeaturedProductsCarouselFragment],
 );
 
-export const getPricingAndRelatedProducts = cache(
+export const getProductPricingAndRelatedProducts = cache(
   async (variables: Variables, customerAccessToken?: string) => {
     const { data } = await client.fetch({
-      document: PricingAndRelatedProductsQuery,
+      document: ProductPricingAndRelatedProductsQuery,
       variables,
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
