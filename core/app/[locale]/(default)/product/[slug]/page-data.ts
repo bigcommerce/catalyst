@@ -1,13 +1,10 @@
-import { notFound } from 'next/navigation';
 import { cache } from 'react';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
-import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
 import { ProductViewedFragment } from './_components/product-viewed/fragment';
@@ -103,20 +100,9 @@ const DateFieldFragment = graphql(`
   }
 `);
 
-const AddToCartButtonFragment = graphql(`
-  fragment AddToCartButtonFragment on Product {
-    inventory {
-      isInStock
-    }
-    availabilityV2 {
-      status
-    }
-  }
-`);
-
-export const ProductFormFragment = graphql(
+export const ProductOptionsFragment = graphql(
   `
-    fragment ProductFormFragment on Product {
+    fragment ProductOptionsFragment on Product {
       entityId
       productOptions(first: 50) {
         edges {
@@ -135,7 +121,6 @@ export const ProductFormFragment = graphql(
           }
         }
       }
-      ...AddToCartButtonFragment
     }
   `,
   [
@@ -145,63 +130,154 @@ export const ProductFormFragment = graphql(
     TextFieldFragment,
     MultiLineTextFieldFragment,
     DateFieldFragment,
-    AddToCartButtonFragment,
   ],
 );
 
-const ProductDetailsFragment = graphql(
-  `
-    fragment ProductDetailsFragment on Product {
-      entityId
-      name
-      description
-      path
-      images {
-        edges {
-          node {
-            altText
-            url: urlTemplate(lossy: true)
-            isDefault
-          }
-        }
-      }
-      defaultImage {
-        altText
-        url: urlTemplate(lossy: true)
-      }
-      brand {
+const ProductPageMetadataQuery = graphql(`
+  query ProductPageMetadataQuery($entityId: Int!) {
+    site {
+      product(entityId: $entityId) {
         name
-      }
-      reviewSummary {
-        averageRating
-      }
-      description
-      sku
-      weight {
-        value
-        unit
-      }
-      condition
-      customFields {
-        edges {
-          node {
-            entityId
-            name
-            value
-          }
+        defaultImage {
+          altText
+          url: urlTemplate(lossy: true)
         }
+        seo {
+          pageTitle
+          metaDescription
+          metaKeywords
+        }
+        plainTextDescription(characterLimit: 1200)
       }
-      warranty
-      ...PricingFragment
-      ...ProductFormFragment
     }
-  `,
-  [PricingFragment, ProductFormFragment],
+  }
+`);
+
+export const getProductPageMetadata = cache(
+  async (entityId: number, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: ProductPageMetadataQuery,
+      variables: { entityId },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    return data.site.product;
+  },
 );
 
-const ProductPageQuery = graphql(
+const ProductQuery = graphql(
   `
-    query ProductPageQuery(
+    query ProductQuery($entityId: Int!) {
+      site {
+        product(entityId: $entityId) {
+          entityId
+          name
+          description
+          path
+          brand {
+            name
+          }
+          reviewSummary {
+            averageRating
+          }
+          description
+          ...ProductOptionsFragment
+        }
+      }
+    }
+  `,
+  [ProductOptionsFragment],
+);
+
+export const getProduct = cache(async (entityId: number, customerAccessToken?: string) => {
+  const { data } = await client.fetch({
+    document: ProductQuery,
+    variables: { entityId },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  return data.site.product;
+});
+
+const StreamableProductQuery = graphql(
+  `
+    query StreamableProductQuery(
+      $entityId: Int!
+      $optionValueIds: [OptionValueId!]
+      $useDefaultOptionSelections: Boolean
+    ) {
+      site {
+        product(
+          entityId: $entityId
+          optionValueIds: $optionValueIds
+          useDefaultOptionSelections: $useDefaultOptionSelections
+        ) {
+          images {
+            edges {
+              node {
+                altText
+                url: urlTemplate(lossy: true)
+                isDefault
+              }
+            }
+          }
+          defaultImage {
+            altText
+            url: urlTemplate(lossy: true)
+          }
+          sku
+          weight {
+            value
+            unit
+          }
+          condition
+          customFields {
+            edges {
+              node {
+                entityId
+                name
+                value
+              }
+            }
+          }
+          warranty
+          inventory {
+            isInStock
+          }
+          availabilityV2 {
+            status
+          }
+          ...ProductViewedFragment
+          ...ProductSchemaFragment
+        }
+      }
+    }
+  `,
+  [ProductViewedFragment, ProductSchemaFragment],
+);
+
+type Variables = VariablesOf<typeof StreamableProductQuery>;
+
+export const getStreamableProduct = cache(
+  async (variables: Variables, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: StreamableProductQuery,
+      variables,
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    return data.site.product;
+  },
+);
+
+// Fields that require currencyCode as a query variable
+// Separated from the rest to cache separately
+const ProductPricingAndRelatedProductsQuery = graphql(
+  `
+    query ProductPricingAndRelatedProductsQuery(
       $entityId: Int!
       $optionValueIds: [OptionValueId!]
       $useDefaultOptionSelections: Boolean
@@ -213,19 +289,7 @@ const ProductPageQuery = graphql(
           optionValueIds: $optionValueIds
           useDefaultOptionSelections: $useDefaultOptionSelections
         ) {
-          ...ProductDetailsFragment
-          ...ProductViewedFragment
-          ...ProductSchemaFragment
-          name
-          defaultImage {
-            url: urlTemplate(lossy: true)
-            altText
-          }
-          seo {
-            pageTitle
-            metaDescription
-            metaKeywords
-          }
+          ...PricingFragment
           relatedProducts(first: 8) {
             edges {
               node {
@@ -237,32 +301,18 @@ const ProductPageQuery = graphql(
       }
     }
   `,
-  [
-    ProductDetailsFragment,
-    ProductViewedFragment,
-    ProductSchemaFragment,
-    FeaturedProductsCarouselFragment,
-  ],
+  [PricingFragment, FeaturedProductsCarouselFragment],
 );
 
-type Variables = VariablesOf<typeof ProductPageQuery>;
+export const getProductPricingAndRelatedProducts = cache(
+  async (variables: Variables, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: ProductPricingAndRelatedProductsQuery,
+      variables,
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
 
-export const getProductData = cache(async (variables: Variables) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  const currencyCode = await getPreferredCurrencyCode();
-
-  const { data } = await client.fetch({
-    document: ProductPageQuery,
-    variables: { ...variables, currencyCode },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
-
-  const product = data.site.product;
-
-  if (!product) {
-    return notFound();
-  }
-
-  return product;
-});
+    return data.site.product;
+  },
+);

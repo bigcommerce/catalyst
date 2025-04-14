@@ -134,19 +134,12 @@ export function ProductDetail<F extends Field>({
                     </Stream>
                   </div>
                   <div className="group/product-detail-form">
-                    <Stream
-                      fallback={<ProductDetailFormSkeleton />}
-                      value={Streamable.all([
-                        streamableFields,
-                        streamableCtaLabel,
-                        streamableCtaDisabled,
-                      ])}
-                    >
-                      {([fields, ctaLabel, ctaDisabled]) => (
+                    <Stream fallback={<ProductDetailFormSkeleton />} value={streamableFields}>
+                      {(fields) => (
                         <ProductDetailForm
                           action={action}
-                          ctaDisabled={ctaDisabled ?? undefined}
-                          ctaLabel={ctaLabel ?? undefined}
+                          ctaDisabled={streamableCtaDisabled}
+                          ctaLabel={streamableCtaLabel}
                           decrementLabel={decrementLabel}
                           emptySelectPlaceholder={emptySelectPlaceholder}
                           fields={fields}
@@ -220,7 +213,7 @@ function ProductGallerySkeleton() {
 }
 
 function PriceLabelSkeleton() {
-  return <Skeleton.Box className="my-4 h-4 w-20 rounded-md" />;
+  return <Skeleton.Box className="my-5 h-4 w-20 rounded-md" />;
 }
 
 function RatingSkeleton() {
