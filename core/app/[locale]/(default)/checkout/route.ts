@@ -27,10 +27,7 @@ const CheckoutRedirectMutation = graphql(`
 
 export async function GET(req: NextRequest, { params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const url = new URL(req.url);
-  const searchParams = url.searchParams;
-  const paramsCartId = searchParams.get('cartId'); 
-  const cartId = paramsCartId || await getCartId();
+  const cartId = req.nextUrl.searchParams.get('cartId') ?? (await getCartId());
   const customerAccessToken = await getSessionCustomerAccessToken();
   const channelId = getChannelIdFromLocale(locale);
 
