@@ -79,7 +79,7 @@
     "Faceted": {
         "Brand": {
             "Empty": {
-                "title": "No products in this brand",
+                "title": "Inga produkter i detta varumärke",
                 "subtitle": "Prova att använda olika filter."
             }
         },
@@ -317,7 +317,7 @@
         "noOtherDetails": "Det finns inga övriga detaljer.",
         "viewOptions": "Visa alternativ",
         "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
-        "missingCart": "Cart not found. Please try again later.",
+        "missingCart": "Kundvagnen hittades inte. Försök igen senare.",
         "unknownError": "Okänt fel. Försök igen senare."
     },
     "Product": {

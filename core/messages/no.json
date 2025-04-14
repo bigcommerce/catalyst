@@ -79,7 +79,7 @@
     "Faceted": {
         "Brand": {
             "Empty": {
-                "title": "No products in this brand",
+                "title": "Ingen produkter i dette merket",
                 "subtitle": "Prøv å bruke forskjellige filtre."
             }
         },
@@ -147,7 +147,7 @@
                 "shippingMethod": "Forsendelsesmetode",
                 "summaryTotal": "Totalbeløp",
                 "destination": "Mål",
-                "destinationWithCount": "Destination {number, number}/{total, number}",
+                "destinationWithCount": "Destinasjon {number, number}/{total, number}",
                 "subtotal": "Delsum",
                 "shipping": "Frakt",
                 "tax": "Avgift"
@@ -317,7 +317,7 @@
         "noOtherDetails": "Det er ingen andre detaljer.",
         "viewOptions": "Vis alternativer",
         "successMessage": "{cartItems, plural, =1 {1 vare} other {# varer}} lagt til i <cartLink>handlekurven din</cartLink>",
-        "missingCart": "Cart not found. Please try again later.",
+        "missingCart": "Handlekurv ikke funnet. Prøv på nytt senere.",
         "unknownError": "Ukjent feil. Prøv på nytt senere."
     },
     "Product": {

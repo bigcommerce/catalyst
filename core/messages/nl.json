@@ -79,7 +79,7 @@
     "Faceted": {
         "Brand": {
             "Empty": {
-                "title": "No products in this brand",
+                "title": "Geen producten in dit merk",
                 "subtitle": "Probeer andere filters te gebruiken."
             }
         },
@@ -147,7 +147,7 @@
                 "shippingMethod": "Verzendmethode",
                 "summaryTotal": "Totaal",
                 "destination": "Bestemming",
-                "destinationWithCount": "Destination {number, number}/{total, number}",
+                "destinationWithCount": "Bestemming {number, number}/{total, number}",
                 "subtotal": "Subtotaal",
                 "shipping": "Verzending",
                 "tax": "Belasting"
@@ -317,7 +317,7 @@
         "noOtherDetails": "Er zijn geen verdere details.",
         "viewOptions": "Opties weergeven",
         "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} toegevoegd aan <cartLink> je winkelwagen</cartLink>",
-        "missingCart": "Cart not found. Please try again later.",
+        "missingCart": "Winkelmandje niet gevonden. Probeer het later opnieuw.",
         "unknownError": "Onbekende fout. Probeer het later opnieuw."
     },
     "Product": {
