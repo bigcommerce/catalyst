@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
-import { createLoader, parseAsString } from 'nuqs/server';
+import { createLoader, parseAsString, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -19,7 +19,7 @@ const PaginationSearchParamNames = {
   AFTER: 'reviews_after',
 } as const;
 
-export const loadReviewsPaginationSearchParams = createLoader({
+const loadReviewsPaginationSearchParams = createLoader({
   [PaginationSearchParamNames.BEFORE]: parseAsString,
   [PaginationSearchParamNames.AFTER]: parseAsString,
 });
@@ -69,21 +69,16 @@ const getReviews = cache(async (productId: number, paginationArgs: object) => {
   return data.site.product;
 });
 
-interface SearchParams {
-  [PaginationSearchParamNames.BEFORE]?: string | null;
-  [PaginationSearchParamNames.AFTER]?: string | null;
-}
-
 interface Props {
   productId: number;
-  searchParams: Streamable<SearchParams>;
+  searchParams: Promise<SearchParams>;
 }
 
 export const Reviews = async ({ productId, searchParams }: Props) => {
   const t = await getTranslations('Product.Reviews');
 
   const streamableReviewsData = Streamable.from(async () => {
-    const paginationSearchParams = await searchParams;
+    const paginationSearchParams = await loadReviewsPaginationSearchParams(searchParams);
 
     const {
       [PaginationSearchParamNames.AFTER]: after,
