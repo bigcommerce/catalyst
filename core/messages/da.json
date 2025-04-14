@@ -79,7 +79,7 @@
     "Faceted": {
         "Brand": {
             "Empty": {
-                "title": "No products in this brand",
+                "title": "Der er ingen produkter i dette mærke",
                 "subtitle": "Prøv at bruge andre filtre."
             }
         },
@@ -317,7 +317,7 @@
         "noOtherDetails": "Der er ingen andre oplysninger.",
         "viewOptions": "Se muligheder",
         "successMessage": "<cartLink>{CartItems, plural, =1 {1 vare} other {# varer}} tilføjet til din indkøbskurv</cartLink>",
-        "missingCart": "Cart not found. Please try again later.",
+        "missingCart": "Indkøbskurven blev ikke fundet. Prøv igen senere.",
         "unknownError": "Ukendt fejl. Prøv igen senere."
     },
     "Product": {

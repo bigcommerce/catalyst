@@ -79,7 +79,7 @@
     "Faceted": {
         "Brand": {
             "Empty": {
-                "title": "No products in this brand",
+                "title": "Nessun prodotto in questo marchio",
                 "subtitle": "Prova a usare filtri diversi."
             }
         },
@@ -147,7 +147,7 @@
                 "shippingMethod": "Metodo di spedizione",
                 "summaryTotal": "Totale",
                 "destination": "Destinazione",
-                "destinationWithCount": "Destination {number, number}/{total, number}",
+                "destinationWithCount": "Destinazione {number, number}/{total, number}",
                 "subtotal": "Subtotale",
                 "shipping": "Spedizioni",
                 "tax": "Tasse"
@@ -317,7 +317,7 @@
         "noOtherDetails": "Non ci sono altri dettagli.",
         "viewOptions": "Visualizza le opzioni",
         "successMessage": "{cartItems, plural, =1 {1 articolo} other {# articoli}} aggiunto/i al <cartLink> carrello</cartLink>",
-        "missingCart": "Cart not found. Please try again later.",
+        "missingCart": "Carrello non trovato. Riprova più tardi.",
         "unknownError": "Errore sconosciuto. Riprova più tardi."
     },
     "Product": {

@@ -79,7 +79,7 @@
     "Faceted": {
         "Brand": {
             "Empty": {
-                "title": "No products in this brand",
+                "title": "Aucun produit dans cette marque",
                 "subtitle": "Essayez différents filtres."
             }
         },
@@ -317,7 +317,7 @@
         "noOtherDetails": "Aucune information supplémentaire.",
         "viewOptions": "Afficher les options",
         "successMessage": "<cartLink>{CartItems, plural, =1 {1 article} other {# articles}} ajouté(s) à votre panier</cartLink>",
-        "missingCart": "Cart not found. Please try again later.",
+        "missingCart": "Panier introuvable. Veuillez réessayer plus tard.",
         "unknownError": "Erreur inconnue. Veuillez réessayer plus tard."
     },
     "Product": {
