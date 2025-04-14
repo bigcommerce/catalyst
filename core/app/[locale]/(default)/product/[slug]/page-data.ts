@@ -3,7 +3,6 @@ import { cache } from 'react';
 import { client } from '~/client';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
@@ -159,7 +158,7 @@ export const getProductPageMetadata = cache(
       document: ProductPageMetadataQuery,
       variables: { entityId },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
@@ -195,7 +194,7 @@ export const getProduct = cache(async (entityId: number, customerAccessToken?: s
     document: ProductQuery,
     variables: { entityId },
     customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    fetchOptions: { cache: 'no-store' },
   });
 
   return data.site.product;
@@ -266,7 +265,7 @@ export const getStreamableProduct = cache(
       document: StreamableProductQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
@@ -310,7 +309,7 @@ export const getProductPricingAndRelatedProducts = cache(
       document: ProductPricingAndRelatedProductsQuery,
       variables,
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: { cache: 'no-store' },
     });
 
     return data.site.product;
