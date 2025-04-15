@@ -23,7 +23,7 @@ import { fetchFacetedSearch } from '../../fetch-faceted-search';
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
 
-const cachedCategoryDataVariables = cache((categoryId: number) => {
+const getCachedCategory = cache((categoryId: number) => {
   return {
     category: categoryId,
   };
@@ -33,8 +33,12 @@ const compareLoader = createCompareLoader();
 
 const createCategorySearchParamsLoader = cache(
   async (categoryId: number, currencyCode?: CurrencyCode, customerAccessToken?: string) => {
-    const variables = cachedCategoryDataVariables(categoryId);
-    const categorySearch = await fetchFacetedSearch(variables, currencyCode, customerAccessToken);
+    const cachedCategory = getCachedCategory(categoryId);
+    const categorySearch = await fetchFacetedSearch(
+      cachedCategory,
+      currencyCode,
+      customerAccessToken,
+    );
     const categoryFacets = categorySearch.facets.items.filter(
       (facet) => facet.__typename !== 'CategorySearchFilter',
     );
@@ -181,8 +185,12 @@ export default async function Category(props: Props) {
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
-    const variables = cachedCategoryDataVariables(categoryId);
-    const categorySearch = await fetchFacetedSearch(variables, currencyCode, customerAccessToken);
+    const cachedCategory = getCachedCategory(categoryId);
+    const categorySearch = await fetchFacetedSearch(
+      cachedCategory,
+      currencyCode,
+      customerAccessToken,
+    );
     const refinedSearch = await streamableFacetedSearch;
 
     const allFacets = categorySearch.facets.items.filter(
