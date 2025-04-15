@@ -2,6 +2,7 @@ import { cache } from 'react';
 
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { BreadcrumbsCategoryFragment } from '~/components/breadcrumbs/fragment';
 
 const CategoryPageQuery = graphql(
@@ -46,10 +47,12 @@ const CategoryPageQuery = graphql(
   [BreadcrumbsCategoryFragment],
 );
 
-export const getCategoryPageData = cache(async (entityId: number) => {
+export const getCategoryPageData = cache(async (entityId: number, customerAccessToken?: string) => {
   const response = await client.fetch({
     document: CategoryPageQuery,
     variables: { entityId },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   return response.data.site;

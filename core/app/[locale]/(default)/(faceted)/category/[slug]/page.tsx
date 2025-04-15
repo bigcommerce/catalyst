@@ -81,6 +81,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function Category(props: Props) {
   const { slug, locale } = await props.params;
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   setRequestLocale(locale);
 
@@ -88,7 +89,10 @@ export default async function Category(props: Props) {
 
   const categoryId = Number(slug);
 
-  const { category, settings, categoryTree } = await getCategoryPageData(categoryId);
+  const { category, settings, categoryTree } = await getCategoryPageData(
+    categoryId,
+    customerAccessToken,
+  );
 
   if (!category) {
     return notFound();
@@ -104,7 +108,6 @@ export default async function Category(props: Props) {
 
   const streamableFacetedSearch = Streamable.from(async () => {
     const searchParams = await props.searchParams;
-    const customerAccessToken = await getSessionCustomerAccessToken();
     const currencyCode = await getPreferredCurrencyCode();
 
     const searchParamsCache = await createCategorySearchParamsCache(categoryId);
@@ -194,7 +197,6 @@ export default async function Category(props: Props) {
 
   const streamableCompareProducts = Streamable.from(async () => {
     const searchParams = await props.searchParams;
-    const customerAccessToken = await getSessionCustomerAccessToken();
     const currencyCode = await getPreferredCurrencyCode();
 
     if (!productComparisonsEnabled) {
