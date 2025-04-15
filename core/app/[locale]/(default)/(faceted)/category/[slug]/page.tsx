@@ -61,10 +61,11 @@ interface Props {
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug } = await props.params;
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const categoryId = Number(slug);
 
-  const { category } = await getCategoryPageData(categoryId);
+  const { category } = await getCategoryPageData(categoryId, customerAccessToken);
 
   if (!category) {
     return notFound();

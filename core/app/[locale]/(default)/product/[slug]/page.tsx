@@ -31,10 +31,10 @@ interface Props {
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug } = await props.params;
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const productId = Number(slug);
 
-  const customerAccessToken = await getSessionCustomerAccessToken();
   const product = await getProductPageMetadata(productId, customerAccessToken);
 
   if (!product) {
