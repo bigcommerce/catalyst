@@ -24,9 +24,7 @@ import { NumberInput } from '@/vibes/soul/form/number-input';
 import { RadioGroup } from '@/vibes/soul/form/radio-group';
 import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Button } from '@/vibes/soul/primitives/button';
-import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { usePathname, useRouter } from '~/i18n/routing';
 
@@ -46,12 +44,12 @@ export interface ProductDetailFormProps<F extends Field> {
   fields: F[];
   action: ProductDetailFormAction<F>;
   productId: string;
-  ctaLabel?: Streamable<string | null>;
+  ctaLabel?: string;
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;
   emptySelectPlaceholder?: string;
-  ctaDisabled?: Streamable<boolean | null>;
+  ctaDisabled?: boolean;
   prefetch?: boolean;
 }
 
@@ -59,12 +57,12 @@ export function ProductDetailForm<F extends Field>({
   action,
   fields,
   productId,
-  ctaLabel: streamableCtaLabel = 'Add to cart',
+  ctaLabel = 'Add to cart',
   quantityLabel = 'Quantity',
   incrementLabel = 'Increase quantity',
   decrementLabel = 'Decrease quantity',
   emptySelectPlaceholder = 'Select an option',
-  ctaDisabled: streamableCtaDisabled = false,
+  ctaDisabled = false,
   prefetch = false,
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
@@ -150,33 +148,19 @@ export function ProductDetailForm<F extends Field>({
             </FormStatus>
           ))}
           <div className="flex gap-x-3 pt-3">
-            <Stream
-              fallback={
-                <div className="flex animate-pulse gap-x-3">
-                  <Skeleton.Box className="h-[53px] w-[120px] rounded-lg" />
-                  <Skeleton.Box className="h-[50px] w-[216px] rounded-full" />
-                </div>
-              }
-              value={Streamable.all([streamableCtaDisabled, streamableCtaLabel])}
-            >
-              {([ctaDisabled, ctaLabel]) => (
-                <>
-                  <NumberInput
-                    aria-label={quantityLabel}
-                    decrementLabel={decrementLabel}
-                    incrementLabel={incrementLabel}
-                    min={1}
-                    name={formFields.quantity.name}
-                    onBlur={quantityControl.blur}
-                    onChange={(e) => quantityControl.change(e.currentTarget.value)}
-                    onFocus={quantityControl.focus}
-                    required
-                    value={quantityControl.value}
-                  />
-                  <SubmitButton disabled={ctaDisabled ?? false}>{ctaLabel}</SubmitButton>
-                </>
-              )}
-            </Stream>
+            <NumberInput
+              aria-label={quantityLabel}
+              decrementLabel={decrementLabel}
+              incrementLabel={incrementLabel}
+              min={1}
+              name={formFields.quantity.name}
+              onBlur={quantityControl.blur}
+              onChange={(e) => quantityControl.change(e.currentTarget.value)}
+              onFocus={quantityControl.focus}
+              required
+              value={quantityControl.value}
+            />
+            <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
           </div>
         </div>
       </form>
