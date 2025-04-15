@@ -11,7 +11,11 @@ export default async function NotFound() {
     <>
       <Header />
 
-      <NotFoundSection subtitle={t('subtitle')} title={t('title')} />
+      <NotFoundSection
+        className="flex-1 place-content-center"
+        subtitle={t('subtitle')}
+        title={t('title')}
+      />
 
       <Footer />
     </>
