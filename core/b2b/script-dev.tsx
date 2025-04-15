@@ -4,16 +4,19 @@
 import Script from 'next/script';
 
 import { useB2BAuth } from './use-b2b-auth';
+import { useB2BCart } from './use-b2b-cart';
 
 interface DevProps {
   storeHash: string;
   channelId: string;
   hostname: string;
   token?: string;
+  cartId?: string | null;
 }
 
-export function ScriptDev({ hostname, storeHash, channelId, token }: DevProps) {
+export function ScriptDev({ cartId, hostname, storeHash, channelId, token }: DevProps) {
   useB2BAuth(token);
+  useB2BCart(cartId)
 
   const src = `${hostname}/src/main.ts`;
 

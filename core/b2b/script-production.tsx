@@ -3,16 +3,19 @@
 import Script from 'next/script';
 
 import { useB2BAuth } from './use-b2b-auth';
+import { useB2BCart } from './use-b2b-cart';
 
 interface Props {
   storeHash: string;
   channelId: string;
   token?: string;
   environment: 'staging' | 'production';
+  cartId?: string | null;
 }
 
-export function ScriptProduction({ storeHash, channelId, token, environment }: Props) {
+export function ScriptProduction({ cartId, storeHash, channelId, token, environment }: Props) {
   useB2BAuth(token);
+  useB2BCart(cartId);
 
   return (
     <>

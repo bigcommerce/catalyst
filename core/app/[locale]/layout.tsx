@@ -105,9 +105,9 @@ export default async function RootLayout({ params, children }: Props) {
               {children}
             </Providers>
           </NuqsAdapter>
+          <B2BLoader />
         </NextIntlClientProvider>
         <VercelComponents />
-        <B2BLoader />
       </body>
     </html>
   );
