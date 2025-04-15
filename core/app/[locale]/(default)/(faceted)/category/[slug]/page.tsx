@@ -10,6 +10,7 @@ import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/load
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { getSessionCustomerAccessToken } from '~/auth';
+import { CurrencyCode } from '~/components/header/fragment';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -22,34 +23,43 @@ import { fetchFacetedSearch } from '../../fetch-faceted-search';
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
 
+const cachedCategoryDataVariables = cache((categoryId: number) => {
+  return {
+    category: categoryId,
+  };
+});
+
 const compareLoader = createCompareLoader();
 
-const createCategorySearchParamsLoader = cache(async (categoryId: number) => {
-  const categorySearch = await fetchFacetedSearch({ category: categoryId });
-  const categoryFacets = categorySearch.facets.items.filter(
-    (facet) => facet.__typename !== 'CategorySearchFilter',
-  );
-  const transformedCategoryFacets = await facetsTransformer({
-    refinedFacets: categoryFacets,
-    allFacets: categoryFacets,
-    searchParams: {},
-  });
-  const categoryFilters = transformedCategoryFacets.filter((facet) => facet != null);
-  const filterParsers = getFilterParsers(categoryFilters);
+const createCategorySearchParamsLoader = cache(
+  async (categoryId: number, currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+    const variables = cachedCategoryDataVariables(categoryId);
+    const categorySearch = await fetchFacetedSearch(variables, currencyCode, customerAccessToken);
+    const categoryFacets = categorySearch.facets.items.filter(
+      (facet) => facet.__typename !== 'CategorySearchFilter',
+    );
+    const transformedCategoryFacets = await facetsTransformer({
+      refinedFacets: categoryFacets,
+      allFacets: categoryFacets,
+      searchParams: {},
+    });
+    const categoryFilters = transformedCategoryFacets.filter((facet) => facet != null);
+    const filterParsers = getFilterParsers(categoryFilters);
 
-  // If there are no filters, return `null`, since calling `createSearchParamsCache` with an empty
-  // object will throw the following cryptic error:
-  //
-  // ```
-  // Error: [nuqs] Empty search params cache. Search params can't be accessed in Layouts.
-  //   See https://err.47ng.com/NUQS-500
-  // ```
-  if (Object.keys(filterParsers).length === 0) {
-    return null;
-  }
+    // If there are no filters, return `null`, since calling `createLoader` with an empty
+    // object will throw the following cryptic error:
+    //
+    // ```
+    // Error: [nuqs] Empty search params cache. Search params can't be accessed in Layouts.
+    //   See https://err.47ng.com/NUQS-500
+    // ```
+    if (Object.keys(filterParsers).length === 0) {
+      return null;
+    }
 
-  return createLoader(filterParsers);
-});
+    return createLoader(filterParsers);
+  },
+);
 
 interface Props {
   params: Promise<{
@@ -111,7 +121,11 @@ export default async function Category(props: Props) {
     const searchParams = await props.searchParams;
     const currencyCode = await getPreferredCurrencyCode();
 
-    const loadSearchParams = await createCategorySearchParamsLoader(categoryId);
+    const loadSearchParams = await createCategorySearchParamsLoader(
+      categoryId,
+      currencyCode,
+      customerAccessToken,
+    );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
 
     const search = await fetchFacetedSearch(
@@ -159,15 +173,22 @@ export default async function Category(props: Props) {
 
   const streamableFilters = Streamable.from(async () => {
     const searchParams = await props.searchParams;
+    const currencyCode = await getPreferredCurrencyCode();
 
-    const loadSearchParams = await createCategorySearchParamsLoader(categoryId);
+    const loadSearchParams = await createCategorySearchParamsLoader(
+      categoryId,
+      currencyCode,
+      customerAccessToken,
+    );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
-    const search = await streamableFacetedSearch;
+    const variables = cachedCategoryDataVariables(categoryId);
+    const categorySearch = await fetchFacetedSearch(variables, currencyCode, customerAccessToken);
+    const refinedSearch = await streamableFacetedSearch;
 
-    const allFacets = search.facets.items.filter(
+    const allFacets = categorySearch.facets.items.filter(
       (facet) => facet.__typename !== 'CategorySearchFilter',
     );
-    const refinedFacets = search.facets.items.filter(
+    const refinedFacets = refinedSearch.facets.items.filter(
       (facet) => facet.__typename !== 'CategorySearchFilter',
     );
 
