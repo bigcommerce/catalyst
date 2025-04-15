@@ -2,7 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
-import { createSearchParamsCache, SearchParams } from 'nuqs/server';
+import { createLoader, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
@@ -24,7 +24,7 @@ import { getCategoryPageData } from './page-data';
 
 const compareLoader = createCompareLoader();
 
-const createCategorySearchParamsCache = cache(async (categoryId: number) => {
+const createCategorySearchParamsLoader = cache(async (categoryId: number) => {
   const categorySearch = await fetchFacetedSearch({ category: categoryId });
   const categoryFacets = categorySearch.facets.items.filter(
     (facet) => facet.__typename !== 'CategorySearchFilter',
@@ -48,7 +48,7 @@ const createCategorySearchParamsCache = cache(async (categoryId: number) => {
     return null;
   }
 
-  return createSearchParamsCache(filterParsers);
+  return createLoader(filterParsers);
 });
 
 interface Props {
@@ -110,8 +110,8 @@ export default async function Category(props: Props) {
     const searchParams = await props.searchParams;
     const currencyCode = await getPreferredCurrencyCode();
 
-    const searchParamsCache = await createCategorySearchParamsCache(categoryId);
-    const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
+    const loadSearchParams = await createCategorySearchParamsLoader(categoryId);
+    const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
 
     const search = await fetchFacetedSearch(
       {
@@ -158,8 +158,9 @@ export default async function Category(props: Props) {
 
   const streamableFilters = Streamable.from(async () => {
     const searchParams = await props.searchParams;
-    const searchParamsCache = await createCategorySearchParamsCache(categoryId);
-    const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
+
+    const loadSearchParams = await createCategorySearchParamsLoader(categoryId);
+    const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
     const search = await streamableFacetedSearch;
 
     const allFacets = search.facets.items.filter(
