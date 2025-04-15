@@ -6,7 +6,6 @@ import { z } from 'zod';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
-import { CurrencyCode } from '~/components/header/fragment';
 
 import { MAX_COMPARE_LIMIT } from '../compare/page-data';
 
@@ -44,7 +43,7 @@ const CompareProductsQuery = graphql(`
 type Variables = VariablesOf<typeof CompareProductsQuery>;
 
 export const getCompareProducts = cache(
-  async (variables: Variables, currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+  async (variables: Variables, customerAccessToken?: string) => {
     const parsedVariables = CompareProductsSchema.parse(variables);
 
     if (parsedVariables.entityIds.length === 0) {
@@ -53,7 +52,7 @@ export const getCompareProducts = cache(
 
     const response = await client.fetch({
       document: CompareProductsQuery,
-      variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT, currencyCode },
+      variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });

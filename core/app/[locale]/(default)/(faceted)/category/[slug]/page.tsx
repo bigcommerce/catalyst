@@ -16,7 +16,7 @@ import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
-import { getCompareProducts as getCompareProductsData } from '../../fetch-compare-products';
+import { getCompareProducts } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { CategoryViewed } from './_components/category-viewed';
@@ -199,7 +199,6 @@ export default async function Category(props: Props) {
 
   const streamableCompareProducts = Streamable.from(async () => {
     const searchParams = await props.searchParams;
-    const currencyCode = await getPreferredCurrencyCode();
 
     if (!productComparisonsEnabled) {
       return [];
@@ -209,7 +208,7 @@ export default async function Category(props: Props) {
 
     const compareIds = { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
 
-    const products = await getCompareProductsData(compareIds, currencyCode, customerAccessToken);
+    const products = await getCompareProducts(compareIds, customerAccessToken);
 
     return products.map((product) => ({
       id: product.entityId.toString(),
