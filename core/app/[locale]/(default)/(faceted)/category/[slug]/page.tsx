@@ -10,7 +10,6 @@ import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/load
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { getSessionCustomerAccessToken } from '~/auth';
-import { CurrencyCode } from '~/components/header/fragment';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
@@ -32,13 +31,9 @@ const getCachedCategory = cache((categoryId: number) => {
 const compareLoader = createCompareLoader();
 
 const createCategorySearchParamsLoader = cache(
-  async (categoryId: number, currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+  async (categoryId: number, customerAccessToken?: string) => {
     const cachedCategory = getCachedCategory(categoryId);
-    const categorySearch = await fetchFacetedSearch(
-      cachedCategory,
-      currencyCode,
-      customerAccessToken,
-    );
+    const categorySearch = await fetchFacetedSearch(cachedCategory, undefined, customerAccessToken);
     const categoryFacets = categorySearch.facets.items.filter(
       (facet) => facet.__typename !== 'CategorySearchFilter',
     );
@@ -127,7 +122,6 @@ export default async function Category(props: Props) {
 
     const loadSearchParams = await createCategorySearchParamsLoader(
       categoryId,
-      currencyCode,
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
@@ -177,20 +171,14 @@ export default async function Category(props: Props) {
 
   const streamableFilters = Streamable.from(async () => {
     const searchParams = await props.searchParams;
-    const currencyCode = await getPreferredCurrencyCode();
 
     const loadSearchParams = await createCategorySearchParamsLoader(
       categoryId,
-      currencyCode,
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
     const cachedCategory = getCachedCategory(categoryId);
-    const categorySearch = await fetchFacetedSearch(
-      cachedCategory,
-      currencyCode,
-      customerAccessToken,
-    );
+    const categorySearch = await fetchFacetedSearch(cachedCategory, undefined, customerAccessToken);
     const refinedSearch = await streamableFacetedSearch;
 
     const allFacets = categorySearch.facets.items.filter(
