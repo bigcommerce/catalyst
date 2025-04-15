@@ -220,7 +220,7 @@ function ProductGallerySkeleton() {
 }
 
 function PriceLabelSkeleton() {
-  return <Skeleton.Box className="my-4 h-4 w-20 rounded-md" />;
+  return <Skeleton.Box className="my-5 h-4 w-20 rounded-md" />;
 }
 
 function RatingSkeleton() {
