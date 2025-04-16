@@ -26,11 +26,12 @@ const BrandPageQuery = graphql(`
   }
 `);
 
-export const getBrandPageData = cache(async (entityId: number) => {
+export const getBrandPageData = cache(async (entityId: number, customerAccessToken?: string) => {
   const response = await client.fetch({
     document: BrandPageQuery,
     variables: { entityId },
-    fetchOptions: { next: { revalidate } },
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
   return response.data.site;

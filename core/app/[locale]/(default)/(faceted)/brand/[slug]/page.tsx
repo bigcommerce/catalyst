@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
-import { createSearchParamsCache } from 'nuqs/server';
+import { createLoader, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -20,47 +20,59 @@ import { fetchFacetedSearch } from '../../fetch-faceted-search';
 
 import { getBrandPageData } from './page-data';
 
-const createBrandSearchParamsCache = cache(async (brandId: string) => {
-  const brandSearch = await fetchFacetedSearch({ brand: [brandId] });
-  const brandFacets = brandSearch.facets.items.filter(
-    (facet) => facet.__typename !== 'BrandSearchFilter',
-  );
-  const transformedBrandFacets = await facetsTransformer({
-    refinedFacets: brandFacets,
-    allFacets: brandFacets,
-    searchParams: {},
-  });
-  const brandFilters = transformedBrandFacets.filter((facet) => facet != null);
-  const filterParsers = getFilterParsers(brandFilters);
-
-  // If there are no filters, return `null`, since calling `createSearchParamsCache` with an empty
-  // object will throw the following cryptic error:
-  //
-  // ```
-  // Error: [nuqs] Empty search params cache. Search params can't be accessed in Layouts.
-  //   See https://err.47ng.com/NUQS-500
-  // ```
-  if (Object.keys(filterParsers).length === 0) {
-    return null;
-  }
-
-  return createSearchParamsCache(filterParsers);
+const getCachedBrand = cache((brandId: string) => {
+  return {
+    brand: [brandId],
+  };
 });
+
+const compareLoader = createCompareLoader();
+
+const createBrandSearchParamsLoader = cache(
+  async (brandId: string, customerAccessToken?: string) => {
+    const cachedBrand = getCachedBrand(brandId);
+    const brandSearch = await fetchFacetedSearch(cachedBrand, undefined, customerAccessToken);
+    const brandFacets = brandSearch.facets.items.filter(
+      (facet) => facet.__typename !== 'BrandSearchFilter',
+    );
+    const transformedBrandFacets = await facetsTransformer({
+      refinedFacets: brandFacets,
+      allFacets: brandFacets,
+      searchParams: {},
+    });
+    const brandFilters = transformedBrandFacets.filter((facet) => facet != null);
+    const filterParsers = getFilterParsers(brandFilters);
+
+    // If there are no filters, return `null`, since calling `createLoader` with an empty
+    // object will throw the following cryptic error:
+    //
+    // ```
+    // Error: [nuqs] Empty search params cache. Search params can't be accessed in Layouts.
+    //   See https://err.47ng.com/NUQS-500
+    // ```
+    if (Object.keys(filterParsers).length === 0) {
+      return null;
+    }
+
+    return createLoader(filterParsers);
+  },
+);
 
 interface Props {
   params: Promise<{
     slug: string;
     locale: string;
   }>;
-  searchParams: Promise<Record<string, string | string[] | undefined>>;
+  searchParams: Promise<SearchParams>;
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
   const { slug } = await props.params;
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   const brandId = Number(slug);
 
-  const { brand } = await getBrandPageData(brandId);
+  const { brand } = await getBrandPageData(brandId, customerAccessToken);
 
   if (!brand) {
     return notFound();
@@ -77,6 +89,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function Brand(props: Props) {
   const { locale, slug } = await props.params;
+  const customerAccessToken = await getSessionCustomerAccessToken();
 
   setRequestLocale(locale);
 
@@ -84,7 +97,7 @@ export default async function Brand(props: Props) {
 
   const brandId = Number(slug);
 
-  const { brand, settings } = await getBrandPageData(brandId);
+  const { brand, settings } = await getBrandPageData(brandId, customerAccessToken);
 
   if (!brand) {
     return notFound();
@@ -95,11 +108,10 @@ export default async function Brand(props: Props) {
 
   const streamableFacetedSearch = Streamable.from(async () => {
     const searchParams = await props.searchParams;
-    const customerAccessToken = await getSessionCustomerAccessToken();
     const currencyCode = await getPreferredCurrencyCode();
 
-    const searchParamsCache = await createBrandSearchParamsCache(slug);
-    const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
+    const loadSearchParams = await createBrandSearchParamsLoader(slug, customerAccessToken);
+    const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
 
     const search = await fetchFacetedSearch(
       {
@@ -146,14 +158,16 @@ export default async function Brand(props: Props) {
 
   const streamableFilters = Streamable.from(async () => {
     const searchParams = await props.searchParams;
-    const searchParamsCache = await createBrandSearchParamsCache(slug);
-    const parsedSearchParams = searchParamsCache?.parse(searchParams) ?? {};
-    const search = await streamableFacetedSearch;
+    const loadSearchParams = await createBrandSearchParamsLoader(slug, customerAccessToken);
+    const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
+    const cachedBrand = getCachedBrand(slug);
+    const categorySearch = await fetchFacetedSearch(cachedBrand, undefined, customerAccessToken);
+    const refinedSearch = await streamableFacetedSearch;
 
-    const allFacets = search.facets.items.filter(
+    const allFacets = categorySearch.facets.items.filter(
       (facet) => facet.__typename !== 'BrandSearchFilter',
     );
-    const refinedFacets = search.facets.items.filter(
+    const refinedFacets = refinedSearch.facets.items.filter(
       (facet) => facet.__typename !== 'BrandSearchFilter',
     );
 
@@ -168,20 +182,16 @@ export default async function Brand(props: Props) {
 
   const streamableCompareProducts = Streamable.from(async () => {
     const searchParams = await props.searchParams;
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const currencyCode = await getPreferredCurrencyCode();
 
     if (!productComparisonsEnabled) {
       return [];
     }
 
-    const compareLoader = createCompareLoader();
-
     const { compare } = compareLoader(searchParams);
 
     const compareIds = { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
 
-    const products = await getCompareProductsData(compareIds, currencyCode, customerAccessToken);
+    const products = await getCompareProductsData(compareIds, customerAccessToken);
 
     return products.map((product) => ({
       id: product.entityId.toString(),
