@@ -1,11 +1,10 @@
 'use client';
 
-import { signOut } from 'next-auth/react';
 import { useEffect } from 'react';
 
 import { useSDK } from './use-b2b-sdk';
-import { syncCart } from './sync-cart';
 import { useRouter } from '~/i18n/routing';
+import { setCartId } from '~/lib/cart';
 
 
 
@@ -15,7 +14,7 @@ export function useB2BCart(cartId?: string | null) {
   const handleCartCreated = ({
       data: { cartId = '' },
   }) => {
-      void syncCart(cartId).then((error) => {
+      void setCartId(cartId).then((error) => {
           // eslint-disable-next-line no-console
           console.error(error);
           router.refresh();
