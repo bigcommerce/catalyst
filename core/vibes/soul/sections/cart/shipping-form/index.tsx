@@ -227,7 +227,7 @@ export function ShippingForm({
   const stateControl = useInputControl(addressFields.state);
 
   return (
-    <div className="border-contrast-100 space-y-4 border-t pt-4 pb-5">
+    <div className="py-4">
       <div>
         <div className="flex justify-between">
           <span>{shippingLabel}</span>
@@ -264,7 +264,7 @@ export function ShippingForm({
         <form
           {...getFormProps(addressForm)}
           action={formAction}
-          className={clsx('space-y-5', { hidden: !showAddressForm })}
+          className={clsx('mt-4 space-y-4', { hidden: !showAddressForm })}
         >
           {Array.isArray(countries) ? (
             <Select
@@ -352,7 +352,7 @@ export function ShippingForm({
           </div>
         </form>
 
-        <div className={clsx('space-y-2.5', { hidden: showAddressForm })}>
+        <div className={clsx('mt-4 space-y-2.5', { hidden: showAddressForm })}>
           {formattedAddress}
           <Button
             onClick={() => setShowAddressForm(true)}
@@ -371,7 +371,7 @@ export function ShippingForm({
           {...getFormProps(shippingOptionsForm)}
           action={formAction}
         >
-          <div className="space-y-3">
+          <div className="mt-4 space-y-3">
             <RadioGroup
               {...getInputProps(shippingOptionsFields.shippingOption, {
                 type: 'radio',
@@ -421,7 +421,7 @@ export function ShippingForm({
         </form>
 
         <div
-          className={clsx('space-y-3', {
+          className={clsx('mt-6 space-y-3', {
             hidden: state.shippingOptions === null || state.shippingOptions.length > 0,
           })}
         >
