@@ -205,8 +205,6 @@ export function ProductDetailForm<F extends Field>({
     }),
   );
 
-  console.dir(selectedOptions, { depth: null });
-
   const quantityControl = useInputControl(formFields.quantity);
 
   return (
