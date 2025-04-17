@@ -134,12 +134,19 @@ export function ProductDetail<F extends Field>({
                     </Stream>
                   </div>
                   <div className="group/product-detail-form">
-                    <Stream fallback={<ProductDetailFormSkeleton />} value={streamableFields}>
-                      {(fields) => (
+                    <Stream
+                      fallback={<ProductDetailFormSkeleton />}
+                      value={Streamable.all([
+                        streamableFields,
+                        streamableCtaLabel,
+                        streamableCtaDisabled,
+                      ])}
+                    >
+                      {([fields, ctaLabel, ctaDisabled]) => (
                         <ProductDetailForm
                           action={action}
-                          ctaDisabled={streamableCtaDisabled}
-                          ctaLabel={streamableCtaLabel}
+                          ctaDisabled={ctaDisabled ?? undefined}
+                          ctaLabel={ctaLabel ?? undefined}
                           decrementLabel={decrementLabel}
                           emptySelectPlaceholder={emptySelectPlaceholder}
                           fields={fields}
