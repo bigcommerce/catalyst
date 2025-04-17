@@ -275,7 +275,7 @@ export default async function Product(props: Props) {
           id: baseProduct.entityId.toString(),
           title: baseProduct.name,
           description: (
-            <div className="prose" dangerouslySetInnerHTML={{ __html: baseProduct.description }} />
+            <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />
           ),
           href: baseProduct.path,
           images: streamableImages,
