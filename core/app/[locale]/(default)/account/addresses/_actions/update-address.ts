@@ -4,7 +4,7 @@ import { unstable_expireTag as expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
-import { Field, FieldGroup } from '@/vibes/soul/primitives/dynamic-form/schema';
+import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
 import { schema } from '@/vibes/soul/sections/address-list-section/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
@@ -275,7 +275,7 @@ export async function updateAddress(prevState: Awaited<State>, formData: FormDat
 
     return {
       ...prevState,
-      lastResult: submission.reply({ formErrors: [t('Errors.error')] }),
+      lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
     };
   }
 }

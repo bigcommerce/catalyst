@@ -25,7 +25,7 @@ function getStatusColor(
 
     case 'CANCELLED':
     case 'DECLINED':
-      return 'danger';
+      return 'error';
 
     case 'COMPLETED':
     case 'PARTIALLY_REFUNDED':
@@ -36,7 +36,7 @@ function getStatusColor(
 
 export const orderDetailsTransformer = (
   order: ExistingResultType<typeof getCustomerOrderDetails>,
-  t: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'Account.Orders.Details'>>,
   format: ExistingResultType<typeof getFormatter>,
 ): Order => {
   return {
@@ -57,7 +57,7 @@ export const orderDetailsTransformer = (
                 style: 'currency',
                 currency: lineItem.subTotalListPrice.currencyCode,
               }),
-              href: lineItem.baseCatalogProduct?.path ?? `/product/${lineItem.productEntityId}`,
+              href: lineItem.baseCatalogProduct?.path ?? undefined,
               image: lineItem.image
                 ? {
                     src: lineItem.image.url,
@@ -69,8 +69,8 @@ export const orderDetailsTransformer = (
           }),
           title:
             arr.length > 1
-              ? t('destinationWithCountTitle', { number: index + 1, total: arr.length })
-              : t('destinationTitle'),
+              ? t('destinationWithCount', { number: index + 1, total: arr.length })
+              : t('destination'),
           address: {
             city: consignment.shippingAddress.city ?? '',
             country: consignment.shippingAddress.country,
@@ -96,7 +96,7 @@ export const orderDetailsTransformer = (
       }),
       lineItems: [
         {
-          label: t('summarySubtotalLabel'),
+          label: t('subtotal'),
           value: format.number(order.subTotal.value, {
             style: 'currency',
             currency: order.subTotal.currencyCode,
@@ -112,14 +112,14 @@ export const orderDetailsTransformer = (
           };
         }),
         {
-          label: t('summaryShippingLabel'),
+          label: t('shipping'),
           value: format.number(order.shippingCostTotal.value, {
             style: 'currency',
             currency: order.shippingCostTotal.currencyCode,
           }),
         },
         {
-          label: t('summaryTaxLabel'),
+          label: t('tax'),
           value: format.number(order.taxTotal.value, {
             style: 'currency',
             currency: order.taxTotal.currencyCode,

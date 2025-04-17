@@ -6,7 +6,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
-import { Field, FieldGroup, schema } from '@/vibes/soul/primitives/dynamic-form/schema';
+import { Field, FieldGroup, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
@@ -113,7 +113,7 @@ export async function submitContactForm<F extends Field>(
     }
 
     return {
-      lastResult: submission.reply({ formErrors: [t('Errors.error')] }),
+      lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
       fields: prevState.fields,
     };
   }

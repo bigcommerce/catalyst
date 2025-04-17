@@ -13,6 +13,7 @@ type Props = {
   errors?: string[];
   onSelect?: (date: Date | undefined) => void;
   selected?: Date | undefined;
+  colorScheme?: 'light' | 'dark';
 } & Omit<ComponentPropsWithoutRef<typeof Input>, 'defaultValue' | 'onSelect' | 'value' | 'type'>;
 
 const DatePicker = forwardRef<ComponentRef<typeof Input>, Props>(
@@ -25,6 +26,7 @@ const DatePicker = forwardRef<ComponentRef<typeof Input>, Props>(
       placeholder = 'MM/DD/YYYY',
       required = false,
       selected,
+      colorScheme = 'light',
       ...props
     },
     ref,
@@ -45,6 +47,7 @@ const DatePicker = forwardRef<ComponentRef<typeof Input>, Props>(
         <PopoverPrimitive.Trigger asChild>
           <Input
             {...props}
+            colorScheme={colorScheme}
             errors={errors}
             placeholder={placeholder}
             prepend={<CalendarIcon className="h-5 w-5" strokeWidth={1} />}
@@ -59,10 +62,11 @@ const DatePicker = forwardRef<ComponentRef<typeof Input>, Props>(
         <PopoverPrimitive.Portal>
           <PopoverPrimitive.Content
             align="start"
-            className="z-50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95"
+            className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50"
             sideOffset={8}
           >
             <Calendar
+              colorScheme={colorScheme}
               disabled={disabledDays}
               mode="single"
               onSelect={onSelect ?? setDate}

@@ -6,12 +6,13 @@ import { parseWithZod } from '@conform-to/zod';
 import { getLocale, getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
-import { Field, FieldGroup, schema } from '@/vibes/soul/primitives/dynamic-form/schema';
+import { Field, FieldGroup, schema } from '@/vibes/soul/form/dynamic-form/schema';
 import { signIn } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { FieldNameToFieldId } from '~/data-transformers/form-field-transformer/utils';
 import { redirect } from '~/i18n/routing';
+import { getCartId } from '~/lib/cart';
 
 const RegisterCustomerMutation = graphql(`
   mutation RegisterCustomerMutation(
@@ -185,8 +186,9 @@ export async function registerCustomer<F extends Field>(
   prevState: { lastResult: SubmissionResult | null; fields: Array<F | FieldGroup<F>> },
   formData: FormData,
 ) {
-  const t = await getTranslations('Register');
+  const t = await getTranslations('Auth.Register');
   const locale = await getLocale();
+  const cartId = await getCartId();
 
   const submission = parseWithZod(formData, { schema: schema(prevState.fields) });
 
@@ -208,25 +210,25 @@ export async function registerCustomer<F extends Field>(
       fetchOptions: { cache: 'no-store' },
     });
 
-    if (response.errors != null && response.errors.length > 0) {
+    const result = response.data.customer.registerCustomer;
+
+    if (result.errors.length > 0) {
       return {
-        lastResult: submission.reply({ formErrors: response.errors.map((error) => error.message) }),
+        lastResult: submission.reply({
+          formErrors: response.data.customer.registerCustomer.errors.map((error) => error.message),
+        }),
         fields: prevState.fields,
       };
     }
 
-    await signIn(
-      {
-        type: 'password',
-        email: input.email,
-        password: input.password,
-      },
-      {
-        // We want to use next/navigation for the redirect as it
-        // follows basePath and trailing slash configurations.
-        redirect: false,
-      },
-    );
+    await signIn('password', {
+      email: input.email,
+      password: input.password,
+      cartId,
+      // We want to use next/navigation for the redirect as it
+      // follows basePath and trailing slash configurations.
+      redirect: false,
+    });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
@@ -248,7 +250,7 @@ export async function registerCustomer<F extends Field>(
     }
 
     return {
-      lastResult: submission.reply({ formErrors: [t('Errors.error')] }),
+      lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
       fields: prevState.fields,
     };
   }

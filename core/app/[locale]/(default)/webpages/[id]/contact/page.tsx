@@ -3,10 +3,11 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
-import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
+import { DynamicForm } from '@/vibes/soul/form/dynamic-form';
+import type { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
-import { DynamicForm } from '@/vibes/soul/primitives/dynamic-form';
-import type { Field, FieldGroup } from '@/vibes/soul/primitives/dynamic-form/schema';
+import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
@@ -33,11 +34,11 @@ interface ContactPage extends WebPage {
 }
 
 const fieldMapping = {
-  fullname: 'fullNameLabel',
-  companyname: 'companyNameLabel',
-  phone: 'phoneLabel',
-  orderno: 'orderNoLabel',
-  rma: 'rmaLabel',
+  fullname: 'fullName',
+  companyname: 'companyName',
+  phone: 'phone',
+  orderno: 'orderNo',
+  rma: 'rma',
 } as const;
 
 type ContactField = keyof typeof fieldMapping;
@@ -122,7 +123,7 @@ async function getContactFields(id: string) {
   const emailField: Field = {
     id: 'email',
     name: 'email',
-    label: `${t('emailLabel')} *`,
+    label: `${t('email')} *`,
     type: 'email',
     required: true,
   };
@@ -130,7 +131,7 @@ async function getContactFields(id: string) {
   const commentsField: Field = {
     id: 'comments',
     name: 'comments',
-    label: `${t('commentsLabel')} *`,
+    label: `${t('comments')} *`,
     type: 'textarea',
     required: true,
   };
@@ -179,8 +180,8 @@ export default async function ContactPage({ params, searchParams }: Props) {
   if (success === 'true') {
     return (
       <WebPageContent
-        breadcrumbs={getWebPageBreadcrumbs(id)}
-        webPage={getWebPageWithSuccessContent(id, t('success'))}
+        breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id))}
+        webPage={Streamable.from(() => getWebPageWithSuccessContent(id, t('success')))}
       >
         <ButtonLink
           className="mt-8 @2xl:mt-12 @4xl:mt-16"
@@ -196,12 +197,15 @@ export default async function ContactPage({ params, searchParams }: Props) {
   }
 
   return (
-    <WebPageContent breadcrumbs={getWebPageBreadcrumbs(id)} webPage={getWebPage(id)}>
+    <WebPageContent
+      breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id))}
+      webPage={Streamable.from(() => getWebPage(id))}
+    >
       <div className="mt-8 @2xl:mt-12 @4xl:mt-16">
         <DynamicForm
           action={submitContactForm}
           fields={await getContactFields(id)}
-          submitLabel={t('submitFormText')}
+          submitLabel={t('cta')}
         />
       </div>
     </WebPageContent>

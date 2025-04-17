@@ -7,6 +7,30 @@ import * as React from 'react';
 import { FieldError } from '@/vibes/soul/form/field-error';
 import { Label } from '@/vibes/soul/form/label';
 
+/**
+ * This component supports various CSS variables for theming. Here's a comprehensive list, along
+ * with their default values:
+ *
+ * ```css
+ *  :root {
+ *   --number-input-focus: hsl(var(--primary));
+ *   --number-input-light-background: hsl(var(--background));
+ *   --number-input-light-text: hsl(var(--foreground));
+ *   --number-input-light-icon: hsl(var(--contrast-300));
+ *   --number-input-light-icon-hover: hsl(var(--foreground));
+ *   --number-input-light-button-background: hsl(var(--background));
+ *   --number-input-light-button-background-hover: hsl(var(--contrast-100) / 50%);
+ *   --number-input-light-border: hsl(var(--contrast-100));
+ *   --number-input-dark-background: hsl(var(--background));
+ *   --number-input-dark-text: hsl(var(--background));
+ *   --number-input-dark-icon: hsl(var(--contrast-300));
+ *   --number-input-dark-icon-hover: hsl(var(--background));
+ *   --number-input-dark-button-background: hsl(var(--foreground));
+ *   --number-input-dark-button-background-hover: hsl(var(--contrast-500) / 50%);
+ *   --number-input-dark-border: hsl(var(--contrast-500));
+ *  }
+ * ```
+ */
 export const NumberInput = React.forwardRef<
   React.ComponentRef<'input'>,
   Omit<React.ComponentPropsWithoutRef<'input'>, 'id'> & {
@@ -14,6 +38,7 @@ export const NumberInput = React.forwardRef<
     errors?: string[];
     decrementLabel?: string;
     incrementLabel?: string;
+    colorScheme?: 'light' | 'dark';
   }
 >(
   (
@@ -25,6 +50,7 @@ export const NumberInput = React.forwardRef<
       decrementLabel,
       incrementLabel,
       disabled = false,
+      colorScheme = 'light',
       ...rest
     },
     ref,
@@ -33,14 +59,30 @@ export const NumberInput = React.forwardRef<
 
     return (
       <div className={clsx('space-y-2', className)}>
-        {label != null && label !== '' && <Label htmlFor={id}>{label}</Label>}
-        <div className="inline-flex items-center rounded-lg border">
+        {label != null && label !== '' && (
+          <Label colorScheme={colorScheme} htmlFor={id}>
+            {label}
+          </Label>
+        )}
+        <div
+          className={clsx(
+            'inline-flex items-center rounded-lg border',
+            {
+              light:
+                'border-[var(--number-input-light-border,hsl(var(--contrast-100)))] bg-[var(--number-input-light-background,hsl(var(--background)))]',
+              dark: 'border-[var(--number-input-dark-border,hsl(var(--contrast-500)))] bg-[var(--number-input-dark-background,hsl(var(--foreground)))]',
+            }[colorScheme],
+          )}
+        >
           <button
             aria-label={decrementLabel}
             className={clsx(
-              'group rounded-l-lg p-3.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-              !disabled && 'hover:bg-contrast-100/50',
-              disabled && 'cursor-not-allowed opacity-30',
+              'group rounded-l-lg p-3.5 focus-visible:ring-2 focus-visible:ring-[var(--number-input-focus,hsl(var(--primary)))] focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-30',
+              {
+                light:
+                  'bg-[var(--number-input-light-button-background,hsl(var(--background)))] hover:bg-[var(--number-input-light-button-background-hover,hsl(var(--contrast-100)/50%))]',
+                dark: 'bg-[var(--number-input-dark-button-background,hsl(var(--foreground)))] hover:bg-[var(--number-input-dark-button-background-hover,hsl(var(--contrast-500)/50%))]',
+              }[colorScheme],
             )}
             disabled={disabled}
             onClick={(e) => {
@@ -54,8 +96,12 @@ export const NumberInput = React.forwardRef<
           >
             <Minus
               className={clsx(
-                'text-contrast-300 transition-colors duration-300',
-                !disabled && 'group-hover:text-foreground',
+                'transition-colors duration-300',
+                {
+                  light:
+                    'text-[var(--number-input-light-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--number-input-light-icon-hover,hsl(var(--foreground)))]',
+                  dark: 'text-[var(--number-input-dark-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--number-input-dark-icon-hover,hsl(var(--background)))]',
+                }[colorScheme],
               )}
               size={18}
               strokeWidth={1.5}
@@ -64,8 +110,11 @@ export const NumberInput = React.forwardRef<
           <input
             {...rest}
             className={clsx(
-              'w-8 flex-1 select-none justify-center text-center [appearance:textfield] focus-visible:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
-              disabled && 'cursor-not-allowed opacity-30',
+              'w-8 flex-1 [appearance:textfield] justify-center bg-transparent text-center select-none focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-30 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+              {
+                light: 'text-[var(--number-input-light-text,hsl(var(--foreground)))]',
+                dark: 'text-[var(--number-input-dark-text,hsl(var(--background)))]',
+              }[colorScheme],
             )}
             disabled={disabled}
             id={id}
@@ -75,9 +124,12 @@ export const NumberInput = React.forwardRef<
           <button
             aria-label={incrementLabel}
             className={clsx(
-              'group rounded-r-lg p-3.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-              !disabled && 'hover:bg-contrast-100/50',
-              disabled && 'cursor-not-allowed opacity-30',
+              'group rounded-r-lg p-3.5 focus-visible:ring-2 focus-visible:ring-[var(--number-input-focus,hsl(var(--primary)))] focus-visible:outline-hidden disabled:cursor-not-allowed disabled:opacity-30',
+              {
+                light:
+                  'bg-[var(--number-input-light-button-background,hsl(var(--background)))] hover:bg-[var(--number-input-light-button-background-hover,hsl(var(--contrast-100)/50%))]',
+                dark: 'bg-[var(--number-input-dark-button-background,hsl(var(--foreground)))] hover:bg-[var(--number-input-dark-button-background-hover,hsl(var(--contrast-500)/50%))]',
+              }[colorScheme],
             )}
             disabled={disabled}
             onClick={(e) => {
@@ -91,8 +143,12 @@ export const NumberInput = React.forwardRef<
           >
             <Plus
               className={clsx(
-                'text-contrast-300 transition-colors duration-300',
-                !disabled && 'group-hover:text-foreground',
+                'transition-colors duration-300',
+                {
+                  light:
+                    'text-[var(--number-input-light-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--number-input-light-icon-hover,hsl(var(--foreground)))]',
+                  dark: 'text-[var(--number-input-dark-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--number-input-dark-icon-hover,hsl(var(--background)))]',
+                }[colorScheme],
               )}
               size={18}
               strokeWidth={1.5}

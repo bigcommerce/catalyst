@@ -3,18 +3,14 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
-import { unstable_expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
 import { Field, schema } from '@/vibes/soul/sections/product-detail/schema';
 import { graphql } from '~/client/graphql';
-import { addCartLineItem } from '~/client/mutations/add-cart-line-item';
-import { createCart } from '~/client/mutations/create-cart';
-import { getCart } from '~/client/queries/get-cart';
-import { TAGS } from '~/client/tags';
 import { Link } from '~/components/link';
-import { getCartId, setCartId } from '~/lib/cart';
+import { addToOrCreateCart } from '~/lib/cart';
+import { MissingCartError } from '~/lib/cart/error';
 
 type CartSelectedOptionsInput = ReturnType<typeof graphql.scalar<'CartSelectedOptionsInput'>>;
 
@@ -42,10 +38,6 @@ export const addToCart = async (
 
   const productEntityId = Number(submission.value.id);
   const quantity = Number(submission.value.quantity);
-
-  const cartId = await getCartId();
-
-  let cart;
 
   const selectedOptions = prevState.fields.reduce<CartSelectedOptionsInput>((accum, field) => {
     const optionValueEntityId = submission.value[field.name];
@@ -160,65 +152,15 @@ export const addToCart = async (
   }, {});
 
   try {
-    cart = await getCart(cartId);
-
-    if (cart) {
-      const addCartLineItemResponse = await addCartLineItem(cart.entityId, {
-        lineItems: [
-          {
-            productEntityId,
-            selectedOptions,
-            quantity,
-          },
-        ],
-      });
-
-      cart = addCartLineItemResponse.data.cart.addCartLineItems?.cart;
-
-      if (!cart?.entityId) {
-        return {
-          lastResult: submission.reply({ formErrors: [t('missingCart')] }),
-          fields: prevState.fields,
-        };
-      }
-
-      unstable_expireTag(TAGS.cart);
-
-      return {
-        lastResult: submission.reply(),
-        fields: prevState.fields,
-        successMessage: t.rich('successMessage', {
-          cartItems: quantity,
-          cartLink: (chunks) => (
-            <Link className="underline" href="/cart" prefetch="viewport" prefetchKind="full">
-              {chunks}
-            </Link>
-          ),
-        }),
-      };
-    }
-
-    // Create cart
-    const createCartResponse = await createCart([
-      {
-        productEntityId,
-        selectedOptions,
-        quantity,
-      },
-    ]);
-
-    cart = createCartResponse.data.cart.createCart?.cart;
-
-    if (!cart?.entityId) {
-      return {
-        lastResult: submission.reply({ formErrors: [t('missingCart')] }),
-        fields: prevState.fields,
-      };
-    }
-
-    await setCartId(cart.entityId);
-
-    unstable_expireTag(TAGS.cart);
+    await addToOrCreateCart({
+      lineItems: [
+        {
+          productEntityId,
+          selectedOptions,
+          quantity,
+        },
+      ],
+    });
 
     return {
       lastResult: submission.reply(),
@@ -249,6 +191,13 @@ export const addToCart = async (
             return message;
           }),
         }),
+        fields: prevState.fields,
+      };
+    }
+
+    if (error instanceof MissingCartError) {
+      return {
+        lastResult: submission.reply({ formErrors: [t('missingCart')] }),
         fields: prevState.fields,
       };
     }

@@ -31,23 +31,23 @@ export function OrderListItem({
   return (
     <div
       className={clsx(
-        'border-t border-contrast-100 pb-6 pt-5 last:border-b @lg:pb-10 @lg:pt-6',
+        'border-contrast-100 border-t pt-5 pb-6 last:border-b @lg:pt-6 @lg:pb-10',
         className,
       )}
     >
       <div className="flex flex-col justify-between gap-x-10 gap-y-4 @lg:flex-row">
         <div className="flex items-start gap-x-12">
           <div>
-            <span className="font-mono text-xs uppercase leading-normal text-contrast-500">
+            <span className="text-contrast-500 font-mono text-xs leading-normal uppercase">
               {orderNumberLabel}
             </span>
-            <span className="block text-lg font-semibold leading-normal">{order.id}</span>
+            <span className="block text-lg leading-normal font-semibold">{order.id}</span>
           </div>
           <div>
-            <span className="font-mono text-xs uppercase leading-normal text-contrast-500">
+            <span className="text-contrast-500 font-mono text-xs leading-normal uppercase">
               {totalLabel}
             </span>
-            <span className="block text-lg font-semibold leading-normal">{order.totalPrice}</span>
+            <span className="block text-lg leading-normal font-semibold">{order.totalPrice}</span>
           </div>
           <Badge className="mt-0.5">{order.status}</Badge>
         </div>

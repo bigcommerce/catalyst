@@ -1,8 +1,8 @@
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { BlogPostCardBlogPost } from '@/vibes/soul/primitives/blog-post-card';
-import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/primitives/breadcrumbs';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { BlogPostList } from '@/vibes/soul/sections/blog-post-list';
+import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 
 interface Props {
@@ -31,16 +31,16 @@ export function FeaturedBlogPostList({
       {breadcrumbs && <Breadcrumbs breadcrumbs={breadcrumbs} />}
 
       <div className="pt-6">
-        <h1 className="mb-3 font-heading text-4xl font-medium leading-none text-foreground @xl:text-5xl @4xl:text-6xl">
+        <h1 className="font-heading text-foreground mb-3 text-4xl leading-none font-medium @xl:text-5xl @4xl:text-6xl">
           {title}
         </h1>
 
         {description != null && description !== '' && (
-          <p className="max-w-lg text-lg text-contrast-500">{description}</p>
+          <p className="text-contrast-500 max-w-lg text-lg">{description}</p>
         )}
 
         <BlogPostList
-          className="mb-8 mt-8 @4xl:mb-10 @4xl:mt-10"
+          className="mt-8 mb-8 @4xl:mt-10 @4xl:mb-10"
           emptyStateSubtitle={emptyStateSubtitle}
           emptyStateTitle={emptyStateTitle}
           placeholderCount={placeholderCount}

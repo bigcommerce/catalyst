@@ -10,3 +10,9 @@
   Provide as much information as you can about how you tested and
   how another developer can test.
 --->
+
+## Migration
+<!---
+  If you have moved any files around, or made any breaking changes,
+  please provide a migration guide for the developers to make rebases easier.
+--->

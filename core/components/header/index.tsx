@@ -1,7 +1,7 @@
 import { getLocale, getTranslations } from 'next-intl/server';
-import PLazy from 'p-lazy';
 import { cache } from 'react';
 
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { HeaderSection } from '@/vibes/soul/sections/header-section';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -16,7 +16,6 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { search } from './_actions/search';
 import { switchCurrency } from './_actions/switch-currency';
-import { switchLocale } from './_actions/switch-locale';
 import { HeaderFragment } from './fragment';
 
 const GetCartCountQuery = graphql(`
@@ -142,18 +141,16 @@ export const Header = async () => {
         cartHref: '/cart',
         cartLabel: t('Icons.cart'),
         searchHref: '/search',
-        searchLabel: t('Icons.search'),
         searchParamName: 'term',
         searchAction: search,
-        links: getLinks(),
-        logo: getLogo(),
+        links: Streamable.from(getLinks),
+        logo: Streamable.from(getLogo),
         mobileMenuTriggerLabel: t('toggleNavigation'),
-        openSearchPopupLabel: t('Search.openSearchPopup'),
+        openSearchPopupLabel: t('Icons.search'),
         logoLabel: t('home'),
-        cartCount: PLazy.from(getCartCount),
+        cartCount: Streamable.from(getCartCount),
         activeLocaleId: locale,
         locales,
-        localeAction: switchLocale,
         currencies,
         activeCurrencyId,
         currencyAction: switchCurrency,

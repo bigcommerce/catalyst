@@ -2,11 +2,12 @@ import { Sliders } from 'lucide-react';
 import { Suspense } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/primitives/breadcrumbs';
 import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { ListProduct, ProductsList } from '@/vibes/soul/primitives/products-list';
+import { Product } from '@/vibes/soul/primitives/product-card';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
+import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
+import { ProductList } from '@/vibes/soul/sections/product-list';
 import { Filter, FiltersPanel } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import {
   Sorting,
@@ -18,13 +19,14 @@ interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;
   title?: Streamable<string | null>;
   totalCount: Streamable<number>;
-  products: Streamable<ListProduct[]>;
+  products: Streamable<Product[]>;
   filters: Streamable<Filter[]>;
   sortOptions: Streamable<SortOption[]>;
-  compareProducts?: Streamable<ListProduct[] | null>;
+  compareProducts?: Streamable<Product[]>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
-  compareAction?: React.ComponentProps<'form'>['action'];
+  compareHref?: string;
   compareLabel?: Streamable<string>;
+  showCompare?: Streamable<boolean>;
   filterLabel?: string;
   filtersPanelTitle?: Streamable<string>;
   resetFiltersLabel?: Streamable<string>;
@@ -34,9 +36,12 @@ interface Props {
   sortParamName?: string;
   sortDefaultValue?: string;
   compareParamName?: string;
-  emptyStateSubtitle?: Streamable<string | null>;
-  emptyStateTitle?: Streamable<string | null>;
+  emptyStateSubtitle?: Streamable<string>;
+  emptyStateTitle?: Streamable<string>;
   placeholderCount?: number;
+  removeLabel?: Streamable<string>;
+  maxItems?: number;
+  maxCompareLimitMessage?: Streamable<string>;
 }
 
 export function ProductsListSection({
@@ -48,11 +53,12 @@ export function ProductsListSection({
   sortOptions: streamableSortOptions,
   sortDefaultValue,
   filters,
-  compareAction,
+  compareHref,
   compareLabel,
+  showCompare,
   paginationInfo,
   filterLabel = 'Filters',
-  filtersPanelTitle: streamableFiltersPanelTitle,
+  filtersPanelTitle: streamableFiltersPanelTitle = 'Filters',
   resetFiltersLabel,
   rangeFilterApplyLabel,
   sortLabel: streamableSortLabel,
@@ -62,28 +68,31 @@ export function ProductsListSection({
   emptyStateSubtitle,
   emptyStateTitle,
   placeholderCount = 8,
+  removeLabel,
+  maxItems,
+  maxCompareLimitMessage,
 }: Props) {
   return (
     <div className="group/products-list-section @container">
-      <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
+      <div className="mx-auto max-w-(--breakpoint-2xl) px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
         <div>
           <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
             {(breadcrumbs) =>
               breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
             }
           </Stream>
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
-            <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
+          <div className="text-foreground flex flex-wrap items-center justify-between gap-4 pt-6 pb-8">
+            <h1 className="font-heading flex items-center gap-2 text-3xl leading-none font-medium @lg:text-4xl @2xl:text-5xl">
               <Suspense
                 fallback={
-                  <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
+                  <span className="bg-contrast-100 inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg" />
                 }
               >
                 {title}
               </Suspense>
               <Suspense
                 fallback={
-                  <span className="inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg bg-contrast-100" />
+                  <span className="bg-contrast-100 inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg" />
                 }
               >
                 <span className="text-contrast-300">{totalCount}</span>
@@ -92,7 +101,7 @@ export function ProductsListSection({
             <div className="flex gap-2">
               <Stream
                 fallback={<SortingSkeleton />}
-                value={Promise.all([
+                value={Streamable.all([
                   streamableSortLabel,
                   streamableSortOptions,
                   streamableSortPlaceholder,
@@ -120,7 +129,7 @@ export function ProductsListSection({
                   </SidePanel.Trigger>
                   <Stream value={streamableFiltersPanelTitle}>
                     {(filtersPanelTitle) => (
-                      <SidePanel.Content title={<h2>{filtersPanelTitle}</h2>}>
+                      <SidePanel.Content title={filtersPanelTitle}>
                         <FiltersPanel
                           filters={filters}
                           paginationInfo={paginationInfo}
@@ -149,17 +158,20 @@ export function ProductsListSection({
             />
           </aside>
 
-          <div className="flex-1 group-has-[[data-pending]]/products-list-section:animate-pulse">
-            <ProductsList
-              compareAction={compareAction}
+          <div className="flex-1 group-has-data-pending/products-list-section:animate-pulse">
+            <ProductList
+              compareHref={compareHref}
               compareLabel={compareLabel}
               compareParamName={compareParamName}
               compareProducts={compareProducts}
               emptyStateSubtitle={emptyStateSubtitle}
               emptyStateTitle={emptyStateTitle}
+              maxCompareLimitMessage={maxCompareLimitMessage}
+              maxItems={maxItems}
               placeholderCount={placeholderCount}
               products={products}
-              showCompare
+              removeLabel={removeLabel}
+              showCompare={showCompare}
             />
 
             {paginationInfo && <CursorPagination info={paginationInfo} />}

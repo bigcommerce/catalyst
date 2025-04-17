@@ -1,11 +1,13 @@
 import { Metadata } from 'next';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Breadcrumb } from '@/vibes/soul/primitives/breadcrumbs';
+import { Streamable } from '@/vibes/soul/lib/streamable';
+import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { ListProduct } from '@/vibes/soul/primitives/products-list';
+import { Product } from '@/vibes/soul/primitives/product-card';
+import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
 import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
@@ -13,7 +15,11 @@ import { Option as SortOption } from '@/vibes/soul/sections/products-list-sectio
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
+import { MAX_COMPARE_LIMIT } from '../../compare/page-data';
+import { getCompareProducts as getCompareProductsData } from '../fetch-compare-products';
 import { fetchFacetedSearch } from '../fetch-faceted-search';
+
+import { getSearchPageData } from './page-data';
 
 const createSearchSearchParamsCache = cache(async (props: Props) => {
   const searchParams = await props.searchParams;
@@ -79,7 +85,7 @@ async function getProducts(props: Props) {
 
 async function getTitle(props: Props): Promise<string> {
   const searchTerm = await getSearchTerm(props);
-  const t = await getTranslations('Search');
+  const t = await getTranslations('Faceted.Search');
 
   return `${t('searchResults')} "${searchTerm}"`;
 }
@@ -113,7 +119,7 @@ async function getFilters(props: Props): Promise<Filter[]> {
   return transformedFacets.filter((facet) => facet != null);
 }
 
-async function getListProducts(props: Props): Promise<ListProduct[]> {
+async function getListProducts(props: Props): Promise<Product[]> {
   const products = await getProducts(props);
   const format = await getFormatter();
 
@@ -142,13 +148,13 @@ async function getTotalCount(props: Props): Promise<number> {
 }
 
 async function getSortLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.SortBy');
+  const t = await getTranslations('Faceted.SortBy');
 
-  return t('ariaLabel');
+  return t('sortBy');
 }
 
 async function getSortOptions(): Promise<SortOption[]> {
-  const t = await getTranslations('FacetedGroup.SortBy');
+  const t = await getTranslations('Faceted.SortBy');
 
   return [
     { value: 'featured', label: t('featuredItems') },
@@ -186,8 +192,39 @@ async function getPaginationInfo(props: Props): Promise<CursorPaginationInfo> {
   };
 }
 
+async function getShowCompare() {
+  const data = await getSearchPageData();
+
+  return data.settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+}
+
+const cachedCompareProductIds = cache(async (props: Props) => {
+  const searchParams = await props.searchParams;
+
+  const compareLoader = createCompareLoader();
+
+  const { compare } = compareLoader(searchParams);
+
+  return { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
+});
+
+async function getCompareProducts(props: Props) {
+  const compareIds = await cachedCompareProductIds(props);
+
+  const products = await getCompareProductsData(compareIds);
+
+  return products.map((product) => ({
+    id: product.entityId.toString(),
+    title: product.name,
+    image: product.defaultImage
+      ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
+      : undefined,
+    href: product.path,
+  }));
+}
+
 async function getFilterLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch');
+  const t = await getTranslations('Faceted.FacetedSearch');
 
   return t('filters');
 }
@@ -198,52 +235,67 @@ async function getCompareLabel(): Promise<string> {
   return t('compare');
 }
 
+async function getRemoveLabel(): Promise<string> {
+  const t = await getTranslations('Components.ProductCard.Compare');
+
+  return t('remove');
+}
+
+async function getMaxCompareLimitMessage(): Promise<string> {
+  const t = await getTranslations('Components.ProductCard.Compare');
+
+  return t('maxCompareLimit');
+}
+
 async function getFiltersPanelTitle(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch');
+  const t = await getTranslations('Faceted.FacetedSearch');
 
   return t('filters');
 }
 
 async function getResetFiltersLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch');
+  const t = await getTranslations('Faceted.FacetedSearch');
 
   return t('resetFilters');
 }
 
 async function getRangeFilterApplyLabel(): Promise<string> {
-  const t = await getTranslations('FacetedGroup.FacetedSearch.Range');
+  const t = await getTranslations('Faceted.FacetedSearch.Range');
 
   return t('apply');
 }
 
 async function getEmptyStateTitle(props: Props): Promise<string> {
   const searchTerm = await getSearchTerm(props);
-  const t = await getTranslations('Search');
+  const t = await getTranslations('Faceted.Search.Empty');
 
-  return t('emptyStateTitle', { term: searchTerm });
+  return t('title', { term: searchTerm });
 }
 
 async function getEmptyStateSubtitle(): Promise<string> {
-  const t = await getTranslations('Search');
+  const t = await getTranslations('Faceted.Search.Empty');
 
-  return t('emptyStateSubtitle');
+  return t('subtitle');
 }
 
 async function getBreadcrumbs(): Promise<Breadcrumb[]> {
-  const t = await getTranslations('Search');
+  const t = await getTranslations('Faceted.Search.Breadcrumbs');
 
   return [
-    { label: t('Breadcrumbs.home'), href: '/' },
-    { label: t('Breadcrumbs.search'), href: `#` },
+    { label: t('home'), href: '/' },
+    { label: t('search'), href: `#` },
   ];
 }
 
 interface Props {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Search');
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  const t = await getTranslations({ locale, namespace: 'Faceted.Search' });
 
   return {
     title: t('title'),
@@ -251,25 +303,34 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function Search(props: Props) {
+  const { locale } = await props.params;
+
+  setRequestLocale(locale);
+
   return (
     <ProductsListSection
-      breadcrumbs={getBreadcrumbs()}
-      compareLabel={getCompareLabel()}
-      emptyStateSubtitle={getEmptyStateSubtitle()}
-      emptyStateTitle={getEmptyStateTitle(props)}
+      breadcrumbs={Streamable.from(getBreadcrumbs)}
+      compareLabel={Streamable.from(getCompareLabel)}
+      compareProducts={Streamable.from(() => getCompareProducts(props))}
+      emptyStateSubtitle={Streamable.from(getEmptyStateSubtitle)}
+      emptyStateTitle={Streamable.from(() => getEmptyStateTitle(props))}
       filterLabel={await getFilterLabel()}
-      filters={getFilters(props)}
-      filtersPanelTitle={getFiltersPanelTitle()}
-      paginationInfo={getPaginationInfo(props)}
-      products={getListProducts(props)}
-      rangeFilterApplyLabel={getRangeFilterApplyLabel()}
-      resetFiltersLabel={getResetFiltersLabel()}
+      filters={Streamable.from(() => getFilters(props))}
+      filtersPanelTitle={Streamable.from(getFiltersPanelTitle)}
+      maxCompareLimitMessage={Streamable.from(getMaxCompareLimitMessage)}
+      maxItems={MAX_COMPARE_LIMIT}
+      paginationInfo={Streamable.from(() => getPaginationInfo(props))}
+      products={Streamable.from(() => getListProducts(props))}
+      rangeFilterApplyLabel={Streamable.from(getRangeFilterApplyLabel)}
+      removeLabel={Streamable.from(getRemoveLabel)}
+      resetFiltersLabel={Streamable.from(getResetFiltersLabel)}
+      showCompare={Streamable.from(getShowCompare)}
       sortDefaultValue="featured"
-      sortLabel={getSortLabel()}
-      sortOptions={getSortOptions()}
+      sortLabel={Streamable.from(getSortLabel)}
+      sortOptions={Streamable.from(getSortOptions)}
       sortParamName="sort"
-      title={getTitle(props)}
-      totalCount={getTotalCount(props)}
+      title={Streamable.from(() => getTitle(props))}
+      totalCount={Streamable.from(() => getTotalCount(props))}
     />
   );
 }

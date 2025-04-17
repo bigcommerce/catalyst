@@ -56,9 +56,13 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     this.defaultChannelId = config.channelId;
     this.backendUserAgent = getBackendUserAgent(config.platform, config.backendUserAgentExtensions);
-    this.getChannelId = config.getChannelId
-      ? config.getChannelId
-      : (defaultChannelId) => defaultChannelId;
+
+    this.getChannelId =
+      config.getChannelId ??
+      function defaultChannelIdFn(defaultChannelId) {
+        return defaultChannelId;
+      };
+
     this.beforeRequest = config.beforeRequest;
   }
 
@@ -69,6 +73,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
+    errorPolicy?: 'none' | 'all' | 'ignore';
   }): Promise<BigCommerceResponse<TResult>>;
 
   // Overload for documents that do not require variables
@@ -78,6 +83,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
+    errorPolicy?: 'none' | 'all' | 'ignore';
   }): Promise<BigCommerceResponse<TResult>>;
 
   async fetch<TResult, TVariables>({
@@ -86,18 +92,25 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken,
     fetchOptions = {} as FetcherRequestInit,
     channelId,
+    errorPolicy = 'none',
   }: {
     document: DocumentDecoration<TResult, TVariables>;
     variables?: TVariables;
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
+    errorPolicy?: 'none' | 'all' | 'ignore';
   }): Promise<BigCommerceResponse<TResult>> {
     const { headers = {}, ...rest } = fetchOptions;
     const query = normalizeQuery(document);
     const log = this.requestLogger(query);
+    const operationInfo = getOperationInfo(query);
 
-    const graphqlUrl = await this.getGraphQLEndpoint(channelId);
+    const graphqlUrl = await this.getGraphQLEndpoint(
+      channelId,
+      operationInfo.name,
+      operationInfo.type,
+    );
     const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
       (await this.beforeRequest?.(fetchOptions)) ?? {};
 
@@ -130,11 +143,18 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     const { errors, ...data } = result;
 
-    if (errors) {
+    // If errorPolicy is 'none', we throw an error if there are any errors
+    if (errorPolicy === 'none' && errors) {
       throw BigCommerceGQLError.createFromResult(errors);
     }
 
-    return data;
+    // If errorPolicy is 'ignore', we return the data and ignore the errors
+    if (errorPolicy === 'ignore') {
+      return data;
+    }
+
+    // If errorPolicy is 'all', we return the errors with the data
+    return result;
   }
 
   async fetchShippingZones() {
@@ -184,8 +204,22 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return `https://store-${this.config.storeHash}-${resolvedChannelId}.${graphqlApiDomain}`;
   }
 
-  private async getGraphQLEndpoint(channelId?: string) {
-    return `${await this.getCanonicalUrl(channelId)}/graphql`;
+  private async getGraphQLEndpoint(
+    channelId?: string,
+    operationName?: string,
+    operationType?: string,
+  ) {
+    const baseUrl = new URL(`${await this.getCanonicalUrl(channelId)}/graphql`);
+
+    if (operationName) {
+      baseUrl.searchParams.set('operation', operationName);
+    }
+
+    if (operationType) {
+      baseUrl.searchParams.set('type', operationType);
+    }
+
+    return baseUrl.toString();
   }
 
   private requestLogger(document: string) {
