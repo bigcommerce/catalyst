@@ -1,5 +1,5 @@
 import { Sliders } from 'lucide-react';
-import { Suspense } from 'react';
+import { Suspense, ReactNode } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Button } from '@/vibes/soul/primitives/button';
@@ -18,6 +18,7 @@ import {
 interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;
   title?: Streamable<string | null>;
+  description?: Streamable<ReactNode>;
   totalCount: Streamable<number>;
   products: Streamable<Product[]>;
   filters: Streamable<Filter[]>;
@@ -47,6 +48,7 @@ interface Props {
 export function ProductsListSection({
   breadcrumbs: streamableBreadcrumbs,
   title = 'Products',
+  description,
   totalCount,
   products,
   compareProducts,
@@ -143,6 +145,9 @@ export function ProductsListSection({
               </div>
             </div>
           </div>
+          <Stream fallback={null} value={description}>
+            {(desc) => desc && <div className="pb-8">{desc}</div>}
+          </Stream>
         </div>
         <div className="flex items-stretch gap-8 @4xl:gap-10">
           <aside className="hidden w-52 @3xl:block @4xl:w-60">

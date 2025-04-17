@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { createSearchParamsCache } from 'nuqs/server';
-import { cache } from 'react';
+import { cache, ReactNode } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
@@ -127,6 +127,14 @@ async function getTitle(props: Props): Promise<string | null> {
   const category = await getCategory(props);
 
   return category.name;
+}
+
+async function getDescription(props: Props): Promise<ReactNode | null> {
+  const category = await getCategory(props);
+
+  return category.description ? (
+    <div className="prose" dangerouslySetInnerHTML={{ __html: category.description }} />
+  ) : null;
 }
 
 const getSearch = cache(async (props: Props) => {
@@ -358,6 +366,7 @@ export default async function Category(props: Props) {
         sortOptions={Streamable.from(getSortOptions)}
         sortParamName="sort"
         title={Streamable.from(() => getTitle(props))}
+        description={Streamable.from(() => getDescription(props))}
         totalCount={Streamable.from(() => getTotalCount(props))}
       />
       <Stream
