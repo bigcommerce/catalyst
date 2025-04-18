@@ -6,7 +6,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { compareAddToCartFormDataSchema } from '@/vibes/soul/primitives/compare-card/schema';
+import { compareAddToCartFormDataSchema } from '@/ui/primitives/compare-card/schema';
 import { Link } from '~/components/link';
 import { addToOrCreateCart } from '~/lib/cart';
 import { MissingCartError } from '~/lib/cart/error';

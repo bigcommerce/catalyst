@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server';
 
-import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
+import { Wishlist } from '@/ui/sections/wishlist-details';
 import { ExistingResultType } from '~/client/util';
 
 import { toggleWishlistVisibility } from './_actions/change-wishlist-visibility';

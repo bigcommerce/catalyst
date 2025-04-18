@@ -3,8 +3,8 @@
 import { getInputProps } from '@conform-to/react';
 import { useRef } from 'react';
 
-import { FormStatus } from '@/vibes/soul/form/form-status';
-import { Input } from '@/vibes/soul/form/input';
+import { FormStatus } from '@/ui/form/form-status';
+import { Input } from '@/ui/form/input';
 import { useModalForm } from '~/components/modal/modal-form-provider';
 
 import { newWishlistSchema } from '../../_actions/schema';

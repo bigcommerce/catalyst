@@ -1,7 +1,7 @@
 import { SubmissionResult } from '@conform-to/react';
 
-import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
-import { Address, DefaultAddressConfiguration } from '@/vibes/soul/sections/address-list-section';
+import { Field, FieldGroup } from '@/ui/form/dynamic-form/schema';
+import { Address, DefaultAddressConfiguration } from '@/ui/sections/address-list-section';
 
 import { createAddress } from './create-address';
 import { deleteAddress } from './delete-address';

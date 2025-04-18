@@ -35,7 +35,7 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@/vibes/*": ["./vibes/*"],
+      "@/ui/*": ["./ui/*"],
       "~/*": ["./*"]
     },
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"

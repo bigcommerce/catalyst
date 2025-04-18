@@ -1,11 +1,11 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ResultOf } from 'gql.tada';
 
+import { Breadcrumb } from '@/ui/sections/breadcrumbs';
 import {
   BreadcrumbsCategoryFragment,
   BreadcrumbsWebPageFragment,
 } from '~/components/breadcrumbs/fragment';
-import { Breadcrumb } from '~/vibes/soul/sections/breadcrumbs';
 
 type BreadcrumbsResult =
   | ResultOf<typeof BreadcrumbsWebPageFragment>

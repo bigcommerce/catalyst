@@ -1,7 +1,7 @@
 'use client';
 
-import { FormStatus } from '@/vibes/soul/form/form-status';
-import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
+import { FormStatus } from '@/ui/form/form-status';
+import { Wishlist } from '@/ui/sections/wishlist-details';
 import { useModalForm } from '~/components/modal/modal-form-provider';
 
 import { toggleWishlistVisibilitySchema } from '../../_actions/schema';

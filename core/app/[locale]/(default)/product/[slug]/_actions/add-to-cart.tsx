@@ -6,7 +6,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { Field, schema } from '@/vibes/soul/sections/product-detail/schema';
+import { Field, schema } from '@/ui/sections/product-detail/schema';
 import { graphql } from '~/client/graphql';
 import { Link } from '~/components/link';
 import { addToOrCreateCart } from '~/lib/cart';

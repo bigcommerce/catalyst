@@ -2,9 +2,9 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
-import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
-import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
+import { Streamable } from '@/ui/lib/streamable';
+import { FeaturedProductCarousel } from '@/ui/sections/featured-product-carousel';
+import { FeaturedProductList } from '@/ui/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';

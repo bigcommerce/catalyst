@@ -2,9 +2,9 @@
 
 import { useActionState, useEffect, useTransition } from 'react';
 
-import { Switch } from '@/vibes/soul/form/switch';
-import { toast } from '@/vibes/soul/primitives/toaster';
-import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
+import { Switch } from '@/ui/form/switch';
+import { toast } from '@/ui/primitives/toaster';
+import { Wishlist } from '@/ui/sections/wishlist-details';
 
 import { toggleWishlistVisibility } from '../../_actions/change-wishlist-visibility';
 

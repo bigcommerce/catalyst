@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { Maintenance as MaintenanceSection } from '@/vibes/soul/sections/maintenance';
+import { Maintenance as MaintenanceSection } from '@/ui/sections/maintenance';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { StoreLogoFragment } from '~/components/store-logo/fragment';

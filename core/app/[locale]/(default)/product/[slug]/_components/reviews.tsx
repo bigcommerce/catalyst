@@ -3,8 +3,8 @@ import { getFormatter, getTranslations } from 'next-intl/server';
 import { createLoader, parseAsString, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Reviews as ReviewsSection } from '@/vibes/soul/sections/reviews';
+import { Stream, Streamable } from '@/ui/lib/streamable';
+import { Reviews as ReviewsSection } from '@/ui/sections/reviews';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';

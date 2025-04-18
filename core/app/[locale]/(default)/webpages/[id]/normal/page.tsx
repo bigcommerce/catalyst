@@ -3,8 +3,8 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
+import { Streamable } from '@/ui/lib/streamable';
+import { Breadcrumb } from '@/ui/sections/breadcrumbs';
 import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,

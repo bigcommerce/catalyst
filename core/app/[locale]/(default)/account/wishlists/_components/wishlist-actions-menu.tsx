@@ -3,9 +3,9 @@
 import { EllipsisIcon } from 'lucide-react';
 import { useReducer } from 'react';
 
-import { Button } from '@/vibes/soul/primitives/button';
-import { DropdownMenu } from '@/vibes/soul/primitives/dropdown-menu';
-import { toast } from '@/vibes/soul/primitives/toaster';
+import { Button } from '@/ui/primitives/button';
+import { DropdownMenu } from '@/ui/primitives/dropdown-menu';
+import { toast } from '@/ui/primitives/toaster';
 import { Modal, ModalButton, ModalFormAction, ModalFormState } from '~/components/modal';
 
 import { getShareWishlistModal } from '../modals';

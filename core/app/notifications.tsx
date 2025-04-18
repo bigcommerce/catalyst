@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-import { toast } from '@/vibes/soul/primitives/toaster';
+import { toast } from '@/ui/primitives/toaster';
 import { type ServerToastData } from '~/lib/server-toast';
 
 export const CookieNotifications = (notification: ServerToastData) => {

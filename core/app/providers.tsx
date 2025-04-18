@@ -2,7 +2,7 @@
 
 import { PropsWithChildren } from 'react';
 
-import { Toaster } from '@/vibes/soul/primitives/toaster';
+import { Toaster } from '@/ui/primitives/toaster';
 
 export function Providers({ children }: PropsWithChildren) {
   return (

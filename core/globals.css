@@ -7,46 +7,46 @@
 
 @source './app/**/*.{ts,tsx}';
 @source './components/**/*.{ts,tsx}';
-@source './vibes/**/*.{ts,tsx}';
+@source './ui/**/*.{ts,tsx}';
 
 @layer utilities {
   .prose {
-    :where(h1):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: hsl(var(--foreground));
       font-family: var(--font-family-heading);
     }
 
-    :where(h2):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: hsl(var(--foreground));
       font-family: var(--font-family-heading);
     }
 
-    :where(h3):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: hsl(var(--foreground));
       font-family: var(--font-family-heading);
     }
 
-    :where(h4):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(h4):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: hsl(var(--foreground));
       font-family: var(--font-family-heading);
     }
 
-    :where(h5):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(h5):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: hsl(var(--foreground));
       font-family: var(--font-family-heading);
     }
 
-    :where(h6):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(h6):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: hsl(var(--foreground));
       font-family: var(--font-family-heading);
     }
 
-    :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: hsl(var(--foreground));
       font-family: var(--font-family-body);
     }
 
-    :where(a):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(a):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: color-mix(in oklab, hsl(var(--primary)), black 15%);
       text-decoration: none;
 
@@ -55,21 +55,21 @@
       }
     }
 
-    :where(ul):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(ul):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: hsl(var(--contrast-500));
       font-family: var(--font-family-body);
     }
 
-    :where(ol):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: hsl(var(--contrast-500));
       font-family: var(--font-family-body);
     }
 
-    :where(strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(strong):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       font-weight: 600;
     }
 
-    :where(blockquote):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(blockquote):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       border-left-color: hsl(var(--contrast-300));
 
       p {
@@ -79,12 +79,12 @@
       }
     }
 
-    :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: hsl(var(--contrast-500));
       font-family: var(--font-family-mono);
     }
 
-    :where(pre):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
+    :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
       color: hsl(var(--background));
       background-color: hsl(var(--foreground));
       font-family: var(--font-family-mono);
@@ -260,7 +260,6 @@
   }
 
   @keyframes shake {
-
     10%,
     90% {
       transform: translate3d(-1px, 0, 0);

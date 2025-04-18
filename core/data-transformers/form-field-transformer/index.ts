@@ -1,6 +1,6 @@
 import { FragmentOf } from 'gql.tada';
 
-import { Field } from '@/vibes/soul/form/dynamic-form/schema';
+import { Field } from '@/ui/form/dynamic-form/schema';
 
 import { FormFieldsFragment } from './fragment';
 import { FieldNameToFieldId } from './utils';

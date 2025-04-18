@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { Address, AddressListSection } from '@/vibes/soul/sections/address-list-section';
+import { Address, AddressListSection } from '@/ui/sections/address-list-section';
 import {
   fieldToFieldNameTransformer,
   formFieldTransformer,

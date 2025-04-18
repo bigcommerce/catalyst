@@ -3,15 +3,15 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { createSearchParamsCache } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
-import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
-import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { Product } from '@/vibes/soul/primitives/product-card';
-import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
-import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
-import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
-import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
-import { Option as SortOption } from '@/vibes/soul/sections/products-list-section/sorting';
+import { Streamable } from '@/ui/lib/streamable';
+import { createCompareLoader } from '@/ui/primitives/compare-drawer/loader';
+import { CursorPaginationInfo } from '@/ui/primitives/cursor-pagination';
+import { Product } from '@/ui/primitives/product-card';
+import { Breadcrumb } from '@/ui/sections/breadcrumbs';
+import { ProductsListSection } from '@/ui/sections/products-list-section';
+import { getFilterParsers } from '@/ui/sections/products-list-section/filter-parsers';
+import { Filter } from '@/ui/sections/products-list-section/filters-panel';
+import { Option as SortOption } from '@/ui/sections/products-list-section/sorting';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 

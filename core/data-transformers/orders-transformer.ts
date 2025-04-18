@@ -1,6 +1,6 @@
 import { getFormatter } from 'next-intl/server';
 
-import { Order } from '@/vibes/soul/sections/order-list-section/order-list-item';
+import { Order } from '@/ui/sections/order-list-section/order-list-item';
 import { getCustomerOrders } from '~/app/[locale]/(default)/account/orders/page-data';
 import { ExistingResultType } from '~/client/util';
 

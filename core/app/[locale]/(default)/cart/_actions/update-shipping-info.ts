@@ -4,8 +4,8 @@ import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
 
-import { shippingActionFormDataSchema } from '@/vibes/soul/sections/cart/schema';
-import { ShippingFormState } from '@/vibes/soul/sections/cart/shipping-form';
+import { shippingActionFormDataSchema } from '@/ui/sections/cart/schema';
+import { ShippingFormState } from '@/ui/sections/cart/shipping-form';
 import { getCartId } from '~/lib/cart';
 
 import { getCart } from '../page-data';

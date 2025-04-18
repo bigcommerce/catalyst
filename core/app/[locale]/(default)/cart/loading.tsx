@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 
-import { CartSkeleton } from '@/vibes/soul/sections/cart';
+import { CartSkeleton } from '@/ui/sections/cart';
 
 export default function Loading() {
   const t = useTranslations('Cart');

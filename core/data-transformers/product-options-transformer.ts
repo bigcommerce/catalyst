@@ -2,7 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { ResultOf } from 'gql.tada';
 import { getTranslations } from 'next-intl/server';
 
-import { Field } from '@/vibes/soul/sections/product-detail/schema';
+import { Field } from '@/ui/sections/product-detail/schema';
 import { ProductOptionsFragment } from '~/app/[locale]/(default)/product/[slug]/page-data';
 
 export const productOptionsTransformer = async (

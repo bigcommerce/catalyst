@@ -3,11 +3,11 @@
 import { clsx } from 'clsx';
 import { useState } from 'react';
 
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
-import * as Skeleton from '@/vibes/soul/primitives/skeleton';
-import { toast } from '@/vibes/soul/primitives/toaster';
-import { Tooltip } from '@/vibes/soul/primitives/tooltip';
+import { Stream, Streamable } from '@/ui/lib/streamable';
+import { Button, ButtonProps } from '@/ui/primitives/button';
+import * as Skeleton from '@/ui/primitives/skeleton';
+import { toast } from '@/ui/primitives/toaster';
+import { Tooltip } from '@/ui/primitives/tooltip';
 import { Modal } from '~/components/modal';
 
 import { ShareWishlistModal } from '../../_components/modals/share';

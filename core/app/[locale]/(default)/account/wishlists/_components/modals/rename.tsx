@@ -3,9 +3,9 @@
 import { getInputProps } from '@conform-to/react';
 import { useRef } from 'react';
 
-import { FormStatus } from '@/vibes/soul/form/form-status';
-import { Input } from '@/vibes/soul/form/input';
-import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
+import { FormStatus } from '@/ui/form/form-status';
+import { Input } from '@/ui/form/input';
+import { Wishlist } from '@/ui/sections/wishlist-details';
 import { useModalForm } from '~/components/modal/modal-form-provider';
 
 import { renameWishlistSchema } from '../../_actions/schema';

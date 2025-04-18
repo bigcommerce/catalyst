@@ -4,7 +4,7 @@ import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
 
-import { schema } from '@/vibes/soul/primitives/inline-email-form/schema';
+import { schema } from '@/ui/primitives/inline-email-form/schema';
 
 export const subscribe = async (
   _lastResult: { lastResult: SubmissionResult | null },

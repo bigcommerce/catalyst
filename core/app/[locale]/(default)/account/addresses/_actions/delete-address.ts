@@ -4,7 +4,7 @@ import { unstable_expireTag as expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
-import { schema } from '@/vibes/soul/sections/address-list-section/schema';
+import { schema } from '@/ui/sections/address-list-section/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';

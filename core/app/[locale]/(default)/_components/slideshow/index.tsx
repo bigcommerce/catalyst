@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 
-import { Slideshow as SlideshowSection } from '~/vibes/soul/sections/slideshow';
+import { Slideshow as SlideshowSection } from '@/ui/sections/slideshow';
 
 import SlideBg01 from './slide-bg-01.jpg';
 import SlideBg02 from './slide-bg-02.jpg';

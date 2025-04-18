@@ -4,8 +4,8 @@ import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
 
-import { ChangePasswordAction } from '@/vibes/soul/sections/account-settings-section/change-password-form';
-import { changePasswordSchema } from '@/vibes/soul/sections/account-settings-section/schema';
+import { ChangePasswordAction } from '@/ui/sections/account-settings-section/change-password-form';
+import { changePasswordSchema } from '@/ui/sections/account-settings-section/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';

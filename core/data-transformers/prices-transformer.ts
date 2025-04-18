@@ -1,7 +1,7 @@
 import { ResultOf } from 'gql.tada';
 import { getFormatter } from 'next-intl/server';
 
-import { Price } from '@/vibes/soul/primitives/price-label';
+import { Price } from '@/ui/primitives/price-label';
 import { PricingFragment } from '~/client/fragments/pricing';
 import { ExistingResultType } from '~/client/util';
 

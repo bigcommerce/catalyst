@@ -2,8 +2,8 @@
 import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { ButtonLink } from '@/vibes/soul/primitives/button-link';
-import { SignInSection } from '@/vibes/soul/sections/sign-in-section';
+import { ButtonLink } from '@/ui/primitives/button-link';
+import { SignInSection } from '@/ui/sections/sign-in-section';
 import { buildConfig } from '~/build-config/reader';
 import { ForceRefresh } from '~/components/force-refresh';
 

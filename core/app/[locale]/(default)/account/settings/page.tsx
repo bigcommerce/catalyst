@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { AccountSettingsSection } from '@/vibes/soul/sections/account-settings-section';
+import { AccountSettingsSection } from '@/ui/sections/account-settings-section';
 
 import { changePassword } from './_actions/change-password';
 import { updateCustomer } from './_actions/update-customer';

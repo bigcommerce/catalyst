@@ -1,8 +1,8 @@
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { PropsWithChildren } from 'react';
 
-import { SidebarMenu } from '@/vibes/soul/sections/sidebar-menu';
-import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
+import { SidebarMenu } from '@/ui/sections/sidebar-menu';
+import { StickySidebarLayout } from '@/ui/sections/sticky-sidebar-layout';
 import { isLoggedIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
 

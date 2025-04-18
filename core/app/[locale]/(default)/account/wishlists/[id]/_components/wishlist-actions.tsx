@@ -1,7 +1,7 @@
-import { SwitchSkeleton } from '@/vibes/soul/form/switch';
-import { Streamable } from '@/vibes/soul/lib/streamable';
-import * as Skeleton from '@/vibes/soul/primitives/skeleton';
-import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
+import { SwitchSkeleton } from '@/ui/form/switch';
+import { Streamable } from '@/ui/lib/streamable';
+import * as Skeleton from '@/ui/primitives/skeleton';
+import { Wishlist } from '@/ui/sections/wishlist-details';
 
 import { WishlistAction, WishlistActionsMenu } from '../../_components/wishlist-actions-menu';
 

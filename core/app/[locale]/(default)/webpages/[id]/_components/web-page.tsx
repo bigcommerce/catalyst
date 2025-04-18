@@ -1,5 +1,5 @@
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
+import { Stream, Streamable } from '@/ui/lib/streamable';
+import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/ui/sections/breadcrumbs';
 
 export interface WebPage {
   title: string;

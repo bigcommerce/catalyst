@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 
-import { Subscribe as SubscribeSection } from '@/vibes/soul/sections/subscribe';
+import { Subscribe as SubscribeSection } from '@/ui/sections/subscribe';
 
 import { subscribe } from './_actions/subscribe';
 

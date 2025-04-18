@@ -5,7 +5,7 @@ import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
 
-import { schema } from '@/vibes/soul/sections/reset-password-section/schema';
+import { schema } from '@/ui/sections/reset-password-section/schema';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 

@@ -7,11 +7,8 @@ import { useActionState, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
-import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
-import {
-  Modal as ModalPrimitive,
-  ModalProps as ModalPrimitiveProps,
-} from '@/vibes/soul/primitives/modal';
+import { Button, ButtonProps } from '@/ui/primitives/button';
+import { Modal as ModalPrimitive, ModalProps as ModalPrimitiveProps } from '@/ui/primitives/modal';
 
 import { ModalFormContext } from './modal-form-provider';
 

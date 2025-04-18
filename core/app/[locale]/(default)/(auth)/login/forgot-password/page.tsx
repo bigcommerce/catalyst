@@ -6,7 +6,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 // import { revalidate } from '~/client/revalidate-target';
 // import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
-import { ForgotPasswordSection } from '@/vibes/soul/sections/forgot-password-section';
+import { ForgotPasswordSection } from '@/ui/sections/forgot-password-section';
 
 import { resetPassword } from './_actions/reset-password';
 

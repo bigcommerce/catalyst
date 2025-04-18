@@ -2,8 +2,8 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
-import { SidebarMenu } from '@/vibes/soul/sections/sidebar-menu';
-import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
+import { SidebarMenu } from '@/ui/sections/sidebar-menu';
+import { StickySidebarLayout } from '@/ui/sections/sticky-sidebar-layout';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';

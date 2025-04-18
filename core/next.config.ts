@@ -69,7 +69,7 @@ export default async (): Promise<NextConfig> => {
         'middlewares',
         'scripts',
         'tests',
-        'vibes',
+        'ui',
       ],
     },
     // default URL generation in BigCommerce uses trailing slash

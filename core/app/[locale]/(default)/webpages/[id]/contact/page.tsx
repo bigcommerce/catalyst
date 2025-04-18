@@ -3,11 +3,11 @@ import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
-import { DynamicForm } from '@/vibes/soul/form/dynamic-form';
-import type { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
-import { Streamable } from '@/vibes/soul/lib/streamable';
-import { ButtonLink } from '@/vibes/soul/primitives/button-link';
-import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
+import { DynamicForm } from '@/ui/form/dynamic-form';
+import type { Field, FieldGroup } from '@/ui/form/dynamic-form/schema';
+import { Streamable } from '@/ui/lib/streamable';
+import { ButtonLink } from '@/ui/primitives/button-link';
+import { Breadcrumb } from '@/ui/sections/breadcrumbs';
 import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,

@@ -1,6 +1,6 @@
 import { ResultOf } from 'gql.tada';
 
-import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
+import { CursorPaginationInfo } from '@/ui/primitives/cursor-pagination';
 import { PaginationFragment } from '~/client/fragments/pagination';
 
 export const defaultPageInfo = {

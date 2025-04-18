@@ -4,11 +4,11 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
-import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
-import { SectionLayout } from '@/vibes/soul/sections/section-layout';
-import { Wishlist, WishlistDetails } from '@/vibes/soul/sections/wishlist-details';
+import { Streamable } from '@/ui/lib/streamable';
+import { CursorPaginationInfo } from '@/ui/primitives/cursor-pagination';
+import { Breadcrumb, Breadcrumbs } from '@/ui/sections/breadcrumbs';
+import { SectionLayout } from '@/ui/sections/section-layout';
+import { Wishlist, WishlistDetails } from '@/ui/sections/wishlist-details';
 import { addWishlistItemToCart } from '~/app/[locale]/(default)/account/wishlists/[id]/_actions/add-to-cart';
 import {
   WishlistShareButton,

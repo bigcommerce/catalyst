@@ -1,8 +1,8 @@
 import { getLocale, getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
-import { HeaderSection } from '@/vibes/soul/sections/header-section';
+import { Streamable } from '@/ui/lib/streamable';
+import { HeaderSection } from '@/ui/sections/header-section';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';

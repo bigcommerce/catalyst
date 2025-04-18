@@ -2,11 +2,11 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
-import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import * as Skeleton from '@/vibes/soul/primitives/skeleton';
-import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
-import { WishlistsSection } from '@/vibes/soul/sections/wishlists-section';
+import { Streamable } from '@/ui/lib/streamable';
+import { CursorPaginationInfo } from '@/ui/primitives/cursor-pagination';
+import * as Skeleton from '@/ui/primitives/skeleton';
+import { Wishlist } from '@/ui/sections/wishlist-details';
+import { WishlistsSection } from '@/ui/sections/wishlists-section';
 import { ExistingResultType } from '~/client/util';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { wishlistsTransformer } from '~/data-transformers/wishlists-transformer';

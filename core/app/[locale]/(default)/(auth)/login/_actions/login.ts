@@ -6,7 +6,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { AuthError } from 'next-auth';
 import { getLocale, getTranslations } from 'next-intl/server';
 
-import { schema } from '@/vibes/soul/sections/sign-in-section/schema';
+import { schema } from '@/ui/sections/sign-in-section/schema';
 import { signIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
 import { getCartId } from '~/lib/cart';

@@ -1,9 +1,9 @@
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { OrderListSection } from '@/ui/sections/order-list-section';
 import { ordersTransformer } from '~/data-transformers/orders-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
-import { OrderListSection } from '~/vibes/soul/sections/order-list-section';
 
 import { getCustomerOrders } from './page-data';
 

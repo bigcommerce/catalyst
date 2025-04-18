@@ -6,7 +6,7 @@ import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
-import { SearchResult } from '@/vibes/soul/primitives/navigation';
+import { SearchResult } from '@/ui/primitives/navigation';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';

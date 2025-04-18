@@ -1,8 +1,8 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
-import { WishlistItem } from '@/vibes/soul/primitives/wishlist-item-card';
-import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
+import { WishlistItem } from '@/ui/primitives/wishlist-item-card';
+import { Wishlist } from '@/ui/sections/wishlist-details';
 import { ResultOf } from '~/client/graphql';
 import { ExistingResultType } from '~/client/util';
 import {

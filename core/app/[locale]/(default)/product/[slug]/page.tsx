@@ -4,9 +4,9 @@ import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs/server';
 
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
-import { ProductDetail } from '@/vibes/soul/sections/product-detail';
+import { Stream, Streamable } from '@/ui/lib/streamable';
+import { FeaturedProductCarousel } from '@/ui/sections/featured-product-carousel';
+import { ProductDetail } from '@/ui/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';

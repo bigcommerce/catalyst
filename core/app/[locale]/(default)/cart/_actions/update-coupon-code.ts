@@ -5,7 +5,7 @@ import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { getTranslations } from 'next-intl/server';
 
-import { couponCodeActionFormDataSchema } from '@/vibes/soul/sections/cart/schema';
+import { couponCodeActionFormDataSchema } from '@/ui/sections/cart/schema';
 import { getCartId } from '~/lib/cart';
 
 import { getCart } from '../page-data';

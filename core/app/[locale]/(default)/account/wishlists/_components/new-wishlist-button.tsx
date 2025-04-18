@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 
-import { Button } from '@/vibes/soul/primitives/button';
-import { toast } from '@/vibes/soul/primitives/toaster';
+import { Button } from '@/ui/primitives/button';
+import { toast } from '@/ui/primitives/toaster';
 import { Modal, ModalFormState } from '~/components/modal';
 
 import { WishlistModalProps } from './wishlist-actions-menu';
