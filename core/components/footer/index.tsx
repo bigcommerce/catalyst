@@ -11,14 +11,14 @@ import { cache, JSX } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Footer as FooterSection } from '@/vibes/soul/sections/footer';
-import { LayoutQuery } from '~/app/[locale]/(default)/page-data';
+import { GetLinksAndSectionsQuery, LayoutQuery } from '~/app/[locale]/(default)/page-data';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql, readFragment } from '~/client/graphql';
+import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 
-import { FooterFragment } from './fragment';
+import { FooterFragment, FooterSectionsFragment } from './fragment';
 import { AmazonIcon } from './payment-icons/amazon';
 import { AmericanExpressIcon } from './payment-icons/american-express';
 import { ApplePayIcon } from './payment-icons/apple-pay';
@@ -44,59 +44,14 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   YouTube: { icon: <SiYoutube title="YouTube" /> },
 };
 
-const GetFooterSectionsQuery = graphql(`
-  query GetFooterSectionsQuery {
-    site {
-      content {
-        pages(filters: { parentEntityIds: [0] }) {
-          edges {
-            node {
-              __typename
-              name
-              ... on RawHtmlPage {
-                path
-              }
-              ... on ContactPage {
-                path
-              }
-              ... on NormalPage {
-                path
-              }
-              ... on BlogIndexPage {
-                path
-              }
-              ... on ExternalLinkPage {
-                link
-              }
-            }
-          }
-        }
-      }
-      brands(first: 5) {
-        edges {
-          node {
-            entityId
-            name
-            path
-          }
-        }
-      }
-      categoryTree {
-        name
-        path
-      }
-    }
-  }
-`);
-
 const getFooterSections = cache(async (customerAccessToken?: string) => {
-  const { data } = await client.fetch({
-    document: GetFooterSectionsQuery,
+  const { data: response } = await client.fetch({
+    document: GetLinksAndSectionsQuery,
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
-  return data.site;
+  return readFragment(FooterSectionsFragment, response).site;
 });
 
 const getFooterData = cache(async () => {

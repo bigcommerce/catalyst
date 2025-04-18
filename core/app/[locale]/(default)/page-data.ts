@@ -5,8 +5,8 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
 import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
-import { FooterFragment } from '~/components/footer/fragment';
-import { CurrencyCode, HeaderFragment } from '~/components/header/fragment';
+import { FooterFragment, FooterSectionsFragment } from '~/components/footer/fragment';
+import { CurrencyCode, HeaderFragment, HeaderLinksFragment } from '~/components/header/fragment';
 
 export const LayoutQuery = graphql(
   `
@@ -18,6 +18,18 @@ export const LayoutQuery = graphql(
     }
   `,
   [HeaderFragment, FooterFragment],
+);
+
+export const GetLinksAndSectionsQuery = graphql(
+  `
+    query GetLinksAndSectionsQuery {
+      site {
+        ...HeaderLinksFragment
+        ...FooterSectionsFragment
+      }
+    }
+  `,
+  [HeaderLinksFragment, FooterSectionsFragment],
 );
 
 const HomePageQuery = graphql(

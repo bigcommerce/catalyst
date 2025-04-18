@@ -3,7 +3,7 @@ import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { HeaderSection } from '@/vibes/soul/sections/header-section';
-import { LayoutQuery } from '~/app/[locale]/(default)/page-data';
+import { GetLinksAndSectionsQuery, LayoutQuery } from '~/app/[locale]/(default)/page-data';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, readFragment } from '~/client/graphql';
@@ -16,7 +16,7 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { search } from './_actions/search';
 import { switchCurrency } from './_actions/switch-currency';
-import { HeaderFragment } from './fragment';
+import { HeaderFragment, HeaderLinksFragment } from './fragment';
 
 const GetCartCountQuery = graphql(`
   query GetCartCountQuery($cartId: String) {
@@ -47,33 +47,14 @@ const getCartCount = async (cartId: string, customerAccessToken?: string) => {
   return response.data.site.cart?.lineItems.totalQuantity ?? null;
 };
 
-const GetHeaderLinksQuery = graphql(`
-  query GetHeaderLinksQuery {
-    site {
-      categoryTree {
-        name
-        path
-        children {
-          name
-          path
-          children {
-            name
-            path
-          }
-        }
-      }
-    }
-  }
-`);
-
 const getHeaderLinks = cache(async (customerAccessToken?: string) => {
-  const { data } = await client.fetch({
-    document: GetHeaderLinksQuery,
+  const { data: response } = await client.fetch({
+    document: GetLinksAndSectionsQuery,
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
-  return data.site.categoryTree;
+  return readFragment(HeaderLinksFragment, response).site.categoryTree;
 });
 
 const getHeaderData = cache(async () => {

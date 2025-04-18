@@ -29,6 +29,23 @@ export const HeaderFragment = graphql(`
   }
 `);
 
+export const HeaderLinksFragment = graphql(`
+  fragment HeaderLinksFragment on Site {
+    categoryTree {
+      name
+      path
+      children {
+        name
+        path
+        children {
+          name
+          path
+        }
+      }
+    }
+  }
+`);
+
 export type Currency = NonNullable<
   NonNullable<FragmentOf<typeof HeaderFragment>>['currencies']['edges']
 >[number]['node'];
