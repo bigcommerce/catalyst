@@ -1,6 +1,6 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { Metadata } from 'next';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 import * as z from 'zod';
 
@@ -57,21 +57,28 @@ const getProducts = cache(async (productIds: number[] = []): Promise<CompareCard
   }));
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Compare');
+interface Props {
+  params: Promise<{ locale: string }>;
+  searchParams: Promise<{
+    ids?: string | string[];
+  }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  const t = await getTranslations({ locale, namespace: 'Compare' });
 
   return {
     title: t('title'),
   };
 }
 
-interface Props {
-  searchParams: Promise<{
-    ids?: string | string[];
-  }>;
-}
-
 export default async function Compare(props: Props) {
+  const { locale } = await props.params;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('Compare');
 
   const searchParams = await props.searchParams;

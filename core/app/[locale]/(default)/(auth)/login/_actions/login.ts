@@ -11,15 +11,19 @@ import { signIn } from '~/auth';
 import { redirect } from '~/i18n/routing';
 import { getCartId } from '~/lib/cart';
 
-export const login = async (_lastResult: SubmissionResult | null, formData: FormData) => {
+export const login = async (
+  { redirectTo }: { redirectTo: string },
+  _lastResult: SubmissionResult | null,
+  formData: FormData,
+) => {
   const locale = await getLocale();
-  const t = await getTranslations('Login');
+  const t = await getTranslations('Auth.Login');
   const cartId = await getCartId();
 
   const submission = parseWithZod(formData, { schema });
 
   if (submission.status !== 'success') {
-    return submission.reply({ formErrors: [t('Form.error')] });
+    return submission.reply();
   }
 
   try {
@@ -27,8 +31,6 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
       email: submission.value.email,
       password: submission.value.password,
       cartId,
-      // We want to use next/navigation for the redirect as it
-      // follows basePath and trailing slash configurations.
       redirect: false,
     });
   } catch (error) {
@@ -47,11 +49,11 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
       error.cause &&
       error.cause.err?.message.includes('Invalid credentials')
     ) {
-      return submission.reply({ formErrors: [t('Form.invalidCredentials')] });
+      return submission.reply({ formErrors: [t('invalidCredentials')] });
     }
 
-    return submission.reply({ formErrors: [t('Form.somethingWentWrong')] });
+    return submission.reply({ formErrors: [t('somethingWentWrong')] });
   }
 
-  return redirect({ href: '/account/orders', locale });
+  return redirect({ href: redirectTo, locale });
 };

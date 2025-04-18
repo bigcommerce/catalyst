@@ -38,6 +38,7 @@ export interface ProductDetailProps<F extends Field> {
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;
+  emptySelectPlaceholder?: string;
   ctaLabel?: Streamable<string | null>;
   ctaDisabled?: Streamable<boolean | null>;
   prefetch?: boolean;
@@ -68,6 +69,7 @@ export function ProductDetail<F extends Field>({
   quantityLabel,
   incrementLabel,
   decrementLabel,
+  emptySelectPlaceholder,
   ctaLabel: streamableCtaLabel,
   ctaDisabled: streamableCtaDisabled,
   prefetch,
@@ -76,7 +78,7 @@ export function ProductDetail<F extends Field>({
 }: ProductDetailProps<F>) {
   return (
     <section className="@container">
-      <div className="group/product-detail mx-auto w-full max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
+      <div className="group/product-detail mx-auto w-full max-w-(--breakpoint-2xl) px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
         {breadcrumbs && (
           <div className="group/breadcrumbs mb-6">
             <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -98,7 +100,7 @@ export function ProductDetail<F extends Field>({
                       {product.subtitle}
                     </p>
                   )}
-                  <h1 className="mb-3 mt-2 font-[family-name:var(--product-detail-title-font-family,var(--font-family-heading))] text-2xl font-medium leading-none @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
+                  <h1 className="mt-2 mb-3 font-[family-name:var(--product-detail-title-font-family,var(--font-family-heading))] text-2xl leading-none font-medium @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
                     {product.title}
                   </h1>
                   <div className="group/product-rating">
@@ -146,6 +148,7 @@ export function ProductDetail<F extends Field>({
                           ctaDisabled={ctaDisabled ?? undefined}
                           ctaLabel={ctaLabel ?? undefined}
                           decrementLabel={decrementLabel}
+                          emptySelectPlaceholder={emptySelectPlaceholder}
                           fields={fields}
                           incrementLabel={incrementLabel}
                           prefetch={prefetch}
@@ -217,7 +220,7 @@ function ProductGallerySkeleton() {
 }
 
 function PriceLabelSkeleton() {
-  return <Skeleton.Box className="my-4 h-4 w-20 rounded-md" />;
+  return <Skeleton.Box className="my-5 h-4 w-20 rounded-md" />;
 }
 
 function RatingSkeleton() {
@@ -296,24 +299,24 @@ function ProductAccordionsSkeleton() {
       pending
     >
       <div className="flex items-center justify-between">
-        <Skeleton.Box className="h-2 w-20 rounded-sm" />
-        <Skeleton.Box className="h-3 w-3 rounded-sm" />
+        <Skeleton.Box className="h-2 w-20 rounded-xs" />
+        <Skeleton.Box className="h-3 w-3 rounded-xs" />
       </div>
       <div className="mb-1 flex flex-col gap-4">
-        <Skeleton.Box className="h-3 w-full rounded-sm" />
-        <Skeleton.Box className="h-3 w-full rounded-sm" />
-        <Skeleton.Box className="h-3 w-3/5 rounded-sm" />
+        <Skeleton.Box className="h-3 w-full rounded-xs" />
+        <Skeleton.Box className="h-3 w-full rounded-xs" />
+        <Skeleton.Box className="h-3 w-3/5 rounded-xs" />
       </div>
       <div className="flex items-center justify-between">
-        <Skeleton.Box className="h-2 w-24 rounded-sm" />
+        <Skeleton.Box className="h-2 w-24 rounded-xs" />
         <Skeleton.Box className="h-3 w-3 rounded-full" />
       </div>
       <div className="flex items-center justify-between">
-        <Skeleton.Box className="h-2 w-20 rounded-sm" />
+        <Skeleton.Box className="h-2 w-20 rounded-xs" />
         <Skeleton.Box className="h-3 w-3 rounded-full" />
       </div>
       <div className="flex items-center justify-between">
-        <Skeleton.Box className="h-2 w-32 rounded-sm" />
+        <Skeleton.Box className="h-2 w-32 rounded-xs" />
         <Skeleton.Box className="h-3 w-3 rounded-full" />
       </div>
     </Skeleton.Root>

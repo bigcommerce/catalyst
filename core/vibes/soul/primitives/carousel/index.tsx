@@ -112,7 +112,7 @@ function Carousel({
       <div
         {...rest}
         aria-roledescription="carousel"
-        className={clsx('relative @container', hideOverflow && 'overflow-hidden', className)}
+        className={clsx('@container relative', hideOverflow && 'overflow-hidden', className)}
         onKeyDownCapture={handleKeyDown}
         role="region"
       >
@@ -181,7 +181,7 @@ function CarouselButtons({
       )}
     >
       <button
-        className="rounded-lg ring-[var(--carousel-focus,hsl(var(--primary)))] transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-25"
+        className="rounded-lg ring-[var(--carousel-focus,hsl(var(--primary)))] transition-colors duration-300 focus-visible:ring-2 focus-visible:outline-0 disabled:pointer-events-none disabled:opacity-25"
         disabled={!canScrollPrev}
         onClick={scrollPrev}
         title={previousLabel}
@@ -189,7 +189,7 @@ function CarouselButtons({
         <ArrowLeft strokeWidth={1.5} />
       </button>
       <button
-        className="rounded-lg ring-[var(--carousel-focus,hsl(var(--primary)))] transition-colors duration-300 focus-visible:outline-0 focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-25"
+        className="rounded-lg ring-[var(--carousel-focus,hsl(var(--primary)))] transition-colors duration-300 focus-visible:ring-2 focus-visible:outline-0 disabled:pointer-events-none disabled:opacity-25"
         disabled={!canScrollNext}
         onClick={scrollNext}
         title={nextLabel}

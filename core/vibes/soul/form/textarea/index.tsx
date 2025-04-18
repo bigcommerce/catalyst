@@ -12,14 +12,14 @@ import { Label } from '@/vibes/soul/form/label';
  *  :root {
  *    --textarea-light-background: hsl(var(--background));
  *    --textarea-light-text: hsl(var(--foreground));
- *    --textarea-light-placeholder: hsl(var(--contrast-gray-500));
- *    --textarea-light-border: hsl(var(--border-contrast-100));
+ *    --textarea-light-placeholder: hsl(var(--contrast-500));
+ *    --textarea-light-border: hsl(var(--contrast-100));
  *    --textarea-light-border-focus: hsl(var(--foreground));
  *    --textarea-light-border-error: hsl(var(--error));
  *    --textarea-dark-background: hsl(var(--foreground));
  *    --textarea-dark-text: hsl(var(--background));
- *    --textarea-dark-placeholder: hsl(var(--contrast-gray-100));
- *    --textarea-dark-border: hsl(var(--border-contrast-500));
+ *    --textarea-dark-placeholder: hsl(var(--contrast-100));
+ *    --textarea-dark-border: hsl(var(--contrast-500));
  *    --textarea-dark-border-focus: hsl(var(--background));
  *    --textarea-dark-border-error: hsl(var(--error));
  *  }
@@ -46,21 +46,21 @@ export const Textarea = React.forwardRef<
       <textarea
         {...rest}
         className={clsx(
-          'w-full rounded-lg border p-3 transition-colors duration-200 placeholder:font-normal focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
+          'w-full rounded-lg border p-3 transition-colors duration-200 placeholder:font-normal focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
           {
             light:
-              'bg-[var(--textarea-light-background,hsl(var(--background)))] text-[var(--textarea-light-text,hsl(var(--foreground)))] placeholder-[var(--textarea-light-placeholder,hsl(var(--contrast-gray-500)))] focus:border-[var(--textarea-light-border-focus,hsl(var(--foreground)))]',
-            dark: 'bg-[var(--textarea-dark-background,hsl(var(--foreground)))] text-[var(--textarea-dark-text,hsl(var(--background)))] placeholder-[var(--textarea-dark-placeholder,hsl(var(--contrast-gray-100)))] focus:border-[var(--textarea-dark-border-focus,hsl(var(--background)))]',
+              'bg-[var(--textarea-light-background,hsl(var(--background)))] text-[var(--textarea-light-text,hsl(var(--foreground)))] placeholder-[var(--textarea-light-placeholder,hsl(var(--contrast-500)))] focus:border-[var(--textarea-light-border-focus,hsl(var(--foreground)))]',
+            dark: 'bg-[var(--textarea-dark-background,hsl(var(--foreground)))] text-[var(--textarea-dark-text,hsl(var(--background)))] placeholder-[var(--textarea-dark-placeholder,hsl(var(--contrast-100)))] focus:border-[var(--textarea-dark-border-focus,hsl(var(--background)))]',
           }[colorScheme],
           {
             light:
               errors && errors.length > 0
                 ? 'border-[var(--textarea-light-border-error,hsl(var(--error)))]'
-                : 'border-[var(--textarea-light-border,hsl(var(--border-contrast-100)))]',
+                : 'border-[var(--textarea-light-border,hsl(var(--contrast-100)))]',
             dark:
               errors && errors.length > 0
                 ? 'border-[var(--textarea-dark-border-error,hsl(var(--error)))]'
-                : 'border-[var(--textarea-dark-border,hsl(var(--border-contrast-500)))]',
+                : 'border-[var(--textarea-dark-border,hsl(var(--contrast-500)))]',
           }[colorScheme],
         )}
         id={id}

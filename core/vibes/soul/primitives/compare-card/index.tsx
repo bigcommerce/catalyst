@@ -65,7 +65,7 @@ export function CompareCard({
   return (
     <div
       className={clsx(
-        'w-full max-w-md divide-y divide-[var(--compare-card-divider,hsl(var(--contrast-100)))] font-[family-name:var(--compare-card-font-family-primary,var(--font-family-body))] font-normal @container',
+        '@container w-full max-w-md divide-y divide-[var(--compare-card-divider,hsl(var(--contrast-100)))] font-[family-name:var(--compare-card-font-family-primary,var(--font-family-body))] font-normal',
         className,
       )}
     >
@@ -88,7 +88,7 @@ export function CompareCard({
           ))}
       </div>
       <div className="space-y-4 py-4">
-        <div className="font-[family-name:var(--compare-card-font-family-secondary,var(--font-family-mono))] text-xs font-normal uppercase text-[var(--compare-card-label,hsl(var(--foreground)))]">
+        <div className="font-[family-name:var(--compare-card-font-family-secondary,var(--font-family-mono))] text-xs font-normal text-[var(--compare-card-label,hsl(var(--foreground)))] uppercase">
           {ratingLabel}
         </div>
         {product.rating != null ? (
@@ -100,7 +100,7 @@ export function CompareCard({
         )}
       </div>
       <div className="space-y-4 py-4">
-        <div className="font-[family-name:var(--compare-card-font-family-secondary,var(--font-family-mono))] text-xs font-normal uppercase text-[var(--compare-card-label,hsl(var(--foreground)))]">
+        <div className="font-[family-name:var(--compare-card-font-family-secondary,var(--font-family-mono))] text-xs font-normal text-[var(--compare-card-label,hsl(var(--foreground)))] uppercase">
           {descriptionLabel}
         </div>
         {product.description != null && product.description !== '' ? (
@@ -115,7 +115,7 @@ export function CompareCard({
       </div>
       {product.customFields != null ? (
         <div className="space-y-4 py-4">
-          <div className="font-[family-name:var(--compare-card-font-family-secondary,var(--font-family-mono))] text-xs font-normal uppercase text-[var(--compare-card-label,hsl(var(--foreground)))]">
+          <div className="font-[family-name:var(--compare-card-font-family-secondary,var(--font-family-mono))] text-xs font-normal text-[var(--compare-card-label,hsl(var(--foreground)))] uppercase">
             {otherDetailsLabel}
           </div>
           {product.customFields.map((field, index) => (
@@ -128,7 +128,7 @@ export function CompareCard({
         </div>
       ) : (
         <div className="space-y-4 py-4">
-          <div className="font-[family-name:var(--compare-card-font-family-secondary,var(--font-family-mono))] text-xs font-normal uppercase text-[var(--compare-card-label,hsl(var(--foreground)))]">
+          <div className="font-[family-name:var(--compare-card-font-family-secondary,var(--font-family-mono))] text-xs font-normal text-[var(--compare-card-label,hsl(var(--foreground)))] uppercase">
             {otherDetailsLabel}
           </div>
           <p className="text-sm text-[var(--compare-card-description,hsl(var(--contrast-400)))]">
@@ -144,7 +144,7 @@ export function CompareCardSkeleton({ className }: { className?: string }) {
   return (
     <div
       className={clsx(
-        'w-full max-w-md divide-y divide-[var(--skeleton,hsl(var(--contrast-300)/15%))] @container',
+        '@container w-full max-w-md divide-y divide-[var(--skeleton,hsl(var(--contrast-300)/15%))]',
         className,
       )}
     >
@@ -153,15 +153,15 @@ export function CompareCardSkeleton({ className }: { className?: string }) {
         <Skeleton.Box className="h-12 rounded-full" />
       </div>
       <div className="space-y-4 py-4 text-xs">
-        <Skeleton.Text characterCount={10} className="rounded" />
-        <Skeleton.Box className="h-6 w-32 rounded" />
+        <Skeleton.Text characterCount={10} className="rounded-sm" />
+        <Skeleton.Box className="h-6 w-32 rounded-sm" />
       </div>
       <div className="space-y-4 py-4 text-xs">
-        <Skeleton.Text characterCount={12} className="rounded" />
+        <Skeleton.Text characterCount={12} className="rounded-sm" />
         <div className="text-sm">
-          <Skeleton.Text characterCount="full" className="rounded" />
-          <Skeleton.Text characterCount={45} className="rounded" />
-          <Skeleton.Text characterCount={40} className="rounded" />
+          <Skeleton.Text characterCount="full" className="rounded-sm" />
+          <Skeleton.Text characterCount={45} className="rounded-sm" />
+          <Skeleton.Text characterCount={40} className="rounded-sm" />
         </div>
       </div>
     </div>

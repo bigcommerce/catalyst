@@ -104,8 +104,13 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const { headers = {}, ...rest } = fetchOptions;
     const query = normalizeQuery(document);
     const log = this.requestLogger(query);
+    const operationInfo = getOperationInfo(query);
 
-    const graphqlUrl = await this.getGraphQLEndpoint(channelId);
+    const graphqlUrl = await this.getGraphQLEndpoint(
+      channelId,
+      operationInfo.name,
+      operationInfo.type,
+    );
     const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
       (await this.beforeRequest?.(fetchOptions)) ?? {};
 
@@ -199,8 +204,22 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return `https://store-${this.config.storeHash}-${resolvedChannelId}.${graphqlApiDomain}`;
   }
 
-  private async getGraphQLEndpoint(channelId?: string) {
-    return `${await this.getCanonicalUrl(channelId)}/graphql`;
+  private async getGraphQLEndpoint(
+    channelId?: string,
+    operationName?: string,
+    operationType?: string,
+  ) {
+    const baseUrl = new URL(`${await this.getCanonicalUrl(channelId)}/graphql`);
+
+    if (operationName) {
+      baseUrl.searchParams.set('operation', operationName);
+    }
+
+    if (operationType) {
+      baseUrl.searchParams.set('type', operationType);
+    }
+
+    return baseUrl.toString();
   }
 
   private requestLogger(document: string) {

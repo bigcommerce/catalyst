@@ -1,4 +1,4 @@
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
@@ -23,6 +23,7 @@ import {
 import { getCustomerWishlists } from './page-data';
 
 interface Props {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<SearchParams>;
 }
 
@@ -36,7 +37,7 @@ const searchParamsCache = createSearchParamsCache({
 
 async function listWishlists(
   searchParamsPromise: Promise<SearchParams>,
-  t: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
 ): Promise<Wishlist[]> {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
   const formatter = await getFormatter();
@@ -58,7 +59,11 @@ async function getPaginationInfo(
   return pageInfoTransformer(wishlists?.pageInfo ?? defaultPageInfo);
 }
 
-export default async function Wishlists({ searchParams }: Props) {
+export default async function Wishlists({ params, searchParams }: Props) {
+  const { locale } = await params;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('Account.Wishlists');
   const isMobile = await isMobileUser();
   const newWishlistModal = getNewWishlistModal(t);

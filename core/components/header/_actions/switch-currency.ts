@@ -49,7 +49,7 @@ export const updateCartCurrency = async (cartId: string, currencyCode: CurrencyC
 };
 
 export const switchCurrency = async (_prevState: SubmissionResult | null, payload: FormData) => {
-  const t = await getTranslations('Components.Header.Currency');
+  const t = await getTranslations('Components.Header.SwitchCurrency');
 
   const submission = parseWithZod(payload, { schema: currencySwitchSchema });
 

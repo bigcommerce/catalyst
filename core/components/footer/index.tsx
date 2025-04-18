@@ -7,6 +7,7 @@ import {
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
 import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { cache, JSX } from 'react';
 
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
@@ -89,24 +90,25 @@ const getLogo = async () => {
 
 const getSections = async () => {
   const data = await getLayoutData();
+  const t = await getTranslations('Components.Footer');
 
   return [
     {
-      title: 'Categories',
+      title: t('categories'),
       links: data.categoryTree.map((category) => ({
         label: category.name,
         href: category.path,
       })),
     },
     {
-      title: 'Brands',
+      title: t('brands'),
       links: removeEdgesAndNodes(data.brands).map((brand) => ({
         label: brand.name,
         href: brand.path,
       })),
     },
     {
-      title: 'Navigate',
+      title: t('navigate'),
       links: removeEdgesAndNodes(data.content.pages).map((page) => ({
         label: page.name,
         href: page.__typename === 'ExternalLinkPage' ? page.link : page.path,
@@ -136,7 +138,7 @@ export const Footer = () => {
   return (
     <FooterSection
       contactInformation={getContactInformation()}
-      contactTitle={t('contact')}
+      contactTitle={t('contactUs')}
       copyright={getCopyright()}
       logo={getLogo()}
       logoHref="/"

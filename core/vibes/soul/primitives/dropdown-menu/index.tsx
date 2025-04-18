@@ -62,7 +62,7 @@ export const DropdownMenu = ({
         <DropdownMenuPrimitive.Content
           align={align}
           className={clsx(
-            'z-50 max-h-80 rounded-2xl border border-contrast-100 bg-[var(--dropdown-menu-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2',
+            'border-contrast-100 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 max-h-80 rounded-2xl border bg-[var(--dropdown-menu-background,hsl(var(--background)))] p-2 shadow-xl @4xl:w-32 @4xl:rounded-2xl @4xl:p-2',
             className,
           )}
           sideOffset={slideOffset}
@@ -96,7 +96,7 @@ export const DropdownMenu = ({
                 <DropdownMenuPrimitive.Item
                   asChild={asChild ?? labelIsComponent}
                   className={clsx(
-                    'cursor-default rounded-lg bg-[var(--dropdown-menu-item-background,transparent)] px-2.5 py-2 font-[family-name:var(--dropdown-menu-item-font-family,var(--font-family-body))] text-sm font-medium outline-none transition-colors data-[disabled]:cursor-not-allowed data-[disabled]:bg-contrast-100/50 data-[disabled]:text-contrast-300/95',
+                    'data-disabled:bg-contrast-100/50 data-disabled:text-contrast-300/95 cursor-default rounded-lg bg-[var(--dropdown-menu-item-background,transparent)] px-2.5 py-2 font-[family-name:var(--dropdown-menu-item-font-family,var(--font-family-body))] text-sm font-medium outline-hidden transition-colors data-disabled:cursor-not-allowed',
                     {
                       default:
                         'text-[var(--dropdown-menu-item-text,hsl(var(--contrast-400)))] ring-[var(--dropdown-menu-item-focus,hsl(var(--primary)))] [&:not([data-disabled])]:hover:bg-[var(--dropdown-menu-item-background-hover,hsl(var(--contrast-100)))] [&:not([data-disabled])]:hover:text-[var(--dropdown-menu-item-text-hover,hsl(var(--foreground)))]',

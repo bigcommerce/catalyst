@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { OrderDetailsSection } from '@/vibes/soul/sections/order-details-section';
 import { orderDetailsTransformer } from '~/data-transformers/order-details-transformer';
@@ -15,7 +15,10 @@ interface Props {
 
 export default async function Order(props: Props) {
   const { id, locale } = await props.params;
-  const t = await getTranslations('Account.OrderDetails');
+
+  setRequestLocale(locale);
+
+  const t = await getTranslations('Account.Orders.Details');
   const format = await getFormatter();
 
   const order = await getCustomerOrderDetails({
@@ -30,9 +33,9 @@ export default async function Order(props: Props) {
     <OrderDetailsSection
       order={orderDetailsTransformer(order, t, format)}
       prevHref={`/${locale}/account/orders`}
-      shipmentAddressLabel={t('shippingAddressLabel')}
-      shipmentMethodLabel={t('shippingMethodLabel')}
-      summaryTotalLabel={t('summaryTotalLabel')}
+      shipmentAddressLabel={t('shippingAddress')}
+      shipmentMethodLabel={t('shippingMethod')}
+      summaryTotalLabel={t('summaryTotal')}
       title={t('title', { orderNumber: id })}
     />
   );

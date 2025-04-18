@@ -35,7 +35,7 @@ const CustomerChangePasswordMutation = graphql(`
 `);
 
 export const changePassword: ChangePasswordAction = async (prevState, formData) => {
-  const t = await getTranslations('Account.Settings.ChangePassword');
+  const t = await getTranslations('Account.Settings');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const submission = parseWithZod(formData, { schema: changePasswordSchema });
@@ -79,6 +79,6 @@ export const changePassword: ChangePasswordAction = async (prevState, formData) 
       return submission.reply({ formErrors: [error.message] });
     }
 
-    return submission.reply({ formErrors: [t('error')] });
+    return submission.reply({ formErrors: [t('somethingWentWrong')] });
   }
 };

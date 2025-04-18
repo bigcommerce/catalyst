@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
@@ -19,7 +19,7 @@ import { WishlistActions, WishlistActionsSkeleton } from './_components/wishlist
 import { getCustomerWishlist } from './page-data';
 
 interface Props {
-  params: Promise<{ id: string }>;
+  params: Promise<{ locale: string; id: string }>;
   searchParams: Promise<SearchParams>;
 }
 
@@ -33,8 +33,8 @@ const searchParamsCache = createSearchParamsCache({
 
 async function getWishlist(
   id: string,
-  t: ExistingResultType<typeof getTranslations>,
-  pt: ExistingResultType<typeof getTranslations>,
+  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
+  pt: ExistingResultType<typeof getTranslations<'Product.ProductDetails'>>,
   searchParamsPromise: Promise<SearchParams>,
 ): Promise<Wishlist> {
   const entityId = Number(id);
@@ -61,7 +61,10 @@ async function getPaginationInfo(
 }
 
 export default async function WishlistPage({ params, searchParams }: Props) {
-  const { id } = await params;
+  const { locale, id } = await params;
+
+  setRequestLocale(locale);
+
   const t = await getTranslations('Account.Wishlists');
   const pt = await getTranslations('Product.ProductDetails');
   const wishlistActions = (wishlist?: Wishlist) => {

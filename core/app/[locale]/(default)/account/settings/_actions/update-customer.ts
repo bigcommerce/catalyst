@@ -44,7 +44,7 @@ const UpdateCustomerMutation = graphql(`
 `);
 
 export const updateCustomer: UpdateAccountAction = async (prevState, formData) => {
-  const t = await getTranslations('Register');
+  const t = await getTranslations('Account.Settings');
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const submission = parseWithZod(formData, { schema: updateAccountSchema });
@@ -79,7 +79,7 @@ export const updateCustomer: UpdateAccountAction = async (prevState, formData) =
 
     return {
       account: submission.value,
-      successMessage: t('successfulUpdate'),
+      successMessage: t('passwordUpdated'),
       lastResult: submission.reply(),
     };
   } catch (error) {
@@ -104,7 +104,7 @@ export const updateCustomer: UpdateAccountAction = async (prevState, formData) =
 
     return {
       account: prevState.account,
-      lastResult: submission.reply({ formErrors: [t('Errors.error')] }),
+      lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
     };
   }
 };

@@ -6,11 +6,11 @@ import type { Metadata } from 'next';
 import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
-import { getMessages, setRequestLocale } from 'next-intl/server';
+import { setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
 import { PropsWithChildren } from 'react';
 
-import '../globals.css';
+import '../../globals.css';
 
 import { fonts } from '~/app/fonts';
 import { client } from '~/client';
@@ -98,8 +98,6 @@ export default async function RootLayout({ params, children }: Props) {
   // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
   setRequestLocale(locale);
 
-  const messages = await getMessages();
-
   return (
     <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
       <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
@@ -108,7 +106,7 @@ export default async function RootLayout({ params, children }: Props) {
           <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
         </head>
         <body>
-          <NextIntlClientProvider locale={locale} messages={messages}>
+          <NextIntlClientProvider>
             <NuqsAdapter>
               <Providers>
                 {toastNotificationCookieData && (
