@@ -104,3 +104,5 @@ export default async function Compare(props: Props) {
     />
   );
 }
+
+export const experimental_ppr = false;
