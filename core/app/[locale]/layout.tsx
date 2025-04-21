@@ -94,7 +94,7 @@ export default async function RootLayout({ params, children }: Props) {
 
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
-      <body>
+      <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
           <NuqsAdapter>
             <Providers>
