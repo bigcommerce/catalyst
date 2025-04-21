@@ -8,7 +8,7 @@ import { client } from './client';
 import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
 
-const withMakeswift = createWithMakeswift({ previewMode: false });
+const withMakeswift = createWithMakeswift();
 const withNextIntl = createNextIntlPlugin();
 
 const LocaleQuery = graphql(`
