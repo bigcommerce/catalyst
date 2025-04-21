@@ -126,7 +126,7 @@ export const Header = async () => {
     return getCartCount(cartId, customerAccessToken);
   });
 
-  const streamableActiveCurrencyId = Streamable.from(async () => {
+  const streamableActiveCurrencyId = Streamable.from(async (): Promise<string | undefined> => {
     const currencyCode = await getPreferredCurrencyCode();
 
     const defaultCurrency = currencies.find(({ isDefault }) => isDefault);
@@ -153,8 +153,7 @@ export const Header = async () => {
         activeLocaleId: locale,
         locales,
         currencies,
-        // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-        activeCurrencyId: streamableActiveCurrencyId as string,
+        activeCurrencyId: streamableActiveCurrencyId,
         currencyAction: switchCurrency,
       }}
     />

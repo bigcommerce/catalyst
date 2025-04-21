@@ -97,7 +97,7 @@ interface Props<S extends SearchResult> {
   locales?: Locale[];
   activeLocaleId?: string;
   currencies?: Currency[];
-  activeCurrencyId?: string;
+  activeCurrencyId?: Streamable<string | undefined>;
   currencyAction?: CurrencyAction;
   logo?: Streamable<string | { src: string; alt: string } | null>;
   logoWidth?: number;
