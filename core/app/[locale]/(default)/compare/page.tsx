@@ -104,3 +104,7 @@ export default async function Compare(props: Props) {
     />
   );
 }
+
+// Disabled to circumvent a bug in Next.js and PPR
+// More info: https://github.com/vercel/next.js/issues/59407
+export const experimental_ppr = false;
