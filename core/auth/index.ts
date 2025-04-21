@@ -52,6 +52,11 @@ const LogoutMutation = graphql(`
   mutation LogoutMutation {
     logout {
       result
+      cartUnassignResult {
+        cart {
+          entityId
+        }
+      }
     }
   }
 `);
@@ -235,7 +240,7 @@ const config = {
 
       if (customerAccessToken) {
         try {
-          await client.fetch({
+          const response = await client.fetch({
             document: LogoutMutation,
             variables: {},
             customerAccessToken,
@@ -244,7 +249,13 @@ const config = {
             },
           });
 
-          await clearCartId();
+          const cartId = response.data.logout.cartUnassignResult.cart?.entityId;
+
+          if (cartId) {
+            await setCartId(cartId);
+          } else {
+            await clearCartId();
+          }
         } catch (error) {
           // eslint-disable-next-line no-console
           console.error(error);
