@@ -1,16 +1,15 @@
 import { cache } from 'react';
 
-import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { graphql, VariablesOf } from '~/client/graphql';
+import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { BreadcrumbsCategoryFragment } from '~/components/breadcrumbs/fragment';
 
 const CategoryPageQuery = graphql(
   `
-    query CategoryPageQuery($categoryId: Int!) {
+    query CategoryPageQuery($entityId: Int!) {
       site {
-        category(entityId: $categoryId) {
+        category(entityId: $entityId) {
           entityId
           name
           ...BreadcrumbsFragment
@@ -20,7 +19,7 @@ const CategoryPageQuery = graphql(
             metaKeywords
           }
         }
-        categoryTree(rootEntityId: $categoryId) {
+        categoryTree(rootEntityId: $entityId) {
           entityId
           name
           path
@@ -48,14 +47,10 @@ const CategoryPageQuery = graphql(
   [BreadcrumbsCategoryFragment],
 );
 
-type Variables = VariablesOf<typeof CategoryPageQuery>;
-
-export const getCategoryPageData = cache(async (variables: Variables) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-
+export const getCategoryPageData = cache(async (entityId: number, customerAccessToken?: string) => {
   const response = await client.fetch({
     document: CategoryPageQuery,
-    variables,
+    variables: { entityId },
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
