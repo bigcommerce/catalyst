@@ -1,21 +1,9 @@
-import { Streamable } from '@/vibes/soul/lib/streamable';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
-import { Product } from '@/vibes/soul/primitives/product-card';
 import { ProductList } from '@/vibes/soul/sections/product-list';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
+import { type FeaturedProductListData } from '~/ui/featured-product-list';
 
-interface Link {
-  label: string;
-  href: string;
-}
-
-export interface FeaturedProductsListProps {
-  title: string;
-  description?: string;
-  cta?: Link;
-  products: Streamable<Product[]>;
-  emptyStateTitle?: Streamable<string>;
-  emptyStateSubtitle?: Streamable<string>;
+export interface FeaturedProductsListProps extends FeaturedProductListData {
   placeholderCount?: number;
 }
 

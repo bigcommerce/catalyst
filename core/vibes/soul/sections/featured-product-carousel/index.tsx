@@ -1,18 +1,18 @@
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { AnimatedLink } from '@/vibes/soul/primitives/animated-link';
-import { CarouselProduct, ProductCarousel } from '@/vibes/soul/sections/product-carousel';
+import { ProductCarousel } from '@/vibes/soul/sections/product-carousel';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
+import { type FeaturedProductCarouselData } from '~/ui/featured-product-carousel';
 
 interface Link {
   label: string;
   href: string;
 }
 
-export interface FeaturedProductCarouselProps {
+export interface FeaturedProductCarouselProps extends FeaturedProductCarouselData {
   title: string;
   description?: string;
   cta?: Link;
-  products: Streamable<CarouselProduct[]>;
   emptyStateTitle?: Streamable<string>;
   emptyStateSubtitle?: Streamable<string>;
   placeholderCount?: number;

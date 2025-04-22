@@ -8,17 +8,12 @@ import {
   CarouselContent,
   CarouselItem,
 } from '@/vibes/soul/primitives/carousel';
-import {
-  CompareCard,
-  CompareCardSkeleton,
-  CompareCardWithId,
-} from '@/vibes/soul/primitives/compare-card';
-import { CompareAddToCartAction } from '@/vibes/soul/primitives/compare-card/add-to-cart-form';
+import { CompareCard, CompareCardSkeleton } from '@/vibes/soul/primitives/compare-card';
+import { type CompareSectionData } from '~/ui/compare-section';
 
-interface Props {
+interface Props extends CompareSectionData {
   className?: string;
   title?: string;
-  products: Streamable<CompareCardWithId[]>;
   emptyStateTitle?: Streamable<string | null>;
   emptyStateSubtitle?: Streamable<string | null>;
   addToCartLabel?: string;
@@ -32,7 +27,6 @@ interface Props {
   noOtherDetailsLabel?: string;
   viewOptionsLabel?: string;
   preorderLabel?: string;
-  addToCartAction?: CompareAddToCartAction;
 }
 
 export function CompareSection({

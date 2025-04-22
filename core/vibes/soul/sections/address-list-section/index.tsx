@@ -1,42 +1,32 @@
 'use client';
 
-import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
+import { getFormProps, getInputProps, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { startTransition, useActionState, useEffect, useOptimistic, useState } from 'react';
 import { useFormStatus } from 'react-dom';
-import { z } from 'zod';
 
 import { DynamicForm } from '@/vibes/soul/form/dynamic-form';
-import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { Button } from '@/vibes/soul/primitives/button';
 import { Spinner } from '@/vibes/soul/primitives/spinner';
 import { toast } from '@/vibes/soul/primitives/toaster';
+import {
+  type Address,
+  type AddressListData,
+  type AddressListState,
+  type Field,
+  type FieldGroup,
+} from '~/ui/address-list-section';
 
 import { schema } from './schema';
-
-export type Address = z.infer<typeof schema>;
 
 export interface DefaultAddressConfiguration {
   id: string | null;
 }
 
-type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
-
-interface State<A extends Address, F extends Field> {
-  addresses: A[];
-  defaultAddress?: DefaultAddressConfiguration;
-  lastResult: SubmissionResult | null;
-  fields: Array<F | FieldGroup<F>>;
-}
-
-interface Props<A extends Address, F extends Field> {
+interface Props<A extends Address, F extends Field> extends AddressListData<A, F> {
   title?: string;
-  addresses: A[];
-  fields: Array<F | FieldGroup<F>>;
   minimumAddressCount?: number;
-  defaultAddress?: DefaultAddressConfiguration;
-  addressAction: Action<State<A, F>, FormData>;
   editLabel?: string;
   deleteLabel?: string;
   updateLabel?: string;
@@ -68,49 +58,49 @@ export function AddressListSection<A extends Address, F extends Field>({
     fields,
   });
 
-  const [optimisticState, setOptimisticState] = useOptimistic<State<Address, F>, FormData>(
-    state,
-    (prevState, formData) => {
-      const intent = formData.get('intent');
-      const submission = parseWithZod(formData, { schema });
+  const [optimisticState, setOptimisticState] = useOptimistic<
+    AddressListState<Address, F>,
+    FormData
+  >(state, (prevState, formData) => {
+    const intent = formData.get('intent');
+    const submission = parseWithZod(formData, { schema });
 
-      if (submission.status !== 'success') return prevState;
+    if (submission.status !== 'success') return prevState;
 
-      switch (intent) {
-        case 'create': {
-          const nextAddress = submission.value;
+    switch (intent) {
+      case 'create': {
+        const nextAddress = submission.value;
 
-          return {
-            ...prevState,
-            addresses: [...prevState.addresses, nextAddress],
-          };
-        }
-
-        case 'update': {
-          return {
-            ...prevState,
-            addresses: prevState.addresses.map((a) =>
-              a.id === submission.value.id ? submission.value : a,
-            ),
-          };
-        }
-
-        case 'delete': {
-          return {
-            ...prevState,
-            addresses: prevState.addresses.filter((a) => a.id !== submission.value.id),
-          };
-        }
-
-        case 'setDefault': {
-          return { ...prevState, defaultAddress: { id: submission.value.id } };
-        }
-
-        default:
-          return prevState;
+        return {
+          ...prevState,
+          addresses: [...prevState.addresses, nextAddress],
+        };
       }
-    },
-  );
+
+      case 'update': {
+        return {
+          ...prevState,
+          addresses: prevState.addresses.map((a) =>
+            a.id === submission.value.id ? submission.value : a,
+          ),
+        };
+      }
+
+      case 'delete': {
+        return {
+          ...prevState,
+          addresses: prevState.addresses.filter((a) => a.id !== submission.value.id),
+        };
+      }
+
+      case 'setDefault': {
+        return { ...prevState, defaultAddress: { id: submission.value.id } };
+      }
+
+      default:
+        return prevState;
+    }
+  });
   const [activeAddressIds, setActiveAddressIds] = useState<string[]>([]);
   const [showNewAddressForm, setShowNewAddressForm] = useState(false);
   const [form] = useForm({

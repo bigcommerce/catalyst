@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { Address, AddressListSection } from '@/vibes/soul/sections/address-list-section';
 import {
   fieldToFieldNameTransformer,
   formFieldTransformer,
@@ -14,6 +13,7 @@ import {
   transformFieldsToLayout,
 } from '~/data-transformers/form-field-transformer/utils';
 import { exists } from '~/lib/utils';
+import { type Address, AddressListSection } from '~/ui/address-list-section';
 
 import { addressAction } from './_actions/address-action';
 import { getCustomerAddresses } from './page-data';

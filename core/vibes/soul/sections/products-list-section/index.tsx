@@ -6,7 +6,7 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Product } from '@/vibes/soul/primitives/product-card';
 import * as SidePanel from '@/vibes/soul/primitives/side-panel';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
+import { Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductList } from '@/vibes/soul/sections/product-list';
 import { Filter, FiltersPanel } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import {
@@ -14,6 +14,7 @@ import {
   SortingSkeleton,
   Option as SortOption,
 } from '@/vibes/soul/sections/products-list-section/sorting';
+import { type Breadcrumb } from '~/ui/breadcrumbs';
 
 interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;

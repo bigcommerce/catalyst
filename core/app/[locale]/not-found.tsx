@@ -1,8 +1,8 @@
 import { getTranslations } from 'next-intl/server';
 
-import { NotFound as NotFoundSection } from '@/vibes/soul/sections/not-found';
 import { Footer } from '~/components/footer';
 import { Header } from '~/components/header';
+import { NotFound as NotFoundSection } from '~/ui/not-found';
 
 export default async function NotFound() {
   const t = await getTranslations('NotFound');

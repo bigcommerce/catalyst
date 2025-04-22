@@ -2,11 +2,11 @@ import { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { ReactNode } from 'react';
 
-import { Maintenance as MaintenanceSection } from '@/vibes/soul/sections/maintenance';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { StoreLogoFragment } from '~/components/store-logo/fragment';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
+import { Maintenance as MaintenanceSection } from '~/ui/maintenance';
 
 const MaintenancePageQuery = graphql(
   `

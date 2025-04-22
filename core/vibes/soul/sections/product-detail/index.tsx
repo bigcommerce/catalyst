@@ -1,40 +1,18 @@
-import { ReactNode } from 'react';
-
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
-import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
+import { PriceLabel } from '@/vibes/soul/primitives/price-label';
 import { Rating } from '@/vibes/soul/primitives/rating';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
-import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
+import { Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
+import { type Breadcrumb } from '~/ui/breadcrumbs';
+import { type ProductDetailData } from '~/ui/product-detail';
 
-import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
+import { ProductDetailForm } from './product-detail-form';
 import { Field } from './schema';
 
-interface ProductDetailProduct {
-  id: string;
-  title: string;
-  href: string;
-  images: Streamable<Array<{ src: string; alt: string }>>;
-  price?: Streamable<Price | null>;
-  subtitle?: string;
-  badge?: string;
-  rating?: Streamable<number | null>;
-  summary?: Streamable<string>;
-  description?: Streamable<string | ReactNode | null>;
-  accordions?: Streamable<
-    Array<{
-      title: string;
-      content: ReactNode;
-    }>
-  >;
-}
-
-export interface ProductDetailProps<F extends Field> {
+export interface ProductDetailProps<F extends Field> extends ProductDetailData<F> {
   breadcrumbs?: Streamable<Breadcrumb[]>;
-  product: Streamable<ProductDetailProduct | null>;
-  action: ProductDetailFormAction<F>;
-  fields: Streamable<F[]>;
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;

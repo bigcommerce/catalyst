@@ -5,13 +5,13 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 // TODO: Add recaptcha token
 // import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
-import { DynamicFormSection } from '@/vibes/soul/sections/dynamic-form-section';
 import { formFieldTransformer } from '~/data-transformers/form-field-transformer';
 import {
   CUSTOMER_FIELDS_TO_EXCLUDE,
   FULL_NAME_FIELDS,
 } from '~/data-transformers/form-field-transformer/utils';
 import { exists } from '~/lib/utils';
+import { DynamicFormSection } from '~/ui/dynamic-form-section';
 
 import { registerCustomer } from './_actions/register-customer';
 import { getRegisterCustomerQuery } from './page-data';

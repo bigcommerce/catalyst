@@ -1,13 +1,12 @@
-import { ChangePasswordAction, ChangePasswordForm } from './change-password-form';
-import { Account, UpdateAccountAction, UpdateAccountForm } from './update-account-form';
+import { type AccountSettingsData } from '~/ui/account-settings-section';
 
-interface Props {
+import { ChangePasswordForm } from './change-password-form';
+import { UpdateAccountForm } from './update-account-form';
+
+interface Props extends AccountSettingsData {
   title?: string;
-  account: Account;
-  updateAccountAction: UpdateAccountAction;
   updateAccountSubmitLabel?: string;
   changePasswordTitle?: string;
-  changePasswordAction: ChangePasswordAction;
   changePasswordSubmitLabel?: string;
   currentPasswordLabel?: string;
   newPasswordLabel?: string;

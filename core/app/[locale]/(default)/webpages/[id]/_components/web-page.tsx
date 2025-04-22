@@ -1,5 +1,6 @@
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
+import { BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
+import { type Breadcrumb, Breadcrumbs } from '~/ui/breadcrumbs';
 
 export interface WebPage {
   title: string;

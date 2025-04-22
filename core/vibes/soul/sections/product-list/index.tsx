@@ -8,9 +8,9 @@ import {
   ProductCardSkeleton,
 } from '@/vibes/soul/primitives/product-card';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
+import { type ProductListData } from '~/ui/product-list';
 
-interface ProductListProps {
-  products: Streamable<Product[]>;
+interface ProductListProps extends ProductListData {
   compareProducts?: Streamable<Product[]>;
   className?: string;
   colorScheme?: 'light' | 'dark';

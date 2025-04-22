@@ -5,7 +5,7 @@ import {
   BreadcrumbsCategoryFragment,
   BreadcrumbsWebPageFragment,
 } from '~/components/breadcrumbs/fragment';
-import { Breadcrumb } from '~/vibes/soul/sections/breadcrumbs';
+import { type Breadcrumb } from '~/ui/breadcrumbs';
 
 type BreadcrumbsResult =
   | ResultOf<typeof BreadcrumbsWebPageFragment>

@@ -1,20 +1,12 @@
 'use client';
 
-import { SubmissionResult, useForm } from '@conform-to/react';
-import { ReactNode, useActionState, useEffect } from 'react';
+import { useForm } from '@conform-to/react';
+import { useActionState, useEffect } from 'react';
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { useRouter } from '~/i18n/routing';
-
-type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
-
-interface State {
-  lastResult: SubmissionResult | null;
-  successMessage?: ReactNode;
-}
-
-export type CompareAddToCartAction = Action<State, FormData>;
+import { type CompareAddToCartAction } from '~/ui/compare-section';
 
 interface Props {
   disabled?: boolean;

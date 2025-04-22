@@ -5,8 +5,8 @@ import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
-import { FeaturedBlogPostList } from '@/vibes/soul/sections/featured-blog-post-list';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
+import { FeaturedBlogPostList } from '~/ui/featured-blog-post-list';
 
 import { getBlog, getBlogPosts } from './page-data';
 

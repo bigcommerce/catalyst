@@ -5,9 +5,8 @@ import { cache } from 'react';
 import * as z from 'zod';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
-import { CompareCardWithId } from '@/vibes/soul/primitives/compare-card';
-import { CompareSection } from '@/vibes/soul/sections/compare-section';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
+import { type CompareCardWithId, CompareSection } from '~/ui/compare-section';
 
 import { addToCart } from './_actions/add-to-cart';
 import { getCompareData } from './page-data';

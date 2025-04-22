@@ -1,14 +1,12 @@
 import { clsx } from 'clsx';
 
-import { DynamicForm, DynamicFormAction } from '@/vibes/soul/form/dynamic-form';
-import { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
+import { DynamicForm } from '@/vibes/soul/form/dynamic-form';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
+import { type DynamicFormData, type Field } from '~/ui/dynamic-form-section';
 
-interface Props<F extends Field> {
+interface Props<F extends Field> extends DynamicFormData<F> {
   title?: string;
   subtitle?: string;
-  action: DynamicFormAction<F>;
-  fields: Array<F | FieldGroup<F>>;
   submitLabel?: string;
   className?: string;
 }

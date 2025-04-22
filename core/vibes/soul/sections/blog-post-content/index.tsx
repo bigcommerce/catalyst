@@ -1,35 +1,13 @@
 import { clsx } from 'clsx';
 
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Stream } from '@/vibes/soul/lib/streamable';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
-import { Breadcrumb, Breadcrumbs, BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
+import { BreadcrumbsSkeleton } from '@/vibes/soul/sections/breadcrumbs';
 import { Image } from '~/components/image';
+import { type BlogPostContentData } from '~/ui/blog-post-content';
+import { Breadcrumbs } from '~/ui/breadcrumbs';
 
-interface Tag {
-  label: string;
-  link: {
-    href: string;
-    target?: string;
-  };
-}
-
-interface Image {
-  src: string;
-  alt: string;
-}
-
-export interface BlogPostContentBlogPost {
-  title: string;
-  author?: string;
-  date: string;
-  tags?: Tag[];
-  content: string;
-  image?: Image;
-}
-
-interface Props {
-  blogPost: Streamable<BlogPostContentBlogPost>;
-  breadcrumbs?: Streamable<Breadcrumb[]>;
+interface Props extends BlogPostContentData {
   className?: string;
 }
 

@@ -4,11 +4,11 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
-import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
 } from '~/data-transformers/breadcrumbs-transformer';
+import { type Breadcrumb } from '~/ui/breadcrumbs';
 
 import { WebPageContent, WebPage as WebPageData } from '../_components/web-page';
 

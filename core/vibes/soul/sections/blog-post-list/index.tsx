@@ -1,14 +1,10 @@
 import { clsx } from 'clsx';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
-import {
-  BlogPostCard,
-  BlogPostCardBlogPost,
-  BlogPostCardSkeleton,
-} from '@/vibes/soul/primitives/blog-post-card';
+import { BlogPostCard, BlogPostCardSkeleton } from '@/vibes/soul/primitives/blog-post-card';
+import { type BlogPostListData } from '~/ui/blog-post-list';
 
-interface Props {
-  posts: Streamable<BlogPostCardBlogPost[]>;
+interface Props extends BlogPostListData {
   className?: string;
   emptyStateSubtitle?: Streamable<string | null>;
   emptyStateTitle?: Streamable<string | null>;

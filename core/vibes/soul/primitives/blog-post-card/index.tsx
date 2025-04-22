@@ -2,19 +2,7 @@ import { clsx } from 'clsx';
 
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
-
-export interface BlogPostCardBlogPost {
-  id: string;
-  author?: string | null;
-  content: string;
-  date: string;
-  image?: {
-    src: string;
-    alt: string;
-  };
-  href: string;
-  title: string;
-}
+import { type BlogPostCardBlogPost } from '~/ui/blog-post-list';
 
 interface Props {
   blogPost: BlogPostCardBlogPost;

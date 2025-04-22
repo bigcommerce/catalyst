@@ -10,13 +10,13 @@ import { useTranslations } from 'next-intl';
 import { getTranslations } from 'next-intl/server';
 import { cache, JSX } from 'react';
 
-import { Footer as FooterSection } from '@/vibes/soul/sections/footer';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
+import { Footer as FooterSection } from '~/ui/footer';
 
 import { FooterFragment } from './fragment';
 import { AmazonIcon } from './payment-icons/amazon';

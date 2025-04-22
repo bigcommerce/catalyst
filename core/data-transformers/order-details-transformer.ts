@@ -1,7 +1,7 @@
 import { getFormatter, getTranslations } from 'next-intl/server';
 
-import { Order } from '@/vibes/soul/sections/order-details-section';
 import { ExistingResultType } from '~/client/util';
+import { Order } from '~/ui/order-details-section';
 
 import { getCustomerOrderDetails } from '../app/[locale]/(default)/account/orders/[id]/page-data';
 

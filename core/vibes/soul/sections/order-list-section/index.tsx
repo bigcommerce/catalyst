@@ -1,11 +1,10 @@
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
+import { type OrderListData } from '~/ui/order-list-section';
 
 import { OrderList } from './order-list';
-import { Order } from './order-list-item';
 
-interface Props {
+interface Props extends OrderListData {
   title?: string;
-  orders: Order[] | Promise<Order[]>;
   paginationInfo?: CursorPaginationInfo | Promise<CursorPaginationInfo>;
   orderNumberLabel?: string;
   totalLabel?: string;

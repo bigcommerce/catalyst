@@ -3,6 +3,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+import { type OrderData } from '~/ui/order-details-section';
 
 interface Summary {
   lineItems: Array<{
@@ -70,8 +71,7 @@ export interface Order {
   summary: Summary;
 }
 
-interface Props {
-  order: Order;
+interface Props extends OrderData {
   title?: string;
   shipmentAddressLabel?: string;
   shipmentMethodLabel?: string;
@@ -128,6 +128,9 @@ function Shipment({
   addressLabel = 'Shipping address',
   methodLabel = 'Shipping method',
 }: {
+  // @todo  OrderSection['order']['destinations'][number]?
+  // What is the best DX for breaking out interface fields?
+  // Maybe just export Order and the primitives?
   destination: Destination;
   addressLabel?: string;
   methodLabel?: string;

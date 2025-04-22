@@ -1,6 +1,6 @@
 'use client';
 
-import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
+import { getFormProps, getInputProps, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -8,15 +8,9 @@ import { useFormStatus } from 'react-dom';
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
+import { type ForgotPasswordAction } from '~/ui/forgot-password-section';
 
 import { schema } from './schema';
-
-type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
-
-export type ForgotPasswordAction = Action<
-  { lastResult: SubmissionResult | null; successMessage?: string },
-  FormData
->;
 
 interface Props {
   action: ForgotPasswordAction;

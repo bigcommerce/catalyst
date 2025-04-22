@@ -6,7 +6,6 @@ import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/ser
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 import { Wishlist, WishlistDetails } from '@/vibes/soul/sections/wishlist-details';
 import { addWishlistItemToCart } from '~/app/[locale]/(default)/account/wishlists/[id]/_actions/add-to-cart';
@@ -18,6 +17,7 @@ import { ExistingResultType } from '~/client/util';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { publicWishlistDetailsTransformer } from '~/data-transformers/wishlists-transformer';
 import { isMobileUser } from '~/lib/user-agent';
+import { type Breadcrumb, Breadcrumbs } from '~/ui/breadcrumbs';
 
 import { getPublicWishlist } from './page-data';
 

@@ -6,8 +6,8 @@ import { parseWithZod } from '@conform-to/zod';
 import { FragmentOf } from 'gql.tada';
 import { getTranslations } from 'next-intl/server';
 
-import { CartLineItem } from '@/vibes/soul/sections/cart';
 import { cartLineItemActionFormDataSchema } from '@/vibes/soul/sections/cart/schema';
+import { type CartLineItem } from '~/ui/cart';
 
 import { DigitalItemFragment, PhysicalItemFragment } from '../page-data';
 

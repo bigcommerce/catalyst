@@ -9,17 +9,12 @@ import {
   CarouselItem,
   CarouselScrollbar,
 } from '@/vibes/soul/primitives/carousel';
-import {
-  type Product,
-  ProductCard,
-  ProductCardSkeleton,
-} from '@/vibes/soul/primitives/product-card';
+import { ProductCard, ProductCardSkeleton } from '@/vibes/soul/primitives/product-card';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
+import { type FeaturedProductCarouselData } from '~/ui/featured-product-carousel';
 
-export type CarouselProduct = Product;
-
-export interface ProductCarouselProps {
-  products: Streamable<CarouselProduct[]>;
+// @todo remove featured-product-carousel/interface.ts and use this interface instead
+export interface ProductCarouselProps extends FeaturedProductCarouselData {
   className?: string;
   colorScheme?: 'light' | 'dark';
   aspectRatio?: '5:6' | '3:4' | '1:1';

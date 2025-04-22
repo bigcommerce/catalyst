@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 
-import { Error as ErrorSection } from '@/vibes/soul/sections/error';
+import { Error as ErrorSection } from '~/ui/error';
 
 interface Props {
   error: Error & { digest?: string };

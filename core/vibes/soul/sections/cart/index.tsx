@@ -1,12 +1,64 @@
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Stream } from '@/vibes/soul/lib/streamable';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
+import {
+  type CartData,
+  type CartDataData,
+  type CartLineItem,
+  type CouponCode,
+  type Shipping,
+} from '~/ui/cart';
 
-import { CartClient, Cart as CartData, CartLineItem, CartProps } from './client';
+import { CartClient } from './client';
 
-export { type CartLineItem } from './client';
+interface CartDataExtensions<LineItem extends CartLineItem> extends CartDataData<LineItem> {
+  totalLabel?: string;
+}
+
+interface CouponCodeExtensions extends CouponCode {
+  ctaLabel?: string;
+  disabled?: boolean;
+  label?: string;
+  placeholder?: string;
+  removeLabel?: string;
+}
+
+interface ShippingExtensions extends Shipping {
+  showShippingForm?: boolean;
+  shippingLabel?: string;
+  addLabel?: string;
+  changeLabel?: string;
+  countryLabel?: string;
+  cityLabel?: string;
+  stateLabel?: string;
+  postalCodeLabel?: string;
+  updateShippingOptionsLabel?: string;
+  viewShippingOptionsLabel?: string;
+  cancelLabel?: string;
+  editAddressLabel?: string;
+  shippingOptionsLabel?: string;
+  updateShippingLabel?: string;
+  addShippingLabel?: string;
+  noShippingOptionsLabel?: string;
+}
+
+interface Props<LineItem extends CartLineItem = CartLineItem>
+  extends CartData<
+    LineItem,
+    CartDataExtensions<LineItem>,
+    CouponCodeExtensions,
+    ShippingExtensions
+  > {
+  title?: string;
+  summaryTitle?: string;
+  emptyState?: CartEmptyState;
+  checkoutLabel?: string;
+  deleteLineItemLabel?: string;
+  decrementLineItemLabel?: string;
+  incrementLineItemLabel?: string;
+}
 
 export function Cart<LineItem extends CartLineItem>({
   cart: streamableCart,
@@ -14,9 +66,7 @@ export function Cart<LineItem extends CartLineItem>({
   title = 'Cart',
   summaryTitle = 'Summary',
   ...props
-}: Omit<CartProps<LineItem>, 'cart'> & {
-  cart: Streamable<CartData<LineItem>>;
-}) {
+}: Props<LineItem>) {
   return (
     <Stream
       fallback={<CartSkeleton summaryTitle={summaryTitle} title={title} />}

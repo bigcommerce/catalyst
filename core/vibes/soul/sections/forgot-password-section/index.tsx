@@ -1,9 +1,10 @@
-import { ForgotPasswordAction, ForgotPasswordForm } from './forgot-password-form';
+import { type ForgotPasswordData } from '~/ui/forgot-password-section';
 
-interface Props {
+import { ForgotPasswordForm } from './forgot-password-form';
+
+interface Props extends ForgotPasswordData {
   title?: string;
   subtitle?: string;
-  action: ForgotPasswordAction;
   emailLabel?: string;
   submitLabel?: string;
 }

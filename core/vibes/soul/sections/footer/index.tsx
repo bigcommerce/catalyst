@@ -4,20 +4,11 @@ import { forwardRef, ReactNode, type Ref } from 'react';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Logo } from '@/vibes/soul/primitives/logo';
 import { Link } from '~/components/link';
+import { type FooterData } from '~/ui/footer';
 
 interface Image {
   src: string;
   alt: string;
-}
-
-interface Link {
-  href: string;
-  label: string;
-}
-
-export interface Section {
-  title?: string;
-  links: Link[];
 }
 
 interface SocialMediaLink {
@@ -30,9 +21,8 @@ interface ContactInformation {
   phone?: string;
 }
 
-interface Props {
+interface Props extends FooterData {
   logo?: Streamable<string | Image | null>;
-  sections: Streamable<Section[]>;
   copyright?: Streamable<string | null>;
   contactInformation?: Streamable<ContactInformation | null>;
   paymentIcons?: Streamable<ReactNode[] | null>;

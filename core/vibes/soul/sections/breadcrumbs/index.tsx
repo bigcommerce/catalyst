@@ -1,17 +1,12 @@
 import { clsx } from 'clsx';
 import { ChevronRight } from 'lucide-react';
 
-import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { Stream } from '@/vibes/soul/lib/streamable';
 import { AnimatedLink } from '@/vibes/soul/primitives/animated-link';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
+import { type BreadcrumbsData } from '~/ui/breadcrumbs';
 
-export interface Breadcrumb {
-  label: string;
-  href: string;
-}
-
-export interface BreadcrumbsProps {
-  breadcrumbs: Streamable<Breadcrumb[]>;
+export interface BreadcrumbsProps extends BreadcrumbsData {
   className?: string;
 }
 

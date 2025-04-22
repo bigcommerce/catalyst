@@ -1,10 +1,10 @@
 import { Button } from '@/vibes/soul/primitives/button';
+import { type ErrorData } from '~/ui/error';
 
-interface Props {
+interface Props extends ErrorData {
   title: string;
   subtitle: string;
   ctaLabel?: string;
-  ctaAction?: () => void | Promise<void>;
 }
 
 export function Error({

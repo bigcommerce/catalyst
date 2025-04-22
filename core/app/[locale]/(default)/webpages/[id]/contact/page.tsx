@@ -7,11 +7,11 @@ import { DynamicForm } from '@/vibes/soul/form/dynamic-form';
 import type { Field, FieldGroup } from '@/vibes/soul/form/dynamic-form/schema';
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
-import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 import {
   breadcrumbsTransformer,
   truncateBreadcrumbs,
 } from '~/data-transformers/breadcrumbs-transformer';
+import { type Breadcrumb } from '~/ui/breadcrumbs';
 
 import { WebPage, WebPageContent } from '../_components/web-page';
 

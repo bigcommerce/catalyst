@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
-import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
+import { CartEmptyState } from '@/vibes/soul/sections/cart';
 import { getCartId } from '~/lib/cart';
 import { exists } from '~/lib/utils';
+import { Cart as CartComponent } from '~/ui/cart';
 
 import { redirectToCheckout } from './_actions/redirect-to-checkout';
 import { updateCouponCode } from './_actions/update-coupon-code';
