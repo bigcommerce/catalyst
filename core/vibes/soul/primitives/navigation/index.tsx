@@ -97,7 +97,7 @@ interface Props<S extends SearchResult> {
   locales?: Locale[];
   activeLocaleId?: string;
   currencies?: Currency[];
-  activeCurrencyId?: string;
+  activeCurrencyId?: Streamable<string | undefined>;
   currencyAction?: CurrencyAction;
   logo?: Streamable<string | { src: string; alt: string } | null>;
   logoWidth?: number;
@@ -270,8 +270,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     linksPosition = 'center',
     activeLocaleId,
     locales,
-    currencies,
-    activeCurrencyId,
+    currencies: streamableCurrencies,
+    activeCurrencyId: streamableActiveCurrencyId,
     currencyAction,
     searchHref,
     searchParamName = 'query',
@@ -429,7 +429,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           <Stream
             fallback={
-              <ul className="flex animate-pulse flex-row p-2 @4xl:gap-2 @4xl:p-5">
+              <ul className="flex animate-pulse flex-row @4xl:gap-6 @4xl:p-2.5">
                 <li>
                   <span className="bg-contrast-100 block h-4 w-10 rounded-md" />
                 </li>
@@ -570,14 +570,21 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           ) : null}
 
           {/* Currency Dropdown */}
-          {currencies && currencies.length > 1 && currencyAction ? (
-            <CurrencyForm
-              action={currencyAction}
-              activeCurrencyId={activeCurrencyId}
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              currencies={currencies as [Currency, ...Currency[]]}
-            />
-          ) : null}
+          <Stream
+            fallback={null}
+            value={Streamable.all([streamableCurrencies, streamableActiveCurrencyId])}
+          >
+            {([currencies, activeCurrencyId]) =>
+              currencies && currencies.length > 1 && currencyAction ? (
+                <CurrencyForm
+                  action={currencyAction}
+                  activeCurrencyId={activeCurrencyId}
+                  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                  currencies={currencies as [Currency, ...Currency[]]}
+                />
+              ) : null
+            }
+          </Stream>
         </div>
       </div>
 
