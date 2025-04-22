@@ -9,7 +9,6 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
-import { ExistingResultType } from '~/client/util';
 
 import { WishlistButtonDropdown } from './dropdown';
 
@@ -79,10 +78,10 @@ interface WishlistButton {
 }
 
 async function getWishlistButton(
-  t: ExistingResultType<typeof getTranslations<'Product.ProductDetails.WishlistButton'>>,
   productId: number,
   productSku?: Streamable<string>,
 ): Promise<WishlistButton> {
+  const t = await getTranslations('Wishlist.Button');
   const data = await getWishlistButtonData(productId, await getSessionCustomerAccessToken());
 
   if (!data?.wishlists.edges?.length) {
@@ -138,8 +137,8 @@ interface Props {
 }
 
 export const WishlistButton = async ({ productId, productSku, formId }: Props) => {
-  const t = await getTranslations('Product.ProductDetails.WishlistButton');
-  const { isProductInWishlist, wishlists } = await getWishlistButton(t, productId, productSku);
+  const t = await getTranslations('Wishlist.Button');
+  const { isProductInWishlist, wishlists } = await getWishlistButton(productId, productSku);
 
   return (
     <WishlistButtonDropdown

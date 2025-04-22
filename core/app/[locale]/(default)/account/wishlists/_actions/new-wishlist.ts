@@ -20,7 +20,7 @@ interface State {
 
 export async function newWishlist(prevState: Awaited<State>, formData: FormData): Promise<State> {
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const t = await getTranslations('Account.Wishlists');
+  const t = await getTranslations('Wishlist');
   const schema = newWishlistSchema({ required_error: t('Errors.nameRequired') });
   const submission = parseWithZod(formData, { schema });
 

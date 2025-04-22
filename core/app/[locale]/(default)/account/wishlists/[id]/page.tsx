@@ -33,7 +33,7 @@ const searchParamsCache = createSearchParamsCache({
 
 async function getWishlist(
   id: string,
-  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
+  t: ExistingResultType<typeof getTranslations<'Wishlist'>>,
   pt: ExistingResultType<typeof getTranslations<'Product.ProductDetails'>>,
   searchParamsPromise: Promise<SearchParams>,
 ): Promise<Wishlist> {
@@ -65,7 +65,7 @@ export default async function WishlistPage({ params, searchParams }: Props) {
 
   setRequestLocale(locale);
 
-  const t = await getTranslations('Account.Wishlists');
+  const t = await getTranslations('Wishlist');
   const pt = await getTranslations('Product.ProductDetails');
   const wishlistActions = (wishlist?: Wishlist) => {
     if (!wishlist) {

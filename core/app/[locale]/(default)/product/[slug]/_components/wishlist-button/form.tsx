@@ -24,7 +24,7 @@ export const WishlistButtonForm = async ({
   productSku,
   searchParams,
 }: Props) => {
-  const t = await getTranslations('Account.Wishlists');
+  const t = await getTranslations('Wishlist');
   const modalVisible = (await searchParams).action === 'addToNewWishlist';
   const sku = await productSku;
 

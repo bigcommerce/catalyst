@@ -172,7 +172,7 @@ function getLoginRedirect(redirectTo: string) {
 export async function wishlistAction(payload: FormData): Promise<void> {
   const locale = await getLocale();
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const t = await getTranslations('Product.ProductDetails.WishlistButton');
+  const t = await getTranslations('Wishlist');
   const submission = parseWithZod(payload, { schema });
 
   if (submission.status !== 'success') {
@@ -201,7 +201,7 @@ export async function wishlistAction(payload: FormData): Promise<void> {
         if (wishlistId === 0) {
           await addToDefaultWishlist(
             customerAccessToken,
-            t('defaultWishlistName'),
+            t('Button.defaultWishlistName'),
             productId,
             variantId,
           );
@@ -209,7 +209,7 @@ export async function wishlistAction(payload: FormData): Promise<void> {
           await addToWishlist(customerAccessToken, { wishlistId, productId, variantId });
         }
 
-        await serverToast.success(t('addSuccessMessage'));
+        await serverToast.success(t('Button.addSuccessMessage'));
 
         break;
       }
@@ -220,7 +220,7 @@ export async function wishlistAction(payload: FormData): Promise<void> {
         }
 
         await removeFromWishlist(customerAccessToken, { wishlistId, wishlistItemId });
-        await serverToast.success(t('removeSuccessMessage'));
+        await serverToast.success(t('Button.removeSuccessMessage'));
 
         break;
       }
@@ -266,14 +266,11 @@ export async function addToNewWishlist(
   formData: FormData,
 ): Promise<State> {
   const locale = await getLocale();
-  const t = await getTranslations('Product.ProductDetails.WishlistButton');
+  const t = await getTranslations('Wishlist');
   const submission = parseWithZod(formData, { schema: addToNewWishlistSchema });
 
   if (submission.status !== 'success') {
-    return {
-      ...prevState,
-      lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }),
-    };
+    return { lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }) };
   }
 
   const { productId, selectedSku, wishlistName, redirectTo } = submission.value;
@@ -297,7 +294,7 @@ export async function addToNewWishlist(
   const result = await newWishlist(prevState, newWishlistFormData);
 
   if (result.lastResult?.status === 'success') {
-    await serverToast.success(t('addSuccessMessage'));
+    await serverToast.success(t('Button.addSuccessMessage'));
   }
 
   return result;
