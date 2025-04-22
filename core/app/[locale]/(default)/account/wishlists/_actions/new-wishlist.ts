@@ -69,9 +69,13 @@ export async function newWishlist(prevState: Awaited<State>, formData: FormData)
     console.error(error);
 
     if (error instanceof BigCommerceGQLError) {
+      const formError = error.message.includes('Please sign in')
+        ? t('Errors.unauthorized')
+        : t('Errors.unexpected');
+
       return {
         ...prevState,
-        lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }),
+        lastResult: submission.reply({ formErrors: [formError] }),
       };
     }
 

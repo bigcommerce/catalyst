@@ -351,6 +351,18 @@
         "sku": "SKU",
         "weight": "Weight",
         "condition": "Condition"
+      },
+      "WishlistButton": {
+        "addToNewWishlist": "Add to new wish list",
+        "defaultWishlistName": "My wish list",
+        "addSuccessMessage": "Product has been added to your wish list",
+        "removeSuccessMessage": "Product has been removed from your wish list",
+        "Errors": {
+          "unauthorized": "You are not authorized to perform this action, please sign in and try again",
+          "unexpected": "An unexpected error occurred, please try again",
+          "addProductFailed": "Failed to add the product from your wish list, please try again",
+          "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+        }
       }
     },
     "RelatedProducts": {
