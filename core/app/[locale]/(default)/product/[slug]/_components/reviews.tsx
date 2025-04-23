@@ -1,8 +1,9 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
+import { createLoader, parseAsString, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
-import { Stream } from '@/vibes/soul/lib/streamable';
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Reviews as ReviewsSection } from '@/vibes/soul/sections/reviews';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
@@ -13,15 +14,15 @@ import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-i
 import { ProductReviewSchemaFragment } from './product-review-schema/fragment';
 import { ProductReviewSchema } from './product-review-schema/product-review-schema';
 
-export const PaginationSearchParamNames = {
+const PaginationSearchParamNames = {
   BEFORE: 'reviews_before',
   AFTER: 'reviews_after',
 } as const;
 
-interface SearchParams {
-  [PaginationSearchParamNames.BEFORE]?: string | null;
-  [PaginationSearchParamNames.AFTER]?: string | null;
-}
+const loadReviewsPaginationSearchParams = createLoader({
+  [PaginationSearchParamNames.BEFORE]: parseAsString,
+  [PaginationSearchParamNames.AFTER]: parseAsString,
+});
 
 const ReviewsQuery = graphql(
   `
@@ -58,11 +59,7 @@ const ReviewsQuery = graphql(
   [ProductReviewSchemaFragment, PaginationFragment],
 );
 
-const getReviewsData = cache(async (productId: number, searchParams: Promise<SearchParams>) => {
-  const { [PaginationSearchParamNames.AFTER]: after, [PaginationSearchParamNames.BEFORE]: before } =
-    await searchParams;
-  const paginationArgs = before == null ? { first: 5, after } : { last: 5, before };
-
+const getReviews = cache(async (productId: number, paginationArgs: object) => {
   const { data } = await client.fetch({
     document: ReviewsQuery,
     variables: { ...paginationArgs, entityId: productId },
@@ -72,52 +69,6 @@ const getReviewsData = cache(async (productId: number, searchParams: Promise<Sea
   return data.site.product;
 });
 
-const getReviews = async (productId: number, searchParams: Promise<SearchParams>) => {
-  const product = await getReviewsData(productId, searchParams);
-
-  if (!product) {
-    return [];
-  }
-
-  return removeEdgesAndNodes(product.reviews);
-};
-
-const getFormattedReviews = async (productId: number, searchParams: Promise<SearchParams>) => {
-  const reviews = await getReviews(productId, searchParams);
-  const format = await getFormatter();
-
-  return reviews.map((review) => ({
-    id: review.entityId.toString(),
-    rating: review.rating,
-    review: review.text,
-    name: review.author.name,
-    date: format.dateTime(new Date(review.createdAt.utc), {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    }),
-  }));
-};
-
-const getAverageRating = async (productId: number) => {
-  const product = await getReviewsData(productId, Promise.resolve({}));
-
-  if (!product) {
-    return 0;
-  }
-
-  return product.reviewSummary.averageRating;
-};
-
-const getPaginationInfo = async (productId: number, searchParams: Promise<SearchParams>) => {
-  const product = await getReviewsData(productId, searchParams);
-
-  return pageInfoTransformer(product?.reviews.pageInfo ?? defaultPageInfo, {
-    startCursorParamName: PaginationSearchParamNames.BEFORE,
-    endCursorParamName: PaginationSearchParamNames.AFTER,
-  });
-};
-
 interface Props {
   productId: number;
   searchParams: Promise<SearchParams>;
@@ -126,20 +77,78 @@ interface Props {
 export const Reviews = async ({ productId, searchParams }: Props) => {
   const t = await getTranslations('Product.Reviews');
 
+  const streamableReviewsData = Streamable.from(async () => {
+    const paginationSearchParams = await loadReviewsPaginationSearchParams(searchParams);
+
+    const {
+      [PaginationSearchParamNames.AFTER]: after,
+      [PaginationSearchParamNames.BEFORE]: before,
+    } = paginationSearchParams;
+    const paginationArgs = before == null ? { first: 5, after } : { last: 5, before };
+
+    return getReviews(productId, paginationArgs);
+  });
+
+  const streamableReviews = Streamable.from(async () => {
+    const product = await streamableReviewsData;
+    const format = await getFormatter();
+
+    if (!product) {
+      return [];
+    }
+
+    return removeEdgesAndNodes(product.reviews).map((review) => ({
+      id: review.entityId.toString(),
+      rating: review.rating,
+      review: review.text,
+      name: review.author.name,
+      date: format.dateTime(new Date(review.createdAt.utc), {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      }),
+    }));
+  });
+
+  const streamableAvergeRating = Streamable.from(async () => {
+    const product = await streamableReviewsData;
+
+    if (!product) {
+      return 0;
+    }
+
+    return product.reviewSummary.averageRating;
+  });
+
+  const streamablePaginationInfo = Streamable.from(async () => {
+    const product = await streamableReviewsData;
+
+    return pageInfoTransformer(product?.reviews.pageInfo ?? defaultPageInfo, {
+      startCursorParamName: PaginationSearchParamNames.BEFORE,
+      endCursorParamName: PaginationSearchParamNames.AFTER,
+    });
+  });
+
   return (
     <>
       <ReviewsSection
-        averageRating={getAverageRating(productId)}
+        averageRating={streamableAvergeRating}
         emptyStateMessage={t('empty')}
         nextLabel={t('next')}
-        paginationInfo={getPaginationInfo(productId, searchParams)}
+        paginationInfo={streamablePaginationInfo}
         previousLabel={t('previous')}
-        reviews={getFormattedReviews(productId, searchParams)}
+        reviews={streamableReviews}
         reviewsLabel={t('title')}
       />
-      <Stream fallback={null} value={getReviews(productId, searchParams)}>
-        {(reviews) =>
-          reviews.length > 0 && <ProductReviewSchema productId={productId} reviews={reviews} />
+      <Stream fallback={null} value={streamableReviewsData}>
+        {(product) =>
+          product &&
+          removeEdgesAndNodes(product.reviews).length > 0 && (
+            <ProductReviewSchema
+              productId={productId}
+              reviews={removeEdgesAndNodes(product.reviews)}
+            />
+          )
         }
       </Stream>
     </>

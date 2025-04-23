@@ -4,7 +4,13 @@ import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform
 import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
 import { ArrowRight, Minus, Plus, Trash2 } from 'lucide-react';
-import { startTransition, useActionState, useEffect, useOptimistic } from 'react';
+import {
+  ComponentPropsWithoutRef,
+  startTransition,
+  useActionState,
+  useEffect,
+  useOptimistic,
+} from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
@@ -42,7 +48,7 @@ export interface CartState<LineItem extends CartLineItem> {
 }
 
 export interface Cart<LineItem extends CartLineItem> {
-  cartId?: string;
+  id?: string;
   lineItems: LineItem[];
   summaryItems: CartSummaryItem[];
   total: string;
@@ -110,7 +116,7 @@ interface Shipping {
   noShippingOptionsLabel?: string;
 }
 
-export interface Props<LineItem extends CartLineItem> {
+export interface CartProps<LineItem extends CartLineItem> {
   title?: string;
   summaryTitle?: string;
   emptyState?: CartEmptyState;
@@ -131,6 +137,31 @@ const defaultEmptyState = {
   cta: { label: 'Continue shopping', href: '#' },
 };
 
+// eslint-disable-next-line valid-jsdoc
+/**
+ * This component supports various CSS variables for theming. Here's a comprehensive list, along
+ * with their default values:
+ *
+ * ```css
+ * :root {
+ *   --cart-focus: hsl(var(--primary));
+ *   --cart-font-family: var(--font-family-body);
+ *   --cart-title-font-family: var(--font-family-heading);
+ *   --cart-text: hsl(var(--foreground));
+ *   --cart-subtitle-text: hsl(var(--contrast-500));
+ *   --cart-subtext-text: hsl(var(--contrast-300));
+ *   --cart-icon: hsl(var(--contrast-300));
+ *   --cart-icon-hover: hsl(var(--foreground));
+ *   --cart-border: hsl(var(--contrast-100));
+ *   --cart-image-background: hsl(var(--contrast-100));
+ *   --cart-button-background: hsl(var(--contrast-100));
+ *   --cart-counter-icon: hsl(var(--contrast-300));
+ *   --cart-counter-icon-hover: hsl(var(--foreground));
+ *   --cart-counter-background: hsl(var(--background));
+ *   --cart-counter-background-hover: hsl(var(--contast-100) / 50%);
+ * }
+ * ```
+ */
 export function CartClient<LineItem extends CartLineItem>({
   title,
   cart,
@@ -144,7 +175,7 @@ export function CartClient<LineItem extends CartLineItem>({
   emptyState = defaultEmptyState,
   summaryTitle,
   shipping,
-}: Props<LineItem>) {
+}: CartProps<LineItem>) {
   const isAddToQuoteEnabled = useB2BQuoteEnabled();
 
   const [state, formAction] = useActionState(lineItemAction, {
@@ -206,13 +237,14 @@ export function CartClient<LineItem extends CartLineItem>({
 
   return (
     <StickySidebarLayout
+      className="font-[family-name:var(--cart-font-family,var(--font-family-body))] text-[var(--cart-text,hsl(var(--foreground)))]"
       sidebar={
         <div>
-          <h2 className="font-heading mb-10 text-4xl leading-none font-medium @xl:text-5xl">
+          <h2 className="mb-10 font-[family-name:var(--cart-title-font-family,var(--font-family-heading))] text-4xl leading-none font-medium @xl:text-5xl">
             {summaryTitle}
           </h2>
           <dl aria-label="Receipt Summary" className="w-full">
-            <div className="divide-contrast-100 divide-y">
+            <div className="divide-y divide-[var(--cart-border,hsl(var(--contrast-100)))]">
               {cart.summaryItems.map((summaryItem, index) => (
                 <div className="flex justify-between py-4" key={index}>
                   <dt>{summaryItem.label}</dt>
@@ -222,22 +254,29 @@ export function CartClient<LineItem extends CartLineItem>({
 
               {shipping && <ShippingForm {...shipping} />}
             </div>
-
-            {couponCode && <CouponCodeForm {...couponCode} />}
-
-            <div className="border-contrast-100 flex justify-between border-t py-6 text-xl font-bold">
+            {couponCode && (
+              <CouponCodeForm
+                action={couponCode.action}
+                couponCodes={couponCode.couponCodes}
+                ctaLabel={couponCode.ctaLabel}
+                disabled={couponCode.disabled}
+                label={couponCode.label}
+                placeholder={couponCode.placeholder}
+                removeLabel={couponCode.removeLabel}
+              />
+            )}
+            <div className="flex justify-between border-t border-[var(--cart-border,hsl(var(--contrast-100)))] py-6 text-xl font-bold">
               <dt>{cart.totalLabel ?? 'Total'}</dt>
               <dl>{cart.total}</dl>
             </div>
           </dl>
-
           <div className="flex flex-col gap-4">
             <CheckoutButton action={checkoutAction} className="mt-4 w-full">
               {checkoutLabel}
               <ArrowRight size={20} strokeWidth={1} />
             </CheckoutButton>
-            {typeof cart.cartId === 'string' && cart.cartId !== '' && isAddToQuoteEnabled && (
-              <AddCartToQuoteButton cartId={cart.cartId} />
+            {typeof cart.id === 'string' && cart.id !== '' && isAddToQuoteEnabled && (
+              <AddCartToQuoteButton cartId={cart.id} />
             )}
           </div>
         </div>
@@ -246,13 +285,12 @@ export function CartClient<LineItem extends CartLineItem>({
       sidebarSize="1/3"
     >
       <div className="w-full">
-        <h1 className="font-heading mb-10 text-4xl leading-none font-medium @xl:text-5xl">
+        <h1 className="mb-10 font-[family-name:var(--cart-title-font-family,var(--font-family-heading))] text-4xl leading-none font-medium @xl:text-5xl">
           {title}
-          <span className="text-contrast-300 contrast-more:text-contrast-500 ml-4">
+          <span className="ml-4 text-[var(--cart-subtext-text,hsl(var(--contrast-300)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
             {optimisticQuantity}
           </span>
         </h1>
-
         {/* Cart Items */}
         <ul className="flex flex-col gap-5">
           {optimisticLineItems.map((lineItem) => (
@@ -260,7 +298,7 @@ export function CartClient<LineItem extends CartLineItem>({
               className="@container flex flex-col items-start gap-x-5 gap-y-4 @sm:flex-row"
               key={lineItem.id}
             >
-              <div className="bg-contrast-100 focus-visible:ring-primary relative aspect-square w-full max-w-24 overflow-hidden rounded-xl focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-hidden">
+              <div className="relative aspect-square w-full max-w-24 overflow-hidden rounded-xl bg-[var(--cart-image-background,hsl(var(--contrast-100)))] focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4 focus-visible:outline-hidden">
                 <Image
                   alt={lineItem.image.alt}
                   className="object-cover"
@@ -272,7 +310,7 @@ export function CartClient<LineItem extends CartLineItem>({
               <div className="flex grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
                 <div className="flex w-full flex-1 flex-col @xl:w-1/2 @xl:pr-4">
                   <span className="font-medium">{lineItem.title}</span>
-                  <span className="text-contrast-300 contrast-more:text-contrast-500">
+                  <span className="text-[var(--cart-subtext-text,hsl(var(--contrast-300)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
                     {lineItem.subtitle}
                   </span>
                 </div>
@@ -334,12 +372,14 @@ function CounterForm({
         <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
 
         {/* Counter */}
-        <div className="flex items-center rounded-lg border">
+        <div className="flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]">
           <button
             aria-label={decrementLabel}
             className={clsx(
-              'group focus-visible:ring-primary rounded-l-lg p-3 focus-visible:ring-2 focus-visible:outline-hidden',
-              lineItem.quantity === 1 ? 'opacity-50' : 'hover:bg-contrast-100/50',
+              'group rounded-l-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:outline-hidden disabled:cursor-not-allowed',
+              lineItem.quantity === 1
+                ? 'opacity-50'
+                : 'hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))]',
             )}
             disabled={lineItem.quantity === 1}
             name="intent"
@@ -348,27 +388,28 @@ function CounterForm({
           >
             <Minus
               className={clsx(
-                'text-contrast-300 transition-colors duration-300',
-                lineItem.quantity !== 1 && 'group-hover:text-foreground',
+                'text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300',
+                lineItem.quantity !== 1 &&
+                  'group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]',
               )}
               size={18}
               strokeWidth={1.5}
             />
           </button>
-          <span className="focus-visible:ring-primary flex w-8 justify-center select-none focus-visible:ring-2 focus-visible:outline-hidden">
+          <span className="flex w-8 justify-center select-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:outline-hidden">
             {lineItem.quantity}
           </span>
           <button
             aria-label={incrementLabel}
             className={clsx(
-              'group hover:bg-contrast-100/50 focus-visible:ring-primary rounded-r-lg p-3 transition-colors duration-300 focus-visible:ring-2 focus-visible:outline-hidden',
+              'group rounded-r-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 transition-colors duration-300 hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))] focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:outline-hidden disabled:cursor-not-allowed',
             )}
             name="intent"
             type="submit"
             value="increment"
           >
             <Plus
-              className="text-contrast-300 group-hover:text-foreground transition-colors duration-300"
+              className="text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300 group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]"
               size={18}
               strokeWidth={1.5}
             />
@@ -377,12 +418,16 @@ function CounterForm({
 
         <button
           aria-label={deleteLabel}
-          className="hover:bg-contrast-100 focus-visible:ring-primary -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 focus-visible:ring-2 focus-visible:ring-offset-4 focus-visible:outline-hidden"
+          className="group -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4 focus-visible:outline-hidden"
           name="intent"
           type="submit"
           value="delete"
         >
-          <Trash2 size={20} strokeWidth={1} />
+          <Trash2
+            className="text-[var(--cart-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--cart-icon-hover,hsl(var(--foreground)))]"
+            size={20}
+            strokeWidth={1}
+          />
         </button>
       </div>
     </form>
@@ -391,8 +436,8 @@ function CounterForm({
 
 function CheckoutButton({
   action,
-  ...rest
-}: { action: Action<SubmissionResult | null, FormData> } & React.ComponentPropsWithoutRef<
+  ...props
+}: { action: Action<SubmissionResult | null, FormData> } & ComponentPropsWithoutRef<
   typeof Button
 >) {
   const [lastResult, formAction] = useActionState(action, null);
@@ -409,12 +454,12 @@ function CheckoutButton({
 
   return (
     <form action={formAction}>
-      <SubmitButton {...rest} />
+      <SubmitButton {...props} />
     </form>
   );
 }
 
-function SubmitButton(props: React.ComponentPropsWithoutRef<typeof Button>) {
+function SubmitButton(props: ComponentPropsWithoutRef<typeof Button>) {
   const { pending } = useFormStatus();
 
   return <Button {...props} disabled={pending} loading={pending} type="submit" />;

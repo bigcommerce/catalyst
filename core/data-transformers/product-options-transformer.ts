@@ -3,10 +3,10 @@ import { ResultOf } from 'gql.tada';
 import { getTranslations } from 'next-intl/server';
 
 import { Field } from '@/vibes/soul/sections/product-detail/schema';
-import { ProductFormFragment } from '~/app/[locale]/(default)/product/[slug]/page-data';
+import { ProductOptionsFragment } from '~/app/[locale]/(default)/product/[slug]/page-data';
 
 export const productOptionsTransformer = async (
-  productOptions: ResultOf<typeof ProductFormFragment>['productOptions'],
+  productOptions: ResultOf<typeof ProductOptionsFragment>['productOptions'],
 ) => {
   const t = await getTranslations('Product.ProductDetails');
 

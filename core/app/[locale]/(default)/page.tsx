@@ -1,76 +1,16 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
-import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
-import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
-import { FeaturedProductsListFragment } from '~/components/featured-products-list/fragment';
 import { Subscribe } from '~/components/subscribe';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { Slideshow } from './_components/slideshow';
-
-const HomePageQuery = graphql(
-  `
-    query HomePageQuery($currencyCode: currencyCode) {
-      site {
-        featuredProducts(first: 12) {
-          edges {
-            node {
-              ...FeaturedProductsListFragment
-            }
-          }
-        }
-        newestProducts(first: 12) {
-          edges {
-            node {
-              ...FeaturedProductsCarouselFragment
-            }
-          }
-        }
-      }
-    }
-  `,
-  [FeaturedProductsCarouselFragment, FeaturedProductsListFragment],
-);
-
-const getPageData = cache(async () => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  const currencyCode = await getPreferredCurrencyCode();
-  const { data } = await client.fetch({
-    document: HomePageQuery,
-    customerAccessToken,
-    variables: { currencyCode },
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
-
-  return data;
-});
-
-const getFeaturedProducts = async () => {
-  const data = await getPageData();
-  const format = await getFormatter();
-
-  const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
-
-  return productCardTransformer(featuredProducts, format);
-};
-
-const getNewestProducts = async () => {
-  const data = await getPageData();
-  const format = await getFormatter();
-
-  const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
-
-  return productCardTransformer(newestProducts, format);
-};
+import { getPageData } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -82,6 +22,30 @@ export default async function Home({ params }: Props) {
   setRequestLocale(locale);
 
   const t = await getTranslations('Home');
+  const format = await getFormatter();
+
+  const streamablePageData = Streamable.from(async () => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const currencyCode = await getPreferredCurrencyCode();
+
+    return getPageData(currencyCode, customerAccessToken);
+  });
+
+  const streamableFeaturedProducts = Streamable.from(async () => {
+    const data = await streamablePageData;
+
+    const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
+
+    return productCardTransformer(featuredProducts, format);
+  });
+
+  const streamableNewestProducts = Streamable.from(async () => {
+    const data = await streamablePageData;
+
+    const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
+
+    return productCardTransformer(newestProducts, format);
+  });
 
   return (
     <>
@@ -92,7 +56,7 @@ export default async function Home({ params }: Props) {
         description={t('FeaturedProducts.description')}
         emptyStateSubtitle={t('FeaturedProducts.emptyStateSubtitle')}
         emptyStateTitle={t('FeaturedProducts.emptyStateTitle')}
-        products={Streamable.from(getFeaturedProducts)}
+        products={streamableFeaturedProducts}
         title={t('FeaturedProducts.title')}
       />
 
@@ -103,7 +67,7 @@ export default async function Home({ params }: Props) {
         emptyStateTitle={t('NewestProducts.emptyStateTitle')}
         nextLabel={t('NewestProducts.nextProducts')}
         previousLabel={t('NewestProducts.previousProducts')}
-        products={Streamable.from(getNewestProducts)}
+        products={streamableNewestProducts}
         title={t('NewestProducts.title')}
       />
 

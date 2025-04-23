@@ -25,9 +25,9 @@ const CheckoutRedirectMutation = graphql(`
   }
 `);
 
-export async function GET(_: NextRequest, { params }: { params: Promise<{ locale: string }> }) {
+export async function GET(req: NextRequest, { params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const cartId = await getCartId();
+  const cartId = req.nextUrl.searchParams.get('cartId') ?? (await getCartId());
   const customerAccessToken = await getSessionCustomerAccessToken();
   const channelId = getChannelIdFromLocale(locale);
 

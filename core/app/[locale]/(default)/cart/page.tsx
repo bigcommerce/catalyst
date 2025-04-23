@@ -129,7 +129,7 @@ export default async function Cart({ params }: Props) {
     <>
       <CartComponent
         cart={{
-          cartId,
+          id: cartId,
           lineItems: formattedLineItems,
           total: format.number(checkout?.grandTotal?.value || 0, {
             style: 'currency',

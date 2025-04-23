@@ -17,6 +17,20 @@ export const HeaderFragment = graphql(`
         }
       }
     }
+    currencies(first: 25) {
+      edges {
+        node {
+          code
+          isTransactional
+          isDefault
+        }
+      }
+    }
+  }
+`);
+
+export const HeaderLinksFragment = graphql(`
+  fragment HeaderLinksFragment on Site {
     categoryTree {
       name
       path
@@ -26,15 +40,6 @@ export const HeaderFragment = graphql(`
         children {
           name
           path
-        }
-      }
-    }
-    currencies(first: 25) {
-      edges {
-        node {
-          code
-          isTransactional
-          isDefault
         }
       }
     }

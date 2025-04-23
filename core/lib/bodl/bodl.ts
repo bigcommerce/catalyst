@@ -195,7 +195,7 @@ export class Bodl {
           });
         });
       },
-    } satisfies Analytics.Cart.Events;
+    } satisfies BodlAnalytics.Cart.Events;
   }
 
   private getNavigationEvents() {
@@ -218,7 +218,7 @@ export class Bodl {
           });
         });
       },
-    } satisfies Analytics.Navigation.Events;
+    } satisfies BodlAnalytics.Navigation.Events;
   }
 
   private getConsentEvents() {
@@ -239,7 +239,7 @@ export class Bodl {
           });
         });
       },
-    } satisfies Analytics.Consent.Events;
+    } satisfies BodlAnalytics.Consent.Events;
   }
 
   private bindConsentEvents() {
