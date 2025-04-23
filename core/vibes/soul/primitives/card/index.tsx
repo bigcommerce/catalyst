@@ -59,7 +59,7 @@ export function Card({
   return (
     <article
       className={clsx(
-        'group relative flex w-full min-w-0 max-w-md cursor-pointer flex-col gap-2 rounded-[var(--card-border-radius,1rem)] font-[family-name:var(--card-font-family,var(--font-family-body))] @container',
+        'group @container relative flex w-full max-w-md min-w-0 cursor-pointer flex-col gap-2 rounded-[var(--card-border-radius,1rem)] font-[family-name:var(--card-font-family,var(--font-family-body))]',
         {
           small: 'gap-2',
           medium: 'gap-3',
@@ -71,7 +71,7 @@ export function Card({
     >
       <ArrowUpRight
         className={clsx(
-          'absolute right-5 top-5 z-10 transition-transform duration-700 ease-out group-hover:-translate-y-1.5 group-hover:translate-x-1.5',
+          'absolute top-5 right-5 z-10 transition-transform duration-700 ease-out group-hover:translate-x-1.5 group-hover:-translate-y-1.5',
           {
             light: 'text-[var(--card-light-icon,hsl(var(--foreground)))]',
             dark: 'text-[var(--card-dark-icon,hsl(var(--background)))]',
@@ -97,7 +97,7 @@ export function Card({
           <Image
             alt={image.alt}
             className={clsx(
-              'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+              'w-full scale-100 object-cover transition-transform duration-500 ease-out select-none group-hover:scale-110',
               {
                 light: 'bg-[var(--card-light-background,hsl(var(--contrast-100)))]',
                 dark: 'bg-[var(--card-dark-background,hsl(var(--contrast-500)))]',
@@ -110,7 +110,7 @@ export function Card({
         ) : (
           <div
             className={clsx(
-              'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
+              'pt-5 pl-5 text-4xl leading-[0.8] font-bold tracking-tighter break-words opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
               {
                 light: 'text-[var(--card-light-text,hsl(var(--foreground)))]',
                 dark: 'text-[var(--card-dark-text,hsl(var(--background)))]',
@@ -125,12 +125,12 @@ export function Card({
             className={clsx(
               'absolute inset-0 flex items-end p-6 @xs:p-8',
               showOverlay &&
-                'bg-gradient-to-b from-foreground/0 from-50% via-foreground/0 via-50% to-foreground/50 to-100%',
+                'from-foreground/0 via-foreground/0 to-foreground/50 bg-gradient-to-b from-50% via-50% to-100%',
             )}
           >
             <h3
               className={clsx(
-                'font-medium leading-tight',
+                'leading-tight font-medium',
                 {
                   small: 'text-lg tracking-normal @xs:text-xl',
                   medium: 'text-xl tracking-normal @xs:text-2xl',
@@ -151,7 +151,7 @@ export function Card({
       {textPosition === 'outside' && (
         <h3
           className={clsx(
-            'line-clamp-1 font-medium leading-tight',
+            'line-clamp-1 leading-tight font-medium',
             {
               small: 'text-lg tracking-normal @xs:text-xl',
               medium: 'text-xl tracking-normal @xs:text-2xl',

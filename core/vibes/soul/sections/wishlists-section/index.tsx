@@ -33,9 +33,9 @@ export const WishlistsSection = ({
 }: Props) => {
   return (
     <section className="w-full">
-      <header className="mb-4 border-b border-b-contrast-100">
+      <header className="border-b-contrast-100 mb-4 border-b">
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="font-heading text-4xl font-medium leading-none">{title}</h1>
+          <h1 className="font-heading text-4xl leading-none font-medium">{title}</h1>
           {actions}
         </div>
       </header>

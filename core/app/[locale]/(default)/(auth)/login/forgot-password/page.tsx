@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 // import { client } from '~/client';
 // import { graphql } from '~/client/graphql';
@@ -24,16 +24,26 @@ import { resetPassword } from './_actions/reset-password';
 //   }
 // `);
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Login.ForgotPassword');
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  const t = await getTranslations({ locale, namespace: 'Auth.Login.ForgotPassword' });
 
   return {
     title: t('title'),
   };
 }
 
-export default async function Reset() {
-  const t = await getTranslations('Login.ForgotPassword');
+export default async function Reset(props: Props) {
+  const { locale } = await props.params;
+
+  setRequestLocale(locale);
+
+  const t = await getTranslations('Auth.Login.ForgotPassword');
 
   // TODO: add recaptcha token
   // const { data } = await client.fetch({
@@ -43,10 +53,6 @@ export default async function Reset() {
   // const recaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
 
   return (
-    <ForgotPasswordSection
-      action={resetPassword}
-      subtitle={t('Form.description')}
-      title={t('heading')}
-    />
+    <ForgotPasswordSection action={resetPassword} subtitle={t('subtitle')} title={t('title')} />
   );
 }

@@ -30,11 +30,11 @@ export async function changePassword(
   _prevState: { lastResult: SubmissionResult | null; successMessage?: string },
   formData: FormData,
 ) {
-  const t = await getTranslations('ChangePassword');
+  const t = await getTranslations('Auth.ChangePassword');
   const submission = parseWithZod(formData, { schema });
 
   if (submission.status !== 'success') {
-    return { lastResult: submission.reply({ formErrors: [t('Form.error')] }) };
+    return { lastResult: submission.reply() };
   }
 
   try {
@@ -62,7 +62,7 @@ export async function changePassword(
 
     return {
       lastResult: submission.reply(),
-      successMessage: t('Form.successMessage'),
+      successMessage: t('passwordUpdated'),
     };
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -83,7 +83,7 @@ export async function changePassword(
     }
 
     return {
-      lastResult: submission.reply({ formErrors: [t('Errors.error')] }),
+      lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }),
     };
   }
 }

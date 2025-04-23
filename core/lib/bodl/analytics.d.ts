@@ -1,4 +1,4 @@
-declare namespace Analytics {
+declare namespace BodlAnalytics {
   namespace Navigation {
     interface Product {
       product_id: string;

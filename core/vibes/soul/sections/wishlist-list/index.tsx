@@ -50,7 +50,7 @@ export const WishlistList = ({
 
           return wishlists.map((wishlist) => (
             <WishlistListItem
-              className="border-b border-b-contrast-100 last:border-b-transparent"
+              className="border-b-contrast-100 border-b last:border-b-transparent"
               emptyStateText={emptyWishlistStateText}
               itemActions={itemActions}
               key={wishlist.id}
@@ -77,12 +77,12 @@ function WishlistListEmptyState({
       <div className="[mask-image:linear-gradient(to_bottom,_black_0%,_transparent_100%)]">
         <WishlistListSkeleton itemActions={itemActions} placeholderCount={placeholderCount} />
       </div>
-      <div className="absolute inset-0 mx-auto px-3 py-24 pb-3 @4xl:px-10 @4xl:pb-10 @4xl:pt-16">
+      <div className="absolute inset-0 mx-auto px-3 py-24 pb-3 @4xl:px-10 @4xl:pt-16 @4xl:pb-10">
         <div className="mx-auto max-w-xl space-y-2 text-center @4xl:space-y-3">
-          <h3 className="@4x:leading-none font-heading text-2xl leading-tight text-foreground @4xl:text-4xl">
+          <h3 className="@4x:leading-none font-heading text-foreground text-2xl leading-tight @4xl:text-4xl">
             {emptyStateTitle}
           </h3>
-          <p className="text-sm text-contrast-500 @4xl:text-lg">{emptyStateSubtitle}</p>
+          <p className="text-contrast-500 text-sm @4xl:text-lg">{emptyStateSubtitle}</p>
           {emptyStateCallToAction}
         </div>
       </div>

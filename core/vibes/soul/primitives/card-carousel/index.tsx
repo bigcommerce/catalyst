@@ -123,7 +123,7 @@ export function CardCarouselSkeleton({
           </CarouselItem>
         ))}
       </CarouselContent>
-      <div className="h-6 w-56 animate-pulse bg-contrast-100" />
+      <div className="bg-contrast-100 h-6 w-56 animate-pulse" />
       <div className="absolute inset-0 flex items-center justify-center text-lg">{message}</div>
     </Carousel>
   );

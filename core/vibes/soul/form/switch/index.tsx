@@ -46,7 +46,7 @@ export const Switch = ({
         aria-busy={loading}
         checked={checked}
         className={clsx(
-          'w-12 rounded-full border border-contrast-200 p-[3px] transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2 data-[disabled]:cursor-not-allowed [&:not([data-loading])]:data-[disabled]:bg-contrast-100',
+          'border-contrast-200 [&:not([data-loading])]:data-disabled:bg-contrast-100 w-12 rounded-full border p-[3px] transition-colors duration-100 focus-visible:ring-2 focus-visible:outline-hidden data-disabled:cursor-not-allowed',
         )}
         data-loading={loading ? '' : undefined}
         disabled={disabled || loading}
@@ -56,7 +56,7 @@ export const Switch = ({
       >
         <SwitchPrimitive.Thumb
           className={clsx(
-            'relative block h-5 w-5 overflow-hidden rounded-full transition-transform duration-100 data-[state=checked]:translate-x-full data-[disabled]:bg-contrast-200 data-[state=unchecked]:bg-contrast-200',
+            'data-disabled:bg-contrast-200 data-[state=unchecked]:bg-contrast-200 relative block h-5 w-5 overflow-hidden rounded-full transition-transform duration-100 data-[state=checked]:translate-x-full',
             {
               primary: 'bg-[var(--toggle-primary-background,hsl(var(--primary)))]',
               secondary: 'bg-[var(--toggle-secondary-background,hsl(var(--foreground)))]',
@@ -101,7 +101,7 @@ interface LabelProps {
 
 function SwitchLabel({ id, label, size = 'medium', state, loading }: LabelProps) {
   const baseClass =
-    '[&:not([data-loading])]:group-has-[[data-disabled]]/switch:text-contrast-400 font-semibold select-none';
+    'group-has-data-disabled/switch:[&:not([data-loading])]:text-contrast-400 font-semibold select-none';
   const sizeClass = {
     small: 'text-sm',
     medium: 'text-base',
@@ -136,7 +136,7 @@ function SwitchLabel({ id, label, size = 'medium', state, loading }: LabelProps)
     <div className="leading-[0]">
       <label
         className={clsx(
-          'mb-[-2px] group-has-[[data-state=unchecked]]/switch:invisible group-has-[[data-state=checked]]/switch:block',
+          'mb-[-2px] group-has-data-[state=checked]/switch:block group-has-data-[state=unchecked]/switch:invisible',
           baseClass,
           sizeClass,
         )}
@@ -147,7 +147,7 @@ function SwitchLabel({ id, label, size = 'medium', state, loading }: LabelProps)
       </label>
       <label
         className={clsx(
-          'group-has-[[data-state=checked]]/switch:invisible group-has-[[data-state=unchecked]]/switch:block',
+          'group-has-data-[state=checked]/switch:invisible group-has-data-[state=unchecked]/switch:block',
           baseClass,
           sizeClass,
         )}

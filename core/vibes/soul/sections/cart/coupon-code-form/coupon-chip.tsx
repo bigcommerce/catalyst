@@ -5,7 +5,7 @@ import { Chip } from '@/vibes/soul/primitives/chip';
 
 import { couponCodeActionFormDataSchema } from '../schema';
 
-interface Props {
+export interface CouponChipProps {
   action: (payload: FormData) => void;
   onSubmit: (formData: FormData) => void;
   couponCode: string;
@@ -17,7 +17,7 @@ export function CouponChip({
   removeLabel = 'Remove promo code',
   onSubmit,
   action,
-}: Props) {
+}: CouponChipProps) {
   const [form, fields] = useForm({
     onValidate({ formData }) {
       return parseWithZod(formData, {

@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { ordersTransformer } from '~/data-transformers/orders-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
@@ -8,6 +8,7 @@ import { OrderListSection } from '~/vibes/soul/sections/order-list-section';
 import { getCustomerOrders } from './page-data';
 
 interface Props {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{
     [key: string]: string | string[] | undefined;
     before?: string;
@@ -15,7 +16,11 @@ interface Props {
   }>;
 }
 
-export default async function Orders({ searchParams }: Props) {
+export default async function Orders({ params, searchParams }: Props) {
+  const { locale } = await params;
+
+  setRequestLocale(locale);
+
   const { before, after } = await searchParams;
   const t = await getTranslations('Account.Orders');
   const format = await getFormatter();

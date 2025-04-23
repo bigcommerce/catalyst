@@ -29,7 +29,7 @@ export function Badge({ children, shape = 'rounded', className, variant = 'prima
   return (
     <span
       className={clsx(
-        'px-2 py-0.5 font-[family-name:var(--badge-font-family,var(--font-family-mono))] text-xs uppercase tracking-tighter text-[var(--badge-text,hsl(var(--foreground)))]',
+        'px-2 py-0.5 font-[family-name:var(--badge-font-family,var(--font-family-mono))] text-xs tracking-tighter text-[var(--badge-text,hsl(var(--foreground)))] uppercase',
         {
           pill: 'rounded-full',
           rounded: 'rounded',

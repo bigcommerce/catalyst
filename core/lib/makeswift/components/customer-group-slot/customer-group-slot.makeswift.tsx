@@ -71,7 +71,7 @@ function getGroupSlot(
 export function SlotSkeleton({ className }: { className?: string }) {
   return (
     <div className={clsx(className, 'relative w-full animate-pulse p-2')}>
-      <div className="line-clamp-1 h-20 w-full rounded-lg bg-contrast-100" />
+      <div className="bg-contrast-100 line-clamp-1 h-20 w-full rounded-lg" />
     </div>
   );
 }

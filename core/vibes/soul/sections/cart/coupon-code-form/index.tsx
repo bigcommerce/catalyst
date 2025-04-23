@@ -20,7 +20,7 @@ export interface CouponCodeFormState {
   lastResult: SubmissionResult | null;
 }
 
-interface Props {
+export interface CouponCodeFormProps {
   action: Action<CouponCodeFormState, FormData>;
   couponCodes?: string[];
   ctaLabel?: string;
@@ -40,7 +40,7 @@ export function CouponCodeForm({
   placeholder,
   removeLabel,
   requiredErrorMessage,
-}: Props) {
+}: CouponCodeFormProps) {
   const [state, formAction] = useActionState(action, {
     couponCodes: couponCodes ?? [],
     lastResult: null,
@@ -88,10 +88,10 @@ export function CouponCodeForm({
   });
 
   return (
-    <div className="space-y-2 border-t border-contrast-100 pb-5 pt-4">
+    <div className="space-y-2 border-t border-[var(--cart-border,hsl(var(--contrast-100)))] pt-4 pb-5">
       <form {...getFormProps(form)} action={formAction} className="space-y-2">
         <label htmlFor={fields.couponCode.id}>{label}</label>
-        <div className="flex gap-1.5">
+        <div className="mt-2 flex gap-1.5">
           <Input
             {...getInputProps(fields.couponCode, {
               required: true,

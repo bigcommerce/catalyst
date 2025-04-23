@@ -48,6 +48,7 @@ export interface ProductDetailFormProps<F extends Field> {
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;
+  emptySelectPlaceholder?: string;
   ctaDisabled?: boolean;
   prefetch?: boolean;
 }
@@ -60,6 +61,7 @@ export function ProductDetailForm<F extends Field>({
   quantityLabel = 'Quantity',
   incrementLabel = 'Increase quantity',
   decrementLabel = 'Decrease quantity',
+  emptySelectPlaceholder = 'Select an option',
   ctaDisabled = false,
   prefetch = false,
 }: ProductDetailFormProps<F>) {
@@ -130,6 +132,7 @@ export function ProductDetailForm<F extends Field>({
           {fields.map((field) => {
             return (
               <FormField
+                emptySelectPlaceholder={emptySelectPlaceholder}
                 field={field}
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 formField={formFields[field.name]!}
@@ -185,10 +188,12 @@ function FormField({
   field,
   formField,
   onPrefetch,
+  emptySelectPlaceholder,
 }: {
   field: Field;
   formField: FieldMetadata<string | number | boolean | Date | undefined>;
   onPrefetch: (fieldName: string, value: string) => void;
+  emptySelectPlaceholder?: string;
 }) {
   const controls = useInputControl(formField);
 
@@ -270,6 +275,7 @@ function FormField({
           onOptionMouseEnter={handleOnOptionMouseEnter}
           onValueChange={handleChange}
           options={field.options}
+          placeholder={emptySelectPlaceholder}
           required={formField.required}
           value={controls.value ?? ''}
         />

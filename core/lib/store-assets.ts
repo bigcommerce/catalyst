@@ -1,4 +1,5 @@
-const cdnHostname = process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME ?? 'cdn11.bigcommerce.com';
+import { buildConfig } from '~/build-config/reader';
+
 const storeHash = process.env.BIGCOMMERCE_STORE_HASH ?? '';
 
 /**
@@ -12,7 +13,7 @@ const storeHash = process.env.BIGCOMMERCE_STORE_HASH ?? '';
  * @returns {string} The CDN image URL.
  */
 const cdnImageUrlBuilder = (sizeSegment: string, source: string, path: string): string => {
-  return `https://${cdnHostname}/s-${storeHash}/images/stencil/${sizeSegment}/${source}/${path}`;
+  return `https://${buildConfig.get('urls').cdnUrl}/s-${storeHash}/images/stencil/${sizeSegment}/${source}/${path}`;
 };
 
 /**
@@ -25,7 +26,7 @@ const cdnImageUrlBuilder = (sizeSegment: string, source: string, path: string): 
  * @returns {string} The full URL to the content asset.
  */
 export const contentAssetUrl = (path: string): string => {
-  return `https://${cdnHostname}/s-${storeHash}/content/${path}`;
+  return `https://${buildConfig.get('urls').cdnUrl}/s-${storeHash}/content/${path}`;
 };
 
 /**

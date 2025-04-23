@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 // TODO: Add recaptcha token
 // import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
@@ -16,16 +16,26 @@ import { exists } from '~/lib/utils';
 import { registerCustomer } from './_actions/register-customer';
 import { getRegisterCustomerQuery } from './page-data';
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Register');
+interface Props {
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  const t = await getTranslations({ locale, namespace: 'Auth.Register' });
 
   return {
     title: t('title'),
   };
 }
 
-export default async function Register() {
-  const t = await getTranslations('Register');
+export default async function Register({ params }: Props) {
+  const { locale } = await params;
+
+  setRequestLocale(locale);
+
+  const t = await getTranslations('Auth.Register');
 
   const registerCustomerData = await getRegisterCustomerQuery({
     address: { sortBy: 'SORT_ORDER' },
@@ -52,7 +62,7 @@ export default async function Register() {
           .map(formFieldTransformer)
           .filter(exists),
       ]}
-      submitLabel={t('Form.submit')}
+      submitLabel={t('cta')}
       title={t('heading')}
     />
   );

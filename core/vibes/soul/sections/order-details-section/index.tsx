@@ -89,9 +89,9 @@ export function OrderDetailsSection({
 }: Props) {
   return (
     <div className="@container">
-      <div className="flex gap-4 border-b border-contrast-100 pb-8">
+      <div className="border-contrast-100 flex gap-4 border-b pb-8">
         <Link
-          className="mt-1 flex h-12 w-12 items-center justify-center rounded-full border border-contrast-100 text-foreground ring-primary transition-colors duration-300 hover:border-contrast-200 hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2"
+          className="border-contrast-100 text-foreground ring-primary hover:border-contrast-200 hover:bg-contrast-100 mt-1 flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-300 focus-visible:ring-2 focus-visible:outline-0"
           href={prevHref}
         >
           <ArrowLeft />
@@ -133,7 +133,7 @@ function Shipment({
   methodLabel?: string;
 }) {
   return (
-    <div className="border-b border-contrast-100 py-8 @container">
+    <div className="border-contrast-100 @container border-b py-8">
       <div className="space-y-6">
         <div className="text-2xl font-medium">{destination.title}</div>
         <div className="grid gap-8 @xl:flex @xl:gap-20">
@@ -199,21 +199,21 @@ function ShipmentTracking({
 function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
   return lineItem.href ? (
     <Link
-      className="group grid shrink-0 cursor-pointer gap-8 rounded-xl ring-primary ring-offset-4 focus-visible:outline-0 focus-visible:ring-2 @sm:flex @sm:rounded-2xl"
+      className="group ring-primary grid shrink-0 cursor-pointer gap-8 rounded-xl ring-offset-4 focus-visible:ring-2 focus-visible:outline-0 @sm:flex @sm:rounded-2xl"
       href={lineItem.href}
       id={lineItem.id}
     >
-      <div className="relative aspect-square basis-40 overflow-hidden rounded-[inherit] border border-contrast-100 bg-contrast-100">
+      <div className="border-contrast-100 bg-contrast-100 relative aspect-square basis-40 overflow-hidden rounded-[inherit] border">
         {lineItem.image?.src != null ? (
           <Image
             alt={lineItem.image.alt}
-            className="w-full scale-100 select-none bg-contrast-100 object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+            className="bg-contrast-100 w-full scale-100 object-cover transition-transform duration-500 ease-out select-none group-hover:scale-110"
             fill
             sizes="10rem"
             src={lineItem.image.src}
           />
         ) : (
-          <div className="pl-2 pt-3 text-4xl font-bold leading-[0.8] tracking-tighter text-contrast-300 transition-transform duration-500 ease-out group-hover:scale-105">
+          <div className="text-contrast-300 pt-3 pl-2 text-4xl leading-[0.8] font-bold tracking-tighter transition-transform duration-500 ease-out group-hover:scale-105">
             {lineItem.title}
           </div>
         )}
@@ -223,7 +223,7 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
         <div>
           <div className="font-semibold">{lineItem.title}</div>
           {lineItem.subtitle != null && lineItem.subtitle !== '' && (
-            <div className="font-normal text-contrast-500">{lineItem.subtitle}</div>
+            <div className="text-contrast-500 font-normal">{lineItem.subtitle}</div>
           )}
         </div>
         <div className="flex gap-1 text-sm">
@@ -243,17 +243,17 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
     </Link>
   ) : (
     <div className="group grid shrink-0 gap-8 rounded-xl @sm:flex @sm:rounded-2xl" id={lineItem.id}>
-      <div className="relative aspect-square basis-40 overflow-hidden rounded-[inherit] border border-contrast-100 bg-contrast-100">
+      <div className="border-contrast-100 bg-contrast-100 relative aspect-square basis-40 overflow-hidden rounded-[inherit] border">
         {lineItem.image?.src != null ? (
           <Image
             alt={lineItem.image.alt}
-            className="w-full scale-100 select-none bg-contrast-100 object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+            className="bg-contrast-100 w-full scale-100 object-cover transition-transform duration-500 ease-out select-none group-hover:scale-110"
             fill
             sizes="10rem"
             src={lineItem.image.src}
           />
         ) : (
-          <div className="pl-2 pt-3 text-4xl font-bold leading-[0.8] tracking-tighter text-contrast-300 transition-transform duration-500 ease-out group-hover:scale-105">
+          <div className="text-contrast-300 pt-3 pl-2 text-4xl leading-[0.8] font-bold tracking-tighter transition-transform duration-500 ease-out group-hover:scale-105">
             {lineItem.title}
           </div>
         )}
@@ -263,7 +263,7 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
         <div>
           <div className="font-semibold">{lineItem.title}</div>
           {lineItem.subtitle != null && lineItem.subtitle !== '' && (
-            <div className="font-normal text-contrast-500">{lineItem.subtitle}</div>
+            <div className="text-contrast-500 font-normal">{lineItem.subtitle}</div>
           )}
         </div>
         <div className="flex gap-1 text-sm">
@@ -287,13 +287,13 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
 function Summary({ summary, totalLabel = 'Total' }: { summary: Summary; totalLabel?: string }) {
   return (
     <div className="divide-y divide-gray-100">
-      <div className="space-y-2 pb-3 pt-5">
+      <div className="space-y-2 pt-5 pb-3">
         {summary.lineItems.map((lineItem, index) => (
           <div className="flex justify-between" key={index}>
             <div>
               <div className="text-sm">{lineItem.label}</div>
               {lineItem.subtext != null && lineItem.subtext !== '' && (
-                <div className="text-xs text-contrast-400">{lineItem.subtext}</div>
+                <div className="text-contrast-400 text-xs">{lineItem.subtext}</div>
               )}
             </div>
 
@@ -301,7 +301,7 @@ function Summary({ summary, totalLabel = 'Total' }: { summary: Summary; totalLab
           </div>
         ))}
       </div>
-      <div className="flex justify-between border-t border-contrast-200 py-3 font-semibold">
+      <div className="border-contrast-200 flex justify-between border-t py-3 font-semibold">
         <span>{totalLabel}</span>
         <span>{summary.total}</span>
       </div>

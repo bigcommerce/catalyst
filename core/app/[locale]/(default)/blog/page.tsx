@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
 
@@ -24,8 +24,10 @@ const searchParamsCache = createSearchParamsCache({
   limit: parseAsInteger.withDefault(defaultPostLimit),
 });
 
-export async function generateMetadata(): Promise<Metadata> {
-  const t = await getTranslations('Blog');
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { locale } = await params;
+
+  const t = await getTranslations({ locale, namespace: 'Blog' });
   const blog = await getBlog();
 
   return {
@@ -65,6 +67,12 @@ async function getPaginationInfo(searchParamsPromise: Promise<SearchParams>) {
 }
 
 export default async function Blog(props: Props) {
+  const { locale } = await props.params;
+
+  setRequestLocale(locale);
+
+  const t = await getTranslations('Blog');
+
   const searchParamsParsed = searchParamsCache.parse(await props.searchParams);
   const { tag } = searchParamsParsed;
   const blog = await getBlog();
@@ -79,7 +87,7 @@ export default async function Blog(props: Props) {
     <FeaturedBlogPostList
       breadcrumbs={[
         {
-          label: 'Home',
+          label: t('home'),
           href: '/',
         },
         {
