@@ -10,7 +10,8 @@
     "build:analyze": "ANALYZE=true npm run build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "test": "vitest"
   },
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",
@@ -89,11 +90,15 @@
     "dotenv-cli": "^8.0.0",
     "eslint": "^8.57.1",
     "eslint-config-next": "15.2.3",
+    "msw": "^2.7.4",
     "postcss": "^8.5.3",
     "prettier": "^3.5.3",
     "prettier-plugin-tailwindcss": "^0.6.11",
     "tailwindcss": "^4.1.4",
     "tailwindcss-animate": "1.0.7",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vite-tsconfig-paths": "^5.1.4",
+    "vitest": "^3.1.1"
   }
 }
