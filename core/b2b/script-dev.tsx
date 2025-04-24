@@ -16,7 +16,7 @@ interface DevProps {
 
 export function ScriptDev({ cartId, hostname, storeHash, channelId, token }: DevProps) {
   useB2BAuth(token);
-  useB2BCart(cartId)
+  useB2BCart(cartId);
 
   const src = `${hostname}/src/main.ts`;
 
