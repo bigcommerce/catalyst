@@ -32,7 +32,11 @@ const GetRouteQuery = graphql(`
             ... on ProductRedirect {
               path
             }
+            ... on ManualRedirect {
+              url
+            }
           }
+          fromPath
           toUrl
         }
         node {
@@ -143,8 +147,9 @@ const RedirectSchema = z.object({
     z.object({ __typename: z.literal('CategoryRedirect'), path: z.string() }),
     z.object({ __typename: z.literal('PageRedirect'), path: z.string() }),
     z.object({ __typename: z.literal('ProductRedirect'), path: z.string() }),
-    z.object({ __typename: z.literal('ManualRedirect') }),
+    z.object({ __typename: z.literal('ManualRedirect'), url: z.string() }),
   ]),
+  fromPath: z.string(),
   toUrl: z.string(),
 });
 
@@ -221,7 +226,8 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
 
   try {
-    const pathname = clearLocaleFromPath(request.nextUrl.pathname, locale);
+    // For route resolution parity, we need to also include query params, otherwise certain redirects will not work.
+    const pathname = clearLocaleFromPath(request.nextUrl.pathname + request.nextUrl.search, locale);
 
     let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
       kvKey(pathname, channelId),
@@ -282,6 +288,10 @@ export const withRoutes: MiddlewareFactory = () => {
     };
 
     if (route?.redirect) {
+      // Only carry over query params if the fromPath does not have any, as Bigcommerce 301 redirects support matching by specific query params.
+      const fromPathSearchParams = new URL(route.redirect.fromPath, request.url).search;
+      const searchParams = fromPathSearchParams.length > 0 ? '' : request.nextUrl.search;
+
       switch (route.redirect.to.__typename) {
         case 'BlogPostRedirect':
         case 'BrandRedirect':
@@ -289,14 +299,26 @@ export const withRoutes: MiddlewareFactory = () => {
         case 'PageRedirect':
         case 'ProductRedirect': {
           // For dynamic redirects, assume an internal redirect and construct the URL from the path
-          const redirectUrl = new URL(route.redirect.to.path, request.url);
+          const redirectUrl = new URL(route.redirect.to.path + searchParams, request.url);
+
+          return NextResponse.redirect(redirectUrl, redirectConfig);
+        }
+
+        case 'ManualRedirect': {
+          // For manual redirects, to.url will be a relative path if it is an internal redirect and an absolute URL if it is an external redirect.
+          // URL constructor will correctly handle both cases.
+          // If the manual redirect is an external URL, we should not carry query params.
+          const redirectUrl = new URL(route.redirect.to.url, request.url);
+
+          if (redirectUrl.origin === request.nextUrl.origin) {
+            redirectUrl.search = searchParams;
+          }
 
           return NextResponse.redirect(redirectUrl, redirectConfig);
         }
 
         default: {
-          // For manual redirects, redirect to the full URL to handle cases
-          // where the destination URL might be external to the site.
+          // If for some reason the redirect type is not recognized, use the toUrl as a fallback
           return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
         }
       }
