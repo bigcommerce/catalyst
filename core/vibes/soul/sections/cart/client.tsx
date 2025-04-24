@@ -20,6 +20,7 @@ import { useB2BQuoteEnabled } from '~/b2b/use-b2b-quote-enabled';
 import { AddCartToQuoteButton } from '~/components/add-cart-to-quote-button';
 import { Image } from '~/components/image';
 
+import { AddCartToQuoteButton } from './add-cart-to-quote-button';
 import { CouponCodeForm, CouponCodeFormState } from './coupon-code-form';
 import { cartLineItemActionFormDataSchema } from './schema';
 import { ShippingForm, ShippingFormState } from './shipping-form';

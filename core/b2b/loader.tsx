@@ -5,7 +5,7 @@ import { auth } from '~/auth';
 import { ScriptDev } from './script-dev';
 import { ScriptProduction } from './script-production';
 import { ScriptCustom } from './script-custom';
-
+        
 const EnvironmentSchema = z.object({
   BIGCOMMERCE_STORE_HASH: z.string({ message: 'BIGCOMMERCE_STORE_HASH is required' }),
   BIGCOMMERCE_CHANNEL_ID: z.string({ message: 'BIGCOMMERCE_CHANNEL_ID is required' }),
@@ -45,8 +45,8 @@ export async function B2BLoader() {
     />;
   }
 
-
   const environment = STAGING_B2B_CDN_ORIGIN === 'true' ? 'staging' : 'production';
+
   return (
     <ScriptProduction
       channelId={BIGCOMMERCE_CHANNEL_ID}
