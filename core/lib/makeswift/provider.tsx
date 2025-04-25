@@ -14,7 +14,7 @@ export function MakeswiftProvider({
 }) {
   return (
     <ReactRuntimeProvider previewMode={previewMode} runtime={runtime}>
-      <RootStyleRegistry>{children}</RootStyleRegistry>
+      <RootStyleRegistry enableCssReset={false}>{children}</RootStyleRegistry>
     </ReactRuntimeProvider>
   );
 }
