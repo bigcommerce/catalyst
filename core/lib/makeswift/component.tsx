@@ -1,6 +1,6 @@
-import { MakeswiftComponent } from '@makeswift/runtime/next';
-
 import { getComponentSnapshot } from '~/lib/makeswift/client';
+
+import { MakeswiftComponentShim } from './makeswift-component-shim';
 
 export const Component = async ({
   snapshotId,
@@ -13,5 +13,5 @@ export const Component = async ({
 }) => {
   const snapshot = await getComponentSnapshot(snapshotId);
 
-  return <MakeswiftComponent label={await label} snapshot={snapshot} {...props} />;
+  return <MakeswiftComponentShim label={await label} snapshot={snapshot} {...props} />;
 };
