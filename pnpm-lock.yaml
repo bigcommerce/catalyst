@@ -39,8 +39,8 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0(react@19.1.0)
       '@makeswift/runtime':
-        specifier: ^0.24.0
-        version: 0.24.0(@types/react-dom@19.0.4(@types/react@19.1.2))(@types/react@19.1.2)(next@15.4.0-canary.0(@babel/core@7.24.7)(@playwright/test@1.51.1)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        specifier: ^0.24.1
+        version: 0.24.1(@types/react-dom@19.0.4(@types/react@19.1.2))(@types/react@19.1.2)(next@15.4.0-canary.0(@babel/core@7.24.7)(@playwright/test@1.51.1)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-accordion':
         specifier: ^1.2.4
         version: 1.2.8(@types/react-dom@19.0.4(@types/react@19.1.2))(@types/react@19.1.2)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -1639,8 +1639,8 @@ packages:
   '@makeswift/prop-controllers@0.4.1':
     resolution: {integrity: sha512-o9FkM0czODl1aXGxvnVOpx/KMLCJQ2wy5LUnUacPGXxZRW8fbsDaF3Y3dmM6tv2fJgIQbUG+bEpHBFQd1AxZJg==}
 
-  '@makeswift/runtime@0.24.0':
-    resolution: {integrity: sha512-q4sjRgIQjMqNjQ7/YSTJ9YyhMYQBkNsvqUuT5dLxJD1mb4U5cMQYao+M3msAP71090L5oqzuPln8cfLqJCVi7w==}
+  '@makeswift/runtime@0.24.1':
+    resolution: {integrity: sha512-fXsLnkB8/29WqR/FnzBOp2jG8uDp0g4OXiwCboYX7/9Q5zdRwjK9Cx/EQW/vYl0ZKmUN++pZbUjvsR4o1nv2eQ==}
     peerDependencies:
       '@types/react': ^18.0.0 || ^19.0.0
       '@types/react-dom': ^18.0.0 || ^19.0.0
@@ -7903,7 +7903,7 @@ snapshots:
       ts-pattern: 5.5.0
       zod: 3.24.2
 
-  '@makeswift/runtime@0.24.0(@types/react-dom@19.0.4(@types/react@19.1.2))(@types/react@19.1.2)(next@15.4.0-canary.0(@babel/core@7.24.7)(@playwright/test@1.51.1)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@makeswift/runtime@0.24.1(@types/react-dom@19.0.4(@types/react@19.1.2))(@types/react@19.1.2)(next@15.4.0-canary.0(@babel/core@7.24.7)(@playwright/test@1.51.1)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@emotion/cache': 11.14.0
       '@emotion/css': 11.13.5
