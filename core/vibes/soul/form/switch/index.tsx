@@ -136,7 +136,7 @@ function SwitchLabel({ id, label, size = 'medium', state, loading }: LabelProps)
     <div className="leading-[0]">
       <label
         className={clsx(
-          'mb-[-2px] group-has-data-[state=checked]/switch:block group-has-data-[state=unchecked]/switch:invisible',
+          'mb-[-2px] leading-[0] group-has-data-[state=checked]/switch:block group-has-data-[state=unchecked]/switch:invisible',
           baseClass,
           sizeClass,
         )}
@@ -147,7 +147,7 @@ function SwitchLabel({ id, label, size = 'medium', state, loading }: LabelProps)
       </label>
       <label
         className={clsx(
-          'group-has-data-[state=checked]/switch:invisible group-has-data-[state=unchecked]/switch:block',
+          'mt-[-1px] leading-[0] group-has-data-[state=checked]/switch:invisible group-has-data-[state=unchecked]/switch:block',
           baseClass,
           sizeClass,
         )}
