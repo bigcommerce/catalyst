@@ -25,16 +25,11 @@ export function ScriptCustom({ storeHash, channelId, token, hostname }: Props) {
           }
           window.B3 = {
               setting: {
-              store_hash: '${storeHash}',  
-              channel_id: ${channelId},
+                store_hash: '${storeHash}',  
+                channel_id: ${channelId},
+                platform: 'catalyst',
+                cart_url: '/cart',
               },
-              'dom.checkoutRegisterParentElement': '#checkout-app',
-              'dom.registerElement':
-              '[href^="/login"], #checkout-customer-login, [href="/login"] .navUser-item-loginLabel, #checkout-customer-returning .form-legend-container [href="#"]',
-              'dom.openB3Checkout': 'checkout-customer-continue',
-              before_login_goto_page: '/account',
-              checkout_super_clear_session: 'true',
-              'dom.navUserLoginElement': '.navUser-item.navUser-item--account',
           }
         `}
       </Script>
