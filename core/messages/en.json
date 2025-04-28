@@ -401,7 +401,7 @@
   },
   "NotFound": {
     "title": "We couldn't find that page!",
-    "subtitle": "It looks like the page you requested has moved or no longer exists.",
+    "subtitle": "Try searching for something else or go back to the home page.",
     "featuredProducts": "Featured products"
   },
   "Components": {
