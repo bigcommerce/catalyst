@@ -126,6 +126,11 @@
             "priceAscending": "Prix : par ordre croissant",
             "priceDescending": "Prix : par ordre décroissant",
             "relevance": "Pertinence"
+        },
+        "Compare": {
+            "compare": "Comparer",
+            "remove": "Supprimer",
+            "maxCompareLimit": "Vous avez atteint le nombre maximal de produits pouvant être comparés. Pour en ajouter un autre, supprimez d'abord un produit."
         }
     },
     "Account": {
@@ -434,13 +439,6 @@
             "placeholder": "Saisissez votre adresse e-mail",
             "description": "Restez informé des dernières nouvelles et offres de notre magasin.",
             "success": "Merci de l’intérêt que vous nous portez ! La fonctionnalité Newsletter sera bientôt disponible !"
-        },
-        "ProductCard": {
-            "Compare": {
-                "compare": "Comparer",
-                "remove": "Supprimer",
-                "maxCompareLimit": "Vous avez atteint le nombre maximal de produits pouvant être comparés. Pour en ajouter un autre, supprimez d'abord un produit."
-            }
         }
     }
 }
