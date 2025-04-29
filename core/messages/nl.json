@@ -126,6 +126,11 @@
             "priceAscending": "Prijs: oplopend",
             "priceDescending": "Prijs: aflopend",
             "relevance": "Relevantie"
+        },
+        "Compare": {
+            "compare": "Vergelijken",
+            "remove": "Verwijderen",
+            "maxCompareLimit": "Je hebt het maximale aantal producten voor vergelijking bereikt. Verwijder een product om een nieuw toe te voegen."
         }
     },
     "Account": {
@@ -490,13 +495,6 @@
             "placeholder": "Voer uw e-mail in",
             "description": "Blijf op de hoogte van het laatste nieuws en aanbiedingen van onze winkel.",
             "success": "Bedankt voor je interesse! De nieuwsbrieffunctie komt binnenkort!"
-        },
-        "ProductCard": {
-            "Compare": {
-                "compare": "Vergelijken",
-                "remove": "Verwijderen",
-                "maxCompareLimit": "Je hebt het maximale aantal producten voor vergelijking bereikt. Verwijder een product om een nieuw toe te voegen."
-            }
         }
     }
 }

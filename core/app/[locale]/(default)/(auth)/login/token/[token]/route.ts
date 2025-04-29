@@ -11,12 +11,8 @@ import { redirect, unstable_rethrow as rethrow } from 'next/navigation';
 import { signIn } from '~/auth';
 import { getCartId } from '~/lib/cart';
 
-interface TokenParams {
-  params: Promise<{ token: string }>;
-}
-
-export async function GET(request: Request, { params }: TokenParams) {
-  const token = (await params).token;
+export async function GET(_: Request, { params }: { params: Promise<{ token: string }> }) {
+  const { token } = await params;
   const cartId = await getCartId();
 
   try {

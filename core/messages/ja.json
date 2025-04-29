@@ -126,6 +126,11 @@
             "priceAscending": "価格：昇順",
             "priceDescending": "価格：降順",
             "relevance": "関連性"
+        },
+        "Compare": {
+            "compare": "価格比較",
+            "remove": "削除",
+            "maxCompareLimit": "比較対象の商品が最大数に達しました。新しい商品を追加するには、1つ商品を削除してください。"
         }
     },
     "Account": {
@@ -490,13 +495,6 @@
             "placeholder": "メールアドレスを入力してください",
             "description": "当店の最新ニュースやオファーをぜひチェックしてください。",
             "success": "ご関心をお寄せいただきありがとうございます！ニュースレター機能は近日開始予定です！"
-        },
-        "ProductCard": {
-            "Compare": {
-                "compare": "価格比較",
-                "remove": "削除",
-                "maxCompareLimit": "比較対象の商品が最大数に達しました。新しい商品を追加するには、1つ商品を削除してください。"
-            }
         }
     }
 }

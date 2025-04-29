@@ -126,6 +126,11 @@
             "priceAscending": "Pris: Stigende",
             "priceDescending": "Pris: Synkende",
             "relevance": "Relevans"
+        },
+        "Compare": {
+            "compare": "Sammenlign",
+            "remove": "Fjern",
+            "maxCompareLimit": "Du har nådd det maksimale antallet produkter for sammenligning. Fjern et produkt for å legge til et nytt."
         }
     },
     "Account": {
@@ -490,13 +495,6 @@
             "placeholder": "Skriv inn epostadressen din",
             "description": "Hold deg oppdatert med de siste nyhetene og tilbudene fra butikken vår.",
             "success": "Takk for interessen! Nyhetsbrevfunksjonen kommer snart!"
-        },
-        "ProductCard": {
-            "Compare": {
-                "compare": "Sammenlign",
-                "remove": "Fjern",
-                "maxCompareLimit": "Du har nådd det maksimale antallet produkter for sammenligning. Fjern et produkt for å legge til et nytt."
-            }
         }
     }
 }

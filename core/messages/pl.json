@@ -126,6 +126,11 @@
             "priceAscending": "Cena: rosnąco",
             "priceDescending": "Cena: malejąco",
             "relevance": "Znaczenie"
+        },
+        "Compare": {
+            "compare": "Porównaj",
+            "remove": "Usuń",
+            "maxCompareLimit": "Osiągnięto maksymalną liczbę produktów do porównania. Usuń produkt, aby dodać nowy."
         }
     },
     "Account": {
@@ -490,13 +495,6 @@
             "placeholder": "Wpisz swój adres e-mail",
             "description": "Bądź na bieżąco z najnowszymi informacjami i ofertami naszego sklepu.",
             "success": "Dziękujemy za Państwa zainteresowanie! Funkcja newslettera wkrótce będzie dostępna!"
-        },
-        "ProductCard": {
-            "Compare": {
-                "compare": "Porównaj",
-                "remove": "Usuń",
-                "maxCompareLimit": "Osiągnięto maksymalną liczbę produktów do porównania. Usuń produkt, aby dodać nowy."
-            }
         }
     }
 }

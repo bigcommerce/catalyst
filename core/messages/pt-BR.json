@@ -126,6 +126,11 @@
             "priceAscending": "Preço: crescente",
             "priceDescending": "Preço: decrescente",
             "relevance": "Relevância"
+        },
+        "Compare": {
+            "compare": "Comparar",
+            "remove": "Remover",
+            "maxCompareLimit": "Você atingiu o número máximo de produtos para comparação. Para adicionar um novo, remova um produto."
         }
     },
     "Account": {
@@ -490,13 +495,6 @@
             "placeholder": "Digite seu email",
             "description": "Fique por dentro das últimas novidades e ofertas da nossa loja.",
             "success": "Agradecemos o seu interesse! O recurso de newsletter estará disponível em breve!"
-        },
-        "ProductCard": {
-            "Compare": {
-                "compare": "Comparar",
-                "remove": "Remover",
-                "maxCompareLimit": "Você atingiu o número máximo de produtos para comparação. Para adicionar um novo, remova um produto."
-            }
         }
     }
 }
