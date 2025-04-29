@@ -10,11 +10,11 @@ import { Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 import { Wishlist, WishlistDetails } from '@/vibes/soul/sections/wishlist-details';
 import { addWishlistItemToCart } from '~/app/[locale]/(default)/account/wishlists/[id]/_actions/add-to-cart';
+import { ExistingResultType } from '~/client/util';
 import {
   WishlistShareButton,
   WishlistShareButtonSkeleton,
-} from '~/app/[locale]/(default)/account/wishlists/[id]/_components/share-button';
-import { ExistingResultType } from '~/client/util';
+} from '~/components/wishlist/share-button';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { publicWishlistDetailsTransformer } from '~/data-transformers/wishlists-transformer';
 import { isMobileUser } from '~/lib/user-agent';

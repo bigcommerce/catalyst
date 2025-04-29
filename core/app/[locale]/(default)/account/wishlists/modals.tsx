@@ -2,16 +2,16 @@ import { getTranslations } from 'next-intl/server';
 
 import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
 import { ExistingResultType } from '~/client/util';
+import { ChangeWishlistVisibilityModal } from '~/components/wishlist/modals/change-visibility';
+import { DeleteWishlistModal } from '~/components/wishlist/modals/delete';
+import { NewWishlistModal } from '~/components/wishlist/modals/new';
+import { RenameWishlistModal } from '~/components/wishlist/modals/rename';
+import { ShareWishlistModal } from '~/components/wishlist/modals/share';
 
 import { toggleWishlistVisibility } from './_actions/change-wishlist-visibility';
 import { deleteWishlist } from './_actions/delete-wishlist';
 import { newWishlist } from './_actions/new-wishlist';
 import { renameWishlist } from './_actions/rename-wishlist';
-import { ChangeWishlistVisibilityModal } from './_components/modals/change-visibility';
-import { DeleteWishlistModal } from './_components/modals/delete';
-import { NewWishlistModal } from './_components/modals/new';
-import { RenameWishlistModal } from './_components/modals/rename';
-import { ShareWishlistModal } from './_components/modals/share';
 import { WishlistModalProps } from './_components/wishlist-actions-menu';
 
 const bold = (chunks: React.ReactNode) => <span className="font-bold">{chunks}</span>;

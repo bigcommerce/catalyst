@@ -4,7 +4,7 @@ import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
 import { useModalForm } from '~/components/modal/modal-form-provider';
 
-import { toggleWishlistVisibilitySchema } from '../../_actions/schema';
+import { toggleWishlistVisibilitySchema } from '../../../app/[locale]/(default)/account/wishlists/_actions/schema';
 
 export const ChangeWishlistVisibilityModal = ({
   id,
