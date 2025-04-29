@@ -5,7 +5,6 @@ import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
 import { getLocale, getTranslations } from 'next-intl/server';
-import { cache } from 'react';
 import { z } from 'zod';
 
 import { CreateWishlistMutation } from '~/app/[locale]/(default)/account/wishlists/_actions/mutation';
@@ -13,7 +12,6 @@ import { newWishlist } from '~/app/[locale]/(default)/account/wishlists/_actions
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
 import { redirect } from '~/i18n/routing';
 import { serverToast } from '~/lib/server-toast';
@@ -97,18 +95,16 @@ interface WishlistRemoveMutationVariables {
   wishlistItemId: number;
 }
 
-const getVariantIdFromSku = cache(
-  async (productId: number, sku: string, customerAccessToken?: string) => {
-    const { data } = await client.fetch({
-      document: VariantIdFromSkuQuery,
-      variables: { productId, sku },
-      customerAccessToken,
-      fetchOptions: { next: { revalidate } },
-    });
+async function getVariantIdFromSku(productId: number, sku: string, customerAccessToken?: string) {
+  const { data } = await client.fetch({
+    document: VariantIdFromSkuQuery,
+    variables: { productId, sku },
+    customerAccessToken,
+    fetchOptions: { cache: 'no-store' },
+  });
 
-    return data.site.product?.variants.edges?.[0]?.node.entityId ?? undefined;
-  },
-);
+  return data.site.product?.variants.edges?.[0]?.node.entityId ?? undefined;
+}
 
 async function addToDefaultWishlist(
   customerAccessToken: string,
