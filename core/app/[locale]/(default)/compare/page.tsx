@@ -5,7 +5,7 @@ import { cache } from 'react';
 import * as z from 'zod';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
-import { CompareCardWithId } from '@/vibes/soul/primitives/compare-card';
+import { CompareProduct } from '@/vibes/soul/primitives/compare-card';
 import { CompareSection } from '@/vibes/soul/sections/compare-section';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 
@@ -29,7 +29,7 @@ const CompareParamsSchema = z.object({
     .transform((value) => value?.map((id) => parseInt(id, 10))),
 });
 
-const getProducts = cache(async (productIds: number[] = []): Promise<CompareCardWithId[]> => {
+const getProducts = cache(async (productIds: number[] = []): Promise<CompareProduct[]> => {
   const t = await getTranslations('Compare');
 
   const products = await getCompareData(productIds);
