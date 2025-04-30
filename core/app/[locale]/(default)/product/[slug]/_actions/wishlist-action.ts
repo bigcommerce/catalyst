@@ -1,6 +1,10 @@
 'use server';
 
-import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
+import {
+  BigCommerceAPIError,
+  BigCommerceGQLError,
+  removeEdgesAndNodes,
+} from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
@@ -10,9 +14,11 @@ import { z } from 'zod';
 import { CreateWishlistMutation } from '~/app/[locale]/(default)/account/wishlists/_actions/mutation';
 import { newWishlist } from '~/app/[locale]/(default)/account/wishlists/_actions/new-wishlist';
 import { getSessionCustomerAccessToken } from '~/auth';
+import { buildConfig } from '~/build-config/reader';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
+import { WishlistMutationError } from '~/components/wishlist/error';
 import { redirect } from '~/i18n/routing';
 import { serverToast } from '~/lib/server-toast';
 
@@ -103,7 +109,11 @@ async function getVariantIdFromSku(productId: number, sku: string, customerAcces
     fetchOptions: { cache: 'no-store' },
   });
 
-  return data.site.product?.variants.edges?.[0]?.node.entityId ?? undefined;
+  if (!data.site.product?.variants) {
+    return undefined;
+  }
+
+  return removeEdgesAndNodes(data.site.product.variants)[0]?.entityId ?? undefined;
 }
 
 async function addToDefaultWishlist(
@@ -126,7 +136,7 @@ async function addToDefaultWishlist(
   });
 
   if (!data.wishlist.createWishlist?.result) {
-    throw new Error('Failed to add item to default wishlist. Response was empty.');
+    throw new WishlistMutationError('Failed to add item to default wishlist. Response was empty.');
   }
 }
 
@@ -139,7 +149,7 @@ async function addToWishlist(customerAccessToken: string, variables: WishlistAdd
   });
 
   if (!data.wishlist.addWishlistItems?.result) {
-    throw new Error('Failed to add item to wishlist. Response was empty.');
+    throw new WishlistMutationError('Failed to add item to wishlist. Response was empty.');
   }
 }
 
@@ -155,12 +165,15 @@ async function removeFromWishlist(
   });
 
   if (!data.wishlist.deleteWishlistItems?.result) {
-    throw new Error('Failed to add item to wishlist. Response was empty.');
+    throw new WishlistMutationError('Failed to add item to wishlist. Response was empty.');
   }
 }
 
 function getLoginRedirect(redirectTo: string) {
-  const loginParams = new URLSearchParams({ redirectTo });
+  const vanityUrl = buildConfig.get('urls').vanityUrl;
+  const redirectToUrl = new URL(redirectTo, vanityUrl);
+  const redirectToParam = redirectToUrl.pathname + redirectToUrl.search;
+  const loginParams = new URLSearchParams({ redirectTo: redirectToParam });
 
   return `/login?${loginParams.toString()}`;
 }
@@ -212,7 +225,7 @@ export async function wishlistAction(payload: FormData): Promise<void> {
 
       case 'remove': {
         if (!wishlistItemId) {
-          throw new Error('wishlistItemId is required for remove action');
+          throw new WishlistMutationError('wishlistItemId is required for remove action');
         }
 
         await removeFromWishlist(customerAccessToken, { wishlistId, wishlistItemId });
@@ -269,16 +282,14 @@ export async function addToNewWishlist(
     return { lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }) };
   }
 
-  const { productId, selectedSku, wishlistName, redirectTo } = submission.value;
+  const { productId, selectedSku, redirectTo } = submission.value;
   const customerAccessToken = await getSessionCustomerAccessToken();
   const variantId = await getVariantIdFromSku(productId, selectedSku, customerAccessToken);
-  const newWishlistFormData = new FormData();
 
-  newWishlistFormData.append('wishlistName', wishlistName);
-  newWishlistFormData.append('wishlistItems[0].productEntityId', productId.toString());
+  formData.append('wishlistItems[0].productEntityId', productId.toString());
 
   if (variantId) {
-    newWishlistFormData.append('wishlistItems[0].variantEntityId', variantId.toString());
+    formData.append('wishlistItems[0].variantEntityId', variantId.toString());
   }
 
   if (!customerAccessToken) {
@@ -287,7 +298,7 @@ export async function addToNewWishlist(
     return { lastResult: null };
   }
 
-  const result = await newWishlist(prevState, newWishlistFormData);
+  const result = await newWishlist(prevState, formData);
 
   if (result.lastResult?.status === 'success') {
     await serverToast.success(t('Button.addSuccessMessage'));
