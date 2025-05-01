@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -17,7 +18,8 @@ const CustomerAllOrders = graphql(
       $first: Int
       $last: Int
       $filters: OrdersFiltersInput
-    ) {
+      $locale: String
+    ) @shopperPreferences(locale: $locale) {
       customer {
         orders(after: $after, before: $before, first: $first, last: $last, filters: $filters) {
           pageInfo {
@@ -82,6 +84,7 @@ export const getCustomerOrders = cache(
     limit = 5,
   }: CustomerOrdersArgs) => {
     const customerAccessToken = await getSessionCustomerAccessToken();
+    const locale = await getLocale();
     const paginationArgs = before ? { last: limit, before } : { first: limit, after };
     const filtersArgs = {
       filters: {
@@ -91,7 +94,7 @@ export const getCustomerOrders = cache(
     };
     const response = await client.fetch({
       document: CustomerAllOrders,
-      variables: { ...paginationArgs, ...filtersArgs },
+      variables: { ...paginationArgs, ...filtersArgs, locale },
       customerAccessToken,
       fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
       errorPolicy: 'auth',

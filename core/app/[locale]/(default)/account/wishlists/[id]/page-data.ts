@@ -1,3 +1,4 @@
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -17,7 +18,8 @@ const WishlistDetailsQuery = graphql(
       $before: String
       $entityId: Int!
       $currencyCode: currencyCode
-    ) {
+      $locale: String
+    ) @shopperPreferences(locale: $locale) {
       customer {
         wishlists(filters: { entityIds: [$entityId] }) {
           edges {
@@ -41,11 +43,12 @@ interface Pagination {
 export const getCustomerWishlist = cache(async (entityId: number, pagination: Pagination) => {
   const { before, after, limit = 9 } = pagination;
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
   const currencyCode = await getPreferredCurrencyCode();
   const paginationArgs = before ? { last: limit, before } : { first: limit, after };
   const response = await client.fetch({
     document: WishlistDetailsQuery,
-    variables: { ...paginationArgs, currencyCode, entityId },
+    variables: { ...paginationArgs, currencyCode, entityId, locale },
     customerAccessToken,
     fetchOptions: { next: { revalidate, tags: [TAGS.customer] } },
   });

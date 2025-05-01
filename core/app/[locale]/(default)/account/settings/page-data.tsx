@@ -1,3 +1,4 @@
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -13,7 +14,8 @@ const CustomerSettingsQuery = graphql(
       $customerSortBy: FormFieldSortInput
       $addressFilters: FormFieldFiltersInput
       $addressSortBy: FormFieldSortInput
-    ) {
+      $locale: String
+    ) @shopperPreferences(locale: $locale) {
       customer {
         entityId
         email
@@ -54,6 +56,7 @@ interface Props {
 
 export const getCustomerSettingsQuery = cache(async ({ address, customer }: Props = {}) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
 
   const response = await client.fetch({
     document: CustomerSettingsQuery,
@@ -62,6 +65,7 @@ export const getCustomerSettingsQuery = cache(async ({ address, customer }: Prop
       addressSortBy: address?.sortBy,
       customerFilters: customer?.filters,
       customerSortBy: customer?.sortBy,
+      locale,
     },
     fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
     customerAccessToken,
