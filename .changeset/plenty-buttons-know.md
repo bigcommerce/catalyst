@@ -2,8 +2,8 @@
 "@bigcommerce/catalyst-core": patch
 ---
 
-Remove `error.name` check for auth error in Login, since `error.name` gets minified in production and the check never returns `true`.
+Check for `error.type` instead of `error.name` auth error in Login, since `error.name` gets minified in production and the check never returns `true`. Additionally, add a check for the `cause.err` to be of type `BigcommerceGQLError`.
 
 Migration:
 
-- Remove `error.name === 'CallbackRouteError'` check in the error handling of the login action.
+- Change `error.name === 'CallbackRouteError'` to `error.type === 'CallbackRouteError'` check in the error handling of the login action and include `error.cause.err instanceof BigCommerceGQLError`.
