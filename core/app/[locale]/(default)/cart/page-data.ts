@@ -1,3 +1,5 @@
+import { getLocale } from 'next-intl/server';
+
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { FragmentOf, graphql, VariablesOf } from '~/client/graphql';
@@ -186,7 +188,7 @@ const GeographyFragment = graphql(
 
 const CartPageQuery = graphql(
   `
-    query CartPageQuery($cartId: String) {
+    query CartPageQuery($cartId: String, $locale: String) @shopperPreferences(locale: $locale) {
       site {
         cart(entityId: $cartId) {
           entityId
@@ -246,10 +248,11 @@ type Variables = VariablesOf<typeof CartPageQuery>;
 
 export const getCart = async (variables: Variables) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
 
   const { data } = await client.fetch({
     document: CartPageQuery,
-    variables,
+    variables: { ...variables, locale },
     customerAccessToken,
     fetchOptions: {
       cache: 'no-store',
