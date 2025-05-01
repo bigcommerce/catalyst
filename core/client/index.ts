@@ -43,7 +43,6 @@ export const client = createClient({
   beforeRequest: async (fetchOptions) => {
     // We can't serialize a `Headers` object within this method so we have to opt into using a plain object
     const requestHeaders: Record<string, string> = {};
-    const locale = await getLocale();
 
     if (fetchOptions?.cache && ['no-store', 'no-cache'].includes(fetchOptions.cache)) {
       const ipAddress = (await headers()).get('X-Forwarded-For');
@@ -52,10 +51,6 @@ export const client = createClient({
         requestHeaders['X-Forwarded-For'] = ipAddress;
         requestHeaders['True-Client-IP'] = ipAddress;
       }
-    }
-
-    if (locale) {
-      requestHeaders['Accept-Language'] = locale;
     }
 
     return {
