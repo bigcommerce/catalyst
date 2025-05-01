@@ -32,12 +32,12 @@ interface Props {
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { slug } = await props.params;
+  const { locale, slug } = await props.params;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const productId = Number(slug);
 
-  const product = await getProductPageMetadata(productId, customerAccessToken);
+  const product = await getProductPageMetadata(productId, locale, customerAccessToken);
 
   if (!product) {
     return notFound();
@@ -75,7 +75,7 @@ export default async function Product(props: Props) {
 
   const productId = Number(slug);
 
-  const baseProduct = await getProduct(productId, customerAccessToken);
+  const baseProduct = await getProduct(productId, locale, customerAccessToken);
 
   if (!baseProduct) {
     return notFound();
@@ -99,7 +99,7 @@ export default async function Product(props: Props) {
       useDefaultOptionSelections: true,
     };
 
-    const product = await getStreamableProduct(variables, customerAccessToken);
+    const product = await getStreamableProduct(variables, locale, customerAccessToken);
 
     if (!product) {
       return notFound();
@@ -131,7 +131,7 @@ export default async function Product(props: Props) {
       currencyCode,
     };
 
-    return await getProductPricingAndRelatedProducts(variables, customerAccessToken);
+    return await getProductPricingAndRelatedProducts(variables, locale, customerAccessToken);
   });
 
   const streamablePrices = Streamable.from(async () => {

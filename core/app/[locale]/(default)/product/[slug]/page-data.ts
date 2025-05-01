@@ -134,7 +134,8 @@ export const ProductOptionsFragment = graphql(
 );
 
 const ProductPageMetadataQuery = graphql(`
-  query ProductPageMetadataQuery($entityId: Int!) {
+  query ProductPageMetadataQuery($entityId: Int!, $locale: String)
+  @shopperPreferences(locale: $locale) {
     site {
       product(entityId: $entityId) {
         name
@@ -154,10 +155,10 @@ const ProductPageMetadataQuery = graphql(`
 `);
 
 export const getProductPageMetadata = cache(
-  async (entityId: number, customerAccessToken?: string) => {
+  async (entityId: number, locale: string, customerAccessToken?: string) => {
     const { data } = await client.fetch({
       document: ProductPageMetadataQuery,
-      variables: { entityId },
+      variables: { entityId, locale },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
@@ -168,7 +169,7 @@ export const getProductPageMetadata = cache(
 
 const ProductQuery = graphql(
   `
-    query ProductQuery($entityId: Int!) {
+    query ProductQuery($entityId: Int!, $locale: String) @shopperPreferences(locale: $locale) {
       site {
         product(entityId: $entityId) {
           entityId
@@ -190,16 +191,18 @@ const ProductQuery = graphql(
   [ProductOptionsFragment],
 );
 
-export const getProduct = cache(async (entityId: number, customerAccessToken?: string) => {
-  const { data } = await client.fetch({
-    document: ProductQuery,
-    variables: { entityId },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+export const getProduct = cache(
+  async (entityId: number, locale: string, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: ProductQuery,
+      variables: { entityId, locale },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
 
-  return data.site.product;
-});
+    return data.site.product;
+  },
+);
 
 const StreamableProductQuery = graphql(
   `
@@ -207,7 +210,8 @@ const StreamableProductQuery = graphql(
       $entityId: Int!
       $optionValueIds: [OptionValueId!]
       $useDefaultOptionSelections: Boolean
-    ) {
+      $locale: String
+    ) @shopperPreferences(locale: $locale) {
       site {
         product(
           entityId: $entityId
@@ -261,10 +265,10 @@ const StreamableProductQuery = graphql(
 type Variables = VariablesOf<typeof StreamableProductQuery>;
 
 export const getStreamableProduct = cache(
-  async (variables: Variables, customerAccessToken?: string) => {
+  async (variables: Variables, locale: string, customerAccessToken?: string) => {
     const { data } = await client.fetch({
       document: StreamableProductQuery,
-      variables,
+      variables: { ...variables, locale },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
@@ -282,7 +286,8 @@ const ProductPricingAndRelatedProductsQuery = graphql(
       $optionValueIds: [OptionValueId!]
       $useDefaultOptionSelections: Boolean
       $currencyCode: currencyCode
-    ) {
+      $locale: String
+    ) @shopperPreferences(locale: $locale) {
       site {
         product(
           entityId: $entityId
@@ -305,10 +310,10 @@ const ProductPricingAndRelatedProductsQuery = graphql(
 );
 
 export const getProductPricingAndRelatedProducts = cache(
-  async (variables: Variables, customerAccessToken?: string) => {
+  async (variables: Variables, locale: string, customerAccessToken?: string) => {
     const { data } = await client.fetch({
       document: ProductPricingAndRelatedProductsQuery,
-      variables,
+      variables: { ...variables, locale },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });

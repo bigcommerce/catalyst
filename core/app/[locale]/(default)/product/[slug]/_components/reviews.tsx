@@ -1,5 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { getFormatter, getTranslations } from 'next-intl/server';
+import { getFormatter, getLocale, getTranslations } from 'next-intl/server';
 import { createLoader, parseAsString, SearchParams } from 'nuqs/server';
 import { cache } from 'react';
 
@@ -26,7 +26,14 @@ const loadReviewsPaginationSearchParams = createLoader({
 
 const ReviewsQuery = graphql(
   `
-    query ReviewsQuery($entityId: Int!, $first: Int, $after: String, $before: String, $last: Int) {
+    query ReviewsQuery(
+      $entityId: Int!
+      $first: Int
+      $after: String
+      $before: String
+      $last: Int
+      $locale: String
+    ) @shopperPreferences(locale: $locale) {
       site {
         product(entityId: $entityId) {
           reviewSummary {
@@ -59,10 +66,10 @@ const ReviewsQuery = graphql(
   [ProductReviewSchemaFragment, PaginationFragment],
 );
 
-const getReviews = cache(async (productId: number, paginationArgs: object) => {
+const getReviews = cache(async (productId: number, paginationArgs: object, locale: string) => {
   const { data } = await client.fetch({
     document: ReviewsQuery,
-    variables: { ...paginationArgs, entityId: productId },
+    variables: { ...paginationArgs, entityId: productId, locale },
     fetchOptions: { next: { revalidate } },
   });
 
@@ -76,6 +83,7 @@ interface Props {
 
 export const Reviews = async ({ productId, searchParams }: Props) => {
   const t = await getTranslations('Product.Reviews');
+  const locale = await getLocale();
 
   const streamableReviewsData = Streamable.from(async () => {
     const paginationSearchParams = await loadReviewsPaginationSearchParams(searchParams);
@@ -86,7 +94,7 @@ export const Reviews = async ({ productId, searchParams }: Props) => {
     } = paginationSearchParams;
     const paginationArgs = before == null ? { first: 5, after } : { last: 5, before };
 
-    return getReviews(productId, paginationArgs);
+    return getReviews(productId, paginationArgs, locale);
   });
 
   const streamableReviews = Streamable.from(async () => {
