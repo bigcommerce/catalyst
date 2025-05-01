@@ -45,6 +45,7 @@ export const login = async (
 
     if (
       error instanceof AuthError &&
+      error.type === 'CallbackRouteError' &&
       error.cause &&
       error.cause.err?.message.includes('Invalid credentials')
     ) {
