@@ -2,10 +2,12 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
+import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { ProductCardFragment } from '~/components/product-card/fragment';
+import { routing } from '~/i18n/routing';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 const GetBestSellingProductsQuery = graphql(
@@ -114,15 +116,17 @@ export type GetProductsResponse = Array<
   >[number]['node']
 >;
 
-const getBestSellingProducts = cache(async () => {
+const getBestSellingProducts = cache(async ({ locale }: { locale?: string }) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const currencyCode = await getPreferredCurrencyCode();
+  const channelId = getChannelIdFromLocale(locale);
 
   try {
     const response = await client.fetch({
       document: GetBestSellingProductsQuery,
       customerAccessToken,
       variables: { currencyCode },
+      channelId,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
@@ -141,15 +145,17 @@ const getBestSellingProducts = cache(async () => {
   }
 });
 
-const getFeaturedProducts = cache(async () => {
+const getFeaturedProducts = cache(async ({ locale }: { locale?: string }) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const currencyCode = await getPreferredCurrencyCode();
+  const channelId = getChannelIdFromLocale(locale);
 
   try {
     const response = await client.fetch({
       document: GetFeaturedProductsQuery,
       customerAccessToken,
       variables: { currencyCode },
+      channelId,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
@@ -168,15 +174,17 @@ const getFeaturedProducts = cache(async () => {
   }
 });
 
-const getNewestProducts = cache(async () => {
+const getNewestProducts = cache(async ({ locale }: { locale?: string }) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const currencyCode = await getPreferredCurrencyCode();
+  const channelId = getChannelIdFromLocale(locale);
 
   try {
     const response = await client.fetch({
       document: GetNewestProductsQuery,
       customerAccessToken,
       variables: { currencyCode },
+      channelId,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 

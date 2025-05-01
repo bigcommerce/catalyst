@@ -6,6 +6,7 @@ import {
   BcProductSchema,
   useBcProductToVibesProduct,
 } from './use-bc-product-to-vibes-product/use-bc-product-to-vibes-product';
+import { useLocale } from 'next-intl';
 
 const ProductListSchema = z.object({
   products: z.array(BcProductSchema),
@@ -24,9 +25,10 @@ interface Props {
 
 export function useProducts({ collection, collectionLimit = 20, additionalProductIds }: Props) {
   const bcProductToVibesProduct = useBcProductToVibesProduct();
+  const locale = useLocale();
 
   const { data: collectionData, isLoading: isCollectionLoading } = useSWR(
-    collection !== 'none' ? `/api/products/group/${collection}` : null,
+    collection !== 'none' ? `/api/products/group/${collection}?locale=${locale}` : null,
     fetcher,
   );
 
