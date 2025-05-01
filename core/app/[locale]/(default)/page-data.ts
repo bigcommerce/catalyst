@@ -22,7 +22,7 @@ export const LayoutQuery = graphql(
 
 export const GetLinksAndSectionsQuery = graphql(
   `
-    query GetLinksAndSectionsQuery {
+    query GetLinksAndSectionsQuery($locale: String) @shopperPreferences(locale: $locale) {
       site {
         ...HeaderLinksFragment
         ...FooterSectionsFragment
@@ -34,7 +34,8 @@ export const GetLinksAndSectionsQuery = graphql(
 
 const HomePageQuery = graphql(
   `
-    query HomePageQuery($currencyCode: currencyCode) {
+    query HomePageQuery($currencyCode: currencyCode, $locale: String)
+    @shopperPreferences(locale: $locale) {
       site {
         featuredProducts(first: 12) {
           edges {
@@ -57,11 +58,11 @@ const HomePageQuery = graphql(
 );
 
 export const getPageData = cache(
-  async (currencyCode?: CurrencyCode, customerAccessToken?: string) => {
+  async (locale: string, currencyCode?: CurrencyCode, customerAccessToken?: string) => {
     const { data } = await client.fetch({
       document: HomePageQuery,
       customerAccessToken,
-      variables: { currencyCode },
+      variables: { currencyCode, locale },
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 

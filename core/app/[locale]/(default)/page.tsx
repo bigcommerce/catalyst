@@ -28,7 +28,7 @@ export default async function Home({ params }: Props) {
     const customerAccessToken = await getSessionCustomerAccessToken();
     const currencyCode = await getPreferredCurrencyCode();
 
-    return getPageData(currencyCode, customerAccessToken);
+    return getPageData(locale, currencyCode, customerAccessToken);
   });
 
   const streamableFeaturedProducts = Streamable.from(async () => {

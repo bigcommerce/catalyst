@@ -47,9 +47,10 @@ const getCartCount = async (cartId: string, customerAccessToken?: string) => {
   return response.data.site.cart?.lineItems.totalQuantity ?? null;
 };
 
-const getHeaderLinks = cache(async (customerAccessToken?: string) => {
+const getHeaderLinks = cache(async (locale: string, customerAccessToken?: string) => {
   const { data: response } = await client.fetch({
     document: GetLinksAndSectionsQuery,
+    variables: { locale },
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
@@ -93,7 +94,7 @@ export const Header = async () => {
   const streamableLinks = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
 
-    const categoryTree = await getHeaderLinks(customerAccessToken);
+    const categoryTree = await getHeaderLinks(locale, customerAccessToken);
 
     /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
    To show a full list of categories, modify the `slice` method to remove the limit.

@@ -6,7 +6,7 @@ import {
   SiX,
   SiYoutube,
 } from '@icons-pack/react-simple-icons';
-import { getTranslations } from 'next-intl/server';
+import { getLocale, getTranslations } from 'next-intl/server';
 import { cache, JSX } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
@@ -44,9 +44,10 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   YouTube: { icon: <SiYoutube title="YouTube" /> },
 };
 
-const getFooterSections = cache(async (customerAccessToken?: string) => {
+const getFooterSections = cache(async (locale: string, customerAccessToken?: string) => {
   const { data: response } = await client.fetch({
     document: GetLinksAndSectionsQuery,
+    variables: { locale },
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
@@ -65,6 +66,7 @@ const getFooterData = cache(async () => {
 
 export const Footer = async () => {
   const t = await getTranslations('Components.Footer');
+  const locale = await getLocale();
 
   const data = await getFooterData();
 
@@ -89,7 +91,7 @@ export const Footer = async () => {
   const streamableSections = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
 
-    const sectionsData = await getFooterSections(customerAccessToken);
+    const sectionsData = await getFooterSections(locale, customerAccessToken);
 
     return [
       {
