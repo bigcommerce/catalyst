@@ -11,7 +11,7 @@ interface DevProps {
   channelId: string;
   hostname: string;
   token?: string;
-  cartId?: string | null;
+  cartId?: string;
 }
 
 export function ScriptDev({ cartId, hostname, storeHash, channelId, token }: DevProps) {

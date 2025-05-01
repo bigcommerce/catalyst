@@ -29,7 +29,7 @@ export async function B2BLoader() {
         hostname={LOCAL_BUYER_PORTAL_HOST}
         storeHash={BIGCOMMERCE_STORE_HASH}
         token={session?.b2bToken}
-        cartId={session?.user?.cartId}
+        cartId={session?.user?.cartId ?? undefined}
       />
     );
   }
