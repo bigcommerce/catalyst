@@ -1,4 +1,5 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import { getLocale } from 'next-intl/server';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -50,7 +51,12 @@ export const CompareCardFragment = graphql(
 
 const ComparePageQuery = graphql(
   `
-    query ComparePageQuery($entityIds: [Int!], $first: Int, $currencyCode: currencyCode) {
+    query ComparePageQuery(
+      $entityIds: [Int!]
+      $first: Int
+      $currencyCode: currencyCode
+      $locale: String
+    ) @shopperPreferences(locale: $locale) {
       site {
         products(entityIds: $entityIds, first: $first) {
           edges {
@@ -68,6 +74,7 @@ const ComparePageQuery = graphql(
 
 export const getCompareData = cache(async (productIds: number[] = []) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const locale = await getLocale();
   const currencyCode = await getPreferredCurrencyCode();
 
   const { data } = await client.fetch({
@@ -76,6 +83,7 @@ export const getCompareData = cache(async (productIds: number[] = []) => {
       entityIds: productIds,
       first: productIds.length ? MAX_COMPARE_LIMIT : 0,
       currencyCode,
+      locale,
     },
     customerAccessToken,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
