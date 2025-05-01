@@ -5,7 +5,7 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 
 const SearchPageQuery = graphql(`
-  query SearchPageQuery {
+  query SearchPageQuery($locale: String) @shopperPreferences(locale: $locale) {
     site {
       settings {
         storefront {
@@ -18,9 +18,10 @@ const SearchPageQuery = graphql(`
   }
 `);
 
-export const getSearchPageData = cache(async () => {
+export const getSearchPageData = cache(async (locale: string) => {
   const response = await client.fetch({
     document: SearchPageQuery,
+    variables: { locale },
     fetchOptions: { next: { revalidate } },
   });
 

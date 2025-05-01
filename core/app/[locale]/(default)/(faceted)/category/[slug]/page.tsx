@@ -31,9 +31,14 @@ const getCachedCategory = cache((categoryId: number) => {
 const compareLoader = createCompareLoader();
 
 const createCategorySearchParamsLoader = cache(
-  async (categoryId: number, customerAccessToken?: string) => {
+  async (categoryId: number, locale: string, customerAccessToken?: string) => {
     const cachedCategory = getCachedCategory(categoryId);
-    const categorySearch = await fetchFacetedSearch(cachedCategory, undefined, customerAccessToken);
+    const categorySearch = await fetchFacetedSearch(
+      cachedCategory,
+      locale,
+      undefined,
+      customerAccessToken,
+    );
     const categoryFacets = categorySearch.facets.items.filter(
       (facet) => facet.__typename !== 'CategorySearchFilter',
     );
@@ -69,12 +74,12 @@ interface Props {
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { slug } = await props.params;
+  const { locale, slug } = await props.params;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const categoryId = Number(slug);
 
-  const { category } = await getCategoryPageData(categoryId, customerAccessToken);
+  const { category } = await getCategoryPageData(categoryId, locale, customerAccessToken);
 
   if (!category) {
     return notFound();
@@ -101,6 +106,7 @@ export default async function Category(props: Props) {
 
   const { category, settings, categoryTree } = await getCategoryPageData(
     categoryId,
+    locale,
     customerAccessToken,
   );
 
@@ -122,6 +128,7 @@ export default async function Category(props: Props) {
 
     const loadSearchParams = await createCategorySearchParamsLoader(
       categoryId,
+      locale,
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
@@ -132,6 +139,7 @@ export default async function Category(props: Props) {
         ...parsedSearchParams,
         category: categoryId,
       },
+      locale,
       currencyCode,
       customerAccessToken,
     );
@@ -174,11 +182,17 @@ export default async function Category(props: Props) {
 
     const loadSearchParams = await createCategorySearchParamsLoader(
       categoryId,
+      locale,
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
     const cachedCategory = getCachedCategory(categoryId);
-    const categorySearch = await fetchFacetedSearch(cachedCategory, undefined, customerAccessToken);
+    const categorySearch = await fetchFacetedSearch(
+      cachedCategory,
+      locale,
+      undefined,
+      customerAccessToken,
+    );
     const refinedSearch = await streamableFacetedSearch;
 
     const allFacets = categorySearch.facets.items.filter(
@@ -225,7 +239,7 @@ export default async function Category(props: Props) {
 
     const compareIds = { entityIds: compare ? compare.map((id: string) => Number(id)) : [] };
 
-    const products = await getCompareProducts(compareIds, customerAccessToken);
+    const products = await getCompareProducts(compareIds, locale, customerAccessToken);
 
     return products.map((product) => ({
       id: product.entityId.toString(),

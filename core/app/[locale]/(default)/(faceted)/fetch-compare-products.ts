@@ -21,7 +21,8 @@ const CompareProductsSchema = z.object({
 });
 
 const CompareProductsQuery = graphql(`
-  query CompareProductsQuery($entityIds: [Int!], $first: Int) {
+  query CompareProductsQuery($entityIds: [Int!], $first: Int, $locale: String)
+  @shopperPreferences(locale: $locale) {
     site {
       products(entityIds: $entityIds, first: $first) {
         edges {
@@ -43,7 +44,7 @@ const CompareProductsQuery = graphql(`
 type Variables = VariablesOf<typeof CompareProductsQuery>;
 
 export const getCompareProducts = cache(
-  async (variables: Variables, customerAccessToken?: string) => {
+  async (variables: Variables, locale: string, customerAccessToken?: string) => {
     const parsedVariables = CompareProductsSchema.parse(variables);
 
     if (parsedVariables.entityIds.length === 0) {
@@ -52,7 +53,7 @@ export const getCompareProducts = cache(
 
     const response = await client.fetch({
       document: CompareProductsQuery,
-      variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT },
+      variables: { ...parsedVariables, first: MAX_COMPARE_LIMIT, locale },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });

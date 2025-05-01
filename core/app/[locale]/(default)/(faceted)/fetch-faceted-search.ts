@@ -18,7 +18,8 @@ const GetProductSearchResultsQuery = graphql(
       $filters: SearchProductsFiltersInput!
       $sort: SearchProductsSortInput
       $currencyCode: currencyCode
-    ) {
+      $locale: String
+    ) @shopperPreferences(locale: $locale) {
       site {
         search {
           searchProducts(filters: $filters, sort: $sort) {
@@ -175,6 +176,7 @@ interface ProductSearch {
 const getProductSearchResults = cache(
   async (
     { limit = 9, after, before, sort, filters }: ProductSearch,
+    locale: string,
     currencyCode?: CurrencyCode,
     customerAccessToken?: string,
   ) => {
@@ -183,7 +185,7 @@ const getProductSearchResults = cache(
 
     const response = await client.fetch({
       document: GetProductSearchResultsQuery,
-      variables: { ...filterArgs, ...paginationArgs, currencyCode },
+      variables: { ...filterArgs, ...paginationArgs, currencyCode, locale },
       customerAccessToken,
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate: 300 } },
     });
@@ -401,6 +403,7 @@ export const fetchFacetedSearch = cache(
   // We need to make sure the reference passed into this function is the same if we want it to be memoized.
   async (
     params: z.input<typeof PublicSearchParamsSchema>,
+    locale: string,
     currencyCode?: CurrencyCode,
     customerAccessToken?: string,
   ) => {
@@ -414,6 +417,7 @@ export const fetchFacetedSearch = cache(
         sort,
         filters,
       },
+      locale,
       currencyCode,
       customerAccessToken,
     );

@@ -7,7 +7,7 @@ import { BreadcrumbsCategoryFragment } from '~/components/breadcrumbs/fragment';
 
 const CategoryPageQuery = graphql(
   `
-    query CategoryPageQuery($entityId: Int!) {
+    query CategoryPageQuery($entityId: Int!, $locale: String) @shopperPreferences(locale: $locale) {
       site {
         category(entityId: $entityId) {
           entityId
@@ -47,13 +47,15 @@ const CategoryPageQuery = graphql(
   [BreadcrumbsCategoryFragment],
 );
 
-export const getCategoryPageData = cache(async (entityId: number, customerAccessToken?: string) => {
-  const response = await client.fetch({
-    document: CategoryPageQuery,
-    variables: { entityId },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+export const getCategoryPageData = cache(
+  async (entityId: number, locale: string, customerAccessToken?: string) => {
+    const response = await client.fetch({
+      document: CategoryPageQuery,
+      variables: { entityId, locale },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
 
-  return response.data.site;
-});
+    return response.data.site;
+  },
+);
