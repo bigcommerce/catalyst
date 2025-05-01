@@ -10,7 +10,7 @@ import { logoTransformer } from '~/data-transformers/logo-transformer';
 
 const MaintenancePageQuery = graphql(
   `
-    query MaintenancePageQuery {
+    query MaintenancePageQuery($locale: String) @shopperPreferences(locale: $locale) {
       site {
         settings {
           contact {
@@ -53,6 +53,7 @@ export default async function Maintenance({ params }: Props) {
 
   const { data } = await client.fetch({
     document: MaintenancePageQuery,
+    variables: { locale },
   });
 
   const storeSettings = data.site.settings;
