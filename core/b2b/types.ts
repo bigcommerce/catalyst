@@ -70,6 +70,10 @@ declare global {
             selectedOptions?: B2BProductOption[];
           }) => Promise<void>;
         };
+        cart?: {
+          getEntityId: () => string;
+          setEntityId: (cartId: string) => void;
+        }
       };
       callbacks?: {
         addEventListener: {
@@ -80,8 +84,9 @@ declare global {
             }) => void,
           ): void;
           (event: 'on-logout', callback: (props: { data: Record<string, string> }) => void): void;
+          (event: 'on-cart-created', callback: (props: { data: { cartId: string } }) => void): void;
         };
-        removeEventListener: (event: 'on-logout' | 'on-registered', callback: unknown) => void;
+        removeEventListener: (event: 'on-logout' | 'on-registered' | 'on-cart-created', callback: unknown) => void;
         dispatchEvent: (event: string) => void;
       };
     };

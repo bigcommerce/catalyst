@@ -25,6 +25,7 @@ export async function B2BLoader() {
   if (LOCAL_BUYER_PORTAL_HOST) {
     return (
       <ScriptDev
+        cartId={session?.user?.cartId ?? undefined}
         channelId={BIGCOMMERCE_CHANNEL_ID}
         hostname={LOCAL_BUYER_PORTAL_HOST}
         storeHash={BIGCOMMERCE_STORE_HASH}
@@ -37,6 +38,7 @@ export async function B2BLoader() {
 
   return (
     <ScriptProduction
+      cartId={session?.user?.cartId}
       channelId={BIGCOMMERCE_CHANNEL_ID}
       environment={environment}
       storeHash={BIGCOMMERCE_STORE_HASH}
