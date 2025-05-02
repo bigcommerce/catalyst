@@ -17,6 +17,8 @@ import { addToCart } from './_actions/add-to-cart';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
+import { WishlistButton } from './_components/wishlist-button';
+import { WishlistButtonForm } from './_components/wishlist-button/form';
 import {
   getProduct,
   getProductPageMetadata,
@@ -64,6 +66,7 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 export default async function Product(props: Props) {
   const { locale, slug } = await props.params;
   const customerAccessToken = await getSessionCustomerAccessToken();
+  const detachedWishlistFormId = 'product-add-to-wishlist-form';
 
   setRequestLocale(locale);
 
@@ -104,6 +107,8 @@ export default async function Product(props: Props) {
 
     return product;
   });
+
+  const streamableProductSku = Streamable.from(async () => (await streamableProduct).sku);
 
   const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {
     const options = await props.searchParams;
@@ -265,6 +270,13 @@ export default async function Product(props: Props) {
     <>
       <ProductDetail
         action={addToCart}
+        additionalActions={
+          <WishlistButton
+            formId={detachedWishlistFormId}
+            productId={productId}
+            productSku={streamableProductSku}
+          />
+        }
         additionalInformationTitle={t('ProductDetails.additionalInformation')}
         ctaDisabled={streameableCtaDisabled}
         ctaLabel={streameableCtaLabel}
@@ -318,6 +330,13 @@ export default async function Product(props: Props) {
           </>
         )}
       </Stream>
+
+      <WishlistButtonForm
+        formId={detachedWishlistFormId}
+        productId={productId}
+        productSku={streamableProductSku}
+        searchParams={props.searchParams}
+      />
     </>
   );
 }

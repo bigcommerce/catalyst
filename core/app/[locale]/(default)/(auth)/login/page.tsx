@@ -35,13 +35,14 @@ export default async function Login({ params, searchParams }: Props) {
   const t = await getTranslations('Auth.Login');
 
   const vanityUrl = buildConfig.get('urls').vanityUrl;
-  const redirectToPathname = new URL(redirectTo, vanityUrl).pathname;
+  const redirectUrl = new URL(redirectTo, vanityUrl);
+  const redirectTarget = redirectUrl.pathname + redirectUrl.search;
 
   return (
     <>
       <ForceRefresh />
       <SignInSection
-        action={login.bind(null, { redirectTo: redirectToPathname })}
+        action={login.bind(null, { redirectTo: redirectTarget })}
         forgotPasswordHref="/login/forgot-password"
         forgotPasswordLabel={t('forgotPassword')}
         submitLabel={t('cta')}

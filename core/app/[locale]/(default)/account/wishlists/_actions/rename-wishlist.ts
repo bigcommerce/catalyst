@@ -23,7 +23,7 @@ export async function renameWishlist(
   formData: FormData,
 ): Promise<State> {
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const t = await getTranslations('Account.Wishlists');
+  const t = await getTranslations('Wishlist');
   const schema = renameWishlistSchema({ required_error: t('Errors.nameRequired') });
   const submission = parseWithZod(formData, { schema });
 

@@ -76,7 +76,7 @@ function wishlistItemsTransformer(
 
 function wishlistTransformer(
   wishlist: ResultOf<typeof WishlistFragment | typeof WishlistPaginatedItemsFragment>,
-  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
+  t: ExistingResultType<typeof getTranslations<'Wishlist'>>,
   formatter: ExistingResultType<typeof getFormatter>,
   pt?: ExistingResultType<typeof getTranslations<'Product.ProductDetails'>>,
 ): Wishlist {
@@ -103,21 +103,21 @@ function wishlistTransformer(
 
 export const wishlistsTransformer = (
   wishlists: ResultOf<typeof WishlistsFragment>,
-  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
+  t: ExistingResultType<typeof getTranslations<'Wishlist'>>,
   formatter: ExistingResultType<typeof getFormatter>,
 ): Wishlist[] =>
   removeEdgesAndNodes(wishlists).map((wishlist) => wishlistTransformer(wishlist, t, formatter));
 
 export const wishlistDetailsTransformer = (
   wishlist: ResultOf<typeof WishlistPaginatedItemsFragment>,
-  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
+  t: ExistingResultType<typeof getTranslations<'Wishlist'>>,
   pt: ExistingResultType<typeof getTranslations<'Product.ProductDetails'>>,
   formatter: ExistingResultType<typeof getFormatter>,
 ): Wishlist => wishlistTransformer(wishlist, t, formatter, pt);
 
 export const publicWishlistDetailsTransformer = (
   wishlist: ResultOf<typeof PublicWishlistFragment>,
-  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
+  t: ExistingResultType<typeof getTranslations<'Wishlist'>>,
   pt: ExistingResultType<typeof getTranslations<'Product.ProductDetails'>>,
   formatter: ExistingResultType<typeof getFormatter>,
 ): Wishlist => wishlistTransformer({ ...wishlist, isPublic: true }, t, formatter, pt);

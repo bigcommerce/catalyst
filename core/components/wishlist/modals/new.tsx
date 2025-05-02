@@ -7,7 +7,7 @@ import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { useModalForm } from '~/components/modal/modal-form-provider';
 
-import { newWishlistSchema } from '../../_actions/schema';
+import { newWishlistSchema } from '../../../app/[locale]/(default)/account/wishlists/_actions/schema';
 
 export const NewWishlistModal = ({
   nameLabel = 'Name',
