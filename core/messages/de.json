@@ -178,61 +178,71 @@
             "newPassword": "Neues Passwort",
             "confirmPassword": "Passwort bestätigen",
             "cta": "Update"
+        }
+    },
+    "Wishlist": {
+        "title": "Wunschlisten",
+        "new": "Neue Wunschliste",
+        "items": "{count, plural, =1 {1 Artikel} other {# Artikel}}",
+        "viewWishlist": "Liste anzeigen",
+        "noWishlists": "Sie haben keine Wunschlisten.",
+        "noWishlistsSubtitle": "Erstellen Sie eine Wunschliste, um Ihre Lieblingsprodukte zu speichern.",
+        "noWishlistsCallToAction": "Eine Wunschliste erstellen",
+        "emptyWishlist": "Sie haben keine Produkte zu dieser Wunschliste hinzugefügt.",
+        "share": "Freigeben",
+        "shareSuccess": "Die Wunschliste wurde erfolgreich geteilt.",
+        "shareCopied": "Die öffentliche URL der Wunschliste wurde in Ihre Zwischenablage kopiert.",
+        "shareDisabled": "Um Ihre Wunschliste teilen zu können, muss sie öffentlich sein.",
+        "makePublic": "Öffentlich machen",
+        "makePrivate": "Privat machen",
+        "rename": "Umbenennen",
+        "delete": "Löschen",
+        "Visibility": {
+            "public": "Öffentlich",
+            "private": "Privat"
         },
-        "Wishlists": {
-            "title": "Wunschlisten",
-            "new": "Neue Wunschliste",
-            "items": "{count, plural, =1 {1 Artikel} other {# Artikel}}",
-            "viewWishlist": "Liste anzeigen",
-            "noWishlists": "Sie haben keine Wunschlisten.",
-            "noWishlistsSubtitle": "Erstellen Sie eine Wunschliste, um Ihre Lieblingsprodukte zu speichern.",
-            "noWishlistsCallToAction": "Eine Wunschliste erstellen",
-            "emptyWishlist": "Sie haben keine Produkte zu dieser Wunschliste hinzugefügt.",
-            "share": "Freigeben",
-            "shareSuccess": "Die Wunschliste wurde erfolgreich geteilt.",
-            "shareCopied": "Die öffentliche URL der Wunschliste wurde in Ihre Zwischenablage kopiert.",
-            "shareDisabled": "Um Ihre Wunschliste teilen zu können, muss sie öffentlich sein.",
-            "makePublic": "Öffentlich machen",
-            "makePrivate": "Privat machen",
-            "rename": "Umbenennen",
+        "Modal": {
+            "cancel": "Abbrechen",
+            "close": "Schließen",
+            "copy": "Kopieren",
+            "create": "erstellen",
+            "save": "Speichern",
             "delete": "Löschen",
-            "Visibility": {
-                "public": "Öffentlich",
-                "private": "Privat"
-            },
-            "Modal": {
-                "cancel": "Abbrechen",
-                "close": "Schließen",
-                "copy": "Kopieren",
-                "create": "erstellen",
-                "save": "Speichern",
-                "delete": "Löschen",
-                "newTitle": "Eine neue Wunschliste erstellen",
-                "shareTitle": "Teilen Sie {name}",
-                "renameTitle": "{name} umbenennen",
-                "deleteTitle": "{name} löschen",
-                "changeVisibilityPublicTitle": "Möchten Sie {name} öffentlich machen?",
-                "changeVisibilityPrivateTitle": "Soll {name} auf privat gesetzt werden?",
-                "makePublicContent": "Möchten Sie <bold>{name}</bold> wirklich auf öffentlich setzen? Dadurch können andere Ihre Wunschliste sehen, wenn sie den Link haben.",
-                "makePrivateContent": "Möchten Sie <bold>{name}</bold> wirklich auf privat setzen? Wenn Sie Ihre Wunschliste mit anderen geteilt haben, können diese sie nicht mehr sehen.",
-                "deleteContent": "Möchten Sie <bold>{name}</bold> wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
-            },
-            "Form": {
-                "nameLabel": "Name"
-            },
+            "newTitle": "Eine neue Wunschliste erstellen",
+            "shareTitle": "Teilen Sie {name}",
+            "renameTitle": "{name} umbenennen",
+            "deleteTitle": "{name} löschen",
+            "changeVisibilityPublicTitle": "Möchten Sie {name} öffentlich machen?",
+            "changeVisibilityPrivateTitle": "Soll {name} auf privat gesetzt werden?",
+            "makePublicContent": "Möchten Sie <bold>{name}</bold> wirklich auf öffentlich setzen? Dadurch können andere Ihre Wunschliste sehen, wenn sie den Link haben.",
+            "makePrivateContent": "Möchten Sie <bold>{name}</bold> wirklich auf privat setzen? Wenn Sie Ihre Wunschliste mit anderen geteilt haben, können diese sie nicht mehr sehen.",
+            "deleteContent": "Möchten Sie <bold>{name}</bold> wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+        },
+        "Form": {
+            "nameLabel": "Name"
+        },
+        "Errors": {
+            "nameRequired": "Der Wunschlistenname darf nicht leer sein.",
+            "updateFailed": "Die Aktualisierung Ihrer Wunschliste ist fehlgeschlagen. Bitte versuchen Sie es erneut.",
+            "deleteFailed": "Das Löschen Ihrer Wunschliste konnte nicht durchgeführt werden. Bitte versuchen Sie es erneut.",
+            "removeProductFailed": "Das Produkt konnte nicht von Ihrer Wunschliste entfernt werden. Bitte versuchen Sie es erneut.",
+            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
+            "unexpected": "An unexpected error occurred, please try again"
+        },
+        "Result": {
+            "createSuccess": "Die Wunschliste wurde erfolgreich erstellt.",
+            "updateSuccess": "Die Wunschliste wurde erfolgreich aktualisiert.",
+            "deleteSuccess": "Die Wunschliste wurde erfolgreich gelöscht.",
+            "removeItemSuccess": "Der Artikel wurde von Ihrer Wunschliste entfernt."
+        },
+        "Button": {
+            "addToNewWishlist": "Add to new wish list",
+            "defaultWishlistName": "My wish list",
+            "addSuccessMessage": "Product has been added to your wish list",
+            "removeSuccessMessage": "Product has been removed from your wish list",
             "Errors": {
-                "nameRequired": "Der Wunschlistenname darf nicht leer sein.",
-                "updateFailed": "Die Aktualisierung Ihrer Wunschliste ist fehlgeschlagen. Bitte versuchen Sie es erneut.",
-                "deleteFailed": "Das Löschen Ihrer Wunschliste konnte nicht durchgeführt werden. Bitte versuchen Sie es erneut.",
-                "removeProductFailed": "Das Produkt konnte nicht von Ihrer Wunschliste entfernt werden. Bitte versuchen Sie es erneut.",
-                "unauthorized": "Sie sind nicht berechtigt, diese Aktion durchzuführen. Bitte melden Sie sich an und versuchen Sie es erneut.",
-                "unexpected": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
-            },
-            "Result": {
-                "createSuccess": "Die Wunschliste wurde erfolgreich erstellt.",
-                "updateSuccess": "Die Wunschliste wurde erfolgreich aktualisiert.",
-                "deleteSuccess": "Die Wunschliste wurde erfolgreich gelöscht.",
-                "removeItemSuccess": "Der Artikel wurde von Ihrer Wunschliste entfernt."
+                "addProductFailed": "Failed to add the product from your wish list, please try again",
+                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
             }
         }
     },

@@ -178,61 +178,71 @@
             "newPassword": "Den nye adgangskode",
             "confirmPassword": "Bekræft adgangskode",
             "cta": "Opdater"
+        }
+    },
+    "Wishlist": {
+        "title": "Ønskelister",
+        "new": "Ny ønskeliste",
+        "items": "{count, plural, =1 {1 vare} other {# varer}}",
+        "viewWishlist": "Se liste",
+        "noWishlists": "Du har ingen ønskelister",
+        "noWishlistsSubtitle": "Opret en ønskeliste for at gemme dine yndlingsprodukter.",
+        "noWishlistsCallToAction": "Opret en ønskeliste",
+        "emptyWishlist": "Du har ikke tilføjet produkter til denne ønskeliste.",
+        "share": "Del",
+        "shareSuccess": "Ønskelisten er delt.",
+        "shareCopied": "Ønskelistens offentlige URL er blevet kopieret til din udklipsholder.",
+        "shareDisabled": "Din ønskeliste skal være offentlig for at kunne dele den.",
+        "makePublic": "Gør offentlig",
+        "makePrivate": "Gør privat",
+        "rename": "Omdøb",
+        "delete": "Slet",
+        "Visibility": {
+            "public": "Offentlig",
+            "private": "Privat"
         },
-        "Wishlists": {
-            "title": "Ønskelister",
-            "new": "Ny ønskeliste",
-            "items": "{count, plural, =1 {1 vare} other {# varer}}",
-            "viewWishlist": "Se liste",
-            "noWishlists": "Du har ingen ønskelister",
-            "noWishlistsSubtitle": "Opret en ønskeliste for at gemme dine yndlingsprodukter.",
-            "noWishlistsCallToAction": "Opret en ønskeliste",
-            "emptyWishlist": "Du har ikke tilføjet produkter til denne ønskeliste.",
-            "share": "Del",
-            "shareSuccess": "Ønskelisten er delt.",
-            "shareCopied": "Ønskelistens offentlige URL er blevet kopieret til din udklipsholder.",
-            "shareDisabled": "Din ønskeliste skal være offentlig for at kunne dele den.",
-            "makePublic": "Gør offentlig",
-            "makePrivate": "Gør privat",
-            "rename": "Omdøb",
+        "Modal": {
+            "cancel": "Annuller",
+            "close": "Luk",
+            "copy": "Kopi",
+            "create": "Opret",
+            "save": "Gem",
             "delete": "Slet",
-            "Visibility": {
-                "public": "Offentlig",
-                "private": "Privat"
-            },
-            "Modal": {
-                "cancel": "Annuller",
-                "close": "Luk",
-                "copy": "Kopi",
-                "create": "Opret",
-                "save": "Gem",
-                "delete": "Slet",
-                "newTitle": "Opret en ny ønskeliste",
-                "shareTitle": "Del {name}",
-                "renameTitle": "Omdøb {name}",
-                "deleteTitle": "Slet {name}",
-                "changeVisibilityPublicTitle": "Vil du gøre {name} offentlig?",
-                "changeVisibilityPrivateTitle": "Vil du gøre {name} privat?",
-                "makePublicContent": "Er du sikker på du vil gøre <bold>{name}</bold> offentlig? Dette giver andre mulighed for at se din ønskeliste, hvis de har linket.",
-                "makePrivateContent": "Er du sikker på du vil gøre <bold>{name}</bold> privat? Hvis du har delt din ønskeliste med andre, vil de ikke længere kunne se den.",
-                "deleteContent": "Er du sikker på, at du vil slette <bold>{name}</bold>? Denne handling kan ikke fortrydes."
-            },
-            "Form": {
-                "nameLabel": "Navn"
-            },
+            "newTitle": "Opret en ny ønskeliste",
+            "shareTitle": "Del {name}",
+            "renameTitle": "Omdøb {name}",
+            "deleteTitle": "Slet {name}",
+            "changeVisibilityPublicTitle": "Vil du gøre {name} offentlig?",
+            "changeVisibilityPrivateTitle": "Vil du gøre {name} privat?",
+            "makePublicContent": "Er du sikker på du vil gøre <bold>{name}</bold> offentlig? Dette giver andre mulighed for at se din ønskeliste, hvis de har linket.",
+            "makePrivateContent": "Er du sikker på du vil gøre <bold>{name}</bold> privat? Hvis du har delt din ønskeliste med andre, vil de ikke længere kunne se den.",
+            "deleteContent": "Er du sikker på, at du vil slette <bold>{name}</bold>? Denne handling kan ikke fortrydes."
+        },
+        "Form": {
+            "nameLabel": "Navn"
+        },
+        "Errors": {
+            "nameRequired": "Navnet på ønskelisten må ikke være tomt.",
+            "updateFailed": "Din ønskeliste kunne ikke opdateres. Prøv igen.",
+            "deleteFailed": "Din ønskeliste kunne ikke slettes. Prøv igen.",
+            "removeProductFailed": "Produktet kunne ikke fjernes fra din ønskeliste. Prøv igen.",
+            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
+            "unexpected": "An unexpected error occurred, please try again"
+        },
+        "Result": {
+            "createSuccess": "Ønskelisten er oprettet.",
+            "updateSuccess": "Ønskelisten er opdateret.",
+            "deleteSuccess": "Ønskelisten er slettet.",
+            "removeItemSuccess": "Varen er blevet fjernet fra din ønskeliste."
+        },
+        "Button": {
+            "addToNewWishlist": "Add to new wish list",
+            "defaultWishlistName": "My wish list",
+            "addSuccessMessage": "Product has been added to your wish list",
+            "removeSuccessMessage": "Product has been removed from your wish list",
             "Errors": {
-                "nameRequired": "Navnet på ønskelisten må ikke være tomt.",
-                "updateFailed": "Din ønskeliste kunne ikke opdateres. Prøv igen.",
-                "deleteFailed": "Din ønskeliste kunne ikke slettes. Prøv igen.",
-                "removeProductFailed": "Produktet kunne ikke fjernes fra din ønskeliste. Prøv igen.",
-                "unauthorized": "Du er ikke autoriseret til at udføre denne handling. Log ind, og prøv igen.",
-                "unexpected": "Der er opstået en uventet fejl. Prøv igen."
-            },
-            "Result": {
-                "createSuccess": "Ønskelisten er oprettet.",
-                "updateSuccess": "Ønskelisten er opdateret.",
-                "deleteSuccess": "Ønskelisten er slettet.",
-                "removeItemSuccess": "Varen er blevet fjernet fra din ønskeliste."
+                "addProductFailed": "Failed to add the product from your wish list, please try again",
+                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
             }
         }
     },
