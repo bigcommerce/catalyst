@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { BigCommerceAPIError } from './api-error';
 import { BigCommerceAuthError } from './gql-auth-error';
 import { BigCommerceGQLError } from './gql-error';
@@ -119,7 +120,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   }): Promise<BigCommerceResponse<TResult>> {
     const { headers = {}, ...rest } = fetchOptions;
     const query = normalizeQuery(document);
-    const log = this.requestLogger(query);
     const operationInfo = getOperationInfo(query);
 
     const graphqlUrl = await this.getGraphQLEndpoint(
@@ -130,9 +130,11 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
       (await this.beforeRequest?.(fetchOptions)) ?? {};
 
-    const response = await fetch(graphqlUrl, {
+    const url = `http://localhost:8080/graphql${new URL(graphqlUrl).search}`;
+    const reqInit = {
       method: 'POST',
       headers: {
+        'x-bc-graphql-url': graphqlUrl,
         'Content-Type': 'application/json',
         Authorization: `Bearer ${this.config.storefrontToken}`,
         'User-Agent': this.backendUserAgent,
@@ -150,13 +152,33 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       }),
       ...additionalFetchOptions,
       ...rest,
-    });
+    };
+
+    const encoder = new TextEncoder();
+    const stableOptions = this.sortObj({ url, reqInit });
+    const encodedOptions = encoder.encode(JSON.stringify(stableOptions));
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encodedOptions);
+    const hash = Array.from(new Uint8Array(hashBuffer))
+      .map((b) => b.toString(16).padStart(2, '0'))
+      .join('');
+
+    const log = this.requestLogger(url, reqInit, hash);
+
+    const finalReqInit = {
+      ...reqInit,
+      headers: {
+        ...reqInit.headers,
+        'x-bc-request-hash': hash,
+      },
+    };
+
+    const response = await fetch(url, finalReqInit);
 
     if (!response.ok) {
       throw await BigCommerceAPIError.createFromResponse(response);
     }
 
-    log(response);
+    log();
 
     const result = (await response.json()) as BigCommerceResponse<TResult>;
 
@@ -234,28 +256,50 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     return baseUrl.toString();
   }
 
-  private requestLogger(document: string) {
+  private requestLogger(url: string, reqInit: RequestInit, hash: string) {
     if (!this.config.logger) {
       return () => {
         // noop
       };
     }
 
-    const { name, type } = getOperationInfo(document);
+    const searchParams = new URL(url).searchParams;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unnecessary-condition
+    const body = JSON.parse((reqInit.body as string) ?? '{}');
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+    const variables = body.variables
+      ? // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        JSON.stringify(body.variables).replace(/\s+/g, ' ').replace(/\n/g, '').trim()
+      : '{}';
 
-    const timeStart = performance.now();
+    console.log();
+    console.log(` [SENDING REQUEST: ${hash}]`);
+    console.log('   | Operation:', searchParams.get('operation'));
+    // @ts-expect-error reqInit.cache is not typed
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    console.log('   | Cache:', { cache: reqInit.cache, next: reqInit.next });
+    console.log('   | Variables:', variables);
 
-    return (response: Response) => {
-      const timeEnd = performance.now();
-      const duration = (timeEnd - timeStart).toFixed(2);
-
-      const complexity = response.headers.get('x-bc-graphql-complexity');
-
-      // eslint-disable-next-line no-console
-      console.log(
-        `[BigCommerce] ${type} ${name ?? 'anonymous'} - ${duration}ms - complexity ${complexity ?? 'unknown'}`,
-      );
+    return () => {
+      // noop
     };
+  }
+
+  private sortObj(obj: unknown): unknown {
+    if (Array.isArray(obj)) {
+      return obj.map(this.sortObj);
+    } else if (obj && typeof obj === 'object' && !(obj instanceof Headers)) {
+      return Object.keys(obj)
+        .sort()
+        .reduce((acc, key) => {
+          // @ts-expect-error recursive call
+          acc[key] = this.sortObj(obj[key]);
+
+          return acc;
+        }, {});
+    }
+
+    return obj;
   }
 }
 

@@ -1,0 +1,16 @@
+{
+  "name": "@bigcommerce/catalyst-proxy",
+  "type": "module",
+  "main": "proxy.js",
+  "packageManager": "pnpm@10.6.5",
+  "scripts": {
+    "dev": "nodemon proxy.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "http-proxy": "^1.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}

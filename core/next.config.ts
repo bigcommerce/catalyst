@@ -61,6 +61,12 @@ export default async (): Promise<NextConfig> => {
   const settings = await writeSettingsToBuildConfig();
 
   let nextConfig: NextConfig = {
+    logging: {
+      fetches: {
+        fullUrl: true,
+        hmrRefreshes: true,
+      },
+    },
     reactStrictMode: true,
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],

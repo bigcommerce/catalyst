@@ -1,5 +1,6 @@
 packages:
   - core
+  - proxy
   - packages/*
 publicHoistPattern:
   - '@bigcommerce/eslint-*'
