@@ -25,6 +25,7 @@ import { NumberInput } from '@/vibes/soul/form/number-input';
 import { RadioGroup } from '@/vibes/soul/form/radio-group';
 import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
+import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { usePathname, useRouter } from '~/i18n/routing';
@@ -188,6 +189,7 @@ function SubmitButton({ children, disabled }: { children: ReactNode; disabled?: 
   );
 }
 
+// eslint-disable-next-line complexity
 function FormField({
   field,
   formField,
@@ -208,7 +210,7 @@ function FormField({
   const handleChange = useCallback(
     (value: string) => {
       // Ensure that if page is reached without a full reload, we are still setting the selection properly based on query params.
-      const fieldValue = value || String(params[field.name]);
+      const fieldValue = value || String(params[field.name] ?? '');
 
       void setParams({ [field.name]: fieldValue });
       controls.change(fieldValue);
@@ -267,6 +269,23 @@ function FormField({
           onChange={(e) => handleChange(e.currentTarget.value)}
           onFocus={controls.focus}
           required={formField.required}
+        />
+      );
+
+    case 'textarea':
+      return (
+        <Textarea
+          errors={formField.errors}
+          key={formField.id}
+          label={field.label}
+          maxLength={field.maxLength}
+          minLength={field.minLength}
+          name={formField.name}
+          onBlur={controls.blur}
+          onChange={(e) => handleChange(e.currentTarget.value)}
+          onFocus={controls.focus}
+          required={formField.required}
+          value={controls.value ?? ''}
         />
       );
 
