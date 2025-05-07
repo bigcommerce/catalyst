@@ -1,5 +1,7 @@
 import { BigCommerceAPIError } from './api-error';
+import { BigCommerceAuthError } from './gql-auth-error';
 import { BigCommerceGQLError } from './gql-error';
+import { parseGraphQLError } from './lib/error';
 import { DocumentDecoration } from './types';
 import { getOperationInfo } from './utils/getOperationName';
 import { normalizeQuery } from './utils/normalizeQuery';
@@ -23,6 +25,10 @@ interface Config<FetcherRequestInit extends RequestInit = RequestInit> {
   beforeRequest?: (
     fetchOptions?: FetcherRequestInit,
   ) => Promise<Partial<FetcherRequestInit> | undefined> | Partial<FetcherRequestInit> | undefined;
+  onError?: (
+    error: BigCommerceGQLError,
+    queryType: 'query' | 'mutation' | 'subscription',
+  ) => Promise<void> | void;
 }
 
 interface BigCommerceResponseError {
@@ -39,6 +45,8 @@ interface BigCommerceResponse<T> {
   errors?: BigCommerceResponseError[];
 }
 
+type GraphQLErrorPolicy = 'none' | 'all' | 'auth' | 'ignore';
+
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private backendUserAgent: string;
   private readonly defaultChannelId: string;
@@ -46,6 +54,10 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private beforeRequest?: (
     fetchOptions?: FetcherRequestInit,
   ) => Promise<Partial<FetcherRequestInit> | undefined> | Partial<FetcherRequestInit> | undefined;
+  private onError?: (
+    error: BigCommerceGQLError,
+    queryType: 'query' | 'mutation' | 'subscription',
+  ) => Promise<void> | void;
 
   private trustedProxySecret = process.env.BIGCOMMERCE_TRUSTED_PROXY_SECRET;
 
@@ -64,6 +76,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       };
 
     this.beforeRequest = config.beforeRequest;
+    this.onError = config.onError;
   }
 
   // Overload for documents that require variables
@@ -73,7 +86,8 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
-    errorPolicy?: 'none' | 'all' | 'ignore';
+    errorPolicy?: GraphQLErrorPolicy;
+    validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>>;
 
   // Overload for documents that do not require variables
@@ -83,7 +97,8 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
-    errorPolicy?: 'none' | 'all' | 'ignore';
+    errorPolicy?: GraphQLErrorPolicy;
+    validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>>;
 
   async fetch<TResult, TVariables>({
@@ -93,13 +108,15 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     fetchOptions = {} as FetcherRequestInit,
     channelId,
     errorPolicy = 'none',
+    validateCustomerAccessToken = true,
   }: {
     document: DocumentDecoration<TResult, TVariables>;
     variables?: TVariables;
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
-    errorPolicy?: 'none' | 'all' | 'ignore';
+    errorPolicy?: GraphQLErrorPolicy;
+    validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>> {
     const { headers = {}, ...rest } = fetchOptions;
     const query = normalizeQuery(document);
@@ -121,6 +138,9 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
         Authorization: `Bearer ${this.config.storefrontToken}`,
         'User-Agent': this.backendUserAgent,
         ...(customerAccessToken && { 'X-Bc-Customer-Access-Token': customerAccessToken }),
+        ...(validateCustomerAccessToken && {
+          'X-Bc-Error-On-Invalid-Customer-Access-Token': 'true',
+        }),
         ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
         ...Object.fromEntries(new Headers(additionalFetchHeaders).entries()),
         ...Object.fromEntries(new Headers(headers).entries()),
@@ -145,7 +165,21 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     // If errorPolicy is 'none', we throw an error if there are any errors
     if (errorPolicy === 'none' && errors) {
-      throw BigCommerceGQLError.createFromResult(errors);
+      const error = parseGraphQLError(errors);
+
+      await this.onError?.(error, operationInfo.type);
+
+      throw error;
+    }
+
+    if (errorPolicy === 'auth' && errors) {
+      const error = parseGraphQLError(errors);
+
+      if (error instanceof BigCommerceAuthError) {
+        await this.onError?.(error, operationInfo.type);
+
+        throw error;
+      }
     }
 
     // If errorPolicy is 'ignore', we return the data and ignore the errors

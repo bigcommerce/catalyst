@@ -1,6 +1,6 @@
 'use server';
 
-import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
+import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
@@ -76,21 +76,11 @@ export async function removeWishlistItem(
     // eslint-disable-next-line no-console
     console.error(error);
 
-    if (error instanceof BigCommerceGQLError) {
+    if (error instanceof BigCommerceAuthError) {
       return {
         ...prevState,
         lastResult: { status: 'error' },
-        errorMessage: error.message.includes('Please sign in')
-          ? t('Errors.unauthorized')
-          : t('Errors.unexpected'),
-      };
-    }
-
-    if (error instanceof BigCommerceAPIError) {
-      return {
-        ...prevState,
-        lastResult: { status: 'error' },
-        errorMessage: t('Errors.unexpected'),
+        errorMessage: t('Errors.unauthorized'),
       };
     }
 

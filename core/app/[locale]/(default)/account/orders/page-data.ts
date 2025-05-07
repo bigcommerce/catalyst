@@ -94,7 +94,7 @@ export const getCustomerOrders = cache(
       variables: { ...paginationArgs, ...filtersArgs },
       customerAccessToken,
       fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
-      errorPolicy: 'ignore',
+      errorPolicy: 'auth',
     });
 
     const orders = response.data.customer?.orders;
