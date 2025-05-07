@@ -3,11 +3,11 @@ import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/serve
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
-import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { Subscribe } from '~/components/subscribe';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { FeaturedProductList } from '~/ui/featured-product-list';
 
 import { Slideshow } from './_components/slideshow';
 import { getPageData } from './page-data';
