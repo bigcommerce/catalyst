@@ -149,20 +149,22 @@ export function ProductCard({
             {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
           </div>
         </div>
-        <Link
-          aria-label={title}
-          className={clsx(
-            'absolute inset-0 rounded-t-2xl rounded-b-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
-            {
-              light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
-              dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
-            }[colorScheme],
-          )}
-          href={href}
-          id={id}
-        >
-          <span className="sr-only">View product</span>
-        </Link>
+        {href !== '#' && (
+          <Link
+            aria-label={title}
+            className={clsx(
+              'absolute inset-0 rounded-t-2xl rounded-b-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
+              {
+                light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
+                dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
+              }[colorScheme],
+            )}
+            href={href}
+            id={id}
+          >
+            <span className="sr-only">View product</span>
+          </Link>
+        )}
       </div>
       {showCompare && (
         <div className="mt-0.5 shrink-0">

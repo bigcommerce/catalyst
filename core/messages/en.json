@@ -155,7 +155,8 @@
         "destinationWithCount": "Destination {number, number}/{total, number}",
         "subtotal": "Subtotal",
         "shipping": "Shipping",
-        "tax": "Tax"
+        "tax": "Tax",
+        "orderSummary": "Order summary"
       }
     },
     "Addresses": {
