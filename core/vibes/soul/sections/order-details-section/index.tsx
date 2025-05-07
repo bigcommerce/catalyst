@@ -1,6 +1,9 @@
 import { ArrowLeft } from 'lucide-react';
 
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Badge } from '@/vibes/soul/primitives/badge';
+import { ButtonLink } from '@/vibes/soul/primitives/button-link';
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
@@ -47,6 +50,7 @@ interface ShipmentLineItem {
   title: string;
   subtitle?: string;
   price: string;
+  totalPrice: string;
   href?: string;
   image?: { src: string; alt: string };
   quantity: number;
@@ -70,55 +74,95 @@ export interface Order {
   summary: Summary;
 }
 
-interface Props {
-  order: Order;
+export interface OrderDetailsSectionProps {
+  order: Streamable<Order>;
   title?: string;
+  orderSummaryLabel?: string;
   shipmentAddressLabel?: string;
   shipmentMethodLabel?: string;
   summaryTotalLabel?: string;
   prevHref?: string;
 }
 
+// eslint-disable-next-line valid-jsdoc
+/**
+ * This component supports various CSS variables for theming. Here's a comprehensive list, along
+ * with their default values:
+ *
+ * ```css
+ * :root {
+ *   --order-details-section-focus: hsl(var(--primary));
+ *   --order-details-section-font-family: hsl(var(--font-family-body));
+ *   --order-details-section-title-font-family: hsl(var(--font-family-heading));
+ *   --order-details-text-primary: hsl(var(--foreground));
+ *   --order-details-text-secondary: hsl(var(--contrast-500));
+ *   --order-details-section-border: hsl(var(--contrast-100));
+ *   --order-details-section-button-border: hsl(var(--contrast-100));
+ *   --order-details-section-button-border-hover: hsl(var(--contrast-200));
+ *   --order-details-section-button-icon: hsl(var(--foreground));
+ *   --order-details-section-button-background: hsl(var(--background));
+ *   --order-details-section-button-background-hover: hsl(var(--contrast-100));
+ *   --order-details-section-image-background: hsl(var(--contrast-100));
+ *   --order-details-section-line-item: hsl(var(--contrast-300))
+ *   --order-details-section-line-item-subtitle: hsl(var(--contrast-500))
+ *   --order-details-section-line-item-subtext: hsl(var(--contrast-400))
+ * }
+ * ```
+ */
 export function OrderDetailsSection({
-  order,
-  title = `Order #${order.id}`,
+  order: streamableOrder,
+  title,
+  orderSummaryLabel = 'Order summary',
   shipmentAddressLabel,
   shipmentMethodLabel,
   summaryTotalLabel,
   prevHref = '/orders',
-}: Props) {
+}: OrderDetailsSectionProps) {
   return (
-    <div className="@container">
-      <div className="border-contrast-100 flex gap-4 border-b pb-8">
-        <Link
-          className="border-contrast-100 text-foreground ring-primary hover:border-contrast-200 hover:bg-contrast-100 mt-1 flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-300 focus-visible:ring-2 focus-visible:outline-0"
-          href={prevHref}
-        >
-          <ArrowLeft />
-        </Link>
-        <div className="space-y-1">
-          <div className="flex items-center gap-3">
-            <h1 className="text-4xl">{title}</h1>
-            <Badge variant={order.statusColor}>{order.status}</Badge>
-          </div>
-          <p>{order.date}</p>
-        </div>
-      </div>
-      <div className="grid @3xl:flex">
-        <div className="order-2 flex-1 pr-12 @3xl:order-1">
-          {order.destinations.map((destination) => (
-            <Shipment
-              addressLabel={shipmentAddressLabel}
-              destination={destination}
-              key={destination.id}
-              methodLabel={shipmentMethodLabel}
-            />
-          ))}
-        </div>
-        <div className="order-1 basis-72 pt-8 @3xl:order-2">
-          <Summary summary={order.summary} totalLabel={summaryTotalLabel} />
-        </div>
-      </div>
+    <div className="@container font-[family-name:var(--order-details-section-font-family,var(--font-family-body))] text-[var(--order-details-text-primary,hsl(var(--foreground)))]">
+      <Stream
+        fallback={<OrderDetailsSectionSkeleton prevHref={prevHref} />}
+        value={streamableOrder}
+      >
+        {(order) => (
+          <>
+            <div className="flex gap-4 border-b border-[var(--order-details-section-border,hsl(var(--contrast-100)))] pb-8">
+              {prevHref !== '' && (
+                <ButtonLink href={prevHref} shape="circle" size="small" variant="ghost">
+                  <ArrowLeft />
+                </ButtonLink>
+              )}
+              <div className="space-y-1">
+                <div className="flex items-center gap-3">
+                  <h1 className="font-[family-name:var(--order-details-section-title-font-family,var(--font-family-heading))] text-4xl">
+                    {title ?? `Order #${order.id}`}
+                  </h1>
+                  <Badge variant={order.statusColor}>{order.status}</Badge>
+                </div>
+                <p className="text-base font-light">{order.date}</p>
+              </div>
+            </div>
+            <div className="grid @3xl:flex">
+              <div className="order-2 flex-1 pr-12 @3xl:order-1">
+                {order.destinations.map((destination) => (
+                  <Shipment
+                    addressLabel={shipmentAddressLabel}
+                    destination={destination}
+                    key={destination.id}
+                    methodLabel={shipmentMethodLabel}
+                  />
+                ))}
+              </div>
+              <div className="order-1 basis-72 pt-8 @3xl:order-2">
+                <div className="font-[family-name:var(--order-details-section-title-font-family,var(--font-family-heading))] text-2xl font-medium">
+                  {orderSummaryLabel}
+                </div>
+                <Summary summary={order.summary} totalLabel={summaryTotalLabel} />
+              </div>
+            </div>
+          </>
+        )}
+      </Stream>
     </div>
   );
 }
@@ -133,31 +177,77 @@ function Shipment({
   methodLabel?: string;
 }) {
   return (
-    <div className="border-contrast-100 @container border-b py-8">
+    <div className="@container border-b border-[var(--order-details-section-border,hsl(var(--contrast-100)))] py-8">
       <div className="space-y-6">
-        <div className="text-2xl font-medium">{destination.title}</div>
+        <div className="font-[family-name:var(--order-details-section-title-font-family,var(--font-family-heading))] text-2xl font-medium">
+          {destination.title}
+        </div>
         <div className="grid gap-8 @xl:flex @xl:gap-20">
           <div className="text-sm">
             <h3 className="font-semibold">{addressLabel}</h3>
-            <p>{destination.address.name}</p>
-            <p>{destination.address.street1}</p>
-            <p>{destination.address.street2}</p>
-            <p>
-              {`${destination.address.city}, ${destination.address.state} ${destination.address.zipcode}`}
-            </p>
-            <p>{destination.address.country}</p>
+            <div className="text-[var(--order-details-text-secondary,hsl(var(--contrast-500)))]">
+              <p>{destination.address.name}</p>
+              <p>{destination.address.street1}</p>
+              <p>{destination.address.street2}</p>
+              <p>
+                {`${destination.address.city}, ${destination.address.state} ${destination.address.zipcode}`}
+              </p>
+              <p>{destination.address.country}</p>
+            </div>
           </div>
           {destination.shipments.map((shipment) => (
             <div className="text-sm" key={shipment.name}>
               <h3 className="font-semibold">{methodLabel}</h3>
-              <p>{shipment.name}</p>
-              <p>{shipment.status}</p>
-              <ShipmentTracking tracking={shipment.tracking} />
+              <div className="text-[var(--order-details-text-secondary,hsl(var(--contrast-500)))]">
+                <p>{shipment.name}</p>
+                <p>{shipment.status}</p>
+                <ShipmentTracking tracking={shipment.tracking} />
+              </div>
             </div>
           ))}
         </div>
         {destination.lineItems.map((lineItem) => (
           <ShipmentLineItem key={lineItem.id} lineItem={lineItem} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ShipmentSkeleton({
+  shipmentsPlaceholderCount = 1,
+  lineItemsPlaceholderCount = 2,
+}: {
+  shipmentsPlaceholderCount?: number;
+  lineItemsPlaceholderCount?: number;
+}) {
+  return (
+    <div className="@container border-b border-[var(--order-details-section-border,hsl(var(--contrast-100)))] py-8">
+      <div className="space-y-6">
+        <Skeleton.Text characterCount={8} className="rounded-sm text-2xl" />
+        <div className="grid gap-8 @xl:flex @xl:gap-20">
+          <div className="text-sm">
+            <Skeleton.Text characterCount={13} className="rounded-sm" />
+            <div>
+              <Skeleton.Text characterCount={8} className="rounded-sm" />
+              <Skeleton.Text characterCount={12} className="rounded-sm" />
+              <Skeleton.Text characterCount={16} className="rounded-sm" />
+              <Skeleton.Text characterCount={8} className="rounded-sm" />
+            </div>
+          </div>
+          {Array.from({ length: shipmentsPlaceholderCount }).map((_, index) => (
+            <div className="text-sm" key={index}>
+              <Skeleton.Text characterCount={13} className="rounded-sm" />
+              <div>
+                <Skeleton.Text characterCount={16} className="rounded-sm" />
+                <Skeleton.Text characterCount={8} className="rounded-sm" />
+                <Skeleton.Text characterCount={24} className="rounded-sm" />
+              </div>
+            </div>
+          ))}
+        </div>
+        {Array.from({ length: lineItemsPlaceholderCount }).map((_, index) => (
+          <ShipmentLineItemSkeleton key={index} />
         ))}
       </div>
     </div>
@@ -197,23 +287,42 @@ function ShipmentTracking({
 }
 
 function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
-  return lineItem.href ? (
-    <Link
-      className="group ring-primary grid shrink-0 cursor-pointer gap-8 rounded-xl ring-offset-4 focus-visible:ring-2 focus-visible:outline-0 @sm:flex @sm:rounded-2xl"
-      href={lineItem.href}
-      id={lineItem.id}
-    >
-      <div className="border-contrast-100 bg-contrast-100 relative aspect-square basis-40 overflow-hidden rounded-[inherit] border">
+  const LineItemWrapper = ({ children }: { children: React.ReactNode }) => {
+    if (lineItem.href) {
+      return (
+        <Link
+          className="group grid shrink-0 cursor-pointer gap-8 rounded-xl ring-[var(--order-details-section-focus,hsl(var(--primary)))] ring-offset-4 focus-visible:ring-2 focus-visible:outline-none @sm:flex @sm:rounded-2xl"
+          href={lineItem.href}
+          id={lineItem.id}
+        >
+          {children}
+        </Link>
+      );
+    }
+
+    return (
+      <div
+        className="group grid shrink-0 gap-8 rounded-xl ring-[var(--order-details-section-focus,hsl(var(--primary)))] ring-offset-4 focus-visible:ring-2 focus-visible:outline-none @sm:flex @sm:rounded-2xl"
+        id={lineItem.id}
+      >
+        {children}
+      </div>
+    );
+  };
+
+  return (
+    <LineItemWrapper>
+      <div className="relative aspect-square basis-40 overflow-hidden rounded-[inherit] border border-[var(--order-details-section-border,hsl(var(--contrast-100)))] bg-[var(--order-details-section-image-background,hsl(var(--contrast-100)))]">
         {lineItem.image?.src != null ? (
           <Image
             alt={lineItem.image.alt}
-            className="bg-contrast-100 w-full scale-100 object-cover transition-transform duration-500 ease-out select-none group-hover:scale-110"
+            className="w-full scale-100 object-cover transition-transform duration-500 ease-out select-none group-hover:scale-110"
             fill
             sizes="10rem"
             src={lineItem.image.src}
           />
         ) : (
-          <div className="text-contrast-300 pt-3 pl-2 text-4xl leading-[0.8] font-bold tracking-tighter transition-transform duration-500 ease-out group-hover:scale-105">
+          <div className="pt-3 pl-2 text-4xl leading-[0.8] font-bold tracking-tighter text-[var(--order-details-section-line-item,hsl(var(--contrast-300)))] transition-transform duration-500 ease-out group-hover:scale-105">
             {lineItem.title}
           </div>
         )}
@@ -221,15 +330,20 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
 
       <div className="space-y-3 text-sm leading-snug">
         <div>
-          <div className="font-semibold">{lineItem.title}</div>
+          <div className="flex items-center gap-1 text-sm">
+            <span className="font-semibold">{lineItem.title}</span>
+            <span>×</span>
+            <span className="font-semibold">{lineItem.quantity}</span>
+          </div>
           {lineItem.subtitle != null && lineItem.subtitle !== '' && (
-            <div className="text-contrast-500 font-normal">{lineItem.subtitle}</div>
+            <div className="font-normal text-[var(--order-details-section-line-item-subtitle,hsl(var(--contrast-500)))]">
+              {lineItem.subtitle}
+            </div>
           )}
         </div>
         <div className="flex gap-1 text-sm">
-          <span className="font-semibold">{lineItem.price}</span>
-          <span>×</span>
-          <span className="font-semibold">{lineItem.quantity}</span>
+          <span className="font-semibold">{lineItem.totalPrice}</span>
+          {lineItem.quantity > 1 && <span className="font-normal">({lineItem.price} each)</span>}
         </div>
         <div>
           {lineItem.metadata?.map((metadata, index) => (
@@ -240,44 +354,33 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
           ))}
         </div>
       </div>
-    </Link>
-  ) : (
-    <div className="group grid shrink-0 gap-8 rounded-xl @sm:flex @sm:rounded-2xl" id={lineItem.id}>
-      <div className="border-contrast-100 bg-contrast-100 relative aspect-square basis-40 overflow-hidden rounded-[inherit] border">
-        {lineItem.image?.src != null ? (
-          <Image
-            alt={lineItem.image.alt}
-            className="bg-contrast-100 w-full scale-100 object-cover transition-transform duration-500 ease-out select-none group-hover:scale-110"
-            fill
-            sizes="10rem"
-            src={lineItem.image.src}
-          />
-        ) : (
-          <div className="text-contrast-300 pt-3 pl-2 text-4xl leading-[0.8] font-bold tracking-tighter transition-transform duration-500 ease-out group-hover:scale-105">
-            {lineItem.title}
-          </div>
-        )}
+    </LineItemWrapper>
+  );
+}
+
+function ShipmentLineItemSkeleton() {
+  return (
+    <div className="group grid shrink-0 gap-8 rounded-xl @sm:flex @sm:rounded-2xl">
+      <div className="relative aspect-square basis-40 overflow-hidden rounded-[inherit]">
+        <Skeleton.Box className="h-full w-full" />
       </div>
 
       <div className="space-y-3 text-sm leading-snug">
         <div>
-          <div className="font-semibold">{lineItem.title}</div>
-          {lineItem.subtitle != null && lineItem.subtitle !== '' && (
-            <div className="text-contrast-500 font-normal">{lineItem.subtitle}</div>
-          )}
+          <div className="flex items-center gap-1 text-sm">
+            <Skeleton.Text characterCount={24} className="rounded-sm" />
+          </div>
+          <Skeleton.Text characterCount={6} className="rounded-sm" />
         </div>
         <div className="flex gap-1 text-sm">
-          <span className="font-semibold">{lineItem.price}</span>
-          <span>×</span>
-          <span className="font-semibold">{lineItem.quantity}</span>
+          <Skeleton.Text characterCount={5} className="rounded-sm" />
+          <Skeleton.Text characterCount={8} className="rounded-sm" />
         </div>
         <div>
-          {lineItem.metadata?.map((metadata, index) => (
-            <div className="flex gap-1 text-sm" key={index}>
-              <span className="font-semibold">{metadata.label}:</span>
-              <span>{metadata.value}</span>
-            </div>
-          ))}
+          <div className="flex gap-1 text-sm">
+            <Skeleton.Text characterCount={7} className="rounded-sm" />
+            <Skeleton.Text characterCount={3} className="rounded-sm" />
+          </div>
         </div>
       </div>
     </div>
@@ -286,14 +389,16 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
 
 function Summary({ summary, totalLabel = 'Total' }: { summary: Summary; totalLabel?: string }) {
   return (
-    <div className="divide-y divide-gray-100">
+    <div>
       <div className="space-y-2 pt-5 pb-3">
         {summary.lineItems.map((lineItem, index) => (
           <div className="flex justify-between" key={index}>
             <div>
               <div className="text-sm">{lineItem.label}</div>
               {lineItem.subtext != null && lineItem.subtext !== '' && (
-                <div className="text-contrast-400 text-xs">{lineItem.subtext}</div>
+                <div className="text-xs text-[var(--order-details-section-line-item-subtext,hsl(var(--contrast-400)))]">
+                  {lineItem.subtext}
+                </div>
               )}
             </div>
 
@@ -301,9 +406,72 @@ function Summary({ summary, totalLabel = 'Total' }: { summary: Summary; totalLab
           </div>
         ))}
       </div>
-      <div className="border-contrast-200 flex justify-between border-t py-3 font-semibold">
+      <div className="flex justify-between border-t border-[var(--order-details-section-border,hsl(var(--contrast-100)))] py-3 font-semibold">
         <span>{totalLabel}</span>
         <span>{summary.total}</span>
+      </div>
+    </div>
+  );
+}
+
+function SummarySkeleton({ placeholderCount = 2 }: { placeholderCount?: number }) {
+  return (
+    <div>
+      <div className="space-y-2 pt-5 pb-3">
+        {Array.from({ length: placeholderCount }).map((_, index) => (
+          <div className="flex justify-between" key={index}>
+            <div>
+              <Skeleton.Text characterCount={6} className="rounded-sm text-sm" />
+              <Skeleton.Text characterCount={12} className="rounded-sm text-xs" />
+            </div>
+
+            <Skeleton.Text characterCount={6} className="rounded-sm text-sm" />
+          </div>
+        ))}
+      </div>
+      <div className="flex justify-between border-t border-[var(--order-details-section-border,hsl(var(--contrast-100)))] py-3">
+        <Skeleton.Text characterCount={6} className="rounded-sm" />
+        <Skeleton.Text characterCount={6} className="rounded-sm" />
+      </div>
+    </div>
+  );
+}
+
+function OrderDetailsSectionSkeleton({
+  prevHref,
+  placeholderCount = 1,
+  lineItemsPlaceholderCount = 2,
+}: {
+  prevHref?: string;
+  placeholderCount?: number;
+  lineItemsPlaceholderCount?: number;
+}) {
+  return (
+    <div className="animate-pulse">
+      <div className="flex gap-4 border-b border-[var(--order-details-section-border,hsl(var(--contrast-100)))] pb-8">
+        {prevHref != null && prevHref !== '' && (
+          <ButtonLink href={prevHref} shape="circle" size="small" variant="ghost">
+            <ArrowLeft />
+          </ButtonLink>
+        )}
+        <div className="space-y-1">
+          <div className="flex items-center gap-3">
+            <Skeleton.Text characterCount={8} className="rounded-sm text-4xl" />
+            <Skeleton.Text characterCount={8} className="rounded-sm text-xs" />
+          </div>
+          <Skeleton.Text characterCount={7} className="rounded-sm text-base" />
+        </div>
+      </div>
+      <div className="grid @3xl:flex">
+        <div className="order-2 flex-1 pr-12 @3xl:order-1">
+          {Array.from({ length: placeholderCount }).map((_, index) => (
+            <ShipmentSkeleton key={index} lineItemsPlaceholderCount={lineItemsPlaceholderCount} />
+          ))}
+        </div>
+        <div className="order-1 basis-72 pt-8 @3xl:order-2">
+          <Skeleton.Text characterCount={10} className="rounded-sm text-2xl" />
+          <SummarySkeleton placeholderCount={3} />
+        </div>
       </div>
     </div>
   );

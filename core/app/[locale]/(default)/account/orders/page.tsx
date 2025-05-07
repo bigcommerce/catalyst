@@ -1,9 +1,8 @@
-import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { Order, OrderList } from '@/vibes/soul/sections/order-list';
 import { ordersTransformer } from '~/data-transformers/orders-transformer';
-import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
-import { OrderListSection } from '~/vibes/soul/sections/order-list-section';
+import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
 import { getCustomerOrders } from './page-data';
 
@@ -16,6 +15,31 @@ interface Props {
   }>;
 }
 
+async function getOrders(after?: string, before?: string): Promise<Order[]> {
+  const format = await getFormatter();
+  const customerOrdersDetails = await getCustomerOrders({
+    ...(after && { after }),
+    ...(before && { before }),
+  });
+
+  if (!customerOrdersDetails) {
+    return [];
+  }
+
+  const { orders } = customerOrdersDetails;
+
+  return ordersTransformer(orders, format);
+}
+
+async function getPaginationInfo(after?: string, before?: string) {
+  const customerOrdersDetails = await getCustomerOrders({
+    ...(after && { after }),
+    ...(before && { before }),
+  });
+
+  return pageInfoTransformer(customerOrdersDetails?.pageInfo ?? defaultPageInfo);
+}
+
 export default async function Orders({ params, searchParams }: Props) {
   const { locale } = await params;
 
@@ -23,24 +47,12 @@ export default async function Orders({ params, searchParams }: Props) {
 
   const { before, after } = await searchParams;
   const t = await getTranslations('Account.Orders');
-  const format = await getFormatter();
-
-  const customerOrdersDetails = await getCustomerOrders({
-    ...(after && { after }),
-    ...(before && { before }),
-  });
-
-  if (!customerOrdersDetails) {
-    notFound();
-  }
-
-  const { orders, pageInfo } = customerOrdersDetails;
 
   return (
-    <OrderListSection
+    <OrderList
       orderNumberLabel={t('orderNumber')}
-      orders={ordersTransformer(orders, format)}
-      paginationInfo={pageInfoTransformer(pageInfo)}
+      orders={getOrders(after, before)}
+      paginationInfo={getPaginationInfo(after, before)}
       title={t('title')}
       totalLabel={t('totalPrice')}
       viewDetailsLabel={t('viewDetails')}

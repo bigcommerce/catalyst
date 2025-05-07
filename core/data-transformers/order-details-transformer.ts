@@ -49,11 +49,22 @@ export const orderDetailsTransformer = (
         return {
           id: String(consignment.entityId),
           lineItems: consignment.lineItems.map((lineItem) => {
+            const price = lineItem.catalogProductWithOptionSelections?.prices?.price
+              ? format.number(lineItem.catalogProductWithOptionSelections.prices.price.value, {
+                  style: 'currency',
+                  currency: lineItem.catalogProductWithOptionSelections.prices.price.currencyCode,
+                })
+              : format.number(lineItem.subTotalListPrice.value / lineItem.quantity, {
+                  style: 'currency',
+                  currency: lineItem.subTotalListPrice.currencyCode,
+                });
+
             return {
               id: String(lineItem.entityId),
               title: lineItem.name,
               subtitle: lineItem.brand ?? '',
-              price: format.number(lineItem.subTotalListPrice.value, {
+              price,
+              totalPrice: format.number(lineItem.subTotalListPrice.value, {
                 style: 'currency',
                 currency: lineItem.subTotalListPrice.currencyCode,
               }),
@@ -65,6 +76,10 @@ export const orderDetailsTransformer = (
                   }
                 : undefined,
               quantity: lineItem.quantity,
+              metadata: lineItem.productOptions.map((option) => ({
+                label: option.name,
+                value: option.value,
+              })),
             };
           }),
           title:

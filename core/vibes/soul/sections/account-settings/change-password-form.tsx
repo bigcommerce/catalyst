@@ -2,7 +2,7 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { useActionState, useEffect } from 'react';
+import { ReactNode, useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { Input } from '@/vibes/soul/form/input';
@@ -14,7 +14,7 @@ type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State
 
 export type ChangePasswordAction = Action<SubmissionResult | null, FormData>;
 
-interface Props {
+export interface ChangePasswordFormProps {
   action: ChangePasswordAction;
   currentPasswordLabel?: string;
   newPasswordLabel?: string;
@@ -28,7 +28,7 @@ export function ChangePasswordForm({
   newPasswordLabel = 'New password',
   confirmPasswordLabel = 'Confirm password',
   submitLabel = 'Update',
-}: Props) {
+}: ChangePasswordFormProps) {
   const [lastResult, formAction] = useActionState(action, null);
   const [form, fields] = useForm({
     constraint: getZodConstraint(changePasswordSchema),
@@ -72,7 +72,7 @@ export function ChangePasswordForm({
   );
 }
 
-function SubmitButton({ children }: { children: React.ReactNode }) {
+function SubmitButton({ children }: { children: ReactNode }) {
   const { pending } = useFormStatus();
 
   return (

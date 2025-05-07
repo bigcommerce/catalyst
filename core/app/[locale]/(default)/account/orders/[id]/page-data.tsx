@@ -117,11 +117,7 @@ const CustomerOrderDetails = graphql(
   [OrderItemFragment],
 );
 
-interface CustomerOrderDetailsArgs {
-  id: number;
-}
-
-export const getCustomerOrderDetails = cache(async ({ id }: CustomerOrderDetailsArgs) => {
+export const getCustomerOrderDetails = cache(async (id: number) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const response = await client.fetch({

@@ -23,7 +23,7 @@ interface State {
   lastResult: SubmissionResult | null;
 }
 
-interface Props {
+export interface UpdateAccountFormProps {
   action: UpdateAccountAction;
   account: Account;
   firstNameLabel?: string;
@@ -41,7 +41,7 @@ export function UpdateAccountForm({
   emailLabel = 'Email',
   companyLabel = 'Company',
   submitLabel = 'Update',
-}: Props) {
+}: UpdateAccountFormProps) {
   const [state, formAction] = useActionState(action, { account, lastResult: null });
   const [pending, startTransition] = useTransition();
 

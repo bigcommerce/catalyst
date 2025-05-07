@@ -5,8 +5,8 @@ import { parseWithZod } from '@conform-to/zod';
 import { unstable_expireTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
-import { updateAccountSchema } from '@/vibes/soul/sections/account-settings-section/schema';
-import { UpdateAccountAction } from '@/vibes/soul/sections/account-settings-section/update-account-form';
+import { updateAccountSchema } from '@/vibes/soul/sections/account-settings/schema';
+import { UpdateAccountAction } from '@/vibes/soul/sections/account-settings/update-account-form';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
