@@ -1,6 +1,6 @@
 'use server';
 
-import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
+import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
@@ -68,21 +68,10 @@ export async function newWishlist(prevState: Awaited<State>, formData: FormData)
     // eslint-disable-next-line no-console
     console.error(error);
 
-    if (error instanceof BigCommerceGQLError) {
-      const formError = error.message.includes('Please sign in')
-        ? t('Errors.unauthorized')
-        : t('Errors.unexpected');
-
+    if (error instanceof BigCommerceAuthError) {
       return {
         ...prevState,
-        lastResult: submission.reply({ formErrors: [formError] }),
-      };
-    }
-
-    if (error instanceof BigCommerceAPIError) {
-      return {
-        ...prevState,
-        lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }),
+        lastResult: submission.reply({ formErrors: [t('Errors.unauthorized')] }),
       };
     }
 

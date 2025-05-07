@@ -1,6 +1,6 @@
 'use server';
 
-import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
+import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
@@ -70,17 +70,10 @@ export async function renameWishlist(
     // eslint-disable-next-line no-console
     console.error(error);
 
-    if (error instanceof BigCommerceGQLError) {
+    if (error instanceof BigCommerceAuthError) {
       return {
         ...prevState,
-        lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }),
-      };
-    }
-
-    if (error instanceof BigCommerceAPIError) {
-      return {
-        ...prevState,
-        lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }),
+        lastResult: submission.reply({ formErrors: [t('Errors.unauthorized')] }),
       };
     }
 

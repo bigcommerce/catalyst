@@ -133,7 +133,7 @@ export const getCustomerOrderDetails = cache(async ({ id }: CustomerOrderDetails
     },
     fetchOptions: { cache: 'no-store', next: { tags: [TAGS.customer] } },
     customerAccessToken,
-    errorPolicy: 'ignore',
+    errorPolicy: 'auth',
   });
 
   const order = response.data.site.order;
