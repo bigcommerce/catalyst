@@ -195,8 +195,8 @@ function Shipment({
               <p>{destination.address.country}</p>
             </div>
           </div>
-          {destination.shipments.map((shipment) => (
-            <div className="text-sm" key={shipment.name}>
+          {destination.shipments.map((shipment, index) => (
+            <div className="text-sm" key={`${shipment.name}-${index}`}>
               <h3 className="font-semibold">{methodLabel}</h3>
               <div className="text-[var(--order-details-text-secondary,hsl(var(--contrast-500)))]">
                 <p>{shipment.name}</p>
@@ -347,7 +347,7 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
         </div>
         <div>
           {lineItem.metadata?.map((metadata, index) => (
-            <div className="flex gap-1 text-sm" key={index}>
+            <div className="flex gap-1 text-sm" key={`lineItem-meta-${metadata.label}-${index}`}>
               <span className="font-semibold">{metadata.label}:</span>
               <span>{metadata.value}</span>
             </div>
