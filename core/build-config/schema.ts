@@ -9,7 +9,7 @@ export const buildConfigSchema = z.object({
   ),
   urls: z.object({
     vanityUrl: z.string(),
-    cdnUrl: z.string().default('cdn11.bigcommerce.com'),
+    cdnUrls: z.array(z.string()).default(['cdn11.bigcommerce.com']),
     checkoutUrl: z.string(),
   }),
 });

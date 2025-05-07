@@ -38,7 +38,9 @@ async function writeSettingsToBuildConfig() {
     locales: data.site.settings?.locales,
     urls: {
       ...data.site.settings?.url,
-      cdnUrl: process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME ?? data.site.settings?.url.cdnUrl,
+      cdnUrls: process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME
+        ? process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME.split(',').map((s) => s.trim())
+        : [data.site.settings?.url.cdnUrl],
     },
   });
 }
@@ -76,6 +78,11 @@ export default async (): Promise<NextConfig> => {
     trailingSlash: process.env.TRAILING_SLASH !== 'false',
     // eslint-disable-next-line @typescript-eslint/require-await
     async headers() {
+      const cdnLinks = settings.urls.cdnUrls.map((url) => ({
+        key: 'Link',
+        value: `<https://${url}>; rel=preconnect`,
+      }));
+
       return [
         {
           source: '/(.*)',
@@ -84,10 +91,7 @@ export default async (): Promise<NextConfig> => {
               key: 'Content-Security-Policy',
               value: cspHeader.replace(/\n/g, ''),
             },
-            {
-              key: 'Link',
-              value: `<https://${settings.urls.cdnUrl}>; rel=preconnect`,
-            },
+            ...cdnLinks,
           ],
         },
       ];
