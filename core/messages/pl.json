@@ -178,61 +178,71 @@
             "newPassword": "Nowe hasło",
             "confirmPassword": "Potwierdź hasło",
             "cta": "Aktualizacja"
+        }
+    },
+    "Wishlist": {
+        "title": "Wish Lists",
+        "new": "Nowa lista życzeń",
+        "items": "{count, plural, =1 {1 pozycja} other {# pozycji(-e)}}",
+        "viewWishlist": "Wyświetl listę",
+        "noWishlists": "Nie masz żadnych list życzeń",
+        "noWishlistsSubtitle": "Utwórz listę życzeń, aby zapisać swoje ulubione produkty.",
+        "noWishlistsCallToAction": "Utwórz listę życzeń",
+        "emptyWishlist": "Nie dodano żadnych produktów do tej listy życzeń.",
+        "share": "Udostępnij",
+        "shareSuccess": "Lista życzeń została pomyślnie udostępniona.",
+        "shareCopied": "Skopiowano publiczny adres URL listy życzeń do schowka.",
+        "shareDisabled": "Lista życzeń musi być ustawiona jako publiczna, aby można było ją udostępniać.",
+        "makePublic": "Upublicznij",
+        "makePrivate": "Uczyń prywatnym",
+        "rename": "Zmień nazwę",
+        "delete": "Usuń",
+        "Visibility": {
+            "public": "Publiczna",
+            "private": "Prywatna"
         },
-        "Wishlists": {
-            "title": "Wish Lists",
-            "new": "Nowa lista życzeń",
-            "items": "{count, plural, =1 {1 pozycja} other {# pozycji(-e)}}",
-            "viewWishlist": "Wyświetl listę",
-            "noWishlists": "Nie masz żadnych list życzeń",
-            "noWishlistsSubtitle": "Utwórz listę życzeń, aby zapisać swoje ulubione produkty.",
-            "noWishlistsCallToAction": "Utwórz listę życzeń",
-            "emptyWishlist": "Nie dodano żadnych produktów do tej listy życzeń.",
-            "share": "Udostępnij",
-            "shareSuccess": "Lista życzeń została pomyślnie udostępniona.",
-            "shareCopied": "Skopiowano publiczny adres URL listy życzeń do schowka.",
-            "shareDisabled": "Lista życzeń musi być ustawiona jako publiczna, aby można było ją udostępniać.",
-            "makePublic": "Upublicznij",
-            "makePrivate": "Uczyń prywatnym",
-            "rename": "Zmień nazwę",
+        "Modal": {
+            "cancel": "Anuluj",
+            "close": "Zamknij",
+            "copy": "Kopiuj",
+            "create": "Utwórz",
+            "save": "Zapisz",
             "delete": "Usuń",
-            "Visibility": {
-                "public": "Publiczna",
-                "private": "Prywatna"
-            },
-            "Modal": {
-                "cancel": "Anuluj",
-                "close": "Zamknij",
-                "copy": "Kopiuj",
-                "create": "Utwórz",
-                "save": "Zapisz",
-                "delete": "Usuń",
-                "newTitle": "Utwórz nową listę życzeń",
-                "shareTitle": "Udostępnij {name}",
-                "renameTitle": "Zmień nazwę {name}",
-                "deleteTitle": "Usuń lokalizację {name}",
-                "changeVisibilityPublicTitle": "Czy uczynić {name} publicznym?",
-                "changeVisibilityPrivateTitle": "Ustawić: {name} jako prywatne?",
-                "makePublicContent": "Czy na pewno chcesz ustawić <bold>{name}</bold> jako publiczną? Pozwoli to innym osobom zobaczyć Twoją listę życzeń, jeśli mają do niej link.",
-                "makePrivateContent": "Czy na pewno chcesz ustawić <bold>{name}</bold> jako prywatną? Jeśli lista życzeń została udostępniona innym osobom, utracą one możliwość wyświetlenia jej.",
-                "deleteContent": "Czy na pewno chcesz usunąć: <bold>{name}</bold>? Tego działania nie można cofnąć."
-            },
-            "Form": {
-                "nameLabel": "Nazwa"
-            },
+            "newTitle": "Utwórz nową listę życzeń",
+            "shareTitle": "Udostępnij {name}",
+            "renameTitle": "Zmień nazwę {name}",
+            "deleteTitle": "Usuń lokalizację {name}",
+            "changeVisibilityPublicTitle": "Czy uczynić {name} publicznym?",
+            "changeVisibilityPrivateTitle": "Ustawić: {name} jako prywatne?",
+            "makePublicContent": "Czy na pewno chcesz ustawić <bold>{name}</bold> jako publiczną? Pozwoli to innym osobom zobaczyć Twoją listę życzeń, jeśli mają do niej link.",
+            "makePrivateContent": "Czy na pewno chcesz ustawić <bold>{name}</bold> jako prywatną? Jeśli lista życzeń została udostępniona innym osobom, utracą one możliwość wyświetlenia jej.",
+            "deleteContent": "Czy na pewno chcesz usunąć: <bold>{name}</bold>? Tego działania nie można cofnąć."
+        },
+        "Form": {
+            "nameLabel": "Nazwa"
+        },
+        "Errors": {
+            "nameRequired": "Nazwa listy życzeń nie może być pusta.",
+            "updateFailed": "Nie można zaktualizować listy życzeń. Spróbuj ponownie.",
+            "deleteFailed": "Nie można usunąć listy życzeń. Spróbuj ponownie.",
+            "removeProductFailed": "Nie można usunąć produktu z listy życzeń. Spróbuj ponownie.",
+            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
+            "unexpected": "An unexpected error occurred, please try again"
+        },
+        "Result": {
+            "createSuccess": "Lista życzeń została pomyślnie utworzona.",
+            "updateSuccess": "Lista życzeń została pomyślnie zaktualizowana.",
+            "deleteSuccess": "Lista życzeń została pomyślnie usunięta.",
+            "removeItemSuccess": "Produkt został usunięty z listy życzeń."
+        },
+        "Button": {
+            "addToNewWishlist": "Add to new wish list",
+            "defaultWishlistName": "My wish list",
+            "addSuccessMessage": "Product has been added to your wish list",
+            "removeSuccessMessage": "Product has been removed from your wish list",
             "Errors": {
-                "nameRequired": "Nazwa listy życzeń nie może być pusta.",
-                "updateFailed": "Nie można zaktualizować listy życzeń. Spróbuj ponownie.",
-                "deleteFailed": "Nie można usunąć listy życzeń. Spróbuj ponownie.",
-                "removeProductFailed": "Nie można usunąć produktu z listy życzeń. Spróbuj ponownie.",
-                "unauthorized": "Nie masz uprawnień do wykonania tej czynności. Zaloguj się i spróbuj ponownie.",
-                "unexpected": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie."
-            },
-            "Result": {
-                "createSuccess": "Lista życzeń została pomyślnie utworzona.",
-                "updateSuccess": "Lista życzeń została pomyślnie zaktualizowana.",
-                "deleteSuccess": "Lista życzeń została pomyślnie usunięta.",
-                "removeItemSuccess": "Produkt został usunięty z listy życzeń."
+                "addProductFailed": "Failed to add the product from your wish list, please try again",
+                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
             }
         },
         "Wishlists": {

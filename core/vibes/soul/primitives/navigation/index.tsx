@@ -27,6 +27,7 @@ import { Logo } from '@/vibes/soul/primitives/logo';
 import { Price } from '@/vibes/soul/primitives/price-label';
 import { ProductCard } from '@/vibes/soul/primitives/product-card';
 import { Link } from '~/components/link';
+import { useSearch } from '~/context/search-context';
 import { usePathname, useRouter } from '~/i18n/routing';
 
 interface Link {
@@ -287,14 +288,14 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   ref: Ref<HTMLDivElement>,
 ) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const { isSearchOpen, setIsSearchOpen } = useSearch();
 
   const pathname = usePathname();
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
     setIsSearchOpen(false);
-  }, [pathname]);
+  }, [pathname, setIsSearchOpen]);
 
   useEffect(() => {
     function handleScroll() {
@@ -305,7 +306,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     window.addEventListener('scroll', handleScroll);
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [setIsSearchOpen]);
 
   return (
     <NavigationMenu.Root

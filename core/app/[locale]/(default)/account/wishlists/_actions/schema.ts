@@ -4,7 +4,7 @@ const wishlistId = z.number().nonnegative().min(1);
 
 const wishlistItemSchema = z.object({
   productEntityId: z.number().nonnegative().min(1),
-  variantEntityId: z.number().nonnegative().min(1),
+  variantEntityId: z.number().nonnegative().min(1).optional(),
 });
 
 export const newWishlistSchema = ({

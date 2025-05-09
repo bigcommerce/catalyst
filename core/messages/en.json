@@ -155,7 +155,8 @@
         "destinationWithCount": "Destination {number, number}/{total, number}",
         "subtotal": "Subtotal",
         "shipping": "Shipping",
-        "tax": "Tax"
+        "tax": "Tax",
+        "orderSummary": "Order summary"
       }
     },
     "Addresses": {
@@ -178,61 +179,71 @@
       "newPassword": "New password",
       "confirmPassword": "Confirm password",
       "cta": "Update"
+    }
+  },
+  "Wishlist": {
+    "title": "Wish Lists",
+    "new": "New wish list",
+    "items": "{count, plural, =1 {1 item} other {# items}}",
+    "viewWishlist": "View list",
+    "noWishlists": "You don't have any wish lists",
+    "noWishlistsSubtitle": "Create a wishlist to save your favorite products.",
+    "noWishlistsCallToAction": "Create a wishlist",
+    "emptyWishlist": "You haven't added products to this wish list.",
+    "share": "Share",
+    "shareSuccess": "Wish list has been shared successfully.",
+    "shareCopied": "Wish list public URL has been copied to your clipboard.",
+    "shareDisabled": "Your wish list must be public in order to share it.",
+    "makePublic": "Make public",
+    "makePrivate": "Make private",
+    "rename": "Rename",
+    "delete": "Delete",
+    "Visibility": {
+      "public": "Public",
+      "private": "Private"
     },
-    "Wishlists": {
-      "title": "Wish Lists",
-      "new": "New wish list",
-      "items": "{count, plural, =1 {1 item} other {# items}}",
-      "viewWishlist": "View list",
-      "noWishlists": "You don't have any wish lists",
-      "noWishlistsSubtitle": "Create a wishlist to save your favorite products.",
-      "noWishlistsCallToAction": "Create a wishlist",
-      "emptyWishlist": "You haven't added products to this wish list.",
-      "share": "Share",
-      "shareSuccess": "Wish list has been shared successfully.",
-      "shareCopied": "Wish list public URL has been copied to your clipboard.",
-      "shareDisabled": "Your wish list must be public in order to share it.",
-      "makePublic": "Make public",
-      "makePrivate": "Make private",
-      "rename": "Rename",
+    "Modal": {
+      "cancel": "Cancel",
+      "close": "Close",
+      "copy": "Copy",
+      "create": "Create",
+      "save": "Save",
       "delete": "Delete",
-      "Visibility": {
-        "public": "Public",
-        "private": "Private"
-      },
-      "Modal": {
-        "cancel": "Cancel",
-        "close": "Close",
-        "copy": "Copy",
-        "create": "Create",
-        "save": "Save",
-        "delete": "Delete",
-        "newTitle": "Create a new wish list",
-        "shareTitle": "Share {name}",
-        "renameTitle": "Rename {name}",
-        "deleteTitle": "Delete {name}",
-        "changeVisibilityPublicTitle": "Make {name} public?",
-        "changeVisibilityPrivateTitle": "Make {name} private?",
-        "makePublicContent": "Are you sure you want to make <bold>{name}</bold> public? This will allow others to see your wish list if they have the link.",
-        "makePrivateContent": "Are you sure you want to make <bold>{name}</bold> private? If you've shared your wish list with others, they will no longer be able to see it.",
-        "deleteContent": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone."
-      },
-      "Form": {
-        "nameLabel": "Name"
-      },
+      "newTitle": "Create a new wish list",
+      "shareTitle": "Share {name}",
+      "renameTitle": "Rename {name}",
+      "deleteTitle": "Delete {name}",
+      "changeVisibilityPublicTitle": "Make {name} public?",
+      "changeVisibilityPrivateTitle": "Make {name} private?",
+      "makePublicContent": "Are you sure you want to make <bold>{name}</bold> public? This will allow others to see your wish list if they have the link.",
+      "makePrivateContent": "Are you sure you want to make <bold>{name}</bold> private? If you've shared your wish list with others, they will no longer be able to see it.",
+      "deleteContent": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone."
+    },
+    "Form": {
+      "nameLabel": "Name"
+    },
+    "Errors": {
+      "nameRequired": "Wish list name cannot be empty.",
+      "updateFailed": "Failed to update your wish list. Please try again.",
+      "deleteFailed": "Failed to delete your wish list. Please try again.",
+      "removeProductFailed": "Failed to remove the product from your wish list. Please try again.",
+      "unauthorized": "You are not authorized to perform this action, please sign in and try again",
+      "unexpected": "An unexpected error occurred, please try again"
+    },
+    "Result": {
+      "createSuccess": "Wish list has been created successfully.",
+      "updateSuccess": "Wish list has been updated successfully.",
+      "deleteSuccess": "Wish list has been deleted successfully.",
+      "removeItemSuccess": "Item has been removed from your wish list."
+    },
+    "Button": {
+      "addToNewWishlist": "Add to new wish list",
+      "defaultWishlistName": "My wish list",
+      "addSuccessMessage": "Product has been added to your wish list",
+      "removeSuccessMessage": "Product has been removed from your wish list",
       "Errors": {
-        "nameRequired": "Wish list name cannot be empty.",
-        "updateFailed": "Failed to update your wish list. Please try again.",
-        "deleteFailed": "Failed to delete your wish list. Please try again.",
-        "removeProductFailed": "Failed to remove the product from your wish list. Please try again.",
-        "unauthorized": "You are not authorized to perform this action. Please sign in and try again.",
-        "unexpected": "An unexpected error occurred. Please try again."
-      },
-      "Result": {
-        "createSuccess": "Wish list has been created successfully.",
-        "updateSuccess": "Wish list has been updated successfully.",
-        "deleteSuccess": "Wish list has been deleted successfully.",
-        "removeItemSuccess": "Item has been removed from your wish list."
+        "addProductFailed": "Failed to add the product from your wish list, please try again",
+        "removeProductFailed": "Failed to remove the product from your wish list, please try again"
       }
     },
     "Wishlists": {
@@ -457,7 +468,7 @@
   },
   "NotFound": {
     "title": "We couldn't find that page!",
-    "subtitle": "It looks like the page you requested has moved or no longer exists.",
+    "subtitle": "Try searching for something else or go back to the home page.",
     "featuredProducts": "Featured products"
   },
   "Components": {

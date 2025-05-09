@@ -1,3 +1,4 @@
+import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
 import { unstable_rethrow as rethrow } from 'next/navigation';
 import { NextRequest, NextResponse } from 'next/server';
 
@@ -57,6 +58,10 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ loca
     });
   } catch (error) {
     rethrow(error);
+
+    if (error instanceof BigCommerceAuthError) {
+      return redirect({ href: '/logout?redirectTo=/checkout/', locale });
+    }
 
     // eslint-disable-next-line no-console
     console.error(error);

@@ -178,61 +178,71 @@
             "newPassword": "Nueva contraseña",
             "confirmPassword": "Confirmar contraseña",
             "cta": "Actualizar"
+        }
+    },
+    "Wishlist": {
+        "title": "Listas de deseos",
+        "new": "Nueva lista de deseos",
+        "items": "{count, plural, =1 {1 artículo} other {# artículos}}",
+        "viewWishlist": "Ver lista",
+        "noWishlists": "No tienes ninguna lista de deseos",
+        "noWishlistsSubtitle": "Crea una lista de deseos para guardar tus productos favoritos.",
+        "noWishlistsCallToAction": "Crea una lista de deseos",
+        "emptyWishlist": "No has agregado productos a esta lista de deseos.",
+        "share": "Compartir",
+        "shareSuccess": "La lista de deseos se compartió correctamente.",
+        "shareCopied": "La URL pública de la lista de deseos se copió a tu portapapeles.",
+        "shareDisabled": "Tu lista de deseos debe ser pública para que puedas compartirla.",
+        "makePublic": "Haz público",
+        "makePrivate": "Configurar como privada",
+        "rename": "Cambiar el nombre",
+        "delete": "Eliminar",
+        "Visibility": {
+            "public": "Público",
+            "private": "Privado"
         },
-        "Wishlists": {
-            "title": "Listas de deseos",
-            "new": "Nueva lista de deseos",
-            "items": "{count, plural, =1 {1 artículo} other {# artículos}}",
-            "viewWishlist": "Ver lista",
-            "noWishlists": "No tienes ninguna lista de deseos",
-            "noWishlistsSubtitle": "Crea una lista de deseos para guardar tus productos favoritos.",
-            "noWishlistsCallToAction": "Crea una lista de deseos",
-            "emptyWishlist": "No has agregado productos a esta lista de deseos.",
-            "share": "Compartir",
-            "shareSuccess": "La lista de deseos se compartió correctamente.",
-            "shareCopied": "La URL pública de la lista de deseos se copió a tu portapapeles.",
-            "shareDisabled": "Tu lista de deseos debe ser pública para que puedas compartirla.",
-            "makePublic": "Haz público",
-            "makePrivate": "Configurar como privada",
-            "rename": "Cambiar el nombre",
+        "Modal": {
+            "cancel": "Cancelar",
+            "close": "Cerrar",
+            "copy": "Copiar",
+            "create": "Crear",
+            "save": "Guardar",
             "delete": "Eliminar",
-            "Visibility": {
-                "public": "Público",
-                "private": "Privado"
-            },
-            "Modal": {
-                "cancel": "Cancelar",
-                "close": "Cerrar",
-                "copy": "Copiar",
-                "create": "Crear",
-                "save": "Guardar",
-                "delete": "Eliminar",
-                "newTitle": "Crea una nueva lista de deseos",
-                "shareTitle": "Comparte {name}",
-                "renameTitle": "Renombrar {name}",
-                "deleteTitle": "Borrar {name}",
-                "changeVisibilityPublicTitle": "¿Hacer {name} público?",
-                "changeVisibilityPrivateTitle": "¿Hacer {name} privado?",
-                "makePublicContent": "¿Confirmas que quieres configurar <bold>{name}</bold> como pública? Si lo haces, otras personas podrán ver tu lista de deseos si tienen un enlace para acceder a ella.",
-                "makePrivateContent": "¿Confirmas que quieres configurar <bold>{name}</bold> como privada? Las personas con quienes hayas compartido tu lista de deseos ya no podrán verla.",
-                "deleteContent": "¿Confirmas que quieres eliminar <bold>{name}</bold>? Esta acción no puede deshacerse."
-            },
-            "Form": {
-                "nameLabel": "Nombre"
-            },
+            "newTitle": "Crea una nueva lista de deseos",
+            "shareTitle": "Comparte {name}",
+            "renameTitle": "Renombrar {name}",
+            "deleteTitle": "Borrar {name}",
+            "changeVisibilityPublicTitle": "¿Hacer {name} público?",
+            "changeVisibilityPrivateTitle": "¿Hacer {name} privado?",
+            "makePublicContent": "¿Confirmas que quieres configurar <bold>{name}</bold> como pública? Si lo haces, otras personas podrán ver tu lista de deseos si tienen un enlace para acceder a ella.",
+            "makePrivateContent": "¿Confirmas que quieres configurar <bold>{name}</bold> como privada? Las personas con quienes hayas compartido tu lista de deseos ya no podrán verla.",
+            "deleteContent": "¿Confirmas que quieres eliminar <bold>{name}</bold>? Esta acción no puede deshacerse."
+        },
+        "Form": {
+            "nameLabel": "Nombre"
+        },
+        "Errors": {
+            "nameRequired": "El nombre de la lista de deseos no puede estar vacío.",
+            "updateFailed": "No se pudo actualizar tu lista de deseos. Vuelve a intentarlo.",
+            "deleteFailed": "No se pudo eliminar tu lista de deseos. Vuelve a intentarlo.",
+            "removeProductFailed": "No se pudo eliminar el producto de tu lista de deseos. Vuelve a intentarlo.",
+            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
+            "unexpected": "An unexpected error occurred, please try again"
+        },
+        "Result": {
+            "createSuccess": "La lista de deseos se creó correctamente.",
+            "updateSuccess": "La lista de deseos se actualizó correctamente.",
+            "deleteSuccess": "La lista de deseos se eliminó correctamente.",
+            "removeItemSuccess": "Se eliminó el artículo de tu lista de deseos."
+        },
+        "Button": {
+            "addToNewWishlist": "Add to new wish list",
+            "defaultWishlistName": "My wish list",
+            "addSuccessMessage": "Product has been added to your wish list",
+            "removeSuccessMessage": "Product has been removed from your wish list",
             "Errors": {
-                "nameRequired": "El nombre de la lista de deseos no puede estar vacío.",
-                "updateFailed": "No se pudo actualizar tu lista de deseos. Vuelve a intentarlo.",
-                "deleteFailed": "No se pudo eliminar tu lista de deseos. Vuelve a intentarlo.",
-                "removeProductFailed": "No se pudo eliminar el producto de tu lista de deseos. Vuelve a intentarlo.",
-                "unauthorized": "No tienes autorización para realizar esta acción. Inicia sesión y vuelve a intentarlo.",
-                "unexpected": "Ocurrió un error inesperado. Vuelva a intentarlo."
-            },
-            "Result": {
-                "createSuccess": "La lista de deseos se creó correctamente.",
-                "updateSuccess": "La lista de deseos se actualizó correctamente.",
-                "deleteSuccess": "La lista de deseos se eliminó correctamente.",
-                "removeItemSuccess": "Se eliminó el artículo de tu lista de deseos."
+                "addProductFailed": "Failed to add the product from your wish list, please try again",
+                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
             }
         },
         "Wishlists": {

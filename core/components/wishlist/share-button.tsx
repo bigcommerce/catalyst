@@ -10,8 +10,9 @@ import { toast } from '@/vibes/soul/primitives/toaster';
 import { Tooltip } from '@/vibes/soul/primitives/tooltip';
 import { Modal } from '~/components/modal';
 
-import { ShareWishlistModal } from '../../_components/modals/share';
-import { getShareWishlistModal } from '../../modals';
+import { getShareWishlistModal } from '../../app/[locale]/(default)/account/wishlists/modals';
+
+import { ShareWishlistModal } from './modals/share';
 
 interface Props {
   wishlistName: string;

@@ -45,9 +45,10 @@ export const login = async (
 
     if (
       error instanceof AuthError &&
-      error.name === 'CallbackRouteError' &&
+      error.type === 'CallbackRouteError' &&
       error.cause &&
-      error.cause.err?.message.includes('Invalid credentials')
+      error.cause.err instanceof BigCommerceGQLError &&
+      error.cause.err.message.includes('Invalid credentials')
     ) {
       return submission.reply({ formErrors: [t('invalidCredentials')] });
     }

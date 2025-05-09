@@ -77,7 +77,7 @@ export const Footer = async () => {
         address: data.settings.contact.address,
         phone: data.settings.contact.phone,
       }
-    : null;
+    : undefined;
 
   const socialMediaLinks = data.settings?.socialMediaLinks
     .filter((socialMediaLink) => Boolean(socialIcons[socialMediaLink.name]))

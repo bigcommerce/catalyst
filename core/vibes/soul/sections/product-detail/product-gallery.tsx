@@ -10,6 +10,19 @@ export interface ProductGalleryProps {
   images: Array<{ alt: string; src: string }>;
   className?: string;
   thumbnailLabel?: string;
+  aspectRatio?:
+    | '1:1'
+    | '4:5'
+    | '5:4'
+    | '3:4'
+    | '4:3'
+    | '2:3'
+    | '3:2'
+    | '16:9'
+    | '9:16'
+    | '5:6'
+    | '6:5';
+  fit?: 'contain' | 'cover';
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -30,6 +43,8 @@ export function ProductGallery({
   images,
   className,
   thumbnailLabel = 'View image number',
+  aspectRatio = '4:5',
+  fit = 'contain',
 }: ProductGalleryProps) {
   const [previewImage, setPreviewImage] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel();
@@ -59,10 +74,34 @@ export function ProductGallery({
       >
         <div className="flex">
           {images.map((image, idx) => (
-            <div className="relative aspect-4/5 w-full shrink-0 grow-0 basis-full" key={idx}>
+            <div
+              className={clsx(
+                'relative w-full shrink-0 grow-0 basis-full',
+                {
+                  '5:6': 'aspect-5/6',
+                  '3:4': 'aspect-3/4',
+                  '4:5': 'aspect-4/5',
+                  '3:2': 'aspect-3/2',
+                  '2:3': 'aspect-2/3',
+                  '16:9': 'aspect-16/9',
+                  '9:16': 'aspect-9/16',
+                  '6:5': 'aspect-6/5',
+                  '5:4': 'aspect-5/4',
+                  '4:3': 'aspect-4/3',
+                  '1:1': 'aspect-square',
+                }[aspectRatio],
+              )}
+              key={idx}
+            >
               <Image
                 alt={image.alt}
-                className="bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))] object-cover"
+                className={clsx(
+                  'bg-[var(--product-gallery-image-background,hsl(var(--contrast-100)))]',
+                  {
+                    contain: 'object-contain',
+                    cover: 'object-cover',
+                  }[fit],
+                )}
                 fill
                 priority={idx === 0}
                 sizes="(min-width: 42rem) 50vw, 100vw"
