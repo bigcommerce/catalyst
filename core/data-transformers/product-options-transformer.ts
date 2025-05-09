@@ -161,6 +161,8 @@ export const productOptionsTransformer = async (
           required: option.isRequired,
           name: option.entityId.toString(),
           defaultValue: option.defaultText ?? undefined,
+          minLength: option.minLength ?? undefined,
+          maxLength: option.maxLength ?? undefined,
         };
       }
 
