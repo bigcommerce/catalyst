@@ -13,7 +13,7 @@ const storeHash = process.env.BIGCOMMERCE_STORE_HASH ?? '';
  * @returns {string} The CDN image URL.
  */
 const cdnImageUrlBuilder = (sizeSegment: string, source: string, path: string): string => {
-  return `https://${buildConfig.get('urls').cdnUrls[0]}/s-${storeHash}/images/stencil/${sizeSegment}/${source}/${path}`;
+  return `https://${buildConfig.get('urls').cdnUrls.at(0)}/s-${storeHash}/images/stencil/${sizeSegment}/${source}/${path}`;
 };
 
 /**
@@ -26,7 +26,7 @@ const cdnImageUrlBuilder = (sizeSegment: string, source: string, path: string): 
  * @returns {string} The full URL to the content asset.
  */
 export const contentAssetUrl = (path: string): string => {
-  return `https://${buildConfig.get('urls').cdnUrls[0]}/s-${storeHash}/content/${path}`;
+  return `https://${buildConfig.get('urls').cdnUrls.at(0)}/s-${storeHash}/content/${path}`;
 };
 
 /**
