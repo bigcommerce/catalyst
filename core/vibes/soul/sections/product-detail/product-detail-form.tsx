@@ -18,6 +18,7 @@ import { z } from 'zod';
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
 import { CardRadioGroup } from '@/vibes/soul/form/card-radio-group';
 import { Checkbox } from '@/vibes/soul/form/checkbox';
+import { DatePicker } from '@/vibes/soul/form/date-picker';
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { NumberInput } from '@/vibes/soul/form/number-input';
@@ -251,6 +252,21 @@ function FormField({
           onFocus={controls.focus}
           required={formField.required}
           value={controls.value ?? ''}
+        />
+      );
+
+    case 'date':
+      return (
+        <DatePicker
+          defaultValue={controls.value}
+          errors={formField.errors}
+          key={formField.id}
+          label={field.label}
+          name={formField.name}
+          onBlur={controls.blur}
+          onChange={(e) => handleChange(e.currentTarget.value)}
+          onFocus={controls.focus}
+          required={formField.required}
         />
       );
 
