@@ -171,7 +171,6 @@ const ProductQuery = graphql(
     query ProductQuery($entityId: Int!) {
       site {
         product(entityId: $entityId) {
-          sku
           entityId
           name
           description

@@ -49,7 +49,6 @@ export interface ProductDetailFormProps<F extends Field> {
   fields: F[];
   action: ProductDetailFormAction<F>;
   productId: string;
-  sku: string;
   ctaLabel?: string;
   quantityLabel?: string;
   incrementLabel?: string;
@@ -72,7 +71,6 @@ export function ProductDetailForm<F extends Field>({
   ctaDisabled = false,
   prefetch = false,
   additionalActions,
-  sku,
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -152,14 +150,12 @@ export function ProductDetailForm<F extends Field>({
       if (formData.get('intent') === 'add-to-quote') {
         void addProductsToQuote({
           productId,
-          sku,
           quantity: Number(submission.value.quantity),
           selectedOptions,
         });
       } else if (formData.get('intent') === 'add-to-shopping-list') {
         void addProductToShoppingList({
           productId,
-          sku,
           quantity: Number(submission.value.quantity),
           selectedOptions,
         });

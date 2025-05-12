@@ -17,7 +17,6 @@ interface ProductOption {
 
 interface Data {
   productId: string;
-  sku: string;
   quantity: number;
   selectedOptions: ProductOption[];
 }
@@ -27,13 +26,12 @@ export const useAddToQuote = () => {
   const [isAddingToQuote, setLoading] = useState(false);
   const sdk = useSDK();
 
-  const addProductsToQuote = async ({ selectedOptions, productId, quantity, sku }: Data) => {
+  const addProductsToQuote = async ({ selectedOptions, productId, quantity }: Data) => {
     setLoading(true);
 
     try {
       await sdk?.utils?.quote?.addProducts([
         {
-          sku,
           productEntityId: Number(productId),
           quantity,
           selectedOptions: selectedOptions.map(mapToB2BProductOptions),
@@ -56,12 +54,11 @@ export const useAddToShoppingList = () => {
   const [isAddingToShoppingList, setLoading] = useState(false);
   const sdk = useSDK();
 
-  const addProductToShoppingList = async ({ selectedOptions, productId, quantity, sku }: Data) => {
+  const addProductToShoppingList = async ({ selectedOptions, productId, quantity }: Data) => {
     setLoading(true);
 
     try {
       await sdk?.utils?.shoppingList?.addProductFromPage({
-        sku,
         productEntityId: Number(productId),
         quantity,
         selectedOptions: selectedOptions.map(mapToB2BProductOptions),

@@ -40,6 +40,12 @@ export interface B2BProfile {
   companyRoleName: string;
 }
 
+interface LineItem {
+  productEntityId: number;
+  quantity?: number;
+  selectedOptions?: B2BProductOption[];
+}
+
 declare global {
   interface Window {
     b2b?: {
@@ -53,27 +59,15 @@ declare global {
         quote?: {
           getQuoteConfigs: () => QuoteConfigProps[];
           addProductsFromCartId: (cartId: string) => Promise<void>;
-          addProducts: (
-            products: Array<{
-              sku: string;
-              productEntityId: number;
-              quantity?: number;
-              selectedOptions?: B2BProductOption[];
-            }>,
-          ) => Promise<void>;
+          addProducts: (products: LineItem[]) => Promise<void>;
         };
         shoppingList?: {
-          addProductFromPage: (product: {
-            sku: string;
-            productEntityId: number;
-            quantity?: number;
-            selectedOptions?: B2BProductOption[];
-          }) => Promise<void>;
+          addProductFromPage: (product: LineItem) => Promise<void>;
         };
         cart?: {
           getEntityId: () => string;
           setEntityId: (cartId: string) => void;
-        }
+        };
       };
       callbacks?: {
         addEventListener: {
@@ -86,7 +80,10 @@ declare global {
           (event: 'on-logout', callback: (props: { data: Record<string, string> }) => void): void;
           (event: 'on-cart-created', callback: (props: { data: { cartId: string } }) => void): void;
         };
-        removeEventListener: (event: 'on-logout' | 'on-registered' | 'on-cart-created', callback: unknown) => void;
+        removeEventListener: (
+          event: 'on-logout' | 'on-registered' | 'on-cart-created',
+          callback: unknown,
+        ) => void;
         dispatchEvent: (event: string) => void;
       };
     };
