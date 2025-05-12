@@ -31,7 +31,7 @@ const GetCartCountQuery = graphql(`
   }
 `);
 
-const getCartCount = async (cartId: string, customerAccessToken?: string) => {
+const getCartCount = cache(async (cartId: string, customerAccessToken?: string) => {
   const response = await client.fetch({
     document: GetCartCountQuery,
     variables: { cartId },
@@ -45,7 +45,7 @@ const getCartCount = async (cartId: string, customerAccessToken?: string) => {
   });
 
   return response.data.site.cart?.lineItems.totalQuantity ?? null;
-};
+});
 
 const getHeaderLinks = cache(async (customerAccessToken?: string) => {
   const { data: response } = await client.fetch({
