@@ -1,7 +1,6 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
-import { string } from 'zod';
 
 import { writeBuildConfig } from './build-config/writer';
 import { client } from './client';
@@ -35,12 +34,14 @@ const SettingsQuery = graphql(`
 async function writeSettingsToBuildConfig() {
   const { data } = await client.fetch({ document: SettingsQuery });
 
+  const cdnEnvHostnames = process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME;
+
   return await writeBuildConfig({
     locales: data.site.settings?.locales,
     urls: {
       ...data.site.settings?.url,
-      cdnUrls: (process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME
-        ? process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME.split(',').map((s) => s.trim())
+      cdnUrls: (cdnEnvHostnames
+        ? cdnEnvHostnames.split(',').map((s) => s.trim())
         : [data.site.settings?.url.cdnUrl]
       ).filter((url): url is string => !!url),
     },
