@@ -42,34 +42,29 @@ The easiest way to deploy your Catalyst Storefront is to use the [One-Click Cata
 
 Check out the [Catalyst.dev One-Click Catalyst Documentation](https://www.catalyst.dev/docs/getting-started) for more details.
 
-## Quickstart
+## Getting Started
 
-Create a new project interactively by running:
+**Requirements:**
 
-```bash
-npm create @bigcommerce/catalyst@latest
-```
+- A [BigCommerce account](https://www.bigcommerce.com/start-your-trial)
+- Node.js version 20 or 22
+- Corepack-enabled `pnpm`
 
-You'll then get the following prompts:
+  ```bash
+  corepack enable pnpm
+  ```
 
-```console
-? What would you like to call your project?  my-faster-storefront
-? Which would you like?
-❯ Link Catalyst to a BigCommerce Store
-  Use sample data
+1. Install the latest version of Catalyst:
 
-? Would you like to create a new channel? y
+   ```bash
+   pnpm create @bigcommerce/catalyst@latest
+   ```
 
-? What would you like to name the new channel? My Faster Storefront
+2. Run the local development server:
 
-Success! Created 'my-faster-storefront' at '/Users/first.last/Documents/GitHub/my-faster-storefront'
-```
-
-Next steps:
-
-```bash
-cd my-faster-storefront && npm run dev
-```
+   ```bash
+   pnpm run dev
+   ```
 
 Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 
