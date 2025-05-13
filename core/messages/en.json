@@ -385,6 +385,7 @@
       "home": "Home"
     },
     "ContactUs": {
+      "home": "Home",
       "Form": {
         "success": "Thanks for reaching out. We'll get back to you soon.",
         "successCta": "Continue shopping",

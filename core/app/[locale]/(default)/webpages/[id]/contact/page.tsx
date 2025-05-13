@@ -67,11 +67,13 @@ const getWebPage = cache(async (id: string): Promise<ContactPage> => {
 });
 
 async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
+  const t = await getTranslations('WebPages.ContactUs');
+
   const webpage = await getWebPage(id);
   const [, ...rest] = webpage.breadcrumbs.reverse();
   const breadcrumbs = [
     {
-      label: 'Home',
+      label: t('home'),
       href: '/',
     },
     ...rest.reverse(),
