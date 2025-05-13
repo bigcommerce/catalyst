@@ -10,10 +10,16 @@ const storeHash = process.env.BIGCOMMERCE_STORE_HASH ?? '';
  * @param {string} sizeSegment - The size segment of the URL. Can be of the form `{:size}` (to make it a urlTemplate) or `original` or `123w` or `123x123`.
  * @param {string} source - The source of the image. Can be either `content` or `image-manager`.
  * @param {string} path - The path of the image relative to the source.
+ * @param {number} cdnIndex - The index of the CDN URL to use. Defaults to 0.
  * @returns {string} The CDN image URL.
  */
-const cdnImageUrlBuilder = (sizeSegment: string, source: string, path: string): string => {
-  return `https://${buildConfig.get('urls').cdnUrls.at(0)}/s-${storeHash}/images/stencil/${sizeSegment}/${source}/${path}`;
+const cdnImageUrlBuilder = (
+  sizeSegment: string,
+  source: string,
+  path: string,
+  cdnIndex = 0,
+): string => {
+  return `https://${buildConfig.get('urls').cdnUrls.at(cdnIndex)}/s-${storeHash}/images/stencil/${sizeSegment}/${source}/${path}`;
 };
 
 /**
@@ -23,10 +29,11 @@ const cdnImageUrlBuilder = (sizeSegment: string, source: string, path: string): 
  * that the asset is invalidated when the storefront app is deployed.
  *
  * @param {string} path - The path of the content asset.
+ * @param {number} cdnIndex - The index of the CDN URL to use. Defaults to 0.
  * @returns {string} The full URL to the content asset.
  */
-export const contentAssetUrl = (path: string): string => {
-  return `https://${buildConfig.get('urls').cdnUrls.at(0)}/s-${storeHash}/content/${path}`;
+export const contentAssetUrl = (path: string, cdnIndex = 0): string => {
+  return `https://${buildConfig.get('urls').cdnUrls.at(cdnIndex)}/s-${storeHash}/content/${path}`;
 };
 
 /**
