@@ -36,16 +36,11 @@ times before. You can instead go straight to work building your brand and making
 
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_hr.png)
 
+## Deploy via One-Click Catalyst App
 
-## Deploy on Vercel
+The easiest way to deploy your Catalyst Storefront is to use the [One-Click Catalyst App](http://login.bigcommerce.com/deep-links/app/53284) available in the BigCommerce App Marketplace.
 
-The easiest way to deploy your Catalyst Storefront is to use the [Vercel Platform](https://vercel.com/new) from the creators of Next.js.
-
-Check out the [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-<div align="left">
-  <a href="https://vercel.com/new/clone?repository-url=https://github.com/bigcommerce/catalyst&root-directory=core&project-name=my-catalyst-storefront&repository-name=my-catalyst-storefront&integration-ids=oac_nsrwzogJLEFglVwt2060kB0y&external-id=catalyst&demo-title=BigCommerce+Catalyst+with+Vercel&demo-description=Create+a+BigCommerce+Catalyst+Storefront+and+Deploy+to+Vercel&demo-url=catalyst-demo.site&demo-image=https://storage.googleapis.com/s.mkswft.com/RmlsZTozODgzZmY3Yy1hNmVlLTQ1MGUtYjRkMS1mMjEyNzgxNjk5MTY%3D/Social-image-Catalyst.png"><img src="https://vercel.com/button" alt="Deploy with Vercel"/></a>
-</div>
+Check out the [Catalyst.dev One-Click Catalyst Documentation](https://www.catalyst.dev/docs/getting-started) for more details.
 
 ## Quickstart
 
