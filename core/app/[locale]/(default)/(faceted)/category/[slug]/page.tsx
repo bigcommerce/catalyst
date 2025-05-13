@@ -274,13 +274,7 @@ export default async function Category(props: Props) {
         totalCount={streamableTotalCount}
       />
       <Stream value={streamableFacetedSearch}>
-        {(search) => (
-          <CategoryViewed
-            category={category}
-            categoryId={category.entityId}
-            products={search.products.items}
-          />
-        )}
+        {(search) => <CategoryViewed category={category} products={search.products.items} />}
       </Stream>
     </>
   );

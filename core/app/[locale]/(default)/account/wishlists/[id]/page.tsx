@@ -1,3 +1,4 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
@@ -16,6 +17,7 @@ import { getDeleteWishlistModal, getRenameWishlistModal } from '../modals';
 
 import { addWishlistItemToCart } from './_actions/add-to-cart';
 import { WishlistActions, WishlistActionsSkeleton } from './_components/wishlist-actions';
+import { WishlistAnalyticsProvider } from './_components/wishlist-analytics-provider';
 import { getCustomerWishlist } from './page-data';
 
 interface Props {
@@ -48,6 +50,30 @@ async function getWishlist(
 
   return wishlistDetailsTransformer(wishlist, t, pt, formatter);
 }
+
+const getAnalyticsData = async (id: string, searchParamsPromise: Promise<SearchParams>) => {
+  const entityId = Number(id);
+  const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
+  const wishlist = await getCustomerWishlist(entityId, searchParamsParsed);
+
+  if (!wishlist) {
+    return [];
+  }
+
+  return removeEdgesAndNodes(wishlist.items)
+    .map(({ product }) => product)
+    .filter((product) => product !== null)
+    .map((product) => {
+      return {
+        id: product.entityId,
+        name: product.name,
+        sku: product.sku,
+        brand: product.brand?.name ?? '',
+        price: product.prices?.price.value ?? 0,
+        currency: product.prices?.price.currencyCode ?? '',
+      };
+    });
+};
 
 async function getPaginationInfo(
   id: string,
@@ -98,14 +124,16 @@ export default async function WishlistPage({ params, searchParams }: Props) {
   };
 
   return (
-    <WishlistDetails
-      action={addWishlistItemToCart}
-      emptyStateText={t('emptyWishlist')}
-      headerActions={wishlistActions}
-      paginationInfo={Streamable.from(() => getPaginationInfo(id, searchParams))}
-      prevHref="/account/wishlists"
-      removeAction={removeWishlistItem}
-      wishlist={Streamable.from(() => getWishlist(id, t, pt, searchParams))}
-    />
+    <WishlistAnalyticsProvider data={Streamable.from(() => getAnalyticsData(id, searchParams))}>
+      <WishlistDetails
+        action={addWishlistItemToCart}
+        emptyStateText={t('emptyWishlist')}
+        headerActions={wishlistActions}
+        paginationInfo={Streamable.from(() => getPaginationInfo(id, searchParams))}
+        prevHref="/account/wishlists"
+        removeAction={removeWishlistItem}
+        wishlist={Streamable.from(() => getWishlist(id, t, pt, searchParams))}
+      />
+    </WishlistAnalyticsProvider>
   );
 }
