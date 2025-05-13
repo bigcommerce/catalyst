@@ -3,8 +3,16 @@
 </a>
 
 <br />
+<br />
 
-**Catalyst** is the composable, fully customizable headless ecommerce storefront framework for
+<div align="center">
+
+[![MIT License](https://img.shields.io/github/license/bigcommerce/catalyst)](LICENSE.md)
+[![Lighthouse Report](https://github.com/bigcommerce/catalyst/actions/workflows/lighthouse.yml/badge.svg)](https://github.com/bigcommerce/catalyst/actions/workflows/lighthouse.yml) [![Lint, Typecheck, gql.tada](https://github.com/bigcommerce/catalyst/actions/workflows/basic.yml/badge.svg)](https://github.com/bigcommerce/catalyst/actions/workflows/basic.yml)
+
+</div>
+
+**Catalyst** is the composable, fully customizable headless commerce framework for
 [BigCommerce](https://www.bigcommerce.com/). Catalyst is built with [Next.js](https://nextjs.org/), uses
 our [React](https://react.dev/) storefront components, and is backed by the
 [GraphQL Storefront API](https://developer.bigcommerce.com/docs/storefront/graphql).
@@ -13,47 +21,56 @@ By choosing Catalyst, you'll have a fully-functional storefront within a few sec
 up APIs or building SEO, Accessibility, and Performance-optimized ecommerce components you've probably written many
 times before. You can instead go straight to work building your brand and making this your own.
 
-<div align="center">
+## Demo
+
+- [Catalyst Demo](https://catalyst-demo.site)
 
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_hr.png)
-
-</div>
 
 <p align="center">
  <a href="https://www.catalyst.dev">🚀 catalyst.dev</a> •
  <a href="https://developer.bigcommerce.com/community">🤗 BigCommerce Developer Community</a> •
- <a href="https://github.com/bigcommerce/catalyst/discussions">💬 GitHub Discussions</a>
+ <a href="https://github.com/bigcommerce/catalyst/discussions">💬 GitHub Discussions</a> •
+ <a href="/docs">💡 Docs in this repo</a>
 </p>
-
-<div align="center">
 
 ![-----------------------------------------------------](https://storage.googleapis.com/bigcommerce-developers/images/catalyst_readme_hr.png)
 
-</div>
+## Deploy via One-Click Catalyst App
 
-## Requirements
+The easiest way to deploy your Catalyst Storefront is to use the [One-Click Catalyst App](http://login.bigcommerce.com/deep-links/app/53284) available in the BigCommerce App Marketplace.
 
-- Node.js 20+
-- `npm` (or `pnpm`/`yarn`)
+Check out the [Catalyst.dev One-Click Catalyst Documentation](https://www.catalyst.dev/docs/getting-started) for more details.
 
-## Getting started
+## Getting Started
 
-If this installation of Catalyst was created using the `catalyst` CLI, you should already be connected to a store and can get started immediately by running:
+**Requirements:**
 
-```shell
-npm run dev
-```
+- A [BigCommerce account](https://www.bigcommerce.com/start-your-trial)
+- Node.js version 20 or 22
+- Corepack-enabled `pnpm`
 
-If you want to connect to another store or channel, you can run the setup process again by running:
+  ```bash
+  corepack enable pnpm
+  ```
 
-```shell
-npx @bigcommerce/create-catalyst@latest init
-```
+1. Install the latest version of Catalyst:
+
+   ```bash
+   pnpm create @bigcommerce/catalyst@latest
+   ```
+
+2. Run the local development server:
+
+   ```bash
+   pnpm run dev
+   ```
 
 Learn more about Catalyst at [catalyst.dev](https://catalyst.dev).
 
 ## Resources
 
+- [Catalyst Documentation](https://catalyst.dev/docs/)
 - [GraphQL Storefront API Playground](https://developer.bigcommerce.com/graphql-storefront/playground)
 - [GraphQL Storefront API Explorer](https://developer.bigcommerce.com/graphql-storefront/explorer)
 - [BigCommerce DevDocs](https://developer.bigcommerce.com/docs/build)
