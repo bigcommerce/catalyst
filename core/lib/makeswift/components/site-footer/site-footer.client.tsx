@@ -3,9 +3,7 @@
 import {
   type ComponentPropsWithoutRef,
   createContext,
-  forwardRef,
   type PropsWithChildren,
-  type Ref,
   useContext,
 } from 'react';
 
@@ -16,11 +14,13 @@ import { mergeSections } from '../../utils/merge-sections';
 type FooterProps = ComponentPropsWithoutRef<typeof Footer>;
 
 // MakeswiftFooter does not support streamable sections
-type ContextProps = Omit<FooterProps, 'sections'> & {
+type ContextProps = Omit<FooterProps, 'sections' | 'logo'> & {
+  logo: Awaited<FooterProps['logo']>;
   sections: Awaited<FooterProps['sections']>;
 };
 
 const PropsContext = createContext<ContextProps>({
+  logo: null,
   sections: [],
 });
 
@@ -63,21 +63,18 @@ function combineSections(
   );
 }
 
-export const MakeswiftFooter = forwardRef(
-  ({ logo, sections, copyright }: Props, ref: Ref<HTMLDivElement>) => {
-    const passedProps = useContext(PropsContext);
-    const logoObject = logo.src ? { src: logo.src, alt: logo.alt } : passedProps.logo;
+export const MakeswiftFooter = ({ logo, sections, copyright }: Props) => {
+  const passedProps = useContext(PropsContext);
+  const logoObject = logo.src ? { src: logo.src, alt: logo.alt } : passedProps.logo;
 
-    return (
-      <Footer
-        {...passedProps}
-        copyright={copyright ?? passedProps.copyright}
-        logo={logo.show ? logoObject : undefined}
-        logoHeight={logo.show ? logo.height : 0}
-        logoWidth={logo.show ? logo.width : 0}
-        ref={ref}
-        sections={combineSections(passedProps.sections, sections)}
-      />
-    );
-  },
-);
+  return (
+    <Footer
+      {...passedProps}
+      copyright={copyright ?? passedProps.copyright}
+      logo={logo.show ? logoObject : null}
+      logoHeight={logo.show ? logo.height : 0}
+      logoWidth={logo.show ? logo.width : 0}
+      sections={combineSections(passedProps.sections, sections)}
+    />
+  );
+};

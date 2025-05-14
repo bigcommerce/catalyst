@@ -32,7 +32,7 @@ interface ContactInformation {
 }
 
 export interface FooterProps {
-  logo: Streamable<string | Image>;
+  logo: Streamable<string | Image | null>;
   sections: Streamable<Section[]>;
   copyright?: Streamable<string>;
   contactInformation?: Streamable<ContactInformation>;
