@@ -155,7 +155,8 @@
                 "destinationWithCount": "Destino {número, número}/{total, número}",
                 "subtotal": "Subtotal",
                 "shipping": "Envio",
-                "tax": "Imposto"
+                "tax": "Imposto",
+                "orderSummary": "Resumo do pedido"
             }
         },
         "Addresses": {
@@ -226,8 +227,8 @@
             "updateFailed": "Não foi possível atualizar a sua lista de desejos. Tente novamente.",
             "deleteFailed": "Não foi possível excluir a sua lista de desejos. Tente novamente.",
             "removeProductFailed": "Não foi possível remover o produto da sua lista de desejos. Tente novamente.",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "Você não tem autorização para executar esta ação. Faça login e tente novamente.",
+            "unexpected": "Ocorreu um erro inesperado. Tente novamente."
         },
         "Result": {
             "createSuccess": "A lista de desejos foi criada.",
@@ -236,13 +237,13 @@
             "removeItemSuccess": "O item foi removido da sua lista de desejos."
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "addToNewWishlist": "Adicionar à nova lista de desejos",
+            "defaultWishlistName": "Minhas listas de desejos",
+            "addSuccessMessage": "O produto foi adicionado à sua lista de desejos",
+            "removeSuccessMessage": "O produto foi removido da sua lista de desejos",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "Não foi possível adicionar o produto da sua lista de desejos. Tente novamente.",
+                "removeProductFailed": "Não foi possível remover o produto da sua lista de desejos. Tente novamente."
             }
         }
     },
@@ -411,7 +412,7 @@
     },
     "NotFound": {
         "title": "Não encontramos essa página!",
-        "subtitle": "Parece que a página que você solicitou foi movida ou não existe mais.",
+        "subtitle": "Try searching for something else or go back to the home page.",
         "featuredProducts": "Produtos em destaque"
     },
     "Components": {

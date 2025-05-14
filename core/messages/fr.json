@@ -155,7 +155,8 @@
                 "destinationWithCount": "Destination {number, number}/{total, number}",
                 "subtotal": "Sous-total",
                 "shipping": "Livraison",
-                "tax": "Taxes"
+                "tax": "Taxes",
+                "orderSummary": "Récapitulatif de la commande"
             }
         },
         "Addresses": {
@@ -226,8 +227,8 @@
             "updateFailed": "Impossible de mettre à jour votre liste d'envies. Veuillez réessayer.",
             "deleteFailed": "Échec de la suppression de votre liste d'envies. Veuillez réessayer.",
             "removeProductFailed": "Impossible de retirer le produit de votre liste d'envies. Veuillez réessayer.",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action. Veuillez vous connecter et réessayer.",
+            "unexpected": "Une erreur inattendue s'est produite. Veuillez réessayer."
         },
         "Result": {
             "createSuccess": "La liste d'envies a été créée avec succès.",
@@ -236,13 +237,13 @@
             "removeItemSuccess": "L'article a été supprimé de votre liste d'envies."
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "addToNewWishlist": "Ajouter à une nouvelle liste d'envies",
+            "defaultWishlistName": "Ma liste d'envies",
+            "addSuccessMessage": "Le produit a été ajouté à votre liste d'envies.",
+            "removeSuccessMessage": "Le produit a été retiré de votre liste d'envies.",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "Impossible d'ajouter le produit de votre liste d'envies. Veuillez réessayer.",
+                "removeProductFailed": "Impossible de retirer le produit de votre liste d'envies. Veuillez réessayer."
             }
         }
     },
@@ -411,7 +412,7 @@
     },
     "NotFound": {
         "title": "Page introuvable !",
-        "subtitle": "Il semblerait que la page que vous avez demandée ait été déplacée ou n'existe plus.",
+        "subtitle": "Try searching for something else or go back to the home page.",
         "featuredProducts": "Produits en vedette"
     },
     "Components": {

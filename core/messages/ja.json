@@ -155,7 +155,8 @@
                 "destinationWithCount": "目的地 {number, number}／{total, number}",
                 "subtotal": "小計",
                 "shipping": "配送",
-                "tax": "税金"
+                "tax": "税金",
+                "orderSummary": "注文概要"
             }
         },
         "Addresses": {
@@ -226,8 +227,8 @@
             "updateFailed": "ウィッシュリストの更新に失敗しました。再度お試しください。",
             "deleteFailed": "ウィッシュリストを削除できませんでした。再度お試しください。",
             "removeProductFailed": "ウィッシュリストから商品を削除することができませんでした。再度お試しください。",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "この操作を実行する権限がありません。サインインして、もう一度お試しください",
+            "unexpected": "予期しないエラーが発生しました。もう一度お試しください"
         },
         "Result": {
             "createSuccess": "ウィッシュリストが正常に作成されました。",
@@ -236,13 +237,13 @@
             "removeItemSuccess": "アイテムがウィッシュリストから削除されました。"
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "addToNewWishlist": "新しいウィッシュリストに追加",
+            "defaultWishlistName": "私のウィッシュリスト",
+            "addSuccessMessage": "商品がウィッシュリストに追加されました",
+            "removeSuccessMessage": "商品がウィッシュリストから削除されました",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "ウィッシュリストから商品を追加できませんでした。もう一度お試しください。",
+                "removeProductFailed": "ウィッシュリストから商品を削除できませんでした。再度お試しください"
             }
         }
     },
@@ -411,7 +412,7 @@
     },
     "NotFound": {
         "title": "そのページは見つかりませんでした！",
-        "subtitle": "リクエストされたページは移動したか、もう存在しないようです。",
+        "subtitle": "Try searching for something else or go back to the home page.",
         "featuredProducts": "おすすめ商品"
     },
     "Components": {
