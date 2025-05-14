@@ -1,5 +1,4 @@
 ---
-"@bigcommerce/catalyst-client": patch
 "@bigcommerce/catalyst-core": patch
 ---
 
