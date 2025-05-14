@@ -36,14 +36,23 @@ async function writeSettingsToBuildConfig() {
 
   const cdnEnvHostnames = process.env.NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME;
 
+  const cdnUrls = (
+    cdnEnvHostnames
+      ? cdnEnvHostnames.split(',').map((s) => s.trim())
+      : [data.site.settings?.url.cdnUrl]
+  ).filter((url): url is string => !!url);
+
+  if (!cdnUrls.length) {
+    throw new Error(
+      'No CDN URLs found. Please ensure that NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME is set correctly.',
+    );
+  }
+
   return await writeBuildConfig({
     locales: data.site.settings?.locales,
     urls: {
       ...data.site.settings?.url,
-      cdnUrls: (cdnEnvHostnames
-        ? cdnEnvHostnames.split(',').map((s) => s.trim())
-        : [data.site.settings?.url.cdnUrl]
-      ).filter((url): url is string => !!url),
+      cdnUrls,
     },
   });
 }
