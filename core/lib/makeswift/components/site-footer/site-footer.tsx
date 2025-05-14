@@ -15,14 +15,16 @@ type Props = ComponentPropsWithoutRef<typeof VibesFooter> & {
 export const SiteFooter = async ({
   snapshotId = 'site-footer',
   label = 'Site Footer',
+  logo: streamableLogo,
   sections: streamableSections,
   ...props
 }: Props) => {
   const snapshot = await getComponentSnapshot(snapshotId);
+  const logo = await streamableLogo;
   const sections = await streamableSections;
 
   return (
-    <PropsContextProvider value={{ ...props, sections }}>
+    <PropsContextProvider value={{ ...props, logo, sections }}>
       <MakeswiftComponent label={label} snapshot={snapshot} type={COMPONENT_TYPE} />
     </PropsContextProvider>
   );
