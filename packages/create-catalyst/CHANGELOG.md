@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.22.0
+
+### Minor Changes
+
+- [#2296](https://github.com/bigcommerce/catalyst/pull/2296) [`da1f486`](https://github.com/bigcommerce/catalyst/commit/da1f486685544ebe117881caa97d7b0539171531) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Expands the supported Node.js version of the `create-catalyst` CLI to `^20` and `^22`. The version of Node.js required to run the CLI is not necessarily tied to the version of Node.js required to run Catalyst; the CLI requires at least version 18 to run because it depends on global Fetch API support being enabled by default. More context in [#2296](https://github.com/bigcommerce/catalyst/pull/2296).
+
+- [#2136](https://github.com/bigcommerce/catalyst/pull/2136) [`e5f1ac9`](https://github.com/bigcommerce/catalyst/commit/e5f1ac9879319a66187d410a3dc6b2764b15a789) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Support node 22.
+
+### Patch Changes
+
+- [#2017](https://github.com/bigcommerce/catalyst/pull/2017) [`c1519d4`](https://github.com/bigcommerce/catalyst/commit/c1519d4098baa7d21553415e4c794c185b27ec07) Thanks [@RomanKrasinskyi](https://github.com/RomanKrasinskyi)! - Add es-419 to list of allowed locale for selecting in CLI
+
 ## 0.21.0
 
 ### Minor Changes

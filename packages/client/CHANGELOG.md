@@ -1,5 +1,23 @@
 # Changelog
 
+## 0.15.0
+
+### Minor Changes
+
+- [#1914](https://github.com/bigcommerce/catalyst/pull/1914) [`f039b2c`](https://github.com/bigcommerce/catalyst/commit/f039b2c7235118626d7a727bff5271ac8982f910) Thanks [@jorgemoya](https://github.com/jorgemoya)! - GQL requests that respond as `200` but have an `errors` field will now be properly handled by the client and throw a proper `BigCommerceGQLError` response with the message reason from the API. This will provide a more detailed description of why the GQL request errored out.
+
+  API errors will still be handled and attribute the errored status as the message with this change as `BigCommerceAPIError`.
+
+- [`0aa23e2`](undefined) - Add an `onError` callback to in order to handle auth and invalid sessions.
+
+- [#2124](https://github.com/bigcommerce/catalyst/pull/2124) [`4a00a27`](https://github.com/bigcommerce/catalyst/commit/4a00a27acea733b6f3fef221b3d1472b145d25f0) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add an `errorPolicy` option for GQL requests. Accepts `none`, `ignore`, `all`. Defaults to `none` which throws an error if there are GQL errors, `ignore` returns the data without error object, and `all` returns both data and errors.
+
+### Patch Changes
+
+- [`c830100`](undefined) - Manual changes on a dependency bumps.
+
+- [#2226](https://github.com/bigcommerce/catalyst/pull/2226) [`3b14d66`](https://github.com/bigcommerce/catalyst/commit/3b14d668d32e7ebe37e31b1851b3db8f8be46bec) Thanks [@bookernath](https://github.com/bookernath)! - Add GraphQL operation name and type to GraphQL URL as query parameters to improve server logging of GraphQL operations
+
 ## 0.14.0
 
 ### Minor Changes
