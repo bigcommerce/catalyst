@@ -13,6 +13,8 @@
 
 </div>
 
+> **Note:** This is the `integrations/makeswift` branch of Catalyst, which includes an integration with Makeswift for visual editing. This is the version of Catalyst deployed by default by the One-Click Catalyst functionality in the BigCommerce control panel. If you wish to use a version of Catalyst without a pre-integrated visual editor, consider the code on the `canary` branch or refer to the [tags](https://github.com/bigcommerce/catalyst/tags) for the version that's best for you.
+
 **Catalyst** is the composable, fully customizable headless commerce framework for
 [BigCommerce](https://www.bigcommerce.com/). Catalyst is built with [Next.js](https://nextjs.org/), uses
 our [React](https://react.dev/) storefront components, and is backed by the
