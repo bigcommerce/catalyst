@@ -54,6 +54,9 @@ const getHeaderLinks = cache(async (customerAccessToken?: string) => {
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
+  console.log('shopper preference', response.shopperPreferences.locale?.resolved);
+  console.log('category tree', response.site.categoryTree);
+
   return readFragment(HeaderLinksFragment, response).site.categoryTree;
 });
 

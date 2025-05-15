@@ -27,6 +27,11 @@ export const GetLinksAndSectionsQuery = graphql(
         ...HeaderLinksFragment
         ...FooterSectionsFragment
       }
+      shopperPreferences {
+        locale {
+          resolved
+        }
+      }
     }
   `,
   [HeaderLinksFragment, FooterSectionsFragment],

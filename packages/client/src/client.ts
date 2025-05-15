@@ -1,3 +1,12 @@
+import {
+  ArgumentNode,
+  DirectiveNode,
+  DocumentNode,
+  Kind,
+  StringValueNode,
+  visit,
+} from '@0no-co/graphql.web';
+
 import { BigCommerceAPIError } from './api-error';
 import { BigCommerceAuthError } from './gql-auth-error';
 import { BigCommerceGQLError } from './gql-error';
@@ -119,7 +128,18 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>> {
     const { headers = {}, ...rest } = fetchOptions;
-    const query = normalizeQuery(document);
+
+    const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
+      (await this.beforeRequest?.(fetchOptions)) ?? {};
+
+    const modifiedDoc = addShopperPreferencesDirective(
+      document as DocumentNode,
+      (additionalFetchHeaders as Record<string, string>)['Accept-Language'],
+    );
+
+    delete (additionalFetchHeaders as Record<string, string>)['Accept-Language'];
+
+    const query = normalizeQuery(modifiedDoc);
     const log = this.requestLogger(query);
     const operationInfo = getOperationInfo(query);
 
@@ -128,8 +148,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
       operationInfo.name,
       operationInfo.type,
     );
-    const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
-      (await this.beforeRequest?.(fetchOptions)) ?? {};
 
     const response = await fetch(graphqlUrl, {
       method: 'POST',
@@ -285,4 +303,34 @@ export function createClient<FetcherRequestInit extends RequestInit = RequestIni
   config: Config<FetcherRequestInit>,
 ) {
   return new Client<FetcherRequestInit>(config);
+}
+
+export function addShopperPreferencesDirective(doc: DocumentNode, locale = 'es-MX'): DocumentNode {
+  return visit(doc, {
+    OperationDefinition(node) {
+      const alreadyHasDirective = node.directives?.some(
+        (d) => d.name.value === 'shopperPreferences',
+      );
+
+      if (alreadyHasDirective) return node;
+
+      const directive: DirectiveNode = {
+        kind: Kind.DIRECTIVE,
+        name: { kind: Kind.NAME, value: 'shopperPreferences' },
+        arguments: [
+          {
+            kind: Kind.ARGUMENT,
+            name: { kind: Kind.NAME, value: 'locale' },
+
+            value: { kind: Kind.STRING, value: locale } as StringValueNode,
+          } as ArgumentNode,
+        ],
+      };
+
+      return {
+        ...node,
+        directives: [...(node.directives ?? []), directive],
+      };
+    },
+  });
 }
