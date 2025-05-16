@@ -36,7 +36,7 @@ export async function getLqipData(url: string): Promise<string> {
   }
 }
 
-export function hydrateLqipCache(url: string): void {
+export async function hydrateLqipCache(url: string): Promise<void> {
   const waitUntil = getWaitUntil();
   if (waitUntil) {
     waitUntil(getLqipData(url));
