@@ -182,6 +182,8 @@ const navGroupClassName =
   'block rounded-lg bg-[var(--nav-group-background,transparent)] px-3 py-2 font-[family-name:var(--nav-group-font-family,var(--font-family-body))] font-medium text-[var(--nav-group-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-group-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-group-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2';
 const navButtonClassName =
   'relative rounded-lg bg-[var(--nav-button-background,transparent)] p-1.5 text-[var(--nav-button-icon,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2 @4xl:hover:bg-[var(--nav-button-background-hover,hsl(var(--contrast-100)))] @4xl:hover:text-[var(--nav-button-icon-hover,hsl(var(--foreground)))]';
+const navCustomButtonClassName =
+  'relative rounded-lg bg-[var(--nav-button-background,transparent)] p-1.5 text-[var(--nav-button-icon,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors focus-visible:outline-0 focus-visible:ring-2';
 
 /**
  * This component supports various CSS variables for theming. Here's a comprehensive list, along
@@ -263,7 +265,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     logoHref = '/',
     logoLabel = 'Home',
     logoWidth = 200,
-    logoHeight = 40,
+    logoHeight = 80,
     mobileLogo: streamableMobileLogo,
     mobileLogoWidth = 100,
     mobileLogoHeight = 40,
@@ -417,85 +419,96 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         </div>
 
         {/* Top Level Nav Links */}
-        <ul
-          className={clsx(
-            'hidden gap-1 @4xl:flex @4xl:flex-1',
-            {
-              left: '@4xl:justify-start',
-              center: '@4xl:justify-center',
-              right: '@4xl:justify-end',
-            }[linksPosition],
-          )}
-        >
-          <Stream
-            fallback={
-              <ul className="flex animate-pulse flex-row p-2 @4xl:gap-2 @4xl:p-5">
-                <li>
-                  <span className="block h-4 w-10 rounded-md bg-contrast-100" />
-                </li>
-                <li>
-                  <span className="block h-4 w-14 rounded-md bg-contrast-100" />
-                </li>
-                <li>
-                  <span className="block h-4 w-24 rounded-md bg-contrast-100" />
-                </li>
-                <li>
-                  <span className="block h-4 w-16 rounded-md bg-contrast-100" />
-                </li>
-              </ul>
-            }
-            value={streamableLinks}
+        <div className={clsx('hidden @4xl:flex @4xl:flex-1 @4xl:flex-col @4xl:gap-1')}>
+          <SearchFormNew
+            // @ts-ignore
+            searchAction={searchAction}
+            searchCtaLabel={searchCtaLabel}
+            searchHref={searchHref}
+            searchInputPlaceholder={searchInputPlaceholder}
+            searchParamName={searchParamName}
+          />
+          {/* make this full with on the parent div and not in the same lien as the previous dev */}
+          <ul
+            className={clsx(
+              'w-full @4xl:flex @4xl:flex-1',
+              {
+                left: '@4xl:justify-start',
+                center: '@4xl:justify-center',
+                right: '@4xl:justify-end',
+              }[linksPosition],
+            )}
           >
-            {(links) =>
-              links.map((item, i) => (
-                <NavigationMenu.Item key={i} value={i.toString()}>
-                  <NavigationMenu.Trigger asChild>
-                    <Link
-                      className="hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
-                      href={item.href}
-                    >
-                      {item.label}
-                    </Link>
-                  </NavigationMenu.Trigger>
-                  {item.groups != null && item.groups.length > 0 && (
-                    <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
-                      <div className="m-auto grid w-full max-w-screen-lg grid-cols-5 justify-center gap-5 px-5 pb-8 pt-5">
-                        {item.groups.map((group, columnIndex) => (
-                          <ul className="flex flex-col" key={columnIndex}>
-                            {/* Second Level Links */}
-                            {group.label != null && group.label !== '' && (
-                              <li>
-                                {group.href != null && group.href !== '' ? (
-                                  <Link className={navGroupClassName} href={group.href}>
-                                    {group.label}
-                                  </Link>
-                                ) : (
-                                  <span className={navGroupClassName}>{group.label}</span>
-                                )}
-                              </li>
-                            )}
+            <Stream
+              fallback={
+                <ul className="flex animate-pulse flex-row p-2 @4xl:gap-2 @4xl:p-5">
+                  <li>
+                    <span className="block h-4 w-10 rounded-md bg-contrast-100" />
+                  </li>
+                  <li>
+                    <span className="block h-4 w-14 rounded-md bg-contrast-100" />
+                  </li>
+                  <li>
+                    <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+                  </li>
+                  <li>
+                    <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                  </li>
+                </ul>
+              }
+              value={streamableLinks}
+            >
+              {(links) =>
+                links.map((item, i) => (
+                  <NavigationMenu.Item key={i} value={i.toString()}>
+                    <NavigationMenu.Trigger asChild>
+                      <Link
+                        className="hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
+                        href={item.href}
+                      >
+                        {item.label}
+                      </Link>
+                    </NavigationMenu.Trigger>
+                    {item.groups != null && item.groups.length > 0 && (
+                      <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
+                        <div className="m-auto grid w-full max-w-screen-lg grid-cols-5 justify-center gap-5 px-5 pb-8 pt-5">
+                          {item.groups.map((group, columnIndex) => (
+                            <ul className="flex flex-col" key={columnIndex}>
+                              {/* Second Level Links */}
+                              {group.label != null && group.label !== '' && (
+                                <li>
+                                  {group.href != null && group.href !== '' ? (
+                                    <Link className={navGroupClassName} href={group.href}>
+                                      {group.label}
+                                    </Link>
+                                  ) : (
+                                    <span className={navGroupClassName}>{group.label}</span>
+                                  )}
+                                </li>
+                              )}
 
-                            {group.links.map((link, idx) => (
-                              // Third Level Links
-                              <li key={idx}>
-                                <Link
-                                  className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
-                                  href={link.href}
-                                >
-                                  {link.label}
-                                </Link>
-                              </li>
-                            ))}
-                          </ul>
-                        ))}
-                      </div>
-                    </NavigationMenu.Content>
-                  )}
-                </NavigationMenu.Item>
-              ))
-            }
-          </Stream>
-        </ul>
+                              {group.links.map((link, idx) => (
+                                // Third Level Links
+                                <li key={idx}>
+                                  <Link
+                                    className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
+                                    href={link.href}
+                                  >
+                                    {link.label}
+                                  </Link>
+                                </li>
+                              ))}
+                            </ul>
+                          ))}
+                        </div>
+                      </NavigationMenu.Content>
+                    )}
+                  </NavigationMenu.Item>
+                ))
+              }
+            </Stream>
+          </ul>
+        </div>
 
         {/* Icon Buttons */}
         <div
@@ -505,43 +518,55 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           )}
         >
           {searchAction ? (
-            <Popover.Root onOpenChange={setIsSearchOpen} open={isSearchOpen}>
-              <Popover.Anchor className="absolute left-0 right-0 top-full" />
-              <Popover.Trigger asChild>
-                <button
-                  aria-label={openSearchPopupLabel}
-                  className={navButtonClassName}
-                  onPointerEnter={(e) => e.preventDefault()}
-                  onPointerLeave={(e) => e.preventDefault()}
-                  onPointerMove={(e) => e.preventDefault()}
-                >
-                  <Search size={20} strokeWidth={1} />
-                </button>
-              </Popover.Trigger>
-              <Popover.Portal>
-                <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-                  <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
-                    <SearchForm
-                      searchAction={searchAction}
-                      searchCtaLabel={searchCtaLabel}
-                      searchHref={searchHref}
-                      searchInputPlaceholder={searchInputPlaceholder}
-                      searchParamName={searchParamName}
-                    />
-                  </div>
-                </Popover.Content>
-              </Popover.Portal>
-            </Popover.Root>
+            <></>
           ) : (
+            // <Popover.Root onOpenChange={setIsSearchOpen} open={isSearchOpen}>
+            //   <Popover.Anchor className="absolute left-0 right-0 top-full" />
+            //   <Popover.Trigger asChild>
+            //     <button
+            //       aria-label={openSearchPopupLabel}
+            //       className={navButtonClassName}
+            //       onPointerEnter={(e) => e.preventDefault()}
+            //       onPointerLeave={(e) => e.preventDefault()}
+            //       onPointerMove={(e) => e.preventDefault()}
+            //     >
+            //       <Search size={20} strokeWidth={1} />
+            //     </button>
+            //   </Popover.Trigger>
+            //   <Popover.Portal>
+            //     <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
+            //       <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
+            //         <SearchForm
+            //           searchAction={searchAction}
+            //           searchCtaLabel={searchCtaLabel}
+            //           searchHref={searchHref}
+            //           searchInputPlaceholder={searchInputPlaceholder}
+            //           searchParamName={searchParamName}
+            //         />
+            //       </div>
+            //     </Popover.Content>
+            //   </Popover.Portal>
+            // </Popover.Root>
             <Link aria-label={searchLabel} className={navButtonClassName} href={searchHref}>
               <Search size={20} strokeWidth={1} />
             </Link>
           )}
 
-          <Link aria-label={accountLabel} className={navButtonClassName} href={accountHref}>
-            <User size={20} strokeWidth={1} />
+          <Link aria-label={accountLabel} className={navCustomButtonClassName} href={accountHref}>
+            <Button variant="secondary" size="x-small" shape="rounded">
+              Create Account
+            </Button>
+            {/* <User size={20} strokeWidth={1} /> */}
           </Link>
-          <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
+
+          <Link aria-label={accountLabel} className={navCustomButtonClassName} href={accountHref}>
+            <Button variant="tertiary" size="x-small" shape="rounded">
+              Sign In
+            </Button>
+          </Link>
+
+          {/* Link to shopping cart */}
+          {/* <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
             <ShoppingBag size={20} strokeWidth={1} />
             <Stream
               fallback={
@@ -558,7 +583,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 )
               }
             </Stream>
-          </Link>
+          </Link> */}
 
           {/* Locale / Language Dropdown */}
           {locales && locales.length > 1 ? (
@@ -590,6 +615,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
 Navigation.displayName = 'Navigation';
 
+/**
+ * Old Look Icon for Search Form
+ */
 function SearchForm<S extends SearchResult>({
   searchAction,
   searchParamName = 'query',
@@ -681,6 +709,99 @@ function SearchForm<S extends SearchResult>({
   );
 }
 
+/**
+ * New Input Search
+ */
+function SearchFormNew<S extends SearchResult>({
+  searchAction,
+  searchParamName = 'query',
+  searchHref = '/search',
+  searchInputPlaceholder = 'Search Products',
+  searchCtaLabel = 'View more',
+  submitLabel = 'Submit',
+}: {
+  searchAction: SearchAction<S>;
+  searchParamName?: string;
+  searchHref?: string;
+  searchCtaLabel?: string;
+  searchInputPlaceholder?: string;
+  submitLabel?: string;
+}) {
+  const [query, setQuery] = useState('');
+  const [isSearching, startSearching] = useTransition();
+  const [{ searchResults, lastResult, emptyStateTitle, emptyStateSubtitle }, formAction] =
+    useActionState(searchAction, {
+      searchResults: null,
+      lastResult: null,
+    });
+  const [isDebouncing, setIsDebouncing] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isPending = isSearching || isDebouncing || isSubmitting;
+  const debouncedOnChange = useMemo(() => {
+    const debounced = debounce((q: string) => {
+      setIsDebouncing(false);
+
+      const formData = new FormData();
+
+      formData.append(searchParamName, q);
+
+      startSearching(() => {
+        formAction(formData);
+      });
+    }, 300);
+
+    return (q: string) => {
+      setIsDebouncing(true);
+
+      debounced(q);
+    };
+  }, [formAction, searchParamName]);
+
+  const [form] = useForm({ lastResult });
+
+  const handleSubmit = useCallback(() => {
+    setIsSubmitting(true);
+  }, []);
+
+  return (
+    <>
+      <form
+        action={searchHref}
+        className="border-1 flex items-center gap-3 rounded-md border px-3 py-3 @4xl:px-3 @4xl:py-3"
+        onSubmit={handleSubmit}
+      >
+        <SearchIcon
+          className="hidden shrink-0 text-[var(--nav-search-icon,hsl(var(--contrast-500)))] @xl:block"
+          size={20}
+          strokeWidth={1}
+        />
+        <input
+          className="flex-grow bg-transparent pl-2 text-lg font-medium outline-0 focus-visible:outline-none @xl:pl-0"
+          name={searchParamName}
+          onChange={(e) => {
+            setQuery(e.currentTarget.value);
+            debouncedOnChange(e.currentTarget.value);
+          }}
+          placeholder={searchInputPlaceholder}
+          type="text"
+          value={query}
+        />
+      </form>
+
+      <SearchResults
+        emptySearchSubtitle={emptyStateSubtitle}
+        emptySearchTitle={emptyStateTitle}
+        errors={form.errors}
+        query={query}
+        searchCtaLabel={searchCtaLabel}
+        searchParamName={searchParamName}
+        searchResults={searchResults}
+        stale={isPending}
+      />
+    </>
+  );
+}
+
 function SubmitButton({ loading, submitLabel }: { loading: boolean; submitLabel: string }) {
   const { pending } = useFormStatus();
 
@@ -746,77 +867,79 @@ function SearchResults({
   }
 
   return (
-    <div
-      className={clsx(
-        'flex flex-1 flex-col overflow-y-auto border-t border-[var(--nav-search-divider,hsl(var(--contrast-100)))] @2xl:flex-row',
-        stale && 'opacity-50',
-      )}
-    >
-      {searchResults.map((result, index) => {
-        switch (result.type) {
-          case 'links': {
-            return (
-              <section
-                aria-label={result.title}
-                className="flex w-full flex-col gap-1 border-b border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-5 @2xl:max-w-80 @2xl:border-b-0 @2xl:border-r"
-                key={`result-${index}`}
-              >
-                <h3 className="mb-4 font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
-                  {result.title}
-                </h3>
-                <ul role="listbox">
-                  {result.links.map((link, i) => (
-                    <li key={i}>
-                      <Link
-                        className="block rounded-lg bg-[var(--nav-search-result-link-background,transparent)] px-3 py-4 font-[family-name:var(--nav-search-result-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-search-result-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-search-result-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-search-result-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
-                        href={link.href}
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            );
-          }
-
-          case 'products': {
-            return (
-              <section
-                aria-label={result.title}
-                className="flex w-full flex-col gap-5 p-5"
-                key={`result-${index}`}
-              >
-                <h3 className="font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
-                  {result.title}
-                </h3>
-                <ul
-                  className="grid w-full grid-cols-2 gap-5 @xl:grid-cols-4 @2xl:grid-cols-2 @4xl:grid-cols-4"
-                  role="listbox"
+    <div className="perspective-[2000px] absolute left-0 right-0 top-full z-50 flex w-full justify-center">
+      <div
+        className={clsx(
+          'flex flex-1 flex-col overflow-y-auto border-t border-[var(--nav-search-divider,hsl(var(--contrast-100)))] bg-white @2xl:flex-row',
+          stale && 'opacity-50',
+        )}
+      >
+        {searchResults.map((result, index) => {
+          switch (result.type) {
+            case 'links': {
+              return (
+                <section
+                  aria-label={result.title}
+                  className="flex w-full flex-col gap-1 border-b border-[var(--nav-search-divider,hsl(var(--contrast-100)))] p-5 @2xl:max-w-80 @2xl:border-b-0 @2xl:border-r"
+                  key={`result-${index}`}
                 >
-                  {result.products.map((product) => (
-                    <li key={product.id}>
-                      <ProductCard
-                        imageSizes="(min-width: 42rem) 25vw, 50vw"
-                        product={{
-                          id: product.id,
-                          title: product.title,
-                          href: product.href,
-                          price: product.price,
-                          image: product.image,
-                        }}
-                      />
-                    </li>
-                  ))}
-                </ul>
-              </section>
-            );
-          }
+                  <h3 className="mb-4 font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
+                    {result.title}
+                  </h3>
+                  <ul role="listbox">
+                    {result.links.map((link, i) => (
+                      <li key={i}>
+                        <Link
+                          className="block rounded-lg bg-[var(--nav-search-result-link-background,transparent)] px-3 py-4 font-[family-name:var(--nav-search-result-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-search-result-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-search-result-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-search-result-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
+                          href={link.href}
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              );
+            }
 
-          default:
-            return null;
-        }
-      })}
+            case 'products': {
+              return (
+                <section
+                  aria-label={result.title}
+                  className="flex w-full flex-col gap-5 p-5"
+                  key={`result-${index}`}
+                >
+                  <h3 className="font-[family-name:var(--nav-search-result-title-font-family,var(--font-family-mono))] text-sm uppercase text-[var(--nav-search-result-title,hsl(var(--foreground)))]">
+                    {result.title}
+                  </h3>
+                  <ul
+                    className="grid w-full grid-cols-2 gap-5 @xl:grid-cols-4 @2xl:grid-cols-2 @4xl:grid-cols-4"
+                    role="listbox"
+                  >
+                    {result.products.map((product) => (
+                      <li key={product.id}>
+                        <ProductCard
+                          imageSizes="(min-width: 42rem) 25vw, 50vw"
+                          product={{
+                            id: product.id,
+                            title: product.title,
+                            href: product.href,
+                            price: product.price,
+                            image: product.image,
+                          }}
+                        />
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              );
+            }
+
+            default:
+              return null;
+          }
+        })}
+      </div>
     </div>
   );
 }

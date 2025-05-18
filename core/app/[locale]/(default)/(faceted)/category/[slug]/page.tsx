@@ -107,6 +107,8 @@ async function getSubCategoriesFilters(props: Props): Promise<Filter[]> {
   const data = await getCategoryPageData(variables);
   const t = await getTranslations('FacetedGroup.MobileSideNav');
 
+  console.log(data);
+
   const categoryTree = data.categoryTree[0];
 
   if (categoryTree == null || categoryTree.children.length === 0) return [];
@@ -118,6 +120,9 @@ async function getSubCategoriesFilters(props: Props): Promise<Filter[]> {
       links: categoryTree.children.map((category) => ({
         label: category.name,
         href: category.path,
+        id: category.entityId.toString(),
+        productCount: category.productCount,
+        image: category.image ? category.image.urlOriginal : null,
       })),
     },
   ];
@@ -161,6 +166,12 @@ async function getListProducts(props: Props): Promise<Product[]> {
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name ?? undefined,
   }));
+}
+
+async function getCategoryFeaturedImage(props: Props): Promise<string | null> {
+  const category = await getCategory(props);
+
+  return category.defaultImage ? category.defaultImage.urlOriginal : null;
 }
 
 async function getFilters(props: Props): Promise<Filter[]> {
@@ -339,6 +350,7 @@ export default async function Category(props: Props) {
       <ProductsListSection
         breadcrumbs={Streamable.from(() => getBreadcrumbs(props))}
         compareLabel={Streamable.from(getCompareLabel)}
+        categoryImage={Streamable.from(() => getCategoryFeaturedImage(props))}
         compareProducts={Streamable.from(() => getCompareProducts(props))}
         emptyStateSubtitle={Streamable.from(getEmptyStateSubtitle)}
         emptyStateTitle={Streamable.from(getEmptyStateTitle)}

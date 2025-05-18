@@ -22,6 +22,7 @@ interface Props {
   products: Streamable<Product[]>;
   filters: Streamable<Filter[]>;
   sortOptions: Streamable<SortOption[]>;
+  categoryImage: Streamable<string | null>;
   compareProducts?: Streamable<Product[]>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
   compareHref?: string;
@@ -54,6 +55,7 @@ export function ProductsListSection({
   sortDefaultValue,
   filters,
   compareHref,
+  categoryImage,
   compareLabel,
   showCompare,
   paginationInfo,
@@ -72,8 +74,31 @@ export function ProductsListSection({
   maxItems,
   maxCompareLimitMessage,
 }: Props) {
+  const DEFAULT_CATEGORY_IMAGE_URL = 'https://placehold.co/1800x200/png?text=Category+Image';
+
   return (
     <div className="group/products-list-section @container">
+      {/**
+       * CATEGORY FEATURED IMAGE
+       */}
+      <div className="relative mx-auto flex h-[200px] w-full max-w-screen-2xl items-center justify-center overflow-hidden rounded-lg bg-contrast-100">
+        <Suspense
+          fallback={
+            <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
+          }
+        >
+          <Stream value={categoryImage}>
+            {(resolvedCategoryImage) => (
+              <img
+                src={resolvedCategoryImage ? resolvedCategoryImage : DEFAULT_CATEGORY_IMAGE_URL}
+                alt=""
+                className="h-full w-full bg-white object-contain object-center"
+              />
+            )}
+          </Stream>
+        </Suspense>
+      </div>
+
       <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
         <div>
           <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
@@ -144,20 +169,21 @@ export function ProductsListSection({
             </div>
           </div>
         </div>
-        <div className="flex items-stretch gap-8 @4xl:gap-10">
-          <aside className="hidden w-52 @3xl:block @4xl:w-60">
-            <Stream value={streamableFiltersPanelTitle}>
-              {(filtersPanelTitle) => <h2 className="sr-only">{filtersPanelTitle}</h2>}
-            </Stream>
-            <FiltersPanel
-              className="sticky top-4"
-              filters={filters}
-              paginationInfo={paginationInfo}
-              rangeFilterApplyLabel={rangeFilterApplyLabel}
-              resetFiltersLabel={resetFiltersLabel}
-            />
-          </aside>
 
+        {/**
+         * GRID OF ITEMS FOR THE SUB CATEGORIES
+         */}
+        <div className="hidden @3xl:block @4xl:w-full">
+          <FiltersPanel
+            className="sticky top-4"
+            filters={filters}
+            paginationInfo={paginationInfo}
+            rangeFilterApplyLabel={rangeFilterApplyLabel}
+            resetFiltersLabel={resetFiltersLabel}
+          />
+        </div>
+
+        <div className="flex items-stretch gap-8 @4xl:gap-10">
           <div className="flex-1 group-has-[[data-pending]]/products-list-section:animate-pulse">
             <ProductList
               compareHref={compareHref}

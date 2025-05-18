@@ -92,6 +92,35 @@ export function FiltersPanel({
   );
 }
 
+interface CategoryCardProps {
+  imageUrl: string;
+  title: string;
+  productCount: number;
+  href: string;
+}
+
+export function CategoryCard({ imageUrl, title, productCount, href }: CategoryCardProps) {
+  return (
+    <Suspense fallback={<CardSkeleton />}>
+      <Link href={href}>
+        {/* Image */}
+        <div className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md shadow-md">
+          <img
+            alt={title}
+            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+            src={imageUrl}
+          />
+          <div className="absolute inset-0 bg-black bg-opacity-40 transition duration-300 group-hover:bg-opacity-50" />
+          <div className="absolute bottom-4 left-4 z-10 text-white">
+            <h3 className="text-lg font-semibold">{title}</h3>
+            <p className="text-sm">{productCount} products</p>
+          </div>
+        </div>
+      </Link>
+    </Suspense>
+  );
+}
+
 export function FiltersPanelInner({
   className,
   filters: streamableFilters,
@@ -135,170 +164,209 @@ export function FiltersPanelInner({
     (filter): filter is LinkGroupFilter => filter.type === 'link-group',
   );
 
+  let categories: any[] = [];
+
+  linkGroupFilters.forEach((linkGroup) => {
+    if (linkGroup.label === 'Categories') {
+      categories = linkGroup.links;
+    }
+  });
+
+  if (categories.length === 0) {
+    return <></>;
+  }
+
+  const SUB_CATEGORY_DEFAULT_IMAGE_ID = 'https://placehold.co/200x200/png?text=Category+Image';
+
   return (
-    <div className={clsx('space-y-5', className)} data-pending={isPending ? true : null}>
-      {linkGroupFilters.map((linkGroup, index) => (
-        <div key={index.toString()}>
-          <h3 className="py-4 font-mono text-sm uppercase text-contrast-400">{linkGroup.label}</h3>
-          <ul>
-            {linkGroup.links.map((link, linkIndex) => (
-              <li className="py-2" key={linkIndex.toString()}>
-                <Link
-                  className="font-body text-base font-medium text-contrast-500 transition-colors duration-300 ease-out hover:text-foreground"
-                  href={link.href}
-                >
-                  {link.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
+    <div
+      className={clsx(
+        'grid gap-5',
+        'grid-cols-2', // mobile: 2 columns
+        'sm:grid-cols-4', // tablet: 4 columns
+        'lg:grid-cols-6', // desktop: 6 columns
+        'mb-28',
+        className,
+      )}
+      data-pending={isPending ? true : null}
+    >
+      {categories.map((category, index) => (
+        <CategoryCard
+          key={index.toString()}
+          href={category.href}
+          imageUrl={category.image ? category.image : SUB_CATEGORY_DEFAULT_IMAGE_ID}
+          title={category.label}
+          productCount={category.productCount}
+        />
       ))}
-      <Accordion
-        onValueChange={(items) =>
-          setAccordionItems((prevItems) =>
-            prevItems.map((prevItem) => ({
-              ...prevItem,
-              expanded: items.includes(prevItem.value),
-            })),
-          )
-        }
-        type="multiple"
-        value={accordionItems.filter((item) => item.expanded).map((item) => item.value)}
-      >
-        {accordionItems.map((accordionItem) => {
-          const { key, value, filter } = accordionItem;
-
-          switch (filter.type) {
-            case 'toggle-group':
-              return (
-                <AccordionItem
-                  key={key}
-                  title={`${filter.label}${getParamCountLabel(optimisticParams, filter.paramName)}`}
-                  value={value}
-                >
-                  <ToggleGroup
-                    onValueChange={(toggleGroupValues) => {
-                      startTransition(async () => {
-                        const nextParams = {
-                          ...optimisticParams,
-                          [startCursorParamName]: null,
-                          [endCursorParamName]: null,
-                          [filter.paramName]:
-                            toggleGroupValues.length === 0 ? null : toggleGroupValues,
-                        };
-
-                        setOptimisticParams(nextParams);
-                        await setParams(nextParams);
-                      });
-                    }}
-                    options={filter.options}
-                    type="multiple"
-                    value={optimisticParams[filter.paramName] ?? []}
-                  />
-                </AccordionItem>
-              );
-
-            case 'range':
-              return (
-                <AccordionItem key={key} title={filter.label} value={value}>
-                  <RangeInput
-                    applyLabel={rangeFilterApplyLabel}
-                    disabled={filter.disabled}
-                    max={filter.max}
-                    maxLabel={filter.maxLabel}
-                    maxName={filter.maxParamName}
-                    maxPlaceholder={filter.maxPlaceholder}
-                    maxPrepend={filter.maxPrepend}
-                    min={filter.min}
-                    minLabel={filter.minLabel}
-                    minName={filter.minParamName}
-                    minPlaceholder={filter.minPlaceholder}
-                    minPrepend={filter.minPrepend}
-                    onChange={({ min, max }) => {
-                      startTransition(async () => {
-                        const nextParams = {
-                          ...optimisticParams,
-                          [filter.minParamName]: min,
-                          [filter.maxParamName]: max,
-                          [startCursorParamName]: null,
-                          [endCursorParamName]: null,
-                        };
-
-                        setOptimisticParams(nextParams);
-                        await setParams(nextParams);
-                      });
-                    }}
-                    value={{
-                      min: optimisticParams[filter.minParamName] ?? null,
-                      max: optimisticParams[filter.maxParamName] ?? null,
-                    }}
-                  />
-                </AccordionItem>
-              );
-
-            case 'rating':
-              return (
-                <AccordionItem key={key} title={filter.label} value={value}>
-                  <div className="space-y-3">
-                    {[5, 4, 3, 2, 1].map((rating) => (
-                      <Checkbox
-                        checked={
-                          optimisticParams[filter.paramName]?.includes(rating.toString()) ?? false
-                        }
-                        disabled={filter.disabled}
-                        key={rating}
-                        label={<Rating rating={rating} showRating={false} />}
-                        onCheckedChange={(checked) =>
-                          startTransition(async () => {
-                            const ratings = new Set(optimisticParams[filter.paramName]);
-
-                            if (checked === true) ratings.add(rating.toString());
-                            else ratings.delete(rating.toString());
-
-                            const nextParams = {
-                              ...optimisticParams,
-                              [filter.paramName]: Array.from(ratings),
-                              [startCursorParamName]: null,
-                              [endCursorParamName]: null,
-                            };
-
-                            setOptimisticParams(nextParams);
-                            await setParams(nextParams);
-                          })
-                        }
-                      />
-                    ))}
-                  </div>
-                </AccordionItem>
-              );
-
-            default:
-              return null;
-          }
-        })}
-      </Accordion>
-
-      <Button
-        onClick={() => {
-          startTransition(async () => {
-            const nextParams = {
-              ...Object.fromEntries(Object.entries(optimisticParams).map(([key]) => [key, null])),
-              [startCursorParamName]: optimisticParams[startCursorParamName],
-              [endCursorParamName]: optimisticParams[endCursorParamName],
-            };
-
-            setOptimisticParams(nextParams);
-            await setParams(nextParams);
-          });
-        }}
-        size="small"
-        variant="secondary"
-      >
-        {resetFiltersLabel}
-      </Button>
     </div>
   );
+
+  // old categories with filters (CAN BE RE-ADDED)
+  // return (
+  //   <div className={clsx('space-y-5', className)} data-pending={isPending ? true : null}>
+  //     {linkGroupFilters.map((linkGroup, index) => (
+  //       <div key={index.toString()}>
+  //         <h3 className="py-4 font-mono text-sm uppercase text-contrast-400">{linkGroup.label}</h3>
+  //         <ul>
+  //           {linkGroup.links.map((link, linkIndex) => (
+  //             <li className="py-2" key={linkIndex.toString()}>
+  //               <Link
+  //                 className="font-body text-base font-medium text-contrast-500 transition-colors duration-300 ease-out hover:text-foreground"
+  //                 href={link.href}
+  //               >
+  //                 {link.label}
+  //               </Link>
+  //             </li>
+  //           ))}
+  //         </ul>
+  //       </div>
+  //     ))}
+  //     <Accordion
+  //       onValueChange={(items) =>
+  //         setAccordionItems((prevItems) =>
+  //           prevItems.map((prevItem) => ({
+  //             ...prevItem,
+  //             expanded: items.includes(prevItem.value),
+  //           })),
+  //         )
+  //       }
+  //       type="multiple"
+  //       value={accordionItems.filter((item) => item.expanded).map((item) => item.value)}
+  //     >
+  //       {accordionItems.map((accordionItem) => {
+  //         const { key, value, filter } = accordionItem;
+
+  //         switch (filter.type) {
+  //           case 'toggle-group':
+  //             return (
+  //               <AccordionItem
+  //                 key={key}
+  //                 title={`${filter.label}${getParamCountLabel(optimisticParams, filter.paramName)}`}
+  //                 value={value}
+  //               >
+  //                 <ToggleGroup
+  //                   onValueChange={(toggleGroupValues) => {
+  //                     startTransition(async () => {
+  //                       const nextParams = {
+  //                         ...optimisticParams,
+  //                         [startCursorParamName]: null,
+  //                         [endCursorParamName]: null,
+  //                         [filter.paramName]:
+  //                           toggleGroupValues.length === 0 ? null : toggleGroupValues,
+  //                       };
+
+  //                       setOptimisticParams(nextParams);
+  //                       await setParams(nextParams);
+  //                     });
+  //                   }}
+  //                   options={filter.options}
+  //                   type="multiple"
+  //                   value={optimisticParams[filter.paramName] ?? []}
+  //                 />
+  //               </AccordionItem>
+  //             );
+
+  //           case 'range':
+  //             return (
+  //               <AccordionItem key={key} title={filter.label} value={value}>
+  //                 <RangeInput
+  //                   applyLabel={rangeFilterApplyLabel}
+  //                   disabled={filter.disabled}
+  //                   max={filter.max}
+  //                   maxLabel={filter.maxLabel}
+  //                   maxName={filter.maxParamName}
+  //                   maxPlaceholder={filter.maxPlaceholder}
+  //                   maxPrepend={filter.maxPrepend}
+  //                   min={filter.min}
+  //                   minLabel={filter.minLabel}
+  //                   minName={filter.minParamName}
+  //                   minPlaceholder={filter.minPlaceholder}
+  //                   minPrepend={filter.minPrepend}
+  //                   onChange={({ min, max }) => {
+  //                     startTransition(async () => {
+  //                       const nextParams = {
+  //                         ...optimisticParams,
+  //                         [filter.minParamName]: min,
+  //                         [filter.maxParamName]: max,
+  //                         [startCursorParamName]: null,
+  //                         [endCursorParamName]: null,
+  //                       };
+
+  //                       setOptimisticParams(nextParams);
+  //                       await setParams(nextParams);
+  //                     });
+  //                   }}
+  //                   value={{
+  //                     min: optimisticParams[filter.minParamName] ?? null,
+  //                     max: optimisticParams[filter.maxParamName] ?? null,
+  //                   }}
+  //                 />
+  //               </AccordionItem>
+  //             );
+
+  //           case 'rating':
+  //             return (
+  //               <AccordionItem key={key} title={filter.label} value={value}>
+  //                 <div className="space-y-3">
+  //                   {[5, 4, 3, 2, 1].map((rating) => (
+  //                     <Checkbox
+  //                       checked={
+  //                         optimisticParams[filter.paramName]?.includes(rating.toString()) ?? false
+  //                       }
+  //                       disabled={filter.disabled}
+  //                       key={rating}
+  //                       label={<Rating rating={rating} showRating={false} />}
+  //                       onCheckedChange={(checked) =>
+  //                         startTransition(async () => {
+  //                           const ratings = new Set(optimisticParams[filter.paramName]);
+
+  //                           if (checked === true) ratings.add(rating.toString());
+  //                           else ratings.delete(rating.toString());
+
+  //                           const nextParams = {
+  //                             ...optimisticParams,
+  //                             [filter.paramName]: Array.from(ratings),
+  //                             [startCursorParamName]: null,
+  //                             [endCursorParamName]: null,
+  //                           };
+
+  //                           setOptimisticParams(nextParams);
+  //                           await setParams(nextParams);
+  //                         })
+  //                       }
+  //                     />
+  //                   ))}
+  //                 </div>
+  //               </AccordionItem>
+  //             );
+
+  //           default:
+  //             return null;
+  //         }
+  //       })}
+  //     </Accordion>
+
+  //     <Button
+  //       onClick={() => {
+  //         startTransition(async () => {
+  //           const nextParams = {
+  //             ...Object.fromEntries(Object.entries(optimisticParams).map(([key]) => [key, null])),
+  //             [startCursorParamName]: optimisticParams[startCursorParamName],
+  //             [endCursorParamName]: optimisticParams[endCursorParamName],
+  //           };
+
+  //           setOptimisticParams(nextParams);
+  //           await setParams(nextParams);
+  //         });
+  //       }}
+  //       size="small"
+  //       variant="secondary"
+  //     >
+  //       {resetFiltersLabel}
+  //     </Button>
+  //   </div>
+  // );
 }
 
 export function FiltersSkeleton() {
@@ -315,6 +383,22 @@ export function FiltersSkeleton() {
       </AccordionSkeleton>
       {/* Reset Filters Button */}
       <div className="h-10 w-[10ch] animate-pulse rounded-full bg-contrast-100" />
+    </div>
+  );
+}
+
+export function CardSkeleton() {
+  return (
+    <div className="relative h-48 w-full animate-pulse overflow-hidden rounded-md bg-contrast-100 shadow-md">
+      {/* Image placeholder */}
+      <div className="absolute inset-0 bg-contrast-200" />
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black bg-opacity-30" />
+      {/* Text placeholders */}
+      <div className="absolute bottom-4 left-4 right-4 z-10">
+        <div className="mb-2 h-5 w-2/3 rounded bg-contrast-300" />
+        <div className="h-4 w-1/3 rounded bg-contrast-300" />
+      </div>
     </div>
   );
 }

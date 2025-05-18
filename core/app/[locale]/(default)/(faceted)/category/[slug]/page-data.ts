@@ -13,6 +13,9 @@ const CategoryPageQuery = graphql(
         category(entityId: $categoryId) {
           entityId
           name
+          defaultImage {
+            urlOriginal
+          }
           ...BreadcrumbsFragment
           seo {
             pageTitle
@@ -28,6 +31,10 @@ const CategoryPageQuery = graphql(
             entityId
             name
             path
+            productCount
+            image {
+              urlOriginal
+            }
             children {
               entityId
               name
