@@ -18,7 +18,7 @@ import {
 interface Props {
   breadcrumbs?: Streamable<Breadcrumb[]>;
   title?: Streamable<string | null>;
-  totalCount: Streamable<number>;
+  totalCount: Streamable<string>;
   products: Streamable<Product[]>;
   filters: Streamable<Filter[]>;
   sortOptions: Streamable<SortOption[]>;

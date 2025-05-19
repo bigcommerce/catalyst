@@ -160,7 +160,7 @@ export default async function Category(props: Props) {
   const streamableTotalCount = Streamable.from(async () => {
     const search = await streamableFacetedSearch;
 
-    return search.products.collectionInfo?.totalItems ?? 0;
+    return String(search.products.collectionInfo?.totalItems ?? 0);
   });
 
   const streamablePagination = Streamable.from(async () => {
