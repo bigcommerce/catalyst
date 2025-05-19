@@ -385,6 +385,7 @@
             "home": "ホーム"
         },
         "ContactUs": {
+            "home": "ホーム",
             "Form": {
                 "success": "お問い合わせありがとうございます。近日中に返信させていただきます。",
                 "successCta": "買い物を続ける",
@@ -412,7 +413,7 @@
     },
     "NotFound": {
         "title": "そのページは見つかりませんでした！",
-        "subtitle": "Try searching for something else or go back to the home page.",
+        "subtitle": "他のものを検索するか、ホームページに戻ってください。",
         "featuredProducts": "おすすめ商品"
     },
     "Components": {
