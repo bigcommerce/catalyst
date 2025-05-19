@@ -385,6 +385,7 @@
             "home": "Inicio"
         },
         "ContactUs": {
+            "home": "Inicio",
             "Form": {
                 "success": "Gracias por ponerte en contacto con nosotros. Nos pondremos en contacto contigo pronto.",
                 "successCta": "Seguir comprando",
@@ -412,7 +413,7 @@
     },
     "NotFound": {
         "title": "No hemos podido encontrar esa página.",
-        "subtitle": "Try searching for something else or go back to the home page.",
+        "subtitle": "Prueba a buscar otra cosa o vuelve a la página de inicio.",
         "featuredProducts": "Productos destacados"
     },
     "Components": {

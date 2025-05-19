@@ -385,6 +385,7 @@
             "home": "Hjem"
         },
         "ContactUs": {
+            "home": "Hjem",
             "Form": {
                 "success": "Tak for din henvendelse. Vi vender snart tilbage til dig.",
                 "successCta": "Fortsæt med at handle",
@@ -412,7 +413,7 @@
     },
     "NotFound": {
         "title": "Vi kunne ikke finde den side.",
-        "subtitle": "Try searching for something else or go back to the home page.",
+        "subtitle": "Prøv at søge efter noget andet, eller gå tilbage til startsiden.",
         "featuredProducts": "Udvalgte produkter"
     },
     "Components": {

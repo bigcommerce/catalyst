@@ -385,6 +385,7 @@
             "home": "Home"
         },
         "ContactUs": {
+            "home": "Home",
             "Form": {
                 "success": "Bedankt voor je bericht. We nemen snel contact met je op.",
                 "successCta": "Verdergaan met winkelen",
@@ -412,7 +413,7 @@
     },
     "NotFound": {
         "title": "We hebben die pagina niet gevonden!",
-        "subtitle": "Try searching for something else or go back to the home page.",
+        "subtitle": "Probeer iets anders te zoeken of ga terug naar de homepage.",
         "featuredProducts": "Uitgelichte producten"
     },
     "Components": {
