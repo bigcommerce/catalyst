@@ -385,6 +385,7 @@
             "home": "Accueil"
         },
         "ContactUs": {
+            "home": "Accueil",
             "Form": {
                 "success": "Merci de nous avoir contactés. Nous reviendrons vers vous bientôt.",
                 "successCta": "Continuer mes achats",
@@ -412,7 +413,7 @@
     },
     "NotFound": {
         "title": "Page introuvable !",
-        "subtitle": "Try searching for something else or go back to the home page.",
+        "subtitle": "Essayez de rechercher autre chose ou revenez à la page d'accueil.",
         "featuredProducts": "Produits en vedette"
     },
     "Components": {

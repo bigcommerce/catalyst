@@ -385,6 +385,7 @@
             "home": "Hem"
         },
         "ContactUs": {
+            "home": "Hem",
             "Form": {
                 "success": "Tack för att du hörde av dig. Vi återkommer till dig inom kort.",
                 "successCta": "Fortsätt att handla",
@@ -412,7 +413,7 @@
     },
     "NotFound": {
         "title": "Vi kunde inte hitta den sidan!",
-        "subtitle": "Try searching for something else or go back to the home page.",
+        "subtitle": "Prova att söka efter något annat eller gå tillbaka till startsidan.",
         "featuredProducts": "Utvalda produkter"
     },
     "Components": {

@@ -385,6 +385,7 @@
             "home": "Hjem"
         },
         "ContactUs": {
+            "home": "Hjem",
             "Form": {
                 "success": "Takk for at du tok kontakt. Vi kommer tilbake til deg snart.",
                 "successCta": "Fortsett å handle",
@@ -412,7 +413,7 @@
     },
     "NotFound": {
         "title": "Vi fant ikke den siden!",
-        "subtitle": "Try searching for something else or go back to the home page.",
+        "subtitle": "Prøv å søke etter noe annet, eller gå tilbake til hjemmesiden.",
         "featuredProducts": "Utvalgt produkter"
     },
     "Components": {
