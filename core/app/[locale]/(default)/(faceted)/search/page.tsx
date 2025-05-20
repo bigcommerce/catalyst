@@ -141,12 +141,12 @@ export default async function Search(props: Props) {
     const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : '';
 
     if (!searchTerm) {
-      return 0;
+      return '0';
     }
 
     const search = await streamableFacetedSearch;
 
-    return search.products.collectionInfo?.totalItems ?? 0;
+    return String(search.products.collectionInfo?.totalItems ?? 0);
   });
 
   const streamableEmptyStateTitle = Streamable.from(async () => {
