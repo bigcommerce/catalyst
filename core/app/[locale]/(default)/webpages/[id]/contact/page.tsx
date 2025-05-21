@@ -111,6 +111,7 @@ async function getContactFields(id: string) {
     id: 'pageId',
     name: 'pageId',
     type: 'hidden',
+    label: 'Page ID',
     defaultValue: String(entityId),
   };
 
@@ -119,6 +120,7 @@ async function getContactFields(id: string) {
     id: 'pagePath',
     name: 'pagePath',
     type: 'hidden',
+    label: 'Page Path',
     defaultValue: path,
   };
 
