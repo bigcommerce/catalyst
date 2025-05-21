@@ -3,6 +3,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Script from 'next/script';
 import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
@@ -107,23 +108,29 @@ export default async function RootLayout({ params, children }: Props) {
   setRequestLocale(locale);
 
   return (
-    <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
-      <body className="flex min-h-screen flex-col">
-        <NextIntlClientProvider>
-          <NuqsAdapter>
-            <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
-              <Providers>
-                {toastNotificationCookieData && (
-                  <CookieNotifications {...toastNotificationCookieData} />
-                )}
-                {children}
-              </Providers>
-            </AnalyticsProvider>
-          </NuqsAdapter>
-        </NextIntlClientProvider>
-        <VercelComponents />
-      </body>
-    </html>
+    <>
+      <Script
+        src="https://cdn.jsdelivr.net/npm/container-query-polyfill@1/dist/container-query-polyfill.modern.js"
+        strategy="beforeInteractive"
+      />
+      <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+        <body className="flex min-h-screen flex-col">
+          <NextIntlClientProvider>
+            <NuqsAdapter>
+              <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
+                <Providers>
+                  {toastNotificationCookieData && (
+                    <CookieNotifications {...toastNotificationCookieData} />
+                  )}
+                  {children}
+                </Providers>
+              </AnalyticsProvider>
+            </NuqsAdapter>
+          </NextIntlClientProvider>
+          <VercelComponents />
+        </body>
+      </html>
+    </>
   );
 }
 
