@@ -158,9 +158,10 @@ export default async function Category(props: Props) {
   });
 
   const streamableTotalCount = Streamable.from(async () => {
+    const format = await getFormatter();
     const search = await streamableFacetedSearch;
 
-    return String(search.products.collectionInfo?.totalItems ?? 0);
+    return format.number(search.products.collectionInfo?.totalItems ?? 0);
   });
 
   const streamablePagination = Streamable.from(async () => {
