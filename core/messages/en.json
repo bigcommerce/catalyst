@@ -249,7 +249,8 @@
   },
   "PublicWishlist": {
     "title": "Public Wish List",
-    "defaultName": "Public wish list"
+    "defaultName": "Public wish list",
+    "emptyWishlist": "This wish list doesn't have any products yet."
   },
   "Blog": {
     "title": "Blog",
