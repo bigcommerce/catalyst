@@ -1,6 +1,5 @@
 import { defineConfig, devices } from '@playwright/test';
 import { config } from 'dotenv';
-import 'tests/test-setup';
 
 config();
 

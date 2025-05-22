@@ -1,5 +1,6 @@
-import { expect, test } from '@playwright/test';
 import { z } from 'zod';
+
+import { expect, test } from '~/tests/fixtures';
 
 const CookieSchema = z.object({
   name: z.string(),
