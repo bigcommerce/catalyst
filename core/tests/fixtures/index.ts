@@ -1,4 +1,5 @@
-import { test as base } from '@playwright/test';
+import { expect as baseExpect, test as baseTest } from '@playwright/test';
+import { validate as isUuid } from 'uuid';
 
 import { AccountFactory } from './utils/account';
 import { OrderFactory } from './utils/order';
@@ -11,7 +12,7 @@ interface Fixtures {
   order: OrderFactory;
 }
 
-export const test = base.extend<Fixtures>({
+export const test = baseTest.extend<Fixtures>({
   account: [
     async ({ page }, use) => {
       const accountFactory = new AccountFactory(page);
@@ -34,4 +35,22 @@ export const test = base.extend<Fixtures>({
   ],
 });
 
-export { expect, type Page } from '@playwright/test';
+export const expect = baseExpect.extend({
+  toBeUuid(received) {
+    const pass = isUuid(received);
+
+    if (pass) {
+      return {
+        message: () => `expected ${received} not to be a uuid`,
+        pass: true,
+      };
+    }
+
+    return {
+      message: () => `expected ${received} to be a uuid`,
+      pass: false,
+    };
+  },
+});
+
+export { type Page } from '@playwright/test';
