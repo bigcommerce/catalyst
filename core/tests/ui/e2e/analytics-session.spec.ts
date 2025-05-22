@@ -1,8 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { z } from 'zod';
 
-const uuidMatcher = /[0-9a-fA-F-]{16,}/;
-
 const CookieSchema = z.object({
   name: z.string(),
   value: z.string(),
@@ -14,13 +12,13 @@ test.describe('Analytics cookies middleware', () => {
     await page.goto('/');
 
     const cookies = await context.cookies();
-    const visitorId = cookies.find((c) => c.name === 'visitorId');
-    const visitId = cookies.find((c) => c.name === 'visitId');
+    const visitorId = cookies.find((c) => c.name === 'catalyst.visitorId');
+    const visitId = cookies.find((c) => c.name === 'catalyst.visitId');
 
     expect(visitorId).toBeDefined();
-    expect(visitorId?.value).toMatch(uuidMatcher);
+    expect(visitorId?.value).toBeUuid();
     expect(visitId).toBeDefined();
-    expect(visitId?.value).toMatch(uuidMatcher);
+    expect(visitId?.value).toBeUuid();
   });
 
   test('visitId cookie has correct expiry', async ({ page, context }) => {
@@ -59,7 +57,7 @@ test.describe('Analytics cookies middleware', () => {
     await page.goto('/');
 
     let cookies = await context.cookies();
-    const oldVisitId = cookies.find((c) => c.name === 'visitId')?.value;
+    const oldVisitId = cookies.find((c) => c.name === 'catalyst.visitId')?.value;
 
     // Simulate expiry by clearing the visitId cookie
     await context.clearCookies();
@@ -67,7 +65,7 @@ test.describe('Analytics cookies middleware', () => {
 
     cookies = await context.cookies();
 
-    const newVisitId = cookies.find((c) => c.name === 'visitId')?.value;
+    const newVisitId = cookies.find((c) => c.name === 'catalyst.visitId')?.value;
 
     expect(newVisitId).toBeDefined();
     expect(newVisitId).not.toBe(oldVisitId);

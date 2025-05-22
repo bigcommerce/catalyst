@@ -1,11 +1,20 @@
 import { cookies } from 'next/headers';
 import { validate as isUuid, v4 as uuidv4 } from 'uuid';
 
-const VISITOR_COOKIE_NAME = 'visitorId';
-const VISIT_COOKIE_NAME = 'visitId';
+const VISITOR_COOKIE_NAME = 'catalyst.visitorId';
+const VISIT_COOKIE_NAME = 'catalyst.visitId';
 const VISITOR_DURATION = 400 * 24 * 60 * 60; // 400 days
 const VISIT_DURATION = 30 * 60; // 30 minutes
 
+interface VisitId {
+  id: string;
+  isNew: boolean;
+}
+
+/**
+ * Sets the visitorId cookie. If the cookie does not exist or is invalid, a new one is created.
+ * @returns {string} The visitorId
+ */
 export async function setVisitorIdCookie(): Promise<string> {
   const cookieStore = await cookies();
   let visitorId = cookieStore.get(VISITOR_COOKIE_NAME)?.value;
@@ -23,9 +32,11 @@ export async function setVisitorIdCookie(): Promise<string> {
   return visitorId;
 }
 
-export async function setVisitIdCookie(
-  onNewVisit?: (visitId: string) => Promise<void>,
-): Promise<string> {
+/**
+ * Sets the visitId cookie. If the cookie does not exist or is invalid, a new one is created.
+ * @returns {VisitId} An object containing the visitId and a boolean indicating if it's a new visit
+ */
+export async function setVisitIdCookie(): Promise<VisitId> {
   const cookieStore = await cookies();
   let visitId = cookieStore.get(VISIT_COOKIE_NAME)?.value;
   let isNew = false;
@@ -41,11 +52,10 @@ export async function setVisitIdCookie(
     });
   }
 
-  if (isNew && onNewVisit) {
-    await onNewVisit(visitId);
-  }
-
-  return visitId;
+  return {
+    id: visitId,
+    isNew,
+  };
 }
 
 export async function getVisitorId(): Promise<string | undefined> {

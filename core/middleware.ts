@@ -6,9 +6,9 @@ import { withIntl } from './middlewares/with-intl';
 import { withRoutes } from './middlewares/with-routes';
 
 export const middleware = composeMiddlewares(
-  withAnalyticsCookies,
   withAuth,
   withIntl,
+  withAnalyticsCookies,
   withChannelId,
   withRoutes,
 );
