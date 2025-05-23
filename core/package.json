@@ -1,5 +1,5 @@
 {
-  "name": "@bigcommerce/catalyst-core",
+  "name": "@bigcommerce/catalyst-makeswift",
   "description": "BigCommerce Catalyst is a Next.js starter kit for building headless BigCommerce storefronts.",
   "version": "1.0.0-rc",
   "private": true,

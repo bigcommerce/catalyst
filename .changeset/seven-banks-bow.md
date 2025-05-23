@@ -1,5 +1,5 @@
 ---
-"@bigcommerce/catalyst-core": patch
+"@bigcommerce/catalyst-makeswift": patch
 ---
 
 Fix: missing **Add-to-cart** feedback on `integrations/makeswift` branch:

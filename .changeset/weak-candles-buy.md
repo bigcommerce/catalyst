@@ -1,5 +1,5 @@
 ---
-"@bigcommerce/catalyst-core": patch
+"@bigcommerce/catalyst-makeswift": patch
 ---
 
 fix: flicker on rerendering `<ProductList />`

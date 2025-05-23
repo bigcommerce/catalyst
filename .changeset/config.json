@@ -11,7 +11,7 @@
     "version": true,
     "tag": true
   },
-  "baseBranch": "canary",
+  "baseBranch": "integrations/makeswift",
   "updateInternalDependencies": "patch",
   "ignore": []
 }
