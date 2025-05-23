@@ -1,3 +1,5 @@
+// Disabling the rule as this should be the only place where we import test and expect from Playwright
+// eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { expect as baseExpect, test as baseTest } from '@playwright/test';
 import { validate as isUuid } from 'uuid';
 
@@ -52,5 +54,3 @@ export const expect = baseExpect.extend({
     };
   },
 });
-
-export { type Page } from '@playwright/test';
