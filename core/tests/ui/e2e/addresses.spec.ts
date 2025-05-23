@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
+import { type Page } from '@playwright/test';
 
-import { expect, type Page, test } from '~/tests/fixtures';
+import { expect, test } from '~/tests/fixtures';
 
 const streetAddress: string = faker.location.streetAddress();
 const state: string = faker.location.state();

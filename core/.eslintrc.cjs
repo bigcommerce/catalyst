@@ -47,6 +47,11 @@ const config = {
             importNames: ['redirect', 'permanentRedirect', 'useRouter', 'usePathname'],
             message: 'Please import from `~/i18n/routing` instead.',
           },
+          {
+            name: '@playwright/test',
+            importNames: ['expect', 'test'],
+            message: 'Please import from `~/tests/fixtures` instead.',
+          },
         ],
       },
     ],
