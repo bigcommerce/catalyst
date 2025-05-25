@@ -81,7 +81,7 @@ export function ProductsListSection({
       {/**
        * CATEGORY FEATURED IMAGE
        */}
-      <div className="relative mx-auto flex h-[200px] w-full max-w-screen-2xl items-center justify-center overflow-hidden rounded-lg bg-contrast-100">
+      {/* <div className="relative mx-auto flex h-[200px] w-full max-w-screen-2xl items-center justify-center overflow-hidden rounded-lg bg-contrast-100">
         <Suspense
           fallback={
             <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
@@ -97,7 +97,7 @@ export function ProductsListSection({
             )}
           </Stream>
         </Suspense>
-      </div>
+      </div> */}
 
       <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
         <div>
