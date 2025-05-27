@@ -114,6 +114,7 @@ export default async function WishlistPage({ params, searchParams }: Props) {
         ]}
         shareCloseLabel={t('Modal.close')}
         shareCopiedMessage={t('shareCopied')}
+        shareCopyLabel={t('Modal.copy')}
         shareDisabledTooltip={t('shareDisabled')}
         shareLabel={t('share')}
         shareModalTitle={t('Modal.shareTitle', { name: wishlist.name })}
