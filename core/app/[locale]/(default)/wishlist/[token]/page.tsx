@@ -141,6 +141,7 @@ export default async function PublicWishlist({ params, searchParams }: Props) {
         <WishlistShareButton
           closeLabel={t('Modal.close')}
           copiedMessage={t('shareCopied')}
+          copyLabel={t('Modal.copy')}
           disabledTooltip={t('shareDisabled')}
           isMobileUser={Streamable.from(isMobileUser)}
           isPublic={wishlist.visibility.isPublic}

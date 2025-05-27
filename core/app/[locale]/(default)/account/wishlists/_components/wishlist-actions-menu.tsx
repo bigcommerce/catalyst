@@ -37,18 +37,19 @@ interface WishlistMenuAction extends WishlistActionBase {
 export type WishlistAction = WishlistModalAction | WishlistMenuAction;
 
 interface Props {
+  actionsTitle?: string;
   share?: {
     wishlistName: string;
     label: string;
     publicUrl: string;
     modalTitle: string;
-    modalCloseLabel: string;
     copiedMessage: string;
     isMobileUser: boolean;
     isPublic: boolean;
     successMessage: string;
     disabledTooltip: string;
     closeLabel: string;
+    copyLabel: string;
   };
   items: WishlistAction[];
 }
@@ -84,13 +85,19 @@ function getShareMenuItemProps(
     label: share.label,
     disabled: !share.isPublic,
     key,
-    modal: getShareWishlistModal(share.modalTitle, share.modalCloseLabel, share.publicUrl, () => {
-      void copyToClipboard(share.publicUrl);
-    }),
+    modal: getShareWishlistModal(
+      share.modalTitle,
+      share.copyLabel,
+      share.closeLabel,
+      share.publicUrl,
+      () => {
+        void copyToClipboard(share.publicUrl);
+      },
+    ),
   };
 }
 
-export const WishlistActionsMenu = ({ items, share }: Props) => {
+export const WishlistActionsMenu = ({ actionsTitle, items, share }: Props) => {
   const [state, dispatch] = useReducer(reducer, {});
   const shareModalKey = 'share-dropdown-modal';
   const getShareUrl = (publicUrl: string) => String(new URL(publicUrl, window.location.origin));
@@ -149,7 +156,9 @@ export const WishlistActionsMenu = ({ items, share }: Props) => {
           size="small"
           variant="tertiary"
         >
-          <EllipsisIcon size={20} />
+          <EllipsisIcon size={20}>
+            <title>{actionsTitle}</title>
+          </EllipsisIcon>
         </Button>
       </DropdownMenu>
       {modals.map(({ key, modal: { formAction: action, ...modalProps } }) => (

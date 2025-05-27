@@ -43,8 +43,10 @@ export default async function Login({ params, searchParams }: Props) {
       <ForceRefresh />
       <SignInSection
         action={login.bind(null, { redirectTo: redirectTarget })}
+        emailLabel={t('email')}
         forgotPasswordHref="/login/forgot-password"
         forgotPasswordLabel={t('forgotPassword')}
+        passwordLabel={t('password')}
         submitLabel={t('cta')}
         title={t('heading')}
       >

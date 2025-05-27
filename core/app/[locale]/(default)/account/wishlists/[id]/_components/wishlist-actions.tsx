@@ -16,6 +16,7 @@ interface Props {
   isMobileUser: Streamable<boolean>;
   shareLabel: string;
   shareCloseLabel: string;
+  shareCopyLabel: string;
   shareModalTitle: string;
   shareSuccessMessage: string;
   shareCopiedMessage: string;
@@ -28,6 +29,7 @@ export const WishlistActions = ({
   isMobileUser,
   shareLabel,
   shareCloseLabel,
+  shareCopyLabel,
   shareModalTitle,
   shareSuccessMessage,
   shareCopiedMessage,
@@ -47,6 +49,7 @@ export const WishlistActions = ({
             <WishlistShareButton
               closeLabel={shareCloseLabel}
               copiedMessage={shareCopiedMessage}
+              copyLabel={shareCopyLabel}
               disabledTooltip={shareDisabledTooltip}
               isMobileUser={isMobileUser}
               isPublic={wishlist.visibility.isPublic}
