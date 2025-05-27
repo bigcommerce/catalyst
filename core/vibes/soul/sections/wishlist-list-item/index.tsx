@@ -47,7 +47,10 @@ export const WishlistListItem = ({
         const { name, visibility, items, totalItems, href } = wishlist;
 
         return (
-          <div className={clsx('@container my-4 flex flex-col', className)}>
+          <div
+            className={clsx('@container my-4 flex flex-col', className)}
+            data-testid="wishlist-list-item"
+          >
             <div className="flex flex-1 flex-col justify-between @sm:flex-row @sm:items-center">
               <div className="flex flex-col">
                 <div className="flex items-center gap-2">

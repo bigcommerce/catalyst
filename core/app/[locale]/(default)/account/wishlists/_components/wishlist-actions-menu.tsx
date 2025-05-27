@@ -42,13 +42,13 @@ interface Props {
     label: string;
     publicUrl: string;
     modalTitle: string;
-    modalCloseLabel: string;
     copiedMessage: string;
     isMobileUser: boolean;
     isPublic: boolean;
     successMessage: string;
     disabledTooltip: string;
     closeLabel: string;
+    copyLabel: string;
   };
   items: WishlistAction[];
 }
@@ -84,9 +84,15 @@ function getShareMenuItemProps(
     label: share.label,
     disabled: !share.isPublic,
     key,
-    modal: getShareWishlistModal(share.modalTitle, share.modalCloseLabel, share.publicUrl, () => {
-      void copyToClipboard(share.publicUrl);
-    }),
+    modal: getShareWishlistModal(
+      share.modalTitle,
+      share.copyLabel,
+      share.closeLabel,
+      share.publicUrl,
+      () => {
+        void copyToClipboard(share.publicUrl);
+      },
+    ),
   };
 }
 
@@ -145,6 +151,7 @@ export const WishlistActionsMenu = ({ items, share }: Props) => {
       <DropdownMenu className="min-w-40" items={menuItems}>
         <Button
           className="data-[state=open]:after:translate-x-0"
+          data-testid="wishlist-actions-menu-button"
           shape="circle"
           size="small"
           variant="tertiary"

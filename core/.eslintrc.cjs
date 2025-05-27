@@ -61,6 +61,7 @@ const config = {
     'client/generated/**/*.ts',
     'playwright-report/**',
     'test-results/**',
+    '.tests/**',
     '**/google_analytics4.js',
   ],
 };

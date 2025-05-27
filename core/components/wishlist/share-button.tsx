@@ -25,6 +25,7 @@ interface Props {
   copiedMessage: string;
   disabledTooltip: string;
   closeLabel: string;
+  copyLabel: string;
   size?: ButtonProps['size'];
 }
 
@@ -39,6 +40,7 @@ export const WishlistShareButton = ({
   copiedMessage,
   disabledTooltip,
   closeLabel,
+  copyLabel,
   size = 'small',
 }: Props) => {
   const [open, setOpen] = useState(false);
@@ -100,7 +102,13 @@ export const WishlistShareButton = ({
               isOpen={open}
               setOpen={setOpen}
               trigger={ShareButton}
-              {...getShareWishlistModal(modalTitle, closeLabel, publicUrl, copyToClipboard)}
+              {...getShareWishlistModal(
+                modalTitle,
+                copyLabel,
+                closeLabel,
+                publicUrl,
+                copyToClipboard,
+              )}
             >
               <ShareWishlistModal publicUrl={publicUrl} />
             </Modal>

@@ -107,12 +107,12 @@ export default async function Wishlists({ params, searchParams }: Props) {
                       modalTitle: t('Modal.shareTitle', { name: wishlist.name }),
                       publicUrl: wishlist.publicUrl,
                       closeLabel: t('Modal.close'),
+                      copyLabel: t('Modal.copy'),
                       copiedMessage: t('shareCopied'),
                       disabledTooltip: t('shareDisabled'),
                       label: t('share'),
                       successMessage: t('shareSuccess'),
                       isPublic: wishlist.visibility.isPublic,
-                      modalCloseLabel: t('Modal.close'),
                       isMobileUser: isMobile,
                     }
                   : undefined
