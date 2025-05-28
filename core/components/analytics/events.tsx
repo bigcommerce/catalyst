@@ -5,7 +5,10 @@ interface EventsContext {
   onRemoveFromCart?: (formData?: FormData) => void;
 }
 
-const EventsContext = createContext<EventsContext | null>(null);
+const EventsContext = createContext<EventsContext>({
+  onAddToCart: undefined,
+  onRemoveFromCart: undefined,
+});
 
 export const EventsProvider = ({ children, ...props }: PropsWithChildren<EventsContext>) => {
   return <EventsContext.Provider value={props}>{children}</EventsContext.Provider>;
@@ -13,10 +16,6 @@ export const EventsProvider = ({ children, ...props }: PropsWithChildren<EventsC
 
 export const useEvents = () => {
   const context = useContext(EventsContext);
-
-  if (!context) {
-    throw new Error('useEvents must be used within a EventsProvider');
-  }
 
   return context;
 };
