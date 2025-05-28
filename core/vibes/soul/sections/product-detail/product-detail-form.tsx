@@ -12,7 +12,7 @@ import {
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
 import { ReactNode, startTransition, useActionState, useCallback, useEffect } from 'react';
-import { requestFormReset, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
@@ -31,6 +31,7 @@ import { toast } from '@/vibes/soul/primitives/toaster';
 import { useEvents } from '~/components/analytics/events';
 import { usePathname, useRouter } from '~/i18n/routing';
 
+import { revalidateCart } from './actions/revalidate-cart';
 import { Field, schema, SchemaRawShape } from './schema';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
@@ -109,9 +110,11 @@ export function ProductDetailForm<F extends Field>({
     if (lastResult?.status === 'success') {
       toast.success(successMessage);
 
-      // This is needed to refresh the Data Cache after the product has been added to the cart.
-      // The cart id is not picked up after the first time the cart is created/updated.
-      router.refresh();
+      startTransition(async () => {
+        // This is needed to refresh the Data Cache after the product has been added to the cart.
+        // The cart id is not picked up after the first time the cart is created/updated.
+        await revalidateCart();
+      });
     }
   }, [lastResult, successMessage, router]);
 
@@ -125,7 +128,6 @@ export function ProductDetailForm<F extends Field>({
       event.preventDefault();
 
       startTransition(() => {
-        requestFormReset(event.currentTarget);
         formAction(formData);
 
         events.onAddToCart?.(formData);
