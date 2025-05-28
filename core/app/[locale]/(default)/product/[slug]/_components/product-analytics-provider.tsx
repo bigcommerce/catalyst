@@ -24,7 +24,7 @@ export function ProductAnalyticsProvider(
   props: PropsWithChildren<{ data: Streamable<AddToCartContext> }>,
 ) {
   return (
-    <Suspense fallback={<div />}>
+    <Suspense fallback={props.children}>
       <ProductAnalyticsProviderResolved {...props} />
     </Suspense>
   );
