@@ -20,7 +20,7 @@ export const SearchParamsRouterRefresh = ({
 
   useEffect(() => {
     if (!paramsAreEqual) {
-      router.refresh();
+      // router.refresh();
     }
   }, [router, paramsAreEqual]);
 
