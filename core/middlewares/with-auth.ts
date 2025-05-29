@@ -1,6 +1,6 @@
 import { NextResponse, URLPattern } from 'next/server';
 
-import { auth, signIn } from '~/auth';
+import { anonymousSignIn, auth, clearAnonymousSession, getAnonymousSession } from '~/auth';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
@@ -15,12 +15,21 @@ export const withAuth: MiddlewareFactory = (next) => {
   return async (request, event) => {
     // @ts-expect-error: The `auth` function doesn't have the correct type to support it as a MiddlewareFactory.
     const authWithCallback = auth(async (req) => {
+      const anonymousSession = await getAnonymousSession();
       const isProtectedRoute = protectedPathPattern.test(req.nextUrl.toString().toLowerCase());
       const isGetRequest = req.method === 'GET';
 
-      if (!req.auth) {
-        await signIn('anonymous', { redirect: false });
+      // Create the anonymous session if it doesn't exist
+      if (!req.auth && !anonymousSession) {
+        await anonymousSignIn();
+      }
 
+      // If the user is authenticated and there is an anonymous session, clear the anonymous session
+      if (req.auth && anonymousSession) {
+        await clearAnonymousSession();
+      }
+
+      if (!req.auth) {
         if (isProtectedRoute && isGetRequest) {
           return redirectToLogin(req.url);
         }

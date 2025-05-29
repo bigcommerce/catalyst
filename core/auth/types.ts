@@ -1,8 +1,8 @@
-import { DefaultSession } from 'next-auth';
+import { User } from 'next-auth';
 
 declare module 'next-auth' {
   interface Session {
-    user?: DefaultSession['user'];
+    user?: User;
   }
 
   interface User {
@@ -12,11 +12,15 @@ declare module 'next-auth' {
     customerAccessToken?: string;
     impersonatorId?: string | null;
   }
+
+  interface AnonymousUser {
+    cartId?: string | null;
+  }
 }
 
 declare module 'next-auth/jwt' {
   interface JWT {
     id?: string;
-    user?: DefaultSession['user'];
+    user?: User;
   }
 }
