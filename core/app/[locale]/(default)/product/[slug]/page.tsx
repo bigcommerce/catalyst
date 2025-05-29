@@ -85,6 +85,9 @@ export default async function Product(props: Props) {
   const streamableProduct = Streamable.from(async () => {
     const options = await props.searchParams;
 
+    // eslint-disable-next-line no-console
+    console.log('search params', options);
+
     const optionValueIds = Object.keys(options)
       .map((option) => ({
         optionEntityId: Number(option),
