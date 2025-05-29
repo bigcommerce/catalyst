@@ -33,6 +33,10 @@ const CompareParamsSchema = z.object({
 const getProducts = cache(async (productIds: number[] = []): Promise<CompareProduct[]> => {
   const t = await getTranslations('Compare');
 
+  if (productIds.length === 0) {
+    return [];
+  }
+
   const products = await getCompareData(productIds);
   const format = await getFormatter();
 
