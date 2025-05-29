@@ -13,7 +13,6 @@ Previously, the pages would 404 which is misleading.
 ### Migration
 
 1. Copy all changes from the `/core/client` directory and the `/packages/client` directory
-2. Copy logic from withAuth middleware to handle the `?invalidate-session` query param
 3. Copy translation values
 4. Copy all changes from the `/core/app/[locale]/(default)/account/` directory server actions
 5. Copy all changes from the `/core/app/[locale]/(default)/checkout/route.ts` file
