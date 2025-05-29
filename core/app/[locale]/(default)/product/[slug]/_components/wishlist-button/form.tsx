@@ -4,7 +4,7 @@ import { SearchParams } from 'nuqs';
 import { Streamable } from '@/vibes/soul/lib/streamable';
 
 import { wishlistAction } from '../../_actions/wishlist-action';
-import { SearchParamsRouterRefresh } from '../search-params-router-refresh';
+// import { SearchParamsRouterRefresh } from '../search-params-router-refresh';
 
 import { AddToNewWishlistModal } from './add-to-new-wishlist-modal';
 
@@ -30,7 +30,7 @@ export const WishlistButtonForm = async ({
 
   return (
     <>
-      <SearchParamsRouterRefresh searchParamsServer={await searchParams} />
+      {/* <SearchParamsRouterRefresh searchParamsServer={await searchParams} /> */}
       <form action={wishlistAction} id={formId}>
         <input name="productId" type="hidden" value={productId} />
         <input name="selectedSku" type="hidden" value={sku} />
