@@ -5,7 +5,7 @@ import { auth, signIn, signOut } from '~/auth';
 import { type MiddlewareFactory } from './compose-middlewares';
 
 // Path matcher for any routes that require authentication
-const protectedPathPattern = new URLPattern({ pathname: '/(account)/*' });
+const protectedPathPattern = new URLPattern({ pathname: `{/:locale}?/(account)/*` });
 const sessionInvalidateParam = 'invalidate-session';
 
 function redirectToLogin(url: string) {
