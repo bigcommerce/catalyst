@@ -2,142 +2,93 @@
 
 @plugin 'tailwindcss-radix';
 @plugin 'tailwindcss-animate';
-@plugin '@tailwindcss/container-queries';
 @plugin '@tailwindcss/typography';
 
-@source './app/**/*.{ts,tsx}';
-@source './components/**/*.{ts,tsx}';
-@source './vibes/**/*.{ts,tsx}';
-
-@layer utilities {
-  .prose {
-    :where(h1):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: hsl(var(--foreground));
-      font-family: var(--font-family-heading);
-    }
-
-    :where(h2):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: hsl(var(--foreground));
-      font-family: var(--font-family-heading);
-    }
-
-    :where(h3):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: hsl(var(--foreground));
-      font-family: var(--font-family-heading);
-    }
-
-    :where(h4):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: hsl(var(--foreground));
-      font-family: var(--font-family-heading);
-    }
-
-    :where(h5):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: hsl(var(--foreground));
-      font-family: var(--font-family-heading);
-    }
-
-    :where(h6):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: hsl(var(--foreground));
-      font-family: var(--font-family-heading);
-    }
-
-    :where(p):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: hsl(var(--foreground));
-      font-family: var(--font-family-body);
-    }
-
-    :where(a):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: color-mix(in oklab, hsl(var(--primary)), black 15%);
-      text-decoration: none;
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-
-    :where(ul):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: hsl(var(--contrast-500));
-      font-family: var(--font-family-body);
-    }
-
-    :where(ol):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: hsl(var(--contrast-500));
-      font-family: var(--font-family-body);
-    }
-
-    :where(strong):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      font-weight: 600;
-    }
-
-    :where(blockquote):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      border-left-color: hsl(var(--contrast-300));
-
-      p {
-        color: hsl(var(--contrast-500));
-        font-style: normal;
-        font-weight: 400;
-      }
-    }
-
-    :where(code):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: hsl(var(--contrast-500));
-      font-family: var(--font-family-mono);
-    }
-
-    :where(pre):not(:where([class~="not-prose"],[class~="not-prose"] *)) {
-      color: hsl(var(--background));
-      background-color: hsl(var(--foreground));
-      font-family: var(--font-family-mono);
-    }
-  }
-}
-
-@theme {
+@theme inline {
   --color-primary: hsl(var(--primary));
-  --color-primary-highlight: color-mix(in oklab, hsl(var(--primary)), white 75%);
-  --color-primary-shadow: color-mix(in oklab, hsl(var(--primary)), black 75%);
+  --color-primary-highlight: var(--primary-highlight);
+  --color-primary-shadow: var(--primary-shadow);
 
   --color-accent: hsl(var(--accent));
-  --color-accent-highlight: color-mix(in oklab, hsl(var(--accent)), white 75%);
-  --color-accent-shadow: color-mix(in oklab, hsl(var(--accent)), black 75%);
+  --color-accent-highlight: var(--accent-highlight);
+  --color-accent-shadow: var(--accent-shadow);
 
   --color-success: hsl(var(--success));
-  --color-success-highlight: color-mix(in oklab, hsl(var(--success)), white 75%);
-  --color-success-shadow: color-mix(in oklab, hsl(var(--success)), black 75%);
+  --color-success-highlight: var(--success-highlight);
+  --color-success-shadow: var(--success-shadow);
 
   --color-error: hsl(var(--error));
-  --color-error-highlight: color-mix(in oklab, hsl(var(--error)), white 75%);
-  --color-error-shadow: color-mix(in oklab, hsl(var(--error)), black 75%);
+  --color-error-highlight: var(--error-highlight);
+  --color-error-shadow: var(--error-shadow);
 
   --color-warning: hsl(var(--warning));
-  --color-warning-highlight: color-mix(in oklab, hsl(var(--warning)), white 75%);
-  --color-warning-shadow: color-mix(in oklab, hsl(var(--warning)), black 75%);
+  --color-warning-highlight: var(--warning-highlight);
+  --color-warning-shadow: var(--warning-shadow);
 
   --color-info: hsl(var(--info));
-  --color-info-highlight: color-mix(in oklab, hsl(var(--info)), white 75%);
-  --color-info-shadow: color-mix(in oklab, hsl(var(--info)), black 75%);
+  --color-info-highlight: var(--info-highlight);
+  --color-info-shadow: var(--info-shadow);
 
   --color-foreground: hsl(var(--foreground));
   --color-background: hsl(var(--background));
+
   --color-contrast-100: hsl(var(--contrast-100));
   --color-contrast-200: hsl(var(--contrast-200));
   --color-contrast-300: hsl(var(--contrast-300));
   --color-contrast-400: hsl(var(--contrast-400));
   --color-contrast-500: hsl(var(--contrast-500));
 
-  --text-xs: var(--font-size-xs, 0.75rem);
-  --text-sm: var(--font-size-sm, 0.875rem);
-  --text-base: var(--font-size-base, 1rem);
-  --text-lg: var(--font-size-lg, 1.125rem);
-  --text-xl: var(--font-size-xl, 1.25rem);
-  --text-2xl: var(--font-size-2xl, 1.5rem);
-  --text-3xl: var(--font-size-3xl, 1.875rem);
-  --text-4xl: var(--font-size-4xl, 2.25rem);
-  --text-5xl: var(--font-size-5xl, 3rem);
-  --text-6xl: var(--font-size-6xl, 3.75rem);
-  --text-7xl: var(--font-size-7xl, 4.5rem);
-  --text-8xl: var(--font-size-8xl, 6rem);
-  --text-9xl: var(--font-size-9xl, 8rem);
+  --text-xs: var(--font-size-xs);
+  --text-xs--line-height: var(--font-size-xs-line-height);
+  --text-xs--letter-spacing: var(--font-size-xs-letter-spacing);
+
+  --text-sm: var(--font-size-sm);
+  --text-sm-line-height: var(--font-size-sm-line-height);
+  --text-sm-letter-spacing: var(--font-size-sm-letter-spacing);
+
+  --text-base: var(--font-size-base);
+  --text-base--line-height: var(--font-size-base-line-height);
+  --text-base--letter-spacing: var(--font-size-base-letter-spacing);
+
+  --text-lg: var(--font-size-lg);
+  --text-lg--line-height: var(--font-size-lg-line-height);
+  --text-lg--letter-spacing: var(--font-size-lg-letter-spacing);
+
+  --text-xl: var(--font-size-xl);
+  --text-xl--line-height: var(--font-size-xl-line-height);
+  --text-xl--letter-spacing: var(--font-size-xl-letter-spacing);
+
+  --text-2xl: var(--font-size-2xl);
+  --text-2xl--line-height: var(--font-size-2xl-line-height);
+  --text-2xl--letter-spacing: var(--font-size-2xl-letter-spacing);
+
+  --text-3xl: var(--font-size-3xl);
+  --text-3xl--line-height: var(--font-size-3xl-line-height);
+  --text-3xl--letter-spacing: var(--font-size-3xl-letter-spacing);
+
+  --text-4xl: var(--font-size-4xl);
+  --text-4xl--line-height: var(--font-size-4xl-line-height);
+  --text-4xl--letter-spacing: var(--font-size-4xl-letter-spacing);
+
+  --text-5xl: var(--font-size-5xl);
+  --text-5xl--line-height: var(--font-size-5xl-line-height);
+  --text-5xl--letter-spacing: var(--font-size-5xl-letter-spacing);
+
+  --text-6xl: var(--font-size-6xl);
+  --text-6xl--line-height: var(--font-size-6xl-line-height);
+  --text-6xl--letter-spacing: var(--font-size-6xl-letter-spacing);
+
+  --text-7xl: var(--font-size-7xl);
+  --text-7xl--line-height: var(--font-size-7xl-line-height);
+  --text-7xl--letter-spacing: var(--font-size-7xl-letter-spacing);
+
+  --text-8xl: var(--font-size-8xl);
+  --text-8xl--line-height: var(--font-size-8xl-line-height);
+  --text-8xl--letter-spacing: var(--font-size-8xl-letter-spacing);
+
+  --text-9xl: var(--font-size-9xl);
+  --text-9xl--line-height: var(--font-size-9xl-line-height);
+  --text-9xl--letter-spacing: var(--font-size-9xl-letter-spacing);
 
   --shadow-xs: var(--shadow-xs);
   --shadow-sm: var(--shadow-sm);
@@ -146,16 +97,16 @@
   --shadow-xl: var(--shadow-xl);
 
   --font-heading: var(--font-family-heading);
-  --font-heading-font-feature-settings: var(--font-feature-settings-heading);
-  --font-heading-font-variation-settings: var(--font-variation-settings-heading);
+  --font-heading--font-feature-settings: var(--font-feature-settings-heading);
+  --font-heading--font-variation-settings: var(--font-variation-settings-heading);
 
   --font-body: var(--font-family-body);
-  --font-body-font-feature-settings: var(--font-feature-settings-body);
-  --font-body-font-variation-settings: var(--font-variation-settings-body);
+  --font-body--font-feature-settings: var(--font-feature-settings-body);
+  --font-body--font-variation-settings: var(--font-variation-settings-body);
 
   --font-mono: var(--font-family-mono);
-  --font-mono-font-feature-settings: var(--font-feature-settings-mono);
-  --font-mono-font-variation-settings: var(--font-variation-settings-mono);
+  --font-mono--font-feature-settings: var(--font-feature-settings-mono);
+  --font-mono--font-variation-settings: var(--font-variation-settings-mono);
 
   --animate-collapse: collapse 400ms cubic-bezier(1, 0, 0.25, 1);
   --animate-expand: expand 400ms cubic-bezier(1, 0, 0.25, 1);
@@ -260,7 +211,6 @@
   }
 
   @keyframes shake {
-
     10%,
     90% {
       transform: translate3d(-1px, 0, 0);
@@ -294,31 +244,170 @@
   }
 }
 
-:root {
-  --primary: 96 100% 68%;
-  --accent: 96 100% 88%;
-  --background: 0 0% 100%;
-  --foreground: 0 0% 7%;
-  --success: 116 78% 65%;
-  --error: 0 100% 60%;
-  --warning: 40 100% 60%;
-  --info: 220 70% 45%;
-  --contrast-100: 0 0% 93%;
-  --contrast-200: 0 0% 82%;
-  --contrast-300: 0 0% 70%;
-  --contrast-400: 0 0% 54%;
-  --contrast-500: 0 0% 34%;
-  --font-variation-settings-body: 'slnt' 0;
-  --font-variation-settings-heading: 'slnt' 0;
-  --font-size-xs: 0.75rem;
-  --font-size-sm: 0.875rem;
-  --font-size-base: 1rem;
-  --font-size-lg: 1.125rem;
-  --font-size-xl: 1.25rem;
-  --font-size-2xl: 1.5rem;
-  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
-  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
-  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+@layer utilities {
+  .prose {
+    :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: var(--foreground);
+      font-family: var(--font-family-heading);
+    }
+
+    :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: var(--foreground);
+      font-family: var(--font-family-heading);
+    }
+
+    :where(h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: var(--foreground);
+      font-family: var(--font-family-heading);
+    }
+
+    :where(h4):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: var(--foreground);
+      font-family: var(--font-family-heading);
+    }
+
+    :where(h5):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: var(--foreground);
+      font-family: var(--font-family-heading);
+    }
+
+    :where(h6):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: var(--foreground);
+      font-family: var(--font-family-heading);
+    }
+
+    :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: var(--foreground);
+      font-family: var(--font-family-body);
+    }
+
+    :where(a):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: color-mix(in oklab, var(--primary), black 15%);
+      text-decoration: none;
+
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+
+    :where(ul):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: var(--contrast-500);
+      font-family: var(--font-family-body);
+    }
+
+    :where(ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: var(--contrast-500);
+      font-family: var(--font-family-body);
+    }
+
+    :where(strong):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      font-weight: 600;
+    }
+
+    :where(blockquote):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      border-left-color: var(--contrast-300);
+
+      p {
+        color: var(--contrast-500);
+        font-style: normal;
+        font-weight: 400;
+      }
+    }
+
+    :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: var(--contrast-500);
+      font-family: var(--font-family-mono);
+    }
+
+    :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+      color: var(--background);
+      background-color: var(--foreground);
+      font-family: var(--font-family-mono);
+    }
+  }
+}
+
+@layer base {
+  :root {
+    --primary: 96 100% 68%;
+    --primary-highlight: color-mix(in oklab, hsl(var(--primary)), white 75%);
+    --primary-shadow: color-mix(in oklab, hsl(var(--primary)), black 75%);
+    --accent: 96 100% 88%;
+    --accent-highlight: color-mix(in oklab, var(--accent), white 75%);
+    --accent-shadow: color-mix(in oklab, var(--accent), black 75%);
+    --success: 116 78% 65%;
+    --success-highlight: color-mix(in oklab, var(--success), white 75%);
+    --success-shadow: color-mix(in oklab, var(--success), black 75%);
+    --error: 0 100% 60%;
+    --error-highlight: color-mix(in oklab, var(--error), white 75%);
+    --error-shadow: color-mix(in oklab, var(--error), black 75%);
+    --warning: 40 100% 60%;
+    --warning-highlight: color-mix(in oklab, var(--warning), white 75%);
+    --warning-shadow: color-mix(in oklab, var(--warning), black 75%);
+    --info: 220 70% 45%;
+    --info-highlight: color-mix(in oklab, var(--info), white 75%);
+    --info-shadow: color-mix(in oklab, var(--info), black 75%);
+    --background: 0 0% 100%;
+    --foreground: 0 0% 7%;
+    --contrast-100: 0 0% 93%;
+    --contrast-200: 0 0% 82%;
+    --contrast-300: 0 0% 70%;
+    --contrast-400: 0 0% 54%;
+    --contrast-500: 0 0% 34%;
+    --font-variation-settings-heading: 'slnt' 0;
+    --font-feature-settings-heading: normal;
+    --font-variation-settings-body: 'slnt' 0;
+    --font-feature-settings-body: normal;
+    --font-variation-settings-mono: 'slnt' 0;
+    --font-feature-settings-mono: normal;
+    --font-size-xs: 0.75rem;
+    --font-size-xs-line-height: calc(1.25 / 0.75);
+    --font-size-xs-letter-spacing: 0;
+    --font-size-sm: 0.875rem;
+    --font-size-sm-line-height: calc(1.5 / 0.875);
+    --font-size-sm-letter-spacing: 0;
+    --font-size-base: 1rem;
+    --font-size-base-line-height: calc(1.5 / 1);
+    --font-size-base-letter-spacing: -0.01em;
+    --font-size-lg: 1.125rem;
+    --font-size-lg-line-height: calc(1.75 / 1.125);
+    --font-size-lg-letter-spacing: -0.01em;
+    --font-size-xl: 1.25rem;
+    --font-size-xl-line-height: calc(1.75 / 1.25);
+    --font-size-xl-letter-spacing: -0.01em;
+    --font-size-2xl: 1.5rem;
+    --font-size-2xl-line-height: calc(1.75 / 1.5);
+    --font-size-2xl-letter-spacing: -0.01em;
+    --font-size-3xl: 1.875rem;
+    --font-size-3xl-line-height: calc(2 / 1.875);
+    --font-size-3xl-letter-spacing: -0.01em;
+    --font-size-4xl: 2.5rem;
+    --font-size-4xl-line-height: calc(2.75 / 2.5);
+    --font-size-4xl-letter-spacing: -0.02em;
+    --font-size-5xl: 3rem;
+    --font-size-5xl-line-height: 1;
+    --font-size-5xl-letter-spacing: -0.02em;
+    --font-size-6xl: 3.75rem;
+    --font-size-6xl-line-height: 1;
+    --font-size-6xl-letter-spacing: -0.02em;
+    --font-size-7xl: 4.5rem;
+    --font-size-7xl-line-height: 1;
+    --font-size-7xl-letter-spacing: -0.04em;
+    --font-size-8xl: 6rem;
+    --font-size-8xl-line-height: 1;
+    --font-size-8xl-letter-spacing: -0.04em;
+    --font-size-9xl: 7rem;
+    --font-size-9xl-line-height: 1;
+    --font-size-9xl-letter-spacing: -0.04em;
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  }
+
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
 }
