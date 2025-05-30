@@ -178,61 +178,71 @@
             "newPassword": "Nouveau mot de passe",
             "confirmPassword": "Confirmer le mot de passe",
             "cta": "Mettre à jour"
+        }
+    },
+    "Wishlist": {
+        "title": "Listes d'envies",
+        "new": "Nouvelle liste d'envies",
+        "items": "{count, plural, =1 {1 article} other {# articles}}",
+        "viewWishlist": "Afficher la liste",
+        "noWishlists": "Vous n'avez pas de listes d'envies",
+        "noWishlistsSubtitle": "Créez une liste d'envies pour sauvegarder vos produits préférés.",
+        "noWishlistsCallToAction": "Créer une liste d'envies",
+        "emptyWishlist": "Vous n’avez pas ajouté de produits à cette liste d'envies.",
+        "share": "Partager",
+        "shareSuccess": "La liste d'envies a été partagée avec succès.",
+        "shareCopied": "L'URL publique de la liste d'envies a été copiée dans le presse-papier.",
+        "shareDisabled": "Votre liste de souhaits doit être publique pour pouvoir être partagée.",
+        "makePublic": "Rendre public",
+        "makePrivate": "Rendre privé",
+        "rename": "Renommer",
+        "delete": "Supprimer",
+        "Visibility": {
+            "public": "Publique",
+            "private": "Privé"
         },
-        "Wishlists": {
-            "title": "Listes d'envies",
-            "new": "Nouvelle liste d'envies",
-            "items": "{count, plural, =1 {1 article} other {# articles}}",
-            "viewWishlist": "Afficher la liste",
-            "noWishlists": "Vous n'avez pas de listes d'envies",
-            "noWishlistsSubtitle": "Créez une liste d'envies pour sauvegarder vos produits préférés.",
-            "noWishlistsCallToAction": "Créer une liste d'envies",
-            "emptyWishlist": "Vous n’avez pas ajouté de produits à cette liste d'envies.",
-            "share": "Partager",
-            "shareSuccess": "La liste d'envies a été partagée avec succès.",
-            "shareCopied": "L'URL publique de la liste d'envies a été copiée dans le presse-papier.",
-            "shareDisabled": "Votre liste de souhaits doit être publique pour pouvoir être partagée.",
-            "makePublic": "Rendre public",
-            "makePrivate": "Rendre privé",
-            "rename": "Renommer",
+        "Modal": {
+            "cancel": "Annuler",
+            "close": "Fermer",
+            "copy": "Copier",
+            "create": "Créer",
+            "save": "Enregistrer",
             "delete": "Supprimer",
-            "Visibility": {
-                "public": "Publique",
-                "private": "Privé"
-            },
-            "Modal": {
-                "cancel": "Annuler",
-                "close": "Fermer",
-                "copy": "Copier",
-                "create": "Créer",
-                "save": "Enregistrer",
-                "delete": "Supprimer",
-                "newTitle": "Créer une nouvelle liste d’envies",
-                "shareTitle": "Partager {name}",
-                "renameTitle": "Renommer {name}",
-                "deleteTitle": "Supprimer {name}",
-                "changeVisibilityPublicTitle": "Rendre {name} publique ?",
-                "changeVisibilityPrivateTitle": "Rendre {name} privé ?",
-                "makePublicContent": "Voulez-vous vraiment rendre la liste <bold>{name}</bold> publique ? Vous permettrez ainsi aux personnes disposant du lien d'accéder à votre liste d'envies.",
-                "makePrivateContent": "Voulez-vous vraiment rendre la liste <bold>{name}</bold> privée ? Si vous avez partagé votre liste d'envies avec d'autres personnes, celles-ci ne pourront plus la voir.",
-                "deleteContent": "Voulez-vous vraiment supprimer <bold>{name}</bold> ? Cette action ne peut pas être annulée."
-            },
-            "Form": {
-                "nameLabel": "Nom"
-            },
+            "newTitle": "Créer une nouvelle liste d’envies",
+            "shareTitle": "Partager {name}",
+            "renameTitle": "Renommer {name}",
+            "deleteTitle": "Supprimer {name}",
+            "changeVisibilityPublicTitle": "Rendre {name} publique ?",
+            "changeVisibilityPrivateTitle": "Rendre {name} privé ?",
+            "makePublicContent": "Voulez-vous vraiment rendre la liste <bold>{name}</bold> publique ? Vous permettrez ainsi aux personnes disposant du lien d'accéder à votre liste d'envies.",
+            "makePrivateContent": "Voulez-vous vraiment rendre la liste <bold>{name}</bold> privée ? Si vous avez partagé votre liste d'envies avec d'autres personnes, celles-ci ne pourront plus la voir.",
+            "deleteContent": "Voulez-vous vraiment supprimer <bold>{name}</bold> ? Cette action ne peut pas être annulée."
+        },
+        "Form": {
+            "nameLabel": "Nom"
+        },
+        "Errors": {
+            "nameRequired": "Votre liste d'envies doit avoir un nom.",
+            "updateFailed": "Impossible de mettre à jour votre liste d'envies. Veuillez réessayer.",
+            "deleteFailed": "Échec de la suppression de votre liste d'envies. Veuillez réessayer.",
+            "removeProductFailed": "Impossible de retirer le produit de votre liste d'envies. Veuillez réessayer.",
+            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
+            "unexpected": "An unexpected error occurred, please try again"
+        },
+        "Result": {
+            "createSuccess": "La liste d'envies a été créée avec succès.",
+            "updateSuccess": "La liste d'envies a bien été mise à jour.",
+            "deleteSuccess": "La liste d'envies a bien été supprimée.",
+            "removeItemSuccess": "L'article a été supprimé de votre liste d'envies."
+        },
+        "Button": {
+            "addToNewWishlist": "Add to new wish list",
+            "defaultWishlistName": "My wish list",
+            "addSuccessMessage": "Product has been added to your wish list",
+            "removeSuccessMessage": "Product has been removed from your wish list",
             "Errors": {
-                "nameRequired": "Votre liste d'envies doit avoir un nom.",
-                "updateFailed": "Impossible de mettre à jour votre liste d'envies. Veuillez réessayer.",
-                "deleteFailed": "Échec de la suppression de votre liste d'envies. Veuillez réessayer.",
-                "removeProductFailed": "Impossible de retirer le produit de votre liste d'envies. Veuillez réessayer.",
-                "unauthorized": "Vous n'êtes pas autorisé(e) à effectuer cette action. Veuillez vous connecter et réessayer.",
-                "unexpected": "Une erreur inattendue s'est produite. Veuillez réessayer."
-            },
-            "Result": {
-                "createSuccess": "La liste d'envies a été créée avec succès.",
-                "updateSuccess": "La liste d'envies a bien été mise à jour.",
-                "deleteSuccess": "La liste d'envies a bien été supprimée.",
-                "removeItemSuccess": "L'article a été supprimé de votre liste d'envies."
+                "addProductFailed": "Failed to add the product from your wish list, please try again",
+                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
             }
         },
         "Wishlists": {

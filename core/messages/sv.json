@@ -178,61 +178,71 @@
             "newPassword": "Nytt lösenord",
             "confirmPassword": "Bekräfta lösenord",
             "cta": "Uppdatering"
+        }
+    },
+    "Wishlist": {
+        "title": "Önskelistor",
+        "new": "Ny önskelista",
+        "items": "{count, plural, =1 {1 objekt} other {# objekt}}",
+        "viewWishlist": "Visa lista",
+        "noWishlists": "Du har inga önskelistor",
+        "noWishlistsSubtitle": "Skapa en önskelista för att spara dina favoritprodukter.",
+        "noWishlistsCallToAction": "Skapa en önskelista",
+        "emptyWishlist": "Du har inte lagt till några produkter på den här önskelistan.",
+        "share": "Dela med sig",
+        "shareSuccess": "Önskelistan har delats.",
+        "shareCopied": "Önskelistans offentliga URL har kopierats till urklipp.",
+        "shareDisabled": "Din önskelista måste vara offentlig för att kunna delas.",
+        "makePublic": "Gör offentlig",
+        "makePrivate": "Gör privat",
+        "rename": "Döp om",
+        "delete": "Radera",
+        "Visibility": {
+            "public": "Offentlig",
+            "private": "Privat"
         },
-        "Wishlists": {
-            "title": "Önskelistor",
-            "new": "Ny önskelista",
-            "items": "{count, plural, =1 {1 objekt} other {# objekt}}",
-            "viewWishlist": "Visa lista",
-            "noWishlists": "Du har inga önskelistor",
-            "noWishlistsSubtitle": "Skapa en önskelista för att spara dina favoritprodukter.",
-            "noWishlistsCallToAction": "Skapa en önskelista",
-            "emptyWishlist": "Du har inte lagt till några produkter på den här önskelistan.",
-            "share": "Dela med sig",
-            "shareSuccess": "Önskelistan har delats.",
-            "shareCopied": "Önskelistans offentliga URL har kopierats till urklipp.",
-            "shareDisabled": "Din önskelista måste vara offentlig för att kunna delas.",
-            "makePublic": "Gör offentlig",
-            "makePrivate": "Gör privat",
-            "rename": "Döp om",
+        "Modal": {
+            "cancel": "Annullera",
+            "close": "Stäng",
+            "copy": "Kopiera",
+            "create": "skapa",
+            "save": "Spara",
             "delete": "Radera",
-            "Visibility": {
-                "public": "Offentlig",
-                "private": "Privat"
-            },
-            "Modal": {
-                "cancel": "Annullera",
-                "close": "Stäng",
-                "copy": "Kopiera",
-                "create": "skapa",
-                "save": "Spara",
-                "delete": "Radera",
-                "newTitle": "Skapa en ny önskelista",
-                "shareTitle": "Dela {name}",
-                "renameTitle": "Byt namn på {name}",
-                "deleteTitle": "Radera {name}",
-                "changeVisibilityPublicTitle": "Vill du göra {name} offentlig?",
-                "changeVisibilityPrivateTitle": "Vill du göra {name} privat?",
-                "makePublicContent": "Är du säker på att du vill göra <bold>{name}</bold> offentlig? Då kommer andra att kunna se din önskelista om de har länken.",
-                "makePrivateContent": "Är du säker på att du vill göra <bold>{name}</bold> privat? Om du har delat din önskelista med andra kommer de inte längre att kunna se den.",
-                "deleteContent": "Är du säker på att du vill radera <bold>{name}</bold>? Denna åtgärd kan inte ångras."
-            },
-            "Form": {
-                "nameLabel": "Namn"
-            },
+            "newTitle": "Skapa en ny önskelista",
+            "shareTitle": "Dela {name}",
+            "renameTitle": "Byt namn på {name}",
+            "deleteTitle": "Radera {name}",
+            "changeVisibilityPublicTitle": "Vill du göra {name} offentlig?",
+            "changeVisibilityPrivateTitle": "Vill du göra {name} privat?",
+            "makePublicContent": "Är du säker på att du vill göra <bold>{name}</bold> offentlig? Då kommer andra att kunna se din önskelista om de har länken.",
+            "makePrivateContent": "Är du säker på att du vill göra <bold>{name}</bold> privat? Om du har delat din önskelista med andra kommer de inte längre att kunna se den.",
+            "deleteContent": "Är du säker på att du vill radera <bold>{name}</bold>? Denna åtgärd kan inte ångras."
+        },
+        "Form": {
+            "nameLabel": "Namn"
+        },
+        "Errors": {
+            "nameRequired": "Namnet på önskelistan får inte vara tomt.",
+            "updateFailed": "Det gick inte att uppdatera din önskelista. Försök igen.",
+            "deleteFailed": "Det gick inte att radera din önskelista. Försök igen.",
+            "removeProductFailed": "Det gick inte att ta bort produkten från din önskelista. Försök igen.",
+            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
+            "unexpected": "An unexpected error occurred, please try again"
+        },
+        "Result": {
+            "createSuccess": "Önskelistan har skapats.",
+            "updateSuccess": "Önskelistan har uppdaterats.",
+            "deleteSuccess": "Önskelistan har tagits bort.",
+            "removeItemSuccess": "Objektet har tagits bort från din önskelista."
+        },
+        "Button": {
+            "addToNewWishlist": "Add to new wish list",
+            "defaultWishlistName": "My wish list",
+            "addSuccessMessage": "Product has been added to your wish list",
+            "removeSuccessMessage": "Product has been removed from your wish list",
             "Errors": {
-                "nameRequired": "Namnet på önskelistan får inte vara tomt.",
-                "updateFailed": "Det gick inte att uppdatera din önskelista. Försök igen.",
-                "deleteFailed": "Det gick inte att radera din önskelista. Försök igen.",
-                "removeProductFailed": "Det gick inte att ta bort produkten från din önskelista. Försök igen.",
-                "unauthorized": "Du har inte behörighet att utföra den här åtgärden. Logga in och försök igen.",
-                "unexpected": "Ett oväntat fel inträffade. Försök igen."
-            },
-            "Result": {
-                "createSuccess": "Önskelistan har skapats.",
-                "updateSuccess": "Önskelistan har uppdaterats.",
-                "deleteSuccess": "Önskelistan har tagits bort.",
-                "removeItemSuccess": "Objektet har tagits bort från din önskelista."
+                "addProductFailed": "Failed to add the product from your wish list, please try again",
+                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
             }
         },
         "Wishlists": {

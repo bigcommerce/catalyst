@@ -2,10 +2,13 @@ import { SwitchSkeleton } from '@/vibes/soul/form/switch';
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Wishlist } from '@/vibes/soul/sections/wishlist-details';
+import {
+  WishlistShareButton,
+  WishlistShareButtonSkeleton,
+} from '~/components/wishlist/share-button';
 
 import { WishlistAction, WishlistActionsMenu } from '../../_components/wishlist-actions-menu';
 
-import { WishlistShareButton, WishlistShareButtonSkeleton } from './share-button';
 import { WishlistVisibilitySwitch } from './visibility-switch';
 
 interface Props {

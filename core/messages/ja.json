@@ -178,61 +178,71 @@
             "newPassword": "新しいパスワード",
             "confirmPassword": "パスワード確認",
             "cta": "アップデート"
+        }
+    },
+    "Wishlist": {
+        "title": "ウィッシュリスト",
+        "new": "新しいウィッシュリスト",
+        "items": "{count, plural, =1 {1 item} other {# items}}",
+        "viewWishlist": "リストを表示",
+        "noWishlists": "ウィッシュリストがありません",
+        "noWishlistsSubtitle": "お気に入りの商品を保存するには、ウィッシュリストを作成してください。",
+        "noWishlistsCallToAction": "ウィッシュリストを作成",
+        "emptyWishlist": "このウィッシュリストには商品を追加していません。",
+        "share": "共有",
+        "shareSuccess": "ウィッシュリストが正常に共有されました。",
+        "shareCopied": "ウィッシュリストの公開 URL がクリップボードにコピーされました。",
+        "shareDisabled": "欲しいものリストを共有するには、公開する必要があります。",
+        "makePublic": "公開する",
+        "makePrivate": "非公開にする",
+        "rename": "名前の変更",
+        "delete": "削除する",
+        "Visibility": {
+            "public": "公式",
+            "private": "プライベート"
         },
-        "Wishlists": {
-            "title": "ウィッシュリスト",
-            "new": "新しいウィッシュリスト",
-            "items": "{count, plural, =1 {1 item} other {# items}}",
-            "viewWishlist": "リストを表示",
-            "noWishlists": "ウィッシュリストがありません",
-            "noWishlistsSubtitle": "お気に入りの商品を保存するには、ウィッシュリストを作成してください。",
-            "noWishlistsCallToAction": "ウィッシュリストを作成",
-            "emptyWishlist": "このウィッシュリストには商品を追加していません。",
-            "share": "共有",
-            "shareSuccess": "ウィッシュリストが正常に共有されました。",
-            "shareCopied": "ウィッシュリストの公開 URL がクリップボードにコピーされました。",
-            "shareDisabled": "欲しいものリストを共有するには、公開する必要があります。",
-            "makePublic": "公開する",
-            "makePrivate": "非公開にする",
-            "rename": "名前の変更",
+        "Modal": {
+            "cancel": "キャンセル",
+            "close": "閉じる",
+            "copy": "コピー",
+            "create": "作成",
+            "save": "保存",
             "delete": "削除する",
-            "Visibility": {
-                "public": "公式",
-                "private": "プライベート"
-            },
-            "Modal": {
-                "cancel": "キャンセル",
-                "close": "閉じる",
-                "copy": "コピー",
-                "create": "作成",
-                "save": "保存",
-                "delete": "削除する",
-                "newTitle": "新しいウィッシュリストを作成",
-                "shareTitle": "{name}を共有",
-                "renameTitle": "{name}の名前を変更",
-                "deleteTitle": "{name}を削除",
-                "changeVisibilityPublicTitle": "{name} をしますか？",
-                "changeVisibilityPrivateTitle": "{name}を非公開にしますか？",
-                "makePublicContent": "<bold>{name}</bold>を公開してもよろしいですか？これにより、リンクを知っている他のユーザーがあなたのウィッシュリストを閲覧できるようになります。",
-                "makePrivateContent": "<bold>{name}</bold>を非公開にしてもよろしいですか？ウィッシュリストを他のユーザーと共有している場合、他のユーザーはそのリストを閲覧できなくなります。",
-                "deleteContent": "<bold>{name}</bold>を削除してもよろしいですか？この操作は元に戻せません。"
-            },
-            "Form": {
-                "nameLabel": "名前"
-            },
+            "newTitle": "新しいウィッシュリストを作成",
+            "shareTitle": "{name}を共有",
+            "renameTitle": "{name}の名前を変更",
+            "deleteTitle": "{name}を削除",
+            "changeVisibilityPublicTitle": "{name} をしますか？",
+            "changeVisibilityPrivateTitle": "{name}を非公開にしますか？",
+            "makePublicContent": "<bold>{name}</bold>を公開してもよろしいですか？これにより、リンクを知っている他のユーザーがあなたのウィッシュリストを閲覧できるようになります。",
+            "makePrivateContent": "<bold>{name}</bold>を非公開にしてもよろしいですか？ウィッシュリストを他のユーザーと共有している場合、他のユーザーはそのリストを閲覧できなくなります。",
+            "deleteContent": "<bold>{name}</bold>を削除してもよろしいですか？この操作は元に戻せません。"
+        },
+        "Form": {
+            "nameLabel": "名前"
+        },
+        "Errors": {
+            "nameRequired": "ウィッシュリスト名は空欄にできません。",
+            "updateFailed": "ウィッシュリストの更新に失敗しました。再度お試しください。",
+            "deleteFailed": "ウィッシュリストを削除できませんでした。再度お試しください。",
+            "removeProductFailed": "ウィッシュリストから商品を削除することができませんでした。再度お試しください。",
+            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
+            "unexpected": "An unexpected error occurred, please try again"
+        },
+        "Result": {
+            "createSuccess": "ウィッシュリストが正常に作成されました。",
+            "updateSuccess": "ウィッシュリストが正常に更新されました。",
+            "deleteSuccess": "ウィッシュリストは正常に削除されました。",
+            "removeItemSuccess": "アイテムがウィッシュリストから削除されました。"
+        },
+        "Button": {
+            "addToNewWishlist": "Add to new wish list",
+            "defaultWishlistName": "My wish list",
+            "addSuccessMessage": "Product has been added to your wish list",
+            "removeSuccessMessage": "Product has been removed from your wish list",
             "Errors": {
-                "nameRequired": "ウィッシュリスト名は空欄にできません。",
-                "updateFailed": "ウィッシュリストの更新に失敗しました。再度お試しください。",
-                "deleteFailed": "ウィッシュリストを削除できませんでした。再度お試しください。",
-                "removeProductFailed": "ウィッシュリストから商品を削除することができませんでした。再度お試しください。",
-                "unauthorized": "この操作を実行する権限がありません。サインインして、もう一度お試しください。",
-                "unexpected": "予期しないエラーが発生しました。再度お試しください。"
-            },
-            "Result": {
-                "createSuccess": "ウィッシュリストが正常に作成されました。",
-                "updateSuccess": "ウィッシュリストが正常に更新されました。",
-                "deleteSuccess": "ウィッシュリストは正常に削除されました。",
-                "removeItemSuccess": "アイテムがウィッシュリストから削除されました。"
+                "addProductFailed": "Failed to add the product from your wish list, please try again",
+                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
             }
         },
         "Wishlists": {

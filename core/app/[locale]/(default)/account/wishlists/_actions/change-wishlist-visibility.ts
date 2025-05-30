@@ -1,6 +1,6 @@
 'use server';
 
-import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
+import { BigCommerceAuthError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { revalidateTag } from 'next/cache';
@@ -24,7 +24,7 @@ export async function toggleWishlistVisibility(
   formData: FormData,
 ): Promise<State> {
   const customerAccessToken = await getSessionCustomerAccessToken();
-  const t = await getTranslations('Account.Wishlists');
+  const t = await getTranslations('Wishlist');
   const submission = parseWithZod(formData, { schema: toggleWishlistVisibilitySchema });
 
   if (submission.status !== 'success') {
@@ -73,28 +73,22 @@ export async function toggleWishlistVisibility(
     // eslint-disable-next-line no-console
     console.error(error);
 
-    if (error instanceof BigCommerceGQLError) {
+    if (error instanceof BigCommerceAuthError) {
+      const authErrorMessage = t('Errors.unauthorized');
+
       return {
         ...prevState,
-        lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }),
-        errorMessage: error.message.includes('Please sign in')
-          ? t('Errors.unauthorized')
-          : t('Errors.unexpected'),
+        lastResult: submission.reply({ formErrors: [authErrorMessage] }),
+        errorMessage: authErrorMessage,
       };
     }
 
-    if (error instanceof BigCommerceAPIError) {
-      return {
-        ...prevState,
-        lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }),
-        errorMessage: t('Errors.unexpected'),
-      };
-    }
+    const errorMessage = t('Errors.unexpected');
 
     return {
       ...prevState,
-      lastResult: submission.reply({ formErrors: [t('Errors.unexpected')] }),
-      errorMessage: t('Errors.unexpected'),
+      lastResult: submission.reply({ formErrors: [errorMessage] }),
+      errorMessage,
     };
   }
 }

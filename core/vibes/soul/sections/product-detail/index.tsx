@@ -44,6 +44,7 @@ export interface ProductDetailProps<F extends Field> {
   prefetch?: boolean;
   thumbnailLabel?: string;
   additionalInformationTitle?: string;
+  additionalActions?: ReactNode;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -75,6 +76,7 @@ export function ProductDetail<F extends Field>({
   prefetch,
   thumbnailLabel,
   additionalInformationTitle = 'Additional information',
+  additionalActions,
 }: ProductDetailProps<F>) {
   return (
     <section className="@container">
@@ -145,6 +147,7 @@ export function ProductDetail<F extends Field>({
                       {([fields, ctaLabel, ctaDisabled]) => (
                         <ProductDetailForm
                           action={action}
+                          additionalActions={additionalActions}
                           ctaDisabled={ctaDisabled ?? undefined}
                           ctaLabel={ctaLabel ?? undefined}
                           decrementLabel={decrementLabel}
@@ -162,7 +165,7 @@ export function ProductDetail<F extends Field>({
                     <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
                       {(description) =>
                         Boolean(description) && (
-                          <div className="prose prose-sm max-w-none border-t border-[var(--product-detail-border,hsl(var(--contrast-100)))] py-8">
+                          <div className="prose prose-sm max-w-none border-t border-[var(--product-detail-border,hsl(var(--contrast-100)))] py-8 [&>div>*:first-child]:mt-0 [&>div>*:last-child]:mb-0">
                             {description}
                           </div>
                         )

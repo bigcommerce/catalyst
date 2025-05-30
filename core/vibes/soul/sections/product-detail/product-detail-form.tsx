@@ -18,12 +18,14 @@ import { z } from 'zod';
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
 import { CardRadioGroup } from '@/vibes/soul/form/card-radio-group';
 import { Checkbox } from '@/vibes/soul/form/checkbox';
+import { DatePicker } from '@/vibes/soul/form/date-picker';
 import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { NumberInput } from '@/vibes/soul/form/number-input';
 import { RadioGroup } from '@/vibes/soul/form/radio-group';
 import { Select } from '@/vibes/soul/form/select';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
+import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { usePathname, useRouter } from '~/i18n/routing';
@@ -51,6 +53,7 @@ export interface ProductDetailFormProps<F extends Field> {
   emptySelectPlaceholder?: string;
   ctaDisabled?: boolean;
   prefetch?: boolean;
+  additionalActions?: ReactNode;
 }
 
 export function ProductDetailForm<F extends Field>({
@@ -64,6 +67,7 @@ export function ProductDetailForm<F extends Field>({
   emptySelectPlaceholder = 'Select an option',
   ctaDisabled = false,
   prefetch = false,
+  additionalActions,
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -161,6 +165,7 @@ export function ProductDetailForm<F extends Field>({
               value={quantityControl.value}
             />
             <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+            {additionalActions}
           </div>
         </div>
       </form>
@@ -184,6 +189,7 @@ function SubmitButton({ children, disabled }: { children: ReactNode; disabled?: 
   );
 }
 
+// eslint-disable-next-line complexity
 function FormField({
   field,
   formField,
@@ -197,16 +203,19 @@ function FormField({
 }) {
   const controls = useInputControl(formField);
 
-  const [, setParams] = useQueryStates(
+  const [params, setParams] = useQueryStates(
     field.persist === true ? { [field.name]: parseAsString.withOptions({ shallow: false }) } : {},
   );
 
   const handleChange = useCallback(
     (value: string) => {
-      void setParams({ [field.name]: value });
-      controls.change(value);
+      // Ensure that if page is reached without a full reload, we are still setting the selection properly based on query params.
+      const fieldValue = value || String(params[field.name] ?? '');
+
+      void setParams({ [field.name]: fieldValue });
+      controls.change(fieldValue);
     },
-    [setParams, field, controls],
+    [setParams, field, controls, params],
   );
 
   const handleOnOptionMouseEnter = (value: string) => {
@@ -239,6 +248,38 @@ function FormField({
           errors={formField.errors}
           key={formField.id}
           label={field.label}
+          name={formField.name}
+          onBlur={controls.blur}
+          onChange={(e) => handleChange(e.currentTarget.value)}
+          onFocus={controls.focus}
+          required={formField.required}
+          value={controls.value ?? ''}
+        />
+      );
+
+    case 'date':
+      return (
+        <DatePicker
+          defaultValue={controls.value}
+          errors={formField.errors}
+          key={formField.id}
+          label={field.label}
+          name={formField.name}
+          onBlur={controls.blur}
+          onChange={(e) => handleChange(e.currentTarget.value)}
+          onFocus={controls.focus}
+          required={formField.required}
+        />
+      );
+
+    case 'textarea':
+      return (
+        <Textarea
+          errors={formField.errors}
+          key={formField.id}
+          label={field.label}
+          maxLength={field.maxLength}
+          minLength={field.minLength}
           name={formField.name}
           onBlur={controls.blur}
           onChange={(e) => handleChange(e.currentTarget.value)}

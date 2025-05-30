@@ -37,7 +37,7 @@ const searchParamsCache = createSearchParamsCache({
 
 async function listWishlists(
   searchParamsPromise: Promise<SearchParams>,
-  t: ExistingResultType<typeof getTranslations<'Account.Wishlists'>>,
+  t: ExistingResultType<typeof getTranslations<'Wishlist'>>,
 ): Promise<Wishlist[]> {
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
   const formatter = await getFormatter();
@@ -64,7 +64,7 @@ export default async function Wishlists({ params, searchParams }: Props) {
 
   setRequestLocale(locale);
 
-  const t = await getTranslations('Account.Wishlists');
+  const t = await getTranslations('Wishlist');
   const isMobile = await isMobileUser();
   const newWishlistModal = getNewWishlistModal(t);
 
