@@ -152,3 +152,39 @@ test.describe('mobile', () => {
     ).toBeVisible();
   });
 });
+
+test.describe('Analytics Cookies synchronization', () => {
+  test('Checkout route redirects to external checkout with analytics cookies', async ({
+    page,
+    context,
+  }) => {
+    await page.goto('/laundry-detergent/');
+    await expect(
+      page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
+    ).toBeVisible();
+
+    const cookies = await context.cookies();
+    const visitorId = cookies.find((c) => c.name === 'catalyst.visitorId');
+    const visitId = cookies.find((c) => c.name === 'catalyst.visitId');
+
+    await page.getByRole('button', { name: 'Add to Cart' }).first().click();
+    await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
+    await page.getByRole('link', { name: 'Cart Items 1' }).click();
+    await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
+    await page.getByRole('button', { name: 'Proceed to checkout' }).click();
+
+    await page.waitForLoadState('networkidle');
+
+    const externalCheckoutUrl = page.url();
+
+    const checkoutCookies = await context.cookies(externalCheckoutUrl);
+
+    const externalVisitorId = checkoutCookies.find((c) => c.name === 'catalyst.visitorId');
+    const externalVisitId = checkoutCookies.find((c) => c.name === 'catalyst.visitId');
+
+    expect(externalVisitorId).toBeDefined();
+    expect(externalVisitorId?.value).toBe(visitorId?.value);
+    expect(externalVisitId).toBeDefined();
+    expect(externalVisitId?.value).toBe(visitId?.value);
+  });
+});
