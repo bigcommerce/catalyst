@@ -7,12 +7,15 @@ import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { redirect } from '~/i18n/routing';
+import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
 import { getCartId } from '~/lib/cart';
 
 const CheckoutRedirectMutation = graphql(`
-  mutation CheckoutRedirectMutation($cartId: String!) {
+  mutation CheckoutRedirectMutation($cartId: String!, $visitId: UUID, $visitorId: UUID) {
     cart {
-      createCartRedirectUrls(input: { cartEntityId: $cartId }) {
+      createCartRedirectUrls(
+        input: { cartEntityId: $cartId, visitId: $visitId, visitorId: $visitorId }
+      ) {
         errors {
           ... on NotFoundError {
             __typename
@@ -36,10 +39,13 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ loca
     return redirect({ href: '/cart', locale });
   }
 
+  const visitId = await getVisitIdCookie();
+  const visitorId = await getVisitorIdCookie();
+
   try {
     const { data } = await client.fetch({
       document: CheckoutRedirectMutation,
-      variables: { cartId },
+      variables: { cartId, visitId, visitorId },
       fetchOptions: { cache: 'no-store' },
       customerAccessToken,
       channelId,
