@@ -1,3 +1,4 @@
+import { useLocale } from 'next-intl';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { z } from 'zod';
@@ -6,7 +7,6 @@ import {
   BcProductSchema,
   useBcProductToVibesProduct,
 } from './use-bc-product-to-vibes-product/use-bc-product-to-vibes-product';
-import { useLocale } from 'next-intl';
 
 const ProductListSchema = z.object({
   products: z.array(BcProductSchema),
@@ -35,6 +35,7 @@ export function useProducts({ collection, collectionLimit = 20, additionalProduc
   const searchParams = new URLSearchParams();
 
   searchParams.append('ids', additionalProductIds.join(','));
+  searchParams.append('locale', locale);
 
   const additionalProductsUrl = `/api/products/ids?${searchParams.toString()}`;
 

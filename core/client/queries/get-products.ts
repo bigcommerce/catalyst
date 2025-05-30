@@ -7,7 +7,6 @@ import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { ProductCardFragment } from '~/components/product-card/fragment';
-import { routing } from '~/i18n/routing';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 const GetBestSellingProductsQuery = graphql(
@@ -127,7 +126,14 @@ const getBestSellingProducts = cache(async ({ locale }: { locale?: string }) => 
       customerAccessToken,
       variables: { currencyCode },
       channelId,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: {
+        ...(locale && {
+          headers: {
+            'Accept-Language': locale,
+          },
+        }),
+        ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
+      },
     });
 
     const { bestSellingProducts } = response.data.site;
@@ -156,7 +162,14 @@ const getFeaturedProducts = cache(async ({ locale }: { locale?: string }) => {
       customerAccessToken,
       variables: { currencyCode },
       channelId,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: {
+        ...(locale && {
+          headers: {
+            'Accept-Language': locale,
+          },
+        }),
+        ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
+      },
     });
 
     const { featuredProducts } = response.data.site;
@@ -185,7 +198,14 @@ const getNewestProducts = cache(async ({ locale }: { locale?: string }) => {
       customerAccessToken,
       variables: { currencyCode },
       channelId,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: {
+        ...(locale && {
+          headers: {
+            'Accept-Language': locale,
+          },
+        }),
+        ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
+      },
     });
 
     const { newestProducts } = response.data.site;
@@ -203,31 +223,40 @@ const getNewestProducts = cache(async ({ locale }: { locale?: string }) => {
   }
 });
 
-const getProductsByIds = cache(async (entityIds: number[]) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  const currencyCode = await getPreferredCurrencyCode();
+const getProductsByIds = cache(
+  async ({ entityIds, locale }: { entityIds: number[]; locale?: string }) => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const currencyCode = await getPreferredCurrencyCode();
 
-  try {
-    const response = await client.fetch({
-      document: GetProductsByIds,
-      variables: { entityIds, currencyCode },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+    try {
+      const response = await client.fetch({
+        document: GetProductsByIds,
+        variables: { entityIds, currencyCode },
+        customerAccessToken,
+        fetchOptions: {
+          ...(locale && {
+            headers: {
+              'Accept-Language': locale,
+            },
+          }),
+          ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
+        },
+      });
 
-    const { products } = response.data.site;
+      const { products } = response.data.site;
 
-    return {
-      status: 'success',
-      products: removeEdgesAndNodes(products),
-    };
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return { status: 'error', error: error.message };
+      return {
+        status: 'success',
+        products: removeEdgesAndNodes(products),
+      };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { status: 'error', error: error.message };
+      }
+
+      return { status: 'error', error: 'Something went wrong. Please try again.' };
     }
-
-    return { status: 'error', error: 'Something went wrong. Please try again.' };
-  }
-});
+  },
+);
 
 export { getBestSellingProducts, getFeaturedProducts, getNewestProducts, getProductsByIds };

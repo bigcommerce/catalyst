@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
 import { hasLocale } from 'next-intl';
+import { z } from 'zod';
 
 import {
   getBestSellingProducts,
