@@ -126,14 +126,8 @@ const getBestSellingProducts = cache(async ({ locale }: { locale?: string }) => 
       customerAccessToken,
       variables: { currencyCode },
       channelId,
-      fetchOptions: {
-        ...(locale && {
-          headers: {
-            'Accept-Language': locale,
-          },
-        }),
-        ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
-      },
+      locale,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const { bestSellingProducts } = response.data.site;
@@ -162,14 +156,8 @@ const getFeaturedProducts = cache(async ({ locale }: { locale?: string }) => {
       customerAccessToken,
       variables: { currencyCode },
       channelId,
-      fetchOptions: {
-        ...(locale && {
-          headers: {
-            'Accept-Language': locale,
-          },
-        }),
-        ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
-      },
+      locale,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const { featuredProducts } = response.data.site;
@@ -198,14 +186,8 @@ const getNewestProducts = cache(async ({ locale }: { locale?: string }) => {
       customerAccessToken,
       variables: { currencyCode },
       channelId,
-      fetchOptions: {
-        ...(locale && {
-          headers: {
-            'Accept-Language': locale,
-          },
-        }),
-        ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
-      },
+      locale,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
     const { newestProducts } = response.data.site;
@@ -233,14 +215,8 @@ const getProductsByIds = cache(
         document: GetProductsByIds,
         variables: { entityIds, currencyCode },
         customerAccessToken,
-        fetchOptions: {
-          ...(locale && {
-            headers: {
-              'Accept-Language': locale,
-            },
-          }),
-          ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
-        },
+        locale,
+        fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
       });
 
       const { products } = response.data.site;

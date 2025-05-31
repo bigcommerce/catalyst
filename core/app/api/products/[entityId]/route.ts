@@ -45,11 +45,7 @@ export const GET = async (
     document: GetProduct,
     customerAccessToken,
     variables: { entityId: parseInt(entityId, 10), currencyCode },
-    fetchOptions: {
-      headers: {
-        'Accept-Language': locale,
-      },
-    },
+    locale,
   });
 
   return NextResponse.json(data.site.product);
