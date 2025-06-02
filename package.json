@@ -24,6 +24,7 @@
     "@changesets/cli": "^2.29.0",
     "dotenv-cli": "^8.0.0",
     "turbo": "^2.5.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "unlighthouse": "^0.16.3"
   }
 }
