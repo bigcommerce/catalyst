@@ -153,7 +153,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
   return (
     <section
       className={clsx(
-        '@container relative h-[80vh] bg-[var(--slideshow-background,color-mix(in_oklab,hsl(var(--primary)),black_75%))]',
+        'relative h-[80vh] bg-[var(--slideshow-background,color-mix(in_oklab,hsl(var(--primary)),black_75%))] @container',
         className,
       )}
     >
@@ -166,9 +166,9 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                   className="relative h-full w-full min-w-0 shrink-0 grow-0 basis-full"
                   key={idx}
                 >
-                  <div className="absolute inset-x-0 bottom-0 z-10 bg-linear-to-t from-[var(--slideshow-mask,hsl(var(--foreground)/80%))] to-transparent">
-                    <div className="mx-auto w-full max-w-(--breakpoint-2xl) px-4 pt-12 pb-16 text-balance @xl:px-6 @xl:pt-16 @xl:pb-20 @4xl:px-8 @4xl:pt-20">
-                      <h1 className="m-0 max-w-xl font-[family-name:var(--slideshow-title-font-family,var(--font-family-heading))] text-4xl leading-none font-medium text-[var(--slideshow-title,hsl(var(--background)))] @2xl:text-5xl @2xl:leading-[.9] @4xl:text-6xl">
+                  <div className="absolute inset-x-0 bottom-0 z-10 bg-gradient-to-t from-[var(--slideshow-mask,hsl(var(--foreground)/80%))] to-transparent">
+                    <div className="max-w-(--breakpoint-2xl) mx-auto w-full text-balance px-4 pb-16 pt-12 @xl:px-6 @xl:pb-20 @xl:pt-16 @4xl:px-8 @4xl:pt-20">
+                      <h1 className="m-0 max-w-xl font-[family-name:var(--slideshow-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none text-[var(--slideshow-title,hsl(var(--background)))] @2xl:text-5xl @2xl:leading-[.9] @4xl:text-6xl">
                         {title}
                       </h1>
                       {showDescription && (
@@ -212,13 +212,13 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
       </div>
 
       {/* Controls */}
-      <div className="absolute bottom-4 left-1/2 flex w-full max-w-(--breakpoint-2xl) -translate-x-1/2 flex-wrap items-center px-4 @xl:bottom-6 @xl:px-6 @4xl:px-8">
+      <div className="max-w-(--breakpoint-2xl) absolute bottom-4 left-1/2 flex w-full -translate-x-1/2 flex-wrap items-center px-4 @xl:bottom-6 @xl:px-6 @4xl:px-8">
         {/* Progress Buttons */}
         {scrollSnaps.map((_: number, index: number) => {
           return (
             <button
               aria-label={`View image number ${index + 1}`}
-              className="rounded-lg px-1.5 py-2 focus-visible:ring-2 focus-visible:ring-[var(--slideshow-focus,hsl(var(--primary)))] focus-visible:outline-0"
+              className="rounded-lg px-1.5 py-2 focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--slideshow-focus,hsl(var(--primary)))]"
               key={index}
               onClick={() => {
                 onProgressButtonClick(index);
@@ -230,11 +230,11 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
                 <div
                   className={clsx(
                     'absolute h-0.5 bg-[var(--slideshow-pagination,hsl(var(--background)))]',
-                    'fill-mode-forwards opacity-0',
+                    'opacity-0 fill-mode-forwards',
                     isPlaying ? 'running' : 'paused',
                     index === selectedIndex
-                      ? 'animate-in slide-in-from-left opacity-100 ease-linear'
-                      : 'animate-out fade-out ease-out',
+                      ? 'opacity-100 ease-linear animate-in slide-in-from-left'
+                      : 'ease-out animate-out fade-out',
                   )}
                   key={`progress-${playCount}`} // Force the animation to restart when pressing "Play", to match animation with embla's autoplay timer
                   style={{
@@ -253,7 +253,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
         })}
 
         {/* Carousel Count - "01/03" */}
-        <span className="mt-px mr-3 ml-auto font-[family-name:var(--slideshow-number-font-family,var(--font-family-mono))] text-sm text-[var(--slideshow-number,hsl(var(--background)))]">
+        <span className="ml-auto mr-3 mt-px font-[family-name:var(--slideshow-number-font-family,var(--font-family-mono))] text-sm text-[var(--slideshow-number,hsl(var(--background)))]">
           {selectedIndex + 1 < 10 ? `0${selectedIndex + 1}` : selectedIndex + 1}/
           {slides.length < 10 ? `0${slides.length}` : slides.length}
         </span>
@@ -261,7 +261,7 @@ export function Slideshow({ slides, playOnInit = true, interval = 5000, classNam
         {/* Stop / Start Button */}
         <button
           aria-label={isPlaying ? 'Pause' : 'Play'}
-          className="flex h-7 w-7 items-center justify-center rounded-lg border border-[var(--slideshow-play-border,hsl(var(--contrast-300)/50%))] text-[var(--slideshow-play-text,hsl(var(--background)))] ring-[var(--slideshow-focus)] transition-opacity duration-300 hover:border-[var(--slideshow-play-border-hover,hsl(var(--contrast-300)/80%))] focus-visible:ring-2 focus-visible:outline-0"
+          className="flex h-7 w-7 items-center justify-center rounded-lg border border-[var(--slideshow-play-border,hsl(var(--contrast-300)/50%))] text-[var(--slideshow-play-text,hsl(var(--background)))] ring-[var(--slideshow-focus)] transition-opacity duration-300 hover:border-[var(--slideshow-play-border-hover,hsl(var(--contrast-300)/80%))] focus-visible:outline-0 focus-visible:ring-2"
           onClick={toggleAutoplay}
           type="button"
         >

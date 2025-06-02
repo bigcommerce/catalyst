@@ -37,20 +37,20 @@ export function Maintenance({
           </div>
         )}
 
-        <h1 className="font-heading mb-3 text-3xl leading-none font-medium @xl:text-4xl @4xl:text-5xl">
+        <h1 className="mb-3 font-heading text-3xl font-medium leading-none @xl:text-4xl @4xl:text-5xl">
           {title}
         </h1>
         <p className="text-md text-contrast-500 @xl:text-lg @4xl:text-xl">{statusMessage}</p>
 
         {(Boolean(contactPhone) || Boolean(contactEmail)) && (
           <div className="mt-20">
-            <div className="mb-6 text-lg leading-none font-medium @xl:text-xl @4xl:text-2xl">
+            <div className="mb-6 text-lg font-medium leading-none @xl:text-xl @4xl:text-2xl">
               {contactText}
             </div>
             {Boolean(contactEmail) && (
               <div>
                 <Link
-                  className="text-md my-2 inline-flex flex-row items-center font-medium text-[var(--footer-link,hsl(var(--contrast-400)))] ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 hover:text-[var(--footer-link-hover,hsl(var(--foreground)))] focus-visible:ring-2 focus-visible:outline-0 @xl:text-lg"
+                  className="text-md my-2 inline-flex flex-row items-center font-medium text-[var(--footer-link,hsl(var(--contrast-400)))] ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 hover:text-[var(--footer-link-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @xl:text-lg"
                   href={`mailto:${contactEmail}`}
                 >
                   <span>
@@ -63,7 +63,7 @@ export function Maintenance({
             {Boolean(contactPhone) && (
               <div>
                 <Link
-                  className="text-md my-2 inline-flex flex-row items-center font-medium text-[var(--footer-link,hsl(var(--contrast-400)))] ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 hover:text-[var(--footer-link-hover,hsl(var(--foreground)))] focus-visible:ring-2 focus-visible:outline-0 @xl:text-lg"
+                  className="text-md my-2 inline-flex flex-row items-center font-medium text-[var(--footer-link,hsl(var(--contrast-400)))] ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 hover:text-[var(--footer-link-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @xl:text-lg"
                   href={`tel:${contactPhone}`}
                 >
                   <span>

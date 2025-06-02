@@ -92,7 +92,7 @@ export function ProductCarousel({
 
         return (
           <Carousel className={className} hideOverflow={hideOverflow}>
-            <CarouselContent className="mb-10 -ml-4 @2xl:-ml-5">
+            <CarouselContent className="-ml-4 mb-10 @2xl:-ml-5">
               {products.map(({ id, ...product }) => (
                 <CarouselItem
                   className="basis-full pl-4 @md:basis-1/2 @lg:basis-1/3 @2xl:basis-1/4 @2xl:pl-5"
@@ -153,7 +153,7 @@ export function ProductsCarouselSkeleton({
         </div>
       </div>
       <div className="mt-10 flex w-full items-center justify-between gap-8">
-        <Skeleton.Box className="h-1 w-56 rounded-sm" />
+        <Skeleton.Box className="h-1 w-56 rounded" />
         <div className="flex gap-2">
           <Skeleton.Icon icon={<ArrowLeft aria-hidden className="h-6 w-6" strokeWidth={1.5} />} />
           <Skeleton.Icon icon={<ArrowRight aria-hidden className="h-6 w-6" strokeWidth={1.5} />} />
@@ -193,7 +193,7 @@ export function ProductsCarouselEmptyState({
           ))}
         </div>
       </div>
-      <div className="absolute inset-0 mx-auto px-3 py-16 pb-3 @4xl:px-10 @4xl:pt-28 @4xl:pb-10">
+      <div className="absolute inset-0 mx-auto px-3 py-16 pb-3 @4xl:px-10 @4xl:pb-10 @4xl:pt-28">
         <div className="mx-auto max-w-xl space-y-2 text-center @4xl:space-y-3">
           <h3
             className={clsx(

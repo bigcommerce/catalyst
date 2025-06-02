@@ -55,5 +55,5 @@ export function Sorting({
 }
 
 export function SortingSkeleton() {
-  return <div className="bg-contrast-100 h-[50px] w-[12ch] animate-pulse rounded-full" />;
+  return <div className="h-[50px] w-[12ch] animate-pulse rounded-full bg-contrast-100" />;
 }

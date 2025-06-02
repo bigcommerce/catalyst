@@ -22,7 +22,7 @@ export function AnimatedUnderline({ className, children }: AnimatedUnderlineProp
   return (
     <span
       className={clsx(
-        'origin-left font-[family-name:var(--animated-underline-font-family,var(--font-family-body))] leading-normal font-semibold text-[var(--animated-underline-text,hsl(var(--foreground)))] transition-[background-size] duration-300 [background:linear-gradient(0deg,var(--animated-underline-hover,hsl(var(--primary))),var(--animated-underline-hover,hsl(var(--primary))))_no-repeat_left_bottom_/_0_2px] group-focus/underline:bg-[size:100%_2px] hover:bg-[size:100%_2px]',
+        'origin-left font-[family-name:var(--animated-underline-font-family,var(--font-family-body))] font-semibold leading-normal text-[var(--animated-underline-text,hsl(var(--foreground)))] transition-[background-size] duration-300 [background:linear-gradient(0deg,var(--animated-underline-hover,hsl(var(--primary))),var(--animated-underline-hover,hsl(var(--primary))))_no-repeat_left_bottom_/_0_2px] hover:bg-[size:100%_2px] group-focus/underline:bg-[size:100%_2px]',
         className,
       )}
     >
