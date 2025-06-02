@@ -62,10 +62,31 @@ const config = {
       },
     ],
   },
+  overrides: [
+    {
+      files: ['**/*.spec.ts', '**/*.test.ts'],
+      rules: {
+        '@typescript-eslint/no-restricted-imports': [
+          'error',
+          {
+            paths: [
+              {
+                name: 'next-intl/server',
+                importNames: ['getTranslations', 'getFormatter'],
+                message:
+                  'Please import `getTranslations` from `~/tests/lib/i18n` and `getFormatter` from `~/tests/lib/formatter` instead.',
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
   ignorePatterns: [
     'client/generated/**/*.ts',
     'playwright-report/**',
     'test-results/**',
+    '.tests/**',
     '**/google_analytics4.js',
   ],
 };
