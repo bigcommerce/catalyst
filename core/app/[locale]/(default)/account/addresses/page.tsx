@@ -110,7 +110,8 @@ export default async function Addresses({ params, searchParams }: Props) {
       createLabel={t('create')}
       deleteLabel={t('delete')}
       editLabel={t('edit')}
-      fields={[...fields, { name: 'id', type: 'hidden' }]}
+      fields={[...fields, { name: 'id', type: 'hidden', label: 'ID' }]}
+      minimumAddressCount={0}
       setDefaultLabel={t('setDefault')}
       showAddFormLabel={t('cta')}
       title={t('title')}

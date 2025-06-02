@@ -31,7 +31,7 @@ const GetCartCountQuery = graphql(`
   }
 `);
 
-const getCartCount = async (cartId: string, customerAccessToken?: string) => {
+const getCartCount = cache(async (cartId: string, customerAccessToken?: string) => {
   const response = await client.fetch({
     document: GetCartCountQuery,
     variables: { cartId },
@@ -45,12 +45,15 @@ const getCartCount = async (cartId: string, customerAccessToken?: string) => {
   });
 
   return response.data.site.cart?.lineItems.totalQuantity ?? null;
-};
+});
 
 const getHeaderLinks = cache(async (customerAccessToken?: string) => {
   const { data: response } = await client.fetch({
     document: GetLinksAndSectionsQuery,
     customerAccessToken,
+    // Since this query is needed on every page, it's a good idea not to validate the customer access token.
+    // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
+    validateCustomerAccessToken: false,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 

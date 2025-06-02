@@ -1,5 +1,4 @@
-import { expect, test } from '@playwright/test';
-
+import { expect, test } from '~/tests/fixtures';
 import routes from '~/tests/routes';
 
 test('Zero star rating', async ({ page }) => {

@@ -46,9 +46,11 @@ interface Props {
 export const WishlistDetails = ({
   className = '',
   wishlist: streamableWishlist,
+  emptyStateText,
   paginationInfo,
   headerActions,
   prevHref,
+  placeholderCount,
   action,
   removeAction,
 }: Props) => {
@@ -58,6 +60,7 @@ export const WishlistDetails = ({
         <WishlistDetailSkeleton
           className={className}
           headerActions={typeof headerActions === 'function' ? headerActions() : headerActions}
+          placeholderCount={placeholderCount}
           prevHref={prevHref}
         />
       }
@@ -87,7 +90,9 @@ export const WishlistDetails = ({
 
             <WishlistItems
               action={action}
+              emptyStateText={emptyStateText}
               items={items}
+              placeholderCount={placeholderCount}
               removeAction={removeAction}
               wishlistId={wishlist.id}
             />

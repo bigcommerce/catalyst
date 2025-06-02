@@ -123,7 +123,7 @@ export const fieldToFieldNameTransformer = (field: Field): Field => {
 
   return {
     ...field,
-    name: name ?? field.label ?? field.name,
+    name: name ?? (field.label || field.name),
   };
 };
 

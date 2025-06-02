@@ -50,6 +50,8 @@
       "heading": "Log in",
       "forgotPassword": "Forgot your password?",
       "cta": "Log in",
+      "email": "Email",
+      "password": "Password",
       "invalidCredentials": "Your email address or password is incorrect. Try signing in again or reset your password",
       "somethingWentWrong": "Something went wrong. Please try again later.",
       "CreateAccount": {
@@ -146,6 +148,10 @@
       "orderNumber": "Order #",
       "totalPrice": "Total",
       "viewDetails": "View Details",
+      "emptyState": {
+        "title": "You don't have any orders",
+        "cta": "Shop now"
+      },
       "Details": {
         "title": "Order #{orderNumber}",
         "shippingAddress": "Shipping address",
@@ -174,6 +180,7 @@
       "title": "Account settings",
       "changePassword": "Change password",
       "passwordUpdated": "Password has been updated successfully!",
+      "settingsUpdated": "Account settings have been updated successfully!",
       "somethingWentWrong": "Something went wrong. Please try again later.",
       "currentPassword": "Current password",
       "newPassword": "New password",
@@ -182,6 +189,7 @@
     }
   },
   "Wishlist": {
+    "actionsTitle": "Wishlist actions",
     "title": "Wish Lists",
     "new": "New wish list",
     "items": "{count, plural, =1 {1 item} other {# items}}",
@@ -305,7 +313,8 @@
   },
   "PublicWishlist": {
     "title": "Public Wish List",
-    "defaultName": "Public wish list"
+    "defaultName": "Public wish list",
+    "emptyWishlist": "This wish list doesn't have any products yet."
   },
   "Blog": {
     "title": "Blog",
@@ -441,6 +450,7 @@
       "home": "Home"
     },
     "ContactUs": {
+      "home": "Home",
       "Form": {
         "success": "Thanks for reaching out. We'll get back to you soon.",
         "successCta": "Continue shopping",

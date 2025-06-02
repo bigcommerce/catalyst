@@ -1,4 +1,6 @@
-import { expect, Page, test } from '~/tests/fixtures';
+import { type Page } from '@playwright/test';
+
+import { expect, test } from '~/tests/fixtures';
 
 async function selectProductForComparison(page: Page, name: string) {
   const productInformation = page.getByRole('heading', { name }).locator('..');

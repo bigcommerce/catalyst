@@ -1,5 +1,5 @@
 import { decodeJwt } from 'jose';
-import NextAuth, { type DefaultSession, type NextAuthConfig, User } from 'next-auth';
+import NextAuth, { type NextAuthConfig, User } from 'next-auth';
 import 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { getTranslations } from 'next-intl/server';
@@ -317,24 +317,3 @@ export const isLoggedIn = async () => {
 
   return Boolean(cat);
 };
-
-declare module 'next-auth' {
-  interface Session {
-    user?: DefaultSession['user'];
-  }
-
-  interface User {
-    name?: string | null;
-    email?: string | null;
-    cartId?: string | null;
-    customerAccessToken?: string;
-    impersonatorId?: string | null;
-  }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT {
-    id?: string;
-    user?: DefaultSession['user'];
-  }
-}

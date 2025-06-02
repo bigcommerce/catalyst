@@ -1,4 +1,5 @@
 import { composeMiddlewares } from './middlewares/compose-middlewares';
+import { withAnalyticsCookies } from './middlewares/with-analytics-cookies';
 import { withAuth } from './middlewares/with-auth';
 import { withChannelId } from './middlewares/with-channel-id';
 import { withIntl } from './middlewares/with-intl';
@@ -9,6 +10,7 @@ export const middleware = composeMiddlewares(
   withAuth,
   withMakeswift,
   withIntl,
+  withAnalyticsCookies,
   withChannelId,
   withRoutes,
 );

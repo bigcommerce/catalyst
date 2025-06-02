@@ -158,9 +158,10 @@ export default async function Category(props: Props) {
   });
 
   const streamableTotalCount = Streamable.from(async () => {
+    const format = await getFormatter();
     const search = await streamableFacetedSearch;
 
-    return search.products.collectionInfo?.totalItems ?? 0;
+    return format.number(search.products.collectionInfo?.totalItems ?? 0);
   });
 
   const streamablePagination = Streamable.from(async () => {
@@ -274,13 +275,7 @@ export default async function Category(props: Props) {
         totalCount={streamableTotalCount}
       />
       <Stream value={streamableFacetedSearch}>
-        {(search) => (
-          <CategoryViewed
-            category={category}
-            categoryId={category.entityId}
-            products={search.products.items}
-          />
-        )}
+        {(search) => <CategoryViewed category={category} products={search.products.items} />}
       </Stream>
     </>
   );

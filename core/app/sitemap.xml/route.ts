@@ -5,7 +5,7 @@
 
 import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
-import { defaultLocale } from '~/i18n/routing';
+import { defaultLocale } from '~/i18n/locales';
 
 export const GET = async () => {
   const sitemapIndex = await client.fetchSitemapIndex(getChannelIdFromLocale(defaultLocale));

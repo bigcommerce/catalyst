@@ -64,7 +64,7 @@ export const client = createClient({
   },
   onError: (error, queryType) => {
     if (error instanceof BigCommerceAuthError && queryType === 'query') {
-      redirect('?invalidate-session');
+      redirect('/api/auth/signout');
     }
   },
 });

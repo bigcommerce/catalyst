@@ -16,6 +16,7 @@ import { useFormStatus } from 'react-dom';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
+import { useEvents } from '~/components/analytics/events';
 import { Image } from '~/components/image';
 
 import { CouponCodeForm, CouponCodeFormState } from './coupon-code-form';
@@ -173,6 +174,7 @@ export function CartClient<LineItem extends CartLineItem>({
   summaryTitle,
   shipping,
 }: CartProps<LineItem>) {
+  const events = useEvents();
   const [state, formAction] = useActionState(lineItemAction, {
     lineItems: cart.lineItems,
     lastResult: null,
@@ -314,6 +316,26 @@ export function CartClient<LineItem extends CartLineItem>({
                     startTransition(() => {
                       formAction(formData);
                       setOptimisticLineItems(formData);
+
+                      const intent = formData.get('intent');
+
+                      if (intent === 'increment') {
+                        formData.set('quantity', '1');
+
+                        events.onAddToCart?.(formData);
+                      }
+
+                      if (intent === 'decrement') {
+                        formData.set('quantity', '1');
+
+                        events.onRemoveFromCart?.(formData);
+                      }
+
+                      if (intent === 'delete') {
+                        formData.set('quantity', lineItem.quantity.toString());
+
+                        events.onRemoveFromCart?.(formData);
+                      }
                     });
                   }}
                 />

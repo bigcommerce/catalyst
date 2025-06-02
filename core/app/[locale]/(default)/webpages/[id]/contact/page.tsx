@@ -67,11 +67,13 @@ const getWebPage = cache(async (id: string): Promise<ContactPage> => {
 });
 
 async function getWebPageBreadcrumbs(id: string): Promise<Breadcrumb[]> {
+  const t = await getTranslations('WebPages.ContactUs');
+
   const webpage = await getWebPage(id);
   const [, ...rest] = webpage.breadcrumbs.reverse();
   const breadcrumbs = [
     {
-      label: 'Home',
+      label: t('home'),
       href: '/',
     },
     ...rest.reverse(),
@@ -109,6 +111,7 @@ async function getContactFields(id: string) {
     id: 'pageId',
     name: 'pageId',
     type: 'hidden',
+    label: 'Page ID',
     defaultValue: String(entityId),
   };
 
@@ -117,6 +120,7 @@ async function getContactFields(id: string) {
     id: 'pagePath',
     name: 'pagePath',
     type: 'hidden',
+    label: 'Page Path',
     defaultValue: path,
   };
 

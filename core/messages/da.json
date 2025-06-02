@@ -155,7 +155,8 @@
                 "destinationWithCount": "Destination {number, number}/{total, number}",
                 "subtotal": "Subtotal",
                 "shipping": "Forsendelse",
-                "tax": "Moms"
+                "tax": "Moms",
+                "orderSummary": "Ordreoversigt"
             }
         },
         "Addresses": {
@@ -226,8 +227,8 @@
             "updateFailed": "Din ønskeliste kunne ikke opdateres. Prøv igen.",
             "deleteFailed": "Din ønskeliste kunne ikke slettes. Prøv igen.",
             "removeProductFailed": "Produktet kunne ikke fjernes fra din ønskeliste. Prøv igen.",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "Du er ikke autoriseret til at udføre denne handling. Log ind, og prøv igen.",
+            "unexpected": "Der opstod en uventet fejl. Prøv igen."
         },
         "Result": {
             "createSuccess": "Ønskelisten er oprettet.",
@@ -236,13 +237,13 @@
             "removeItemSuccess": "Varen er blevet fjernet fra din ønskeliste."
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "addToNewWishlist": "Føj til ny ønskeliste",
+            "defaultWishlistName": "Min ønskeliste",
+            "addSuccessMessage": "Produktet er blevet føjet til din ønskeliste",
+            "removeSuccessMessage": "Produktet er blevet fjernet fra din ønskeliste",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "Produktet kunne ikke føjes til din ønskeliste. Prøv igen.",
+                "removeProductFailed": "Produktet kunne ikke fjernes fra din ønskeliste. Prøv igen."
             }
         },
         "Wishlists": {
@@ -440,6 +441,7 @@
             "home": "Hjem"
         },
         "ContactUs": {
+            "home": "Hjem",
             "Form": {
                 "success": "Tak for din henvendelse. Vi vender snart tilbage til dig.",
                 "successCta": "Fortsæt med at handle",
@@ -467,7 +469,7 @@
     },
     "NotFound": {
         "title": "Vi kunne ikke finde den side.",
-        "subtitle": "Det ser ud til, at den side, du anmodede om, er flyttet eller ikke længere eksisterer. ",
+        "subtitle": "Prøv at søge efter noget andet, eller gå tilbage til startsiden.",
         "featuredProducts": "Udvalgte produkter"
     },
     "Components": {

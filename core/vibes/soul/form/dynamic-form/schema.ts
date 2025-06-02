@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 interface FormField {
   name: string;
-  label?: string;
+  label: string;
   errors?: string[];
   required?: boolean;
   id?: string;

@@ -3,7 +3,7 @@ import { getSiteVersion } from '@makeswift/runtime/next/server';
 import { strict } from 'assert';
 import { getLocale } from 'next-intl/server';
 
-import { defaultLocale } from '~/i18n/routing';
+import { defaultLocale } from '~/i18n/locales';
 
 import { runtime } from './runtime';
 

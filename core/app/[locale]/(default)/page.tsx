@@ -1,4 +1,4 @@
-import { locales } from '~/i18n/routing';
+import { locales } from '~/i18n/locales';
 import { Page as MakeswiftPage } from '~/lib/makeswift';
 
 interface Params {
