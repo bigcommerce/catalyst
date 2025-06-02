@@ -50,6 +50,8 @@
             "heading": "Inloggen",
             "forgotPassword": "Wachtwoord vergeten?",
             "cta": "Inloggen",
+            "email": "E-mailadres",
+            "password": "Wachtwoord",
             "invalidCredentials": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
             "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Bestelnr.",
             "totalPrice": "Totaal",
             "viewDetails": "Details weergeven",
+            "emptyState": {
+                "title": "U hebt geen bestellingen",
+                "cta": "Nu winkelen"
+            },
             "Details": {
                 "title": "Bestelnummer {orderNumber}",
                 "shippingAddress": "Verzendadres",
@@ -174,6 +180,7 @@
             "title": "Accountinstellingen",
             "changePassword": "Wachtwoord wijzigen",
             "passwordUpdated": "Wachtwoord is succesvol bijgewerkt!",
+            "settingsUpdated": "Accountinstellingen zijn bijgewerkt!",
             "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
             "currentPassword": "Huidig wachtwoord",
             "newPassword": "Nieuw wachtwoord",
@@ -182,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Verlanglijstacties",
         "title": "Verlanglijstjes",
         "new": "Nieuw verlanglijstje",
         "items": "{count, plural, =1 {1 item} other {# items}}",
@@ -249,7 +257,8 @@
     },
     "PublicWishlist": {
         "title": "Openbare verlanglijst",
-        "defaultName": "Openbare verlanglijst"
+        "defaultName": "Openbare verlanglijst",
+        "emptyWishlist": "Deze verlanglijst bevat nog geen producten."
     },
     "Blog": {
         "title": "Blog",

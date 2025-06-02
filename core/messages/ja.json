@@ -50,6 +50,8 @@
             "heading": "ログイン",
             "forgotPassword": "パスワードをお忘れですか?",
             "cta": "ログイン",
+            "email": "Eメール",
+            "password": "パスワード",
             "invalidCredentials": "メールアドレスまたはパスワードが間違っています。もう一度サインインするか、パスワードをリセットしてください",
             "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "注文 #",
             "totalPrice": "合計",
             "viewDetails": "詳細一覧",
+            "emptyState": {
+                "title": "注文がありません",
+                "cta": "今すぐ購入する"
+            },
             "Details": {
                 "title": "注文番号 {orderNumber}",
                 "shippingAddress": "配送先住所",
@@ -174,6 +180,7 @@
             "title": "アカウント設定",
             "changePassword": "パスワード変更",
             "passwordUpdated": "パスワードが正常に更新されました！",
+            "settingsUpdated": "アカウント設定が正常に更新されました！",
             "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
             "currentPassword": "現在のパスワード",
             "newPassword": "新しいパスワード",
@@ -182,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "ウィッシュリストアクション",
         "title": "ウィッシュリスト",
         "new": "新しいウィッシュリスト",
         "items": "{count, plural, =1 {1 item} other {# items}}",
@@ -249,7 +257,8 @@
     },
     "PublicWishlist": {
         "title": "公開ウィッシュリスト",
-        "defaultName": "公開ウィッシュリスト"
+        "defaultName": "公開ウィッシュリスト",
+        "emptyWishlist": "このウィッシュリストにはまだ商品がありません。"
     },
     "Blog": {
         "title": "ブログ",
