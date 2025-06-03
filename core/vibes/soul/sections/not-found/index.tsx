@@ -7,6 +7,7 @@ import { useSearch } from '~/context/search-context';
 export interface NotFoundProps {
   title?: string;
   subtitle?: string;
+  ctaLabel?: string;
   className?: string;
 }
 
@@ -27,6 +28,7 @@ export interface NotFoundProps {
 export function NotFound({
   title = 'Not found',
   subtitle = "Take a look around if you're lost.",
+  ctaLabel = 'Search',
   className = '',
 }: NotFoundProps) {
   const { setIsSearchOpen } = useSearch();
@@ -44,7 +46,7 @@ export function NotFound({
         <p className="mb-4 text-lg text-[var(--not-found-subtitle,hsl(var(--contrast-500)))]">
           {subtitle}
         </p>
-        <Button onClick={handleOpenSearch}>Search</Button>
+        <Button onClick={handleOpenSearch}>{ctaLabel}</Button>
       </header>
     </SectionLayout>
   );
