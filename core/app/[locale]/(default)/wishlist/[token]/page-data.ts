@@ -57,6 +57,7 @@ export const getPublicWishlist = cache(async (token: string, pagination: Paginat
   const response = await client.fetch({
     document: PublicWishlistQuery,
     variables: { ...paginationArgs, currencyCode, token },
+    // Since the wishlist is public, it's okay that we cache this request
     fetchOptions: { next: { revalidate, tags: [TAGS.customer] } },
   });
 
