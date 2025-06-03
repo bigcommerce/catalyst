@@ -56,24 +56,31 @@ const LogoutMutation = graphql(`
   }
 `);
 
+const cartIdSchema = z
+  .string()
+  .uuid()
+  .or(z.literal('undefined')) // auth.js seems to pass the cart id as a string literal 'undefined' when not set.
+  .optional()
+  .transform((val) => (val === 'undefined' ? undefined : val));
+
 const PasswordCredentials = z.object({
   email: z.string().email(),
   password: z.string().min(1),
-  cartId: z.string().optional(),
+  cartId: cartIdSchema,
 });
 
 const AnonymousCredentials = z.object({
-  cartId: z.string().optional(),
+  cartId: cartIdSchema,
 });
 
 const JwtCredentials = z.object({
   jwt: z.string(),
-  cartId: z.string().optional(),
+  cartId: cartIdSchema,
 });
 
 const SessionUpdate = z.object({
   user: z.object({
-    cartId: z.string().nullable().optional(),
+    cartId: cartIdSchema,
   }),
 });
 
