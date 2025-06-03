@@ -147,6 +147,8 @@ export const Header = async () => {
         searchHref: '/search',
         searchParamName: 'term',
         searchAction: search,
+        searchInputPlaceholder: t('Search.inputPlaceholder'),
+        searchSubmitLabel: t('Search.submitLabel'),
         links: streamableLinks,
         logo,
         mobileMenuTriggerLabel: t('toggleNavigation'),

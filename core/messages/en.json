@@ -445,7 +445,9 @@
         "brands": "Brands",
         "noSearchResultsTitle": "Sorry, no results for \"{term}\".",
         "noSearchResultsSubtitle": "Please try another search.",
-        "somethingWentWrong": "Something went wrong. Please try again."
+        "somethingWentWrong": "Something went wrong. Please try again.",
+        "inputPlaceholder": "Search products, categories, brands...",
+        "submitLabel": "Search"
       }
     },
     "Footer": {

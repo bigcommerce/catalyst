@@ -111,8 +111,8 @@ interface Props<S extends SearchResult> {
   searchHref: string;
   searchParamName?: string;
   searchAction?: SearchAction<S>;
-  searchCtaLabel?: string;
   searchInputPlaceholder?: string;
+  searchSubmitLabel?: string;
   cartLabel?: string;
   accountLabel?: string;
   openSearchPopupLabel?: string;
@@ -277,8 +277,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     searchHref,
     searchParamName = 'query',
     searchAction,
-    searchCtaLabel,
     searchInputPlaceholder,
+    searchSubmitLabel,
     cartLabel = 'Cart',
     accountLabel = 'Profile',
     openSearchPopupLabel = 'Open search popup',
@@ -524,10 +524,10 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
                     <SearchForm
                       searchAction={searchAction}
-                      searchCtaLabel={searchCtaLabel}
                       searchHref={searchHref}
                       searchInputPlaceholder={searchInputPlaceholder}
                       searchParamName={searchParamName}
+                      searchSubmitLabel={searchSubmitLabel}
                     />
                   </div>
                 </Popover.Content>
@@ -603,15 +603,13 @@ function SearchForm<S extends SearchResult>({
   searchParamName = 'query',
   searchHref = '/search',
   searchInputPlaceholder = 'Search Products',
-  searchCtaLabel = 'View more',
-  submitLabel = 'Submit',
+  searchSubmitLabel = 'Submit',
 }: {
   searchAction: SearchAction<S>;
   searchParamName?: string;
   searchHref?: string;
-  searchCtaLabel?: string;
   searchInputPlaceholder?: string;
-  submitLabel?: string;
+  searchSubmitLabel?: string;
 }) {
   const [query, setQuery] = useState('');
   const [isSearching, startSearching] = useTransition();
@@ -672,7 +670,7 @@ function SearchForm<S extends SearchResult>({
           type="text"
           value={query}
         />
-        <SubmitButton loading={isPending} submitLabel={submitLabel} />
+        <SubmitButton loading={isPending} submitLabel={searchSubmitLabel} />
       </form>
 
       <SearchResults
@@ -680,7 +678,6 @@ function SearchForm<S extends SearchResult>({
         emptySearchTitle={emptyStateTitle}
         errors={form.errors}
         query={query}
-        searchCtaLabel={searchCtaLabel}
         searchParamName={searchParamName}
         searchResults={searchResults}
         stale={isPending}
@@ -715,7 +712,6 @@ function SearchResults({
 }: {
   query: string;
   searchParamName: string;
-  searchCtaLabel?: string;
   emptySearchTitle?: string;
   emptySearchSubtitle?: string;
   searchResults: SearchResult[] | null;
