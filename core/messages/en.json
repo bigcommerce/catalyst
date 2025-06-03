@@ -423,7 +423,8 @@
   "NotFound": {
     "title": "We couldn't find that page!",
     "subtitle": "Try searching for something else or go back to the home page.",
-    "featuredProducts": "Featured products"
+    "featuredProducts": "Featured products",
+    "search": "Search"
   },
   "Components": {
     "Header": {
