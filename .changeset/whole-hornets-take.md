@@ -1,38 +1,58 @@
-'use server';
+---
+"@bigcommerce/catalyst-core": patch
+---
 
-import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
-import { parseWithZod } from '@conform-to/zod';
-import { getTranslations } from 'next-intl/server';
+Add toast message when changing password
 
-import { ChangePasswordAction } from '@/vibes/soul/sections/account-settings/change-password-form';
-import { changePasswordSchema } from '@/vibes/soul/sections/account-settings/schema';
-import { getSessionCustomerAccessToken } from '~/auth';
-import { client } from '~/client';
-import { graphql } from '~/client/graphql';
+## Migration
 
-const CustomerChangePasswordMutation = graphql(`
-  mutation CustomerChangePasswordMutation($input: ChangePasswordInput!) {
-    customer {
-      changePassword(input: $input) {
-        errors {
-          ... on ValidationError {
-            message
-            path
-          }
-          ... on CustomerDoesNotExistError {
-            message
-          }
-          ... on CustomerPasswordError {
-            message
-          }
-          ... on CustomerNotLoggedInError {
-            message
-          }
-        }
-      }
+### `core/vibes/soul/sections/account-settings/change-password-form.tsx`
+
+1. Import `toast`:
+
+```ts
+import { toast } from '@/vibes/soul/primitives/toaster';
+```
+
+2. Update the `ChangePasswordAction` types:
+
+```ts
+type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
+
+interface State {
+  lastResult: SubmissionResult | null;
+  successMessage?: string;
+}
+
+export type ChangePasswordAction = Action<State, FormData>;
+```
+
+3. Update the `useActionState` hook:
+
+```ts
+const [state, formAction] = useActionState(action, { lastResult: null });
+```
+
+4. Update the `useEffect` hook to display a toast message on success:
+
+```ts
+  useEffect(() => {
+    if (state.lastResult?.status === 'success' && state.successMessage != null) {
+      toast.success(state.successMessage);
     }
-  }
-`);
+
+    if (state.lastResult?.error) {
+      // eslint-disable-next-line no-console
+      console.log(state.lastResult.error);
+    }
+  }, [state]);
+```
+
+### `core/app/[locale]/(default)/account/settings/_actions/change-password.ts`
+
+Update all of the `return` values to match the new `ChangePasswordAction` interface, and return the `passwordUpdated` message on success.
+
+```ts
 
 export const changePassword: ChangePasswordAction = async (prevState, formData) => {
   const t = await getTranslations('Account.Settings');
@@ -91,3 +111,4 @@ export const changePassword: ChangePasswordAction = async (prevState, formData) 
     return { lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }) };
   }
 };
+```
