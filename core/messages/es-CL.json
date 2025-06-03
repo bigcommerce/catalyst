@@ -50,6 +50,8 @@
             "heading": "Inicio de sesión",
             "forgotPassword": "¿Olvidaste tu contraseña?",
             "cta": "Inicio de sesión",
+            "email": "Correo electrónico",
+            "password": "Contraseña",
             "invalidCredentials": "Tu dirección de correo electrónico o tu contraseña son incorrectas. Intenta iniciar sesión de nuevo o restablece tu contraseña",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Núm. de pedido",
             "totalPrice": "Total",
             "viewDetails": "Ver detalles",
+            "emptyState": {
+                "title": "No tienes ningún pedido",
+                "cta": "Comprar ahora"
+            },
             "Details": {
                 "title": "Pedido núm.{orderNumber}",
                 "shippingAddress": "Dirección de envío",
@@ -174,6 +180,7 @@
             "title": "CONFIGURACIÓN DE CUENTA",
             "changePassword": "Cambiar contraseña",
             "passwordUpdated": "¡La contraseña se actualizó correctamente!",
+            "settingsUpdated": "La configuración de la cuenta se actualizó correctamente.",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
             "currentPassword": "Contraseña actual",
             "newPassword": "Nueva contraseña",
@@ -182,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Acciones de la lista de deseos",
         "title": "Listas de deseos",
         "new": "Nueva lista de deseos",
         "items": "{count, plural, =1 {1 artículo} other {# artículos}}",
@@ -249,7 +257,8 @@
     },
     "PublicWishlist": {
         "title": "Lista de deseos pública",
-        "defaultName": "Lista pública de deseos"
+        "defaultName": "Lista pública de deseos",
+        "emptyWishlist": "Aún no hay productos en esta lista de deseos."
     },
     "Blog": {
         "title": "Blog",
