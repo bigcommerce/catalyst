@@ -86,6 +86,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
+    locale?: string;
     errorPolicy?: GraphQLErrorPolicy;
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>>;
@@ -97,6 +98,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
+    locale?: string;
     errorPolicy?: GraphQLErrorPolicy;
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>>;
@@ -107,6 +109,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken,
     fetchOptions = {} as FetcherRequestInit,
     channelId,
+    locale,
     errorPolicy = 'none',
     validateCustomerAccessToken = true,
   }: {
@@ -115,6 +118,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
+    locale?: string;
     errorPolicy?: GraphQLErrorPolicy;
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>> {
@@ -142,6 +146,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
           'X-Bc-Error-On-Invalid-Customer-Access-Token': 'true',
         }),
         ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
+        ...(locale && { 'Accept-Language': locale }),
         ...Object.fromEntries(new Headers(additionalFetchHeaders).entries()),
         ...Object.fromEntries(new Headers(headers).entries()),
       },
