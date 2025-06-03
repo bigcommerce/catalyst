@@ -86,7 +86,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
-    locale?: string;
     errorPolicy?: GraphQLErrorPolicy;
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>>;
@@ -98,7 +97,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
-    locale?: string;
     errorPolicy?: GraphQLErrorPolicy;
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>>;
@@ -109,7 +107,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken,
     fetchOptions = {} as FetcherRequestInit,
     channelId,
-    locale,
     errorPolicy = 'none',
     validateCustomerAccessToken = true,
   }: {
@@ -118,7 +115,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     customerAccessToken?: string;
     fetchOptions?: FetcherRequestInit;
     channelId?: string;
-    locale?: string;
     errorPolicy?: GraphQLErrorPolicy;
     validateCustomerAccessToken?: boolean;
   }): Promise<BigCommerceResponse<TResult>> {
@@ -147,7 +143,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
         }),
         ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
         ...Object.fromEntries(new Headers(additionalFetchHeaders).entries()),
-        ...(locale && { 'Accept-Language': locale }), // @todo should this override `fetchOptions.headers`?
         ...Object.fromEntries(new Headers(headers).entries()),
       },
       body: JSON.stringify({

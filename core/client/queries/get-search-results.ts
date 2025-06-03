@@ -47,8 +47,10 @@ export const getSearchResults = cache(async (searchTerm: string, locale?: string
       document: GetQuickSearchResultsQuery,
       variables: { filters: { searchTerm } },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-      locale,
+      fetchOptions: {
+        ...(locale && { headers: { 'Accept-Language': locale } }),
+        ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
+      },
     });
 
     const { products } = response.data.site.search.searchProducts;
