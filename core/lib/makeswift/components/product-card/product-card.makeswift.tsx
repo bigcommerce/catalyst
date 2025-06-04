@@ -1,6 +1,7 @@
 'use client';
 
 import { Checkbox, Combobox, Group, Select, Style, TextInput } from '@makeswift/runtime/controls';
+import { useLocale } from 'next-intl';
 import useSWR from 'swr';
 
 import { runtime } from '~/lib/makeswift/runtime';
@@ -23,10 +24,13 @@ interface Props {
 
 function MakeswiftProductCard({ className, entityId, badge, ...props }: Props) {
   const bcProductToVibesProduct = useBcProductToVibesProduct();
-  const { data, isLoading } = useSWR(entityId ? `/api/products/${entityId}` : null, async (url) =>
-    fetch(url)
-      .then((r) => r.json())
-      .then(BcProductSchema.parse),
+  const locale = useLocale();
+  const { data, isLoading } = useSWR(
+    entityId ? `/api/products/${entityId}?locale=${locale}` : null,
+    async (url) =>
+      fetch(url)
+        .then((r) => r.json())
+        .then(BcProductSchema.parse),
   );
 
   if (entityId == null || isLoading || data == null) {

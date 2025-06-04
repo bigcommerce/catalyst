@@ -1,4 +1,9 @@
+'use server';
+
+import { getLocale } from 'next-intl/server';
 import { z } from 'zod';
+
+import { getSearchResults } from '~/client/queries/get-search-results';
 
 import { BcProductSchema } from './use-bc-product-to-vibes-product/use-bc-product-to-vibes-product';
 
@@ -7,9 +12,9 @@ const SearchResponseSchema = z.object({
 });
 
 export async function searchProducts(query: string): Promise<BcProductSchema[]> {
-  const response = await fetch(`/api/products?search=${query}`)
-    .then((r) => r.json())
-    .then(SearchResponseSchema.parse);
+  const locale = await getLocale();
 
-  return response.data?.products ?? [];
+  const result = await getSearchResults(query, locale).then(SearchResponseSchema.parse);
+
+  return result.data?.products ?? [];
 }

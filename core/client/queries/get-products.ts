@@ -2,6 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
+import { getChannelIdFromLocale } from '~/channels.config';
 import { client } from '~/client';
 import { graphql, ResultOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -114,16 +115,21 @@ export type GetProductsResponse = Array<
   >[number]['node']
 >;
 
-const getBestSellingProducts = cache(async () => {
+const getBestSellingProducts = cache(async ({ locale }: { locale?: string }) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const currencyCode = await getPreferredCurrencyCode();
+  const channelId = getChannelIdFromLocale(locale);
 
   try {
     const response = await client.fetch({
       document: GetBestSellingProductsQuery,
       customerAccessToken,
       variables: { currencyCode },
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      channelId,
+      fetchOptions: {
+        ...(locale && { headers: { 'Accept-Language': locale } }),
+        ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
+      },
     });
 
     const { bestSellingProducts } = response.data.site;
@@ -141,16 +147,21 @@ const getBestSellingProducts = cache(async () => {
   }
 });
 
-const getFeaturedProducts = cache(async () => {
+const getFeaturedProducts = cache(async ({ locale }: { locale?: string }) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const currencyCode = await getPreferredCurrencyCode();
+  const channelId = getChannelIdFromLocale(locale);
 
   try {
     const response = await client.fetch({
       document: GetFeaturedProductsQuery,
       customerAccessToken,
       variables: { currencyCode },
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      channelId,
+      fetchOptions: {
+        ...(locale && { headers: { 'Accept-Language': locale } }),
+        ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
+      },
     });
 
     const { featuredProducts } = response.data.site;
@@ -168,16 +179,21 @@ const getFeaturedProducts = cache(async () => {
   }
 });
 
-const getNewestProducts = cache(async () => {
+const getNewestProducts = cache(async ({ locale }: { locale?: string }) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
   const currencyCode = await getPreferredCurrencyCode();
+  const channelId = getChannelIdFromLocale(locale);
 
   try {
     const response = await client.fetch({
       document: GetNewestProductsQuery,
       customerAccessToken,
       variables: { currencyCode },
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      channelId,
+      fetchOptions: {
+        ...(locale && { headers: { 'Accept-Language': locale } }),
+        ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
+      },
     });
 
     const { newestProducts } = response.data.site;
@@ -195,31 +211,36 @@ const getNewestProducts = cache(async () => {
   }
 });
 
-const getProductsByIds = cache(async (entityIds: number[]) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-  const currencyCode = await getPreferredCurrencyCode();
+const getProductsByIds = cache(
+  async ({ entityIds, locale }: { entityIds: number[]; locale?: string }) => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+    const currencyCode = await getPreferredCurrencyCode();
 
-  try {
-    const response = await client.fetch({
-      document: GetProductsByIds,
-      variables: { entityIds, currencyCode },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+    try {
+      const response = await client.fetch({
+        document: GetProductsByIds,
+        variables: { entityIds, currencyCode },
+        customerAccessToken,
+        fetchOptions: {
+          ...(locale && { headers: { 'Accept-Language': locale } }),
+          ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
+        },
+      });
 
-    const { products } = response.data.site;
+      const { products } = response.data.site;
 
-    return {
-      status: 'success',
-      products: removeEdgesAndNodes(products),
-    };
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return { status: 'error', error: error.message };
+      return {
+        status: 'success',
+        products: removeEdgesAndNodes(products),
+      };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { status: 'error', error: error.message };
+      }
+
+      return { status: 'error', error: 'Something went wrong. Please try again.' };
     }
-
-    return { status: 'error', error: 'Something went wrong. Please try again.' };
-  }
-});
+  },
+);
 
 export { getBestSellingProducts, getFeaturedProducts, getNewestProducts, getProductsByIds };
