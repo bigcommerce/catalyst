@@ -30,7 +30,12 @@ interface CompareDrawerContext {
   maxItems?: number;
 }
 
-export const CompareDrawerContext = createContext<CompareDrawerContext | undefined>(undefined);
+export const CompareDrawerContext = createContext<CompareDrawerContext>({
+  optimisticItems: [],
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  setOptimisticItems: () => {},
+  maxItems: 0,
+});
 
 export function CompareDrawerProvider({
   children,
@@ -85,13 +90,7 @@ export function CompareDrawerProvider({
 }
 
 export function useCompareDrawer() {
-  const context = useContext(CompareDrawerContext);
-
-  if (context === undefined) {
-    throw new Error('useCompareDrawer must be used within a CompareDrawerProvider');
-  }
-
-  return context;
+  return useContext(CompareDrawerContext);
 }
 
 function getInitials(name: string): string {
