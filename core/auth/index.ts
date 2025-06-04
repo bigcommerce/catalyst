@@ -5,7 +5,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
-import { clearAnonymousSession } from '~/auth/anonymous-session';
+import { anonymousSignIn, clearAnonymousSession } from '~/auth/anonymous-session';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { clearCartId, setCartId } from '~/lib/cart';
@@ -50,9 +50,14 @@ const LoginWithTokenMutation = graphql(`
 `);
 
 const LogoutMutation = graphql(`
-  mutation LogoutMutation {
-    logout {
+  mutation LogoutMutation($cartEntityId: String) {
+    logout(cartEntityId: $cartEntityId) {
       result
+      cartUnassignResult {
+        cart {
+          entityId
+        }
+      }
     }
   }
 `);
@@ -228,19 +233,33 @@ const config = {
   },
   events: {
     async signOut(message) {
+      const cartEntityId = 'token' in message ? message.token?.user?.cartId : null;
       const customerAccessToken =
         'token' in message ? message.token?.user?.customerAccessToken : null;
 
       if (customerAccessToken) {
         try {
-          await client.fetch({
+          const logoutResponse = await client.fetch({
             document: LogoutMutation,
-            variables: {},
+            variables: {
+              cartEntityId,
+            },
             customerAccessToken,
             fetchOptions: {
               cache: 'no-store',
             },
           });
+
+          // If the logout is successful, we want to establish a new anonymous session.
+          // This will allow us to restore the cart if persistent cart is disabled.
+          await anonymousSignIn();
+
+          // If persistent cart is disabled, we can restore the cart back to the anonymous session.
+          if (logoutResponse.data.logout.cartUnassignResult.cart) {
+            await setCartId(logoutResponse.data.logout.cartUnassignResult.cart.entityId);
+
+            return;
+          }
 
           await clearCartId();
         } catch (error) {
