@@ -5,6 +5,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
+import { clearAnonymousSession } from '~/auth/anonymous-session';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { clearCartId, setCartId } from '~/lib/cart';
@@ -69,10 +70,6 @@ const PasswordCredentials = z.object({
   cartId: cartIdSchema,
 });
 
-const AnonymousCredentials = z.object({
-  cartId: cartIdSchema,
-});
-
 const JwtCredentials = z.object({
   jwt: z.string(),
   cartId: cartIdSchema,
@@ -122,6 +119,7 @@ async function loginWithPassword(credentials: unknown): Promise<User | null> {
   }
 
   await handleLoginCart(cartId, result.cart?.entityId);
+  await clearAnonymousSession();
 
   return {
     name: `${result.customer.firstName} ${result.customer.lastName}`,
@@ -157,6 +155,7 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
   }
 
   await handleLoginCart(cartId, result.cart?.entityId);
+  await clearAnonymousSession();
 
   return {
     name: `${result.customer.firstName} ${result.customer.lastName}`,
@@ -164,14 +163,6 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
     customerAccessToken: result.customerAccessToken.value,
     impersonatorId,
     cartId: result.cart?.entityId,
-  };
-}
-
-function loginWithAnonymous(credentials: unknown): User | null {
-  const { cartId } = AnonymousCredentials.parse(credentials);
-
-  return {
-    cartId: cartId ?? null,
   };
 }
 
@@ -270,13 +261,6 @@ const config = {
       authorize: loginWithPassword,
     }),
     CredentialsProvider({
-      id: 'anonymous',
-      credentials: {
-        cartId: { type: 'text' },
-      },
-      authorize: loginWithAnonymous,
-    }),
-    CredentialsProvider({
       id: 'jwt',
       credentials: {
         jwt: { type: 'text' },
@@ -304,3 +288,10 @@ export const isLoggedIn = async () => {
 
   return Boolean(cat);
 };
+
+export {
+  anonymousSignIn,
+  clearAnonymousSession,
+  getAnonymousSession,
+  updateAnonymousSession,
+} from './anonymous-session';
