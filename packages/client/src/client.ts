@@ -16,7 +16,6 @@ export const adminApiHostname: string =
 interface Config<FetcherRequestInit extends RequestInit = RequestInit> {
   storeHash: string;
   storefrontToken: string;
-  xAuthToken: string;
   channelId?: string;
   platform?: string;
   backendUserAgentExtensions?: string;
@@ -189,27 +188,6 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     // If errorPolicy is 'all', we return the errors with the data
     return result;
-  }
-
-  async fetchShippingZones() {
-    const response = await fetch(
-      `https://${adminApiHostname}/stores/${this.config.storeHash}/v2/shipping/zones`,
-      {
-        method: 'GET',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json',
-          'X-Auth-Token': this.config.xAuthToken,
-          'User-Agent': this.backendUserAgent,
-        },
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(`Unable to get Shipping Zones: ${response.statusText}`);
-    }
-
-    return response.json();
   }
 
   async fetchSitemapIndex(channelId?: string): Promise<string> {
