@@ -32,6 +32,12 @@ const RegisterCustomerQuery = graphql(
           }
         }
       }
+      geography {
+        countries {
+          code
+          name
+        }
+      }
     }
   `,
   [FormFieldsFragment],
@@ -68,6 +74,7 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
 
   const addressFields = response.data.site.settings?.formFields.shippingAddress;
   const customerFields = response.data.site.settings?.formFields.customer;
+  const countries = response.data.geography.countries;
 
   const reCaptchaSettings = await bypassReCaptcha(response.data.site.settings?.reCaptcha);
 
@@ -79,5 +86,6 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
     addressFields,
     customerFields,
     reCaptchaSettings,
+    countries,
   };
 });

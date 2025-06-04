@@ -14,6 +14,11 @@ test('Registration works as expected', { tag: [TAGS.writesData] }, async ({ page
     prefix: '1At!',
     length: 10,
   });
+  const phone = faker.phone.number({ style: 'national' });
+  const streetAddress = faker.location.streetAddress();
+  const city = faker.location.city();
+  const state = faker.location.state();
+  const postalCode = faker.location.zipCode();
 
   await page.goto('/register');
   await page.getByRole('heading', { name: t('Auth.Register.heading') }).waitFor();
@@ -24,6 +29,15 @@ test('Registration works as expected', { tag: [TAGS.writesData] }, async ({ page
   await page.getByLabel('Email Address').fill(email);
   await page.getByLabel('Password', { exact: true }).fill(password);
   await page.getByLabel('Confirm Password').fill(password);
+  await page.getByLabel('Phone').fill(phone);
+  await page.getByLabel('Address Line 1').fill(streetAddress);
+  await page.getByLabel('Suburb/City').fill(city);
+  await page.getByLabel('State/Province').fill(state);
+  await page.getByLabel('Zip/Postcode').fill(postalCode);
+  await page.getByRole('combobox', { name: 'Country' }).click();
+  await page.keyboard.type('United States');
+  await page.keyboard.press('Enter');
+  await page.getByRole('radio', { name: 'Home' }).click();
   await page.getByRole('button', { name: t('Auth.Register.cta') }).click();
 
   await expect(page).toHaveURL('/account/orders/');
@@ -47,6 +61,11 @@ test('Registration fails if email is already in use', async ({ page, customer })
     prefix: '1At!',
     length: 10,
   });
+  const phone = faker.phone.number({ style: 'national' });
+  const streetAddress = faker.location.streetAddress();
+  const city = faker.location.city();
+  const state = faker.location.state();
+  const postalCode = faker.location.zipCode();
 
   await page.goto('/register');
   await page.getByRole('heading', { name: t('heading') }).waitFor();
@@ -57,6 +76,15 @@ test('Registration fails if email is already in use', async ({ page, customer })
   await page.getByLabel('Email Address').fill(email);
   await page.getByLabel('Password', { exact: true }).fill(password);
   await page.getByLabel('Confirm Password').fill(password);
+  await page.getByLabel('Phone').fill(phone);
+  await page.getByLabel('Address Line 1').fill(streetAddress);
+  await page.getByLabel('Suburb/City').fill(city);
+  await page.getByLabel('State/Province').fill(state);
+  await page.getByLabel('Zip/Postcode').fill(postalCode);
+  await page.getByRole('combobox', { name: 'Country' }).click();
+  await page.keyboard.type('United States');
+  await page.keyboard.press('Enter');
+  await page.getByRole('radio', { name: 'Home' }).click();
   await page.getByRole('button', { name: t('cta') }).click();
 
   await expect(page).not.toHaveURL('/account/orders/');

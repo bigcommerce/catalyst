@@ -6,14 +6,17 @@ import { FormFieldsFragment } from './fragment';
 import { FieldNameToFieldId } from './utils';
 
 export const formFieldTransformer = (
-  field: FragmentOf<typeof FormFieldsFragment>,
+  field: FragmentOf<typeof FormFieldsFragment> & { name?: string },
 ): Field | null => {
+  // If the field name is provided, use it; otherwise, fallback to the entityId mapped name or label.
+  const name = field.name ?? FieldNameToFieldId[Number(field.entityId)] ?? field.label;
+
   switch (field.__typename) {
     case 'CheckboxesFormField':
       return {
         id: String(field.entityId),
         type: 'checkbox-group',
-        name: String(field.entityId),
+        name,
         label: field.label,
         required: field.isRequired,
         options: field.options.map((option) => ({
@@ -26,7 +29,7 @@ export const formFieldTransformer = (
       return {
         id: String(field.entityId),
         type: 'date',
-        name: String(field.entityId),
+        name,
         label: field.label,
         required: field.isRequired,
         minDate: field.minDate ?? undefined,
@@ -37,7 +40,7 @@ export const formFieldTransformer = (
       return {
         id: String(field.entityId),
         type: 'textarea',
-        name: String(field.entityId),
+        name,
         label: field.label,
         required: field.isRequired,
       };
@@ -46,7 +49,7 @@ export const formFieldTransformer = (
       return {
         id: String(field.entityId),
         type: 'number',
-        name: String(field.entityId),
+        name,
         label: field.label,
         required: field.isRequired,
       };
@@ -56,7 +59,7 @@ export const formFieldTransformer = (
         id: String(field.entityId),
         type:
           field.entityId === FieldNameToFieldId.confirmPassword ? 'confirm-password' : 'password',
-        name: String(field.entityId),
+        name,
         label: field.label,
         required: field.isRequired,
       };
@@ -66,7 +69,7 @@ export const formFieldTransformer = (
         return {
           id: String(field.entityId),
           type: 'select',
-          name: String(field.entityId),
+          name,
           label: field.label,
           required: field.isRequired,
           options: field.options.map((option) => ({
@@ -79,7 +82,7 @@ export const formFieldTransformer = (
       return {
         id: String(field.entityId),
         type: 'button-radio-group',
-        name: String(field.entityId),
+        name,
         label: field.label,
         required: field.isRequired,
         options: field.options.map((option) => ({
@@ -92,7 +95,7 @@ export const formFieldTransformer = (
       return {
         id: String(field.entityId),
         type: 'radio-group',
-        name: String(field.entityId),
+        name,
         label: field.label,
         required: field.isRequired,
         options: field.options.map((option) => ({
@@ -106,7 +109,7 @@ export const formFieldTransformer = (
       return {
         id: String(field.entityId),
         type: field.entityId === FieldNameToFieldId.email ? 'email' : 'text',
-        name: String(field.entityId),
+        name,
         label: field.label,
         required: field.isRequired,
       };
@@ -114,17 +117,6 @@ export const formFieldTransformer = (
     default:
       return null;
   }
-};
-
-// TODO: See if we can merge this is with the above function
-// Will require testing and refactoring of register customer functionality
-export const fieldToFieldNameTransformer = (field: Field): Field => {
-  const name = FieldNameToFieldId[Number(field.name)];
-
-  return {
-    ...field,
-    name: name ?? (field.label || field.name),
-  };
 };
 
 export const injectCountryCodeOptions = (
