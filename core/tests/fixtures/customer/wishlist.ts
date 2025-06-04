@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-type WishlistData = z.infer<typeof Wishlist.schema>;
-
 export class Wishlist {
   static readonly schema = z.object({
     id: z.number(),
@@ -18,6 +16,18 @@ export class Wishlist {
     ),
   });
 
+  static readonly createSchema = z.object({
+    customer_id: z.number(),
+    name: z.string(),
+    is_public: z.boolean(),
+    items: z.array(
+      z.object({
+        product_id: z.number(),
+        variant_id: z.number().optional(),
+      }),
+    ),
+  });
+
   constructor(
     readonly id: number,
     readonly customerId: number,
@@ -27,7 +37,7 @@ export class Wishlist {
     readonly items: Array<{ id: number; productId: number; variantId?: number }>,
   ) {}
 
-  static fromApiResponse(data: WishlistData): Wishlist {
+  static fromApiResponse(data: z.infer<typeof Wishlist.schema>): Wishlist {
     return new Wishlist(
       data.id,
       data.customer_id,
