@@ -1,7 +1,9 @@
+import { cache } from 'react';
+
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
-import { FragmentOf, graphql, VariablesOf } from '~/client/graphql';
-import { getShippingZones } from '~/client/management/get-shipping-zones';
+import { graphql, VariablesOf } from '~/client/graphql';
+import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
 
 export const PhysicalItemFragment = graphql(`
@@ -262,18 +264,34 @@ export const getCart = async (variables: Variables) => {
   return data;
 };
 
-export const getShippingCountries = async (geography: FragmentOf<typeof GeographyFragment>) => {
-  const hasAccessToken = Boolean(process.env.BIGCOMMERCE_ACCESS_TOKEN);
-  const shippingZones = hasAccessToken ? await getShippingZones() : [];
-  const countries = geography.countries ?? [];
+const SupportedShippingDestinationsQuery = graphql(`
+  query SupportedShippingDestinations {
+    site {
+      settings {
+        shipping {
+          supportedShippingDestinations {
+            countries {
+              entityId
+              code
+              name
+              statesOrProvinces {
+                entityId
+                name
+                abbreviation
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
 
-  const uniqueCountryZones = new Set(
-    shippingZones.map((zone) => zone.locations.map((location) => location.country_iso2)).flat(),
-  );
-
-  return countries.filter((countryDetails) => {
-    const isCountryInTheList = uniqueCountryZones.has(countryDetails.code);
-
-    return isCountryInTheList || !hasAccessToken;
+export const getShippingCountries = cache(async () => {
+  const { data } = await client.fetch({
+    document: SupportedShippingDestinationsQuery,
+    fetchOptions: { next: { revalidate } },
   });
-};
+
+  return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];
+});
