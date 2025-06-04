@@ -3,17 +3,7 @@ import { z } from 'zod';
 
 import { testEnv } from '~/tests/environment';
 
-import { Address, AddressCreateData } from './address';
-
-type RequiredCreateFields = 'first_name' | 'last_name' | 'email';
-type CustomerData = z.infer<typeof Customer.schema>;
-type CustomerCreateData = PartialRequired<
-  Omit<CustomerData, 'addresses'> & {
-    authentication?: { new_password: string };
-    addresses?: AddressCreateData[];
-  },
-  RequiredCreateFields
->;
+import { Address } from './address';
 
 export class Customer {
   static readonly schema = z.object({
@@ -29,6 +19,24 @@ export class Customer {
     phone: z.string().optional(),
     origin_channel_id: z.number(),
     channel_ids: z.nullable(z.array(z.number())),
+  });
+
+  static readonly createSchema = z.object({
+    addresses: z.array(Address.createSchema).optional(),
+    authentication: z
+      .object({
+        new_password: z.string(),
+      })
+      .optional(),
+    company: z.string().optional(),
+    customer_group_id: z.number().optional(),
+    email: z.string(),
+    first_name: z.string(),
+    last_name: z.string(),
+    notes: z.string().optional(),
+    phone: z.string().optional(),
+    origin_channel_id: z.number(),
+    channel_ids: z.nullable(z.array(z.number())).optional(),
   });
 
   constructor(
@@ -47,7 +55,10 @@ export class Customer {
     readonly phone?: string,
   ) {}
 
-  static fakeCreateData(password: string, createFakeAddress?: boolean): CustomerCreateData {
+  static fakeCreateData(
+    password: string,
+    createFakeAddress?: boolean,
+  ): z.infer<typeof Customer.createSchema> {
     const firstName = faker.person.firstName();
     const lastName = faker.person.lastName();
     const email = faker.internet.email({ firstName, lastName, provider: 'example.com' });
@@ -66,7 +77,7 @@ export class Customer {
     };
   }
 
-  static fromApiResponse(data: CustomerData, password?: string): Customer {
+  static fromApiResponse(data: z.infer<typeof Customer.schema>, password?: string): Customer {
     return new Customer(
       data.id,
       data.email,

@@ -1,18 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { z } from 'zod';
 
-type RequiredCreateFields =
-  | 'first_name'
-  | 'last_name'
-  | 'address1'
-  | 'city'
-  | 'state_or_province'
-  | 'country_code'
-  | 'postal_code';
-
-type AddressData = z.infer<typeof Address.schema>;
-export type AddressCreateData = PartialRequired<AddressData, RequiredCreateFields>;
-
 export class Address {
   static readonly schema = z.object({
     id: z.number(),
@@ -29,6 +17,17 @@ export class Address {
     phone: z.string().optional(),
     postal_code: z.string(),
     state_or_province: z.string().optional(),
+  });
+
+  static readonly createSchema = z.object({
+    customer_id: z.number().optional(),
+    first_name: z.string(),
+    last_name: z.string(),
+    address1: z.string(),
+    city: z.string(),
+    state_or_province: z.string(),
+    country_code: z.string(),
+    postal_code: z.string(),
   });
 
   constructor(
@@ -56,7 +55,7 @@ export class Address {
     firstName?: string;
     lastName?: string;
     customerId?: number;
-  }): AddressCreateData {
+  }): z.infer<typeof Address.createSchema> {
     const first = firstName ?? faker.person.firstName();
     const last = lastName ?? faker.person.lastName();
     const address1 = faker.location.streetAddress();
@@ -76,7 +75,7 @@ export class Address {
     };
   }
 
-  static fromApiResponse(data: AddressData) {
+  static fromApiResponse(data: z.infer<typeof Address.schema>) {
     return new Address(
       data.id,
       data.address1,

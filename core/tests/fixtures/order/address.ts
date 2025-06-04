@@ -1,17 +1,6 @@
 import { faker } from '@faker-js/faker';
 import { z } from 'zod';
 
-type RequiredCreateFields =
-  | 'first_name'
-  | 'last_name'
-  | 'street_1'
-  | 'state'
-  | 'country_iso2'
-  | 'zip';
-
-type OrderAddressData = z.infer<typeof OrderAddress.schema>;
-export type OrderAddressCreateData = PartialRequired<OrderAddressData, RequiredCreateFields>;
-
 export class OrderAddress {
   static readonly schema = z.object({
     first_name: z.string(),
@@ -23,6 +12,21 @@ export class OrderAddress {
     state: z.string().optional(),
     zip: z.string(),
     country: z.string(),
+    country_iso2: z.string(),
+    phone: z.string().optional(),
+    email: z.string().optional(),
+  });
+
+  static readonly createSchema = z.object({
+    first_name: z.string(),
+    last_name: z.string(),
+    company: z.string().optional(),
+    street_1: z.string(),
+    street_2: z.string().optional(),
+    city: z.string().optional(),
+    state: z.string().optional(),
+    zip: z.string(),
+    country: z.string().optional(),
     country_iso2: z.string(),
     phone: z.string().optional(),
     email: z.string().optional(),
@@ -47,7 +51,7 @@ export class OrderAddress {
     email?: string,
     firstName?: string,
     lastName?: string,
-  ): OrderAddressCreateData {
+  ): z.infer<typeof OrderAddress.createSchema> {
     const first = firstName ?? faker.person.firstName();
     const last = lastName ?? faker.person.lastName();
     const street1 = faker.location.streetAddress();
@@ -68,7 +72,7 @@ export class OrderAddress {
     };
   }
 
-  static fromApiResponse(data: OrderAddressData): OrderAddress {
+  static fromApiResponse(data: z.infer<typeof OrderAddress.schema>): OrderAddress {
     return new OrderAddress(
       data.first_name,
       data.last_name,
