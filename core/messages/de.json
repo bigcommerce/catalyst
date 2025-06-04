@@ -423,7 +423,8 @@
     "NotFound": {
         "title": "Wir konnten diese Seite nicht finden!",
         "subtitle": "Versuchen Sie, nach etwas anderem zu suchen oder zur Startseite zurückzukehren.",
-        "featuredProducts": "Empfohlene Produkte"
+        "featuredProducts": "Empfohlene Produkte",
+        "search": "Suchen"
     },
     "Components": {
         "Header": {
@@ -444,7 +445,9 @@
                 "brands": "Marken",
                 "noSearchResultsTitle": "Leider gibt es keine Ergebnisse für „{term}“.",
                 "noSearchResultsSubtitle": "Bitte versuchen Sie es mit einer anderen Suchanfrage.",
-                "somethingWentWrong": "Es ist etwas schiefgegangen. Bitte versuchen Sie es erneut."
+                "somethingWentWrong": "Es ist etwas schiefgegangen. Bitte versuchen Sie es erneut.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Suchen"
             }
         },
         "Footer": {
