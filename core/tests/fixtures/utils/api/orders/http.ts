@@ -103,29 +103,31 @@ export const ordersHttpClient: OrdersApi = {
 
     return httpClient
       .post('/v2/orders', {
-        status_id: 1,
-        channel_id: testEnv.BIGCOMMERCE_CHANNEL_ID ?? 1,
-        customer_id: customerId ?? 0,
-        billing_address: {
-          first_name: first,
-          last_name: last,
-          email: faker.internet.email({
-            firstName: first,
-            lastName: last,
-            provider: 'example.com',
-          }),
-          street_1: street1,
-          city,
-          state,
-          zip,
-          country_iso2: countryCode,
-        },
-        products: [
-          {
-            product_id: productId,
-            quantity: 1,
+        body: {
+          status_id: 1,
+          channel_id: testEnv.BIGCOMMERCE_CHANNEL_ID ?? 1,
+          customer_id: customerId ?? 0,
+          billing_address: {
+            first_name: first,
+            last_name: last,
+            email: faker.internet.email({
+              firstName: first,
+              lastName: last,
+              provider: 'example.com',
+            }),
+            street_1: street1,
+            city,
+            state,
+            zip,
+            country_iso2: countryCode,
           },
-        ],
+          products: [
+            {
+              product_id: productId,
+              quantity: 1,
+            },
+          ],
+        },
       })
       .parse(OrderSchema);
   },
