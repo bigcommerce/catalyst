@@ -80,7 +80,7 @@ export function ProductDetail<F extends Field>({
 }: ProductDetailProps<F>) {
   return (
     <section className="@container">
-      <div className="group/product-detail max-w-(--breakpoint-2xl) mx-auto w-full px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
+      <div className="group/product-detail mx-auto w-full max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
         {breadcrumbs && (
           <div className="group/breadcrumbs mb-6">
             <Breadcrumbs breadcrumbs={breadcrumbs} />

@@ -67,6 +67,13 @@ export function ButtonLink({
           medium: 'min-h-12 text-base',
           large: 'min-h-14 text-base',
         }[size],
+        shape === 'circle' &&
+          {
+            'x-small': 'min-w-8',
+            small: 'min-w-10',
+            medium: 'min-w-12',
+            large: 'min-w-14',
+          }[size],
         shape !== 'circle' &&
           {
             'x-small': 'gap-x-2 px-3 py-1.5',
@@ -78,7 +85,7 @@ export function ButtonLink({
           pill: 'rounded-full after:rounded-full',
           rounded: 'rounded-lg after:rounded-lg',
           square: 'rounded-none after:rounded-none',
-          circle: 'aspect-square rounded-full after:rounded-full',
+          circle: 'rounded-full after:rounded-full',
         }[shape],
         className,
       )}
