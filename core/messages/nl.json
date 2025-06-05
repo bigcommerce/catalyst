@@ -423,7 +423,8 @@
     "NotFound": {
         "title": "We hebben die pagina niet gevonden!",
         "subtitle": "Probeer iets anders te zoeken of ga terug naar de homepage.",
-        "featuredProducts": "Uitgelichte producten"
+        "featuredProducts": "Uitgelichte producten",
+        "search": "Zoeken"
     },
     "Components": {
         "Header": {
@@ -444,7 +445,9 @@
                 "brands": "Merken",
                 "noSearchResultsTitle": "Sorry, geen resultaten voor '{term}'.",
                 "noSearchResultsSubtitle": "Probeer een andere zoekopdracht",
-                "somethingWentWrong": "Er is iets fout gegaan. Probeer het opnieuw."
+                "somethingWentWrong": "Er is iets fout gegaan. Probeer het opnieuw.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Zoeken"
             }
         },
         "Footer": {

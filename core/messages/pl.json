@@ -423,7 +423,8 @@
     "NotFound": {
         "title": "Nie znaleziono tej strony!",
         "subtitle": "Spróbuj wyszukać coś innego lub wróć do strony głównej.",
-        "featuredProducts": "Polecane produkty"
+        "featuredProducts": "Polecane produkty",
+        "search": "Szukaj na stronie"
     },
     "Components": {
         "Header": {
@@ -444,7 +445,9 @@
                 "brands": "Marki",
                 "noSearchResultsTitle": "Brak wyników dla „{term}”.",
                 "noSearchResultsSubtitle": "Spróbuj innego wyszukiwania.",
-                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować ponownie."
+                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować ponownie.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Szukaj na stronie"
             }
         },
         "Footer": {

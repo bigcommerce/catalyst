@@ -423,7 +423,8 @@
     "NotFound": {
         "title": "そのページは見つかりませんでした！",
         "subtitle": "他のものを検索するか、ホームページに戻ってください。",
-        "featuredProducts": "おすすめ商品"
+        "featuredProducts": "おすすめ商品",
+        "search": "検索"
     },
     "Components": {
         "Header": {
@@ -444,7 +445,9 @@
                 "brands": "ブランド",
                 "noSearchResultsTitle": "申し訳ございません。「{term}」に該当する結果は見つかりませんでした。",
                 "noSearchResultsSubtitle": "別の検索をお試しください。",
-                "somethingWentWrong": "問題が発生しました。 もう一度お試しください。"
+                "somethingWentWrong": "問題が発生しました。 もう一度お試しください。",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "検索"
             }
         },
         "Footer": {

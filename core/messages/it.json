@@ -423,7 +423,8 @@
     "NotFound": {
         "title": "Non è stato possibile trovare la pagina.",
         "subtitle": "Prova a cercare qualcos'altro o torna alla home page.",
-        "featuredProducts": "Prodotti in primo piano"
+        "featuredProducts": "Prodotti in primo piano",
+        "search": "Cerca"
     },
     "Components": {
         "Header": {
@@ -444,7 +445,9 @@
                 "brands": "Marchi",
                 "noSearchResultsTitle": "Spiacenti, nessun risultato per \"{term}\".",
                 "noSearchResultsSubtitle": "Prova un'altra ricerca.",
-                "somethingWentWrong": "Si è verificato un errore. Riprova."
+                "somethingWentWrong": "Si è verificato un errore. Riprova.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Cerca"
             }
         },
         "Footer": {

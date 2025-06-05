@@ -423,7 +423,8 @@
     "NotFound": {
         "title": "Page introuvable !",
         "subtitle": "Essayez de rechercher autre chose ou revenez à la page d'accueil.",
-        "featuredProducts": "Produits en vedette"
+        "featuredProducts": "Produits en vedette",
+        "search": "Rechercher"
     },
     "Components": {
         "Header": {
@@ -444,7 +445,9 @@
                 "brands": "Marques",
                 "noSearchResultsTitle": "Désolé, aucun résultat pour « {term} ».",
                 "noSearchResultsSubtitle": "Veuillez modifier votre recherche.",
-                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer."
+                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Rechercher"
             }
         },
         "Footer": {

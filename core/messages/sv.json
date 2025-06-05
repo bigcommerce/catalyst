@@ -423,7 +423,8 @@
     "NotFound": {
         "title": "Vi kunde inte hitta den sidan!",
         "subtitle": "Prova att söka efter något annat eller gå tillbaka till startsidan.",
-        "featuredProducts": "Utvalda produkter"
+        "featuredProducts": "Utvalda produkter",
+        "search": "Sök"
     },
     "Components": {
         "Header": {
@@ -444,7 +445,9 @@
                 "brands": "Varumärke",
                 "noSearchResultsTitle": "Tyvärr finns inga resultat för ”{term}”.",
                 "noSearchResultsSubtitle": "Försök med en ny sökning.",
-                "somethingWentWrong": "Något gick fel. Var god försök igen."
+                "somethingWentWrong": "Något gick fel. Var god försök igen.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Sök"
             }
         },
         "Footer": {

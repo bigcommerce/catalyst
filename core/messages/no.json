@@ -423,7 +423,8 @@
     "NotFound": {
         "title": "Vi fant ikke den siden!",
         "subtitle": "Prøv å søke etter noe annet, eller gå tilbake til hjemmesiden.",
-        "featuredProducts": "Utvalgt produkter"
+        "featuredProducts": "Utvalgt produkter",
+        "search": "Søk"
     },
     "Components": {
         "Header": {
@@ -444,7 +445,9 @@
                 "brands": "merker",
                 "noSearchResultsTitle": "Beklager, ingen resultater for «{term}».",
                 "noSearchResultsSubtitle": "Prøv et nytt søk.",
-                "somethingWentWrong": "Noe gikk galt. Prøv igjen."
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Søk"
             }
         },
         "Footer": {

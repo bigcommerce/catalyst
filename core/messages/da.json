@@ -423,7 +423,8 @@
     "NotFound": {
         "title": "Vi kunne ikke finde den side.",
         "subtitle": "Prøv at søge efter noget andet, eller gå tilbage til startsiden.",
-        "featuredProducts": "Udvalgte produkter"
+        "featuredProducts": "Udvalgte produkter",
+        "search": "Søg"
     },
     "Components": {
         "Header": {
@@ -444,7 +445,9 @@
                 "brands": "mærker",
                 "noSearchResultsTitle": "Beklager, der var ingen resultater for “{term}”.",
                 "noSearchResultsSubtitle": "Prøv en anden søgning.",
-                "somethingWentWrong": "Noget gik galt. Prøv igen."
+                "somethingWentWrong": "Noget gik galt. Prøv igen.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Søg"
             }
         },
         "Footer": {
