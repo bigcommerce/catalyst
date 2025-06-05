@@ -1,10 +1,6 @@
-import { z } from 'zod';
-
 import { testEnv } from '~/tests/environment';
 import { Fixture } from '~/tests/fixtures/fixture';
-
-import { OrderAddress } from './address';
-import { Order } from './order';
+import { Order } from '~/tests/fixtures/utils/api/orders';
 
 export class OrderFixture extends Fixture {
   orders: Order[] = [];
@@ -20,21 +16,9 @@ export class OrderFixture extends Fixture {
   }
 
   async create(productId: number, customerId?: number): Promise<Order> {
-    const orderData = {
-      status_id: 1,
-      channel_id: testEnv.BIGCOMMERCE_CHANNEL_ID ?? 1,
-      customer_id: customerId ?? 0,
-      billing_address: OrderAddress.fakeCreateData(),
-      products: [
-        {
-          product_id: productId,
-          quantity: 1,
-        },
-      ],
-    };
+    this.skipIfReadonly();
 
-    const resp = await this.api.post('/v2/orders', orderData).parse(Order.schema);
-    const order = Order.fromApiResponse(resp);
+    const order = await this.api.orders.create(productId, customerId);
 
     this.orders.push(order);
 
@@ -42,20 +26,14 @@ export class OrderFixture extends Fixture {
   }
 
   async deleteAllCustomerOrders(customerId: number): Promise<void> {
-    const orders = await this.api
-      .get(`/v2/orders?customer_id=${customerId}&is_deleted=false`)
-      .parse(z.array(Order.schema).optional());
+    this.skipIfReadonly();
 
-    await this.deleteOrders(orders?.map(({ id }) => id) ?? []);
-  }
+    const orders = await this.api.orders.get(customerId);
 
-  async deleteOrders(ids: number[]) {
-    if (ids.length > 0) {
-      await Promise.all(ids.map((id) => this.api.delete(`/v2/orders/${id}`)));
-    }
+    await this.api.orders.delete(orders.map(({ id }) => id));
   }
 
   async cleanup() {
-    await this.deleteOrders(this.orders.map(({ id }) => id));
+    await this.api.orders.delete(this.orders.map(({ id }) => id));
   }
 }

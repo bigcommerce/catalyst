@@ -1,18 +1,63 @@
 /* eslint-disable valid-jsdoc */
 import { faker } from '@faker-js/faker';
-import { z } from 'zod';
 
 import { generateCustomerLoginApiJwt } from '~/auth/customer-login-api';
 import { testEnv } from '~/tests/environment';
 import { expect, Page } from '~/tests/fixtures';
 import { Fixture } from '~/tests/fixtures/fixture';
-import { apiResponseSchema } from '~/tests/fixtures/utils/api/schema';
+import {
+  Address,
+  CreateCustomerData,
+  CreateWishlistData,
+  Customer,
+  Wishlist,
+} from '~/tests/fixtures/utils/api/customers';
 import { getTranslations } from '~/tests/lib/i18n';
 
-import { Address } from './address';
-import { Customer } from './customer';
 import { customerSessionStore } from './session';
-import { Wishlist } from './wishlist';
+
+function fakeCreateAddressData({
+  firstName,
+  lastName,
+  customerId,
+}: {
+  firstName?: string;
+  lastName?: string;
+  customerId?: number;
+}) {
+  const first = firstName ?? faker.person.firstName();
+  const last = lastName ?? faker.person.lastName();
+  const address1 = faker.location.streetAddress();
+  const city = faker.location.city();
+  const state = faker.location.state();
+  const postalCode = faker.location.zipCode('#####');
+
+  return {
+    ...(customerId ? { customerId } : {}),
+    firstName: first,
+    lastName: last,
+    address1,
+    city,
+    stateOrProvince: state,
+    countryCode: 'US',
+    postalCode,
+  };
+}
+
+function fakeCreateCustomerData(password: string, createFakeAddress?: boolean): CreateCustomerData {
+  const firstName = faker.person.firstName();
+  const lastName = faker.person.lastName();
+  const email = faker.internet.email({ firstName, lastName, provider: 'example.com' });
+
+  return {
+    firstName,
+    lastName,
+    email,
+    password,
+    ...(createFakeAddress ? { addresses: [fakeCreateAddressData({ firstName, lastName })] } : {}),
+    originChannelId: Number(testEnv.BIGCOMMERCE_CHANNEL_ID),
+  };
+}
 
 export class CustomerFixture extends Fixture {
   customers: Customer[] = [];
@@ -41,6 +86,8 @@ export class CustomerFixture extends Fixture {
   }
 
   async createNewCustomer(): Promise<Customer> {
+    this.skipIfReadonly();
+
     // Prefix is added to ensure that the password requirements are met
     const password = faker.internet.password({
       pattern: /[a-zA-Z0-9]/,
@@ -48,21 +95,11 @@ export class CustomerFixture extends Fixture {
       length: 10,
     });
 
-    const resp = await this.api
-      .post('/v3/customers', [Customer.fakeCreateData(password, true)])
-      .parse(apiResponseSchema(z.array(Customer.schema)));
+    const customer = await this.api.customers.create(fakeCreateCustomerData(password, true));
 
-    const customer = resp.data[0];
+    this.customers.push(customer);
 
-    if (!customer) {
-      throw new Error('Customer not found in response');
-    }
-
-    const result = Customer.fromApiResponse(customer, password);
-
-    this.customers.push(result);
-
-    return result;
+    return customer;
   }
 
   async getTestCustomer(): Promise<Customer | undefined> {
@@ -74,68 +111,26 @@ export class CustomerFixture extends Fixture {
       return undefined;
     }
 
-    const resp = await this.api
-      .get(`/v3/customers?id:in=${testEnv.TEST_CUSTOMER_ID}&include=addresses`)
-      .parse(apiResponseSchema(z.array(Customer.schema)));
+    const customer = await this.api.customers.getById(testEnv.TEST_CUSTOMER_ID, true);
 
-    const customer = resp.data[0];
+    customer.password = testEnv.TEST_CUSTOMER_PASSWORD;
 
-    if (!customer) {
-      throw new Error('No customer found with the provided TEST_CUSTOMER_ID');
-    }
-
-    if (customer.origin_channel_id !== (testEnv.BIGCOMMERCE_CHANNEL_ID ?? 1)) {
-      throw new Error(
-        `Test customer ${testEnv.TEST_CUSTOMER_ID} is not from the correct channel. Expected ${
-          testEnv.BIGCOMMERCE_CHANNEL_ID ?? 1
-        }, got ${customer.origin_channel_id}.`,
-      );
-    }
-
-    return Customer.fromApiResponse(customer, testEnv.TEST_CUSTOMER_PASSWORD);
+    return customer;
   }
 
   /** Gets customer information from the API via ID. Will not include a password, as this cannot be obtained via API. */
-  async getById(customerId: number): Promise<Customer> {
-    const resp = await this.api
-      .get(`/v3/customers?id:in=${customerId}`)
-      .parse(apiResponseSchema(z.array(Customer.schema)));
-
-    const customer = resp.data[0];
-
-    if (!customer) {
-      throw new Error(`No customer found with the provided ID: ${customerId}`);
-    }
-
-    return Customer.fromApiResponse(customer);
+  getById(customerId: number, includeAddresses?: boolean): Promise<Customer> {
+    return this.api.customers.getById(customerId, includeAddresses);
   }
 
-  async getByEmail(email: string): Promise<Customer> {
-    const resp = await this.api
-      .get(`/v3/customers?email:in=${email}`)
-      .parse(apiResponseSchema(z.array(Customer.schema)));
-
-    const customer = resp.data[0];
-
-    if (!customer) {
-      throw new Error(`No customer found with the provided email: ${email}`);
-    }
-
-    return Customer.fromApiResponse(customer);
+  getByEmail(email: string, includeAddresses?: boolean): Promise<Customer> {
+    return this.api.customers.getByEmail(email, includeAddresses);
   }
 
   async createAddress(customerId: number): Promise<Address> {
-    const resp = await this.api
-      .post('/v3/customers/addresses', [Address.fakeCreateData({ customerId })])
-      .parse(apiResponseSchema(z.array(Address.schema)));
+    this.skipIfReadonly();
 
-    const createdAddress = resp.data[0];
-
-    if (!createdAddress) {
-      throw new Error('No address found in response');
-    }
-
-    const address = Address.fromApiResponse(createdAddress);
+    const address = await this.api.customers.createAddress(fakeCreateAddressData({ customerId }));
 
     this.addresses.push(address);
 
@@ -147,25 +142,15 @@ export class CustomerFixture extends Fixture {
     name = `Test wishlist ${faker.string.alpha(10)}`,
     isPublic = false,
     items = [],
-  }: {
-    customerId: number;
-    name?: string;
-    isPublic?: boolean;
-    items?: Array<{ productId: number; variantId?: number }>;
-  }): Promise<Wishlist> {
-    const resp = await this.api
-      .post('/v3/wishlists', {
-        name,
-        is_public: isPublic,
-        customer_id: customerId,
-        items: items.map(({ productId, variantId }) => ({
-          product_id: productId,
-          variant_id: variantId,
-        })),
-      })
-      .parse(apiResponseSchema(Wishlist.schema));
+  }: CreateWishlistData): Promise<Wishlist> {
+    this.skipIfReadonly();
 
-    const wishlist = Wishlist.fromApiResponse(resp.data);
+    const wishlist = await this.api.customers.createWishlist({
+      name,
+      isPublic,
+      customerId,
+      items,
+    });
 
     this.wishlists.push(wishlist);
 
@@ -238,40 +223,26 @@ export class CustomerFixture extends Fixture {
     await this.page.waitForLoadState('networkidle');
   }
 
-  async delete(...ids: number[]): Promise<void> {
-    if (ids.length > 0) {
-      await this.api.delete(`/v3/customers?id:in=${ids.join(',')}`);
-    }
+  async delete(...customerIds: number[]): Promise<void> {
+    this.skipIfReadonly();
+
+    await this.api.customers.delete(customerIds);
   }
 
   async deleteAllAddresses(customerId: number): Promise<void> {
-    const resp = await this.api
-      .get(`/v3/customers/addresses?customer_id:in=${customerId}`)
-      .parse(apiResponseSchema(z.array(Address.schema)));
+    this.skipIfReadonly();
 
-    const addressIds = resp.data.map(({ id }) => id);
+    const addresses = await this.api.customers.getAddresses(customerId);
 
-    await this.deleteAddresses(...addressIds);
-  }
-
-  async deleteAddresses(...ids: number[]): Promise<void> {
-    if (ids.length > 0) {
-      await this.api.delete(`/v3/customers/addresses?id:in=${ids.join(',')}`);
-    }
+    await this.api.customers.deleteAddresses(addresses.map(({ id }) => id));
   }
 
   async deleteAllWishlists(customerId: number): Promise<void> {
-    const resp = await this.api
-      .get(`/v3/wishlists?customer_id=${customerId}`)
-      .parse(apiResponseSchema(z.array(Wishlist.schema)));
+    this.skipIfReadonly();
 
-    await this.deleteWishlists(...resp.data.map(({ id }) => id));
-  }
+    const wishlists = await this.api.customers.getWishlists(customerId);
 
-  async deleteWishlists(...ids: number[]): Promise<void> {
-    if (ids.length > 0) {
-      await Promise.all(ids.map((id) => this.api.delete(`/v3/wishlists/${id}`)));
-    }
+    await this.api.customers.deleteWishlists(wishlists.map(({ id }) => id));
   }
 
   /** Clones the fixture with a new page object. Useful if the fixture is needed in a new browser window. */
@@ -281,11 +252,11 @@ export class CustomerFixture extends Fixture {
 
   async cleanup() {
     // Cleanup will not remove the test customer set in the environment variables
-    await this.delete(
-      ...this.customers.map(({ id }) => id).filter((id) => id !== testEnv.TEST_CUSTOMER_ID),
+    await this.api.customers.delete(
+      this.customers.map(({ id }) => id).filter((id) => id !== testEnv.TEST_CUSTOMER_ID),
     );
 
-    await this.deleteAddresses(...this.addresses.map(({ id }) => id));
-    await this.deleteWishlists(...this.wishlists.map(({ id }) => id));
+    await this.api.customers.deleteAddresses(this.addresses.map(({ id }) => id));
+    await this.api.customers.deleteWishlists(this.wishlists.map(({ id }) => id));
   }
 }
