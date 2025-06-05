@@ -310,7 +310,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
   return (
     <NavigationMenu.Root
-      className={clsx('max-w-(--breakpoint-2xl) relative mx-auto w-full @container', className)}
+      className={clsx('relative mx-auto w-full max-w-screen-2xl @container', className)}
       delayDuration={0}
       onValueChange={() => setIsSearchOpen(false)}
       ref={ref}
@@ -460,7 +460,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   </NavigationMenu.Trigger>
                   {item.groups != null && item.groups.length > 0 && (
                     <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
-                      <div className="max-w-(--breakpoint-lg) m-auto grid w-full grid-cols-5 justify-center gap-5 px-5 pb-8 pt-5">
+                      <div className="m-auto grid w-full max-w-screen-lg grid-cols-5 justify-center gap-5 px-5 pb-8 pt-5">
                         {item.groups.map((group, columnIndex) => (
                           <ul className="flex flex-col" key={columnIndex}>
                             {/* Second Level Links */}
