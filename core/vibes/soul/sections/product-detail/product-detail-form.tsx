@@ -96,7 +96,7 @@ export function ProductDetailForm<F extends Field>({
   }>(
     (acc, field) => ({
       ...acc,
-      [field.name]: params[field.name] ?? field.defaultValue ?? '',
+      [field.name]: params[field.name] ?? field.defaultValue,
     }),
     { quantity: 1 },
   );
@@ -224,9 +224,9 @@ function FormField({
   const handleChange = useCallback(
     (value: string) => {
       // Ensure that if page is reached without a full reload, we are still setting the selection properly based on query params.
-      const fieldValue = value || String(params[field.name] ?? '');
+      const fieldValue = value || String(params[field.name]);
 
-      void setParams({ [field.name]: fieldValue });
+      void setParams({ [field.name]: fieldValue || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
       controls.change(fieldValue);
     },
     [setParams, field, controls, params],
