@@ -67,10 +67,10 @@ export function OrderList({
   emptyStateActionHref = '/',
 }: OrderListProps) {
   return (
-    <section className="group/order-list @container w-full">
+    <section className="group/order-list w-full @container">
       <header className="mb-4 border-b border-[var(--order-list-border,hsl(var(--contrast-100)))]">
         <div className="mb-4 flex min-h-[42px] items-center justify-between">
-          <h1 className="hidden font-[family-name:var(--order-list-title-font-family,var(--font-family-heading))] text-4xl leading-none font-medium tracking-tight text-[var(--order-list-title,hsl(var(--foreground)))] @2xl:block">
+          <h1 className="hidden font-[family-name:var(--order-list-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none tracking-tight text-[var(--order-list-title,hsl(var(--foreground)))] @2xl:block">
             {title}
           </h1>
         </div>
@@ -92,7 +92,7 @@ export function OrderList({
               {orders.map((order) => (
                 <div
                   className={clsx(
-                    'border-[var(--order-list-border,hsl(var(--contrast-100)))] pt-5 pb-6 last:border-b @lg:pt-6 @lg:pb-10',
+                    'border-[var(--order-list-border,hsl(var(--contrast-100)))] pb-6 pt-5 last:border-b @lg:pb-10 @lg:pt-6',
                     className,
                   )}
                   key={order.id}
@@ -100,18 +100,18 @@ export function OrderList({
                   <div className="flex flex-col justify-between gap-x-10 gap-y-4 @lg:flex-row">
                     <div className="flex items-start gap-x-12 gap-y-4">
                       <div>
-                        <span className="font-[family-name:var(--order-list-label-font-family,var(--font-family-mono))] text-xs leading-normal text-[var(--order-list-label,hsl(var(--contrast-500)))] uppercase">
+                        <span className="font-[family-name:var(--order-list-label-font-family,var(--font-family-mono))] text-xs uppercase leading-normal text-[var(--order-list-label,hsl(var(--contrast-500)))]">
                           {orderNumberLabel}
                         </span>
-                        <span className="block text-lg leading-normal font-semibold text-[var(--order-list-info,hsl(var(--foreground)))]">
+                        <span className="block text-lg font-semibold leading-normal text-[var(--order-list-info,hsl(var(--foreground)))]">
                           {order.id}
                         </span>
                       </div>
                       <div>
-                        <span className="font-[family-name:var(--order-list-label-font-family,var(--font-family-mono))] text-xs leading-normal text-[var(--order-list-label,hsl(var(--contrast-500)))] uppercase">
+                        <span className="font-[family-name:var(--order-list-label-font-family,var(--font-family-mono))] text-xs uppercase leading-normal text-[var(--order-list-label,hsl(var(--contrast-500)))]">
                           {totalLabel}
                         </span>
-                        <span className="block text-lg leading-normal font-semibold text-[var(--order-list-info,hsl(var(--foreground)))]">
+                        <span className="block text-lg font-semibold leading-normal text-[var(--order-list-info,hsl(var(--foreground)))]">
                           {order.totalPrice}
                         </span>
                       </div>
@@ -146,18 +146,18 @@ function OrderListSkeleton() {
     <Skeleton.Root className="group-has-[[data-pending]]/order-list:animate-pulse" pending>
       {Array.from({ length: 3 }).map((_, id) => (
         <div
-          className="border-[var(--order-list-border,hsl(var(--contrast-100)))] pt-5 pb-6 last:border-b @lg:pt-6 @lg:pb-10"
+          className="border-[var(--order-list-border,hsl(var(--contrast-100)))] pb-6 pt-5 last:border-b @lg:pb-10 @lg:pt-6"
           data-pending
           key={id}
         >
           <div className="flex flex-col justify-between gap-x-10 gap-y-4 @lg:flex-row">
             <div className="flex flex-wrap items-start gap-x-12 gap-y-4">
               <div>
-                <Skeleton.Text characterCount={7} className="rounded-sm text-xs" />
+                <Skeleton.Text characterCount={7} className="rounded text-xs" />
                 <Skeleton.Text characterCount={7} className="rounded text-lg" />
               </div>
               <div>
-                <Skeleton.Text characterCount={8} className="rounded-sm text-xs" />
+                <Skeleton.Text characterCount={8} className="rounded text-xs" />
                 <Skeleton.Text characterCount={6} className="rounded text-lg" />
               </div>
               <Skeleton.Box className="mt-0.5 h-[22px] w-[55px] rounded" />

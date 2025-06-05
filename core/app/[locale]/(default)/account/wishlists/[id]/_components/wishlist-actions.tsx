@@ -44,7 +44,7 @@ export const WishlistActions = ({
         <div className="flex-1">
           <WishlistVisibilitySwitch {...wishlist} />
         </div>
-        <div className="@lg:border-l-contrast-100 flex items-center gap-2 pl-4 @lg:border-l">
+        <div className="flex items-center gap-2 pl-4 @lg:border-l @lg:border-l-contrast-100">
           {publicUrl != null && publicUrl !== '' && (
             <WishlistShareButton
               closeLabel={shareCloseLabel}
@@ -74,7 +74,7 @@ export function WishlistActionsSkeleton() {
         <div className="flex-1">
           <SwitchSkeleton characterCount={5} />
         </div>
-        <div className="@lg:border-l-contrast-100 flex items-center gap-2 pl-4 @lg:border-l">
+        <div className="flex items-center gap-2 pl-4 @lg:border-l @lg:border-l-contrast-100">
           <WishlistShareButtonSkeleton />
           <Skeleton.Box className="h-10 w-10 rounded-full" />
         </div>

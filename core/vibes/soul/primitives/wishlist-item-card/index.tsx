@@ -51,7 +51,7 @@ export const WishlistItemCard = ({
         />
       )}
       {removeAction && (
-        <div className="absolute -top-3 -right-3 rounded-full transition-shadow duration-100 hover:shadow-md">
+        <div className="absolute -right-3 -top-3 rounded-full transition-shadow duration-100 hover:shadow-md">
           <RemoveWishlistItemButton action={removeAction} itemId={itemId} wishlistId={wishlistId} />
         </div>
       )}

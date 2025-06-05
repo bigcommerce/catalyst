@@ -27,7 +27,7 @@ export function Alert({
   return (
     <div
       className={clsx(
-        'border-foreground/10 ring-foreground flex max-w-[356px] min-w-[284px] items-center justify-between gap-2 rounded-xl border py-3 ps-4 pe-3 shadow-xs group-focus-visible:ring-2 group-focus-visible:outline-hidden',
+        'flex min-w-[284px] max-w-[356px] items-center justify-between gap-2 rounded-xl border border-foreground/10 py-3 pe-3 ps-4 shadow-sm ring-foreground group-focus-visible:outline-none group-focus-visible:ring-2',
         {
           success: 'bg-success-highlight',
           warning: 'bg-warning-highlight',
@@ -38,9 +38,9 @@ export function Alert({
       role="alert"
     >
       <div className="flex flex-col">
-        <span className="text-foreground text-sm font-normal">{message}</span>
+        <span className="text-sm font-normal text-foreground">{message}</span>
         {Boolean(description) && (
-          <span className="text-contrast-400 text-xs font-medium">{description}</span>
+          <span className="text-xs font-medium text-contrast-400">{description}</span>
         )}
       </div>
 

@@ -119,7 +119,7 @@ export function OrderDetailsSection({
   prevHref = '/orders',
 }: OrderDetailsSectionProps) {
   return (
-    <div className="@container font-[family-name:var(--order-details-section-font-family,var(--font-family-body))] text-[var(--order-details-text-primary,hsl(var(--foreground)))]">
+    <div className="font-[family-name:var(--order-details-section-font-family,var(--font-family-body))] text-[var(--order-details-text-primary,hsl(var(--foreground)))] @container">
       <Stream
         fallback={<OrderDetailsSectionSkeleton prevHref={prevHref} />}
         value={streamableOrder}
@@ -177,7 +177,7 @@ function Shipment({
   methodLabel?: string;
 }) {
   return (
-    <div className="@container border-b border-[var(--order-details-section-border,hsl(var(--contrast-100)))] py-8">
+    <div className="border-b border-[var(--order-details-section-border,hsl(var(--contrast-100)))] py-8 @container">
       <div className="space-y-6">
         <div className="font-[family-name:var(--order-details-section-title-font-family,var(--font-family-heading))] text-2xl font-medium">
           {destination.title}
@@ -222,26 +222,26 @@ function ShipmentSkeleton({
   lineItemsPlaceholderCount?: number;
 }) {
   return (
-    <div className="@container border-b border-[var(--order-details-section-border,hsl(var(--contrast-100)))] py-8">
+    <div className="border-b border-[var(--order-details-section-border,hsl(var(--contrast-100)))] py-8 @container">
       <div className="space-y-6">
-        <Skeleton.Text characterCount={8} className="rounded-sm text-2xl" />
+        <Skeleton.Text characterCount={8} className="rounded text-2xl" />
         <div className="grid gap-8 @xl:flex @xl:gap-20">
           <div className="text-sm">
-            <Skeleton.Text characterCount={13} className="rounded-sm" />
+            <Skeleton.Text characterCount={13} className="rounded" />
             <div>
-              <Skeleton.Text characterCount={8} className="rounded-sm" />
-              <Skeleton.Text characterCount={12} className="rounded-sm" />
-              <Skeleton.Text characterCount={16} className="rounded-sm" />
-              <Skeleton.Text characterCount={8} className="rounded-sm" />
+              <Skeleton.Text characterCount={8} className="rounded" />
+              <Skeleton.Text characterCount={12} className="rounded" />
+              <Skeleton.Text characterCount={16} className="rounded" />
+              <Skeleton.Text characterCount={8} className="rounded" />
             </div>
           </div>
           {Array.from({ length: shipmentsPlaceholderCount }).map((_, index) => (
             <div className="text-sm" key={index}>
-              <Skeleton.Text characterCount={13} className="rounded-sm" />
+              <Skeleton.Text characterCount={13} className="rounded" />
               <div>
-                <Skeleton.Text characterCount={16} className="rounded-sm" />
-                <Skeleton.Text characterCount={8} className="rounded-sm" />
-                <Skeleton.Text characterCount={24} className="rounded-sm" />
+                <Skeleton.Text characterCount={16} className="rounded" />
+                <Skeleton.Text characterCount={8} className="rounded" />
+                <Skeleton.Text characterCount={24} className="rounded" />
               </div>
             </div>
           ))}
@@ -291,7 +291,7 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
     if (lineItem.href) {
       return (
         <Link
-          className="group grid shrink-0 cursor-pointer gap-8 rounded-xl ring-[var(--order-details-section-focus,hsl(var(--primary)))] ring-offset-4 focus-visible:ring-2 focus-visible:outline-none @sm:flex @sm:rounded-2xl"
+          className="group grid shrink-0 cursor-pointer gap-8 rounded-xl ring-[var(--order-details-section-focus,hsl(var(--primary)))] ring-offset-4 focus-visible:outline-none focus-visible:ring-2 @sm:flex @sm:rounded-2xl"
           href={lineItem.href}
           id={lineItem.id}
         >
@@ -302,7 +302,7 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
 
     return (
       <div
-        className="group grid shrink-0 gap-8 rounded-xl ring-[var(--order-details-section-focus,hsl(var(--primary)))] ring-offset-4 focus-visible:ring-2 focus-visible:outline-none @sm:flex @sm:rounded-2xl"
+        className="group grid shrink-0 gap-8 rounded-xl ring-[var(--order-details-section-focus,hsl(var(--primary)))] ring-offset-4 focus-visible:outline-none focus-visible:ring-2 @sm:flex @sm:rounded-2xl"
         id={lineItem.id}
       >
         {children}
@@ -316,13 +316,13 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
         {lineItem.image?.src != null ? (
           <Image
             alt={lineItem.image.alt}
-            className="w-full scale-100 object-cover transition-transform duration-500 ease-out select-none group-hover:scale-110"
+            className="w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110"
             fill
             sizes="10rem"
             src={lineItem.image.src}
           />
         ) : (
-          <div className="pt-3 pl-2 text-4xl leading-[0.8] font-bold tracking-tighter text-[var(--order-details-section-line-item,hsl(var(--contrast-300)))] transition-transform duration-500 ease-out group-hover:scale-105">
+          <div className="pl-2 pt-3 text-4xl font-bold leading-[0.8] tracking-tighter text-[var(--order-details-section-line-item,hsl(var(--contrast-300)))] transition-transform duration-500 ease-out group-hover:scale-105">
             {lineItem.title}
           </div>
         )}
@@ -368,18 +368,18 @@ function ShipmentLineItemSkeleton() {
       <div className="space-y-3 text-sm leading-snug">
         <div>
           <div className="flex items-center gap-1 text-sm">
-            <Skeleton.Text characterCount={24} className="rounded-sm" />
+            <Skeleton.Text characterCount={24} className="rounded" />
           </div>
-          <Skeleton.Text characterCount={6} className="rounded-sm" />
+          <Skeleton.Text characterCount={6} className="rounded" />
         </div>
         <div className="flex gap-1 text-sm">
-          <Skeleton.Text characterCount={5} className="rounded-sm" />
-          <Skeleton.Text characterCount={8} className="rounded-sm" />
+          <Skeleton.Text characterCount={5} className="rounded" />
+          <Skeleton.Text characterCount={8} className="rounded" />
         </div>
         <div>
           <div className="flex gap-1 text-sm">
-            <Skeleton.Text characterCount={7} className="rounded-sm" />
-            <Skeleton.Text characterCount={3} className="rounded-sm" />
+            <Skeleton.Text characterCount={7} className="rounded" />
+            <Skeleton.Text characterCount={3} className="rounded" />
           </div>
         </div>
       </div>
@@ -390,7 +390,7 @@ function ShipmentLineItemSkeleton() {
 function Summary({ summary, totalLabel = 'Total' }: { summary: Summary; totalLabel?: string }) {
   return (
     <div>
-      <div className="space-y-2 pt-5 pb-3">
+      <div className="space-y-2 pb-3 pt-5">
         {summary.lineItems.map((lineItem, index) => (
           <div className="flex justify-between" key={index}>
             <div>
@@ -417,21 +417,21 @@ function Summary({ summary, totalLabel = 'Total' }: { summary: Summary; totalLab
 function SummarySkeleton({ placeholderCount = 2 }: { placeholderCount?: number }) {
   return (
     <div>
-      <div className="space-y-2 pt-5 pb-3">
+      <div className="space-y-2 pb-3 pt-5">
         {Array.from({ length: placeholderCount }).map((_, index) => (
           <div className="flex justify-between" key={index}>
             <div>
-              <Skeleton.Text characterCount={6} className="rounded-sm text-sm" />
-              <Skeleton.Text characterCount={12} className="rounded-sm text-xs" />
+              <Skeleton.Text characterCount={6} className="rounded text-sm" />
+              <Skeleton.Text characterCount={12} className="rounded text-xs" />
             </div>
 
-            <Skeleton.Text characterCount={6} className="rounded-sm text-sm" />
+            <Skeleton.Text characterCount={6} className="rounded text-sm" />
           </div>
         ))}
       </div>
       <div className="flex justify-between border-t border-[var(--order-details-section-border,hsl(var(--contrast-100)))] py-3">
-        <Skeleton.Text characterCount={6} className="rounded-sm" />
-        <Skeleton.Text characterCount={6} className="rounded-sm" />
+        <Skeleton.Text characterCount={6} className="rounded" />
+        <Skeleton.Text characterCount={6} className="rounded" />
       </div>
     </div>
   );
@@ -456,10 +456,10 @@ function OrderDetailsSectionSkeleton({
         )}
         <div className="space-y-1">
           <div className="flex items-center gap-3">
-            <Skeleton.Text characterCount={8} className="rounded-sm text-4xl" />
-            <Skeleton.Text characterCount={8} className="rounded-sm text-xs" />
+            <Skeleton.Text characterCount={8} className="rounded text-4xl" />
+            <Skeleton.Text characterCount={8} className="rounded text-xs" />
           </div>
-          <Skeleton.Text characterCount={7} className="rounded-sm text-base" />
+          <Skeleton.Text characterCount={7} className="rounded text-base" />
         </div>
       </div>
       <div className="grid @3xl:flex">
@@ -469,7 +469,7 @@ function OrderDetailsSectionSkeleton({
           ))}
         </div>
         <div className="order-1 basis-72 pt-8 @3xl:order-2">
-          <Skeleton.Text characterCount={10} className="rounded-sm text-2xl" />
+          <Skeleton.Text characterCount={10} className="rounded text-2xl" />
           <SummarySkeleton placeholderCount={3} />
         </div>
       </div>

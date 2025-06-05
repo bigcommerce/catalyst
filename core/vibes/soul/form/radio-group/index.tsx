@@ -96,7 +96,7 @@ function RadioGroupItem({
           option.description !== undefined ? `${id}-label ${id}-description` : `${id}-label`
         }
         className={clsx(
-          'size-5 cursor-default rounded-full border outline-hidden data-disabled:pointer-events-none data-disabled:opacity-50 [&:disabled+label]:pointer-events-none [&:disabled+label]:opacity-50',
+          'data-disabled:pointer-events-none data-disabled:opacity-50 size-5 cursor-default rounded-full border outline-none [&:disabled+label]:pointer-events-none [&:disabled+label]:opacity-50',
           {
             light: 'bg-[var(--radio-group-light-background,hsl(var(--background)))]',
             dark: 'bg-[var(--radio-group-dark-background,hsl(var(--foreground)))]',

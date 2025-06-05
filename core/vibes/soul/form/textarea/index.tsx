@@ -46,7 +46,7 @@ export const Textarea = React.forwardRef<
       <textarea
         {...rest}
         className={clsx(
-          'w-full rounded-lg border p-3 transition-colors duration-200 placeholder:font-normal focus:outline-hidden disabled:cursor-not-allowed disabled:opacity-50',
+          'w-full rounded-lg border p-3 transition-colors duration-200 placeholder:font-normal focus:outline-none disabled:cursor-not-allowed disabled:opacity-50',
           {
             light:
               'bg-[var(--textarea-light-background,hsl(var(--background)))] text-[var(--textarea-light-text,hsl(var(--foreground)))] placeholder-[var(--textarea-light-placeholder,hsl(var(--contrast-500)))] focus:border-[var(--textarea-light-border-focus,hsl(var(--foreground)))]',
