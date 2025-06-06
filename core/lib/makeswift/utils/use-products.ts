@@ -1,3 +1,4 @@
+import { useLocale } from 'next-intl';
 import { useMemo } from 'react';
 import useSWR from 'swr';
 import { z } from 'zod';
@@ -24,15 +25,17 @@ interface Props {
 
 export function useProducts({ collection, collectionLimit = 20, additionalProductIds }: Props) {
   const bcProductToVibesProduct = useBcProductToVibesProduct();
+  const locale = useLocale();
 
   const { data: collectionData, isLoading: isCollectionLoading } = useSWR(
-    collection !== 'none' ? `/api/products/group/${collection}` : null,
+    collection !== 'none' ? `/api/products/group/${collection}?locale=${locale}` : null,
     fetcher,
   );
 
   const searchParams = new URLSearchParams();
 
   searchParams.append('ids', additionalProductIds.join(','));
+  searchParams.append('locale', locale);
 
   const additionalProductsUrl = `/api/products/ids?${searchParams.toString()}`;
 

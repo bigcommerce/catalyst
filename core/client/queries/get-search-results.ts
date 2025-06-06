@@ -39,7 +39,7 @@ const GetQuickSearchResultsQuery = graphql(
   [ProductCardFragment],
 );
 
-export const getSearchResults = cache(async (searchTerm: string) => {
+export const getSearchResults = cache(async (searchTerm: string, locale?: string) => {
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   try {
@@ -47,7 +47,10 @@ export const getSearchResults = cache(async (searchTerm: string) => {
       document: GetQuickSearchResultsQuery,
       variables: { filters: { searchTerm } },
       customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      fetchOptions: {
+        ...(locale && { headers: { 'Accept-Language': locale } }),
+        ...(customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } }),
+      },
     });
 
     const { products } = response.data.site.search.searchProducts;
