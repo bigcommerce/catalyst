@@ -1,3 +1,4 @@
+import DOMPurify from 'isomorphic-dompurify';
 import { useFormatter } from 'next-intl';
 import { Product as ProductSchemaType, WithContext } from 'schema-dts';
 
@@ -39,7 +40,7 @@ export const ProductReviewSchema = ({ reviews, productId }: Props) => {
 
   return (
     <script
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(productReviewSchema) }}
+      dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(JSON.stringify(productReviewSchema)) }}
       type="application/ld+json"
     />
   );
