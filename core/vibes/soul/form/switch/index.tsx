@@ -33,7 +33,10 @@ export const Switch = ({
   const hasLabel = label != null && label !== '';
 
   return (
-    <div className="group/switch flex items-center gap-2">
+    <div
+      className="group/switch flex items-center gap-2"
+      data-state={checked ? 'checked' : 'unchecked'}
+    >
       {(labelPosition === 'left' || labelPosition === 'both') && hasLabel && (
         <SwitchLabel
           id={id}
@@ -101,7 +104,7 @@ interface LabelProps {
 
 function SwitchLabel({ id, label, size = 'medium', state, loading }: LabelProps) {
   const baseClass =
-    'group-has-data-disabled/switch:[&:not([data-loading])]:text-contrast-400 font-semibold select-none';
+    'group-data-[disabled]/switch:[&:not([data-loading])]:text-contrast-400 font-semibold select-none';
   const sizeClass = {
     small: 'text-sm',
     medium: 'text-base',
@@ -136,7 +139,7 @@ function SwitchLabel({ id, label, size = 'medium', state, loading }: LabelProps)
     <div className="leading-[0]">
       <label
         className={clsx(
-          'group-has-data-[state=checked]/switch:block group-has-data-[state=unchecked]/switch:invisible mb-[-2px] leading-[0]',
+          'mb-[-2px] leading-[0] group-data-[state=unchecked]/switch:invisible group-data-[state=checked]/switch:block',
           baseClass,
           sizeClass,
         )}
@@ -147,7 +150,7 @@ function SwitchLabel({ id, label, size = 'medium', state, loading }: LabelProps)
       </label>
       <label
         className={clsx(
-          'group-has-data-[state=checked]/switch:invisible group-has-data-[state=unchecked]/switch:block mt-[-1px] leading-[0]',
+          'mt-[-1px] leading-[0] group-data-[state=checked]/switch:invisible group-data-[state=unchecked]/switch:block',
           baseClass,
           sizeClass,
         )}
