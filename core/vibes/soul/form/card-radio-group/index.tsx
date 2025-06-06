@@ -93,7 +93,7 @@ export const CardRadioGroup = React.forwardRef<
               value={option.value}
             >
               {option.image && (
-                <div className="relative aspect-square h-full">
+                <div className="aspect-h-1 aspect-w-1 relative h-full">
                   <Image
                     alt={option.image.alt}
                     className="bg-background object-fill"
