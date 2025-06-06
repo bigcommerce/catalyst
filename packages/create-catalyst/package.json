@@ -18,7 +18,7 @@
     "node": "^20.0.0 || ^22.0.0"
   },
   "dependencies": {
-    "@commander-js/extra-typings": "^13.1.0",
+    "@commander-js/extra-typings": "^14.0.0",
     "@iarna/toml": "^2.2.5",
     "@inquirer/core": "^10.1.13",
     "@inquirer/figures": "^1.0.12",
@@ -27,19 +27,19 @@
     "@segment/analytics-node": "^2.2.1",
     "ansi-escapes": "^7.0.0",
     "chalk": "^5.4.1",
-    "commander": "^13.1.0",
-    "conf": "^13.1.0",
+    "commander": "^14.0.0",
+    "conf": "^14.0.0",
     "cross-spawn": "^7.0.6",
     "dotenv": "^16.5.0",
     "fs-extra": "^11.3.0",
-    "giget": "^1.2.5",
+    "giget": "^2.0.0",
     "lodash.kebabcase": "^4.1.1",
-    "nypm": "^0.5.4",
+    "nypm": "^0.6.0",
     "open": "^10.1.2",
     "ora": "^8.2.0",
     "semver": "^7.7.2",
     "std-env": "^3.9.0",
-    "zod": "^3.25.51",
+    "zod": "^3.25.56",
     "zod-validation-error": "^3.4.1"
   },
   "devDependencies": {
