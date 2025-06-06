@@ -57,11 +57,11 @@ test.describe('Login with username and password', () => {
 
     await customer.login();
     await page.waitForURL('/account/orders/');
-    await expect(page.getByRole('heading', { name: ordersHeader })).toBeVisible();
+    await expect(page.getByRole('heading', { name: ordersHeader, exact: true })).toBeVisible();
 
     await page.goto('/login/');
     await page.waitForURL('/account/orders/');
-    await expect(page.getByRole('heading', { name: ordersHeader })).toBeVisible();
+    await expect(page.getByRole('heading', { name: ordersHeader, exact: true })).toBeVisible();
   });
 });
 
@@ -76,7 +76,7 @@ test.describe('Login with JWT', () => {
 
     await page.goto(`/login/token/${jwt}`);
     await page.waitForURL('/account/orders/');
-    await expect(page.getByRole('heading', { name: t('title') })).toBeVisible();
+    await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
   });
 
   test('JWT login redirects to the specified redirect_to value in the token payload', async ({

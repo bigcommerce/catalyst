@@ -6,7 +6,7 @@ import { TAGS } from '~/tests/tags';
 
 test.describe('Account registration', () => {
   test('Registration works as expected', { tag: [TAGS.writesData] }, async ({ page, customer }) => {
-    const t = await getTranslations('Auth.Register');
+    const t = await getTranslations();
 
     const email = faker.internet.email({ provider: 'example.com' });
     // Prefix is added to ensure that the password requirements are met
@@ -17,7 +17,7 @@ test.describe('Account registration', () => {
     });
 
     await page.goto('/register');
-    await page.getByRole('heading', { name: t('heading') }).waitFor();
+    await page.getByRole('heading', { name: t('Auth.Register.heading') }).waitFor();
 
     // TODO: Form fields when creating a new account need to be translated
     await page.getByLabel('First Name').fill(faker.person.firstName());
@@ -25,10 +25,12 @@ test.describe('Account registration', () => {
     await page.getByLabel('Email Address').fill(email);
     await page.getByLabel('Password', { exact: true }).fill(password);
     await page.getByLabel('Confirm Password').fill(password);
-    await page.getByRole('button', { name: t('cta') }).click();
+    await page.getByRole('button', { name: t('Auth.Register.cta') }).click();
 
     await expect(page).toHaveURL('/account/orders/');
-    await expect(page.getByRole('heading', { name: 'Orders' })).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: t('Account.Orders.title'), exact: true }),
+    ).toBeVisible();
 
     const { id } = await customer.getByEmail(email);
 

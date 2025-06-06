@@ -1,1 +1,1 @@
-export { TestApiClientError } from './error';
+export { TestApiClientResponseError } from './response-error';

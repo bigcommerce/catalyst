@@ -1,15 +1,20 @@
 import { type Page, type TestInfo } from '@playwright/test';
 
-import { TestApiClient } from '~/tests/fixtures/utils/api';
+import { testEnv } from '~/tests/environment';
+import { ApiClient, httpApiClient } from '~/tests/fixtures/utils/api';
 
 export abstract class Fixture {
-  protected readonly api: TestApiClient;
+  protected readonly api: ApiClient;
 
   constructor(
     readonly page: Page,
     readonly test: TestInfo,
   ) {
-    this.api = new TestApiClient(test);
+    this.api = httpApiClient;
+  }
+
+  protected skipIfReadonly(): void {
+    this.test.skip(testEnv.TESTS_READ_ONLY, 'Tests are running in read-only mode.');
   }
 
   abstract cleanup(): Promise<void>;
