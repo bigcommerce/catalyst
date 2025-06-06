@@ -50,6 +50,8 @@
             "heading": "Anmelden",
             "forgotPassword": "Passwort vergessen?",
             "cta": "Anmelden",
+            "email": "E-Mail",
+            "password": "Passwort",
             "invalidCredentials": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Bestellnr.",
             "totalPrice": "Summe",
             "viewDetails": "Details anzeigen",
+            "emptyState": {
+                "title": "Sie haben keine Bestellungen",
+                "cta": "Jetzt shoppen"
+            },
             "Details": {
                 "title": "Bestellung #{orderNumber}",
                 "shippingAddress": "Versandadresse",
@@ -174,6 +180,7 @@
             "title": "Kontoeinstellungen",
             "changePassword": "Passwort ändern",
             "passwordUpdated": "Passwort wurde erfolgreich aktualisiert!",
+            "settingsUpdated": "Die Kontoeinstellungen wurden erfolgreich aktualisiert!",
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
             "currentPassword": "Aktuelles Passwort",
             "newPassword": "Neues Passwort",
@@ -182,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Wunschlistenaktionen",
         "title": "Wunschlisten",
         "new": "Neue Wunschliste",
         "items": "{count, plural, =1 {1 Artikel} other {# Artikel}}",
@@ -305,7 +313,8 @@
     },
     "PublicWishlist": {
         "title": "Öffentliche Wunschliste",
-        "defaultName": "Öffentliche Wunschliste"
+        "defaultName": "Öffentliche Wunschliste",
+        "emptyWishlist": "Diese Wunschliste enthält noch keine Produkte."
     },
     "Blog": {
         "title": "Blog",
@@ -470,7 +479,8 @@
     "NotFound": {
         "title": "Wir konnten diese Seite nicht finden!",
         "subtitle": "Versuchen Sie, nach etwas anderem zu suchen oder zur Startseite zurückzukehren.",
-        "featuredProducts": "Empfohlene Produkte"
+        "featuredProducts": "Empfohlene Produkte",
+        "search": "Suchen"
     },
     "Components": {
         "Header": {
@@ -491,7 +501,9 @@
                 "brands": "Marken",
                 "noSearchResultsTitle": "Leider gibt es keine Ergebnisse für „{term}“.",
                 "noSearchResultsSubtitle": "Bitte versuchen Sie es mit einer anderen Suchanfrage.",
-                "somethingWentWrong": "Es ist etwas schiefgegangen. Bitte versuchen Sie es erneut."
+                "somethingWentWrong": "Es ist etwas schiefgegangen. Bitte versuchen Sie es erneut.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Suchen"
             }
         },
         "Footer": {

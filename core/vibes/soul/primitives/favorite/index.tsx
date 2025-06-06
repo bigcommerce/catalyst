@@ -25,7 +25,7 @@ export interface FavoriteProps {
 export const Favorite = ({ checked = false, setChecked }: FavoriteProps) => {
   return (
     <Toggle.Root
-      className="group relative flex h-[50px] w-[50px] shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--favorite-border,hsl(var(--contrast-100)))] text-[var(--favorite-icon,hsl(var(--foreground)))] ring-[var(--favorite-focus,hsl(var(--primary)))] transition-[colors,transform] duration-300 focus-within:ring-2 focus-within:outline-none data-[state=off]:hover:border-[var(--favorite-off-border,hsl(var(--contrast-200)))] data-[state=on]:bg-[var(--favorite-on-background,hsl(var(--contrast-100)))]"
+      className="group relative flex h-[50px] w-[50px] shrink-0 cursor-pointer items-center justify-center rounded-full border border-[var(--favorite-border,hsl(var(--contrast-100)))] text-[var(--favorite-icon,hsl(var(--foreground)))] ring-[var(--favorite-focus,hsl(var(--primary)))] transition-[colors,transform] duration-300 focus-within:outline-none focus-within:ring-2 data-[state=on]:bg-[var(--favorite-on-background,hsl(var(--contrast-100)))] data-[state=off]:hover:border-[var(--favorite-off-border,hsl(var(--contrast-200)))]"
       onPressedChange={setChecked}
       pressed={checked}
     >

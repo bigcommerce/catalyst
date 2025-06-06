@@ -50,6 +50,8 @@
             "heading": "Logg inn",
             "forgotPassword": "Har du glemt passordet?",
             "cta": "Logg inn",
+            "email": "E-post",
+            "password": "Passord",
             "invalidCredentials": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
             "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Bestillingsnr.",
             "totalPrice": "Totalbeløp",
             "viewDetails": "Vis detaljer",
+            "emptyState": {
+                "title": "De har ingen bestillinger",
+                "cta": "Kjøp nå"
+            },
             "Details": {
                 "title": "Bestillingsnummer {orderNumber}",
                 "shippingAddress": "Leveringsadresse",
@@ -174,6 +180,7 @@
             "title": "Kontoinnstillinger",
             "changePassword": "Endre passord",
             "passwordUpdated": "Passordet er oppdatert!",
+            "settingsUpdated": "Kontoinnstillingene har blitt oppdatert!",
             "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
             "currentPassword": "Nåværende passord",
             "newPassword": "Nytt passord",
@@ -182,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Ønskelistehandlinger",
         "title": "Ønskelister",
         "new": "Ny ønskeliste",
         "items": "{count, plural, =1 {1 vare} other {# varer}}",
@@ -305,7 +313,8 @@
     },
     "PublicWishlist": {
         "title": "Offentlig ønskeliste",
-        "defaultName": "Offentlig ønskeliste"
+        "defaultName": "Offentlig ønskeliste",
+        "emptyWishlist": "Denne ønskelisten har ingen produkter til nå"
     },
     "Blog": {
         "title": "blogg",
@@ -470,7 +479,8 @@
     "NotFound": {
         "title": "Vi fant ikke den siden!",
         "subtitle": "Prøv å søke etter noe annet, eller gå tilbake til hjemmesiden.",
-        "featuredProducts": "Utvalgt produkter"
+        "featuredProducts": "Utvalgt produkter",
+        "search": "Søk"
     },
     "Components": {
         "Header": {
@@ -491,7 +501,9 @@
                 "brands": "merker",
                 "noSearchResultsTitle": "Beklager, ingen resultater for «{term}».",
                 "noSearchResultsSubtitle": "Prøv et nytt søk.",
-                "somethingWentWrong": "Noe gikk galt. Prøv igjen."
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Søk"
             }
         },
         "Footer": {

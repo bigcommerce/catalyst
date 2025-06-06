@@ -19,6 +19,7 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
 import { AnalyticsProvider } from '~/components/analytics/provider';
+import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { routing } from '~/i18n/routing';
 import { SiteTheme } from '~/lib/makeswift/components/site-theme';
 import { MakeswiftProvider } from '~/lib/makeswift/provider';
@@ -132,6 +133,7 @@ export default async function RootLayout({ params, children }: Props) {
             </NuqsAdapter>
           </NextIntlClientProvider>
           <VercelComponents />
+          <ContainerQueryPolyfill />
         </body>
       </html>
     </MakeswiftProvider>

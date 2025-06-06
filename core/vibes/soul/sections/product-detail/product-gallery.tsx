@@ -78,16 +78,16 @@ export function ProductGallery({
               className={clsx(
                 'relative w-full shrink-0 grow-0 basis-full',
                 {
-                  '5:6': 'aspect-5/6',
-                  '3:4': 'aspect-3/4',
-                  '4:5': 'aspect-4/5',
-                  '3:2': 'aspect-3/2',
-                  '2:3': 'aspect-2/3',
-                  '16:9': 'aspect-16/9',
-                  '9:16': 'aspect-9/16',
-                  '6:5': 'aspect-6/5',
-                  '5:4': 'aspect-5/4',
-                  '4:3': 'aspect-4/3',
+                  '5:6': 'aspect-[5/6]',
+                  '3:4': 'aspect-[3/4]',
+                  '4:5': 'aspect-[4/5]',
+                  '3:2': 'aspect-[3/2]',
+                  '2:3': 'aspect-[2/3]',
+                  '16:9': 'aspect-[16/9]',
+                  '9:16': 'aspect-[9/16]',
+                  '6:5': 'aspect-[6/5]',
+                  '5:4': 'aspect-[5/4]',
+                  '4:3': 'aspect-[4/3]',
                   '1:1': 'aspect-square',
                 }[aspectRatio],
               )}
@@ -116,7 +116,7 @@ export function ProductGallery({
           <button
             aria-label={`${thumbnailLabel} ${index + 1}`}
             className={clsx(
-              'relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[var(--product-gallery-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 focus-visible:outline-none @md:h-16 @md:w-16',
+              'relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-gallery-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 @md:h-16 @md:w-16',
               index === previewImage
                 ? 'border-[var(--product-gallery-image-border-active,hsl(var(--foreground)))]'
                 : 'border-transparent',

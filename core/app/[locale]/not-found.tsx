@@ -13,6 +13,7 @@ export default async function NotFound() {
 
       <NotFoundSection
         className="flex-1 place-content-center"
+        ctaLabel={t('search')}
         subtitle={t('subtitle')}
         title={t('title')}
       />

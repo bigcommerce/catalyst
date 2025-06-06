@@ -50,6 +50,8 @@
             "heading": "Connexion",
             "forgotPassword": "Mot de passe oublié ?",
             "cta": "Connexion",
+            "email": "E-mail",
+            "password": "Mot de passe",
             "invalidCredentials": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Commande n° ",
             "totalPrice": "Total",
             "viewDetails": "Afficher les détails",
+            "emptyState": {
+                "title": "Vous n'avez aucune commande",
+                "cta": "Acheter"
+            },
             "Details": {
                 "title": "Commande n° {orderNumber}",
                 "shippingAddress": "Adresse de livraison",
@@ -174,6 +180,7 @@
             "title": "Paramètres des comptes",
             "changePassword": "Modifier le mot de passe",
             "passwordUpdated": "Le mot de passe a bien été mis à jour !",
+            "settingsUpdated": "Les paramètres du compte ont été mis à jour.",
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
             "currentPassword": "Mot de passe actuel",
             "newPassword": "Nouveau mot de passe",
@@ -182,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Actions de la liste d'envies",
         "title": "Listes d'envies",
         "new": "Nouvelle liste d'envies",
         "items": "{count, plural, =1 {1 article} other {# articles}}",
@@ -305,7 +313,8 @@
     },
     "PublicWishlist": {
         "title": "Liste d'envies publique",
-        "defaultName": "Liste d'envies publique"
+        "defaultName": "Liste d'envies publique",
+        "emptyWishlist": "Cette liste de souhaits ne contient pas encore de produits."
     },
     "Blog": {
         "title": "Blog",
@@ -470,7 +479,8 @@
     "NotFound": {
         "title": "Page introuvable !",
         "subtitle": "Essayez de rechercher autre chose ou revenez à la page d'accueil.",
-        "featuredProducts": "Produits en vedette"
+        "featuredProducts": "Produits en vedette",
+        "search": "Rechercher"
     },
     "Components": {
         "Header": {
@@ -491,7 +501,9 @@
                 "brands": "Marques",
                 "noSearchResultsTitle": "Désolé, aucun résultat pour « {term} ».",
                 "noSearchResultsSubtitle": "Veuillez modifier votre recherche.",
-                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer."
+                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Rechercher"
             }
         },
         "Footer": {

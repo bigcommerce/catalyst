@@ -12,7 +12,7 @@ import {
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
 import { ReactNode, startTransition, useActionState, useCallback, useEffect } from 'react';
-import { requestFormReset, useFormStatus } from 'react-dom';
+import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
 import { ButtonRadioGroup } from '@/vibes/soul/form/button-radio-group';
@@ -31,6 +31,7 @@ import { toast } from '@/vibes/soul/primitives/toaster';
 import { useEvents } from '~/components/analytics/events';
 import { usePathname, useRouter } from '~/i18n/routing';
 
+import { revalidateCart } from './actions/revalidate-cart';
 import { Field, schema, SchemaRawShape } from './schema';
 
 type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
@@ -95,7 +96,7 @@ export function ProductDetailForm<F extends Field>({
   }>(
     (acc, field) => ({
       ...acc,
-      [field.name]: params[field.name] ?? field.defaultValue ?? '',
+      [field.name]: params[field.name] ?? field.defaultValue,
     }),
     { quantity: 1 },
   );
@@ -109,9 +110,11 @@ export function ProductDetailForm<F extends Field>({
     if (lastResult?.status === 'success') {
       toast.success(successMessage);
 
-      // This is needed to refresh the Data Cache after the product has been added to the cart.
-      // The cart id is not picked up after the first time the cart is created/updated.
-      router.refresh();
+      startTransition(async () => {
+        // This is needed to refresh the Data Cache after the product has been added to the cart.
+        // The cart id is not picked up after the first time the cart is created/updated.
+        await revalidateCart();
+      });
     }
   }, [lastResult, successMessage, router]);
 
@@ -125,7 +128,6 @@ export function ProductDetailForm<F extends Field>({
       event.preventDefault();
 
       startTransition(() => {
-        requestFormReset(event.currentTarget);
         formAction(formData);
 
         events.onAddToCart?.(formData);
@@ -222,10 +224,11 @@ function FormField({
   const handleChange = useCallback(
     (value: string) => {
       // Ensure that if page is reached without a full reload, we are still setting the selection properly based on query params.
-      const fieldValue = value || String(params[field.name] ?? '');
+      const fieldValue = value || params[field.name];
 
-      void setParams({ [field.name]: fieldValue });
-      controls.change(fieldValue);
+      void setParams({ [field.name]: fieldValue || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
+
+      controls.change(fieldValue ?? ''); // If fieldValue is falsey, we set it to an empty string
     },
     [setParams, field, controls, params],
   );
@@ -304,15 +307,16 @@ function FormField({
     case 'checkbox':
       return (
         <Checkbox
+          checked={controls.value === 'true'}
           errors={formField.errors}
           key={formField.id}
           label={field.label}
           name={formField.name}
           onBlur={controls.blur}
-          onCheckedChange={(value) => handleChange(String(value))}
+          onCheckedChange={(value) => handleChange(value ? 'true' : '')}
           onFocus={controls.focus}
           required={formField.required}
-          value={controls.value ?? 'false'}
+          value={controls.value ?? ''}
         />
       );
 

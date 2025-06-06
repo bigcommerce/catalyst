@@ -74,25 +74,25 @@ export function ProductsListSection({
 }: Props) {
   return (
     <div className="group/products-list-section @container">
-      <div className="mx-auto max-w-(--breakpoint-2xl) px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
+      <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
         <div>
           <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
             {(breadcrumbs) =>
               breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
             }
           </Stream>
-          <div className="text-foreground flex flex-wrap items-center justify-between gap-4 pt-6 pb-8">
-            <h1 className="font-heading flex items-center gap-2 text-3xl leading-none font-medium @lg:text-4xl @2xl:text-5xl">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
+            <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
               <Suspense
                 fallback={
-                  <span className="bg-contrast-100 inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg" />
+                  <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
                 }
               >
                 {title}
               </Suspense>
               <Suspense
                 fallback={
-                  <span className="bg-contrast-100 inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg" />
+                  <span className="inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg bg-contrast-100" />
                 }
               >
                 <span className="text-contrast-300">{totalCount}</span>
@@ -158,7 +158,7 @@ export function ProductsListSection({
             />
           </aside>
 
-          <div className="flex-1 group-has-data-pending/products-list-section:animate-pulse">
+          <div className="group-has-data-pending/products-list-section:animate-pulse flex-1">
             <ProductList
               compareHref={compareHref}
               compareLabel={compareLabel}

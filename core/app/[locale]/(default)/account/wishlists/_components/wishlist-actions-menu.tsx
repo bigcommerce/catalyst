@@ -163,7 +163,7 @@ export const WishlistActionsMenu = ({ actionsTitle, items, share }: Props) => {
       </DropdownMenu>
       {modals.map(({ key, modal: { formAction: action, ...modalProps } }) => (
         <Modal
-          className="max-w-lg min-w-64 @lg:min-w-96"
+          className="min-w-64 max-w-lg @lg:min-w-96"
           form={action ? { action, onSuccess: handleModalFormSuccess(key) } : undefined}
           isOpen={state[key] ?? false}
           key={key}

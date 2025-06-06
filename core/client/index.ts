@@ -27,7 +27,6 @@ const getLocale = async () => {
 
 export const client = createClient({
   storefrontToken: process.env.BIGCOMMERCE_STOREFRONT_TOKEN ?? '',
-  xAuthToken: process.env.BIGCOMMERCE_ACCESS_TOKEN ?? '',
   storeHash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
   channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
   backendUserAgentExtensions: backendUserAgent,

@@ -58,7 +58,7 @@ export function Button({
       {...props}
       aria-busy={loading}
       className={clsx(
-        'relative z-0 inline-flex h-fit cursor-pointer items-center justify-center overflow-hidden border text-center font-[family-name:var(--button-font-family,var(--font-family-body))] leading-normal font-semibold select-none after:absolute after:inset-0 after:-z-10 after:-translate-x-[105%] after:duration-300 after:[animation-timing-function:cubic-bezier(0,0.25,0,1)] focus-visible:ring-2 focus-visible:ring-[var(--button-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 focus-visible:outline-hidden disabled:pointer-events-none disabled:opacity-30',
+        'relative z-0 inline-flex h-fit cursor-pointer select-none items-center justify-center overflow-hidden border text-center font-[family-name:var(--button-font-family,var(--font-family-body))] font-semibold leading-normal after:absolute after:inset-0 after:-z-10 after:-translate-x-[105%] after:duration-300 after:[animation-timing-function:cubic-bezier(0,0.25,0,1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--button-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-30',
         {
           primary:
             'border-[var(--button-primary-border,hsl(var(--primary)))] bg-[var(--button-primary-background,hsl(var(--primary)))] text-[var(--button-primary-text,hsl(var(--foreground)))] after:bg-[var(--button-primary-background-hover,color-mix(in_oklab,hsl(var(--primary)),white_75%))]',
@@ -88,13 +88,19 @@ export function Button({
         className={clsx(
           'inline-flex items-center justify-center transition-all duration-300 ease-in-out',
           loading ? '-translate-y-10 opacity-0' : 'translate-y-0 opacity-100',
-          shape === 'circle' && 'aspect-square',
           {
             'x-small': 'min-h-8 text-xs',
             small: 'min-h-10 text-sm',
             medium: 'min-h-12 text-base',
             large: 'min-h-14 text-base',
           }[size],
+          shape === 'circle' &&
+            {
+              'x-small': 'min-w-8',
+              small: 'min-w-10',
+              medium: 'min-w-12',
+              large: 'min-w-14',
+            }[size],
           shape !== 'circle' &&
             {
               'x-small': 'gap-x-2 px-3 py-1.5',

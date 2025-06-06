@@ -83,10 +83,8 @@ test.describe('desktop', () => {
     ).toBeVisible();
   });
 
-  test('Complete checkout as a logged in shopper', async ({ page, account }) => {
-    const customer = await account.create();
-
-    await customer.login();
+  test('Complete checkout as a logged in shopper', async ({ page, customer }) => {
+    const user = await customer.login();
 
     await page.goto('/laundry-detergent/');
     await expect(
@@ -103,7 +101,7 @@ test.describe('desktop', () => {
       .locator('.checkout-step--shipping .checkout-view-content[aria-busy="false"]')
       .waitFor();
 
-    await page.getByText(customer.email).isVisible();
+    await page.getByText(user.email).isVisible();
 
     await page.getByRole('button', { name: 'Continue' }).click();
     await page.getByRole('heading', { name: 'Payment', exact: true }).waitFor();
@@ -113,7 +111,7 @@ test.describe('desktop', () => {
     await page.getByRole('button', { name: 'Place Order' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
-      page.getByRole('heading', { name: `Thank you ${customer.firstName}!`, level: 1 }),
+      page.getByRole('heading', { name: `Thank you ${user.firstName}!`, level: 1 }),
     ).toBeVisible();
   });
 });

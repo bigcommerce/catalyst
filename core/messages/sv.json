@@ -50,6 +50,8 @@
             "heading": "Logga in",
             "forgotPassword": "Glömt ditt lösenord?",
             "cta": "Logga in",
+            "email": "E-post",
+            "password": "Lösenord",
             "invalidCredentials": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Beställningsnummer",
             "totalPrice": "Total",
             "viewDetails": "Visa detaljer",
+            "emptyState": {
+                "title": "Du har inga beställningar",
+                "cta": "Köp nu"
+            },
             "Details": {
                 "title": "Beställningsnummer {orderNumber}",
                 "shippingAddress": "Leveransadress",
@@ -174,6 +180,7 @@
             "title": "Kontoinställningar",
             "changePassword": "Ändra lösenor",
             "passwordUpdated": "Lösenordet har uppdaterats!",
+            "settingsUpdated": "Kontoinställningarna har uppdaterats!",
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
             "currentPassword": "Nuvarande lösenord",
             "newPassword": "Nytt lösenord",
@@ -182,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Åtgärder för önskelista",
         "title": "Önskelistor",
         "new": "Ny önskelista",
         "items": "{count, plural, =1 {1 objekt} other {# objekt}}",
@@ -305,7 +313,8 @@
     },
     "PublicWishlist": {
         "title": "Offentlig önskelista",
-        "defaultName": "Offentlig önskelista"
+        "defaultName": "Offentlig önskelista",
+        "emptyWishlist": "Det finns inga produkter i den här önskelistan ännu."
     },
     "Blog": {
         "title": "Blogg",
@@ -470,7 +479,8 @@
     "NotFound": {
         "title": "Vi kunde inte hitta den sidan!",
         "subtitle": "Prova att söka efter något annat eller gå tillbaka till startsidan.",
-        "featuredProducts": "Utvalda produkter"
+        "featuredProducts": "Utvalda produkter",
+        "search": "Sök"
     },
     "Components": {
         "Header": {
@@ -491,7 +501,9 @@
                 "brands": "Varumärke",
                 "noSearchResultsTitle": "Tyvärr finns inga resultat för ”{term}”.",
                 "noSearchResultsSubtitle": "Försök med en ny sökning.",
-                "somethingWentWrong": "Något gick fel. Var god försök igen."
+                "somethingWentWrong": "Något gick fel. Var god försök igen.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Sök"
             }
         },
         "Footer": {

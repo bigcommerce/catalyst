@@ -40,10 +40,10 @@ export function AccountSettingsSection({
   newPasswordLabel,
 }: AccountSettingsSectionProps) {
   return (
-    <section className="@container w-full">
-      <header className="border-b-contrast-100 mb-4 border-b">
+    <section className="w-full @container">
+      <header className="mb-4 border-b border-b-contrast-100">
         <div className="mb-4 flex min-h-[42px] items-center justify-between">
-          <h1 className="font-heading text-4xl leading-none font-medium">{title}</h1>
+          <h1 className="font-heading text-4xl font-medium leading-none">{title}</h1>
         </div>
       </header>
       <div className="flex flex-col gap-y-24 @xl:flex-row">
@@ -56,7 +56,7 @@ export function AccountSettingsSection({
             />
           </div>
           <div className="border-t border-[var(--account-settings-section-border,hsl(var(--contrast-100)))] pt-12">
-            <h1 className="mb-10 font-[family-name:var(--account-settings-section-font-family,var(--font-family-heading))] text-2xl leading-none font-medium text-[var(--account-settings-section-text,var(--foreground))] @xl:text-2xl">
+            <h1 className="mb-10 font-[family-name:var(--account-settings-section-font-family,var(--font-family-heading))] text-2xl font-medium leading-none text-[var(--account-settings-section-text,var(--foreground))] @xl:text-2xl">
               {changePasswordTitle}
             </h1>
             <ChangePasswordForm

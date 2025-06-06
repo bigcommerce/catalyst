@@ -50,6 +50,8 @@
             "heading": "Credencial de acesso",
             "forgotPassword": "Esqueceu sua senha?",
             "cta": "Credencial de acesso",
+            "email": "Email",
+            "password": "Senha",
             "invalidCredentials": "O endereço de email ou a senha está incorreto. Tente fazer login novamente ou redefinir sua senha",
             "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Pedido n.º",
             "totalPrice": "Total",
             "viewDetails": "Ver detalhes",
+            "emptyState": {
+                "title": "Você não tem nenhum pedido",
+                "cta": "Comprar agora"
+            },
             "Details": {
                 "title": "Pedido n.º {orderNumber}",
                 "shippingAddress": "Endereço de entrega",
@@ -174,6 +180,7 @@
             "title": "Configurações da conta",
             "changePassword": "Alterar senha",
             "passwordUpdated": "A senha foi atualizada com sucesso!",
+            "settingsUpdated": "As configurações da conta foram atualizadas com sucesso!",
             "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde.",
             "currentPassword": "Senha atual",
             "newPassword": "Nova senha",
@@ -182,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Ações da lista de desejos",
         "title": "Lista de desejos",
         "new": "Nova lista de desejos",
         "items": "{count, plural, =1 {1 item} other {# itens}}",
@@ -305,7 +313,8 @@
     },
     "PublicWishlist": {
         "title": "Lista de desejos pública",
-        "defaultName": "Lista de desejos pública"
+        "defaultName": "Lista de desejos pública",
+        "emptyWishlist": "Esta lista de desejos ainda não tem nenhum produto."
     },
     "Blog": {
         "title": "Blog",
@@ -470,7 +479,8 @@
     "NotFound": {
         "title": "Não encontramos essa página!",
         "subtitle": "Tente fazer uma pesquisa diferente ou volte para a página inicial.",
-        "featuredProducts": "Produtos em destaque"
+        "featuredProducts": "Produtos em destaque",
+        "search": "Pesquisar"
     },
     "Components": {
         "Header": {
@@ -491,7 +501,9 @@
                 "brands": "Marcas",
                 "noSearchResultsTitle": "Nenhum resultado para “{term}”.",
                 "noSearchResultsSubtitle": "Experimente outra pesquisa.",
-                "somethingWentWrong": "Ocorreu um erro. Tente novamente."
+                "somethingWentWrong": "Ocorreu um erro. Tente novamente.",
+                "inputPlaceholder": "Search products, categories, brands...",
+                "submitLabel": "Pesquisar"
             }
         },
         "Footer": {

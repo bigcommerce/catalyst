@@ -46,7 +46,7 @@ export function CartSkeleton({
       className="group/cart text-[var(--cart-text,hsl(var(--foreground)))]"
       sidebar={
         <div>
-          <h2 className="mb-10 font-[family-name:var(--cart-title-font-family,var(--font-family-heading))] text-4xl leading-none font-medium @xl:text-5xl">
+          <h2 className="mb-10 font-[family-name:var(--cart-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none @xl:text-5xl">
             {summaryTitle}
           </h2>
           <div className="group-has-[[data-pending]]/cart:animate-pulse">
@@ -78,7 +78,7 @@ export function CartSkeleton({
       sidebarSize="1/3"
     >
       <div>
-        <h1 className="mb-10 font-[family-name:var(--cart-title-font-family,var(--font-family-heading))] text-4xl leading-none font-medium @xl:text-5xl">
+        <h1 className="mb-10 font-[family-name:var(--cart-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none @xl:text-5xl">
           {title}
         </h1>
         {/* Cart Line Items */}
@@ -86,7 +86,7 @@ export function CartSkeleton({
           <ul className="flex flex-col gap-5" data-pending>
             {Array.from({ length: placeholderCount }).map((_, index) => (
               <li
-                className="@container flex flex-col items-start gap-x-5 gap-y-4 @sm:flex-row"
+                className="flex flex-col items-start gap-x-5 gap-y-4 @container @sm:flex-row"
                 key={index}
               >
                 {/* Image */}

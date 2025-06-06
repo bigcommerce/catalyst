@@ -90,7 +90,7 @@ export function Select({
       <SelectPrimitive.Trigger
         aria-label={label}
         className={clsx(
-          'flex h-fit w-full items-center justify-between gap-3 border p-2 px-5 py-3 text-sm font-medium transition-colors select-none focus-visible:ring-2 focus-visible:outline-hidden',
+          'flex h-fit w-full select-none items-center justify-between gap-3 border p-2 px-5 py-3 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2',
           variant === 'rectangle' ? 'rounded-lg' : 'rounded-full',
           {
             light:
@@ -130,7 +130,7 @@ export function Select({
       <SelectPrimitive.Portal>
         <SelectPrimitive.Content
           className={clsx(
-            'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 max-h-80 overflow-y-auto rounded-xl p-2 shadow-xl ring-1 @4xl:rounded-3xl @4xl:p-4',
+            'z-50 max-h-80 overflow-y-auto rounded-xl p-2 shadow-xl ring-1 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:rounded-3xl @4xl:p-4',
             {
               popper: 'w-[var(--radix-select-trigger-width)]',
               'item-aligned': 'w-full',
@@ -161,7 +161,7 @@ export function Select({
             {options.map((option) => (
               <SelectPrimitive.Item
                 className={clsx(
-                  'w-full cursor-default rounded-xl px-3 py-2 text-sm font-medium outline-hidden transition-colors select-none @4xl:text-base',
+                  'w-full cursor-default select-none rounded-xl px-3 py-2 text-sm font-medium outline-none transition-colors @4xl:text-base',
                   {
                     light:
                       'text-[var(--select-light-item-text,hsl(var(--contrast-400)))] hover:bg-[var(--select-light-item-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--select-light-item-text-hover,hsl(var(--foreground)))] focus-visible:bg-[var(--select-light-item-background-focus,hsl(var(--contrast-100)))] focus-visible:text-[var(--select-light-item-text-focus,hsl(var(--foreground)))] data-[state=checked]:text-[var(--select-light-item-checked-text-focus,hsl(var(--foreground)))]',
