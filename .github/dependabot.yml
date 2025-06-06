@@ -15,7 +15,6 @@ updates:
         update-types: ['version-update:semver-major']
       - dependency-name: 'eslint'
         update-types: ['version-update:semver-major']
-      - dependency-name: 'react-day-picker'
-        update-types: ['version-update:semver-major']
-        # Tailwind upgrade deserves it's own PR and changelog
+      # Disabling tailwind due to browser compatibility constraints.
       - dependency-name: 'tailwindcss'
+        update-types: ['version-update:semver-major']

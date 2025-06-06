@@ -41,12 +41,7 @@ times before. You can instead go straight to work building your brand and making
 
 ## Deploy via One-Click Catalyst App
 
-<<<<<<< HEAD
 The easiest way to deploy your Catalyst Storefront is to use the [One-Click Catalyst App](https://login.bigcommerce.com/deep-links/app/53284) available in the BigCommerce App Marketplace.
-=======
-The easiest way to deploy your Catalyst Storefront is to use the [One-Click Catalyst App](http://login.bigcommerce.com/deep-links/app/53284) available in the BigCommerce App Marketplace.
-
-> > > > > > > canary
 
 Check out the [Catalyst.dev One-Click Catalyst Documentation](https://www.catalyst.dev/docs/getting-started) for more details.
 

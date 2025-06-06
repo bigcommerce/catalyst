@@ -10,10 +10,10 @@
   ],
   "dependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",
-    "@next/eslint-plugin-next": "^15.3.0",
-    "eslint-config-prettier": "^10.1.2",
+    "@next/eslint-plugin-next": "^15.3.3",
+    "eslint-config-prettier": "^10.1.5",
     "eslint-plugin-check-file": "^2.8.0",
-    "eslint-plugin-prettier": "^5.2.6"
+    "eslint-plugin-prettier": "^5.4.1"
   },
   "peerDependencies": {
     "eslint": "^8.0.0",

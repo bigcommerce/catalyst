@@ -82,7 +82,7 @@ type CardRadioField = {
   options: Array<{
     value: string;
     label: string;
-    image: { src: string; alt: string };
+    image?: { src: string; alt: string };
     disabled?: boolean;
   }>;
 } & FormField;
