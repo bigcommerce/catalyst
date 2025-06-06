@@ -13,15 +13,15 @@ import { Label } from '@/vibes/soul/form/label';
  *   --input-light-background: hsl(var(--background));
  *   --input-light-text: hsl(var(--foreground));
  *   --input-light-border: hsl(var(--contrast-100));
+ *   --input-light-border-error: hsl(var(--error));
  *   --input-light-focus: hsl(var(--foreground));
  *   --input-light-placeholder: hsl(var(--contrast-500));
- *   --input-light-error: hsl(var(--error));
  *   --input-dark-background: hsl(var(--foreground));
  *   --input-dark-text: hsl(var(--background));
  *   --input-dark-border: hsl(var(--contrast-500));
  *   --input-dark-focus: hsl(var(--background));
  *   --input-dark-placeholder: hsl(var(--contrast-100));
- *   --input-dark-error: hsl(var(--error));
+ *   --input-dark-border-error: hsl(var(--error));
  *  }
  * ```
  */
@@ -48,8 +48,18 @@ export const Input = React.forwardRef<
           'relative overflow-hidden rounded-lg border transition-colors duration-200 focus:outline-none',
           {
             light:
-              'border-[var(--input-light-border,hsl(var(--contrast-100)))] bg-[var(--input-light-background,hsl(var(--background)))] focus-within:border-[var(--input-light-focus,hsl(var(--foreground)))]',
-            dark: 'border-[var(--input-dark-border,hsl(var(--contrast-500)))] bg-[var(--input-dark-background,hsl(var(--foreground)))] focus-within:border-[var(--input-dark-focus,hsl(var(--background)))]',
+              'bg-[var(--input-light-background,hsl(var(--background)))] focus-within:border-[var(--input-light-focus,hsl(var(--foreground)))]',
+            dark: 'bg-[var(--input-dark-background,hsl(var(--foreground)))] focus-within:border-[var(--input-dark-focus,hsl(var(--background)))]',
+          }[colorScheme],
+          {
+            light:
+              errors && errors.length > 0
+                ? 'border-[var(--input-light-border-error,hsl(var(--error)))]'
+                : 'border-[var(--input-light-border,hsl(var(--contrast-100)))]',
+            dark:
+              errors && errors.length > 0
+                ? 'border-[var(--input-dark-border-error,hsl(var(--error)))]'
+                : 'border-[var(--input-dark-border,hsl(var(--contrast-500)))]',
           }[colorScheme],
         )}
       >
