@@ -224,10 +224,11 @@ function FormField({
   const handleChange = useCallback(
     (value: string) => {
       // Ensure that if page is reached without a full reload, we are still setting the selection properly based on query params.
-      const fieldValue = value || String(params[field.name]);
+      const fieldValue = value || params[field.name];
 
       void setParams({ [field.name]: fieldValue || null }); // Passing `null` to remove the value from the query params if fieldValue is falsey
-      controls.change(fieldValue);
+
+      controls.change(fieldValue ?? ''); // If fieldValue is falsey, we set it to an empty string
     },
     [setParams, field, controls, params],
   );
@@ -306,15 +307,16 @@ function FormField({
     case 'checkbox':
       return (
         <Checkbox
+          checked={controls.value === 'true'}
           errors={formField.errors}
           key={formField.id}
           label={field.label}
           name={formField.name}
           onBlur={controls.blur}
-          onCheckedChange={(value) => handleChange(String(value))}
+          onCheckedChange={(value) => handleChange(value ? 'true' : '')}
           onFocus={controls.focus}
           required={formField.required}
-          value={controls.value ?? 'false'}
+          value={controls.value ?? ''}
         />
       );
 
