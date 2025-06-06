@@ -16,49 +16,6 @@ import { getTranslations } from '~/tests/lib/i18n';
 
 import { customerSessionStore } from './session';
 
-function fakeCreateAddressData({
-  firstName,
-  lastName,
-  customerId,
-}: {
-  firstName?: string;
-  lastName?: string;
-  customerId?: number;
-}) {
-  const first = firstName ?? faker.person.firstName();
-  const last = lastName ?? faker.person.lastName();
-  const address1 = faker.location.streetAddress();
-  const city = faker.location.city();
-  const state = faker.location.state();
-  const postalCode = faker.location.zipCode('#####');
-
-  return {
-    ...(customerId ? { customerId } : {}),
-    firstName: first,
-    lastName: last,
-    address1,
-    city,
-    stateOrProvince: state,
-    countryCode: 'US',
-    postalCode,
-  };
-}
-
-function fakeCreateCustomerData(password: string, createFakeAddress?: boolean): CreateCustomerData {
-  const firstName = faker.person.firstName();
-  const lastName = faker.person.lastName();
-  const email = faker.internet.email({ firstName, lastName, provider: 'example.com' });
-
-  return {
-    firstName,
-    lastName,
-    email,
-    password,
-    ...(createFakeAddress ? { addresses: [fakeCreateAddressData({ firstName, lastName })] } : {}),
-    originChannelId: Number(testEnv.BIGCOMMERCE_CHANNEL_ID),
-  };
-}
-
 export class CustomerFixture extends Fixture {
   customers: Customer[] = [];
   addresses: Address[] = [];
@@ -95,7 +52,7 @@ export class CustomerFixture extends Fixture {
       length: 10,
     });
 
-    const customer = await this.api.customers.create(fakeCreateCustomerData(password, true));
+    const customer = await this.api.customers.create(this.fakeCreateCustomerData(password, true));
 
     this.customers.push(customer);
 
@@ -130,7 +87,9 @@ export class CustomerFixture extends Fixture {
   async createAddress(customerId: number): Promise<Address> {
     this.skipIfReadonly();
 
-    const address = await this.api.customers.createAddress(fakeCreateAddressData({ customerId }));
+    const address = await this.api.customers.createAddress(
+      this.fakeCreateAddressData({ customerId }),
+    );
 
     this.addresses.push(address);
 
@@ -142,7 +101,7 @@ export class CustomerFixture extends Fixture {
     name = `Test wishlist ${faker.string.alpha(10)}`,
     isPublic = false,
     items = [],
-  }: CreateWishlistData): Promise<Wishlist> {
+  }: Partial<CreateWishlistData> & { customerId: number }): Promise<Wishlist> {
     this.skipIfReadonly();
 
     const wishlist = await this.api.customers.createWishlist({
@@ -258,5 +217,53 @@ export class CustomerFixture extends Fixture {
 
     await this.api.customers.deleteAddresses(this.addresses.map(({ id }) => id));
     await this.api.customers.deleteWishlists(this.wishlists.map(({ id }) => id));
+  }
+
+  private fakeCreateAddressData({
+    firstName,
+    lastName,
+    customerId,
+  }: {
+    firstName?: string;
+    lastName?: string;
+    customerId?: number;
+  }) {
+    const first = firstName ?? faker.person.firstName();
+    const last = lastName ?? faker.person.lastName();
+    const address1 = faker.location.streetAddress();
+    const city = faker.location.city();
+    const state = faker.location.state();
+    const postalCode = faker.location.zipCode('#####');
+
+    return {
+      ...(customerId ? { customerId } : {}),
+      firstName: first,
+      lastName: last,
+      address1,
+      city,
+      stateOrProvince: state,
+      countryCode: 'US',
+      postalCode,
+    };
+  }
+
+  private fakeCreateCustomerData(
+    password: string,
+    createFakeAddress?: boolean,
+  ): CreateCustomerData {
+    const firstName = faker.person.firstName();
+    const lastName = faker.person.lastName();
+    const email = faker.internet.email({ firstName, lastName, provider: 'example.com' });
+
+    return {
+      firstName,
+      lastName,
+      email,
+      password,
+      ...(createFakeAddress
+        ? { addresses: [this.fakeCreateAddressData({ firstName, lastName })] }
+        : {}),
+      originChannelId: Number(testEnv.BIGCOMMERCE_CHANNEL_ID),
+    };
   }
 }

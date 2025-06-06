@@ -14,9 +14,7 @@ export abstract class Fixture {
   }
 
   protected skipIfReadonly(): void {
-    if (testEnv.TESTS_READ_ONLY) {
-      this.test.skip(true, 'Tests are running in read-only mode.');
-    }
+    this.test.skip(testEnv.TESTS_READ_ONLY, 'Tests are running in read-only mode.');
   }
 
   abstract cleanup(): Promise<void>;

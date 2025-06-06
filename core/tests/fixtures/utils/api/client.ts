@@ -2,123 +2,58 @@ import { z } from 'zod';
 
 import { testEnv } from '~/tests/environment';
 
-import {
-  TestApiClientBodyParseError,
-  TestApiClientResponseError,
-  TestApiClientSchemaError,
-} from './errors';
+import { TestApiClientResponseError } from './errors';
 
-type JsonPrimitive = string | number | boolean | null | undefined;
-type JsonValue = JsonPrimitive | JsonValue[] | JsonObject;
-type JsonArray = JsonValue[];
-
-interface JsonObject {
-  [key: string]: JsonValue;
+class ApiClientResponse extends Promise<Response> {
+  async parse<Out, In = Out>(schema: z.ZodType<Out, z.ZodTypeDef, In>): Promise<Out> {
+    return schema.parse(await this.then((res) => res.json()));
+  }
 }
 
-type RequestBody = string | JsonObject | JsonArray;
-
-interface RequestConfig {
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  headers?: Record<string, string>;
-  body?: RequestBody;
-}
-
-interface ApiClientResponse {
-  then: (
-    onFulfilled: (value: unknown) => Promise<unknown>,
-    onRejected?: (reason: unknown) => Promise<unknown>,
-  ) => Promise<unknown>;
-  parse: <Out, In = Out>(schema: z.ZodType<Out, z.ZodTypeDef, In>) => Promise<Out>;
-}
-
-function clientResponse({
-  path,
-  method,
-  request,
-}: {
-  path: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  request: Promise<Response>;
-}): ApiClientResponse {
-  const handleResponse = async (res: Response): Promise<unknown> => {
-    const { status, statusText } = res;
-
-    // Parse as text first since body can only be consumed once.
-    const responseText = await res.text();
-
-    if (!res.ok) {
-      throw new TestApiClientResponseError(path, method, status, statusText, responseText);
+function httpRequest(path: string, config: RequestInit): ApiClientResponse {
+  // eslint-disable-next-line @typescript-eslint/no-misused-promises
+  return new ApiClientResponse(async (resolve, reject) => {
+    if (!testEnv.BIGCOMMERCE_ACCESS_TOKEN) {
+      throw new Error('BIGCOMMERCE_ACCESS_TOKEN is not set');
     }
 
-    const contentType = res.headers.get('content-type') ?? '';
-
-    if (
-      ['application/json', 'application/problem+json'].includes(contentType) &&
-      responseText.length > 0
-    ) {
-      try {
-        return JSON.parse(responseText);
-      } catch {
-        throw new TestApiClientBodyParseError(path, method, responseText);
-      }
+    if (!testEnv.BIGCOMMERCE_STORE_HASH) {
+      throw new Error('BIGCOMMERCE_STORE_HASH is not set');
     }
 
-    return responseText.length > 0 ? responseText : undefined;
-  };
+    const {
+      BIGCOMMERCE_ACCESS_TOKEN: accessToken,
+      BIGCOMMERCE_STORE_HASH: storeHash,
+      BIGCOMMERCE_ADMIN_API_HOST: host,
+    } = testEnv;
 
-  const response = request.then((res) => handleResponse(res));
+    const { method, headers = {}, body } = config;
+    const req = new Request(`https://${host}/stores/${storeHash}${path}`, {
+      method,
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+        'X-Auth-Token': accessToken,
+        ...Object.fromEntries(new Headers(headers).entries()),
+      },
+      body,
+    });
 
-  return {
-    then: (
-      onFulfilled: (value: unknown) => Promise<unknown>,
-      onRejected?: (reason: unknown) => Promise<unknown>,
-    ) => response.then(onFulfilled, onRejected),
-    parse: async <Out, In = Out>(schema: z.ZodType<Out, z.ZodTypeDef, In>): Promise<Out> => {
-      try {
-        return schema.parse(await response);
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          throw new TestApiClientSchemaError(path, method, error);
-        }
+    const response = await fetch(req);
 
-        throw error;
-      }
-    },
-  };
-}
+    if (!response.ok) {
+      reject(await TestApiClientResponseError.create(req, response));
+    }
 
-function httpRequest(path: string, config: RequestConfig): ApiClientResponse {
-  if (!testEnv.BIGCOMMERCE_ACCESS_TOKEN) {
-    throw new Error('BIGCOMMERCE_ACCESS_TOKEN is not set');
-  }
-
-  if (!testEnv.BIGCOMMERCE_STORE_HASH) {
-    throw new Error('BIGCOMMERCE_STORE_HASH is not set');
-  }
-
-  const accessToken = testEnv.BIGCOMMERCE_ACCESS_TOKEN;
-  const storeHash = testEnv.BIGCOMMERCE_STORE_HASH;
-  const apiUrl = `https://${testEnv.BIGCOMMERCE_ADMIN_API_HOST}/stores/${storeHash}`;
-  const { method, headers, body: bodyInput } = config;
-  const body = typeof bodyInput === 'string' ? bodyInput : JSON.stringify(bodyInput);
-  const req = fetch(`${apiUrl}${path}`, {
-    method,
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      'X-Auth-Token': accessToken,
-      ...headers,
-    },
-    body,
+    resolve(response);
   });
-
-  return clientResponse({ path, method, request: req });
 }
 
 export const httpClient = {
   get: (path: string) => httpRequest(path, { method: 'GET' }),
-  post: (path: string, body?: RequestBody) => httpRequest(path, { method: 'POST', body }),
-  put: (path: string, body?: RequestBody) => httpRequest(path, { method: 'PUT', body }),
+  post: (path: string, body: unknown, config?: RequestInit) =>
+    httpRequest(path, { ...config, method: 'POST', body: JSON.stringify(body) }),
+  put: (path: string, body: unknown, config?: RequestInit) =>
+    httpRequest(path, { ...config, method: 'PUT', body: JSON.stringify(body) }),
   delete: (path: string) => httpRequest(path, { method: 'DELETE' }),
 };
