@@ -446,7 +446,7 @@
                 "noSearchResultsTitle": "Sorry, geen resultaten voor '{term}'.",
                 "noSearchResultsSubtitle": "Probeer een andere zoekopdracht",
                 "somethingWentWrong": "Er is iets fout gegaan. Probeer het opnieuw.",
-                "inputPlaceholder": "Search products, categories, brands...",
+                "inputPlaceholder": "Zoek producten, categorieën, merken...",
                 "submitLabel": "Zoeken"
             }
         },

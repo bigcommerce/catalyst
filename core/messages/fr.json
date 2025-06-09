@@ -446,7 +446,7 @@
                 "noSearchResultsTitle": "Désolé, aucun résultat pour « {term} ».",
                 "noSearchResultsSubtitle": "Veuillez modifier votre recherche.",
                 "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer.",
-                "inputPlaceholder": "Search products, categories, brands...",
+                "inputPlaceholder": "Recherchez des produits, des catégories, des marques...",
                 "submitLabel": "Rechercher"
             }
         },

@@ -446,7 +446,7 @@
                 "noSearchResultsTitle": "Beklager, ingen resultater for «{term}».",
                 "noSearchResultsSubtitle": "Prøv et nytt søk.",
                 "somethingWentWrong": "Noe gikk galt. Prøv igjen.",
-                "inputPlaceholder": "Search products, categories, brands...",
+                "inputPlaceholder": "Søk etter produkter, kategorier, merker ...",
                 "submitLabel": "Søk"
             }
         },
