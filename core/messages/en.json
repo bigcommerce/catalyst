@@ -206,6 +206,7 @@
     "makePrivate": "Make private",
     "rename": "Rename",
     "delete": "Delete",
+    "removeButtonTitle": "Remove product from wish list",
     "Visibility": {
       "public": "Public",
       "private": "Private"

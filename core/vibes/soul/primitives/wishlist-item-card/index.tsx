@@ -27,6 +27,7 @@ interface WishlistItemCardProps extends Omit<ProductCardProps, 'product' | 'show
   item: WishlistItem;
   action: AddWishlistItemToCartAction;
   removeAction?: RemoveWishlistItemAction;
+  removeButtonTitle?: string;
 }
 
 export const WishlistItemCard = ({
@@ -34,6 +35,7 @@ export const WishlistItemCard = ({
   item: { itemId, productId, variantId, callToAction, product },
   action,
   removeAction,
+  removeButtonTitle,
   ...props
 }: WishlistItemCardProps) => {
   return (
@@ -52,7 +54,12 @@ export const WishlistItemCard = ({
       )}
       {removeAction && (
         <div className="absolute -right-3 -top-3 rounded-full transition-shadow duration-100 hover:shadow-md">
-          <RemoveWishlistItemButton action={removeAction} itemId={itemId} wishlistId={wishlistId} />
+          <RemoveWishlistItemButton
+            action={removeAction}
+            itemId={itemId}
+            removeButtonTitle={removeButtonTitle}
+            wishlistId={wishlistId}
+          />
         </div>
       )}
     </div>

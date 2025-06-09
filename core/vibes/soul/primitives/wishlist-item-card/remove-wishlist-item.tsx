@@ -20,9 +20,15 @@ interface Props {
   wishlistId: string;
   itemId: string;
   action: RemoveWishlistItemAction;
+  removeButtonTitle?: string;
 }
 
-export const RemoveWishlistItemButton = ({ wishlistId, itemId, action }: Props) => {
+export const RemoveWishlistItemButton = ({
+  wishlistId,
+  itemId,
+  action,
+  removeButtonTitle = 'Remove product from wishlist',
+}: Props) => {
   const [isPending, startTransition] = useTransition();
   const [state, formAction] = useActionState(action, {
     lastResult: null,
@@ -39,7 +45,9 @@ export const RemoveWishlistItemButton = ({ wishlistId, itemId, action }: Props) 
       <input name="wishlistId" type="hidden" value={wishlistId} />
       <input name="wishlistItemId" type="hidden" value={itemId} />
       <Button loading={isPending} shape="circle" size="x-small" type="submit" variant="tertiary">
-        <XIcon size={20} />
+        <XIcon size={20}>
+          <title>{removeButtonTitle}</title>
+        </XIcon>
       </Button>
     </form>
   );

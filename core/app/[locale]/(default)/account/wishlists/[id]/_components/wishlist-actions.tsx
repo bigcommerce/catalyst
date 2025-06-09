@@ -22,6 +22,7 @@ interface Props {
   shareCopiedMessage: string;
   shareDisabledTooltip: string;
   menuActions: WishlistAction[];
+  actionsTitle?: string;
 }
 
 export const WishlistActions = ({
@@ -35,6 +36,7 @@ export const WishlistActions = ({
   shareCopiedMessage,
   shareDisabledTooltip,
   menuActions,
+  actionsTitle,
 }: Props) => {
   const { publicUrl } = wishlist;
 
@@ -60,7 +62,7 @@ export const WishlistActions = ({
               wishlistName={wishlist.name}
             />
           )}
-          <WishlistActionsMenu items={menuActions} />
+          <WishlistActionsMenu actionsTitle={actionsTitle} items={menuActions} />
         </div>
       </div>
     </div>
