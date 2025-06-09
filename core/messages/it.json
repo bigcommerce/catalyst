@@ -446,7 +446,7 @@
                 "noSearchResultsTitle": "Spiacenti, nessun risultato per \"{term}\".",
                 "noSearchResultsSubtitle": "Prova un'altra ricerca.",
                 "somethingWentWrong": "Si è verificato un errore. Riprova.",
-                "inputPlaceholder": "Search products, categories, brands...",
+                "inputPlaceholder": "Cerca prodotti, categorie, marchi...",
                 "submitLabel": "Cerca"
             }
         },
