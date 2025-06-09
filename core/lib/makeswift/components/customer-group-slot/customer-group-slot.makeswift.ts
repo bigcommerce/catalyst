@@ -9,6 +9,11 @@ async function getAllCustomerGroups(): Promise<CustomerGroupsType | null> {
   const response = await fetch('/api/customer/groups');
 
   if (!response.ok) {
+    if (response.status === 403) {
+      // 403 indicates the store-level API token is not configured, which is the default OCC setup
+      return null;
+    }
+
     throw new Error(`HTTP error! status: ${response.status}`);
   }
 
@@ -64,7 +69,16 @@ runtime.registerComponent(CustomerGroupSlot, {
         try {
           const data = await getAllCustomerGroups();
 
-          if (!data) return [];
+          if (!data) {
+            // nullish data means we don't have access to the customer groups API
+            return [
+              {
+                id: NO_GROUP_ID,
+                label: 'Setup needed. See docs.',
+                value: NO_GROUP_ID,
+              },
+            ];
+          }
 
           return [
             {
