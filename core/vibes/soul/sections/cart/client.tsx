@@ -290,7 +290,7 @@ export function CartClient<LineItem extends CartLineItem>({
               className="flex flex-col items-start gap-x-5 gap-y-4 @container @sm:flex-row"
               key={lineItem.id}
             >
-              <div className="relative aspect-square w-full max-w-24 overflow-hidden rounded-xl bg-[var(--cart-image-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4">
+              <div className="aspect-h-1 aspect-w-1 relative w-full max-w-24 overflow-hidden rounded-xl bg-[var(--cart-image-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4">
                 <Image
                   alt={lineItem.image.alt}
                   className="object-cover"

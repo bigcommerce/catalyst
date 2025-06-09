@@ -32,7 +32,7 @@ export function BlogPostCard({ blogPost, className }: Props) {
       )}
       href={href}
     >
-      <div className="relative mb-4 aspect-[4/3] w-full overflow-hidden rounded-2xl bg-contrast-100">
+      <div className="aspect-h-3 aspect-w-4 relative mb-4 w-full overflow-hidden rounded-2xl bg-contrast-100">
         {image?.src != null && image.src !== '' ? (
           <Image
             alt={image.alt}
@@ -71,7 +71,7 @@ export function BlogPostCardSkeleton({ className }: { className?: string }) {
   return (
     <div className={clsx('flex max-w-md animate-pulse flex-col gap-2 rounded-xl', className)}>
       {/* Image */}
-      <div className="aspect-[4/3] overflow-hidden rounded-xl bg-contrast-100" />
+      <div className="aspect-h-3 aspect-w-4 overflow-hidden rounded-xl bg-contrast-100" />
 
       {/* Title */}
       <div className="h-4 w-24 rounded-lg bg-contrast-100" />

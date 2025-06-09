@@ -90,7 +90,7 @@ export function CartSkeleton({
                 key={index}
               >
                 {/* Image */}
-                <Skeleton.Box className="aspect-square w-full max-w-24 rounded-xl" />
+                <Skeleton.Box className="aspect-h-1 aspect-w-1 w-full max-w-24 rounded-xl" />
                 <div className="flex grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
                   <div className="flex w-full flex-1 flex-col @xl:w-1/2 @xl:pr-4">
                     {/* Line Item Title */}

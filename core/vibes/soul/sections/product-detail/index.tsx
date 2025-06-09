@@ -210,7 +210,7 @@ function ProductGallerySkeleton() {
     <Skeleton.Root className="group-has-[[data-pending]]/product-gallery:animate-pulse" pending>
       <div className="w-full overflow-hidden rounded-xl @xl:rounded-2xl">
         <div className="flex">
-          <Skeleton.Box className="aspect-[4/5] h-full w-full shrink-0 grow-0 basis-full" />
+          <Skeleton.Box className="aspect-h-5 aspect-w-4 h-full w-full shrink-0 grow-0 basis-full" />
         </div>
       </div>
       <div className="mt-2 flex max-w-full gap-2 overflow-x-auto">
