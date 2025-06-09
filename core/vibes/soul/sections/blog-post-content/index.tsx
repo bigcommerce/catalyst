@@ -81,7 +81,7 @@ export function BlogPostContent({
                 {image?.src != null && image.src !== '' && (
                   <Image
                     alt={image.alt}
-                    className="mb-8 aspect-video w-full rounded-2xl bg-contrast-100 object-cover @2xl:mb-12 @4xl:mb-16"
+                    className="aspect-h-9 aspect-w-16 mb-8 w-full rounded-2xl bg-contrast-100 object-cover @2xl:mb-12 @4xl:mb-16"
                     height={780}
                     src={image.src}
                     width={1280}
@@ -129,7 +129,7 @@ function BlogPostTagsSkeleton() {
 
 function BlogPostImageSkeleton() {
   return (
-    <div className="mb-8 aspect-video w-full animate-pulse rounded-2xl bg-contrast-100 object-cover @2xl:mb-12 @4xl:mb-16">
+    <div className="aspect-h-9 aspect-w-16 mb-8 w-full animate-pulse rounded-2xl bg-contrast-100 object-cover @2xl:mb-12 @4xl:mb-16">
       <div className="h-full w-full" />
     </div>
   );

@@ -74,9 +74,9 @@ export function ProductCard({
           className={clsx(
             'relative overflow-hidden rounded-xl @md:rounded-2xl',
             {
-              '5:6': 'aspect-[5/6]',
-              '3:4': 'aspect-[3/4]',
-              '1:1': 'aspect-square',
+              '5:6': 'aspect-h-6 aspect-w-5',
+              '3:4': 'aspect-h-4 aspect-w-3',
+              '1:1': 'aspect-h-1 aspect-w-1',
             }[aspectRatio],
             {
               light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100)))]',
@@ -193,9 +193,9 @@ export function ProductCardSkeleton({
         className={clsx(
           'rounded-xl @md:rounded-2xl',
           {
-            '5:6': 'aspect-[5/6]',
-            '3:4': 'aspect-[3/4]',
-            '1:1': 'aspect-square',
+            '5:6': 'aspect-h-6 aspect-w-5',
+            '3:4': 'aspect-h-4 aspect-w-3',
+            '1:1': 'aspect-h-1 aspect-w-1',
           }[aspectRatio],
         )}
       />

@@ -228,12 +228,16 @@ const config = {
       },
     },
   },
+  corePlugins: {
+    aspectRatio: false,
+  },
   plugins: [
     // @ts-ignore
     require('tailwindcss-radix')(),
     require('tailwindcss-animate'),
     require('@tailwindcss/container-queries'),
     require('@tailwindcss/typography'),
+    require('@tailwindcss/aspect-ratio'),
   ],
 };
 
