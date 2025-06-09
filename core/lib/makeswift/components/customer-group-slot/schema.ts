@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const CustomerGroupsSchema = z.optional(
+export const CustomerGroupsSchema = z.nullable(
   z
     .object({
       id: z.number(),
