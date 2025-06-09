@@ -446,7 +446,7 @@
                 "noSearchResultsTitle": "申し訳ございません。「{term}」に該当する結果は見つかりませんでした。",
                 "noSearchResultsSubtitle": "別の検索をお試しください。",
                 "somethingWentWrong": "問題が発生しました。 もう一度お試しください。",
-                "inputPlaceholder": "Search products, categories, brands...",
+                "inputPlaceholder": "商品、カテゴリ、ブランドを検索...",
                 "submitLabel": "検索"
             }
         },

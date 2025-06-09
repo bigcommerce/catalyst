@@ -446,7 +446,7 @@
                 "noSearchResultsTitle": "Tyvärr finns inga resultat för ”{term}”.",
                 "noSearchResultsSubtitle": "Försök med en ny sökning.",
                 "somethingWentWrong": "Något gick fel. Var god försök igen.",
-                "inputPlaceholder": "Search products, categories, brands...",
+                "inputPlaceholder": "Sök efter produkter, kategorier, varumärken...",
                 "submitLabel": "Sök"
             }
         },
