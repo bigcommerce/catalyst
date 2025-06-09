@@ -1,6 +1,6 @@
 import { testEnv } from '~/tests/environment';
 import { Fixture } from '~/tests/fixtures/fixture';
-import { Product } from '~/tests/fixtures/utils/api/catalog';
+import { Brand, Category, Product } from '~/tests/fixtures/utils/api/catalog';
 
 export class CatalogFixture extends Fixture {
   getDefaultProduct(): Promise<Product> {
@@ -11,6 +11,14 @@ export class CatalogFixture extends Fixture {
     }
 
     return this.api.catalog.getProductById(testEnv.DEFAULT_PRODUCT_ID);
+  }
+
+  getCategories(filters?: { nameLike?: string; ids?: number[] }): Promise<Category[]> {
+    return this.api.catalog.getCategories(filters);
+  }
+
+  getBrands(filters?: { nameLike?: string; ids?: number[] }): Promise<Brand[]> {
+    return this.api.catalog.getBrands(filters);
   }
 
   async cleanup() {

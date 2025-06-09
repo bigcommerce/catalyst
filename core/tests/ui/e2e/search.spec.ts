@@ -1,84 +1,153 @@
+import { faker } from '@faker-js/faker';
+
 import { expect, test } from '~/tests/fixtures';
+import { getTranslations } from '~/tests/lib/i18n';
 
-const productName = '[Sample] Smith Journal 13';
+test.describe('Search', () => {
+  test('Typing in the search bar displays quick search results', async ({ page, catalog }) => {
+    const t = await getTranslations('Components.Header');
+    const { name } = await catalog.getDefaultProduct();
 
-test('Search for a product and press key to view result page', async ({ page }) => {
-  await page.goto('/');
+    await page.goto('/');
+    await page.getByRole('button', { name: t('Icons.search') }).click();
+    await page.getByPlaceholder(t('Search.inputPlaceholder')).fill(name);
+    await page.waitForLoadState('networkidle');
 
-  await page.getByLabel('Open search popup').click();
+    await expect(page.getByRole('heading', { name: t('Search.categories') })).toBeVisible();
+    await expect(page.getByRole('heading', { name: t('Search.brands') })).toBeVisible();
+    await expect(page.getByRole('heading', { name: t('Search.products') })).toBeVisible();
 
-  const searchBox = page.getByPlaceholder('Search...');
+    const searchResultLocator = page.getByRole('region', { name: t('Search.products') });
 
-  await expect(searchBox).toBeVisible();
+    await expect(searchResultLocator.getByRole('link', { name })).toBeVisible();
+  });
 
-  await searchBox.fill(productName);
-  await searchBox.press('Enter');
+  test('Typing in the search bar and pressing Enter goes to the Search Results page', async ({
+    page,
+    catalog,
+  }) => {
+    const t = await getTranslations();
+    const { name } = await catalog.getDefaultProduct();
 
-  await expect(page.getByRole('link', { name: productName })).toBeVisible();
-});
+    await page.goto('/');
+    await page.getByRole('button', { name: t('Components.Header.Icons.search') }).click();
 
-test('Search for a product and wait for results', async ({ page }) => {
-  await page.goto('/');
+    const searchInput = page.getByPlaceholder(t('Components.Header.Search.inputPlaceholder'));
 
-  await page.getByLabel('Open search popup').click();
+    await searchInput.fill(name);
+    await searchInput.press('Enter');
+    await page.waitForLoadState('networkidle');
 
-  const searchBox = page.getByPlaceholder('Search...');
+    await expect(
+      page.getByRole('heading', { name: t('Faceted.Search.searchResults') }),
+    ).toBeVisible();
+    await expect(page.getByRole('link', { name })).toBeVisible();
+  });
 
-  await searchBox.fill('Able Brewing System');
+  test('Searching by SKU returns the product in the search results', async ({ page, catalog }) => {
+    const t = await getTranslations('Components.Header');
+    const { name, sku } = await catalog.getDefaultProduct();
 
-  await expect(page.getByRole('link', { name: '[Sample] Able Brewing System' })).toBeVisible();
-});
+    await page.goto('/');
+    await page.getByRole('button', { name: t('Icons.search') }).click();
+    await page.getByPlaceholder(t('Search.inputPlaceholder')).fill(sku);
+    await page.waitForLoadState('networkidle');
 
-test('Search a product with SKU', async ({ page }) => {
-  await page.goto('/');
+    const searchResultLocator = page.getByRole('region', { name: t('Search.products') });
 
-  await page.getByLabel('Open search popup').click();
+    await expect(searchResultLocator.getByRole('link', { name })).toBeVisible();
+  });
 
-  const searchBox = page.getByPlaceholder('Search...');
+  test('Searching for non-existent product displays no results', async ({ page }) => {
+    const t = await getTranslations();
+    const randomSearchTerm = faker.string.alphanumeric(10);
 
-  await searchBox.fill('SM13');
+    await page.goto('/');
+    await page.getByRole('button', { name: t('Components.Header.Icons.search') }).click();
+    await page
+      .getByPlaceholder(t('Components.Header.Search.inputPlaceholder'))
+      .fill(randomSearchTerm);
 
-  await expect(page.getByRole('link', { name: productName })).toBeVisible();
-});
+    await page.waitForLoadState('networkidle');
 
-test('Search a product category', async ({ page }) => {
-  await page.goto('/');
+    await expect(
+      page.getByText(
+        t('Components.Header.Search.noSearchResultsTitle', { term: randomSearchTerm }),
+      ),
+    ).toBeVisible();
 
-  await page.getByLabel('Open search popup').click();
+    await expect(
+      page.getByText(t('Components.Header.Search.noSearchResultsSubtitle')),
+    ).toBeVisible();
+  });
 
-  const searchBox = page.getByPlaceholder('Search...');
+  test('Searching for non-existent product displays no results on the Search Results page', async ({
+    page,
+  }) => {
+    const t = await getTranslations();
 
-  await searchBox.fill('OFS');
+    await page.goto('/');
+    await page.getByRole('button', { name: t('Components.Header.Icons.search') }).click();
 
-  await expect(page.getByRole('link', { name: '[Sample] Utility Caddy' })).toBeVisible();
-  await expect(page.getByRole('link', { name: '[Sample] Tiered Wire Basket' })).toBeVisible();
-  await expect(page.getByRole('link', { name: '[Sample] Dustpan & Brush' })).toBeVisible();
-  await expect(page.getByRole('link', { name: '[Sample] 1 L Le Parfait Jar' })).toBeVisible();
-  await expect(page.getByRole('link', { name: '[Sample] Canvas Laundry Cart' })).toBeVisible();
-});
+    const searchInput = page.getByPlaceholder(t('Components.Header.Search.inputPlaceholder'));
+    const randomSearchTerm = faker.string.alphanumeric(10);
 
-test('Search dialog sections', async ({ page }) => {
-  await page.goto('/');
+    await searchInput.fill(randomSearchTerm);
+    await searchInput.press('Enter');
+    await page.waitForLoadState('networkidle');
 
-  await page.getByLabel('Open search popup').click();
+    await expect(
+      page.getByText(t('Faceted.Search.Empty.title', { term: randomSearchTerm })),
+    ).toBeVisible();
 
-  const searchBox = page.getByPlaceholder('Search...');
+    await expect(page.getByText(t('Faceted.Search.Empty.subtitle'))).toBeVisible();
+  });
 
-  await searchBox.fill(productName);
+  test('Searching for a category displays in the search results', async ({ page, catalog }) => {
+    const t = await getTranslations('Components.Header');
+    const categories = await catalog.getCategories();
+    const category = categories[0];
 
-  await expect(page.getByRole('heading', { name: 'Categories' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Products' })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Brands' })).toBeVisible();
-});
+    if (!category) {
+      test.skip(true, 'No categories found in the catalog');
 
-test('Search not found', async ({ page }) => {
-  await page.goto('/');
+      return;
+    }
 
-  await page.getByLabel('Open search popup').click();
+    const { name } = category;
 
-  const searchBox = page.getByPlaceholder('Search...');
+    await page.goto('/');
+    await page.getByRole('button', { name: t('Icons.search') }).click();
 
-  await searchBox.fill('flora & fauna');
+    await page.getByPlaceholder(t('Search.inputPlaceholder')).fill(name);
+    await page.waitForLoadState('networkidle');
 
-  await expect(page.getByText('Sorry, no results for "flora & fauna".')).toBeVisible();
+    const searchResultLocator = page.getByRole('region', { name: t('Search.categories') });
+
+    await expect(searchResultLocator.getByRole('link', { name })).toBeVisible();
+  });
+
+  test('Searching for a brand displays in the search results', async ({ page, catalog }) => {
+    const t = await getTranslations('Components.Header');
+    const brands = await catalog.getBrands();
+    const brand = brands[0];
+
+    if (!brand) {
+      test.skip(true, 'No brands found in the catalog');
+
+      return;
+    }
+
+    const { name } = brand;
+
+    await page.goto('/');
+    await page.getByRole('button', { name: t('Icons.search') }).click();
+
+    await page.getByPlaceholder(t('Search.inputPlaceholder')).fill(name);
+    await page.waitForLoadState('networkidle');
+
+    const searchResultLocator = page.getByRole('region', { name: t('Search.brands') });
+
+    await expect(searchResultLocator.getByRole('link', { name })).toBeVisible();
+  });
 });
