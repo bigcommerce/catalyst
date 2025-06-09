@@ -152,12 +152,12 @@ export class CustomerFixture extends Fixture {
     const searchParams = redirectTo ? `?${new URLSearchParams({ redirectTo }).toString()}` : '';
     const url = `/login${searchParams}`;
 
-    if (
-      !redirectTo &&
-      this.reuseCustomerSession &&
-      (await customerSessionStore.useExistingSession(this, customer.id))
-    ) {
-      return;
+    if (!redirectTo && this.reuseCustomerSession) {
+      const usedExistingSession = await customerSessionStore.useExistingSession(this, customer.id);
+
+      if (usedExistingSession) {
+        return;
+      }
     }
 
     await this.page.goto(url);
