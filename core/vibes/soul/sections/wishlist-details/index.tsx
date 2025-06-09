@@ -41,6 +41,7 @@ interface Props {
   headerActions?: React.ReactNode | ((wishlist?: Wishlist) => React.ReactNode);
   action: AddWishlistItemToCartAction;
   removeAction?: RemoveWishlistItemAction;
+  removeButtonTitle?: string;
 }
 
 export const WishlistDetails = ({
@@ -53,6 +54,7 @@ export const WishlistDetails = ({
   placeholderCount,
   action,
   removeAction,
+  removeButtonTitle,
 }: Props) => {
   return (
     <Stream
@@ -94,6 +96,7 @@ export const WishlistDetails = ({
               items={items}
               placeholderCount={placeholderCount}
               removeAction={removeAction}
+              removeButtonTitle={removeButtonTitle}
               wishlistId={wishlist.id}
             />
 
@@ -112,6 +115,7 @@ function WishlistItems({
   placeholderCount,
   action,
   removeAction,
+  removeButtonTitle,
 }: {
   wishlistId: string;
   items: Streamable<WishlistItem[]>;
@@ -119,6 +123,7 @@ function WishlistItems({
   placeholderCount?: number;
   action: AddWishlistItemToCartAction;
   removeAction?: RemoveWishlistItemAction;
+  removeButtonTitle?: string;
 }) {
   return (
     <Stream
@@ -144,6 +149,7 @@ function WishlistItems({
                   item={item}
                   key={index}
                   removeAction={removeAction}
+                  removeButtonTitle={removeButtonTitle}
                   wishlistId={wishlistId}
                 />
               ))}
