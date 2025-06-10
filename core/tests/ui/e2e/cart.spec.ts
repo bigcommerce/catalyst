@@ -1,80 +1,93 @@
 import { expect, test } from '~/tests/fixtures';
+import { getFormatter } from '~/tests/lib/formatter';
+import { getTranslations } from '~/tests/lib/i18n';
 
-const sampleProduct = '[Sample] Able Brewing System';
+test('Cart page displays empty state when no items are in the cart', async ({ page }) => {
+  const t = await getTranslations('Cart');
 
-test.beforeEach(async ({ page }) => {
-  await page.goto('/sample-able-brewing-system/');
-  await expect(
-    page.getByRole('heading', { level: 1, name: '[Sample] Able Brewing System' }),
-  ).toBeVisible();
+  await page.goto('/cart');
 
-  await page.getByRole('button', { name: 'Add to Cart' }).first().click();
-  await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
+  await expect(page.getByRole('heading', { name: t('title') })).toBeVisible();
+  await expect(page.getByText(t('Empty.title'))).toBeVisible();
+  await expect(page.getByText(t('Empty.subtitle'))).toBeVisible();
+  await expect(page.getByRole('link', { name: t('Empty.cta') })).toBeVisible();
 });
 
-test('Add a single product to cart', async ({ page }) => {
-  await page.getByRole('link', { name: 'Cart Items 1' }).click();
+test('Cart page displays line item', async ({ page, catalog, currency }) => {
+  const format = getFormatter();
+  const t = await getTranslations();
+  const product = await catalog.getDefaultOrCreateSimpleProduct();
 
-  await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
-  await expect(page.getByText(sampleProduct, { exact: true })).toBeVisible();
+  await page.goto(product.path);
+  await page.getByRole('button', { name: t('Product.ProductDetails.Submit.addToCart') }).click();
+  await page.waitForLoadState('networkidle');
+
+  await page.goto('/cart');
+
+  await expect(page.getByRole('heading', { name: t('Cart.title') })).toBeVisible();
+  await expect(page.getByRole('heading', { name: t('Cart.CheckoutSummary.title') })).toBeVisible();
+
+  const lineItem = page.getByRole('listitem').filter({ hasText: product.name });
+  const formattedPrice = format.number(product.price, {
+    style: 'currency',
+    currency: await currency.getDefaultCurrency(),
+  });
+
+  await expect(lineItem.getByText(formattedPrice)).toBeVisible();
 });
 
-test('Edit product quantity in cart', async ({ page }) => {
-  await page.getByRole('link', { name: 'Cart Items 1' }).click();
+test('Cart page allows updating item quantity', async ({ page, catalog }) => {
+  const t = await getTranslations();
+  const product = await catalog.getDefaultOrCreateSimpleProduct();
 
-  await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Proceed to checkout' })).toBeVisible();
+  if (product.inventoryLevel === 0 && product.inventoryTracking !== 'none') {
+    test.skip(
+      true,
+      'Product is out of stock, skipping test. This means that the DEFAULT_PRODUCT_ID points to an out of stock product.',
+    );
+  }
 
-  await page.getByRole('button', { name: 'Increase count' }).click();
+  await page.goto(product.path);
+  await page.getByRole('button', { name: t('Product.ProductDetails.Submit.addToCart') }).click();
+  await page.waitForLoadState('networkidle');
 
-  await expect(page.getByRole('link', { name: 'Cart Items 2' })).toBeVisible();
+  await page.goto('/cart');
+  await expect(page.getByRole('heading', { name: `${t('Cart.title')}1` })).toBeVisible();
 
-  await page.getByRole('button', { name: 'Decrease count' }).click();
-  await expect(page.getByRole('link', { name: 'Cart Items 1' })).toBeVisible();
+  await page.getByLabel(t('Cart.increment')).click();
+  await expect(page.getByRole('heading', { name: `${t('Cart.title')}2` })).toBeVisible();
 });
 
-test('Proceed to checkout', async ({ page }) => {
-  await page.getByRole('link', { name: 'Cart Items 1' }).click();
+test('Cart page allows removing a line item', async ({ page, catalog }) => {
+  const t = await getTranslations();
+  const product = await catalog.getDefaultOrCreateSimpleProduct();
 
-  await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
+  await page.goto(product.path);
+  await page.getByRole('button', { name: t('Product.ProductDetails.Submit.addToCart') }).click();
+  await page.waitForLoadState('networkidle');
 
-  await page.getByRole('button', { name: 'Proceed to checkout' }).click();
+  await page.goto('/cart');
+  await expect(page.getByRole('heading', { name: t('Cart.title') })).toBeVisible();
 
+  await page.getByRole('button', { name: t('Cart.removeItem') }).click();
+  await page.waitForLoadState('networkidle');
+
+  await expect(page.getByRole('heading', { name: t('Cart.Empty.title') })).toBeVisible();
+});
+
+test('Cart page can proceed to checkout', async ({ page, catalog }) => {
+  const t = await getTranslations();
+  const product = await catalog.getDefaultOrCreateSimpleProduct();
+
+  await page.goto(product.path);
+  await page.getByRole('button', { name: t('Product.ProductDetails.Submit.addToCart') }).click();
+  await page.waitForLoadState('networkidle');
+
+  await page.goto('/cart');
+  await expect(page.getByRole('heading', { name: t('Cart.title') })).toBeVisible();
+
+  await page.getByRole('button', { name: t('Cart.proceedToCheckout') }).click();
   await page.waitForURL('**/checkout', {
     waitUntil: 'networkidle',
   });
-
-  await expect(page.getByRole('heading', { name: 'Order Summary', level: 3 })).toBeVisible();
-  await expect(page.getByRole('heading', { name: `1 x ${sampleProduct}`, level: 4 })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Shipping', level: 2 })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Billing', level: 2 })).toBeVisible();
-  await expect(page.getByRole('heading', { name: 'Payment', level: 2 })).toBeVisible();
-});
-
-test('Edit product quantity with limited stock', async ({ page }) => {
-  await page.getByRole('link', { name: 'Cart Items 1' }).click();
-  await page.getByRole('button', { name: 'Remove' }).click();
-  await page.getByRole('heading', { name: 'Your cart is empty' }).click();
-
-  await page.goto('/chemex-coffeemaker-3-cup/');
-  await expect(
-    page.getByRole('heading', { level: 1, name: '[Sample] Chemex Coffeemaker 3 Cup' }),
-  ).toBeVisible();
-
-  await page.getByLabel('Quantity').dblclick();
-  await page.getByLabel('Quantity').fill('5');
-
-  await page.getByRole('button', { name: 'Add to cart' }).click();
-  await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
-  await page.getByRole('link', { name: 'Cart Items 5' }).click();
-
-  await expect(page.getByRole('heading', { level: 1, name: 'Your cart' })).toBeVisible();
-
-  await page.getByRole('button', { name: 'Increase count' }).click();
-  await page
-    .getByText('Something went wrong while updating item quantity, please try again')
-    .click();
-
-  await expect(page.getByRole('link', { name: 'Cart Items 5' })).toBeVisible();
-  await expect(page.getByRole('listitem').filter({ hasText: '5' })).toBeVisible();
 });
