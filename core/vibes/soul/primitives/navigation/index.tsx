@@ -118,6 +118,7 @@ interface Props<S extends SearchResult> {
   openSearchPopupLabel?: string;
   searchLabel?: string;
   mobileMenuTriggerLabel?: string;
+  switchCurrencyLabel?: string;
 }
 
 const MobileMenuButton = forwardRef<
@@ -284,6 +285,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     openSearchPopupLabel = 'Open search popup',
     searchLabel = 'Search',
     mobileMenuTriggerLabel = 'Toggle navigation',
+    switchCurrencyLabel,
   }: Props<S>,
   ref: Ref<HTMLDivElement>,
 ) {
@@ -582,6 +584,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   activeCurrencyId={activeCurrencyId}
                   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                   currencies={currencies as [Currency, ...Currency[]]}
+                  switchCurrencyLabel={switchCurrencyLabel}
                 />
               ) : null
             }
@@ -898,10 +901,12 @@ function CurrencyForm({
   action,
   currencies,
   activeCurrencyId,
+  switchCurrencyLabel = 'Switch currency',
 }: {
   activeCurrencyId?: string;
   action: CurrencyAction;
   currencies: [Currency, ...Currency[]];
+  switchCurrencyLabel?: string;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -923,7 +928,9 @@ function CurrencyForm({
         disabled={isPending}
       >
         {activeCurrency?.label ?? currencies[0].label}
-        <ChevronDown size={16} strokeWidth={1.5} />
+        <ChevronDown size={16} strokeWidth={1.5}>
+          <title>{switchCurrencyLabel}</title>
+        </ChevronDown>
       </DropdownMenu.Trigger>
       <DropdownMenu.Portal>
         <DropdownMenu.Content
