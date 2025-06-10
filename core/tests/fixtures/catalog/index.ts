@@ -13,20 +13,36 @@ import {
 export class CatalogFixture extends Fixture {
   products: Product[] = [];
 
-  getDefaultOrCreateSimpleProduct(): Promise<Product> {
+  async getDefaultOrCreateSimpleProduct(): Promise<Product> {
     if (!testEnv.DEFAULT_PRODUCT_ID) {
       return this.createSimpleProduct();
     }
 
-    return this.api.catalog.getProductById(testEnv.DEFAULT_PRODUCT_ID);
+    const testProduct = await this.api.catalog.getProductById(testEnv.DEFAULT_PRODUCT_ID);
+
+    if (testProduct.inventoryLevel === 0 && testProduct.inventoryTracking !== 'none') {
+      throw new Error(
+        'Product for DEFAULT_PRODUCT_ID is out of stock and cannot be used in tests.',
+      );
+    }
+
+    return testProduct;
   }
 
-  getDefaultOrCreateComplexProduct(): Promise<Product> {
+  async getDefaultOrCreateComplexProduct(): Promise<Product> {
     if (!testEnv.DEFAULT_COMPLEX_PRODUCT_ID) {
       return this.createComplexProduct();
     }
 
-    return this.api.catalog.getProductById(testEnv.DEFAULT_COMPLEX_PRODUCT_ID);
+    const testProduct = await this.api.catalog.getProductById(testEnv.DEFAULT_COMPLEX_PRODUCT_ID);
+
+    if (testProduct.inventoryLevel === 0 && testProduct.inventoryTracking !== 'none') {
+      throw new Error(
+        'Product for DEFAULT_COMPLEX_PRODUCT_ID is out of stock and cannot be used in tests.',
+      );
+    }
+
+    return testProduct;
   }
 
   getCategories(filters?: { nameLike?: string; ids?: number[] }): Promise<Category[]> {
@@ -85,9 +101,9 @@ export class CatalogFixture extends Fixture {
       type: 'physical',
       description: faker.lorem.paragraph({ min: 3, max: 50 }),
       isVisible: true,
-      inventoryLevel: faker.number.int({ min: 1, max: 100 }),
+      inventoryLevel: faker.number.int({ min: 10, max: 100 }),
       inventoryWarningLevel: faker.number.int({ min: 1, max: 50 }),
-      inventoryTracking: 'product',
+      inventoryTracking: 'none',
       ...data,
     };
   }

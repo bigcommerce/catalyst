@@ -72,6 +72,7 @@ const ProductSchema = z
   .object({
     id: z.number(),
     name: z.string(),
+    description: z.string(),
     sku: z.string(),
     price: z.number(),
     retail_price: z.number(),
@@ -89,6 +90,7 @@ const ProductSchema = z
     (data): Product => ({
       id: data.id,
       name: data.name,
+      description: data.description,
       sku: data.sku,
       price: data.price,
       retailPrice: data.retail_price,

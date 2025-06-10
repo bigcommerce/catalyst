@@ -58,7 +58,7 @@ class CustomerSessionStore {
     await fixture.page.context().addCookies(customerSession);
     await fixture.page.goto('/login/', { waitUntil: 'networkidle' });
 
-    if (new URL(fixture.page.url()).pathname === '/login/') {
+    if (new URL(fixture.page.url()).pathname.includes('/login/')) {
       // If the session is no longer valid, the page will stay on the login page.
       // If this happens, the session should be removed so the test can login as normal.
       await this.removeCustomerSession(customerId);
