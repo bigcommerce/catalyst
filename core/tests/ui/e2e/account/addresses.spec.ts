@@ -67,64 +67,32 @@ async function assertAddressSectionHasAddress(
   await expect(addressesSection.getByText(address.phoneNumber, { exact: true })).toBeVisible();
 }
 
-test.describe('Account addresses', () => {
-  test(
-    'Adding a new address works as expected',
-    { tag: [TAGS.writesData] },
-    async ({ page, customer }) => {
-      const t = await getTranslations('Account.Addresses');
-      const { id } = await customer.login();
+test(
+  'Adding a new address works as expected',
+  { tag: [TAGS.writesData] },
+  async ({ page, customer }) => {
+    const t = await getTranslations('Account.Addresses');
+    const { id } = await customer.login();
 
-      // Ensure addresses are in a reliable state before the test
-      await customer.deleteAllAddresses(id);
+    // Ensure addresses are in a reliable state before the test
+    await customer.deleteAllAddresses(id);
 
-      await page.goto('/account/addresses/');
-      await page.getByRole('button', { name: t('cta') }).click();
+    await page.goto('/account/addresses/');
+    await page.getByRole('button', { name: t('cta') }).click();
 
-      const address = await fillAddressForm(page);
+    const address = await fillAddressForm(page);
 
-      await page.getByRole('button', { name: t('create'), exact: true }).click();
-      await page.waitForLoadState('networkidle');
+    await page.getByRole('button', { name: t('create'), exact: true }).click();
+    await page.waitForLoadState('networkidle');
 
-      await assertAddressSectionHasAddress(page, address);
-    },
-  );
+    await assertAddressSectionHasAddress(page, address);
+  },
+);
 
-  test(
-    'Editing an address works as expected',
-    { tag: [TAGS.writesData] },
-    async ({ page, customer }) => {
-      const t = await getTranslations('Account.Addresses');
-      const { id } = await customer.login();
-
-      await customer.deleteAllAddresses(id);
-
-      const address = await customer.createAddress(id);
-
-      await page.goto('/account/addresses/');
-      await page.getByRole('button', { name: t('edit') }).click();
-
-      await expect(page.getByLabel('First name')).toHaveValue(address.firstName);
-      await expect(page.getByLabel('Last name')).toHaveValue(address.lastName);
-      await expect(page.getByLabel('Company name')).toHaveValue(address.company ?? '');
-      await expect(page.getByLabel('Phone number')).toHaveValue(address.phone ?? '');
-      await expect(page.getByLabel('Address line 1')).toHaveValue(address.address1);
-      await expect(page.getByLabel('Address line 2')).toHaveValue(address.address2 ?? '');
-      await expect(page.getByLabel('Suburb/city')).toHaveValue(address.city);
-      await expect(page.getByLabel('State/province')).toHaveValue(address.stateOrProvince ?? '');
-      await expect(page.getByLabel('Zip/postcode')).toHaveValue(address.postalCode);
-      await expect(page.getByRole('combobox', { name: 'Country' })).toHaveText(address.country);
-
-      const newAddress = await fillAddressForm(page);
-
-      await page.getByRole('button', { name: t('update'), exact: true }).click();
-      await page.waitForLoadState('networkidle');
-
-      await assertAddressSectionHasAddress(page, newAddress);
-    },
-  );
-
-  test('Deleting an address works as expected', async ({ page, customer }) => {
+test(
+  'Editing an address works as expected',
+  { tag: [TAGS.writesData] },
+  async ({ page, customer }) => {
     const t = await getTranslations('Account.Addresses');
     const { id } = await customer.login();
 
@@ -133,15 +101,45 @@ test.describe('Account addresses', () => {
     const address = await customer.createAddress(id);
 
     await page.goto('/account/addresses/');
-    await page.getByRole('button', { name: t('delete') }).click();
+    await page.getByRole('button', { name: t('edit') }).click();
+
+    await expect(page.getByLabel('First name')).toHaveValue(address.firstName);
+    await expect(page.getByLabel('Last name')).toHaveValue(address.lastName);
+    await expect(page.getByLabel('Company name')).toHaveValue(address.company ?? '');
+    await expect(page.getByLabel('Phone number')).toHaveValue(address.phone ?? '');
+    await expect(page.getByLabel('Address line 1')).toHaveValue(address.address1);
+    await expect(page.getByLabel('Address line 2')).toHaveValue(address.address2 ?? '');
+    await expect(page.getByLabel('Suburb/city')).toHaveValue(address.city);
+    await expect(page.getByLabel('State/province')).toHaveValue(address.stateOrProvince ?? '');
+    await expect(page.getByLabel('Zip/postcode')).toHaveValue(address.postalCode);
+    await expect(page.getByRole('combobox', { name: 'Country' })).toHaveText(address.country);
+
+    const newAddress = await fillAddressForm(page);
+
+    await page.getByRole('button', { name: t('update'), exact: true }).click();
     await page.waitForLoadState('networkidle');
 
-    const addressesSection = page
-      .locator('section')
-      .filter({ has: page.getByRole('heading', { name: t('title') }) });
+    await assertAddressSectionHasAddress(page, newAddress);
+  },
+);
 
-    await expect(
-      addressesSection.getByText(`${address.firstName} ${address.lastName}`, { exact: true }),
-    ).not.toBeVisible();
-  });
+test('Deleting an address works as expected', async ({ page, customer }) => {
+  const t = await getTranslations('Account.Addresses');
+  const { id } = await customer.login();
+
+  await customer.deleteAllAddresses(id);
+
+  const address = await customer.createAddress(id);
+
+  await page.goto('/account/addresses/');
+  await page.getByRole('button', { name: t('delete') }).click();
+  await page.waitForLoadState('networkidle');
+
+  const addressesSection = page
+    .locator('section')
+    .filter({ has: page.getByRole('heading', { name: t('title') }) });
+
+  await expect(
+    addressesSection.getByText(`${address.firstName} ${address.lastName}`, { exact: true }),
+  ).not.toBeVisible();
 });

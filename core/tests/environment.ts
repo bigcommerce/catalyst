@@ -28,6 +28,7 @@ export const testEnv = createEnv({
     TEST_CUSTOMER_EMAIL: z.string().optional(),
     TEST_CUSTOMER_PASSWORD: z.string().optional(),
     DEFAULT_PRODUCT_ID: z.coerce.number().optional(),
+    DEFAULT_COMPLEX_PRODUCT_ID: z.coerce.number().optional(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,
