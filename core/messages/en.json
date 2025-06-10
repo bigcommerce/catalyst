@@ -246,6 +246,7 @@
       "removeItemSuccess": "Item has been removed from your wish list."
     },
     "Button": {
+      "label": "Add to wish list",
       "addToNewWishlist": "Add to new wish list",
       "defaultWishlistName": "My wish list",
       "addSuccessMessage": "Product has been added to your wish list",
@@ -437,6 +438,7 @@
         "search": "Open search popup"
       },
       "SwitchCurrency": {
+        "label": "Switch currency",
         "invalidCurrency": "Invalid currency",
         "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
       },

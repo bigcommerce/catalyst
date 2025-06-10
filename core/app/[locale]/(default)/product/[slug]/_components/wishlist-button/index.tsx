@@ -146,7 +146,7 @@ export const WishlistButton = async ({ productId, productSku, formId }: Props) =
       newWishlistLabel={t('addToNewWishlist')}
       wishlists={wishlists}
     >
-      <Favorite checked={isProductInWishlist} />
+      <Favorite checked={isProductInWishlist} label={t('label')} />
     </WishlistButtonDropdown>
   );
 };
