@@ -261,6 +261,9 @@ importers:
       postcss:
         specifier: ^8.5.4
         version: 8.5.4
+      postcss-aspect-ratio-polyfill:
+        specifier: ^2.0.0
+        version: 2.0.0
       postcss-preset-env:
         specifier: ^10.2.1
         version: 10.2.1(postcss@8.5.4)
@@ -6141,6 +6144,9 @@ packages:
   nth-check@2.1.1:
     resolution: {integrity: sha512-lqjrjmaOoAnWfMmBPL+XNnynZh2+swxiX3WUE0s4yEHI6m+AwrK2UZOimIRl3X/4QctVqS8AiZjFqyOGrMXb/w==}
 
+  number-precision@1.6.0:
+    resolution: {integrity: sha512-05OLPgbgmnixJw+VvEh18yNPUo3iyp4BEWJcrLu4X9W05KmMifN7Mu5exYvQXqxxeNWhvIF+j3Rij+HmddM/hQ==}
+
   nuqs@2.4.3:
     resolution: {integrity: sha512-BgtlYpvRwLYiJuWzxt34q2bXu/AIS66sLU1QePIMr2LWkb+XH0vKXdbLSgn9t6p7QKzwI7f38rX3Wl9llTXQ8Q==}
     peerDependencies:
@@ -6447,6 +6453,10 @@ packages:
   possible-typed-array-names@1.0.0:
     resolution: {integrity: sha512-d7Uw+eZoloe0EHDIYoe+bQ5WXnGMOpmiZFTuMWCwpjzzkL2nTjcKiAk4hh8TjnGye2TwWOk3UXucZ+3rbmBa8Q==}
     engines: {node: '>= 0.4'}
+
+  postcss-aspect-ratio-polyfill@2.0.0:
+    resolution: {integrity: sha512-+C385VUUrF6cnopov6VfsaAYojN0HImyVwSpTQ1gGm1A0Y347sDFE6QQPcjbGyVP9M5dCSretPC5fv1jUjuDPQ==}
+    engines: {node: '>=10.0.0'}
 
   postcss-attribute-case-insensitive@7.0.1:
     resolution: {integrity: sha512-Uai+SupNSqzlschRyNx3kbCTWgY/2hcwtHEI/ej2LJWc9JJ77qKgGptd8DHwY1mXtZ7Aoh4z4yxfwMBue9eNgw==}
@@ -14509,6 +14519,8 @@ snapshots:
     dependencies:
       boolbase: 1.0.0
 
+  number-precision@1.6.0: {}
+
   nuqs@2.4.3(next@15.4.0-canary.0(@babel/core@7.27.4)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0):
     dependencies:
       mitt: 3.0.1
@@ -14808,6 +14820,10 @@ snapshots:
       fsevents: 2.3.2
 
   possible-typed-array-names@1.0.0: {}
+
+  postcss-aspect-ratio-polyfill@2.0.0:
+    dependencies:
+      number-precision: 1.6.0
 
   postcss-attribute-case-insensitive@7.0.1(postcss@8.5.4):
     dependencies:

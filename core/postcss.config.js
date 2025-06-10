@@ -14,5 +14,6 @@ module.exports = {
         'gap-properties': true,
       },
     },
+    'postcss-aspect-ratio-polyfill': {},
   },
 };

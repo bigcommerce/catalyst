@@ -312,7 +312,7 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
 
   return (
     <LineItemWrapper>
-      <div className="aspect-h-1 aspect-w-1 relative basis-40 overflow-hidden rounded-[inherit] border border-[var(--order-details-section-border,hsl(var(--contrast-100)))] bg-[var(--order-details-section-image-background,hsl(var(--contrast-100)))]">
+      <div className="relative aspect-square basis-40 overflow-hidden rounded-[inherit] border border-[var(--order-details-section-border,hsl(var(--contrast-100)))] bg-[var(--order-details-section-image-background,hsl(var(--contrast-100)))]">
         {lineItem.image?.src != null ? (
           <Image
             alt={lineItem.image.alt}
@@ -361,7 +361,7 @@ function ShipmentLineItem({ lineItem }: { lineItem: ShipmentLineItem }) {
 function ShipmentLineItemSkeleton() {
   return (
     <div className="group grid shrink-0 gap-8 rounded-xl @sm:flex @sm:rounded-2xl">
-      <div className="aspect-h-1 aspect-w-1 relative basis-40 overflow-hidden rounded-[inherit]">
+      <div className="relative aspect-square basis-40 overflow-hidden rounded-[inherit]">
         <Skeleton.Box className="h-full w-full" />
       </div>
 
