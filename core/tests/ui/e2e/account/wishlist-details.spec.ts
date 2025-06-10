@@ -45,14 +45,6 @@ test('Wishlist details displays a product correctly with "Add to Cart" button', 
   customer,
 }) => {
   const product = await catalog.getDefaultOrCreateSimpleProduct();
-
-  if (product.inventoryLevel === 0 && product.inventoryTracking !== 'none') {
-    test.skip(
-      true,
-      'Product is out of stock, skipping test. This means that the DEFAULT_PRODUCT_ID points to an out of stock product.',
-    );
-  }
-
   const t = await getTranslations();
   const { id: customerId } = await customer.login();
   const { id: wishlistId, name } = await customer.createWishlist({
@@ -76,14 +68,6 @@ test('Wishlist details displays a product correctly with "Add to Cart" button', 
 
 test('Wishlist product is able to be added to the cart', async ({ page, catalog, customer }) => {
   const product = await catalog.getDefaultOrCreateSimpleProduct();
-
-  if (product.inventoryLevel === 0 && product.inventoryTracking !== 'none') {
-    test.skip(
-      true,
-      'Product is out of stock, skipping test. This means that the DEFAULT_PRODUCT_ID points to an out of stock product.',
-    );
-  }
-
   const t = await getTranslations();
   const { id: customerId } = await customer.login();
   const { id: wishlistId, name } = await customer.createWishlist({

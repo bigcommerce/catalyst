@@ -8,6 +8,7 @@ import { TAGS } from '~/tests/tags';
 
 import { extendedBrowser } from './browser';
 import { CatalogFixture } from './catalog';
+import { CurrencyFixture } from './currency';
 import { CustomerFixture } from './customer';
 import { OrderFixture } from './order';
 import { extendedPage, toHaveURL } from './page';
@@ -16,6 +17,7 @@ interface Fixtures {
   order: OrderFixture;
   catalog: CatalogFixture;
   customer: CustomerFixture;
+  currency: CurrencyFixture;
   /**
    * 'reuseCustomerSession' sets the the configuration for the customer fixture and determines whether to reuse the customer session.
    * For example, in login tests we do not want to reuse the session so we call `test.use({ reuseCustomerSession: false });`
@@ -66,6 +68,16 @@ export const test = baseTest.extend<Fixtures>({
       await use(customerFixture);
 
       await customerFixture.cleanup();
+    },
+    { scope: 'test' },
+  ],
+  currency: [
+    async ({ page }, use, currentTest) => {
+      const currencyFixture = new CurrencyFixture(page, currentTest);
+
+      await use(currencyFixture);
+
+      await currencyFixture.cleanup();
     },
     { scope: 'test' },
   ],

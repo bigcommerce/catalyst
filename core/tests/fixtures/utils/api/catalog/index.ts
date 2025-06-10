@@ -17,6 +17,7 @@ export interface Variant {
 export interface Product {
   readonly id: number;
   readonly name: string;
+  readonly description: string;
   readonly sku: string;
   readonly price: number;
   readonly retailPrice: number;
