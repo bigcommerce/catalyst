@@ -4,7 +4,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 
 import { Address, AddressListSection } from '@/vibes/soul/sections/address-list-section';
 import {
-  fieldToFieldNameTransformer,
   formFieldTransformer,
   injectCountryCodeOptions,
 } from '~/data-transformers/form-field-transformer';
@@ -91,14 +90,6 @@ export default async function Addresses({ params, searchParams }: Props) {
       }
 
       return injectCountryCodeOptions(field, countries ?? []);
-    })
-    .filter(exists)
-    .map((field) => {
-      if (Array.isArray(field)) {
-        return field.map(fieldToFieldNameTransformer);
-      }
-
-      return fieldToFieldNameTransformer(field);
     })
     .filter(exists);
 

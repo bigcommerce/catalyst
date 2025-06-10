@@ -6,13 +6,18 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 // import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 import { DynamicFormSection } from '@/vibes/soul/sections/dynamic-form-section';
-import { formFieldTransformer } from '~/data-transformers/form-field-transformer';
+import {
+  formFieldTransformer,
+  injectCountryCodeOptions,
+} from '~/data-transformers/form-field-transformer';
 import {
   CUSTOMER_FIELDS_TO_EXCLUDE,
-  FULL_NAME_FIELDS,
+  REGISTER_CUSTOMER_FORM_LAYOUT,
+  transformFieldsToLayout,
 } from '~/data-transformers/form-field-transformer/utils';
 import { exists } from '~/lib/utils';
 
+import { ADDRESS_FIELDS_NAME_PREFIX, CUSTOMER_FIELDS_NAME_PREFIX } from './_actions/prefixes';
 import { registerCustomer } from './_actions/register-customer';
 import { getRegisterCustomerQuery } from './page-data';
 
@@ -46,22 +51,55 @@ export default async function Register({ params }: Props) {
     notFound();
   }
 
-  const { addressFields, customerFields } = registerCustomerData;
+  const { addressFields, customerFields, countries } = registerCustomerData;
   // const reCaptcha = await bypassReCaptcha(reCaptchaSettings);
+
+  const fields = transformFieldsToLayout(
+    [
+      ...addressFields.map((field) => {
+        if (!field.isBuiltIn) {
+          return {
+            ...field,
+            name: `${ADDRESS_FIELDS_NAME_PREFIX}${field.label}`,
+          };
+        }
+
+        return field;
+      }),
+      ...customerFields.map((field) => {
+        if (!field.isBuiltIn) {
+          return {
+            ...field,
+            name: `${CUSTOMER_FIELDS_NAME_PREFIX}${field.label}`,
+          };
+        }
+
+        return field;
+      }),
+    ].filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId)),
+    REGISTER_CUSTOMER_FORM_LAYOUT,
+  )
+    .map((field) => {
+      if (Array.isArray(field)) {
+        return field.map(formFieldTransformer).filter(exists);
+      }
+
+      return formFieldTransformer(field);
+    })
+    .filter(exists)
+    .map((field) => {
+      if (Array.isArray(field)) {
+        return field.map((f) => injectCountryCodeOptions(f, countries ?? []));
+      }
+
+      return injectCountryCodeOptions(field, countries ?? []);
+    })
+    .filter(exists);
 
   return (
     <DynamicFormSection
       action={registerCustomer}
-      fields={[
-        addressFields
-          .filter((field) => FULL_NAME_FIELDS.includes(field.entityId))
-          .map(formFieldTransformer)
-          .filter(exists),
-        ...customerFields
-          .filter((field) => !CUSTOMER_FIELDS_TO_EXCLUDE.includes(field.entityId))
-          .map(formFieldTransformer)
-          .filter(exists),
-      ]}
+      fields={fields}
       submitLabel={t('cta')}
       title={t('heading')}
     />
