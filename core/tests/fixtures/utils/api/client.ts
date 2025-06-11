@@ -6,7 +6,9 @@ import { TestApiClientResponseError } from './errors';
 
 class ApiClientResponse extends Promise<Response> {
   async parse<Out, In = Out>(schema: z.ZodType<Out, z.ZodTypeDef, In>): Promise<Out> {
-    return schema.parse(await this.then((res) => res.json()));
+    const resp = await this.then((res) => res.text());
+
+    return schema.parse(resp.length ? JSON.parse(resp) : undefined);
   }
 }
 
