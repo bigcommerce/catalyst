@@ -113,7 +113,7 @@ function PaginationLink({
     <Link
       aria-label={ariaLabel}
       className={clsx(
-        'border-contrast-100 text-foreground ring-primary hover:border-contrast-200 hover:bg-contrast-100 flex h-12 w-12 items-center justify-center rounded-full border transition-colors duration-300 focus-visible:ring-2 focus-visible:outline-0',
+        'flex h-12 w-12 items-center justify-center rounded-full border border-contrast-100 text-foreground ring-primary transition-colors duration-300 hover:border-contrast-200 hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2',
       )}
       href={href}
       scroll={scroll}
@@ -125,7 +125,7 @@ function PaginationLink({
 
 function SkeletonLink({ children }: { children: React.ReactNode }) {
   return (
-    <div className="border-contrast-100 text-foreground flex h-12 w-12 cursor-not-allowed items-center justify-center rounded-full border opacity-50 duration-300">
+    <div className="flex h-12 w-12 cursor-not-allowed items-center justify-center rounded-full border border-contrast-100 text-foreground opacity-50 duration-300">
       {children}
     </div>
   );
@@ -133,7 +133,7 @@ function SkeletonLink({ children }: { children: React.ReactNode }) {
 
 export function CursorPaginationSkeleton() {
   return (
-    <div className="bg-background flex w-full justify-center py-10 text-xs">
+    <div className="flex w-full justify-center bg-background py-10 text-xs">
       <div className="flex gap-2">
         <SkeletonLink>
           <ArrowLeft />

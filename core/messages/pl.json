@@ -50,6 +50,8 @@
             "heading": "Zaloguj się",
             "forgotPassword": "Nie pamiętasz hasła?",
             "cta": "Zaloguj się",
+            "email": "Email",
+            "password": "Hasło",
             "invalidCredentials": "Twój adres e-mail lub hasło są nieprawidłowe. Spróbuj zalogować się ponownie lub zresetuj hasło",
             "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Zamówienie #",
             "totalPrice": "Razem",
             "viewDetails": "Zobacz szczegóły",
+            "emptyState": {
+                "title": "Nie masz żadnych zamówień",
+                "cta": "Kup teraz"
+            },
             "Details": {
                 "title": "Nr zamówienia {orderNumber}",
                 "shippingAddress": "Adres dostawy",
@@ -155,7 +161,8 @@
                 "destinationWithCount": "Miejsce docelowe {number, number}/{total, number}",
                 "subtotal": "Suma cząstkowa",
                 "shipping": "Wysyłka",
-                "tax": "Podatek"
+                "tax": "Podatek",
+                "orderSummary": "Podsumowanie zamówienia"
             }
         },
         "Addresses": {
@@ -173,6 +180,7 @@
             "title": "Ustawienia konta",
             "changePassword": "Zmień hasło",
             "passwordUpdated": "Hasło zostało pomyślnie zaktualizowane!",
+            "settingsUpdated": "Ustawienia konta zostały pomyślnie zaktualizowane!",
             "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
             "currentPassword": "Aktualne hasło",
             "newPassword": "Nowe hasło",
@@ -181,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Działania na liście życzeń",
         "title": "Wish Lists",
         "new": "Nowa lista życzeń",
         "items": "{count, plural, =1 {1 pozycja} other {# pozycji(-e)}}",
@@ -226,8 +235,8 @@
             "updateFailed": "Nie można zaktualizować listy życzeń. Spróbuj ponownie.",
             "deleteFailed": "Nie można usunąć listy życzeń. Spróbuj ponownie.",
             "removeProductFailed": "Nie można usunąć produktu z listy życzeń. Spróbuj ponownie.",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "Nie masz uprawnień do wykonania tej czynności. Zaloguj się i spróbuj ponownie.",
+            "unexpected": "Wystąpił nieoczekiwany błąd. Spróbuj ponownie."
         },
         "Result": {
             "createSuccess": "Lista życzeń została pomyślnie utworzona.",
@@ -236,19 +245,20 @@
             "removeItemSuccess": "Produkt został usunięty z listy życzeń."
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "addToNewWishlist": "Dodaj do nowej listy życzeń",
+            "defaultWishlistName": "Moja lista życzeń",
+            "addSuccessMessage": "Produkt został dodany do Twojej listy życzeń.",
+            "removeSuccessMessage": "Produkt został usunięty z Twojej listy życzeń",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "Nie można dodać produktu z listy życzeń. Spróbuj ponownie.",
+                "removeProductFailed": "Nie można usunąć produktu z listy życzeń. Spróbuj ponownie."
             }
         }
     },
     "PublicWishlist": {
         "title": "Publiczna lista życzeń",
-        "defaultName": "Publiczna lista życzeń"
+        "defaultName": "Publiczna lista życzeń",
+        "emptyWishlist": "Na tej liście życzeń nie ma jeszcze żadnych produktów."
     },
     "Blog": {
         "title": "Blog",
@@ -384,6 +394,7 @@
             "home": "Strona główna"
         },
         "ContactUs": {
+            "home": "Strona główna",
             "Form": {
                 "success": "Dziękuję za kontakt. Skontaktujemy się z Tobą wkrótce.",
                 "successCta": "Kontynuuj zakupy",
@@ -411,8 +422,9 @@
     },
     "NotFound": {
         "title": "Nie znaleziono tej strony!",
-        "subtitle": "Wygląda na to, że żądana strona została przeniesiona lub już nie istnieje.",
-        "featuredProducts": "Polecane produkty"
+        "subtitle": "Spróbuj wyszukać coś innego lub wróć do strony głównej.",
+        "featuredProducts": "Polecane produkty",
+        "search": "Szukaj na stronie"
     },
     "Components": {
         "Header": {
@@ -433,7 +445,9 @@
                 "brands": "Marki",
                 "noSearchResultsTitle": "Brak wyników dla „{term}”.",
                 "noSearchResultsSubtitle": "Spróbuj innego wyszukiwania.",
-                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować ponownie."
+                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować ponownie.",
+                "inputPlaceholder": "Wyszukaj produkty, kategorie, marki...",
+                "submitLabel": "Szukaj na stronie"
             }
         },
         "Footer": {

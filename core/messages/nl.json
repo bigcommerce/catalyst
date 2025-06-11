@@ -50,6 +50,8 @@
             "heading": "Inloggen",
             "forgotPassword": "Wachtwoord vergeten?",
             "cta": "Inloggen",
+            "email": "E-mailadres",
+            "password": "Wachtwoord",
             "invalidCredentials": "Je e-mailadres of wachtwoord is niet correct. Probeer opnieuw in te loggen of stel je wachtwoord opnieuw in",
             "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Bestelnr.",
             "totalPrice": "Totaal",
             "viewDetails": "Details weergeven",
+            "emptyState": {
+                "title": "U hebt geen bestellingen",
+                "cta": "Nu winkelen"
+            },
             "Details": {
                 "title": "Bestelnummer {orderNumber}",
                 "shippingAddress": "Verzendadres",
@@ -155,7 +161,8 @@
                 "destinationWithCount": "Bestemming {number, number}/{total, number}",
                 "subtotal": "Subtotaal",
                 "shipping": "Verzending",
-                "tax": "Belasting"
+                "tax": "Belasting",
+                "orderSummary": "Besteloverzicht"
             }
         },
         "Addresses": {
@@ -173,6 +180,7 @@
             "title": "Accountinstellingen",
             "changePassword": "Wachtwoord wijzigen",
             "passwordUpdated": "Wachtwoord is succesvol bijgewerkt!",
+            "settingsUpdated": "Accountinstellingen zijn bijgewerkt!",
             "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
             "currentPassword": "Huidig wachtwoord",
             "newPassword": "Nieuw wachtwoord",
@@ -181,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Verlanglijstacties",
         "title": "Verlanglijstjes",
         "new": "Nieuw verlanglijstje",
         "items": "{count, plural, =1 {1 item} other {# items}}",
@@ -226,8 +235,8 @@
             "updateFailed": "Het bijwerken van je verlanglijstje is mislukt. Probeer het opnieuw.",
             "deleteFailed": "Het verwijderen van je verlanglijstje is mislukt. Probeer het opnieuw.",
             "removeProductFailed": "Het is niet gelukt om het product van je verlanglijstje te verwijderen. Probeer het opnieuw.",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "Je bent niet bevoegd om deze handeling uit te voeren. Log in en probeer het opnieuw",
+            "unexpected": "Er is een onverwachte fout opgetreden. Probeer het opnieuw"
         },
         "Result": {
             "createSuccess": "Verlanglijstje is succesvol aangemaakt.",
@@ -236,19 +245,20 @@
             "removeItemSuccess": "Het artikel is verwijderd van je verlanglijstje."
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "addToNewWishlist": "Aan nieuw verlanglijstje toevoegen",
+            "defaultWishlistName": "Mijn verlanglijstje",
+            "addSuccessMessage": "Product is toegevoegd aan je verlanglijstje",
+            "removeSuccessMessage": "Het product is verwijderd van je verlanglijstje",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "Het toevoegen van het product van je verlanglijstje is mislukt.Probeer het opnieuw",
+                "removeProductFailed": "Het is niet gelukt om het product van je verlanglijstje te verwijderen. Probeer het opnieuw"
             }
         }
     },
     "PublicWishlist": {
         "title": "Openbare verlanglijst",
-        "defaultName": "Openbare verlanglijst"
+        "defaultName": "Openbare verlanglijst",
+        "emptyWishlist": "Deze verlanglijst bevat nog geen producten."
     },
     "Blog": {
         "title": "Blog",
@@ -384,6 +394,7 @@
             "home": "Home"
         },
         "ContactUs": {
+            "home": "Home",
             "Form": {
                 "success": "Bedankt voor je bericht. We nemen snel contact met je op.",
                 "successCta": "Verdergaan met winkelen",
@@ -411,8 +422,9 @@
     },
     "NotFound": {
         "title": "We hebben die pagina niet gevonden!",
-        "subtitle": "De pagina die je zoekt, is verhuisd of bestaat niet meer.",
-        "featuredProducts": "Uitgelichte producten"
+        "subtitle": "Probeer iets anders te zoeken of ga terug naar de homepage.",
+        "featuredProducts": "Uitgelichte producten",
+        "search": "Zoeken"
     },
     "Components": {
         "Header": {
@@ -433,7 +445,9 @@
                 "brands": "Merken",
                 "noSearchResultsTitle": "Sorry, geen resultaten voor '{term}'.",
                 "noSearchResultsSubtitle": "Probeer een andere zoekopdracht",
-                "somethingWentWrong": "Er is iets fout gegaan. Probeer het opnieuw."
+                "somethingWentWrong": "Er is iets fout gegaan. Probeer het opnieuw.",
+                "inputPlaceholder": "Zoek producten, categorieën, merken...",
+                "submitLabel": "Zoeken"
             }
         },
         "Footer": {

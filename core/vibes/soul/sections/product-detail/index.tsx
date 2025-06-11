@@ -80,7 +80,7 @@ export function ProductDetail<F extends Field>({
 }: ProductDetailProps<F>) {
   return (
     <section className="@container">
-      <div className="group/product-detail mx-auto w-full max-w-(--breakpoint-2xl) px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
+      <div className="group/product-detail mx-auto w-full max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
         {breadcrumbs && (
           <div className="group/breadcrumbs mb-6">
             <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -102,7 +102,7 @@ export function ProductDetail<F extends Field>({
                       {product.subtitle}
                     </p>
                   )}
-                  <h1 className="mt-2 mb-3 font-[family-name:var(--product-detail-title-font-family,var(--font-family-heading))] text-2xl leading-none font-medium @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
+                  <h1 className="mb-3 mt-2 font-[family-name:var(--product-detail-title-font-family,var(--font-family-heading))] text-2xl font-medium leading-none @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
                     {product.title}
                   </h1>
                   <div className="group/product-rating">
@@ -210,7 +210,7 @@ function ProductGallerySkeleton() {
     <Skeleton.Root className="group-has-[[data-pending]]/product-gallery:animate-pulse" pending>
       <div className="w-full overflow-hidden rounded-xl @xl:rounded-2xl">
         <div className="flex">
-          <Skeleton.Box className="aspect-[4/5] h-full w-full shrink-0 grow-0 basis-full" />
+          <Skeleton.Box className="aspect-h-5 aspect-w-4 h-full w-full shrink-0 grow-0 basis-full" />
         </div>
       </div>
       <div className="mt-2 flex max-w-full gap-2 overflow-x-auto">
@@ -302,24 +302,24 @@ function ProductAccordionsSkeleton() {
       pending
     >
       <div className="flex items-center justify-between">
-        <Skeleton.Box className="h-2 w-20 rounded-xs" />
-        <Skeleton.Box className="h-3 w-3 rounded-xs" />
+        <Skeleton.Box className="h-2 w-20 rounded-sm" />
+        <Skeleton.Box className="h-3 w-3 rounded-sm" />
       </div>
       <div className="mb-1 flex flex-col gap-4">
-        <Skeleton.Box className="h-3 w-full rounded-xs" />
-        <Skeleton.Box className="h-3 w-full rounded-xs" />
-        <Skeleton.Box className="h-3 w-3/5 rounded-xs" />
+        <Skeleton.Box className="h-3 w-full rounded-sm" />
+        <Skeleton.Box className="h-3 w-full rounded-sm" />
+        <Skeleton.Box className="h-3 w-3/5 rounded-sm" />
       </div>
       <div className="flex items-center justify-between">
-        <Skeleton.Box className="h-2 w-24 rounded-xs" />
+        <Skeleton.Box className="h-2 w-24 rounded-sm" />
         <Skeleton.Box className="h-3 w-3 rounded-full" />
       </div>
       <div className="flex items-center justify-between">
-        <Skeleton.Box className="h-2 w-20 rounded-xs" />
+        <Skeleton.Box className="h-2 w-20 rounded-sm" />
         <Skeleton.Box className="h-3 w-3 rounded-full" />
       </div>
       <div className="flex items-center justify-between">
-        <Skeleton.Box className="h-2 w-32 rounded-xs" />
+        <Skeleton.Box className="h-2 w-32 rounded-sm" />
         <Skeleton.Box className="h-3 w-3 rounded-full" />
       </div>
     </Skeleton.Root>

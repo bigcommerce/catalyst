@@ -9,7 +9,7 @@ import { Image } from '~/components/image';
 interface Option {
   value: string;
   label: string;
-  image: { src: string; alt: string };
+  image?: { src: string; alt: string };
   disabled?: boolean;
 }
 
@@ -67,11 +67,11 @@ export const CardRadioGroup = React.forwardRef<
             <RadioGroupPrimitive.Item
               aria-label={option.label}
               className={clsx(
-                'font-body relative flex h-12 w-full items-center overflow-hidden rounded-lg border text-sm leading-normal font-normal transition-colors focus-visible:ring-2 focus-visible:ring-[var(--card-radio-group-focus,hsl(var(--primary)))] focus-visible:outline-0 data-disabled:pointer-events-none data-disabled:opacity-50',
+                'data-disabled:pointer-events-none data-disabled:opacity-50 relative flex h-12 w-full items-center overflow-hidden rounded-lg border font-body text-sm font-normal leading-normal transition-colors focus-visible:outline-0 focus-visible:ring-2 focus-visible:ring-[var(--card-radio-group-focus,hsl(var(--primary)))]',
                 {
                   light:
-                    'border-[var(--card-radio-group-light-unchecked-border,hsl(var(--contrast-100)))] text-[var(--card-radio-group-light-unchecked-text,hsl(var(--foreground)))] data-[state=checked]:bg-[var(--card-radio-group-light-checked-background,hsl(var(--foreground)))] data-[state=checked]:text-[var(--card-radio-group-light-checked-text,hsl(var(--background)))] data-[state=unchecked]:bg-[var(--card-radio-group-light-unchecked-background,hsl(var(--background)))] data-[state=unchecked]:hover:border-[var(--card-radio-group-light-unchecked-border-hover,hsl(var(--contrast-200)))] data-[state=unchecked]:hover:bg-[var(--card-radio-group-light-unchecked-background-hover,hsl(var(--contrast-100)))]',
-                  dark: 'border-[var(--card-radio-group-dark-unchecked-border,hsl(var(--contrast-500)))] text-[var(--card-radio-group-dark-unchecked-text,hsl(var(--background)))] data-[state=checked]:bg-[var(--card-radio-group-dark-checked-background,hsl(var(--background)))] data-[state=checked]:text-[var(--card-radio-group-dark-checked-text,hsl(var(--foreground)))] data-[state=unchecked]:bg-[var(--card-radio-group-dark-unchecked-background,hsl(var(--foreground)))] data-[state=unchecked]:hover:border-[var(--card-radio-group-dark-unchecked-border-hover,hsl(var(--contrast-400)))] data-[state=unchecked]:hover:bg-[var(--card-radio-group-dark-unchecked-background-hover,hsl(var(--contrast-500)))]',
+                    'border-[var(--card-radio-group-light-unchecked-border,hsl(var(--contrast-100)))] text-[var(--card-radio-group-light-unchecked-text,hsl(var(--foreground)))] data-[state=checked]:bg-[var(--card-radio-group-light-checked-background,hsl(var(--foreground)))] data-[state=unchecked]:bg-[var(--card-radio-group-light-unchecked-background,hsl(var(--background)))] data-[state=checked]:text-[var(--card-radio-group-light-checked-text,hsl(var(--background)))] data-[state=unchecked]:hover:border-[var(--card-radio-group-light-unchecked-border-hover,hsl(var(--contrast-200)))] data-[state=unchecked]:hover:bg-[var(--card-radio-group-light-unchecked-background-hover,hsl(var(--contrast-100)))]',
+                  dark: 'border-[var(--card-radio-group-dark-unchecked-border,hsl(var(--contrast-500)))] text-[var(--card-radio-group-dark-unchecked-text,hsl(var(--background)))] data-[state=checked]:bg-[var(--card-radio-group-dark-checked-background,hsl(var(--background)))] data-[state=unchecked]:bg-[var(--card-radio-group-dark-unchecked-background,hsl(var(--foreground)))] data-[state=checked]:text-[var(--card-radio-group-dark-checked-text,hsl(var(--foreground)))] data-[state=unchecked]:hover:border-[var(--card-radio-group-dark-unchecked-border-hover,hsl(var(--contrast-400)))] data-[state=unchecked]:hover:bg-[var(--card-radio-group-dark-unchecked-background-hover,hsl(var(--contrast-500)))]',
                 }[colorScheme],
                 {
                   light:
@@ -92,16 +92,18 @@ export const CardRadioGroup = React.forwardRef<
               }}
               value={option.value}
             >
-              <div className="relative aspect-square h-full">
-                <Image
-                  alt={option.image.alt}
-                  className="bg-background object-fill"
-                  fill
-                  src={option.image.src}
-                />
-              </div>
+              {option.image && (
+                <div className="aspect-h-1 aspect-w-1 relative h-full">
+                  <Image
+                    alt={option.image.alt}
+                    className="bg-background object-fill"
+                    fill
+                    src={option.image.src}
+                  />
+                </div>
+              )}
 
-              <span className="flex-1 truncate px-4 text-left text-ellipsis">{option.label}</span>
+              <span className="flex-1 truncate text-ellipsis px-4 text-left">{option.label}</span>
             </RadioGroupPrimitive.Item>
           ))}
         </RadioGroupPrimitive.Root>

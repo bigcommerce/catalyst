@@ -1,6 +1,7 @@
 import { faker } from '@faker-js/faker';
+import { type Page } from '@playwright/test';
 
-import { expect, Page, test } from '~/tests/fixtures';
+import { expect, test } from '~/tests/fixtures';
 
 const firstName = faker.person.firstName();
 const lastName = faker.person.lastName();
@@ -82,10 +83,8 @@ test.describe('desktop', () => {
     ).toBeVisible();
   });
 
-  test('Complete checkout as a logged in shopper', async ({ page, account }) => {
-    const customer = await account.create();
-
-    await customer.login();
+  test('Complete checkout as a logged in shopper', async ({ page, customer }) => {
+    const user = await customer.login();
 
     await page.goto('/laundry-detergent/');
     await expect(
@@ -102,7 +101,7 @@ test.describe('desktop', () => {
       .locator('.checkout-step--shipping .checkout-view-content[aria-busy="false"]')
       .waitFor();
 
-    await page.getByText(customer.email).isVisible();
+    await page.getByText(user.email).isVisible();
 
     await page.getByRole('button', { name: 'Continue' }).click();
     await page.getByRole('heading', { name: 'Payment', exact: true }).waitFor();
@@ -112,7 +111,7 @@ test.describe('desktop', () => {
     await page.getByRole('button', { name: 'Place Order' }).click();
     await page.waitForLoadState('networkidle');
     await expect(
-      page.getByRole('heading', { name: `Thank you ${customer.firstName}!`, level: 1 }),
+      page.getByRole('heading', { name: `Thank you ${user.firstName}!`, level: 1 }),
     ).toBeVisible();
   });
 });
@@ -149,5 +148,41 @@ test.describe('mobile', () => {
     await expect(
       page.getByRole('heading', { name: `Thank you ${firstName}!`, level: 1 }),
     ).toBeVisible();
+  });
+});
+
+test.describe('Analytics Cookies synchronization', () => {
+  test('Checkout route redirects to external checkout with analytics cookies', async ({
+    page,
+    context,
+  }) => {
+    await page.goto('/laundry-detergent/');
+    await expect(
+      page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
+    ).toBeVisible();
+
+    const cookies = await context.cookies();
+    const visitorId = cookies.find((c) => c.name === 'catalyst.visitorId');
+    const visitId = cookies.find((c) => c.name === 'catalyst.visitId');
+
+    await page.getByRole('button', { name: 'Add to Cart' }).first().click();
+    await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
+    await page.getByRole('link', { name: 'Cart Items 1' }).click();
+    await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
+    await page.getByRole('button', { name: 'Proceed to checkout' }).click();
+
+    await page.waitForLoadState('networkidle');
+
+    const externalCheckoutUrl = page.url();
+
+    const checkoutCookies = await context.cookies(externalCheckoutUrl);
+
+    const externalVisitorId = checkoutCookies.find((c) => c.name === 'catalyst.visitorId');
+    const externalVisitId = checkoutCookies.find((c) => c.name === 'catalyst.visitId');
+
+    expect(externalVisitorId).toBeDefined();
+    expect(externalVisitorId?.value).toBe(visitorId?.value);
+    expect(externalVisitId).toBeDefined();
+    expect(externalVisitId?.value).toBe(visitId?.value);
   });
 });

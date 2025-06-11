@@ -50,6 +50,8 @@
             "heading": "Connexion",
             "forgotPassword": "Mot de passe oublié ?",
             "cta": "Connexion",
+            "email": "E-mail",
+            "password": "Mot de passe",
             "invalidCredentials": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Commande n° ",
             "totalPrice": "Total",
             "viewDetails": "Afficher les détails",
+            "emptyState": {
+                "title": "Vous n'avez aucune commande",
+                "cta": "Acheter"
+            },
             "Details": {
                 "title": "Commande n° {orderNumber}",
                 "shippingAddress": "Adresse de livraison",
@@ -155,7 +161,8 @@
                 "destinationWithCount": "Destination {number, number}/{total, number}",
                 "subtotal": "Sous-total",
                 "shipping": "Livraison",
-                "tax": "Taxes"
+                "tax": "Taxes",
+                "orderSummary": "Récapitulatif de la commande"
             }
         },
         "Addresses": {
@@ -173,6 +180,7 @@
             "title": "Paramètres des comptes",
             "changePassword": "Modifier le mot de passe",
             "passwordUpdated": "Le mot de passe a bien été mis à jour !",
+            "settingsUpdated": "Les paramètres du compte ont été mis à jour.",
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
             "currentPassword": "Mot de passe actuel",
             "newPassword": "Nouveau mot de passe",
@@ -181,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Actions de la liste d'envies",
         "title": "Listes d'envies",
         "new": "Nouvelle liste d'envies",
         "items": "{count, plural, =1 {1 article} other {# articles}}",
@@ -226,8 +235,8 @@
             "updateFailed": "Impossible de mettre à jour votre liste d'envies. Veuillez réessayer.",
             "deleteFailed": "Échec de la suppression de votre liste d'envies. Veuillez réessayer.",
             "removeProductFailed": "Impossible de retirer le produit de votre liste d'envies. Veuillez réessayer.",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "Vous n'êtes pas autorisé à effectuer cette action. Veuillez vous connecter et réessayer.",
+            "unexpected": "Une erreur inattendue s'est produite. Veuillez réessayer."
         },
         "Result": {
             "createSuccess": "La liste d'envies a été créée avec succès.",
@@ -236,19 +245,20 @@
             "removeItemSuccess": "L'article a été supprimé de votre liste d'envies."
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "addToNewWishlist": "Ajouter à une nouvelle liste d'envies",
+            "defaultWishlistName": "Ma liste d'envies",
+            "addSuccessMessage": "Le produit a été ajouté à votre liste d'envies.",
+            "removeSuccessMessage": "Le produit a été retiré de votre liste d'envies.",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "Impossible d'ajouter le produit de votre liste d'envies. Veuillez réessayer.",
+                "removeProductFailed": "Impossible de retirer le produit de votre liste d'envies. Veuillez réessayer."
             }
         }
     },
     "PublicWishlist": {
         "title": "Liste d'envies publique",
-        "defaultName": "Liste d'envies publique"
+        "defaultName": "Liste d'envies publique",
+        "emptyWishlist": "Cette liste de souhaits ne contient pas encore de produits."
     },
     "Blog": {
         "title": "Blog",
@@ -384,6 +394,7 @@
             "home": "Accueil"
         },
         "ContactUs": {
+            "home": "Accueil",
             "Form": {
                 "success": "Merci de nous avoir contactés. Nous reviendrons vers vous bientôt.",
                 "successCta": "Continuer mes achats",
@@ -411,8 +422,9 @@
     },
     "NotFound": {
         "title": "Page introuvable !",
-        "subtitle": "Il semblerait que la page que vous avez demandée ait été déplacée ou n'existe plus.",
-        "featuredProducts": "Produits en vedette"
+        "subtitle": "Essayez de rechercher autre chose ou revenez à la page d'accueil.",
+        "featuredProducts": "Produits en vedette",
+        "search": "Rechercher"
     },
     "Components": {
         "Header": {
@@ -433,7 +445,9 @@
                 "brands": "Marques",
                 "noSearchResultsTitle": "Désolé, aucun résultat pour « {term} ».",
                 "noSearchResultsSubtitle": "Veuillez modifier votre recherche.",
-                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer."
+                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer.",
+                "inputPlaceholder": "Recherchez des produits, des catégories, des marques...",
+                "submitLabel": "Rechercher"
             }
         },
         "Footer": {

@@ -50,7 +50,7 @@ export function ButtonLink({
     <Link
       {...props}
       className={clsx(
-        'relative z-0 inline-flex h-fit cursor-pointer items-center justify-center overflow-hidden border text-center font-[family-name:var(--button-font-family)] leading-normal font-semibold select-none after:absolute after:inset-0 after:-z-10 after:-translate-x-[105%] after:duration-300 after:[animation-timing-function:cubic-bezier(0,0.25,0,1)] hover:after:translate-x-0 focus-visible:ring-2 focus-visible:outline-hidden',
+        'relative z-0 inline-flex h-fit cursor-pointer select-none items-center justify-center overflow-hidden border text-center font-[family-name:var(--button-font-family)] font-semibold leading-normal after:absolute after:inset-0 after:-z-10 after:-translate-x-[105%] after:duration-300 after:[animation-timing-function:cubic-bezier(0,0.25,0,1)] hover:after:translate-x-0 focus-visible:outline-none focus-visible:ring-2',
         {
           primary:
             'border-[var(--button-primary-border,hsl(var(--primary)))] bg-[var(--button-primary-background,hsl(var(--primary)))] text-[var(--button-primary-foreground)] after:bg-[var(--button-primary-background-hover,color-mix(in_oklab,hsl(var(--primary)),white_75%))]',
@@ -67,6 +67,13 @@ export function ButtonLink({
           medium: 'min-h-12 text-base',
           large: 'min-h-14 text-base',
         }[size],
+        shape === 'circle' &&
+          {
+            'x-small': 'min-w-8',
+            small: 'min-w-10',
+            medium: 'min-w-12',
+            large: 'min-w-14',
+          }[size],
         shape !== 'circle' &&
           {
             'x-small': 'gap-x-2 px-3 py-1.5',
@@ -78,7 +85,7 @@ export function ButtonLink({
           pill: 'rounded-full after:rounded-full',
           rounded: 'rounded-lg after:rounded-lg',
           square: 'rounded-none after:rounded-none',
-          circle: 'aspect-square rounded-full after:rounded-full',
+          circle: 'rounded-full after:rounded-full',
         }[shape],
         className,
       )}

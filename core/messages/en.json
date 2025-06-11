@@ -50,6 +50,8 @@
       "heading": "Log in",
       "forgotPassword": "Forgot your password?",
       "cta": "Log in",
+      "email": "Email",
+      "password": "Password",
       "invalidCredentials": "Your email address or password is incorrect. Try signing in again or reset your password",
       "somethingWentWrong": "Something went wrong. Please try again later.",
       "CreateAccount": {
@@ -146,6 +148,10 @@
       "orderNumber": "Order #",
       "totalPrice": "Total",
       "viewDetails": "View Details",
+      "emptyState": {
+        "title": "You don't have any orders",
+        "cta": "Shop now"
+      },
       "Details": {
         "title": "Order #{orderNumber}",
         "shippingAddress": "Shipping address",
@@ -174,6 +180,7 @@
       "title": "Account settings",
       "changePassword": "Change password",
       "passwordUpdated": "Password has been updated successfully!",
+      "settingsUpdated": "Account settings have been updated successfully!",
       "somethingWentWrong": "Something went wrong. Please try again later.",
       "currentPassword": "Current password",
       "newPassword": "New password",
@@ -182,6 +189,7 @@
     }
   },
   "Wishlist": {
+    "actionsTitle": "Wishlist actions",
     "title": "Wish Lists",
     "new": "New wish list",
     "items": "{count, plural, =1 {1 item} other {# items}}",
@@ -198,6 +206,7 @@
     "makePrivate": "Make private",
     "rename": "Rename",
     "delete": "Delete",
+    "removeButtonTitle": "Remove product from wish list",
     "Visibility": {
       "public": "Public",
       "private": "Private"
@@ -237,6 +246,7 @@
       "removeItemSuccess": "Item has been removed from your wish list."
     },
     "Button": {
+      "label": "Add to wish list",
       "addToNewWishlist": "Add to new wish list",
       "defaultWishlistName": "My wish list",
       "addSuccessMessage": "Product has been added to your wish list",
@@ -249,7 +259,8 @@
   },
   "PublicWishlist": {
     "title": "Public Wish List",
-    "defaultName": "Public wish list"
+    "defaultName": "Public wish list",
+    "emptyWishlist": "This wish list doesn't have any products yet."
   },
   "Blog": {
     "title": "Blog",
@@ -416,7 +427,8 @@
   "NotFound": {
     "title": "We couldn't find that page!",
     "subtitle": "Try searching for something else or go back to the home page.",
-    "featuredProducts": "Featured products"
+    "featuredProducts": "Featured products",
+    "search": "Search"
   },
   "Components": {
     "Header": {
@@ -428,6 +440,7 @@
         "search": "Open search popup"
       },
       "SwitchCurrency": {
+        "label": "Switch currency",
         "invalidCurrency": "Invalid currency",
         "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
       },
@@ -437,7 +450,9 @@
         "brands": "Brands",
         "noSearchResultsTitle": "Sorry, no results for \"{term}\".",
         "noSearchResultsSubtitle": "Please try another search.",
-        "somethingWentWrong": "Something went wrong. Please try again."
+        "somethingWentWrong": "Something went wrong. Please try again.",
+        "inputPlaceholder": "Search products, categories, brands...",
+        "submitLabel": "Search"
       }
     },
     "Footer": {

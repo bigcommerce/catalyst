@@ -1,12 +1,11 @@
 import { NextResponse, URLPattern } from 'next/server';
 
-import { auth, signIn, signOut } from '~/auth';
+import { anonymousSignIn, auth, clearAnonymousSession, getAnonymousSession } from '~/auth';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
 // Path matcher for any routes that require authentication
-const protectedPathPattern = new URLPattern({ pathname: '/(account)/*' });
-const sessionInvalidateParam = 'invalidate-session';
+const protectedPathPattern = new URLPattern({ pathname: `{/:locale}?/(account)/*` });
 
 function redirectToLogin(url: string) {
   return NextResponse.redirect(new URL('/login', url), { status: 302 });
@@ -16,12 +15,21 @@ export const withAuth: MiddlewareFactory = (next) => {
   return async (request, event) => {
     // @ts-expect-error: The `auth` function doesn't have the correct type to support it as a MiddlewareFactory.
     const authWithCallback = auth(async (req) => {
+      const anonymousSession = await getAnonymousSession();
       const isProtectedRoute = protectedPathPattern.test(req.nextUrl.toString().toLowerCase());
       const isGetRequest = req.method === 'GET';
 
-      if (!req.auth) {
-        await signIn('anonymous', { redirect: false });
+      // Create the anonymous session if it doesn't exist
+      if (!req.auth && !anonymousSession) {
+        await anonymousSignIn();
+      }
 
+      // If the user is authenticated and there is an anonymous session, clear the anonymous session
+      if (req.auth && anonymousSession) {
+        await clearAnonymousSession();
+      }
+
+      if (!req.auth) {
         if (isProtectedRoute && isGetRequest) {
           return redirectToLogin(req.url);
         }
@@ -38,14 +46,6 @@ export const withAuth: MiddlewareFactory = (next) => {
       // Continue the middleware chain
       return next(req, event);
     });
-
-    if (request.nextUrl.searchParams.has(sessionInvalidateParam)) {
-      await signOut({ redirect: false });
-
-      request.nextUrl.searchParams.delete(sessionInvalidateParam);
-
-      return NextResponse.redirect(request.nextUrl, { status: 302 });
-    }
 
     // @ts-expect-error: The `auth` function doesn't have the correct type to support it as a MiddlewareFactory.
     return authWithCallback(request, event);

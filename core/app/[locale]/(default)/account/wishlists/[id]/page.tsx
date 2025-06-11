@@ -1,5 +1,4 @@
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-import { notFound } from 'next/navigation';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 import { SearchParams } from 'nuqs';
 import { createSearchParamsCache, parseAsInteger, parseAsString } from 'nuqs/server';
@@ -10,6 +9,7 @@ import { Wishlist, WishlistDetails } from '@/vibes/soul/sections/wishlist-detail
 import { ExistingResultType } from '~/client/util';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { wishlistDetailsTransformer } from '~/data-transformers/wishlists-transformer';
+import { redirect } from '~/i18n/routing';
 import { isMobileUser } from '~/lib/user-agent';
 
 import { removeWishlistItem } from '../_actions/remove-wishlist-item';
@@ -38,6 +38,7 @@ async function getWishlist(
   t: ExistingResultType<typeof getTranslations<'Wishlist'>>,
   pt: ExistingResultType<typeof getTranslations<'Product.ProductDetails'>>,
   searchParamsPromise: Promise<SearchParams>,
+  locale: string,
 ): Promise<Wishlist> {
   const entityId = Number(id);
   const searchParamsParsed = searchParamsCache.parse(await searchParamsPromise);
@@ -45,7 +46,7 @@ async function getWishlist(
   const wishlist = await getCustomerWishlist(entityId, searchParamsParsed);
 
   if (!wishlist) {
-    return notFound();
+    return redirect({ href: '/account/wishlists/', locale });
   }
 
   return wishlistDetailsTransformer(wishlist, t, pt, formatter);
@@ -100,6 +101,7 @@ export default async function WishlistPage({ params, searchParams }: Props) {
 
     return (
       <WishlistActions
+        actionsTitle={t('actionsTitle')}
         isMobileUser={isMobileUser()}
         menuActions={[
           {
@@ -114,6 +116,7 @@ export default async function WishlistPage({ params, searchParams }: Props) {
         ]}
         shareCloseLabel={t('Modal.close')}
         shareCopiedMessage={t('shareCopied')}
+        shareCopyLabel={t('Modal.copy')}
         shareDisabledTooltip={t('shareDisabled')}
         shareLabel={t('share')}
         shareModalTitle={t('Modal.shareTitle', { name: wishlist.name })}
@@ -132,7 +135,8 @@ export default async function WishlistPage({ params, searchParams }: Props) {
         paginationInfo={Streamable.from(() => getPaginationInfo(id, searchParams))}
         prevHref="/account/wishlists"
         removeAction={removeWishlistItem}
-        wishlist={Streamable.from(() => getWishlist(id, t, pt, searchParams))}
+        removeButtonTitle={t('removeButtonTitle')}
+        wishlist={Streamable.from(() => getWishlist(id, t, pt, searchParams, locale))}
       />
     </WishlistAnalyticsProvider>
   );

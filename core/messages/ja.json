@@ -50,6 +50,8 @@
             "heading": "ログイン",
             "forgotPassword": "パスワードをお忘れですか?",
             "cta": "ログイン",
+            "email": "Eメール",
+            "password": "パスワード",
             "invalidCredentials": "メールアドレスまたはパスワードが間違っています。もう一度サインインするか、パスワードをリセットしてください",
             "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "注文 #",
             "totalPrice": "合計",
             "viewDetails": "詳細一覧",
+            "emptyState": {
+                "title": "注文がありません",
+                "cta": "今すぐ購入する"
+            },
             "Details": {
                 "title": "注文番号 {orderNumber}",
                 "shippingAddress": "配送先住所",
@@ -155,7 +161,8 @@
                 "destinationWithCount": "目的地 {number, number}／{total, number}",
                 "subtotal": "小計",
                 "shipping": "配送",
-                "tax": "税金"
+                "tax": "税金",
+                "orderSummary": "注文概要"
             }
         },
         "Addresses": {
@@ -173,6 +180,7 @@
             "title": "アカウント設定",
             "changePassword": "パスワード変更",
             "passwordUpdated": "パスワードが正常に更新されました！",
+            "settingsUpdated": "アカウント設定が正常に更新されました！",
             "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
             "currentPassword": "現在のパスワード",
             "newPassword": "新しいパスワード",
@@ -181,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "ウィッシュリストアクション",
         "title": "ウィッシュリスト",
         "new": "新しいウィッシュリスト",
         "items": "{count, plural, =1 {1 item} other {# items}}",
@@ -226,8 +235,8 @@
             "updateFailed": "ウィッシュリストの更新に失敗しました。再度お試しください。",
             "deleteFailed": "ウィッシュリストを削除できませんでした。再度お試しください。",
             "removeProductFailed": "ウィッシュリストから商品を削除することができませんでした。再度お試しください。",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "この操作を実行する権限がありません。サインインして、もう一度お試しください",
+            "unexpected": "予期しないエラーが発生しました。もう一度お試しください"
         },
         "Result": {
             "createSuccess": "ウィッシュリストが正常に作成されました。",
@@ -236,19 +245,20 @@
             "removeItemSuccess": "アイテムがウィッシュリストから削除されました。"
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "addToNewWishlist": "新しいウィッシュリストに追加",
+            "defaultWishlistName": "私のウィッシュリスト",
+            "addSuccessMessage": "商品がウィッシュリストに追加されました",
+            "removeSuccessMessage": "商品がウィッシュリストから削除されました",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "ウィッシュリストから商品を追加できませんでした。もう一度お試しください。",
+                "removeProductFailed": "ウィッシュリストから商品を削除できませんでした。再度お試しください"
             }
         }
     },
     "PublicWishlist": {
         "title": "公開ウィッシュリスト",
-        "defaultName": "公開ウィッシュリスト"
+        "defaultName": "公開ウィッシュリスト",
+        "emptyWishlist": "このウィッシュリストにはまだ商品がありません。"
     },
     "Blog": {
         "title": "ブログ",
@@ -384,6 +394,7 @@
             "home": "ホーム"
         },
         "ContactUs": {
+            "home": "ホーム",
             "Form": {
                 "success": "お問い合わせありがとうございます。近日中に返信させていただきます。",
                 "successCta": "買い物を続ける",
@@ -411,8 +422,9 @@
     },
     "NotFound": {
         "title": "そのページは見つかりませんでした！",
-        "subtitle": "リクエストされたページは移動したか、もう存在しないようです。",
-        "featuredProducts": "おすすめ商品"
+        "subtitle": "他のものを検索するか、ホームページに戻ってください。",
+        "featuredProducts": "おすすめ商品",
+        "search": "検索"
     },
     "Components": {
         "Header": {
@@ -433,7 +445,9 @@
                 "brands": "ブランド",
                 "noSearchResultsTitle": "申し訳ございません。「{term}」に該当する結果は見つかりませんでした。",
                 "noSearchResultsSubtitle": "別の検索をお試しください。",
-                "somethingWentWrong": "問題が発生しました。 もう一度お試しください。"
+                "somethingWentWrong": "問題が発生しました。 もう一度お試しください。",
+                "inputPlaceholder": "商品、カテゴリ、ブランドを検索...",
+                "submitLabel": "検索"
             }
         },
         "Footer": {

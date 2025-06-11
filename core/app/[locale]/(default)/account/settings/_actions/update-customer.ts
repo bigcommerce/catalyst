@@ -79,7 +79,7 @@ export const updateCustomer: UpdateAccountAction = async (prevState, formData) =
 
     return {
       account: submission.value,
-      successMessage: t('passwordUpdated'),
+      successMessage: t('settingsUpdated'),
       lastResult: submission.reply(),
     };
   } catch (error) {

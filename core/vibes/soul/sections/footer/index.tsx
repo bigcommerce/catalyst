@@ -85,7 +85,7 @@ export const Footer = ({
   return (
     <footer
       className={clsx(
-        'group/footer @container border-t border-b-4 border-t-[var(--footer-border-top,hsl(var(--contrast-100)))] border-b-[var(--footer-border-bottom,hsl(var(--primary)))] bg-[var(--footer-background,hsl(var(--background)))]',
+        'group/footer border-b-4 border-t border-b-[var(--footer-border-bottom,hsl(var(--primary)))] border-t-[var(--footer-border-top,hsl(var(--contrast-100)))] bg-[var(--footer-background,hsl(var(--background)))] @container',
         className,
       )}
     >
@@ -132,7 +132,7 @@ export const Footer = ({
                       {socialMediaLinks.map(({ href, icon }, i) => {
                         return (
                           <Link
-                            className="flex items-center justify-center rounded-lg fill-[var(--footer-social-icon,hsl(var(--contrast-400)))] p-1 ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 ease-out hover:fill-[var(--footer-social-icon-hover,hsl(var(--foreground)))] focus-visible:ring-2 focus-visible:outline-0"
+                            className="flex items-center justify-center rounded-lg fill-[var(--footer-social-icon,hsl(var(--contrast-400)))] p-1 ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 ease-out hover:fill-[var(--footer-social-icon-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
                             href={href}
                             key={i}
                           >
@@ -170,7 +170,7 @@ export const Footer = ({
                             return (
                               <li key={idx}>
                                 <Link
-                                  className="block rounded-lg py-2 text-sm font-medium text-[var(--footer-link,hsl(var(--contrast-500)))] ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 hover:text-[var(--footer-link-hover,hsl(var(--foreground)))] focus-visible:ring-2 focus-visible:outline-0"
+                                  className="block rounded-lg py-2 text-sm font-medium text-[var(--footer-link,hsl(var(--contrast-500)))] ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 hover:text-[var(--footer-link-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
                                   href={link.href}
                                 >
                                   {link.label}
@@ -244,7 +244,7 @@ function SocialMediaLinksSkeleton() {
 function FooterColumnsSkeleton() {
   return (
     <Skeleton.Root
-      className="@container-normal grid max-w-5xl grid-cols-1 gap-y-8 group-has-[[data-pending]]/footer:animate-pulse @sm:grid-cols-2 @xl:gap-y-10 @2xl:grid-cols-3 @6xl:[grid-template-columns:_repeat(auto-fill,_minmax(220px,_1fr))]"
+      className="grid max-w-5xl grid-cols-1 gap-y-8 @container-normal group-has-[[data-pending]]/footer:animate-pulse @sm:grid-cols-2 @xl:gap-y-10 @2xl:grid-cols-3 @6xl:[grid-template-columns:_repeat(auto-fill,_minmax(220px,_1fr))]"
       pending
     >
       {Array.from({ length: 4 }).map((_, idx) => (
@@ -264,7 +264,7 @@ function FooterColumnSkeleton() {
     <ul>
       {Array.from({ length: 4 }).map((_, idx) => (
         <li className="py-2 text-sm" key={idx}>
-          <Skeleton.Text characterCount={10} className="rounded-sm" />
+          <Skeleton.Text characterCount={10} className="rounded" />
         </li>
       ))}
     </ul>
@@ -274,10 +274,10 @@ function FooterColumnSkeleton() {
 function CopyrightSkeleton() {
   return (
     <Skeleton.Root
-      className="@container-normal flex-1 text-sm group-has-[[data-pending]]/footer:animate-pulse"
+      className="flex-1 text-sm @container-normal group-has-[[data-pending]]/footer:animate-pulse"
       pending
     >
-      <Skeleton.Text characterCount={40} className="rounded-sm" data-pending />
+      <Skeleton.Text characterCount={40} className="rounded" data-pending />
     </Skeleton.Root>
   );
 }
@@ -285,7 +285,7 @@ function CopyrightSkeleton() {
 function PaymentIconsSkeleton() {
   return (
     <Skeleton.Root
-      className="@container-normal flex flex-wrap gap-2 group-has-[[data-pending]]/footer:animate-pulse"
+      className="flex flex-wrap gap-2 @container-normal group-has-[[data-pending]]/footer:animate-pulse"
       pending
     >
       {Array.from({ length: 6 }).map((_, idx) => (
