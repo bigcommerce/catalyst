@@ -12,12 +12,14 @@ import { CurrencyFixture } from './currency';
 import { CustomerFixture } from './customer';
 import { OrderFixture } from './order';
 import { extendedPage, toHaveURL } from './page';
+import { WebPageFixture } from './webpage';
 
 interface Fixtures {
   order: OrderFixture;
   catalog: CatalogFixture;
   customer: CustomerFixture;
   currency: CurrencyFixture;
+  webPage: WebPageFixture;
   /**
    * 'reuseCustomerSession' sets the the configuration for the customer fixture and determines whether to reuse the customer session.
    * For example, in login tests we do not want to reuse the session so we call `test.use({ reuseCustomerSession: false });`
@@ -78,6 +80,16 @@ export const test = baseTest.extend<Fixtures>({
       await use(currencyFixture);
 
       await currencyFixture.cleanup();
+    },
+    { scope: 'test' },
+  ],
+  webPage: [
+    async ({ page }, use, currentTest) => {
+      const webPageFixture = new WebPageFixture(page, currentTest);
+
+      await use(webPageFixture);
+
+      await webPageFixture.cleanup();
     },
     { scope: 'test' },
   ],
