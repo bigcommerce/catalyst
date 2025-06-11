@@ -6,6 +6,7 @@ import { validate as isUuid } from 'uuid';
 import { testEnv } from '~/tests/environment';
 import { TAGS } from '~/tests/tags';
 
+import { BlogFixture } from './blog';
 import { extendedBrowser } from './browser';
 import { CatalogFixture } from './catalog';
 import { CurrencyFixture } from './currency';
@@ -15,6 +16,7 @@ import { extendedPage, toHaveURL } from './page';
 import { WebPageFixture } from './webpage';
 
 interface Fixtures {
+  blog: BlogFixture;
   order: OrderFixture;
   catalog: CatalogFixture;
   customer: CustomerFixture;
@@ -42,6 +44,16 @@ export const test = baseTest.extend<Fixtures>({
       await use(extendedBrowser(browser));
     },
     { scope: 'worker' },
+  ],
+  blog: [
+    async ({ page }, use, currentTest) => {
+      const blogFixture = new BlogFixture(page, currentTest);
+
+      await use(blogFixture);
+
+      await blogFixture.cleanup();
+    },
+    { scope: 'test' },
   ],
   order: [
     async ({ page }, use, currentTest) => {
