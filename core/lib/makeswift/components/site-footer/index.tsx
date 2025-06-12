@@ -4,8 +4,8 @@ import { type ComponentPropsWithoutRef } from 'react';
 import { Footer as VibesFooter } from '@/vibes/soul/sections/footer';
 import { getComponentSnapshot } from '~/lib/makeswift/client';
 
-import { PropsContextProvider } from './site-footer.client';
-import { COMPONENT_TYPE } from './site-footer.makeswift';
+import { PropsContextProvider } from './client';
+import { COMPONENT_TYPE } from './register';
 
 type Props = ComponentPropsWithoutRef<typeof VibesFooter> & {
   snapshotId?: string;

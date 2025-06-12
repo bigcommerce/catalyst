@@ -1,20 +1,19 @@
-import './components/accordion/accordion.makeswift';
-import './components/button-link/button-link.makeswift';
-import './components/card-carousel/card-carousel.makeswift';
-import './components/card/card.makeswift';
-import './components/carousel/carousel.makeswift';
-import './components/customer-group-slot/customer-group-slot.makeswift';
-import './components/product-card/product-card.makeswift';
-import './components/products-carousel/products-carousel.makeswift';
-import './components/products-list/products-list.makeswift';
-import './components/section/section.makeswift';
-import './components/site-footer/site-footer.makeswift';
-import './components/site-header/site-header.makeswift';
-import './components/slideshow/slideshow.makeswift';
-import './components/sticky-sidebar/sticky-sidebar.makeswift';
+import './components/accordion/register';
+import './components/button-link/register';
+import './components/card/register';
+import './components/card-carousel/register';
+import './components/carousel/register';
+import './components/customer-group-slot/register';
+import './components/product-card/register';
 import './components/product-detail/register';
-
+import './components/products-carousel/register';
+import './components/products-list/register';
+import './components/section/register';
+import './components/site-footer/register';
+import './components/site-header/register';
 import './components/site-theme/register';
+import './components/slideshow/register';
+import './components/sticky-sidebar/register';
 
 import { MakeswiftComponentType } from '@makeswift/runtime';
 

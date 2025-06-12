@@ -4,8 +4,8 @@ import { type ComponentPropsWithoutRef } from 'react';
 import { HeaderSection } from '@/vibes/soul/sections/header-section';
 import { getComponentSnapshot } from '~/lib/makeswift/client';
 
-import { PropsContextProvider } from './site-header.client';
-import { COMPONENT_TYPE } from './site-header.makeswift';
+import { PropsContextProvider } from './client';
+import { COMPONENT_TYPE } from './register';
 
 type Props = ComponentPropsWithoutRef<typeof HeaderSection> & {
   snapshotId?: string;

@@ -12,7 +12,7 @@ import {
 
 import { runtime } from '~/lib/makeswift/runtime';
 
-import { MakeswiftHeader } from './site-header.client';
+import { MakeswiftHeader } from './client';
 
 export const COMPONENT_TYPE = 'catalyst-makeswift-header';
 

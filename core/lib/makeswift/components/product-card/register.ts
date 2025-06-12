@@ -4,7 +4,7 @@ import { runtime } from '~/lib/makeswift/runtime';
 
 import { searchProducts } from '../../utils/search-products';
 
-import { MakeswiftProductCard } from './product-card';
+import { MakeswiftProductCard } from './client';
 
 runtime.registerComponent(MakeswiftProductCard, {
   type: 'catalog-product-card',
