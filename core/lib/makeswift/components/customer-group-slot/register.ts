@@ -2,7 +2,7 @@ import { Combobox, Group, List, Slot, Style } from '@makeswift/runtime/controls'
 
 import { runtime } from '~/lib/makeswift/runtime';
 
-import { CustomerGroupSlot, NO_GROUP_ID } from './customer-group-slot';
+import { CustomerGroupSlot, NO_GROUP_ID } from './client';
 import { CustomerGroupsSchema, CustomerGroupsType } from './schema';
 
 async function getAllCustomerGroups(): Promise<CustomerGroupsType | null> {

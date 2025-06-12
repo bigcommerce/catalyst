@@ -2,7 +2,7 @@ import { Checkbox, Group, Image, Link, List, Number, TextInput } from '@makeswif
 
 import { runtime } from '~/lib/makeswift/runtime';
 
-import { MakeswiftFooter } from './site-footer.client';
+import { MakeswiftFooter } from './client';
 
 export const COMPONENT_TYPE = 'catalyst-makeswift-footer';
 

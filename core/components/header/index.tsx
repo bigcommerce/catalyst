@@ -12,7 +12,7 @@ import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { routing } from '~/i18n/routing';
 import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
-import { SiteHeader as HeaderSection } from '~/lib/makeswift/components/site-header/site-header';
+import { SiteHeader as HeaderSection } from '~/lib/makeswift/components/site-header';
 
 import { search } from './_actions/search';
 import { switchCurrency } from './_actions/switch-currency';

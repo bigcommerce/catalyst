@@ -1,4 +1,5 @@
 import {
+  Checkbox,
   Combobox,
   Group,
   List,
@@ -12,12 +13,12 @@ import { runtime } from '~/lib/makeswift/runtime';
 
 import { searchProducts } from '../../utils/search-products';
 
-import { MSProductsList } from './products-list';
+import { MSProductsCarousel } from './client';
 
-runtime.registerComponent(MSProductsList, {
-  type: 'primitive-products-list',
-  label: 'Catalog / Products List',
-  icon: 'gallery',
+runtime.registerComponent(MSProductsCarousel, {
+  type: 'primitive-products-carousel',
+  label: 'Catalog / Products Carousel',
+  icon: 'carousel',
   props: {
     className: Style(),
     collection: Select({
@@ -52,7 +53,7 @@ runtime.registerComponent(MSProductsList, {
         },
       }),
       getItemLabel(product) {
-        return product?.title || 'Product Title';
+        return product?.title || 'Product';
       },
     }),
     aspectRatio: Select({
@@ -65,12 +66,24 @@ runtime.registerComponent(MSProductsList, {
       defaultValue: '5:6',
     }),
     colorScheme: Select({
-      label: 'Text Color Scheme',
+      label: 'Text color scheme',
       options: [
         { value: 'light', label: 'Light' },
         { value: 'dark', label: 'Dark' },
       ],
       defaultValue: 'light',
+    }),
+    showScrollbar: Checkbox({
+      label: 'Show scrollbar',
+      defaultValue: true,
+    }),
+    showButtons: Checkbox({
+      label: 'Show buttons',
+      defaultValue: true,
+    }),
+    hideOverflow: Checkbox({
+      label: 'Hide overflow',
+      defaultValue: true,
     }),
   },
 });
