@@ -13,6 +13,7 @@ import { CurrencyFixture } from './currency';
 import { CustomerFixture } from './customer';
 import { OrderFixture } from './order';
 import { extendedPage, toHaveURL } from './page';
+import { PromotionFixture } from './promotion';
 import { WebPageFixture } from './webpage';
 
 interface Fixtures {
@@ -21,6 +22,7 @@ interface Fixtures {
   catalog: CatalogFixture;
   customer: CustomerFixture;
   currency: CurrencyFixture;
+  promotion: PromotionFixture;
   webPage: WebPageFixture;
   /**
    * 'reuseCustomerSession' sets the the configuration for the customer fixture and determines whether to reuse the customer session.
@@ -92,6 +94,16 @@ export const test = baseTest.extend<Fixtures>({
       await use(currencyFixture);
 
       await currencyFixture.cleanup();
+    },
+    { scope: 'test' },
+  ],
+  promotion: [
+    async ({ page }, use, currentTest) => {
+      const promotionFixture = new PromotionFixture(page, currentTest);
+
+      await use(promotionFixture);
+
+      await promotionFixture.cleanup();
     },
     { scope: 'test' },
   ],
