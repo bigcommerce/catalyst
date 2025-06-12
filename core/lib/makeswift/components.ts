@@ -1,4 +1,4 @@
-import './components/accordions/accordions.makeswift';
+import './components/accordion/accordion.makeswift';
 import './components/button-link/button-link.makeswift';
 import './components/card-carousel/card-carousel.makeswift';
 import './components/card/card.makeswift';
