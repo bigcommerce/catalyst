@@ -1,8 +1,7 @@
 import { getSessionCustomerAccessToken } from '~/auth';
+import { client } from '~/client';
+import { graphql, VariablesOf } from '~/client/graphql';
 import { getPreferredCurrencyCode } from '~/lib/currency';
-
-import { client } from '..';
-import { graphql, VariablesOf } from '../graphql';
 
 const CreateCartMutation = graphql(`
   mutation CreateCartMutation($createCartInput: CreateCartInput!) {
