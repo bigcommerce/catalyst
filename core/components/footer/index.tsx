@@ -117,6 +117,7 @@ export const Footer = async () => {
   });
 
   return (
+    <div> 
     <FooterSection
       contactInformation={contactInformation}
       contactTitle={t('contactUs')}
@@ -128,5 +129,7 @@ export const Footer = async () => {
       sections={streamableSections}
       socialMediaLinks={socialMediaLinks}
     />
+    <h3>westrock-poc</h3>
+    </div>
   );
 };
