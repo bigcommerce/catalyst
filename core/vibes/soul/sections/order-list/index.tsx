@@ -68,8 +68,8 @@ export function OrderList({
 }: OrderListProps) {
   return (
     <section className="group/order-list w-full @container">
-      <header className="mb-4 border-b border-[var(--order-list-border,hsl(var(--contrast-100)))]">
-        <div className="mb-4 flex min-h-[42px] items-center justify-between">
+      <header className="mb-4 border-[var(--order-list-border,hsl(var(--contrast-100)))] @2xl:min-h-[72px] @2xl:border-b">
+        <div className="mb-4 flex items-center justify-between">
           <h1 className="hidden font-[family-name:var(--order-list-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none tracking-tight text-[var(--order-list-title,hsl(var(--foreground)))] @2xl:block">
             {title}
           </h1>

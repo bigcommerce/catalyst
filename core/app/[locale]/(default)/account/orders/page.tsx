@@ -50,8 +50,8 @@ export default async function Orders({ params, searchParams }: Props) {
 
   return (
     <OrderList
-      emptyStateActionLabel={t('emptyState.cta')}
-      emptyStateTitle={t('emptyState.title')}
+      emptyStateActionLabel={t('EmptyState.cta')}
+      emptyStateTitle={t('EmptyState.title')}
       orderNumberLabel={t('orderNumber')}
       orders={getOrders(after, before)}
       paginationInfo={getPaginationInfo(after, before)}
