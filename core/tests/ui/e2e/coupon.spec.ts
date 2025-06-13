@@ -8,7 +8,14 @@ test('Valid coupon code can be applied to the cart', async ({ page, catalog, pro
 
   await page.goto(product.path);
   await page.getByRole('button', { name: t('Product.ProductDetails.Submit.addToCart') }).click();
-  await page.waitForLoadState('networkidle');
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const addToCartSuccessMessage = t.rich('Product.ProductDetails.successMessage', {
+    cartItems: 1,
+    cartLink: (chunks: React.ReactNode) => chunks,
+  }) as string;
+
+  await expect(page.getByText(addToCartSuccessMessage)).toBeVisible();
   await page.goto('/cart');
 
   await expect(page.getByRole('heading', { name: t('Cart.title') })).toBeVisible();
@@ -29,7 +36,14 @@ test('Invalid coupon code cannot be applied', async ({ page, catalog }) => {
 
   await page.goto(product.path);
   await page.getByRole('button', { name: t('Product.ProductDetails.Submit.addToCart') }).click();
-  await page.waitForLoadState('networkidle');
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const addToCartSuccessMessage = t.rich('Product.ProductDetails.successMessage', {
+    cartItems: 1,
+    cartLink: (chunks: React.ReactNode) => chunks,
+  }) as string;
+
+  await expect(page.getByText(addToCartSuccessMessage)).toBeVisible();
   await page.goto('/cart');
 
   await expect(page.getByRole('heading', { name: t('Cart.title') })).toBeVisible();
