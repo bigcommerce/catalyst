@@ -1,6 +1,5 @@
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 
 const VisitStartedMutation = graphql(`
   mutation VisitStarted($input: VisitStartedEventInput!) {
@@ -50,7 +49,7 @@ export async function sendVisitStartedEvent({ initiator, request }: VisitStarted
   return client.fetch({
     document: VisitStartedMutation,
     variables: { input },
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: { cache: 'no-store' },
   });
 }
 
@@ -67,7 +66,7 @@ export async function sendProductViewedEvent({
   return await client.fetch({
     document: ProductViewedMutation,
     variables: { input },
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: { cache: 'no-store' },
   });
 }
 

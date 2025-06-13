@@ -11,12 +11,12 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
-import { sendProductViewedAnalyticsEvent } from '~/lib/analytics/bigcommerce/product-analytics-input';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
 import { ProductSchema } from './_components/product-schema';
+import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
 import { WishlistButton } from './_components/wishlist-button';
 import { WishlistButtonForm } from './_components/wishlist-button/form';
@@ -283,12 +283,6 @@ export default async function Product({ params, searchParams }: Props) {
     };
   });
 
-  // Fire-and-forget: non-blocking analytics event
-  sendProductViewedAnalyticsEvent(streamableProduct).catch((err: unknown) => {
-    // eslint-disable-next-line no-console
-    console.error('Failed to send product viewed analytics event', err);
-  });
-
   return (
     <>
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
@@ -345,7 +339,14 @@ export default async function Product({ params, searchParams }: Props) {
         )}
       >
         {([extendedProduct, pricingProduct]) => (
-          <ProductSchema product={{ ...extendedProduct, prices: pricingProduct?.prices ?? null }} />
+          <>
+            <ProductSchema
+              product={{ ...extendedProduct, prices: pricingProduct?.prices ?? null }}
+            />
+            <ProductViewed
+              product={{ ...extendedProduct, prices: pricingProduct?.prices ?? null }}
+            />
+          </>
         )}
       </Stream>
 
