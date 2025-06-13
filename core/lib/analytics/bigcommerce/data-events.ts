@@ -59,6 +59,8 @@ export async function sendProductViewedEvent({
   initiator,
   request,
 }: ProductViewedEvent) {
+  console.log('sendProductViewedAnalyticsEvent');
+
   const input = {
     commonInput: preareCommonInput(initiator, request),
     productInput: { productEntityId: Number(productId) },

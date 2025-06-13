@@ -11,8 +11,8 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
-import { getPreferredCurrencyCode } from '~/lib/currency';
 import { sendProductViewedAnalyticsEvent } from '~/lib/analytics/bigcommerce/product-analytics-input';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
@@ -284,7 +284,8 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   // Fire-and-forget: non-blocking analytics event
-  sendProductViewedAnalyticsEvent(streamableProduct).catch((err) => {
+  sendProductViewedAnalyticsEvent(streamableProduct).catch((err: unknown) => {
+    // eslint-disable-next-line no-console
     console.error('Failed to send product viewed analytics event', err);
   });
 

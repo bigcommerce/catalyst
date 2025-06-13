@@ -1,7 +1,10 @@
-import { Streamable } from '@/vibes/soul/lib/streamable';
 import { headers } from 'next/headers';
-import { getVisitIdCookie, getVisitorIdCookie } from '.';
+
+import { Streamable } from '@/vibes/soul/lib/streamable';
+
 import { sendProductViewedEvent } from './data-events';
+
+import { getVisitIdCookie, getVisitorIdCookie } from '.';
 
 export async function sendProductViewedAnalyticsEvent(
   streamableProduct: Streamable<{ entityId: number; path: string }>,
@@ -27,7 +30,7 @@ export async function sendProductViewedAnalyticsEvent(
       request: {
         url,
         userAgent,
-        refererUrl
+        refererUrl,
       },
     });
   }
