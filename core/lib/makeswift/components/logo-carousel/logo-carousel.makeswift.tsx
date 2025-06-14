@@ -22,22 +22,19 @@ type MSLogoCarouselProps = {
 runtime.registerComponent(
   function MSLogoCarousel({ totalSlides, ...props }: MSLogoCarouselProps) {
     return (
-      <SectionLayout
-        {...props}
-        children={
-          <>
-            {props.logos.map((logo: LogoInterface, index: number) => (
-              //   <Slide index={index} key={index}>
-              <Logo
-                key={index}
-                width={100}
-                height={50}
-                logo={{ src: logo.imageSrc ?? '', alt: logo.imageAlt ?? '' }}
-                href={logo.link?.href ?? '#'}
-              />
-              //   </Slide>
-            ))}
-            {/* <CarouselProvider
+      <>
+        {props.logos.map((logo: LogoInterface, index: number) => (
+          //   <Slide index={index} key={index}>
+          <Logo
+            key={index}
+            width={100}
+            height={50}
+            logo={{ src: logo.imageSrc ?? '', alt: logo.imageAlt ?? '' }}
+            href={logo.link?.href ?? '#'}
+          />
+          //   </Slide>
+        ))}
+        {/* <CarouselProvider
               naturalSlideWidth={100}
               naturalSlideHeight={50}
               totalSlides={totalSlides}
@@ -57,10 +54,7 @@ runtime.registerComponent(
                 ))}
               </Slider>
             </CarouselProvider> */}
-          </>
-        }
-        hideOverflow={true}
-      />
+      </>
     );
   },
   {
