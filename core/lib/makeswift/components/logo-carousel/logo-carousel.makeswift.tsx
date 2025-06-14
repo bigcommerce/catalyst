@@ -3,8 +3,7 @@ import dynamic from 'next/dynamic';
 
 import { breakpoints, runtime } from '~/lib/makeswift/runtime';
 
-const Carousel = dynamic(() => import('react-multi-carousel'));
-import 'react-multi-carousel/lib/styles.css';
+const Carousel = dynamic(() => import('react-multi-carousel'), { ssr: true });
 
 interface LogoInterface {
   imageSrc?: string;
@@ -67,14 +66,15 @@ runtime.registerComponent(
       >
         {logos.map((logo: LogoInterface, index: number) => (
           <div key={index}>
-            <a
+            <p>Text {index}</p>
+            {/* <a
               href={logo.link?.href ?? '#'}
               target={logo.link?.target}
               rel={logo.link?.target === '_blank' ? 'noopener noreferrer' : undefined}
               className="block h-full w-full"
             >
               <img src={logo.imageSrc ?? ''} alt={logo.imageAlt ?? ''} className="object-contain" />
-            </a>
+            </a> */}
           </div>
         ))}
       </Carousel>
