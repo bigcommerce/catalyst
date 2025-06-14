@@ -86,7 +86,7 @@ runtime.registerComponent(
         itemClass="carousel-item-padding-40-px"
       >
         {logos.map((logo: LogoInterface, index: number) => (
-          <div key={index}>
+          <div key={index} className="px-6 py-6">
             <a
               href={logo.link?.href ?? '#'}
               target={logo.link?.target}
