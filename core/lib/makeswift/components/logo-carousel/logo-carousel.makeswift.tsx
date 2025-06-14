@@ -1,7 +1,8 @@
 import { Group, Image, Link, List, Style, TextInput, Number } from '@makeswift/runtime/controls';
-import { Logo } from '@/vibes/soul/primitives/logo';
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
 
-import { runtime } from '~/lib/makeswift/runtime';
+import { breakpoints, runtime } from '~/lib/makeswift/runtime';
 
 interface LogoInterface {
   imageSrc?: string;
@@ -10,46 +11,71 @@ interface LogoInterface {
 }
 
 type MSLogoCarouselProps = {
+  itemsPerRowSuperDesktop: number;
   itemsPerRowDesktop: number;
   itemsPerRowTablet: number;
   itemsPerRowMobile: number;
   className: string;
-  logoWidth: number;
-  logoHeight: number;
   logos: LogoInterface[];
 };
 
 runtime.registerComponent(
   function MSLogoCarousel({
+    itemsPerRowSuperDesktop,
     itemsPerRowDesktop,
     itemsPerRowMobile,
     itemsPerRowTablet,
     logos,
-    className,
-    logoHeight,
-    logoWidth,
   }: MSLogoCarouselProps) {
+    const responsive = {
+      superLargeDesktop: {
+        breakpoint: { max: 4000, min: breakpoints.screen.width }, // XL and above
+        items: itemsPerRowSuperDesktop,
+      },
+      desktop: {
+        breakpoint: { max: breakpoints.screen.width, min: breakpoints.large.width }, // 1280–1024
+        items: itemsPerRowDesktop,
+      },
+      tablet: {
+        breakpoint: { max: breakpoints.large.width, min: breakpoints.small.width }, // 1024–640
+        items: itemsPerRowTablet,
+      },
+      mobile: {
+        breakpoint: { max: breakpoints.small.width, min: 0 }, // <640
+        items: itemsPerRowMobile,
+      },
+    };
+
     return (
-      <div
-        className={`${className} grid w-full gap-x-6 gap-y-4 grid-cols-${itemsPerRowMobile} sm:grid-cols-${itemsPerRowTablet} lg:grid-cols-${itemsPerRowDesktop}`}
+      <Carousel
+        swipeable={false}
+        draggable={false}
+        showDots={true}
+        responsive={responsive}
+        ssr={true} // means to render carousel on server-side.
+        infinite={true}
+        autoPlaySpeed={1000}
+        keyBoardControl={true}
+        customTransition="all .5"
+        transitionDuration={500}
+        containerClass="carousel-container"
+        removeArrowOnDeviceType={['tablet', 'mobile']}
+        dotListClass="custom-dot-list-style"
+        itemClass="carousel-item-padding-40-px"
       >
         {logos.map((logo: LogoInterface, index: number) => (
-          <a
-            key={index}
-            href={logo.link?.href ?? '#'}
-            target={logo.link?.target}
-            rel={logo.link?.target === '_blank' ? 'noopener noreferrer' : undefined}
-            className="block h-full w-full"
-          >
-            <img
-              src={logo.imageSrc ?? ''}
-              alt={logo.imageAlt ?? ''}
-              className="h-full w-full object-contain"
-              style={{ height: `${logoHeight}px`, width: `${logoWidth}px` }}
-            />
-          </a>
+          <div key={index}>
+            <a
+              href={logo.link?.href ?? '#'}
+              target={logo.link?.target}
+              rel={logo.link?.target === '_blank' ? 'noopener noreferrer' : undefined}
+              className="block h-full w-full"
+            >
+              <img src={logo.imageSrc ?? ''} alt={logo.imageAlt ?? ''} className="object-contain" />
+            </a>
+          </div>
         ))}
-      </div>
+      </Carousel>
     );
   },
   {
@@ -72,11 +98,14 @@ runtime.registerComponent(
           return logo?.imageAlt || 'Logo';
         },
       }),
-      logoWidth: Number({ label: 'Logo Width', defaultValue: 200, min: 1 }),
-      logoHeight: Number({ label: 'Logo Height', defaultValue: 125, min: 1 }),
+      itemsPerRowSuperDesktop: Number({
+        label: 'Items Per Row (Super Large Desktop)',
+        defaultValue: 8,
+        min: 1,
+      }),
       itemsPerRowDesktop: Number({ label: 'Items Per Row (Desktop)', defaultValue: 6, min: 1 }),
       itemsPerRowTablet: Number({ label: 'Items Per Row (Tablet)', defaultValue: 4, min: 1 }),
-      itemsPerRowMobile: Number({ label: 'Items Per Row (Mobile)', defaultValue: 3, min: 1 }),
+      itemsPerRowMobile: Number({ label: 'Items Per Row (Mobile)', defaultValue: 2, min: 1 }),
     },
   },
 );
