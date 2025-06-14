@@ -88,22 +88,28 @@ runtime.registerComponent(
         dotListClass="custom-dot-list-style"
         itemClass="carousel-item-padding-40-px"
       >
-        {logos.map((logo: LogoInterface, index: number) => (
-          <div key={index} className="px-6 py-6">
-            <a
-              href={logo.link?.href ?? '#'}
-              target={logo.link?.target}
-              rel={logo.link?.target === '_blank' ? 'noopener noreferrer' : undefined}
-              className="block h-full w-full"
-            >
-              <img
-                src={logo.imageSrc ?? ''}
-                alt={logo.imageAlt ?? ''}
-                className="h-full w-full object-contain"
-              />
-            </a>
+        {logos.length === 0 ? (
+          <div>
+            <p className="text-gray-500">No logos available</p>
           </div>
-        ))}
+        ) : (
+          logos.map((logo: LogoInterface, index: number) => (
+            <div key={index} className="px-6 py-6">
+              <a
+                href={logo.link?.href ?? '#'}
+                target={logo.link?.target}
+                rel={logo.link?.target === '_blank' ? 'noopener noreferrer' : undefined}
+                className="block h-full w-full"
+              >
+                <img
+                  src={logo.imageSrc ?? ''}
+                  alt={logo.imageAlt ?? ''}
+                  className="h-full w-full object-contain"
+                />
+              </a>
+            </div>
+          ))
+        )}
       </Carousel>
     );
   },
