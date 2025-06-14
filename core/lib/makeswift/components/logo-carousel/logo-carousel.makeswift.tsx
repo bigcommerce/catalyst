@@ -19,7 +19,17 @@ type MSLogoCarouselProps = {
   itemsPerRowMobile: number;
   className: string;
   logos: LogoInterface[];
+  deviceType?: string; // This will be set by getServerSideProps
 };
+
+export async function getServerSideProps({ req }: { req: any }) {
+  const userAgent = req.headers['user-agent'] || '';
+  let deviceType = 'desktop';
+  if (/mobile/i.test(userAgent)) deviceType = 'mobile';
+  else if (/tablet|ipad/i.test(userAgent)) deviceType = 'tablet';
+
+  return { props: { deviceType } };
+}
 
 runtime.registerComponent(
   function MSLogoCarousel({
@@ -28,6 +38,7 @@ runtime.registerComponent(
     itemsPerRowMobile,
     itemsPerRowTablet,
     logos,
+    ...props
   }: MSLogoCarouselProps) {
     const responsive = {
       superLargeDesktop: {
@@ -54,8 +65,9 @@ runtime.registerComponent(
         draggable={false}
         showDots={true}
         responsive={responsive}
-        ssr={false} // means to render carousel on server-side.
+        ssr={true} // means to render carousel on server-side.
         infinite={true}
+        deviceType={props.deviceType} // This is important for SSR. It should match the device type you want to render.
         autoPlaySpeed={1000}
         keyBoardControl={true}
         customTransition="all .5"

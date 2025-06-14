@@ -74,6 +74,7 @@
     "swr": "^2.2.5",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-radix": "^3.0.5",
+    "ua-parser-js": "^2.0.3",
     "uuid": "^11.1.0",
     "zod": "^3.24.2"
   },
