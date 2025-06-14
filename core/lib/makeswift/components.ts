@@ -13,6 +13,8 @@ import './components/site-header/site-header.makeswift';
 import './components/slideshow/slideshow.makeswift';
 import './components/sticky-sidebar/sticky-sidebar.makeswift';
 import './components/product-detail/register';
+// Custom Created MakeSwift Components
+import './components/logo-carousel/logo-carousel.makeswift';
 
 import './components/site-theme/register';
 

@@ -59,6 +59,7 @@
     "next-intl": "^3.26.5",
     "nuqs": "^2.4.1",
     "p-lazy": "^5.0.0",
+    "pure-react-carousel": "^1.32.0",
     "react": "^19.0.0",
     "react-day-picker": "^9.6.3",
     "react-dom": "^19.0.0",
