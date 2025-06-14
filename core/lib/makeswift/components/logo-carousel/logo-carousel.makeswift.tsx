@@ -17,18 +17,26 @@ type MSLogoCarouselProps = {
   totalSlides: number;
   className: string;
   logos: LogoInterface[];
+  logoWidth: number;
+  logoHeight: number;
 };
 
 runtime.registerComponent(
-  function MSLogoCarousel({ totalSlides, ...props }: MSLogoCarouselProps) {
+  function MSLogoCarousel({
+    totalSlides,
+    logoWidth,
+    logoHeight,
+    logos,
+    ...props
+  }: MSLogoCarouselProps) {
     return (
       <>
-        {props.logos.map((logo: LogoInterface, index: number) => (
+        {logos.map((logo: LogoInterface, index: number) => (
           //   <Slide index={index} key={index}>
           <Logo
             key={index}
-            width={100}
-            height={50}
+            width={logoHeight}
+            height={logoHeight}
             logo={{ src: logo.imageSrc ?? '', alt: logo.imageAlt ?? '' }}
             href={logo.link?.href ?? '#'}
           />
@@ -77,6 +85,8 @@ runtime.registerComponent(
           return logo?.imageAlt || 'Logo';
         },
       }),
+      logoWidth: Number({ label: 'Logo Width', defaultValue: 100, min: 25 }),
+      logoHeight: Number({ label: 'Logo Height', defaultValue: 50, min: 25 }),
       totalSlides: Number({ label: 'Total Slides', defaultValue: 3, min: 1 }),
     },
   },
