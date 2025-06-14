@@ -34,32 +34,13 @@ runtime.registerComponent(
   }: MSLogoCarouselProps) {
     return (
       <div
-        className={`grid gap-x-6 gap-y-4`}
-        style={
-          {
-            gridTemplateColumns: `
-          repeat(${itemsPerRowMobile}, minmax(0, 1fr))
-        `,
-            // Responsive columns using media queries
-            ...(itemsPerRowTablet && {
-              ['@media (min-width: 640px)']: {
-                gridTemplateColumns: `repeat(${itemsPerRowTablet}, minmax(0, 1fr))`,
-              },
-            }),
-            ...(itemsPerRowDesktop && {
-              ['@media (min-width: 1024px)']: {
-                gridTemplateColumns: `repeat(${itemsPerRowDesktop}, minmax(0, 1fr))`,
-              },
-            }),
-          } as React.CSSProperties
-        }
+        className={`grid w-full gap-x-6 gap-y-4 grid-cols-${itemsPerRowMobile} sm:grid-cols-${itemsPerRowTablet} lg:grid-cols-${itemsPerRowDesktop}`}
       >
         {logos.map((logo: LogoInterface, index: number) => (
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center" key={index}>
             <Logo
-              key={index}
-              width={logoWidth}
-              height={logoHeight}
+              width={100}
+              height={75}
               logo={{ src: logo.imageSrc ?? '', alt: logo.imageAlt ?? '' }}
               href={logo.link?.href ?? '#'}
             />
