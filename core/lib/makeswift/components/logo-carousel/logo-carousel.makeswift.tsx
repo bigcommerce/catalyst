@@ -90,6 +90,7 @@ runtime.registerComponent(
             removeArrowOnDeviceType={['tablet', 'mobile']}
             dotListClass="custom-dot-list-style"
             itemClass="carousel-item-padding-40-px"
+            className={`${className}`}
           >
             {logos.map((logo: LogoInterface, index: number) => (
               <div key={index} className="px-6 py-6">
