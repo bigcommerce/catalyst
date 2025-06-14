@@ -1,8 +1,10 @@
 import { Group, Image, Link, List, Style, TextInput, Number } from '@makeswift/runtime/controls';
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
+import dynamic from 'next/dynamic';
 
 import { breakpoints, runtime } from '~/lib/makeswift/runtime';
+
+const Carousel = dynamic(() => import('react-multi-carousel'));
+import 'react-multi-carousel/lib/styles.css';
 
 interface LogoInterface {
   imageSrc?: string;
