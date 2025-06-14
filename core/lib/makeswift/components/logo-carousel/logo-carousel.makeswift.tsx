@@ -32,6 +32,8 @@ type MSLogoCarouselProps = {
   draggable?: boolean;
   infinite?: boolean;
   keyBoardControl?: boolean;
+  arrows?: boolean;
+  playSpeed: number;
 };
 
 runtime.registerComponent(
@@ -45,6 +47,8 @@ runtime.registerComponent(
     draggable,
     infinite,
     keyBoardControl,
+    arrows,
+    playSpeed,
   }: MSLogoCarouselProps) {
     const responsive = {
       superLargeDesktop: {
@@ -70,11 +74,12 @@ runtime.registerComponent(
         swipeable={swipeable}
         draggable={draggable}
         showDots={false}
+        arrows={arrows}
         responsive={responsive}
         ssr={true} // means to render carousel on server-side.
         infinite={infinite}
         deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
-        autoPlaySpeed={1000}
+        autoPlaySpeed={playSpeed * 1000} // Convert seconds to milliseconds
         keyBoardControl={keyBoardControl}
         customTransition="all 1000ms"
         transitionDuration={1000}
@@ -130,10 +135,12 @@ runtime.registerComponent(
       itemsPerRowDesktop: Number({ label: 'Items Per Row (Desktop)', defaultValue: 6, min: 1 }),
       itemsPerRowTablet: Number({ label: 'Items Per Row (Tablet)', defaultValue: 4, min: 1 }),
       itemsPerRowMobile: Number({ label: 'Items Per Row (Mobile)', defaultValue: 2, min: 1 }),
+      arrows: Checkbox({ label: 'Show Arrows', defaultValue: true }),
       swipeable: Checkbox({ label: 'Allow Swipeable Moving', defaultValue: false }),
       draggable: Checkbox({ label: 'Allow Draggable Moving', defaultValue: false }),
       infinite: Checkbox({ label: 'Infinite Loop', defaultValue: true }),
       keyBoardControl: Checkbox({ label: 'Enable Keyboard Control', defaultValue: true }),
+      playSpeed: Number({ label: 'Slide Play Speed (In Seconds)', defaultValue: 1 }),
     },
   },
 );
