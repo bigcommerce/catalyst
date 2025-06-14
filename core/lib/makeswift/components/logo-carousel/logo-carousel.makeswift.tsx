@@ -49,6 +49,7 @@ runtime.registerComponent(
     keyBoardControl,
     arrows,
     playSpeed,
+    className,
   }: MSLogoCarouselProps) {
     const responsive = {
       superLargeDesktop: {
@@ -108,7 +109,7 @@ runtime.registerComponent(
             ))}
           </Carousel>
         ) : (
-          <div className="px-6 py-6 text-center">
+          <div className={`${className} w-full px-6 py-6 text-center`}>
             <p className="text-gray-500">Please Start Adding Logos To See The Carousel</p>
           </div>
         )}
