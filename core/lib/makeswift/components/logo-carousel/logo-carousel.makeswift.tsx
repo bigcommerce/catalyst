@@ -31,7 +31,7 @@ type MSLogoCarouselProps = {
   swipeable?: boolean;
   draggable?: boolean;
   infinite?: boolean;
-  keyBoardControl?: boolean;
+  //keyBoardControl?: boolean;
   arrows?: boolean;
   playSpeed: number;
 };
@@ -46,7 +46,7 @@ runtime.registerComponent(
     swipeable,
     draggable,
     infinite,
-    keyBoardControl,
+    //keyBoardControl,
     arrows,
     playSpeed,
     className,
@@ -83,7 +83,7 @@ runtime.registerComponent(
             infinite={infinite}
             deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
             autoPlaySpeed={playSpeed * 1000} // Convert seconds to milliseconds
-            keyBoardControl={keyBoardControl}
+            //keyBoardControl={keyBoardControl}
             customTransition="all 1000ms"
             transitionDuration={1000}
             containerClass="carousel-container"
@@ -149,7 +149,7 @@ runtime.registerComponent(
       swipeable: Checkbox({ label: 'Allow Swipeable Moving', defaultValue: false }),
       draggable: Checkbox({ label: 'Allow Draggable Moving', defaultValue: false }),
       infinite: Checkbox({ label: 'Infinite Loop', defaultValue: true }),
-      keyBoardControl: Checkbox({ label: 'Enable Keyboard Control', defaultValue: true }),
+      //keyBoardControl: Checkbox({ label: 'Enable Keyboard Control', defaultValue: true }),
       playSpeed: Number({ label: 'Slide Play Speed (In Seconds)', defaultValue: 1 }),
     },
   },
