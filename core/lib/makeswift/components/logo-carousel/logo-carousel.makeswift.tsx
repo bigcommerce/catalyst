@@ -54,7 +54,7 @@ runtime.registerComponent(
         draggable={false}
         showDots={true}
         responsive={responsive}
-        ssr={true} // means to render carousel on server-side.
+        ssr={false} // means to render carousel on server-side.
         infinite={true}
         autoPlaySpeed={1000}
         keyBoardControl={true}
@@ -65,6 +65,8 @@ runtime.registerComponent(
         dotListClass="custom-dot-list-style"
         itemClass="carousel-item-padding-40-px"
       >
+        <div>Text 1</div>
+        <div>Text 2</div>
         {logos.map((logo: LogoInterface, index: number) => (
           <div key={index}>
             <p>Text {index}</p>
