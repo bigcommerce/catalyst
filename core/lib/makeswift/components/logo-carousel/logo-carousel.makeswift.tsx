@@ -29,10 +29,10 @@ runtime.registerComponent(
             {props.logos.map((logo: LogoInterface, index: number) => (
               //   <Slide index={index} key={index}>
               <Logo
+                key={index}
                 width={100}
                 height={50}
-                logo={logo.imageSrc ?? ''}
-                label={logo.imageAlt}
+                logo={{ src: logo.imageSrc ?? '', alt: logo.imageAlt ?? '' }}
                 href={logo.link?.href ?? '#'}
               />
               //   </Slide>
