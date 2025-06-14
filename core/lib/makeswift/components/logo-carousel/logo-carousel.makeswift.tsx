@@ -77,19 +77,20 @@ runtime.registerComponent(
         dotListClass="custom-dot-list-style"
         itemClass="carousel-item-padding-40-px"
       >
-        <div>Text 1</div>
-        <div>Text 2</div>
         {logos.map((logo: LogoInterface, index: number) => (
           <div key={index}>
-            <p>Text {index}</p>
-            {/* <a
+            <a
               href={logo.link?.href ?? '#'}
               target={logo.link?.target}
               rel={logo.link?.target === '_blank' ? 'noopener noreferrer' : undefined}
               className="block h-full w-full"
             >
-              <img src={logo.imageSrc ?? ''} alt={logo.imageAlt ?? ''} className="object-contain" />
-            </a> */}
+              <img
+                src={logo.imageSrc ?? ''}
+                alt={logo.imageAlt ?? ''}
+                className="h-full w-full object-contain"
+              />
+            </a>
           </div>
         ))}
       </Carousel>
