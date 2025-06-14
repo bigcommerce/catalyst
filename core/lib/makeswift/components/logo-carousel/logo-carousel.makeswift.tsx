@@ -14,7 +14,9 @@ interface LogoInterface {
 }
 
 type MSLogoCarouselProps = {
-  totalSlides: number;
+  itemsPerRowDesktop: number;
+  itemsPerRowTablet: number;
+  itemsPerRowMobile: number;
   className: string;
   logos: LogoInterface[];
   logoWidth: number;
@@ -23,46 +25,47 @@ type MSLogoCarouselProps = {
 
 runtime.registerComponent(
   function MSLogoCarousel({
-    totalSlides,
+    itemsPerRowDesktop,
+    itemsPerRowMobile,
+    itemsPerRowTablet,
     logoWidth,
     logoHeight,
     logos,
-    ...props
   }: MSLogoCarouselProps) {
     return (
-      <>
+      <div
+        className={`grid gap-x-6 gap-y-4`}
+        style={
+          {
+            gridTemplateColumns: `
+          repeat(${itemsPerRowMobile}, minmax(0, 1fr))
+        `,
+            // Responsive columns using media queries
+            ...(itemsPerRowTablet && {
+              ['@media (min-width: 640px)']: {
+                gridTemplateColumns: `repeat(${itemsPerRowTablet}, minmax(0, 1fr))`,
+              },
+            }),
+            ...(itemsPerRowDesktop && {
+              ['@media (min-width: 1024px)']: {
+                gridTemplateColumns: `repeat(${itemsPerRowDesktop}, minmax(0, 1fr))`,
+              },
+            }),
+          } as React.CSSProperties
+        }
+      >
         {logos.map((logo: LogoInterface, index: number) => (
-          //   <Slide index={index} key={index}>
-          <Logo
-            key={index}
-            width={logoHeight}
-            height={logoHeight}
-            logo={{ src: logo.imageSrc ?? '', alt: logo.imageAlt ?? '' }}
-            href={logo.link?.href ?? '#'}
-          />
-          //   </Slide>
+          <div className="flex items-center justify-center">
+            <Logo
+              key={index}
+              width={logoWidth}
+              height={logoHeight}
+              logo={{ src: logo.imageSrc ?? '', alt: logo.imageAlt ?? '' }}
+              href={logo.link?.href ?? '#'}
+            />
+          </div>
         ))}
-        {/* <CarouselProvider
-              naturalSlideWidth={100}
-              naturalSlideHeight={50}
-              totalSlides={totalSlides}
-              isIntrinsicHeight={true}
-            >
-              <Slider>
-                {props.logos.map((logo: LogoInterface, index: number) => (
-                  <Slide index={index} key={index}>
-                    <Logo
-                      width={100}
-                      height={50}
-                      logo={logo.imageSrc ?? ''}
-                      label={logo.imageAlt}
-                      href={logo.link?.href ?? '#'}
-                    />
-                  </Slide>
-                ))}
-              </Slider>
-            </CarouselProvider> */}
-      </>
+      </div>
     );
   },
   {
@@ -87,7 +90,9 @@ runtime.registerComponent(
       }),
       logoWidth: Number({ label: 'Logo Width', defaultValue: 100, min: 25 }),
       logoHeight: Number({ label: 'Logo Height', defaultValue: 50, min: 25 }),
-      totalSlides: Number({ label: 'Total Slides', defaultValue: 3, min: 1 }),
+      itemsPerRowDesktop: Number({ label: 'Items Per Row (Desktop)', defaultValue: 3, min: 1 }),
+      itemsPerRowTablet: Number({ label: 'Items Per Row (Tablet)', defaultValue: 3, min: 1 }),
+      itemsPerRowMobile: Number({ label: 'Items Per Row (Mobile)', defaultValue: 3, min: 1 }),
     },
   },
 );
