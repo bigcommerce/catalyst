@@ -1,11 +1,7 @@
 import { Group, Image, Link, List, Style, TextInput, Number } from '@makeswift/runtime/controls';
 import { Logo } from '@/vibes/soul/primitives/logo';
 
-// import { CarouselProvider, Slider, Slide } from 'pure-react-carousel';
-import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 import { runtime } from '~/lib/makeswift/runtime';
-
-// import 'pure-react-carousel/dist/react-carousel.es.css';
 
 interface LogoInterface {
   imageSrc?: string;
@@ -18,6 +14,8 @@ type MSLogoCarouselProps = {
   itemsPerRowTablet: number;
   itemsPerRowMobile: number;
   className: string;
+  logoWidth: number;
+  logoHeight: number;
   logos: LogoInterface[];
 };
 
@@ -28,6 +26,8 @@ runtime.registerComponent(
     itemsPerRowTablet,
     logos,
     className,
+    logoHeight,
+    logoWidth,
   }: MSLogoCarouselProps) {
     return (
       <div
@@ -35,8 +35,9 @@ runtime.registerComponent(
       >
         {logos.map((logo: LogoInterface, index: number) => (
           <Logo
-            width={100}
-            height={75}
+            key={index}
+            width={logoWidth}
+            height={logoHeight}
             logo={{ src: logo.imageSrc ?? '', alt: logo.imageAlt ?? '' }}
             href={logo.link?.href ?? '#'}
           />
@@ -64,6 +65,8 @@ runtime.registerComponent(
           return logo?.imageAlt || 'Logo';
         },
       }),
+      logoWidth: Number({ label: 'Logo Width', defaultValue: 200, min: 1 }),
+      logoHeight: Number({ label: 'Logo Height', defaultValue: 125, min: 1 }),
       itemsPerRowDesktop: Number({ label: 'Items Per Row (Desktop)', defaultValue: 6, min: 1 }),
       itemsPerRowTablet: Number({ label: 'Items Per Row (Tablet)', defaultValue: 4, min: 1 }),
       itemsPerRowMobile: Number({ label: 'Items Per Row (Mobile)', defaultValue: 3, min: 1 }),
