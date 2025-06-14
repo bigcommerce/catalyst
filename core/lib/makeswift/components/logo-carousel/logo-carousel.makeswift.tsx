@@ -70,47 +70,49 @@ runtime.registerComponent(
     };
 
     return (
-      <Carousel
-        swipeable={swipeable}
-        draggable={draggable}
-        showDots={false}
-        arrows={arrows}
-        responsive={responsive}
-        ssr={true} // means to render carousel on server-side.
-        infinite={infinite}
-        deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
-        autoPlaySpeed={playSpeed * 1000} // Convert seconds to milliseconds
-        keyBoardControl={keyBoardControl}
-        customTransition="all 1000ms"
-        transitionDuration={1000}
-        containerClass="carousel-container"
-        removeArrowOnDeviceType={['tablet', 'mobile']}
-        dotListClass="custom-dot-list-style"
-        itemClass="carousel-item-padding-40-px"
-      >
-        {logos.length === 0 ? (
-          <div>
-            <p className="text-gray-500">No logos available</p>
-          </div>
+      <>
+        {logos.length > 0 ? (
+          <Carousel
+            swipeable={swipeable}
+            draggable={draggable}
+            showDots={false}
+            arrows={arrows}
+            responsive={responsive}
+            ssr={true} // means to render carousel on server-side.
+            infinite={infinite}
+            deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
+            autoPlaySpeed={playSpeed * 1000} // Convert seconds to milliseconds
+            keyBoardControl={keyBoardControl}
+            customTransition="all 1000ms"
+            transitionDuration={1000}
+            containerClass="carousel-container"
+            removeArrowOnDeviceType={['tablet', 'mobile']}
+            dotListClass="custom-dot-list-style"
+            itemClass="carousel-item-padding-40-px"
+          >
+            {logos.map((logo: LogoInterface, index: number) => (
+              <div key={index} className="px-6 py-6">
+                <a
+                  href={logo.link?.href ?? '#'}
+                  target={logo.link?.target}
+                  rel={logo.link?.target === '_blank' ? 'noopener noreferrer' : undefined}
+                  className="block h-full w-full"
+                >
+                  <img
+                    src={logo.imageSrc ?? ''}
+                    alt={logo.imageAlt ?? ''}
+                    className="h-full w-full object-contain"
+                  />
+                </a>
+              </div>
+            ))}
+          </Carousel>
         ) : (
-          logos.map((logo: LogoInterface, index: number) => (
-            <div key={index} className="px-6 py-6">
-              <a
-                href={logo.link?.href ?? '#'}
-                target={logo.link?.target}
-                rel={logo.link?.target === '_blank' ? 'noopener noreferrer' : undefined}
-                className="block h-full w-full"
-              >
-                <img
-                  src={logo.imageSrc ?? ''}
-                  alt={logo.imageAlt ?? ''}
-                  className="h-full w-full object-contain"
-                />
-              </a>
-            </div>
-          ))
+          <div className="px-6 py-6 text-center">
+            <p className="text-gray-500">Please Start Adding Logos To See The Carousel</p>
+          </div>
         )}
-      </Carousel>
+      </>
     );
   },
   {
