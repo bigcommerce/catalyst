@@ -34,13 +34,20 @@ runtime.registerComponent(
         className={`${className} grid w-full gap-x-6 gap-y-4 grid-cols-${itemsPerRowMobile} sm:grid-cols-${itemsPerRowTablet} lg:grid-cols-${itemsPerRowDesktop}`}
       >
         {logos.map((logo: LogoInterface, index: number) => (
-          <Logo
+          <a
             key={index}
-            width={logoWidth}
-            height={logoHeight}
-            logo={{ src: logo.imageSrc ?? '', alt: logo.imageAlt ?? '' }}
             href={logo.link?.href ?? '#'}
-          />
+            target={logo.link?.target}
+            rel={logo.link?.target === '_blank' ? 'noopener noreferrer' : undefined}
+            className="block h-full w-full"
+          >
+            <img
+              src={logo.imageSrc ?? ''}
+              alt={logo.imageAlt ?? ''}
+              className="h-full w-full object-contain"
+              style={{ height: `${logoHeight}px`, width: `${logoWidth}px` }}
+            />
+          </a>
         ))}
       </div>
     );
