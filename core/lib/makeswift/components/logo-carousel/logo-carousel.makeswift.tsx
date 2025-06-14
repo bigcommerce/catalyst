@@ -67,7 +67,7 @@ runtime.registerComponent(
         responsive={responsive}
         ssr={true} // means to render carousel on server-side.
         infinite={true}
-        deviceType={props.deviceType} // This is important for SSR. It should match the device type you want to render.
+        deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
         autoPlaySpeed={1000}
         keyBoardControl={true}
         customTransition="all .5"
