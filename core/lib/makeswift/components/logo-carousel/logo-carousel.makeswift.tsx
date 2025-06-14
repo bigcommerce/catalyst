@@ -30,7 +30,6 @@ type MSLogoCarouselProps = {
   logos: LogoInterface[];
   swipeable?: boolean;
   draggable?: boolean;
-  showdots?: boolean;
   infinite?: boolean;
   keyBoardControl?: boolean;
 };
@@ -44,7 +43,6 @@ runtime.registerComponent(
     logos,
     swipeable,
     draggable,
-    showdots,
     infinite,
     keyBoardControl,
   }: MSLogoCarouselProps) {
@@ -71,15 +69,15 @@ runtime.registerComponent(
       <Carousel
         swipeable={swipeable}
         draggable={draggable}
-        showDots={showdots}
+        showDots={false}
         responsive={responsive}
         ssr={true} // means to render carousel on server-side.
         infinite={infinite}
         deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
         autoPlaySpeed={1000}
         keyBoardControl={keyBoardControl}
-        customTransition="all .5"
-        transitionDuration={500}
+        customTransition="all 1000ms"
+        transitionDuration={1000}
         containerClass="carousel-container"
         removeArrowOnDeviceType={['tablet', 'mobile']}
         dotListClass="custom-dot-list-style"
@@ -134,7 +132,6 @@ runtime.registerComponent(
       itemsPerRowMobile: Number({ label: 'Items Per Row (Mobile)', defaultValue: 2, min: 1 }),
       swipeable: Checkbox({ label: 'Allow Swipeable Moving', defaultValue: false }),
       draggable: Checkbox({ label: 'Allow Draggable Moving', defaultValue: false }),
-      showDots: Checkbox({ label: 'Show Dots', defaultValue: true }),
       infinite: Checkbox({ label: 'Infinite Loop', defaultValue: true }),
       keyBoardControl: Checkbox({ label: 'Enable Keyboard Control', defaultValue: true }),
     },
