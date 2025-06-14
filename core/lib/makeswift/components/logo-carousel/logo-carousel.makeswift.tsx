@@ -87,7 +87,7 @@ runtime.registerComponent(
             customTransition="all 1000ms"
             transitionDuration={1000}
             containerClass="carousel-container"
-            removeArrowOnDeviceType={['tablet', 'mobile']}
+            //removeArrowOnDeviceType={['tablet', 'mobile']}
             dotListClass="custom-dot-list-style"
             itemClass="carousel-item-padding-40-px"
             className={`${className}`}
