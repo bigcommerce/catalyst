@@ -19,8 +19,6 @@ type MSLogoCarouselProps = {
   itemsPerRowMobile: number;
   className: string;
   logos: LogoInterface[];
-  logoWidth: number;
-  logoHeight: number;
 };
 
 runtime.registerComponent(
@@ -28,23 +26,20 @@ runtime.registerComponent(
     itemsPerRowDesktop,
     itemsPerRowMobile,
     itemsPerRowTablet,
-    logoWidth,
-    logoHeight,
     logos,
+    className,
   }: MSLogoCarouselProps) {
     return (
       <div
-        className={`grid w-full gap-x-6 gap-y-4 grid-cols-${itemsPerRowMobile} sm:grid-cols-${itemsPerRowTablet} lg:grid-cols-${itemsPerRowDesktop}`}
+        className={`${className} grid w-full gap-x-6 gap-y-4 grid-cols-${itemsPerRowMobile} sm:grid-cols-${itemsPerRowTablet} lg:grid-cols-${itemsPerRowDesktop}`}
       >
         {logos.map((logo: LogoInterface, index: number) => (
-          <div className="flex items-center justify-center" key={index}>
-            <Logo
-              width={100}
-              height={75}
-              logo={{ src: logo.imageSrc ?? '', alt: logo.imageAlt ?? '' }}
-              href={logo.link?.href ?? '#'}
-            />
-          </div>
+          <Logo
+            width={100}
+            height={75}
+            logo={{ src: logo.imageSrc ?? '', alt: logo.imageAlt ?? '' }}
+            href={logo.link?.href ?? '#'}
+          />
         ))}
       </div>
     );
@@ -69,10 +64,8 @@ runtime.registerComponent(
           return logo?.imageAlt || 'Logo';
         },
       }),
-      logoWidth: Number({ label: 'Logo Width', defaultValue: 100, min: 25 }),
-      logoHeight: Number({ label: 'Logo Height', defaultValue: 50, min: 25 }),
-      itemsPerRowDesktop: Number({ label: 'Items Per Row (Desktop)', defaultValue: 3, min: 1 }),
-      itemsPerRowTablet: Number({ label: 'Items Per Row (Tablet)', defaultValue: 3, min: 1 }),
+      itemsPerRowDesktop: Number({ label: 'Items Per Row (Desktop)', defaultValue: 6, min: 1 }),
+      itemsPerRowTablet: Number({ label: 'Items Per Row (Tablet)', defaultValue: 4, min: 1 }),
       itemsPerRowMobile: Number({ label: 'Items Per Row (Mobile)', defaultValue: 3, min: 1 }),
     },
   },
