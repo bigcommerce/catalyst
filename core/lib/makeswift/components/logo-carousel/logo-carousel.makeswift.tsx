@@ -1,4 +1,13 @@
-import { Group, Image, Link, List, Style, TextInput, Number } from '@makeswift/runtime/controls';
+import {
+  Group,
+  Image,
+  Link,
+  List,
+  Style,
+  TextInput,
+  Number,
+  Checkbox,
+} from '@makeswift/runtime/controls';
 import dynamic from 'next/dynamic';
 
 import { breakpoints, runtime } from '~/lib/makeswift/runtime';
@@ -19,17 +28,12 @@ type MSLogoCarouselProps = {
   itemsPerRowMobile: number;
   className: string;
   logos: LogoInterface[];
-  deviceType?: string; // This will be set by getServerSideProps
+  swipeable?: boolean;
+  draggable?: boolean;
+  showdots?: boolean;
+  infinite?: boolean;
+  keyBoardControl?: boolean;
 };
-
-export async function getServerSideProps({ req }: { req: any }) {
-  const userAgent = req.headers['user-agent'] || '';
-  let deviceType = 'desktop';
-  if (/mobile/i.test(userAgent)) deviceType = 'mobile';
-  else if (/tablet|ipad/i.test(userAgent)) deviceType = 'tablet';
-
-  return { props: { deviceType } };
-}
 
 runtime.registerComponent(
   function MSLogoCarousel({
@@ -38,7 +42,11 @@ runtime.registerComponent(
     itemsPerRowMobile,
     itemsPerRowTablet,
     logos,
-    ...props
+    swipeable,
+    draggable,
+    showdots,
+    infinite,
+    keyBoardControl,
   }: MSLogoCarouselProps) {
     const responsive = {
       superLargeDesktop: {
@@ -61,15 +69,15 @@ runtime.registerComponent(
 
     return (
       <Carousel
-        swipeable={false}
-        draggable={false}
-        showDots={true}
+        swipeable={swipeable}
+        draggable={draggable}
+        showDots={showdots}
         responsive={responsive}
         ssr={true} // means to render carousel on server-side.
-        infinite={true}
+        infinite={infinite}
         deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
         autoPlaySpeed={1000}
-        keyBoardControl={true}
+        keyBoardControl={keyBoardControl}
         customTransition="all .5"
         transitionDuration={500}
         containerClass="carousel-container"
@@ -124,6 +132,11 @@ runtime.registerComponent(
       itemsPerRowDesktop: Number({ label: 'Items Per Row (Desktop)', defaultValue: 6, min: 1 }),
       itemsPerRowTablet: Number({ label: 'Items Per Row (Tablet)', defaultValue: 4, min: 1 }),
       itemsPerRowMobile: Number({ label: 'Items Per Row (Mobile)', defaultValue: 2, min: 1 }),
+      swipeable: Checkbox({ label: 'Allow Swipeable Moving', defaultValue: false }),
+      draggable: Checkbox({ label: 'Allow Draggable Moving', defaultValue: false }),
+      showDots: Checkbox({ label: 'Show Dots', defaultValue: true }),
+      infinite: Checkbox({ label: 'Infinite Loop', defaultValue: true }),
+      keyBoardControl: Checkbox({ label: 'Enable Keyboard Control', defaultValue: true }),
     },
   },
 );
