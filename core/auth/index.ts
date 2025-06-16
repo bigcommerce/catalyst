@@ -78,10 +78,6 @@ const PasswordCredentials = z.object({
   cartId: cartIdSchema,
 });
 
-const AnonymousCredentials = z.object({
-  cartId: z.string().optional(),
-});
-
 const JwtCredentials = z.object({
   jwt: z.string(),
   cartId: cartIdSchema,
@@ -189,14 +185,6 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
     impersonatorId,
     cartId: result.cart?.entityId,
     b2bToken,
-  };
-}
-
-function loginWithAnonymous(credentials: unknown): User | null {
-  const { cartId } = AnonymousCredentials.parse(credentials);
-
-  return {
-    cartId: cartId ?? null,
   };
 }
 
@@ -317,13 +305,6 @@ const config = {
         cartId: { type: 'text' },
       },
       authorize: loginWithPassword,
-    }),
-    CredentialsProvider({
-      id: 'anonymous',
-      credentials: {
-        cartId: { type: 'text' },
-      },
-      authorize: loginWithAnonymous,
     }),
     CredentialsProvider({
       id: 'jwt',
