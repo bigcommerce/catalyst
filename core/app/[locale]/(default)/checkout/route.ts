@@ -51,24 +51,22 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ loca
       channelId,
     });
 
-    // if (
-    //   data.cart.createCartRedirectUrls.errors.length > 0 ||
-    //   !data.cart.createCartRedirectUrls.redirectUrls
-    // ) {
-    //   return redirect({ href: '/cart', locale });
-    // }
-
-    // return redirect({
-    //   href: data.cart.createCartRedirectUrls.redirectUrls.redirectedCheckoutUrl,
-    //   locale,
-    // });
-
     console.log(data, data.cart.createCartRedirectUrls);
+
+    if (
+      data.cart.createCartRedirectUrls.errors.length > 0 ||
+      !data.cart.createCartRedirectUrls.redirectUrls
+    ) {
+      return redirect({ href: '/cart', locale });
+    }
+
+    return redirect({
+      href: data.cart.createCartRedirectUrls.redirectUrls.redirectedCheckoutUrl,
+      locale,
+    });
 
     return null;
   } catch (error) {
-    rethrow(error);
-
     if (error instanceof BigCommerceAuthError) {
       return redirect({ href: '/logout?redirectTo=/checkout/', locale });
     }
