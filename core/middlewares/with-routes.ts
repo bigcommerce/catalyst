@@ -4,6 +4,8 @@ import { z } from 'zod';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
+import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 
 import { kv } from '../lib/kv';
@@ -340,6 +342,9 @@ export const withRoutes: MiddlewareFactory = () => {
 
       case 'Product': {
         url = `/${locale}/product/${node.entityId}`;
+
+        event.waitUntil(recordProductVisit(request, node.entityId));
+
         break;
       }
 
@@ -387,3 +392,20 @@ export const withRoutes: MiddlewareFactory = () => {
     return NextResponse.rewrite(rewriteUrl);
   };
 };
+
+async function recordProductVisit(request: Request, productId: number) {
+  const visitId = await getVisitIdCookie();
+  const visitorId = await getVisitorIdCookie();
+
+  if (visitId && visitorId) {
+    await sendProductViewedEvent({
+      productId,
+      initiator: { visitId, visitorId },
+      request: {
+        url: request.url,
+        refererUrl: request.headers.get('referer') || '',
+        userAgent: request.headers.get('user-agent') || '',
+      },
+    });
+  }
+}

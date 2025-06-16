@@ -52,6 +52,7 @@ export interface AddressListSectionProps<A extends Address, F extends Field> {
   showAddFormLabel?: string;
   setDefaultLabel?: string;
   cancelLabel?: string;
+  emptyStateTitle?: string;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -84,6 +85,7 @@ export function AddressListSection<A extends Address, F extends Field>({
   cancelLabel = 'Cancel',
   showAddFormLabel = 'Add address',
   setDefaultLabel = 'Set as default',
+  emptyStateTitle = "You don't have any addresses",
 }: AddressListSectionProps<A, F>) {
   const [state, formAction] = useActionState(addressAction, {
     addresses,
@@ -149,13 +151,15 @@ export function AddressListSection<A extends Address, F extends Field>({
     }
   }, [form.errors]);
 
+  const isEmpty = optimisticState.addresses.length === 0;
+
   return (
     <section className="w-full">
-      <header className="mb-4 border-b border-[var(--address-list-section-border,hsl(var(--contrast-100)))]">
+      <header className="mb-4 border-[var(--address-list-section-border,hsl(var(--contrast-100)))] @2xl:min-h-[72px] @2xl:border-b">
         <div className="mb-4 flex items-center justify-between">
           <Title>{title}</Title>
-          {!showNewAddressForm && (
-            <Button onClick={() => setShowNewAddressForm(true)} size="small">
+          {!showNewAddressForm && !isEmpty && (
+            <Button onClick={() => setShowNewAddressForm(true)} size="small" variant="tertiary">
               {showAddFormLabel}
             </Button>
           )}
@@ -200,98 +204,81 @@ export function AddressListSection<A extends Address, F extends Field>({
             </div>
           </div>
         )}
-        {optimisticState.addresses.map((address) => {
-          const addressFields = optimisticState.fields.map<F | FieldGroup<F>>((field) => {
-            if (Array.isArray(field)) {
-              return field.map((f) => {
-                return {
-                  ...f,
-                  defaultValue: address[f.name] ?? '',
-                };
-              });
-            }
+        {!isEmpty ? (
+          optimisticState.addresses.map((address) => {
+            const addressFields = optimisticState.fields.map<F | FieldGroup<F>>((field) => {
+              if (Array.isArray(field)) {
+                return field.map((f) => {
+                  return {
+                    ...f,
+                    defaultValue: address[f.name] ?? '',
+                  };
+                });
+              }
 
-            return {
-              ...field,
-              defaultValue: address[field.name] ?? '',
-            };
-          });
+              return {
+                ...field,
+                defaultValue: address[field.name] ?? '',
+              };
+            });
 
-          return (
-            <div
-              className="border-b border-[var(--address-list-section-border,hsl(var(--contrast-100)))] pb-6 pt-5"
-              key={address.id}
-            >
-              {activeAddressIds.includes(address.id) ? (
-                <div className="w-[480px] space-y-4">
-                  <DynamicForm
-                    action={(_prevState, formData) => {
-                      setActiveAddressIds((prev) => prev.filter((id) => id !== address.id));
+            return (
+              <div
+                className="border-b border-[var(--address-list-section-border,hsl(var(--contrast-100)))] pb-6 pt-5"
+                key={address.id}
+              >
+                {activeAddressIds.includes(address.id) ? (
+                  <div className="w-[480px] space-y-4">
+                    <DynamicForm
+                      action={(_prevState, formData) => {
+                        setActiveAddressIds((prev) => prev.filter((id) => id !== address.id));
 
-                      startTransition(() => {
-                        formAction(formData);
-                        setOptimisticState(formData);
-                      });
+                        startTransition(() => {
+                          formAction(formData);
+                          setOptimisticState(formData);
+                        });
 
-                      return {
-                        fields: optimisticState.fields,
-                        lastResult: optimisticState.lastResult,
-                      };
-                    }}
-                    buttonSize="small"
-                    cancelLabel={cancelLabel}
-                    fields={addressFields}
-                    onCancel={() =>
-                      setActiveAddressIds((prev) => prev.filter((id) => id !== address.id))
-                    }
-                    submitLabel={updateLabel}
-                    submitName="intent"
-                    submitValue="update"
-                  />
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  <AddressPreview
-                    address={address}
-                    isDefault={
-                      optimisticState.defaultAddress
-                        ? optimisticState.defaultAddress.id === address.id
-                        : undefined
-                    }
-                  />
-                  <div className="flex gap-1">
-                    <Button
-                      aria-label={`${editLabel}: ${address.firstName} ${address.lastName}`}
-                      onClick={() => setActiveAddressIds((prev) => [...prev, address.id])}
-                      size="small"
-                      variant="tertiary"
-                    >
-                      {editLabel}
-                    </Button>
-                    {optimisticState.addresses.length > minimumAddressCount && (
-                      <AddressActionButton
-                        action={formAction}
-                        address={address}
-                        aria-label={`${deleteLabel}: ${address.firstName} ${address.lastName}`}
-                        intent="delete"
-                        onSubmit={(formData) => {
-                          startTransition(() => {
-                            formAction(formData);
-                            setOptimisticState(formData);
-                          });
-                        }}
+                        return {
+                          fields: optimisticState.fields,
+                          lastResult: optimisticState.lastResult,
+                        };
+                      }}
+                      buttonSize="small"
+                      cancelLabel={cancelLabel}
+                      fields={addressFields}
+                      onCancel={() =>
+                        setActiveAddressIds((prev) => prev.filter((id) => id !== address.id))
+                      }
+                      submitLabel={updateLabel}
+                      submitName="intent"
+                      submitValue="update"
+                    />
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    <AddressPreview
+                      address={address}
+                      isDefault={
+                        optimisticState.defaultAddress
+                          ? optimisticState.defaultAddress.id === address.id
+                          : undefined
+                      }
+                    />
+                    <div className="flex gap-1">
+                      <Button
+                        aria-label={`${editLabel}: ${address.firstName} ${address.lastName}`}
+                        onClick={() => setActiveAddressIds((prev) => [...prev, address.id])}
+                        size="small"
+                        variant="tertiary"
                       >
-                        {deleteLabel}
-                      </AddressActionButton>
-                    )}
-
-                    {optimisticState.defaultAddress &&
-                      optimisticState.defaultAddress.id !== address.id && (
+                        {editLabel}
+                      </Button>
+                      {optimisticState.addresses.length > minimumAddressCount && (
                         <AddressActionButton
                           action={formAction}
                           address={address}
-                          aria-label={`${setDefaultLabel}: ${address.firstName} ${address.lastName}`}
-                          intent="setDefault"
+                          aria-label={`${deleteLabel}: ${address.firstName} ${address.lastName}`}
+                          intent="delete"
                           onSubmit={(formData) => {
                             startTransition(() => {
                               formAction(formData);
@@ -299,15 +286,47 @@ export function AddressListSection<A extends Address, F extends Field>({
                             });
                           }}
                         >
-                          {setDefaultLabel}
+                          {deleteLabel}
                         </AddressActionButton>
                       )}
+
+                      {optimisticState.defaultAddress &&
+                        optimisticState.defaultAddress.id !== address.id && (
+                          <AddressActionButton
+                            action={formAction}
+                            address={address}
+                            aria-label={`${setDefaultLabel}: ${address.firstName} ${address.lastName}`}
+                            intent="setDefault"
+                            onSubmit={(formData) => {
+                              startTransition(() => {
+                                formAction(formData);
+                                setOptimisticState(formData);
+                              });
+                            }}
+                          >
+                            {setDefaultLabel}
+                          </AddressActionButton>
+                        )}
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
+              </div>
+            );
+          })
+        ) : (
+          <div className="@container">
+            <div className="py-20">
+              <header className="mx-auto flex max-w-2xl flex-col items-center gap-5">
+                <h2 className="text-center text-lg font-semibold text-[var(--order-list-empty-state-title,hsl(var(--foreground)))]">
+                  {emptyStateTitle}
+                </h2>
+                <Button className="w-fit" onClick={() => setShowNewAddressForm(true)}>
+                  {showAddFormLabel}
+                </Button>
+              </header>
             </div>
-          );
-        })}
+          </div>
+        )}
       </div>
     </section>
   );
@@ -317,7 +336,7 @@ function Title({ children }: { children: ReactNode }) {
   const { pending } = useFormStatus();
 
   return (
-    <h1 className="font-[family-name:var(--address-list-section-title-font-family,var(--font-family-heading))] text-4xl text-[var(--address-list-section-title,hsl(var(--foreground)))]">
+    <h1 className="hidden font-[family-name:var(--address-list-section-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none tracking-tight text-[var(--address-list-section-title,hsl(var(--foreground)))] @2xl:block">
       {children}
       {pending && (
         <span className="ml-2">
