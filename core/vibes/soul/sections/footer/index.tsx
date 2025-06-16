@@ -93,13 +93,16 @@ export const Footer = ({
         <div className="flex flex-col justify-between gap-x-16 gap-y-12 @3xl:flex-row">
           <div className="flex flex-col gap-4 @3xl:w-1/3 @3xl:gap-6">
             {/* Logo Information */}
-            <Logo
-              height={logoHeight}
-              href={logoHref}
-              label={logoLabel}
-              logo={logo}
-              width={logoWidth}
-            />
+            <div className="flex items-center justify-start self-stretch">
+              <Logo
+                className="flex"
+                height={logoHeight}
+                href={logoHref}
+                label={logoLabel}
+                logo={logo}
+                width={logoWidth}
+              />
+            </div>
 
             {/* Contact Information */}
             <Stream fallback={<FooterContactSkeleton />} value={streamableContactInformation}>
