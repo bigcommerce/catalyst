@@ -148,7 +148,7 @@
       "orderNumber": "Order #",
       "totalPrice": "Total",
       "viewDetails": "View Details",
-      "emptyState": {
+      "EmptyState": {
         "title": "You don't have any orders",
         "cta": "Shop now"
       },
@@ -174,7 +174,10 @@
       "create": "Create",
       "update": "Update",
       "setDefault": "Set as default",
-      "somethingWentWrong": "Something went wrong. Please try again later."
+      "somethingWentWrong": "Something went wrong. Please try again later.",
+      "EmptyState": {
+        "title": "You don't have any addresses"
+      }
     },
     "Settings": {
       "title": "Account settings",
@@ -195,7 +198,6 @@
     "items": "{count, plural, =1 {1 item} other {# items}}",
     "viewWishlist": "View list",
     "noWishlists": "You don't have any wish lists",
-    "noWishlistsSubtitle": "Create a wishlist to save your favorite products.",
     "noWishlistsCallToAction": "Create a wishlist",
     "emptyWishlist": "You haven't added products to this wish list.",
     "share": "Share",
@@ -206,6 +208,7 @@
     "makePrivate": "Make private",
     "rename": "Rename",
     "delete": "Delete",
+    "removeButtonTitle": "Remove product from wish list",
     "Visibility": {
       "public": "Public",
       "private": "Private"
@@ -245,6 +248,7 @@
       "removeItemSuccess": "Item has been removed from your wish list."
     },
     "Button": {
+      "label": "Add to wish list",
       "addToNewWishlist": "Add to new wish list",
       "defaultWishlistName": "My wish list",
       "addSuccessMessage": "Product has been added to your wish list",
@@ -492,6 +496,7 @@
         "search": "Open search popup"
       },
       "SwitchCurrency": {
+        "label": "Switch currency",
         "invalidCurrency": "Invalid currency",
         "errorUpdatingCurrency": "Error updating currency for your cart. Please try again."
       },

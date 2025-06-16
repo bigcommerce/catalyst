@@ -26,344 +26,381 @@ async function logoutInSeparateBrowser(fixture: CustomerFixture, browser: Browse
   });
 }
 
-test.describe('Account wishlists', () => {
-  test(
-    'Creating a new wishlist works as expected',
-    { tag: [TAGS.writesData] },
-    async ({ page, customer }) => {
-      const t = await getTranslations('Wishlist');
-      const { id } = await customer.login();
-
-      await page.goto('/account/wishlists/');
-      await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
-
-      await page.getByRole('button', { name: t('new'), exact: true }).click();
-
-      const wishlistName = `Wishlist ${faker.string.alpha(10)}`;
-
-      await page.getByLabel(t('Form.nameLabel')).fill(wishlistName);
-      await page.getByRole('button', { name: t('Modal.create') }).click();
-      await expect(page.getByText(t('Result.createSuccess'))).toBeVisible();
-
-      const locator = page.getByRole('region', { name: wishlistName });
-
-      await expect(locator.getByText(wishlistName)).toBeVisible();
-
-      await customer.deleteAllWishlists(id);
-    },
-  );
-
-  test('Creating a new wishlist disallows empty names', async ({ page, customer }) => {
+test(
+  'Creating a new wishlist works as expected',
+  { tag: [TAGS.writesData] },
+  async ({ page, customer }) => {
     const t = await getTranslations('Wishlist');
-
-    await customer.login();
+    const { id } = await customer.login();
 
     await page.goto('/account/wishlists/');
     await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 
     await page.getByRole('button', { name: t('new'), exact: true }).click();
-    await page.getByLabel(t('Form.nameLabel')).fill('');
+
+    const wishlistName = `Wishlist ${faker.string.alpha(10)}`;
+
+    await page.getByLabel(t('Form.nameLabel')).fill(wishlistName);
     await page.getByRole('button', { name: t('Modal.create') }).click();
-    await expect(page.getByText(t('Errors.nameRequired'))).toBeVisible();
+    await expect(page.getByText(t('Result.createSuccess'))).toBeVisible();
+
+    const locator = page.getByRole('region', { name: wishlistName });
+
+    await expect(locator.getByText(wishlistName)).toBeVisible();
+
+    await customer.deleteAllWishlists(id);
+  },
+);
+
+test('Creating a new wishlist disallows empty names', async ({ page, customer }) => {
+  const t = await getTranslations('Wishlist');
+
+  await customer.login();
+
+  await page.goto('/account/wishlists/');
+  await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+
+  await page.getByRole('button', { name: t('new'), exact: true }).click();
+  await page.getByLabel(t('Form.nameLabel')).fill('');
+  await page.getByRole('button', { name: t('Modal.create') }).click();
+  await expect(page.getByText(t('Errors.nameRequired'))).toBeVisible();
+});
+
+test('Wishlists page displays empty state when there are no wishlists', async ({
+  page,
+  customer,
+}) => {
+  const t = await getTranslations('Wishlist');
+  const { id } = await customer.login();
+
+  await customer.deleteAllWishlists(id);
+
+  await page.goto('/account/wishlists/');
+  await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+  await expect(page.getByRole('heading', { name: t('noWishlists'), exact: true })).toBeVisible();
+  await expect(page.getByRole('button', { name: t('new'), exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: t('noWishlistsCallToAction'), exact: true }),
+  ).toBeVisible();
+});
+
+test('Wishlists page displays empty wishlists correctly', async ({ page, customer }) => {
+  const t = await getTranslations('Wishlist');
+  const { id: customerId } = await customer.login();
+  const wishlist1 = await customer.createWishlist({
+    customerId,
+    isPublic: true,
   });
 
-  test('Wishlists page displays empty state when there are no wishlists', async ({
+  const wishlist2 = await customer.createWishlist({ customerId });
+
+  await page.goto('/account/wishlists/');
+  await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+
+  const wishlist1Locator = page.getByRole('region', { name: wishlist1.name });
+  const wishlist2Locator = page.getByRole('region', { name: wishlist2.name });
+
+  await expect(wishlist1Locator.getByText(wishlist1.name)).toBeVisible();
+  await expect(wishlist1Locator.getByText(t('Visibility.public'))).toBeVisible();
+  await expect(wishlist1Locator.getByRole('link', { name: t('viewWishlist') })).toBeVisible();
+  await expect(wishlist1Locator.getByRole('button', { name: t('actionsTitle') })).toBeVisible();
+  await expect(wishlist1Locator.getByText(t('emptyWishlist'))).toBeVisible();
+
+  await expect(wishlist2Locator.getByText(wishlist2.name)).toBeVisible();
+  await expect(wishlist2Locator.getByText(t('Visibility.private'))).toBeVisible();
+  await expect(wishlist2Locator.getByRole('link', { name: t('viewWishlist') })).toBeVisible();
+  await expect(wishlist2Locator.getByRole('button', { name: t('actionsTitle') })).toBeVisible();
+  await expect(wishlist2Locator.getByText(t('emptyWishlist'))).toBeVisible();
+});
+
+test('Wishlists page displays a wishlist with simple and complex products correctly', async ({
+  page,
+  catalog,
+  customer,
+}) => {
+  const product = await catalog.getDefaultOrCreateSimpleProduct();
+  const productWithVariants = await catalog.getDefaultOrCreateComplexProduct();
+  const t = await getTranslations('Wishlist');
+  const { id: customerId } = await customer.login();
+  const wishlist1 = await customer.createWishlist({
+    customerId,
+    isPublic: true,
+    items: [
+      {
+        productId: product.id,
+      },
+      {
+        productId: productWithVariants.id,
+        variantId: productWithVariants.variants[1]?.id,
+      },
+    ],
+  });
+
+  await page.goto('/account/wishlists/');
+  await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+
+  const wishlistLocator = page.getByRole('region', { name: wishlist1.name });
+
+  await expect(wishlistLocator.getByText(wishlist1.name)).toBeVisible();
+  await expect(wishlistLocator.getByText(t('Visibility.public'))).toBeVisible();
+  await expect(wishlistLocator.getByRole('link', { name: t('viewWishlist') })).toBeVisible();
+  await expect(wishlistLocator.getByRole('button', { name: t('actionsTitle') })).toBeVisible();
+  await expect(
+    wishlistLocator.getByRole('link', { name: product.name, exact: true }),
+  ).toBeVisible();
+  await expect(
+    wishlistLocator.getByRole('link', { name: productWithVariants.name, exact: true }),
+  ).toBeVisible();
+});
+
+test.describe('Wishlist actions menu', () => {
+  test('Wishlist actions menu displays all actions', async ({ page, customer }) => {
+    const t = await getTranslations('Wishlist');
+    const { id: customerId } = await customer.login();
+    const { name } = await customer.createWishlist({ customerId });
+
+    await page.goto('/account/wishlists/');
+    await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+
+    const locator = page.getByRole('region', { name });
+
+    await locator.getByRole('button', { name: t('actionsTitle') }).click();
+    await expect(page.getByRole('menuitem', { name: t('share') })).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: t('rename') })).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: t('makePublic') })).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: t('delete') })).toBeVisible();
+  });
+
+  test('Share wishlist action is enabled, displays the correct URL for a public wishlist, and copies the URL to clipboard', async ({
     page,
     customer,
   }) => {
     const t = await getTranslations('Wishlist');
-    const { id } = await customer.login();
-
-    await customer.deleteAllWishlists(id);
-
-    await page.goto('/account/wishlists/');
-    await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
-    await expect(page.getByRole('heading', { name: t('noWishlists'), exact: true })).toBeVisible();
-    await expect(page.getByRole('button', { name: t('new'), exact: true })).toBeVisible();
-    await expect(page.getByText(t('noWishlistsSubtitle'), { exact: true })).toBeVisible();
-    await expect(
-      page.getByRole('button', { name: t('noWishlistsCallToAction'), exact: true }),
-    ).toBeVisible();
-  });
-
-  test('Wishlists page displays each wishlist correctly', async ({ page, customer }) => {
-    const t = await getTranslations('Wishlist');
     const { id: customerId } = await customer.login();
-    const wishlist1 = await customer.createWishlist({
+    const { name, token } = await customer.createWishlist({
       customerId,
       isPublic: true,
     });
 
-    const wishlist2 = await customer.createWishlist({ customerId });
+    await page.goto('/account/wishlists/');
+    await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+
+    const locator = page.getByRole('region', { name });
+
+    await locator.getByRole('button', { name: t('actionsTitle') }).click();
+    await page.getByRole('menuitem', { name: t('share') }).click();
+
+    const expectedUrl = `${testEnv.PLAYWRIGHT_TEST_BASE_URL}/wishlist/${token}`;
+
+    await expect(page.getByText(t('Modal.shareTitle', { name }))).toBeVisible();
+    await expect(page.getByRole('textbox')).toHaveValue(expectedUrl);
+
+    await page.getByRole('button', { name: t('Modal.copy') }).click();
+    await expect(page.getByText(t('shareCopied'))).toBeVisible();
+
+    const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+
+    expect(clipboardText).toBe(expectedUrl);
+  });
+
+  test('Share wishlist action is disabled for a private wishlist', async ({ page, customer }) => {
+    const t = await getTranslations('Wishlist');
+    const { id: customerId } = await customer.login();
+    const { name } = await customer.createWishlist({ customerId });
 
     await page.goto('/account/wishlists/');
     await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 
-    const wishlist1Locator = page.getByRole('region', { name: wishlist1.name });
-    const wishlist2Locator = page.getByRole('region', { name: wishlist2.name });
+    const locator = page.getByRole('region', { name });
 
-    await expect(wishlist1Locator.getByText(wishlist1.name)).toBeVisible();
-    await expect(wishlist1Locator.getByText(t('Visibility.public'))).toBeVisible();
-    await expect(wishlist1Locator.getByRole('link', { name: t('viewWishlist') })).toBeVisible();
-    await expect(wishlist1Locator.getByRole('button', { name: t('actionsTitle') })).toBeVisible();
-    await expect(wishlist1Locator.getByText(t('emptyWishlist'))).toBeVisible();
-
-    await expect(wishlist2Locator.getByText(wishlist2.name)).toBeVisible();
-    await expect(wishlist2Locator.getByText(t('Visibility.private'))).toBeVisible();
-    await expect(wishlist2Locator.getByRole('link', { name: t('viewWishlist') })).toBeVisible();
-    await expect(wishlist2Locator.getByRole('button', { name: t('actionsTitle') })).toBeVisible();
-    await expect(wishlist2Locator.getByText(t('emptyWishlist'))).toBeVisible();
+    await locator.getByRole('button', { name: t('actionsTitle') }).click();
+    await expect(page.getByRole('menuitem', { name: t('share') })).toBeDisabled();
   });
 
-  test.describe('Wishlist actions menu', () => {
-    test('Wishlist actions menu displays all actions', async ({ page, customer }) => {
-      const t = await getTranslations('Wishlist');
-      const { id: customerId } = await customer.login();
-      const { name } = await customer.createWishlist({ customerId });
+  test('Rename wishlist action renames a wishlist successfully', async ({ page, customer }) => {
+    const t = await getTranslations('Wishlist');
+    const { id: customerId } = await customer.login();
+    const { name } = await customer.createWishlist({ customerId });
 
-      await page.goto('/account/wishlists/');
-      await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+    await page.goto('/account/wishlists/');
+    await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 
-      const locator = page.getByRole('region', { name });
+    const locator = page.getByRole('region', { name });
 
-      await locator.getByRole('button', { name: t('actionsTitle') }).click();
-      await expect(page.getByRole('menuitem', { name: t('share') })).toBeVisible();
-      await expect(page.getByRole('menuitem', { name: t('rename') })).toBeVisible();
-      await expect(page.getByRole('menuitem', { name: t('makePublic') })).toBeVisible();
-      await expect(page.getByRole('menuitem', { name: t('delete') })).toBeVisible();
+    await locator.getByRole('button', { name: t('actionsTitle') }).click();
+    await page.getByRole('menuitem', { name: t('rename') }).click();
+
+    await expect(
+      page.getByRole('heading', { name: t('Modal.renameTitle', { name }) }),
+    ).toBeVisible();
+
+    await expect(page.getByLabel(t('Form.nameLabel'))).toHaveValue(name);
+
+    const newName = `${name} (renamed)`;
+
+    await page.getByLabel(t('Form.nameLabel')).fill(newName);
+    await page.getByRole('button', { name: t('Modal.save') }).click();
+
+    await expect(page.getByText(t('Result.updateSuccess'))).toBeVisible();
+    await expect(page.getByRole('region').filter({ hasText: newName })).toBeVisible();
+  });
+
+  test('Rename wishlist action disallows empty names', async ({ page, customer }) => {
+    const t = await getTranslations('Wishlist');
+    const { id: customerId } = await customer.login();
+    const { name } = await customer.createWishlist({ customerId });
+
+    await page.goto('/account/wishlists/');
+    await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+
+    const locator = page.getByRole('region', { name });
+
+    await locator.getByRole('button', { name: t('actionsTitle') }).click();
+    await page.getByRole('menuitem', { name: t('rename') }).click();
+
+    await page.getByLabel(t('Form.nameLabel')).fill('');
+    await page.getByRole('button', { name: t('Modal.save') }).click();
+
+    await expect(page.getByText(t('Errors.nameRequired'))).toBeVisible();
+  });
+
+  test('Rename wishlist action fails if the user is no longer logged in', async ({
+    page,
+    browser,
+    customer,
+  }) => {
+    const t = await getTranslations('Wishlist');
+    const { id: customerId } = await customer.login();
+    const { name } = await customer.createWishlist({ customerId });
+
+    await page.goto('/account/wishlists/');
+    await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+
+    await logoutInSeparateBrowser(customer, browser);
+
+    const locator = page.getByRole('region', { name });
+
+    await locator.getByRole('button', { name: t('actionsTitle') }).click();
+    await page.getByRole('menuitem', { name: t('rename') }).click();
+    await page.getByLabel(t('Form.nameLabel')).fill(`${name} (renamed)`);
+    await page.getByRole('button', { name: t('Modal.save') }).click();
+
+    await expect(page.getByText(t('Errors.unauthorized'))).toBeVisible();
+  });
+
+  test('Public/private wishlist action toggles visibility', async ({ page, customer }) => {
+    const t = await getTranslations('Wishlist');
+    const { id: customerId } = await customer.login();
+    const { name } = await customer.createWishlist({
+      customerId,
+      isPublic: false,
     });
 
-    test('Share wishlist action is enabled, displays the correct URL for a public wishlist, and copies the URL to clipboard', async ({
-      page,
-      customer,
-    }) => {
-      const t = await getTranslations('Wishlist');
-      const { id: customerId } = await customer.login();
-      const { name, token } = await customer.createWishlist({
-        customerId,
-        isPublic: true,
-      });
+    await page.goto('/account/wishlists/');
+    await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 
-      await page.goto('/account/wishlists/');
-      await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+    const locator = page.getByRole('region', { name });
 
-      const locator = page.getByRole('region', { name });
+    await expect(locator.getByText(t('Visibility.private'))).toBeVisible();
+    await locator.getByRole('button', { name: t('actionsTitle') }).click();
 
-      await locator.getByRole('button', { name: t('actionsTitle') }).click();
-      await page.getByRole('menuitem', { name: t('share') }).click();
+    await page.getByRole('menuitem', { name: t('makePublic') }).click();
 
-      const expectedUrl = `${testEnv.PLAYWRIGHT_TEST_BASE_URL}/wishlist/${token}`;
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const makePublicContent = t.rich('Modal.makePublicContent', {
+      name,
+      bold,
+    }) as string;
 
-      await expect(page.getByText(t('Modal.shareTitle', { name }))).toBeVisible();
-      await expect(page.getByRole('textbox')).toHaveValue(expectedUrl);
+    await expect(page.getByText(makePublicContent)).toBeVisible();
+    await page.getByRole('button', { name: t('makePublic') }).click();
+    await expect(page.getByText(t('Result.updateSuccess'))).toBeVisible();
+    await expect(locator.getByText(t('Visibility.public'))).toBeVisible();
 
-      await page.getByRole('button', { name: t('Modal.copy') }).click();
-      await expect(page.getByText(t('shareCopied'))).toBeVisible();
+    await locator.getByRole('button', { name: t('actionsTitle') }).click();
+    await page.getByRole('menuitem', { name: t('makePrivate') }).click();
 
-      const clipboardText = await page.evaluate(() => navigator.clipboard.readText());
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const makePrivateContent = t.rich('Modal.makePrivateContent', {
+      name,
+      bold,
+    }) as string;
 
-      expect(clipboardText).toBe(expectedUrl);
-    });
+    await expect(page.getByText(makePrivateContent)).toBeVisible();
+    await page.getByRole('button', { name: t('makePrivate') }).click();
+    await expect(page.getByText(t('Result.updateSuccess'))).toBeVisible();
+    await expect(locator.getByText(t('Visibility.private'))).toBeVisible();
+  });
 
-    test('Share wishlist action is disabled for a private wishlist', async ({ page, customer }) => {
-      const t = await getTranslations('Wishlist');
-      const { id: customerId } = await customer.login();
-      const { name } = await customer.createWishlist({ customerId });
+  test('Public/private wishlist action fails if the user is no longer logged in', async ({
+    page,
+    browser,
+    customer,
+  }) => {
+    const t = await getTranslations('Wishlist');
+    const { id: customerId } = await customer.login();
+    const { name } = await customer.createWishlist({ customerId });
 
-      await page.goto('/account/wishlists/');
-      await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+    await page.goto('/account/wishlists/');
+    await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 
-      const locator = page.getByRole('region', { name });
+    await logoutInSeparateBrowser(customer, browser);
 
-      await locator.getByRole('button', { name: t('actionsTitle') }).click();
-      await expect(page.getByRole('menuitem', { name: t('share') })).toBeDisabled();
-    });
+    const locator = page.getByRole('region', { name });
 
-    test('Rename wishlist action renames a wishlist successfully', async ({ page, customer }) => {
-      const t = await getTranslations('Wishlist');
-      const { id: customerId } = await customer.login();
-      const { name } = await customer.createWishlist({ customerId });
+    await locator.getByRole('button', { name: t('actionsTitle') }).click();
+    await page.getByRole('menuitem', { name: t('makePublic') }).click();
+    await page.getByRole('button', { name: t('makePublic') }).click();
 
-      await page.goto('/account/wishlists/');
-      await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+    await expect(page.getByText(t('Errors.unauthorized'))).toBeVisible();
+  });
 
-      const locator = page.getByRole('region', { name });
+  test('Delete wishlist action deletes a wishlist successfully', async ({ page, customer }) => {
+    const t = await getTranslations('Wishlist');
+    const { id: customerId } = await customer.login();
+    const { name } = await customer.createWishlist({ customerId });
 
-      await locator.getByRole('button', { name: t('actionsTitle') }).click();
-      await page.getByRole('menuitem', { name: t('rename') }).click();
+    await page.goto('/account/wishlists/');
+    await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 
-      await expect(
-        page.getByRole('heading', { name: t('Modal.renameTitle', { name }) }),
-      ).toBeVisible();
+    const locator = page.getByRole('region', { name });
 
-      await expect(page.getByLabel(t('Form.nameLabel'))).toHaveValue(name);
+    await locator.getByRole('button', { name: t('actionsTitle') }).click();
+    await page.getByRole('menuitem', { name: t('delete') }).click();
 
-      const newName = `${name} (renamed)`;
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+    const deleteContent = t.rich('Modal.deleteContent', {
+      name,
+      bold,
+    }) as string;
 
-      await page.getByLabel(t('Form.nameLabel')).fill(newName);
-      await page.getByRole('button', { name: t('Modal.save') }).click();
+    await expect(page.getByText(deleteContent)).toBeVisible();
 
-      await expect(page.getByText(t('Result.updateSuccess'))).toBeVisible();
-      await expect(page.getByRole('region').filter({ hasText: newName })).toBeVisible();
-    });
+    await page.getByRole('button', { name: t('Modal.delete') }).click();
+    await expect(page.getByText(t('Result.deleteSuccess'))).toBeVisible();
+    await expect(locator).not.toBeVisible();
+  });
 
-    test('Rename wishlist action disallows empty names', async ({ page, customer }) => {
-      const t = await getTranslations('Wishlist');
-      const { id: customerId } = await customer.login();
-      const { name } = await customer.createWishlist({ customerId });
+  test('Delete wishlist action fails if the user is no longer logged in', async ({
+    page,
+    browser,
+    customer,
+  }) => {
+    const t = await getTranslations('Wishlist');
+    const { id: customerId } = await customer.login();
+    const { name } = await customer.createWishlist({ customerId });
 
-      await page.goto('/account/wishlists/');
-      await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
+    await page.goto('/account/wishlists/');
+    await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
 
-      const locator = page.getByRole('region', { name });
+    await logoutInSeparateBrowser(customer, browser);
 
-      await locator.getByRole('button', { name: t('actionsTitle') }).click();
-      await page.getByRole('menuitem', { name: t('rename') }).click();
+    const locator = page.getByRole('region', { name });
 
-      await page.getByLabel(t('Form.nameLabel')).fill('');
-      await page.getByRole('button', { name: t('Modal.save') }).click();
+    await locator.getByRole('button', { name: t('actionsTitle') }).click();
+    await page.getByRole('menuitem', { name: t('delete') }).click();
+    await page.getByRole('button', { name: t('Modal.delete') }).click();
 
-      await expect(page.getByText(t('Errors.nameRequired'))).toBeVisible();
-    });
-
-    test('Rename wishlist action fails if the user is no longer logged in', async ({
-      page,
-      browser,
-      customer,
-    }) => {
-      const t = await getTranslations('Wishlist');
-      const { id: customerId } = await customer.login();
-      const { name } = await customer.createWishlist({ customerId });
-
-      await page.goto('/account/wishlists/');
-      await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
-
-      await logoutInSeparateBrowser(customer, browser);
-
-      const locator = page.getByRole('region', { name });
-
-      await locator.getByRole('button', { name: t('actionsTitle') }).click();
-      await page.getByRole('menuitem', { name: t('rename') }).click();
-      await page.getByLabel(t('Form.nameLabel')).fill(`${name} (renamed)`);
-      await page.getByRole('button', { name: t('Modal.save') }).click();
-
-      await expect(page.getByText(t('Errors.unauthorized'))).toBeVisible();
-    });
-
-    test('Public/private wishlist action toggles visibility', async ({ page, customer }) => {
-      const t = await getTranslations('Wishlist');
-      const { id: customerId } = await customer.login();
-      const { name } = await customer.createWishlist({
-        customerId,
-        isPublic: false,
-      });
-
-      await page.goto('/account/wishlists/');
-      await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
-
-      const locator = page.getByRole('region', { name });
-
-      await expect(locator.getByText(t('Visibility.private'))).toBeVisible();
-      await locator.getByRole('button', { name: t('actionsTitle') }).click();
-
-      await page.getByRole('menuitem', { name: t('makePublic') }).click();
-
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const makePublicContent = t.rich('Modal.makePublicContent', {
-        name,
-        bold,
-      }) as string;
-
-      await expect(page.getByText(makePublicContent)).toBeVisible();
-      await page.getByRole('button', { name: t('makePublic') }).click();
-      await expect(page.getByText(t('Result.updateSuccess'))).toBeVisible();
-      await expect(locator.getByText(t('Visibility.public'))).toBeVisible();
-
-      await locator.getByRole('button', { name: t('actionsTitle') }).click();
-      await page.getByRole('menuitem', { name: t('makePrivate') }).click();
-
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const makePrivateContent = t.rich('Modal.makePrivateContent', {
-        name,
-        bold,
-      }) as string;
-
-      await expect(page.getByText(makePrivateContent)).toBeVisible();
-      await page.getByRole('button', { name: t('makePrivate') }).click();
-      await expect(page.getByText(t('Result.updateSuccess'))).toBeVisible();
-      await expect(locator.getByText(t('Visibility.private'))).toBeVisible();
-    });
-
-    test('Public/private wishlist action fails if the user is no longer logged in', async ({
-      page,
-      browser,
-      customer,
-    }) => {
-      const t = await getTranslations('Wishlist');
-      const { id: customerId } = await customer.login();
-      const { name } = await customer.createWishlist({ customerId });
-
-      await page.goto('/account/wishlists/');
-      await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
-
-      await logoutInSeparateBrowser(customer, browser);
-
-      const locator = page.getByRole('region', { name });
-
-      await locator.getByRole('button', { name: t('actionsTitle') }).click();
-      await page.getByRole('menuitem', { name: t('makePublic') }).click();
-      await page.getByRole('button', { name: t('makePublic') }).click();
-
-      await expect(page.getByText(t('Errors.unauthorized'))).toBeVisible();
-    });
-
-    test('Delete wishlist action deletes a wishlist successfully', async ({ page, customer }) => {
-      const t = await getTranslations('Wishlist');
-      const { id: customerId } = await customer.login();
-      const { name } = await customer.createWishlist({ customerId });
-
-      await page.goto('/account/wishlists/');
-      await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
-
-      const locator = page.getByRole('region', { name });
-
-      await locator.getByRole('button', { name: t('actionsTitle') }).click();
-      await page.getByRole('menuitem', { name: t('delete') }).click();
-
-      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-      const deleteContent = t.rich('Modal.deleteContent', {
-        name,
-        bold,
-      }) as string;
-
-      await expect(page.getByText(deleteContent)).toBeVisible();
-
-      await page.getByRole('button', { name: t('Modal.delete') }).click();
-      await expect(page.getByText(t('Result.deleteSuccess'))).toBeVisible();
-      await expect(locator).not.toBeVisible();
-    });
-
-    test('Delete wishlist action fails if the user is no longer logged in', async ({
-      page,
-      browser,
-      customer,
-    }) => {
-      const t = await getTranslations('Wishlist');
-      const { id: customerId } = await customer.login();
-      const { name } = await customer.createWishlist({ customerId });
-
-      await page.goto('/account/wishlists/');
-      await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
-
-      await logoutInSeparateBrowser(customer, browser);
-
-      const locator = page.getByRole('region', { name });
-
-      await locator.getByRole('button', { name: t('actionsTitle') }).click();
-      await page.getByRole('menuitem', { name: t('delete') }).click();
-      await page.getByRole('button', { name: t('Modal.delete') }).click();
-
-      await expect(page.getByText(t('Errors.unauthorized'))).toBeVisible();
-    });
+    await expect(page.getByText(t('Errors.unauthorized'))).toBeVisible();
   });
 });

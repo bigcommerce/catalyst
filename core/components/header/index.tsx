@@ -160,6 +160,7 @@ export const Header = async () => {
         currencies,
         activeCurrencyId: streamableActiveCurrencyId,
         currencyAction: switchCurrency,
+        switchCurrencyLabel: t('SwitchCurrency.label'),
       }}
     />
   );

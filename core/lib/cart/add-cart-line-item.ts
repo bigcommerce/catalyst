@@ -1,7 +1,6 @@
 import { getSessionCustomerAccessToken } from '~/auth';
-
-import { client } from '..';
-import { graphql, VariablesOf } from '../graphql';
+import { client } from '~/client';
+import { graphql, VariablesOf } from '~/client/graphql';
 
 const AddCartLineItemMutation = graphql(`
   mutation AddCartLineItemMutation($input: AddCartLineItemsInput!) {

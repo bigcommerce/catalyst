@@ -206,6 +206,7 @@
         "makePrivate": "Privé maken",
         "rename": "Naam wijzigen",
         "delete": "Verwijderen",
+        "removeButtonTitle": "Product van verlanglijstje verwijderen",
         "Visibility": {
             "public": "Openbaar",
             "private": "Privé"
@@ -245,6 +246,7 @@
             "removeItemSuccess": "Het artikel is verwijderd van je verlanglijstje."
         },
         "Button": {
+            "label": "Add to wish list",
             "addToNewWishlist": "Aan nieuw verlanglijstje toevoegen",
             "defaultWishlistName": "Mijn verlanglijstje",
             "addSuccessMessage": "Product is toegevoegd aan je verlanglijstje",
@@ -492,6 +494,7 @@
                 "search": "Popup voor zoeken openen"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Ongeldige valuta",
                 "errorUpdatingCurrency": "Er is een fout opgetreden bij het bijwerken van de valuta voor je winkelwagen. Probeer het opnieuw."
             },
@@ -502,7 +505,7 @@
                 "noSearchResultsTitle": "Sorry, geen resultaten voor '{term}'.",
                 "noSearchResultsSubtitle": "Probeer een andere zoekopdracht",
                 "somethingWentWrong": "Er is iets fout gegaan. Probeer het opnieuw.",
-                "inputPlaceholder": "Search products, categories, brands...",
+                "inputPlaceholder": "Zoek producten, categorieën, merken...",
                 "submitLabel": "Zoeken"
             }
         },

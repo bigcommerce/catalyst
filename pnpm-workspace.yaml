@@ -2,6 +2,10 @@ packages:
   - core
   - packages/*
 onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
   - '@vercel/speed-insights'
+  - esbuild
+  - msw
   - puppeteer
   - sharp

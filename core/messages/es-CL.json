@@ -206,6 +206,7 @@
         "makePrivate": "Configurar como privada",
         "rename": "Cambiar el nombre",
         "delete": "Eliminar",
+        "removeButtonTitle": "Eliminar el producto de tu lista de deseos",
         "Visibility": {
             "public": "Público",
             "private": "Privado"
@@ -245,6 +246,7 @@
             "removeItemSuccess": "Se eliminó el artículo de tu lista de deseos."
         },
         "Button": {
+            "label": "Add to wish list",
             "addToNewWishlist": "Agregar a una nueva lista de deseos",
             "defaultWishlistName": "Mi lista de deseos",
             "addSuccessMessage": "El producto se ha agregado a tu lista de deseos.",
@@ -492,6 +494,7 @@
                 "search": "Abrir ventana emergente de búsqueda"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Moneda inválida",
                 "errorUpdatingCurrency": "Error al actualizar la moneda de tu carrito. Vuelve a intentarlo."
             },
@@ -502,7 +505,7 @@
                 "noSearchResultsTitle": "Lo sentimos, no hay resultados para “{term}”.",
                 "noSearchResultsSubtitle": "Prueba con otra búsqueda.",
                 "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo.",
-                "inputPlaceholder": "Search products, categories, brands...",
+                "inputPlaceholder": "Buscar productos, categorías, marcas...",
                 "submitLabel": "Buscar"
             }
         },

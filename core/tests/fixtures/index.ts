@@ -6,16 +6,24 @@ import { validate as isUuid } from 'uuid';
 import { testEnv } from '~/tests/environment';
 import { TAGS } from '~/tests/tags';
 
+import { BlogFixture } from './blog';
 import { extendedBrowser } from './browser';
 import { CatalogFixture } from './catalog';
+import { CurrencyFixture } from './currency';
 import { CustomerFixture } from './customer';
 import { OrderFixture } from './order';
 import { extendedPage, toHaveURL } from './page';
+import { PromotionFixture } from './promotion';
+import { WebPageFixture } from './webpage';
 
 interface Fixtures {
+  blog: BlogFixture;
   order: OrderFixture;
   catalog: CatalogFixture;
   customer: CustomerFixture;
+  currency: CurrencyFixture;
+  promotion: PromotionFixture;
+  webPage: WebPageFixture;
   /**
    * 'reuseCustomerSession' sets the the configuration for the customer fixture and determines whether to reuse the customer session.
    * For example, in login tests we do not want to reuse the session so we call `test.use({ reuseCustomerSession: false });`
@@ -38,6 +46,16 @@ export const test = baseTest.extend<Fixtures>({
       await use(extendedBrowser(browser));
     },
     { scope: 'worker' },
+  ],
+  blog: [
+    async ({ page }, use, currentTest) => {
+      const blogFixture = new BlogFixture(page, currentTest);
+
+      await use(blogFixture);
+
+      await blogFixture.cleanup();
+    },
+    { scope: 'test' },
   ],
   order: [
     async ({ page }, use, currentTest) => {
@@ -66,6 +84,36 @@ export const test = baseTest.extend<Fixtures>({
       await use(customerFixture);
 
       await customerFixture.cleanup();
+    },
+    { scope: 'test' },
+  ],
+  currency: [
+    async ({ page }, use, currentTest) => {
+      const currencyFixture = new CurrencyFixture(page, currentTest);
+
+      await use(currencyFixture);
+
+      await currencyFixture.cleanup();
+    },
+    { scope: 'test' },
+  ],
+  promotion: [
+    async ({ page }, use, currentTest) => {
+      const promotionFixture = new PromotionFixture(page, currentTest);
+
+      await use(promotionFixture);
+
+      await promotionFixture.cleanup();
+    },
+    { scope: 'test' },
+  ],
+  webPage: [
+    async ({ page }, use, currentTest) => {
+      const webPageFixture = new WebPageFixture(page, currentTest);
+
+      await use(webPageFixture);
+
+      await webPageFixture.cleanup();
     },
     { scope: 'test' },
   ],

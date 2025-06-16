@@ -1,188 +1,111 @@
 import { faker } from '@faker-js/faker';
-import { type Page } from '@playwright/test';
 
-import { expect, test } from '~/tests/fixtures';
+import { expect, Page, test } from '~/tests/fixtures';
+import { getTranslations } from '~/tests/lib/i18n';
 
-const firstName = faker.person.firstName();
-const lastName = faker.person.lastName();
+async function selectCountry(page: Page) {
+  const countryInput = page.locator('#countryCodeInput');
+  const countryInputValues = await Promise.all(
+    (await countryInput.getByRole('option').all()).map((o) => o.getAttribute('value')),
+  );
+  const countryCodes = countryInputValues.filter(
+    (value): value is string => value !== null && value !== '',
+  );
 
-async function waitForShippingForm(page: Page, isMobile: boolean) {
-  // Wait for the shipping form to load as playwright can fill out the form faster than the form is loaded in.
-  await page.waitForRequest('**/internalapi/v1/store/countries');
-  await page
-    .locator('.checkout-step--shipping .checkout-view-content[aria-busy="false"]')
-    .waitFor();
+  await countryInput.selectOption(faker.helpers.arrayElement(countryCodes));
+}
 
-  if (!isMobile) {
-    // Redirected checkout auto focuses when the section changes on desktop devices, therefore we need to wait for it to be focused.
-    await expect(page.getByLabel('First Name')).toBeFocused();
+async function selectState(page: Page) {
+  const stateSelector = page.locator('#provinceCodeInput');
+
+  if (await stateSelector.isVisible()) {
+    const stateInputValues = await Promise.all(
+      (await stateSelector.getByRole('option').all()).map((o) => o.getAttribute('value')),
+    );
+    const stateCodes = stateInputValues.filter(
+      (value): value is string => value !== null && value !== '',
+    );
+
+    await stateSelector.selectOption(faker.helpers.arrayElement(stateCodes));
+  } else {
+    const stateInput = page.locator('#provinceInput');
+
+    await stateInput.fill(faker.location.state());
   }
 }
 
-async function enterShopperDetails(page: Page) {
-  await page.getByLabel('First Name').pressSequentially(firstName);
-  await page.getByLabel('Last Name').pressSequentially(lastName);
-  await page.getByLabel('Company Name (Optional)').pressSequentially('BigCommerce');
-  await page.getByLabel('Phone Number (Optional)').pressSequentially(faker.phone.number());
-  await page
-    .getByLabel('Address', { exact: true })
-    .pressSequentially(faker.location.buildingNumber());
-  await page.getByLabel('City').pressSequentially('Natick');
-  await page.getByRole('combobox', { name: 'State/Province' }).selectOption('Massachusetts');
-  await page.getByRole('textbox', { name: 'Postal Code' }).pressSequentially('01762');
-  await expect(page.getByRole('button', { name: 'Continue' })).toContainText('Continue');
+async function selectShippingMethod(page: Page) {
+  await page.locator('label[for*="shippingOptionRadio"]').first().waitFor({ state: 'visible' });
 
-  await page.getByRole('heading', { name: 'Customer' }).waitFor();
-  await page.getByRole('heading', { name: 'Shipping' }).waitFor();
-  await page.getByRole('heading', { name: 'Billing' }).waitFor();
+  const shippingSelector = await page.locator('label[for*="shippingOptionRadio"]').all();
+
+  await faker.helpers.arrayElement(shippingSelector).click();
+  await page.waitForLoadState('networkidle');
 }
 
-async function enterCreditCardDetails(page: Page) {
-  await page
-    .frameLocator('#bigpaypay-ccNumber iframe')
-    .getByLabel('Credit Card Number')
-    .fill('4111 1111 1111 1111');
-  await page.frameLocator('#bigpaypay-ccExpiry iframe').getByPlaceholder('MM / YY').fill('02 / 27');
-  await page
-    .frameLocator('#bigpaypay-ccName iframe')
-    .getByLabel('Name on Card')
-    .fill(`${firstName} ${lastName}`);
-  await page.frameLocator('#bigpaypay-ccCvv iframe').getByLabel('CVV').fill('211');
+async function enterAddressDetails(page: Page) {
+  await page.locator('#firstNameInput').fill(faker.person.firstName());
+  await page.locator('#lastNameInput').fill(faker.person.lastName());
+  await page.locator('#addressLine1Input').fill(faker.location.streetAddress());
+  await page.locator('#addressLine2Input').fill(faker.location.secondaryAddress());
+  await page.locator('#cityInput').fill(faker.location.city());
+  await selectCountry(page);
+  await selectState(page);
+  await page.locator('#postCodeInput').fill(faker.location.zipCode('#####'));
+  await selectShippingMethod(page);
+  await page.locator('button[type="submit"]').click();
+  await page.waitForLoadState('networkidle');
 }
 
-test.describe('desktop', () => {
-  test('Complete checkout as a guest shopper', async ({ page, isMobile }) => {
-    await page.goto('/laundry-detergent/');
-    await expect(
-      page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
-    ).toBeVisible();
+async function enterPaymentDetails(page: Page) {
+  await page.locator('label[for="radio-bigpaypay"]').click();
 
-    await page.getByRole('button', { name: 'Add to Cart' }).first().click();
-    await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
-    await page.getByRole('link', { name: 'Cart Items 1' }).click();
-    await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
-    await page.getByRole('button', { name: 'Proceed to checkout' }).click();
-    await page
-      .getByLabel('Email')
-      .fill(faker.internet.email({ firstName, lastName, provider: 'example.com' }));
+  const iframeCcNumber = page.frameLocator('#bigpaypay-ccNumber iframe').locator('#card-number');
+  const ccNumber = page.locator('#ccNumber');
+  const iframeCcExpiry = page.frameLocator('#bigpaypay-ccExpiry iframe').locator('#card-expiry');
+  const ccExpiry = page.locator('#ccExpiry');
+  const iframeCcName = page.frameLocator('#bigpaypay-ccName iframe').locator('#card-name');
+  const ccName = page.locator('#ccName');
+  const iframeCcCvc = page.frameLocator('#bigpaypay-ccCvv iframe').locator('#card-code');
+  const ccCvc = page.locator('#ccCvv');
 
-    await page.getByRole('button', { name: 'Continue' }).click();
+  await iframeCcNumber.or(ccNumber).fill('4111 1111 1111 1111');
+  await iframeCcExpiry.or(ccExpiry).fill('12/30');
+  await iframeCcName.or(ccName).fill('success'); // BC test payment gateway requires 'success' as name
+  await iframeCcCvc.or(ccCvc).fill('123');
+}
 
-    await waitForShippingForm(page, isMobile);
-    await enterShopperDetails(page);
+test('Checkout works as a guest shopper', async ({ page, catalog }) => {
+  const t = await getTranslations();
+  const product = await catalog.getDefaultOrCreateSimpleProduct();
 
-    await page.getByRole('button', { name: 'Continue' }).click();
-    await page.getByRole('heading', { name: 'Payment', exact: true }).waitFor();
+  await page.goto(product.path);
+  await page.getByRole('button', { name: t('Product.ProductDetails.Submit.addToCart') }).click();
 
-    await enterCreditCardDetails(page);
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  const addToCartSuccessMessage = t.rich('Product.ProductDetails.successMessage', {
+    cartItems: 1,
+    cartLink: (chunks: React.ReactNode) => chunks,
+  }) as string;
 
-    await page.getByRole('button', { name: 'Place Order' }).click();
-    await page.waitForLoadState('networkidle');
-    await expect(
-      page.getByRole('heading', { name: `Thank you ${firstName}!`, level: 1 }),
-    ).toBeVisible();
-  });
+  await expect(page.getByText(addToCartSuccessMessage)).toBeVisible();
 
-  test('Complete checkout as a logged in shopper', async ({ page, customer }) => {
-    const user = await customer.login();
+  await page.goto('/cart');
+  await page.getByRole('button', { name: t('Cart.proceedToCheckout') }).click();
+  await page.waitForURL('**/checkout');
 
-    await page.goto('/laundry-detergent/');
-    await expect(
-      page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
-    ).toBeVisible();
-    await page.getByRole('button', { name: 'Add to Cart' }).first().click();
-    await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
-    await page.getByRole('link', { name: 'Cart Items 1' }).click();
-    await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
-    await page.getByRole('button', { name: 'Proceed to checkout' }).click();
+  await page
+    .locator('input[name="email"]')
+    .fill(faker.internet.email({ provider: 'test.catalyst' }));
+  await page.locator('button[type="submit"]').click();
+  await page.waitForLoadState('networkidle');
 
-    await page.waitForRequest('**/internalapi/v1/store/countries');
-    await page
-      .locator('.checkout-step--shipping .checkout-view-content[aria-busy="false"]')
-      .waitFor();
+  await enterAddressDetails(page);
+  await enterPaymentDetails(page);
 
-    await page.getByText(user.email).isVisible();
+  // Complete order
+  await page.locator('button[type="submit"]').click();
+  await page.waitForLoadState('networkidle');
 
-    await page.getByRole('button', { name: 'Continue' }).click();
-    await page.getByRole('heading', { name: 'Payment', exact: true }).waitFor();
-
-    await enterCreditCardDetails(page);
-
-    await page.getByRole('button', { name: 'Place Order' }).click();
-    await page.waitForLoadState('networkidle');
-    await expect(
-      page.getByRole('heading', { name: `Thank you ${user.firstName}!`, level: 1 }),
-    ).toBeVisible();
-  });
-});
-
-test.describe('mobile', () => {
-  test.use({ viewport: { width: 390, height: 844 }, isMobile: true });
-
-  test('Complete checkout as a guest shopper', async ({ page, isMobile }) => {
-    await page.goto('/laundry-detergent/');
-    await expect(
-      page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
-    ).toBeVisible();
-
-    await page.getByRole('button', { name: 'Add to Cart' }).first().click();
-    await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
-    await page.getByRole('link', { name: 'Cart Items 1' }).click();
-    await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
-    await page.getByRole('button', { name: 'Proceed to checkout' }).click();
-    await page
-      .getByLabel('Email')
-      .fill(faker.internet.email({ firstName, lastName, provider: 'example.com' }));
-    await page.getByRole('button', { name: 'Continue' }).click();
-
-    await waitForShippingForm(page, isMobile);
-    await enterShopperDetails(page);
-
-    await page.getByRole('button', { name: 'Continue' }).click();
-    await page.getByRole('heading', { name: 'Payment', exact: true }).waitFor();
-
-    await enterCreditCardDetails(page);
-
-    await page.getByRole('button', { name: 'Place Order' }).click();
-    await page.waitForLoadState('networkidle');
-    await expect(
-      page.getByRole('heading', { name: `Thank you ${firstName}!`, level: 1 }),
-    ).toBeVisible();
-  });
-});
-
-test.describe('Analytics Cookies synchronization', () => {
-  test('Checkout route redirects to external checkout with analytics cookies', async ({
-    page,
-    context,
-  }) => {
-    await page.goto('/laundry-detergent/');
-    await expect(
-      page.getByRole('heading', { level: 1, name: '[Sample] Laundry Detergent' }),
-    ).toBeVisible();
-
-    const cookies = await context.cookies();
-    const visitorId = cookies.find((c) => c.name === 'catalyst.visitorId');
-    const visitId = cookies.find((c) => c.name === 'catalyst.visitId');
-
-    await page.getByRole('button', { name: 'Add to Cart' }).first().click();
-    await page.getByRole('button', { name: 'Add to Cart' }).first().isEnabled();
-    await page.getByRole('link', { name: 'Cart Items 1' }).click();
-    await page.getByRole('heading', { level: 1, name: 'Your cart' }).click();
-    await page.getByRole('button', { name: 'Proceed to checkout' }).click();
-
-    await page.waitForLoadState('networkidle');
-
-    const externalCheckoutUrl = page.url();
-
-    const checkoutCookies = await context.cookies(externalCheckoutUrl);
-
-    const externalVisitorId = checkoutCookies.find((c) => c.name === 'catalyst.visitorId');
-    const externalVisitId = checkoutCookies.find((c) => c.name === 'catalyst.visitId');
-
-    expect(externalVisitorId).toBeDefined();
-    expect(externalVisitorId?.value).toBe(visitorId?.value);
-    expect(externalVisitId).toBeDefined();
-    expect(externalVisitId?.value).toBe(visitId?.value);
-  });
+  expect(page.url()).toContain('/checkout/order-confirmation');
 });

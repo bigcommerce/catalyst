@@ -206,6 +206,7 @@
         "makePrivate": "Privat machen",
         "rename": "Umbenennen",
         "delete": "Löschen",
+        "removeButtonTitle": "Produkt von der Wunschliste entfernen",
         "Visibility": {
             "public": "Öffentlich",
             "private": "Privat"
@@ -245,6 +246,7 @@
             "removeItemSuccess": "Der Artikel wurde von Ihrer Wunschliste entfernt."
         },
         "Button": {
+            "label": "Add to wish list",
             "addToNewWishlist": "Zu neuer Wunschliste hinzufügen",
             "defaultWishlistName": "Meine Wunschliste",
             "addSuccessMessage": "Das Produkt wurde Ihrer Wunschliste hinzugefügt.",
@@ -492,6 +494,7 @@
                 "search": "Popup-Fenster zur Suche öffnen"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Ungültige Währung",
                 "errorUpdatingCurrency": "Fehler beim Aktualisieren der Währung für Ihren Warenkorb. Bitte versuchen Sie es erneut."
             },
@@ -502,7 +505,7 @@
                 "noSearchResultsTitle": "Leider gibt es keine Ergebnisse für „{term}“.",
                 "noSearchResultsSubtitle": "Bitte versuchen Sie es mit einer anderen Suchanfrage.",
                 "somethingWentWrong": "Es ist etwas schiefgegangen. Bitte versuchen Sie es erneut.",
-                "inputPlaceholder": "Search products, categories, brands...",
+                "inputPlaceholder": "Produkte, Kategorien, Marken suchen ...",
                 "submitLabel": "Suchen"
             }
         },

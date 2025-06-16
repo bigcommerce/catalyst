@@ -51,13 +51,7 @@ export function BlogPostCard({ blogPost, className }: Props) {
       <div className="text-lg font-medium leading-snug">{title}</div>
       <p className="mb-3 mt-1.5 line-clamp-3 text-sm font-normal text-contrast-400">{content}</p>
       <div className="text-sm">
-        <time dateTime={date}>
-          {new Date(date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </time>
+        <time dateTime={date}>{date}</time>
         {date !== '' && author != null && author !== '' && (
           <span className="after:mx-2 after:content-['•']" />
         )}

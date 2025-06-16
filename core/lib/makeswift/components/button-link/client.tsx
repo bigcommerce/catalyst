@@ -1,6 +1,6 @@
-import { ButtonLink, Props } from '@/vibes/soul/primitives/button-link';
+import { ButtonLink, ButtonLinkProps } from '@/vibes/soul/primitives/button-link';
 
-type MSButtonLinkProps = Omit<Props, 'href'> & {
+type MSButtonLinkProps = Omit<ButtonLinkProps, 'href'> & {
   link: { href?: string; target?: string };
   text: string;
 };
