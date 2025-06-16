@@ -206,6 +206,7 @@
         "makePrivate": "非公開にする",
         "rename": "名前の変更",
         "delete": "削除する",
+        "removeButtonTitle": "ウィッシュリストから商品を削除する",
         "Visibility": {
             "public": "公式",
             "private": "プライベート"
@@ -245,6 +246,7 @@
             "removeItemSuccess": "アイテムがウィッシュリストから削除されました。"
         },
         "Button": {
+            "label": "Add to wish list",
             "addToNewWishlist": "新しいウィッシュリストに追加",
             "defaultWishlistName": "私のウィッシュリスト",
             "addSuccessMessage": "商品がウィッシュリストに追加されました",
@@ -436,6 +438,7 @@
                 "search": "検索ポップアップを開く"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "無効な通貨",
                 "errorUpdatingCurrency": "カートの通貨を更新する際にエラーが発生しました。再度お試しください。"
             },

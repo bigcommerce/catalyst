@@ -16,8 +16,8 @@ test('Orders page has an empty state when no orders exist', async ({ page, custo
     page.getByRole('heading', { name: t('Account.Orders.title'), exact: true }),
   ).toBeVisible();
 
-  await expect(page.getByText(t('Account.Orders.emptyState.title'))).toBeVisible();
-  await expect(page.getByRole('link', { name: t('Account.Orders.emptyState.cta') })).toBeVisible();
+  await expect(page.getByText(t('Account.Orders.EmptyState.title'))).toBeVisible();
+  await expect(page.getByRole('link', { name: t('Account.Orders.EmptyState.cta') })).toBeVisible();
 });
 
 test('Order details are displayed and use correct formatting', async ({

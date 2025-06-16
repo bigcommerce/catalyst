@@ -206,6 +206,7 @@
         "makePrivate": "Gør privat",
         "rename": "Omdøb",
         "delete": "Slet",
+        "removeButtonTitle": "Fjern produktet fra ønskelisten",
         "Visibility": {
             "public": "Offentlig",
             "private": "Privat"
@@ -245,6 +246,7 @@
             "removeItemSuccess": "Varen er blevet fjernet fra din ønskeliste."
         },
         "Button": {
+            "label": "Add to wish list",
             "addToNewWishlist": "Føj til ny ønskeliste",
             "defaultWishlistName": "Min ønskeliste",
             "addSuccessMessage": "Produktet er blevet føjet til din ønskeliste",
@@ -436,6 +438,7 @@
                 "search": "Åbn søge-pop op"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Ugyldig valuta",
                 "errorUpdatingCurrency": "Fejl ved opdatering af valuta for din indkøbskurv. Prøv igen."
             },

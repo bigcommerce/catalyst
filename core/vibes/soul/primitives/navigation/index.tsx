@@ -387,6 +387,38 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                     ))
                   }
                 </Stream>
+                {/* Mobile Locale / Currency Dropdown */}
+                {locales && locales.length > 1 && streamableCurrencies && (
+                  <div className="p-2 @4xl:p-5">
+                    <div className="flex items-center px-3 py-1 @4xl:py-2">
+                      {/* Locale / Language Dropdown */}
+                      {locales.length > 1 ? (
+                        <LocaleSwitcher
+                          activeLocaleId={activeLocaleId}
+                          // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                          locales={locales as [Locale, Locale, ...Locale[]]}
+                        />
+                      ) : null}
+
+                      {/* Currency Dropdown */}
+                      <Stream
+                        fallback={null}
+                        value={Streamable.all([streamableCurrencies, streamableActiveCurrencyId])}
+                      >
+                        {([currencies, activeCurrencyId]) =>
+                          currencies.length > 1 && currencyAction ? (
+                            <CurrencyForm
+                              action={currencyAction}
+                              activeCurrencyId={activeCurrencyId}
+                              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                              currencies={currencies as [Currency, ...Currency[]]}
+                            />
+                          ) : null
+                        }
+                      </Stream>
+                    </div>
+                  </div>
+                )}
               </div>
             </Popover.Content>
           </Popover.Portal>
@@ -432,7 +464,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           <Stream
             fallback={
-              <ul className="flex animate-pulse flex-row @4xl:gap-6 @4xl:p-2.5">
+              <ul className="flex min-h-[41px] animate-pulse flex-row items-center @4xl:gap-6 @4xl:p-2.5">
                 <li>
                   <span className="block h-4 w-10 rounded-md bg-contrast-100" />
                 </li>
@@ -567,6 +599,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           {locales && locales.length > 1 ? (
             <LocaleSwitcher
               activeLocaleId={activeLocaleId}
+              className="hidden @4xl:block"
               // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
               locales={locales as [Locale, Locale, ...Locale[]]}
             />
@@ -582,6 +615,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 <CurrencyForm
                   action={currencyAction}
                   activeCurrencyId={activeCurrencyId}
+                  className="hidden @4xl:block"
                   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
                   currencies={currencies as [Currency, ...Currency[]]}
                   switchCurrencyLabel={switchCurrencyLabel}
@@ -850,50 +884,54 @@ const useSwitchLocale = () => {
 function LocaleSwitcher({
   locales,
   activeLocaleId,
+  className,
 }: {
   activeLocaleId?: string;
   locales: [Locale, ...Locale[]];
+  className?: string;
 }) {
   const activeLocale = locales.find((locale) => locale.id === activeLocaleId);
   const [isPending, startTransition] = useTransition();
   const switchLocale = useSwitchLocale();
 
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger
-        className={clsx(
-          'flex items-center gap-1 text-xs uppercase transition-opacity disabled:opacity-30',
-          navButtonClassName,
-        )}
-        disabled={isPending}
-      >
-        {activeLocale?.id ?? locales[0].id}
-        <ChevronDown size={16} strokeWidth={1.5} />
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          align="end"
-          className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
-          sideOffset={16}
+    <div className={className}>
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger
+          className={clsx(
+            'flex items-center gap-1 text-xs uppercase transition-opacity disabled:opacity-30',
+            navButtonClassName,
+          )}
+          disabled={isPending}
         >
-          {locales.map(({ id, label }) => (
-            <DropdownMenu.Item
-              className={clsx(
-                'cursor-default rounded-lg bg-[var(--nav-locale-link-background,transparent)] px-2.5 py-2 font-[family-name:var(--nav-locale-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-locale-link-text,hsl(var(--contrast-400)))] outline-none ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-locale-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-locale-link-text-hover,hsl(var(--foreground)))]',
-                {
-                  'text-[var(--nav-locale-link-text-selected,hsl(var(--foreground)))]':
-                    id === activeLocaleId,
-                },
-              )}
-              key={id}
-              onSelect={() => startTransition(() => switchLocale(id))}
-            >
-              {label}
-            </DropdownMenu.Item>
-          ))}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+          {activeLocale?.id ?? locales[0].id}
+          <ChevronDown size={16} strokeWidth={1.5} />
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content
+            align="end"
+            className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
+            sideOffset={16}
+          >
+            {locales.map(({ id, label }) => (
+              <DropdownMenu.Item
+                className={clsx(
+                  'cursor-default rounded-lg bg-[var(--nav-locale-link-background,transparent)] px-2.5 py-2 font-[family-name:var(--nav-locale-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-locale-link-text,hsl(var(--contrast-400)))] outline-none ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-locale-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-locale-link-text-hover,hsl(var(--foreground)))]',
+                  {
+                    'text-[var(--nav-locale-link-text-selected,hsl(var(--foreground)))]':
+                      id === activeLocaleId,
+                  },
+                )}
+                key={id}
+                onSelect={() => startTransition(() => switchLocale(id))}
+              >
+                {label}
+              </DropdownMenu.Item>
+            ))}
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
+    </div>
   );
 }
 
@@ -902,11 +940,13 @@ function CurrencyForm({
   currencies,
   activeCurrencyId,
   switchCurrencyLabel = 'Switch currency',
+  className,
 }: {
   activeCurrencyId?: string;
   action: CurrencyAction;
   currencies: [Currency, ...Currency[]];
   switchCurrencyLabel?: string;
+  className?: string;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -919,54 +959,56 @@ function CurrencyForm({
   }, [lastResult?.error]);
 
   return (
-    <DropdownMenu.Root>
-      <DropdownMenu.Trigger
-        className={clsx(
-          'flex items-center gap-1 text-xs uppercase transition-opacity disabled:opacity-30',
-          navButtonClassName,
-        )}
-        disabled={isPending}
-      >
-        {activeCurrency?.label ?? currencies[0].label}
-        <ChevronDown size={16} strokeWidth={1.5}>
-          <title>{switchCurrencyLabel}</title>
-        </ChevronDown>
-      </DropdownMenu.Trigger>
-      <DropdownMenu.Portal>
-        <DropdownMenu.Content
-          align="end"
-          className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
-          sideOffset={16}
+    <div className={className}>
+      <DropdownMenu.Root>
+        <DropdownMenu.Trigger
+          className={clsx(
+            'flex items-center gap-1 text-xs uppercase transition-opacity disabled:opacity-30',
+            navButtonClassName,
+          )}
+          disabled={isPending}
         >
-          {currencies.map((currency) => (
-            <DropdownMenu.Item
-              className={clsx(
-                'cursor-default rounded-lg bg-[var(--nav-locale-link-background,transparent)] px-2.5 py-2 font-[family-name:var(--nav-locale-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-locale-link-text,hsl(var(--contrast-400)))] outline-none ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-locale-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-locale-link-text-hover,hsl(var(--foreground)))]',
-                {
-                  'text-[var(--nav-locale-link-text-selected,hsl(var(--foreground)))]':
-                    currency.id === activeCurrencyId,
-                },
-              )}
-              key={currency.id}
-              onSelect={() => {
-                // eslint-disable-next-line @typescript-eslint/require-await
-                startTransition(async () => {
-                  const formData = new FormData();
+          {activeCurrency?.label ?? currencies[0].label}
+          <ChevronDown size={16} strokeWidth={1.5}>
+            <title>{switchCurrencyLabel}</title>
+          </ChevronDown>
+        </DropdownMenu.Trigger>
+        <DropdownMenu.Portal>
+          <DropdownMenu.Content
+            align="end"
+            className="z-50 max-h-80 overflow-y-scroll rounded-xl bg-[var(--nav-locale-background,hsl(var(--background)))] p-2 shadow-xl data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2"
+            sideOffset={16}
+          >
+            {currencies.map((currency) => (
+              <DropdownMenu.Item
+                className={clsx(
+                  'cursor-default rounded-lg bg-[var(--nav-locale-link-background,transparent)] px-2.5 py-2 font-[family-name:var(--nav-locale-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-locale-link-text,hsl(var(--contrast-400)))] outline-none ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-locale-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-locale-link-text-hover,hsl(var(--foreground)))]',
+                  {
+                    'text-[var(--nav-locale-link-text-selected,hsl(var(--foreground)))]':
+                      currency.id === activeCurrencyId,
+                  },
+                )}
+                key={currency.id}
+                onSelect={() => {
+                  // eslint-disable-next-line @typescript-eslint/require-await
+                  startTransition(async () => {
+                    const formData = new FormData();
 
-                  formData.append('id', currency.id);
-                  formAction(formData);
+                    formData.append('id', currency.id);
+                    formAction(formData);
 
-                  // This is needed to refresh the Data Cache after the product has been added to the cart.
-                  // The cart id is not picked up after the first time the cart is created/updated.
-                  router.refresh();
-                });
-              }}
-            >
-              {currency.label}
-            </DropdownMenu.Item>
-          ))}
-        </DropdownMenu.Content>
-      </DropdownMenu.Portal>
-    </DropdownMenu.Root>
+                    // This is needed to refresh the Data Cache after the product has been added to the cart.
+                    // The cart id is not picked up after the first time the cart is created/updated.
+                    router.refresh();
+                  });
+                }}
+              >
+                {currency.label}
+              </DropdownMenu.Item>
+            ))}
+          </DropdownMenu.Content>
+        </DropdownMenu.Portal>
+      </DropdownMenu.Root>
+    </div>
   );
 }

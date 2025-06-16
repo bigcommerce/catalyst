@@ -50,19 +50,23 @@ export default async function Login({ params, searchParams }: Props) {
         submitLabel={t('cta')}
         title={t('heading')}
       >
-        <div className="">
-          <h3 className="mb-3 text-xl font-bold lg:text-2xl">{t('CreateAccount.title')}</h3>
-          <p className="text-base font-semibold">{t('CreateAccount.accountBenefits')}</p>
-          <ul className="mb-4 list-disc ps-4">
-            <li>{t('CreateAccount.fastCheckout')}</li>
-            <li>{t('CreateAccount.multipleAddresses')}</li>
-            <li>{t('CreateAccount.ordersHistory')}</li>
-            <li>{t('CreateAccount.ordersTracking')}</li>
-            <li>{t('CreateAccount.wishlists')}</li>
-          </ul>
-          <ButtonLink href="/register" variant="secondary">
-            {t('CreateAccount.cta')}
-          </ButtonLink>
+        <div className="font-[family-name:var(--sign-in-font-family,var(--font-family-body))]">
+          <h2 className="mb-10 font-[family-name:var(--sign-in-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none text-[var(--reset-password-title,hsl(var(--foreground)))] @xl:text-5xl">
+            {t('CreateAccount.title')}
+          </h2>
+          <div className="text-[var(--sign-in-description,hsl(var(--contrast-500)))]">
+            <p>{t('CreateAccount.accountBenefits')}</p>
+            <ul className="mb-10 ml-4 mt-4 list-disc">
+              <li>{t('CreateAccount.fastCheckout')}</li>
+              <li>{t('CreateAccount.multipleAddresses')}</li>
+              <li>{t('CreateAccount.ordersHistory')}</li>
+              <li>{t('CreateAccount.ordersTracking')}</li>
+              <li>{t('CreateAccount.wishlists')}</li>
+            </ul>
+            <ButtonLink className="mt-auto w-full" href="/register" variant="secondary">
+              {t('CreateAccount.cta')}
+            </ButtonLink>
+          </div>
         </div>
       </SignInSection>
     </>

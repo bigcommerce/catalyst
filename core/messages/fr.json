@@ -206,6 +206,7 @@
         "makePrivate": "Rendre privé",
         "rename": "Renommer",
         "delete": "Supprimer",
+        "removeButtonTitle": "Retirer le produit de la liste d'envies",
         "Visibility": {
             "public": "Publique",
             "private": "Privé"
@@ -245,6 +246,7 @@
             "removeItemSuccess": "L'article a été supprimé de votre liste d'envies."
         },
         "Button": {
+            "label": "Add to wish list",
             "addToNewWishlist": "Ajouter à une nouvelle liste d'envies",
             "defaultWishlistName": "Ma liste d'envies",
             "addSuccessMessage": "Le produit a été ajouté à votre liste d'envies.",
@@ -436,6 +438,7 @@
                 "search": "Ouvrir la fenêtre contextuelle de recherche"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Devise non valide",
                 "errorUpdatingCurrency": "Erreur lors de la mise à jour de la devise de votre panier. Veuillez réessayer."
             },

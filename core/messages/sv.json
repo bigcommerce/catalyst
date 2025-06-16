@@ -206,6 +206,7 @@
         "makePrivate": "Gör privat",
         "rename": "Döp om",
         "delete": "Radera",
+        "removeButtonTitle": "Radera produkten från önskelistan",
         "Visibility": {
             "public": "Offentlig",
             "private": "Privat"
@@ -245,6 +246,7 @@
             "removeItemSuccess": "Objektet har tagits bort från din önskelista."
         },
         "Button": {
+            "label": "Add to wish list",
             "addToNewWishlist": "Lägg till i en ny önskelista",
             "defaultWishlistName": "Min önskelista",
             "addSuccessMessage": "Produkten har lagts till i din önskelista.",
@@ -436,6 +438,7 @@
                 "search": "Öppna popup-fönstret för sökning"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Ogiltig valuta",
                 "errorUpdatingCurrency": "Det gick inte att uppdatera valutan för din kundvagn. Försök igen."
             },

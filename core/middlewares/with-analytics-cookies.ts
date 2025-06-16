@@ -1,4 +1,3 @@
-import { NextRequest } from 'next/server';
 import { validate as isUuid, v4 as uuidv4 } from 'uuid';
 
 import {
@@ -7,6 +6,7 @@ import {
   setVisitIdCookie,
   setVisitorIdCookie,
 } from '~/lib/analytics/bigcommerce';
+import { sendVisitStartedEvent } from '~/lib/analytics/bigcommerce/data-events';
 
 import { MiddlewareFactory } from './compose-middlewares';
 
@@ -25,15 +25,21 @@ export const withAnalyticsCookies: MiddlewareFactory = (next) => {
     if (!visitId || !isUuid(visitId)) {
       visitId = uuidv4();
       await setVisitIdCookie(visitId);
-      event.waitUntil(sendShopperVisitEvent(request, visitorId, visitId));
+
+      event.waitUntil(recordNewVisit(request, visitorId, visitId));
     }
 
     return next(request, event);
   };
 };
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-async function sendShopperVisitEvent(request: NextRequest, visitorId: string, visitId: string) {
-  // fetch from request user agent, url and referer url
-  // TODO: Send shopper visit event to BigCommerce
+async function recordNewVisit(request: Request, visitorId: string, visitId: string) {
+  await sendVisitStartedEvent({
+    initiator: { visitId, visitorId },
+    request: {
+      url: request.url,
+      refererUrl: request.headers.get('referer') || '',
+      userAgent: request.headers.get('user-agent') || '',
+    },
+  });
 }

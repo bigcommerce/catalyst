@@ -32,8 +32,8 @@ interface Props {
   searchParams: Promise<SearchParams>;
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { slug } = await props.params;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const productId = Number(slug);
@@ -64,8 +64,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-export default async function Product(props: Props) {
-  const { locale, slug } = await props.params;
+export default async function Product({ params, searchParams }: Props) {
+  const { locale, slug } = await params;
   const customerAccessToken = await getSessionCustomerAccessToken();
   const detachedWishlistFormId = 'product-add-to-wishlist-form';
 
@@ -83,7 +83,7 @@ export default async function Product(props: Props) {
   }
 
   const streamableProduct = Streamable.from(async () => {
-    const options = await props.searchParams;
+    const options = await searchParams;
 
     const optionValueIds = Object.keys(options)
       .map((option) => ({
@@ -112,7 +112,7 @@ export default async function Product(props: Props) {
   const streamableProductSku = Streamable.from(async () => (await streamableProduct).sku);
 
   const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {
-    const options = await props.searchParams;
+    const options = await searchParams;
 
     const optionValueIds = Object.keys(options)
       .map((option) => ({
@@ -330,7 +330,7 @@ export default async function Product(props: Props) {
         title={t('RelatedProducts.title')}
       />
 
-      <Reviews productId={productId} searchParams={props.searchParams} />
+      <Reviews productId={productId} searchParams={searchParams} />
 
       <Stream
         fallback={null}
@@ -354,7 +354,7 @@ export default async function Product(props: Props) {
         formId={detachedWishlistFormId}
         productId={productId}
         productSku={streamableProductSku}
-        searchParams={props.searchParams}
+        searchParams={searchParams}
       />
     </>
   );
