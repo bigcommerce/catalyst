@@ -206,6 +206,7 @@
         "makePrivate": "Rendi privato",
         "rename": "Rinomina",
         "delete": "Elimina",
+        "removeButtonTitle": "Rimuovi il prodotto dalla lista dei desideri",
         "Visibility": {
             "public": "Pubblica",
             "private": "Privato"
@@ -245,6 +246,7 @@
             "removeItemSuccess": "L'articolo è stato rimosso dalla tua lista dei desideri."
         },
         "Button": {
+            "label": "Add to wish list",
             "addToNewWishlist": "Aggiungi a nuova lista desideri",
             "defaultWishlistName": "La mia lista desideri",
             "addSuccessMessage": "Il prodotto è stato aggiunto alla tua lista dei desideri",
@@ -436,6 +438,7 @@
                 "search": "Apri popup di ricerca"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Valuta non valida",
                 "errorUpdatingCurrency": "Si è verificato un errore durante l'aggiornamento della valuta per il tuo carrello. Riprova."
             },
