@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.0
+
+### Major Changes
+
+- [#2435](https://github.com/bigcommerce/catalyst/pull/2435) [`cd4bd60`](https://github.com/bigcommerce/catalyst/commit/cd4bd604739b0cea4b622b08ebbde4cea953fcae) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Release 1.0.0
+
+### Minor Changes
+
+- [#2370](https://github.com/bigcommerce/catalyst/pull/2370) [`20b8788`](https://github.com/bigcommerce/catalyst/commit/20b87882e089438c6183e83a506267e432a4f741) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Remove the `xAuthToken` config parameter from `@bigcommerce/catalyst-client`. The client no longer has any dependency on a BigCommerce access token, now that we have replaced the `/v2/shipping/zones` REST API call with an appropriate GraphQL field (`site.settings.shipping.supportedShippingDestinations`).
+
+  Migration:
+
+  1. If you are using the version of the client published to NPM, simply ensure you are using at least `@bigcommerce/catalyst-client@0.16.0` or higher.
+  2. If you are using the client in your pnpm workspace, simply remove the `xAuthToken` references in `packages/client/src/client.ts` as well as the `fetchShippingZones` method.
+  3. Remove the reference to `xAuthToken` in `core/client/index.ts`
+
 ## 0.15.0
 
 ### Minor Changes
