@@ -2,13 +2,7 @@ import { createEnv } from '@t3-oss/env-core';
 import { config as dotenvConfig } from 'dotenv';
 import { z } from 'zod/v4';
 
-import { defaultLocale, locales } from '~/i18n/locales';
-
 dotenvConfig({ path: ['.env', '.env.local', '.env.test'], override: true });
-
-const localeSchema = z.string().refine((val: string) => locales.includes(val), {
-  error: `TESTS_LOCALE must be one of: ${locales.join(', ')}`,
-});
 
 export const testEnv = createEnv({
   server: {
@@ -22,8 +16,8 @@ export const testEnv = createEnv({
     VERCEL_PROTECTION_BYPASS: z.string().optional().default(''),
     CI: z.stringbool().optional().default(false),
     TESTS_READ_ONLY: z.stringbool().optional().default(false),
-    TESTS_LOCALE: localeSchema.default(defaultLocale),
-    TESTS_FALLBACK_LOCALE: localeSchema.default(defaultLocale),
+    TESTS_LOCALE: z.string(),
+    TESTS_FALLBACK_LOCALE: z.string(),
     TEST_CUSTOMER_ID: z.coerce.number().optional(),
     TEST_CUSTOMER_EMAIL: z.string().optional(),
     TEST_CUSTOMER_PASSWORD: z.string().optional(),

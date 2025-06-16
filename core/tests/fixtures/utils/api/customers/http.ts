@@ -212,14 +212,6 @@ export const customersHttpClient: CustomersApi = {
       throw new Error(`No customer found with the provided ID: ${customerId}`);
     }
 
-    if (customer.originChannelId !== (testEnv.BIGCOMMERCE_CHANNEL_ID ?? 1)) {
-      throw new Error(
-        `Customer ${customerId} is not from the correct channel. Expected ${
-          testEnv.BIGCOMMERCE_CHANNEL_ID ?? 1
-        }, got ${customer.originChannelId}.`,
-      );
-    }
-
     return customer;
   },
   getByEmail: async (email: string, includeAddresses = false): Promise<Customer> => {

@@ -20,7 +20,7 @@ jobs:
       matrix:
         device: [desktop, mobile]
     concurrency: 
-      group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.deployment_status.target_url }}-${{ matrix.device }}
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.deployment_status.target_url }}-${{ github.job }}-${{ matrix.device }}
       cancel-in-progress: true
 
     steps:
@@ -42,3 +42,56 @@ jobs:
           name: unlighthouse-${{ matrix.device }}-report
           path: './.unlighthouse/'
           include-hidden-files: 'true'
+
+  ui-tests:
+    name: Playwright UI Tests
+    runs-on: ubuntu-latest
+    if: ${{ contains(fromJson('["Production – catalyst-canary", "Preview – catalyst-canary"]'), github.event.deployment_status.environment) }}
+    env:
+      BIGCOMMERCE_ACCESS_TOKEN: ${{ secrets.BIGCOMMERCE_ACCESS_TOKEN }}
+      BIGCOMMERCE_CHANNEL_ID: ${{ secrets.BIGCOMMERCE_CHANNEL_ID }}
+      BIGCOMMERCE_STORE_HASH: ${{ secrets.BIGCOMMERCE_STORE_HASH }}
+      BIGCOMMERCE_CLIENT_ID: ${{ secrets.BIGCOMMERCE_CLIENT_ID }}
+      BIGCOMMERCE_CLIENT_SECRET: ${{ secrets.BIGCOMMERCE_CLIENT_SECRET }}
+      DEFAULT_PRODUCT_ID: ${{ secrets.DEFAULT_PRODUCT_ID }}
+      DEFAULT_COMPLEX_PRODUCT_ID: ${{ secrets.DEFAULT_COMPLEX_PRODUCT_ID }}
+      PLAYWRIGHT_TEST_BASE_URL: ${{ github.event.deployment_status.target_url }}
+      TESTS_LOCALE: ${{ secrets.TESTS_LOCALE }}
+      TESTS_FALLBACK_LOCALE: ${{ secrets.TESTS_FALLBACK_LOCALE }}
+      TEST_CUSTOMER_ID: ${{ secrets.TEST_CUSTOMER_ID }}
+      TEST_CUSTOMER_EMAIL: ${{ secrets.TEST_CUSTOMER_EMAIL }}
+      TEST_CUSTOMER_PASSWORD: ${{ secrets.TEST_CUSTOMER_PASSWORD }}
+
+    concurrency:
+      group: ${{ github.workflow }}-${{ github.ref }}-${{ github.event.deployment_status.target_url }}-${{ github.job }}
+      cancel-in-progress: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: '.nvmrc'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Browsers
+        working-directory: core
+        run: pnpm playwright install --with-deps
+
+      - name: Run Playwright tests
+        working-directory: core
+        run: pnpm playwright test tests/ui/e2e --project=tests-chromium
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-ui
+          path: core/.tests/test-results
+          retention-days: 30

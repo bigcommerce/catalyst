@@ -1,7 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import { expect, ExpectMatcherState, MatcherReturnType, Page } from '@playwright/test';
 
-import { defaultLocale } from '~/i18n/locales';
 import { testEnv } from '~/tests/environment';
 
 export function extendedPage(page: Page) {
@@ -12,7 +11,7 @@ export function extendedPage(page: Page) {
     waitForURL: (...[url, options]: Parameters<typeof page.waitForURL>) => {
       if (
         typeof url === 'string' &&
-        testEnv.TESTS_LOCALE !== defaultLocale &&
+        testEnv.TESTS_LOCALE !== testEnv.TESTS_FALLBACK_LOCALE &&
         url.startsWith('/')
       ) {
         return Promise.race([
@@ -41,7 +40,9 @@ export async function toHaveURL(
   let matcherResult: MatcherReturnType | undefined;
 
   const isRelativeLocaleUrl =
-    typeof url === 'string' && testEnv.TESTS_LOCALE !== defaultLocale && url.startsWith('/');
+    typeof url === 'string' &&
+    testEnv.TESTS_LOCALE !== testEnv.TESTS_FALLBACK_LOCALE &&
+    url.startsWith('/');
 
   try {
     const expectation = this.isNot ? expect(page).not : expect(page);
@@ -79,7 +80,7 @@ export async function toHaveURL(
 
     if (typeof url === 'string') {
       const urlWithLocaleMaybe =
-        testEnv.TESTS_LOCALE !== defaultLocale && url.startsWith('/')
+        testEnv.TESTS_LOCALE !== testEnv.TESTS_FALLBACK_LOCALE && url.startsWith('/')
           ? `/${testEnv.TESTS_LOCALE}${url}`
           : url;
 

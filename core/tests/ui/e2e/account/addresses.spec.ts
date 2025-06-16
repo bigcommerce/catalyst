@@ -28,6 +28,7 @@ async function fillAddressForm(page: Page) {
   await page.getByLabel('Zip/postcode').fill(zipCode);
   await page.getByLabel('Country').click();
   await page.getByRole('option', { name: country }).first().click();
+  await page.getByRole('radio', { name: 'Home' }).click();
 
   return {
     firstName,
@@ -113,6 +114,7 @@ test(
     await expect(page.getByLabel('State/province')).toHaveValue(address.stateOrProvince ?? '');
     await expect(page.getByLabel('Zip/postcode')).toHaveValue(address.postalCode);
     await expect(page.getByRole('combobox', { name: 'Country' })).toHaveText(address.country);
+    await page.getByRole('radio', { name: 'Home' }).click();
 
     const newAddress = await fillAddressForm(page);
 

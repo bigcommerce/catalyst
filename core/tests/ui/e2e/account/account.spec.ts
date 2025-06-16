@@ -1,4 +1,3 @@
-import { defaultLocale } from '~/i18n/locales';
 import { testEnv } from '~/tests/environment';
 import { expect, test } from '~/tests/fixtures';
 import { getTranslations } from '~/tests/lib/i18n';
@@ -21,7 +20,7 @@ accountUrls.forEach((url) => {
   test(`${url} is restricted for guest users when explicitly browsing to the locale URL`, async ({
     page,
   }) => {
-    test.skip(testEnv.TESTS_LOCALE === defaultLocale);
+    test.skip(testEnv.TESTS_LOCALE === testEnv.TESTS_FALLBACK_LOCALE);
 
     await page.goto(`/${testEnv.TESTS_LOCALE}/${url}`);
     await expect(page).toHaveURL('/login/', { timeout: 1000 });
