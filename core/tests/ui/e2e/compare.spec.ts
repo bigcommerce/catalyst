@@ -4,21 +4,22 @@ import { getTranslations } from '~/tests/lib/i18n';
 
 test('Validate compare page', async ({ page, catalog, currency }) => {
   const format = getFormatter();
+  const t = await getTranslations('Compare');
   const defaultCurrency = await currency.getDefaultCurrency();
 
   const product = await catalog.getDefaultOrCreateSimpleProduct();
   const productWithVariants = await catalog.getDefaultOrCreateComplexProduct();
 
   await page.goto(`/compare/?ids=${product.id},${productWithVariants.id}`);
-  await expect(page.getByRole('heading', { name: 'Compare products 2' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: `${t('title')} 2` })).toBeVisible();
 
   // Products names
   await expect(page.getByText(product.name, { exact: true })).toBeVisible();
   await expect(page.getByText(productWithVariants.name, { exact: true })).toBeVisible();
 
   // Products CTAs
-  await expect(page.getByRole('button', { name: 'Add to cart' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'View options' })).toBeVisible();
+  await expect(page.getByRole('button', { name: t('addToCart') })).toBeVisible();
+  await expect(page.getByRole('link', { name: t('viewOptions') })).toBeVisible();
 
   // Product prices
   const productPrice = format.number(product.price, {
@@ -96,7 +97,7 @@ test('Can add simple product to cart', async ({ page, catalog }) => {
 
   await page.goto(`/compare/?ids=${product.id}`);
 
-  await page.getByRole('button', { name: 'Add to cart' }).click();
+  await page.getByRole('button', { name: t('addToCart') }).click();
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const addToCartSuccessMessage = t.rich('successMessage', {
@@ -117,6 +118,8 @@ test("Product with variants 'View options' redirect to product page", async ({ p
 });
 
 test('Disabled add to cart for out of stock products', async ({ page, catalog }) => {
+  const t = await getTranslations('Compare');
+
   const product = await catalog.createSimpleProduct({
     inventoryTracking: 'product',
     inventoryLevel: 0,
@@ -130,13 +133,15 @@ test('Disabled add to cart for out of stock products', async ({ page, catalog })
   await page.goto(`/compare/?ids=${product.id},${productWithVariants.id}`);
 
   // Simple products should have the add to cart button disabled
-  await expect(page.getByRole('button', { name: 'Add to Cart' })).toBeDisabled();
+  await expect(page.getByRole('button', { name: t('addToCart') })).toBeDisabled();
   // Product with variants should have the view options link even when OOS
-  await expect(page.getByRole('link', { name: 'View options' })).toBeVisible();
+  await expect(page.getByRole('link', { name: t('viewOptions') })).toBeVisible();
 });
 
 test('Show empty state when no products are selected', async ({ page }) => {
+  const t = await getTranslations('Compare');
+
   await page.goto('/compare');
 
-  await expect(page.getByText('No products to compare')).toBeVisible();
+  await expect(page.getByText(t('noProductsToCompare'))).toBeVisible();
 });
