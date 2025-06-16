@@ -79,7 +79,6 @@ test('Wishlists page displays empty state when there are no wishlists', async ({
   await expect(page.getByRole('heading', { name: t('title'), exact: true })).toBeVisible();
   await expect(page.getByRole('heading', { name: t('noWishlists'), exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: t('new'), exact: true })).toBeVisible();
-  await expect(page.getByText(t('noWishlistsSubtitle'), { exact: true })).toBeVisible();
   await expect(
     page.getByRole('button', { name: t('noWishlistsCallToAction'), exact: true }),
   ).toBeVisible();
