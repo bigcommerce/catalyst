@@ -62,7 +62,7 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 
     // Convert options for memory cache (it only supports TTL as 'ex' field)
     const memoryOpts = opts?.ttl ? { ex: opts.ttl } : undefined;
-    
+
     await Promise.all([this.memoryKv.set(key, value, memoryOpts), kv.set(key, value, opts)]);
 
     return value;

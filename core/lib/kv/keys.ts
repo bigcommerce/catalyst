@@ -1,4 +1,4 @@
-const VERSION = 'v3';
+const VERSION = 'v4';
 
 export const STORE_STATUS_KEY = 'storeStatus';
 

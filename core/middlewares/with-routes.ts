@@ -122,25 +122,12 @@ const getStoreStatus = async (channelId?: string) => {
 type Route = Awaited<ReturnType<typeof getRoute>>;
 type StorefrontStatusType = ReturnType<typeof graphql.scalar<'StorefrontStatusType'>>;
 
-interface RouteCache {
-  route: Route;
-  expiryTime: number;
-}
-
-interface StorefrontStatusCache {
-  status: StorefrontStatusType;
-  expiryTime: number;
-}
-
-const StorefrontStatusCacheSchema = z.object({
-  status: z.union([
-    z.literal('HIBERNATION'),
-    z.literal('LAUNCHED'),
-    z.literal('MAINTENANCE'),
-    z.literal('PRE_LAUNCH'),
-  ]),
-  expiryTime: z.number(),
-});
+const StorefrontStatusSchema = z.union([
+  z.literal('HIBERNATION'),
+  z.literal('LAUNCHED'),
+  z.literal('MAINTENANCE'),
+  z.literal('PRE_LAUNCH'),
+]);
 
 const RedirectSchema = z.object({
   to: z.union([
@@ -171,44 +158,39 @@ const RouteSchema = z.object({
   node: z.nullable(NodeSchema),
 });
 
-const RouteCacheSchema = z.object({
-  route: z.nullable(RouteSchema),
-  expiryTime: z.number(),
-});
+// Cache TTL configuration from environment variables
+const ROUTE_CACHE_TTL = parseInt(process.env.ROUTE_CACHE_TTL || '86400', 10); // Default: 24 hours
+const STORE_STATUS_CACHE_TTL = parseInt(process.env.STORE_STATUS_CACHE_TTL || '3600', 10); // Default: 1 hour
 
-const updateRouteCache = async (
+const fetchAndCacheRoute = async (
   pathname: string,
   channelId: string,
   event: NextFetchEvent,
-): Promise<RouteCache> => {
-  const routeCache: RouteCache = {
-    route: await getRoute(pathname, channelId),
-    expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
-  };
+): Promise<Route> => {
+  const route = await getRoute(pathname, channelId);
 
-  event.waitUntil(kv.set(kvKey(pathname, channelId), routeCache));
+  // Cache with configurable TTL (default 24 hours)
+  event.waitUntil(kv.set(kvKey(pathname, channelId), route, { ttl: ROUTE_CACHE_TTL }));
 
-  return routeCache;
+  return route;
 };
 
-const updateStatusCache = async (
+const fetchAndCacheStatus = async (
   channelId: string,
   event: NextFetchEvent,
-): Promise<StorefrontStatusCache> => {
+): Promise<StorefrontStatusType> => {
   const status = await getStoreStatus(channelId);
 
   if (status === undefined) {
     throw new Error('Failed to fetch new storefront status');
   }
 
-  const statusCache: StorefrontStatusCache = {
-    status,
-    expiryTime: Date.now() + 1000 * 60 * 5, // 5 minutes
-  };
+  // Cache with configurable TTL (default 1 hour)
+  event.waitUntil(
+    kv.set(kvKey(STORE_STATUS_KEY, channelId), status, { ttl: STORE_STATUS_CACHE_TTL }),
+  );
 
-  event.waitUntil(kv.set(kvKey(STORE_STATUS_KEY, channelId), statusCache));
-
-  return statusCache;
+  return status;
 };
 
 const clearLocaleFromPath = (path: string, locale: string) => {
@@ -231,31 +213,28 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
     // For route resolution parity, we need to also include query params, otherwise certain redirects will not work.
     const pathname = clearLocaleFromPath(request.nextUrl.pathname + request.nextUrl.search, locale);
 
-    let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
+    // Try to get cached values - TTL is handled by the cache layer
+    let [route, status] = await kv.mget<Route | StorefrontStatusType>(
       kvKey(pathname, channelId),
       kvKey(STORE_STATUS_KEY, channelId),
     );
 
-    // If caches are old, update them in the background and return the old data (SWR-like behavior)
-    // If cache is missing, update it and return the new data, but write to KV in the background
-    if (statusCache && statusCache.expiryTime < Date.now()) {
-      event.waitUntil(updateStatusCache(channelId, event));
-    } else if (!statusCache) {
-      statusCache = await updateStatusCache(channelId, event);
+    // If cache miss, fetch fresh data (TTL handles expiry automatically)
+    if (!status) {
+      status = await fetchAndCacheStatus(channelId, event);
     }
 
-    if (routeCache && routeCache.expiryTime < Date.now()) {
-      event.waitUntil(updateRouteCache(pathname, channelId, event));
-    } else if (!routeCache) {
-      routeCache = await updateRouteCache(pathname, channelId, event);
+    if (!route) {
+      route = await fetchAndCacheRoute(pathname, channelId, event);
     }
 
-    const parsedRoute = RouteCacheSchema.safeParse(routeCache);
-    const parsedStatus = StorefrontStatusCacheSchema.safeParse(statusCache);
+    // Simple validation of the cached data
+    const parsedRoute = RouteSchema.nullable().safeParse(route);
+    const parsedStatus = StorefrontStatusSchema.safeParse(status);
 
     return {
-      route: parsedRoute.success ? parsedRoute.data.route : undefined,
-      status: parsedStatus.success ? parsedStatus.data.status : undefined,
+      route: parsedRoute.success ? parsedRoute.data : undefined,
+      status: parsedStatus.success ? parsedStatus.data : undefined,
     };
   } catch (error) {
     // eslint-disable-next-line no-console
