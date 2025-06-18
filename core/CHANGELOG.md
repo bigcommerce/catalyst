@@ -18,9 +18,10 @@ Join the discussion [here](https://github.com/bigcommerce/catalyst/discussions/1
 
 - [`589c91a`](https://github.com/bigcommerce/catalyst/commit/589c91a) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Enable cart restoration on non-persistent cart logouts.
 
-### Migration
+**Migration**
 
 Update the logout mutation to include the `cartEntityId` variable + the `cartUnassignResult` node and make sure the `client.fetch` method contains the new variable.
+
 ```diff
 -mutation LogoutMutation {
 +mutation LogoutMutation($cartEntityId: String) {
@@ -43,6 +44,7 @@ Update the logout mutation to include the `cartEntityId` variable + the `cartUna
 - [`dd66f96`](https://github.com/bigcommerce/catalyst/commit/dd66f96) Thanks [@matthewvolk](https://github.com/matthewvolk)! - In order to maintain parity with Stencil's 404 page, we wanted to allow the user to search from the 404 page. Since the search included with the header component is fully featured, we included a CTA to open the same search that you get when clicking the search icon in the header.
 
 **Migration**
+
 Most changes are additive, so they should hopefully be easy to resolve if flagged for merge conflicts. Change #3 below replaces the Search state with the new search context, be sure to pay attention to the new
 
 1. This change adds a new directory under `core/` called `context/` containing a `search-context.tsx` file. Since this is a new file, there shouldn't be any merge conflicts
@@ -54,11 +56,11 @@ Most changes are additive, so they should hopefully be easy to resolve if flagge
 
 - [`44342ee`](https://github.com/bigcommerce/catalyst/commit/44342ee) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Sets a default session when any user first visits the page.
 
-- [`ff57b8a`](https://github.com/bigcommerce/catalyst/commit/ff57b8a) Thanks [@eugene(yevhenii)kuzmenko](https://github.com/eugene(yevhenii)kuzmenko)! - Pass analytics cookies to checkout mutation to preserve the analytics session whenever shopper redirects to the external checkout
+- [`ff57b8a`](https://github.com/bigcommerce/catalyst/commit/ff57b8a) Thanks [@eugene(yevhenii)kuzmenko](<https://github.com/eugene(yevhenii)kuzmenko>)! - Pass analytics cookies to checkout mutation to preserve the analytics session whenever shopper redirects to the external checkout
 
 - [`067d5a4`](https://github.com/bigcommerce/catalyst/commit/067d5a4) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Move the anonymous session into it's own cookie, separate from Auth.js in order to have better non-persistent cart support.
 
-### Migration
+**Migration**
 
 If you were using `await signIn('anonymous', { redirect: false });`, you'll need to migrate over to using the `await anonymousSignIn()` function. Otherwise, we am only changing the underlying logic in existing API's so pulling in the changes should immediately pick this up.
 
@@ -66,10 +68,9 @@ If you were using `await signIn('anonymous', { redirect: false });`, you'll need
 
 - [`bd3bc8b`](https://github.com/bigcommerce/catalyst/commit/bd3bc8b) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Implement the new analytics provider, utilizing the GoogleAnalytics provider as the first analytics solution.
 
-
 Most changes are additive so merge conflicts should be easy to resolve. In order to use the new provider from the previous provider, if it's already not setup in the BigCommerce control panel for checkout analytics, you'll need to add the GA4 property ID. This will automatically be used by the new GoogleAnalytics provider.
 
-- [`70afa5a`](https://github.com/bigcommerce/catalyst/commit/70afa5a) Thanks [@eugene(yevhenii)kuzmenko](https://github.com/eugene(yevhenii)kuzmenko)! - Dispatch Visit started and Product Viewed analytics events
+- [`70afa5a`](https://github.com/bigcommerce/catalyst/commit/70afa5a) Thanks [@eugene(yevhenii)kuzmenko](<https://github.com/eugene(yevhenii)kuzmenko>)! - Dispatch Visit started and Product Viewed analytics events
 
 - [`da2a462`](https://github.com/bigcommerce/catalyst/commit/da2a462) Thanks [@bookernath](https://github.com/bookernath)! - Add currency selector to header
 
@@ -77,23 +78,22 @@ Most changes are additive so merge conflicts should be easy to resolve. In order
 
 - [`59ff1ce`](https://github.com/bigcommerce/catalyst/commit/59ff1ce) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Fetches the stores URLs on build which can remove the need of setting NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME. The environment variable is still provided in case customization is needed.
 
-- [`a0e6425`](https://github.com/bigcommerce/catalyst/commit/a0e6425) Thanks [@eugene(yevhenii)kuzmenko](https://github.com/eugene(yevhenii)kuzmenko)! - Adds analytics cookies needed for native analytics.
+- [`a0e6425`](https://github.com/bigcommerce/catalyst/commit/a0e6425) Thanks [@eugene(yevhenii)kuzmenko](<https://github.com/eugene(yevhenii)kuzmenko>)! - Adds analytics cookies needed for native analytics.
 
 This is a add-only change, so migration should be as simple as pulling in the new code.
 
-- [`a601f7e`](https://github.com/bigcommerce/catalyst/commit/a601f7e) Thanks [@jorgemoya](https://github.com/jorgemoya)! - ## New
+- [`a601f7e`](https://github.com/bigcommerce/catalyst/commit/a601f7e) Thanks [@jorgemoya](https://github.com/jorgemoya)! - This refactor optimizes compare for caching and the eventual use of dynamicIO.
 
-This refactor optimizes compare for caching and the eventual use of dynamicIO.
-
-## Key modifications include:
+**Key modifications include:**
 
 - Our query functions now take in all params required for fetching, instead of accessing dynamic variables internally. This is important to serialize arguments if we want to eventually `use cache`.
 - Use `Streamable.from` to generate our streaming props that are passed to our UI components.
 
-## Migration instructions:
+**Migration instructions:**
 
 - Updated `/app/[locale]/(default)/compare/page.tsx` to use `Streamable.from` pattern.
 - Renamed `getCompareData` query to `getComparedProducts`.
+
   - Updated query
   - Returns empty `[]` if no product ids are passed
 
@@ -102,31 +102,30 @@ This refactor optimizes compare for caching and the eventual use of dynamicIO.
 - Moved `core/client/mutations/add-cart-line-item.ts` and `core/client/mutations/create-cart.ts` into `core/lib/cart/*`.
 - Removed `core/client/queries/get-cart.ts` in favor of a smaller, more focused query within `core/lib/cart/validate-cart.ts`.
 
-### Migration
+**Migration**
+
 - Replace imports from `~/context/search-context` to `~/lib/search`.
 - Replace imports from `~/client/mutations/` to `~/lib/cart/`.
 - Remove any direct imports from `~/client/queries/get-cart.ts` and use the new `validate-cart.ts` query instead. If you need the previous `getCart` function, you can copy it from the old file and adapt it to your needs.
 
 - [`7b3b81c`](https://github.com/bigcommerce/catalyst/commit/7b3b81c) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Replaces the REST-powered `client.fetchShippingZones` method with a GraphQL-powered query containing the `site.settings.shipping.supportedShippingDestinations` field.
 
-Migration:
+**Migration:**
 
 1. The return type of `getShippingCountries` has the same shape as the `Country` BigCommerce GraphQL type, so you should be able to copy the graphql query from `core/app/[locale]/(default)/cart/page-data.ts` into your project and replace the existing `getShippingCountries` method in there.
 2. Remove the argument `data.geography` from the `getShippingCountries` invocation in `core/app/[locale]/(default)/cart/page.tsx`
 3. Finally, you should be able to delete the file `core/client/management/get-shipping-zones.ts` assuming it is no longer referenced anywhere in `core/`
 
-- [`53e0b5e`](https://github.com/bigcommerce/catalyst/commit/53e0b5e) Thanks [@jorgemoya](https://github.com/jorgemoya)! - ## New
+- [`53e0b5e`](https://github.com/bigcommerce/catalyst/commit/53e0b5e) Thanks [@jorgemoya](https://github.com/jorgemoya)! - This refactor optimizes category PLP for caching and the eventual use of dynamicIO. With these changes we leverage data caching to hit mostly cache data for guest shoppers in different locales and with different currencies.
 
-This refactor optimizes category PLP for caching and the eventual use of dynamicIO. With these changes we leverage data caching to hit mostly cache data for guest shoppers in different locales and with different currencies.
-
-## Key modifications include:
+**Key modifications include:**
 
 - We don't stream in Category page data, instead it's a blocking call that will redirect to `notFound` when category is not found. Same for metadata.
 - Our query functions now take in all params required for fetching, instead of accessing dynamic variables internally. This is important to serialize arguments if we want to eventually `use cache`.
 - Use `Streamable.from` to generate our streaming props that are passed to our UI components.
 - Remove use of nuqs' `createSearchParamsCache` in favor of nuqs' `createLoader`.
 
-## Migration instructions:
+**Migration instructions:**
 
 - Update `/(facted)/category/[slug]/page.tsx`
   - For this page we are now doing a blocking request for category page data. Instead of having functions that each would read from props, we share streamable functions that can be passed to our UI components. We still stream in filter and product data.
@@ -135,13 +134,14 @@ This refactor optimizes category PLP for caching and the eventual use of dynamic
 - Update`/(facted)/category/[slug]/fetch-compare-products.ts`
   - Request now accept `customerAccessToken` as a prop instead of calling internally.
 - Update `/(faceted)/fetch-faceted-search.ts`
+
   - Request now accept `customerAccessToken` and `currencyCode` as a prop instead of calling internally.
 
 - [`537db2c`](https://github.com/bigcommerce/catalyst/commit/537db2c) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Add the ability to redirect from the login page. Developers can now append a relative path to the `?redirectTo=` query param on the `/login` page. When a shopper successfully logs in, it'll redirect them to the given relative path. Defaults to `/account/orders` to prevent a breaking change.
 
 - [`b20dfb0`](https://github.com/bigcommerce/catalyst/commit/b20dfb0) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Adds an eslint rule to import expect and test from ~/tests/fixtures instead of the @playwright/test module. This is to create a more consistent testing experience across the codebase.
 
-### Migration
+**Migration**
 
 Any import statements that import `expect` and `test` from `@playwright/test` should be updated to import from `~/tests/fixtures` instead. All other imports from `@playwright/test` should remain unchanged.
 
@@ -156,11 +156,9 @@ Any import statements that import `expect` and `test` from `@playwright/test` sh
 
 - [`1d6cf64`](https://github.com/bigcommerce/catalyst/commit/1d6cf64) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Render address fields for customer registration form.
 
-- [`42ded4a`](https://github.com/bigcommerce/catalyst/commit/42ded4a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - ## New
+- [`42ded4a`](https://github.com/bigcommerce/catalyst/commit/42ded4a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - This refactor optimizes home page, header, and footer for caching and the eventual use of dynamicIO. With these changes we leverage data caching to hit mostly cache data for guest shoppers in different locales and with different currencies.
 
-This refactor optimizes home page, header, and footer for caching and the eventual use of dynamicIO. With these changes we leverage data caching to hit mostly cache data for guest shoppers in different locales and with different currencies.
-
-## Key modifications include:
+**Key modifications include:**
 
 - Header and Footer now have a blocking request for the shared data that is the same for all users.
 - Data that can change for logged in users is now a separate request.
@@ -169,44 +167,41 @@ This refactor optimizes home page, header, and footer for caching and the eventu
 - Use `Streamable.from` to generate our streaming props that are passed to our UI components.
 - Update Header UI component to allow streaming in of currencies data.
 
-## Migration instructions:
+**Migration instructions:**
 
 - Renamed `/app/[locale]/(default)/query.ts` to `/app/[locale]/(default)/page-data.ts`, include page query on this page.
 - Updated `/app/[locale]/(default)/page.ts` to use `Streamable.from` pattern.
 - Split data that can vary by user from `core/components/footer/fragment.ts` and `core/components/header/fragment.ts`
 - Updated `core/components/header/index.tsx` and `core/components/footer/index.tsx` to fetch shared data in a blocking request and pass data that varies by customer as streamable data. Updated to use the new `Streamable.from` pattern.
-- [`061063f`](https://github.com/bigcommerce/catalyst/commit/061063f) Thanks [@jorgemoya](https://github.com/jorgemoya)! - ## New
+- [`061063f`](https://github.com/bigcommerce/catalyst/commit/061063f) Thanks [@jorgemoya](https://github.com/jorgemoya)! - This refactor optimizes search PLP for caching and the eventual use of dynamicIO. With these changes we leverage data caching to hit mostly cache data for guest shoppers in different locales and with different currencies.
 
-This refactor optimizes search PLP for caching and the eventual use of dynamicIO. With these changes we leverage data caching to hit mostly cache data for guest shoppers in different locales and with different currencies.
-
-## Key modifications include:
+**Key modifications include:**
 
 - We don't stream in Search page data, instead it's a blocking call to get page data.
 - Our query functions now take in all params required for fetching, instead of accessing dynamic variables internally. This is important to serialize arguments if we want to eventually `use cache`.
 - Use `Streamable.from` to generate our streaming props that are passed to our UI components.
 - Remove use of nuqs' `createSearchParamsCache` in favor of nuqs' `createLoader`.
 
-## Migration instructions:
+**Migration instructions:**
 
 - Update `/(facted)/search/page.tsx`
+
   - For this page we are now doing a blocking request for brand page data. Instead of having functions that each would read from props, we share streamable functions that can be passed to our UI components. We still stream in filter and product data.
 
 - [`da2a462`](https://github.com/bigcommerce/catalyst/commit/da2a462) Thanks [@bookernath](https://github.com/bookernath)! - Adds the ability to redirect after logout.
 
 - [`863d744`](https://github.com/bigcommerce/catalyst/commit/863d744) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Removes the old analytics provider in favor of the provider that fetches the configuration from the GraphQL API.
 
-- [`061063f`](https://github.com/bigcommerce/catalyst/commit/061063f) Thanks [@jorgemoya](https://github.com/jorgemoya)! - ## New
+- [`061063f`](https://github.com/bigcommerce/catalyst/commit/061063f) Thanks [@jorgemoya](https://github.com/jorgemoya)! - This refactor optimizes brand PLP for caching and the eventual use of dynamicIO. With these changes we leverage data caching to hit mostly cache data for guest shoppers in different locales and with different currencies.
 
-This refactor optimizes brand PLP for caching and the eventual use of dynamicIO. With these changes we leverage data caching to hit mostly cache data for guest shoppers in different locales and with different currencies.
-
-## Key modifications include:
+**Key modifications include:**
 
 - We don't stream in Brand page data, instead it's a blocking call that will redirect to `notFound` when brand is not found. Same for metadata.
 - Our query functions now take in all params required for fetching, instead of accessing dynamic variables internally. This is important to serialize arguments if we want to eventually `use cache`.
 - Use `Streamable.from` to generate our streaming props that are passed to our UI components.
 - Remove use of nuqs' `createSearchParamsCache` in favor of nuqs' `createLoader`.
 
-## Migration instructions:
+**Migration instructions:**
 
 - Update `/(facted)/brand/[slug]/page.tsx`
   - For this page we are now doing a blocking request for brand page data. Instead of having functions that each would read from props, we share streamable functions that can be passed to our UI components. We still stream in filter and product data.
@@ -227,13 +222,16 @@ This refactor optimizes brand PLP for caching and the eventual use of dynamicIO.
 
 - [`ab1f0a0`](https://github.com/bigcommerce/catalyst/commit/ab1f0a0) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Add wishlist support to product display pages
 
-## Migration
+**Migration**
+
 - Ensure WishlistButton component is passed to additionalActions prop on ProductDetail
 - Ensure WishlistButtonForm is used on product page
+
 - [`11ecddf`](https://github.com/bigcommerce/catalyst/commit/11ecddf) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add persistent cart support
+
 - [`27b2823`](https://github.com/bigcommerce/catalyst/commit/27b2823) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Fix issue where delete button is not displayed if you have only 1 address
 
-## Migration steps:
+**Migration steps:**
 
 Update `/core/app/[locale]/(default)/account/addresses/page.tsx` and pass the `minimumAddressCount={0}` prop to the AddressListSection component.
 
@@ -260,7 +258,8 @@ return (
 
 - [`0779856`](https://github.com/bigcommerce/catalyst/commit/0779856) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Adds Tailwind classes used to style the checkbox input and label based on the disabled state of the checkbox.
 
-Migration:
+**Migration:**
+
 Since this is a one-file change, you should be able to simply grab the diff from [this PR](https://github.com/bigcommerce/catalyst/pull/2399). The main changes to note are that we are [adding a `peer` class](https://v3.tailwindcss.com/docs/hover-focus-and-other-states#styling-based-on-sibling-state) to the CheckboxPrimitive.Root, explicitly styling the `enabled` pseudoclass, and only applying hover styles when the checkbox is enabled.
 
 - [`604450d`](https://github.com/bigcommerce/catalyst/commit/604450d) Thanks [@bookernath](https://github.com/bookernath)! - Re-apply auth grouping approach with middleware exemption to preserve functionality of /login/token endpoint for Customer Login API
@@ -273,28 +272,31 @@ Since this is a one-file change, you should be able to simply grab the diff from
 
 - [`6b0c85a`](https://github.com/bigcommerce/catalyst/commit/6b0c85a) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Remove unused search props, add missing search translations
 
-## Migration
+**Migration**
 
-### `core/components/header/index.tsx`
+`core/components/header/index.tsx`
 
 Ensure the following props are passed to the `HeaderSection` navigation prop:
+
 ```tsx
         searchInputPlaceholder: t('Search.inputPlaceholder'),
         searchSubmitLabel: t('Search.submitLabel'),
 ```
 
-### `core/messages/en.json`
+`core/messages/en.json`
 
 Add the following keys to the `Components.Header.Search` translations:
+
 ```json
         "somethingWentWrong": "Something went wrong. Please try again.",
         "inputPlaceholder": "Search products, categories, brands...",
         "submitLabel": "Search"
 ```
 
-### `core/vibes/soul/primitives/navigation/index.tsx`
+`core/vibes/soul/primitives/navigation/index.tsx`
 
 Copy all changes from this file:
+
 1. Create `searchSubmitLabel?: string;` property, ensure it is passed into `SearchForm`
 2. On the `SearchForm`, remove the `searchCtaLabel = 'View more',` property, as it is unused, and rename `submitLabel` to `searchSubmitLabel`
 3. Ensure that `SearchForm` passes `searchSubmitLabel` to the `SearchButton`: `<SubmitButton loading={isPending} submitLabel={searchSubmitLabel} />`
@@ -328,7 +330,7 @@ Copy all changes from this file:
 
 Additionally, fixes an issue of incorrectly adding an empty query param for product options when an option is empty.
 
-## Migration
+**Migration**
 
 Migration is straighforward and requires adding the hidden input to the component and renaming the `name` prop for the `Select` component to something temporary.
 
@@ -344,7 +346,7 @@ Migration is straighforward and requires adding the hidden input to the componen
 
 - [`5a853c2`](https://github.com/bigcommerce/catalyst/commit/5a853c2) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Check for `error.type` instead of `error.name` auth error in Login, since `error.name` gets minified in production and the check never returns `true`. Additionally, add a check for the `cause.err` to be of type `BigcommerceGQLError`.
 
-Migration:
+**Migration:**
 
 - Change `error.name === 'CallbackRouteError'` to `error.type === 'CallbackRouteError'` check in the error handling of the login action and include `error.cause.err instanceof BigCommerceGQLError`.
 
@@ -354,15 +356,16 @@ Migration:
 
 - [`976c74d`](https://github.com/bigcommerce/catalyst/commit/976c74d) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Fix blog post card date formatting on alternate locales
 
-## Migration
+**Migration**
 
-### `core/vibes/soul/primitives/blog-post-card/index.tsx`
+`core/vibes/soul/primitives/blog-post-card/index.tsx`
 
 Update the component to use `<time dateTime={date}>{date}</time>` for the date, instead of calling `new Date(date).toLocaleDateString(...)`.
 
 - [`9176f56`](https://github.com/bigcommerce/catalyst/commit/9176f56) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Fix possibility of duplicate `key` error in Breadcrumbs component for truncated breadcrumbs.
 
-## Migration
+**Migration**
+
 Update `core/vibes/soul/sections/breadcrumbs/index.tsx` to use `index` as the `key` property instead of `href`
 
 - [`9827e4c`](https://github.com/bigcommerce/catalyst/commit/9827e4c) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Translate home breadcrumb in Contact Us page.
@@ -371,20 +374,20 @@ Update `core/vibes/soul/sections/breadcrumbs/index.tsx` to use `index` as the `k
 
 - [`11ecddf`](https://github.com/bigcommerce/catalyst/commit/11ecddf) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Update translations.
 
-- [`48d5c99`](https://github.com/bigcommerce/catalyst/commit/48d5c99) Thanks [@jordanarldt](https://github.com/jordanarldt)! - - Fix public wishlist analytics/server error
+- [`48d5c99`](https://github.com/bigcommerce/catalyst/commit/48d5c99) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Fix public wishlist analytics/server error
 
 - Add translation key for a Publish Wishlist empty state
 
-## Migration
+**Migration**
 
-### 1. Add the following imports to `core/app/[locale]/(default)/wishlist/[token]/page.tsx`:
+1. Add the following imports to `core/app/[locale]/(default)/wishlist/[token]/page.tsx`:
 
 ```tsx
 import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { WishlistAnalyticsProvider } from '~/app/[locale]/(default)/account/wishlists/[id]/_components/wishlist-analytics-provider';
 ```
 
-### 2. Add the following function into the file:
+2. Add the following function into the file:
 
 ```tsx
 const getAnalyticsData = async (token: string, searchParamsPromise: Promise<SearchParams>) => {
@@ -411,7 +414,7 @@ const getAnalyticsData = async (token: string, searchParamsPromise: Promise<Sear
 };
 ```
 
-### 3. Wrap the component in the `WishlistAnalyticsProvider`:
+3. Wrap the component in the `WishlistAnalyticsProvider`:
 
 ```tsx
 export default async function PublicWishlist({ params, searchParams }: Props) {
@@ -424,7 +427,7 @@ export default async function PublicWishlist({ params, searchParams }: Props) {
 }
 ```
 
-### 4. Update `/core/messages/en.json` "PublishWishlist" to have translations:
+4. Update `/core/messages/en.json` "PublishWishlist" to have translations:
 
 ```json
   "PublicWishlist": {
@@ -434,7 +437,7 @@ export default async function PublicWishlist({ params, searchParams }: Props) {
   },
 ```
 
-### 5. Update `WishlistDetails` component to accept the `emptyStateText` and `placeholderCount` props:
+5. Update `WishlistDetails` component to accept the `emptyStateText` and `placeholderCount` props:
 
 ```tsx
 // ...
@@ -451,7 +454,7 @@ export const WishlistDetails = ({
 }: Props) => {
 ```
 
-### 6. Update `WishlistDetails` component to pass the `emptyStateText` and `placeholderCount` props to both the `WishlistDetailSkeleton` and `WishlistItems` components:
+6. Update `WishlistDetails` component to pass the `emptyStateText` and `placeholderCount` props to both the `WishlistDetailSkeleton` and `WishlistItems` components:
 
 ```tsx
 <WishlistDetailSkeleton
@@ -485,7 +488,7 @@ export const WishlistDetails = ({
 
 - [`a7b369c`](https://github.com/bigcommerce/catalyst/commit/a7b369c) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fixes the error warning by having a `ProductPickList` with no images, by making the `image` prop optional for when it is not needed.
 
-## Migration
+**Migration**
 
 - Update `schema.ts` to allow optional `image` prop for `CardRadioField`
 - Update `productOptionsTransformer` switch to have two cases for `ProductPickList`
@@ -503,34 +506,34 @@ export const WishlistDetails = ({
 
 - [`7071dfe`](https://github.com/bigcommerce/catalyst/commit/7071dfe) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Add locale prefix to auth middleware protected route URLPattern
 
-## Migration
+**Migration**
 
 In `core/middlewares/with-auth.ts`, update the `protectedPathPattern` variable to include an optional path segment for the locale:
+
 ```tsx
 const protectedPathPattern = new URLPattern({ pathname: `{/:locale}?/(account)/*` });
 ```
+
 - [`67715bf`](https://github.com/bigcommerce/catalyst/commit/67715bf) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Update GQL client and auth middleware to handle invalid tokens and invalidate session.
 
-### Summary
+**Summary**
 
 This will ensure that if a user is logged out elsewhere, they will be redirected to the /login page when they try to access a protected route.
 
 Previously, the pages would 404 which is misleading.
 
-### Migration
+**Migration**
 
 1. Copy all changes from the `/core/client` directory and the `/packages/client` directory
-3. Copy translation values
-4. Copy all changes from the `/core/app/[locale]/(default)/account/` directory server actions
-5. Copy all changes from the `/core/app/[locale]/(default)/checkout/route.ts` file
+2. Copy translation values
+3. Copy all changes from the `/core/app/[locale]/(default)/account/` directory server actions
+4. Copy all changes from the `/core/app/[locale]/(default)/checkout/route.ts` file
 
 - [`11ecddf`](https://github.com/bigcommerce/catalyst/commit/11ecddf) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Update translations.
 
-- [`6c77e57`](https://github.com/bigcommerce/catalyst/commit/6c77e57) Thanks [@jorgemoya](https://github.com/jorgemoya)! - ## New
+- [`6c77e57`](https://github.com/bigcommerce/catalyst/commit/6c77e57) Thanks [@jorgemoya](https://github.com/jorgemoya)! - This refactor optimizes PDP for caching and the eventual use of dynamicIO. With these changes we leverage data caching to hit mostly cache data for guest shoppers in different locales and with different currencies.
 
-This refactor optimizes PDP for caching and the eventual use of dynamicIO. With these changes we leverage data caching to hit mostly cache data for guest shoppers in different locales and with different currencies.
-
-## Key modifications include:
+**Key modifications include:**
 
 - Split queries into four:
   - Page Metadata (metadata fields that only depend on locale)
@@ -542,7 +545,7 @@ This refactor optimizes PDP for caching and the eventual use of dynamicIO. With 
 - Use `Streamable.from` to generate our streaming props that are passed to our UI components.
 - Update UI components to allow streaming product options before streaming in buy button.
 
-## Migration instructions:
+**Migration instructions:**
 
 - Update `/product/[slug]/page.tsx`
   - For this page we are now doing a blocking request that is simplified for metadata and as a base product. Instead of having functions that each would read from props, we share streamable functions that can be passed to our UI components.
@@ -551,6 +554,7 @@ This refactor optimizes PDP for caching and the eventual use of dynamicIO. With 
 - Update`/product/[slug]/_components`.
   - Similar to `page.tsx` and `page.data`, expect changes in the fragments defined and how we pass streamable functions to UI components.
 - Update `/vibes/soul/product-detail/index.tsx` & `/vibes/soul/product-detail/product-detail-form.tsx`
+
   - Minor changes to allow streaming in data.
 
 - [`8a25424`](https://github.com/bigcommerce/catalyst/commit/8a25424) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Refactors the sign in functionality to use two separate providers instead of one. This is some work needed to be done in order to provide a better API for session syncing so it shouldn't effect any existing functionality.
@@ -559,7 +563,7 @@ This refactor optimizes PDP for caching and the eventual use of dynamicIO. With 
 
 - [`a19b3ba`](https://github.com/bigcommerce/catalyst/commit/a19b3ba) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Fix persistent cart behavior during login.
 
-## Migration
+**Migration**
 
 In `core/auth/index.ts`, create the `cartIdSchema` variable:
 
@@ -601,11 +605,11 @@ const SessionUpdate = z.object({
 
 - [`11ecddf`](https://github.com/bigcommerce/catalyst/commit/11ecddf) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add discounts summary item to Cart.
 
-- [`2de3c51`](https://github.com/bigcommerce/catalyst/commit/2de3c51) Thanks [@jorgemoya](https://github.com/jorgemoya)! - - Fixes an issue with the checkbox not properly triggering the required validation.
+- [`2de3c51`](https://github.com/bigcommerce/catalyst/commit/2de3c51) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fixes an issue with the checkbox not properly triggering the required validation.
 - Fixes an issue with the checkbox not setting the default value from the API.
 - Fixes an issue with the field value being incorrectly set as `undefined`
 
-## Migration
+**Migration**
 
 Update the props to set a `checked` value and pasa an empty string when checked box is unselected.
 
@@ -633,7 +637,7 @@ case 'checkbox':
 
 - [`2a7b05f`](https://github.com/bigcommerce/catalyst/commit/2a7b05f) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Add translations for 'Search' button on 404 page
 
-## Migration
+**Migration**
 
 1. Add `"search"` translation key in the `"NotFound"` translations
 2. In `core/vibes/soul/sections/not-found/index.tsx`, add a `ctaLabel` property and ensure it is used in place of the "Search" text
@@ -647,19 +651,21 @@ case 'checkbox':
 
 - [`a15d84c`](https://github.com/bigcommerce/catalyst/commit/a15d84c) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Renames `core/app/[locale]/(default)/product/[slug]/_components/product-analytics-provider/index.tsx` to `core/app/[locale]/(default)/product/[slug]/_components/product-analytics-provider.tsx` for consistency with the other analytics components.
 
-### Migration
+**Migration**
 
 To migrate, rename the file with git:
 
 ```bash
 git mv core/app/[locale]/(default)/product/[slug]/_components/product-analytics-provider/index.tsx core/app/[locale]/(default)/product/[slug]/_components/product-analytics-provider.tsx
 ```
+
 - [`5e5314b`](https://github.com/bigcommerce/catalyst/commit/5e5314b) Thanks [@jorgemoya](https://github.com/jorgemoya)! - We want state to be persitent on the `ProductDetailForm`, even after submit. This change will allow the API error messages to properly show when the form is submitted. Additionally, other form fields will retain state (like item quantity).
 
-## Migration
+**Migration**
 
 - Update `ProductDetailForm` to prevent reset on submit, by removing `requestFormReset` in the `onSubmit`.
 - Remove `router.refresh()` call and instead call new `revalidateCart` action.
+
   - `revalidateCart` is an action that `revalidateTag(TAGS.cart)`
   - This prevents the form from fully refreshing on success.
 
@@ -668,17 +674,18 @@ git mv core/app/[locale]/(default)/product/[slug]/_components/product-analytics-
 - [`8c4f374`](https://github.com/bigcommerce/catalyst/commit/8c4f374) Thanks [@jordanarldt](https://github.com/jordanarldt)! - - Redirect to `/account/wishlists/` when a wishlist ID is not found
 - Pass `actionsTitle` to WishlistActionsMenu on WishlistDetails page
 
-## Migration
+**Migration**
+
 1. Copy changes from `/core/app/[locale]/(default)/account/wishlists/[id]/_components/wishlist-actions.tsx` - Ensure that `actionsTitle` is an allowed property and that it is passed into the `WishlistActionsMenu` component
 2. Copy changes from `/core/app/[locale]/(default)/account/wishlists/[id]/page.tsx` - Redirect to `/account/wishlists/` on 404
 3. Ensure that the `removeButtonTitle` prop is passed down all the way to the `RemoveWishlistItemButton` component in the `WishlistItemCard` component
 
 - [`45bbd92`](https://github.com/bigcommerce/catalyst/commit/45bbd92) Thanks [@jordanarldt](https://github.com/jordanarldt)! - - Update the account pages to match the style of VIBES and remain consistent with the rest of Catalyst.
- - Updated OrderDetails line items styling to display cost of each item and the selected `productOptions`
- - Created OrderDetails skeletons
- - Updated /account/orders/[id] to use `Streamable`
+- Updated OrderDetails line items styling to display cost of each item and the selected `productOptions`
+- Created OrderDetails skeletons
+- Updated /account/orders/[id] to use `Streamable`
 
-## Migration
+**Migration**
 
 1. Copy all changes in the `/core/vibes/soul` directory
 2. Copy all changes in the `/core/app/[locale]/(default)/account` directory
@@ -687,9 +694,9 @@ git mv core/app/[locale]/(default)/product/[slug]/_components/product-analytics-
 
 - [`e8c693a`](https://github.com/bigcommerce/catalyst/commit/e8c693a) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Add toast message when changing password
 
-## Migration
+**Migration**
 
-### `core/vibes/soul/sections/account-settings/change-password-form.tsx`
+`core/vibes/soul/sections/account-settings/change-password-form.tsx`
 
 1. Import `toast`:
 
@@ -719,24 +726,23 @@ const [state, formAction] = useActionState(action, { lastResult: null });
 4. Update the `useEffect` hook to display a toast message on success:
 
 ```ts
-  useEffect(() => {
-    if (state.lastResult?.status === 'success' && state.successMessage != null) {
-      toast.success(state.successMessage);
-    }
+useEffect(() => {
+  if (state.lastResult?.status === 'success' && state.successMessage != null) {
+    toast.success(state.successMessage);
+  }
 
-    if (state.lastResult?.error) {
-      // eslint-disable-next-line no-console
-      console.log(state.lastResult.error);
-    }
-  }, [state]);
+  if (state.lastResult?.error) {
+    // eslint-disable-next-line no-console
+    console.log(state.lastResult.error);
+  }
+}, [state]);
 ```
 
-### `core/app/[locale]/(default)/account/settings/_actions/change-password.ts`
+`core/app/[locale]/(default)/account/settings/_actions/change-password.ts`
 
 Update all of the `return` values to match the new `ChangePasswordAction` interface, and return the `passwordUpdated` message on success.
 
 ```ts
-
 export const changePassword: ChangePasswordAction = async (prevState, formData) => {
   const t = await getTranslations('Account.Settings');
   const customerAccessToken = await getSessionCustomerAccessToken();
@@ -806,7 +812,7 @@ export const changePassword: ChangePasswordAction = async (prevState, formData) 
 
 - [`e145673`](https://github.com/bigcommerce/catalyst/commit/e145673) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Allow a list of CDN hostnames for cases when there can be more than one CDN available for image loader.
 
-Migration:
+**Migration:**
 
 - Update `build-config` schema to make `cdnUrls` an array of strings.
 - Update `next.config.ts` to set `cdnUrls` as an array, and set multiple preconnected Link headers (one per CDN).
@@ -835,7 +841,7 @@ Migration:
 - Remove caching in `/account` pages
 - Update `WishlistListItem` for better accessibility
 
-## Migration
+**Migration**
 
 Use this PR as a reference: https://github.com/bigcommerce/catalyst/pull/2341
 
@@ -849,13 +855,13 @@ Use this PR as a reference: https://github.com/bigcommerce/catalyst/pull/2341
 
 - [`5b83a97`](https://github.com/bigcommerce/catalyst/commit/5b83a97) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Pass search params to router.redirect when swapping locales.
 
-## Migration
+**Migration**
 
 Modify `useSwitchLocale` hook to include `Object.fromEntries(searchParams.entries())`.
 
 - [`edda0e3`](https://github.com/bigcommerce/catalyst/commit/edda0e3) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add missing border style for `Input`, `NumberInput` and `DatePicker`.
 
-## Migration
+**Migration**
 
 Following convention, add these conditional classes to the fields using `clsx`:
 
@@ -884,7 +890,8 @@ dark:
 
 - [`816290a`](https://github.com/bigcommerce/catalyst/commit/816290a) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Add aria-label to currency selector and PDP wishlist buttons
 
-## Migration
+**Migration**
+
 1. Copy all changes from the `/messages/en.json` file to get updated translation keys
 2. Add the `label` prop to the `Heart` component in `/core/vibes/soul/primitives/favorite/heart.tsx`
 3. Add the `label` prop to the `Favorite` component in `/core/vibes/soul/primitives/favorite/index.tsx` and pass it to the `Heart` component
