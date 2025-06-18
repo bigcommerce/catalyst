@@ -13,34 +13,33 @@ export class MemoryKvAdapter implements KvAdapter {
     max: 500,
   });
 
-  async mget<Data>(...keys: string[]) {
-    const entries = keys.map((key) => this.kv.get(key)?.value);
+  async mget<Data>(...keys: string[]): Promise<Array<Data | null>> {
+    const results = keys.map((key) => {
+      const entry = this.kv.get(key);
+      
+      if (!entry) {
+        return null;
+      }
+      
+      // Check if expired
+      if (entry.expiresAt < Date.now()) {
+        this.kv.delete(key); // Clean up expired entry
+        return null;
+      }
+      
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      return entry.value as Data;
+    });
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return entries as Data[];
+    return results;
   }
 
-  async set<Data>(key: string, value: Data, options: { ex?: number } = {}) {
+  async set<Data>(key: string, value: Data, options: { ex?: number } = {}): Promise<Data | null> {
     this.kv.set(key, {
       value,
       expiresAt: options.ex ? Date.now() + options.ex * 1_000 : Number.MAX_SAFE_INTEGER,
     });
 
     return value;
-  }
-
-  private async get<Data>(key: string) {
-    const entry = this.kv.get(key);
-
-    if (!entry) {
-      return null;
-    }
-
-    if (entry.expiresAt < Date.now()) {
-      return null;
-    }
-
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    return entry.value as Data;
   }
 }

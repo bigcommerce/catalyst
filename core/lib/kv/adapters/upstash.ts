@@ -2,45 +2,33 @@ import { Redis } from '@upstash/redis';
 
 import { KvAdapter, SetCommandOptions } from '../types';
 
-import { MemoryKvAdapter } from './memory';
-
-const memoryKv = new MemoryKvAdapter();
-
 export class UpstashKvAdapter implements KvAdapter {
-  private upstashKv = Redis.fromEnv();
-  private memoryKv = memoryKv;
+  private redis = Redis.fromEnv();
 
-  async mget<Data>(...keys: string[]) {
-    const memoryValues = await this.memoryKv.mget<Data>(...keys);
-
-    return memoryValues.length ? memoryValues : this.upstashKv.mget<Data[]>(keys);
+  async mget<Data>(...keys: string[]): Promise<Array<Data | null>> {
+    const result = await this.redis.mget<Data[]>(keys);
+    
+    // Redis mget returns an array, but we need to handle the case where some values might be null
+    return Array.isArray(result) ? result : keys.map(() => null);
   }
 
-  async set<Data>(key: string, value: Data, opts?: SetCommandOptions) {
-    // Convert options for memory cache (it only supports TTL as 'ex' field)
-    const memoryOpts = opts?.ttl ? { ex: opts.ttl } : undefined;
-
-    await this.memoryKv.set(key, value, memoryOpts);
-
-    // Build Upstash Redis options - support TTL but ignore tags (not supported by Redis)
-    const { ttl, tags, ...upstashOpts } = opts || {};
-    const redisOpts: Record<string, unknown> = { ...upstashOpts };
+  async set<Data>(key: string, value: Data, opts?: SetCommandOptions): Promise<Data | null> {
+    // Build Redis options - support TTL but ignore tags (not supported by Redis)
+    const { ttl, tags, ...redisOpts } = opts || {};
+    const options: Record<string, unknown> = { ...redisOpts };
 
     // Add TTL if provided (Redis EX parameter for seconds)
     if (ttl) {
-      redisOpts.ex = ttl;
+      options.ex = ttl;
     }
 
-    const response = await this.upstashKv.set(
+    const response = await this.redis.set(
       key,
       value,
-      Object.keys(redisOpts).length > 0 ? redisOpts : undefined,
+      Object.keys(options).length > 0 ? options : undefined,
     );
 
-    if (response === 'OK') {
-      return null;
-    }
-
-    return response;
+    // Redis SET returns 'OK' on success, null on failure
+    return response === 'OK' ? value : null;
   }
 }
