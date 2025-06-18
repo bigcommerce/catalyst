@@ -60,7 +60,10 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 
     this.logger(`SET - Key: ${key} - Value: ${JSON.stringify(value, null, 2)}`);
 
-    await Promise.all([this.memoryKv.set(key, value, opts), kv.set(key, value, opts)]);
+    // Convert options for memory cache (it only supports TTL as 'ex' field)
+    const memoryOpts = opts?.ttl ? { ex: opts.ttl } : undefined;
+    
+    await Promise.all([this.memoryKv.set(key, value, memoryOpts), kv.set(key, value, opts)]);
 
     return value;
   }
@@ -82,16 +85,10 @@ class KV<Adapter extends KvAdapter> implements KvAdapter {
 }
 
 async function createKVAdapter() {
-  if (process.env.BC_KV_REST_API_URL && process.env.BC_KV_REST_API_TOKEN) {
-    const { BcKvAdapter } = await import('./adapters/bc');
+  if (process.env.VERCEL === '1') {
+    const { RuntimeCacheAdapter } = await import('./adapters/vercel-runtime-cache');
 
-    return new BcKvAdapter();
-  }
-
-  if (process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN) {
-    const { VercelKvAdapter } = await import('./adapters/vercel');
-
-    return new VercelKvAdapter();
+    return new RuntimeCacheAdapter();
   }
 
   if (process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN) {
