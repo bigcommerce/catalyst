@@ -71,8 +71,8 @@ To pull the latest code from `canary` into `integrations/makeswift`, follow the 
 > - The `name` field in `core/package.json` should remain `@bigcommerce/catalyst-makeswift`
 > - The `version` field in `core/package.json` should remain whatever the latest published `@bigcommerce/catalyst-makeswift` version was
 > - The `.changesets/` directory should not include any files that reference the `"@bigcommerce/catalyst-core"` package. If these files are merged into `integrations/makeswift`, they will cause the `Changesets Release` GitHub Action in `.github/workflows/changesets-release.yml` to fail with the error: `Error: Found changeset for package @bigcommerce/catalyst-core which is not in the workspace`
-
-<!-- TODO: The chances of someone accidentally merging a PR that references the `@bigcommerce/catalyst-core` package are quite high. We should find a better way to prevent this from happening. -->
+>
+> _Note: A [GitHub Action is in place](.github/workflows/prevent-invalid-changesets.yml) to help prevent invalid changesets from being merged into `integrations/makeswift`. Do not merge your PR if this GitHub Action fails._
 
 5. After resolving any merge conflicts, open a new PR in GitHub to merge your `{new-branch-name}` into `integrations/makeswift`. This PR should be code reviewed and approved before the next steps.
 
@@ -115,6 +115,8 @@ Once your PR is merged, our [GitHub Action](.github/workflows/changesets-release
 
 > [!WARNING]
 > It is very important that `.changeset/*.md` files targeting packages in `packages/` are not merged into the `integrations/makeswift` branch. While it is technically feasible to release packages from `integrations/makeswift`, we never want to do this. If we did this, we would need to sync the branches in the opposite direction, which was never intended to happen.
+>
+> _Note: A [GitHub Action is in place](.github/workflows/prevent-invalid-changesets.yml) to help prevent invalid changesets from being merged into `integrations/makeswift`. Do not merge your PR if this GitHub Action fails._
 
 ## Other Ways to Contribute
 
