@@ -6,9 +6,8 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
-import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
-
-import { kv } from '../lib/kv';
+import { fetchWithTTLCache, batchFetchWithTTLCache } from '~/lib/fetch-cache';
+import { routeCacheKey, storeStatusCacheKey } from '~/lib/fetch-cache/keys';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
@@ -162,36 +161,7 @@ const RouteSchema = z.object({
 const ROUTE_CACHE_TTL = parseInt(process.env.ROUTE_CACHE_TTL || '86400', 10); // Default: 24 hours
 const STORE_STATUS_CACHE_TTL = parseInt(process.env.STORE_STATUS_CACHE_TTL || '3600', 10); // Default: 1 hour
 
-const fetchAndCacheRoute = async (
-  pathname: string,
-  channelId: string,
-  event: NextFetchEvent,
-): Promise<Route> => {
-  const route = await getRoute(pathname, channelId);
-
-  // Cache with configurable TTL (default 24 hours)
-  event.waitUntil(kv.set(kvKey(pathname, channelId), route, { ttl: ROUTE_CACHE_TTL }));
-
-  return route;
-};
-
-const fetchAndCacheStatus = async (
-  channelId: string,
-  event: NextFetchEvent,
-): Promise<StorefrontStatusType> => {
-  const status = await getStoreStatus(channelId);
-
-  if (status === undefined) {
-    throw new Error('Failed to fetch new storefront status');
-  }
-
-  // Cache with configurable TTL (default 1 hour)
-  event.waitUntil(
-    kv.set(kvKey(STORE_STATUS_KEY, channelId), status, { ttl: STORE_STATUS_CACHE_TTL }),
-  );
-
-  return status;
-};
+// Functions removed - caching is now handled automatically by fetchWithTTLCache
 
 const clearLocaleFromPath = (path: string, locale: string) => {
   if (path === `/${locale}` || path === `/${locale}/`) {
@@ -213,22 +183,27 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
     // For route resolution parity, we need to also include query params, otherwise certain redirects will not work.
     const pathname = clearLocaleFromPath(request.nextUrl.pathname + request.nextUrl.search, locale);
 
-    // Try to get cached values - TTL is handled by the cache layer
-    let [route, status] = await kv.mget<Route | StorefrontStatusType>(
-      kvKey(pathname, channelId),
-      kvKey(STORE_STATUS_KEY, channelId),
-    );
+    // Use batch fetch with TTL caching - much cleaner than manual cache management
+    const [route, status] = await batchFetchWithTTLCache<Route | StorefrontStatusType>([
+      {
+        fetcher: () => getRoute(pathname, channelId),
+        cacheKey: routeCacheKey(pathname, channelId),
+        options: { ttl: ROUTE_CACHE_TTL },
+      },
+      {
+        fetcher: async () => {
+          const fetchedStatus = await getStoreStatus(channelId);
+          if (fetchedStatus === undefined) {
+            throw new Error('Failed to fetch storefront status');
+          }
+          return fetchedStatus;
+        },
+        cacheKey: storeStatusCacheKey(channelId),
+        options: { ttl: STORE_STATUS_CACHE_TTL },
+      },
+    ]);
 
-    // If cache miss, fetch fresh data (TTL handles expiry automatically)
-    if (!status) {
-      status = await fetchAndCacheStatus(channelId, event);
-    }
-
-    if (!route) {
-      route = await fetchAndCacheRoute(pathname, channelId, event);
-    }
-
-    // Simple validation of the cached data
+    // Simple validation of the fetched/cached data
     const parsedRoute = RouteSchema.nullable().safeParse(route);
     const parsedStatus = StorefrontStatusSchema.safeParse(status);
 

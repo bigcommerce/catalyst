@@ -1,6 +1,6 @@
-interface CacheOperation {
-  operation: 'GET' | 'MGET' | 'SET';
-  keys: string[];
+interface FetchCacheOperation {
+  operation: 'FETCH' | 'BATCH_FETCH' | 'CACHE_SET';
+  cacheKeys: string[];
   memoryHits?: number;
   backendHits?: number;
   totalMisses?: number;
@@ -11,26 +11,26 @@ interface CacheOperation {
   backend?: string;
 }
 
-interface CacheLoggerConfig {
+interface FetchCacheLoggerConfig {
   enabled: boolean;
   prefix?: string;
 }
 
-export class CacheLogger {
-  private config: CacheLoggerConfig;
+export class FetchCacheLogger {
+  private config: FetchCacheLoggerConfig;
 
-  constructor(config: CacheLoggerConfig) {
+  constructor(config: FetchCacheLoggerConfig) {
     this.config = config;
   }
 
-  logOperation(operation: CacheOperation): void {
+  logOperation(operation: FetchCacheOperation): void {
     if (!this.config.enabled) return;
 
-    const prefix = this.config.prefix || '[Cache]';
-    const { operation: op, keys, totalTime, backend } = operation;
+    const prefix = this.config.prefix || '[Fetch Cache]';
+    const { operation: op, cacheKeys, totalTime, backend } = operation;
 
     // Build the main message
-    const keyStr = keys.length === 1 ? keys[0] : `[${keys.join(', ')}]`;
+    const keyStr = cacheKeys.length === 1 ? cacheKeys[0] : `[${cacheKeys.join(', ')}]`;
     let message = `${prefix} ${op} ${keyStr}`;
 
     // Add backend info if available
@@ -38,8 +38,8 @@ export class CacheLogger {
       message += ` (${backend})`;
     }
 
-    // Add hit/miss analysis for GET/MGET operations
-    if (op === 'GET' || op === 'MGET') {
+    // Add hit/miss analysis for fetch operations
+    if (op === 'FETCH' || op === 'BATCH_FETCH') {
       const analysis = this.buildHitMissAnalysis(operation);
       if (analysis) {
         message += ` - ${analysis}`;
@@ -52,7 +52,7 @@ export class CacheLogger {
       message += ` - ${timing}`;
     }
 
-    // Add options if present (for SET operations)
+    // Add options if present (for CACHE_SET operations)
     if (operation.options && Object.keys(operation.options).length > 0) {
       const opts = this.formatOptions(operation.options);
       message += ` - ${opts}`;
@@ -62,31 +62,31 @@ export class CacheLogger {
     console.log(message);
   }
 
-  private buildHitMissAnalysis(operation: CacheOperation): string {
-    const { keys, memoryHits = 0, backendHits = 0, totalMisses = 0 } = operation;
-    const total = keys.length;
+  private buildHitMissAnalysis(operation: FetchCacheOperation): string {
+    const { cacheKeys, memoryHits = 0, backendHits = 0, totalMisses = 0 } = operation;
+    const total = cacheKeys.length;
 
     if (memoryHits === total) {
-      return '✓ All from memory';
+      return '✓ All from memory cache';
     }
 
     if (memoryHits + backendHits === total) {
       if (memoryHits > 0) {
         return `✓ Memory: ${memoryHits}, Backend: ${backendHits}`;
       }
-      return `✓ All from backend`;
+      return `✓ All from backend cache`;
     }
 
-    // Some misses
+    // Some misses - need to fetch fresh data
     const parts = [];
     if (memoryHits > 0) parts.push(`Memory: ${memoryHits}`);
     if (backendHits > 0) parts.push(`Backend: ${backendHits}`);
-    if (totalMisses > 0) parts.push(`✗ Misses: ${totalMisses}`);
+    if (totalMisses > 0) parts.push(`✗ Fetch required: ${totalMisses}`);
 
     return parts.join(', ');
   }
 
-  private buildTimingBreakdown(operation: CacheOperation): string {
+  private buildTimingBreakdown(operation: FetchCacheOperation): string {
     const { memoryTime, backendTime, totalTime } = operation;
     const parts = [];
 
@@ -133,4 +133,4 @@ export const getPerformanceTimer = (): (() => number) => {
   return () => Date.now();
 };
 
-export const timer = getPerformanceTimer(); 
+export const timer = getPerformanceTimer();
