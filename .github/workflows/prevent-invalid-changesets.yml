@@ -5,6 +5,10 @@ on:
     branches:
       - integrations/makeswift
 
+permissions:
+  contents: read
+  pull-requests: read
+
 jobs:
   validate-changesets:
     runs-on: ubuntu-latest
@@ -16,22 +20,63 @@ jobs:
       - name: Get changed .changeset files
         id: changed
         run: |
-          files=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep '^\.changeset/.*\.md$' || true)
-          echo "files<<EOF" >> $GITHUB_OUTPUT
+          set -euo pipefail
+
+          files=$(git diff --name-only "origin/${{ github.base_ref }}...HEAD" | grep '^\.changeset/.*\.md$' || true)
+
+          # sanitize the file list to prevent injection
+          files=$(echo "$files" | grep -E '^\.changeset/[a-zA-Z0-9_-]+\.md$' || true)
+
+          delimiter="changeset_files_$(date +%s)_$$"
+          echo "files<<$delimiter" >> $GITHUB_OUTPUT
           echo "$files" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          echo "$delimiter" >> $GITHUB_OUTPUT
 
       - name: Validate changesets only target @bigcommerce/catalyst-makeswift
         if: steps.changed.outputs.files != ''
         run: |
-          echo "${{ steps.changed.outputs.files }}" | while read file; do
-            echo "Checking $file..."
+          set -euo pipefail
+          echo "${{ steps.changed.outputs.files }}" | while IFS= read -r file; do
+            # .changeset/*.md filenames should only contain alphanumeric characters, hyphens, and underscores
+            if [[ ! "$file" =~ ^\.changeset/[a-zA-Z0-9_-]+\.md$ ]]; then
+              printf "::error::Invalid filename pattern: %s\n" "$file"
+              exit 1
+            fi
 
-            frontmatter=$(awk '/^---/{if (++count == 2) exit; next} count==1' "$file")
+            # extra defense against path traversal attacks
+            if [[ "$file" == *".."* ]] || [[ "$file" == *"/"* && "$file" != .changeset/* ]]; then
+              printf "::error::Suspicious file path: %s\n" "$file"
+              exit 1
+            fi
+
+            printf "Checking %s...\n" "$file"
+
+            # processing untrusted file contents through awk/grep without size limits could lead to resource exhaustion
+            # limit file size to 100KB
+            if [[ $(stat -f%z "$file" 2>/dev/null || stat -c%s "$file" 2>/dev/null) -gt 102400 ]]; then
+              printf "::error file=%s::File too large\n" "$file"
+              exit 1
+            fi
+
+            if [[ -L "$file" ]]; then
+              printf "::error file=%s::Symlinks are not allowed\n" "$file"
+              exit 1
+            fi
+
+            if [[ ! -f "$file" ]]; then
+              printf "::error::File not found: %s\n" "$file"
+              exit 1
+            fi
+
+            frontmatter=$(timeout 10s awk '/^---/{if (++count == 2) exit; next} count==1' "$file" 2>/dev/null || echo "")
+            if [[ -z "$frontmatter" ]]; then
+              printf "::error file=%s::Failed to extract frontmatter or file has no frontmatter\n" "$file"
+              exit 1
+            fi
 
             # fails the check if it finds a changeset file with frontmatter containing a package that is not "@bigcommerce/catalyst-makeswift"
             echo "$frontmatter" | grep -Eo '"@bigcommerce/[^"]+"' | grep -v '"@bigcommerce/catalyst-makeswift"' && {
-              echo "::error file=$file::Invalid package found in changeset file. Only @bigcommerce/catalyst-makeswift is allowed."
+              printf "::error file=%s::Invalid package found in changeset file. Only @bigcommerce/catalyst-makeswift is allowed.\n" "${file//[^a-zA-Z0-9.\/_-]/}"
               exit 1
             }
           done
