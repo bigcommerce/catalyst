@@ -36,6 +36,7 @@ jobs:
         if: steps.changed.outputs.files != ''
         run: |
           set -euo pipefail
+
           echo "${{ steps.changed.outputs.files }}" | while IFS= read -r file; do
             # .changeset/*.md filenames should only contain alphanumeric characters, hyphens, and underscores
             if [[ ! "$file" =~ ^\.changeset/[a-zA-Z0-9_-]+\.md$ ]]; then
