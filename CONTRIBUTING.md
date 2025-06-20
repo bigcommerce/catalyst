@@ -70,7 +70,7 @@ To pull the latest code from `canary` into `integrations/makeswift`, follow the 
 >
 > - The `name` field in `core/package.json` should remain `@bigcommerce/catalyst-makeswift`
 > - The `version` field in `core/package.json` should remain whatever the latest published `@bigcommerce/catalyst-makeswift` version was
-> - The `.changesets/` directory should not include any files that reference the `"@bigcommerce/catalyst-core"` package. If these files are merged into `integrations/makeswift`, they will cause the `Changesets Release` GitHub Action in `.github/workflows/changesets-release.yml` to fail with the error: `Error: Found changeset for package @bigcommerce/catalyst-core which is not in the workspace`
+> - The `.changeset/` directory should not include any files that reference the `"@bigcommerce/catalyst-core"` package. If these files are merged into `integrations/makeswift`, they will cause the `Changesets Release` GitHub Action in `.github/workflows/changesets-release.yml` to fail with the error: `Error: Found changeset for package @bigcommerce/catalyst-core which is not in the workspace`
 >
 > _Note: A [GitHub Action is in place](.github/workflows/prevent-invalid-changesets.yml) to help prevent invalid changesets from being merged into `integrations/makeswift`. Do not merge your PR if this GitHub Action fails._
 
@@ -109,7 +109,7 @@ pnpm changeset
 
 An interactive prompt will take you through the process of [adding your changeset](https://github.com/changesets/changesets/blob/main/docs/adding-a-changeset.md).
 
-Once you've completed the interactive prompt, you'll see a new file in the `.changesets/` directory. This file contains the version bump and changelog entry for your changes. You should commit this file to the branch associated with your PR.
+Once you've completed the interactive prompt, you'll see a new file in the `.changeset/` directory. This file contains the version bump and changelog entry for your changes. You should commit this file to the branch associated with your PR.
 
 Once your PR is merged, our [GitHub Action](.github/workflows/changesets-release.yml) will handle the process of versioning and updating the changelog, (and in the case of `packages/`, publishing your changes to NPM). No further action is needed from you.
 
