@@ -5,6 +5,7 @@ import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/car
 import { getCartId } from '~/lib/cart';
 import { exists } from '~/lib/utils';
 
+import { getStreamableProduct } from '../product/[slug]/page-data';
 import { redirectToCheckout } from './_actions/redirect-to-checkout';
 import { updateCouponCode } from './_actions/update-coupon-code';
 import { updateLineItem } from './_actions/update-line-item';
@@ -63,42 +64,63 @@ export default async function Cart({ params }: Props) {
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
 
-  const formattedLineItems = lineItems.map((item) => ({
-    id: item.entityId,
-    quantity: item.quantity,
-    price: format.number(item.listPrice.value, {
-      style: 'currency',
-      currency: item.listPrice.currencyCode,
-    }),
-    subtitle: item.selectedOptions
-      .map((option) => {
-        switch (option.__typename) {
-          case 'CartSelectedMultipleChoiceOption':
-          case 'CartSelectedCheckboxOption':
-            return `${option.name}: ${option.value}`;
+  const formattedLineItems = await Promise.all(lineItems.map(async (item) => {
+    const optionValueIds = item.selectedOptions?.map((opt) =>
+      'optionEntityId' in opt && 'valueEntityId' in opt &&
+      typeof opt.optionEntityId === 'number' &&
+      typeof opt.valueEntityId === 'number'
+        ? { optionEntityId: opt.optionEntityId, valueEntityId: opt.valueEntityId }
+        : null
+    ).filter(Boolean);
 
-          case 'CartSelectedNumberFieldOption':
-            return `${option.name}: ${option.number}`;
+    const product = await getStreamableProduct({
+      entityId: item.productEntityId,
+      optionValueIds,
+      useDefaultOptionSelections: true,
+    });
 
-          case 'CartSelectedMultiLineTextFieldOption':
-          case 'CartSelectedTextFieldOption':
-            return `${option.name}: ${option.text}`;
+    const isInStock = product?.inventory?.isInStock ?? false;
 
-          case 'CartSelectedDateFieldOption':
-            return `${option.name}: ${format.dateTime(new Date(option.date.utc))}`;
+    return {
+      id: item.entityId,
+      quantity: item.quantity,
+      price: format.number(item.listPrice.value, {
+        style: 'currency',
+        currency: item.listPrice.currencyCode,
+      }),
+      subtitle: item.selectedOptions
+        .map((option) => {
+          switch (option.__typename) {
+            case 'CartSelectedMultipleChoiceOption':
+            case 'CartSelectedCheckboxOption':
+              return `${option.name}: ${option.value}`;
 
-          default:
-            return '';
-        }
-      })
-      .join(', '),
-    title: item.name,
-    image: { src: item.image?.url || '', alt: item.name },
-    href: new URL(item.url).pathname,
-    selectedOptions: item.selectedOptions,
-    productEntityId: item.productEntityId,
-    variantEntityId: item.variantEntityId,
+            case 'CartSelectedNumberFieldOption':
+              return `${option.name}: ${option.number}`;
+
+            case 'CartSelectedMultiLineTextFieldOption':
+            case 'CartSelectedTextFieldOption':
+              return `${option.name}: ${option.text}`;
+
+            case 'CartSelectedDateFieldOption':
+              return `${option.name}: ${format.dateTime(new Date(option.date.utc))}`;
+
+            default:
+              return '';
+          }
+        })
+        .join(', '),
+      title: item.name,
+      image: { src: item.image?.url || '', alt: item.name },
+      href: new URL(item.url).pathname,
+      selectedOptions: item.selectedOptions,
+      productEntityId: item.productEntityId,
+      variantEntityId: item.variantEntityId,
+      isInStock,
+    };
   }));
+
+  const canProceed = formattedLineItems.every((item) => item.isInStock);
 
   const totalCouponDiscount =
     checkout?.coupons.reduce((sum, coupon) => sum + coupon.discountedAmount.value, 0) ?? 0;
@@ -128,6 +150,7 @@ export default async function Cart({ params }: Props) {
   return (
     <>
       <CartComponent
+        canProceedToCheckout={canProceed}
         cart={{
           lineItems: formattedLineItems,
           total: format.number(checkout?.grandTotal?.value || 0, {
@@ -189,6 +212,7 @@ export default async function Cart({ params }: Props) {
         incrementLineItemLabel={t('increment')}
         key={`${cart.entityId}-${cart.version}`}
         lineItemAction={updateLineItem}
+        outOfStockMessage={t('outOfStockMessage')}
         shipping={{
           action: updateShippingInfo,
           countries,

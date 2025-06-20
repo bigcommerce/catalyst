@@ -126,6 +126,8 @@ export interface CartProps<LineItem extends CartLineItem> {
   cart: Cart<LineItem>;
   couponCode?: CouponCode;
   shipping?: Shipping;
+  canProceedToCheckout?: boolean;
+  outOfStockMessage?: string;
 }
 
 const defaultEmptyState = {
@@ -172,6 +174,8 @@ export function CartClient<LineItem extends CartLineItem>({
   emptyState = defaultEmptyState,
   summaryTitle,
   shipping,
+  canProceedToCheckout,
+  outOfStockMessage,
 }: CartProps<LineItem>) {
   const [state, formAction] = useActionState(lineItemAction, {
     lineItems: cart.lineItems,
@@ -265,7 +269,7 @@ export function CartClient<LineItem extends CartLineItem>({
               <dl>{cart.total}</dl>
             </div>
           </dl>
-          <CheckoutButton action={checkoutAction} className="mt-4 w-full">
+          <CheckoutButton action={checkoutAction} className="mt-4 w-full" disabled={!canProceedToCheckout}>
             {checkoutLabel}
             <ArrowRight size={20} strokeWidth={1} />
           </CheckoutButton>
@@ -299,7 +303,14 @@ export function CartClient<LineItem extends CartLineItem>({
               </div>
               <div className="flex grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
                 <div className="flex w-full flex-1 flex-col @xl:w-1/2 @xl:pr-4">
-                  <span className="font-medium">{lineItem.title}</span>
+                  <span className="font-medium">
+                    {lineItem.title}
+                    {!('isInStock' in lineItem) || lineItem.isInStock ? null : (
+                      <span className="block mt-1 text-red-600 text-sm font-normal">
+                        {outOfStockMessage}
+                      </span>
+                    )}
+                  </span>
                   <span className="text-[var(--cart-subtext-text,hsl(var(--contrast-300)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
                     {lineItem.subtitle}
                   </span>
@@ -426,6 +437,7 @@ function CounterForm({
 
 function CheckoutButton({
   action,
+  disabled,
   ...props
 }: { action: Action<SubmissionResult | null, FormData> } & ComponentPropsWithoutRef<
   typeof Button
@@ -433,6 +445,8 @@ function CheckoutButton({
   const [lastResult, formAction] = useActionState(action, null);
 
   const [form] = useForm({ lastResult });
+
+  props.disabled = disabled;
 
   useEffect(() => {
     if (form.errors) {
@@ -444,7 +458,7 @@ function CheckoutButton({
 
   return (
     <form action={formAction}>
-      <SubmitButton {...props} />
+      <SubmitButton {...props} disabled={disabled} />
     </form>
   );
 }
@@ -452,5 +466,7 @@ function CheckoutButton({
 function SubmitButton(props: ComponentPropsWithoutRef<typeof Button>) {
   const { pending } = useFormStatus();
 
-  return <Button {...props} disabled={pending} loading={pending} type="submit" />;
+  const disabled = props.disabled || pending;
+
+  return <Button {...props} disabled={disabled} loading={pending} type="submit" />;
 }
