@@ -88,6 +88,6 @@ runtime.registerComponent(MakeswiftProductCard, {
         text: TextInput({ label: 'Badge text', defaultValue: 'New' }),
       },
     }),
-    showCompare: Checkbox({ label: 'Show compare', defaultValue: true }),
+    showCompare: Checkbox({ label: 'Show compare', defaultValue: false }),
   },
 });
