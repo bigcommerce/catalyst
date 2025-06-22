@@ -81,9 +81,9 @@ function MakeswiftProductCardGIT({
     <div
       className={clsx(
         'grid gap-5',
-        'grid-cols-2', // mobile: 2 columns
-        'sm:grid-cols-4', // tablet: 4 columns
-        'lg:grid-cols-6', // desktop: 6 columns
+        `grid-cols-${itemsPerRowMobile}`, // mobile: 2 columns
+        `sm:grid-cols-${itemsPerRowTablet}`, // tablet: 4 columns
+        `lg:grid-cols-${itemsPerRowDesktop}`, // desktop: 6 columns
         className,
       )}
     >
