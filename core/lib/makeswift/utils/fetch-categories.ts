@@ -29,14 +29,16 @@ export function useCategoriesByIds({ categoryIds }: Props) {
 
   const { data, isLoading } = useSWR(categoryIds.length ? categoryByIdsUrl : null, fetcher);
 
-  console.log('useCategoriesByIds data', data);
+  console.log(data, 'useCategoriesByIds data');
 
   const categories = useMemo(() => {
-    if (data?.categories) {
-      return data.categories.map((category: any) => bcCategoryToVibesCategory(category));
+    if (data?.data.categories) {
+      return data.data.categories.map((category: any) => bcCategoryToVibesCategory(category));
     }
     return [];
   }, [data, bcCategoryToVibesCategory]);
+
+  console.log('useCategoriesByIds categories', categories);
 
   return { categories, isLoading };
 }
