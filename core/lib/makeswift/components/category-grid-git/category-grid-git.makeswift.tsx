@@ -55,6 +55,9 @@ function MakeswiftCategoryGridGIT({
     categoryIds,
   });
 
+  console.log('MakeswiftCategoryGridGIT categories', categories);
+  console.log('MakeswiftCategoryGridGIT isLoading', isLoading);
+
   if (isLoading) {
     return <CategoryGridItemSkeleton className={className} />;
   }

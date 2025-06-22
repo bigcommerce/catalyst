@@ -38,9 +38,5 @@ export function useCategoriesByIds({ categoryIds }: Props) {
     [isLoading, combinedCategories, bcCategoryToVibesCategory],
   );
 
-  // // Remove useMemo, compute directly
-  // const combinedProducts = data?.products ?? [];
-  // const products = isLoading ? null : combinedProducts.map(bcProductToVibesProduct);
-
   return { categories, isLoading };
 }
