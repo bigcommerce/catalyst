@@ -5,7 +5,7 @@ import { string, z } from 'zod';
 interface Category {
   id: string;
   name: string;
-  image: string;
+  image?: string;
   productCount: number;
   path: string;
 }
@@ -13,7 +13,7 @@ interface Category {
 export const BcCategorySchema = z.object({
   category_id: z.number(),
   name: z.string(),
-  image_url: z.string(),
+  image_url: z.string().optional(),
   url: z.object({
     path: z.string(),
   }),
