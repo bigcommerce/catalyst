@@ -82,10 +82,10 @@ function MakeswiftProductCardGIT({
         className={[
           'grid gap-4',
           gridColsClass('', itemsPerRowMobile),
-          gridColsClass('sm:', itemsPerRowMobile),
-          gridColsClass('md:', itemsPerRowTablet),
-          gridColsClass('lg:', itemsPerRowDesktop),
-          gridColsClass('xl:', itemsPerRowSuperDesktop),
+          gridColsClass('@sm:', itemsPerRowMobile),
+          gridColsClass('@md:', itemsPerRowTablet),
+          gridColsClass('@lg:', itemsPerRowDesktop),
+          gridColsClass('@xl:', itemsPerRowSuperDesktop),
         ].join(' ')}
       >
         {products.map(async (product, index) => {

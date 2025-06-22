@@ -25,8 +25,7 @@ interface CategoryInterface {
 }
 
 const gridColsClass = (prefix: string, count: string) => {
-  // Only allow 1-4
-  const allowed = ['1', '2', '3', '4'];
+  const allowed = ['1', '2', '3', '4', '6', '8', '10'];
   if (!allowed.includes(count)) return '';
   return `${prefix}grid-cols-${count}`;
 };
@@ -56,9 +55,6 @@ function MakeswiftCategoryGridGIT({
     categoryIds,
   });
 
-  console.log('Categories:', categories);
-  console.log('Is Loading:', isLoading);
-
   if (isLoading) {
     return <CategoryGridItemSkeleton className={className} />;
   }
@@ -73,10 +69,10 @@ function MakeswiftCategoryGridGIT({
         className={[
           'grid gap-4',
           gridColsClass('', itemsPerRowMobile),
-          gridColsClass('sm:', itemsPerRowMobile),
-          gridColsClass('md:', itemsPerRowTablet),
-          gridColsClass('lg:', itemsPerRowDesktop),
-          gridColsClass('xl:', itemsPerRowSuperDesktop),
+          gridColsClass('@sm:', itemsPerRowMobile),
+          gridColsClass('@md:', itemsPerRowTablet),
+          gridColsClass('@lg:', itemsPerRowDesktop),
+          gridColsClass('@xl:', itemsPerRowSuperDesktop),
         ].join(' ')}
       >
         {categories.map(async (category) => {
