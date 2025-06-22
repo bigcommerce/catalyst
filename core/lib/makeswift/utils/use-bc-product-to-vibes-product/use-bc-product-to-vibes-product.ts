@@ -30,8 +30,8 @@ export const BcProductSchema = z.object({
   prices: PricesSchema,
   reviewSummary: z
     .object({
-      averageRating: z.number().nullable(),
-      reviewCount: z.number().nullable(),
+      averageRating: z.number().optional(),
+      reviewCount: z.number().optional(),
     })
     .optional(),
 });

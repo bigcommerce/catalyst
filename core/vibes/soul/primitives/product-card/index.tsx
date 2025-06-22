@@ -16,8 +16,6 @@ export interface Product {
   price?: Price;
   subtitle?: string;
   badge?: string;
-  rating: number;
-  reviewCount: number;
 }
 
 export interface ProductCardProps {
