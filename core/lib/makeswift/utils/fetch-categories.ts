@@ -11,10 +11,8 @@ const CategoryListSchema = z.object({
   categories: z.array(BcCategorySchema),
 });
 
-const fetcher = (url: string) =>
-  fetch(url)
-    .then((res) => res.json())
-    .then(CategoryListSchema.parse);
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+//.then(CategoryListSchema.parse);
 
 interface Props {
   categoryIds: string[];
