@@ -17,6 +17,7 @@ import { ProductCard } from '~/vibes/soul/primitives/product-card-git';
 import { searchProducts } from '../../utils/search-products';
 import { useProductsByIds } from '../../utils/fetch-products';
 import { Price } from '@/vibes/soul/primitives/price-label';
+import clsx from 'clsx';
 
 interface Props {
   className?: string;
@@ -76,17 +77,16 @@ function MakeswiftProductCardGIT({
     return <ProductCardSkeleton className={className} />;
   }
 
+  const gridCols = clsx(
+    'grid gap-4 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 @xl:grid-cols-4',
+  );
+
   return (
     <div className={className}>
       <div
-        className={[
-          'grid gap-4',
-          gridColsClass('', itemsPerRowMobile),
-          gridColsClass('@sm:', itemsPerRowMobile),
-          gridColsClass('@md:', itemsPerRowTablet),
-          gridColsClass('@lg:', itemsPerRowDesktop),
-          gridColsClass('@xl:', itemsPerRowSuperDesktop),
-        ].join(' ')}
+        className={clsx(
+          'grid gap-4 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 @xl:grid-cols-4',
+        )}
       >
         {products.map(async (product, index) => {
           const { price, salePrice } = handlePrice(product.price);
