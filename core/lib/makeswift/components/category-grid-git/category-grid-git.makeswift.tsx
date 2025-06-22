@@ -67,39 +67,37 @@ function MakeswiftCategoryGridGIT({
   }
 
   return (
-    <div className={className}>
-      <div
-        className={clsx(
-          'grid gap-5',
-          `grid-cols-${itemsPerRowMobile}`, // mobile: 2 columns
-          `sm:grid-cols-${itemsPerRowTablet}`, // tablet: 4 columns
-          `lg:grid-cols-${itemsPerRowDesktop}`, // desktop: 6 columns
-          `xl:grid-cols-${itemsPerRowSuperDesktop}`, // super desktop: 8 columns
-          className,
-        )}
-      >
-        {categories.map(async (category) => {
-          return (
-            <p>{category.name}</p>
-            // <ProductCard
-            //   key={product.id}
-            //   className={className}
-            //   image={product.image}
-            //   name={product.title}
-            //   rating={product.rating}
-            //   reviewCount={product.reviewCount}
-            //   price={price}
-            //   salePrice={salePrice}
-            //   badge={customProductSettings?.badge}
-            //   aspectRatio={aspectRatio}
-            //   showReviews={showReviews}
-            //   href={product.href}
-            //   id={product.id}
-            //   {...props}
-            // />
-          );
-        })}
-      </div>
+    <div
+      className={clsx(
+        'grid gap-5',
+        `grid-cols-${itemsPerRowMobile}`, // mobile: 2 columns
+        `sm:grid-cols-${itemsPerRowTablet}`, // tablet: 4 columns
+        `lg:grid-cols-${itemsPerRowDesktop}`, // desktop: 6 columns
+        `xl:grid-cols-${itemsPerRowSuperDesktop}`, // super desktop: 8 columns
+        className,
+      )}
+    >
+      {categories.map(async (category) => {
+        return (
+          <p>{category.name}</p>
+          // <ProductCard
+          //   key={product.id}
+          //   className={className}
+          //   image={product.image}
+          //   name={product.title}
+          //   rating={product.rating}
+          //   reviewCount={product.reviewCount}
+          //   price={price}
+          //   salePrice={salePrice}
+          //   badge={customProductSettings?.badge}
+          //   aspectRatio={aspectRatio}
+          //   showReviews={showReviews}
+          //   href={product.href}
+          //   id={product.id}
+          //   {...props}
+          // />
+        );
+      })}
     </div>
   );
 }
