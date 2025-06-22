@@ -77,43 +77,41 @@ function MakeswiftProductCardGIT({
     return <ProductCardSkeleton className={className} />;
   }
 
-  const gridCols = clsx(
-    'grid gap-4 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 @xl:grid-cols-4',
-  );
-
   return (
-    <div className={className}>
-      <div
-        className={clsx(
-          'grid gap-4 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 @xl:grid-cols-4',
-        )}
-      >
-        {products.map(async (product, index) => {
-          const { price, salePrice } = handlePrice(product.price);
-          const customProductSettings = additionalProducts[index] || handleCustomBadgeObject();
+    <div
+      className={clsx(
+        'grid gap-5',
+        'grid-cols-2', // mobile: 2 columns
+        'sm:grid-cols-4', // tablet: 4 columns
+        'lg:grid-cols-6', // desktop: 6 columns
+        className,
+      )}
+    >
+      {products.map(async (product, index) => {
+        const { price, salePrice } = handlePrice(product.price);
+        const customProductSettings = additionalProducts[index] || handleCustomBadgeObject();
 
-          return (
-            <ProductCard
-              key={product.id}
-              className={className}
-              image={product.image}
-              name={product.title}
-              // @ts-ignore
-              rating={product.rating as number}
-              // @ts-ignore
-              reviewCount={product.reviewCount as number}
-              price={price}
-              salePrice={salePrice}
-              badge={customProductSettings?.badge}
-              aspectRatio={aspectRatio}
-              showReviews={showReviews}
-              href={product.href}
-              id={product.id}
-              {...props}
-            />
-          );
-        })}
-      </div>
+        return (
+          <ProductCard
+            key={product.id}
+            className={className}
+            image={product.image}
+            name={product.title}
+            // @ts-ignore
+            rating={product.rating as number}
+            // @ts-ignore
+            reviewCount={product.reviewCount as number}
+            price={price}
+            salePrice={salePrice}
+            badge={customProductSettings?.badge}
+            aspectRatio={aspectRatio}
+            showReviews={showReviews}
+            href={product.href}
+            id={product.id}
+            {...props}
+          />
+        );
+      })}
     </div>
   );
 }
