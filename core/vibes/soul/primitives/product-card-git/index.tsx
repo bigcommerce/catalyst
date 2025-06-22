@@ -11,7 +11,6 @@ interface ProductCardProps {
   salePrice?: string;
   rating: number;
   reviewCount: number;
-  showBadge?: boolean;
   badge: { show: boolean; text: string; theme: string; shape: string; location: string };
   aspectRatio?: '5:6' | '3:4' | '1:1';
   showReviews?: boolean;
@@ -29,7 +28,6 @@ export const ProductCard = ({
   salePrice,
   rating,
   reviewCount,
-  showBadge = false,
   badge,
   aspectRatio = '5:6',
   imagePriority = false,
@@ -106,12 +104,12 @@ export const ProductCard = ({
         <Link
           aria-label={name}
           className={clsx(
-            'mt-4 w-full rounded bg-gray-900 py-2 text-white transition hover:bg-gray-800',
+            'relative mt-4 block w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
           )}
           href={href}
           id={id}
         >
-          <span className="sr-only">Shop Now →</span>
+          Shop Now →
         </Link>
       </div>
     </div>
