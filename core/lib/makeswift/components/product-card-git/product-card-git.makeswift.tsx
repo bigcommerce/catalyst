@@ -5,7 +5,6 @@ import {
   Combobox,
   Group,
   List,
-  Number,
   Select,
   Style,
   TextInput,
@@ -53,63 +52,69 @@ function MakeswiftProductCardGIT({
     <div
       className={`grid grid-cols-2 gap-4 sm:grid-cols-${itemsPerRowMobile} md:grid-cols-${itemsPerRowTablet} lg:grid-cols-${itemsPerRowDesktop} xl:grid-cols-${itemsPerRowSuperDesktop} ${className}`}
     >
-      {products.map(async (item) => {
-        const { badge, aspectRatio, entityId, showReviews } = item;
+      {products.length > 0 ? (
+        products.map(async (item) => {
+          const { badge, aspectRatio, entityId, showReviews } = item;
 
-        const { data, isLoading } = useSWR(
-          entityId ? `/api/products/${entityId}` : null,
-          async (url) =>
-            fetch(url)
-              .then((r) => r.json())
-              .then(BcProductSchema.parse),
-        );
+          const { data, isLoading } = useSWR(
+            entityId ? `/api/products/${entityId}` : null,
+            async (url) =>
+              fetch(url)
+                .then((r) => r.json())
+                .then(BcProductSchema.parse),
+          );
 
-        if (entityId == null || isLoading || data == null) {
-          return <ProductCardSkeleton className={className} />;
-        }
+          if (entityId == null || isLoading || data == null) {
+            return <ProductCardSkeleton className={className} />;
+          }
 
-        const product = bcProductToVibesProduct(data);
+          const product = bcProductToVibesProduct(data);
 
-        let price;
-        let salePrice: string | undefined = undefined;
-        if (!product.price) {
-          price = '0';
-        } else if (typeof product.price === 'string') {
-          price = product.price;
-        } else if (
-          typeof product.price === 'object' &&
-          product.price !== null &&
-          'minValue' in product.price
-        ) {
-          price = `${product.price.minValue} - ${product.price.maxValue}`;
-        } else if (
-          typeof product.price === 'object' &&
-          product.price !== null &&
-          'previousValue' in product.price
-        ) {
-          price = product.price.previousValue;
-          salePrice = product.price.currentValue;
-        }
+          let price;
+          let salePrice: string | undefined = undefined;
+          if (!product.price) {
+            price = '0';
+          } else if (typeof product.price === 'string') {
+            price = product.price;
+          } else if (
+            typeof product.price === 'object' &&
+            product.price !== null &&
+            'minValue' in product.price
+          ) {
+            price = `${product.price.minValue} - ${product.price.maxValue}`;
+          } else if (
+            typeof product.price === 'object' &&
+            product.price !== null &&
+            'previousValue' in product.price
+          ) {
+            price = product.price.previousValue;
+            salePrice = product.price.currentValue;
+          }
 
-        return (
-          <ProductCard
-            key={product.id}
-            className={className}
-            image={product.image}
-            name={product.title}
-            rating={product.rating || 0}
-            reviewCount={product.reviewCount || 0}
-            price={price}
-            salePrice={salePrice}
-            badge={badge}
-            aspectRatio={aspectRatio}
-            showReviews={showReviews}
-            href={product.href}
-            id={product.id}
-            {...props}
-          />
-        );
-      })}
+          return (
+            <ProductCard
+              key={product.id}
+              className={className}
+              image={product.image}
+              name={product.title}
+              rating={product.rating || 0}
+              reviewCount={product.reviewCount || 0}
+              price={price}
+              salePrice={salePrice}
+              badge={badge}
+              aspectRatio={aspectRatio}
+              showReviews={showReviews}
+              href={product.href}
+              id={product.id}
+              {...props}
+            />
+          );
+        })
+      ) : (
+        <div className="col-span-full text-center text-gray-500">
+          <p>Please Start Adding Products</p>
+        </div>
+      )}
     </div>
   );
 }
@@ -185,6 +190,9 @@ runtime.registerComponent(MakeswiftProductCardGIT, {
           }),
         },
       }),
+      getItemLabel(product) {
+        return 'Product';
+      },
     }),
     itemsPerRowSuperDesktop: Select({
       label: 'Items Per Row (Super Desktop)',
