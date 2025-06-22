@@ -66,14 +66,14 @@ function MakeswiftCategoryGridGIT({
   return (
     <div className={className}>
       <div
-        className={[
-          'grid gap-4',
-          gridColsClass('', itemsPerRowMobile),
-          gridColsClass('@sm:', itemsPerRowMobile),
-          gridColsClass('@md:', itemsPerRowTablet),
-          gridColsClass('@lg:', itemsPerRowDesktop),
-          gridColsClass('@xl:', itemsPerRowSuperDesktop),
-        ].join(' ')}
+        className={clsx(
+          'grid gap-5',
+          `grid-cols-${itemsPerRowMobile}`, // mobile: 2 columns
+          `sm:grid-cols-${itemsPerRowTablet}`, // tablet: 4 columns
+          `lg:grid-cols-${itemsPerRowDesktop}`, // desktop: 6 columns
+          `xl:grid-cols-${itemsPerRowSuperDesktop}`, // super desktop: 8 columns
+          className,
+        )}
       >
         {categories.map(async (category) => {
           return (
