@@ -56,6 +56,14 @@ function MakeswiftProductCardGIT({
         products.map(async (item) => {
           const { badge, aspectRatio, entityId, showReviews } = item;
 
+          console.log('Product Card GIT', {
+            entityId,
+          });
+
+          if (!entityId) {
+            return <ProductCardSkeleton className={className} />;
+          }
+
           const { data, isLoading } = useSWR(
             entityId ? `/api/products/${entityId}` : null,
             async (url) =>
@@ -63,6 +71,11 @@ function MakeswiftProductCardGIT({
                 .then((r) => r.json())
                 .then(BcProductSchema.parse),
           );
+
+          console.log('Product Card GIT Data', {
+            data,
+            isLoading,
+          });
 
           if (entityId == null || isLoading || data == null) {
             return <ProductCardSkeleton className={className} />;

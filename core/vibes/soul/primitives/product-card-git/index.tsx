@@ -36,9 +36,6 @@ export const ProductCard = ({
   id,
   href,
 }: ProductCardProps) => {
-  console.log('ProductCard rendered with:', {
-    image,
-  });
   return (
     <div className={`max-w-xl overflow-hidden rounded-lg bg-white shadow-lg ${className}`}>
       <div
