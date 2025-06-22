@@ -12,8 +12,7 @@ interface ProductCardProps {
   rating: number;
   reviewCount: number;
   showBadge?: boolean;
-  badgeText?: string;
-  badgeColor?: string;
+  badge: { show: boolean; text: string; theme: string; shape: string; location: string };
   aspectRatio?: '5:6' | '3:4' | '1:1';
   showReviews?: boolean;
   imagePriority?: boolean;
@@ -31,8 +30,7 @@ export const ProductCard = ({
   rating,
   reviewCount,
   showBadge = false,
-  badgeText = 'Best Seller',
-  badgeColor = 'bg-yellow-400',
+  badge,
   aspectRatio = '5:6',
   imagePriority = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
@@ -72,9 +70,13 @@ export const ProductCard = ({
             {name}
           </div>
         )}
-        {showBadge && badgeText !== '' && (
-          <Badge className="absolute right-3 top-3" shape="rounded">
-            {badgeText}
+        {badge.show && badge.text !== '' && (
+          <Badge
+            className={`absolute ${badge.location}-3 top-3`}
+            shape={badge.shape as 'pill' | 'rounded'}
+            variant={badge.theme as 'primary' | 'warning' | 'error' | 'success' | 'info'}
+          >
+            {badge.text}
           </Badge>
         )}
       </div>

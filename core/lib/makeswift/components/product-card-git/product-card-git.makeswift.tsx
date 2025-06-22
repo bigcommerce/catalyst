@@ -25,7 +25,7 @@ interface Props {
   className?: string;
   entityId?: string;
   aspectRatio?: '1:1' | '5:6' | '3:4';
-  badge: { show: boolean; text: string; color: string };
+  badge: { show: boolean; text: string; theme: string; shape: string; location: string };
   showReviews?: boolean;
 }
 
@@ -73,9 +73,7 @@ function MakeswiftProductCardGIT({ className, entityId, badge, showReviews, ...p
       reviewCount={product.reviewCount || 0}
       price={price}
       salePrice={salePrice}
-      showBadge={badge.show}
-      badgeText={badge.text}
-      badgeColor={badge.color}
+      badge={badge}
       aspectRatio={props.aspectRatio}
       showReviews={showReviews}
       href={product.href}
@@ -120,9 +118,32 @@ runtime.registerComponent(MakeswiftProductCardGIT, {
       props: {
         show: Checkbox({ label: 'Show badge', defaultValue: true }),
         text: TextInput({ label: 'Badge text', defaultValue: 'New' }),
-        color: Color({
-          label: 'Badge color',
-          defaultValue: '#ff0000',
+        shape: Select({
+          label: 'Badge shape',
+          options: [
+            { value: 'pill', label: 'Pill' },
+            { value: 'rounded', label: 'Rounded' },
+          ],
+          defaultValue: 'rounded',
+        }),
+        location: Select({
+          label: 'Badge location',
+          options: [
+            { value: 'left', label: 'Top Left' },
+            { value: 'right', label: 'Top Right' },
+          ],
+          defaultValue: 'right',
+        }),
+        theme: Select({
+          label: 'Badge Theme',
+          options: [
+            { value: 'error', label: 'Error' },
+            { value: 'info', label: 'Info' },
+            { value: 'primary', label: 'Primary' },
+            { value: 'success', label: 'Success' },
+            { value: 'warning', label: 'Warning' },
+          ],
+          defaultValue: 'primary',
         }),
       },
     }),
