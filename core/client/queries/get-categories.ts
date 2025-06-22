@@ -18,7 +18,8 @@ interface GetCategoriesByIds {
 }
 
 const getCategoriesByIds = cache(async (entityIds: number[]): Promise<GetCategoriesByIds> => {
-  const ids = entityIds.map((id) => (id ? id.toString() : '')).filter((id) => id !== '');
+  const ids = entityIds.join(','); // Convert array to comma-separated string
+
   try {
     const response = await axios.get(
       `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/trees/categories?category_id:in=${ids}`,
