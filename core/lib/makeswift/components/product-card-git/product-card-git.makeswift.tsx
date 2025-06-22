@@ -1,14 +1,6 @@
 'use client';
 
-import {
-  Checkbox,
-  Color,
-  Combobox,
-  Group,
-  Select,
-  Style,
-  TextInput,
-} from '@makeswift/runtime/controls';
+import { Checkbox, Combobox, Group, Select, Style, TextInput } from '@makeswift/runtime/controls';
 import useSWR from 'swr';
 
 import { runtime } from '~/lib/makeswift/runtime';

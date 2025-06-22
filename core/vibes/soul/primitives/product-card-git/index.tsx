@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import Image from 'next/image';
+import { Image } from '~/components/image';
 import { Badge } from '../badge';
 import { Link } from '~/components/link';
 
