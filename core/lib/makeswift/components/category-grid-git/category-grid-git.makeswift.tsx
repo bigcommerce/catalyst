@@ -77,7 +77,7 @@ function MakeswiftCategoryGridGIT({
         className,
       )}
     >
-      {categories.map(async (category) => {
+      {categories.map(async (category: any) => {
         return (
           <p>{category.name}</p>
           // <ProductCard

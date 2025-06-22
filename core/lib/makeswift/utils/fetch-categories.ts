@@ -31,12 +31,12 @@ export function useCategoriesByIds({ categoryIds }: Props) {
 
   console.log('useCategoriesByIds data', data);
 
-  const combinedCategories = useMemo(() => [...(data?.categories ?? [])], [data]);
-
-  const categories = useMemo(
-    () => (isLoading ? null : combinedCategories.map(bcCategoryToVibesCategory)),
-    [isLoading, combinedCategories, bcCategoryToVibesCategory],
-  );
+  const categories = useMemo(() => {
+    if (data?.categories) {
+      return data.categories.map((category: any) => bcCategoryToVibesCategory(category));
+    }
+    return [];
+  }, [data, bcCategoryToVibesCategory]);
 
   return { categories, isLoading };
 }
