@@ -1,0 +1,128 @@
+'use client';
+
+import {
+  Checkbox,
+  Color,
+  Combobox,
+  Group,
+  Select,
+  Style,
+  TextInput,
+} from '@makeswift/runtime/controls';
+import useSWR from 'swr';
+
+import { runtime } from '~/lib/makeswift/runtime';
+import {
+  BcProductSchema,
+  useBcProductToVibesProduct,
+} from '~/lib/makeswift/utils/use-bc-product-to-vibes-product/use-bc-product-to-vibes-product';
+import { ProductCardSkeleton } from '~/vibes/soul/primitives/product-card';
+import { ProductCard } from '~/vibes/soul/primitives/product-card-git';
+
+import { searchProducts } from '../../utils/search-products';
+
+interface Props {
+  className?: string;
+  entityId?: string;
+  aspectRatio: '1:1' | '5:6' | '3:4';
+  badge: { show: boolean; text: string; color: string };
+  showReviews?: boolean;
+}
+
+function MakeswiftProductCardGIT({ className, entityId, badge, showReviews, ...props }: Props) {
+  const bcProductToVibesProduct = useBcProductToVibesProduct();
+  const { data, isLoading } = useSWR(entityId ? `/api/products/${entityId}` : null, async (url) =>
+    fetch(url)
+      .then((r) => r.json())
+      .then(BcProductSchema.parse),
+  );
+
+  if (entityId == null || isLoading || data == null) {
+    return <ProductCardSkeleton className={className} />;
+  }
+
+  const product = bcProductToVibesProduct(data);
+
+  let price;
+  let salePrice: string | undefined = undefined;
+  if (!product.price) {
+    price = '0';
+  } else if (typeof product.price === 'string') {
+    price = product.price;
+  } else if (
+    typeof product.price === 'object' &&
+    product.price !== null &&
+    'minValue' in product.price
+  ) {
+    price = `${product.price.minValue} - ${product.price.maxValue}`;
+  } else if (
+    typeof product.price === 'object' &&
+    product.price !== null &&
+    'previousValue' in product.price
+  ) {
+    price = product.price.previousValue;
+    salePrice = product.price.currentValue;
+  }
+
+  return (
+    <ProductCard
+      className={className}
+      imageUrl={product.image?.src || ''}
+      name={product.title}
+      rating={product.rating || 0}
+      reviewCount={product.reviewCount || 0}
+      price={price}
+      salePrice={salePrice}
+      showBadge={badge.show}
+      badgeText={badge.text}
+      badgeColor={badge.color}
+      imageAspectRatio={props.aspectRatio}
+      showReviews={showReviews}
+      {...props}
+    />
+  );
+}
+
+runtime.registerComponent(MakeswiftProductCardGIT, {
+  type: 'catalog-product-card-git',
+  label: 'Product Card (GIT)',
+  props: {
+    className: Style(),
+    entityId: Combobox({
+      label: 'Product',
+      async getOptions(query) {
+        const products = await searchProducts(query);
+
+        return products.map((product) => ({
+          id: product.entityId.toString(),
+          label: product.name,
+          value: product.entityId.toString(),
+        }));
+      },
+    }),
+    aspectRatio: Select({
+      label: 'Image aspect ratio',
+      options: [
+        { value: '1:1', label: 'Square' },
+        { value: '5:6', label: '5:6' },
+        { value: '3:4', label: '3:4' },
+      ],
+      defaultValue: '5:6',
+    }),
+    showReviews: Checkbox({
+      label: 'Show reviews',
+      defaultValue: true,
+    }),
+    badge: Group({
+      label: 'Badge',
+      props: {
+        show: Checkbox({ label: 'Show badge', defaultValue: true }),
+        text: TextInput({ label: 'Badge text', defaultValue: 'New' }),
+        color: Color({
+          label: 'Badge color',
+          defaultValue: '#ff0000',
+        }),
+      },
+    }),
+  },
+});

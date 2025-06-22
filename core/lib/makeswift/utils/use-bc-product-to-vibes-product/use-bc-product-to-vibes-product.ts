@@ -47,6 +47,8 @@ export function useBcProductToVibesProduct(): (product: BcProductSchema) => Prod
         image: defaultImage ? { src: defaultImage.url, alt: defaultImage.altText } : undefined,
         price,
         subtitle: brand?.name,
+        rating: 0,
+        reviewCount: 0,
       };
     },
     [format],
