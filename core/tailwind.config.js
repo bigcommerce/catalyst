@@ -7,6 +7,11 @@ const config = {
     './makeswift/**/*.{ts,tsx,js,jsx}',
     '!./node_modules/**', // Exclude everything in node_modules to speed up builds
   ],
+  safelist: [
+    {
+      pattern: /grid-cols-.+/,
+    },
+  ],
   theme: {
     extend: {
       typography: {
