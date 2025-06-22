@@ -92,7 +92,7 @@ export const getCategorySearchResults = cache(
   async (searchTerm: string): Promise<CategorySearchResponse> => {
     try {
       const response = await axios.get(
-        `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/trees/categories?name:like=${searchTerm}`,
+        `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/trees/categories?name:like=${searchTerm}&limit=10&include_fields=product_count`,
         {
           headers: {
             'X-Auth-Token': process.env.BIGCOMMERCE_API_ACCESS_TOKEN ?? '',

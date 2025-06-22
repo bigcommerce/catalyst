@@ -1,22 +1,14 @@
 'use client';
 
-import {
-  Checkbox,
-  Combobox,
-  Group,
-  List,
-  Select,
-  Style,
-  TextInput,
-} from '@makeswift/runtime/controls';
+import { Combobox, Group, List, Select, Style } from '@makeswift/runtime/controls';
 
 import { runtime } from '~/lib/makeswift/runtime';
-import { ProductCardSkeleton } from '~/vibes/soul/primitives/product-card';
-import { ProductCard } from '~/vibes/soul/primitives/product-card-git';
 
-import { searchProducts } from '../../utils/search-products';
-import { useProductsByIds } from '../../utils/fetch-products';
+import * as Skeleton from '@/vibes/soul/primitives/skeleton';
+
 import { searchCategories } from '../../utils/search-categories';
+import clsx from 'clsx';
+import { useCategoriesByIds } from '../../utils/fetch-categories';
 
 interface Props {
   className?: string;
@@ -26,7 +18,6 @@ interface Props {
   itemsPerRowTablet: string;
   itemsPerRowMobile: string;
   aspectRatio?: '1:1' | '5:6' | '3:4';
-  showProductCount?: boolean;
 }
 
 interface CategoryInterface {
@@ -48,7 +39,6 @@ function MakeswiftCategoryGridGIT({
   itemsPerRowTablet,
   itemsPerRowMobile,
   aspectRatio,
-  showProductCount,
   ...props
 }: Props) {
   const categoryIds = categoryItems.map(({ entityId }) => entityId ?? '');
@@ -63,19 +53,17 @@ function MakeswiftCategoryGridGIT({
     );
   }
 
-  const isLoading = true;
-
-  // const { categories, isLoading } = useProductsByIds({
-  //   categoryIds,
-  // });
+  const { categories, isLoading } = useCategoriesByIds({
+    categoryIds,
+  });
 
   if (isLoading) {
-    return <ProductCardSkeleton className={className} />;
+    return <CategoryGridItemSkeleton className={className} />;
   }
 
-  // if (categories == null || categories.length === 0) {
-  //   return <ProductCardSkeleton className={className} />;
-  // }
+  if (categories == null || categories.length === 0) {
+    return <CategoryGridItemSkeleton className={className} />;
+  }
 
   return (
     <div className={className}>
@@ -89,9 +77,9 @@ function MakeswiftCategoryGridGIT({
           gridColsClass('xl:', itemsPerRowSuperDesktop),
         ].join(' ')}
       >
-        {/* {categories.map(async (category) => {
+        {categories.map(async (category) => {
           return (
-            <p>{category.entityId}</p>
+            <p>{category.name}</p>
             // <ProductCard
             //   key={product.id}
             //   className={className}
@@ -109,9 +97,32 @@ function MakeswiftCategoryGridGIT({
             //   {...props}
             // />
           );
-        })} */}
+        })}
       </div>
     </div>
+  );
+}
+
+export function CategoryGridItemSkeleton({
+  className,
+  aspectRatio = '5:6',
+}: {
+  className?: string;
+  aspectRatio?: string;
+}) {
+  return (
+    <Skeleton.Root className={clsx(className)}>
+      <Skeleton.Box
+        className={clsx(
+          'rounded-[var(--product-card-border-radius,1rem)]',
+          {
+            '5:6': 'aspect-[5/6]',
+            '3:4': 'aspect-[3/4]',
+            '1:1': 'aspect-square',
+          }[aspectRatio],
+        )}
+      />
+    </Skeleton.Root>
   );
 }
 
@@ -143,10 +154,10 @@ runtime.registerComponent(MakeswiftCategoryGridGIT, {
         return 'Category';
       },
     }),
-    showProductCount: Checkbox({
-      label: 'Show Product Count',
-      defaultValue: true,
-    }),
+    // showProductCount: Checkbox({
+    //   label: 'Show Product Count',
+    //   defaultValue: true,
+    // }),
     aspectRatio: Select({
       label: 'Product Image aspect ratio',
       options: [

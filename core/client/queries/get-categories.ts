@@ -1,62 +1,41 @@
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
+import axios from 'axios';
 import { cache } from 'react';
 
-import { getSessionCustomerAccessToken } from '~/auth';
-import { client } from '~/client';
-import { graphql, ResultOf } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
+interface GetCategoriesByIds {
+  status: 'success' | 'error';
+  data?: {
+    categories: {
+      category_id: number;
+      name: string;
+      description: string;
+      image_url: string;
+      url: {
+        path: string;
+      };
+    }[];
+  };
+  error?: string;
+}
 
-const GetCategoriesByIdsQuery = graphql(
-  `
-    query GetCategoriesByIds($entityIds: [Int!]) {
-      site {
-        categories(entityIds: $entityIds) {
-          edges {
-            node {
-              id
-              name
-              path
-              description
-              parentId
-              defaultImage {
-                url(width: 300)
-                altText
-              }
-              breadcrumbs {
-                name
-                path
-              }
-            }
-          }
-        }
-      }
-    }
-  `,
-  [],
-);
-
-export type GetCategoriesResponse = Array<
-  NonNullable<
-    ResultOf<typeof GetCategoriesByIdsQuery>['site']['categories']['edges']
-  >[number]['node']
->;
-
-const getCategoriesByIds = cache(async (entityIds: number[]) => {
-  const customerAccessToken = await getSessionCustomerAccessToken();
-
+const getCategoriesByIds = cache(async (entityIds: number[]): Promise<GetCategoriesByIds> => {
   try {
-    const response = await client.fetch({
-      document: GetCategoriesByIdsQuery,
-      variables: { entityIds },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+    const response = await axios.get(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/trees/categories?category_id:in=${entityIds}`,
+      {
+        headers: {
+          'X-Auth-Token': process.env.BIGCOMMERCE_API_ACCESS_TOKEN ?? '',
+          'Content-Type': 'application/json',
+        },
+      },
+    );
 
-    const { categories } = response.data.site;
+    const { data } = response.data;
 
     return {
       status: 'success',
-      categories: removeEdgesAndNodes(categories),
+      data: {
+        categories: data,
+      },
     };
   } catch (error: unknown) {
     if (error instanceof Error) {
@@ -67,4 +46,4 @@ const getCategoriesByIds = cache(async (entityIds: number[]) => {
   }
 });
 
-export {
+export { getCategoriesByIds };
