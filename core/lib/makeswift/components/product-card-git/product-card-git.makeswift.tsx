@@ -9,136 +9,122 @@ import {
   Style,
   TextInput,
 } from '@makeswift/runtime/controls';
-import useSWR from 'swr';
 
 import { runtime } from '~/lib/makeswift/runtime';
-import {
-  BcProductSchema,
-  useBcProductToVibesProduct,
-} from '~/lib/makeswift/utils/use-bc-product-to-vibes-product/use-bc-product-to-vibes-product';
 import { ProductCardSkeleton } from '~/vibes/soul/primitives/product-card';
 import { ProductCard } from '~/vibes/soul/primitives/product-card-git';
 
 import { searchProducts } from '../../utils/search-products';
+import { useProductsByIds } from '../../utils/fetch-products';
 
 interface Props {
   className?: string;
-  products: ProductInterface[];
+  additionalProducts: ProductInterface[];
   itemsPerRowSuperDesktop: string;
   itemsPerRowDesktop: string;
   itemsPerRowTablet: string;
   itemsPerRowMobile: string;
+  aspectRatio?: '1:1' | '5:6' | '3:4';
+  showReviews?: boolean;
 }
 
 interface ProductInterface {
   entityId?: string;
-  aspectRatio?: '1:1' | '5:6' | '3:4';
   badge: { show: boolean; text: string; theme: string; shape: string; location: string };
-  showReviews?: boolean;
 }
 
 function MakeswiftProductCardGIT({
   className,
-  products,
+  additionalProducts,
   itemsPerRowDesktop,
   itemsPerRowSuperDesktop,
   itemsPerRowTablet,
   itemsPerRowMobile,
+  aspectRatio,
+  showReviews,
   ...props
 }: Props) {
-  const bcProductToVibesProduct = useBcProductToVibesProduct();
+  const additionalProductIds = additionalProducts.map(({ entityId }) => entityId ?? '');
 
-  return (
-    <div className={className}>
-      {products.length > 0 ? (
-        <div
-          className={`grid grid-cols-${itemsPerRowMobile} gap-4 sm:grid-cols-${itemsPerRowMobile} md:grid-cols-${itemsPerRowTablet} lg:grid-cols-${itemsPerRowDesktop} xl:grid-cols-${itemsPerRowSuperDesktop}`}
-        >
-          {products.map(async (item) => {
-            const { badge, aspectRatio, entityId, showReviews } = item;
-            const randomNumber = Math.random().toString(36).substring(2, 15).toString();
-
-            console.log('Product Card GIT', {
-              entityId,
-            });
-
-            if (!entityId) {
-              return <p key={randomNumber}>No Product</p>; // <ProductCardSkeleton key={randomNumber} className={className} />;
-            }
-
-            const { data, isLoading } = useSWR(
-              entityId ? `/api/products/${entityId}` : null,
-              async (url) =>
-                fetch(url)
-                  .then((r) => r.json())
-                  .then(BcProductSchema.parse),
-            );
-
-            console.log('Product Card GIT Data', {
-              data,
-              isLoading,
-            });
-
-            if (entityId == null || isLoading || data == null) {
-              return <p key={randomNumber}>No Product</p>; //<ProductCardSkeleton key={randomNumber} className={className} />;
-            }
-
-            console.log('Product Card GIT Data Parsed', {
-              data,
-            });
-
-            const product = bcProductToVibesProduct(data);
-
-            console.log('Product Card GIT Product', {
-              product,
-            });
-
-            let price;
-            let salePrice: string | undefined = undefined;
-            if (!product.price) {
-              price = '0';
-            } else if (typeof product.price === 'string') {
-              price = product.price;
-            } else if (
-              typeof product.price === 'object' &&
-              product.price !== null &&
-              'minValue' in product.price
-            ) {
-              price = `${product.price.minValue} - ${product.price.maxValue}`;
-            } else if (
-              typeof product.price === 'object' &&
-              product.price !== null &&
-              'previousValue' in product.price
-            ) {
-              price = product.price.previousValue;
-              salePrice = product.price.currentValue;
-            }
-
-            return (
-              <ProductCard
-                key={entityId}
-                className={className}
-                image={product.image}
-                name={product.title}
-                rating={product.rating || 0}
-                reviewCount={product.reviewCount || 0}
-                price={price}
-                salePrice={salePrice}
-                badge={badge}
-                aspectRatio={aspectRatio}
-                showReviews={showReviews}
-                href={product.href}
-                id={entityId}
-                {...props}
-              />
-            );
-          })}
-        </div>
-      ) : (
+  if (additionalProductIds.length === 0) {
+    return (
+      <div className={className}>
         <div className="my-5 text-center text-lg text-gray-500">
           <p>Please Start Adding Products</p>
         </div>
-      )}
+      </div>
+    );
+  }
+
+  const { products, isLoading } = useProductsByIds({
+    productIds: additionalProductIds,
+  });
+
+  if (isLoading) {
+    return <ProductCardSkeleton className={className} />;
+  }
+
+  if (products == null || products.length === 0) {
+    return <ProductCardSkeleton className={className} />;
+  }
+
+  return (
+    <div className={className}>
+      <div
+        className={`grid grid-cols-${itemsPerRowMobile} gap-4 sm:grid-cols-${itemsPerRowMobile} md:grid-cols-${itemsPerRowTablet} lg:grid-cols-${itemsPerRowDesktop} xl:grid-cols-${itemsPerRowSuperDesktop}`}
+      >
+        {products.map(async (product, index) => {
+          let price;
+          let salePrice: string | undefined = undefined;
+          if (!product.price) {
+            price = '0';
+          } else if (typeof product.price === 'string') {
+            price = product.price;
+          } else if (
+            typeof product.price === 'object' &&
+            product.price !== null &&
+            'minValue' in product.price
+          ) {
+            price = `${product.price.minValue} - ${product.price.maxValue}`;
+          } else if (
+            typeof product.price === 'object' &&
+            product.price !== null &&
+            'previousValue' in product.price
+          ) {
+            price = product.price.previousValue;
+            salePrice = product.price.currentValue;
+          }
+
+          const customProductSettings = additionalProducts[index] || {
+            badge: {
+              text: '',
+              theme: '',
+              shape: '',
+              location: '',
+              show: false,
+            },
+          };
+
+          return (
+            <ProductCard
+              key={product.id}
+              className={className}
+              image={product.image}
+              name={product.title}
+              rating={product.rating || 0}
+              reviewCount={product.reviewCount || 0}
+              price={price}
+              salePrice={salePrice}
+              badge={customProductSettings?.badge}
+              aspectRatio={aspectRatio}
+              showReviews={showReviews}
+              href={product.href}
+              id={product.id}
+              {...props}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -148,7 +134,7 @@ runtime.registerComponent(MakeswiftProductCardGIT, {
   label: 'GIT / Product Cards (GIT)',
   props: {
     className: Style(),
-    products: List({
+    additionalProducts: List({
       label: 'Products',
       type: Group({
         label: 'Product',
@@ -164,19 +150,6 @@ runtime.registerComponent(MakeswiftProductCardGIT, {
                 value: product.entityId.toString(),
               }));
             },
-          }),
-          aspectRatio: Select({
-            label: 'Image aspect ratio',
-            options: [
-              { value: '1:1', label: 'Square' },
-              { value: '5:6', label: '5:6' },
-              { value: '3:4', label: '3:4' },
-            ],
-            defaultValue: '5:6',
-          }),
-          showReviews: Checkbox({
-            label: 'Show reviews',
-            defaultValue: true,
           }),
           badge: Group({
             label: 'Badge',
@@ -217,6 +190,19 @@ runtime.registerComponent(MakeswiftProductCardGIT, {
       getItemLabel(product) {
         return 'Product';
       },
+    }),
+    showReviews: Checkbox({
+      label: 'Show reviews',
+      defaultValue: true,
+    }),
+    aspectRatio: Select({
+      label: 'Product Image aspect ratio',
+      options: [
+        { value: '1:1', label: 'Square' },
+        { value: '5:6', label: '5:6' },
+        { value: '3:4', label: '3:4' },
+      ],
+      defaultValue: '1:1',
     }),
     itemsPerRowSuperDesktop: Select({
       label: 'Items Per Row (Super Desktop)',

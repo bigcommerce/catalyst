@@ -1,0 +1,42 @@
+import { useMemo } from 'react';
+import useSWR from 'swr';
+import { z } from 'zod';
+
+import {
+  BcProductSchema,
+  useBcProductToVibesProduct,
+} from './use-bc-product-to-vibes-product/use-bc-product-to-vibes-product';
+
+const ProductListSchema = z.object({
+  products: z.array(BcProductSchema),
+});
+
+const fetcher = (url: string) =>
+  fetch(url)
+    .then((res) => res.json())
+    .then(ProductListSchema.parse);
+
+interface Props {
+  productIds: string[];
+}
+
+export function useProducts({ productIds }: Props) {
+  const bcProductToVibesProduct = useBcProductToVibesProduct();
+
+  const searchParams = new URLSearchParams();
+
+  searchParams.append('ids', productIds.join(','));
+
+  const additionalProductsUrl = `/api/products/ids?${searchParams.toString()}`;
+
+  const { data, isLoading } = useSWR(productIds.length ? additionalProductsUrl : null, fetcher);
+
+  const combinedProducts = useMemo(() => [...(data?.products ?? [])], [data]);
+
+  const products = useMemo(
+    () => (isLoading ? null : combinedProducts.map(bcProductToVibesProduct)),
+    [isLoading, combinedProducts, bcProductToVibesProduct],
+  );
+
+  return { products, isLoading };
+}
