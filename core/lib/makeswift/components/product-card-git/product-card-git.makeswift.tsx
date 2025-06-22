@@ -56,13 +56,14 @@ function MakeswiftProductCardGIT({
         >
           {products.map(async (item) => {
             const { badge, aspectRatio, entityId, showReviews } = item;
+            const randomNumber = Math.random().toString(36).substring(2, 15);
 
             console.log('Product Card GIT', {
               entityId,
             });
 
             if (!entityId) {
-              return <ProductCardSkeleton className={className} />;
+              return <ProductCardSkeleton key={randomNumber} className={className} />;
             }
 
             const { data, isLoading } = useSWR(
@@ -79,7 +80,7 @@ function MakeswiftProductCardGIT({
             });
 
             if (entityId == null || isLoading || data == null) {
-              return <ProductCardSkeleton className={className} />;
+              return <ProductCardSkeleton key={randomNumber} className={className} />;
             }
 
             console.log('Product Card GIT Data Parsed', {
@@ -134,7 +135,7 @@ function MakeswiftProductCardGIT({
           })}
         </div>
       ) : (
-        <div className="text-center text-gray-500">
+        <div className="my-5 text-center text-lg text-gray-500">
           <p>Please Start Adding Products</p>
         </div>
       )}
