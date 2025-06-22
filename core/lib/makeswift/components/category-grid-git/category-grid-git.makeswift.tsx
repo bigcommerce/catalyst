@@ -143,6 +143,8 @@ runtime.registerComponent(MakeswiftCategoryGridGIT, {
             async getOptions(query) {
               const categories = await searchCategories(query);
 
+              console.log('Inside Query Categories', categories);
+
               return categories.map((category) => ({
                 id: category.category_id.toString(),
                 label: category.name,
