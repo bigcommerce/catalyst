@@ -9,9 +9,6 @@ export const GET = async (request: NextRequest) => {
   if (query == null) {
     return NextResponse.json({ status: 'error', error: 'ids query is required' }, { status: 400 });
   }
-
-  console.log('query', query);
-
   const idList = query.split(',');
 
   const ids = idList.map((id) => (id ? parseInt(id, 10) : null)).filter((id) => id !== null);
