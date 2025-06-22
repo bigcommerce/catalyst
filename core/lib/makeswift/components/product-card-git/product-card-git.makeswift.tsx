@@ -24,7 +24,7 @@ import { searchProducts } from '../../utils/search-products';
 interface Props {
   className?: string;
   entityId?: string;
-  aspectRatio: '1:1' | '5:6' | '3:4';
+  aspectRatio?: '1:1' | '5:6' | '3:4';
   badge: { show: boolean; text: string; color: string };
   showReviews?: boolean;
 }
@@ -67,7 +67,7 @@ function MakeswiftProductCardGIT({ className, entityId, badge, showReviews, ...p
   return (
     <ProductCard
       className={className}
-      imageUrl={product.image?.src || ''}
+      image={product.image}
       name={product.title}
       rating={product.rating || 0}
       reviewCount={product.reviewCount || 0}
@@ -76,7 +76,7 @@ function MakeswiftProductCardGIT({ className, entityId, badge, showReviews, ...p
       showBadge={badge.show}
       badgeText={badge.text}
       badgeColor={badge.color}
-      imageAspectRatio={props.aspectRatio}
+      aspectRatio={props.aspectRatio}
       showReviews={showReviews}
       {...props}
     />
