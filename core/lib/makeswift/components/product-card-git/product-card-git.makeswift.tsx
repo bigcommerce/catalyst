@@ -16,6 +16,7 @@ import { ProductCard } from '~/vibes/soul/primitives/product-card-git';
 
 import { searchProducts } from '../../utils/search-products';
 import { useProductsByIds } from '../../utils/fetch-products';
+import { Price } from '@/vibes/soul/primitives/price-label';
 
 interface Props {
   className?: string;
@@ -49,7 +50,7 @@ function MakeswiftProductCardGIT({
   if (additionalProductIds.length === 0) {
     return (
       <div className={className}>
-        <div className="my-5 text-center text-lg text-gray-500">
+        <div className="my-5 py-10 text-center text-lg text-gray-500">
           <p>Please Start Adding Products</p>
         </div>
       </div>
@@ -74,36 +75,8 @@ function MakeswiftProductCardGIT({
         className={`grid grid-cols-${itemsPerRowMobile} gap-4 sm:grid-cols-${itemsPerRowMobile} md:grid-cols-${itemsPerRowTablet} lg:grid-cols-${itemsPerRowDesktop} xl:grid-cols-${itemsPerRowSuperDesktop}`}
       >
         {products.map(async (product, index) => {
-          let price;
-          let salePrice: string | undefined = undefined;
-          if (!product.price) {
-            price = '0';
-          } else if (typeof product.price === 'string') {
-            price = product.price;
-          } else if (
-            typeof product.price === 'object' &&
-            product.price !== null &&
-            'minValue' in product.price
-          ) {
-            price = `${product.price.minValue} - ${product.price.maxValue}`;
-          } else if (
-            typeof product.price === 'object' &&
-            product.price !== null &&
-            'previousValue' in product.price
-          ) {
-            price = product.price.previousValue;
-            salePrice = product.price.currentValue;
-          }
-
-          const customProductSettings = additionalProducts[index] || {
-            badge: {
-              text: '',
-              theme: '',
-              shape: '',
-              location: '',
-              show: false,
-            },
-          };
+          const { price, salePrice } = handlePrice(product.price);
+          const customProductSettings = additionalProducts[index] || handleCustomBadgeObject();
 
           return (
             <ProductCard
@@ -128,6 +101,46 @@ function MakeswiftProductCardGIT({
     </div>
   );
 }
+
+const handlePrice = (productPrice: Price | undefined) => {
+  let price;
+  let salePrice: string | undefined = undefined;
+  if (!productPrice) {
+    price = '0';
+  } else if (typeof productPrice === 'string') {
+    price = productPrice;
+  } else if (
+    typeof productPrice === 'object' &&
+    productPrice !== null &&
+    'minValue' in productPrice
+  ) {
+    price = `${productPrice.minValue} - ${productPrice.maxValue}`;
+  } else if (
+    typeof productPrice === 'object' &&
+    productPrice !== null &&
+    'previousValue' in productPrice
+  ) {
+    price = productPrice.previousValue;
+    salePrice = productPrice.currentValue;
+  }
+
+  return {
+    price,
+    salePrice: salePrice ? salePrice.toString() : undefined,
+  };
+};
+
+const handleCustomBadgeObject = () => {
+  return {
+    badge: {
+      text: '',
+      theme: '',
+      shape: '',
+      location: '',
+      show: false,
+    },
+  };
+};
 
 runtime.registerComponent(MakeswiftProductCardGIT, {
   type: 'catalog-product-cards-git',

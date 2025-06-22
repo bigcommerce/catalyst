@@ -38,6 +38,8 @@ export function useBcProductToVibesProduct(): (product: BcProductSchema) => Prod
   return useCallback(
     (product) => {
       const { entityId, name, defaultImage, brand, path, prices } = product;
+
+      console.log(product);
       const price = pricesTransformer(prices, format);
 
       return {
