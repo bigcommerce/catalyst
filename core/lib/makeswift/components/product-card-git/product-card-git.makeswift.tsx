@@ -81,7 +81,15 @@ function MakeswiftProductCardGIT({
             return <ProductCardSkeleton className={className} />;
           }
 
+          console.log('Product Card GIT Data Parsed', {
+            data,
+          });
+
           const product = bcProductToVibesProduct(data);
+
+          console.log('Product Card GIT Product', {
+            product,
+          });
 
           let price;
           let salePrice: string | undefined = undefined;
@@ -106,7 +114,7 @@ function MakeswiftProductCardGIT({
 
           return (
             <ProductCard
-              key={product.id}
+              key={entityId}
               className={className}
               image={product.image}
               name={product.title}
@@ -118,7 +126,7 @@ function MakeswiftProductCardGIT({
               aspectRatio={aspectRatio}
               showReviews={showReviews}
               href={product.href}
-              id={product.id}
+              id={entityId}
               {...props}
             />
           );
@@ -133,8 +141,8 @@ function MakeswiftProductCardGIT({
 }
 
 runtime.registerComponent(MakeswiftProductCardGIT, {
-  type: 'catalog-product-card-git',
-  label: 'GIT / Product Card (GIT)',
+  type: 'catalog-product-cards-git',
+  label: 'GIT / Product Cards (GIT)',
   props: {
     className: Style(),
     products: List({
