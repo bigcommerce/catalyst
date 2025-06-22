@@ -34,6 +34,13 @@ interface ProductInterface {
   badge: { show: boolean; text: string; theme: string; shape: string; location: string };
 }
 
+const gridColsClass = (prefix: string, count: string) => {
+  // Only allow 1-4
+  const allowed = ['1', '2', '3', '4'];
+  if (!allowed.includes(count)) return '';
+  return `${prefix}grid-cols-${count}`;
+};
+
 function MakeswiftProductCardGIT({
   className,
   additionalProducts,
@@ -75,7 +82,14 @@ function MakeswiftProductCardGIT({
   return (
     <div className={className}>
       <div
-        className={`grid grid-cols-${itemsPerRowMobile} gap-4 sm:grid-cols-${itemsPerRowMobile} md:grid-cols-${itemsPerRowTablet} lg:grid-cols-${itemsPerRowDesktop} xl:grid-cols-${itemsPerRowSuperDesktop}`}
+        className={[
+          'grid gap-4',
+          gridColsClass('', itemsPerRowMobile),
+          gridColsClass('sm:', itemsPerRowMobile),
+          gridColsClass('md:', itemsPerRowTablet),
+          gridColsClass('lg:', itemsPerRowDesktop),
+          gridColsClass('xl:', itemsPerRowSuperDesktop),
+        ].join(' ')}
       >
         {products.map(async (product, index) => {
           const { price, salePrice } = handlePrice(product.price);
