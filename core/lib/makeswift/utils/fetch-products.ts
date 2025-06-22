@@ -27,9 +27,9 @@ export function useProductsByIds({ productIds }: Props) {
 
   searchParams.append('ids', productIds.join(','));
 
-  const additionalProductsUrl = `/api/products/ids?${searchParams.toString()}&include_fields=reviews_rating_sum,reviews_count`;
+  const productByIdsUrl = `/api/products/ids?${searchParams.toString()}&include_fields=reviews_rating_sum,reviews_count`;
 
-  const { data, isLoading } = useSWR(productIds.length ? additionalProductsUrl : null, fetcher);
+  const { data, isLoading } = useSWR(productIds.length ? productByIdsUrl : null, fetcher);
 
   const combinedProducts = useMemo(() => [...(data?.products ?? [])], [data]);
 
