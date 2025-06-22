@@ -20,7 +20,7 @@ interface Props {
   productIds: string[];
 }
 
-export function useProducts({ productIds }: Props) {
+export function useProductsByIds({ productIds }: Props) {
   const bcProductToVibesProduct = useBcProductToVibesProduct();
 
   const searchParams = new URLSearchParams();
