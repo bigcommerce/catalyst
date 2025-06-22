@@ -6,6 +6,9 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { ProductCardFragment } from '~/components/product-card/fragment';
+import axios from 'axios';
+
+// ###################################################### PRODUCTS ######################################################
 
 const GetQuickSearchResultsQuery = graphql(
   `
@@ -66,3 +69,54 @@ export const getSearchResults = cache(async (searchTerm: string) => {
     return { status: 'error', error: 'Something went wrong. Please try again.' };
   }
 });
+
+// ###################################################### CATEGORIES ######################################################
+
+interface CategorySearchResponse {
+  status: 'success' | 'error';
+  data?: {
+    categories: {
+      category_id: number;
+      name: string;
+      description: string;
+      image_url: string;
+      url: {
+        path: string;
+      };
+    }[];
+  };
+  error?: string;
+}
+
+export const getCategorySearchResults = cache(
+  async (searchTerm: string): Promise<CategorySearchResponse> => {
+    const customerAccessToken = await getSessionCustomerAccessToken();
+
+    try {
+      const response = await axios.get(
+        `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/trees/categories?name:like=${searchTerm}`,
+        {
+          headers: {
+            'X-Auth-Token': customerAccessToken ?? '',
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+
+      const { data } = response.data;
+
+      return {
+        status: 'success',
+        data: {
+          categories: data,
+        },
+      };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { status: 'error', error: error.message };
+      }
+
+      return { status: 'error', error: 'Something went wrong. Please try again.' };
+    }
+  },
+);

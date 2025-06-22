@@ -31,16 +31,16 @@ export function useProductsByIds({ productIds }: Props) {
 
   const { data, isLoading } = useSWR(productIds.length ? productByIdsUrl : null, fetcher);
 
-  //   const combinedProducts = useMemo(() => [...(data?.products ?? [])], [data]);
+  const combinedProducts = useMemo(() => [...(data?.products ?? [])], [data]);
 
-  //   const products = useMemo(
-  //     () => (isLoading ? null : combinedProducts.map(bcProductToVibesProduct)),
-  //     [isLoading, combinedProducts, bcProductToVibesProduct],
-  //   );
+  const products = useMemo(
+    () => (isLoading ? null : combinedProducts.map(bcProductToVibesProduct)),
+    [isLoading, combinedProducts, bcProductToVibesProduct],
+  );
 
-  // Remove useMemo, compute directly
-  const combinedProducts = data?.products ?? [];
-  const products = isLoading ? null : combinedProducts.map(bcProductToVibesProduct);
+  // // Remove useMemo, compute directly
+  // const combinedProducts = data?.products ?? [];
+  // const products = isLoading ? null : combinedProducts.map(bcProductToVibesProduct);
 
   return { products, isLoading };
 }

@@ -15,7 +15,8 @@ import './components/sticky-sidebar/sticky-sidebar.makeswift';
 import './components/product-detail/register';
 // Custom Created MakeSwift Components
 import './components/logo-carousel/logo-carousel.makeswift';
-import './components/product-card-git/product-card-git.makeswift';
+import './components/product-cards-git/product-cards-git.makeswift';
+import './components/category-grid-git/category-grid-git.makeswift';
 
 import './components/site-theme/register';
 

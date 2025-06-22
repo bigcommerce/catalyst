@@ -68,9 +68,6 @@ function MakeswiftProductCardGIT({
     productIds: additionalProductIds,
   });
 
-  console.log(products);
-  console.log('IsLoading: ', isLoading);
-
   if (isLoading) {
     return <ProductCardSkeleton className={className} />;
   }
