@@ -28,6 +28,10 @@ export const BcProductSchema = z.object({
   brand: z.object({ name: z.string(), path: z.string() }).nullable(),
   path: z.string(),
   prices: PricesSchema,
+  reviewSummary: z.object({
+    averageRating: z.number().nullable(),
+    reviewCount: z.number().nullable(),
+  }),
 });
 
 export type BcProductSchema = z.infer<typeof BcProductSchema>;
@@ -37,9 +41,8 @@ export function useBcProductToVibesProduct(): (product: BcProductSchema) => Prod
 
   return useCallback(
     (product) => {
-      const { entityId, name, defaultImage, brand, path, prices } = product;
+      const { entityId, name, defaultImage, brand, path, prices, reviewSummary } = product;
 
-      console.log(product);
       const price = pricesTransformer(prices, format);
 
       return {
@@ -49,8 +52,8 @@ export function useBcProductToVibesProduct(): (product: BcProductSchema) => Prod
         image: defaultImage ? { src: defaultImage.url, alt: defaultImage.altText } : undefined,
         price,
         subtitle: brand?.name,
-        rating: 0,
-        reviewCount: 0,
+        rating: reviewSummary.averageRating ?? 0,
+        reviewCount: reviewSummary.reviewCount ?? 0,
       };
     },
     [format],

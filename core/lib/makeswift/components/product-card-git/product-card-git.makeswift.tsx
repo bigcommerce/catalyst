@@ -84,8 +84,8 @@ function MakeswiftProductCardGIT({
               className={className}
               image={product.image}
               name={product.title}
-              rating={product.rating || 0}
-              reviewCount={product.reviewCount || 0}
+              rating={product.rating}
+              reviewCount={product.reviewCount}
               price={price}
               salePrice={salePrice}
               badge={customProductSettings?.badge}
