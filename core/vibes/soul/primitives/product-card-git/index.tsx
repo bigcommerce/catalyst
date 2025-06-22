@@ -1,6 +1,7 @@
 import clsx from 'clsx';
 import Image from 'next/image';
 import { Badge } from '../badge';
+import { Link } from '~/components/link';
 
 interface ProductCardProps {
   className?: string;
@@ -17,6 +18,8 @@ interface ProductCardProps {
   showReviews?: boolean;
   imagePriority?: boolean;
   imageSizes?: string;
+  href: string;
+  id: string;
 }
 
 export const ProductCard = ({
@@ -34,6 +37,8 @@ export const ProductCard = ({
   imagePriority = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
   showReviews = true,
+  id,
+  href,
 }: ProductCardProps) => {
   return (
     <div className={`max-w-xl overflow-hidden rounded-lg bg-white shadow-lg ${className}`}>
@@ -68,7 +73,7 @@ export const ProductCard = ({
           </div>
         )}
         {showBadge && badgeText !== '' && (
-          <Badge className="absolute left-3 top-3" shape="rounded">
+          <Badge className="absolute right-3 top-3" shape="rounded">
             {badgeText}
           </Badge>
         )}
@@ -96,9 +101,16 @@ export const ProductCard = ({
             <span className="text-2xl font-bold">{price}</span>
           </div>
         )}
-        <button className="mt-4 w-full rounded bg-gray-900 py-2 text-white transition hover:bg-gray-800">
-          Shop Now →
-        </button>
+        <Link
+          aria-label={name}
+          className={clsx(
+            'mt-4 w-full rounded bg-gray-900 py-2 text-white transition hover:bg-gray-800',
+          )}
+          href={href}
+          id={id}
+        >
+          <span className="sr-only">Shop Now →</span>
+        </Link>
       </div>
     </div>
   );

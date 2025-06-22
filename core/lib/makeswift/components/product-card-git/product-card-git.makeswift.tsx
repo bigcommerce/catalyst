@@ -78,6 +78,8 @@ function MakeswiftProductCardGIT({ className, entityId, badge, showReviews, ...p
       badgeColor={badge.color}
       aspectRatio={props.aspectRatio}
       showReviews={showReviews}
+      href={product.href}
+      id={product.id}
       {...props}
     />
   );
