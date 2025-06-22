@@ -84,6 +84,7 @@ function MakeswiftProductCardGIT({
         `grid-cols-${itemsPerRowMobile}`, // mobile: 2 columns
         `sm:grid-cols-${itemsPerRowTablet}`, // tablet: 4 columns
         `lg:grid-cols-${itemsPerRowDesktop}`, // desktop: 6 columns
+        `xl:grid-cols-${itemsPerRowSuperDesktop}`, // super desktop: 8 columns
         className,
       )}
     >
