@@ -39,7 +39,6 @@ function MakeswiftCategoryGridGIT({
   itemsPerRowTablet,
   itemsPerRowMobile,
   aspectRatio,
-  ...props
 }: Props) {
   const categoryIds = categoryItems.map(({ entityId }) => entityId ?? '');
 
@@ -56,6 +55,9 @@ function MakeswiftCategoryGridGIT({
   const { categories, isLoading } = useCategoriesByIds({
     categoryIds,
   });
+
+  console.log('Categories:', categories);
+  console.log('Is Loading:', isLoading);
 
   if (isLoading) {
     return <CategoryGridItemSkeleton className={className} />;
