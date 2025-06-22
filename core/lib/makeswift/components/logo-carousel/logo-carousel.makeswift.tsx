@@ -119,7 +119,7 @@ runtime.registerComponent(
   },
   {
     type: 'primitive-logo-carousel',
-    label: 'Logo Carousel (GIT)',
+    label: 'GIT / Logo Carousel (GIT)',
     icon: 'carousel',
     props: {
       className: Style(),

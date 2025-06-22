@@ -77,7 +77,7 @@ function MakeswiftProductCardGIT({ className, entityId, badge, showReviews, ...p
 
 runtime.registerComponent(MakeswiftProductCardGIT, {
   type: 'catalog-product-card-git',
-  label: 'Product Card (GIT)',
+  label: 'GIT / Product Card (GIT)',
   props: {
     className: Style(),
     entityId: Combobox({
