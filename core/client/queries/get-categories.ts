@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { cache } from 'react';
 
-interface GetCategoriesByIds {
+interface GetCategoriesByIdsResponse {
   status: 'success' | 'error';
   data?: {
     categories: {
@@ -17,35 +17,37 @@ interface GetCategoriesByIds {
   error?: string;
 }
 
-const getCategoriesByIds = cache(async (entityIds: number[]): Promise<GetCategoriesByIds> => {
-  const ids = entityIds.join(','); // Convert array to comma-separated string
+const getCategoriesByIds = cache(
+  async (entityIds: number[]): Promise<GetCategoriesByIdsResponse> => {
+    const ids = entityIds.join(','); // Convert array to comma-separated string
 
-  try {
-    const response = await axios.get(
-      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/trees/categories?category_id:in=${ids}`,
-      {
-        headers: {
-          'X-Auth-Token': process.env.BIGCOMMERCE_API_ACCESS_TOKEN ?? '',
-          'Content-Type': 'application/json',
+    try {
+      const response = await axios.get(
+        `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/trees/categories?category_id:in=${ids}`,
+        {
+          headers: {
+            'X-Auth-Token': process.env.BIGCOMMERCE_API_ACCESS_TOKEN ?? '',
+            'Content-Type': 'application/json',
+          },
         },
-      },
-    );
+      );
 
-    const { data } = response.data;
+      const { data } = response.data;
 
-    return {
-      status: 'success',
-      data: {
-        categories: data,
-      },
-    };
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      return { status: 'error', error: error.message };
+      return {
+        status: 'success',
+        data: {
+          categories: data,
+        },
+      };
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return { status: 'error', error: error.message };
+      }
+
+      return { status: 'error', error: 'Something went wrong. Please try again.' };
     }
-
-    return { status: 'error', error: 'Something went wrong. Please try again.' };
-  }
-});
+  },
+);
 
 export { getCategoriesByIds };

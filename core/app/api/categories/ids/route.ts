@@ -16,5 +16,7 @@ export const GET = async (request: NextRequest) => {
   const result =
     ids.length > 0 ? await getCategoriesByIds(ids) : { status: 'success', categories: [] };
 
+  console.log('API Result', result);
+
   return NextResponse.json(result);
 };
