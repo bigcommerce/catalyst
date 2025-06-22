@@ -11,8 +11,10 @@ const CategoryListSchema = z.object({
   categories: z.array(BcCategorySchema),
 });
 
-const fetcher = (url: string) => fetch(url).then((res) => res.json());
-//.then(CategoryListSchema.parse);
+const fetcher = (url: string) =>
+  fetch(url)
+    .then((res) => res.json())
+    .then(CategoryListSchema.parse);
 
 interface Props {
   categoryIds: string[];
@@ -29,16 +31,12 @@ export function useCategoriesByIds({ categoryIds }: Props) {
 
   const { data, isLoading } = useSWR(categoryIds.length ? categoryByIdsUrl : null, fetcher);
 
-  console.log(data, 'useCategoriesByIds data');
+  const combinedCategories = useMemo(() => [...(data?.categories ?? [])], [data]);
 
-  const categories = useMemo(() => {
-    if (data?.data.categories) {
-      return data.data.categories.map((category: any) => bcCategoryToVibesCategory(category));
-    }
-    return [];
-  }, [data, bcCategoryToVibesCategory]);
-
-  console.log('useCategoriesByIds categories', categories);
+  const categories = useMemo(
+    () => (isLoading ? null : combinedCategories.map(bcCategoryToVibesCategory)),
+    [isLoading, combinedCategories, bcCategoryToVibesCategory],
+  );
 
   return { categories, isLoading };
 }

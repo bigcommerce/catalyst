@@ -3,17 +3,15 @@ import { cache } from 'react';
 
 interface GetCategoriesByIdsResponse {
   status: 'success' | 'error';
-  data?: {
-    categories: {
-      category_id: number;
-      name: string;
-      description: string;
-      image_url?: string;
-      url: {
-        path: string;
-      };
-    }[];
-  };
+  categories?: {
+    category_id: number;
+    name: string;
+    description: string;
+    image_url?: string;
+    url: {
+      path: string;
+    };
+  }[];
   error?: string;
 }
 
@@ -36,9 +34,7 @@ const getCategoriesByIds = cache(
 
       return {
         status: 'success',
-        data: {
-          categories: data,
-        },
+        categories: data,
       };
     } catch (error: unknown) {
       if (error instanceof Error) {
