@@ -37,7 +37,12 @@ export const ProductCard = ({
   href,
 }: ProductCardProps) => {
   return (
-    <div className={`max-w-xl overflow-hidden rounded-lg bg-white shadow-lg ${className}`}>
+    <div
+      className={clsx(
+        'flex h-full max-w-xl flex-col overflow-hidden rounded-lg bg-white shadow-lg',
+        className,
+      )}
+    >
       <div
         className={clsx(
           'relative overflow-hidden rounded-xl bg-[var(--product-card-light-background,hsl(var(--contrast-100)))] @md:rounded-2xl',
@@ -78,7 +83,7 @@ export const ProductCard = ({
           </Badge>
         )}
       </div>
-      <div className="p-4">
+      <div className="flex flex-1 flex-col p-4">
         <h2 className="mb-1 text-xl font-bold text-gray-800">{name}</h2>
         {showReviews && (
           <div className="mb-2 flex items-center">
@@ -101,16 +106,18 @@ export const ProductCard = ({
             <span className="text-2xl font-bold">{price}</span>
           </div>
         )}
-        <Link
-          aria-label={name}
-          className={clsx(
-            'relative mt-4 block w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
-          )}
-          href={href}
-          id={id}
-        >
-          Shop Now →
-        </Link>
+        <div className="mt-auto">
+          <Link
+            aria-label={name}
+            className={clsx(
+              'relative mt-4 block w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
+            )}
+            href={href}
+            id={id}
+          >
+            Shop Now →
+          </Link>
+        </div>
       </div>
     </div>
   );
