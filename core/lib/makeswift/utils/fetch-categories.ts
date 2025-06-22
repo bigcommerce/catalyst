@@ -29,7 +29,7 @@ export function useCategoriesByIds({ categoryIds }: Props) {
 
   const { data, isLoading } = useSWR(categoryIds.length ? categoryByIdsUrl : null, fetcher);
 
-  console.log('Categories Data:', data);
+  console.log('useCategoriesByIds data', data);
 
   const combinedCategories = useMemo(() => [...(data?.categories ?? [])], [data]);
 
