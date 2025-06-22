@@ -38,9 +38,5 @@ export function useProductsByIds({ productIds }: Props) {
     [isLoading, combinedProducts, bcProductToVibesProduct],
   );
 
-  // // Remove useMemo, compute directly
-  // const combinedProducts = data?.products ?? [];
-  // const products = isLoading ? null : combinedProducts.map(bcProductToVibesProduct);
-
   return { products, isLoading };
 }

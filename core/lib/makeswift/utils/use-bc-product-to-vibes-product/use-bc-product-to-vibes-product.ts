@@ -33,7 +33,7 @@ export const BcProductSchema = z.object({
       averageRating: z.number().nullable(),
       reviewCount: z.number().nullable(),
     })
-    .nullable(),
+    .optional(),
 });
 
 export type BcProductSchema = z.infer<typeof BcProductSchema>;
