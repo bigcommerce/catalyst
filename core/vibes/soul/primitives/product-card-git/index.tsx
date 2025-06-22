@@ -84,29 +84,30 @@ export const ProductCard = ({
         )}
       </div>
       <div className="flex flex-1 flex-col p-4">
-        <h2 className="mb-1 text-xl font-bold text-gray-800">{name}</h2>
-        {showReviews && (
-          <div className="mb-2 flex items-center">
-            <div className="text-yellow-400">
-              {'★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating))}
-            </div>
-            <span className="ml-2 text-sm text-gray-600">
-              {rating} ({reviewCount} reviews)
-            </span>
-          </div>
-        )}
-
-        {salePrice ? (
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold">{salePrice}</span>
-            <span className="text-gray-400 line-through">{price}</span>
-          </div>
-        ) : (
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-bold">{price}</span>
-          </div>
-        )}
         <div className="mt-auto">
+          <h2 className="mb-1 text-xl font-bold text-gray-800">{name}</h2>
+          {showReviews && (
+            <div className="mb-2 flex items-center">
+              <div className="text-yellow-400">
+                {'★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating))}
+              </div>
+              <span className="ml-2 text-sm text-gray-600">
+                {rating} ({reviewCount} reviews)
+              </span>
+            </div>
+          )}
+
+          {salePrice ? (
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold">{salePrice}</span>
+              <span className="text-gray-400 line-through">{price}</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-bold">{price}</span>
+            </div>
+          )}
+
           <Link
             aria-label={name}
             className={clsx(
