@@ -148,7 +148,7 @@
             "orderNumber": "Ordine #",
             "totalPrice": "Totale",
             "viewDetails": "Visualizza dettagli",
-            "emptyState": {
+            "EmptyState": {
                 "title": "Non hai ordini",
                 "cta": "Acquista ora"
             },
@@ -174,7 +174,10 @@
             "create": "crea",
             "update": "Aggiorna",
             "setDefault": "Imposta come predefinito",
-            "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
+            "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
+            "EmptyState": {
+                "title": "Non hai indirizzi"
+            }
         },
         "Settings": {
             "title": "Impostazioni account",
@@ -195,7 +198,6 @@
         "items": "{count, plural, =1 {1 item} other {# items}}",
         "viewWishlist": "Visualizza elenco",
         "noWishlists": "Non hai nessuna lista dei desideri",
-        "noWishlistsSubtitle": "Crea una lista dei desideri per salvare i tuoi prodotti preferiti.",
         "noWishlistsCallToAction": "Crea una lista desideri",
         "emptyWishlist": "Non hai aggiunto prodotti a questa lista dei desideri.",
         "share": "Condividi",
@@ -246,7 +248,7 @@
             "removeItemSuccess": "L'articolo è stato rimosso dalla tua lista dei desideri."
         },
         "Button": {
-            "label": "Add to wish list",
+            "label": "Aggiungi alla Lista desideri",
             "addToNewWishlist": "Aggiungi a nuova lista desideri",
             "defaultWishlistName": "La mia lista desideri",
             "addSuccessMessage": "Il prodotto è stato aggiunto alla tua lista dei desideri",
@@ -438,7 +440,7 @@
                 "search": "Apri popup di ricerca"
             },
             "SwitchCurrency": {
-                "label": "Switch currency",
+                "label": "Cambia valuta",
                 "invalidCurrency": "Valuta non valida",
                 "errorUpdatingCurrency": "Si è verificato un errore durante l'aggiornamento della valuta per il tuo carrello. Riprova."
             },
