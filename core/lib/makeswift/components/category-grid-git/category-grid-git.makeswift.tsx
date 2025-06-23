@@ -9,6 +9,8 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { searchCategories } from '../../utils/search-categories';
 import clsx from 'clsx';
 import { useCategoriesByIds } from '../../utils/fetch-categories';
+import { Link } from '~/components/link';
+import { Image } from '~/components/image';
 
 interface Props {
   className?: string;
@@ -24,11 +26,7 @@ interface CategoryInterface {
   entityId?: string;
 }
 
-const gridColsClass = (prefix: string, count: string) => {
-  const allowed = ['1', '2', '3', '4', '6', '8', '10'];
-  if (!allowed.includes(count)) return '';
-  return `${prefix}grid-cols-${count}`;
-};
+const DEFAULT_CATEGORY_IMAGE = 'https://placehold.co/200x200/png?text=Category+Image';
 
 function MakeswiftCategoryGridGIT({
   className,
@@ -50,20 +48,49 @@ function MakeswiftCategoryGridGIT({
       </div>
     );
   }
+  const skeletonCount = Number(itemsPerRowDesktop) || 6; // fallback to 6 if invalid
+  const skeletons = Array.from({ length: skeletonCount });
 
   const { categories, isLoading } = useCategoriesByIds({
     categoryIds,
   });
 
-  console.log('MakeswiftCategoryGridGIT categories', categories);
-  console.log('MakeswiftCategoryGridGIT isLoading', isLoading);
-
   if (isLoading) {
-    return <CategoryGridItemSkeleton className={className} />;
+    return (
+      <div
+        className={clsx(
+          'grid gap-5',
+          `grid-cols-${itemsPerRowMobile}`, // mobile: 2 columns
+          `sm:grid-cols-${itemsPerRowTablet}`, // tablet: 4 columns
+          `lg:grid-cols-${itemsPerRowDesktop}`, // desktop: 6 columns
+          `xl:grid-cols-${itemsPerRowSuperDesktop}`, // super desktop: 8 columns
+          className,
+        )}
+      >
+        {skeletons.map((_, idx) => (
+          <CategoryGridItemSkeleton key={idx} className={className} />
+        ))}
+      </div>
+    );
   }
 
   if (categories == null || categories.length === 0) {
-    return <CategoryGridItemSkeleton className={className} />;
+    return (
+      <div
+        className={clsx(
+          'grid gap-5',
+          `grid-cols-${itemsPerRowMobile}`, // mobile: 2 columns
+          `sm:grid-cols-${itemsPerRowTablet}`, // tablet: 4 columns
+          `lg:grid-cols-${itemsPerRowDesktop}`, // desktop: 6 columns
+          `xl:grid-cols-${itemsPerRowSuperDesktop}`, // super desktop: 8 columns
+          className,
+        )}
+      >
+        {skeletons.map((_, idx) => (
+          <CategoryGridItemSkeleton key={idx} className={className} />
+        ))}
+      </div>
+    );
   }
 
   return (
@@ -79,26 +106,62 @@ function MakeswiftCategoryGridGIT({
     >
       {categories.map(async (category: any) => {
         return (
-          <p>{category.name}</p>
-          // <ProductCard
-          //   key={product.id}
-          //   className={className}
-          //   image={product.image}
-          //   name={product.title}
-          //   rating={product.rating}
-          //   reviewCount={product.reviewCount}
-          //   price={price}
-          //   salePrice={salePrice}
-          //   badge={customProductSettings?.badge}
-          //   aspectRatio={aspectRatio}
-          //   showReviews={showReviews}
-          //   href={product.href}
-          //   id={product.id}
-          //   {...props}
-          // />
+          <CategoryGridCard
+            key={category.category_id}
+            id={category.category_id.toString()}
+            name={category.name}
+            href={`/${category.category_id}`}
+            imageUrl={category.image ?? DEFAULT_CATEGORY_IMAGE}
+            productCount={category.product_count}
+            aspectRatio={aspectRatio}
+          />
         );
       })}
     </div>
+  );
+}
+
+interface CategoryGridCardProps {
+  name: string;
+  href: string;
+  id: string;
+  imageUrl: string;
+  productCount: number;
+  aspectRatio?: '5:6' | '3:4' | '1:1';
+  imagePriority?: boolean;
+  imageSizes?: string;
+}
+
+export function CategoryGridCard({
+  href,
+  id,
+  imageUrl,
+  name,
+  productCount,
+  imagePriority = false,
+  imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
+}: CategoryGridCardProps) {
+  return (
+    <Link aria-label={name} href={href} id={id}>
+      {/* Image */}
+      <div className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md shadow-md">
+        <Image
+          alt={name}
+          className={clsx(
+            'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+          )}
+          fill
+          priority={imagePriority}
+          sizes={imageSizes}
+          src={imageUrl}
+        />
+        <div className="absolute inset-0 bg-black bg-opacity-40 transition duration-300 group-hover:bg-opacity-50" />
+        <div className="absolute bottom-4 left-4 z-10 text-white">
+          <h3 className="text-lg font-semibold">{name}</h3>
+          <p className="text-sm">{productCount} products</p>
+        </div>
+      </div>
+    </Link>
   );
 }
 
