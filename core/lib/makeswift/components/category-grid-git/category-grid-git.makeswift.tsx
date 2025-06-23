@@ -138,6 +138,7 @@ export function CategoryGridCard({
   imageUrl,
   name,
   productCount,
+  aspectRatio = '5:6',
   imagePriority = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
 }: CategoryGridCardProps) {
@@ -145,30 +146,41 @@ export function CategoryGridCard({
     <Link aria-label={name} href={href} id={id}>
       {/* Image */}
       <div className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md shadow-md">
-        {imageUrl ? (
-          <Image
-            alt={name}
-            className={clsx(
-              'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
-            )}
-            fill
-            priority={imagePriority}
-            sizes={imageSizes}
-            src={imageUrl}
-          />
-        ) : (
-          <div
-            className={clsx(
-              'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter text-[var(--product-card-light-title,hsl(var(--foreground)))] opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
-            )}
-          >
-            {name}
+        <div
+          className={clsx(
+            'relative overflow-hidden rounded-xl bg-[var(--product-card-light-background,hsl(var(--contrast-100)))] @md:rounded-2xl',
+            {
+              '5:6': 'aspect-[5/6]',
+              '3:4': 'aspect-[3/4]',
+              '1:1': 'aspect-square',
+            }[aspectRatio],
+          )}
+        >
+          {imageUrl ? (
+            <Image
+              alt={name}
+              className={clsx(
+                'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+              )}
+              fill
+              priority={imagePriority}
+              sizes={imageSizes}
+              src={imageUrl}
+            />
+          ) : (
+            <div
+              className={clsx(
+                'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter text-[var(--product-card-light-title,hsl(var(--foreground)))] opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
+              )}
+            >
+              {name}
+            </div>
+          )}
+          <div className="absolute inset-0 bg-black bg-opacity-40 transition duration-300 group-hover:bg-opacity-50" />
+          <div className="absolute bottom-4 left-4 z-10 text-white">
+            <h3 className="text-lg font-semibold">{name}</h3>
+            <p className="text-sm">{productCount} products</p>
           </div>
-        )}
-        <div className="absolute inset-0 bg-black bg-opacity-40 transition duration-300 group-hover:bg-opacity-50" />
-        <div className="absolute bottom-4 left-4 z-10 text-white">
-          <h3 className="text-lg font-semibold">{name}</h3>
-          <p className="text-sm">{productCount} products</p>
         </div>
       </div>
     </Link>
