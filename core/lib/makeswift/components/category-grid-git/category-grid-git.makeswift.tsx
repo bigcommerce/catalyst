@@ -107,10 +107,10 @@ function MakeswiftCategoryGridGIT({
       {categories.map(async (category: any) => {
         return (
           <CategoryGridCard
-            key={category.category_id}
+            key={category.id}
             id={category.category_id.toString()}
             name={category.name}
-            href={`/${category.category_id}`}
+            href={`/${category.path}`}
             imageUrl={category.image ?? DEFAULT_CATEGORY_IMAGE}
             productCount={category.product_count}
             aspectRatio={aspectRatio}
