@@ -110,8 +110,10 @@ function MakeswiftCategoryGridGIT({
             key={category.id}
             id={category.id.toString()}
             name={category.name}
-            href={`/${category.path}`}
-            imageUrl={category.image ?? DEFAULT_CATEGORY_IMAGE}
+            href={category.path}
+            imageUrl={
+              category.image && category.image.length > 0 ? category.image : DEFAULT_CATEGORY_IMAGE
+            }
             productCount={category.productCount}
             aspectRatio={aspectRatio}
           />
