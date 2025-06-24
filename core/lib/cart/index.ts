@@ -14,15 +14,11 @@ export async function getCartId(): Promise<string | undefined> {
   const anonymousSession = await getAnonymousSession();
 
   if (anonymousSession) {
-    console.log("ANONYMOUS SESSION")
-    console.log(JSON.stringify(anonymousSession, null, 2))
     return anonymousSession.user?.cartId ?? undefined;
   }
 
   const session = await auth();
 
-  console.log("SESSION")
-  console.log(JSON.stringify(session, null, 2))
   return session?.user?.cartId ?? undefined;
 }
 

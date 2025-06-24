@@ -264,6 +264,9 @@ const config = {
       const customerAccessToken =
         'token' in message ? message.token?.user?.customerAccessToken : null;
 
+      console.log("CARTENTITYID", cartEntityId)
+      console.log('CAT', customerAccessToken)
+
       if (customerAccessToken) {
         try {
           const logoutResponse = await client.fetch({
@@ -276,6 +279,9 @@ const config = {
               cache: 'no-store',
             },
           });
+          
+          console.log("LOGOUT RESPONSE")
+          console.log(JSON.stringify(logoutResponse, null, 2))
 
           // If the logout is successful, we want to establish a new anonymous session.
           // This will allow us to restore the cart if persistent cart is disabled.
@@ -283,11 +289,13 @@ const config = {
 
           // If persistent cart is disabled, we can restore the cart back to the anonymous session.
           if (logoutResponse.data.logout.cartUnassignResult.cart) {
+            console.log("LOGOUT RESPONSE CONTAINS CARTID, SETTING")
             await setCartId(logoutResponse.data.logout.cartUnassignResult.cart.entityId);
 
             return;
           }
 
+          console.log("CLEARING CART ID")
           await clearCartId();
         } catch (error) {
           // eslint-disable-next-line no-console
