@@ -4,7 +4,6 @@ dist
 .vscode/**/*
 !.vscode/settings.example.json
 !.vscode/launch.example.json
-!.vscode/tasks.json
 .idea
 .vercel
 .catalyst
