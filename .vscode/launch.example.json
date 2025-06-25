@@ -32,8 +32,7 @@
                 "killOnServerStop": true,
                 "pattern": "- Local:.+(https?://.+)",
                 "uriFormat": "%s"
-            },
-            "preLaunchTask": "generate"
+            }
         }
     ]
 }
