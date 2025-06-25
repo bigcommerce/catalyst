@@ -1,0 +1,39 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Catalyst: debug server-side",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "pnpm run dev",
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "name": "Catalyst: debug client-side",
+            "type": "chrome", // Use "chrome" "firefox" or "msedge" as needed
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "webRoot": "${workspaceFolder}/core"
+        },
+        {
+            "name": "Catalyst: debug full stack",
+            "type": "node",
+            "request": "launch",
+            "cwd": "${workspaceFolder}/core",
+            "program": "${workspaceFolder}/core/node_modules/next/dist/bin/next",
+            "args": ["dev"],
+            "runtimeArgs": ["--inspect"],
+            "skipFiles": ["<node_internals>/**"],
+            "env": {
+                "NODE_ENV": "development"
+            },
+            "serverReadyAction": {
+                "action": "openExternally",
+                "killOnServerStop": true,
+                "pattern": "- Local:.+(https?://.+)",
+                "uriFormat": "%s"
+            },
+            "preLaunchTask": "generate"
+        }
+    ]
+}
