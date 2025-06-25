@@ -38,7 +38,6 @@ module.exports = async ({ core, exec }) => {
         return;
       }
 
-      // check if file exists
       if (!fs.existsSync(filename)) {
         core.setFailed(`File not found: ${filename}`);
         return;
@@ -52,7 +51,6 @@ module.exports = async ({ core, exec }) => {
         return;
       }
 
-      // check if it's a symlink
       if (stats.isSymbolicLink()) {
         core.error(`Symlinks are not allowed`, { file: filename });
         core.setFailed(`File ${filename} is a symlink`);
@@ -74,7 +72,7 @@ module.exports = async ({ core, exec }) => {
 
       const frontmatter = frontmatterMatch[1];
 
-      // extract package references from frontmatter
+      // extract all packages starting with "@bigcommerce/
       const packageMatches = frontmatter.match(/"@bigcommerce\/[^"]+"/g);
 
       if (packageMatches) {
@@ -83,10 +81,9 @@ module.exports = async ({ core, exec }) => {
         );
 
         if (invalidPackages.length > 0) {
-          const sanitizedFile = filename.replace(/[^a-zA-Z0-9.\/_-]/g, "");
           core.error(
             `Invalid package found in changeset file. Only @bigcommerce/catalyst-makeswift is allowed.`,
-            { file: sanitizedFile }
+            { file: filename }
           );
           core.setFailed(
             `File ${filename} contains invalid packages: ${invalidPackages.join(
