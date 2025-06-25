@@ -3,6 +3,7 @@ dist
 .turbo
 .vscode/**/*
 !.vscode/settings.example.json
+!.vscode/launch.example.json
 .idea
 .vercel
 .catalyst
