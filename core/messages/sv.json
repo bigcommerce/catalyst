@@ -50,6 +50,8 @@
             "heading": "Logga in",
             "forgotPassword": "Glömt ditt lösenord?",
             "cta": "Logga in",
+            "email": "E-post",
+            "password": "Lösenord",
             "invalidCredentials": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Beställningsnummer",
             "totalPrice": "Total",
             "viewDetails": "Visa detaljer",
+            "emptyState": {
+                "title": "Du har inga beställningar",
+                "cta": "Köp nu"
+            },
             "Details": {
                 "title": "Beställningsnummer {orderNumber}",
                 "shippingAddress": "Leveransadress",
@@ -155,7 +161,8 @@
                 "destinationWithCount": "Destination {number, number}/{total, number}",
                 "subtotal": "Delsumma",
                 "shipping": "Frakt",
-                "tax": "Beskatta"
+                "tax": "Beskatta",
+                "orderSummary": "Beställningssammanfattning"
             }
         },
         "Addresses": {
@@ -173,6 +180,7 @@
             "title": "Kontoinställningar",
             "changePassword": "Ändra lösenor",
             "passwordUpdated": "Lösenordet har uppdaterats!",
+            "settingsUpdated": "Kontoinställningarna har uppdaterats!",
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
             "currentPassword": "Nuvarande lösenord",
             "newPassword": "Nytt lösenord",
@@ -181,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Åtgärder för önskelista",
         "title": "Önskelistor",
         "new": "Ny önskelista",
         "items": "{count, plural, =1 {1 objekt} other {# objekt}}",
@@ -197,6 +206,7 @@
         "makePrivate": "Gör privat",
         "rename": "Döp om",
         "delete": "Radera",
+        "removeButtonTitle": "Radera produkten från önskelistan",
         "Visibility": {
             "public": "Offentlig",
             "private": "Privat"
@@ -226,8 +236,8 @@
             "updateFailed": "Det gick inte att uppdatera din önskelista. Försök igen.",
             "deleteFailed": "Det gick inte att radera din önskelista. Försök igen.",
             "removeProductFailed": "Det gick inte att ta bort produkten från din önskelista. Försök igen.",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "Du har inte behörighet att utföra den här åtgärden. Logga in och försök igen.",
+            "unexpected": "Ett oväntat fel inträffade. Försök igen."
         },
         "Result": {
             "createSuccess": "Önskelistan har skapats.",
@@ -236,19 +246,21 @@
             "removeItemSuccess": "Objektet har tagits bort från din önskelista."
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "label": "Add to wish list",
+            "addToNewWishlist": "Lägg till i en ny önskelista",
+            "defaultWishlistName": "Min önskelista",
+            "addSuccessMessage": "Produkten har lagts till i din önskelista.",
+            "removeSuccessMessage": "Produkten har tagits bort från din önskelista.",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "Det gick inte att lägga till produkten från din önskelista. Försök igen.",
+                "removeProductFailed": "Det gick inte att ta bort produkten från din önskelista. Försök igen."
             }
         }
     },
     "PublicWishlist": {
         "title": "Offentlig önskelista",
-        "defaultName": "Offentlig önskelista"
+        "defaultName": "Offentlig önskelista",
+        "emptyWishlist": "Det finns inga produkter i den här önskelistan ännu."
     },
     "Blog": {
         "title": "Blogg",
@@ -384,6 +396,7 @@
             "home": "Hem"
         },
         "ContactUs": {
+            "home": "Hem",
             "Form": {
                 "success": "Tack för att du hörde av dig. Vi återkommer till dig inom kort.",
                 "successCta": "Fortsätt att handla",
@@ -411,8 +424,9 @@
     },
     "NotFound": {
         "title": "Vi kunde inte hitta den sidan!",
-        "subtitle": "Det verkar som om sidan du begärde har flyttats eller inte längre finns.",
-        "featuredProducts": "Utvalda produkter"
+        "subtitle": "Prova att söka efter något annat eller gå tillbaka till startsidan.",
+        "featuredProducts": "Utvalda produkter",
+        "search": "Sök"
     },
     "Components": {
         "Header": {
@@ -424,6 +438,7 @@
                 "search": "Öppna popup-fönstret för sökning"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Ogiltig valuta",
                 "errorUpdatingCurrency": "Det gick inte att uppdatera valutan för din kundvagn. Försök igen."
             },
@@ -433,7 +448,9 @@
                 "brands": "Varumärke",
                 "noSearchResultsTitle": "Tyvärr finns inga resultat för ”{term}”.",
                 "noSearchResultsSubtitle": "Försök med en ny sökning.",
-                "somethingWentWrong": "Något gick fel. Var god försök igen."
+                "somethingWentWrong": "Något gick fel. Var god försök igen.",
+                "inputPlaceholder": "Sök efter produkter, kategorier, varumärken...",
+                "submitLabel": "Sök"
             }
         },
         "Footer": {

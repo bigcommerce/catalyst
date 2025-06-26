@@ -44,13 +44,13 @@ export const Modal = ({
     <Dialog.Root onOpenChange={setOpen} open={isOpen}>
       {trigger != null && <Dialog.Trigger asChild>{trigger}</Dialog.Trigger>}
       <Dialog.Portal>
-        <Dialog.Overlay className="@container fixed inset-0 z-30 flex items-center justify-center bg-[var(--modal-overlay-background,hsl(var(--foreground)/50%))]">
+        <Dialog.Overlay className="fixed inset-0 z-30 flex items-center justify-center bg-[var(--modal-overlay-background,hsl(var(--foreground)/50%))] @container">
           <Dialog.Content
             className={clsx(
               'mx-3 my-10 max-h-[90%] max-w-3xl overflow-y-auto rounded-2xl bg-[var(--modal-background,hsl(var(--background)))]',
               'transition ease-out',
-              'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:duration-200 data-[state=open]:duration-200',
-              'data-[state=closed]:slide-out-to-bottom-16 data-[state=open]:slide-in-from-bottom-16 focus:outline-hidden',
+              'data-[state=closed]:duration-200 data-[state=open]:duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out',
+              'focus:outline-none data-[state=closed]:slide-out-to-bottom-16 data-[state=open]:slide-in-from-bottom-16',
               className,
             )}
             onEscapeKeyDown={required ? (event) => event.preventDefault() : undefined}
@@ -60,12 +60,12 @@ export const Modal = ({
             <div className="flex flex-col">
               <div
                 className={clsx(
-                  'border-b-contrast-200 mb-5 flex min-h-10 flex-row items-center border-b py-3 pl-5',
+                  'mb-5 flex min-h-10 flex-row items-center border-b border-b-contrast-200 py-3 pl-5',
                   hideHeader ? 'sr-only' : '',
                 )}
               >
                 <Dialog.Title asChild>
-                  <h1 className="flex-1 pr-4 text-base leading-none font-semibold">{title}</h1>
+                  <h1 className="flex-1 pr-4 text-base font-semibold leading-none">{title}</h1>
                 </Dialog.Title>
                 {!(required || hideHeader) && (
                   <div className="flex items-center justify-center pr-3">

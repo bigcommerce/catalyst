@@ -21,6 +21,7 @@ export interface AccountSettingsSectionProps {
  *
  * ```css
  * :root {
+ *   --account-settings-section-title-font-family: var(--font-family-heading);
  *   --account-settings-section-font-family: var(--font-family-heading);
  *   --account-settings-section-text: hsl(var(--foreground));
  *   --account-settings-section-border: hsl(var(--contrast-100));
@@ -40,11 +41,11 @@ export function AccountSettingsSection({
   newPasswordLabel,
 }: AccountSettingsSectionProps) {
   return (
-    <section className="@container w-full">
-      <header className="border-b-contrast-100 mb-4 border-b">
-        <div className="mb-4 flex min-h-[42px] items-center justify-between">
-          <h1 className="font-heading text-4xl leading-none font-medium">{title}</h1>
-        </div>
+    <section className="w-full @container">
+      <header className="mb-4 border-[var(--account-settings-section-border,hsl(var(--contrast-100)))] @2xl:min-h-[72px] @2xl:border-b">
+        <h1 className="hidden font-[family-name:var(--account-settings-section-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none tracking-tight text-[var(--account-settings-section-title,hsl(var(--foreground)))] @2xl:block">
+          {title}
+        </h1>
       </header>
       <div className="flex flex-col gap-y-24 @xl:flex-row">
         <div className="my-4 flex w-full flex-col @xl:max-w-lg">
@@ -56,7 +57,7 @@ export function AccountSettingsSection({
             />
           </div>
           <div className="border-t border-[var(--account-settings-section-border,hsl(var(--contrast-100)))] pt-12">
-            <h1 className="mb-10 font-[family-name:var(--account-settings-section-font-family,var(--font-family-heading))] text-2xl leading-none font-medium text-[var(--account-settings-section-text,var(--foreground))] @xl:text-2xl">
+            <h1 className="mb-10 font-[family-name:var(--account-settings-section-font-family,var(--font-family-heading))] text-2xl font-medium leading-none text-[var(--account-settings-section-text,var(--foreground))] @xl:text-2xl">
               {changePasswordTitle}
             </h1>
             <ChangePasswordForm

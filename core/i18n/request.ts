@@ -2,7 +2,7 @@ import deepmerge from 'deepmerge';
 import { notFound } from 'next/navigation';
 import { getRequestConfig } from 'next-intl/server';
 
-import { locales } from './routing';
+import { locales } from './locales';
 
 // The language to fall back to if the requested message string is not available.
 const fallbackLocale = 'en';

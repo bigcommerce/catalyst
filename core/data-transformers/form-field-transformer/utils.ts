@@ -33,19 +33,20 @@ export enum FieldTypeToFieldInput {
   'MultilineTextFormField' = 'multilineTexts',
 }
 
-export const CUSTOMER_FIELDS_TO_EXCLUDE = [
-  FieldNameToFieldId.currentPassword,
-  FieldNameToFieldId.exclusiveOffers,
-];
+export const CUSTOMER_FIELDS_TO_EXCLUDE = [FieldNameToFieldId.currentPassword];
 
-export const BOTH_CUSTOMER_ADDRESS_FIELDS = [
-  FieldNameToFieldId.firstName,
-  FieldNameToFieldId.lastName,
+export const REGISTER_CUSTOMER_FORM_LAYOUT = [
+  [FieldNameToFieldId.firstName, FieldNameToFieldId.lastName],
+  FieldNameToFieldId.email,
+  FieldNameToFieldId.password,
+  FieldNameToFieldId.confirmPassword,
   FieldNameToFieldId.company,
   FieldNameToFieldId.phone,
+  FieldNameToFieldId.address1,
+  FieldNameToFieldId.address2,
+  [FieldNameToFieldId.city, FieldNameToFieldId.stateOrProvince],
+  [FieldNameToFieldId.postalCode, FieldNameToFieldId.countryCode],
 ];
-
-export const FULL_NAME_FIELDS = [FieldNameToFieldId.firstName, FieldNameToFieldId.lastName];
 
 export const ADDRESS_FORM_LAYOUT = [
   [FieldNameToFieldId.firstName, FieldNameToFieldId.lastName],
@@ -56,29 +57,6 @@ export const ADDRESS_FORM_LAYOUT = [
   [FieldNameToFieldId.city, FieldNameToFieldId.stateOrProvince],
   [FieldNameToFieldId.postalCode, FieldNameToFieldId.countryCode],
 ];
-
-export const createFieldName = (field: FormField, fieldOrigin: 'customer' | 'address') => {
-  const { isBuiltIn, entityId: fieldId, __typename: fieldType } = field;
-  const isCustomField = !isBuiltIn;
-  let secondFieldType = fieldOrigin;
-
-  if (isCustomField && fieldType !== 'PicklistOrTextFormField') {
-    const customFieldInputType =
-      fieldType === 'PicklistFormField' ? 'multipleChoices' : FieldTypeToFieldInput[fieldType];
-
-    return `custom_${fieldOrigin}-${customFieldInputType}-${fieldId}`;
-  }
-
-  if (fieldOrigin === 'address') {
-    secondFieldType = 'customer';
-  }
-
-  if (fieldOrigin === 'customer') {
-    secondFieldType = 'address';
-  }
-
-  return `${fieldOrigin}-${BOTH_CUSTOMER_ADDRESS_FIELDS.includes(fieldId) ? `${secondFieldType}-` : ''}${FieldNameToFieldId[fieldId] || fieldId}`;
-};
 
 export const getPreviouslySubmittedValue = (fieldValue?: FormFieldValue) => {
   if (!fieldValue) {

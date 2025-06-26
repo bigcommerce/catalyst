@@ -1,4 +1,11 @@
 packages:
   - core
   - packages/*
-neverBuiltDependencies: null
+onlyBuiltDependencies:
+  - '@parcel/watcher'
+  - '@swc/core'
+  - '@vercel/speed-insights'
+  - esbuild
+  - msw
+  - puppeteer
+  - sharp

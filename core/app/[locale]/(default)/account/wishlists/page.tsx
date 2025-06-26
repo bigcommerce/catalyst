@@ -74,7 +74,6 @@ export default async function Wishlists({ params, searchParams }: Props) {
       emptyStateCallToAction={
         <NewWishlistButton label={t('noWishlistsCallToAction')} modal={newWishlistModal} />
       }
-      emptyStateSubtitle={t('noWishlistsSubtitle')}
       emptyStateTitle={t('noWishlists')}
       emptyWishlistStateText={t('emptyWishlist')}
       itemActions={{
@@ -85,6 +84,7 @@ export default async function Wishlists({ params, searchParams }: Props) {
 
           return (
             <WishlistActionsMenu
+              actionsTitle={t('actionsTitle')}
               items={[
                 {
                   label: t('rename'),
@@ -107,12 +107,12 @@ export default async function Wishlists({ params, searchParams }: Props) {
                       modalTitle: t('Modal.shareTitle', { name: wishlist.name }),
                       publicUrl: wishlist.publicUrl,
                       closeLabel: t('Modal.close'),
+                      copyLabel: t('Modal.copy'),
                       copiedMessage: t('shareCopied'),
                       disabledTooltip: t('shareDisabled'),
                       label: t('share'),
                       successMessage: t('shareSuccess'),
                       isPublic: wishlist.visibility.isPublic,
-                      modalCloseLabel: t('Modal.close'),
                       isMobileUser: isMobile,
                     }
                   : undefined
@@ -122,7 +122,6 @@ export default async function Wishlists({ params, searchParams }: Props) {
         },
       }}
       paginationInfo={Streamable.from(() => getPaginationInfo(searchParams))}
-      placeholderCount={1}
       title={t('title')}
       viewWishlistLabel={t('viewWishlist')}
       wishlists={Streamable.from(() => listWishlists(searchParams, t))}

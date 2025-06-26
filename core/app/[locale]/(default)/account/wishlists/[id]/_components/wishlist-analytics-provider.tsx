@@ -25,7 +25,7 @@ export function WishlistAnalyticsProvider(
   props: PropsWithChildren<{ data: Streamable<AddToCartContext[]> }>,
 ) {
   return (
-    <Suspense fallback={<div />}>
+    <Suspense fallback={props.children}>
       <WishlistAnalyticsProviderResolved {...props} />
     </Suspense>
   );

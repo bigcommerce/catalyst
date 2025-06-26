@@ -50,6 +50,8 @@
             "heading": "Accedi",
             "forgotPassword": "Hai dimenticato la password?",
             "cta": "Accedi",
+            "email": "E-mail",
+            "password": "Password",
             "invalidCredentials": "L'indirizzo e-mail o la password non sono corretti. Prova ad accedere di nuovo o reimposta la password",
             "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Ordine #",
             "totalPrice": "Totale",
             "viewDetails": "Visualizza dettagli",
+            "emptyState": {
+                "title": "Non hai ordini",
+                "cta": "Acquista ora"
+            },
             "Details": {
                 "title": "Ordine n. {orderNumber}",
                 "shippingAddress": "Indirizzo di spedizione",
@@ -155,7 +161,8 @@
                 "destinationWithCount": "Destinazione {number, number}/{total, number}",
                 "subtotal": "Subtotale",
                 "shipping": "Spedizioni",
-                "tax": "Tasse"
+                "tax": "Tasse",
+                "orderSummary": "Riepilogo ordine"
             }
         },
         "Addresses": {
@@ -173,6 +180,7 @@
             "title": "Impostazioni account",
             "changePassword": "Cambia password",
             "passwordUpdated": "La password è stata aggiornata!",
+            "settingsUpdated": "Impostazioni dell'account aggiornate.",
             "somethingWentWrong": "Si è verificato un errore. Riprova più tardi.",
             "currentPassword": "Password attuale",
             "newPassword": "Nuova password",
@@ -181,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Azioni della lista dei desideri",
         "title": "Liste desideri",
         "new": "Nuova Lista desideri",
         "items": "{count, plural, =1 {1 item} other {# items}}",
@@ -197,6 +206,7 @@
         "makePrivate": "Rendi privato",
         "rename": "Rinomina",
         "delete": "Elimina",
+        "removeButtonTitle": "Rimuovi il prodotto dalla lista dei desideri",
         "Visibility": {
             "public": "Pubblica",
             "private": "Privato"
@@ -226,8 +236,8 @@
             "updateFailed": "Impossibile aggiornare la tua lista dei desideri. Riprova.",
             "deleteFailed": "Impossibile eliminare la tua lista dei desideri. Riprova.",
             "removeProductFailed": "Impossibile rimuovere il prodotto dalla tua lista dei desideri. Riprova.",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "Non hai l'autorizzazione a eseguire questa azione. Accedi e riprova",
+            "unexpected": "Si è verificato un errore imprevisto, riprova"
         },
         "Result": {
             "createSuccess": "La lista dei desideri è stata creata correttamente.",
@@ -236,19 +246,21 @@
             "removeItemSuccess": "L'articolo è stato rimosso dalla tua lista dei desideri."
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "label": "Add to wish list",
+            "addToNewWishlist": "Aggiungi a nuova lista desideri",
+            "defaultWishlistName": "La mia lista desideri",
+            "addSuccessMessage": "Il prodotto è stato aggiunto alla tua lista dei desideri",
+            "removeSuccessMessage": "Il prodotto è stato rimosso dalla tua lista dei desideri",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "Impossibile aggiungere il prodotto dalla tua lista dei desideri. Riprova",
+                "removeProductFailed": "Impossibile rimuovere il prodotto dalla tua lista dei desideri. Riprova"
             }
         }
     },
     "PublicWishlist": {
         "title": "Lista dei desideri pubblica",
-        "defaultName": "Lista dei desideri pubblica"
+        "defaultName": "Lista dei desideri pubblica",
+        "emptyWishlist": "Questa lista dei desideri non contiene ancora prodotti."
     },
     "Blog": {
         "title": "Blog",
@@ -384,6 +396,7 @@
             "home": "Home"
         },
         "ContactUs": {
+            "home": "Home",
             "Form": {
                 "success": "Grazie per averci contattato. Ti risponderemo al più presto.",
                 "successCta": "Continua a fare acquisti",
@@ -411,8 +424,9 @@
     },
     "NotFound": {
         "title": "Non è stato possibile trovare la pagina.",
-        "subtitle": "Sembra che la pagina che hai richiesto non esista più o che sia stata spostata.",
-        "featuredProducts": "Prodotti in primo piano"
+        "subtitle": "Prova a cercare qualcos'altro o torna alla home page.",
+        "featuredProducts": "Prodotti in primo piano",
+        "search": "Cerca"
     },
     "Components": {
         "Header": {
@@ -424,6 +438,7 @@
                 "search": "Apri popup di ricerca"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Valuta non valida",
                 "errorUpdatingCurrency": "Si è verificato un errore durante l'aggiornamento della valuta per il tuo carrello. Riprova."
             },
@@ -433,7 +448,9 @@
                 "brands": "Marchi",
                 "noSearchResultsTitle": "Spiacenti, nessun risultato per \"{term}\".",
                 "noSearchResultsSubtitle": "Prova un'altra ricerca.",
-                "somethingWentWrong": "Si è verificato un errore. Riprova."
+                "somethingWentWrong": "Si è verificato un errore. Riprova.",
+                "inputPlaceholder": "Cerca prodotti, categorie, marchi...",
+                "submitLabel": "Cerca"
             }
         },
         "Footer": {

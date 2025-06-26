@@ -7,10 +7,11 @@ import { buildConfig } from '~/build-config/reader';
 import bcCdnImageLoader from '~/lib/cdn-image-loader';
 
 function shouldUseLoaderProp(props: ImageProps): boolean {
-  return (
-    typeof props.src === 'string' &&
-    props.src.startsWith(`https://${buildConfig.get('urls').cdnUrl}`)
-  );
+  if (typeof props.src !== 'string') return false;
+
+  const { src } = props;
+
+  return buildConfig.get('urls').cdnUrls.some((cdn) => src.startsWith(`https://${cdn}`));
 }
 
 /**

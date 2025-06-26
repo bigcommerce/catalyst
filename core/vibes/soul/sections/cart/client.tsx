@@ -242,7 +242,7 @@ export function CartClient<LineItem extends CartLineItem>({
       className="font-[family-name:var(--cart-font-family,var(--font-family-body))] text-[var(--cart-text,hsl(var(--foreground)))]"
       sidebar={
         <div>
-          <h2 className="mb-10 font-[family-name:var(--cart-title-font-family,var(--font-family-heading))] text-4xl leading-none font-medium @xl:text-5xl">
+          <h2 className="mb-10 font-[family-name:var(--cart-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none @xl:text-5xl">
             {summaryTitle}
           </h2>
           <dl aria-label="Receipt Summary" className="w-full">
@@ -287,7 +287,7 @@ export function CartClient<LineItem extends CartLineItem>({
       sidebarSize="1/3"
     >
       <div className="w-full">
-        <h1 className="mb-10 font-[family-name:var(--cart-title-font-family,var(--font-family-heading))] text-4xl leading-none font-medium @xl:text-5xl">
+        <h1 className="mb-10 font-[family-name:var(--cart-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none @xl:text-5xl">
           {title}
           <span className="ml-4 text-[var(--cart-subtext-text,hsl(var(--contrast-300)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
             {optimisticQuantity}
@@ -297,10 +297,10 @@ export function CartClient<LineItem extends CartLineItem>({
         <ul className="flex flex-col gap-5">
           {optimisticLineItems.map((lineItem) => (
             <li
-              className="@container flex flex-col items-start gap-x-5 gap-y-4 @sm:flex-row"
+              className="flex flex-col items-start gap-x-5 gap-y-4 @container @sm:flex-row"
               key={lineItem.id}
             >
-              <div className="relative aspect-square w-full max-w-24 overflow-hidden rounded-xl bg-[var(--cart-image-background,hsl(var(--contrast-100)))] focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4 focus-visible:outline-hidden">
+              <div className="relative aspect-square w-full max-w-24 overflow-hidden rounded-xl bg-[var(--cart-image-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4">
                 <Image
                   alt={lineItem.image.alt}
                   className="object-cover"
@@ -398,7 +398,7 @@ function CounterForm({
           <button
             aria-label={decrementLabel}
             className={clsx(
-              'group rounded-l-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:outline-hidden disabled:cursor-not-allowed',
+              'group rounded-l-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
               lineItem.quantity === 1
                 ? 'opacity-50'
                 : 'hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))]',
@@ -418,13 +418,13 @@ function CounterForm({
               strokeWidth={1.5}
             />
           </button>
-          <span className="flex w-8 justify-center select-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:outline-hidden">
+          <span className="flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))]">
             {lineItem.quantity}
           </span>
           <button
             aria-label={incrementLabel}
             className={clsx(
-              'group rounded-r-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 transition-colors duration-300 hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))] focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:outline-hidden disabled:cursor-not-allowed',
+              'group rounded-r-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 transition-colors duration-300 hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
             )}
             name="intent"
             type="submit"
@@ -440,7 +440,7 @@ function CounterForm({
 
         <button
           aria-label={deleteLabel}
-          className="group -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4 focus-visible:outline-hidden"
+          className="group -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
           name="intent"
           type="submit"
           value="delete"

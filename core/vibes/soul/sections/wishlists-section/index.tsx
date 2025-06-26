@@ -9,44 +9,53 @@ interface Props {
   wishlists: Streamable<Wishlist[]>;
   paginationInfo?: Streamable<CursorPaginationInfo>;
   emptyStateCallToAction?: React.ReactNode;
-  emptyStateSubtitle?: Streamable<string | null>;
   emptyStateTitle?: Streamable<string | null>;
   emptyWishlistStateText?: Streamable<string | null>;
   viewWishlistLabel?: string;
-  placeholderCount?: number;
   actions?: React.ReactNode;
   itemActions?: WishlistItemActions;
 }
+
+/**
+ * This component supports various CSS variables for theming. Here's a comprehensive list, along
+ * with their default values:
+ *
+ * ```css
+ * :root {
+ *   --wishlists-section-title-font-family: var(--font-family-heading);
+ *   --wishlists-section-title: hsl(var(--foreground));
+ *   --wishlists-section-border: hsl(var(--contrast-100));
+ * }
+ * ```
+ */
 
 export const WishlistsSection = ({
   title,
   wishlists,
   paginationInfo,
   emptyStateCallToAction,
-  emptyStateSubtitle,
   emptyStateTitle,
   emptyWishlistStateText,
   viewWishlistLabel,
-  placeholderCount,
   actions,
   itemActions,
 }: Props) => {
   return (
     <section className="w-full">
-      <header className="border-b-contrast-100 mb-4 border-b">
+      <header className="mb-4 border-[var(--wishlists-section-border,hsl(var(--contrast-100)))] @2xl:min-h-[72px] @2xl:border-b">
         <div className="mb-4 flex items-center justify-between">
-          <h1 className="font-heading text-4xl leading-none font-medium">{title}</h1>
+          <h1 className="hidden font-[family-name:var(--wishlists-section-title-font-family,var(--font-family-heading))] text-4xl font-medium leading-none tracking-tight text-[var(--wishlists-section-title,hsl(var(--foreground)))] @2xl:block">
+            {title}
+          </h1>
           {actions}
         </div>
       </header>
 
       <WishlistList
         emptyStateCallToAction={emptyStateCallToAction}
-        emptyStateSubtitle={emptyStateSubtitle}
         emptyStateTitle={emptyStateTitle}
         emptyWishlistStateText={emptyWishlistStateText}
         itemActions={itemActions}
-        placeholderCount={placeholderCount}
         viewWishlistLabel={viewWishlistLabel}
         wishlists={wishlists}
       />

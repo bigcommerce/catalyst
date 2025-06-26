@@ -50,6 +50,8 @@
             "heading": "Inicio de sesión",
             "forgotPassword": "¿Olvidaste tu contraseña?",
             "cta": "Inicio de sesión",
+            "email": "Correo electrónico",
+            "password": "Contraseña",
             "invalidCredentials": "Tu dirección de correo electrónico o tu contraseña son incorrectas. Intenta iniciar sesión de nuevo o restablece tu contraseña",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Núm. de pedido",
             "totalPrice": "Total",
             "viewDetails": "Ver detalles",
+            "emptyState": {
+                "title": "No tienes ningún pedido",
+                "cta": "Comprar ahora"
+            },
             "Details": {
                 "title": "Pedido núm.{orderNumber}",
                 "shippingAddress": "Dirección de envío",
@@ -155,7 +161,8 @@
                 "destinationWithCount": "Destino {número, número}/{total, número}",
                 "subtotal": "Subtotal",
                 "shipping": "Envío",
-                "tax": "Impuesto"
+                "tax": "Impuesto",
+                "orderSummary": "Resumen del pedido"
             }
         },
         "Addresses": {
@@ -173,6 +180,7 @@
             "title": "CONFIGURACIÓN DE CUENTA",
             "changePassword": "Cambiar contraseña",
             "passwordUpdated": "¡La contraseña se actualizó correctamente!",
+            "settingsUpdated": "La configuración de la cuenta se actualizó correctamente.",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
             "currentPassword": "Contraseña actual",
             "newPassword": "Nueva contraseña",
@@ -181,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Acciones de la lista de deseos",
         "title": "Listas de deseos",
         "new": "Nueva lista de deseos",
         "items": "{count, plural, =1 {1 artículo} other {# artículos}}",
@@ -197,6 +206,7 @@
         "makePrivate": "Configurar como privada",
         "rename": "Cambiar el nombre",
         "delete": "Eliminar",
+        "removeButtonTitle": "Eliminar el producto de tu lista de deseos",
         "Visibility": {
             "public": "Público",
             "private": "Privado"
@@ -226,8 +236,8 @@
             "updateFailed": "No se pudo actualizar tu lista de deseos. Vuelve a intentarlo.",
             "deleteFailed": "No se pudo eliminar tu lista de deseos. Vuelve a intentarlo.",
             "removeProductFailed": "No se pudo eliminar el producto de tu lista de deseos. Vuelve a intentarlo.",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "No tienes autorización para realizar esta acción. Inicia sesión e inténtalo de nuevo.",
+            "unexpected": "Se produjo un error inesperado, inténtalo de nuevo"
         },
         "Result": {
             "createSuccess": "La lista de deseos se creó correctamente.",
@@ -236,19 +246,21 @@
             "removeItemSuccess": "Se eliminó el artículo de tu lista de deseos."
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "label": "Add to wish list",
+            "addToNewWishlist": "Agregar a una nueva lista de deseos",
+            "defaultWishlistName": "Mi lista de deseos",
+            "addSuccessMessage": "El producto se ha agregado a tu lista de deseos.",
+            "removeSuccessMessage": "El producto se ha eliminado de tu lista de deseos.",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "No se pudo agregar el producto de tu lista de deseos, inténtalo de nuevo",
+                "removeProductFailed": "No se pudo eliminar el producto de tu lista de deseos, inténtalo de nuevo"
             }
         }
     },
     "PublicWishlist": {
         "title": "Lista de deseos pública",
-        "defaultName": "Lista pública de deseos"
+        "defaultName": "Lista pública de deseos",
+        "emptyWishlist": "Aún no hay productos en esta lista de deseos."
     },
     "Blog": {
         "title": "Blog",
@@ -384,6 +396,7 @@
             "home": "Página de inicio"
         },
         "ContactUs": {
+            "home": "Página de inicio",
             "Form": {
                 "success": "Gracias por ponerte en contacto. Nos comunicaremos contigo pronto.",
                 "successCta": "Seguir comprando",
@@ -411,8 +424,9 @@
     },
     "NotFound": {
         "title": "No pudimos encontrar esa página.",
-        "subtitle": "Lo sentimos, pero parece que la página solicitada cambió de lugar o ya no existe.",
-        "featuredProducts": "Productos destacados"
+        "subtitle": "Intenta buscar algo más o regresa a la página de inicio.",
+        "featuredProducts": "Productos destacados",
+        "search": "Buscar"
     },
     "Components": {
         "Header": {
@@ -424,6 +438,7 @@
                 "search": "Abrir ventana emergente de búsqueda"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Moneda inválida",
                 "errorUpdatingCurrency": "Error al actualizar la moneda de tu carrito. Vuelve a intentarlo."
             },
@@ -433,7 +448,9 @@
                 "brands": "Marcas",
                 "noSearchResultsTitle": "Lo sentimos, no hay resultados para “{term}”.",
                 "noSearchResultsSubtitle": "Prueba con otra búsqueda.",
-                "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo."
+                "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo.",
+                "inputPlaceholder": "Buscar productos, categorías, marcas...",
+                "submitLabel": "Buscar"
             }
         },
         "Footer": {

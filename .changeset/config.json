@@ -13,5 +13,5 @@
   },
   "baseBranch": "canary",
   "updateInternalDependencies": "patch",
-  "ignore": []
+  "ignore": ["@bigcommerce/catalyst"]
 }

@@ -41,7 +41,7 @@ export const changePassword: ChangePasswordAction = async (prevState, formData) 
   const submission = parseWithZod(formData, { schema: changePasswordSchema });
 
   if (submission.status !== 'success') {
-    return submission.reply();
+    return { lastResult: submission.reply() };
   }
 
   const input = {
@@ -61,24 +61,33 @@ export const changePassword: ChangePasswordAction = async (prevState, formData) 
     const result = response.data.customer.changePassword;
 
     if (result.errors.length > 0) {
-      return submission.reply({ formErrors: result.errors.map((error) => error.message) });
+      return {
+        lastResult: submission.reply({ formErrors: result.errors.map((error) => error.message) }),
+      };
     }
 
-    return submission.reply();
+    return {
+      lastResult: submission.reply(),
+      successMessage: t('passwordUpdated'),
+    };
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
 
     if (error instanceof BigCommerceGQLError) {
-      return submission.reply({
-        formErrors: error.errors.map(({ message }) => message),
-      });
+      return {
+        lastResult: submission.reply({
+          formErrors: error.errors.map(({ message }) => message),
+        }),
+      };
     }
 
     if (error instanceof Error) {
-      return submission.reply({ formErrors: [error.message] });
+      return {
+        lastResult: submission.reply({ formErrors: [error.message] }),
+      };
     }
 
-    return submission.reply({ formErrors: [t('somethingWentWrong')] });
+    return { lastResult: submission.reply({ formErrors: [t('somethingWentWrong')] }) };
   }
 };

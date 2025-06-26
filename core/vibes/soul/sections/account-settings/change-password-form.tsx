@@ -7,12 +7,18 @@ import { useFormStatus } from 'react-dom';
 
 import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
+import { toast } from '@/vibes/soul/primitives/toaster';
 
 import { changePasswordSchema } from './schema';
 
-type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
+type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
 
-export type ChangePasswordAction = Action<SubmissionResult | null, FormData>;
+interface State {
+  lastResult: SubmissionResult | null;
+  successMessage?: string;
+}
+
+export type ChangePasswordAction = Action<State, FormData>;
 
 export interface ChangePasswordFormProps {
   action: ChangePasswordAction;
@@ -29,7 +35,7 @@ export function ChangePasswordForm({
   confirmPasswordLabel = 'Confirm password',
   submitLabel = 'Update',
 }: ChangePasswordFormProps) {
-  const [lastResult, formAction] = useActionState(action, null);
+  const [state, formAction] = useActionState(action, { lastResult: null });
   const [form, fields] = useForm({
     constraint: getZodConstraint(changePasswordSchema),
     shouldValidate: 'onBlur',
@@ -40,11 +46,15 @@ export function ChangePasswordForm({
   });
 
   useEffect(() => {
-    if (lastResult?.error) {
-      // eslint-disable-next-line no-console
-      console.log(lastResult.error);
+    if (state.lastResult?.status === 'success' && state.successMessage != null) {
+      toast.success(state.successMessage);
     }
-  }, [lastResult]);
+
+    if (state.lastResult?.error) {
+      // eslint-disable-next-line no-console
+      console.log(state.lastResult.error);
+    }
+  }, [state]);
 
   return (
     <form {...getFormProps(form)} action={formAction} className="space-y-5">

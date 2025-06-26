@@ -94,6 +94,7 @@ export const getChangeWishlistVisibilityModal = (
 
 export const getShareWishlistModal = (
   title: string,
+  copyLabel: string,
   closeLabel: string,
   publicUrl: string,
   action: () => void | Promise<void>,
@@ -102,7 +103,7 @@ export const getShareWishlistModal = (
   title,
   buttons: [
     { type: 'cancel', label: closeLabel },
-    { label: 'Copy', variant: 'primary', action },
+    { label: copyLabel, variant: 'primary', action },
   ],
 });
 

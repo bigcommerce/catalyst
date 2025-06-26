@@ -137,16 +137,17 @@ export default async function Search(props: Props) {
   });
 
   const streamableTotalCount = Streamable.from(async () => {
+    const format = await getFormatter();
     const searchParams = await props.searchParams;
     const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : '';
 
     if (!searchTerm) {
-      return 0;
+      return format.number(0);
     }
 
     const search = await streamableFacetedSearch;
 
-    return search.products.collectionInfo?.totalItems ?? 0;
+    return format.number(search.products.collectionInfo?.totalItems ?? 0);
   });
 
   const streamableEmptyStateTitle = Streamable.from(async () => {

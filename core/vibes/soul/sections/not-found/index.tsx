@@ -2,11 +2,12 @@
 
 import { Button } from '@/vibes/soul/primitives/button';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
-import { useSearch } from '~/context/search-context';
+import { useSearch } from '~/lib/search';
 
 export interface NotFoundProps {
   title?: string;
   subtitle?: string;
+  ctaLabel?: string;
   className?: string;
 }
 
@@ -27,6 +28,7 @@ export interface NotFoundProps {
 export function NotFound({
   title = 'Not found',
   subtitle = "Take a look around if you're lost.",
+  ctaLabel = 'Search',
   className = '',
 }: NotFoundProps) {
   const { setIsSearchOpen } = useSearch();
@@ -38,13 +40,13 @@ export function NotFound({
   return (
     <SectionLayout className={className} containerSize="2xl">
       <header className="font-[family-name:var(--not-found-font-family,var(--font-family-body))]">
-        <h1 className="mb-3 font-[family-name:var(--not-found-title-font-family,var(--font-family-heading))] text-3xl leading-none font-medium text-[var(--not-found-title,hsl(var(--foreground)))] @xl:text-4xl @4xl:text-5xl">
+        <h1 className="mb-3 font-[family-name:var(--not-found-title-font-family,var(--font-family-heading))] text-3xl font-medium leading-none text-[var(--not-found-title,hsl(var(--foreground)))] @xl:text-4xl @4xl:text-5xl">
           {title}
         </h1>
         <p className="mb-4 text-lg text-[var(--not-found-subtitle,hsl(var(--contrast-500)))]">
           {subtitle}
         </p>
-        <Button onClick={handleOpenSearch}>Search</Button>
+        <Button onClick={handleOpenSearch}>{ctaLabel}</Button>
       </header>
     </SectionLayout>
   );
