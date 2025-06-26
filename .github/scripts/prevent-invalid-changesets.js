@@ -2,6 +2,12 @@ const fs = require("fs");
 
 module.exports = async ({ core, exec }) => {
   try {
+    await exec.exec("git", [
+      "fetch",
+      "https://github.com/bigcommerce/catalyst.git",
+      "integrations/makeswift",
+    ]);
+
     const { stdout } = await exec.getExecOutput("git", [
       "diff",
       "--name-only",
