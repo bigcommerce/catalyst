@@ -84,7 +84,7 @@ To pull the latest code from `canary` into `integrations/makeswift`, follow the 
    ```
 
 > [!IMPORTANT]
-> It is very important that you do not use the merge button in the GitHub UI to merge your PR. The problem with the "Squash and merge" or "Rebase and merge" button in GitHub is that it **rewrites history and throws away your local merge commit**. Instead, locally rebasing your `integrations/makeswift` branch onto your `{new-branch-name}` branch preserves the merge commit from step 4, which will properly set the new merge base for future merges from `canary` into `integrations/makeswift`.
+> It is very important that you **do NOT** click the "Squash and merge" or "Rebase and merge" buttons in the GitHub PR UI. Instead, either merge the PR with a traditional merge commit (button should say "Merge pull request"), or locally rebase your `integrations/makeswift` branch onto your `{new-branch-name}` branch. Either of these options will correctly preserve the merge commit from step 4 in the history of `integrations/makeswift`, which will then set the new merge base for future merges from `canary` into `integrations/makeswift`. You can confirm this by running `git merge canary` from `integrations/makeswift` after rebasing; if you see "Already up to date.", you followed the steps correctly (unless legitimately new commits have been pushed to canary since the last time you merged, then you may see a new merge commit/potential conflicts for only those new commits).
 
 7. Push the changes up to GitHub, which will automatically close the open PR from step 5.
 
