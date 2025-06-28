@@ -18,6 +18,7 @@ interface ProductCardProps {
   imageSizes?: string;
   href: string;
   id: string;
+  buttonText?: string;
 }
 
 export const ProductCard = ({
@@ -33,6 +34,7 @@ export const ProductCard = ({
   imagePriority = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
   showReviews = true,
+  buttonText = 'Shop Now →',
   id,
   href,
 }: ProductCardProps) => {
@@ -117,7 +119,7 @@ export const ProductCard = ({
             href={href}
             id={id}
           >
-            Shop Now →
+            {buttonText}
           </Link>
         </div>
       </div>
