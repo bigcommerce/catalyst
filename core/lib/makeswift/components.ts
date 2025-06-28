@@ -18,6 +18,7 @@ import './components/logo-carousel/logo-carousel.makeswift';
 import './components/product-cards-git/product-cards-git.makeswift';
 import './components/category-grid-git/category-grid-git.makeswift';
 import './components/featured-products-git/featured-products-git.makesiwft';
+import './components/featured-category-git/featured-category-git.makeswift';
 
 import './components/site-theme/register';
 
