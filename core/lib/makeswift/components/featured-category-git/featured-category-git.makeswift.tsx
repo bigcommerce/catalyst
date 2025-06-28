@@ -173,13 +173,13 @@ function MakeswiftFeaturedProductsGridGIT({
       <div className={clsx('lg:col-span-4 xl:col-span-4', 'featured-category-carousel-container')}>
         {products.length > 0 ? (
           <Carousel
-            swipeable={false}
-            draggable={false}
+            swipeable={true}
+            draggable={true}
             showDots={true}
             arrows={false}
             responsive={responsive}
             ssr={true} // means to render carousel on server-side.
-            infinite={false}
+            infinite={true}
             deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
             autoPlaySpeed={1 * 1000} // Convert seconds to milliseconds
             //keyBoardControl={keyBoardControl}
@@ -205,7 +205,7 @@ function MakeswiftFeaturedProductsGridGIT({
               return (
                 <ProductCard
                   key={product.id}
-                  className={`${className} h-full`}
+                  className={`h-full`}
                   image={product.image}
                   name={product.title}
                   // @ts-ignore
