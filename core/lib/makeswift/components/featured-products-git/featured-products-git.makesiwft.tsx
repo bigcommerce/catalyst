@@ -12,7 +12,6 @@ import {
 
 import { runtime } from '~/lib/makeswift/runtime';
 import { ProductCardSkeleton } from '~/vibes/soul/primitives/product-card';
-import { ProductCard } from '~/vibes/soul/primitives/product-card-git';
 
 import { searchProducts } from '../../utils/search-products';
 import { useProductsByIds } from '../../utils/fetch-products';
