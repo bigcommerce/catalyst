@@ -160,7 +160,7 @@ function MakeswiftFeaturedProductsGridGIT({
         className,
       )}
     >
-      <div className="col-span-1">
+      <div className="lg:col-span-1 xl:col-span-1">
         <CategoryGridCard
           id={category.id.toString()}
           name={category.name}
@@ -170,61 +170,63 @@ function MakeswiftFeaturedProductsGridGIT({
           fullHeight={true}
         />
       </div>
-      {products.length > 0 ? (
-        <Carousel
-          swipeable={true}
-          draggable={true}
-          showDots={true}
-          arrows={false}
-          responsive={responsive}
-          ssr={true} // means to render carousel on server-side.
-          infinite={true}
-          deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
-          autoPlaySpeed={1 * 1000} // Convert seconds to milliseconds
-          //keyBoardControl={keyBoardControl}
-          customTransition="all 1000ms"
-          transitionDuration={1000}
-          //containerClass="carousel-container"
-          //removeArrowOnDeviceType={['tablet', 'mobile']}
-          dotListClass="custom-dot-list-style"
-          itemClass="carousel-item-padding-40-px"
-          className={`${className} col-span-4`}
-        >
-          {products.map((product) => {
-            const { price, salePrice } = handlePrice(product.price);
+      <div className="lg:col-span-4 xl:col-span-4">
+        {products.length > 0 ? (
+          <Carousel
+            swipeable={true}
+            draggable={true}
+            showDots={true}
+            arrows={false}
+            responsive={responsive}
+            ssr={true} // means to render carousel on server-side.
+            infinite={true}
+            deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
+            autoPlaySpeed={1 * 1000} // Convert seconds to milliseconds
+            //keyBoardControl={keyBoardControl}
+            customTransition="all 1000ms"
+            transitionDuration={1000}
+            containerClass="carousel-container"
+            //removeArrowOnDeviceType={['tablet', 'mobile']}
+            dotListClass="custom-dot-list-style"
+            itemClass="carousel-item-padding-40-px"
+            className={`${className}`}
+          >
+            {products.map((product) => {
+              const { price, salePrice } = handlePrice(product.price);
 
-            const badgeOptions = {
-              show: false,
-              text: '',
-              theme: 'primary',
-              shape: 'pill',
-              location: 'top-right',
-            };
+              const badgeOptions = {
+                show: false,
+                text: '',
+                theme: 'primary',
+                shape: 'pill',
+                location: 'top-right',
+              };
 
-            return (
-              <ProductCard
-                key={product.id}
-                className={className}
-                image={product.image}
-                name={product.title}
-                // @ts-ignore
-                rating={product.rating as number}
-                // @ts-ignore
-                reviewCount={product.reviewCount as number}
-                price={price}
-                badge={badgeOptions}
-                showReviews={showReviews}
-                salePrice={salePrice}
-                aspectRatio={aspectRatio}
-                href={product.href}
-                id={product.id}
-                buttonText="Add To Cart"
-                {...props}
-              />
-            );
-          })}
-        </Carousel>
-      ) : null}
+              return (
+                <ProductCard
+                  key={product.id}
+                  className={className}
+                  image={product.image}
+                  name={product.title}
+                  // @ts-ignore
+                  rating={product.rating as number}
+                  // @ts-ignore
+                  reviewCount={product.reviewCount as number}
+                  price={price}
+                  badge={badgeOptions}
+                  showReviews={showReviews}
+                  salePrice={salePrice}
+                  aspectRatio={aspectRatio}
+                  href={product.href}
+                  id={product.id}
+                  buttonText="Add To Cart"
+                  {...props}
+                />
+              );
+            })}
+          </Carousel>
+        ) : null}
+      </div>
     </div>
   );
 }
