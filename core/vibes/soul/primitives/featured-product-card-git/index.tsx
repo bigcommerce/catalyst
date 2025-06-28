@@ -13,6 +13,7 @@ interface ProductCardProps {
   imageSizes?: string;
   href: string;
   description?: string;
+  categories: string[];
   id: string;
 }
 
@@ -25,6 +26,7 @@ export const FeaturedProductCard = ({
   aspectRatio = '5:6',
   imagePriority = false,
   description = '',
+  categories = [],
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
   id,
   href,
@@ -90,7 +92,9 @@ export const FeaturedProductCard = ({
               )}
             </div>
             <div>
-              <p className="text-sm font-normal text-gray-500">Electrical</p>
+              <p className="text-sm font-normal text-gray-500">
+                {categories.length > 0 ? categories[0] : ''}
+              </p>
             </div>
           </div>
 

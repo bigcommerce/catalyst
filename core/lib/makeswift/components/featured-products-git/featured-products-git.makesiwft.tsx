@@ -123,6 +123,7 @@ function MakeswiftFeaturedProductsGridGIT({
             reviewCount={product.reviewCount as number}
             description={product.description}
             price={price}
+            categories={product.categories}
             salePrice={salePrice}
             aspectRatio={aspectRatio}
             href={product.href}

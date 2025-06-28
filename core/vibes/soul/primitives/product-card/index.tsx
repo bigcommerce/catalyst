@@ -14,6 +14,7 @@ export interface Product {
   description: string;
   href: string;
   image?: { src: string; alt: string };
+  categories: string[];
   price?: Price;
   subtitle?: string;
   badge?: string;
