@@ -202,7 +202,7 @@ function MakeswiftFeaturedProductsGridGIT({
             transitionDuration={1000}
             containerClass="carousel-container overflow-visible"
             removeArrowOnDeviceType={['desktop', 'superLargeDesktop']}
-            dotListClass="custom-dot-list-style xs:bottom-10 md:bottom-10 lg:!hidden !bottom-[-40px]"
+            dotListClass="custom-dot-list-style xs:bottom-10 md:bottom-10 lg:!hidden bottom-[-40px]"
             itemClass="carousel-item-padding-40-px px-2"
             // renderDotsOutside={true}
             className={``}
