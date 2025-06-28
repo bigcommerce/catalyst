@@ -200,7 +200,6 @@ function MakeswiftFeaturedProductsGridGIT({
             //keyBoardControl={keyBoardControl}
             customTransition="all 1000ms"
             transitionDuration={1000}
-            centerMode={true}
             containerClass="carousel-container"
             removeArrowOnDeviceType={['desktop', 'superLargeDesktop']}
             dotListClass="custom-dot-list-style lg:!hidden"
