@@ -170,7 +170,12 @@ function MakeswiftFeaturedProductsGridGIT({
           fullHeight={true}
         />
       </div>
-      <div className={clsx('lg:col-span-4 xl:col-span-4')}>
+      <div
+        className={clsx(
+          'custom- lg:col-span-4 xl:col-span-4',
+          'featured-category-carousel-container',
+        )}
+      >
         {products.length > 0 ? (
           <Carousel
             swipeable={true}
@@ -185,11 +190,11 @@ function MakeswiftFeaturedProductsGridGIT({
             //keyBoardControl={keyBoardControl}
             customTransition="all 1000ms"
             transitionDuration={1000}
-            containerClass="carousel-container"
+            // containerClass="carousel-container"
             //removeArrowOnDeviceType={['tablet', 'mobile']}
             dotListClass="custom-dot-list-style"
             itemClass="carousel-item-padding-40-px"
-            className={`${className}`}
+            className={``}
           >
             {products.map((product) => {
               const { price, salePrice } = handlePrice(product.price);
