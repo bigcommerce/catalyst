@@ -7,7 +7,7 @@
   bottom: -40px !important;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 1025px) {
   .custom-featured-category-git-dot-list {
     display: flex !important;
   }
