@@ -100,10 +100,16 @@ function MakeswiftFeaturedProductsGridGIT({
     tablet: {
       breakpoint: { max: breakpoints.large.width, min: breakpoints.small.width }, // 1024–640
       items: 1,
+      showDots: true,
+      swipeable: true,
+      draggable: true,
     },
     mobile: {
       breakpoint: { max: breakpoints.small.width, min: 0 }, // <640
       items: 1,
+      showDots: true,
+      swipeable: true,
+      draggable: true,
     },
   };
 
@@ -173,8 +179,8 @@ function MakeswiftFeaturedProductsGridGIT({
       <div className={clsx('lg:col-span-4 xl:col-span-4', 'featured-category-carousel-container')}>
         {products.length > 0 ? (
           <Carousel
-            swipeable={true}
-            draggable={true}
+            swipeable={false}
+            draggable={false}
             showDots={true}
             arrows={false}
             responsive={responsive}
