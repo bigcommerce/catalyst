@@ -3,5 +3,12 @@
 }
 
 .custom-featured-category-git-dot-list {
+  display: none !important;
   bottom: -40px !important;
+}
+
+@media (max-width: 1024px) {
+  .custom-featured-category-git-dot-list {
+    display: block !important;
+  }
 }
