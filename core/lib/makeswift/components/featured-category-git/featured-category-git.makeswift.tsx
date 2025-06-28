@@ -205,6 +205,7 @@ function MakeswiftFeaturedProductsGridGIT({
             removeArrowOnDeviceType={['desktop', 'superLargeDesktop']}
             dotListClass="custom-dot-list-style lg:!hidden"
             itemClass="carousel-item-padding-40-px px-2"
+            renderDotsOutside={true}
             className={``}
           >
             {products.map((product) => {
