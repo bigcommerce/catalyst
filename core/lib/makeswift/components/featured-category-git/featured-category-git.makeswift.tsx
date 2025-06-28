@@ -86,7 +86,7 @@ function MakeswiftFeaturedProductsGridGIT({
 
   const mobileColumns = 1,
     tabletColumns = 1,
-    desktopColumns = 2;
+    desktopColumns = 5;
 
   const responsive = {
     superLargeDesktop: {
@@ -160,14 +160,16 @@ function MakeswiftFeaturedProductsGridGIT({
         className,
       )}
     >
-      <CategoryGridCard
-        id={category.id.toString()}
-        name={category.name}
-        href={category.path}
-        imageUrl={category.image}
-        productCount={category.productCount}
-        fullHeight={true}
-      />
+      <div className="col-span-1">
+        <CategoryGridCard
+          id={category.id.toString()}
+          name={category.name}
+          href={category.path}
+          imageUrl={category.image}
+          productCount={category.productCount}
+          fullHeight={true}
+        />
+      </div>
       {products.length > 0 ? (
         <Carousel
           swipeable={true}
@@ -186,7 +188,7 @@ function MakeswiftFeaturedProductsGridGIT({
           //removeArrowOnDeviceType={['tablet', 'mobile']}
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-40-px"
-          className={`${className}`}
+          className={`${className} col-span-4`}
         >
           {products.map((product) => {
             const { price, salePrice } = handlePrice(product.price);
