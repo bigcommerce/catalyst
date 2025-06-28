@@ -186,9 +186,9 @@ function MakeswiftFeaturedProductsGridGIT({
             customTransition="all 1000ms"
             transitionDuration={1000}
             containerClass="carousel-container"
-            removeArrowOnDeviceType={['desktop']}
-            dotListClass="custom-dot-list-style block mt-6"
-            itemClass="carousel-item-padding-40-px"
+            removeArrowOnDeviceType={['desktop', 'superLargeDesktop']}
+            dotListClass="custom-dot-list-style block"
+            itemClass="carousel-item-padding-40-px px-2"
             className={``}
           >
             {products.map((product) => {
@@ -205,7 +205,7 @@ function MakeswiftFeaturedProductsGridGIT({
               return (
                 <ProductCard
                   key={product.id}
-                  className={`${className} mx-2 h-full`}
+                  className={`${className} h-full`}
                   image={product.image}
                   name={product.title}
                   // @ts-ignore
