@@ -14,6 +14,6 @@
 
   .custom-featured-category-git-container {
     overflow-x: hidden !important;
-    overflow-y: visible !important;
+    overflow-y: clip !important;
   }
 }
