@@ -87,7 +87,7 @@ function MakeswiftFeaturedProductsGridGIT({
 
   const mobileColumns = 1,
     tabletColumns = 1,
-    desktopColumns = 5;
+    desktopColumns = 2;
 
   const responsive = {
     superLargeDesktop: {
