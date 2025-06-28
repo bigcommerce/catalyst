@@ -173,21 +173,21 @@ function MakeswiftFeaturedProductsGridGIT({
       <div className={clsx('lg:col-span-4 xl:col-span-4', 'featured-category-carousel-container')}>
         {products.length > 0 ? (
           <Carousel
-            swipeable={true}
-            draggable={true}
+            swipeable={false}
+            draggable={false}
             showDots={true}
             arrows={false}
             responsive={responsive}
             ssr={true} // means to render carousel on server-side.
-            infinite={true}
+            infinite={false}
             deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
             autoPlaySpeed={1 * 1000} // Convert seconds to milliseconds
             //keyBoardControl={keyBoardControl}
             customTransition="all 1000ms"
             transitionDuration={1000}
             containerClass="carousel-container"
-            //removeArrowOnDeviceType={['tablet', 'mobile']}
-            dotListClass="custom-dot-list-style block lg:hidden mt-6"
+            removeArrowOnDeviceType={['desktop']}
+            dotListClass="custom-dot-list-style block mt-6"
             itemClass="carousel-item-padding-40-px"
             className={``}
           >
@@ -203,27 +203,25 @@ function MakeswiftFeaturedProductsGridGIT({
               };
 
               return (
-                <div className="px-4">
-                  <ProductCard
-                    key={product.id}
-                    className={className}
-                    image={product.image}
-                    name={product.title}
-                    // @ts-ignore
-                    rating={product.rating as number}
-                    // @ts-ignore
-                    reviewCount={product.reviewCount as number}
-                    price={price}
-                    badge={badgeOptions}
-                    showReviews={showReviews}
-                    salePrice={salePrice}
-                    aspectRatio={aspectRatio}
-                    href={product.href}
-                    id={product.id}
-                    buttonText="Add To Cart"
-                    {...props}
-                  />
-                </div>
+                <ProductCard
+                  key={product.id}
+                  className={`${className} mx-2 h-full`}
+                  image={product.image}
+                  name={product.title}
+                  // @ts-ignore
+                  rating={product.rating as number}
+                  // @ts-ignore
+                  reviewCount={product.reviewCount as number}
+                  price={price}
+                  badge={badgeOptions}
+                  showReviews={showReviews}
+                  salePrice={salePrice}
+                  aspectRatio={aspectRatio}
+                  href={product.href}
+                  id={product.id}
+                  buttonText="Add To Cart"
+                  {...props}
+                />
               );
             })}
           </Carousel>
