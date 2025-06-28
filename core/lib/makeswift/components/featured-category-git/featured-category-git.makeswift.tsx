@@ -92,10 +92,16 @@ function MakeswiftFeaturedProductsGridGIT({
     superLargeDesktop: {
       breakpoint: { max: 4000, min: breakpoints.screen.width }, // XL and above
       items: 4,
+      showDots: false,
+      swipeable: false,
+      draggable: false,
     },
     desktop: {
       breakpoint: { max: breakpoints.screen.width, min: breakpoints.large.width }, // 1280–1024
       items: 4,
+      showDots: false,
+      swipeable: false,
+      draggable: false,
     },
     tablet: {
       breakpoint: { max: breakpoints.large.width, min: breakpoints.small.width }, // 1024–640
