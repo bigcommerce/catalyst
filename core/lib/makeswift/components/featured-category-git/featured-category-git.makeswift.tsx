@@ -208,8 +208,8 @@ const handlePrice = (productPrice: Price | undefined) => {
 };
 
 runtime.registerComponent(MakeswiftFeaturedProductsGridGIT, {
-  type: 'catalog-product-featured-git',
-  label: 'GIT / Featured Products (GIT)',
+  type: 'catalog-category-featured-git',
+  label: 'GIT / Featured Category (GIT)',
   props: {
     className: Style(),
     productEntityOne: Group({
