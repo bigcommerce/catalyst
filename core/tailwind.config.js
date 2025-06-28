@@ -21,11 +21,19 @@ const config = {
       variants: ['sm', 'md', 'lg', 'xl', '2xl', 'hover', 'focus'],
     },
     {
+      pattern: /^hidden$/,
+      variants: ['sm', 'md', 'lg', 'xl', '2xl', 'hover', 'focus'],
+    },
+    {
       pattern: /^overflow-visible$/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
     {
-      pattern: /^bottom-$/,
+      pattern: /^!overflow-visible$/,
+      variants: ['sm', 'md', 'lg', 'xl', '2xl'],
+    },
+    {
+      pattern: /^bottom-\[.*\]$/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
   ],
