@@ -12,6 +12,10 @@ const config = {
       pattern: /grid-cols-.+/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
+    {
+      pattern: /col-span-.+/,
+      variants: ['sm', 'md', 'lg', 'xl', '2xl'],
+    },
   ],
   theme: {
     extend: {

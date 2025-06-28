@@ -160,7 +160,7 @@ function MakeswiftFeaturedProductsGridGIT({
         className,
       )}
     >
-      <div className={clsx('lg:col-span-1 xl:col-span-1')}>
+      <div className={clsx('grid lg:col-span-1 xl:col-span-1')}>
         <CategoryGridCard
           id={category.id.toString()}
           name={category.name}
@@ -170,12 +170,7 @@ function MakeswiftFeaturedProductsGridGIT({
           fullHeight={true}
         />
       </div>
-      <div
-        className={clsx(
-          'custom- lg:col-span-4 xl:col-span-4',
-          'featured-category-carousel-container',
-        )}
-      >
+      <div className={clsx('lg:col-span-4 xl:col-span-4', 'featured-category-carousel-container')}>
         {products.length > 0 ? (
           <Carousel
             swipeable={true}
