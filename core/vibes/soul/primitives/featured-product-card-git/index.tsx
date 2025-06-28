@@ -1,0 +1,109 @@
+import clsx from 'clsx';
+import { Image } from '~/components/image';
+import { Link } from '~/components/link';
+
+interface ProductCardProps {
+  className?: string;
+  image?: { src: string; alt: string };
+  name: string;
+  price?: string;
+  salePrice?: string;
+  aspectRatio?: '5:6' | '3:4' | '1:1';
+  imagePriority?: boolean;
+  imageSizes?: string;
+  href: string;
+  id: string;
+}
+
+export const FeaturedProductCard = ({
+  className,
+  image,
+  name,
+  price,
+  salePrice,
+  aspectRatio = '5:6',
+  imagePriority = false,
+  imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
+  id,
+  href,
+}: ProductCardProps) => {
+  const description = 'This is a long long long long long long long description for the product';
+
+  return (
+    <div
+      className={clsx(
+        'flex h-full max-w-xl flex-col overflow-hidden rounded-lg bg-white shadow-lg',
+        className,
+      )}
+    >
+      <div
+        className={clsx(
+          'relative overflow-hidden rounded-xl bg-[var(--product-card-light-background,hsl(var(--contrast-100)))] @md:rounded-2xl',
+          {
+            '5:6': 'aspect-[5/6]',
+            '3:4': 'aspect-[3/4]',
+            '1:1': 'aspect-square',
+          }[aspectRatio],
+        )}
+      >
+        {image != null ? (
+          <Image
+            alt={image.alt}
+            className={clsx(
+              'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+            )}
+            fill
+            priority={imagePriority}
+            sizes={imageSizes}
+            src={image.src}
+          />
+        ) : (
+          <div
+            className={clsx(
+              'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter text-[var(--product-card-light-title,hsl(var(--foreground)))] opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
+            )}
+          >
+            {name}
+          </div>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col p-4">
+        <h2 className="mb-1 text-lg font-bold text-gray-800">{name}</h2>
+        <p className="mb-1 mt-0.5 text-sm font-normal text-gray-500">
+          {description.length > 40 ? description.slice(0, 37) + '...' : description}
+        </p>
+
+        <div className="mt-auto">
+          <div className="grid-gap-2 grid grid-cols-2">
+            <div>
+              <p className="text-sm font-normal text-gray-500">Electrical</p>
+            </div>
+            <div>
+              {salePrice ? (
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold">{salePrice}</span>
+                  <span className="text-gray-400 line-through">{price}</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl font-bold">{price}</span>
+                </div>
+              )}
+            </div>
+          </div>
+
+          <Link
+            aria-label={name}
+            className={clsx(
+              'relative mt-4 block w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
+            )}
+            href={href}
+            id={id}
+          >
+            Add to Cart
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+};
