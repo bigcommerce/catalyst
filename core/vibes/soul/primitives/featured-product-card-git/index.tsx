@@ -63,7 +63,7 @@ export const FeaturedProductCard = ({
               'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter text-[var(--product-card-light-title,hsl(var(--foreground)))] opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
             )}
           >
-            {name}
+            {name.length > 20 ? name.slice(0, 17) + '...' : name}
           </div>
         )}
       </div>
@@ -76,9 +76,6 @@ export const FeaturedProductCard = ({
         <div className="mt-auto">
           <div className="grid-gap-2 grid grid-cols-2">
             <div>
-              <p className="text-sm font-normal text-gray-500">Electrical</p>
-            </div>
-            <div>
               {salePrice ? (
                 <div className="flex items-center gap-2">
                   <span className="text-2xl font-bold">{salePrice}</span>
@@ -89,6 +86,9 @@ export const FeaturedProductCard = ({
                   <span className="text-2xl font-bold">{price}</span>
                 </div>
               )}
+            </div>
+            <div>
+              <p className="text-sm font-normal text-gray-500">Electrical</p>
             </div>
           </div>
 

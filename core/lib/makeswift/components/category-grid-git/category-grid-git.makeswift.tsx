@@ -63,8 +63,8 @@ function MakeswiftCategoryGridGIT({
           className,
         )}
       >
-        {skeletons.map((_, idx) => (
-          <CategoryGridItemSkeleton key={idx} className={className} />
+        {Array.from({ length: skeletonCount }).map((_, index) => (
+          <CategoryGridItemSkeleton key={index} className={className} />
         ))}
       </div>
     );
@@ -82,8 +82,8 @@ function MakeswiftCategoryGridGIT({
           className,
         )}
       >
-        {skeletons.map((_, idx) => (
-          <CategoryGridItemSkeleton key={idx} className={className} />
+        {Array.from({ length: skeletonCount }).map((_, index) => (
+          <CategoryGridItemSkeleton key={index} className={className} />
         ))}
       </div>
     );

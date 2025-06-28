@@ -70,11 +70,41 @@ function MakeswiftProductCardGIT({
   });
 
   if (isLoading) {
-    return <ProductCardSkeleton className={className} />;
+    return (
+      <div
+        className={clsx(
+          'grid gap-5',
+          `grid-cols-${itemsPerRowMobile}`, // mobile: 2 columns
+          `sm:grid-cols-${itemsPerRowTablet}`, // tablet: 4 columns
+          `lg:grid-cols-${itemsPerRowDesktop}`, // desktop: 6 columns
+          `xl:grid-cols-${itemsPerRowSuperDesktop}`, // super desktop: 8 columns
+          className,
+        )}
+      >
+        {Array.from({ length: additionalProducts.length }).map((_, index) => (
+          <ProductCardSkeleton key={index} className={className} />
+        ))}
+      </div>
+    );
   }
 
   if (products == null || products.length === 0) {
-    return <ProductCardSkeleton className={className} />;
+    return (
+      <div
+        className={clsx(
+          'grid gap-5',
+          `grid-cols-${itemsPerRowMobile}`, // mobile: 2 columns
+          `sm:grid-cols-${itemsPerRowTablet}`, // tablet: 4 columns
+          `lg:grid-cols-${itemsPerRowDesktop}`, // desktop: 6 columns
+          `xl:grid-cols-${itemsPerRowSuperDesktop}`, // super desktop: 8 columns
+          className,
+        )}
+      >
+        {Array.from({ length: additionalProducts.length }).map((_, index) => (
+          <ProductCardSkeleton key={index} className={className} />
+        ))}
+      </div>
+    );
   }
 
   return (
