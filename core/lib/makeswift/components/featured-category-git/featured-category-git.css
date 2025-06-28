@@ -9,6 +9,11 @@
 
 @media (max-width: 1024px) {
   .custom-featured-category-git-dot-list {
-    display: block !important;
+    display: flex !important;
+  }
+
+  .custom-featured-category-git-container {
+    overflow-x: hidden !important;
+    overflow-y: visible !important;
   }
 }
