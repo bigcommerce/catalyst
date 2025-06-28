@@ -11,9 +11,4 @@
   .custom-featured-category-git-dot-list {
     display: flex !important;
   }
-
-  .custom-featured-category-git-container {
-    overflow-x: hidden !important;
-    overflow-y: clip !important;
-  }
 }
