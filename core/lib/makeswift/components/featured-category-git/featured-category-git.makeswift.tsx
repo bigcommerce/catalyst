@@ -95,6 +95,7 @@ function MakeswiftFeaturedProductsGridGIT({
       showDots: false,
       swipeable: false,
       draggable: false,
+      infinite: false,
     },
     desktop: {
       breakpoint: { max: breakpoints.screen.width, min: breakpoints.large.width }, // 1280–1024
@@ -102,6 +103,7 @@ function MakeswiftFeaturedProductsGridGIT({
       showDots: false,
       swipeable: false,
       draggable: false,
+      infinite: false,
     },
     tablet: {
       breakpoint: { max: breakpoints.large.width, min: breakpoints.small.width }, // 1024–640
@@ -109,6 +111,7 @@ function MakeswiftFeaturedProductsGridGIT({
       showDots: true,
       swipeable: true,
       draggable: true,
+      infinite: true,
     },
     mobile: {
       breakpoint: { max: breakpoints.small.width, min: 0 }, // <640
@@ -116,6 +119,7 @@ function MakeswiftFeaturedProductsGridGIT({
       showDots: true,
       swipeable: true,
       draggable: true,
+      infinite: true,
     },
   };
 
@@ -191,7 +195,6 @@ function MakeswiftFeaturedProductsGridGIT({
             arrows={false}
             responsive={responsive}
             ssr={true} // means to render carousel on server-side.
-            infinite={true}
             deviceType={'desktop'} // This is important for SSR. It should match the device type you want to render.
             autoPlaySpeed={1 * 1000} // Convert seconds to milliseconds
             //keyBoardControl={keyBoardControl}
