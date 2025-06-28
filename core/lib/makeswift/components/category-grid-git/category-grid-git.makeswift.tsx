@@ -124,6 +124,7 @@ interface CategoryGridCardProps {
   productCount: number;
   imagePriority?: boolean;
   imageSizes?: string;
+  fullHeight?: boolean;
 }
 
 export function CategoryGridCard({
@@ -133,12 +134,15 @@ export function CategoryGridCard({
   name,
   productCount,
   imagePriority = false,
+  fullHeight = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
 }: CategoryGridCardProps) {
   return (
     <Link aria-label={name} href={href} id={id}>
       {/* Image */}
-      <div className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md shadow-md">
+      <div
+        className={`group relative ${fullHeight ? 'h-full' : 'h-48'} w-full cursor-pointer overflow-hidden rounded-md shadow-md`}
+      >
         {imageUrl ? (
           <Image
             alt={name}

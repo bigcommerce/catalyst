@@ -142,6 +142,7 @@ function MakeswiftFeaturedProductsGridGIT({
         href={category.path}
         imageUrl={category.image}
         productCount={category.productCount}
+        fullHeight={true}
       />
       {products.map(async (product) => {
         const { price, salePrice } = handlePrice(product.price);
