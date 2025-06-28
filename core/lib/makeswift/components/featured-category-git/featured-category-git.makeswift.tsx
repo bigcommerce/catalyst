@@ -153,14 +153,14 @@ function MakeswiftFeaturedProductsGridGIT({
     <div
       className={clsx(
         'grid gap-5',
-        `grid-cols-${mobileColumns}`, // mobile: 2 columns
-        `sm:grid-cols-${tabletColumns}`, // tablet: 4 columns
-        `lg:grid-cols-${desktopColumns}`, // desktop: 6 columns
-        `xl:grid-cols-${desktopColumns}`, // super desktop: 8 columns
+        `grid-cols-${mobileColumns}`, // mobile: 1 columns
+        `sm:grid-cols-${tabletColumns}`, // tablet: 1 columns
+        `lg:grid-cols-${desktopColumns}`, // desktop: 5 columns
+        `xl:grid-cols-${desktopColumns}`, // super desktop: 5 columns
         className,
       )}
     >
-      <div className="lg:col-span-1 xl:col-span-1">
+      <div className={clsx('lg:col-span-1 xl:col-span-1')}>
         <CategoryGridCard
           id={category.id.toString()}
           name={category.name}
@@ -170,7 +170,7 @@ function MakeswiftFeaturedProductsGridGIT({
           fullHeight={true}
         />
       </div>
-      <div className="lg:col-span-4 xl:col-span-4">
+      <div className={clsx('lg:col-span-4 xl:col-span-4')}>
         {products.length > 0 ? (
           <Carousel
             swipeable={true}
