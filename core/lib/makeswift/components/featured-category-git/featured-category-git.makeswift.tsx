@@ -19,6 +19,7 @@ import { useCategoriesByIds } from '../../utils/fetch-categories';
 import dynamic from 'next/dynamic';
 
 import 'react-multi-carousel/lib/styles.css';
+import './featured-category-git.css';
 
 const Carousel = dynamic(() => import('react-multi-carousel'), { ssr: true });
 
@@ -200,9 +201,9 @@ function MakeswiftFeaturedProductsGridGIT({
             //keyBoardControl={keyBoardControl}
             customTransition="all 1000ms"
             transitionDuration={1000}
-            containerClass="carousel-container !overflow-visible"
+            containerClass="carousel-container custom-featured-category-git-container"
             removeArrowOnDeviceType={['desktop', 'superLargeDesktop']}
-            dotListClass="custom-dot-list-style xs:bottom-10 md:bottom-10 lg:!hidden bottom-[-40px]"
+            dotListClass="custom-dot-list-style custom-featured-category-git-dot-list"
             itemClass="carousel-item-padding-40-px px-2"
             // renderDotsOutside={true}
             className={``}
