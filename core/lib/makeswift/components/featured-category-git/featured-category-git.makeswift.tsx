@@ -187,7 +187,7 @@ function MakeswiftFeaturedProductsGridGIT({
             transitionDuration={1000}
             containerClass="carousel-container"
             //removeArrowOnDeviceType={['tablet', 'mobile']}
-            dotListClass="custom-dot-list-style"
+            dotListClass="custom-dot-list-style block lg:hidden mt-6"
             itemClass="carousel-item-padding-40-px"
             className={``}
           >
@@ -203,25 +203,27 @@ function MakeswiftFeaturedProductsGridGIT({
               };
 
               return (
-                <ProductCard
-                  key={product.id}
-                  className={className}
-                  image={product.image}
-                  name={product.title}
-                  // @ts-ignore
-                  rating={product.rating as number}
-                  // @ts-ignore
-                  reviewCount={product.reviewCount as number}
-                  price={price}
-                  badge={badgeOptions}
-                  showReviews={showReviews}
-                  salePrice={salePrice}
-                  aspectRatio={aspectRatio}
-                  href={product.href}
-                  id={product.id}
-                  buttonText="Add To Cart"
-                  {...props}
-                />
+                <div className="px-4">
+                  <ProductCard
+                    key={product.id}
+                    className={className}
+                    image={product.image}
+                    name={product.title}
+                    // @ts-ignore
+                    rating={product.rating as number}
+                    // @ts-ignore
+                    reviewCount={product.reviewCount as number}
+                    price={price}
+                    badge={badgeOptions}
+                    showReviews={showReviews}
+                    salePrice={salePrice}
+                    aspectRatio={aspectRatio}
+                    href={product.href}
+                    id={product.id}
+                    buttonText="Add To Cart"
+                    {...props}
+                  />
+                </div>
               );
             })}
           </Carousel>
