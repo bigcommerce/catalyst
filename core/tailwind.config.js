@@ -18,7 +18,7 @@ const config = {
     },
     {
       pattern: /^!hidden$/,
-      variants: ['sm', 'md', 'lg', 'hover', 'focus'],
+      variants: ['sm', 'md', 'lg', 'xl', '2xl', 'hover', 'focus'],
     },
   ],
   theme: {

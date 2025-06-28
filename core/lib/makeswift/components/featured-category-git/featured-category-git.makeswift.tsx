@@ -107,7 +107,7 @@ function MakeswiftFeaturedProductsGridGIT({
     },
     tablet: {
       breakpoint: { max: breakpoints.large.width, min: breakpoints.small.width }, // 1024–640
-      items: 1,
+      items: 2,
       showDots: true,
       swipeable: true,
       draggable: true,
@@ -200,9 +200,10 @@ function MakeswiftFeaturedProductsGridGIT({
             //keyBoardControl={keyBoardControl}
             customTransition="all 1000ms"
             transitionDuration={1000}
+            centerMode={true}
             containerClass="carousel-container"
             removeArrowOnDeviceType={['desktop', 'superLargeDesktop']}
-            dotListClass="custom-dot-list-style block lg:!hidden"
+            dotListClass="custom-dot-list-style lg:!hidden"
             itemClass="carousel-item-padding-40-px px-2"
             className={``}
           >
