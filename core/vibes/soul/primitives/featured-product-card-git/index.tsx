@@ -72,7 +72,7 @@ export const FeaturedProductCard = ({
           {name.length > 20 ? name.slice(0, 17) + '...' : name}
         </h2>
         <p className="mb-1 mt-0.5 text-sm font-normal text-gray-500">
-          {description.length > 40 ? description.slice(0, 37) + '...' : description}
+          {description.length > 37 ? description.slice(0, 34) + '...' : description}
         </p>
 
         <div className="mt-auto">
@@ -80,12 +80,12 @@ export const FeaturedProductCard = ({
             <div>
               {salePrice ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-normal">{salePrice}</span>
+                  <span className="text-sm font-bold">{salePrice}</span>
                   <span className="text-black line-through">{price}</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <span className="text-sm font-normal">{price}</span>
+                  <span className="text-sm font-bold">{price}</span>
                 </div>
               )}
             </div>
