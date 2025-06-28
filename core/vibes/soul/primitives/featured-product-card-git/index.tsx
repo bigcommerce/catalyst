@@ -12,6 +12,7 @@ interface ProductCardProps {
   imagePriority?: boolean;
   imageSizes?: string;
   href: string;
+  description?: string;
   id: string;
 }
 
@@ -23,12 +24,11 @@ export const FeaturedProductCard = ({
   salePrice,
   aspectRatio = '5:6',
   imagePriority = false,
+  description = '',
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
   id,
   href,
 }: ProductCardProps) => {
-  const description = 'This is a long long long long long long long description for the product';
-
   return (
     <div
       className={clsx(

@@ -11,6 +11,7 @@ import { Compare } from './compare';
 export interface Product {
   id: string;
   title: string;
+  description: string;
   href: string;
   image?: { src: string; alt: string };
   price?: Price;
