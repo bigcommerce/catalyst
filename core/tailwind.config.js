@@ -16,6 +16,10 @@ const config = {
       pattern: /col-span-.+/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
+    {
+      pattern: /^!hidden$/,
+      variants: ['sm', 'md', 'lg', 'hover', 'focus'],
+    },
   ],
   theme: {
     extend: {
