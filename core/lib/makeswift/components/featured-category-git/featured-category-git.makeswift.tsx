@@ -189,9 +189,9 @@ function MakeswiftFeaturedProductsGridGIT({
       <div className={clsx('lg:col-span-4 xl:col-span-4', 'featured-category-carousel-container')}>
         {products.length > 0 ? (
           <Carousel
-            // swipeable={false}
-            // draggable={false}
-            // showDots={true}
+            swipeable={false}
+            draggable={false}
+            showDots={true}
             arrows={false}
             responsive={responsive}
             ssr={true} // means to render carousel on server-side.
