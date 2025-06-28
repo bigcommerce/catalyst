@@ -63,12 +63,14 @@ export const FeaturedProductCard = ({
               'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter text-[var(--product-card-light-title,hsl(var(--foreground)))] opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
             )}
           >
-            {name.length > 20 ? name.slice(0, 17) + '...' : name}
+            {name}
           </div>
         )}
       </div>
       <div className="flex flex-1 flex-col p-4">
-        <h2 className="mb-1 text-lg font-bold text-gray-800">{name}</h2>
+        <h2 className="mb-1 text-lg font-bold text-gray-800">
+          {name.length > 20 ? name.slice(0, 17) + '...' : name}
+        </h2>
         <p className="mb-1 mt-0.5 text-sm font-normal text-gray-500">
           {description.length > 40 ? description.slice(0, 37) + '...' : description}
         </p>
@@ -78,12 +80,12 @@ export const FeaturedProductCard = ({
             <div>
               {salePrice ? (
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-bold">{salePrice}</span>
-                  <span className="text-gray-400 line-through">{price}</span>
+                  <span className="text-sm font-normal">{salePrice}</span>
+                  <span className="text-black line-through">{price}</span>
                 </div>
               ) : (
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-bold">{price}</span>
+                  <span className="text-sm font-normal">{price}</span>
                 </div>
               )}
             </div>
