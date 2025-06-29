@@ -41,7 +41,7 @@ export const ProductCard = ({
   return (
     <div
       className={clsx(
-        'flex h-full max-w-xl flex-col overflow-hidden rounded-lg bg-white shadow-lg',
+        'max-w flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-lg',
         className,
       )}
     >
