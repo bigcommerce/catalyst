@@ -5,6 +5,7 @@ import {
   Combobox,
   Group,
   List,
+  Number,
   Select,
   Style,
   TextInput,
@@ -27,6 +28,8 @@ interface Props {
   itemsPerRowTablet: string;
   itemsPerRowMobile: string;
   aspectRatio?: '1:1' | '5:6' | '3:4';
+  titleExcerptLength: number;
+  descriptionExcerptLength: number;
 }
 
 interface ProductInterface {
@@ -41,6 +44,8 @@ function MakeswiftFeaturedProductsGridGIT({
   itemsPerRowTablet,
   itemsPerRowMobile,
   aspectRatio,
+  titleExcerptLength,
+  descriptionExcerptLength,
   ...props
 }: Props) {
   const additionalProductIds = additionalProducts.map(({ entityId }) => entityId ?? '');
@@ -125,6 +130,8 @@ function MakeswiftFeaturedProductsGridGIT({
             price={price}
             categories={product.categories}
             salePrice={salePrice}
+            titleExcerptLength={titleExcerptLength}
+            descriptionExcerptLength={descriptionExcerptLength}
             aspectRatio={aspectRatio}
             href={product.href}
             id={product.id}
@@ -200,6 +207,20 @@ runtime.registerComponent(MakeswiftFeaturedProductsGridGIT, {
         { value: '3:4', label: '3:4' },
       ],
       defaultValue: '1:1',
+    }),
+    titleExcerptLength: Number({
+      label: 'Title Excerpt Length',
+      defaultValue: 35,
+      min: 0,
+      max: 100,
+      step: 1,
+    }),
+    descriptionExcerptLength: Number({
+      label: 'Description Excerpt Length',
+      defaultValue: 50,
+      min: 0,
+      max: 500,
+      step: 1,
     }),
     itemsPerRowSuperDesktop: Select({
       label: 'Items Per Row (Super Desktop)',

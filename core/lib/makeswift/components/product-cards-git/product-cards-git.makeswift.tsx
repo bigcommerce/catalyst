@@ -125,7 +125,6 @@ function MakeswiftProductCardGIT({
         return (
           <ProductCard
             key={product.id}
-            className={className}
             image={product.image}
             name={product.title}
             // @ts-ignore

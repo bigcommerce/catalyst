@@ -15,6 +15,8 @@ interface ProductCardProps {
   description?: string;
   categories: string[];
   id: string;
+  titleExcerptLength: number;
+  descriptionExcerptLength: number;
 }
 
 export const FeaturedProductCard = ({
@@ -30,6 +32,8 @@ export const FeaturedProductCard = ({
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
   id,
   href,
+  titleExcerptLength,
+  descriptionExcerptLength,
 }: ProductCardProps) => {
   return (
     <Link href={href} id={id}>
@@ -72,10 +76,12 @@ export const FeaturedProductCard = ({
         </div>
         <div className="flex flex-1 flex-col p-4">
           <h2 className="mb-1 text-lg font-bold text-gray-800">
-            {name.length > 20 ? name.slice(0, 17) + '...' : name}
+            {name.length > titleExcerptLength ? name.slice(0, titleExcerptLength) + '...' : name}
           </h2>
           <p className="mb-1 mt-0.5 text-sm font-normal text-gray-500">
-            {description.length > 37 ? description.slice(0, 34) + '...' : description}
+            {description.length > descriptionExcerptLength
+              ? description.slice(0, descriptionExcerptLength) + '...'
+              : description}
           </p>
 
           <div className="mt-auto">
