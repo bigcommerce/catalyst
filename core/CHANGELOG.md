@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+### Patch Changes
+
+- [#2448](https://github.com/bigcommerce/catalyst/pull/2448) [`e4444a2`](https://github.com/bigcommerce/catalyst/commit/e4444a2ca83b5b73776c842feff56e47f57344dc) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fixes an issue where the anonymous session wasn't getting cleared after an actual session was established.
+
 ## 1.0.0
 
 ### Major Changes
