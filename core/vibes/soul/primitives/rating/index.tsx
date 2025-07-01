@@ -48,7 +48,7 @@ const Star = ({ type }: StarType) => {
 
   return (
     <svg
-      className="text-foreground inline-block"
+      className="inline-block text-foreground"
       fill="none"
       height={20}
       viewBox="0 0 20 20"
@@ -76,7 +76,7 @@ export const Rating = function Rating({ showRating = true, rating, className }: 
       ))}
 
       {showRating && (
-        <span className="border-contrast-100 text-contrast-400 ml-1.5 flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border px-1 text-xs font-medium">
+        <span className="ml-1.5 flex h-6 min-w-6 shrink-0 items-center justify-center rounded-full border border-contrast-100 px-1 text-xs font-medium text-contrast-400">
           {adjustedRating % 1 !== 0 ? adjustedRating.toFixed(1) : adjustedRating}
         </span>
       )}

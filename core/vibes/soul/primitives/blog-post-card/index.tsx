@@ -27,12 +27,12 @@ export function BlogPostCard({ blogPost, className }: Props) {
   return (
     <Link
       className={clsx(
-        'group text-foreground ring-primary @container max-w-full rounded-t-2xl rounded-b-lg ring-offset-4 focus:outline-0 focus-visible:ring-2',
+        'group max-w-full rounded-b-lg rounded-t-2xl text-foreground ring-primary ring-offset-4 @container focus:outline-0 focus-visible:ring-2',
         className,
       )}
       href={href}
     >
-      <div className="bg-contrast-100 relative mb-4 aspect-4/3 w-full overflow-hidden rounded-2xl">
+      <div className="relative mb-4 aspect-[4/3] w-full overflow-hidden rounded-2xl bg-contrast-100">
         {image?.src != null && image.src !== '' ? (
           <Image
             alt={image.alt}
@@ -42,22 +42,16 @@ export function BlogPostCard({ blogPost, className }: Props) {
             src={image.src}
           />
         ) : (
-          <div className="text-foreground/15 p-4 text-5xl leading-none font-bold tracking-tighter">
+          <div className="p-4 text-5xl font-bold leading-none tracking-tighter text-foreground/15">
             {title}
           </div>
         )}
       </div>
 
-      <div className="text-lg leading-snug font-medium">{title}</div>
-      <p className="text-contrast-400 mt-1.5 mb-3 line-clamp-3 text-sm font-normal">{content}</p>
+      <div className="text-lg font-medium leading-snug">{title}</div>
+      <p className="mb-3 mt-1.5 line-clamp-3 text-sm font-normal text-contrast-400">{content}</p>
       <div className="text-sm">
-        <time dateTime={date}>
-          {new Date(date).toLocaleDateString('en-US', {
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric',
-          })}
-        </time>
+        <time dateTime={date}>{date}</time>
         {date !== '' && author != null && author !== '' && (
           <span className="after:mx-2 after:content-['•']" />
         )}
@@ -71,22 +65,22 @@ export function BlogPostCardSkeleton({ className }: { className?: string }) {
   return (
     <div className={clsx('flex max-w-md animate-pulse flex-col gap-2 rounded-xl', className)}>
       {/* Image */}
-      <div className="bg-contrast-100 aspect-4/3 overflow-hidden rounded-xl" />
+      <div className="aspect-[4/3] overflow-hidden rounded-xl bg-contrast-100" />
 
       {/* Title */}
-      <div className="bg-contrast-100 h-4 w-24 rounded-lg" />
+      <div className="h-4 w-24 rounded-lg bg-contrast-100" />
 
       {/* Content */}
-      <div className="bg-contrast-100 h-3 w-full rounded-lg" />
-      <div className="bg-contrast-100 h-3 w-full rounded-lg" />
-      <div className="bg-contrast-100 h-3 w-1/2 rounded-lg" />
+      <div className="h-3 w-full rounded-lg bg-contrast-100" />
+      <div className="h-3 w-full rounded-lg bg-contrast-100" />
+      <div className="h-3 w-1/2 rounded-lg bg-contrast-100" />
 
       <div className="flex flex-wrap items-center">
         {/* Date */}
-        <div className="bg-contrast-100 h-4 w-16 rounded-lg" />
-        <span className="after:text-contrast-100 after:mx-2 after:content-['•']" />
+        <div className="h-4 w-16 rounded-lg bg-contrast-100" />
+        <span className="after:mx-2 after:text-contrast-100 after:content-['•']" />
         {/* Author */}
-        <div className="bg-contrast-100 h-4 w-20 rounded-lg" />
+        <div className="h-4 w-20 rounded-lg bg-contrast-100" />
       </div>
     </div>
   );

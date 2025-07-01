@@ -93,7 +93,26 @@ export const productOptionsTransformer = async (
             };
           }
 
-          case 'ProductPickList':
+          case 'ProductPickList': {
+            return {
+              persist: option.isVariantOption,
+              type: 'card-radio-group',
+              label: option.displayName,
+              required: option.isRequired,
+              name: option.entityId.toString(),
+              defaultValue: values.find((value) => value.isDefault)?.entityId.toString(),
+              options: values
+                .filter(
+                  (value) =>
+                    '__typename' in value && value.__typename === 'ProductPickListOptionValue',
+                )
+                .map((value) => ({
+                  label: value.label,
+                  value: value.entityId.toString(),
+                })),
+            };
+          }
+
           case 'ProductPickListWithImages': {
             return {
               persist: option.isVariantOption,

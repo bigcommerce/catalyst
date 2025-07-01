@@ -62,7 +62,7 @@ export const DropdownMenu = ({
         <DropdownMenuPrimitive.Content
           align={align}
           className={clsx(
-            'ring-contrast-100 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 z-50 max-h-80 max-w-lg overflow-y-auto rounded-2xl bg-[var(--dropdown-menu-background,hsl(var(--background)))] p-2 shadow-xl ring @4xl:w-32 @4xl:rounded-2xl @4xl:p-2',
+            'z-50 max-h-80 max-w-lg overflow-y-auto rounded-2xl bg-[var(--dropdown-menu-background,hsl(var(--background)))] p-2 shadow-xl ring ring-contrast-100 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 @4xl:w-32 @4xl:rounded-2xl @4xl:p-2',
             className,
           )}
           sideOffset={slideOffset}
@@ -71,7 +71,7 @@ export const DropdownMenu = ({
             if (item === 'separator') {
               return (
                 <DropdownMenuPrimitive.Separator
-                  className="bg-contrast-100 my-1.5 h-[1px]"
+                  className="my-1.5 h-[1px] bg-contrast-100"
                   key={`dropdown-separator-${index}`}
                 />
               );
@@ -103,7 +103,7 @@ export const DropdownMenu = ({
               <DropdownMenuPrimitive.Item
                 asChild={asChild ?? labelIsComponent}
                 className={clsx(
-                  'data-disabled:bg-contrast-100/50 data-disabled:text-contrast-300/95 cursor-default rounded-lg bg-[var(--dropdown-menu-item-background,transparent)] px-3 py-2 font-[family-name:var(--dropdown-menu-item-font-family,var(--font-family-body))] text-sm font-medium outline-hidden transition-colors data-disabled:cursor-not-allowed',
+                  'data-disabled:bg-contrast-100/50 data-disabled:text-contrast-300/95 data-disabled:cursor-not-allowed cursor-default rounded-lg bg-[var(--dropdown-menu-item-background,transparent)] px-3 py-2 font-[family-name:var(--dropdown-menu-item-font-family,var(--font-family-body))] text-sm font-medium outline-none transition-colors',
                   {
                     default:
                       'text-[var(--dropdown-menu-item-text,hsl(var(--contrast-500)))] ring-[var(--dropdown-menu-item-focus,hsl(var(--primary)))] [&:not([data-disabled])]:hover:bg-[var(--dropdown-menu-item-background-hover,hsl(var(--contrast-100)))] [&:not([data-disabled])]:hover:text-[var(--dropdown-menu-item-text-hover,hsl(var(--foreground)))] [&:not([data-disabled])]:data-[highlighted]:bg-[var(--dropdown-menu-item-background-hover,hsl(var(--contrast-100)))] [&:not([data-disabled])]:data-[highlighted]:text-[var(--dropdown-menu-item-text-hover,hsl(var(--foreground)))]',

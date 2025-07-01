@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import { getFormatter, getTranslations, setRequestLocale } from 'next-intl/server';
 
+import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
+import { CartAnalyticsProvider } from '~/app/[locale]/(default)/cart/_components/cart-analytics-provider';
 import { getCartId } from '~/lib/cart';
 import { exists } from '~/lib/utils';
 
@@ -25,6 +27,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t('title'),
   };
 }
+
+const getAnalyticsData = async (cartId: string) => {
+  const data = await getCart({ cartId });
+
+  const cart = data.site.cart;
+
+  if (!cart) {
+    return [];
+  }
+
+  const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
+
+  return lineItems.map((item) => {
+    return {
+      entityId: item.entityId,
+      id: item.productEntityId,
+      name: item.name,
+      brand: item.brand ?? '',
+      sku: item.sku ?? '',
+      price: item.listPrice.value,
+      quantity: item.quantity,
+      currency: item.listPrice.currencyCode,
+    };
+  });
+};
 
 // eslint-disable-next-line complexity
 export default async function Cart({ params }: Props) {
@@ -120,7 +147,7 @@ export default async function Cart({ params }: Props) {
     checkout?.shippingConsignments?.find((consignment) => consignment.selectedShippingOption) ||
     checkout?.shippingConsignments?.[0];
 
-  const shippingCountries = await getShippingCountries(data.geography);
+  const shippingCountries = await getShippingCountries();
 
   const countries = shippingCountries.map((country) => ({
     value: country.code,
@@ -140,131 +167,133 @@ export default async function Cart({ params }: Props) {
 
   return (
     <>
-      <CartComponent
-        canProceedToCheckout={canProceed}
-        cart={{
-          lineItems: formattedLineItems,
-          total: format.number(checkout?.grandTotal?.value || 0, {
-            style: 'currency',
-            currency: cart.currencyCode,
-          }),
-          totalLabel: t('CheckoutSummary.total'),
-          summaryItems: [
-            {
-              label: t('CheckoutSummary.subTotal'),
-              value: format.number(checkout?.subtotal?.value ?? 0, {
-                style: 'currency',
-                currency: cart.currencyCode,
-              }),
-            },
-            cart.discountedAmount.value > 0
-              ? {
-                  label: t('CheckoutSummary.discounts'),
-                  value: `-${format.number(cart.discountedAmount.value, {
-                    style: 'currency',
-                    currency: cart.currencyCode,
-                  })}`,
-                }
-              : null,
-            totalCouponDiscount > 0
-              ? {
-                  label: t('CheckoutSummary.CouponCode.couponCode'),
-                  value: `-${format.number(totalCouponDiscount, {
-                    style: 'currency',
-                    currency: cart.currencyCode,
-                  })}`,
-                }
-              : null,
-            checkout?.taxTotal && {
-              label: t('CheckoutSummary.tax'),
-              value: format.number(checkout.taxTotal.value, {
-                style: 'currency',
-                currency: cart.currencyCode,
-              }),
-            },
-          ].filter(exists),
-        }}
-        checkoutAction={redirectToCheckout}
-        checkoutLabel={t('proceedToCheckout')}
-        couponCode={{
-          action: updateCouponCode,
-          couponCodes: checkout?.coupons.map((coupon) => coupon.code) ?? [],
-          ctaLabel: t('CheckoutSummary.CouponCode.apply'),
-          label: t('CheckoutSummary.CouponCode.couponCode'),
-          removeLabel: t('CheckoutSummary.CouponCode.removeCouponCode'),
-        }}
-        decrementLineItemLabel={t('decrement')}
-        deleteLineItemLabel={t('removeItem')}
-        emptyState={{
-          title: t('Empty.title'),
-          subtitle: t('Empty.subtitle'),
-          cta: { label: t('Empty.cta'), href: '/shop-all' },
-        }}
-        incrementLineItemLabel={t('increment')}
-        key={`${cart.entityId}-${cart.version}`}
-        lineItemAction={updateLineItem}
-        outOfStockMessage={t('outOfStockMessage')}
-        shipping={{
-          action: updateShippingInfo,
-          countries,
-          states: statesOrProvinces,
-          address: shippingConsignment?.address
-            ? {
-                country: shippingConsignment.address.countryCode,
-                city:
-                  shippingConsignment.address.city !== ''
-                    ? (shippingConsignment.address.city ?? undefined)
-                    : undefined,
-                state:
-                  shippingConsignment.address.stateOrProvince !== ''
-                    ? (shippingConsignment.address.stateOrProvince ?? undefined)
-                    : undefined,
-                postalCode:
-                  shippingConsignment.address.postalCode !== ''
-                    ? (shippingConsignment.address.postalCode ?? undefined)
-                    : undefined,
-              }
-            : undefined,
-          shippingOptions: shippingConsignment?.availableShippingOptions
-            ? shippingConsignment.availableShippingOptions.map((option) => ({
-                label: option.description,
-                value: option.entityId,
-                price: format.number(option.cost.value, {
+      <CartAnalyticsProvider data={Streamable.from(() => getAnalyticsData(cartId))}>
+        <CartComponent
+          canProceedToCheckout={canProceed}
+          cart={{
+            lineItems: formattedLineItems,
+            total: format.number(checkout?.grandTotal?.value || 0, {
+              style: 'currency',
+              currency: cart.currencyCode,
+            }),
+            totalLabel: t('CheckoutSummary.total'),
+            summaryItems: [
+              {
+                label: t('CheckoutSummary.subTotal'),
+                value: format.number(checkout?.subtotal?.value ?? 0, {
                   style: 'currency',
-                  currency: checkout?.cart?.currencyCode,
+                  currency: cart.currencyCode,
                 }),
-              }))
-            : undefined,
-          shippingOption: shippingConsignment?.selectedShippingOption
-            ? {
-                value: shippingConsignment.selectedShippingOption.entityId,
-                label: shippingConsignment.selectedShippingOption.description,
-                price: format.number(shippingConsignment.selectedShippingOption.cost.value, {
+              },
+              cart.discountedAmount.value > 0
+                ? {
+                    label: t('CheckoutSummary.discounts'),
+                    value: `-${format.number(cart.discountedAmount.value, {
+                      style: 'currency',
+                      currency: cart.currencyCode,
+                    })}`,
+                  }
+                : null,
+              totalCouponDiscount > 0
+                ? {
+                    label: t('CheckoutSummary.CouponCode.couponCode'),
+                    value: `-${format.number(totalCouponDiscount, {
+                      style: 'currency',
+                      currency: cart.currencyCode,
+                    })}`,
+                  }
+                : null,
+              checkout?.taxTotal && {
+                label: t('CheckoutSummary.tax'),
+                value: format.number(checkout.taxTotal.value, {
                   style: 'currency',
-                  currency: checkout?.cart?.currencyCode,
+                  currency: cart.currencyCode,
                 }),
-              }
-            : undefined,
-          showShippingForm,
-          shippingLabel: t('CheckoutSummary.Shipping.shipping'),
-          addLabel: t('CheckoutSummary.Shipping.add'),
-          changeLabel: t('CheckoutSummary.Shipping.change'),
-          countryLabel: t('CheckoutSummary.Shipping.country'),
-          cityLabel: t('CheckoutSummary.Shipping.city'),
-          stateLabel: t('CheckoutSummary.Shipping.state'),
-          postalCodeLabel: t('CheckoutSummary.Shipping.postalCode'),
-          updateShippingOptionsLabel: t('CheckoutSummary.Shipping.updatedShippingOptions'),
-          viewShippingOptionsLabel: t('CheckoutSummary.Shipping.viewShippingOptions'),
-          cancelLabel: t('CheckoutSummary.Shipping.cancel'),
-          editAddressLabel: t('CheckoutSummary.Shipping.editAddress'),
-          shippingOptionsLabel: t('CheckoutSummary.Shipping.shippingOptions'),
-          updateShippingLabel: t('CheckoutSummary.Shipping.updateShipping'),
-          addShippingLabel: t('CheckoutSummary.Shipping.addShipping'),
-          noShippingOptionsLabel: t('CheckoutSummary.Shipping.noShippingOptions'),
-        }}
-        summaryTitle={t('CheckoutSummary.title')}
-        title={t('title')}
-      />
+              },
+            ].filter(exists),
+          }}
+          checkoutAction={redirectToCheckout}
+          checkoutLabel={t('proceedToCheckout')}
+          couponCode={{
+            action: updateCouponCode,
+            couponCodes: checkout?.coupons.map((coupon) => coupon.code) ?? [],
+            ctaLabel: t('CheckoutSummary.CouponCode.apply'),
+            label: t('CheckoutSummary.CouponCode.couponCode'),
+            removeLabel: t('CheckoutSummary.CouponCode.removeCouponCode'),
+          }}
+          decrementLineItemLabel={t('decrement')}
+          deleteLineItemLabel={t('removeItem')}
+          emptyState={{
+            title: t('Empty.title'),
+            subtitle: t('Empty.subtitle'),
+            cta: { label: t('Empty.cta'), href: '/shop-all' },
+          }}
+          incrementLineItemLabel={t('increment')}
+          key={`${cart.entityId}-${cart.version}`}
+          lineItemAction={updateLineItem}
+          outOfStockMessage={t('outOfStockMessage')}
+          shipping={{
+            action: updateShippingInfo,
+            countries,
+            states: statesOrProvinces,
+            address: shippingConsignment?.address
+              ? {
+                  country: shippingConsignment.address.countryCode,
+                  city:
+                    shippingConsignment.address.city !== ''
+                      ? (shippingConsignment.address.city ?? undefined)
+                      : undefined,
+                  state:
+                    shippingConsignment.address.stateOrProvince !== ''
+                      ? (shippingConsignment.address.stateOrProvince ?? undefined)
+                      : undefined,
+                  postalCode:
+                    shippingConsignment.address.postalCode !== ''
+                      ? (shippingConsignment.address.postalCode ?? undefined)
+                      : undefined,
+                }
+              : undefined,
+            shippingOptions: shippingConsignment?.availableShippingOptions
+              ? shippingConsignment.availableShippingOptions.map((option) => ({
+                  label: option.description,
+                  value: option.entityId,
+                  price: format.number(option.cost.value, {
+                    style: 'currency',
+                    currency: checkout?.cart?.currencyCode,
+                  }),
+                }))
+              : undefined,
+            shippingOption: shippingConsignment?.selectedShippingOption
+              ? {
+                  value: shippingConsignment.selectedShippingOption.entityId,
+                  label: shippingConsignment.selectedShippingOption.description,
+                  price: format.number(shippingConsignment.selectedShippingOption.cost.value, {
+                    style: 'currency',
+                    currency: checkout?.cart?.currencyCode,
+                  }),
+                }
+              : undefined,
+            showShippingForm,
+            shippingLabel: t('CheckoutSummary.Shipping.shipping'),
+            addLabel: t('CheckoutSummary.Shipping.add'),
+            changeLabel: t('CheckoutSummary.Shipping.change'),
+            countryLabel: t('CheckoutSummary.Shipping.country'),
+            cityLabel: t('CheckoutSummary.Shipping.city'),
+            stateLabel: t('CheckoutSummary.Shipping.state'),
+            postalCodeLabel: t('CheckoutSummary.Shipping.postalCode'),
+            updateShippingOptionsLabel: t('CheckoutSummary.Shipping.updatedShippingOptions'),
+            viewShippingOptionsLabel: t('CheckoutSummary.Shipping.viewShippingOptions'),
+            cancelLabel: t('CheckoutSummary.Shipping.cancel'),
+            editAddressLabel: t('CheckoutSummary.Shipping.editAddress'),
+            shippingOptionsLabel: t('CheckoutSummary.Shipping.shippingOptions'),
+            updateShippingLabel: t('CheckoutSummary.Shipping.updateShipping'),
+            addShippingLabel: t('CheckoutSummary.Shipping.addShipping'),
+            noShippingOptionsLabel: t('CheckoutSummary.Shipping.noShippingOptions'),
+          }}
+          summaryTitle={t('CheckoutSummary.title')}
+          title={t('title')}
+        />
+      </CartAnalyticsProvider>
       <CartViewed
         currencyCode={cart.currencyCode}
         lineItems={lineItems}

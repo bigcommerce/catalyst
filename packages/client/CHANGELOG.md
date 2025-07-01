@@ -1,5 +1,39 @@
 # Changelog
 
+## 1.0.0
+
+### Major Changes
+
+- [#2435](https://github.com/bigcommerce/catalyst/pull/2435) [`cd4bd60`](https://github.com/bigcommerce/catalyst/commit/cd4bd604739b0cea4b622b08ebbde4cea953fcae) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Release 1.0.0 (see [`core/CHANGELOG.md`](../../core/CHANGELOG.md#100) for more details)
+
+### Minor Changes
+
+- [#2370](https://github.com/bigcommerce/catalyst/pull/2370) [`20b8788`](https://github.com/bigcommerce/catalyst/commit/20b87882e089438c6183e83a506267e432a4f741) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Remove the `xAuthToken` config parameter from `@bigcommerce/catalyst-client`. The client no longer has any dependency on a BigCommerce access token, now that we have replaced the `/v2/shipping/zones` REST API call with an appropriate GraphQL field (`site.settings.shipping.supportedShippingDestinations`).
+
+  Migration:
+
+  1. If you are using the version of the client published to NPM, simply ensure you are using at least `@bigcommerce/catalyst-client@0.16.0` or higher.
+  2. If you are using the client in your pnpm workspace, simply remove the `xAuthToken` references in `packages/client/src/client.ts` as well as the `fetchShippingZones` method.
+  3. Remove the reference to `xAuthToken` in `core/client/index.ts`
+
+## 0.15.0
+
+### Minor Changes
+
+- [#1914](https://github.com/bigcommerce/catalyst/pull/1914) [`f039b2c`](https://github.com/bigcommerce/catalyst/commit/f039b2c7235118626d7a727bff5271ac8982f910) Thanks [@jorgemoya](https://github.com/jorgemoya)! - GQL requests that respond as `200` but have an `errors` field will now be properly handled by the client and throw a proper `BigCommerceGQLError` response with the message reason from the API. This will provide a more detailed description of why the GQL request errored out.
+
+  API errors will still be handled and attribute the errored status as the message with this change as `BigCommerceAPIError`.
+
+- [`0aa23e2`](undefined) - Add an `onError` callback to in order to handle auth and invalid sessions.
+
+- [#2124](https://github.com/bigcommerce/catalyst/pull/2124) [`4a00a27`](https://github.com/bigcommerce/catalyst/commit/4a00a27acea733b6f3fef221b3d1472b145d25f0) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add an `errorPolicy` option for GQL requests. Accepts `none`, `ignore`, `all`. Defaults to `none` which throws an error if there are GQL errors, `ignore` returns the data without error object, and `all` returns both data and errors.
+
+### Patch Changes
+
+- [`c830100`](undefined) - Manual changes on a dependency bumps.
+
+- [#2226](https://github.com/bigcommerce/catalyst/pull/2226) [`3b14d66`](https://github.com/bigcommerce/catalyst/commit/3b14d668d32e7ebe37e31b1851b3db8f8be46bec) Thanks [@bookernath](https://github.com/bookernath)! - Add GraphQL operation name and type to GraphQL URL as query parameters to improve server logging of GraphQL operations
+
 ## 0.14.0
 
 ### Minor Changes

@@ -33,7 +33,10 @@ export const Switch = ({
   const hasLabel = label != null && label !== '';
 
   return (
-    <div className="group/switch flex items-center gap-2">
+    <div
+      className="group/switch flex items-center gap-2"
+      data-state={checked ? 'checked' : 'unchecked'}
+    >
       {(labelPosition === 'left' || labelPosition === 'both') && hasLabel && (
         <SwitchLabel
           id={id}
@@ -46,7 +49,7 @@ export const Switch = ({
         aria-busy={loading}
         checked={checked}
         className={clsx(
-          'border-contrast-200 [&:not([data-loading])]:data-disabled:bg-contrast-100 w-12 rounded-full border p-[3px] transition-colors duration-100 focus-visible:ring-2 focus-visible:outline-hidden data-disabled:cursor-not-allowed',
+          '[&:not([data-loading])]:data-disabled:bg-contrast-100 data-disabled:cursor-not-allowed w-12 rounded-full border border-contrast-200 p-[3px] transition-colors duration-100 focus-visible:outline-none focus-visible:ring-2',
         )}
         data-loading={loading ? '' : undefined}
         disabled={disabled || loading}
@@ -56,7 +59,7 @@ export const Switch = ({
       >
         <SwitchPrimitive.Thumb
           className={clsx(
-            'data-disabled:bg-contrast-200 data-[state=unchecked]:bg-contrast-200 relative block h-5 w-5 overflow-hidden rounded-full transition-transform duration-100 data-[state=checked]:translate-x-full',
+            'data-disabled:bg-contrast-200 relative block h-5 w-5 overflow-hidden rounded-full transition-transform duration-100 data-[state=checked]:translate-x-full data-[state=unchecked]:bg-contrast-200',
             {
               primary: 'bg-[var(--toggle-primary-background,hsl(var(--primary)))]',
               secondary: 'bg-[var(--toggle-secondary-background,hsl(var(--foreground)))]',
@@ -101,7 +104,7 @@ interface LabelProps {
 
 function SwitchLabel({ id, label, size = 'medium', state, loading }: LabelProps) {
   const baseClass =
-    'group-has-data-disabled/switch:[&:not([data-loading])]:text-contrast-400 font-semibold select-none';
+    'group-data-[disabled]/switch:[&:not([data-loading])]:text-contrast-400 font-semibold select-none';
   const sizeClass = {
     small: 'text-sm',
     medium: 'text-base',
@@ -136,7 +139,7 @@ function SwitchLabel({ id, label, size = 'medium', state, loading }: LabelProps)
     <div className="leading-[0]">
       <label
         className={clsx(
-          'mb-[-2px] leading-[0] group-has-data-[state=checked]/switch:block group-has-data-[state=unchecked]/switch:invisible',
+          'mb-[-2px] leading-[0] group-data-[state=unchecked]/switch:invisible group-data-[state=checked]/switch:block',
           baseClass,
           sizeClass,
         )}
@@ -147,7 +150,7 @@ function SwitchLabel({ id, label, size = 'medium', state, loading }: LabelProps)
       </label>
       <label
         className={clsx(
-          'mt-[-1px] leading-[0] group-has-data-[state=checked]/switch:invisible group-has-data-[state=unchecked]/switch:block',
+          'mt-[-1px] leading-[0] group-data-[state=checked]/switch:invisible group-data-[state=unchecked]/switch:block',
           baseClass,
           sizeClass,
         )}

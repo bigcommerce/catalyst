@@ -65,7 +65,7 @@ export function ProductCard({
   return (
     <article
       className={clsx(
-        'group @container flex max-w-md min-w-0 flex-col gap-2 font-[family-name:var(--card-font-family,var(--font-family-body))]',
+        'group flex min-w-0 max-w-md flex-col gap-2 font-[family-name:var(--card-font-family,var(--font-family-body))] @container',
         className,
       )}
     >
@@ -74,8 +74,8 @@ export function ProductCard({
           className={clsx(
             'relative overflow-hidden rounded-xl @md:rounded-2xl',
             {
-              '5:6': 'aspect-5/6',
-              '3:4': 'aspect-3/4',
+              '5:6': 'aspect-[5/6]',
+              '3:4': 'aspect-[3/4]',
               '1:1': 'aspect-square',
             }[aspectRatio],
             {
@@ -88,7 +88,7 @@ export function ProductCard({
             <Image
               alt={image.alt}
               className={clsx(
-                'w-full scale-100 object-cover transition-transform duration-500 ease-out select-none group-hover:scale-110',
+                'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
                 {
                   light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
                   dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
@@ -102,7 +102,7 @@ export function ProductCard({
           ) : (
             <div
               className={clsx(
-                'pt-5 pl-5 text-4xl leading-[0.8] font-bold tracking-tighter break-words opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
+                'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
                 {
                   light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
                   dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
@@ -113,7 +113,7 @@ export function ProductCard({
             </div>
           )}
           {badge != null && badge !== '' && (
-            <Badge className="absolute top-3 left-3" shape="rounded">
+            <Badge className="absolute left-3 top-3" shape="rounded">
               {badge}
             </Badge>
           )}
@@ -153,7 +153,7 @@ export function ProductCard({
           <Link
             aria-label={title}
             className={clsx(
-              'absolute inset-0 rounded-t-2xl rounded-b-lg focus:outline-hidden focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
+              'absolute inset-0 rounded-b-lg rounded-t-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
               {
                 light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
                 dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
@@ -193,17 +193,17 @@ export function ProductCardSkeleton({
         className={clsx(
           'rounded-xl @md:rounded-2xl',
           {
-            '5:6': 'aspect-5/6',
-            '3:4': 'aspect-3/4',
+            '5:6': 'aspect-[5/6]',
+            '3:4': 'aspect-[3/4]',
             '1:1': 'aspect-square',
           }[aspectRatio],
         )}
       />
       <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
         <div className="w-full text-sm @[16rem]:text-base">
-          <Skeleton.Text characterCount={10} className="rounded-sm" />
-          <Skeleton.Text characterCount={8} className="rounded-sm" />
-          <Skeleton.Text characterCount={6} className="rounded-sm" />
+          <Skeleton.Text characterCount={10} className="rounded" />
+          <Skeleton.Text characterCount={8} className="rounded" />
+          <Skeleton.Text characterCount={6} className="rounded" />
         </div>
       </div>
     </div>

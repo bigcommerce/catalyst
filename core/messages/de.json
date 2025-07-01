@@ -50,6 +50,8 @@
             "heading": "Anmelden",
             "forgotPassword": "Passwort vergessen?",
             "cta": "Anmelden",
+            "email": "E-Mail",
+            "password": "Passwort",
             "invalidCredentials": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Bestellnr.",
             "totalPrice": "Summe",
             "viewDetails": "Details anzeigen",
+            "emptyState": {
+                "title": "Sie haben keine Bestellungen",
+                "cta": "Jetzt shoppen"
+            },
             "Details": {
                 "title": "Bestellung #{orderNumber}",
                 "shippingAddress": "Versandadresse",
@@ -155,7 +161,8 @@
                 "destinationWithCount": "Zielort {Nummer, Nummer}/{Gesamt, Nummer}",
                 "subtotal": "Zwischensumme",
                 "shipping": "Versand",
-                "tax": "Steuern"
+                "tax": "Steuern",
+                "orderSummary": "Bestellübersicht"
             }
         },
         "Addresses": {
@@ -173,6 +180,7 @@
             "title": "Kontoeinstellungen",
             "changePassword": "Passwort ändern",
             "passwordUpdated": "Passwort wurde erfolgreich aktualisiert!",
+            "settingsUpdated": "Die Kontoeinstellungen wurden erfolgreich aktualisiert!",
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
             "currentPassword": "Aktuelles Passwort",
             "newPassword": "Neues Passwort",
@@ -181,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Wunschlistenaktionen",
         "title": "Wunschlisten",
         "new": "Neue Wunschliste",
         "items": "{count, plural, =1 {1 Artikel} other {# Artikel}}",
@@ -197,6 +206,7 @@
         "makePrivate": "Privat machen",
         "rename": "Umbenennen",
         "delete": "Löschen",
+        "removeButtonTitle": "Produkt von der Wunschliste entfernen",
         "Visibility": {
             "public": "Öffentlich",
             "private": "Privat"
@@ -226,8 +236,8 @@
             "updateFailed": "Die Aktualisierung Ihrer Wunschliste ist fehlgeschlagen. Bitte versuchen Sie es erneut.",
             "deleteFailed": "Das Löschen Ihrer Wunschliste konnte nicht durchgeführt werden. Bitte versuchen Sie es erneut.",
             "removeProductFailed": "Das Produkt konnte nicht von Ihrer Wunschliste entfernt werden. Bitte versuchen Sie es erneut.",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "Sie sind nicht berechtigt, diese Aktion auszuführen, bitte melden Sie sich an und versuchen Sie es erneut.",
+            "unexpected": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
         },
         "Result": {
             "createSuccess": "Die Wunschliste wurde erfolgreich erstellt.",
@@ -236,19 +246,21 @@
             "removeItemSuccess": "Der Artikel wurde von Ihrer Wunschliste entfernt."
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "label": "Add to wish list",
+            "addToNewWishlist": "Zu neuer Wunschliste hinzufügen",
+            "defaultWishlistName": "Meine Wunschliste",
+            "addSuccessMessage": "Das Produkt wurde Ihrer Wunschliste hinzugefügt.",
+            "removeSuccessMessage": "Das Produkt wurde von Ihrer Wunschliste entfernt",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "Das Produkt konnte nicht zu Ihrer Wunschliste hinzugefügt werden. Bitte versuchen Sie es erneut.",
+                "removeProductFailed": "Das Produkt konnte nicht von Ihrer Wunschliste entfernt werden, bitte versuchen Sie es erneut."
             }
         }
     },
     "PublicWishlist": {
         "title": "Öffentliche Wunschliste",
-        "defaultName": "Öffentliche Wunschliste"
+        "defaultName": "Öffentliche Wunschliste",
+        "emptyWishlist": "Diese Wunschliste enthält noch keine Produkte."
     },
     "Blog": {
         "title": "Blog",
@@ -384,6 +396,7 @@
             "home": "Startseite"
         },
         "ContactUs": {
+            "home": "Startseite",
             "Form": {
                 "success": "Vielen Dank für Ihre Kontaktaufnahme. Wir melden uns bald bei Ihnen.",
                 "successCta": "Weiter einkaufen",
@@ -411,8 +424,9 @@
     },
     "NotFound": {
         "title": "Wir konnten diese Seite nicht finden!",
-        "subtitle": "Es sieht so aus, als ob die von Ihnen angeforderte Seite verschoben wurde oder nicht mehr existiert.",
-        "featuredProducts": "Empfohlene Produkte"
+        "subtitle": "Versuchen Sie, nach etwas anderem zu suchen oder zur Startseite zurückzukehren.",
+        "featuredProducts": "Empfohlene Produkte",
+        "search": "Suchen"
     },
     "Components": {
         "Header": {
@@ -424,6 +438,7 @@
                 "search": "Popup-Fenster zur Suche öffnen"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Ungültige Währung",
                 "errorUpdatingCurrency": "Fehler beim Aktualisieren der Währung für Ihren Warenkorb. Bitte versuchen Sie es erneut."
             },
@@ -433,7 +448,9 @@
                 "brands": "Marken",
                 "noSearchResultsTitle": "Leider gibt es keine Ergebnisse für „{term}“.",
                 "noSearchResultsSubtitle": "Bitte versuchen Sie es mit einer anderen Suchanfrage.",
-                "somethingWentWrong": "Es ist etwas schiefgegangen. Bitte versuchen Sie es erneut."
+                "somethingWentWrong": "Es ist etwas schiefgegangen. Bitte versuchen Sie es erneut.",
+                "inputPlaceholder": "Produkte, Kategorien, Marken suchen ...",
+                "submitLabel": "Suchen"
             }
         },
         "Footer": {

@@ -1,10 +1,11 @@
 import { decodeJwt } from 'jose';
-import NextAuth, { type DefaultSession, type NextAuthConfig, User } from 'next-auth';
+import NextAuth, { type NextAuthConfig, User } from 'next-auth';
 import 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
+import { anonymousSignIn, clearAnonymousSession } from '~/auth/anonymous-session';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { clearCartId, setCartId } from '~/lib/cart';
@@ -49,31 +50,39 @@ const LoginWithTokenMutation = graphql(`
 `);
 
 const LogoutMutation = graphql(`
-  mutation LogoutMutation {
-    logout {
+  mutation LogoutMutation($cartEntityId: String) {
+    logout(cartEntityId: $cartEntityId) {
       result
+      cartUnassignResult {
+        cart {
+          entityId
+        }
+      }
     }
   }
 `);
 
+const cartIdSchema = z
+  .string()
+  .uuid()
+  .or(z.literal('undefined')) // auth.js seems to pass the cart id as a string literal 'undefined' when not set.
+  .optional()
+  .transform((val) => (val === 'undefined' ? undefined : val));
+
 const PasswordCredentials = z.object({
   email: z.string().email(),
   password: z.string().min(1),
-  cartId: z.string().optional(),
-});
-
-const AnonymousCredentials = z.object({
-  cartId: z.string().optional(),
+  cartId: cartIdSchema,
 });
 
 const JwtCredentials = z.object({
   jwt: z.string(),
-  cartId: z.string().optional(),
+  cartId: cartIdSchema,
 });
 
 const SessionUpdate = z.object({
   user: z.object({
-    cartId: z.string().nullable().optional(),
+    cartId: cartIdSchema,
   }),
 });
 
@@ -115,6 +124,7 @@ async function loginWithPassword(credentials: unknown): Promise<User | null> {
   }
 
   await handleLoginCart(cartId, result.cart?.entityId);
+  await clearAnonymousSession();
 
   return {
     name: `${result.customer.firstName} ${result.customer.lastName}`,
@@ -150,6 +160,7 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
   }
 
   await handleLoginCart(cartId, result.cart?.entityId);
+  await clearAnonymousSession();
 
   return {
     name: `${result.customer.firstName} ${result.customer.lastName}`,
@@ -157,14 +168,6 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
     customerAccessToken: result.customerAccessToken.value,
     impersonatorId,
     cartId: result.cart?.entityId,
-  };
-}
-
-function loginWithAnonymous(credentials: unknown): User | null {
-  const { cartId } = AnonymousCredentials.parse(credentials);
-
-  return {
-    cartId: cartId ?? null,
   };
 }
 
@@ -230,19 +233,33 @@ const config = {
   },
   events: {
     async signOut(message) {
+      const cartEntityId = 'token' in message ? message.token?.user?.cartId : null;
       const customerAccessToken =
         'token' in message ? message.token?.user?.customerAccessToken : null;
 
       if (customerAccessToken) {
         try {
-          await client.fetch({
+          const logoutResponse = await client.fetch({
             document: LogoutMutation,
-            variables: {},
+            variables: {
+              cartEntityId,
+            },
             customerAccessToken,
             fetchOptions: {
               cache: 'no-store',
             },
           });
+
+          // If the logout is successful, we want to establish a new anonymous session.
+          // This will allow us to restore the cart if persistent cart is disabled.
+          await anonymousSignIn();
+
+          // If persistent cart is disabled, we can restore the cart back to the anonymous session.
+          if (logoutResponse.data.logout.cartUnassignResult.cart) {
+            await setCartId(logoutResponse.data.logout.cartUnassignResult.cart.entityId);
+
+            return;
+          }
 
           await clearCartId();
         } catch (error) {
@@ -261,13 +278,6 @@ const config = {
         cartId: { type: 'text' },
       },
       authorize: loginWithPassword,
-    }),
-    CredentialsProvider({
-      id: 'anonymous',
-      credentials: {
-        cartId: { type: 'text' },
-      },
-      authorize: loginWithAnonymous,
     }),
     CredentialsProvider({
       id: 'jwt',
@@ -298,23 +308,9 @@ export const isLoggedIn = async () => {
   return Boolean(cat);
 };
 
-declare module 'next-auth' {
-  interface Session {
-    user?: DefaultSession['user'];
-  }
-
-  interface User {
-    name?: string | null;
-    email?: string | null;
-    cartId?: string | null;
-    customerAccessToken?: string;
-    impersonatorId?: string | null;
-  }
-}
-
-declare module 'next-auth/jwt' {
-  interface JWT {
-    id?: string;
-    user?: DefaultSession['user'];
-  }
-}
+export {
+  anonymousSignIn,
+  clearAnonymousSession,
+  getAnonymousSession,
+  updateAnonymousSession,
+} from './anonymous-session';

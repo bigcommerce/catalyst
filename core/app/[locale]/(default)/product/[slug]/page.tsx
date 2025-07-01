@@ -14,6 +14,7 @@ import { productOptionsTransformer } from '~/data-transformers/product-options-t
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { addToCart } from './_actions/add-to-cart';
+import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
@@ -31,8 +32,8 @@ interface Props {
   searchParams: Promise<SearchParams>;
 }
 
-export async function generateMetadata(props: Props): Promise<Metadata> {
-  const { slug } = await props.params;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
   const customerAccessToken = await getSessionCustomerAccessToken();
 
   const productId = Number(slug);
@@ -63,8 +64,8 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   };
 }
 
-export default async function Product(props: Props) {
-  const { locale, slug } = await props.params;
+export default async function Product({ params, searchParams }: Props) {
+  const { locale, slug } = await params;
   const customerAccessToken = await getSessionCustomerAccessToken();
   const detachedWishlistFormId = 'product-add-to-wishlist-form';
 
@@ -82,7 +83,7 @@ export default async function Product(props: Props) {
   }
 
   const streamableProduct = Streamable.from(async () => {
-    const options = await props.searchParams;
+    const options = await searchParams;
 
     const optionValueIds = Object.keys(options)
       .map((option) => ({
@@ -111,7 +112,7 @@ export default async function Product(props: Props) {
   const streamableProductSku = Streamable.from(async () => (await streamableProduct).sku);
 
   const streamableProductPricingAndRelatedProducts = Streamable.from(async () => {
-    const options = await props.searchParams;
+    const options = await searchParams;
 
     const optionValueIds = Object.keys(options)
       .map((option) => ({
@@ -266,39 +267,57 @@ export default async function Product(props: Props) {
     return productCardTransformer(relatedProducts, format);
   });
 
+  const streamableAnalyticsData = Streamable.from(async () => {
+    const [extendedProduct, pricingProduct] = await Streamable.all([
+      streamableProduct,
+      streamableProductPricingAndRelatedProducts,
+    ]);
+
+    return {
+      id: extendedProduct.entityId,
+      name: extendedProduct.name,
+      sku: extendedProduct.sku,
+      brand: extendedProduct.brand?.name ?? '',
+      price: pricingProduct?.prices?.price.value ?? 0,
+      currency: pricingProduct?.prices?.price.currencyCode ?? '',
+    };
+  });
+
   return (
     <>
-      <ProductDetail
-        action={addToCart}
-        additionalActions={
-          <WishlistButton
-            formId={detachedWishlistFormId}
-            productId={productId}
-            productSku={streamableProductSku}
-          />
-        }
-        additionalInformationTitle={t('ProductDetails.additionalInformation')}
-        ctaDisabled={streameableCtaDisabled}
-        ctaLabel={streameableCtaLabel}
-        decrementLabel={t('ProductDetails.decreaseQuantity')}
-        emptySelectPlaceholder={t('ProductDetails.emptySelectPlaceholder')}
-        fields={productOptionsTransformer(baseProduct.productOptions)}
-        incrementLabel={t('ProductDetails.increaseQuantity')}
-        prefetch={true}
-        product={{
-          id: baseProduct.entityId.toString(),
-          title: baseProduct.name,
-          description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
-          href: baseProduct.path,
-          images: streamableImages,
-          price: streamablePrices,
-          subtitle: baseProduct.brand?.name,
-          rating: baseProduct.reviewSummary.averageRating,
-          accordions: streameableAccordions,
-        }}
-        quantityLabel={t('ProductDetails.quantity')}
-        thumbnailLabel={t('ProductDetails.thumbnail')}
-      />
+      <ProductAnalyticsProvider data={streamableAnalyticsData}>
+        <ProductDetail
+          action={addToCart}
+          additionalActions={
+            <WishlistButton
+              formId={detachedWishlistFormId}
+              productId={productId}
+              productSku={streamableProductSku}
+            />
+          }
+          additionalInformationTitle={t('ProductDetails.additionalInformation')}
+          ctaDisabled={streameableCtaDisabled}
+          ctaLabel={streameableCtaLabel}
+          decrementLabel={t('ProductDetails.decreaseQuantity')}
+          emptySelectPlaceholder={t('ProductDetails.emptySelectPlaceholder')}
+          fields={productOptionsTransformer(baseProduct.productOptions)}
+          incrementLabel={t('ProductDetails.increaseQuantity')}
+          prefetch={true}
+          product={{
+            id: baseProduct.entityId.toString(),
+            title: baseProduct.name,
+            description: <div dangerouslySetInnerHTML={{ __html: baseProduct.description }} />,
+            href: baseProduct.path,
+            images: streamableImages,
+            price: streamablePrices,
+            subtitle: baseProduct.brand?.name,
+            rating: baseProduct.reviewSummary.averageRating,
+            accordions: streameableAccordions,
+          }}
+          quantityLabel={t('ProductDetails.quantity')}
+          thumbnailLabel={t('ProductDetails.thumbnail')}
+        />
+      </ProductAnalyticsProvider>
 
       <FeaturedProductCarousel
         cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
@@ -311,7 +330,7 @@ export default async function Product(props: Props) {
         title={t('RelatedProducts.title')}
       />
 
-      <Reviews productId={productId} searchParams={props.searchParams} />
+      <Reviews productId={productId} searchParams={searchParams} />
 
       <Stream
         fallback={null}
@@ -335,7 +354,7 @@ export default async function Product(props: Props) {
         formId={detachedWishlistFormId}
         productId={productId}
         productSku={streamableProductSku}
-        searchParams={props.searchParams}
+        searchParams={searchParams}
       />
     </>
   );

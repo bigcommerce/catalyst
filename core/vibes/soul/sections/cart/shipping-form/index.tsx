@@ -16,7 +16,7 @@ import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { Label } from '@/vibes/soul/form/label';
 import { RadioGroup } from '@/vibes/soul/form/radio-group';
-import { Select } from '@/vibes/soul/form/select';
+import { SelectField } from '@/vibes/soul/form/select-field';
 import { Button } from '@/vibes/soul/primitives/button';
 
 import { shippingActionFormDataSchema } from '../schema';
@@ -236,7 +236,7 @@ export function ShippingForm({
           ) : (
             !showForms && (
               <button
-                className="font-semibold focus-visible:ring-2 focus-visible:ring-[var(--button-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 focus-visible:outline-hidden"
+                className="font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--button-focus,hsl(var(--primary)))] focus-visible:ring-offset-2"
                 onClick={() => setShowForms(!showForms)}
               >
                 {addLabel}
@@ -247,10 +247,10 @@ export function ShippingForm({
 
         {state.shippingOption && (
           <div className="flex gap-1.5 text-xs">
-            <span className="text-contrast-400 font-medium">{state.shippingOption.label}</span>
+            <span className="font-medium text-contrast-400">{state.shippingOption.label}</span>
             {!showForms && (
               <button
-                className="font-semibold focus-visible:ring-2 focus-visible:ring-[var(--button-focus,hsl(var(--primary)))] focus-visible:ring-offset-2 focus-visible:outline-hidden"
+                className="font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--button-focus,hsl(var(--primary)))] focus-visible:ring-offset-2"
                 onClick={() => setShowForms(true)}
               >
                 {changeLabel}
@@ -267,7 +267,7 @@ export function ShippingForm({
           className={clsx('mt-4 space-y-4', { hidden: !showAddressForm })}
         >
           {Array.isArray(countries) ? (
-            <Select
+            <SelectField
               errors={addressFields.country.errors}
               key={addressFields.country.id}
               label={countryLabel}
@@ -277,7 +277,7 @@ export function ShippingForm({
               onValueChange={countryControl.change}
               options={countries}
               placeholder=""
-              value={countryControl.value}
+              value={countryControl.value ?? ''}
             />
           ) : (
             <Input
@@ -295,7 +295,7 @@ export function ShippingForm({
           />
           <div className="flex gap-3">
             {Array.isArray(states) ? (
-              <Select
+              <SelectField
                 disabled={addressFields.country.value === undefined}
                 errors={addressFields.state.errors}
                 key={addressFields.state.id}
@@ -308,7 +308,7 @@ export function ShippingForm({
                   states.find((s) => s.country === addressFields.country.value)?.states ?? []
                 }
                 placeholder=""
-                value={stateControl.value}
+                value={stateControl.value ?? ''}
               />
             ) : (
               <Input

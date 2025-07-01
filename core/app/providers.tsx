@@ -3,7 +3,7 @@
 import { PropsWithChildren } from 'react';
 
 import { Toaster } from '@/vibes/soul/primitives/toaster';
-import { SearchProvider } from '~/context/search-context';
+import { SearchProvider } from '~/lib/search';
 
 export function Providers({ children }: PropsWithChildren) {
   return (

@@ -50,6 +50,8 @@
             "heading": "Logg inn",
             "forgotPassword": "Har du glemt passordet?",
             "cta": "Logg inn",
+            "email": "E-post",
+            "password": "Passord",
             "invalidCredentials": "E-postadressen eller passordet er feil. Prøv å logge på igjen, eller tilbakestill passordet ditt.",
             "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
             "CreateAccount": {
@@ -146,6 +148,10 @@
             "orderNumber": "Bestillingsnr.",
             "totalPrice": "Totalbeløp",
             "viewDetails": "Vis detaljer",
+            "emptyState": {
+                "title": "De har ingen bestillinger",
+                "cta": "Kjøp nå"
+            },
             "Details": {
                 "title": "Bestillingsnummer {orderNumber}",
                 "shippingAddress": "Leveringsadresse",
@@ -155,7 +161,8 @@
                 "destinationWithCount": "Destinasjon {number, number}/{total, number}",
                 "subtotal": "Delsum",
                 "shipping": "Frakt",
-                "tax": "Avgift"
+                "tax": "Avgift",
+                "orderSummary": "Bestillingssammendrag"
             }
         },
         "Addresses": {
@@ -173,6 +180,7 @@
             "title": "Kontoinnstillinger",
             "changePassword": "Endre passord",
             "passwordUpdated": "Passordet er oppdatert!",
+            "settingsUpdated": "Kontoinnstillingene har blitt oppdatert!",
             "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
             "currentPassword": "Nåværende passord",
             "newPassword": "Nytt passord",
@@ -181,6 +189,7 @@
         }
     },
     "Wishlist": {
+        "actionsTitle": "Ønskelistehandlinger",
         "title": "Ønskelister",
         "new": "Ny ønskeliste",
         "items": "{count, plural, =1 {1 vare} other {# varer}}",
@@ -197,6 +206,7 @@
         "makePrivate": "Gjør privat",
         "rename": "Gi nytt navn",
         "delete": "Slett",
+        "removeButtonTitle": "Fjern produktet fra ønskelisten",
         "Visibility": {
             "public": "Offentlig",
             "private": "Privat"
@@ -226,8 +236,8 @@
             "updateFailed": "Kan ikke oppdatere ønskelisten. Prøv igjen.",
             "deleteFailed": "Kan ikke slette ønskelisten din. Prøv igjen.",
             "removeProductFailed": "Kan ikke fjerne produktet fra ønskelisten. Prøv igjen.",
-            "unauthorized": "You are not authorized to perform this action, please sign in and try again",
-            "unexpected": "An unexpected error occurred, please try again"
+            "unauthorized": "Du er ikke autorisert til å utføre denne handlingen. Logg på og prøv igjen.",
+            "unexpected": "En uventet feil oppstod, prøv igjen"
         },
         "Result": {
             "createSuccess": "Ønskelisten er opprettet.",
@@ -236,19 +246,21 @@
             "removeItemSuccess": "Varen er fjernet fra ønskelisten din."
         },
         "Button": {
-            "addToNewWishlist": "Add to new wish list",
-            "defaultWishlistName": "My wish list",
-            "addSuccessMessage": "Product has been added to your wish list",
-            "removeSuccessMessage": "Product has been removed from your wish list",
+            "label": "Add to wish list",
+            "addToNewWishlist": "Legg til i ny ønskeliste",
+            "defaultWishlistName": "Min ønskeliste",
+            "addSuccessMessage": "Produktet er lagt til i ønskelisten din",
+            "removeSuccessMessage": "Produktet er fjernet fra ønskelisten din",
             "Errors": {
-                "addProductFailed": "Failed to add the product from your wish list, please try again",
-                "removeProductFailed": "Failed to remove the product from your wish list, please try again"
+                "addProductFailed": "Kan ikke legge til produktet fra ønskelisten din, prøv igjen.",
+                "removeProductFailed": "Kan ikke fjerne produktet fra ønskelisten, prøv igjen."
             }
         }
     },
     "PublicWishlist": {
         "title": "Offentlig ønskeliste",
-        "defaultName": "Offentlig ønskeliste"
+        "defaultName": "Offentlig ønskeliste",
+        "emptyWishlist": "Denne ønskelisten har ingen produkter til nå"
     },
     "Blog": {
         "title": "blogg",
@@ -384,6 +396,7 @@
             "home": "Hjem"
         },
         "ContactUs": {
+            "home": "Hjem",
             "Form": {
                 "success": "Takk for at du tok kontakt. Vi kommer tilbake til deg snart.",
                 "successCta": "Fortsett å handle",
@@ -411,8 +424,9 @@
     },
     "NotFound": {
         "title": "Vi fant ikke den siden!",
-        "subtitle": "Det ser ut til at siden du ba om har flyttet eller ikke lenger eksisterer.",
-        "featuredProducts": "Utvalgt produkter"
+        "subtitle": "Prøv å søke etter noe annet, eller gå tilbake til hjemmesiden.",
+        "featuredProducts": "Utvalgt produkter",
+        "search": "Søk"
     },
     "Components": {
         "Header": {
@@ -424,6 +438,7 @@
                 "search": "Åpne popup-vinduet for søk"
             },
             "SwitchCurrency": {
+                "label": "Switch currency",
                 "invalidCurrency": "Ugyldig valuta",
                 "errorUpdatingCurrency": "Det oppsto en feil ved oppdatering av valutaen for handlekurven din. Prøv igjen."
             },
@@ -433,7 +448,9 @@
                 "brands": "merker",
                 "noSearchResultsTitle": "Beklager, ingen resultater for «{term}».",
                 "noSearchResultsSubtitle": "Prøv et nytt søk.",
-                "somethingWentWrong": "Noe gikk galt. Prøv igjen."
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen.",
+                "inputPlaceholder": "Søk etter produkter, kategorier, merker ...",
+                "submitLabel": "Søk"
             }
         },
         "Footer": {
