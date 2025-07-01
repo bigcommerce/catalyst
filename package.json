@@ -23,6 +23,8 @@
     "@changesets/changelog-github": "^0.5.1",
     "@changesets/cli": "^2.29.4",
     "dotenv-cli": "^8.0.0",
+    "prettier": "^3.5.3",
+    "prettier-plugin-tailwindcss": "^0.6.12",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3",
     "unlighthouse": "^0.16.3"

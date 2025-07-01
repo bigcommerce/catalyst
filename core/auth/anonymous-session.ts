@@ -68,7 +68,12 @@ export const clearAnonymousSession = async () => {
   const useSecureCookies = await shouldUseSecureCookie();
   const cookiePrefix = useSecureCookies ? '__Secure-' : '';
 
-  cookieJar.delete(`${cookiePrefix}${anonymousCookieName}`);
+  cookieJar.delete({
+    name: `${cookiePrefix}${anonymousCookieName}`,
+    secure: true,
+    sameSite: 'lax',
+    httpOnly: true,
+  });
 };
 
 export const updateAnonymousSession = async (user: AnonymousUser) => {
