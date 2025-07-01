@@ -50,3 +50,8 @@ messages/*.d.json.ts
 
 # Build config
 build-config.json
+
+# opennext
+.open-next
+.wrangler
+.bigcommerce

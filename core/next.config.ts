@@ -1,4 +1,5 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
 
@@ -121,3 +122,5 @@ export default async (): Promise<NextConfig> => {
 
   return nextConfig;
 };
+
+void initOpenNextCloudflareForDev();

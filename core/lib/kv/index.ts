@@ -1,3 +1,5 @@
+import { getCloudflareContext } from '@opennextjs/cloudflare';
+
 import { MemoryKvAdapter } from './adapters/memory';
 import { KvAdapter, SetCommandOptions } from './types';
 
@@ -98,6 +100,15 @@ async function createKVAdapter() {
     const { UpstashKvAdapter } = await import('./adapters/upstash');
 
     return new UpstashKvAdapter();
+  }
+
+  // New Cloudflare KV adapter
+
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (getCloudflareContext().env['catalyst-test-jm']) {
+    const { CloudflareKvAdapter } = await import('./adapters/cloudflare');
+
+    return new CloudflareKvAdapter();
   }
 
   return new MemoryKvAdapter();
