@@ -1,0 +1,27 @@
+name: Prevent invalid packages for Changesets
+
+on:
+  pull_request:
+    branches:
+      - integrations/makeswift
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  validate-changesets:
+    runs-on: ubuntu-latest
+    name: Validate Changeset Packages
+    steps:
+      - name: Checkout PR code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Validate changesets only target @bigcommerce/catalyst-makeswift
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const script = require('./.github/scripts/prevent-invalid-changesets.js')
+            await script({ core, exec })
