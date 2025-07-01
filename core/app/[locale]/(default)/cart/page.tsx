@@ -5,13 +5,12 @@ import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/car
 import { getCartId } from '~/lib/cart';
 import { exists } from '~/lib/utils';
 
-import { getStreamableProduct } from '../product/[slug]/page-data';
 import { redirectToCheckout } from './_actions/redirect-to-checkout';
 import { updateCouponCode } from './_actions/update-coupon-code';
 import { updateLineItem } from './_actions/update-line-item';
 import { updateShippingInfo } from './_actions/update-shipping-info';
 import { CartViewed } from './_components/cart-viewed';
-import { getCart, getShippingCountries } from './page-data';
+import { getCart, getProductsInventory, getShippingCountries } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -64,22 +63,14 @@ export default async function Cart({ params }: Props) {
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
 
-  const formattedLineItems = await Promise.all(lineItems.map(async (item) => {
-    const optionValueIds = item.selectedOptions?.map((opt) =>
-      'optionEntityId' in opt && 'valueEntityId' in opt &&
-      typeof opt.optionEntityId === 'number' &&
-      typeof opt.valueEntityId === 'number'
-        ? { optionEntityId: opt.optionEntityId, valueEntityId: opt.valueEntityId }
-        : null
-    ).filter(Boolean);
+  const productIds = lineItems.map((item) => item.productEntityId);
+  const variantIds = lineItems
+    .map((item) => item.variantEntityId)
+    .filter((id): id is number => typeof id === 'number');
 
-    const product = await getStreamableProduct({
-      entityId: item.productEntityId,
-      optionValueIds,
-      useDefaultOptionSelections: true,
-    });
-
-    const isInStock = product?.inventory?.isInStock ?? false;
+  const productsInventory = await getProductsInventory({ productIds, variantIds });
+  const formattedLineItems = lineItems.map((item) => {
+    const isInStock = productsInventory.get(item.variantEntityId ?? 0) ?? false;
 
     return {
       id: item.entityId,
@@ -118,7 +109,7 @@ export default async function Cart({ params }: Props) {
       variantEntityId: item.variantEntityId,
       isInStock,
     };
-  }));
+  });
 
   const canProceed = formattedLineItems.every((item) => item.isInStock);
 
