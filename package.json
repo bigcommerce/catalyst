@@ -17,6 +17,7 @@
     "dev": "dotenv -e .env.local -- turbo run dev",
     "build": "dotenv -e .env.local -- turbo run build",
     "lint": "dotenv -e .env.local -- turbo lint",
+    "test": "turbo run test",
     "typecheck": "turbo typecheck"
   },
   "devDependencies": {
