@@ -8,6 +8,8 @@ const config = {
     'no-console': 'off',
     'import/no-named-as-default': 'off',
     '@typescript-eslint/naming-convention': 'off',
+    // sequential execution is typically desired in a synchronous CLI program
+    'no-await-in-loop': 'off',
   },
   ignorePatterns: ['/dist/**'],
 };

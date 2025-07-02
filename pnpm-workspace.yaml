@@ -9,3 +9,5 @@ onlyBuiltDependencies:
   - msw
   - puppeteer
   - sharp
+publicHoistPattern:
+  - '*eslint*'
