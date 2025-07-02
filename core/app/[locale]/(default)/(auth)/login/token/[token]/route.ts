@@ -33,5 +33,4 @@ export async function GET(_: Request, { params }: { params: Promise<{ token: str
   }
 }
 
-export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
