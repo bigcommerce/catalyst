@@ -288,9 +288,6 @@ importers:
 
   packages/cli:
     dependencies:
-      '@commander-js/extra-typings':
-        specifier: ^14.0.0
-        version: 14.0.0(commander@14.0.0)
       chalk:
         specifier: ^5.3.0
         version: 5.4.1
@@ -304,6 +301,9 @@ importers:
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../eslint-config-catalyst
+      '@commander-js/extra-typings':
+        specifier: ^14.0.0
+        version: 14.0.0(commander@14.0.0)
       '@types/node':
         specifier: ^22.15.30
         version: 22.15.30
