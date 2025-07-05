@@ -52,11 +52,11 @@ interface Props {
     centerText: string;
     rightText: {
       text: string;
-      link: { href: string };
+      link: { href: string; target?: string };
     };
     links: Array<{
       label: string;
-      link: { href: string };
+      link: { href: string; target?: string };
     }>;
     // allowClose: boolean;
     // children?: ReactNode;

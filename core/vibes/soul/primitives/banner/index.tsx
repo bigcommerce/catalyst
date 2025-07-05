@@ -32,11 +32,11 @@ export const Banner = forwardRef(
     centerText?: string;
     rightText?: {
       text: string;
-      link: { href: string };
+      link: { href: string; target?: string };
     };
     links?: Array<{
       label: string;
-      link: { href: string };
+      link: { href: string; target?: string };
     }>;
   }) => {
     console.log(centerText, rightText, links, show);
@@ -51,19 +51,21 @@ export const Banner = forwardRef(
       >
         <div className="flex h-full w-full flex-row items-center justify-between gap-2 px-4 py-2 @xl:px-12">
           {/* Left: Links (hidden on small screens) */}
-          <div className="hidden flex-row gap-4 text-sm text-white md:flex">
+          <div className="hidden flex-row gap-4 text-base font-bold text-white md:flex">
             {links?.map((item, idx) => (
               <>
                 <a
                   key={idx}
                   href={item.link.href}
-                  className="text-white/80 transition-colors duration-200 hover:text-white hover:underline"
-                  target="_blank"
+                  className="text-base font-bold text-white transition-colors duration-200 hover:underline"
+                  target={item.link.target || '_blank'}
                   rel="noopener noreferrer"
                 >
                   {item.label}
                 </a>
-                {idx < links.length - 1 && <span className="mx-2 text-white/40">|</span>}
+                {idx < links.length - 1 && (
+                  <span className="mx-2 text-base font-bold text-white">|</span>
+                )}
               </>
             ))}
           </div>
@@ -71,19 +73,19 @@ export const Banner = forwardRef(
           {/* Center: Center Text (always visible) */}
           <div className="flex flex-1 justify-center">
             {centerText && (
-              <span className="truncate text-center text-sm font-medium text-white md:text-base">
+              <span className="truncate text-center text-[16px] font-bold text-[#000000] md:text-[16px]">
                 {centerText}
               </span>
             )}
           </div>
 
           {/* Right: Right Text (hidden on small screens) */}
-          <div className="hidden flex-row items-center gap-2 text-sm text-white md:flex">
+          <div className="hidden flex-row items-center gap-2 text-[16px] font-bold text-[#000000] md:flex">
             {rightText?.text && rightText?.link?.href && (
               <a
                 href={rightText.link.href}
-                className="font-semibold text-white/80 transition-colors duration-200 hover:text-white hover:underline"
-                target="_blank"
+                className="text-[16px] font-bold text-[#000000] transition-colors duration-200 hover:underline"
+                target={rightText.link.target || '_blank'}
                 rel="noopener noreferrer"
               >
                 {rightText.text}
