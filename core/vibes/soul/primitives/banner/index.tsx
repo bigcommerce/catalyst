@@ -39,6 +39,7 @@ export const Banner = forwardRef(
       link: { href: string };
     }>;
   }) => {
+    console.log(centerText, rightText, links, show);
     return (
       <div
         className={clsx(

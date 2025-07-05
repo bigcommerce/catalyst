@@ -108,13 +108,7 @@ export const MakeswiftHeader = forwardRef(
 
     return (
       <HeaderSection
-        banner={{
-          links: combinedBanner.links,
-          show: combinedBanner.show,
-          centerText: combinedBanner.centerText,
-          rightText: combinedBanner.rightText,
-          className: combinedBanner.className,
-        }}
+        banner={combinedBanner}
         navigation={{
           ...passedProps,
           links: combineLinks(passedProps.links, links),
