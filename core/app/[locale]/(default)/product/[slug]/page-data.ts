@@ -233,6 +233,19 @@ const ProductPageQuery = graphql(
             metaDescription
             metaKeywords
           }
+          categories {
+            edges {
+              node {
+                products(first: 8) {
+                  edges {
+                    node {
+                      ...FeaturedProductsCarouselFragment
+                    }
+                  }
+                }
+              }
+            }
+          }
           relatedProducts(first: 8) {
             edges {
               node {

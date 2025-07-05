@@ -17,6 +17,7 @@ import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { PaginationSearchParamNames, Reviews } from './_components/reviews';
 import { getProductData } from './page-data';
+import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 
 const cachedProductDataVariables = cache(
   async (productId: string, searchParams: Props['searchParams']) => {
@@ -187,8 +188,13 @@ const getRelatedProducts = async (props: Props) => {
   const product = await getProductData(variables);
 
   const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
+  const categories = removeEdgesAndNodes(product.categories);
+  const categoryRelatedProducts = categories[0] ? removeEdgesAndNodes(categories[0].products) : [];
 
-  return productCardTransformer(relatedProducts, format);
+  return productCardTransformer(
+    relatedProducts.length > 0 ? relatedProducts : categoryRelatedProducts,
+    format,
+  );
 };
 
 interface Props {
@@ -240,7 +246,7 @@ export default async function Product(props: Props) {
   const parsedSearchParams = searchParamsCache.parse(props.searchParams);
 
   return (
-    <>
+    <SectionLayout hideOverflow={true}>
       <ProductDetail
         action={addToCart}
         additionaInformationTitle={t('ProductDetails.additionalInformation')}
@@ -277,6 +283,6 @@ export default async function Product(props: Props) {
           </>
         )}
       </Stream>
-    </>
+    </SectionLayout>
   );
 }
