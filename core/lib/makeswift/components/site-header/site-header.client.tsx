@@ -101,14 +101,11 @@ function combineLinks(
 
 export const MakeswiftHeader = forwardRef(
   ({ banner, links, logo, linksPosition }: Props, ref: Ref<HTMLDivElement>) => {
-    const { navigation: passedProps, banner: passedBanner } = useContext(PropsContext);
-    const combinedBanner = {
-      ...passedBanner,
-    };
+    const { navigation: passedProps } = useContext(PropsContext);
 
     return (
       <HeaderSection
-        banner={combinedBanner}
+        banner={banner}
         navigation={{
           ...passedProps,
           links: combineLinks(passedProps.links, links),
