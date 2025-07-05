@@ -52,6 +52,10 @@ export interface ProductCardProps {
  * }
  * ```
  */
+
+const DEFAULT_PRODUCT_IMAGE_URL =
+  'https://betterineraction.nyc3.cdn.digitaloceanspaces.com/product-placeholder.svg';
+
 export function ProductCard({
   product: { id, title, subtitle, badge, price, image, href },
   colorScheme = 'light',
@@ -101,17 +105,31 @@ export function ProductCard({
               src={image.src}
             />
           ) : (
-            <div
+            <Image
+              alt={`${title} image`}
               className={clsx(
-                'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
+                'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
                 {
-                  light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
-                  dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
+                  light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
+                  dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
                 }[colorScheme],
               )}
-            >
-              {title}
-            </div>
+              fill
+              priority={imagePriority}
+              sizes={imageSizes}
+              src={DEFAULT_PRODUCT_IMAGE_URL}
+            />
+            // <div
+            //   className={clsx(
+            //     'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
+            //     {
+            //       light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
+            //       dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
+            //     }[colorScheme],
+            //   )}
+            // >
+            //   {title}
+            // </div>
           )}
           {badge != null && badge !== '' && (
             <Badge className="absolute left-3 top-3" shape="rounded">
