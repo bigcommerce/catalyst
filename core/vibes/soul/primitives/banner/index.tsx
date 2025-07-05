@@ -50,8 +50,8 @@ export const Banner = forwardRef(
         id="announcement-bar"
       >
         <div className="flex h-full w-full flex-row items-center justify-between gap-2 px-4 py-2 @xl:px-12">
-          {/* Left: Links (hidden on small screens) */}
-          <div className="hidden flex-row gap-4 text-base font-bold md:flex">
+          {/* Left: Links (hidden on tablet and smaller screens) */}
+          <div className="hidden flex-row gap-4 text-base font-bold lg:flex">
             {links?.map((item, idx) => (
               <>
                 <a
@@ -79,8 +79,8 @@ export const Banner = forwardRef(
             )}
           </div>
 
-          {/* Right: Right Text (hidden on small screens) */}
-          <div className="hidden flex-row items-center gap-2 md:flex">
+          {/* Right: Right Text (hidden on tablet and smaller screens) */}
+          <div className="hidden flex-row items-center gap-2 lg:flex">
             {rightText?.text && rightText?.link?.href && (
               <a
                 href={rightText.link.href}
