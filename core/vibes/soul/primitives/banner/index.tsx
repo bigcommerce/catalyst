@@ -51,7 +51,7 @@ export const Banner = forwardRef(
       >
         <div className="flex h-full w-full flex-row items-center justify-between gap-2 px-4 py-2 @xl:px-12">
           {/* Left: Links (hidden on small screens) */}
-          <div className="hidden flex-row gap-4 text-base font-bold text-white md:flex">
+          <div className="hidden flex-row gap-4 text-base font-bold md:flex">
             {links?.map((item, idx) => (
               <>
                 <a
@@ -73,18 +73,18 @@ export const Banner = forwardRef(
           {/* Center: Center Text (always visible) */}
           <div className="flex flex-1 justify-center">
             {centerText && (
-              <span className="truncate text-center text-[16px] font-bold text-[#000000] md:text-[16px]">
+              <span className="truncate text-center text-base font-bold text-white md:text-base">
                 {centerText}
               </span>
             )}
           </div>
 
           {/* Right: Right Text (hidden on small screens) */}
-          <div className="hidden flex-row items-center gap-2 text-[16px] font-bold text-[#000000] md:flex">
+          <div className="hidden flex-row items-center gap-2 md:flex">
             {rightText?.text && rightText?.link?.href && (
               <a
                 href={rightText.link.href}
-                className="text-[16px] font-bold text-[#000000] transition-colors duration-200 hover:underline"
+                className="text-base font-bold text-white transition-colors duration-200 hover:underline"
                 target={rightText.link.target || '_blank'}
                 rel="noopener noreferrer"
               >
