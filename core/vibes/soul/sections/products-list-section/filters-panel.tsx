@@ -8,17 +8,12 @@ import { clsx } from 'clsx';
 import { parseAsString, useQueryStates } from 'nuqs';
 import { Suspense, useOptimistic, useState, useTransition } from 'react';
 
-import { Checkbox } from '@/vibes/soul/form/checkbox';
-import { RangeInput } from '@/vibes/soul/form/range-input';
-import { ToggleGroup } from '@/vibes/soul/form/toggle-group';
 import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
-import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
-import { Button } from '@/vibes/soul/primitives/button';
 import { CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
-import { Rating } from '@/vibes/soul/primitives/rating';
 import { Link } from '~/components/link';
 
 import { getFilterParsers } from './filter-parsers';
+import { Image } from '~/components/image';
 
 export interface LinkGroupFilter {
   type: 'link-group';
@@ -99,6 +94,9 @@ interface CategoryCardProps {
   href: string;
 }
 
+const DEFAULT_CATEGORY_IMAGE_URL =
+  'https://betterineraction.nyc3.cdn.digitaloceanspaces.com/category-placeholder.svg';
+
 export function CategoryCard({ imageUrl, title, productCount, href }: CategoryCardProps) {
   return (
     <Suspense fallback={<CardSkeleton />}>
@@ -106,9 +104,9 @@ export function CategoryCard({ imageUrl, title, productCount, href }: CategoryCa
         {/* Image */}
         <div className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md shadow-md">
           <img
-            alt={title}
+            alt={`${title} category image`}
             className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-            src={imageUrl}
+            src={imageUrl ? imageUrl : DEFAULT_CATEGORY_IMAGE_URL}
           />
           <div className="absolute inset-0 bg-black bg-opacity-40 transition duration-300 group-hover:bg-opacity-50" />
           <div className="absolute bottom-4 left-4 z-10 text-white">
@@ -176,8 +174,6 @@ export function FiltersPanelInner({
     return <></>;
   }
 
-  const SUB_CATEGORY_DEFAULT_IMAGE_ID = 'https://placehold.co/200x200/png?text=Category+Image';
-
   return (
     <div
       className={clsx(
@@ -194,7 +190,7 @@ export function FiltersPanelInner({
         <CategoryCard
           key={index.toString()}
           href={category.href}
-          imageUrl={category.image ? category.image : SUB_CATEGORY_DEFAULT_IMAGE_ID}
+          imageUrl={category.image ? category.image : null}
           title={category.label}
           productCount={category.productCount}
         />
