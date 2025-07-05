@@ -19,6 +19,9 @@ interface ProductCardProps {
   descriptionExcerptLength: number;
 }
 
+const DEFAULT_PRODUCT_IMAGE_URL =
+  'https://betterineraction.nyc3.cdn.digitaloceanspaces.com/product-placeholder.svg';
+
 export const FeaturedProductCard = ({
   className,
   image,
@@ -65,13 +68,23 @@ export const FeaturedProductCard = ({
               src={image.src}
             />
           ) : (
-            <div
+            <Image
+              alt={`${name} image`}
               className={clsx(
-                'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter text-[var(--product-card-light-title,hsl(var(--foreground)))] opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
+                'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
               )}
-            >
-              {name}
-            </div>
+              fill
+              priority={imagePriority}
+              sizes={imageSizes}
+              src={DEFAULT_PRODUCT_IMAGE_URL}
+            />
+            // <div
+            //   className={clsx(
+            //     'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter text-[var(--product-card-light-title,hsl(var(--foreground)))] opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
+            //   )}
+            // >
+            //   {name}
+            // </div>
           )}
         </div>
         <div className="flex flex-1 flex-col p-4">

@@ -36,6 +36,9 @@ interface ProductInterface {
   entityId?: string;
 }
 
+const DEFAULT_PRODUCT_IMAGE_URL =
+  'https://betterineraction.nyc3.cdn.digitaloceanspaces.com/product-placeholder.svg';
+
 function MakeswiftFeaturedProductsGridGIT({
   className,
   additionalProducts,
