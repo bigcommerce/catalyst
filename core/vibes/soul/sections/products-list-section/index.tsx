@@ -43,6 +43,7 @@ interface Props {
   removeLabel?: Streamable<string>;
   maxItems?: number;
   maxCompareLimitMessage?: Streamable<string>;
+  description?: Streamable<string | null>;
 }
 
 export function ProductsListSection({
@@ -73,6 +74,7 @@ export function ProductsListSection({
   removeLabel,
   maxItems,
   maxCompareLimitMessage,
+  description,
 }: Props) {
   const DEFAULT_CATEGORY_IMAGE_URL = 'https://placehold.co/1800x200/png?text=Category+Image';
 
@@ -106,7 +108,7 @@ export function ProductsListSection({
               breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
             }
           </Stream>
-          <div className="flex flex-wrap items-center justify-between gap-4 pb-8 pt-6 text-foreground">
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 pt-6 text-foreground">
             <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
               <Suspense
                 fallback={
@@ -123,6 +125,11 @@ export function ProductsListSection({
                 <span className="text-contrast-300">{totalCount}</span>
               </Suspense>
             </h1>
+
+            {/**
+             * Section to add category description that comes before the three pipes "|||"
+             */}
+
             <div className="flex gap-2">
               <Stream
                 fallback={<SortingSkeleton />}
@@ -170,12 +177,26 @@ export function ProductsListSection({
           </div>
         </div>
 
+        {description && (
+          <Stream value={description}>
+            {(resolvedDescription) =>
+              resolvedDescription && resolvedDescription !== undefined ? (
+                <div
+                  className="mb-4"
+                  // @ts-ignore
+                  dangerouslySetInnerHTML={{ __html: resolvedDescription.split('|||')[0] }}
+                />
+              ) : null
+            }
+          </Stream>
+        )}
+
         {/**
          * GRID OF ITEMS FOR THE SUB CATEGORIES
          */}
         <div className="hidden @3xl:block @4xl:w-full">
           <FiltersPanel
-            className="sticky top-4"
+            className="sticky top-4 mb-4"
             filters={filters}
             paginationInfo={paginationInfo}
             rangeFilterApplyLabel={rangeFilterApplyLabel}
@@ -183,7 +204,21 @@ export function ProductsListSection({
           />
         </div>
 
-        <div className="flex items-stretch gap-8 @4xl:gap-10">
+        {/**
+         * Section to add category description that comes after the three pipes "|||"
+         */}
+        {description && (
+          <Stream value={description}>
+            {(resolvedDescription) =>
+              resolvedDescription && resolvedDescription.split('|||').length > 1 ? (
+                // @ts-ignore
+                <div dangerouslySetInnerHTML={{ __html: resolvedDescription.split('|||')[1] }} />
+              ) : null
+            }
+          </Stream>
+        )}
+
+        <div className="mt-6 flex items-stretch gap-8 @4xl:gap-10">
           <div className="flex-1 group-has-[[data-pending]]/products-list-section:animate-pulse">
             <ProductList
               compareHref={compareHref}

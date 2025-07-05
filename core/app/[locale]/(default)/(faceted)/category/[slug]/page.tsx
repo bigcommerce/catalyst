@@ -160,6 +160,9 @@ async function getListProducts(props: Props): Promise<Product[]> {
     id: product.entityId.toString(),
     title: product.name,
     href: product.path,
+    categories: [],
+    description: product.description,
+    badge: '',
     image: product.defaultImage
       ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
       : undefined,
@@ -172,6 +175,12 @@ async function getCategoryFeaturedImage(props: Props): Promise<string | null> {
   const category = await getCategory(props);
 
   return category.defaultImage ? category.defaultImage.urlOriginal : null;
+}
+
+async function getCategoryDescription(props: Props): Promise<string | null> {
+  const category = await getCategory(props);
+
+  return category.description ? category.description : null;
 }
 
 async function getFilters(props: Props): Promise<Filter[]> {
@@ -345,14 +354,18 @@ export default async function Category(props: Props) {
 
   setRequestLocale(locale);
 
+  console.log(props);
+
   return (
     <>
       <ProductsListSection
         breadcrumbs={Streamable.from(() => getBreadcrumbs(props))}
         compareLabel={Streamable.from(getCompareLabel)}
         categoryImage={Streamable.from(() => getCategoryFeaturedImage(props))}
+        // @ts-ignore
         compareProducts={Streamable.from(() => getCompareProducts(props))}
         emptyStateSubtitle={Streamable.from(getEmptyStateSubtitle)}
+        description={Streamable.from(() => getCategoryDescription(props))}
         emptyStateTitle={Streamable.from(getEmptyStateTitle)}
         filterLabel={await getFilterLabel()}
         filters={Streamable.from(() => getFilters(props))}
