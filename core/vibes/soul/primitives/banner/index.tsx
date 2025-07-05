@@ -1,7 +1,6 @@
 'use client';
 
 import { clsx } from 'clsx';
-import { X } from 'lucide-react';
 import { ForwardedRef, forwardRef, ReactNode, useCallback, useEffect, useState } from 'react';
 
 /**
@@ -21,64 +20,76 @@ import { ForwardedRef, forwardRef, ReactNode, useCallback, useEffect, useState }
  * ```
  */
 export const Banner = forwardRef(
-  (
-    {
-      id,
-      children,
-      hideDismiss = false,
-      className,
-      onDismiss,
-    }: {
-      id: string;
-      children: ReactNode;
-      hideDismiss?: boolean;
-      className?: string;
-      onDismiss?: () => void;
-    },
-    ref: ForwardedRef<HTMLDivElement>,
-  ) => {
-    const [banner, setBanner] = useState({ dismissed: false, initialized: false });
-
-    useEffect(() => {
-      const hidden = localStorage.getItem(`${id}-hidden-banner`) === 'true';
-
-      setBanner({ dismissed: hidden, initialized: true });
-    }, [id]);
-
-    const hideBanner = useCallback(() => {
-      setBanner((prev) => ({ ...prev, dismissed: true }));
-      localStorage.setItem(`${id}-hidden-banner`, 'true');
-      onDismiss?.();
-    }, [id, onDismiss]);
-
-    if (!banner.initialized) return null;
-
+  ({
+    className,
+    centerText,
+    rightText,
+    links,
+    show,
+  }: {
+    show?: boolean;
+    className?: string;
+    centerText?: string;
+    rightText?: {
+      text: string;
+      link: { href: string };
+    };
+    links?: Array<{
+      label: string;
+      link: { href: string };
+    }>;
+  }) => {
     return (
       <div
         className={clsx(
-          'relative w-full overflow-hidden bg-[var(--banner-background,hsl(var(--primary)))] transition-all duration-300 ease-in @container',
-          banner.dismissed ? 'pointer-events-none max-h-0' : 'max-h-32',
+          'bg-deepblue relative w-full overflow-hidden bg-[var(--banner-background,hsl(var(--primary)))] transition-all duration-300 ease-in @container',
+          !show ? 'max-h-0' : 'max-h-32',
           className,
         )}
         id="announcement-bar"
-        ref={ref}
       >
-        <div className="p-3 pr-12 text-sm text-[var(--banner-text,hsl(var(--foreground)))] @xl:px-12 @xl:text-center @xl:text-base">
-          {children}
-        </div>
+        <div className="flex h-full w-full flex-row items-center justify-between gap-2 px-4 py-2 @xl:px-12">
+          {/* Left: Links (hidden on small screens) */}
+          <div className="hidden flex-row gap-4 text-sm text-white md:flex">
+            {links?.map((item, idx) => (
+              <>
+                <a
+                  key={idx}
+                  href={item.link.href}
+                  className="text-white/80 transition-colors duration-200 hover:text-white hover:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {item.label}
+                </a>
+                {idx < links.length - 1 && <span className="mx-2 text-white/40">|</span>}
+              </>
+            ))}
+          </div>
 
-        {!hideDismiss && (
-          <button
-            aria-label="Dismiss banner"
-            className="absolute right-3 top-3 grid h-8 w-8 place-content-center rounded-full bg-[var(--banner-close-background,transparent)] text-[var(--banner-close-icon,hsl(var(--foreground)/50%))] transition-colors duration-300 hover:bg-[var(--banner-close-background-hover,hsl(var(--background)/40%))] hover:text-[var(--banner-close-icon-hover,hsl(var(--foreground)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--banner-focus,hsl(var(--foreground)))] @xl:top-1/2 @xl:-translate-y-1/2"
-            onClick={(e) => {
-              e.preventDefault();
-              hideBanner();
-            }}
-          >
-            <X absoluteStrokeWidth size={20} strokeWidth={1.5} />
-          </button>
-        )}
+          {/* Center: Center Text (always visible) */}
+          <div className="flex flex-1 justify-center">
+            {centerText && (
+              <span className="truncate text-center text-sm font-medium text-white md:text-base">
+                {centerText}
+              </span>
+            )}
+          </div>
+
+          {/* Right: Right Text (hidden on small screens) */}
+          <div className="hidden flex-row items-center gap-2 text-sm text-white md:flex">
+            {rightText?.text && rightText?.link?.href && (
+              <a
+                href={rightText.link.href}
+                className="font-semibold text-white/80 transition-colors duration-200 hover:text-white hover:underline"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {rightText.text}
+              </a>
+            )}
+          </div>
+        </div>
       </div>
     );
   },

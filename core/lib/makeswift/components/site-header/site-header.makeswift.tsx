@@ -21,8 +21,31 @@ const banner = Group({
   preferredLayout: Group.Layout.Popover,
   props: {
     show: Checkbox({ label: 'Show banner', defaultValue: false }),
-    allowClose: Checkbox({ label: 'Allow banner to close', defaultValue: true }),
-    id: TextInput({ label: 'Banner ID', defaultValue: 'black_friday_2025' }),
+    centerText: TextInput({
+      label: 'Center text',
+      defaultValue: 'FREE SHIPPING IN THE US ORDERS OVER $500',
+    }),
+    rightText: Group({
+      label: 'Right text',
+      preferredLayout: Group.Layout.Popover,
+      props: {
+        text: TextInput({ label: 'Text', defaultValue: 'CREATE YOUR ACCOUNT' }),
+        link: Link({ label: 'Link URL' }),
+      },
+    }),
+    links: List({
+      label: 'Links',
+      type: Group({
+        label: 'Link',
+        props: {
+          label: TextInput({ label: 'Text', defaultValue: 'Text' }),
+          link: Link({ label: 'URL' }),
+        },
+      }),
+      getItemLabel: (item) => item?.label ?? 'Text',
+    }),
+    // allowClose: Checkbox({ label: 'Allow banner to close', defaultValue: true }),
+    // id: TextInput({ label: 'Banner ID', defaultValue: 'black_friday_2025' }),
     children: Slot(),
   },
 });

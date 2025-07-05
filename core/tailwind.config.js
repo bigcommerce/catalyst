@@ -148,6 +148,7 @@ const config = {
           400: 'hsl(var(--contrast-400))',
           500: 'hsl(var(--contrast-500))',
         },
+        deepblue: '#011F4B',
       },
       fontFamily: {
         heading: [

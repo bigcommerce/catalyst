@@ -48,10 +48,18 @@ interface ImageProps {
 
 interface Props {
   banner: {
-    id: string;
     show: boolean;
-    allowClose: boolean;
-    children?: ReactNode;
+    centerText: string;
+    rightText: {
+      text: string;
+      link: { href: string };
+    };
+    links: Array<{
+      label: string;
+      link: { href: string };
+    }>;
+    // allowClose: boolean;
+    // children?: ReactNode;
   };
   links: Array<{
     label: string;
@@ -94,18 +102,19 @@ function combineLinks(
 export const MakeswiftHeader = forwardRef(
   ({ banner, links, logo, linksPosition }: Props, ref: Ref<HTMLDivElement>) => {
     const { navigation: passedProps, banner: passedBanner } = useContext(PropsContext);
-    const combinedBanner = banner.show
-      ? {
-          ...passedBanner,
-          id: banner.id,
-          hideDismiss: !banner.allowClose,
-          children: banner.children ?? passedBanner?.children,
-        }
-      : undefined;
+    const combinedBanner = {
+      ...passedBanner,
+    };
 
     return (
       <HeaderSection
-        banner={combinedBanner}
+        banner={{
+          links: combinedBanner.links,
+          show: combinedBanner.show,
+          centerText: combinedBanner.centerText,
+          rightText: combinedBanner.rightText,
+          className: combinedBanner.className,
+        }}
         navigation={{
           ...passedProps,
           links: combineLinks(passedProps.links, links),
