@@ -523,59 +523,61 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         {/* Icon Buttons */}
         <div
           className={clsx(
-            'flex items-center justify-end gap-2 transition-colors duration-300',
+            'flex flex-col items-end justify-end gap-1 transition-colors duration-300',
             linksPosition === 'center' ? 'flex-1' : 'flex-1 @4xl:flex-none',
           )}
         >
-          {/* Sign In Button */}
-          <Link aria-label={accountLabel} className={navCustomButtonClassName} href={accountHref}>
-            <span>
-              <User size={20} strokeWidth={1} className="inline" />
-              Sign In
-            </span>
-          </Link>
+          <div className="flex items-center gap-2">
+            {/* Sign In Button */}
+            <Link aria-label={accountLabel} className={navCustomButtonClassName} href={accountHref}>
+              <span>
+                <User size={20} strokeWidth={1} className="inline" />
+                Sign In
+              </span>
+            </Link>
 
-          <span className="text-[#D2D2D2]">|</span>
+            <span className="text-[#D2D2D2]">|</span>
 
-          {/* Cart Icon */}
-          <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
-            <ShoppingBasket size={20} strokeWidth={1} />
-            <Stream
-              fallback={
-                <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-contrast-100 text-xs text-background" />
-              }
-              value={streamableCartCount}
-            >
-              {(cartCount) =>
-                cartCount != null &&
-                cartCount > 0 && (
-                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--nav-cart-count-background,hsl(var(--foreground)))] font-[family-name:var(--nav-cart-count-font-family,var(--font-family-body))] text-xs text-[var(--nav-cart-count-text,hsl(var(--background)))]">
-                    {cartCount}
-                  </span>
-                )
-              }
-            </Stream>
-          </Link>
-          {/* Locale / Language Dropdown */}
-          {locales && locales.length > 1 ? (
-            <LocaleSwitcher
-              activeLocaleId={activeLocaleId}
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              locales={locales as [Locale, Locale, ...Locale[]]}
-            />
-          ) : null}
-          {/* Currency Dropdown */}
-          {currencies && currencies.length > 1 && currencyAction ? (
-            <CurrencyForm
-              action={currencyAction}
-              activeCurrencyId={activeCurrencyId}
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              currencies={currencies as [Currency, ...Currency[]]}
-            />
-          ) : null}
+            {/* Cart Icon */}
+            <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
+              <ShoppingBasket size={20} strokeWidth={1} />
+              <Stream
+                fallback={
+                  <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-contrast-100 text-xs text-background" />
+                }
+                value={streamableCartCount}
+              >
+                {(cartCount) =>
+                  cartCount != null &&
+                  cartCount > 0 && (
+                    <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-[var(--nav-cart-count-background,hsl(var(--foreground)))] font-[family-name:var(--nav-cart-count-font-family,var(--font-family-body))] text-xs text-[var(--nav-cart-count-text,hsl(var(--background)))]">
+                      {cartCount}
+                    </span>
+                  )
+                }
+              </Stream>
+            </Link>
+            {/* Locale / Language Dropdown */}
+            {locales && locales.length > 1 ? (
+              <LocaleSwitcher
+                activeLocaleId={activeLocaleId}
+                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                locales={locales as [Locale, Locale, ...Locale[]]}
+              />
+            ) : null}
+            {/* Currency Dropdown */}
+            {currencies && currencies.length > 1 && currencyAction ? (
+              <CurrencyForm
+                action={currencyAction}
+                activeCurrencyId={activeCurrencyId}
+                // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+                currencies={currencies as [Currency, ...Currency[]]}
+              />
+            ) : null}
+          </div>
           <Link
             href="tel:8185049333"
-            className="ml-4 flex items-center whitespace-nowrap text-lg font-bold text-[#011F4B] hover:underline"
+            className="mt-1 flex items-center whitespace-nowrap text-lg font-bold text-[#011F4B] hover:underline"
             style={{ lineHeight: 1 }}
             aria-label="Call 818-504-9333"
           >
