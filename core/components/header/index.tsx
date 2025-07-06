@@ -50,7 +50,7 @@ const getLinks = async () => {
    To show a full list of categories, modify the `slice` method to remove the limit.
    Will require modification of navigation menu styles to accommodate the additional categories.
    */
-  const categoryTree = data.categoryTree.slice(0, 6);
+  const categoryTree = data.categoryTree; //.slice(0, 6);
 
   return categoryTree.map(({ name, path, children }) => ({
     label: name,

@@ -39,11 +39,10 @@ export const Banner = forwardRef(
       link: { href: string; target?: string };
     }>;
   }) => {
-    console.log(centerText, rightText, links, show);
     return (
       <div
         className={clsx(
-          'bg-deepblue relative w-full overflow-hidden bg-[var(--banner-background,hsl(var(--primary)))] transition-all duration-300 ease-in @container',
+          'relative w-full overflow-hidden bg-[var(--banner-background,hsl(var(--primary)))] bg-deepblue transition-all duration-300 ease-in @container',
           !show ? 'max-h-0' : 'max-h-32',
           className,
         )}

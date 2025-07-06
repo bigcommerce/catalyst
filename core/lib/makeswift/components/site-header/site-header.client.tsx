@@ -29,6 +29,7 @@ const PropsContext = createContext<ContextProps>({
     cartHref: '',
     searchHref: '',
     links: [],
+    categoryLinks: [],
   },
 });
 
@@ -109,7 +110,8 @@ export const MakeswiftHeader = forwardRef(
         banner={banner}
         navigation={{
           ...passedProps,
-          links: combineLinks(passedProps.links, links),
+          links: combineLinks([], links),
+          categoryLinks: passedProps.links,
           logo: logo.desktop.src
             ? { src: logo.desktop.src, alt: logo.desktop.alt }
             : passedProps.logo,

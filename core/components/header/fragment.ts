@@ -20,6 +20,11 @@ export const HeaderFragment = graphql(`
     categoryTree {
       name
       path
+      image {
+        url(width: 50, height: 50, lossy: true)
+        altText
+        isDefault
+      }
       children {
         name
         path

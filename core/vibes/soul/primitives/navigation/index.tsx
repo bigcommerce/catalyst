@@ -15,6 +15,7 @@ import {
   ShoppingBasket,
   User,
   PhoneCall,
+  ChevronDownIcon,
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React, {
@@ -42,6 +43,7 @@ import { button } from '~/lib/makeswift/components/site-theme/components/button'
 interface Link {
   label: string;
   href: string;
+  image?: string; // Add image property for category icon
   groups?: Array<{
     label?: string;
     href?: string;
@@ -103,6 +105,7 @@ interface Props<S extends SearchResult> {
   cartCount?: Streamable<number | null>;
   cartHref: string;
   links: Streamable<Link[]>;
+  categoryLinks: Link[];
   linksPosition?: 'center' | 'left' | 'right';
   locales?: Locale[];
   phoneNumber?: string;
@@ -264,6 +267,10 @@ const navCustomButtonClassName =
  * }
  * ```
  */
+
+const DEFAULT_CATEGORY_IMAGE_URL =
+  'https://betterineraction.nyc3.cdn.digitaloceanspaces.com/category-placeholder.svg';
+
 export const Navigation = forwardRef(function Navigation<S extends SearchResult>(
   {
     className,
@@ -272,6 +279,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     cartCount: streamableCartCount,
     accountHref,
     links: streamableLinks,
+    categoryLinks,
     logo: streamableLogo,
     logoHref = '/',
     logoLabel = 'Home',
@@ -451,6 +459,60 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               }[linksPosition],
             )}
           >
+            {/**
+             * Custom Icon That Developer Create
+             */}
+            <NavigationMenu.Item value={'All Products'.toString()}>
+              <NavigationMenu.Trigger asChild>
+                <Link
+                  className="hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
+                  href={'/shop'}
+                >
+                  All Products <ChevronDownIcon className="inline" strokeWidth={3} size={20} />
+                </Link>
+              </NavigationMenu.Trigger>
+
+              <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
+                <div className="m-auto grid w-full max-w-screen-lg grid-cols-2 gap-2 px-5 pb-8 pt-5">
+                  {categoryLinks.map((category, idx) =>
+                    category.href ? (
+                      <Link
+                        key={idx}
+                        href={category.href}
+                        className="flex w-full items-center gap-4 rounded-lg p-3 transition-colors hover:bg-[var(--nav-group-background-hover,hsl(var(--contrast-100)))]"
+                        style={{ textDecoration: 'none' }}
+                      >
+                        <img
+                          // @ts-ignore
+                          src={category.image ? category.image.url : DEFAULT_CATEGORY_IMAGE_URL}
+                          alt={category.label}
+                          className="h-10 w-10 rounded border border-[var(--nav-menu-border,hsl(var(--foreground)/10%))] bg-white object-cover"
+                        />
+                        <span className="w-full text-left text-base font-medium text-[var(--nav-group-text,hsl(var(--foreground)))]">
+                          {category.label}
+                        </span>
+                      </Link>
+                    ) : (
+                      <div key={idx} className="flex w-full items-center gap-4 rounded-lg p-3">
+                        <img
+                          // @ts-ignore
+                          src={category.image ? category.image.url : DEFAULT_CATEGORY_IMAGE_URL}
+                          alt={category.label}
+                          className="h-10 w-10 rounded border border-[var(--nav-menu-border,hsl(var(--foreground)/10%))] bg-white object-cover"
+                        />
+                        <span className="w-full text-left text-base font-medium text-[var(--nav-group-text,hsl(var(--foreground)))]">
+                          {category.label}
+                        </span>
+                      </div>
+                    ),
+                  )}
+                </div>
+              </NavigationMenu.Content>
+            </NavigationMenu.Item>
+
+            {/*
+              Dynamic Links Coming From MakeSwift
+            */}
             <Stream
               fallback={
                 <ul className="flex animate-pulse flex-row p-2 @4xl:gap-2 @4xl:p-5">
@@ -471,52 +533,50 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               value={streamableLinks}
             >
               {(links) =>
-                links.map((item, i) => (
-                  <NavigationMenu.Item key={i} value={i.toString()}>
-                    <NavigationMenu.Trigger asChild>
-                      <Link
-                        className="hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
-                        href={item.href}
-                      >
-                        {item.label}
-                      </Link>
-                    </NavigationMenu.Trigger>
-                    {item.groups != null && item.groups.length > 0 && (
-                      <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
-                        <div className="m-auto grid w-full max-w-screen-lg grid-cols-5 justify-center gap-5 px-5 pb-8 pt-5">
-                          {item.groups.map((group, columnIndex) => (
-                            <ul className="flex flex-col" key={columnIndex}>
-                              {/* Second Level Links */}
-                              {group.label != null && group.label !== '' && (
-                                <li>
-                                  {group.href != null && group.href !== '' ? (
-                                    <Link className={navGroupClassName} href={group.href}>
+                links.map((item, i) => {
+                  return (
+                    <NavigationMenu.Item key={i} value={i.toString()}>
+                      <NavigationMenu.Trigger asChild>
+                        <Link
+                          className="hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
+                          href={item.href}
+                        >
+                          {item.label}
+                        </Link>
+                      </NavigationMenu.Trigger>
+                      {item.groups != null && item.groups.length > 0 && (
+                        <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
+                          <div className="m-auto grid w-full max-w-screen-lg grid-cols-5 justify-center gap-5 px-5 pb-8 pt-5">
+                            {item.groups.map((group, columnIndex) => (
+                              <ul className="flex flex-col" key={columnIndex}>
+                                {/* Second Level Links */}
+                                {group.label != null && group.label !== '' && (
+                                  <li>
+                                    <Link className={navGroupClassName} href={group.href as string}>
                                       {group.label}
                                     </Link>
-                                  ) : (
-                                    <span className={navGroupClassName}>{group.label}</span>
-                                  )}
-                                </li>
-                              )}
+                                  </li>
+                                )}
 
-                              {group.links.map((link, idx) => (
-                                // Third Level Links
-                                <li key={idx}>
-                                  <Link
-                                    className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
-                                    href={link.href}
-                                  >
-                                    {link.label}
-                                  </Link>
-                                </li>
-                              ))}
-                            </ul>
-                          ))}
-                        </div>
-                      </NavigationMenu.Content>
-                    )}
-                  </NavigationMenu.Item>
-                ))
+                                {group.links.map((link, idx) => (
+                                  // Third Level Links
+                                  <li key={idx}>
+                                    <Link
+                                      className="block rounded-lg bg-[var(--nav-sub-link-background,transparent)] px-3 py-1.5 font-[family-name:var(--nav-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
+                                      href={link.href}
+                                    >
+                                      {link.label}
+                                    </Link>
+                                  </li>
+                                ))}
+                              </ul>
+                            ))}
+                          </div>
+                        </NavigationMenu.Content>
+                      )}
+                    </NavigationMenu.Item>
+                  );
+                })
               }
             </Stream>
           </ul>
