@@ -310,6 +310,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 ) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isAllProductsOpen, setIsAllProductsOpen] = useState(false);
 
   const pathname = usePathname();
 
@@ -358,6 +359,51 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           <Popover.Portal>
             <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popper-anchor-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
               <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
+                {/* Static Links on Mobile */}
+
+                <ul className="flex flex-col p-2 @4xl:gap-2 @4xl:p-5">
+                  <li>
+                    <button
+                      className="flex w-full items-center justify-between rounded-lg px-3 py-2 font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] focus:outline-none"
+                      onClick={() => setIsAllProductsOpen((open) => !open)}
+                      aria-expanded={isAllProductsOpen}
+                    >
+                      All Products
+                      <ChevronDownIcon
+                        className={clsx('transition-transform', isAllProductsOpen && 'rotate-180')}
+                        size={20}
+                        strokeWidth={3}
+                      />
+                    </button>
+                    {isAllProductsOpen && (
+                      <ul className="pl-4">
+                        {categoryLinks.map((category, idx) =>
+                          category.href ? (
+                            <li key={idx}>
+                              <Link
+                                href={category.href}
+                                className="block rounded-lg px-3 py-2 text-sm text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]"
+                              >
+                                {category.label}
+                              </Link>
+                            </li>
+                          ) : (
+                            <li
+                              key={idx}
+                              className="block rounded-lg px-3 py-2 text-sm text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]"
+                            >
+                              {category.label}
+                            </li>
+                          ),
+                        )}
+                      </ul>
+                    )}
+                  </li>
+                </ul>
+
+                {/**
+                 * Dynamic Links on Mobile
+                 */}
                 <Stream
                   fallback={
                     <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
