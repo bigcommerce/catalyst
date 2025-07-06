@@ -105,6 +105,7 @@ interface Props<S extends SearchResult> {
   links: Streamable<Link[]>;
   linksPosition?: 'center' | 'left' | 'right';
   locales?: Locale[];
+  phoneNumber?: string;
   activeLocaleId?: string;
   currencies?: Currency[];
   activeCurrencyId?: string;
@@ -283,6 +284,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     activeLocaleId,
     locales,
     currencies,
+    phoneNumber,
     activeCurrencyId,
     currencyAction,
     searchHref,
@@ -576,13 +578,13 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             ) : null}
           </div>
           <Link
-            href="tel:8185049333"
+            href={`tel:${phoneNumber}`}
             className="mt-1 flex items-center whitespace-nowrap text-lg font-bold text-[#011F4B] hover:underline"
             style={{ lineHeight: 1 }}
-            aria-label="Call 818-504-9333"
+            aria-label={`Call ${phoneNumber}`}
           >
             <PhoneCall color="#011F4B" strokeWidth={2} className="mr-2 inline" size={24} />
-            818-504-9333
+            {phoneNumber}
           </Link>
         </div>
       </div>

@@ -130,5 +130,9 @@ runtime.registerComponent(MakeswiftHeader, {
       ],
       defaultValue: 'center',
     }),
+    phoneNumber: TextInput({
+      label: 'Phone number',
+      defaultValue: '8185049333',
+    }),
   },
 });

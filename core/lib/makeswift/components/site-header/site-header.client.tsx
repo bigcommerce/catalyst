@@ -79,6 +79,7 @@ interface Props {
     link?: { href: string };
   };
   linksPosition: 'center' | 'left' | 'right';
+  phoneNumber?: string;
 }
 
 function combineLinks(
@@ -100,7 +101,7 @@ function combineLinks(
 }
 
 export const MakeswiftHeader = forwardRef(
-  ({ banner, links, logo, linksPosition }: Props, ref: Ref<HTMLDivElement>) => {
+  ({ banner, links, logo, linksPosition, phoneNumber }: Props, ref: Ref<HTMLDivElement>) => {
     const { navigation: passedProps } = useContext(PropsContext);
 
     return (
@@ -120,6 +121,7 @@ export const MakeswiftHeader = forwardRef(
           mobileLogoWidth: logo.mobile.width,
           mobileLogoHeight: logo.mobile.height,
           linksPosition,
+          phoneNumber,
           logoHref: logo.link?.href ?? passedProps.logoHref,
         }}
         ref={ref}
