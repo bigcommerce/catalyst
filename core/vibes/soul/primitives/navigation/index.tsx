@@ -6,7 +6,16 @@ import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
 import debounce from 'lodash.debounce';
-import { ArrowRight, ChevronDown, Search, SearchIcon, ShoppingBag, User } from 'lucide-react';
+import {
+  ArrowRight,
+  ChevronDown,
+  Search,
+  SearchIcon,
+  ShoppingBag,
+  ShoppingBasket,
+  User,
+  PhoneCall,
+} from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React, {
   forwardRef,
@@ -530,7 +539,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
           {/* Cart Icon */}
           <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
-            <ShoppingBag size={20} strokeWidth={1} />
+            <ShoppingBasket size={20} strokeWidth={1} />
             <Stream
               fallback={
                 <span className="absolute -right-0.5 -top-0.5 flex h-4 w-4 animate-pulse items-center justify-center rounded-full bg-contrast-100 text-xs text-background" />
@@ -564,6 +573,10 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               currencies={currencies as [Currency, ...Currency[]]}
             />
           ) : null}
+          <p className="text-[#011F4B]">
+            <PhoneCall color="#011F4B" strokeWidth={2} className="inline" />
+            818-504-9333
+          </p>
         </div>
       </div>
 

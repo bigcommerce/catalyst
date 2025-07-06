@@ -36,6 +36,10 @@ const config = {
       pattern: /^bottom-\[.*\]$/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
+    {
+      pattern: /^text-\[.*\]$/,
+      variants: ['sm', 'md', 'lg', 'xl', '2xl'],
+    },
   ],
   theme: {
     extend: {
