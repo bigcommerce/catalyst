@@ -109,6 +109,7 @@ interface Props<S extends SearchResult> {
   linksPosition?: 'center' | 'left' | 'right';
   locales?: Locale[];
   phoneNumber?: string;
+  centerRightBlock?: boolean;
   activeLocaleId?: string;
   currencies?: Currency[];
   activeCurrencyId?: string;
@@ -293,6 +294,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     locales,
     currencies,
     phoneNumber,
+    centerRightBlock,
     activeCurrencyId,
     currencyAction,
     searchHref,
@@ -632,7 +634,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         <div
           className={clsx(
             'flex flex-col items-end justify-end gap-1 transition-colors duration-300',
-            linksPosition === 'center' ? 'flex-1' : 'flex-1 @4xl:flex-none',
+            centerRightBlock ? 'flex-1' : 'flex-1 @4xl:flex-none',
           )}
         >
           <div className="flex items-center gap-2">
