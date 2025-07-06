@@ -93,12 +93,12 @@ runtime.registerComponent(
             className={`${className}`}
           >
             {logos.map((logo: LogoInterface, index: number) => (
-              <div key={index} className="flex h-32 items-center justify-center px-6 py-6">
+              <div key={index} className="flex h-full items-center justify-center px-6 py-6">
                 <a
                   href={logo.link?.href ?? '#'}
                   target={logo.link?.target}
                   rel={logo.link?.target === '_blank' ? 'noopener noreferrer' : undefined}
-                  className="block h-full w-full"
+                  className="flex h-full w-full"
                 >
                   <img
                     src={logo.imageSrc ?? ''}
