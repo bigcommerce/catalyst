@@ -520,17 +520,13 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           {/* Sign In Button */}
           <Link aria-label={accountLabel} className={navCustomButtonClassName} href={accountHref}>
-            <Button variant="tertiary" size="x-small" shape="rounded">
+            <span>
+              <User size={20} strokeWidth={1} />
               Sign In
-            </Button>
+            </span>
           </Link>
 
-          {/* Create Account Button */}
-          <Link aria-label={accountLabel} className={navCustomButtonClassName} href={accountHref}>
-            <Button variant="secondary" size="x-small" shape="rounded">
-              Create Account
-            </Button>
-          </Link>
+          <span className="text-[#D2D2D2]">|</span>
 
           {/* Cart Icon */}
           <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
@@ -551,7 +547,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               }
             </Stream>
           </Link>
-
           {/* Locale / Language Dropdown */}
           {locales && locales.length > 1 ? (
             <LocaleSwitcher
@@ -560,7 +555,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               locales={locales as [Locale, Locale, ...Locale[]]}
             />
           ) : null}
-
           {/* Currency Dropdown */}
           {currencies && currencies.length > 1 && currencyAction ? (
             <CurrencyForm
