@@ -12,6 +12,7 @@ import dynamic from 'next/dynamic';
 
 import { breakpoints, runtime } from '~/lib/makeswift/runtime';
 import 'react-multi-carousel/lib/styles.css';
+import './logo-carousel.css';
 
 const Carousel = dynamic(() => import('react-multi-carousel'), { ssr: true });
 
