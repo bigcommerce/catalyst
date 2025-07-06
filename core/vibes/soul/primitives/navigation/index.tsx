@@ -573,10 +573,15 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               currencies={currencies as [Currency, ...Currency[]]}
             />
           ) : null}
-          <p className="text-[#011F4B]">
-            <PhoneCall color="#011F4B" strokeWidth={2} className="inline" />
+          <Link
+            href="tel:8185049333"
+            className="ml-4 flex items-center whitespace-nowrap text-lg font-bold text-[#011F4B] hover:underline"
+            style={{ lineHeight: 1 }}
+            aria-label="Call 818-504-9333"
+          >
+            <PhoneCall color="#011F4B" strokeWidth={2} className="mr-2 inline" size={24} />
             818-504-9333
-          </p>
+          </Link>
         </div>
       </div>
 
