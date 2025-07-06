@@ -134,9 +134,5 @@ runtime.registerComponent(MakeswiftHeader, {
       label: 'Phone number',
       defaultValue: '8185049333',
     }),
-    centerRightBlock: Checkbox({
-      label: 'Center right block',
-      defaultValue: true,
-    }),
   },
 });

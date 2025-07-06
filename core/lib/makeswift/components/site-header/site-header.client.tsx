@@ -103,10 +103,7 @@ function combineLinks(
 }
 
 export const MakeswiftHeader = forwardRef(
-  (
-    { banner, links, logo, linksPosition, phoneNumber, centerRightBlock }: Props,
-    ref: Ref<HTMLDivElement>,
-  ) => {
+  ({ banner, links, logo, linksPosition, phoneNumber }: Props, ref: Ref<HTMLDivElement>) => {
     const { navigation: passedProps } = useContext(PropsContext);
 
     return (
@@ -128,7 +125,6 @@ export const MakeswiftHeader = forwardRef(
           mobileLogoHeight: logo.mobile.height,
           linksPosition,
           phoneNumber,
-          centerRightBlock,
           logoHref: logo.link?.href ?? passedProps.logoHref,
         }}
         ref={ref}
