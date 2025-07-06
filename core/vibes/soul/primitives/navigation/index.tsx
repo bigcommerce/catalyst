@@ -514,62 +514,25 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         {/* Icon Buttons */}
         <div
           className={clsx(
-            'flex items-center justify-end gap-0.5 transition-colors duration-300',
+            'flex items-center justify-end gap-2 transition-colors duration-300',
             linksPosition === 'center' ? 'flex-1' : 'flex-1 @4xl:flex-none',
           )}
         >
-          {searchAction ? (
-            <></>
-          ) : (
-            <>
-              <Popover.Root onOpenChange={setIsSearchOpen} open={isSearchOpen}>
-                <Popover.Anchor className="absolute left-0 right-0 top-full" />
-                <Popover.Trigger asChild>
-                  <button
-                    aria-label={openSearchPopupLabel}
-                    className={navButtonClassName}
-                    onPointerEnter={(e) => e.preventDefault()}
-                    onPointerLeave={(e) => e.preventDefault()}
-                    onPointerMove={(e) => e.preventDefault()}
-                  >
-                    <Search size={20} strokeWidth={1} />
-                  </button>
-                </Popover.Trigger>
-                <Popover.Portal>
-                  <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-16px)] w-[var(--radix-popper-anchor-width)] py-2 @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-                    <div className="flex max-h-[inherit] flex-col rounded-2xl bg-[var(--nav-search-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-search-border,hsl(var(--foreground)/5%))] transition-all duration-200 ease-in-out @4xl:inset-x-0">
-                      <SearchForm
-                        // @ts-ignore
-                        searchAction={searchAction}
-                        searchCtaLabel={searchCtaLabel}
-                        searchHref={searchHref}
-                        searchInputPlaceholder={searchInputPlaceholder}
-                        searchParamName={searchParamName}
-                      />
-                    </div>
-                  </Popover.Content>
-                </Popover.Portal>
-              </Popover.Root>
-              <Link aria-label={searchLabel} className={navButtonClassName} href={searchHref}>
-                <Search size={20} strokeWidth={1} />
-              </Link>
-            </>
-          )}
-
-          {/* <Link aria-label={accountLabel} className={navCustomButtonClassName} href={accountHref}>
-            <Button variant="secondary" size="x-small" shape="rounded">
-              Create Account
-            </Button>
-        <User size={20} strokeWidth={1} />
-          </Link> */}
-
-          {/* <Link aria-label={accountLabel} className={navCustomButtonClassName} href={accountHref}>
+          {/* Sign In Button */}
+          <Link aria-label={accountLabel} className={navCustomButtonClassName} href={accountHref}>
             <Button variant="tertiary" size="x-small" shape="rounded">
               Sign In
             </Button>
-          </Link> */}
+          </Link>
 
-          {/* Link to shopping cart */}
+          {/* Create Account Button */}
+          <Link aria-label={accountLabel} className={navCustomButtonClassName} href={accountHref}>
+            <Button variant="secondary" size="x-small" shape="rounded">
+              Create Account
+            </Button>
+          </Link>
+
+          {/* Cart Icon */}
           <Link aria-label={cartLabel} className={navButtonClassName} href={cartHref}>
             <ShoppingBag size={20} strokeWidth={1} />
             <Stream
