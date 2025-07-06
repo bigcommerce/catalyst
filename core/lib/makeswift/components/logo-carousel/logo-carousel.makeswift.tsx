@@ -93,7 +93,7 @@ runtime.registerComponent(
             className={`${className}`}
           >
             {logos.map((logo: LogoInterface, index: number) => (
-              <div key={index} className="px-6 py-6">
+              <div key={index} className="flex h-32 items-center justify-center px-6 py-6">
                 <a
                   href={logo.link?.href ?? '#'}
                   target={logo.link?.target}
@@ -103,7 +103,7 @@ runtime.registerComponent(
                   <img
                     src={logo.imageSrc ?? ''}
                     alt={logo.imageAlt ?? ''}
-                    className="h-full w-full object-contain"
+                    className="mx-auto max-h-full max-w-full object-contain"
                   />
                 </a>
               </div>
