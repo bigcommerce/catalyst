@@ -4,6 +4,7 @@ import { Command } from 'commander';
 import PACKAGE_INFO from '../package.json';
 
 import { auth } from './commands/auth';
+import { login } from './commands/login';
 import { version } from './commands/version';
 
 export const program = new Command();
@@ -15,4 +16,5 @@ program
   .version(PACKAGE_INFO.version)
   .description('CLI tool for Catalyst development')
   .addCommand(version)
-  .addCommand(auth);
+  .addCommand(auth)
+  .addCommand(login);
