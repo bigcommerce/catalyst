@@ -99,7 +99,9 @@ export const ButtonRadioGroup = React.forwardRef<
             </RadioGroupPrimitive.Item>
           ))}
         </RadioGroupPrimitive.Root>
-        {errors?.map((error) => <FieldError key={error}>{error}</FieldError>)}
+        {errors?.map((error) => (
+          <FieldError key={error}>{error}</FieldError>
+        ))}
       </div>
     );
   },
