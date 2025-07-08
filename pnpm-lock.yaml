@@ -289,14 +289,14 @@ importers:
   packages/cli:
     dependencies:
       '@commander-js/extra-typings':
-        specifier: ^12.1.0
-        version: 12.1.0(commander@12.1.0)
+        specifier: ^14.0.0
+        version: 14.0.0(commander@14.0.0)
       chalk:
         specifier: ^5.3.0
         version: 5.4.1
       commander:
-        specifier: ^12.1.0
-        version: 12.1.0
+        specifier: ^14.0.0
+        version: 14.0.0
     devDependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.11.0
@@ -366,8 +366,8 @@ importers:
   packages/create-catalyst:
     dependencies:
       '@commander-js/extra-typings':
-        specifier: ^13.1.0
-        version: 13.1.0(commander@13.1.0)
+        specifier: ^14.0.0
+        version: 14.0.0(commander@14.0.0)
       '@iarna/toml':
         specifier: ^2.2.5
         version: 2.2.5
@@ -393,8 +393,8 @@ importers:
         specifier: ^5.4.1
         version: 5.4.1
       commander:
-        specifier: ^13.1.0
-        version: 13.1.0
+        specifier: ^14.0.0
+        version: 14.0.0
       conf:
         specifier: ^13.1.0
         version: 13.1.0
@@ -794,15 +794,10 @@ packages:
   '@changesets/write@0.4.0':
     resolution: {integrity: sha512-CdTLvIOPiCNuH71pyDu3rA+Q0n65cmAbXnwWH84rKGiFumFzkmHNT8KHTMEchcxN+Kl8I54xGUhJ7l3E7X396Q==}
 
-  '@commander-js/extra-typings@12.1.0':
-    resolution: {integrity: sha512-wf/lwQvWAA0goIghcb91dQYpkLBcyhOhQNqG/VgWhnKzgt+UOMvra7EX/2fv70arm5RW+PUHoQHHDa6/p77Eqg==}
+  '@commander-js/extra-typings@14.0.0':
+    resolution: {integrity: sha512-hIn0ncNaJRLkZrxBIp5AsW/eXEHNKYQBh0aPdoUqNgD+Io3NIykQqpKFyKcuasZhicGaEZJX/JBSIkZ4e5x8Dg==}
     peerDependencies:
-      commander: ~12.1.0
-
-  '@commander-js/extra-typings@13.1.0':
-    resolution: {integrity: sha512-q5P52BYb1hwVWE6dtID7VvuJWrlfbCv4klj7BjUUOqMz4jbSZD4C9fJ9lRjL2jnBGTg+gDDlaXN51rkWcLk4fg==}
-    peerDependencies:
-      commander: ~13.1.0
+      commander: ~14.0.0
 
   '@conform-to/dom@1.6.1':
     resolution: {integrity: sha512-9JaMBM6hD8uBu6VIggXScQAxpKUFGNFydiZHUKbW5nXIvqptLjiPPf1DXHrO0tQpl9EH+BWQ8rXFuVX8L3cYcw==}
@@ -1777,8 +1772,8 @@ packages:
     resolution: {integrity: sha512-R8gLRTZeyp03ymzP/6Lil/28tGeGEzhx1q2k703KGWRAI1VdvPIXdG70VJc2pAMw3NA6JKL5hhFu1sJX0Mnn/A==}
     engines: {node: '>=6.0.0'}
 
-  '@jridgewell/sourcemap-codec@1.5.0':
-    resolution: {integrity: sha512-gv3ZRaISU3fjPAgNsriBRqGWQL6quFx04YMPW/zD8XMLsU32mhCCbfbO6KZFLjvYpCZ8zyDEgqsgf+PwPaM7GQ==}
+  '@jridgewell/sourcemap-codec@1.5.4':
+    resolution: {integrity: sha512-VT2+G1VQs/9oz078bLrYbecdZKs912zQlkelYpuf+SXF+QvZDYJlbx/LSx+meSAwdDFnF8FVXW92AVjjkVmgFw==}
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
@@ -2851,8 +2846,8 @@ packages:
   '@types/estree@1.0.6':
     resolution: {integrity: sha512-AYnb1nQyY49te+VRAVgmzfcgjYS91mY5P0TKUDCLEM+gNnA+3T6rWITXRLYCpahpqSQbN5cE+gHpnPyXjHWxcw==}
 
-  '@types/estree@1.0.7':
-    resolution: {integrity: sha512-w28IoSUCJpidD/TGviZwwMJckNESJZXFu7NBZ5YJ4mEUnNraUn9Pm8HSZm/jDF1pDWYKspWE7oVphigUPRakIQ==}
+  '@types/estree@1.0.8':
+    resolution: {integrity: sha512-dWHzHa2WqEXI/O1E9OjrocMTKJl2mSrEolh1Iomrv6U+JuNwaHXsXx9bLu5gG7BUWFIN0skIQJQ/L1rIex4X6w==}
 
   '@types/fs-extra@11.0.4':
     resolution: {integrity: sha512-yTbItCNreRooED33qjunPthRcSjERP1r4MqCZc7wv0u2sUkzTFp45tgUfS5+r7FrZPdmCCNflLhVSP/o+SemsQ==}
@@ -3238,8 +3233,8 @@ packages:
     resolution: {integrity: sha512-ueEepnujpqee2o5aIYnvHU6C0A42MNdsIDeqy5BydrkuC5R1ZuUFnm27EeFJGoEHJQgn3uleRvmTXaJgfXbt4g==}
     engines: {node: '>=0.4.0'}
 
-  acorn@8.14.1:
-    resolution: {integrity: sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==}
+  acorn@8.15.0:
+    resolution: {integrity: sha512-NZyJarBfL7nWwIq+FDL6Zp/yHEhePMNnnJ0y3qfieCrmNvYct8uvtiV41UvlSe6apAfk0fY1FbWx+NwfmpvtTg==}
     engines: {node: '>=0.4.0'}
     hasBin: true
 
@@ -3707,13 +3702,9 @@ packages:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
 
-  commander@12.1.0:
-    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
-    engines: {node: '>=18'}
-
-  commander@13.1.0:
-    resolution: {integrity: sha512-/rFeCpNJQbhSZjGVwO9RFV3xPqbnERS8MmIQzCtD/zl6gpJuV/bMLuN92oG3F7d8oDEHHRrujSXNUr8fpjntKw==}
-    engines: {node: '>=18'}
+  commander@14.0.0:
+    resolution: {integrity: sha512-2uM9rYjPvyq39NwLRqaiLtWHyDC1FvryJDa2ATTVims5YAS4PupsEQsDvP14FqhFr0P49CYDugi59xaxJlTXRA==}
+    engines: {node: '>=20'}
 
   commander@4.1.1:
     resolution: {integrity: sha512-NOKm8xhkzAjzFx8B2v5OAHT+u5pRQc2UCa2Vq9jYL/31o2wi9mxBA7LIFs3sV5VSC49z6pEhfbMULvShKj26WA==}
@@ -4426,8 +4417,8 @@ packages:
     resolution: {integrity: sha512-ca9pw9fomFcKPvFLXhBKUK90ZvGibiGOvRJNbjljY7s7uq/5YO4BOzcYtJqExdx99rF6aAcnRxHmcUHcz6sQsg==}
     engines: {node: '>=0.10'}
 
-  esrap@1.4.7:
-    resolution: {integrity: sha512-0ZxW6guTF/AeKeKi7he93lmgv7Hx7giD1tBrOeVqkqsZGQJd2/kfnL7LdIsr9FT/AtkBK9XeDTov+gxprBqdEg==}
+  esrap@1.4.9:
+    resolution: {integrity: sha512-3OMlcd0a03UGuZpPeUC1HxR3nA23l+HEyCiZw3b3FumJIN9KphoGzDJKMXI1S72jVS1dsenDyQC0kJlO1U9E1g==}
 
   esrecurse@4.3.0:
     resolution: {integrity: sha512-KmfKL3b6G+RXvP8N1vr3Tq1kL/oCFgn2NYXEtqP8/L3pKapUA4G8cFVaoF3SU323CD4XypR/ffioHmkti6/Tag==}
@@ -8240,13 +8231,9 @@ snapshots:
       human-id: 4.1.1
       prettier: 2.8.8
 
-  '@commander-js/extra-typings@12.1.0(commander@12.1.0)':
+  '@commander-js/extra-typings@14.0.0(commander@14.0.0)':
     dependencies:
-      commander: 12.1.0
-
-  '@commander-js/extra-typings@13.1.0(commander@13.1.0)':
-    dependencies:
-      commander: 13.1.0
+      commander: 14.0.0
 
   '@conform-to/dom@1.6.1': {}
 
@@ -9187,19 +9174,19 @@ snapshots:
   '@jridgewell/gen-mapping@0.3.8':
     dependencies:
       '@jridgewell/set-array': 1.2.1
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.4
       '@jridgewell/trace-mapping': 0.3.25
 
   '@jridgewell/resolve-uri@3.1.2': {}
 
   '@jridgewell/set-array@1.2.1': {}
 
-  '@jridgewell/sourcemap-codec@1.5.0': {}
+  '@jridgewell/sourcemap-codec@1.5.4': {}
 
   '@jridgewell/trace-mapping@0.3.25':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.4
 
   '@lhci/utils@0.14.0(encoding@0.1.13)':
     dependencies:
@@ -9927,7 +9914,7 @@ snapshots:
 
   '@rollup/pluginutils@5.1.4(rollup@4.37.0)':
     dependencies:
-      '@types/estree': 1.0.7
+      '@types/estree': 1.0.8
       estree-walker: 2.0.2
       picomatch: 4.0.2
     optionalDependencies:
@@ -10265,12 +10252,12 @@ snapshots:
 
   '@types/eslint@9.6.1':
     dependencies:
-      '@types/estree': 1.0.7
+      '@types/estree': 1.0.8
       '@types/json-schema': 7.0.15
 
   '@types/estree@1.0.6': {}
 
-  '@types/estree@1.0.7': {}
+  '@types/estree@1.0.8': {}
 
   '@types/fs-extra@11.0.4':
     dependencies:
@@ -10805,20 +10792,20 @@ snapshots:
 
   '@vue/shared@3.5.16': {}
 
-  acorn-jsx@5.3.2(acorn@8.14.1):
+  acorn-jsx@5.3.2(acorn@8.15.0):
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
 
-  acorn-typescript@1.4.13(acorn@8.14.1):
+  acorn-typescript@1.4.13(acorn@8.15.0):
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
     optional: true
 
   acorn-walk@8.3.4:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
 
-  acorn@8.14.1: {}
+  acorn@8.15.0: {}
 
   agent-base@6.0.2:
     dependencies:
@@ -11355,9 +11342,7 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  commander@12.1.0: {}
-
-  commander@13.1.0: {}
+  commander@14.0.0: {}
 
   commander@4.1.1: {}
 
@@ -11956,7 +11941,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.9.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.9.1(eslint-plugin-import@2.31.0)(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -11988,7 +11973,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.9.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.9.1(eslint-plugin-import@2.31.0)(eslint@8.57.1))(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -12180,14 +12165,14 @@ snapshots:
 
   espree@10.3.0:
     dependencies:
-      acorn: 8.14.1
-      acorn-jsx: 5.3.2(acorn@8.14.1)
+      acorn: 8.15.0
+      acorn-jsx: 5.3.2(acorn@8.15.0)
       eslint-visitor-keys: 4.2.0
 
   espree@9.6.1:
     dependencies:
-      acorn: 8.14.1
-      acorn-jsx: 5.3.2(acorn@8.14.1)
+      acorn: 8.15.0
+      acorn-jsx: 5.3.2(acorn@8.15.0)
       eslint-visitor-keys: 3.4.3
 
   esprima@4.0.1: {}
@@ -12196,9 +12181,9 @@ snapshots:
     dependencies:
       estraverse: 5.3.0
 
-  esrap@1.4.7:
+  esrap@1.4.9:
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.4
     optional: true
 
   esrecurse@4.3.0:
@@ -12211,7 +12196,7 @@ snapshots:
 
   estree-walker@3.0.3:
     dependencies:
-      '@types/estree': 1.0.7
+      '@types/estree': 1.0.8
 
   esutils@2.0.3: {}
 
@@ -12879,7 +12864,7 @@ snapshots:
 
   is-reference@3.0.3:
     dependencies:
-      '@types/estree': 1.0.7
+      '@types/estree': 1.0.8
     optional: true
 
   is-regex@1.2.1:
@@ -13707,7 +13692,7 @@ snapshots:
 
   magic-string@0.30.17:
     dependencies:
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.4
 
   magicast@0.3.5:
     dependencies:
@@ -13789,7 +13774,7 @@ snapshots:
 
   mlly@1.7.4:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
       pathe: 2.0.3
       pkg-types: 1.3.1
       ufo: 1.6.1
@@ -15276,14 +15261,14 @@ snapshots:
   svelte@5.1.15:
     dependencies:
       '@ampproject/remapping': 2.3.0
-      '@jridgewell/sourcemap-codec': 1.5.0
-      '@types/estree': 1.0.7
-      acorn: 8.14.1
-      acorn-typescript: 1.4.13(acorn@8.14.1)
+      '@jridgewell/sourcemap-codec': 1.5.4
+      '@types/estree': 1.0.8
+      acorn: 8.15.0
+      acorn-typescript: 1.4.13(acorn@8.15.0)
       aria-query: 5.3.2
       axobject-query: 4.1.0
       esm-env: 1.2.2
-      esrap: 1.4.7
+      esrap: 1.4.9
       is-reference: 3.0.3
       locate-character: 3.0.0
       magic-string: 0.30.17
@@ -15621,7 +15606,7 @@ snapshots:
 
   unctx@2.4.1:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
       estree-walker: 3.0.3
       magic-string: 0.30.17
       unplugin: 2.3.5
@@ -15635,7 +15620,7 @@ snapshots:
   unimport@3.14.6(rollup@4.37.0):
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.37.0)
-      acorn: 8.14.1
+      acorn: 8.15.0
       escape-string-regexp: 5.0.0
       estree-walker: 3.0.3
       fast-glob: 3.3.3
@@ -15682,12 +15667,12 @@ snapshots:
 
   unplugin@1.16.1:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
       webpack-virtual-modules: 0.6.2
 
   unplugin@2.3.5:
     dependencies:
-      acorn: 8.14.1
+      acorn: 8.15.0
       picomatch: 4.0.2
       webpack-virtual-modules: 0.6.2
 
@@ -15868,7 +15853,7 @@ snapshots:
   webpack-bundle-analyzer@4.10.1:
     dependencies:
       '@discoveryjs/json-ext': 0.5.7
-      acorn: 8.14.1
+      acorn: 8.15.0
       acorn-walk: 8.3.4
       commander: 7.2.0
       debounce: 1.2.1

@@ -18,7 +18,7 @@
     "node": "^20.0.0 || ^22.0.0"
   },
   "dependencies": {
-    "@commander-js/extra-typings": "^13.1.0",
+    "@commander-js/extra-typings": "^14.0.0",
     "@iarna/toml": "^2.2.5",
     "@inquirer/core": "^10.1.13",
     "@inquirer/figures": "^1.0.12",
@@ -27,7 +27,7 @@
     "@segment/analytics-node": "^2.2.1",
     "ansi-escapes": "^7.0.0",
     "chalk": "^5.4.1",
-    "commander": "^13.1.0",
+    "commander": "^14.0.0",
     "conf": "^13.1.0",
     "cross-spawn": "^7.0.6",
     "dotenv": "^16.5.0",
