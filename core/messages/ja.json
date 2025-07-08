@@ -148,7 +148,7 @@
             "orderNumber": "注文 #",
             "totalPrice": "合計",
             "viewDetails": "詳細一覧",
-            "emptyState": {
+            "EmptyState": {
                 "title": "注文がありません",
                 "cta": "今すぐ購入する"
             },
@@ -174,7 +174,10 @@
             "create": "作成",
             "update": "アップデート",
             "setDefault": "デフォルトとして設定",
-            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
+            "EmptyState": {
+                "title": "アドレスがありません"
+            }
         },
         "Settings": {
             "title": "アカウント設定",
@@ -195,7 +198,6 @@
         "items": "{count, plural, =1 {1 item} other {# items}}",
         "viewWishlist": "リストを表示",
         "noWishlists": "ウィッシュリストがありません",
-        "noWishlistsSubtitle": "お気に入りの商品を保存するには、ウィッシュリストを作成してください。",
         "noWishlistsCallToAction": "ウィッシュリストを作成",
         "emptyWishlist": "このウィッシュリストには商品を追加していません。",
         "share": "共有",
@@ -246,7 +248,7 @@
             "removeItemSuccess": "アイテムがウィッシュリストから削除されました。"
         },
         "Button": {
-            "label": "Add to wish list",
+            "label": "ウィッシュリストに追加",
             "addToNewWishlist": "新しいウィッシュリストに追加",
             "defaultWishlistName": "私のウィッシュリスト",
             "addSuccessMessage": "商品がウィッシュリストに追加されました",
@@ -438,7 +440,7 @@
                 "search": "検索ポップアップを開く"
             },
             "SwitchCurrency": {
-                "label": "Switch currency",
+                "label": "通貨を切り替える",
                 "invalidCurrency": "無効な通貨",
                 "errorUpdatingCurrency": "カートの通貨を更新する際にエラーが発生しました。再度お試しください。"
             },
