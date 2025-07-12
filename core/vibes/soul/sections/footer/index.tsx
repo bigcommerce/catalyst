@@ -332,11 +332,11 @@ export const Footer = forwardRef(function Footer(
           </Stream>
         </div>
 
-        <div className="flex flex-col-reverse items-start gap-y-8 pt-16 @3xl:flex-row @3xl:items-center @3xl:pt-20">
-          {/* Copyright */}
+        {/* Footer Bottom: horizontal line and centered copyright */}
+        <div className="mt-12 border-t border-[var(--footer-border-top,hsl(var(--contrast-100)))] pt-6 text-center">
           <Stream
             fallback={
-              <div className="flex h-[1lh] flex-1 animate-pulse items-center text-sm">
+              <div className="flex h-[1lh] animate-pulse items-center justify-center text-sm">
                 <span className="h-[1ex] w-[40ch] rounded-sm bg-contrast-100" />
               </div>
             }
@@ -345,34 +345,13 @@ export const Footer = forwardRef(function Footer(
             {(copyright) => {
               if (copyright != null) {
                 return (
-                  <p className="flex-1 text-sm text-[var(--footer-copyright,hsl(var(--contrast-400)))]">
+                  <p className="text-sm text-[var(--footer-copyright,hsl(var(--contrast-400)))]">
                     {copyright}
                   </p>
                 );
               }
             }}
           </Stream>
-
-          {/* Payment Icons */}
-          {/* <Stream
-            fallback={
-              <div className="flex animate-pulse flex-wrap gap-2">
-                <div className="h-6 w-[2.1875rem] rounded bg-contrast-100" />
-                <div className="h-6 w-[2.1875rem] rounded bg-contrast-100" />
-                <div className="h-6 w-[2.1875rem] rounded bg-contrast-100" />
-                <div className="h-6 w-[2.1875rem] rounded bg-contrast-100" />
-                <div className="h-6 w-[2.1875rem] rounded bg-contrast-100" />
-                <div className="h-6 w-[2.1875rem] rounded bg-contrast-100" />
-              </div>
-            }
-            value={streamablePaymentIcons}
-          >
-            {(paymentIcons) => {
-              if (paymentIcons != null) {
-                return <div className="flex flex-wrap gap-2">{paymentIcons}</div>;
-              }
-            }}
-          </Stream> */}
         </div>
       </div>
     </footer>
