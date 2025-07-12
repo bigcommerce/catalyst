@@ -76,7 +76,7 @@ export const MakeswiftFooter = forwardRef(
         logoHeight={logo.show ? logo.height : 0}
         logoWidth={logo.show ? logo.width : 0}
         ref={ref}
-        sections={combineSections(passedProps.sections, [])} //{combineSections(passedProps.sections, sections)}
+        sections={combineSections([], sections)} //{combineSections(passedProps.sections, sections)}
       />
     );
   },
