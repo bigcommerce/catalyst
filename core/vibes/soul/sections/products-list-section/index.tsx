@@ -204,20 +204,6 @@ export function ProductsListSection({
           />
         </div>
 
-        {/**
-         * Section to add category description that comes after the three pipes "|||"
-         */}
-        {description && (
-          <Stream value={description}>
-            {(resolvedDescription) =>
-              resolvedDescription && resolvedDescription.split('|||').length > 1 ? (
-                // @ts-ignore
-                <div dangerouslySetInnerHTML={{ __html: resolvedDescription.split('|||')[1] }} />
-              ) : null
-            }
-          </Stream>
-        )}
-
         <div className="mt-6 flex items-stretch gap-8 @4xl:gap-10">
           <div className="flex-1 group-has-[[data-pending]]/products-list-section:animate-pulse">
             <ProductList
@@ -238,6 +224,20 @@ export function ProductsListSection({
             {paginationInfo && <CursorPagination info={paginationInfo} />}
           </div>
         </div>
+
+        {/**
+         * Section to add category description that comes after the three pipes "|||"
+         */}
+        {description && (
+          <Stream value={description}>
+            {(resolvedDescription) =>
+              resolvedDescription && resolvedDescription.split('|||').length > 1 ? (
+                // @ts-ignore
+                <div dangerouslySetInnerHTML={{ __html: resolvedDescription.split('|||')[1] }} />
+              ) : null
+            }
+          </Stream>
+        )}
       </div>
     </div>
   );

@@ -377,25 +377,9 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                     </button>
                     {isAllProductsOpen && (
                       <ul className="pl-4">
-                        {categoryLinks.map((category, idx) =>
-                          category.href ? (
-                            <li key={idx}>
-                              <Link
-                                href={category.href}
-                                className="block rounded-lg px-3 py-2 text-sm text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]"
-                              >
-                                {category.label}
-                              </Link>
-                            </li>
-                          ) : (
-                            <li
-                              key={idx}
-                              className="block rounded-lg px-3 py-2 text-sm text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]"
-                            >
-                              {category.label}
-                            </li>
-                          ),
-                        )}
+                        {categoryLinks.map((category, idx) => (
+                          <MobileItem category={category} idx={idx} />
+                        ))}
                       </ul>
                     )}
                   </li>
@@ -520,8 +504,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
               <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
                 <div className="m-auto grid w-full max-w-screen-lg grid-cols-2 gap-2 px-5 pb-8 pt-5">
-                  {categoryLinks.map((category, idx) =>
-                    category.href ? (
+                  {categoryLinks.map((category, idx) => {
+                    return category.href ? (
                       <Link
                         key={idx}
                         href={category.href}
@@ -550,8 +534,8 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                           {category.label}
                         </span>
                       </div>
-                    ),
-                  )}
+                    );
+                  })}
                 </div>
               </NavigationMenu.Content>
             </NavigationMenu.Item>
@@ -703,6 +687,76 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 });
 
 Navigation.displayName = 'Navigation';
+
+/**
+ * Render Mobile Item Display
+ */
+const MobileItem = ({ category, idx }: { category: any; idx: number }) => {
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
+  const hasGroups = Array.isArray(category.groups) && category.groups.length > 0;
+  // Unique key for each category accordion
+  const categoryKey = `category-accordion-${idx}`;
+  return (
+    <li key={categoryKey} className="mb-1">
+      <div className="flex items-center justify-between">
+        <span className="block rounded-lg px-3 py-2 text-sm text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]">
+          {category.label}
+        </span>
+        {hasGroups && (
+          <button
+            aria-label={`Toggle ${category.label} subcategories`}
+            className="ml-2 p-1"
+            onClick={() => setIsCategoryOpen((open) => !open)}
+            type="button"
+          >
+            <ChevronDownIcon
+              className={clsx('transition-transform', isCategoryOpen && 'rotate-180')}
+              size={16}
+              strokeWidth={2}
+            />
+          </button>
+        )}
+      </div>
+      {/* View All button only when accordion is open */}
+      {isCategoryOpen && category.href && (
+        <div className="pb-1 pl-3">
+          <Link
+            href={category.href}
+            className="inline-block rounded px-2 py-1 text-xs font-semibold text-blue-700 underline hover:bg-blue-50"
+          >
+            View All {category.label}
+          </Link>
+        </div>
+      )}
+      {/* Nested accordion for groups */}
+      {hasGroups && isCategoryOpen && (
+        <ul className="pl-4">
+          {(category.groups ?? []).map((group: any, groupIdx: number) => (
+            <li key={`group-${groupIdx}`} className="mb-1">
+              {group.label && (
+                <span className="block px-2 py-1 text-xs font-bold text-gray-700">
+                  {group.label}
+                </span>
+              )}
+              <ul>
+                {group.links.map((link: any, linkIdx: number) => (
+                  <li key={`link-${linkIdx}`}>
+                    <Link
+                      href={link.href}
+                      className="block rounded-lg px-3 py-2 text-xs text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))]"
+                    >
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))}
+        </ul>
+      )}
+    </li>
+  );
+};
 
 /**
  * Old Look Icon for Search Form
