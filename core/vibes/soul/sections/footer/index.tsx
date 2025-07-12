@@ -354,7 +354,7 @@ export const Footer = forwardRef(function Footer(
           </Stream>
 
           {/* Payment Icons */}
-          <Stream
+          {/* <Stream
             fallback={
               <div className="flex animate-pulse flex-wrap gap-2">
                 <div className="h-6 w-[2.1875rem] rounded bg-contrast-100" />
@@ -372,7 +372,7 @@ export const Footer = forwardRef(function Footer(
                 return <div className="flex flex-wrap gap-2">{paymentIcons}</div>;
               }
             }}
-          </Stream>
+          </Stream> */}
         </div>
       </div>
     </footer>
