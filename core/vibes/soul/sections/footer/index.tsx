@@ -86,14 +86,14 @@ export const Footer = forwardRef(function Footer(
   return (
     <footer
       className={clsx(
-        'border-b-4 border-t border-b-[var(--footer-border-bottom,hsl(var(--primary)))] border-t-[var(--footer-border-top,hsl(var(--contrast-100)))] bg-[var(--footer-background,hsl(var(--background)))] @container',
+        'border-b-4 border-t border-b-[var(--footer-border-bottom,hsl(var(--primary)))] border-t-[var(--footer-border-top,hsl(var(--contrast-100)))] bg-[#F4F4F5] @container',
         className,
       )}
       ref={ref}
     >
-      <div className="mx-auto max-w-screen-2xl bg-[##F4F4F5] px-4 py-6 @xl:px-6 @xl:py-10 @4xl:px-8 @4xl:py-12">
+      <div className="mx-auto max-w-screen-2xl px-4 py-6 @xl:px-6 @xl:py-10 @4xl:px-8 @4xl:py-12">
         <div className="flex flex-col justify-between gap-x-8 gap-y-12 @3xl:flex-row">
-          <div className="flex flex-col gap-4 @3xl:w-1/3 @3xl:gap-6">
+          <div className="flex flex-col gap-2 @3xl:w-1/3 @3xl:gap-2">
             {/* Logo Information */}
             <Logo
               height={logoHeight}
