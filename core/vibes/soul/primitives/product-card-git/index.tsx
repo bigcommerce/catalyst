@@ -44,26 +44,25 @@ export const ProductCard = ({
   return (
     <div
       className={clsx(
-        'max-w flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-lg',
+        'flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-lg',
         className,
       )}
     >
       <div
         className={clsx(
-          'relative overflow-hidden rounded-xl bg-[var(--product-card-light-background,hsl(var(--contrast-100)))] @md:rounded-2xl',
+          'relative overflow-hidden rounded-none bg-[var(--product-card-light-background,hsl(var(--contrast-100)))]',
           {
             '5:6': 'aspect-[5/6]',
             '3:4': 'aspect-[3/4]',
             '1:1': 'aspect-square',
           }[aspectRatio],
         )}
+        style={{ minHeight: 0 }}
       >
         {image != null ? (
           <Image
             alt={image.alt}
-            className={clsx(
-              'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
-            )}
+            className={clsx('absolute inset-0 h-full w-full object-cover')}
             fill
             priority={imagePriority}
             sizes={imageSizes}
@@ -72,21 +71,12 @@ export const ProductCard = ({
         ) : (
           <Image
             alt={`${name} image`}
-            className={clsx(
-              'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
-            )}
+            className={clsx('absolute inset-0 h-full w-full object-cover')}
             fill
             priority={imagePriority}
             sizes={imageSizes}
             src={DEFAULT_PRODUCT_IMAGE_URL}
           />
-          // <div
-          //   className={clsx(
-          //     'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter text-[var(--product-card-light-title,hsl(var(--foreground)))] opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
-          //   )}
-          // >
-          //   {name}
-          // </div>
         )}
         {badge.show && badge.text !== '' && (
           <Badge
