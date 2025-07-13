@@ -48,7 +48,7 @@ export const Banner = forwardRef(
         )}
         id="announcement-bar"
       >
-        <div className="flex h-full w-full flex-row items-center justify-between gap-2 px-4 py-2 @xl:px-12">
+        <div className="flex h-full w-full flex-row items-center justify-between gap-2 px-4 py-5 @xl:px-12">
           {/* Left: Links (hidden on tablet and smaller screens) */}
           <div className="hidden flex-row gap-4 text-base font-bold lg:flex">
             {links?.map((item, idx) => (
