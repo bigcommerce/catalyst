@@ -80,6 +80,13 @@ export const ProductCard = ({
             sizes={imageSizes}
             src={DEFAULT_PRODUCT_IMAGE_URL}
           />
+          // <div
+          //   className={clsx(
+          //     'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter text-[var(--product-card-light-title,hsl(var(--foreground)))] opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
+          //   )}
+          // >
+          //   {name}
+          // </div>
         )}
         {badge.show && badge.text !== '' && (
           <Badge
