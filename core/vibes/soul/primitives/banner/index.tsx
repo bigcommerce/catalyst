@@ -42,16 +42,16 @@ export const Banner = forwardRef(
     return (
       <div
         className={clsx(
-          'relative w-full overflow-hidden bg-[var(--banner-background,hsl(var(--primary)))] bg-deepblue transition-all duration-300 ease-in @container',
-          !show ? 'max-h-0' : 'max-h-32',
+          'relative w-full overflow-hidden bg-[#0a2656] transition-all duration-300 ease-in @container',
+          !show ? 'max-h-0' : 'max-h-16',
           className,
         )}
         id="announcement-bar"
       >
-        <div className="max-w-screen-2xl">
-          <div className="flex h-full w-full flex-row items-center justify-between gap-2 px-4 py-4 @xl:px-12">
-            {/* Left: Links (hidden on tablet and smaller screens) */}
-            <div className="hidden flex-row gap-4 text-base font-bold lg:flex">
+        <div className="mx-auto max-w-screen-2xl">
+          <div className="flex w-full flex-row items-center justify-between gap-2 px-4 py-3 @xl:px-12">
+            {/* Left: Links (always visible) */}
+            <div className="flex flex-row gap-4 text-base font-bold text-white">
               {links?.map((item, idx) => (
                 <>
                   <a
@@ -73,14 +73,14 @@ export const Banner = forwardRef(
             {/* Center: Center Text (always visible) */}
             <div className="flex flex-1 justify-center">
               {centerText && (
-                <span className="truncate text-center text-base font-bold text-white md:text-base">
+                <span className="truncate text-center text-base font-bold text-white">
                   {centerText}
                 </span>
               )}
             </div>
 
-            {/* Right: Right Text (hidden on tablet and smaller screens) */}
-            <div className="hidden flex-row items-center gap-2 lg:flex">
+            {/* Right: Right Text (always visible) */}
+            <div className="flex flex-row items-center gap-2 text-base font-bold text-white">
               {rightText?.text && rightText?.link?.href && (
                 <a
                   href={rightText.link.href}
