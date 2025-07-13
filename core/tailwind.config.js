@@ -40,6 +40,14 @@ const config = {
       pattern: /^text-\[.*\]$/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
+    {
+      pattern: /^right-\[.*\]$/,
+      variants: ['sm', 'md', 'lg', 'xl', '2xl'],
+    },
+    {
+      pattern: /^left-\[.*\]$/,
+      variants: ['sm', 'md', 'lg', 'xl', '2xl'],
+    },
   ],
   theme: {
     extend: {
