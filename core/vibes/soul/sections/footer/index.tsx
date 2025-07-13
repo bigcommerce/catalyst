@@ -333,7 +333,7 @@ export const Footer = forwardRef(function Footer(
         </div>
 
         {/* Footer Bottom: horizontal line and centered copyright */}
-        <div className="mt-12 border-t border-[var(--footer-border-top,hsl(var(--contrast-100)))] pt-6 text-center">
+        <div className="mt-12 border-t border-[#E5E7EB] border-[var(--footer-border-top,hsl(var(--contrast-100)))] pt-6 text-center">
           <Stream
             fallback={
               <div className="flex h-[1lh] animate-pulse items-center justify-center text-sm">
