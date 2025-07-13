@@ -50,7 +50,7 @@ export const ProductCard = ({
     >
       <div
         className={clsx(
-          'relative max-h-48 overflow-hidden rounded-xl bg-[var(--product-card-light-background,hsl(var(--contrast-100)))] @md:rounded-2xl',
+          'relative max-h-[480px] overflow-hidden rounded-xl bg-[var(--product-card-light-background,hsl(var(--contrast-100)))] @md:rounded-2xl',
           {
             '5:6': 'aspect-[5/6]',
             '3:4': 'aspect-[3/4]',
