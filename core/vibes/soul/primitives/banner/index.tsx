@@ -48,48 +48,50 @@ export const Banner = forwardRef(
         )}
         id="announcement-bar"
       >
-        <div className="flex h-full w-full flex-row items-center justify-between gap-2 px-4 py-5 @xl:px-12">
-          {/* Left: Links (hidden on tablet and smaller screens) */}
-          <div className="hidden flex-row gap-4 text-base font-bold lg:flex">
-            {links?.map((item, idx) => (
-              <>
+        <div className="max-w-screen-2xl">
+          <div className="flex h-full w-full flex-row items-center justify-between gap-2 px-4 py-4 @xl:px-12">
+            {/* Left: Links (hidden on tablet and smaller screens) */}
+            <div className="hidden flex-row gap-4 text-base font-bold lg:flex">
+              {links?.map((item, idx) => (
+                <>
+                  <a
+                    key={idx}
+                    href={item.link.href}
+                    className="text-base font-bold text-white transition-colors duration-200 hover:underline"
+                    target={item.link.target || '_blank'}
+                    rel="noopener noreferrer"
+                  >
+                    {item.label}
+                  </a>
+                  {idx < links.length - 1 && (
+                    <span className="mx-2 text-base font-bold text-white">|</span>
+                  )}
+                </>
+              ))}
+            </div>
+
+            {/* Center: Center Text (always visible) */}
+            <div className="flex flex-1 justify-center">
+              {centerText && (
+                <span className="truncate text-center text-base font-bold text-white md:text-base">
+                  {centerText}
+                </span>
+              )}
+            </div>
+
+            {/* Right: Right Text (hidden on tablet and smaller screens) */}
+            <div className="hidden flex-row items-center gap-2 lg:flex">
+              {rightText?.text && rightText?.link?.href && (
                 <a
-                  key={idx}
-                  href={item.link.href}
+                  href={rightText.link.href}
                   className="text-base font-bold text-white transition-colors duration-200 hover:underline"
-                  target={item.link.target || '_blank'}
+                  target={rightText.link.target || '_blank'}
                   rel="noopener noreferrer"
                 >
-                  {item.label}
+                  {rightText.text}
                 </a>
-                {idx < links.length - 1 && (
-                  <span className="mx-2 text-base font-bold text-white">|</span>
-                )}
-              </>
-            ))}
-          </div>
-
-          {/* Center: Center Text (always visible) */}
-          <div className="flex flex-1 justify-center">
-            {centerText && (
-              <span className="truncate text-center text-base font-bold text-white md:text-base">
-                {centerText}
-              </span>
-            )}
-          </div>
-
-          {/* Right: Right Text (hidden on tablet and smaller screens) */}
-          <div className="hidden flex-row items-center gap-2 lg:flex">
-            {rightText?.text && rightText?.link?.href && (
-              <a
-                href={rightText.link.href}
-                className="text-base font-bold text-white transition-colors duration-200 hover:underline"
-                target={rightText.link.target || '_blank'}
-                rel="noopener noreferrer"
-              >
-                {rightText.text}
-              </a>
-            )}
+              )}
+            </div>
           </div>
         </div>
       </div>
