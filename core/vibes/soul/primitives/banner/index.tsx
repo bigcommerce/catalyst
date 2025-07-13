@@ -42,7 +42,7 @@ export const Banner = forwardRef(
     return (
       <div
         className={clsx(
-          'relative w-full overflow-hidden bg-[#0a2656] transition-all duration-300 ease-in @container',
+          'relative w-full overflow-hidden bg-[#0a2656] px-6 transition-all duration-300 ease-in @container',
           !show ? 'max-h-0' : 'max-h-16',
           className,
         )}
@@ -50,8 +50,8 @@ export const Banner = forwardRef(
       >
         <div className="mx-auto max-w-screen-2xl">
           <div className="flex w-full flex-row items-center justify-between gap-2 px-4 py-3 @xl:px-12">
-            {/* Left: Links (always visible) */}
-            <div className="flex flex-row gap-4 text-base font-bold text-white">
+            {/* Left: Links (hidden on small, visible on xl+) */}
+            <div className="hidden flex-row gap-4 text-base font-bold text-white @xl:flex">
               {links?.map((item, idx) => (
                 <>
                   <a
@@ -79,8 +79,8 @@ export const Banner = forwardRef(
               )}
             </div>
 
-            {/* Right: Right Text (always visible) */}
-            <div className="flex flex-row items-center gap-2 text-base font-bold text-white">
+            {/* Right: Right Text (hidden on small, visible on xl+) */}
+            <div className="hidden flex-row items-center gap-2 text-base font-bold text-white @xl:flex">
               {rightText?.text && rightText?.link?.href && (
                 <a
                   href={rightText.link.href}
