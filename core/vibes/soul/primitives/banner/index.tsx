@@ -42,14 +42,14 @@ export const Banner = forwardRef(
     return (
       <div
         className={clsx(
-          'relative w-full overflow-hidden bg-[#0a2656] px-6 transition-all duration-300 ease-in @container',
+          'relative w-full overflow-hidden bg-[#0a2656] transition-all duration-300 ease-in @container',
           !show ? 'max-h-0' : 'max-h-16',
           className,
         )}
         id="announcement-bar"
       >
         <div className="mx-auto max-w-screen-2xl">
-          <div className="flex w-full flex-row items-center justify-between gap-2 px-4 py-3 @xl:px-12">
+          <div className="flex w-full flex-row items-center justify-between gap-2 px-6 py-3 @xl:px-12">
             {/* Left: Links (hidden on small, visible on xl+) */}
             <div className="hidden flex-row gap-4 text-base font-bold text-white @xl:flex">
               {links?.map((item, idx) => (
