@@ -49,7 +49,7 @@ export const Banner = forwardRef(
         id="announcement-bar"
       >
         <div className="mx-auto max-w-screen-2xl">
-          <div className="flex w-full flex-row items-center justify-between gap-2 px-6 py-3 @xl:px-12">
+          <div className="flex w-full flex-row items-center justify-between gap-2 px-6 py-3">
             {/* Left: Links (hidden on small, visible on xl+) */}
             <div className="hidden flex-row gap-4 text-base font-bold text-white @xl:flex">
               {links?.map((item, idx) => (
