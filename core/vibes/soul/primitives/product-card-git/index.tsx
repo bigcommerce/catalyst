@@ -90,7 +90,7 @@ export const ProductCard = ({
         )}
         {badge.show && badge.text !== '' && (
           <Badge
-            className={`absolute ${badge.location}-3 top-3`}
+            className={`absolute ${badge.location}-4 top-4`}
             shape={badge.shape as 'pill' | 'rounded'}
             variant={badge.theme as 'primary' | 'warning' | 'error' | 'success' | 'info'}
           >
