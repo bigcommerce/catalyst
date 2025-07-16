@@ -1,7 +1,7 @@
 import AdmZip from 'adm-zip';
 import { Command } from 'commander';
 import { consola } from 'consola';
-import { access, mkdir } from 'node:fs/promises';
+import { access, mkdir, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 export const generateBundleZip = async (rootDir: string) => {
@@ -15,6 +15,22 @@ export const generateBundleZip = async (rootDir: string) => {
     await access(distDir);
   } catch {
     await mkdir(distDir, { recursive: true });
+  }
+
+  // Check if buildDir exists
+  try {
+    await access(buildDir);
+  } catch {
+    consola.error(`Build directory not found: ${buildDir}`);
+    process.exit(1);
+  }
+
+  // Check if buildDir is not empty
+  const buildDirContents = await readdir(buildDir);
+
+  if (buildDirContents.length === 0) {
+    consola.error(`Build directory is empty: ${buildDir}`);
+    process.exit(1);
   }
 
   const outputZip = join(distDir, 'bundle.zip');
