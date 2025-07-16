@@ -21,6 +21,9 @@
     "node": "^20.0.0 || ^22.0.0"
   },
   "dependencies": {
+    "@commander-js/extra-typings": "^12.1.0",
+    "adm-zip": "^0.5.16",
+    "archiver": "^5.3.2",
     "chalk": "^5.3.0",
     "commander": "^14.0.0",
     "consola": "^3.4.2"
@@ -29,6 +32,8 @@
     "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
     "@commander-js/extra-typings": "^14.0.0",
+    "@types/adm-zip": "^0.5.7",
+    "@types/archiver": "^5.1.10",
     "@types/node": "^22.15.30",
     "@vitest/coverage-v8": "^3.2.4",
     "@vitest/ui": "^3.2.4",
