@@ -1,7 +1,6 @@
-import archiver from 'archiver';
+import AdmZip from 'adm-zip';
 import { Command } from 'commander';
 import { consola } from 'consola';
-import { createWriteStream } from 'node:fs';
 import { access, mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
@@ -11,6 +10,7 @@ export const generateBundleZip = async (rootDir: string) => {
   const buildDir = join(rootDir, '.open-next');
   const distDir = join(rootDir, '.bigcommerce/dist');
 
+  // Check for distDir or create one
   try {
     await access(distDir);
   } catch {
@@ -19,23 +19,13 @@ export const generateBundleZip = async (rootDir: string) => {
 
   const outputZip = join(distDir, 'bundle.zip');
 
-  const output = createWriteStream(outputZip);
-  const archive = archiver('zip', { zlib: { level: 9 } });
+  // Use AdmZip to create the zip
+  const zip = new AdmZip();
 
-  output.on('close', () => {
-    consola.success(`Created ${outputZip} (${archive.pointer()} total bytes)`);
-  });
+  zip.addLocalFolder(buildDir, 'output');
+  zip.writeZip(outputZip);
 
-  archive.on('error', (err) => {
-    consola.error('Error creating zip:', err);
-    process.exit(1);
-  });
-
-  archive.pipe(output);
-
-  archive.directory(buildDir, 'output');
-
-  await archive.finalize();
+  consola.success(`Created ${outputZip}`);
 };
 
 interface DeployOptions {
