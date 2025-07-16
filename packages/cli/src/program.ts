@@ -3,6 +3,7 @@ import { Command } from 'commander';
 
 import PACKAGE_INFO from '../package.json';
 
+import { build } from './commands/build';
 import { version } from './commands/version';
 
 export const program = new Command();
@@ -13,4 +14,5 @@ program
   .name(PACKAGE_INFO.name)
   .version(PACKAGE_INFO.version)
   .description('CLI tool for Catalyst development')
-  .addCommand(version);
+  .addCommand(version)
+  .addCommand(build);
