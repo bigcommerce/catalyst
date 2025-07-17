@@ -8,8 +8,8 @@ import { generateBundleZip } from '../../src/commands/deploy';
 
 const tmpDir = tmpdir();
 
-const workerPath = join(tmpDir, '.open-next/worker.js');
-const assetsDir = join(tmpDir, '.open-next/assets');
+const workerPath = join(tmpDir, '.bigcommerce/dist/worker.js');
+const assetsDir = join(tmpDir, '.bigcommerce/dist/assets');
 const outputZip = join(tmpDir, '.bigcommerce/dist/bundle.zip');
 
 beforeAll(async () => {
