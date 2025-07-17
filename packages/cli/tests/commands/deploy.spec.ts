@@ -1,23 +1,32 @@
 import AdmZip from 'adm-zip';
 import { mkdir, stat, writeFile } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
 import { dirname, join } from 'node:path';
-import { beforeAll, describe, expect, test } from 'vitest';
+import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 import { generateBundleZip } from '../../src/commands/deploy';
+import { mkTempDir } from '../../src/lib/mk-temp-dir';
 
-const tmpDir = tmpdir();
-
-const workerPath = join(tmpDir, '.bigcommerce/dist/worker.js');
-const assetsDir = join(tmpDir, '.bigcommerce/dist/assets');
-const outputZip = join(tmpDir, '.bigcommerce/dist/bundle.zip');
+let tmpDir: string;
+let cleanup: () => Promise<void>;
+let outputZip: string;
 
 beforeAll(async () => {
   // Setup test directories and files
+  [tmpDir, cleanup] = await mkTempDir();
+
+  const workerPath = join(tmpDir, '.bigcommerce/dist/worker.js');
+  const assetsDir = join(tmpDir, '.bigcommerce/dist/assets');
+
+  outputZip = join(tmpDir, '.bigcommerce/dist/bundle.zip');
+
   await mkdir(dirname(workerPath), { recursive: true });
   await writeFile(workerPath, 'console.log("worker");');
   await mkdir(assetsDir, { recursive: true });
   await writeFile(join(assetsDir, 'test.txt'), 'asset file');
+});
+
+afterAll(async () => {
+  await cleanup();
 });
 
 describe('bundle zip generation', () => {

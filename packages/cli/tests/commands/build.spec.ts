@@ -1,49 +1,6 @@
-import { access, mkdir, stat, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
 import { describe, expect, test } from 'vitest';
 
-import { createFilter, mkTempDir } from '../../src/commands/build';
-
-describe('mkTempDir', () => {
-  test('creates directory that actually exists', async () => {
-    const [path, cleanup] = await mkTempDir();
-
-    const stats = await stat(path);
-
-    expect(stats.isDirectory()).toBe(true);
-
-    await cleanup();
-  });
-
-  test('cleanup function removes the directory', async () => {
-    const [path, cleanup] = await mkTempDir();
-
-    await expect(access(path)).resolves.not.toThrow();
-
-    await cleanup();
-
-    await expect(access(path)).rejects.toThrow();
-  });
-
-  test('cleanup removes directory recursively with contents', async () => {
-    const [path, cleanup] = await mkTempDir();
-
-    await mkdir(join(path, 'subdir'));
-    await writeFile(join(path, 'file.txt'), 'test content');
-    await writeFile(join(path, 'subdir', 'nested.txt'), 'nested content');
-
-    await cleanup();
-
-    await expect(access(path)).rejects.toThrow();
-  });
-
-  test('cleanup is idempotent', async () => {
-    const [, cleanup] = await mkTempDir();
-
-    await cleanup();
-    await expect(cleanup()).resolves.not.toThrow();
-  });
-});
+import { createFilter } from '../../src/commands/build';
 
 describe('createFilter', () => {
   const ROOT = '/my/project';

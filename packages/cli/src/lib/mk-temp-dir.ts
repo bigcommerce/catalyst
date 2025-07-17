@@ -1,0 +1,24 @@
+import consola from 'consola';
+import { mkdtemp, rm } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+export async function mkTempDir(prefix?: string) {
+  const tmp = prefix ? join(tmpdir(), prefix) : tmpdir();
+  const path = await mkdtemp(tmp);
+
+  consola.info(`Created temporary directory: ${path}`);
+
+  return [
+    path,
+    async () => {
+      try {
+        consola.info(`Cleaning up temporary directory: ${path}`);
+        await rm(path, { recursive: true, force: true });
+        consola.success('Cleanup complete');
+      } catch (error) {
+        consola.warn(`Failed to clean up temporary directory: ${path}`, error);
+      }
+    },
+  ] as const;
+}
