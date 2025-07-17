@@ -1,8 +1,9 @@
 import { Command } from 'commander';
 import consola from 'consola';
-import { cp, mkdtemp, rm } from 'node:fs/promises';
-import { tmpdir } from 'node:os';
-import { join, relative, sep } from 'node:path';
+import { cp } from 'node:fs/promises';
+import { relative, sep } from 'node:path';
+
+import { mkTempDir } from '../lib/mk-temp-dir';
 
 const SKIP_DIRS = new Set([
   'node_modules',
@@ -25,30 +26,10 @@ export function createFilter(root: string, skipDirs: Set<string>) {
   };
 }
 
-export async function mkTempDir() {
-  const prefix = join(tmpdir(), 'catalyst-build-');
-  const path = await mkdtemp(prefix);
-
-  consola.info(`Created temporary directory: ${path}`);
-
-  return [
-    path,
-    async () => {
-      try {
-        consola.info(`Cleaning up temporary directory: ${path}`);
-        await rm(path, { recursive: true, force: true });
-        consola.success('Cleanup complete');
-      } catch (error) {
-        consola.warn(`Failed to clean up temporary directory: ${path}`, error);
-      }
-    },
-  ] as const;
-}
-
 export const build = new Command('build')
   .option('--keep-temp-dir', 'Keep the temporary directory after the build')
   .action(async (options) => {
-    const [tmpDir, rmTempDir] = await mkTempDir();
+    const [tmpDir, rmTempDir] = await mkTempDir('catalyst-build-');
 
     try {
       consola.start('Copying project to temp directory...');
