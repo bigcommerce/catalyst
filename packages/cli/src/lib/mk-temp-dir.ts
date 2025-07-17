@@ -3,8 +3,9 @@ import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-export async function mkTempDir(prefix?: string) {
-  const tmp = prefix ? join(tmpdir(), prefix) : tmpdir();
+export async function mkTempDir(prefix = '/') {
+  const tmp = join(tmpdir(), prefix);
+
   const path = await mkdtemp(tmp);
 
   consola.info(`Created temporary directory: ${path}`);
