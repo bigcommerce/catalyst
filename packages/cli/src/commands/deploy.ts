@@ -10,13 +10,6 @@ export const generateBundleZip = async (rootDir: string) => {
   const buildDir = join(rootDir, '.open-next');
   const distDir = join(rootDir, '.bigcommerce/dist');
 
-  // Check for distDir or create one
-  try {
-    await access(distDir);
-  } catch {
-    await mkdir(distDir, { recursive: true });
-  }
-
   // Check if buildDir exists
   try {
     await access(buildDir);
@@ -31,6 +24,13 @@ export const generateBundleZip = async (rootDir: string) => {
   if (buildDirContents.length === 0) {
     consola.error(`Build directory is empty: ${buildDir}`);
     process.exit(1);
+  }
+
+  // Check for distDir or create one
+  try {
+    await access(distDir);
+  } catch {
+    await mkdir(distDir, { recursive: true });
   }
 
   const outputZip = join(distDir, 'bundle.zip');
@@ -55,4 +55,5 @@ export const deploy = new Command('deploy')
     await generateBundleZip(opts.rootDir);
 
     // @todo rest of upload flow
+    process.exit(0);
   });
