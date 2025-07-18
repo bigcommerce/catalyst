@@ -1,6 +1,6 @@
 'use client';
 
-import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
+import { SubmissionResult, useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
 import { ArrowRight, Minus, Plus, Trash2 } from 'lucide-react';
@@ -10,6 +10,8 @@ import {
   useActionState,
   useEffect,
   useOptimistic,
+  useRef,
+  useState,
 } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -198,20 +200,10 @@ export function CartClient<LineItem extends CartLineItem>({
       if (submission.status !== 'success') return prevState;
 
       switch (submission.value.intent) {
-        case 'increment': {
-          const { id } = submission.value;
+        case 'update': {
+          const { id, quantity } = submission.value;
 
-          return prevState.map((item) =>
-            item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
-          );
-        }
-
-        case 'decrement': {
-          const { id } = submission.value;
-
-          return prevState.map((item) =>
-            item.id === id ? { ...item, quantity: item.quantity - 1 } : item,
-          );
+          return prevState.map((item) => (item.id === id ? { ...item, quantity } : item));
         }
 
         case 'delete': {
@@ -307,7 +299,6 @@ export function CartClient<LineItem extends CartLineItem>({
                   </span>
                 </div>
                 <CounterForm
-                  action={formAction}
                   decrementLabel={decrementLineItemLabel}
                   deleteLabel={deleteLineItemLabel}
                   incrementLabel={incrementLineItemLabel}
@@ -319,21 +310,37 @@ export function CartClient<LineItem extends CartLineItem>({
 
                       const intent = formData.get('intent');
 
-                      if (intent === 'increment') {
-                        formData.set('quantity', '1');
+                      if (intent === 'update') {
+                        // formData.get() can return null if field doesn't exist, though it should
+                        // always exist here. Default to current quantity as safety fallback to prevent
+                        // erroneous analytics events
+                        const submittedQuantity = formData.get('quantity');
+                        const targetQuantity =
+                          submittedQuantity && typeof submittedQuantity === 'string'
+                            ? parseInt(submittedQuantity, 10)
+                            : lineItem.quantity;
 
-                        events.onAddToCart?.(formData);
-                      }
+                        // Calculate the net change between old and new quantity for analytics tracking
+                        // since we only want to track the final result, not individual button clicks
+                        const netChange = targetQuantity - lineItem.quantity;
 
-                      if (intent === 'decrement') {
-                        formData.set('quantity', '1');
+                        if (netChange !== 0) {
+                          const analyticsFormData = new FormData();
 
-                        events.onRemoveFromCart?.(formData);
+                          analyticsFormData.append('intent', 'update');
+                          analyticsFormData.append('id', lineItem.id);
+                          analyticsFormData.append('quantity', Math.abs(netChange).toString());
+
+                          if (netChange > 0) {
+                            events.onAddToCart?.(analyticsFormData);
+                          } else {
+                            events.onRemoveFromCart?.(analyticsFormData);
+                          }
+                        }
                       }
 
                       if (intent === 'delete') {
                         formData.set('quantity', lineItem.quantity.toString());
-
                         events.onRemoveFromCart?.(formData);
                       }
                     });
@@ -350,7 +357,6 @@ export function CartClient<LineItem extends CartLineItem>({
 
 function CounterForm({
   lineItem,
-  action,
   onSubmit,
   incrementLabel = 'Increase count',
   decrementLabel = 'Decrease count',
@@ -360,89 +366,126 @@ function CounterForm({
   incrementLabel?: string;
   decrementLabel?: string;
   deleteLabel?: string;
-  action: (payload: FormData) => void;
   onSubmit: (formData: FormData) => void;
 }) {
-  const [form, fields] = useForm({
-    defaultValue: { id: lineItem.id },
-    shouldValidate: 'onBlur',
-    shouldRevalidate: 'onInput',
-    onValidate({ formData }) {
-      return parseWithZod(formData, { schema: cartLineItemActionFormDataSchema });
-    },
-    onSubmit(event, { formData }) {
-      event.preventDefault();
+  const [quantity, setQuantity] = useState(lineItem.quantity);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const debounceTimeout = useRef<NodeJS.Timeout | null>(null);
+  const originalQuantity = useRef(lineItem.quantity);
 
-      onSubmit(formData);
-    },
-  });
+  useEffect(() => {
+    originalQuantity.current = lineItem.quantity;
+    setQuantity(lineItem.quantity);
+  }, [lineItem.quantity]);
+
+  useEffect(() => {
+    if (quantity !== originalQuantity.current && !isSubmitting) {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+
+      debounceTimeout.current = setTimeout(() => {
+        setIsSubmitting(true);
+
+        const formData = new FormData();
+
+        formData.append('intent', 'update');
+        formData.append('id', lineItem.id);
+        formData.append('quantity', quantity.toString());
+
+        onSubmit(formData);
+      }, 500);
+    }
+
+    return () => {
+      if (debounceTimeout.current) {
+        clearTimeout(debounceTimeout.current);
+      }
+    };
+  }, [quantity, lineItem.id, onSubmit, isSubmitting]);
+
+  useEffect(() => {
+    if (isSubmitting) {
+      const resetTimeout = setTimeout(() => {
+        setIsSubmitting(false);
+      }, 1000);
+
+      return () => clearTimeout(resetTimeout);
+    }
+  }, [isSubmitting]);
 
   return (
-    <form {...getFormProps(form)} action={action}>
-      <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
-      <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
-        <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
+    <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
+      <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
 
-        {/* Counter */}
-        <div className="flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]">
-          <button
-            aria-label={decrementLabel}
-            className={clsx(
-              'group rounded-l-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
-              lineItem.quantity === 1
-                ? 'opacity-50'
-                : 'hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))]',
-            )}
-            disabled={lineItem.quantity === 1}
-            name="intent"
-            type="submit"
-            value="decrement"
-          >
-            <Minus
-              className={clsx(
-                'text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300',
-                lineItem.quantity !== 1 &&
-                  'group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]',
-              )}
-              size={18}
-              strokeWidth={1.5}
-            />
-          </button>
-          <span className="flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))]">
-            {lineItem.quantity}
-          </span>
-          <button
-            aria-label={incrementLabel}
-            className={clsx(
-              'group rounded-r-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 transition-colors duration-300 hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
-            )}
-            name="intent"
-            type="submit"
-            value="increment"
-          >
-            <Plus
-              className="text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300 group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]"
-              size={18}
-              strokeWidth={1.5}
-            />
-          </button>
-        </div>
-
+      {/* Counter */}
+      <div className="flex items-center rounded-lg border border-[var(--cart-counter-border,hsl(var(--contrast-100)))]">
         <button
-          aria-label={deleteLabel}
-          className="group -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
-          name="intent"
-          type="submit"
-          value="delete"
+          aria-label={decrementLabel}
+          className={clsx(
+            'group rounded-l-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
+            quantity === 1
+              ? 'opacity-50'
+              : 'hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))]',
+          )}
+          disabled={quantity === 1}
+          onClick={() => {
+            if (quantity > 1) {
+              setQuantity((prev) => prev - 1);
+            }
+          }}
+          type="button"
         >
-          <Trash2
-            className="text-[var(--cart-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--cart-icon-hover,hsl(var(--foreground)))]"
-            size={20}
-            strokeWidth={1}
+          <Minus
+            className={clsx(
+              'text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300',
+              quantity !== 1 &&
+                'group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]',
+            )}
+            size={18}
+            strokeWidth={1.5}
+          />
+        </button>
+        <span className="flex w-8 select-none justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))]">
+          {quantity}
+        </span>
+        <button
+          aria-label={incrementLabel}
+          className={clsx(
+            'group rounded-r-lg bg-[var(--cart-counter-background,hsl(var(--background)))] p-3 transition-colors duration-300 hover:bg-[var(--cart-counter-background-hover,hsl(var(--contrast-100)/50%))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] disabled:cursor-not-allowed',
+          )}
+          onClick={() => {
+            setQuantity((prev) => prev + 1);
+          }}
+          type="button"
+        >
+          <Plus
+            className="text-[var(--cart-counter-icon,hsl(var(--contrast-300)))] transition-colors duration-300 group-hover:text-[var(--cart-counter-icon-hover,hsl(var(--foreground)))]"
+            size={18}
+            strokeWidth={1.5}
           />
         </button>
       </div>
-    </form>
+
+      <button
+        aria-label={deleteLabel}
+        className="group -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
+        onClick={() => {
+          const formData = new FormData();
+
+          formData.append('intent', 'delete');
+          formData.append('id', lineItem.id);
+          onSubmit(formData);
+        }}
+        type="button"
+      >
+        <Trash2
+          className="text-[var(--cart-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--cart-icon-hover,hsl(var(--foreground)))]"
+          size={20}
+          strokeWidth={1}
+        />
+      </button>
+    </div>
   );
 }
 
