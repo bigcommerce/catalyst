@@ -3,7 +3,11 @@ import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
-import { generateBundleZip } from '../../src/commands/deploy';
+import {
+  generateBundleZip,
+  generateUploadSignature,
+  uploadBundleZip,
+} from '../../src/commands/deploy';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
 
 let tmpDir: string;
@@ -56,5 +60,26 @@ describe('bundle zip generation', () => {
     expect(entries.some((e) => e.startsWith('output/assets/'))).toBe(true);
     // Check for output/worker.js
     expect(entries).toContain('output/worker.js');
+  });
+});
+
+describe('bundle zip upload', () => {
+  test('fetches upload signature and uploads bundle zip', async () => {
+    const storeHash = 'test-store';
+    const accessToken = 'test-token';
+    const apiHost = 'api.bigcommerce.com';
+
+    // Test generateUploadSignature
+    const signature = await generateUploadSignature(storeHash, accessToken, apiHost);
+
+    expect(signature.upload_url).toBe('https://mock-upload-url.com');
+    expect(signature.upload_uuid).toBe('mock-uuid');
+
+    // Test uploadBundleZip
+    await generateBundleZip(tmpDir); // Ensure zip exists
+
+    const uploadResult = await uploadBundleZip('https://mock-upload-url.com', tmpDir);
+
+    expect(uploadResult).toBe(true);
   });
 });
