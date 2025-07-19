@@ -615,7 +615,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         {/* Icon Buttons */}
         <div
           className={clsx(
-            'flex flex-col items-end justify-end gap-1 transition-colors duration-300',
+            'flex flex-col items-start justify-start gap-1 transition-colors duration-300',
             linksPosition === 'center' ? 'flex-1' : 'flex-1 @4xl:flex-none',
           )}
         >
@@ -669,7 +669,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           </div>
           <Link
             href={`tel:${phoneNumber}`}
-            className="mt-1 flex items-center whitespace-nowrap text-lg font-bold text-[#011F4B] hover:underline"
+            className="text-md mt-1 flex items-center whitespace-nowrap font-bold text-[#011F4B] hover:underline"
             style={{ lineHeight: 1 }}
             aria-label={`Call ${phoneNumber}`}
           >
