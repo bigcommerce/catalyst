@@ -7,6 +7,7 @@ import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gal
 
 import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
 import { Field } from './schema';
+import { Link } from '~/components/link';
 
 interface ProductDetailProduct {
   id: string;
@@ -76,21 +77,17 @@ export function ProductDetail<F extends Field>({
                   {product.subtitle != null && product.subtitle !== '' && (
                     <p className="font-mono text-sm uppercase">{product.subtitle}</p>
                   )}
-
                   <h1 className="mb-3 mt-2 font-heading text-2xl font-medium leading-none @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
                     {product.title}
                   </h1>
-
                   <Stream fallback={<RatingSkeleton />} value={product.rating}>
                     {(rating) => <Rating rating={rating ?? 0} />}
                   </Stream>
-
                   <Stream fallback={<PriceLabelSkeleton />} value={product.price}>
                     {(price) => (
                       <PriceLabel className="my-3 text-xl @xl:text-2xl" price={price ?? ''} />
                     )}
                   </Stream>
-
                   <div className="mb-8 @2xl:hidden">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
                       {(images) => (
@@ -98,14 +95,12 @@ export function ProductDetail<F extends Field>({
                       )}
                     </Stream>
                   </div>
-
                   <Stream fallback={<ProductSummarySkeleton />} value={product.summary}>
                     {(summary) =>
                       summary !== undefined &&
                       summary !== '' && <p className="text-contrast-500">{summary}</p>
                     }
                   </Stream>
-
                   <Stream
                     fallback={<ProductDetailFormSkeleton />}
                     value={Streamable.all([
@@ -129,16 +124,21 @@ export function ProductDetail<F extends Field>({
                     )}
                   </Stream>
 
+                  <p className="text-md mb-6 font-bold underline">
+                    <Link href={'/contact-us'}>Need a quote on a big project? Click Here</Link>
+                  </p>
+
                   <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
                     {(description) =>
-                      description != null && (
+                      description != null &&
+                      // @ts-ignore
+                      description.length > 0 && (
                         <div className="prose prose-sm border-t border-contrast-100 py-8">
                           {description}
                         </div>
                       )
                     }
                   </Stream>
-
                   <h2 className="sr-only">{additionaInformationTitle}</h2>
                   <Stream fallback={<ProductAccordionsSkeleton />} value={product.accordions}>
                     {(accordions) =>
