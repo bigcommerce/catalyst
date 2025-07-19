@@ -1,5 +1,6 @@
 'use client';
 
+import React from 'react';
 import { TextInput, Style, Select } from '@makeswift/runtime/controls';
 import { runtime } from '../../runtime';
 import clsx from 'clsx';
@@ -30,9 +31,58 @@ runtime.registerComponent(
     buttonText,
     ...props
   }: ContactFormGITProps) {
+    const [form, setForm] = React.useState({
+      fullName: '',
+      email: '',
+      phone: '',
+      businessName: '',
+      subject: '',
+      message: '',
+    });
+    const [submitting, setSubmitting] = React.useState(false);
+    const [success, setSuccess] = React.useState(false);
+    const [error, setError] = React.useState('');
+
+    const requiredFieldsFilled =
+      form.fullName.trim() && form.email.trim() && form.subject.trim() && form.message.trim();
+
+    function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
+      const { name, value } = e.target;
+      setForm((prev) => ({ ...prev, [name]: value }));
+    }
+
+    async function handleSubmit(e: React.FormEvent) {
+      e.preventDefault();
+      setSubmitting(true);
+      setError('');
+      setSuccess(false);
+      try {
+        // Replace '/api/send-contact-email' with your actual backend endpoint
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...form, to: email }),
+        });
+        if (!res.ok) throw new Error('Failed to send email');
+        setSuccess(true);
+        setForm({
+          fullName: '',
+          email: '',
+          phone: '',
+          businessName: '',
+          subject: '',
+          message: '',
+        });
+      } catch (err: any) {
+        setError(err.message || 'Something went wrong');
+      } finally {
+        setSubmitting(false);
+      }
+    }
+
     return (
       <div className={clsx('', className)}>
-        <form>
+        <form onSubmit={handleSubmit}>
           <div
             className={clsx(
               'grid gap-5',
@@ -42,21 +92,65 @@ runtime.registerComponent(
               `xl:grid-cols-${itemsPerRowSuperDesktop}`,
             )}
           >
-            <Input required label="Full name" type="text" placeholder="Jhon Doe" />
-            <Input required label="Email" type="email" placeholder="jhon.doe@example.com" />
-            <Input label="Phone" type="text" placeholder="Your phone number here" />
-            <Input label="Business Name" type="text" placeholder="Your business name here" />
-            <Input required label="Subject" type="text" placeholder="Your subject here" />
+            <Input
+              required
+              label="Full name"
+              type="text"
+              name="fullName"
+              value={form.fullName}
+              onChange={handleChange}
+            />
+            <Input
+              required
+              label="Email"
+              type="email"
+              name="email"
+              value={form.email}
+              onChange={handleChange}
+            />
+            <Input
+              label="Phone"
+              type="text"
+              name="phone"
+              value={form.phone}
+              onChange={handleChange}
+            />
+            <Input
+              label="Business Name"
+              type="text"
+              name="businessName"
+              value={form.businessName}
+              onChange={handleChange}
+            />
+            <Input
+              required
+              label="Subject"
+              type="text"
+              name="subject"
+              value={form.subject}
+              onChange={handleChange}
+            />
           </div>
           <Textarea
             className="mt-4"
             required
             label="Message"
+            name="message"
+            value={form.message}
+            onChange={handleChange}
             placeholder="Your message here"
             rows={4}
           />
-          <Button type="submit" className="mt-4" variant={buttonTypeVariant}>
-            {buttonText}
+          {error && <div className="mt-2 text-red-500">{error}</div>}
+          {success && <div className="mt-2 text-green-500">Message sent successfully!</div>}
+          <Button
+            type="submit"
+            className="mt-4"
+            variant={buttonTypeVariant}
+            loading={submitting}
+            disabled={!requiredFieldsFilled || submitting}
+          >
+            {submitting ? 'Sending...' : buttonText}
           </Button>
         </form>
       </div>
