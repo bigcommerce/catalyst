@@ -15,25 +15,29 @@ interface ContactFormGITProps {
 runtime.registerComponent(
   function ContactFormGIT({ email, className, ...props }: ContactFormGITProps) {
     return (
-      <div className={clsx('grid grid-cols-2 gap-4', className)}>
+      <div className={clsx('', className)}>
         <form>
-          <Input required label="Full name" type="text" placeholder="Jhon Doe" />
-          <Input required label="Email" type="email" placeholder="jhon.doe@example.com" />
-          <Input label="Phone" type="text" placeholder="Your phone number here" />
-          <Input label="Business Name" type="text" placeholder="Your business name here" />
-          <Input required label="Subject" type="text" placeholder="Your subject here" />
+          <div className="grid grid-cols-2 gap-4">
+            <Input required label="Full name" type="text" placeholder="Jhon Doe" />
+            <Input required label="Email" type="email" placeholder="jhon.doe@example.com" />
+            <Input label="Phone" type="text" placeholder="Your phone number here" />
+            <Input label="Business Name" type="text" placeholder="Your business name here" />
+            <Input required label="Subject" type="text" placeholder="Your subject here" />
+          </div>
           <Textarea required label="Message" placeholder="Your message here" rows={4} />
           <Button
             type="submit"
-            className="col-span-2 mt-4 w-full bg-blue-600 text-white hover:bg-blue-700"
-          />
+            className="col-span-2 mt-4 bg-blue-600 text-white hover:bg-blue-700"
+          >
+            Send Message
+          </Button>
         </form>
       </div>
     );
   },
   {
     type: 'contact-form-git',
-    label: 'Contact Form GIT',
+    label: 'GIT / Contact Form (GIT)',
     props: {
       className: Style(),
       email: TextInput({
