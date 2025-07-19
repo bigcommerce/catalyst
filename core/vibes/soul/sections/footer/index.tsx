@@ -106,7 +106,7 @@ export const Footer = forwardRef(function Footer(
             {/* Contact Information */}
             <Stream
               fallback={
-                <div className="mb-4 animate-pulse text-lg @lg:text-xl">
+                <div className="mb-2 animate-pulse text-lg @lg:text-xl">
                   <div className="flex h-[1lh] items-center">
                     <span className="h-[1ex] w-[10ch] rounded bg-contrast-100" />
                   </div>
@@ -123,10 +123,7 @@ export const Footer = forwardRef(function Footer(
               {(contactInformation) => {
                 if (contactInformation?.address != null || contactInformation?.phone != null) {
                   return (
-                    <div className="mb-4 text-lg font-medium @lg:text-xl">
-                      <h3 className="text-[var(--footer-contact-title,hsl(var(--contrast-300)))]">
-                        {contactTitle}
-                      </h3>
+                    <div className="text-lg font-medium @lg:text-xl">
                       <div className="text-[var(--footer-contact-text,hsl(var(--foreground)))]">
                         {contactInformation.address != null &&
                           contactInformation.address !== '' && <p>{contactInformation.address}</p>}
@@ -134,6 +131,9 @@ export const Footer = forwardRef(function Footer(
                           <p>{contactInformation.phone}</p>
                         )}
                       </div>
+                      <h3 className="text-[var(--footer-contact-title,hsl(var(--contrast-300)))]">
+                        {contactTitle}
+                      </h3>
                     </div>
                   );
                 }
