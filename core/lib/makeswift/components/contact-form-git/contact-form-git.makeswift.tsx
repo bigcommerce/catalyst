@@ -7,6 +7,7 @@ import clsx from 'clsx';
 import { Input } from '@/vibes/soul/form/input';
 import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button } from '@/vibes/soul/primitives/button';
+import { Alert } from '@/vibes/soul/primitives/alert';
 
 interface ContactFormGITProps {
   email: string;
@@ -42,7 +43,35 @@ runtime.registerComponent(
     const [submitting, setSubmitting] = React.useState(false);
     const [success, setSuccess] = React.useState(false);
     const [error, setError] = React.useState('');
+    // Timer refs to clear timeouts if needed
+    const successTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+    const errorTimeoutRef = React.useRef<NodeJS.Timeout | null>(null);
 
+    // Hide success alert after 10 seconds
+    React.useEffect(() => {
+      if (success) {
+        if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current);
+        successTimeoutRef.current = setTimeout(() => {
+          setSuccess(false);
+        }, 10000);
+      }
+      return () => {
+        if (successTimeoutRef.current) clearTimeout(successTimeoutRef.current);
+      };
+    }, [success]);
+
+    // Hide error alert after 10 seconds
+    React.useEffect(() => {
+      if (error) {
+        if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
+        errorTimeoutRef.current = setTimeout(() => {
+          setError('');
+        }, 10000);
+      }
+      return () => {
+        if (errorTimeoutRef.current) clearTimeout(errorTimeoutRef.current);
+      };
+    }, [error]);
     const requiredFieldsFilled =
       form.fullName.trim() && form.email.trim() && form.subject.trim() && form.message.trim();
 
@@ -141,8 +170,8 @@ runtime.registerComponent(
             placeholder="Your message here"
             rows={4}
           />
-          {error && <div className="mt-2 text-red-500">{error}</div>}
-          {success && <div className="mt-2 text-green-500">Message sent successfully!</div>}
+          {error && <Alert message={error} variant="error" />}
+          {success && <Alert message={'Message sent successfully!'} variant="success" />}
           <Button
             type="submit"
             className="mt-4"
