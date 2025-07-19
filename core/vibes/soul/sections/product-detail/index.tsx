@@ -125,7 +125,7 @@ export function ProductDetail<F extends Field>({
                   </Stream>
 
                   <p className="text-md mb-6 font-bold underline">
-                    <Link href={'/contact-us'}>Need a quote on a big project? Click Here</Link>
+                    <Link href={'/contact'}>Need a quote on a big project? Click Here</Link>
                   </p>
 
                   <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
