@@ -6,6 +6,7 @@ import { writeBuildConfig } from './build-config/writer';
 import { client } from './client';
 import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
+import withPlaiceholder from "@plaiceholder/next";
 
 const withNextIntl = createNextIntlPlugin({
   experimental: {
@@ -112,6 +113,9 @@ export default async (): Promise<NextConfig> => {
 
   // Apply withNextIntl to the config
   nextConfig = withNextIntl(nextConfig);
+
+  // Apply withPlaiceholder to the config
+  nextConfig = withPlaiceholder(nextConfig);
 
   if (process.env.ANALYZE === 'true') {
     const withBundleAnalyzer = bundleAnalyzer();
