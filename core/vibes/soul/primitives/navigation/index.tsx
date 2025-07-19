@@ -733,23 +733,20 @@ const MobileItem = ({ category, idx }: { category: any; idx: number }) => {
         <ul className="pl-4">
           {(category.groups ?? []).map((group: any, groupIdx: number) => (
             <li key={`group-${groupIdx}`} className="mb-1">
-              {group.label && (
-                <span className="block px-2 py-1 text-xs font-bold text-gray-700">
+              {group.label && group.href ? (
+                <Link
+                  href={group.href}
+                  className="block rounded-lg px-3 py-2 text-xs font-bold hover:bg-blue-50"
+                >
                   {group.label}
-                </span>
+                </Link>
+              ) : (
+                group.label && (
+                  <span className="block px-2 py-1 text-xs font-bold text-gray-700">
+                    {group.label}
+                  </span>
+                )
               )}
-              <ul>
-                {group.links.map((link: any, linkIdx: number) => (
-                  <li key={`link-${linkIdx}`}>
-                    <Link
-                      href={link.href}
-                      className="block rounded-lg px-3 py-2 text-xs text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))]"
-                    >
-                      {link.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
             </li>
           ))}
         </ul>
