@@ -22,7 +22,7 @@
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
-    "@types/node": "^22.15.30",
+    "@types/node": "^22.16.5",
     "dotenv-cli": "^8.0.0",
     "eslint": "^8.57.1",
     "prettier": "^3.6.2",
