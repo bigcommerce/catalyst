@@ -1,9 +1,12 @@
 import { Command } from 'commander';
 import consola from 'consola';
 import { cp } from 'node:fs/promises';
-import { relative, sep } from 'node:path';
+import { join, relative, sep } from 'node:path';
+import { addDevDependency, installDependencies, runScript } from 'nypm';
 
 import { mkTempDir } from '../lib/mk-temp-dir';
+
+const OPENNEXTJS_CLOUDFLARE_VERSION = '1.5.1';
 
 const SKIP_DIRS = new Set([
   'node_modules',
@@ -35,6 +38,7 @@ export const build = new Command('build')
       consola.start('Copying project to temp directory...');
 
       const cwd = process.cwd();
+      const packageManager = 'pnpm';
 
       await cp(cwd, tmpDir, {
         recursive: true,
@@ -44,6 +48,29 @@ export const build = new Command('build')
       });
 
       consola.success(`Project copied to temp directory: ${tmpDir}`);
+
+      consola.start('Installing dependencies...');
+
+      await installDependencies({
+        cwd: tmpDir,
+        packageManager,
+      });
+
+      await addDevDependency(`@opennextjs/cloudflare@${OPENNEXTJS_CLOUDFLARE_VERSION}`, {
+        cwd: join(tmpDir, 'core'),
+        packageManager,
+      });
+
+      consola.success('Dependencies installed');
+
+      consola.start('Building dependencies...');
+
+      await runScript('build', {
+        cwd: join(tmpDir, 'packages', 'client'),
+        packageManager,
+      });
+
+      consola.success('Dependencies built');
     } catch (error) {
       consola.error(error);
       process.exitCode = 1;
