@@ -304,8 +304,8 @@ importers:
         specifier: ^0.6.0
         version: 0.6.0
       zod:
-        specifier: ^3.25.51
-        version: 3.25.51
+        specifier: ^4.0.5
+        version: 4.0.5
     devDependencies:
       '@bigcommerce/eslint-config':
         specifier: ^2.11.0
@@ -7833,6 +7833,9 @@ packages:
 
   zod@3.25.51:
     resolution: {integrity: sha512-TQSnBldh+XSGL+opiSIq0575wvDPqu09AqWe1F7JhUMKY+M91/aGlK4MhpVNO7MgYfHcVCB1ffwAUTJzllKJqg==}
+
+  zod@4.0.5:
+    resolution: {integrity: sha512-/5UuuRPStvHXu7RS+gmvRf4NXrNxpSllGwDnCBcJZtQsKrviYXm54yDGV2KYNLT5kq0lHGcl7lqWJLgSaG+tgA==}
 
 snapshots:
 
@@ -16170,3 +16173,5 @@ snapshots:
   zod@3.23.8: {}
 
   zod@3.25.51: {}
+
+  zod@4.0.5: {}

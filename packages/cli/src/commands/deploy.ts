@@ -5,11 +5,9 @@ import { access, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { z } from 'zod';
 
-import { BigCommerceResponse } from '../types';
-
 const UploadSignatureSchema = z.object({
   data: z.object({
-    upload_url: z.string().url(),
+    upload_url: z.url(),
     upload_uuid: z.string(),
   }),
 });
@@ -72,13 +70,8 @@ export const generateUploadSignature = async (
       process.exit(1);
     }
 
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    const json = (await response.json()) as BigCommerceResponse<{
-      upload_url: string;
-      upload_uuid: string;
-    }>;
-
-    const { data } = UploadSignatureSchema.parse(json);
+    const res: unknown = await response.json();
+    const { data } = UploadSignatureSchema.parse(res);
 
     consola.success('Upload signature generated.');
 
