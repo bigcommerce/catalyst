@@ -6,7 +6,7 @@ import { addDevDependency, installDependencies, runScript } from 'nypm';
 
 import { mkTempDir } from '../lib/mk-temp-dir';
 
-const OPENNEXTJS_CLOUDFLARE_VERSION = '1.5.1';
+const OPENNEXTJS_CLOUDFLARE_VERSION = '1.5.2';
 
 const SKIP_DIRS = new Set([
   'node_modules',

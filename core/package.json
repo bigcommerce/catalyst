@@ -50,7 +50,7 @@
     "lodash.debounce": "^4.0.8",
     "lru-cache": "^11.1.0",
     "lucide-react": "^0.474.0",
-    "next": "15.4.0-canary.114",
+    "next": "15.4.2-canary.10",
     "next-auth": "5.0.0-beta.25",
     "next-intl": "^4.1.0",
     "nuqs": "^2.4.3",
