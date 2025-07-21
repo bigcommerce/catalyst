@@ -3,8 +3,16 @@ import { Command, Option } from 'commander';
 import { consola } from 'consola';
 import { access, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import { z } from 'zod';
 
 import { BigCommerceResponse } from '../types';
+
+const UploadSignatureSchema = z.object({
+  data: z.object({
+    upload_url: z.string().url(),
+    upload_uuid: z.string(),
+  }),
+});
 
 export const generateBundleZip = async (rootDir: string) => {
   consola.info('Generating bundle...');
@@ -65,10 +73,12 @@ export const generateUploadSignature = async (
     }
 
     // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-    const { data } = (await response.json()) as BigCommerceResponse<{
+    const json = (await response.json()) as BigCommerceResponse<{
       upload_url: string;
       upload_uuid: string;
     }>;
+
+    const { data } = UploadSignatureSchema.parse(json);
 
     consola.success('Upload signature generated.');
 

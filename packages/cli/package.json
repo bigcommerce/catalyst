@@ -25,7 +25,8 @@
     "chalk": "^5.3.0",
     "commander": "^14.0.0",
     "consola": "^3.4.2",
-    "nypm": "^0.6.0"
+    "nypm": "^0.6.0",
+    "zod": "^3.25.51"
   },
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",
