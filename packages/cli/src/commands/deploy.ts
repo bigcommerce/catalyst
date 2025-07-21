@@ -1,5 +1,5 @@
 import AdmZip from 'adm-zip';
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import { consola } from 'consola';
 import { access, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
@@ -111,20 +111,45 @@ export const uploadBundleZip = async (uploadUrl: string, rootDir: string) => {
 };
 
 interface DeployOptions {
+  storeHash?: string;
+  accessToken?: string;
   rootDir: string;
   apiHost: string;
 }
 
 export const deploy = new Command('deploy')
   .description('Deploy the application to Cloudflare')
-  .argument('<storeHash>')
-  .argument('<accessToken>')
-  .option('--root-dir <rootDir>', 'Root directory', process.cwd())
-  .option('--api-host <apiHost>', 'API host endpoint', 'api.bigcommerce.com')
-  .action(async (storeHash: string, accessToken: string, opts: DeployOptions) => {
+  .addOption(
+    new Option(
+      '--store-hash <hash>',
+      'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
+    ).env('BIGCOMMERCE_STORE_HASH'),
+  )
+  .addOption(
+    new Option(
+      '--access-token <token>',
+      'BigCommerce access token. Can be found after creating a store-level API account.',
+    ).env('BIGCOMMERCE_ACCESS_TOKEN'),
+  )
+  .option('--root-dir <rootDir>', 'Root directory to deploy from.', process.cwd())
+  .option(
+    '--api-host <apiHost>',
+    'Modifies API host endpoint. Useful for testing other environments.',
+    'api.bigcommerce.com',
+  )
+  .action(async (opts: DeployOptions) => {
+    if (!opts.storeHash || !opts.accessToken) {
+      consola.error('Missing store hash and access token.');
+      process.exit(1);
+    }
+
     await generateBundleZip(opts.rootDir);
 
-    const uploadSignature = await generateUploadSignature(storeHash, accessToken, opts.apiHost);
+    const uploadSignature = await generateUploadSignature(
+      opts.storeHash,
+      opts.accessToken,
+      opts.apiHost,
+    );
 
     await uploadBundleZip(uploadSignature.upload_url, opts.rootDir);
 
