@@ -4,6 +4,7 @@ import { cp } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 import { addDevDependency, installDependencies, runScript } from 'nypm';
 
+import { getModuleCliPath } from '../lib/get-module-cli-path';
 import { mkTempDir } from '../lib/mk-temp-dir';
 
 const OPENNEXTJS_CLOUDFLARE_VERSION = '1.5.2';
@@ -71,6 +72,15 @@ export const build = new Command('build')
       });
 
       consola.success('Dependencies built');
+
+      consola.start('Copying templates...');
+
+      await cp(join(getModuleCliPath(), 'templates'), join(tmpDir, 'core'), {
+        recursive: true,
+        force: true,
+      });
+
+      consola.success('Templates copied');
     } catch (error) {
       consola.error(error);
       process.exitCode = 1;

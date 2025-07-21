@@ -9,7 +9,7 @@ const config = {
     'import/no-named-as-default': 'off',
     '@typescript-eslint/naming-convention': 'off',
   },
-  ignorePatterns: ['/dist/**'],
+  ignorePatterns: ['/dist/**', '/templates/**'],
 };
 
 module.exports = config;
