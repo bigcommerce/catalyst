@@ -134,12 +134,12 @@ export const deploy = new Command('deploy')
       'BigCommerce access token. Can be found after creating a store-level API account.',
     ).env('BIGCOMMERCE_ACCESS_TOKEN'),
   )
-  .option('--root-dir <rootDir>', 'Root directory to deploy from.', process.cwd())
-  .option(
-    '--api-host <apiHost>',
-    'Modifies API host endpoint. Useful for testing other environments.',
-    'api.bigcommerce.com',
+  .addOption(
+    new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
+      .env('BIGCOMMERCE_API_HOST')
+      .default('api.bigcommerce.com'),
   )
+  .option('--root-dir <rootDir>', 'Root directory to deploy from.', process.cwd())
   .action(async (opts: DeployOptions) => {
     if (!opts.storeHash || !opts.accessToken) {
       consola.error('Missing store hash and access token.');
