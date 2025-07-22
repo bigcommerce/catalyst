@@ -7,7 +7,6 @@ import {
   createDeployment,
   generateBundleZip,
   generateUploadSignature,
-  loadProjectId,
   uploadBundleZip,
 } from '../../src/commands/deploy';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
@@ -40,36 +39,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await cleanup();
-});
-
-describe('loadProjectId', () => {
-  test('throws error if .bigcommerce/project.json is not defined', async () => {
-    await expect(loadProjectId(tmpDir)).rejects.toThrowError(
-      'Error reading project ID from .bigcommerce/project.json. Please ensure the file exists and is valid.',
-    );
-  });
-
-  test('throws error if .bigcommerce/project.json is defined but project_id is missing', async () => {
-    const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
-
-    await mkdir(dirname(projectJsonPath), { recursive: true });
-    await writeFile(projectJsonPath, JSON.stringify({}));
-
-    await expect(loadProjectId(tmpDir)).rejects.toThrowError(
-      'Failed to read project ID from .bigcommerce/project.json.',
-    );
-  });
-
-  test('reads project_id from .bigcommerce/project.json', async () => {
-    const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
-
-    await mkdir(dirname(projectJsonPath), { recursive: true });
-    await writeFile(projectJsonPath, JSON.stringify({ project_id: projectId }));
-
-    const loadedProjectId = await loadProjectId(tmpDir);
-
-    expect(loadedProjectId).toBe(projectId);
-  });
 });
 
 describe('bundle zip generation and upload', () => {

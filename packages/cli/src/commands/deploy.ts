@@ -1,13 +1,10 @@
 import AdmZip from 'adm-zip';
 import { Command, Option } from 'commander';
+import Conf from 'conf';
 import { consola } from 'consola';
 import { access, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { z } from 'zod';
-
-const ProjectJsonSchema = z.object({
-  project_id: z.uuid(),
-});
 
 const UploadSignatureSchema = z.object({
   data: z.object({
@@ -22,28 +19,35 @@ const CreateDeploymentSchema = z.object({
   }),
 });
 
-export const loadProjectId = async (rootDir: string) => {
-  const projectJsonPath = join(rootDir, '.bigcommerce/project.json');
+const loadProjectId = (rootDir: string) => {
+  const config = new Conf({
+    cwd: join(rootDir, '.bigcommerce'),
+    projectSuffix: '',
+    configName: 'project',
+    schema: {
+      projectId: {
+        type: 'string',
+      },
+    },
+  });
 
-  try {
-    await access(projectJsonPath);
-  } catch {
-    throw new Error(
-      'Error reading project ID from .bigcommerce/project.json. Please ensure the file exists and is valid.',
-    );
+  const projectId = config.get('projectId');
+
+  if (!projectId) {
+    throw new Error('Missing projectId in .bigcommerce/project.json. Please ensure it is defined.');
   }
 
-  const file = await readFile(projectJsonPath, 'utf8');
-
-  let parsed;
+  let projectUuid;
 
   try {
-    parsed = ProjectJsonSchema.parse(JSON.parse(file));
+    const projectIdSchema = z.uuid();
+
+    projectUuid = projectIdSchema.parse(projectId);
   } catch {
-    throw new Error('Failed to read project ID from .bigcommerce/project.json.');
+    throw new Error('Invalid projectId format. Please ensure it is a valid UUID.');
   }
 
-  return parsed.project_id;
+  return projectUuid;
 };
 
 export const generateBundleZip = async (rootDir: string) => {
@@ -134,7 +138,7 @@ export const uploadBundleZip = async (uploadUrl: string, rootDir: string) => {
 };
 
 export const createDeployment = async (
-  projectId: string,
+  projectUuid: string,
   uploadUuid: string,
   storeHash: string,
   accessToken: string,
@@ -150,7 +154,7 @@ export const createDeployment = async (
       Accept: 'application/json',
     },
     body: JSON.stringify({
-      project_uuid: projectId,
+      project_uuid: projectUuid,
       upload_uuid: uploadUuid,
     }),
   });
@@ -199,7 +203,9 @@ export const deploy = new Command('deploy')
   .option('--root-dir <rootDir>', 'Root directory to deploy from.', process.cwd())
   .action(async (opts) => {
     try {
-      const projectId = opts.projectId ?? (await loadProjectId(opts.rootDir));
+      let projectUuid = opts.projectId;
+
+      projectUuid ??= loadProjectId(opts.rootDir);
 
       await generateBundleZip(opts.rootDir);
 
@@ -212,7 +218,7 @@ export const deploy = new Command('deploy')
       await uploadBundleZip(uploadSignature.upload_url, opts.rootDir);
 
       await createDeployment(
-        projectId,
+        projectUuid,
         uploadSignature.upload_uuid,
         opts.storeHash,
         opts.accessToken,
