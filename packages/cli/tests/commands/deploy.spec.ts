@@ -1,5 +1,4 @@
 import AdmZip from 'adm-zip';
-import Conf from 'conf';
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
@@ -8,16 +7,13 @@ import {
   createDeployment,
   generateBundleZip,
   generateUploadSignature,
-  loadProjectId,
   uploadBundleZip,
 } from '../../src/commands/deploy';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
-import { ProjectConfig } from '../../src/types';
 
 let tmpDir: string;
 let cleanup: () => Promise<void>;
 let outputZip: string;
-let config: Conf<ProjectConfig>;
 
 const projectId = 'a23f5785-fd99-4a94-9fb3-945551623923';
 const storeHash = 'test-store';
@@ -29,15 +25,6 @@ const uploadUrl = 'https://mock-upload-url.com';
 beforeAll(async () => {
   // Setup test directories and files
   [tmpDir, cleanup] = await mkTempDir();
-
-  config = new Conf<ProjectConfig>({
-    cwd: join(tmpDir, '.bigcommerce'),
-    projectSuffix: '',
-    configName: 'project',
-    schema: {
-      projectId: { type: 'string', format: 'uuid' },
-    },
-  });
 
   const workerPath = join(tmpDir, '.bigcommerce/dist/worker.js');
   const assetsDir = join(tmpDir, '.bigcommerce/dist/assets');
@@ -52,36 +39,6 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await cleanup();
-});
-
-describe('loadProjectId', () => {
-  test('throws error if .bigcommerce/project.json is not defined', () => {
-    expect(() => loadProjectId(config)).toThrowError(
-      'Missing projectId in .bigcommerce/project.json. Please ensure it is defined.',
-    );
-  });
-
-  test('throws error if .bigcommerce/project.json is defined but projectId is missing', async () => {
-    const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
-
-    await mkdir(dirname(projectJsonPath), { recursive: true });
-    await writeFile(projectJsonPath, JSON.stringify({}));
-
-    expect(() => loadProjectId(config)).toThrowError(
-      'Missing projectId in .bigcommerce/project.json. Please ensure it is defined.',
-    );
-  });
-
-  test('reads projectId from .bigcommerce/project.json', async () => {
-    const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
-
-    await mkdir(dirname(projectJsonPath), { recursive: true });
-    await writeFile(projectJsonPath, JSON.stringify({ projectId }));
-
-    const loadedProjectId = loadProjectId(config);
-
-    expect(loadedProjectId).toBe(projectId);
-  });
 });
 
 describe('bundle zip generation and upload', () => {
