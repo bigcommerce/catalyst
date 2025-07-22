@@ -6,6 +6,8 @@ import { access, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { z } from 'zod';
 
+import { ProjectConfig } from '../types';
+
 const UploadSignatureSchema = z.object({
   data: z.object({
     upload_url: z.url(),
@@ -19,35 +21,22 @@ const CreateDeploymentSchema = z.object({
   }),
 });
 
-const loadProjectId = (rootDir: string) => {
-  const config = new Conf({
-    cwd: join(rootDir, '.bigcommerce'),
-    projectSuffix: '',
-    configName: 'project',
-    schema: {
-      projectId: {
-        type: 'string',
-      },
-    },
-  });
-
+export const loadProjectId = (config: Conf<ProjectConfig>) => {
   const projectId = config.get('projectId');
 
-  if (!projectId) {
-    throw new Error('Missing projectId in .bigcommerce/project.json. Please ensure it is defined.');
-  }
-
-  let projectUuid;
+  const projectIdSchema = z.uuid();
 
   try {
-    const projectIdSchema = z.uuid();
-
-    projectUuid = projectIdSchema.parse(projectId);
+    return projectIdSchema.parse(projectId);
   } catch {
+    if (!projectId) {
+      throw new Error(
+        'Missing projectId in .bigcommerce/project.json. Please ensure it is defined.',
+      );
+    }
+
     throw new Error('Invalid projectId format. Please ensure it is a valid UUID.');
   }
-
-  return projectUuid;
 };
 
 export const generateBundleZip = async (rootDir: string) => {
@@ -202,10 +191,19 @@ export const deploy = new Command('deploy')
   )
   .option('--root-dir <rootDir>', 'Root directory to deploy from.', process.cwd())
   .action(async (opts) => {
+    const config = new Conf<ProjectConfig>({
+      cwd: join(opts.rootDir, '.bigcommerce'),
+      projectSuffix: '',
+      configName: 'project',
+      schema: {
+        projectId: { type: 'string', format: 'uuid' },
+      },
+    });
+
     try {
       let projectUuid = opts.projectId;
 
-      projectUuid ??= loadProjectId(opts.rootDir);
+      projectUuid ??= loadProjectId(config);
 
       await generateBundleZip(opts.rootDir);
 
