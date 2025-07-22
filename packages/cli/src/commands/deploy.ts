@@ -5,12 +5,46 @@ import { access, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { z } from 'zod';
 
+const ProjectJsonSchema = z.object({
+  project_id: z.uuid(),
+});
+
 const UploadSignatureSchema = z.object({
   data: z.object({
     upload_url: z.url(),
     upload_uuid: z.string(),
   }),
 });
+
+const CreateDeploymentSchema = z.object({
+  data: z.object({
+    deployment_uuid: z.uuid(),
+  }),
+});
+
+export const loadProjectId = async (rootDir: string) => {
+  const projectJsonPath = join(rootDir, '.bigcommerce/project.json');
+
+  try {
+    await access(projectJsonPath);
+  } catch {
+    throw new Error(
+      'Error reading project ID from .bigcommerce/project.json. Please ensure the file exists and is valid.',
+    );
+  }
+
+  const file = await readFile(projectJsonPath, 'utf8');
+
+  let parsed;
+
+  try {
+    parsed = ProjectJsonSchema.parse(JSON.parse(file));
+  } catch {
+    throw new Error('Failed to read project ID from .bigcommerce/project.json.');
+  }
+
+  return parsed.project_id;
+};
 
 export const generateBundleZip = async (rootDir: string) => {
   consola.info('Generating bundle...');
@@ -21,16 +55,14 @@ export const generateBundleZip = async (rootDir: string) => {
   try {
     await access(distDir);
   } catch {
-    consola.error(`Dist directory not found: ${distDir}`);
-    process.exit(1);
+    throw new Error(`Dist directory not found: ${distDir}`);
   }
 
   // Check if .bigcommerce/dist is not empty
   const buildDirContents = await readdir(distDir);
 
   if (buildDirContents.length === 0) {
-    consola.error(`Dist directory is empty: ${distDir}`);
-    process.exit(1);
+    throw new Error(`Dist directory is empty: ${distDir}`);
   }
 
   const outputZip = join(distDir, 'bundle.zip');
@@ -51,35 +83,29 @@ export const generateUploadSignature = async (
 ) => {
   consola.info('Generating upload signature...');
 
-  try {
-    const response = await fetch(
-      `https://${apiHost}/stores/${storeHash}/v3/headless/deployments/uploads`,
-      {
-        method: 'POST',
-        headers: {
-          'X-Auth-Token': accessToken,
-          'Content-Type': 'application/json',
-          Accept: 'application/json',
-        },
-        body: JSON.stringify({}),
+  const response = await fetch(
+    `https://${apiHost}/stores/${storeHash}/v3/headless/deployments/uploads`,
+    {
+      method: 'POST',
+      headers: {
+        'X-Auth-Token': accessToken,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
-    );
+      body: JSON.stringify({}),
+    },
+  );
 
-    if (!response.ok) {
-      consola.error(`Failed to fetch upload signature: ${response.status} ${response.statusText}`);
-      process.exit(1);
-    }
-
-    const res: unknown = await response.json();
-    const { data } = UploadSignatureSchema.parse(res);
-
-    consola.success('Upload signature generated.');
-
-    return data;
-  } catch (error) {
-    consola.error('Error in generateUploadSignature:', error);
-    process.exit(1);
+  if (!response.ok) {
+    throw new Error(`Failed to fetch upload signature: ${response.status} ${response.statusText}`);
   }
+
+  const res: unknown = await response.json();
+  const { data } = UploadSignatureSchema.parse(res);
+
+  consola.success('Upload signature generated.');
+
+  return data;
 };
 
 export const uploadBundleZip = async (uploadUrl: string, rootDir: string) => {
@@ -90,27 +116,55 @@ export const uploadBundleZip = async (uploadUrl: string, rootDir: string) => {
   // Read the zip file as a buffer
   const fileBuffer = await readFile(zipPath);
 
-  try {
-    const response = await fetch(uploadUrl, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/zip',
-      },
-      body: fileBuffer,
-    });
+  const response = await fetch(uploadUrl, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/zip',
+    },
+    body: fileBuffer,
+  });
 
-    if (!response.ok) {
-      consola.error(`Failed to upload bundle: ${response.status} ${response.statusText}`);
-      process.exit(1);
-    }
-
-    consola.success('Bundle uploaded successfully.');
-
-    return true;
-  } catch (error) {
-    consola.error('Error in uploadBundleZip:', error);
-    process.exit(1);
+  if (!response.ok) {
+    throw new Error(`Failed to upload bundle: ${response.status} ${response.statusText}`);
   }
+
+  consola.success('Bundle uploaded successfully.');
+
+  return true;
+};
+
+export const createDeployment = async (
+  projectId: string,
+  uploadUuid: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+) => {
+  consola.info('Creating deployment...');
+
+  const response = await fetch(`https://${apiHost}/stores/${storeHash}/v3/headless/deployments`, {
+    method: 'POST',
+    headers: {
+      'X-Auth-Token': accessToken,
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+    body: JSON.stringify({
+      project_uuid: projectId,
+      upload_uuid: uploadUuid,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to create deployment: ${response.status} ${response.statusText}`);
+  }
+
+  const res: unknown = await response.json();
+  const { data } = CreateDeploymentSchema.parse(res);
+
+  consola.success('Deployment started...');
+
+  return data;
 };
 
 export const deploy = new Command('deploy')
@@ -136,18 +190,40 @@ export const deploy = new Command('deploy')
       .env('BIGCOMMERCE_API_HOST')
       .default('api.bigcommerce.com'),
   )
+  .addOption(
+    new Option(
+      '--project-id <id>',
+      'BigCommerce headless project ID. Can be found via the BigCommerce API (GET /v3/headless/projects).',
+    ).env('BIGCOMMERCE_PROJECT_ID'),
+  )
   .option('--root-dir <rootDir>', 'Root directory to deploy from.', process.cwd())
   .action(async (opts) => {
-    await generateBundleZip(opts.rootDir);
+    try {
+      const projectId = opts.projectId ?? (await loadProjectId(opts.rootDir));
 
-    const uploadSignature = await generateUploadSignature(
-      opts.storeHash,
-      opts.accessToken,
-      opts.apiHost,
-    );
+      await generateBundleZip(opts.rootDir);
 
-    await uploadBundleZip(uploadSignature.upload_url, opts.rootDir);
+      const uploadSignature = await generateUploadSignature(
+        opts.storeHash,
+        opts.accessToken,
+        opts.apiHost,
+      );
 
-    // @todo rest of upload flow
+      await uploadBundleZip(uploadSignature.upload_url, opts.rootDir);
+
+      await createDeployment(
+        projectId,
+        uploadSignature.upload_uuid,
+        opts.storeHash,
+        opts.accessToken,
+        opts.apiHost,
+      );
+
+      // @todo poll for deployment status
+    } catch (error) {
+      consola.error(error);
+      process.exit(1);
+    }
+
     process.exit(0);
   });

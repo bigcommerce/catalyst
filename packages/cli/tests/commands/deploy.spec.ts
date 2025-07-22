@@ -4,8 +4,10 @@ import { dirname, join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 import {
+  createDeployment,
   generateBundleZip,
   generateUploadSignature,
+  loadProjectId,
   uploadBundleZip,
 } from '../../src/commands/deploy';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
@@ -13,6 +15,13 @@ import { mkTempDir } from '../../src/lib/mk-temp-dir';
 let tmpDir: string;
 let cleanup: () => Promise<void>;
 let outputZip: string;
+
+const projectId = 'a23f5785-fd99-4a94-9fb3-945551623923';
+const storeHash = 'test-store';
+const accessToken = 'test-token';
+const apiHost = 'api.bigcommerce.com';
+const uploadUuid = '0e93ce5f-6f91-4236-87ec-ca79627f31ba';
+const uploadUrl = 'https://mock-upload-url.com';
 
 beforeAll(async () => {
   // Setup test directories and files
@@ -33,7 +42,37 @@ afterAll(async () => {
   await cleanup();
 });
 
-describe('bundle zip generation', () => {
+describe('loadProjectId', () => {
+  test('throws error if .bigcommerce/project.json is not defined', async () => {
+    await expect(loadProjectId(tmpDir)).rejects.toThrowError(
+      'Error reading project ID from .bigcommerce/project.json. Please ensure the file exists and is valid.',
+    );
+  });
+
+  test('throws error if .bigcommerce/project.json is defined but project_id is missing', async () => {
+    const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
+
+    await mkdir(dirname(projectJsonPath), { recursive: true });
+    await writeFile(projectJsonPath, JSON.stringify({}));
+
+    await expect(loadProjectId(tmpDir)).rejects.toThrowError(
+      'Failed to read project ID from .bigcommerce/project.json.',
+    );
+  });
+
+  test('reads project_id from .bigcommerce/project.json', async () => {
+    const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
+
+    await mkdir(dirname(projectJsonPath), { recursive: true });
+    await writeFile(projectJsonPath, JSON.stringify({ project_id: projectId }));
+
+    const loadedProjectId = await loadProjectId(tmpDir);
+
+    expect(loadedProjectId).toBe(projectId);
+  });
+});
+
+describe('bundle zip generation and upload', () => {
   test('creates bundle.zip from build output', async () => {
     await generateBundleZip(tmpDir);
 
@@ -61,25 +100,33 @@ describe('bundle zip generation', () => {
     // Check for output/worker.js
     expect(entries).toContain('output/worker.js');
   });
-});
 
-describe('bundle zip upload', () => {
   test('fetches upload signature and uploads bundle zip', async () => {
-    const storeHash = 'test-store';
-    const accessToken = 'test-token';
-    const apiHost = 'api.bigcommerce.com';
-
     // Test generateUploadSignature
     const signature = await generateUploadSignature(storeHash, accessToken, apiHost);
 
-    expect(signature.upload_url).toBe('https://mock-upload-url.com');
-    expect(signature.upload_uuid).toBe('mock-uuid');
+    expect(signature.upload_url).toBe(uploadUrl);
+    expect(signature.upload_uuid).toBe(uploadUuid);
 
     // Test uploadBundleZip
     await generateBundleZip(tmpDir); // Ensure zip exists
 
-    const uploadResult = await uploadBundleZip('https://mock-upload-url.com', tmpDir);
+    const uploadResult = await uploadBundleZip(uploadUrl, tmpDir);
 
     expect(uploadResult).toBe(true);
+  });
+});
+
+describe('deployment and polling', () => {
+  test('creates a deployment', async () => {
+    const deployment = await createDeployment(
+      projectId,
+      uploadUuid,
+      storeHash,
+      accessToken,
+      apiHost,
+    );
+
+    expect(deployment.deployment_uuid).toBe('5b29c3c0-5f68-44fe-99e5-06492babf7be');
   });
 });
