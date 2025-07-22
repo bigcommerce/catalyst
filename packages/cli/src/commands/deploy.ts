@@ -113,26 +113,23 @@ export const uploadBundleZip = async (uploadUrl: string, rootDir: string) => {
   }
 };
 
-interface DeployOptions {
-  storeHash?: string;
-  accessToken?: string;
-  rootDir: string;
-  apiHost: string;
-}
-
 export const deploy = new Command('deploy')
   .description('Deploy the application to Cloudflare')
   .addOption(
     new Option(
       '--store-hash <hash>',
       'BigCommerce store hash. Can be found in the URL of your store Control Panel.',
-    ).env('BIGCOMMERCE_STORE_HASH'),
+    )
+      .env('BIGCOMMERCE_STORE_HASH')
+      .makeOptionMandatory(),
   )
   .addOption(
     new Option(
       '--access-token <token>',
       'BigCommerce access token. Can be found after creating a store-level API account.',
-    ).env('BIGCOMMERCE_ACCESS_TOKEN'),
+    )
+      .env('BIGCOMMERCE_ACCESS_TOKEN')
+      .makeOptionMandatory(),
   )
   .addOption(
     new Option('--api-host <host>', 'BigCommerce API host. The default is api.bigcommerce.com.')
@@ -140,12 +137,7 @@ export const deploy = new Command('deploy')
       .default('api.bigcommerce.com'),
   )
   .option('--root-dir <rootDir>', 'Root directory to deploy from.', process.cwd())
-  .action(async (opts: DeployOptions) => {
-    if (!opts.storeHash || !opts.accessToken) {
-      consola.error('Missing store hash and access token.');
-      process.exit(1);
-    }
-
+  .action(async (opts) => {
     await generateBundleZip(opts.rootDir);
 
     const uploadSignature = await generateUploadSignature(
