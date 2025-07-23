@@ -10,6 +10,7 @@ import {
   useActionState,
   useEffect,
   useOptimistic,
+  useRef,
 } from 'react';
 import { useFormStatus } from 'react-dom';
 
@@ -175,6 +176,10 @@ export function CartClient<LineItem extends CartLineItem>({
   shipping,
 }: CartProps<LineItem>) {
   const events = useEvents();
+
+  const batchDeleteTimeout = useRef<NodeJS.Timeout | null>(null);
+  const requestedLineItemsToDelete = useRef<string[]>([]);
+
   const [state, formAction] = useActionState(lineItemAction, {
     lineItems: cart.lineItems,
     lastResult: null,
@@ -312,31 +317,60 @@ export function CartClient<LineItem extends CartLineItem>({
                   deleteLabel={deleteLineItemLabel}
                   incrementLabel={incrementLineItemLabel}
                   lineItem={lineItem}
-                  onSubmit={(formData) => {
-                    startTransition(() => {
-                      formAction(formData);
-                      setOptimisticLineItems(formData);
-
-                      const intent = formData.get('intent');
-
-                      if (intent === 'increment') {
-                        formData.set('quantity', '1');
-
-                        events.onAddToCart?.(formData);
-                      }
-
-                      if (intent === 'decrement') {
-                        formData.set('quantity', '1');
-
-                        events.onRemoveFromCart?.(formData);
-                      }
-
-                      if (intent === 'delete') {
-                        formData.set('quantity', lineItem.quantity.toString());
-
-                        events.onRemoveFromCart?.(formData);
-                      }
+                  onSubmit={(formData: FormData) => {
+                    const submission = parseWithZod(formData, {
+                      schema: cartLineItemActionFormDataSchema,
                     });
+
+                    if (submission.status !== 'success') {
+                      throw new Error('unreachable');
+                    }
+
+                    if (submission.value.intent === 'increment') {
+                      startTransition(() => {
+                        formAction(formData);
+                      });
+
+                      formData.set('quantity', '1');
+
+                      events.onAddToCart?.(formData);
+                    }
+
+                    if (submission.value.intent === 'decrement') {
+                      startTransition(() => {
+                        formAction(formData);
+                      });
+
+                      formData.set('quantity', '1');
+
+                      events.onRemoveFromCart?.(formData);
+                    }
+
+                    if (submission.value.intent === 'delete') {
+                      requestedLineItemsToDelete.current.push(submission.value.id);
+
+                      if (batchDeleteTimeout.current) {
+                        clearTimeout(batchDeleteTimeout.current);
+                      }
+
+                      startTransition(async () => {
+                        setOptimisticLineItems(formData);
+
+                        await new Promise((resolve) => {
+                          batchDeleteTimeout.current = setTimeout(() => {
+                            startTransition(() => {
+                              formData.set('id', requestedLineItemsToDelete.current.join(','));
+
+                              formAction(formData);
+                            });
+
+                            requestedLineItemsToDelete.current = [];
+                            // @todo events.onRemoveFromCart?.(formData);
+                            resolve(true);
+                          }, 1000);
+                        });
+                      });
+                    }
                   }}
                 />
               </div>
