@@ -124,7 +124,9 @@ export function CouponCodeForm({
           ))}
         </div>
       )}
-      {form.errors?.map((error, index) => <FieldError key={index}>{error}</FieldError>)}
+      {form.errors?.map((error, index) => (
+        <FieldError key={index}>{error}</FieldError>
+      ))}
     </div>
   );
 }

@@ -38,6 +38,11 @@
         "node_modules/.cache/tsbuildinfo.json"
       ]
     },
+    "test": {
+      "dependsOn": [
+        "topo"
+      ]
+    },
     "dev": {
       "env": ["*"],
       "cache": false,

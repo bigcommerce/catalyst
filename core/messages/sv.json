@@ -148,7 +148,7 @@
             "orderNumber": "Beställningsnummer",
             "totalPrice": "Total",
             "viewDetails": "Visa detaljer",
-            "emptyState": {
+            "EmptyState": {
                 "title": "Du har inga beställningar",
                 "cta": "Köp nu"
             },
@@ -174,7 +174,10 @@
             "create": "skapa",
             "update": "Uppdatering",
             "setDefault": "Ange som standard",
-            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
+            "EmptyState": {
+                "title": "Du har inga adresser"
+            }
         },
         "Settings": {
             "title": "Kontoinställningar",
@@ -195,7 +198,6 @@
         "items": "{count, plural, =1 {1 objekt} other {# objekt}}",
         "viewWishlist": "Visa lista",
         "noWishlists": "Du har inga önskelistor",
-        "noWishlistsSubtitle": "Skapa en önskelista för att spara dina favoritprodukter.",
         "noWishlistsCallToAction": "Skapa en önskelista",
         "emptyWishlist": "Du har inte lagt till några produkter på den här önskelistan.",
         "share": "Dela med sig",
@@ -246,7 +248,7 @@
             "removeItemSuccess": "Objektet har tagits bort från din önskelista."
         },
         "Button": {
-            "label": "Add to wish list",
+            "label": "Lägg till i önskelista",
             "addToNewWishlist": "Lägg till i en ny önskelista",
             "defaultWishlistName": "Min önskelista",
             "addSuccessMessage": "Produkten har lagts till i din önskelista.",
@@ -494,7 +496,7 @@
                 "search": "Öppna popup-fönstret för sökning"
             },
             "SwitchCurrency": {
-                "label": "Switch currency",
+                "label": "Byt valuta",
                 "invalidCurrency": "Ogiltig valuta",
                 "errorUpdatingCurrency": "Det gick inte att uppdatera valutan för din kundvagn. Försök igen."
             },

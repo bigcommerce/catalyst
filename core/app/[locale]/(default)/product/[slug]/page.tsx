@@ -267,6 +267,18 @@ export default async function Product({ params, searchParams }: Props) {
     return productCardTransformer(relatedProducts, format);
   });
 
+  const streamableMinQuantity = Streamable.from(async () => {
+    const product = await streamableProduct;
+
+    return product.minPurchaseQuantity;
+  });
+
+  const streamableMaxQuantity = Streamable.from(async () => {
+    const product = await streamableProduct;
+
+    return product.maxPurchaseQuantity;
+  });
+
   const streamableAnalyticsData = Streamable.from(async () => {
     const [extendedProduct, pricingProduct] = await Streamable.all([
       streamableProduct,
@@ -313,6 +325,8 @@ export default async function Product({ params, searchParams }: Props) {
             subtitle: baseProduct.brand?.name,
             rating: baseProduct.reviewSummary.averageRating,
             accordions: streameableAccordions,
+            minQuantity: streamableMinQuantity,
+            maxQuantity: streamableMaxQuantity,
           }}
           productId={baseProduct.entityId}
           quantityLabel={t('ProductDetails.quantity')}

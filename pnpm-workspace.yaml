@@ -1,6 +1,14 @@
 packages:
   - core
   - packages/*
+publicHoistPattern:
+  - '@bigcommerce/eslint-*'
+  - '@bigcommerce/eslint-*'
+  - '@next/eslint-*'
+  - '@stylistic/eslint-*'
+  - '@typescript-eslint/*'
+  - 'eslint-config-*'
+  - 'eslint-plugin-*'
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@swc/core'

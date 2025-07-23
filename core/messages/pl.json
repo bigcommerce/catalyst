@@ -148,7 +148,7 @@
             "orderNumber": "Zamówienie #",
             "totalPrice": "Razem",
             "viewDetails": "Zobacz szczegóły",
-            "emptyState": {
+            "EmptyState": {
                 "title": "Nie masz żadnych zamówień",
                 "cta": "Kup teraz"
             },
@@ -174,7 +174,10 @@
             "create": "Utwórz",
             "update": "Aktualizacja",
             "setDefault": "Ustaw jako domyślne",
-            "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
+            "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później.",
+            "EmptyState": {
+                "title": "You don't have any addresses"
+            }
         },
         "Settings": {
             "title": "Ustawienia konta",
@@ -195,7 +198,6 @@
         "items": "{count, plural, =1 {1 pozycja} other {# pozycji(-e)}}",
         "viewWishlist": "Wyświetl listę",
         "noWishlists": "Nie masz żadnych list życzeń",
-        "noWishlistsSubtitle": "Utwórz listę życzeń, aby zapisać swoje ulubione produkty.",
         "noWishlistsCallToAction": "Utwórz listę życzeń",
         "emptyWishlist": "Nie dodano żadnych produktów do tej listy życzeń.",
         "share": "Udostępnij",

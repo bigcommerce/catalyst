@@ -82,7 +82,9 @@ export const ToggleGroup = React.forwardRef<
           </ToggleGroupPrimitive.Item>
         ))}
       </ToggleGroupPrimitive.Root>
-      {errors?.map((error) => <FieldError key={error}>{error}</FieldError>)}
+      {errors?.map((error) => (
+        <FieldError key={error}>{error}</FieldError>
+      ))}
     </div>
   );
 });

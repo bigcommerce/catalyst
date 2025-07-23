@@ -148,7 +148,7 @@
             "orderNumber": "Bestelnr.",
             "totalPrice": "Totaal",
             "viewDetails": "Details weergeven",
-            "emptyState": {
+            "EmptyState": {
                 "title": "U hebt geen bestellingen",
                 "cta": "Nu winkelen"
             },
@@ -174,7 +174,10 @@
             "create": "Aanmaken",
             "update": "Bijwerken",
             "setDefault": "Instellen als standaard",
-            "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+            "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw.",
+            "EmptyState": {
+                "title": "Je hebt geen adressen"
+            }
         },
         "Settings": {
             "title": "Accountinstellingen",
@@ -195,7 +198,6 @@
         "items": "{count, plural, =1 {1 item} other {# items}}",
         "viewWishlist": "Lijstje bekijken",
         "noWishlists": "Je hebt geen verlanglijstjes.",
-        "noWishlistsSubtitle": "Maak een verlanglijstje om je favoriete producten te bewaren.",
         "noWishlistsCallToAction": "Een verlanglijstje maken",
         "emptyWishlist": "Je hebt nog geen producten aan dit verlanglijstje toegevoegd.",
         "share": "Delen",
@@ -246,7 +248,7 @@
             "removeItemSuccess": "Het artikel is verwijderd van je verlanglijstje."
         },
         "Button": {
-            "label": "Add to wish list",
+            "label": "Toevoegen aan verlanglijstje",
             "addToNewWishlist": "Aan nieuw verlanglijstje toevoegen",
             "defaultWishlistName": "Mijn verlanglijstje",
             "addSuccessMessage": "Product is toegevoegd aan je verlanglijstje",
@@ -494,7 +496,7 @@
                 "search": "Popup voor zoeken openen"
             },
             "SwitchCurrency": {
-                "label": "Switch currency",
+                "label": "Valuta wisselen",
                 "invalidCurrency": "Ongeldige valuta",
                 "errorUpdatingCurrency": "Er is een fout opgetreden bij het bijwerken van de valuta voor je winkelwagen. Probeer het opnieuw."
             },
