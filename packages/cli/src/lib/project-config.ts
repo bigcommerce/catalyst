@@ -2,7 +2,7 @@ import Conf from 'conf';
 import { join } from 'path';
 
 export interface ProjectConfigSchema {
-  projectId: string;
+  projectUuid: string;
 }
 
 export class ProjectConfig {
@@ -14,7 +14,7 @@ export class ProjectConfig {
       projectSuffix: '',
       configName: 'project',
       schema: {
-        projectId: { type: 'string', format: 'uuid' },
+        projectUuid: { type: 'string', format: 'uuid' },
       },
     });
   }

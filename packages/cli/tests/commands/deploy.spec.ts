@@ -15,7 +15,7 @@ let tmpDir: string;
 let cleanup: () => Promise<void>;
 let outputZip: string;
 
-const projectId = 'a23f5785-fd99-4a94-9fb3-945551623923';
+const projectUuid = 'a23f5785-fd99-4a94-9fb3-945551623923';
 const storeHash = 'test-store';
 const accessToken = 'test-token';
 const apiHost = 'api.bigcommerce.com';
@@ -89,7 +89,7 @@ describe('bundle zip generation and upload', () => {
 describe('deployment and polling', () => {
   test('creates a deployment', async () => {
     const deployment = await createDeployment(
-      projectId,
+      projectUuid,
       uploadUuid,
       storeHash,
       accessToken,

@@ -9,7 +9,7 @@ let tmpDir: string;
 let cleanup: () => Promise<void>;
 let config: ProjectConfig;
 
-const projectId = 'a23f5785-fd99-4a94-9fb3-945551623923';
+const projectUuid = 'a23f5785-fd99-4a94-9fb3-945551623923';
 
 beforeAll(async () => {
   [tmpDir, cleanup] = await mkTempDir();
@@ -27,8 +27,8 @@ test('throws error if field is missing', async () => {
   await mkdir(dirname(projectJsonPath), { recursive: true });
   await writeFile(projectJsonPath, JSON.stringify({}));
 
-  expect(() => config.get('projectId')).toThrowError(
-    'No `projectId` found in .bigcommerce/project.json.',
+  expect(() => config.get('projectUuid')).toThrowError(
+    'No `projectUuid` found in .bigcommerce/project.json.',
   );
 });
 
@@ -36,10 +36,10 @@ test('throws error if field does not match schema', async () => {
   const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
 
   await mkdir(dirname(projectJsonPath), { recursive: true });
-  await writeFile(projectJsonPath, JSON.stringify({ projectId: 'invalid-uuid' }));
+  await writeFile(projectJsonPath, JSON.stringify({ projectUuid: 'invalid-uuid' }));
 
-  expect(() => config.get('projectId')).toThrowError(
-    'Config schema violation: `projectId` must match format "uuid"',
+  expect(() => config.get('projectUuid')).toThrowError(
+    'Config schema violation: `projectUuid` must match format "uuid"',
   );
 });
 
@@ -49,9 +49,9 @@ test('writes and reads field from .bigcommerce/project.json', async () => {
   await mkdir(dirname(projectJsonPath), { recursive: true });
   await writeFile(projectJsonPath, JSON.stringify({}));
 
-  config.set('projectId', projectId);
+  config.set('projectUuid', projectUuid);
 
-  const modifiedProjectId = config.get('projectId');
+  const modifiedProjectUuid = config.get('projectUuid');
 
-  expect(modifiedProjectId).toBe(projectId);
+  expect(modifiedProjectUuid).toBe(projectUuid);
 });

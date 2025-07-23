@@ -166,16 +166,16 @@ export const deploy = new Command('deploy')
   )
   .addOption(
     new Option(
-      '--project-id <id>',
-      'BigCommerce headless project ID. Can be found via the BigCommerce API (GET /v3/headless/projects).',
-    ).env('BIGCOMMERCE_PROJECT_ID'),
+      '--project-uuid <uuid>',
+      'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/headless/projects).',
+    ).env('BIGCOMMERCE_PROJECT_UUID'),
   )
   .option('--root-dir <rootDir>', 'Root directory to deploy from.', process.cwd())
   .action(async (opts) => {
     const config = new ProjectConfig(opts.rootDir);
 
     try {
-      const projectUuid = opts.projectId ?? config.get('projectId');
+      const projectUuid = opts.projectUuid ?? config.get('projectUuid');
 
       await generateBundleZip(opts.rootDir);
 
