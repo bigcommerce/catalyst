@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+### Patch Changes
+
+- [#2470](https://github.com/bigcommerce/catalyst/pull/2470) [`094b6af`](https://github.com/bigcommerce/catalyst/commit/094b6af34b47065e320ca388f539285f607f4d7a) Thanks [@agurtovoy](https://github.com/agurtovoy)! - feat: add slots for user-provided content on category pages
+
 ## 1.0.0
 
 ### Major Changes
