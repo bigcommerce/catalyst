@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.1.0
+
+### Minor Changes
+
+- [#2477](https://github.com/bigcommerce/catalyst/pull/2477) [`02af32c`](https://github.com/bigcommerce/catalyst/commit/02af32c459719f97e8973a19b6889e5fa73d0c38) Thanks [@bookernath](https://github.com/bookernath)! - Add support for Scripts API/Script Manager scripts rendering via next/script
+
+### Patch Changes
+
+- [#2465](https://github.com/bigcommerce/catalyst/pull/2465) [`a438bb6`](https://github.com/bigcommerce/catalyst/commit/a438bb660bc3bd11adacd125769ba99ba2e1c38d) Thanks [@bookernath](https://github.com/bookernath)! - Bump next to 15.4.0-canary.114 to fix issue with PDPs 500ing on Docker builds
+
+- [#2474](https://github.com/bigcommerce/catalyst/pull/2474) [`989bf97`](https://github.com/bigcommerce/catalyst/commit/989bf974c534a7201782ace9a4bf3fe745e8af01) Thanks [@bookernath](https://github.com/bookernath)! - Respect min/max purchase quantity from API in quantity selector
+
+- [#2464](https://github.com/bigcommerce/catalyst/pull/2464) [`474f960`](https://github.com/bigcommerce/catalyst/commit/474f960c4c428e28874022b36ae2b03e0b301e20) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove edge runtime declarations to be able to run Catalyst with OpenNext.
+
+- [#2468](https://github.com/bigcommerce/catalyst/pull/2468) [`8b64931`](https://github.com/bigcommerce/catalyst/commit/8b6493156a70490c0c35c35d45ebd9ad8f23615c) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+## 1.0.1
+
+### Patch Changes
+
+- [#2448](https://github.com/bigcommerce/catalyst/pull/2448) [`e4444a2`](https://github.com/bigcommerce/catalyst/commit/e4444a2ca83b5b73776c842feff56e47f57344dc) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fixes an issue where the anonymous session wasn't getting cleared after an actual session was established.
+
 ## 1.0.0
 
 ### Major Changes
@@ -189,7 +211,6 @@
 ### Minor Changes
 
 - [#1491](https://github.com/bigcommerce/catalyst/pull/1491) [`313a591`](https://github.com/bigcommerce/catalyst/commit/313a5913181a144b53cb12208132f4a9924e2256) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Bump `next-intl` which includes [some minor changes and updated APIs](<(https://next-intl-docs.vercel.app/blog/next-intl-3-22)>):
-
   - Use new `createNavigation` api.
   - Pass `locale` to redirects.
   - `setRequestLocale` is no longer unstable.
@@ -285,7 +306,6 @@
 - [#1362](https://github.com/bigcommerce/catalyst/pull/1362) [`0814afe`](https://github.com/bigcommerce/catalyst/commit/0814afefca00b2497dddb0622df45f4d50865882) Thanks [@deini](https://github.com/deini)! - If app is not running on Vercel's infra, `<Analytics />` and `<SpeedInsights />` are not rendered.
 
   Opt-out of vercel analytics and speed insights by setting the following env vars to `true`
-
   - `DISABLE_VERCEL_ANALYTICS`
   - `DISABLE_VERCEL_SPEED_INSIGHTS`
 
@@ -374,7 +394,6 @@
 - [#1278](https://github.com/bigcommerce/catalyst/pull/1278) [`f8553c6`](https://github.com/bigcommerce/catalyst/commit/f8553c6c9fb35ab7a143fabd60719c8156269448) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix wrapping author text in BlogPostCard.
 
 - [#1322](https://github.com/bigcommerce/catalyst/pull/1322) [`77ecb4b`](https://github.com/bigcommerce/catalyst/commit/77ecb4bb4f527e079788b0f9dff2468e92d0bc1a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Split auth forms to four different pages:
-
   - /login
   - /register
   - /reset
@@ -424,7 +443,6 @@
 - [#1194](https://github.com/bigcommerce/catalyst/pull/1194) [`b455b05`](https://github.com/bigcommerce/catalyst/commit/b455b05a6121b005bd5147a25c964b9554b1b350) Thanks [@BC-krasnoshapka](https://github.com/BC-krasnoshapka)! - Add basic support for Google Analytics via [Big Open Data Layer](https://developer.bigcommerce.com/docs/integrations/hosted-analytics). BODL and GA4 integration is encapsulated in `bodl` library which hides current complexity and limitations that will be improved in future. It can be extended with more events and integrations with other analytics providers later. Data transformation from Catalyst data models to BODL and firing events is done in client components, as only frontend events are supported by BODL for now.
 
   List of currently supported events:
-
   - View product category
   - View product page
   - Add product to cart

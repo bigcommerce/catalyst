@@ -148,7 +148,7 @@
             "orderNumber": "Núm. de pedido",
             "totalPrice": "Total",
             "viewDetails": "Ver detalles",
-            "emptyState": {
+            "EmptyState": {
                 "title": "No tienes ningún pedido",
                 "cta": "Comprar ahora"
             },
@@ -174,7 +174,10 @@
             "create": "Crear",
             "update": "Actualizar",
             "setDefault": "Establecer como predeterminado",
-            "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
+            "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde.",
+            "EmptyState": {
+                "title": "No tienes ninguna dirección"
+            }
         },
         "Settings": {
             "title": "Configuración de la cuenta",
@@ -195,7 +198,6 @@
         "items": "{count, plural, =1 {1 item} other {# items}}",
         "viewWishlist": "Ver lista",
         "noWishlists": "No tienes ninguna lista de deseos",
-        "noWishlistsSubtitle": "Crea una lista de deseos para guardar tus productos favoritos.",
         "noWishlistsCallToAction": "Crea una lista de deseos",
         "emptyWishlist": "No has añadido productos a esta lista de deseos.",
         "share": "Compartir",
@@ -246,7 +248,7 @@
             "removeItemSuccess": "Se ha eliminado el artículo de tu lista de deseos."
         },
         "Button": {
-            "label": "Add to wish list",
+            "label": "Añadir a la lista de deseos",
             "addToNewWishlist": "Añadir a una nueva lista de deseos",
             "defaultWishlistName": "Mi lista de deseos",
             "addSuccessMessage": "El producto se ha añadido a tu lista de deseos.",
@@ -494,7 +496,7 @@
                 "search": "Abrir ventana de búsqueda"
             },
             "SwitchCurrency": {
-                "label": "Switch currency",
+                "label": "Cambiar divisa",
                 "invalidCurrency": "Moneda no válida",
                 "errorUpdatingCurrency": "Error al actualizar la moneda de tu carrito. Inténtalo de nuevo."
             },

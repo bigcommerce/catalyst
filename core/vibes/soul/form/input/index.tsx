@@ -83,7 +83,9 @@ export const Input = React.forwardRef<
           ref={ref}
         />
       </div>
-      {errors?.map((error) => <FieldError key={error}>{error}</FieldError>)}
+      {errors?.map((error) => (
+        <FieldError key={error}>{error}</FieldError>
+      ))}
     </div>
   );
 });

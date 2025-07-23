@@ -148,7 +148,7 @@
             "orderNumber": "Commande n° ",
             "totalPrice": "Total",
             "viewDetails": "Afficher les détails",
-            "emptyState": {
+            "EmptyState": {
                 "title": "Vous n'avez aucune commande",
                 "cta": "Acheter"
             },
@@ -174,7 +174,10 @@
             "create": "Créer",
             "update": "Mettre à jour",
             "setDefault": "Définir par défaut",
-            "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
+            "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+            "EmptyState": {
+                "title": "Vous n'avez pas d'adresse"
+            }
         },
         "Settings": {
             "title": "Paramètres des comptes",
@@ -195,7 +198,6 @@
         "items": "{count, plural, =1 {1 article} other {# articles}}",
         "viewWishlist": "Afficher la liste",
         "noWishlists": "Vous n'avez pas de listes d'envies",
-        "noWishlistsSubtitle": "Créez une liste d'envies pour sauvegarder vos produits préférés.",
         "noWishlistsCallToAction": "Créer une liste d'envies",
         "emptyWishlist": "Vous n’avez pas ajouté de produits à cette liste d'envies.",
         "share": "Partager",
@@ -246,7 +248,7 @@
             "removeItemSuccess": "L'article a été supprimé de votre liste d'envies."
         },
         "Button": {
-            "label": "Add to wish list",
+            "label": "Ajouter à la liste d'envies",
             "addToNewWishlist": "Ajouter à une nouvelle liste d'envies",
             "defaultWishlistName": "Ma liste d'envies",
             "addSuccessMessage": "Le produit a été ajouté à votre liste d'envies.",
@@ -494,7 +496,7 @@
                 "search": "Ouvrir la fenêtre contextuelle de recherche"
             },
             "SwitchCurrency": {
-                "label": "Switch currency",
+                "label": "Changer de devise",
                 "invalidCurrency": "Devise non valide",
                 "errorUpdatingCurrency": "Erreur lors de la mise à jour de la devise de votre panier. Veuillez réessayer."
             },

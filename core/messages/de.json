@@ -148,7 +148,7 @@
             "orderNumber": "Bestellnr.",
             "totalPrice": "Summe",
             "viewDetails": "Details anzeigen",
-            "emptyState": {
+            "EmptyState": {
                 "title": "Sie haben keine Bestellungen",
                 "cta": "Jetzt shoppen"
             },
@@ -174,7 +174,10 @@
             "create": "erstellen",
             "update": "Update",
             "setDefault": "Als Standard festlegen",
-            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+            "EmptyState": {
+                "title": "Sie haben keine Adressen"
+            }
         },
         "Settings": {
             "title": "Kontoeinstellungen",
@@ -195,7 +198,6 @@
         "items": "{count, plural, =1 {1 Artikel} other {# Artikel}}",
         "viewWishlist": "Liste anzeigen",
         "noWishlists": "Sie haben keine Wunschlisten.",
-        "noWishlistsSubtitle": "Erstellen Sie eine Wunschliste, um Ihre Lieblingsprodukte zu speichern.",
         "noWishlistsCallToAction": "Eine Wunschliste erstellen",
         "emptyWishlist": "Sie haben keine Produkte zu dieser Wunschliste hinzugefügt.",
         "share": "Freigeben",
@@ -246,7 +248,7 @@
             "removeItemSuccess": "Der Artikel wurde von Ihrer Wunschliste entfernt."
         },
         "Button": {
-            "label": "Add to wish list",
+            "label": "Zur Wunschliste hinzufügen",
             "addToNewWishlist": "Zu neuer Wunschliste hinzufügen",
             "defaultWishlistName": "Meine Wunschliste",
             "addSuccessMessage": "Das Produkt wurde Ihrer Wunschliste hinzugefügt.",
@@ -494,7 +496,7 @@
                 "search": "Popup-Fenster zur Suche öffnen"
             },
             "SwitchCurrency": {
-                "label": "Switch currency",
+                "label": "Währung ändern",
                 "invalidCurrency": "Ungültige Währung",
                 "errorUpdatingCurrency": "Fehler beim Aktualisieren der Währung für Ihren Warenkorb. Bitte versuchen Sie es erneut."
             },

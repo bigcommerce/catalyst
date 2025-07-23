@@ -56,6 +56,8 @@ export interface ProductDetailFormProps<F extends Field> {
   ctaDisabled?: boolean;
   prefetch?: boolean;
   additionalActions?: ReactNode;
+  minQuantity?: number;
+  maxQuantity?: number;
 }
 
 export function ProductDetailForm<F extends Field>({
@@ -70,6 +72,8 @@ export function ProductDetailForm<F extends Field>({
   ctaDisabled = false,
   prefetch = false,
   additionalActions,
+  minQuantity,
+  maxQuantity,
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -98,7 +102,7 @@ export function ProductDetailForm<F extends Field>({
       ...acc,
       [field.name]: params[field.name] ?? field.defaultValue,
     }),
-    { quantity: 1 },
+    { quantity: minQuantity ?? 1 },
   );
 
   const [{ lastResult, successMessage }, formAction] = useActionState(action, {
@@ -120,9 +124,9 @@ export function ProductDetailForm<F extends Field>({
 
   const [form, formFields] = useForm({
     lastResult,
-    constraint: getZodConstraint(schema(fields)),
+    constraint: getZodConstraint(schema(fields, minQuantity, maxQuantity)),
     onValidate({ formData }) {
-      return parseWithZod(formData, { schema: schema(fields) });
+      return parseWithZod(formData, { schema: schema(fields, minQuantity, maxQuantity) });
     },
     onSubmit(event, { formData }) {
       event.preventDefault();
@@ -170,7 +174,8 @@ export function ProductDetailForm<F extends Field>({
               aria-label={quantityLabel}
               decrementLabel={decrementLabel}
               incrementLabel={incrementLabel}
-              min={1}
+              max={maxQuantity}
+              min={minQuantity ?? 1}
               name={formFields.quantity.name}
               onBlur={quantityControl.blur}
               onChange={(e) => quantityControl.change(e.currentTarget.value)}
