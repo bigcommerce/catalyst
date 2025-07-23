@@ -23,7 +23,7 @@ export class ProjectConfig {
     const value = this.config.get(field);
 
     if (!value) {
-      throw new Error(`No '${field}' found in .bigcommerce/project.json.`);
+      throw new Error(`No \`${field}\` found in .bigcommerce/project.json.`);
     }
 
     return value;

@@ -28,7 +28,7 @@ test('throws error if field is missing', async () => {
   await writeFile(projectJsonPath, JSON.stringify({}));
 
   expect(() => config.get('projectId')).toThrowError(
-    "No 'projectId' found in .bigcommerce/project.json.",
+    'No `projectId` found in .bigcommerce/project.json.',
   );
 });
 
