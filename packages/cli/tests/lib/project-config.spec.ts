@@ -21,39 +21,37 @@ afterAll(async () => {
   await cleanup();
 });
 
-describe('getProjectId', () => {
-  test('throws error if projectId is missing', async () => {
-    const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
+test('throws error if field is missing', async () => {
+  const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
 
-    await mkdir(dirname(projectJsonPath), { recursive: true });
-    await writeFile(projectJsonPath, JSON.stringify({}));
+  await mkdir(dirname(projectJsonPath), { recursive: true });
+  await writeFile(projectJsonPath, JSON.stringify({}));
 
-    expect(() => config.getProjectId()).toThrowError(
-      'No `projectId` found in .bigcommerce/project.json. Please add a valid `projectId` (UUID) to your bigcommerce configuration file.',
-    );
-  });
+  expect(() => config.get('projectId')).toThrowError(
+    "No 'projectId' found in .bigcommerce/project.json.",
+  );
+});
 
-  test('throws error if projectId is not uuid', async () => {
-    const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
+test('throws error if field does not match schema', async () => {
+  const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
 
-    await mkdir(dirname(projectJsonPath), { recursive: true });
-    await writeFile(projectJsonPath, JSON.stringify({ projectId: 'invalid-uuid' }));
+  await mkdir(dirname(projectJsonPath), { recursive: true });
+  await writeFile(projectJsonPath, JSON.stringify({ projectId: 'invalid-uuid' }));
 
-    expect(() => config.getProjectId()).toThrowError(
-      'Config schema violation: `projectId` must match format "uuid"',
-    );
-  });
+  expect(() => config.get('projectId')).toThrowError(
+    'Config schema violation: `projectId` must match format "uuid"',
+  );
+});
 
-  test('writes and reads projectId from .bigcommerce/project.json', async () => {
-    const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
+test('writes and reads field from .bigcommerce/project.json', async () => {
+  const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
 
-    await mkdir(dirname(projectJsonPath), { recursive: true });
-    await writeFile(projectJsonPath, JSON.stringify({}));
+  await mkdir(dirname(projectJsonPath), { recursive: true });
+  await writeFile(projectJsonPath, JSON.stringify({}));
 
-    config.setProjectId(projectId);
+  config.set('projectId', projectId);
 
-    const modifiedProjectId = config.getProjectId();
+  const modifiedProjectId = config.get('projectId');
 
-    expect(modifiedProjectId).toBe(projectId);
-  });
+  expect(modifiedProjectId).toBe(projectId);
 });

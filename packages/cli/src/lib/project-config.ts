@@ -19,19 +19,17 @@ export class ProjectConfig {
     });
   }
 
-  getProjectId(): string {
-    const projectId = this.config.get('projectId');
+  get(field: keyof ProjectConfigSchema): string {
+    const value = this.config.get(field);
 
-    if (!projectId) {
-      throw new Error(
-        'No `projectId` found in .bigcommerce/project.json. Please add a valid `projectId` (UUID) to your bigcommerce configuration file.',
-      );
+    if (!value) {
+      throw new Error(`No '${field}' found in .bigcommerce/project.json.`);
     }
 
-    return projectId;
+    return value;
   }
 
-  setProjectId(projectId: string): void {
-    this.config.set('projectId', projectId);
+  set(field: string, value: string): void {
+    this.config.set(field, value);
   }
 }

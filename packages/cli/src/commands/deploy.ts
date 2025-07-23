@@ -175,9 +175,7 @@ export const deploy = new Command('deploy')
     const config = new ProjectConfig(opts.rootDir);
 
     try {
-      let projectUuid = opts.projectId;
-
-      projectUuid ??= config.getProjectId();
+      const projectUuid = opts.projectId ?? config.get('projectId');
 
       await generateBundleZip(opts.rootDir);
 
