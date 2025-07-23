@@ -4,6 +4,7 @@ import { dirname, join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, test } from 'vitest';
 
 import {
+  createDeployment,
   generateBundleZip,
   generateUploadSignature,
   uploadBundleZip,
@@ -13,6 +14,13 @@ import { mkTempDir } from '../../src/lib/mk-temp-dir';
 let tmpDir: string;
 let cleanup: () => Promise<void>;
 let outputZip: string;
+
+const projectUuid = 'a23f5785-fd99-4a94-9fb3-945551623923';
+const storeHash = 'test-store';
+const accessToken = 'test-token';
+const apiHost = 'api.bigcommerce.com';
+const uploadUuid = '0e93ce5f-6f91-4236-87ec-ca79627f31ba';
+const uploadUrl = 'https://mock-upload-url.com';
 
 beforeAll(async () => {
   // Setup test directories and files
@@ -33,7 +41,7 @@ afterAll(async () => {
   await cleanup();
 });
 
-describe('bundle zip generation', () => {
+describe('bundle zip generation and upload', () => {
   test('creates bundle.zip from build output', async () => {
     await generateBundleZip(tmpDir);
 
@@ -61,25 +69,33 @@ describe('bundle zip generation', () => {
     // Check for output/worker.js
     expect(entries).toContain('output/worker.js');
   });
-});
 
-describe('bundle zip upload', () => {
   test('fetches upload signature and uploads bundle zip', async () => {
-    const storeHash = 'test-store';
-    const accessToken = 'test-token';
-    const apiHost = 'api.bigcommerce.com';
-
     // Test generateUploadSignature
     const signature = await generateUploadSignature(storeHash, accessToken, apiHost);
 
-    expect(signature.upload_url).toBe('https://mock-upload-url.com');
-    expect(signature.upload_uuid).toBe('mock-uuid');
+    expect(signature.upload_url).toBe(uploadUrl);
+    expect(signature.upload_uuid).toBe(uploadUuid);
 
     // Test uploadBundleZip
     await generateBundleZip(tmpDir); // Ensure zip exists
 
-    const uploadResult = await uploadBundleZip('https://mock-upload-url.com', tmpDir);
+    const uploadResult = await uploadBundleZip(uploadUrl, tmpDir);
 
     expect(uploadResult).toBe(true);
+  });
+});
+
+describe('deployment and polling', () => {
+  test('creates a deployment', async () => {
+    const deployment = await createDeployment(
+      projectUuid,
+      uploadUuid,
+      storeHash,
+      accessToken,
+      apiHost,
+    );
+
+    expect(deployment.deployment_uuid).toBe('5b29c3c0-5f68-44fe-99e5-06492babf7be');
   });
 });
