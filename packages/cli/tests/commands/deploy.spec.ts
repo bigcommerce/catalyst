@@ -1,15 +1,20 @@
 import AdmZip from 'adm-zip';
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { afterAll, beforeAll, describe, expect, test } from 'vitest';
+import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
 
 import {
   createDeployment,
   generateBundleZip,
   generateUploadSignature,
+  getDeploymentStatus,
   uploadBundleZip,
 } from '../../src/commands/deploy';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
+import { textHistory } from '../mocks/spinner';
+
+// eslint-disable-next-line import/dynamic-import-chunkname
+vi.mock('yocto-spinner', () => import('../mocks/spinner'));
 
 let tmpDir: string;
 let cleanup: () => Promise<void>;
@@ -21,6 +26,7 @@ const accessToken = 'test-token';
 const apiHost = 'api.bigcommerce.com';
 const uploadUuid = '0e93ce5f-6f91-4236-87ec-ca79627f31ba';
 const uploadUrl = 'https://mock-upload-url.com';
+const deploymentUuid = '5b29c3c0-5f68-44fe-99e5-06492babf7be';
 
 beforeAll(async () => {
   // Setup test directories and files
@@ -96,6 +102,20 @@ describe('deployment and polling', () => {
       apiHost,
     );
 
-    expect(deployment.deployment_uuid).toBe('5b29c3c0-5f68-44fe-99e5-06492babf7be');
+    expect(deployment.deployment_uuid).toBe(deploymentUuid);
+  });
+
+  test('polls deployment status until completion', async () => {
+    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost);
+
+    expect(textHistory).toEqual([
+      `Checking deployment status for ${deploymentUuid}...`,
+      'PROCESSING',
+      'FINALIZING',
+    ]);
+
+    // Since the mock returns a stream, we can't assert on the final state directly.
+    // Instead, we check that the function completes without throwing.
+    expect(true).toBe(true); // Placeholder assertion
   });
 });

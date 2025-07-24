@@ -3,6 +3,7 @@ import { Command, Option } from 'commander';
 import { consola } from 'consola';
 import { access, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
 import { ProjectConfig } from '../lib/project-config';
@@ -17,6 +18,31 @@ const UploadSignatureSchema = z.object({
 const CreateDeploymentSchema = z.object({
   data: z.object({
     deployment_uuid: z.uuid(),
+  }),
+});
+
+const DeploymentStatusSchema = z.object({
+  data: z.object({
+    deployment_uuid: z.uuid(),
+    deployment_status: z.enum(['QUEUED', 'IN_PROGRESS', 'FAILED', 'COMPLETED']),
+    event: z
+      .object({
+        step: z.enum([
+          'DOWNLOADING',
+          'UNZIPPING',
+          'PROCESSING',
+          'DEPLOYING',
+          'FINALIZING',
+          'COMPLETED',
+        ]),
+        progress: z.number(),
+      })
+      .nullable(),
+    error: z
+      .object({
+        code: z.number(),
+      })
+      .nullable(),
   }),
 });
 
@@ -141,6 +167,62 @@ export const createDeployment = async (
   return data;
 };
 
+export const getDeploymentStatus = async (
+  deploymentUuid: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+) => {
+  const spinner = yoctoSpinner({
+    text: `Checking deployment status for ${deploymentUuid}...`,
+  }).start();
+
+  const response = await fetch(
+    `https://${apiHost}/stores/${storeHash}/v3/headless/deployments/${deploymentUuid}`,
+    {
+      method: 'GET',
+      headers: {
+        'X-Auth-Token': accessToken,
+        Accept: 'text/event-stream',
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to open event stream: ${response.status} ${response.statusText}`);
+  }
+
+  const reader = response.body?.getReader();
+  const decoder = new TextDecoder();
+  let done = false;
+
+  while (reader && !done) {
+    // eslint-disable-next-line no-await-in-loop
+    const { value, done: streamDone } = await reader.read();
+
+    if (value) {
+      const chunk = decoder.decode(value, { stream: true });
+
+      const res: unknown = JSON.parse(chunk);
+
+      const { data } = DeploymentStatusSchema.parse(res);
+
+      if (data.error) {
+        spinner.error('Deployment failed.');
+        throw new Error(`Deployment failed with error code: ${data.error.code}`);
+      }
+
+      if (data.event?.step) {
+        spinner.text = data.event.step;
+      }
+    }
+
+    done = streamDone;
+  }
+
+  spinner.success('Deployment completed successfully.');
+};
+
 export const deploy = new Command('deploy')
   .description('Deploy the application to Cloudflare')
   .addOption(
@@ -187,7 +269,7 @@ export const deploy = new Command('deploy')
 
       await uploadBundleZip(uploadSignature.upload_url, opts.rootDir);
 
-      await createDeployment(
+      const { deployment_uuid: deploymentUuid } = await createDeployment(
         projectUuid,
         uploadSignature.upload_uuid,
         opts.storeHash,
@@ -195,7 +277,7 @@ export const deploy = new Command('deploy')
         opts.apiHost,
       );
 
-      // @todo poll for deployment status
+      await getDeploymentStatus(deploymentUuid, opts.storeHash, opts.accessToken, opts.apiHost);
     } catch (error) {
       consola.error(error);
       process.exit(1);
