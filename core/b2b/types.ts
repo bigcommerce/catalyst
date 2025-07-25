@@ -1,3 +1,6 @@
+import { ReactNode } from 'react';
+import { ToasterProps } from 'sonner';
+
 export interface B2BProductOption {
   optionEntityId: number;
   optionValueEntityId: number;
@@ -46,8 +49,27 @@ interface LineItem {
   selectedOptions?: B2BProductOption[];
 }
 
+interface ToastOptions {
+  action?: {
+    label: string;
+    onClick: () => void;
+  };
+  description?: string;
+  position?: ToasterProps['position'];
+  dismissLabel?: string;
+}
+
+
 declare global {
   interface Window {
+    catalyst?: {
+      toast?: {
+        success: (message: ReactNode, options?: ToastOptions) => void;
+        error: (message: ReactNode, options?: ToastOptions) => void;
+        warning: (message: ReactNode, options?: ToastOptions) => void;
+        info: (message: ReactNode, options?: ToastOptions) => void;
+      };
+    };
     b2b?: {
       utils?: {
         openPage: (page: string) => void;
