@@ -142,7 +142,7 @@ export function ProductCard({
           <div className="flex-1 text-sm @[16rem]:text-base">
             <span
               className={clsx(
-                'block font-semibold',
+                'line-clamp-2 block break-words font-semibold',
                 {
                   light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
                   dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
