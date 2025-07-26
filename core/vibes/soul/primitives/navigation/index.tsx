@@ -311,6 +311,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAllProductsOpen, setIsAllProductsOpen] = useState(false);
   const [navMenuValue, setNavMenuValue] = useState<string | null>(null);
+  const [hiddenCategoryBar, SetHiddenCategoryBar] = useState(false);
 
   const pathname = usePathname();
 
@@ -494,7 +495,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
              * Custom Icon That Developer Create
              */}
             <NavigationMenu.Item value={'All Products'.toString()}>
-              <NavigationMenu.Trigger asChild>
+              <NavigationMenu.Trigger onMouseEnter={() => SetHiddenCategoryBar(false)} asChild>
                 <Link
                   className="hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[#011F4B] hover:text-white focus-visible:bg-[#011F4B] focus-visible:text-white focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
                   href={'/shop'}
@@ -503,17 +504,21 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                 </Link>
               </NavigationMenu.Trigger>
 
-              <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
+              <NavigationMenu.Content
+                hidden={hiddenCategoryBar}
+                className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]"
+              >
                 <div className="m-auto grid w-full max-w-screen-lg grid-cols-2 gap-2 px-5 pb-8 pt-5">
                   {categoryLinks.map((category, idx) => {
-                    const handleMenuItemClick = () => setNavMenuValue(null);
                     return category.href ? (
                       <Link
                         key={idx}
                         href={category.href}
                         className="flex w-full items-center gap-4 rounded-lg p-3 transition-colors hover:bg-[var(--nav-group-background-hover,hsl(var(--contrast-100)))]"
                         style={{ textDecoration: 'none' }}
-                        onClick={handleMenuItemClick}
+                        onClick={() => {
+                          SetHiddenCategoryBar(true);
+                        }}
                       >
                         <img
                           // @ts-ignore
@@ -529,7 +534,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                       <div
                         key={idx}
                         className="flex w-full items-center gap-4 rounded-lg p-3"
-                        onClick={handleMenuItemClick}
+                        onPointerDown={handleMenuItemPointerDown}
                       >
                         <img
                           // @ts-ignore
