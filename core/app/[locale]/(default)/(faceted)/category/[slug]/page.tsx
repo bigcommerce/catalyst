@@ -354,8 +354,6 @@ export default async function Category(props: Props) {
 
   setRequestLocale(locale);
 
-  console.log(props);
-
   return (
     <>
       <ProductsListSection
