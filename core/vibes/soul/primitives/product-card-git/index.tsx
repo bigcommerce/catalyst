@@ -42,11 +42,15 @@ export const ProductCard = ({
   href,
 }: ProductCardProps) => {
   return (
-    <div
+    <Link
+      aria-label={name}
+      href={href}
+      id={id}
       className={clsx(
-        'max-w flex h-full flex-col overflow-hidden rounded-lg bg-white shadow-lg',
+        'max-w group flex h-full flex-col overflow-hidden rounded-lg bg-white no-underline shadow-lg',
         className,
       )}
+      style={{ display: 'block' }}
     >
       <div
         className={clsx(
@@ -80,13 +84,6 @@ export const ProductCard = ({
             sizes={imageSizes}
             src={DEFAULT_PRODUCT_IMAGE_URL}
           />
-          // <div
-          //   className={clsx(
-          //     'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter text-[var(--product-card-light-title,hsl(var(--foreground)))] opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
-          //   )}
-          // >
-          //   {name}
-          // </div>
         )}
         {badge.show && badge.text !== '' && (
           <Badge
@@ -124,18 +121,16 @@ export const ProductCard = ({
             </div>
           )}
 
-          <Link
-            aria-label={name}
+          <span
             className={clsx(
               'relative mt-4 block w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
             )}
-            href={href}
-            id={id}
+            style={{ pointerEvents: 'none' }}
           >
             {buttonText}
-          </Link>
+          </span>
         </div>
       </div>
-    </div>
+    </Link>
   );
 };
