@@ -122,11 +122,20 @@ export const Footer = forwardRef(function Footer(
             >
               {(contactInformation) => {
                 if (contactInformation?.address != null || contactInformation?.phone != null) {
+                  console.log(contactInformation);
                   return (
                     <div className="text-lg font-medium @lg:text-xl">
                       <div className="text-[var(--footer-contact-text,hsl(var(--foreground)))]">
                         {contactInformation.address != null &&
-                          contactInformation.address !== '' && <p>{contactInformation.address}</p>}
+                          contactInformation.address !== '' && (
+                            <address>
+                              {contactInformation.address.split('\n').map((line, idx) => (
+                                <span key={idx} style={{ display: 'block' }}>
+                                  {line}
+                                </span>
+                              ))}
+                            </address>
+                          )}
                         {contactInformation.phone != null && contactInformation.phone !== '' && (
                           <p>{contactInformation.phone}</p>
                         )}
@@ -153,6 +162,7 @@ export const Footer = forwardRef(function Footer(
               value={streamableSocialMediaLinks}
             >
               {(socialMediaLinks) => {
+                console.log(socialMediaLinks);
                 if (socialMediaLinks != null) {
                   return (
                     <div className="flex items-center gap-3">

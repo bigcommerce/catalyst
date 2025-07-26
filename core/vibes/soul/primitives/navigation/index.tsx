@@ -698,23 +698,27 @@ const MobileItem = ({ category, idx }: { category: any; idx: number }) => {
   const categoryKey = `category-accordion-${idx}`;
   return (
     <li key={categoryKey} className="mb-1">
-      <div className="flex items-center justify-between">
+      <div
+        className="flex cursor-pointer items-center justify-between"
+        onClick={() => hasGroups && setIsCategoryOpen((open) => !open)}
+        aria-expanded={isCategoryOpen}
+        role={hasGroups ? 'button' : undefined}
+        tabIndex={hasGroups ? 0 : undefined}
+        onKeyDown={(e) => {
+          if (hasGroups && (e.key === 'Enter' || e.key === ' ')) {
+            setIsCategoryOpen((open) => !open);
+          }
+        }}
+      >
         <span className="block rounded-lg px-3 py-2 text-sm text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))]">
           {category.label}
         </span>
         {hasGroups && (
-          <button
-            aria-label={`Toggle ${category.label} subcategories`}
-            className="ml-2 p-1"
-            onClick={() => setIsCategoryOpen((open) => !open)}
-            type="button"
-          >
-            <ChevronDownIcon
-              className={clsx('transition-transform', isCategoryOpen && 'rotate-180')}
-              size={16}
-              strokeWidth={2}
-            />
-          </button>
+          <ChevronDownIcon
+            className={clsx('transition-transform', isCategoryOpen && 'rotate-180')}
+            size={16}
+            strokeWidth={2}
+          />
         )}
       </div>
       {/* View All button only when accordion is open */}

@@ -5,6 +5,7 @@ import {
   SiPinterest,
   SiX,
   SiYoutube,
+  SiLinkerd,
 } from '@icons-pack/react-simple-icons';
 import { useTranslations } from 'next-intl';
 import { cache, JSX } from 'react';
@@ -34,6 +35,7 @@ const paymentIcons = [
   <VisaIcon key="visa" />,
 ];
 
+// Social media icons mapping
 const socialIcons: Record<string, { icon: JSX.Element }> = {
   Facebook: { icon: <SiFacebook title="Facebook" /> },
   Twitter: { icon: <SiX title="Twitter" /> },
@@ -41,6 +43,7 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   Pinterest: { icon: <SiPinterest title="Pinterest" /> },
   Instagram: { icon: <SiInstagram title="Instagram" /> },
   YouTube: { icon: <SiYoutube title="YouTube" /> },
+  LinkedIn: { icon: <SiLinkerd title="LinkedIn" /> }, // Using X icon as placeholder
 };
 
 const getLayoutData = cache(async () => {
@@ -121,6 +124,8 @@ const getSocialMediaLinks = async () => {
   if (!data.settings?.socialMediaLinks) {
     return null;
   }
+
+  console.log(data);
 
   return data.settings.socialMediaLinks
     .filter((socialMediaLink) => Boolean(socialIcons[socialMediaLink.name]))
