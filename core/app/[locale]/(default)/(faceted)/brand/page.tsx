@@ -41,7 +41,7 @@ export default async function BrandsPage(props: Props) {
   const { brands, pageInfo: paginationInfo } = await getBrandsData({
     before,
     after,
-    first: limit,
+    limit,
   });
 
   if (brands.length === 0) {

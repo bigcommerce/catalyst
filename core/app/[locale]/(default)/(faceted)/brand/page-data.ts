@@ -26,9 +26,9 @@ export const BrandFragment = graphql(
 // Brands query with pagination (accepts before)
 export const BrandsPageQuery = graphql(
   `
-    query BrandsPageQuery($after: String, $before: String, $first: Int) {
+    query BrandsPageQuery($first: Int, $last: Int, $after: String, $before: String) {
       site {
-        brands(after: $after, before: $before, first: $first) {
+        brands(first: $first, after: $after, last: $last, before: $before) {
           edges {
             node {
               ...BrandFragment
@@ -52,19 +52,18 @@ export const getBrandsData = cache(
   async ({
     after = null,
     before = null,
-    first = 20,
-  }: { after?: string | null; before?: string | null; first?: number } = {}) => {
-    // Only include 'after' or 'before', never both
-    let variables: { after?: string | null; before?: string | null; first: number } = { first };
-    if (after && !before) {
-      variables.after = after;
-    } else if (before && !after) {
-      variables.before = before;
-    }
+    limit = 20,
+  }: { after?: string | null; before?: string | null; limit?: number } = {}) => {
+    // Only include 'after' or 'before', never both, and avoid 'first' with 'before'
+    const paginationArgs = before ? { last: limit, before } : { first: limit, after };
+
+    console.log(`Fetching brands with pagination: ${JSON.stringify(paginationArgs)}`);
 
     const { data } = await client.fetch({
       document: BrandsPageQuery,
-      variables,
+      variables: {
+        ...paginationArgs,
+      },
       fetchOptions: { next: { revalidate: 60 } }, // Adjust revalidate as needed
     });
 
