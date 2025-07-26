@@ -673,7 +673,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             style={{ lineHeight: 1 }}
             aria-label={`Call ${phoneNumber}`}
           >
-            <PhoneCall color="#011F4B" strokeWidth={2} className="mr-2 inline" size={24} />
+            <PhoneCall color="#011F4B" strokeWidth={2} className="mr-2 inline" size={18} />
             {phoneNumber}
           </Link>
         </div>
