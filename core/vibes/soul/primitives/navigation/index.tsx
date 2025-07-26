@@ -309,19 +309,17 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
   ref: Ref<HTMLDivElement>,
 ) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isAllProductsOpen, setIsAllProductsOpen] = useState(false);
+  const [navMenuValue, setNavMenuValue] = useState<string | null>(null);
 
   const pathname = usePathname();
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
-    setIsSearchOpen(false);
   }, [pathname]);
 
   useEffect(() => {
     function handleScroll() {
-      setIsSearchOpen(false);
       setIsMobileMenuOpen(false);
     }
 
@@ -334,7 +332,10 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     <NavigationMenu.Root
       className={clsx('relative mx-auto w-full max-w-screen-2xl @container', className)}
       delayDuration={0}
-      onValueChange={() => setIsSearchOpen(false)}
+      value={navMenuValue ?? undefined}
+      onValueChange={(value) => {
+        setNavMenuValue(value ?? undefined);
+      }}
       ref={ref}
     >
       <div
@@ -505,16 +506,18 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               <NavigationMenu.Content className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]">
                 <div className="m-auto grid w-full max-w-screen-lg grid-cols-2 gap-2 px-5 pb-8 pt-5">
                   {categoryLinks.map((category, idx) => {
+                    const handleMenuItemClick = () => setNavMenuValue(null);
                     return category.href ? (
                       <Link
                         key={idx}
                         href={category.href}
                         className="flex w-full items-center gap-4 rounded-lg p-3 transition-colors hover:bg-[var(--nav-group-background-hover,hsl(var(--contrast-100)))]"
                         style={{ textDecoration: 'none' }}
+                        onClick={handleMenuItemClick}
                       >
                         <img
                           // @ts-ignore
-                          src={category.image ? category.image.url : DEFAULT_CATEGORY_IMAGE_URL}
+                          src={category.image ? category.image : DEFAULT_CATEGORY_IMAGE_URL}
                           alt={category.label}
                           className="h-10 w-10 rounded border border-[var(--nav-menu-border,hsl(var(--foreground)/10%))] bg-white object-cover"
                         />
@@ -523,7 +526,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                         </span>
                       </Link>
                     ) : (
-                      <div key={idx} className="flex w-full items-center gap-4 rounded-lg p-3">
+                      <div
+                        key={idx}
+                        className="flex w-full items-center gap-4 rounded-lg p-3"
+                        onClick={handleMenuItemClick}
+                      >
                         <img
                           // @ts-ignore
                           src={category.image ? category.image.url : DEFAULT_CATEGORY_IMAGE_URL}

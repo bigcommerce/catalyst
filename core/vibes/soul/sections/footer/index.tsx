@@ -122,7 +122,6 @@ export const Footer = forwardRef(function Footer(
             >
               {(contactInformation) => {
                 if (contactInformation?.address != null || contactInformation?.phone != null) {
-                  console.log(contactInformation);
                   return (
                     <div className="text-lg font-medium @lg:text-xl">
                       <div className="text-[var(--footer-contact-text,hsl(var(--foreground)))]">

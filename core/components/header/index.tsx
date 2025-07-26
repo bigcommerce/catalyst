@@ -52,9 +52,10 @@ const getLinks = async () => {
    */
   const categoryTree = data.categoryTree; //.slice(0, 6);
 
-  return categoryTree.map(({ name, path, children }) => ({
+  return categoryTree.map(({ name, path, children, image }) => ({
     label: name,
     href: path,
+    image: image?.url,
     groups: children.map((firstChild) => ({
       label: firstChild.name,
       href: firstChild.path,
@@ -135,6 +136,7 @@ export const Header = async () => {
 
   return (
     <HeaderSection
+      // @ts-ignore
       navigation={{
         accountHref: '/login',
         accountLabel: t('Icons.account'),
