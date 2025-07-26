@@ -531,11 +531,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                         </span>
                       </Link>
                     ) : (
-                      <div
-                        key={idx}
-                        className="flex w-full items-center gap-4 rounded-lg p-3"
-                        onPointerDown={handleMenuItemPointerDown}
-                      >
+                      <div key={idx} className="flex w-full items-center gap-4 rounded-lg p-3">
                         <img
                           // @ts-ignore
                           src={category.image ? category.image.url : DEFAULT_CATEGORY_IMAGE_URL}
