@@ -85,9 +85,15 @@ export const ProductSchema = ({ product }: Props) => {
   };
 
   return (
-    <script
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
-      type="application/ld+json"
-    />
+    <>
+      <script
+        src={`https://cdn.quoteninja.com/storefront/quoteninja-headless.js?storeID=wlbjjbyoi5`}
+      ></script>
+
+      <script
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+        type="application/ld+json"
+      />
+    </>
   );
 };
