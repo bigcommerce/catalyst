@@ -25,6 +25,7 @@ import { CookieNotifications } from '../notifications';
 import { Providers } from '../providers';
 
 import '~/lib/makeswift/components';
+import Script from 'next/script';
 
 const RootLayoutMetadataQuery = graphql(`
   query RootLayoutMetadataQuery {
@@ -119,9 +120,10 @@ export default async function RootLayout({ params, children }: Props) {
             </NuqsAdapter>
           </NextIntlClientProvider>
           <VercelComponents />
-          <script
-            src={`https://cdn.quoteninja.com/storefront/quoteninja-headless.js?storeID=wlbjjbyoi5`}
-          ></script>
+          <Script
+            src="https://cdn.quoteninja.com/storefront/quoteninja-headless.js?storeID=wlbjjbyoi5"
+            strategy="afterInteractive"
+          />
         </body>
       </html>
     </MakeswiftProvider>
