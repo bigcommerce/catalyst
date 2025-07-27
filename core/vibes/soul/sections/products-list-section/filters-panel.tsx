@@ -94,20 +94,21 @@ interface CategoryCardProps {
   href: string;
 }
 
-const DEFAULT_CATEGORY_IMAGE_URL =
-  'https://betterineraction.nyc3.cdn.digitaloceanspaces.com/category-placeholder.svg';
-
 export function CategoryCard({ imageUrl, title, productCount, href }: CategoryCardProps) {
   return (
     <Suspense fallback={<CardSkeleton />}>
       <Link href={href}>
         {/* Image */}
         <div className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md shadow-md">
-          <img
-            alt={`${title} category image`}
-            className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
-            src={imageUrl ? imageUrl : DEFAULT_CATEGORY_IMAGE_URL}
-          />
+          {imageUrl ? (
+            <img
+              alt={`${title} category image`}
+              className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+              src={imageUrl}
+            />
+          ) : (
+            <div className="h-full w-full" style={{ backgroundColor: '#304A7A' }} />
+          )}
           <div className="absolute inset-0 bg-black bg-opacity-40 transition duration-300 group-hover:bg-opacity-50" />
           <div className="absolute bottom-4 left-4 z-10 text-white">
             <h3 className="text-lg font-semibold">{title}</h3>
