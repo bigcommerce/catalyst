@@ -120,10 +120,7 @@ export default async function RootLayout({ params, children }: Props) {
             </NuqsAdapter>
           </NextIntlClientProvider>
           <VercelComponents />
-          <Script
-            src="https://cdn.quoteninja.com/storefront/quoteninja-headless.js?storeID=wlbjjbyoi5"
-            strategy="afterInteractive"
-          />
+          <script src="https://cdn.quoteninja.com/storefront/quoteninja-headless.js?storeID=wlbjjbyoi5" />
         </body>
       </html>
     </MakeswiftProvider>
