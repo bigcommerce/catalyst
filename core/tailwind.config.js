@@ -37,6 +37,9 @@ const config = {
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
     {
+      pattern: /^bg-\[.*\]$/,
+    },
+    {
       pattern: /^text-\[.*\]$/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },

@@ -71,6 +71,30 @@ const createAContact = async (
   }
 };
 
+const sendFormSpreeEmail = async (
+  fullName: string,
+  email: string,
+  phone: string,
+  businessName: string,
+  subject: string,
+  message: string,
+): Promise<void> => {
+  try {
+    const response = await axios.post('https://formspree.io/f/meozkqbw', {
+      name: 'Contact Form Submission',
+      fullName,
+      email,
+      phone,
+      businessName,
+      subject,
+      message,
+    });
+  } catch (error) {
+    console.error('Error sending Formspree email:', error);
+    throw new Error('Failed to send Formspree email');
+  }
+};
+
 export const POST = async (request: NextRequest): Promise<NextResponse<ContactFormResponse>> => {
   const body = await request.json();
   const { firstName, lastName, email, phone, businessName, subject, message, to } = body;
@@ -92,17 +116,14 @@ export const POST = async (request: NextRequest): Promise<NextResponse<ContactFo
     to || '',
   );
 
-  // TODO: ADD A LOGIC TO SEND EMAIL
-  console.log('Contact Form Submission:', {
-    firstName,
-    lastName,
+  await sendFormSpreeEmail(
+    `${firstName} ${lastName}`,
     email,
-    phone,
-    businessName,
+    phone || '',
+    businessName || '',
     subject,
     message,
-    to,
-  });
+  );
 
   return NextResponse.json({ status: 'success' });
 };
