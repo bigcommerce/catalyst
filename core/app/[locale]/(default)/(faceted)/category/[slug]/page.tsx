@@ -107,8 +107,6 @@ async function getSubCategoriesFilters(props: Props): Promise<Filter[]> {
   const data = await getCategoryPageData(variables);
   const t = await getTranslations('FacetedGroup.MobileSideNav');
 
-  console.log(data);
-
   const categoryTree = data.categoryTree[0];
 
   if (categoryTree == null || categoryTree.children.length === 0) return [];

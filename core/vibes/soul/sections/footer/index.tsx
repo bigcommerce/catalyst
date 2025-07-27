@@ -161,7 +161,6 @@ export const Footer = forwardRef(function Footer(
               value={streamableSocialMediaLinks}
             >
               {(socialMediaLinks) => {
-                console.log(socialMediaLinks);
                 if (socialMediaLinks != null) {
                   return (
                     <div className="flex items-center gap-3">

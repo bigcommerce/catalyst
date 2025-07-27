@@ -56,6 +56,27 @@ export const client = createClient({
       requestHeaders['Accept-Language'] = locale;
     }
 
+    // Inject customer info if available
+    try {
+      // Dynamically import to avoid circular deps
+      const { auth } = await import('../auth');
+      const session = await auth();
+      if (session?.user) {
+        if (session.user.customerAccessToken) {
+          requestHeaders['X-Customer-Access-Token'] = session.user.customerAccessToken;
+        }
+        if (session.user.email) {
+          requestHeaders['X-Customer-Email'] = session.user.email;
+        }
+        if (session.user.name) {
+          requestHeaders['X-Customer-Name'] = session.user.name;
+        }
+        // Add more fields as needed (e.g., ID, group, etc.)
+      }
+    } catch (e) {
+      // fail silently if not available
+    }
+
     return {
       headers: requestHeaders,
     };

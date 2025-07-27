@@ -125,8 +125,6 @@ const getSocialMediaLinks = async () => {
     return null;
   }
 
-  console.log(data);
-
   return data.settings.socialMediaLinks
     .filter((socialMediaLink) => Boolean(socialIcons[socialMediaLink.name]))
     .map((socialMediaLink) => ({
