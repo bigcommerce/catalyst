@@ -81,6 +81,8 @@ export const POST = async (request: NextRequest): Promise<NextResponse<ContactFo
     );
   }
 
+  await createAContact(fullName, email, phone, businessName, subject, message, to);
+
   // TODO: ADD A LOGIC TO SEND EMAIL
   console.log('Contact Form Submission:', {
     fullName,
