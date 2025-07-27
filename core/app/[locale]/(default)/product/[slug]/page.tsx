@@ -18,7 +18,6 @@ import { ProductViewed } from './_components/product-viewed';
 import { PaginationSearchParamNames, Reviews } from './_components/reviews';
 import { getProductData } from './page-data';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
-import { B2BNinjaScript } from './_components/b2b-ninja';
 
 const cachedProductDataVariables = cache(
   async (productId: string, searchParams: Props['searchParams']) => {
@@ -282,7 +281,6 @@ export default async function Product(props: Props) {
           <>
             <ProductSchema product={product} />
             <ProductViewed product={product} />
-            <B2BNinjaScript />
           </>
         )}
       </Stream>
