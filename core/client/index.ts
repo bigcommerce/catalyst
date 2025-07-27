@@ -61,6 +61,7 @@ export const client = createClient({
       // Dynamically import to avoid circular deps
       const { auth } = await import('../auth');
       const session = await auth();
+
       if (session?.user) {
         if (session.user.customerAccessToken) {
           requestHeaders['X-Customer-Access-Token'] = session.user.customerAccessToken;

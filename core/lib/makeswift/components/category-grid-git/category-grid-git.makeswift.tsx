@@ -127,9 +127,6 @@ interface CategoryGridCardProps {
   fullHeight?: boolean;
 }
 
-const DEFAULT_CATEGORY_IMAGE_URL =
-  'https://betterineraction.nyc3.cdn.digitaloceanspaces.com/category-placeholder.svg';
-
 export function CategoryGridCard({
   href,
   id,
@@ -146,16 +143,20 @@ export function CategoryGridCard({
       <div
         className={`group relative ${fullHeight ? 'h-full' : 'h-48'} w-full cursor-pointer overflow-hidden rounded-md shadow-md`}
       >
-        <Image
-          alt={name}
-          className={clsx(
-            'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
-          )}
-          fill
-          priority={imagePriority}
-          sizes={imageSizes}
-          src={imageUrl ? imageUrl : DEFAULT_CATEGORY_IMAGE_URL}
-        />
+        {imageUrl ? (
+          <Image
+            alt={name}
+            className={clsx(
+              'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+            )}
+            fill
+            priority={imagePriority}
+            sizes={imageSizes}
+            src={imageUrl}
+          />
+        ) : (
+          <div className="h-full w-full bg-[#304A7A]" />
+        )}
         <div className="absolute inset-0 bg-black bg-opacity-40 transition duration-300 group-hover:bg-opacity-50" />
         <div className="absolute bottom-4 left-4 z-10 text-white">
           <h3 className="text-lg font-semibold">{name}</h3>

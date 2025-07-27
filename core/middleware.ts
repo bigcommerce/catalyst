@@ -1,11 +1,25 @@
-import { composeMiddlewares } from './middlewares/compose-middlewares';
+import { composeMiddlewares, MiddlewareFactory } from './middlewares/compose-middlewares';
 import { withAuth } from './middlewares/with-auth';
 import { withChannelId } from './middlewares/with-channel-id';
 import { withIntl } from './middlewares/with-intl';
 import { withMakeswift } from './middlewares/with-makeswift';
 import { withRoutes } from './middlewares/with-routes';
+import { NextMiddleware, NextResponse } from 'next/server';
+
+// Custom middleware to rewrite /customer/current.jwt to /api/customer/current.jwt
+const withCustomerJwtRewrite: MiddlewareFactory = (next) => {
+  return async (request, event) => {
+    const url = request.nextUrl.clone();
+    if (url.pathname === '/customer/current.jwt') {
+      url.pathname = '/api/customer/current.jwt';
+      return NextResponse.rewrite(url);
+    }
+    return next(request, event);
+  };
+};
 
 export const middleware = composeMiddlewares(
+  withCustomerJwtRewrite,
   withAuth,
   withMakeswift,
   withIntl,
