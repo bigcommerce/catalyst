@@ -16,7 +16,7 @@ const DEFAULT_BRAND_IMAGE_URL =
 export function BrandCard({ imageUrl, title, productCount, href }: BrandProps): JSX.Element {
   return (
     <div>
-      <Link href={`/brand${href}`}>
+      <Link href={`${href}`}>
         <div className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md shadow-md">
           <img
             alt={`${title} brand image`}
