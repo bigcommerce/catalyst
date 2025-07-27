@@ -60,6 +60,7 @@ const createAContact = async (
       {
         headers: {
           'Content-Type': 'application/json',
+          Accept: 'application/json',
           Authorization: `Bearer ${accessToken}`,
         },
       },
@@ -72,20 +73,29 @@ const createAContact = async (
 
 export const POST = async (request: NextRequest): Promise<NextResponse<ContactFormResponse>> => {
   const body = await request.json();
-  const { fullName, email, phone, businessName, subject, message, to } = body;
+  const { firstName, lastName, email, phone, businessName, subject, message, to } = body;
 
-  if (!fullName || !email || !subject || !message) {
+  if (!firstName || !lastName || !email || !subject || !message) {
     return NextResponse.json(
       { status: 'error', error: 'Missing required fields' },
       { status: 400 },
     );
   }
 
-  await createAContact(fullName, email, phone, businessName, subject, message, to);
+  await createAContact(
+    `${firstName} ${lastName}`,
+    email,
+    phone || '',
+    businessName || '',
+    subject,
+    message,
+    to || '',
+  );
 
   // TODO: ADD A LOGIC TO SEND EMAIL
   console.log('Contact Form Submission:', {
-    fullName,
+    firstName,
+    lastName,
     email,
     phone,
     businessName,

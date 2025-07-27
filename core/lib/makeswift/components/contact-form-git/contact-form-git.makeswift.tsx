@@ -33,7 +33,8 @@ runtime.registerComponent(
     ...props
   }: ContactFormGITProps) {
     const [form, setForm] = React.useState({
-      fullName: '',
+      firstName: '',
+      lastName: '',
       email: '',
       phone: '',
       businessName: '',
@@ -73,7 +74,11 @@ runtime.registerComponent(
       };
     }, [error]);
     const requiredFieldsFilled =
-      form.fullName.trim() && form.email.trim() && form.subject.trim() && form.message.trim();
+      form.firstName.trim() &&
+      form.lastName.trim() &&
+      form.email.trim() &&
+      form.subject.trim() &&
+      form.message.trim();
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) {
       const { name, value } = e.target;
@@ -95,7 +100,8 @@ runtime.registerComponent(
         if (!res.ok) throw new Error('Failed to send email');
         setSuccess(true);
         setForm({
-          fullName: '',
+          firstName: '',
+          lastName: '',
           email: '',
           phone: '',
           businessName: '',
@@ -123,10 +129,18 @@ runtime.registerComponent(
           >
             <Input
               required
-              label="Full name"
+              label="First name"
               type="text"
-              name="fullName"
-              value={form.fullName}
+              name="firstName"
+              value={form.firstName}
+              onChange={handleChange}
+            />
+            <Input
+              required
+              label="Last name"
+              type="text"
+              name="lastName"
+              value={form.lastName}
               onChange={handleChange}
             />
             <Input
