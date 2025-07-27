@@ -80,7 +80,7 @@ const sendFormSpreeEmail = async (
   message: string,
 ): Promise<void> => {
   try {
-    const response = await axios.post('https://formspree.io/f/meozkqbw', {
+    const response = await axios.post(`${process.env.FORM_SPREE_URL}`, {
       name: 'Contact Form Submission',
       fullName,
       email,

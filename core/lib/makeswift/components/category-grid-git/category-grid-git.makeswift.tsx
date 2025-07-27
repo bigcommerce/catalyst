@@ -155,7 +155,7 @@ export function CategoryGridCard({
             src={imageUrl}
           />
         ) : (
-          <div className="h-full w-full bg-[#304A7A]" />
+          <div className="h-full w-full" style={{ backgroundColor: '#304A7A' }} />
         )}
         <div className="absolute inset-0 bg-black bg-opacity-40 transition duration-300 group-hover:bg-opacity-50" />
         <div className="absolute bottom-4 left-4 z-10 text-white">
