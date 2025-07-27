@@ -116,6 +116,13 @@ export default async function RootLayout({ params, children }: Props) {
                   <CookieNotifications {...toastNotificationCookieData} />
                 )}
                 {children}
+                <button
+                  className="qn-button qn-hover-button qn-hover-button-expanded"
+                  id="qn-dialog-toggle"
+                  type="button"
+                >
+                  Finish Quote Request
+                </button>
               </Providers>
             </NuqsAdapter>
           </NextIntlClientProvider>

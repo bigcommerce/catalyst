@@ -161,6 +161,13 @@ export function ProductDetailForm<F extends Field>({
           </div>
         </div>
       </form>
+
+      <button
+        id="qn-add-to-quote"
+        className="qn-add-to-quote button button--secondary button button--secondary"
+      >
+        Add to Quote Request
+      </button>
     </FormProvider>
   );
 }
