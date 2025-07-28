@@ -15,7 +15,7 @@ export const start = new Command('start')
       await execa({
         stdio: 'inherit',
         cwd: opts.rootDir,
-      })`${nextBin} start`;
+      })`${nextBin} start -p ${opts.port}`;
     } catch (error) {
       consola.error(error);
       process.exit(1);
