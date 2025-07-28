@@ -25,7 +25,7 @@ export const dev = new Command('dev')
       await execa({
         stdio: 'inherit',
         cwd: opts.rootDir,
-      })`${nextBin} dev`;
+      })`${nextBin} dev -p ${opts.port}`;
     } catch (error) {
       consola.error(error);
       process.exit(1);
