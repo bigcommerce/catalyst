@@ -7,6 +7,7 @@ import PACKAGE_INFO from '../package.json';
 import { build } from './commands/build';
 import { deploy } from './commands/deploy';
 import { dev } from './commands/dev';
+import { link } from './commands/link';
 import { start } from './commands/start';
 import { version } from './commands/version';
 
@@ -18,8 +19,9 @@ program
   .name(PACKAGE_INFO.name)
   .version(PACKAGE_INFO.version)
   .description('CLI tool for Catalyst development')
+  .addCommand(version)
+  .addCommand(dev)
+  .addCommand(start)
   .addCommand(build)
   .addCommand(deploy)
-  .addCommand(dev)
-  .addCommand(version)
-  .addCommand(start);
+  .addCommand(link);
