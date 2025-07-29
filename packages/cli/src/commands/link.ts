@@ -63,6 +63,7 @@ export const link = new Command('link')
       if (options.projectUuid) {
         consola.start('Project UUID provided, writing to .bigcommerce/project.json...');
         config.set('projectUuid', options.projectUuid);
+        config.set('framework', 'catalyst');
         consola.success('Project UUID written to .bigcommerce/project.json.');
 
         process.exit(0);
@@ -91,6 +92,7 @@ export const link = new Command('link')
 
         consola.start('Writing project UUID to .bigcommerce/project.json...');
         config.set('projectUuid', projectUuid);
+        config.set('framework', 'catalyst');
         consola.success('Project UUID written to .bigcommerce/project.json.');
         process.exit(0);
       }

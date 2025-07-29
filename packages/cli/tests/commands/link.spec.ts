@@ -87,6 +87,7 @@ test('sets projectUuid when called with --project-uuid', async () => {
   );
   expect(exitMock).toHaveBeenCalledWith(0);
   expect(config.get('projectUuid')).toBe(projectUuid1);
+  expect(config.get('framework')).toBe('catalyst');
 });
 
 test('fetches projects and prompts user to select one', async () => {
@@ -133,6 +134,7 @@ test('fetches projects and prompts user to select one', async () => {
   );
   expect(exitMock).toHaveBeenCalledWith(0);
   expect(config.get('projectUuid')).toBe(projectUuid2);
+  expect(config.get('framework')).toBe('catalyst');
 
   consolaPromptMock.mockRestore();
 });
