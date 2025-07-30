@@ -4,28 +4,28 @@ import { execa } from 'execa';
 import { join } from 'node:path';
 
 export const dev = new Command('dev')
-  .description('Start the Catalyst development server.')
+  .description('Start the Catalyst development server')
+  .option('-p, --port <number>', 'Port to run the development server on (default: 3000).', '3000')
   .option(
-    '-p, --port <number>',
-    'Port number to run the development server on (default: 3000).',
-    '3000',
+    '--root-dir <path>',
+    'Path to the root directory of your Catalyst project (default: current working directory).',
+    process.cwd(),
   )
-  .option('--root-dir <rootDir>', 'Root directory of your Catalyst project.', process.cwd())
   .action(async (opts) => {
     try {
       const dotenvBin = join(opts.rootDir, 'node_modules', '.bin', 'dotenv');
 
-      await execa({
+      await execa(dotenvBin, ['-e', '.env.local', '--', 'node', './scripts/generate.cjs'], {
         stdio: 'inherit',
         cwd: opts.rootDir,
-      })`${dotenvBin} -e .env.local -- node ./scripts/generate.cjs`;
+      });
 
       const nextBin = join(opts.rootDir, 'node_modules', '.bin', 'next');
 
-      await execa({
+      await execa(nextBin, ['dev', '-p', opts.port], {
         stdio: 'inherit',
         cwd: opts.rootDir,
-      })`${nextBin} dev -p ${opts.port}`;
+      });
     } catch (error) {
       consola.error(error);
       process.exit(1);
