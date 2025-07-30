@@ -91,8 +91,7 @@ export const link = new Command('link')
         consola.success('Projects fetched.');
 
         if (!projects.length) {
-          consola.error('No headless projects found for this store.');
-          process.exit(1);
+          throw new Error('No headless projects found for this store.');
         }
 
         const projectUuid = await consola.prompt('Select a project (Press <enter> to select).', {
@@ -113,10 +112,9 @@ export const link = new Command('link')
       consola.error('Insufficient information to link a project.');
       consola.info('Provide a project UUID with --project-uuid, or');
       consola.info('Provide both --store-hash and --access-token to fetch and select a project.');
+      process.exit(1);
     } catch (error) {
-      consola.error(error);
+      consola.error(error instanceof Error ? error.message : error);
       process.exit(1);
     }
-
-    process.exit(1);
   });
