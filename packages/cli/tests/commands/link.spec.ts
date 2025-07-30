@@ -1,11 +1,13 @@
 import { Command } from 'commander';
 import consola from 'consola';
+import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, expect, MockInstance, test, vi } from 'vitest';
 
 import { link } from '../../src/commands/link';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
 import { ProjectConfig } from '../../src/lib/project-config';
 import { program } from '../../src/program';
+import { server } from '../mocks/node';
 
 let consolaStartMock: MockInstance;
 let consolaSuccessMock: MockInstance;
@@ -139,6 +141,32 @@ test('fetches projects and prompts user to select one', async () => {
   expect(config.get('framework')).toBe('catalyst');
 
   consolaPromptMock.mockRestore();
+});
+
+test('errors when no projects are found', async () => {
+  server.use(
+    http.get('https://:apiHost/stores/:storeHash/v3/headless/projects', () =>
+      HttpResponse.json({
+        data: [],
+      }),
+    ),
+  );
+
+  await program.parseAsync([
+    'node',
+    'catalyst',
+    'link',
+    '--store-hash',
+    storeHash,
+    '--access-token',
+    accessToken,
+    '--root-dir',
+    tmpDir,
+  ]);
+
+  expect(consolaStartMock).toHaveBeenCalledWith('Fetching projects...');
+  expect(consolaErrorMock).toHaveBeenCalledWith('No headless projects found for this store.');
+  expect(exitMock).toHaveBeenCalledWith(1);
 });
 
 test('errors when no projectUuid, storeHash, or accessToken are provided', async () => {
