@@ -63,7 +63,7 @@ test('properly configured Command instance', () => {
       expect.objectContaining({ flags: '--access-token <token>' }),
       expect.objectContaining({ flags: '--api-host <host>', defaultValue: 'api.bigcommerce.com' }),
       expect.objectContaining({ flags: '--project-uuid <uuid>' }),
-      expect.objectContaining({ flags: '--root-dir <rootDir>', defaultValue: process.cwd() }),
+      expect.objectContaining({ flags: '--root-dir <path>', defaultValue: process.cwd() }),
     ]),
   );
 });

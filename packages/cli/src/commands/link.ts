@@ -55,7 +55,11 @@ export const link = new Command('link')
     '--project-uuid <uuid>',
     'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/headless/projects).',
   )
-  .option('--root-dir <rootDir>', 'Root directory to deploy from.', process.cwd())
+  .option(
+    '--root-dir <path>',
+    'Path to the root directory of your Catalyst project (default: current working directory).',
+    process.cwd(),
+  )
   .action(async (options) => {
     try {
       const config = new ProjectConfig(options.rootDir);
