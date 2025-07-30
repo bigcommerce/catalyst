@@ -21,6 +21,12 @@ async function fetchProjects(storeHash: string, accessToken: string, apiHost: st
     },
   });
 
+  if (response.status === 404) {
+    throw new Error(
+      'Headless Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+    );
+  }
+
   if (!response.ok) {
     throw new Error(`Failed to fetch projects: ${response.statusText}`);
   }

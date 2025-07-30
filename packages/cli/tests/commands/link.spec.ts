@@ -169,6 +169,30 @@ test('errors when no projects are found', async () => {
   expect(exitMock).toHaveBeenCalledWith(1);
 });
 
+test('errors when headless projects API is not found', async () => {
+  server.use(
+    http.get('https://:apiHost/stores/:storeHash/v3/headless/projects', () =>
+      HttpResponse.json({}, { status: 404 }),
+    ),
+  );
+  await program.parseAsync([
+    'node',
+    'catalyst',
+    'link',
+    '--store-hash',
+    storeHash,
+    '--access-token',
+    accessToken,
+    '--root-dir',
+    tmpDir,
+  ]);
+
+  expect(consolaStartMock).toHaveBeenCalledWith('Fetching projects...');
+  expect(consolaErrorMock).toHaveBeenCalledWith(
+    'Headless Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+  );
+});
+
 test('errors when no projectUuid, storeHash, or accessToken are provided', async () => {
   await program.parseAsync(['node', 'catalyst', 'link', '--root-dir', tmpDir]);
 
