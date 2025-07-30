@@ -21,7 +21,7 @@ export const start = new Command('start')
         cwd: opts.rootDir,
       });
     } catch (error) {
-      consola.error(error);
+      consola.error(error instanceof Error ? error.message : error);
       process.exit(1);
     }
   });
