@@ -33,7 +33,9 @@ async function fetchProjects(storeHash: string, accessToken: string, apiHost: st
 }
 
 export const link = new Command('link')
-  .description('Link your local Catalyst repository to a BigCommerce project')
+  .description(
+    'Link your local Catalyst project to a BigCommerce headless project. You can provide a project UUID directly, or fetch and select from available projects using your store credentials.',
+  )
   .addOption(
     new Option(
       '--store-hash <hash>',
@@ -53,7 +55,7 @@ export const link = new Command('link')
   )
   .option(
     '--project-uuid <uuid>',
-    'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/headless/projects).',
+    'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/headless/projects). Use this to link directly without fetching projects.',
   )
   .option(
     '--root-dir <path>',
@@ -64,11 +66,15 @@ export const link = new Command('link')
     try {
       const config = new ProjectConfig(options.rootDir);
 
-      if (options.projectUuid) {
-        consola.start('Project UUID provided, writing to .bigcommerce/project.json...');
-        config.set('projectUuid', options.projectUuid);
+      const writeProjectConfig = (uuid: string) => {
+        consola.start('Writing project UUID to .bigcommerce/project.json...');
+        config.set('projectUuid', uuid);
         config.set('framework', 'catalyst');
         consola.success('Project UUID written to .bigcommerce/project.json.');
+      };
+
+      if (options.projectUuid) {
+        writeProjectConfig(options.projectUuid);
 
         process.exit(0);
       }
@@ -84,6 +90,11 @@ export const link = new Command('link')
 
         consola.success('Projects fetched.');
 
+        if (!projects.length) {
+          consola.error('No headless projects found for this store.');
+          process.exit(1);
+        }
+
         const projectUuid = await consola.prompt('Select a project (Press <enter> to select).', {
           type: 'select',
           options: projects.map((project) => ({
@@ -94,18 +105,14 @@ export const link = new Command('link')
           cancel: 'reject',
         });
 
-        consola.start('Writing project UUID to .bigcommerce/project.json...');
-        config.set('projectUuid', projectUuid);
-        config.set('framework', 'catalyst');
-        consola.success('Project UUID written to .bigcommerce/project.json.');
+        writeProjectConfig(projectUuid);
+
         process.exit(0);
       }
 
-      consola.error('No project UUID provided');
-      consola.info('Please provide a project UUID using the --project-uuid flag');
-      consola.info(
-        'Or provide a store hash and access token using the --store-hash and --access-token flags',
-      );
+      consola.error('Insufficient information to link a project.');
+      consola.info('Provide a project UUID with --project-uuid, or');
+      consola.info('Provide both --store-hash and --access-token to fetch and select a project.');
     } catch (error) {
       consola.error(error);
       process.exit(1);

@@ -56,7 +56,9 @@ afterAll(async () => {
 test('properly configured Command instance', () => {
   expect(link).toBeInstanceOf(Command);
   expect(link.name()).toBe('link');
-  expect(link.description()).toBe('Link your local Catalyst repository to a BigCommerce project');
+  expect(link.description()).toBe(
+    'Link your local Catalyst project to a BigCommerce headless project. You can provide a project UUID directly, or fetch and select from available projects using your store credentials.',
+  );
   expect(link.options).toEqual(
     expect.arrayContaining([
       expect.objectContaining({ flags: '--store-hash <hash>' }),
@@ -80,7 +82,7 @@ test('sets projectUuid when called with --project-uuid', async () => {
   ]);
 
   expect(consolaStartMock).toHaveBeenCalledWith(
-    'Project UUID provided, writing to .bigcommerce/project.json...',
+    'Writing project UUID to .bigcommerce/project.json...',
   );
   expect(consolaSuccessMock).toHaveBeenCalledWith(
     'Project UUID written to .bigcommerce/project.json.',
@@ -144,12 +146,10 @@ test('errors when no projectUuid, storeHash, or accessToken are provided', async
 
   expect(consolaStartMock).not.toHaveBeenCalled();
   expect(consolaSuccessMock).not.toHaveBeenCalled();
-  expect(consolaErrorMock).toHaveBeenCalledWith('No project UUID provided');
-  expect(consolaInfoMock.mock.calls[0][0]).toBe(
-    'Please provide a project UUID using the --project-uuid flag',
-  );
+  expect(consolaErrorMock).toHaveBeenCalledWith('Insufficient information to link a project.');
+  expect(consolaInfoMock.mock.calls[0][0]).toBe('Provide a project UUID with --project-uuid, or');
   expect(consolaInfoMock.mock.calls[1][0]).toBe(
-    'Or provide a store hash and access token using the --store-hash and --access-token flags',
+    'Provide both --store-hash and --access-token to fetch and select a project.',
   );
   expect(exitMock).toHaveBeenCalledWith(1);
 });
