@@ -9,10 +9,6 @@ import { ProjectConfig } from '../../src/lib/project-config';
 import { program } from '../../src/program';
 import { server } from '../mocks/node';
 
-let consolaStartMock: MockInstance;
-let consolaSuccessMock: MockInstance;
-let consolaInfoMock: MockInstance;
-let consolaErrorMock: MockInstance;
 let exitMock: MockInstance;
 
 let tmpDir: string;
@@ -25,10 +21,7 @@ const storeHash = 'test-store';
 const accessToken = 'test-token';
 
 beforeAll(async () => {
-  consolaStartMock = vi.spyOn(consola, 'start').mockImplementation(() => null);
-  consolaSuccessMock = vi.spyOn(consola, 'success').mockImplementation(() => null);
-  consolaInfoMock = vi.spyOn(consola, 'info').mockImplementation(() => null);
-  consolaErrorMock = vi.spyOn(consola, 'error').mockImplementation(() => null);
+  consola.mockTypes(() => vi.fn());
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   exitMock = vi.spyOn(process, 'exit').mockImplementation(() => null as never);
@@ -39,17 +32,11 @@ beforeAll(async () => {
 });
 
 afterEach(() => {
-  consolaStartMock.mockReset();
-  consolaSuccessMock.mockReset();
-  consolaInfoMock.mockReset();
-  consolaErrorMock.mockReset();
+  vi.clearAllMocks();
 });
 
 afterAll(async () => {
-  consolaStartMock.mockRestore();
-  consolaSuccessMock.mockRestore();
-  consolaInfoMock.mockRestore();
-  consolaErrorMock.mockRestore();
+  vi.restoreAllMocks();
   exitMock.mockRestore();
 
   await cleanup();
@@ -83,10 +70,10 @@ test('sets projectUuid when called with --project-uuid', async () => {
     tmpDir,
   ]);
 
-  expect(consolaStartMock).toHaveBeenCalledWith(
+  expect(consola.start).toHaveBeenCalledWith(
     'Writing project UUID to .bigcommerce/project.json...',
   );
-  expect(consolaSuccessMock).toHaveBeenCalledWith(
+  expect(consola.success).toHaveBeenCalledWith(
     'Project UUID written to .bigcommerce/project.json.',
   );
   expect(exitMock).toHaveBeenCalledWith(0);
@@ -127,16 +114,18 @@ test('fetches projects and prompts user to select one', async () => {
     tmpDir,
   ]);
 
-  expect(consolaStartMock.mock.calls[0][0]).toBe('Fetching projects...');
-  expect(consolaSuccessMock.mock.calls[0][0]).toBe('Projects fetched.');
+  expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
+  expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
 
-  expect(consolaStartMock.mock.calls[1][0]).toBe(
+  expect(consola.start).toHaveBeenCalledWith(
     'Writing project UUID to .bigcommerce/project.json...',
   );
-  expect(consolaSuccessMock.mock.calls[1][0]).toBe(
+  expect(consola.success).toHaveBeenCalledWith(
     'Project UUID written to .bigcommerce/project.json.',
   );
+
   expect(exitMock).toHaveBeenCalledWith(0);
+
   expect(config.get('projectUuid')).toBe(projectUuid2);
   expect(config.get('framework')).toBe('catalyst');
 
@@ -164,8 +153,8 @@ test('errors when no projects are found', async () => {
     tmpDir,
   ]);
 
-  expect(consolaStartMock).toHaveBeenCalledWith('Fetching projects...');
-  expect(consolaErrorMock).toHaveBeenCalledWith('No headless projects found for this store.');
+  expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
+  expect(consola.error).toHaveBeenCalledWith('No headless projects found for this store.');
   expect(exitMock).toHaveBeenCalledWith(1);
 });
 
@@ -187,8 +176,8 @@ test('errors when headless projects API is not found', async () => {
     tmpDir,
   ]);
 
-  expect(consolaStartMock).toHaveBeenCalledWith('Fetching projects...');
-  expect(consolaErrorMock).toHaveBeenCalledWith(
+  expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
+  expect(consola.error).toHaveBeenCalledWith(
     'Headless Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
   );
 });
@@ -196,12 +185,13 @@ test('errors when headless projects API is not found', async () => {
 test('errors when no projectUuid, storeHash, or accessToken are provided', async () => {
   await program.parseAsync(['node', 'catalyst', 'link', '--root-dir', tmpDir]);
 
-  expect(consolaStartMock).not.toHaveBeenCalled();
-  expect(consolaSuccessMock).not.toHaveBeenCalled();
-  expect(consolaErrorMock).toHaveBeenCalledWith('Insufficient information to link a project.');
-  expect(consolaInfoMock.mock.calls[0][0]).toBe('Provide a project UUID with --project-uuid, or');
-  expect(consolaInfoMock.mock.calls[1][0]).toBe(
+  expect(consola.start).not.toHaveBeenCalled();
+  expect(consola.success).not.toHaveBeenCalled();
+  expect(consola.error).toHaveBeenCalledWith('Insufficient information to link a project.');
+  expect(consola.info).toHaveBeenCalledWith('Provide a project UUID with --project-uuid, or');
+  expect(consola.info).toHaveBeenCalledWith(
     'Provide both --store-hash and --access-token to fetch and select a project.',
   );
+
   expect(exitMock).toHaveBeenCalledWith(1);
 });
