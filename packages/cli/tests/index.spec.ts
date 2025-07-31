@@ -17,5 +17,6 @@ describe('CLI program', () => {
     expect(commands).toContain('version');
     expect(commands).toContain('build');
     expect(commands).toContain('deploy');
+    expect(commands).toContain('dev');
   });
 });
