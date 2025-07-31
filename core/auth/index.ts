@@ -188,6 +188,16 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
   };
 }
 
+const partitionedCookie = (name?: string) =>
+  ({
+    ...(name !== undefined ? { name } : {}),
+    options: {
+      partitioned: true,
+      secure: true,
+      sameSite: 'none',
+    },
+  }) as const;
+
 const config = {
   // Explicitly setting this value to be undefined. We want the library to handle CSRF checks when taking sensitive actions.
   // When handling sensitive actions like sign in, sign out, etc., the library will automatically check for CSRF tokens.
@@ -315,6 +325,16 @@ const config = {
       authorize: loginWithJwt,
     }),
   ],
+  // configure NextAuth cookies to work inside of the Makeswift Builder's canvas
+  cookies: {
+    sessionToken: partitionedCookie(),
+    callbackUrl: partitionedCookie(),
+    csrfToken: partitionedCookie(),
+    pkceCodeVerifier: partitionedCookie(),
+    state: partitionedCookie(),
+    nonce: partitionedCookie(),
+    webauthnChallenge: partitionedCookie(),
+  },
 } satisfies NextAuthConfig;
 
 export const { handlers, auth, signIn, signOut, unstable_update: updateSession } = NextAuth(config);

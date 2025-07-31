@@ -4,10 +4,12 @@ import { withAuth } from './middlewares/with-auth';
 import { withB2B } from './middlewares/with-b2b';
 import { withChannelId } from './middlewares/with-channel-id';
 import { withIntl } from './middlewares/with-intl';
+import { withMakeswift } from './middlewares/with-makeswift';
 import { withRoutes } from './middlewares/with-routes';
 
 export const middleware = composeMiddlewares(
   withAuth,
+  withMakeswift,
   withIntl,
   withAnalyticsCookies,
   withChannelId,

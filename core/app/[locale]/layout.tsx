@@ -2,6 +2,7 @@ import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
 import type { Metadata } from 'next';
+import { draftMode } from 'next/headers';
 import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
@@ -22,7 +23,12 @@ import { AnalyticsProvider } from '~/components/analytics/provider';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
-import { getToastNotification } from '~/lib/server-toast';
+import { SiteTheme } from '~/lib/makeswift/components/site-theme';
+import { MakeswiftProvider } from '~/lib/makeswift/provider';
+
+import { getToastNotification } from '../../lib/server-toast';
+
+import '~/lib/makeswift/components';
 
 const RootLayoutMetadataQuery = graphql(
   `
@@ -113,32 +119,35 @@ export default async function RootLayout({ params, children }: Props) {
   setRequestLocale(locale);
 
   return (
-    <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
-      <head>
-        <ScriptManagerScripts
-          scripts={data.site.content.headerScripts}
-          strategy="afterInteractive"
-        />
-      </head>
-      <body className="flex min-h-screen flex-col">
-        <NextIntlClientProvider>
-          <NuqsAdapter>
-            <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
-              <Providers>
-                {toastNotificationCookieData && (
-                  <CookieNotifications {...toastNotificationCookieData} />
-                )}
-                {children}
-              </Providers>
-            </AnalyticsProvider>
-          </NuqsAdapter>
-          <B2BLoader />
-        </NextIntlClientProvider>
-        <VercelComponents />
-        <ContainerQueryPolyfill />
-        <ScriptManagerScripts scripts={data.site.content.footerScripts} strategy="lazyOnload" />
-      </body>
-    </html>
+    <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
+      <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+        <head>
+          <SiteTheme />
+          <ScriptManagerScripts
+            scripts={data.site.content.headerScripts}
+            strategy="afterInteractive"
+          />
+        </head>
+        <body className="flex min-h-screen flex-col">
+          <NextIntlClientProvider>
+            <NuqsAdapter>
+              <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
+                <Providers>
+                  {toastNotificationCookieData && (
+                    <CookieNotifications {...toastNotificationCookieData} />
+                  )}
+                  {children}
+                </Providers>
+              </AnalyticsProvider>
+            </NuqsAdapter>
+            <B2BLoader />
+          </NextIntlClientProvider>
+          <VercelComponents />
+          <ContainerQueryPolyfill />
+          <ScriptManagerScripts scripts={data.site.content.footerScripts} strategy="lazyOnload" />
+        </body>
+      </html>
+    </MakeswiftProvider>
   );
 }
 
