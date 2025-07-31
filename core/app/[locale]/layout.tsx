@@ -20,6 +20,7 @@ import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
 import { AnalyticsProvider } from '~/components/analytics/provider';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
+import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
 import { getToastNotification } from '~/lib/server-toast';
 
@@ -36,13 +37,16 @@ const RootLayoutMetadataQuery = graphql(
           }
           ...WebAnalyticsFragment
         }
+        content {
+          ...ScriptsFragment
+        }
       }
       channel {
         entityId
       }
     }
   `,
-  [WebAnalyticsFragment],
+  [WebAnalyticsFragment, ScriptsFragment],
 );
 
 const fetchRootLayoutMetadata = cache(async () => {
@@ -110,6 +114,12 @@ export default async function RootLayout({ params, children }: Props) {
 
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
+      <head>
+        <ScriptManagerScripts
+          scripts={data.site.content.headerScripts}
+          strategy="afterInteractive"
+        />
+      </head>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
           <NuqsAdapter>
@@ -126,6 +136,7 @@ export default async function RootLayout({ params, children }: Props) {
         </NextIntlClientProvider>
         <VercelComponents />
         <ContainerQueryPolyfill />
+        <ScriptManagerScripts scripts={data.site.content.footerScripts} strategy="lazyOnload" />
       </body>
     </html>
   );
