@@ -3,6 +3,7 @@ import { join } from 'path';
 
 export interface ProjectConfigSchema {
   projectUuid: string;
+  framework: 'catalyst' | 'nextjs';
 }
 
 export class ProjectConfig {
@@ -15,6 +16,11 @@ export class ProjectConfig {
       configName: 'project',
       schema: {
         projectUuid: { type: 'string', format: 'uuid' },
+        framework: {
+          type: 'string',
+          enum: ['catalyst', 'nextjs'],
+          default: 'catalyst',
+        },
       },
     });
   }

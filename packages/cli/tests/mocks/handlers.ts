@@ -22,4 +22,14 @@ export const handlers = [
       },
     }),
   ),
+
+  // Handler for fetchProjects
+  http.get('https://:apiHost/stores/:storeHash/v3/headless/projects', () =>
+    HttpResponse.json({
+      data: [
+        { uuid: 'a23f5785-fd99-4a94-9fb3-945551623923', name: 'Project One' },
+        { uuid: 'b23f5785-fd99-4a94-9fb3-945551623924', name: 'Project Two' },
+      ],
+    }),
+  ),
 ];
