@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import { Command } from 'commander';
+import consola from 'consola';
 
 import PACKAGE_INFO from '../package.json';
 
@@ -9,7 +10,7 @@ import { version } from './commands/version';
 
 export const program = new Command();
 
-console.log(chalk.cyanBright(`\n◢ ${PACKAGE_INFO.name} v${PACKAGE_INFO.version}\n`));
+consola.log(chalk.cyanBright(`\n◢ ${PACKAGE_INFO.name} v${PACKAGE_INFO.version}\n`));
 
 program
   .name(PACKAGE_INFO.name)
