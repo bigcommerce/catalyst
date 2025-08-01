@@ -18,5 +18,6 @@ describe('CLI program', () => {
     expect(commands).toContain('build');
     expect(commands).toContain('deploy');
     expect(commands).toContain('dev');
+    expect(commands).toContain('start');
   });
 });

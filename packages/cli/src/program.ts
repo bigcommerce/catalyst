@@ -7,6 +7,7 @@ import PACKAGE_INFO from '../package.json';
 import { build } from './commands/build';
 import { deploy } from './commands/deploy';
 import { dev } from './commands/dev';
+import { start } from './commands/start';
 import { version } from './commands/version';
 
 export const program = new Command();
@@ -20,4 +21,5 @@ program
   .addCommand(build)
   .addCommand(deploy)
   .addCommand(dev)
-  .addCommand(version);
+  .addCommand(version)
+  .addCommand(start);
