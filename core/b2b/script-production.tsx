@@ -35,7 +35,7 @@ export function ScriptProduction({ cartId, storeHash, channelId, token, environm
         data-channelid={channelId}
         data-environment={environment}
         data-storehash={storeHash}
-        src={`https://cdn.bundleb2b.net/b2b/${environment}/storefront/headless.js`}
+        src={'https://microapps.bigcommerce.com/b2b-buyer-portal/headless.js'}
         type="module"
       />
     </>
