@@ -632,7 +632,21 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           <div className="flex items-center gap-2">
             {/* Sign In Button (Streamable) */}
-            <Stream value={user}>
+            <Stream
+              value={user}
+              fallback={
+                <Link
+                  aria-label={accountLabel}
+                  className={navCustomButtonClassName}
+                  href={accountHref}
+                >
+                  <span>
+                    <User size={20} strokeWidth={1} className="inline" />
+                    Sign In
+                  </span>
+                </Link>
+              }
+            >
               {(userValue) =>
                 userValue && userValue.email.length > 0 ? (
                   <Link

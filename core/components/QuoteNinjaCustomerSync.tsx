@@ -21,6 +21,8 @@ export const QuoteNinjaCustomerSync = ({ customer }: QuoteNinjaCustomerSyncProps
           if (!result) {
             // Optionally handle failed login (e.g., show error, log)
             console.warn('QuoteNinja customer sync failed: invalid customer data');
+          } else {
+            console.log('QuoteNinja customer sync successful');
           }
         })
         .catch((err: any) => {

@@ -25,9 +25,9 @@ import { CookieNotifications } from '../notifications';
 import { Providers } from '../providers';
 
 import '~/lib/makeswift/components';
-import Script from 'next/script';
 import { getUser } from '~/lib/user';
 import { QuoteNinjaCustomerSync } from '~/components/QuoteNinjaCustomerSync';
+import { getCustomerV2RecordByEmail } from '~/auth';
 
 const RootLayoutMetadataQuery = graphql(`
   query RootLayoutMetadataQuery {
@@ -103,6 +103,11 @@ export default async function RootLayout({ params, children }: Props) {
 
   const [messages, user] = await Promise.all([getMessages(), getUser()]);
 
+  let v2CustomerRecord = null;
+  if (user?.email) {
+    v2CustomerRecord = await getCustomerV2RecordByEmail(user.email);
+  }
+
   return (
     <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
       <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
@@ -114,7 +119,7 @@ export default async function RootLayout({ params, children }: Props) {
           <NextIntlClientProvider locale={locale} messages={messages}>
             <NuqsAdapter>
               <Providers>
-                {user ? <QuoteNinjaCustomerSync customer={user} /> : null}
+                {user ? <QuoteNinjaCustomerSync customer={v2CustomerRecord} /> : null}
                 {toastNotificationCookieData && (
                   <CookieNotifications {...toastNotificationCookieData} />
                 )}

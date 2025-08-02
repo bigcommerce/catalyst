@@ -10,8 +10,6 @@ export interface User {
 export async function getUser(): Promise<User | undefined> {
   const session = await auth();
 
-  console.log('Session:', session);
-
   if (!session || !session.user) {
     return undefined;
   }

@@ -1,3 +1,4 @@
+import axios from 'axios';
 import { decodeJwt } from 'jose';
 import NextAuth, { type DefaultSession, type NextAuthConfig, User } from 'next-auth';
 import 'next-auth/jwt';
@@ -76,6 +77,32 @@ const SessionUpdate = z.object({
     cartId: z.string().nullable().optional(),
   }),
 });
+
+async function getCustomerV2Record(email: string | null | undefined) {
+  if (!email) {
+    return null;
+  }
+
+  const URL = `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v2/customers?email=${email}`;
+
+  try {
+    const response = await axios.get(URL, {
+      headers: {
+        'X-Auth-Token': process.env.BIGCOMMERCE_API_ACCESS_TOKEN,
+        Accept: 'application/json',
+      },
+    });
+
+    if (!response.data || response.data.length === 0) {
+      return null;
+    }
+
+    return response.data[0];
+  } catch (error) {
+    console.error('Error fetching customer data:', error);
+    return null;
+  }
+}
 
 async function handleLoginCart(guestCartId?: string, loginResultCartId?: string) {
   const t = await getTranslations('Cart');
@@ -197,7 +224,6 @@ const config = {
   },
   callbacks: {
     jwt: ({ token, user, session, trigger }) => {
-      console.log('JWT Callback - Token:', user, session);
       // user can actually be undefined
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (user?.customerAccessToken) {
@@ -229,7 +255,7 @@ const config = {
 
       return token;
     },
-    session({ session, token }) {
+    async session({ session, token }) {
       if (token.user?.customerAccessToken) {
         session.user.customerAccessToken = token.user.customerAccessToken;
       }
@@ -313,6 +339,14 @@ export const getSessionCustomerAccessToken = async () => {
   } catch {
     // No empty
   }
+};
+
+export const getCustomerV2RecordByEmail = async (email: string) => {
+  if (email) {
+    const user = await getCustomerV2Record(email);
+    return user;
+  }
+  return null;
 };
 
 export const isLoggedIn = async () => {

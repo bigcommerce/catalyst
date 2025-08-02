@@ -186,14 +186,18 @@ function B2BNinjaAddToQuoteButton() {
   return (
     <Button
       id="qn-cart-to-quote"
-      type="button"
+      type="submit"
       size="medium"
       className="top-0 mt-0 w-auto @xl:w-56"
       style={{ marginTop: '0' }}
       variant="secondary"
       onClick={(event) => {
+        console.log(event);
+
+        console.log(window.BN);
+
+        event.preventDefault();
         if (window.BN && window.BN.show_quote) {
-          event.preventDefault();
           window.BN.add_product(event);
         }
       }}
