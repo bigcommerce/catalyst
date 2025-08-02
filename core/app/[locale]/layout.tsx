@@ -26,6 +26,8 @@ import { Providers } from '../providers';
 
 import '~/lib/makeswift/components';
 import Script from 'next/script';
+import { getUser } from '~/lib/user';
+import { QuoteNinjaCustomerSync } from '~/components/QuoteNinjaCustomerSync';
 
 const RootLayoutMetadataQuery = graphql(`
   query RootLayoutMetadataQuery {
@@ -99,7 +101,7 @@ export default async function RootLayout({ params, children }: Props) {
   // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
   setRequestLocale(locale);
 
-  const messages = await getMessages();
+  const [messages, user] = await Promise.all([getMessages(), getUser()]);
 
   return (
     <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
@@ -112,6 +114,7 @@ export default async function RootLayout({ params, children }: Props) {
           <NextIntlClientProvider locale={locale} messages={messages}>
             <NuqsAdapter>
               <Providers>
+                {user ? <QuoteNinjaCustomerSync customer={user} /> : null}
                 {toastNotificationCookieData && (
                   <CookieNotifications {...toastNotificationCookieData} />
                 )}

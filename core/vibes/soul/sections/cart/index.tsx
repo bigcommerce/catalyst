@@ -1,9 +1,12 @@
+'use client';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 
 import { CartClient, Cart as CartData, CartLineItem, Props as CartProps } from './client';
+import { getCartId } from '~/lib/cart';
+import React, { useEffect, useState } from 'react';
 
 export { type CartLineItem } from './client';
 
@@ -16,12 +19,26 @@ export function Cart<LineItem extends CartLineItem>({
 }: Omit<CartProps<LineItem>, 'cart'> & {
   cart: Streamable<CartData<LineItem>>;
 }) {
+  const [cartId, setCartId] = useState<string | undefined>(undefined);
+
+  useEffect(() => {
+    getCartId().then(setCartId);
+  }, []);
+
   return (
     <Stream
       fallback={<CartSkeleton summaryTitle={summaryTitle} title={title} />}
       value={streamableCart}
     >
-      {(cart) => <CartClient {...rest} cart={cart} summaryTitle={summaryTitle} title={title} />}
+      {(cart) => (
+        <CartClient
+          {...rest}
+          cart={cart}
+          cartId={cartId}
+          summaryTitle={summaryTitle}
+          title={title}
+        />
+      )}
     </Stream>
   );
 }

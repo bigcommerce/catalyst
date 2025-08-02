@@ -17,6 +17,7 @@ import { cartLineItemActionFormDataSchema } from './schema';
 import { ShippingForm, ShippingFormState } from './shipping-form';
 
 import { CartEmptyState } from '.';
+import { getCartId } from '~/lib/cart';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -120,6 +121,7 @@ export interface Props<LineItem extends CartLineItem> {
   cart: Cart<LineItem>;
   couponCode?: CouponCode;
   shipping?: Shipping;
+  cartId?: string;
 }
 
 const defaultEmptyState = {
@@ -131,6 +133,7 @@ const defaultEmptyState = {
 export function CartClient<LineItem extends CartLineItem>({
   title,
   cart,
+  cartId,
   couponCode,
   decrementLineItemLabel,
   incrementLineItemLabel,
@@ -146,7 +149,6 @@ export function CartClient<LineItem extends CartLineItem>({
     lineItems: cart.lineItems,
     lastResult: null,
   });
-
   const [form] = useForm({ lastResult: state.lastResult });
 
   useEffect(() => {
@@ -226,7 +228,7 @@ export function CartClient<LineItem extends CartLineItem>({
             </div>
           </dl>
 
-          <CheckoutButton action={checkoutAction} className="mt-4 w-full">
+          <CheckoutButton cartId={cartId} action={checkoutAction} className="mt-4 w-full">
             {checkoutLabel}
             <ArrowRight size={20} strokeWidth={1} />
           </CheckoutButton>
@@ -381,10 +383,12 @@ function CounterForm({
 
 function CheckoutButton({
   action,
+  cartId,
   ...rest
-}: { action: Action<SubmissionResult | null, FormData> } & React.ComponentPropsWithoutRef<
-  typeof Button
->) {
+}: {
+  action: Action<SubmissionResult | null, FormData>;
+  cartId?: string;
+} & React.ComponentPropsWithoutRef<typeof Button>) {
   const [lastResult, formAction] = useActionState(action, null);
 
   const [form] = useForm({ lastResult });
@@ -398,9 +402,12 @@ function CheckoutButton({
   }, [form.errors]);
 
   return (
-    <form action={formAction}>
-      <SubmitButton {...rest} />
-    </form>
+    <>
+      <form action={formAction}>
+        <SubmitButton {...rest} />
+      </form>
+      <B2BNinjaCartToQuoteButton cartId={cartId} />
+    </>
   );
 }
 
@@ -408,4 +415,31 @@ function SubmitButton(props: React.ComponentPropsWithoutRef<typeof Button>) {
   const { pending } = useFormStatus();
 
   return <Button {...props} disabled={pending} loading={pending} type="submit" />;
+}
+
+function B2BNinjaCartToQuoteButton({ cartId }: { cartId?: string }) {
+  return (
+    <Button
+      onClick={async (event) => {
+        if (typeof window !== 'undefined' && window.BN && window.BN.cart_id_to_quote) {
+          event.preventDefault();
+          if (cartId) {
+            await window.BN.cart_id_to_quote(cartId)
+              .then(() => {
+                window.BN.show_quote('quote-view');
+              })
+              .catch((error: any) => {
+                console.error('Error converting cart to quote:', error);
+              });
+          }
+        }
+      }}
+      className="mt-2 w-full"
+      variant="secondary"
+      size="large"
+      type="button"
+    >
+      Add Cart To Quote
+    </Button>
+  );
 }

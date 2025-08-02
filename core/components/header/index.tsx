@@ -17,6 +17,7 @@ import { SiteHeader as HeaderSection } from '~/lib/makeswift/components/site-hea
 import { search } from './_actions/search';
 import { switchCurrency } from './_actions/switch-currency';
 import { HeaderFragment } from './fragment';
+import { getUser } from '~/lib/user';
 
 const GetCartCountQuery = graphql(`
   query GetCartCountQuery($cartId: String) {
@@ -152,6 +153,7 @@ export const Header = async () => {
         openSearchPopupLabel: t('Search.openSearchPopup'),
         logoLabel: t('home'),
         cartCount: Streamable.from(getCartCount),
+        user: Streamable.from(getUser),
         activeLocaleId: locale,
         locales,
         currencies,

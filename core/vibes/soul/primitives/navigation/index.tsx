@@ -13,9 +13,9 @@ import {
   SearchIcon,
   ShoppingBag,
   ShoppingBasket,
-  User,
   PhoneCall,
   ChevronDownIcon,
+  User,
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React, {
@@ -39,6 +39,7 @@ import { ProductCard } from '@/vibes/soul/primitives/product-card';
 import { Link } from '~/components/link';
 import { usePathname, useRouter } from '~/i18n/routing';
 import { button } from '~/lib/makeswift/components/site-theme/components/button';
+import { User as UserInterface } from '~/lib/user';
 
 interface Link {
   label: string;
@@ -103,6 +104,7 @@ interface Props<S extends SearchResult> {
   isFloating?: boolean;
   accountHref: string;
   cartCount?: Streamable<number | null>;
+  user?: Streamable<UserInterface | undefined>;
   cartHref: string;
   links: Streamable<Link[]>;
   categoryLinks: Link[];
@@ -294,6 +296,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     currencies,
     phoneNumber,
     activeCurrencyId,
+    user,
     currencyAction,
     searchHref,
     searchParamName = 'query',
@@ -628,13 +631,34 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           )}
         >
           <div className="flex items-center gap-2">
-            {/* Sign In Button */}
-            <Link aria-label={accountLabel} className={navCustomButtonClassName} href={accountHref}>
-              <span>
-                <User size={20} strokeWidth={1} className="inline" />
-                Sign In
-              </span>
-            </Link>
+            {/* Sign In Button (Streamable) */}
+            <Stream value={user}>
+              {(userValue) =>
+                userValue && userValue.email.length > 0 ? (
+                  <Link
+                    aria-label={accountLabel}
+                    className={clsx(navCustomButtonClassName)}
+                    href={'/account/orders'}
+                  >
+                    <span>
+                      <User size={20} strokeWidth={1} className="mr-1 inline" />
+                      Account
+                    </span>
+                  </Link>
+                ) : (
+                  <Link
+                    aria-label={accountLabel}
+                    className={navCustomButtonClassName}
+                    href={accountHref}
+                  >
+                    <span>
+                      <User size={20} strokeWidth={1} className="inline" />
+                      Sign In
+                    </span>
+                  </Link>
+                )
+              }
+            </Stream>
 
             <span className="text-[#D2D2D2]">|</span>
 

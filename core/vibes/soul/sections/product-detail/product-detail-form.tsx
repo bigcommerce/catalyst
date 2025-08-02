@@ -158,6 +158,7 @@ export function ProductDetailForm<F extends Field>({
               value={quantityControl.value}
             />
             <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+            <B2BNinjaAddToQuoteButton />
           </div>
         </div>
       </form>
@@ -177,6 +178,27 @@ function SubmitButton({ children, disabled }: { children: React.ReactNode; disab
       type="submit"
     >
       {children}
+    </Button>
+  );
+}
+
+function B2BNinjaAddToQuoteButton() {
+  return (
+    <Button
+      id="qn-cart-to-quote"
+      type="button"
+      size="medium"
+      className="top-0 mt-0 w-auto @xl:w-56"
+      style={{ marginTop: '0' }}
+      variant="secondary"
+      onClick={(event) => {
+        if (window.BN && window.BN.show_quote) {
+          event.preventDefault();
+          window.BN.add_product(event);
+        }
+      }}
+    >
+      Add To Quote
     </Button>
   );
 }

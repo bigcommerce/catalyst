@@ -1,23 +1,22 @@
 'use client';
 declare global {
   interface Window {
-    BN?: {
-      log_in_customer: (customer: any) => Promise<boolean>;
-    };
+    BN?: any;
   }
 }
 import { useEffect } from 'react';
+import { User } from '~/lib/user';
 
 interface QuoteNinjaCustomerSyncProps {
-  customer: any; // Should be the full BigCommerce V2 customer object
+  customer: User;
 }
 
 export const QuoteNinjaCustomerSync = ({ customer }: QuoteNinjaCustomerSyncProps) => {
-  console.log('Hello from here');
-  console.log(window);
   useEffect(() => {
     if (typeof window !== 'undefined' && window.BN && customer) {
-      window.BN.log_in_customer(customer)
+      window.BN.log_in_customer({
+        ...customer,
+      })
         .then((result: boolean) => {
           if (!result) {
             // Optionally handle failed login (e.g., show error, log)
@@ -32,4 +31,16 @@ export const QuoteNinjaCustomerSync = ({ customer }: QuoteNinjaCustomerSyncProps
   }, [customer]);
 
   return null;
+  // <button
+  //   id="qn-cart-to-quote"
+  //   className="qn-button qn-hover-button qn-hover-button-expanded bg-black text-white"
+  //   onClick={() => {
+  //     if (typeof window !== 'undefined' && window.BN && window.BN.show_quote) {
+  //       console.log('quoted window', window.BN);
+  //       window.BN.show_quote('quote-view');
+  //     }
+  //   }}
+  // >
+  //   View Quote
+  // </button>
 };

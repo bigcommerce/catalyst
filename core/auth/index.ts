@@ -117,6 +117,7 @@ async function loginWithPassword(credentials: unknown): Promise<User | null> {
   await handleLoginCart(cartId, result.cart?.entityId);
 
   return {
+    id: result.customer.entityId.toString(),
     name: `${result.customer.firstName} ${result.customer.lastName}`,
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
@@ -152,6 +153,7 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
   await handleLoginCart(cartId, result.cart?.entityId);
 
   return {
+    id: result.customer.entityId.toString(),
     name: `${result.customer.firstName} ${result.customer.lastName}`,
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
@@ -161,10 +163,11 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
 }
 
 function loginWithAnonymous(credentials: unknown): User | null {
-  const { cartId } = AnonymousCredentials.parse(credentials);
+  const anonymousUser = AnonymousCredentials.parse(credentials);
 
   return {
-    cartId: cartId ?? null,
+    id: anonymousUser.cartId,
+    cartId: anonymousUser.cartId ?? null,
   };
 }
 
@@ -194,6 +197,7 @@ const config = {
   },
   callbacks: {
     jwt: ({ token, user, session, trigger }) => {
+      console.log('JWT Callback - Token:', user, session);
       // user can actually be undefined
       // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (user?.customerAccessToken) {
@@ -323,6 +327,7 @@ declare module 'next-auth' {
   }
 
   interface User {
+    id?: string;
     name?: string | null;
     email?: string | null;
     cartId?: string | null;
