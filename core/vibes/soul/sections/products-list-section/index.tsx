@@ -117,13 +117,13 @@ export function ProductsListSection({
               >
                 {title}
               </Suspense>
-              <Suspense
+              {/* <Suspense
                 fallback={
                   <span className="inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg bg-contrast-100" />
                 }
               >
                 <span className="text-contrast-300">{totalCount}</span>
-              </Suspense>
+              </Suspense> */}
             </h1>
 
             {/**
