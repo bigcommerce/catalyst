@@ -126,6 +126,8 @@ export function ProductDetailForm<F extends Field>({
       <FormStateInput />
       <form {...getFormProps(form)} action={formAction} className="py-8">
         <input name="id" type="hidden" value={productId} />
+        <input type="hidden" name="action" value="add" />
+
         <div className="space-y-6">
           {fields.map((field) => {
             return (
@@ -158,7 +160,11 @@ export function ProductDetailForm<F extends Field>({
               value={quantityControl.value}
             />
             <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
-            <B2BNinjaAddToQuoteButton />
+            <B2BNinjaAddToQuoteButton
+              disabled={ctaDisabled}
+              productId={productId}
+              quantity={quantityControl.value}
+            />
           </div>
         </div>
       </form>
@@ -182,23 +188,51 @@ function SubmitButton({ children, disabled }: { children: React.ReactNode; disab
   );
 }
 
-function B2BNinjaAddToQuoteButton() {
+function B2BNinjaAddToQuoteButton({
+  disabled,
+  productId,
+  quantity,
+}: {
+  disabled?: boolean;
+  productId: string;
+  quantity?: string;
+}) {
   return (
     <Button
       id="qn-cart-to-quote"
       type="submit"
       size="medium"
+      disabled={disabled}
       className="top-0 mt-0 w-auto @xl:w-56"
       style={{ marginTop: '0' }}
       variant="secondary"
       onClick={(event) => {
-        console.log(event);
-
-        console.log(window.BN);
-
         event.preventDefault();
-        if (window.BN && window.BN.show_quote) {
-          window.BN.add_product(event);
+
+        if (window.BN && window.BN.add_products_to_quote) {
+          window.BN.add_products_to_quote(
+            [
+              {
+                id: parseInt(productId, 10),
+                qty: parseInt(quantity ?? '1', 10),
+                options: [],
+              },
+            ],
+            true,
+            true,
+          )
+            .then((result: boolean) => {
+              if (!result) {
+                // Optionally handle failed add to quote (e.g., show error, log)
+                console.warn('B2BNinja add to quote failed: invalid product data');
+              } else {
+                console.log('B2BNinja add to quote successful');
+              }
+            })
+            .catch((err: any) => {
+              // Optionally handle error
+              console.error('B2BNinja add to quote error:', err);
+            });
         }
       }}
     >
