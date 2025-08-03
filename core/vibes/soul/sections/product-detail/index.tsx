@@ -130,9 +130,7 @@ export function ProductDetail<F extends Field>({
 
                   <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
                     {(description) =>
-                      description != null &&
-                      // @ts-ignore
-                      description.length > 0 && (
+                      description != null && (
                         <div className="prose prose-sm border-t border-contrast-100 py-8">
                           {description}
                         </div>

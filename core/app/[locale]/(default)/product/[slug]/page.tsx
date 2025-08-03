@@ -273,7 +273,6 @@ export default async function Product(props: Props) {
         scrollbarLabel={t('RelatedProducts.scrollbar')}
         title={t('RelatedProducts.title')}
       />
-
       <Reviews productId={productId} searchParams={parsedSearchParams} />
 
       <Stream fallback={null} value={Streamable.from(() => getProductData(variables))}>
