@@ -105,6 +105,7 @@ interface Props<S extends SearchResult> {
   accountHref: string;
   cartCount?: Streamable<number | null>;
   user?: Streamable<UserInterface | undefined>;
+  isLoggedIn: Streamable<boolean>;
   cartHref: string;
   links: Streamable<Link[]>;
   categoryLinks: Link[];
@@ -283,6 +284,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     links: streamableLinks,
     categoryLinks,
     logo: streamableLogo,
+    isLoggedIn,
     logoHref = '/',
     logoLabel = 'Home',
     logoWidth = 200,
@@ -632,47 +634,16 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           <div className="flex items-center gap-2">
             {/* Sign In Button (Streamable) */}
-            <Stream
-              value={user}
-              fallback={
-                <Link
-                  aria-label={accountLabel}
-                  className={navCustomButtonClassName}
-                  href={accountHref}
-                >
-                  <span>
-                    <User size={20} strokeWidth={1} className="inline" />
-                    Sign In
-                  </span>
-                </Link>
-              }
+            <Link
+              aria-label={accountLabel}
+              className={clsx(navCustomButtonClassName)}
+              href={accountHref}
             >
-              {(userValue) =>
-                userValue && userValue.email.length > 0 ? (
-                  <Link
-                    aria-label={accountLabel}
-                    className={clsx(navCustomButtonClassName)}
-                    href={'/account/orders'}
-                  >
-                    <span>
-                      <User size={20} strokeWidth={1} className="mr-1 inline" />
-                      Account
-                    </span>
-                  </Link>
-                ) : (
-                  <Link
-                    aria-label={accountLabel}
-                    className={navCustomButtonClassName}
-                    href={accountHref}
-                  >
-                    <span>
-                      <User size={20} strokeWidth={1} className="inline" />
-                      Sign In
-                    </span>
-                  </Link>
-                )
-              }
-            </Stream>
+              <span>
+                <User size={20} strokeWidth={1} className="mr-1 inline" />
+                Account
+              </span>
+            </Link>
 
             <span className="text-[#D2D2D2]">|</span>
 
