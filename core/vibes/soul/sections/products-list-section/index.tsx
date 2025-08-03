@@ -76,8 +76,6 @@ export function ProductsListSection({
   maxCompareLimitMessage,
   description,
 }: Props) {
-  const DEFAULT_CATEGORY_IMAGE_URL = 'https://placehold.co/1800x200/png?text=Category+Image';
-
   return (
     <div className="group/products-list-section @container">
       {/**
