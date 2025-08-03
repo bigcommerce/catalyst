@@ -511,7 +511,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
 
               <NavigationMenu.Content
                 hidden={hiddenCategoryBar}
-                className="rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]"
+                className="z-50 rounded-2xl bg-[var(--nav-menu-background,hsl(var(--background)))] shadow-xl ring-1 ring-[var(--nav-menu-border,hsl(var(--foreground)/5%))]"
               >
                 <div className="m-auto grid w-full max-w-screen-lg grid-cols-2 gap-2 px-5 pb-8 pt-5">
                   {categoryLinks.map((category, idx) => {
