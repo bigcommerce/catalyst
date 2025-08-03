@@ -1027,6 +1027,18 @@ function SearchResults({
     );
   }
 
+  // Add state to control popup visibility
+  const [isOpen, setIsOpen] = useState(true);
+
+  useEffect(() => {
+    setIsOpen(true);
+  }, [query]);
+
+  // Handler to close popup
+  const handleClose = () => setIsOpen(false);
+
+  if (!isOpen) return null;
+
   return (
     <div className="perspective-[2000px] absolute left-0 right-0 top-full z-50 flex w-full justify-center">
       <div
@@ -1053,6 +1065,7 @@ function SearchResults({
                         <Link
                           className="block rounded-lg bg-[var(--nav-search-result-link-background,transparent)] px-3 py-4 font-[family-name:var(--nav-search-result-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-search-result-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-search-result-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-search-result-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
                           href={link.href}
+                          onClick={handleClose}
                         >
                           {link.label}
                         </Link>
@@ -1078,7 +1091,7 @@ function SearchResults({
                     role="listbox"
                   >
                     {result.products.map((product) => (
-                      <li key={product.id}>
+                      <li key={product.id} onClick={handleClose}>
                         <ProductCard
                           imageSizes="(min-width: 42rem) 25vw, 50vw"
                           product={{

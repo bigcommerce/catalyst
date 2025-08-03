@@ -23,6 +23,7 @@ type ContextProps = Omit<HeaderSectionProps, 'navigation'> & {
 };
 
 const PropsContext = createContext<ContextProps>({
+  // @ts-ignore
   navigation: {
     accountHref: '',
     cartHref: '',

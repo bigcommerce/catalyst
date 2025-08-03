@@ -30,6 +30,7 @@ export interface ProductCardProps {
   compareLabel?: string;
   compareParamName?: string;
   product: Product;
+  onClick?: () => void;
 }
 
 // eslint-disable-next-line valid-jsdoc
