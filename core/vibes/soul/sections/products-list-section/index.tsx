@@ -182,7 +182,7 @@ export function ProductsListSection({
             {(resolvedDescription) =>
               resolvedDescription && resolvedDescription !== undefined ? (
                 <div
-                  className="mb-4"
+                  className="mb-8 max-w-7xl"
                   // @ts-ignore
                   dangerouslySetInnerHTML={{ __html: resolvedDescription.split('|||')[0] }}
                 />

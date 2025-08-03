@@ -17,3 +17,26 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
+
+main h2 {
+  @apply text-3xl;
+  @apply mb-2;
+}
+main h3 {
+  @apply text-xl;
+}
+main p {
+  @apply mb-2;
+}
+main ul, main ol {
+  @apply mb-4;
+  @apply ml-4;
+  @apply mt-2;
+  @apply list-disc;
+}
+main a {
+  @apply text-[#011F4B];
+}
+main a:hover {
+  @apply underline;
+}

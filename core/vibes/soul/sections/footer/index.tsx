@@ -139,9 +139,9 @@ export const Footer = forwardRef(function Footer(
                           <p>{contactInformation.phone}</p>
                         )}
                       </div>
-                      <h3 className="text-[var(--footer-contact-title,hsl(var(--contrast-300)))]">
+                      {/* <h3 className="text-[var(--footer-contact-title,hsl(var(--contrast-300)))]">
                         {contactTitle}
-                      </h3>
+                      </h3> */}
                     </div>
                   );
                 }
