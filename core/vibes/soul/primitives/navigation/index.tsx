@@ -777,100 +777,6 @@ const MobileItem = ({ category, idx }: { category: any; idx: number }) => {
 };
 
 /**
- * Old Look Icon for Search Form
- */
-function SearchForm<S extends SearchResult>({
-  searchAction,
-  searchParamName = 'query',
-  searchHref = '/search',
-  searchInputPlaceholder = 'Search Products',
-  searchCtaLabel = 'View more',
-  submitLabel = 'Submit',
-}: {
-  searchAction: SearchAction<S>;
-  searchParamName?: string;
-  searchHref?: string;
-  searchCtaLabel?: string;
-  searchInputPlaceholder?: string;
-  submitLabel?: string;
-}) {
-  const [query, setQuery] = useState('');
-  const [isSearching, startSearching] = useTransition();
-  const [{ searchResults, lastResult, emptyStateTitle, emptyStateSubtitle }, formAction] =
-    useActionState(searchAction, {
-      searchResults: null,
-      lastResult: null,
-    });
-  const [isDebouncing, setIsDebouncing] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const isPending = isSearching || isDebouncing || isSubmitting;
-  const debouncedOnChange = useMemo(() => {
-    const debounced = debounce((q: string) => {
-      setIsDebouncing(false);
-
-      const formData = new FormData();
-
-      formData.append(searchParamName, q);
-
-      startSearching(() => {
-        formAction(formData);
-      });
-    }, 300);
-
-    return (q: string) => {
-      setIsDebouncing(true);
-
-      debounced(q);
-    };
-  }, [formAction, searchParamName]);
-
-  const [form] = useForm({ lastResult });
-
-  const handleSubmit = useCallback(() => {
-    setIsSubmitting(true);
-  }, []);
-
-  return (
-    <>
-      <form
-        action={searchHref}
-        className="flex items-center gap-3 px-3 py-3 @4xl:px-5 @4xl:py-4"
-        onSubmit={handleSubmit}
-      >
-        <SearchIcon
-          className="hidden shrink-0 text-[var(--nav-search-icon,hsl(var(--contrast-500)))] @xl:block"
-          size={20}
-          strokeWidth={1}
-        />
-        <input
-          className="flex-grow bg-transparent pl-2 text-lg font-medium outline-0 focus-visible:outline-none @xl:pl-0"
-          name={searchParamName}
-          onChange={(e) => {
-            setQuery(e.currentTarget.value);
-            debouncedOnChange(e.currentTarget.value);
-          }}
-          placeholder={searchInputPlaceholder}
-          type="text"
-          value={query}
-        />
-        <SubmitButton loading={isPending} submitLabel={submitLabel} />
-      </form>
-
-      <SearchResults
-        emptySearchSubtitle={emptyStateSubtitle}
-        emptySearchTitle={emptyStateTitle}
-        errors={form.errors}
-        query={query}
-        searchCtaLabel={searchCtaLabel}
-        searchParamName={searchParamName}
-        searchResults={searchResults}
-        stale={isPending}
-      />
-    </>
-  );
-}
-
-/**
  * New Input Search
  */
 function SearchFormNew<S extends SearchResult>({
@@ -889,6 +795,7 @@ function SearchFormNew<S extends SearchResult>({
   submitLabel?: string;
 }) {
   const [query, setQuery] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
   const [isSearching, startSearching] = useTransition();
   const [{ searchResults, lastResult, emptyStateTitle, emptyStateSubtitle }, formAction] =
     useActionState(searchAction, {
@@ -919,6 +826,21 @@ function SearchFormNew<S extends SearchResult>({
   }, [formAction, searchParamName]);
 
   const [form] = useForm({ lastResult });
+
+  const handleClose = () => {
+    setIsOpen(false);
+  };
+
+  useEffect(() => {
+    if (query === '') {
+      setIsOpen(false);
+      return;
+    }
+
+    if (searchResults != null && searchResults.length > 0) {
+      setIsOpen(true);
+    }
+  }, [query, searchResults]);
 
   const handleSubmit = useCallback(() => {
     setIsSubmitting(true);
@@ -949,16 +871,19 @@ function SearchFormNew<S extends SearchResult>({
         />
       </form>
 
-      <SearchResults
-        emptySearchSubtitle={emptyStateSubtitle}
-        emptySearchTitle={emptyStateTitle}
-        errors={form.errors}
-        query={query}
-        searchCtaLabel={searchCtaLabel}
-        searchParamName={searchParamName}
-        searchResults={searchResults}
-        stale={isPending}
-      />
+      {isOpen && (
+        <SearchResults
+          emptySearchSubtitle={emptyStateSubtitle}
+          emptySearchTitle={emptyStateTitle}
+          errors={form.errors}
+          query={query}
+          searchCtaLabel={searchCtaLabel}
+          searchParamName={searchParamName}
+          searchResults={searchResults}
+          stale={isPending}
+          handleClose={handleClose}
+        />
+      )}
     </>
   );
 }
@@ -986,6 +911,7 @@ function SearchResults({
   emptySearchTitle = `No results were found for '${query}'`,
   emptySearchSubtitle = 'Please try another search.',
   errors,
+  handleClose,
 }: {
   query: string;
   searchParamName: string;
@@ -995,8 +921,13 @@ function SearchResults({
   searchResults: SearchResult[] | null;
   stale: boolean;
   errors?: string[];
+  handleClose: () => void;
 }) {
   if (query === '') return null;
+
+  if (stale) {
+    return null;
+  }
 
   if (errors != null && errors.length > 0) {
     if (stale) return null;
@@ -1026,18 +957,6 @@ function SearchResults({
       </div>
     );
   }
-
-  // Add state to control popup visibility
-  const [isOpen, setIsOpen] = useState(true);
-
-  useEffect(() => {
-    setIsOpen(true);
-  }, [query]);
-
-  // Handler to close popup
-  const handleClose = () => setIsOpen(false);
-
-  if (!isOpen) return null;
 
   return (
     <div className="perspective-[2000px] absolute left-0 right-0 top-full z-50 flex w-full justify-center">
