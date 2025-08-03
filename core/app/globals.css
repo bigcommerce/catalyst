@@ -28,12 +28,22 @@ main h3 {
 main p {
   @apply mb-2;
 }
-main ul, main ol {
+main ul {
   @apply mb-4;
   @apply ml-4;
   @apply mt-2;
   @apply list-disc;
 }
+main ol {
+  @apply mb-4;
+  @apply ml-4;
+  @apply mt-2;
+  @apply list-decimal;
+}
+main nav ul{
+  @apply list-none;
+}
+
 main a {
   @apply text-[#011F4B];
 }
