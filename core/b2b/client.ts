@@ -8,6 +8,8 @@ interface LoginWithB2BParams {
   };
 }
 
+const PROD_B2B_URL = 'https://api-b2b.bigcommerce.com';
+
 const ENV = z
   .object({
     env: z.object({
@@ -32,18 +34,7 @@ const B2BTokenResponseSchema = z.object({
 export async function loginWithB2B({ customerId, customerAccessToken }: LoginWithB2BParams) {
   const { B2B_API_HOST, B2B_API_TOKEN, BIGCOMMERCE_CHANNEL_ID, NODE_ENV } = ENV.parse(process);
 
-  let apiHost: string;
-
-  if (B2B_API_HOST.endsWith('/')) {
-    if (NODE_ENV !== 'production') {
-      throw new Error(
-        'Environment variable B2B_API_HOST must not contain a trailing slash. Please remove the slash and try again.'
-      );
-    }
-    apiHost = 'https://api-b2b.bigcommerce.com';
-  } else {
-    apiHost = B2B_API_HOST;
-  }
+  const apiHost = NODE_ENV === 'production' ? PROD_B2B_URL : B2B_API_HOST;
 
   const response = await fetch(`${apiHost}/api/io/auth/customers/storefront`, {
     method: 'POST',
