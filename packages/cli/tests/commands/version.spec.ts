@@ -5,15 +5,6 @@ import { beforeAll, expect, test, vi } from 'vitest';
 import { version } from '../../src/commands/version';
 import { program } from '../../src/program';
 
-vi.mock('chalk', () => ({
-  default: new Proxy(
-    {},
-    {
-      get: () => (str: string) => str,
-    },
-  ),
-}));
-
 beforeAll(() => {
   consola.mockTypes(() => vi.fn());
 });
