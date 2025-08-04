@@ -6,6 +6,12 @@
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
   "observability": {
     "enabled": true,
+    "head_sampling_rate": 0.05,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": false,
+    },
   },
   "assets": {
     "directory": ".open-next/assets",
