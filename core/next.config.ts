@@ -1,6 +1,7 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
+import chalk from 'chalk';
 
 import { writeBuildConfig } from './build-config/writer';
 import { client } from './client';
@@ -9,17 +10,21 @@ import { cspHeader } from './lib/content-security-policy';
 
 const b2bApiHost = process.env.B2B_API_HOST;
 
-if (b2bApiHost && b2bApiHost.endsWith('/')) {
-  // Using console.warn to print a non-blocking warning message
-  // The ANSI escape codes (\x1b[33m and \x1b[0m) make the text yellow in most terminals
-  console.warn('\n\x1b[33m%s\x1b[0m', '==================== ATTENTION ====================');
-  console.warn(
-    `\x1b[33mWarning: The B2B_API_HOST environment variable ("${b2bApiHost}") ends with a trailing slash '/'.`
+if (b2bApiHost && b2bApiHost.endsWith('/') && process.env.NODE_ENV !== 'production') {
+  console.log(chalk.red('==================== ATTENTION ===================='));
+  console.log(
+    chalk.red(
+      `Warning: The B2B_API_HOST environment variable ("${b2bApiHost}") ends with a trailing slash '/'.`,
+    ),
   );
-  console.warn(
-    `\x1b[33mThis can lead to double slashes in API URLs. Please remove it from your .env file.`
+  console.log(
+    chalk.red(`This can lead to double slashes in API URLs. Please remove it from your .env file.`),
   );
-  console.warn('\x1b[33m%s\x1b[0m\n', '=================================================');
+  console.log(chalk.red('================================================='));
+
+  throw new Error(
+    `B2B_API_HOST should not end with a trailing slash. Please update your .env file.`,
+  );
 }
 
 const withNextIntl = createNextIntlPlugin({
