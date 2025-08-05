@@ -8,23 +8,15 @@ import { client } from './client';
 import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
 
-const b2bApiHost = process.env.B2B_API_HOST;
 
-if (b2bApiHost && b2bApiHost.endsWith('/') && process.env.NODE_ENV !== 'production') {
-  console.log(chalk.red('==================== ATTENTION ===================='));
-  console.log(
-    chalk.red(
-      `Warning: The B2B_API_HOST environment variable ("${b2bApiHost}") ends with a trailing slash '/'.`,
-    ),
-  );
-  console.log(
-    chalk.red(`This can lead to double slashes in API URLs. Please remove it from your .env file.`),
-  );
-  console.log(chalk.red('================================================='));
+if (process.env.NODE_ENV !== 'production') {
+  const b2bApiHost = process.env.B2B_API_HOST;
 
-  throw new Error(
-    `B2B_API_HOST should not end with a trailing slash. Please update your .env file.`,
-  );
+  if (b2bApiHost?.endsWith('/')) {
+    throw new Error(
+      `B2B_API_HOST should not end with a trailing slash. Please update your .env file.`,
+    );
+  }
 }
 
 const withNextIntl = createNextIntlPlugin({

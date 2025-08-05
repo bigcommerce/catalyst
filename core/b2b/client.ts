@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { getAPIHostname } from './getApiHostname';
 
 interface LoginWithB2BParams {
   customerId: number;
@@ -8,15 +9,11 @@ interface LoginWithB2BParams {
   };
 }
 
-const PROD_B2B_URL = 'https://api-b2b.bigcommerce.com';
-
 const ENV = z
   .object({
     env: z.object({
       B2B_API_TOKEN: z.string(),
       BIGCOMMERCE_CHANNEL_ID: z.string(),
-      B2B_API_HOST: z.string().default('https://api-b2b.bigcommerce.com'),
-      NODE_ENV: z.enum(['development', 'production']).default('production'),
     }),
   })
   .transform(({ env }) => env);
@@ -32,9 +29,9 @@ const B2BTokenResponseSchema = z.object({
 });
 
 export async function loginWithB2B({ customerId, customerAccessToken }: LoginWithB2BParams) {
-  const { B2B_API_HOST, B2B_API_TOKEN, BIGCOMMERCE_CHANNEL_ID, NODE_ENV } = ENV.parse(process);
+  const { B2B_API_TOKEN, BIGCOMMERCE_CHANNEL_ID } = ENV.parse(process);
 
-  const apiHost = NODE_ENV === 'production' ? PROD_B2B_URL : B2B_API_HOST;
+  const apiHost = getAPIHostname();
 
   const response = await fetch(`${apiHost}/api/io/auth/customers/storefront`, {
     method: 'POST',
