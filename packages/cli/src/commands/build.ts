@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import consola from 'consola';
+import { execa } from 'execa';
 import { cp } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
 import { addDevDependency, installDependencies, runScript } from 'nypm';
@@ -8,6 +9,7 @@ import { getModuleCliPath } from '../lib/get-module-cli-path';
 import { mkTempDir } from '../lib/mk-temp-dir';
 
 const OPENNEXTJS_CLOUDFLARE_VERSION = '1.5.2';
+const WRANGLER_VERSION = '4.24.3';
 
 const SKIP_DIRS = new Set([
   'node_modules',
@@ -38,8 +40,13 @@ export const build = new Command('build')
     try {
       consola.start('Copying project to temp directory...');
 
-      const cwd = process.cwd();
       const packageManager = 'pnpm';
+
+      const cwd = process.cwd();
+      const tmpCoreDir = join(tmpDir, 'core');
+      const wranglerOutDir = join(tmpCoreDir, '.dist');
+      const openNextOutDir = join(tmpCoreDir, '.open-next');
+      const bigcommerceDistDir = join(cwd, '.bigcommerce', 'dist');
 
       await cp(cwd, tmpDir, {
         recursive: true,
@@ -58,7 +65,7 @@ export const build = new Command('build')
       });
 
       await addDevDependency(`@opennextjs/cloudflare@${OPENNEXTJS_CLOUDFLARE_VERSION}`, {
-        cwd: join(tmpDir, 'core'),
+        cwd: tmpCoreDir,
         packageManager,
       });
 
@@ -75,12 +82,52 @@ export const build = new Command('build')
 
       consola.start('Copying templates...');
 
-      await cp(join(getModuleCliPath(), 'templates'), join(tmpDir, 'core'), {
+      await cp(join(getModuleCliPath(), 'templates'), tmpCoreDir, {
         recursive: true,
         force: true,
       });
 
       consola.success('Templates copied');
+
+      consola.start('Building project...');
+
+      await execa('pnpm', ['exec', 'opennextjs-cloudflare', 'build'], {
+        stdout: ['pipe', 'inherit'],
+        cwd: tmpCoreDir,
+      });
+
+      await execa(
+        'pnpm',
+        [
+          'dlx',
+          `wrangler@${WRANGLER_VERSION}`,
+          'deploy',
+          '--keep-vars',
+          '--outdir',
+          wranglerOutDir,
+          '--dry-run',
+        ],
+        {
+          stdout: ['pipe', 'inherit'],
+          cwd: tmpCoreDir,
+        },
+      );
+
+      consola.success('Project built');
+
+      consola.start('Copying build to project...');
+
+      await cp(wranglerOutDir, bigcommerceDistDir, {
+        recursive: true,
+        force: true,
+      });
+
+      await cp(join(openNextOutDir, 'assets'), join(bigcommerceDistDir, 'assets'), {
+        recursive: true,
+        force: true,
+      });
+
+      consola.success('Build copied to project');
     } catch (error) {
       consola.error(error);
       process.exitCode = 1;
