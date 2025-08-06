@@ -8,6 +8,16 @@ import { z } from 'zod';
 
 import { ProjectConfig } from '../lib/project-config';
 
+const STEPS = {
+  initializing: 'Initializing...',
+  downloading: 'Downloading...',
+  unzipping: 'Unzipping...',
+  processing: 'Processing...',
+  deploying: 'Deploying...',
+  finalizing: 'Finalizing...',
+  complete: 'Complete',
+};
+
 const UploadSignatureSchema = z.object({
   data: z.object({
     upload_url: z.url(),
@@ -22,28 +32,27 @@ const CreateDeploymentSchema = z.object({
 });
 
 const DeploymentStatusSchema = z.object({
-  data: z.object({
-    deployment_uuid: z.uuid(),
-    deployment_status: z.enum(['QUEUED', 'IN_PROGRESS', 'FAILED', 'COMPLETED']),
-    event: z
-      .object({
-        step: z.enum([
-          'DOWNLOADING',
-          'UNZIPPING',
-          'PROCESSING',
-          'DEPLOYING',
-          'FINALIZING',
-          'COMPLETED',
-        ]),
-        progress: z.number(),
-      })
-      .nullable(),
-    error: z
-      .object({
-        code: z.number(),
-      })
-      .nullable(),
-  }),
+  deployment_uuid: z.uuid(),
+  deployment_status: z.enum(['queued', 'in_progress', 'failed', 'completed']),
+  event: z
+    .object({
+      step: z.enum([
+        'initializing',
+        'downloading',
+        'unzipping',
+        'processing',
+        'deploying',
+        'finalizing',
+        'complete',
+      ]),
+      progress: z.number(),
+    })
+    .nullable(),
+  error: z
+    .object({
+      code: z.number(),
+    })
+    .optional(),
 });
 
 export const generateBundleZip = async (rootDir: string) => {
@@ -173,17 +182,20 @@ export const getDeploymentStatus = async (
   accessToken: string,
   apiHost: string,
 ) => {
+  consola.info('Fetching deployment status...');
+
   const spinner = yoctoSpinner({
     text: `Checking deployment status for ${deploymentUuid}...`,
   }).start();
 
   const response = await fetch(
-    `https://${apiHost}/stores/${storeHash}/v3/headless/deployments/${deploymentUuid}`,
+    `https://${apiHost}/stores/${storeHash}/v3/headless/deployments/${deploymentUuid}/events`,
     {
       method: 'GET',
       headers: {
         'X-Auth-Token': accessToken,
         Accept: 'text/event-stream',
+        Connection: 'keep-alive',
       },
     },
   );
@@ -193,34 +205,51 @@ export const getDeploymentStatus = async (
   }
 
   const reader = response.body?.getReader();
+
+  if (!reader) {
+    throw new Error('Failed to read event stream.');
+  }
+
   const decoder = new TextDecoder();
   let done = false;
 
-  while (reader && !done) {
+  while (!done) {
     // eslint-disable-next-line no-await-in-loop
     const { value, done: streamDone } = await reader.read();
+    let json: unknown;
 
     if (value) {
-      const chunk = decoder.decode(value, { stream: true });
+      const chunk = decoder.decode(value, { stream: true }).trim();
+      const split = chunk
+        .split('\n\n')
+        .map((s) => s.replace('data:', '').trim())
+        .filter(Boolean);
 
-      const res: unknown = JSON.parse(chunk);
+      split.forEach((event) => {
+        try {
+          json = JSON.parse(event);
+        } catch (error) {
+          consola.warn(`Failed to parse event, dropping from stream. Event: ${event}`, error);
 
-      const { data } = DeploymentStatusSchema.parse(res);
+          return;
+        }
 
-      if (data.error) {
-        spinner.error('Deployment failed.');
-        throw new Error(`Deployment failed with error code: ${data.error.code}`);
-      }
+        const data = DeploymentStatusSchema.parse(json);
 
-      if (data.event?.step) {
-        spinner.text = data.event.step;
-      }
+        if (data.error) {
+          throw new Error(`Deployment failed with error code: ${data.error.code}`);
+        }
+
+        if (data.event && STEPS[data.event.step] !== spinner.text) {
+          spinner.text = STEPS[data.event.step];
+        }
+      });
     }
 
     done = streamDone;
   }
 
-  spinner.success('Deployment completed successfully.');
+  consola.success('Deployment completed successfully.');
 };
 
 export const deploy = new Command('deploy')

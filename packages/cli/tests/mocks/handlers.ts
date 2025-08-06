@@ -37,33 +37,33 @@ export const handlers = [
 
   // Handler for getDeploymentStatus
   http.get(
-    'https://:apiHost/stores/:storeHash/v3/headless/deployments/:deploymentUuid',
+    'https://:apiHost/stores/:storeHash/v3/headless/deployments/:deploymentUuid/events',
     ({ params }) => {
       const stream = new ReadableStream({
         start(controller) {
           controller.enqueue(
             encoder.encode(
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `{"data": {"deployment_status":"IN_PROGRESS","deployment_uuid":"${params.deploymentUuid}","event":{"step":"PROCESSING","progress":75},"error":null}}\n\n`,
+              `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"processing","progress":75}}`,
             ),
           );
           setTimeout(() => {
             controller.enqueue(
               encoder.encode(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `{"data": {"deployment_status":"IN_PROGRESS","deployment_uuid":"${params.deploymentUuid}","event":{"step":"FINALIZING","progress":99},"error":null}}\n\n`,
+                `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"finalizing","progress":99}}`,
               ),
             );
-          }, 100);
+          }, 10);
           setTimeout(() => {
             controller.enqueue(
               encoder.encode(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `{"data": {"deployment_status":"COMPLETED","deployment_uuid":"${params.deploymentUuid}","event":null,"error":null}}\n\n`,
+                `data: {"deployment_status":"completed","deployment_uuid":"${params.deploymentUuid}","event":null}`,
               ),
             );
             controller.close();
-          }, 200);
+          }, 20);
         },
       });
 

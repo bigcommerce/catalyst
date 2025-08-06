@@ -1,30 +1,22 @@
 import { vi } from 'vitest';
 
-const spinnerMock = {
-  text: 'Loading…',
-  start() {
-    return this;
-  },
-  success: vi.fn(),
-  error: vi.fn(),
-};
+export const textHistory: string[] = [];
 
-const textHistory: string[] = [];
-
-export default function yoctoSpinner({ text }: { text: string }) {
-  spinnerMock.text = text;
+export default vi.fn().mockImplementation(({ text }: { text: string }) => {
   textHistory.push(text);
-  Object.defineProperty(spinnerMock, 'text', {
-    set(val: string) {
-      textHistory.push(val);
-    },
-    get() {
-      return textHistory[textHistory.length - 1];
-    },
-    configurable: true,
-  });
 
-  return spinnerMock;
-}
-
-export { textHistory };
+  return {
+    start: vi.fn().mockReturnThis(),
+    stop: vi.fn().mockReturnThis(),
+    succeed: vi.fn().mockReturnThis(),
+    fail: vi.fn().mockReturnThis(),
+    warn: vi.fn().mockReturnThis(),
+    info: vi.fn().mockReturnThis(),
+    set text(value: string) {
+      textHistory.push(value);
+    },
+    get text() {
+      return textHistory[textHistory.length - 1] || '';
+    },
+  };
+});

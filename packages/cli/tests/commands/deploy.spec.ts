@@ -1,8 +1,10 @@
 import AdmZip from 'adm-zip';
 import { Command } from 'commander';
+import consola from 'consola';
+import { http, HttpResponse } from 'msw';
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 
 import {
   createDeployment,
@@ -13,6 +15,7 @@ import {
   uploadBundleZip,
 } from '../../src/commands/deploy';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
+import { server } from '../mocks/node';
 import { textHistory } from '../mocks/spinner';
 
 // eslint-disable-next-line import/dynamic-import-chunkname
@@ -31,6 +34,8 @@ const uploadUrl = 'https://mock-upload-url.com';
 const deploymentUuid = '5b29c3c0-5f68-44fe-99e5-06492babf7be';
 
 beforeAll(async () => {
+  consola.mockTypes(() => vi.fn());
+
   [tmpDir, cleanup] = await mkTempDir();
 
   const workerPath = join(tmpDir, '.bigcommerce/dist/worker.js');
@@ -42,6 +47,11 @@ beforeAll(async () => {
   await writeFile(workerPath, 'console.log("worker");');
   await mkdir(assetsDir, { recursive: true });
   await writeFile(join(assetsDir, 'test.txt'), 'asset file');
+});
+
+afterEach(() => {
+  vi.clearAllMocks();
+  textHistory.length = 0;
 });
 
 afterAll(async () => {
@@ -90,25 +100,33 @@ describe('bundle zip generation and upload', () => {
     expect(entries.some((e) => e.startsWith('output/assets/'))).toBe(true);
     // Check for output/worker.js
     expect(entries).toContain('output/worker.js');
+
+    expect(consola.success).toHaveBeenCalledWith(`Bundle created at: ${outputZip}`);
   });
 
-  test('fetches upload signature and uploads bundle zip', async () => {
-    // Test generateUploadSignature
+  test('fetches upload signature', async () => {
     const signature = await generateUploadSignature(storeHash, accessToken, apiHost);
+
+    expect(consola.info).toHaveBeenCalledWith('Generating upload signature...');
+    expect(consola.success).toHaveBeenCalledWith('Upload signature generated.');
 
     expect(signature.upload_url).toBe(uploadUrl);
     expect(signature.upload_uuid).toBe(uploadUuid);
+  });
 
-    // Test uploadBundleZip
+  test('fetches upload signature and uploads bundle zip', async () => {
     await generateBundleZip(tmpDir); // Ensure zip exists
 
     const uploadResult = await uploadBundleZip(uploadUrl, tmpDir);
+
+    expect(consola.info).toHaveBeenCalledWith('Uploading bundle...');
+    expect(consola.success).toHaveBeenCalledWith('Bundle uploaded successfully.');
 
     expect(uploadResult).toBe(true);
   });
 });
 
-describe('deployment and polling', () => {
+describe('deployment and event streaming', () => {
   test('creates a deployment', async () => {
     const deployment = await createDeployment(
       projectUuid,
@@ -121,17 +139,110 @@ describe('deployment and polling', () => {
     expect(deployment.deployment_uuid).toBe(deploymentUuid);
   });
 
-  test('polls deployment status until completion', async () => {
+  test('streams deployment status until completion', async () => {
     await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost);
+
+    expect(consola.info).toHaveBeenCalledWith(`Fetching deployment status...`);
 
     expect(textHistory).toEqual([
       `Checking deployment status for ${deploymentUuid}...`,
-      'PROCESSING',
-      'FINALIZING',
+      'Processing...',
+      'Finalizing...',
     ]);
 
-    // Since the mock returns a stream, we can't assert on the final state directly.
-    // Instead, we check that the function completes without throwing.
-    expect(true).toBe(true); // Placeholder assertion
+    expect(consola.success).toHaveBeenCalledWith('Deployment completed successfully.');
+  });
+
+  test('warns if event stream is incomplete or unable to be parsed', async () => {
+    const encoder = new TextEncoder();
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/headless/deployments/:deploymentUuid/events',
+        () => {
+          const stream = new ReadableStream({
+            start(controller) {
+              controller.enqueue(
+                encoder.encode(
+                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+                ),
+              );
+              setTimeout(() => {
+                // Incomplete stream data
+                controller.enqueue(encoder.encode(`data: {"deployment_status":"in_progress",`));
+              }, 10);
+              setTimeout(() => {
+                controller.enqueue(
+                  encoder.encode(
+                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"finalizing","progress":99}}`,
+                  ),
+                );
+                controller.close();
+              }, 20);
+            },
+          });
+
+          return new HttpResponse(stream, {
+            status: 200,
+            headers: { 'Content-Type': 'text/event-stream' },
+          });
+        },
+      ),
+    );
+
+    await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost);
+
+    expect(consola.info).toHaveBeenCalledWith(`Fetching deployment status...`);
+
+    expect(textHistory).toEqual([
+      `Checking deployment status for ${deploymentUuid}...`,
+      'Processing...',
+      'Finalizing...',
+    ]);
+
+    expect(consola.warn).toHaveBeenCalledWith(
+      expect.stringContaining('Failed to parse event, dropping from stream.'),
+      expect.any(Error),
+    );
+    expect(consola.success).toHaveBeenCalledWith('Deployment completed successfully.');
+  });
+
+  test('handles deployment errors', async () => {
+    const encoder = new TextEncoder();
+
+    server.use(
+      http.get(
+        'https://:apiHost/stores/:storeHash/v3/headless/deployments/:deploymentUuid/events',
+        () => {
+          const stream = new ReadableStream({
+            start(controller) {
+              controller.enqueue(
+                encoder.encode(
+                  `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"processing","progress":75}}`,
+                ),
+              );
+              setTimeout(() => {
+                controller.enqueue(
+                  encoder.encode(
+                    `data: {"deployment_status":"in_progress","deployment_uuid":"${deploymentUuid}","event":{"step":"unzipping","progress":99},"error":{"code":30}}`,
+                  ),
+                );
+              }, 10);
+            },
+          });
+
+          return new HttpResponse(stream, {
+            status: 200,
+            headers: { 'Content-Type': 'text/event-stream' },
+          });
+        },
+      ),
+    );
+
+    await expect(
+      getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost),
+    ).rejects.toThrow('Deployment failed with error code: 30');
+
+    expect(consola.info).toHaveBeenCalledWith(`Fetching deployment status...`);
   });
 });
