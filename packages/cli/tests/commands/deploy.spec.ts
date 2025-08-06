@@ -1,10 +1,12 @@
 import AdmZip from 'adm-zip';
+import { Command } from 'commander';
 import { mkdir, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, test, vi } from 'vitest';
 
 import {
   createDeployment,
+  deploy,
   generateBundleZip,
   generateUploadSignature,
   getDeploymentStatus,
@@ -29,7 +31,6 @@ const uploadUrl = 'https://mock-upload-url.com';
 const deploymentUuid = '5b29c3c0-5f68-44fe-99e5-06492babf7be';
 
 beforeAll(async () => {
-  // Setup test directories and files
   [tmpDir, cleanup] = await mkTempDir();
 
   const workerPath = join(tmpDir, '.bigcommerce/dist/worker.js');
@@ -45,6 +46,21 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await cleanup();
+});
+
+test('properly configured Command instance', () => {
+  expect(deploy).toBeInstanceOf(Command);
+  expect(deploy.name()).toBe('deploy');
+  expect(deploy.description()).toBe('Deploy your application to Cloudflare.');
+  expect(deploy.options).toEqual(
+    expect.arrayContaining([
+      expect.objectContaining({ flags: '--store-hash <hash>' }),
+      expect.objectContaining({ flags: '--access-token <token>' }),
+      expect.objectContaining({ flags: '--api-host <host>', defaultValue: 'api.bigcommerce.com' }),
+      expect.objectContaining({ flags: '--project-uuid <uuid>' }),
+      expect.objectContaining({ flags: '--root-dir <path>', defaultValue: process.cwd() }),
+    ]),
+  );
 });
 
 describe('bundle zip generation and upload', () => {

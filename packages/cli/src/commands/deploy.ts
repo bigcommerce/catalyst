@@ -224,7 +224,7 @@ export const getDeploymentStatus = async (
 };
 
 export const deploy = new Command('deploy')
-  .description('Deploy the application to Cloudflare')
+  .description('Deploy your application to Cloudflare.')
   .addOption(
     new Option(
       '--store-hash <hash>',
@@ -252,11 +252,15 @@ export const deploy = new Command('deploy')
       'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/headless/projects).',
     ).env('BIGCOMMERCE_PROJECT_UUID'),
   )
-  .option('--root-dir <rootDir>', 'Root directory to deploy from.', process.cwd())
+  .option(
+    '--root-dir <path>',
+    'Path to the root directory of your Catalyst project (default: current working directory).',
+    process.cwd(),
+  )
   .action(async (opts) => {
-    const config = new ProjectConfig(opts.rootDir);
-
     try {
+      const config = new ProjectConfig(opts.rootDir);
+
       const projectUuid = opts.projectUuid ?? config.get('projectUuid');
 
       await generateBundleZip(opts.rootDir);
@@ -282,6 +286,4 @@ export const deploy = new Command('deploy')
       consola.error(error);
       process.exit(1);
     }
-
-    process.exit(0);
   });
