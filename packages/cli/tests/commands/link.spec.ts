@@ -15,6 +15,10 @@ let tmpDir: string;
 let cleanup: () => Promise<void>;
 let config: ProjectConfig;
 
+const { mockIdentify } = vi.hoisted(() => ({
+  mockIdentify: vi.fn(),
+}));
+
 const projectUuid1 = 'a23f5785-fd99-4a94-9fb3-945551623923';
 const projectUuid2 = 'b23f5785-fd99-4a94-9fb3-945551623924';
 const storeHash = 'test-store';
@@ -22,6 +26,21 @@ const accessToken = 'test-token';
 
 beforeAll(async () => {
   consola.mockTypes(() => vi.fn());
+
+  vi.mock('../../src/lib/telemetry', () => {
+    return {
+      Telemetry: vi.fn().mockImplementation(() => {
+        return {
+          identify: mockIdentify,
+          isEnabled: vi.fn(() => true),
+          track: vi.fn(),
+          analytics: {
+            closeAndFlush: vi.fn(),
+          },
+        };
+      }),
+    };
+  });
 
   // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   exitMock = vi.spyOn(process, 'exit').mockImplementation(() => null as never);
@@ -114,6 +133,8 @@ test('fetches projects and prompts user to select one', async () => {
     tmpDir,
   ]);
 
+  expect(mockIdentify).toHaveBeenCalledWith(storeHash);
+
   expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
   expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
 
@@ -153,6 +174,8 @@ test('errors when no projects are found', async () => {
     tmpDir,
   ]);
 
+  expect(mockIdentify).toHaveBeenCalledWith(storeHash);
+
   expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
   expect(consola.error).toHaveBeenCalledWith('No headless projects found for this store.');
   expect(exitMock).toHaveBeenCalledWith(1);
@@ -175,6 +198,8 @@ test('errors when headless projects API is not found', async () => {
     '--root-dir',
     tmpDir,
   ]);
+
+  expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
   expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
   expect(consola.error).toHaveBeenCalledWith(

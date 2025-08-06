@@ -7,6 +7,9 @@ import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
 import { ProjectConfig } from '../lib/project-config';
+import { Telemetry } from '../lib/telemetry';
+
+const telemetry = new Telemetry();
 
 const stepsEnum = z.enum([
   'initializing',
@@ -289,6 +292,8 @@ export const deploy = new Command('deploy')
   .action(async (opts) => {
     try {
       const config = new ProjectConfig(opts.rootDir);
+
+      await telemetry.identify(opts.storeHash);
 
       const projectUuid = opts.projectUuid ?? config.get('projectUuid');
 
