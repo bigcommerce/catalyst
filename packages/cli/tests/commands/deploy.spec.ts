@@ -51,6 +51,8 @@ beforeAll(async () => {
 
 afterEach(() => {
   vi.clearAllMocks();
+
+  // Resets spinner text history
   textHistory.length = 0;
 });
 
@@ -115,8 +117,6 @@ describe('bundle zip generation and upload', () => {
   });
 
   test('fetches upload signature and uploads bundle zip', async () => {
-    await generateBundleZip(tmpDir); // Ensure zip exists
-
     const uploadResult = await uploadBundleZip(uploadUrl, tmpDir);
 
     expect(consola.info).toHaveBeenCalledWith('Uploading bundle...');
@@ -142,15 +142,14 @@ describe('deployment and event streaming', () => {
   test('streams deployment status until completion', async () => {
     await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost);
 
-    expect(consola.info).toHaveBeenCalledWith(`Fetching deployment status...`);
+    expect(consola.info).toHaveBeenCalledWith('Fetching deployment status...');
 
     expect(textHistory).toEqual([
-      `Checking deployment status for ${deploymentUuid}...`,
+      'Fetching...',
       'Processing...',
       'Finalizing...',
+      'Deployment completed successfully.',
     ]);
-
-    expect(consola.success).toHaveBeenCalledWith('Deployment completed successfully.');
   });
 
   test('warns if event stream is incomplete or unable to be parsed', async () => {
@@ -192,19 +191,19 @@ describe('deployment and event streaming', () => {
 
     await getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost);
 
-    expect(consola.info).toHaveBeenCalledWith(`Fetching deployment status...`);
+    expect(consola.info).toHaveBeenCalledWith('Fetching deployment status...');
 
     expect(textHistory).toEqual([
-      `Checking deployment status for ${deploymentUuid}...`,
+      'Fetching...',
       'Processing...',
       'Finalizing...',
+      'Deployment completed successfully.',
     ]);
 
     expect(consola.warn).toHaveBeenCalledWith(
       expect.stringContaining('Failed to parse event, dropping from stream.'),
       expect.any(Error),
     );
-    expect(consola.success).toHaveBeenCalledWith('Deployment completed successfully.');
   });
 
   test('handles deployment errors', async () => {
@@ -243,6 +242,8 @@ describe('deployment and event streaming', () => {
       getDeploymentStatus(deploymentUuid, storeHash, accessToken, apiHost),
     ).rejects.toThrow('Deployment failed with error code: 30');
 
-    expect(consola.info).toHaveBeenCalledWith(`Fetching deployment status...`);
+    expect(consola.info).toHaveBeenCalledWith('Fetching deployment status...');
+
+    expect(textHistory).toEqual(['Fetching...', 'Processing...']);
   });
 });

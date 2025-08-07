@@ -184,9 +184,7 @@ export const getDeploymentStatus = async (
 ) => {
   consola.info('Fetching deployment status...');
 
-  const spinner = yoctoSpinner({
-    text: `Checking deployment status for ${deploymentUuid}...`,
-  }).start();
+  const spinner = yoctoSpinner().start('Fetching...');
 
   const response = await fetch(
     `https://${apiHost}/stores/${storeHash}/v3/headless/deployments/${deploymentUuid}/events`,
@@ -249,7 +247,7 @@ export const getDeploymentStatus = async (
     done = streamDone;
   }
 
-  consola.success('Deployment completed successfully.');
+  spinner.success('Deployment completed successfully.');
 };
 
 export const deploy = new Command('deploy')
