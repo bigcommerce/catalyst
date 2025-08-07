@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { getAPIHostname } from './getApiHostname';
 
 interface LoginWithB2BParams {
   customerId: number;
@@ -13,7 +14,6 @@ const ENV = z
     env: z.object({
       B2B_API_TOKEN: z.string(),
       BIGCOMMERCE_CHANNEL_ID: z.string(),
-      B2B_API_HOST: z.string().default('https://api-b2b.bigcommerce.com'),
     }),
   })
   .transform(({ env }) => env);
@@ -29,9 +29,11 @@ const B2BTokenResponseSchema = z.object({
 });
 
 export async function loginWithB2B({ customerId, customerAccessToken }: LoginWithB2BParams) {
-  const { B2B_API_HOST, B2B_API_TOKEN, BIGCOMMERCE_CHANNEL_ID } = ENV.parse(process);
+  const { B2B_API_TOKEN, BIGCOMMERCE_CHANNEL_ID } = ENV.parse(process);
 
-  const response = await fetch(`${B2B_API_HOST}/api/io/auth/customers/storefront`, {
+  const apiHost = getAPIHostname();
+
+  const response = await fetch(`${apiHost}/api/io/auth/customers/storefront`, {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -48,8 +50,9 @@ export async function loginWithB2B({ customerId, customerAccessToken }: LoginWit
   if (!response.ok) {
     const errorMessage = ErrorResponse.parse(await response.json()).detail;
 
+    // Use the resolved `apiHost` variable in the error message for accuracy
     throw new Error(
-      `Failed to login with ${B2B_API_HOST}. Status: ${response.status}, Message: ${errorMessage}`,
+      `Failed to login with ${apiHost}. Status: ${response.status}, Message: ${errorMessage}`
     );
   }
 
