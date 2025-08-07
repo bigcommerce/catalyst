@@ -83,6 +83,9 @@ describe('bundle zip generation and upload', () => {
     const stats = await stat(outputZip);
 
     expect(stats.size).toBeGreaterThan(0);
+
+    expect(consola.info).toHaveBeenCalledWith('Generating bundle...');
+    expect(consola.success).toHaveBeenCalledWith(`Bundle created at: ${outputZip}`);
   });
 
   test('zip contains output folder with assets and worker.js', async () => {
