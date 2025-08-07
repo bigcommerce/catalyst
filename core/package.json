@@ -36,7 +36,6 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/kv": "^3.0.0",
     "@vercel/speed-insights": "^1.2.0",
-    "chalk": "^5.5.0",
     "clsx": "^2.1.1",
     "content-security-policy-builder": "^2.3.0",
     "deepmerge": "^4.3.1",

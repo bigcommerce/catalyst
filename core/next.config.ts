@@ -1,7 +1,6 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
-import chalk from 'chalk';
 
 import { writeBuildConfig } from './build-config/writer';
 import { client } from './client';
