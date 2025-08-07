@@ -242,6 +242,8 @@ const StreamableProductQuery = graphql(
               }
             }
           }
+          minPurchaseQuantity
+          maxPurchaseQuantity
           warranty
           inventory {
             isInStock

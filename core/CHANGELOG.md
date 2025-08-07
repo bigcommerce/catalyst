@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.1.0
+
+### Minor Changes
+
+- [#2477](https://github.com/bigcommerce/catalyst/pull/2477) [`02af32c`](https://github.com/bigcommerce/catalyst/commit/02af32c459719f97e8973a19b6889e5fa73d0c38) Thanks [@bookernath](https://github.com/bookernath)! - Add support for Scripts API/Script Manager scripts rendering via next/script
+
+### Patch Changes
+
+- [#2465](https://github.com/bigcommerce/catalyst/pull/2465) [`a438bb6`](https://github.com/bigcommerce/catalyst/commit/a438bb660bc3bd11adacd125769ba99ba2e1c38d) Thanks [@bookernath](https://github.com/bookernath)! - Bump next to 15.4.0-canary.114 to fix issue with PDPs 500ing on Docker builds
+
+- [#2474](https://github.com/bigcommerce/catalyst/pull/2474) [`989bf97`](https://github.com/bigcommerce/catalyst/commit/989bf974c534a7201782ace9a4bf3fe745e8af01) Thanks [@bookernath](https://github.com/bookernath)! - Respect min/max purchase quantity from API in quantity selector
+
+- [#2464](https://github.com/bigcommerce/catalyst/pull/2464) [`474f960`](https://github.com/bigcommerce/catalyst/commit/474f960c4c428e28874022b36ae2b03e0b301e20) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove edge runtime declarations to be able to run Catalyst with OpenNext.
+
+- [#2468](https://github.com/bigcommerce/catalyst/pull/2468) [`8b64931`](https://github.com/bigcommerce/catalyst/commit/8b6493156a70490c0c35c35d45ebd9ad8f23615c) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+## 1.0.1
+
+### Patch Changes
+
+- [#2448](https://github.com/bigcommerce/catalyst/pull/2448) [`e4444a2`](https://github.com/bigcommerce/catalyst/commit/e4444a2ca83b5b73776c842feff56e47f57344dc) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Fixes an issue where the anonymous session wasn't getting cleared after an actual session was established.
+
 ## 1.0.0
 
 ### Major Changes
@@ -93,7 +115,6 @@ This is a add-only change, so migration should be as simple as pulling in the ne
 
 - Updated `/app/[locale]/(default)/compare/page.tsx` to use `Streamable.from` pattern.
 - Renamed `getCompareData` query to `getComparedProducts`.
-
   - Updated query
   - Returns empty `[]` if no product ids are passed
 
@@ -134,7 +155,6 @@ This is a add-only change, so migration should be as simple as pulling in the ne
 - Update`/(facted)/category/[slug]/fetch-compare-products.ts`
   - Request now accept `customerAccessToken` as a prop instead of calling internally.
 - Update `/(faceted)/fetch-faceted-search.ts`
-
   - Request now accept `customerAccessToken` and `currencyCode` as a prop instead of calling internally.
 
 - [`537db2c`](https://github.com/bigcommerce/catalyst/commit/537db2c) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Add the ability to redirect from the login page. Developers can now append a relative path to the `?redirectTo=` query param on the `/login` page. When a shopper successfully logs in, it'll redirect them to the given relative path. Defaults to `/account/orders` to prevent a breaking change.
@@ -185,7 +205,6 @@ Any import statements that import `expect` and `test` from `@playwright/test` sh
 **Migration instructions:**
 
 - Update `/(facted)/search/page.tsx`
-
   - For this page we are now doing a blocking request for brand page data. Instead of having functions that each would read from props, we share streamable functions that can be passed to our UI components. We still stream in filter and product data.
 
 - [`da2a462`](https://github.com/bigcommerce/catalyst/commit/da2a462) Thanks [@bookernath](https://github.com/bookernath)! - Adds the ability to redirect after logout.
@@ -554,7 +573,6 @@ Previously, the pages would 404 which is misleading.
 - Update`/product/[slug]/_components`.
   - Similar to `page.tsx` and `page.data`, expect changes in the fragments defined and how we pass streamable functions to UI components.
 - Update `/vibes/soul/product-detail/index.tsx` & `/vibes/soul/product-detail/product-detail-form.tsx`
-
   - Minor changes to allow streaming in data.
 
 - [`8a25424`](https://github.com/bigcommerce/catalyst/commit/8a25424) Thanks [@chancellorclark](https://github.com/chancellorclark)! - Refactors the sign in functionality to use two separate providers instead of one. This is some work needed to be done in order to provide a better API for session syncing so it shouldn't effect any existing functionality.
@@ -665,7 +683,6 @@ git mv core/app/[locale]/(default)/product/[slug]/_components/product-analytics-
 
 - Update `ProductDetailForm` to prevent reset on submit, by removing `requestFormReset` in the `onSubmit`.
 - Remove `router.refresh()` call and instead call new `revalidateCart` action.
-
   - `revalidateCart` is an action that `revalidateTag(TAGS.cart)`
   - This prevents the form from fully refreshing on success.
 
@@ -1061,7 +1078,6 @@ dark:
 ### Minor Changes
 
 - [#1491](https://github.com/bigcommerce/catalyst/pull/1491) [`313a591`](https://github.com/bigcommerce/catalyst/commit/313a5913181a144b53cb12208132f4a9924e2256) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Bump `next-intl` which includes [some minor changes and updated APIs](<(https://next-intl-docs.vercel.app/blog/next-intl-3-22)>):
-
   - Use new `createNavigation` api.
   - Pass `locale` to redirects.
   - `setRequestLocale` is no longer unstable.
@@ -1157,7 +1173,6 @@ dark:
 - [#1362](https://github.com/bigcommerce/catalyst/pull/1362) [`0814afe`](https://github.com/bigcommerce/catalyst/commit/0814afefca00b2497dddb0622df45f4d50865882) Thanks [@deini](https://github.com/deini)! - If app is not running on Vercel's infra, `<Analytics />` and `<SpeedInsights />` are not rendered.
 
   Opt-out of vercel analytics and speed insights by setting the following env vars to `true`
-
   - `DISABLE_VERCEL_ANALYTICS`
   - `DISABLE_VERCEL_SPEED_INSIGHTS`
 
@@ -1246,7 +1261,6 @@ dark:
 - [#1278](https://github.com/bigcommerce/catalyst/pull/1278) [`f8553c6`](https://github.com/bigcommerce/catalyst/commit/f8553c6c9fb35ab7a143fabd60719c8156269448) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Fix wrapping author text in BlogPostCard.
 
 - [#1322](https://github.com/bigcommerce/catalyst/pull/1322) [`77ecb4b`](https://github.com/bigcommerce/catalyst/commit/77ecb4bb4f527e079788b0f9dff2468e92d0bc1a) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Split auth forms to four different pages:
-
   - /login
   - /register
   - /reset
@@ -1296,7 +1310,6 @@ dark:
 - [#1194](https://github.com/bigcommerce/catalyst/pull/1194) [`b455b05`](https://github.com/bigcommerce/catalyst/commit/b455b05a6121b005bd5147a25c964b9554b1b350) Thanks [@BC-krasnoshapka](https://github.com/BC-krasnoshapka)! - Add basic support for Google Analytics via [Big Open Data Layer](https://developer.bigcommerce.com/docs/integrations/hosted-analytics). BODL and GA4 integration is encapsulated in `bodl` library which hides current complexity and limitations that will be improved in future. It can be extended with more events and integrations with other analytics providers later. Data transformation from Catalyst data models to BODL and firing events is done in client components, as only frontend events are supported by BODL for now.
 
   List of currently supported events:
-
   - View product category
   - View product page
   - Add product to cart

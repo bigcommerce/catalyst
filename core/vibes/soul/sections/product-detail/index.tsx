@@ -28,6 +28,8 @@ interface ProductDetailProduct {
       content: ReactNode;
     }>
   >;
+  minQuantity?: Streamable<number | null>;
+  maxQuantity?: Streamable<number | null>;
 }
 
 export interface ProductDetailProps<F extends Field> {
@@ -142,9 +144,11 @@ export function ProductDetail<F extends Field>({
                         streamableFields,
                         streamableCtaLabel,
                         streamableCtaDisabled,
+                        product.minQuantity,
+                        product.maxQuantity,
                       ])}
                     >
-                      {([fields, ctaLabel, ctaDisabled]) => (
+                      {([fields, ctaLabel, ctaDisabled, minQuantity, maxQuantity]) => (
                         <ProductDetailForm
                           action={action}
                           additionalActions={additionalActions}
@@ -154,6 +158,8 @@ export function ProductDetail<F extends Field>({
                           emptySelectPlaceholder={emptySelectPlaceholder}
                           fields={fields}
                           incrementLabel={incrementLabel}
+                          maxQuantity={maxQuantity ?? undefined}
+                          minQuantity={minQuantity ?? undefined}
                           prefetch={prefetch}
                           productId={product.id}
                           quantityLabel={quantityLabel}

@@ -2,7 +2,7 @@
 
 require('@bigcommerce/eslint-config/patch');
 
-/** @type {import('eslint').Linter.Config} */
+/** @type {import('eslint').Linter.LegacyConfig} */
 const config = {
   root: true,
   extends: [

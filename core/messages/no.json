@@ -148,7 +148,7 @@
             "orderNumber": "Bestillingsnr.",
             "totalPrice": "Totalbeløp",
             "viewDetails": "Vis detaljer",
-            "emptyState": {
+            "EmptyState": {
                 "title": "De har ingen bestillinger",
                 "cta": "Kjøp nå"
             },
@@ -174,7 +174,10 @@
             "create": "Opprett",
             "update": "Oppdater",
             "setDefault": "Angi som standard",
-            "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
+            "somethingWentWrong": "Noe gikk galt. Prøv igjen senere.",
+            "EmptyState": {
+                "title": "Du har ingen adresser"
+            }
         },
         "Settings": {
             "title": "Kontoinnstillinger",
@@ -195,7 +198,6 @@
         "items": "{count, plural, =1 {1 vare} other {# varer}}",
         "viewWishlist": "Se listen",
         "noWishlists": "Du har ingen ønskelister",
-        "noWishlistsSubtitle": "Opprett en ønskeliste for å lagre favorittproduktene dine.",
         "noWishlistsCallToAction": "Opprett en ønskeliste",
         "emptyWishlist": "Du har ikke lagt til produkter på denne ønskelisten.",
         "share": "Del",
@@ -246,7 +248,7 @@
             "removeItemSuccess": "Varen er fjernet fra ønskelisten din."
         },
         "Button": {
-            "label": "Add to wish list",
+            "label": "Legg til på ønskeliste",
             "addToNewWishlist": "Legg til i ny ønskeliste",
             "defaultWishlistName": "Min ønskeliste",
             "addSuccessMessage": "Produktet er lagt til i ønskelisten din",
@@ -438,7 +440,7 @@
                 "search": "Åpne popup-vinduet for søk"
             },
             "SwitchCurrency": {
-                "label": "Switch currency",
+                "label": "Bytt valuta",
                 "invalidCurrency": "Ugyldig valuta",
                 "errorUpdatingCurrency": "Det oppsto en feil ved oppdatering av valutaen for handlekurven din. Prøv igjen."
             },
