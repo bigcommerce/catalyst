@@ -3,9 +3,30 @@ import { Command, Option } from 'commander';
 import { consola } from 'consola';
 import { access, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
+import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
 import { ProjectConfig } from '../lib/project-config';
+
+const stepsEnum = z.enum([
+  'initializing',
+  'downloading',
+  'unzipping',
+  'processing',
+  'deploying',
+  'finalizing',
+  'complete',
+]);
+
+const STEPS: Record<z.infer<typeof stepsEnum>, string> = {
+  initializing: 'Initializing...',
+  downloading: 'Downloading...',
+  unzipping: 'Unzipping...',
+  processing: 'Processing...',
+  deploying: 'Deploying...',
+  finalizing: 'Finalizing...',
+  complete: 'Complete',
+};
 
 const UploadSignatureSchema = z.object({
   data: z.object({
@@ -18,6 +39,22 @@ const CreateDeploymentSchema = z.object({
   data: z.object({
     deployment_uuid: z.uuid(),
   }),
+});
+
+const DeploymentStatusSchema = z.object({
+  deployment_uuid: z.uuid(),
+  deployment_status: z.enum(['queued', 'in_progress', 'failed', 'completed']),
+  event: z
+    .object({
+      step: stepsEnum,
+      progress: z.number(),
+    })
+    .nullable(),
+  error: z
+    .object({
+      code: z.number(),
+    })
+    .optional(),
 });
 
 export const generateBundleZip = async (rootDir: string) => {
@@ -141,8 +178,82 @@ export const createDeployment = async (
   return data;
 };
 
+export const getDeploymentStatus = async (
+  deploymentUuid: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+) => {
+  consola.info('Fetching deployment status...');
+
+  const spinner = yoctoSpinner().start('Fetching...');
+
+  const response = await fetch(
+    `https://${apiHost}/stores/${storeHash}/v3/headless/deployments/${deploymentUuid}/events`,
+    {
+      method: 'GET',
+      headers: {
+        'X-Auth-Token': accessToken,
+        Accept: 'text/event-stream',
+        Connection: 'keep-alive',
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to open event stream: ${response.status} ${response.statusText}`);
+  }
+
+  const reader = response.body?.getReader();
+
+  if (!reader) {
+    throw new Error('Failed to read event stream.');
+  }
+
+  const decoder = new TextDecoder();
+  let done = false;
+
+  while (!done) {
+    // eslint-disable-next-line no-await-in-loop
+    const { value, done: streamDone } = await reader.read();
+    let json: unknown;
+
+    if (value) {
+      const chunk = decoder.decode(value, { stream: true }).trim();
+      const split = chunk
+        .split('\n\n')
+        .map((s) => s.replace('data:', '').trim())
+        .filter(Boolean);
+
+      split.forEach((event) => {
+        try {
+          json = JSON.parse(event);
+        } catch (error) {
+          consola.warn(`Failed to parse event, dropping from stream. Event: ${event}`, error);
+
+          return;
+        }
+
+        const data = DeploymentStatusSchema.parse(json);
+
+        if (data.error) {
+          throw new Error(`Deployment failed with error code: ${data.error.code}`);
+        }
+
+        if (data.event && STEPS[data.event.step] !== spinner.text) {
+          spinner.text = STEPS[data.event.step];
+        }
+      });
+    }
+
+    done = streamDone;
+  }
+
+  spinner.success('Deployment completed successfully.');
+};
+
 export const deploy = new Command('deploy')
-  .description('Deploy the application to Cloudflare')
+  .description('Deploy your application to Cloudflare.')
   .addOption(
     new Option(
       '--store-hash <hash>',
@@ -170,11 +281,15 @@ export const deploy = new Command('deploy')
       'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/headless/projects).',
     ).env('BIGCOMMERCE_PROJECT_UUID'),
   )
-  .option('--root-dir <rootDir>', 'Root directory to deploy from.', process.cwd())
+  .option(
+    '--root-dir <path>',
+    'Path to the root directory of your Catalyst project (default: current working directory).',
+    process.cwd(),
+  )
   .action(async (opts) => {
-    const config = new ProjectConfig(opts.rootDir);
-
     try {
+      const config = new ProjectConfig(opts.rootDir);
+
       const projectUuid = opts.projectUuid ?? config.get('projectUuid');
 
       await generateBundleZip(opts.rootDir);
@@ -187,7 +302,7 @@ export const deploy = new Command('deploy')
 
       await uploadBundleZip(uploadSignature.upload_url, opts.rootDir);
 
-      await createDeployment(
+      const { deployment_uuid: deploymentUuid } = await createDeployment(
         projectUuid,
         uploadSignature.upload_uuid,
         opts.storeHash,
@@ -195,11 +310,9 @@ export const deploy = new Command('deploy')
         opts.apiHost,
       );
 
-      // @todo poll for deployment status
+      await getDeploymentStatus(deploymentUuid, opts.storeHash, opts.accessToken, opts.apiHost);
     } catch (error) {
       consola.error(error);
       process.exit(1);
     }
-
-    process.exit(0);
   });
