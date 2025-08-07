@@ -8,7 +8,17 @@ import { z } from 'zod';
 
 import { ProjectConfig } from '../lib/project-config';
 
-const STEPS = {
+const stepsEnum = z.enum([
+  'initializing',
+  'downloading',
+  'unzipping',
+  'processing',
+  'deploying',
+  'finalizing',
+  'complete',
+]);
+
+const STEPS: Record<z.infer<typeof stepsEnum>, string> = {
   initializing: 'Initializing...',
   downloading: 'Downloading...',
   unzipping: 'Unzipping...',
@@ -36,15 +46,7 @@ const DeploymentStatusSchema = z.object({
   deployment_status: z.enum(['queued', 'in_progress', 'failed', 'completed']),
   event: z
     .object({
-      step: z.enum([
-        'initializing',
-        'downloading',
-        'unzipping',
-        'processing',
-        'deploying',
-        'finalizing',
-        'complete',
-      ]),
+      step: stepsEnum,
       progress: z.number(),
     })
     .nullable(),
