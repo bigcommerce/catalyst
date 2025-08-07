@@ -120,10 +120,20 @@ export interface SchemaRawShape {
   quantity: z.ZodNumber;
 }
 
-export function schema(fields: Field[]): z.ZodObject<SchemaRawShape> {
+export function schema(
+  fields: Field[],
+  minQuantity?: number,
+  maxQuantity?: number,
+): z.ZodObject<SchemaRawShape> {
+  let quantitySchema = z.number().min(minQuantity ?? 1);
+
+  if (maxQuantity != null) {
+    quantitySchema = quantitySchema.max(maxQuantity);
+  }
+
   const shape: SchemaRawShape = {
     id: z.string(),
-    quantity: z.number().min(1),
+    quantity: quantitySchema,
   };
 
   fields.forEach((field) => {
