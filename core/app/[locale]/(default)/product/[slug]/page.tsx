@@ -18,8 +18,6 @@ import { ProductAnalyticsProvider } from './_components/product-analytics-provid
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
-import { WishlistButton } from './_components/wishlist-button';
-import { WishlistButtonForm } from './_components/wishlist-button/form';
 import {
   getProduct,
   getProductPageMetadata,
@@ -300,13 +298,6 @@ export default async function Product({ params, searchParams }: Props) {
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
         <ProductDetail
           action={addToCart}
-          additionalActions={
-            <WishlistButton
-              formId={detachedWishlistFormId}
-              productId={productId}
-              productSku={streamableProductSku}
-            />
-          }
           additionalInformationTitle={t('ProductDetails.additionalInformation')}
           ctaDisabled={streameableCtaDisabled}
           ctaLabel={streameableCtaLabel}
@@ -364,13 +355,6 @@ export default async function Product({ params, searchParams }: Props) {
           </>
         )}
       </Stream>
-
-      <WishlistButtonForm
-        formId={detachedWishlistFormId}
-        productId={productId}
-        productSku={streamableProductSku}
-        searchParams={searchParams}
-      />
     </>
   );
 }
