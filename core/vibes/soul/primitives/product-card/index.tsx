@@ -78,7 +78,7 @@ export function ProductCard({
       <div className="relative">
         <div
           className={clsx(
-            'relative h-full overflow-hidden rounded-xl @md:rounded-2xl',
+            'relative overflow-hidden rounded-xl @md:rounded-2xl',
             {
               '5:6': 'aspect-[5/6]',
               '3:4': 'aspect-[3/4]',
@@ -94,7 +94,7 @@ export function ProductCard({
             <Image
               alt={image.alt}
               className={clsx(
-                'absolute inset-0 h-full w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+                'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
                 {
                   light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
                   dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
@@ -109,7 +109,7 @@ export function ProductCard({
             <Image
               alt={`${title} image`}
               className={clsx(
-                'absolute inset-0 h-full w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+                'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
                 {
                   light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
                   dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
