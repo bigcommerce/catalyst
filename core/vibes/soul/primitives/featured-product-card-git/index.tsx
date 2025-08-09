@@ -1,6 +1,24 @@
 import clsx from 'clsx';
+import React from 'react';
+
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
+
+// Helper to strip HTML tags and truncate text
+function truncateHtmlText(html: string, maxLength: number): string {
+  if (!html) return '';
+  // Create a temporary element to parse HTML
+  const tempDiv =
+    typeof window !== 'undefined' ? document.createElement('div') : { innerHTML: html };
+  if (typeof window !== 'undefined') tempDiv.innerHTML = html;
+  // Get the text content
+  const text = (tempDiv as any).textContent || '';
+  // Truncate and escape
+  let truncated = text.slice(0, maxLength);
+  if (text.length > maxLength) truncated += '...';
+  // Escape for HTML
+  return truncated.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
 
 interface ProductCardProps {
   className?: string;
@@ -92,15 +110,11 @@ export const FeaturedProductCard = ({
             {name.length > titleExcerptLength ? name.slice(0, titleExcerptLength) + '...' : name}
           </h2>
           <p className="mb-1 mt-0.5 text-sm font-normal text-gray-500">
-            {description.length > descriptionExcerptLength ? (
-              <div
-                dangerouslySetInnerHTML={{
-                  __html: description.slice(0, descriptionExcerptLength) + '...',
-                }}
-              />
-            ) : (
-              <div dangerouslySetInnerHTML={{ __html: description }} />
-            )}
+            <span
+              dangerouslySetInnerHTML={{
+                __html: truncateHtmlText(description, descriptionExcerptLength),
+              }}
+            />
           </p>
 
           <div className="mt-auto">
