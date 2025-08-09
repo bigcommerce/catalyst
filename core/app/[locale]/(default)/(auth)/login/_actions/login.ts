@@ -29,8 +29,10 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
       cartId,
       // We want to use next/navigation for the redirect as it
       // follows basePath and trailing slash configurations.
-      redirect: true,
+      redirect: false,
     });
+    // If the sign-in was successful, we can redirect the user.
+    return redirect({ href: '/account/orders', locale });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
