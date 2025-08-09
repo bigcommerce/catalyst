@@ -1,6 +1,5 @@
 'use server';
 
-import { redirect } from 'next/navigation';
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
@@ -9,6 +8,7 @@ import { getLocale, getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/sections/sign-in-section/schema';
 import { signIn } from '~/auth';
+import { redirect } from '~/i18n/routing';
 import { getCartId } from '~/lib/cart';
 
 export const login = async (_lastResult: SubmissionResult | null, formData: FormData) => {
@@ -32,7 +32,7 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
       redirect: false,
     });
 
-    return redirect('/account/orders');
+    return redirect({ href: '/account/orders', locale });
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);
