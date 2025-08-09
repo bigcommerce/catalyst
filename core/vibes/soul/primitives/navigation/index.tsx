@@ -16,6 +16,7 @@ import {
   PhoneCall,
   ChevronDownIcon,
   User,
+  LogIn,
 } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React, {
@@ -652,7 +653,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                     href={accountHref}
                   >
                     <span>
-                      <User size={20} strokeWidth={1} className="mr-1 inline" />
+                      <LogIn size={20} strokeWidth={1} className="mr-1 inline" />
                       Sign In
                     </span>
                   </Link>
