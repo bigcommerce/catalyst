@@ -167,7 +167,7 @@ export function ProductDetail<F extends Field>({
 
 function ImageSkeleton() {
   return (
-    <div className="aspect-[4/5] h-full w-full shrink-0 grow-0 basis-full animate-pulse bg-contrast-100" />
+    <div className="aspect-square h-full w-full shrink-0 grow-0 basis-full animate-pulse bg-contrast-100" />
   );
 }
 

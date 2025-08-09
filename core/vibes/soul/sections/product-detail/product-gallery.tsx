@@ -41,7 +41,7 @@ export function ProductGallery({ images, className, thumbnailLabel = 'View image
       >
         <div className="flex">
           {images.map((image, idx) => (
-            <div className="relative aspect-[4/5] w-full shrink-0 grow-0 basis-full" key={idx}>
+            <div className="relative aspect-square w-full shrink-0 grow-0 basis-full" key={idx}>
               <Image
                 alt={image.alt}
                 className="object-cover"
