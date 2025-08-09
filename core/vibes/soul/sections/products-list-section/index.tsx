@@ -217,6 +217,7 @@ export function ProductsListSection({
               products={products}
               removeLabel={removeLabel}
               showCompare={showCompare}
+              aspectRatio="1:1"
             />
 
             {paginationInfo && <CursorPagination info={paginationInfo} />}
