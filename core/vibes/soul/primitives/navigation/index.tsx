@@ -41,6 +41,8 @@ import { usePathname, useRouter } from '~/i18n/routing';
 import { button } from '~/lib/makeswift/components/site-theme/components/button';
 import { User as UserInterface } from '~/lib/user';
 
+import { AccountDropdownMenu } from './AccountDropdownMenu';
+
 interface Link {
   label: string;
   href: string;
@@ -633,12 +635,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           )}
         >
           <div className="flex items-center gap-2">
-            {/* Sign In Button (Streamable) */}
+            {/* Account Dropdown or Sign In Button (Streamable) */}
             <Stream value={isLoggedIn}>
-              {(loggedIn) => {
-                console.log('Logged In Status:', loggedIn);
-
-                return (
+              {(loggedIn) =>
+                loggedIn ? (
+                  <AccountDropdownMenu accountHref={accountHref} accountLabel={accountLabel} />
+                ) : (
                   <Link
                     aria-label={accountLabel}
                     className={clsx(navCustomButtonClassName)}
@@ -646,11 +648,11 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
                   >
                     <span>
                       <User size={20} strokeWidth={1} className="mr-1 inline" />
-                      {loggedIn ? 'Account' : 'Sign In'}
+                      Sign In
                     </span>
                   </Link>
-                );
-              }}
+                )
+              }
             </Stream>
 
             <span className="text-[#D2D2D2]">|</span>
