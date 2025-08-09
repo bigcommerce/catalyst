@@ -3,7 +3,6 @@ import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
 export const inter = Inter({
   display: 'swap',
   subsets: ['latin'],
-  weight: '400',
   variable: '--font-family-inter',
 });
 
