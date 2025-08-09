@@ -352,6 +352,8 @@ export const getCustomerV2RecordByEmail = async (email: string) => {
 export const isLoggedIn = async () => {
   const cat = await getSessionCustomerAccessToken();
 
+  console.log('Customer Access Token:', cat);
+
   return Boolean(cat);
 };
 

@@ -3,7 +3,7 @@ import { cache } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
 import { LayoutQuery } from '~/app/[locale]/(default)/query';
-import { getSessionCustomerAccessToken } from '~/auth';
+import { getSessionCustomerAccessToken, isLoggedIn } from '~/auth';
 import { client } from '~/client';
 import { graphql, readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -144,6 +144,7 @@ export const Header = async () => {
         cartHref: '/cart',
         cartLabel: t('Icons.cart'),
         searchHref: '/search',
+        isLoggedIn: Streamable.from(isLoggedIn),
         searchLabel: t('Icons.search'),
         searchParamName: 'term',
         searchAction: search,
