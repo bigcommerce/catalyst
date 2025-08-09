@@ -36,18 +36,18 @@ export const AccountDropdownMenu: React.FC<AccountDropdownMenuProps> = ({
         >
           <DropdownMenu.Item asChild>
             <Link
-              href="/account/settings"
-              className="block w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))]"
-            >
-              Account Settings
-            </Link>
-          </DropdownMenu.Item>
-          <DropdownMenu.Item asChild>
-            <Link
               href="/account/orders"
               className="block w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))]"
             >
               Orders
+            </Link>
+          </DropdownMenu.Item>
+          <DropdownMenu.Item asChild>
+            <Link
+              href="/account/settings"
+              className="block w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))]"
+            >
+              Account Settings
             </Link>
           </DropdownMenu.Item>
           <DropdownMenu.Item asChild>
