@@ -29,7 +29,7 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
       cartId,
       // We want to use next/navigation for the redirect as it
       // follows basePath and trailing slash configurations.
-      redirect: false,
+      redirect: true,
     });
   } catch (error) {
     // eslint-disable-next-line no-console
