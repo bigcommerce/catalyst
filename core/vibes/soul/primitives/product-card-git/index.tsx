@@ -72,6 +72,7 @@ export const ProductCard = ({
             priority={imagePriority}
             sizes={imageSizes}
             src={image.src}
+            loading={imagePriority ? 'eager' : 'lazy'}
           />
         ) : (
           <Image
@@ -83,6 +84,7 @@ export const ProductCard = ({
             priority={imagePriority}
             sizes={imageSizes}
             src={DEFAULT_PRODUCT_IMAGE_URL}
+            loading={imagePriority ? 'eager' : 'lazy'}
           />
         )}
         {badge.show && badge.text !== '' && (
