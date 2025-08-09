@@ -1,25 +1,22 @@
-import localFont from 'next/font/local';
+import { DM_Serif_Text, Inter, Roboto_Mono } from 'next/font/google';
 
-export const inter = localFont({
-  src: [
-    { path: '../public/fonts/Inter-Regular.woff2', weight: '400' },
-    // Add more weights if available, e.g.:
-    // { path: '../public/fonts/Inter-Bold.woff2', weight: '700' },
-  ],
+export const inter = Inter({
+  display: 'swap',
+  subsets: ['latin'],
   variable: '--font-family-inter',
-  display: 'swap',
 });
 
-export const dmSerifText = localFont({
-  src: '../public/fonts/DMSerifText-Regular.woff2',
+export const dmSerifText = DM_Serif_Text({
+  display: 'swap',
+  subsets: ['latin'],
+  weight: '400',
   variable: '--font-family-dm-serif-text',
-  display: 'swap',
 });
 
-export const robotoMono = localFont({
-  src: '../public/fonts/RobotoMono-Regular.woff2',
-  variable: '--font-family-roboto-mono',
+export const robotoMono = Roboto_Mono({
+  subsets: ['latin'],
   display: 'swap',
+  variable: '--font-family-roboto-mono',
 });
 
 export const fonts = [inter, dmSerifText, robotoMono];
