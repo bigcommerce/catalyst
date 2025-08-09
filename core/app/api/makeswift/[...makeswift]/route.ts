@@ -26,25 +26,25 @@ const handler = MakeswiftApiHandler(process.env.MAKESWIFT_SITE_API_KEY, {
   runtime,
   apiOrigin: process.env.MAKESWIFT_API_ORIGIN,
   appOrigin: process.env.MAKESWIFT_APP_ORIGIN,
-  getFonts() {
-    return [
-      {
-        family: 'var(--font-family-inter)',
-        label: 'Inter',
-        variants: defaultVariants,
-      },
-      {
-        family: 'var(--font-family-dm-serif-text)',
-        label: 'DM Serif Text',
-        variants: [{ weight: '400', style: 'normal' }],
-      },
-      {
-        family: 'var(--font-family-roboto-mono)',
-        label: 'Roboto Mono',
-        variants: defaultVariants,
-      },
-    ];
-  },
+  // getFonts() {
+  //   return [
+  //     {
+  //       family: 'var(--font-family-inter)',
+  //       label: 'Inter',
+  //       variants: defaultVariants,
+  //     },
+  //     {
+  //       family: 'var(--font-family-dm-serif-text)',
+  //       label: 'DM Serif Text',
+  //       variants: [{ weight: '400', style: 'normal' }],
+  //     },
+  //     {
+  //       family: 'var(--font-family-roboto-mono)',
+  //       label: 'Roboto Mono',
+  //       variants: defaultVariants,
+  //     },
+  //   ];
+  // },
 });
 
 export { handler as GET, handler as POST };
