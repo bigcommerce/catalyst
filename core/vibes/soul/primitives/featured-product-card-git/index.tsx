@@ -92,9 +92,15 @@ export const FeaturedProductCard = ({
             {name.length > titleExcerptLength ? name.slice(0, titleExcerptLength) + '...' : name}
           </h2>
           <p className="mb-1 mt-0.5 text-sm font-normal text-gray-500">
-            {description.length > descriptionExcerptLength
-              ? description.slice(0, descriptionExcerptLength) + '...'
-              : description}
+            {description.length > descriptionExcerptLength ? (
+              <div
+                dangerouslySetInnerHTML={{
+                  __html: description.slice(0, descriptionExcerptLength) + '...',
+                }}
+              />
+            ) : (
+              <div dangerouslySetInnerHTML={{ __html: description }} />
+            )}
           </p>
 
           <div className="mt-auto">
