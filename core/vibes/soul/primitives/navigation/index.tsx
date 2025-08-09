@@ -636,7 +636,12 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
         >
           <div className="flex items-center gap-2">
             {/* Account Dropdown or Sign In Button (Streamable) */}
-            <Stream value={isLoggedIn}>
+            <Stream
+              value={isLoggedIn}
+              fallback={
+                <span className="inline-flex h-8 w-24 animate-pulse items-center rounded bg-contrast-100" />
+              }
+            >
               {(loggedIn) =>
                 loggedIn ? (
                   <AccountDropdownMenu accountHref={accountHref} accountLabel={accountLabel} />

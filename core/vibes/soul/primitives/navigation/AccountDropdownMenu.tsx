@@ -50,6 +50,14 @@ export const AccountDropdownMenu: React.FC<AccountDropdownMenuProps> = ({
               Orders
             </Link>
           </DropdownMenu.Item>
+          <DropdownMenu.Item asChild>
+            <Link
+              href="/account/wishlists"
+              className="block w-full rounded-lg px-3 py-2 text-left text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] hover:bg-[var(--nav-link-background-hover,hsl(var(--contrast-100)))]"
+            >
+              Wishlists
+            </Link>
+          </DropdownMenu.Item>
           <DropdownMenu.Separator className="my-1 h-px bg-[var(--nav-menu-border,hsl(var(--foreground)/5%))]" />
           <DropdownMenu.Item asChild>
             <Link
