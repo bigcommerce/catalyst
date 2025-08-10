@@ -30,13 +30,8 @@ export const getBrandsRest = cache(
   async ({ page = 1, limit = 20 } = {}): Promise<GetBrandsRestResponse> => {
     try {
       const response = await axios.get(
-        `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/brands`,
+        `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/brands?sort=name&page=${page}&limit=${limit}`,
         {
-          params: {
-            page,
-            limit,
-            sort: 'name',
-          },
           headers: {
             'X-Auth-Token': process.env.BIGCOMMERCE_API_ACCESS_TOKEN ?? '',
             'Content-Type': 'application/json',

@@ -3,28 +3,6 @@ import { cache } from 'react';
 import { client } from '~/client';
 import { getBrandsRest } from '~/client/queries/get-brands';
 import { revalidate } from '~/client/revalidate-target';
-import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
-
-const convertRestPageInfoIntoGraphQL = (
-  restPageInfo:
-    | {
-        total: number;
-        count: number;
-        per_page: number;
-        current_page: number;
-        total_pages: number;
-      }
-    | undefined,
-) => {
-  if (!restPageInfo) return null;
-
-  return {
-    startCursorParamName: 'after',
-    startCursor: restPageInfo.current_page ? String(restPageInfo.current_page) : null,
-    endCursorParamName: 'before',
-    endCursor: restPageInfo.current_page ? String(restPageInfo.current_page + 1) : null,
-  };
-};
 
 // Fetch brands using BigCommerce REST API, then fetch entities using GraphQL by entityIds
 export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
