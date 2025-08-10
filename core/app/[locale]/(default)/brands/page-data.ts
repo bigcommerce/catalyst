@@ -19,9 +19,9 @@ const convertRestPageInfoIntoGraphQL = (
   if (!restPageInfo) return null;
 
   return {
-    startCursorParamName: 'page',
+    startCursorParamName: 'after',
     startCursor: restPageInfo.current_page ? String(restPageInfo.current_page) : null,
-    endCursorParamName: 'page',
+    endCursorParamName: 'before',
     endCursor: restPageInfo.current_page ? String(restPageInfo.current_page + 1) : null,
   };
 };
@@ -33,7 +33,7 @@ export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
   if (restResult.status !== 'success' || !restResult.brands) {
     return {
       brands: [],
-      pageInfo: convertRestPageInfoIntoGraphQL(restResult.meta?.pagination),
+      pageInfo: restResult.meta?.pagination,
       error: restResult.error,
     };
   }
@@ -43,7 +43,7 @@ export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
   if (!entityIds.length) {
     return {
       brands: [],
-      pageInfo: convertRestPageInfoIntoGraphQL(restResult.meta?.pagination),
+      pageInfo: restResult.meta?.pagination,
     };
   }
   // 3. Fetch entities by entityIds using GraphQL in parallel batches of 10
@@ -64,7 +64,7 @@ export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
     .filter(Boolean)
     .flatMap((result) => (Array.isArray(result.edges) ? result.edges : []));
   if (!allBrandsEdges.length) {
-    return { brands: [], pageInfo: convertRestPageInfoIntoGraphQL(restResult.meta?.pagination) };
+    return { brands: [], pageInfo: restResult.meta?.pagination };
   }
 
   // 4. Return brands and pagination info
@@ -76,7 +76,7 @@ export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
       path: brand.path,
       defaultImage: brand.defaultImage,
     })),
-    pageInfo: convertRestPageInfoIntoGraphQL(restResult.meta?.pagination) || null,
+    pageInfo: restResult.meta?.pagination,
   };
 });
 

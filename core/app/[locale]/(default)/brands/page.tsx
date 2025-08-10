@@ -7,6 +7,7 @@ import { parseAsInteger, parseAsString, SearchParams } from 'nuqs/server';
 import { createSearchParamsCache } from 'nuqs/server';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
+import { ArrowLeft, ArrowRight, Link } from 'lucide-react';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -23,8 +24,7 @@ interface Props {
 const defaultBrandLimit = 18;
 
 const searchParamsCache = createSearchParamsCache({
-  before: parseAsString,
-  after: parseAsString,
+  page: parseAsString.withDefault('1'),
   limit: parseAsInteger.withDefault(defaultBrandLimit),
 });
 
@@ -35,17 +35,11 @@ export default async function BrandsPage(props: Props) {
 
   // Parse search params for pagination
   const searchParamsParsed = searchParamsCache.parse(await props.searchParams);
-  const { before, after, limit } = searchParamsParsed;
+  const { page, limit } = searchParamsParsed;
 
   // Fetch brands data
-  let pageParam: string | undefined = undefined;
-  if (after) {
-    pageParam = after;
-  } else if (before) {
-    pageParam = before;
-  }
   const { brands, pageInfo: paginationInfo } = await getBrandsData({
-    ...(pageParam ? { page: pageParam } : {}),
+    page,
     limit,
   });
 
@@ -75,7 +69,70 @@ export default async function BrandsPage(props: Props) {
       </div>
 
       {/* Pagination Controls */}
-      {paginationInfo && <CursorPagination info={paginationInfo} />}
+      <PageNumberPagination
+        currentPage={parseInt(page, 10)}
+        totalPages={paginationInfo?.total_pages || 1}
+        basePath={`/brands`}
+      />
     </SectionLayout>
+  );
+}
+
+type PageNumberPaginationProps = {
+  currentPage: number;
+  totalPages: number;
+  basePath: string; // e.g., "/brands"
+  scroll?: boolean;
+};
+
+export function PageNumberPagination({
+  currentPage,
+  totalPages,
+  basePath,
+  scroll,
+}: PageNumberPaginationProps) {
+  const prevPage = currentPage > 1 ? currentPage - 1 : null;
+  const nextPage = currentPage < totalPages ? currentPage + 1 : null;
+
+  return (
+    <nav aria-label="pagination" className="py-10" role="navigation">
+      <ul className="flex items-center justify-center gap-3">
+        <li>
+          {prevPage ? (
+            <Link
+              href={`${basePath}?page=${prevPage}`}
+              aria-label="Go to previous page"
+              className="pagination-arrow"
+            >
+              <ArrowLeft size={24} strokeWidth={1} />
+            </Link>
+          ) : (
+            <span className="opacity-50">
+              <ArrowLeft size={24} strokeWidth={1} />
+            </span>
+          )}
+        </li>
+        <li>
+          <span>
+            Page {currentPage} of {totalPages}
+          </span>
+        </li>
+        <li>
+          {nextPage ? (
+            <Link
+              href={`${basePath}?page=${nextPage}`}
+              aria-label="Go to next page"
+              className="pagination-arrow"
+            >
+              <ArrowRight size={24} strokeWidth={1} />
+            </Link>
+          ) : (
+            <span className="opacity-50">
+              <ArrowRight size={24} strokeWidth={1} />
+            </span>
+          )}
+        </li>
+      </ul>
+    </nav>
   );
 }
