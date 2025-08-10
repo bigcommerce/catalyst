@@ -29,7 +29,7 @@ const convertRestPageInfoIntoGraphQL = (
 // Fetch brands using BigCommerce REST API, then fetch entities using GraphQL by entityIds
 export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
   // 1. Fetch brands from REST API, sorted by name
-  const restResult = await getBrandsRest({ page: parseInt(page, 1), limit });
+  const restResult = await getBrandsRest({ page: parseInt(page, 10), limit });
   if (restResult.status !== 'success' || !restResult.brands) {
     return {
       brands: [],
