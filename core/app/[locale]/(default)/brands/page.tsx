@@ -8,6 +8,7 @@ import { createSearchParamsCache } from 'nuqs/server';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
 import { ArrowLeft, ArrowRight, Link } from 'lucide-react';
+import clsx from 'clsx';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -99,13 +100,9 @@ export function PageNumberPagination({
       <ul className="flex items-center justify-center gap-3">
         <li>
           {prevPage ? (
-            <Link
-              href={`${basePath}?page=${prevPage}`}
-              aria-label="Go to previous page"
-              className="pagination-arrow"
-            >
+            <PaginationLink href={`${basePath}?page=${prevPage}`} aria-label="Go to previous page">
               <ArrowLeft size={24} strokeWidth={1} />
-            </Link>
+            </PaginationLink>
           ) : (
             <span className="opacity-50">
               <ArrowLeft size={24} strokeWidth={1} />
@@ -119,13 +116,9 @@ export function PageNumberPagination({
         </li>
         <li>
           {nextPage ? (
-            <Link
-              href={`${basePath}?page=${nextPage}`}
-              aria-label="Go to next page"
-              className="pagination-arrow"
-            >
+            <PaginationLink href={`${basePath}?page=${nextPage}`} aria-label="Go to next page">
               <ArrowRight size={24} strokeWidth={1} />
-            </Link>
+            </PaginationLink>
           ) : (
             <span className="opacity-50">
               <ArrowRight size={24} strokeWidth={1} />
@@ -134,5 +127,29 @@ export function PageNumberPagination({
         </li>
       </ul>
     </nav>
+  );
+}
+
+function PaginationLink({
+  href,
+  children,
+  scroll,
+  'aria-label': ariaLabel,
+}: {
+  href: string;
+  children: React.ReactNode;
+  scroll?: boolean;
+  ['aria-label']?: string;
+}) {
+  return (
+    <Link
+      aria-label={ariaLabel}
+      className={clsx(
+        'flex h-12 w-12 items-center justify-center rounded-full border border-contrast-100 text-foreground ring-primary transition-colors duration-300 hover:border-contrast-200 hover:bg-contrast-100 focus-visible:outline-0 focus-visible:ring-2',
+      )}
+      href={href}
+    >
+      {children}
+    </Link>
   );
 }
