@@ -45,9 +45,16 @@ export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
     return { brands: [], pageInfo: restResult.meta?.pagination };
   }
 
-  // 4. Return brands and pagination info
+  // 4. Sort brands by name and return brands and pagination info
+  const sortedBrandsEdges = allBrandsEdges.slice().sort((a, b) => {
+    const nameA = a.node.name?.toLowerCase() || '';
+    const nameB = b.node.name?.toLowerCase() || '';
+    if (nameA < nameB) return -1;
+    if (nameA > nameB) return 1;
+    return 0;
+  });
   return {
-    brands: allBrandsEdges.map(({ node: brand }) => ({
+    brands: sortedBrandsEdges.map(({ node: brand }) => ({
       id: brand.id,
       name: brand.name,
       productsCount: brand.products?.collectionInfo?.totalItems || 0,
