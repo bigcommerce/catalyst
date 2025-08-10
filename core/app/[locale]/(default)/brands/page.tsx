@@ -39,8 +39,7 @@ export default async function BrandsPage(props: Props) {
 
   // Fetch brands data
   const { brands, pageInfo: paginationInfo } = await getBrandsData({
-    before,
-    after,
+    page: after ? after : undefined,
     limit,
   });
 
@@ -62,7 +61,7 @@ export default async function BrandsPage(props: Props) {
             href={brand.path}
             name={brand.name}
             title={brand.name}
-            productCount={brand.products.collectionInfo?.totalItems?.toString() ?? '0'}
+            productCount={brand.productsCount.toString()}
             imageUrl={brand.defaultImage?.urlOriginal}
             key={brand.path}
           />
