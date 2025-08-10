@@ -26,7 +26,7 @@ import { Providers } from '../providers';
 
 import '~/lib/makeswift/components';
 import { getUser } from '~/lib/user';
-import { QuoteNinjaCustomerSync } from '~/components/QuoteNinjaCustomerSync';
+import { QuoteNinjaCustomerSyncLoader } from '~/components/QuoteNinjaCustomerSyncLoader';
 import { getCustomerV2RecordByEmail } from '~/auth';
 
 const RootLayoutMetadataQuery = graphql(`
@@ -119,7 +119,7 @@ export default async function RootLayout({ params, children }: Props) {
           <NextIntlClientProvider locale={locale} messages={messages}>
             <NuqsAdapter>
               <Providers>
-                {user ? <QuoteNinjaCustomerSync customer={v2CustomerRecord} /> : null}
+                {user ? <QuoteNinjaCustomerSyncLoader customer={v2CustomerRecord} /> : null}
                 {toastNotificationCookieData && (
                   <CookieNotifications {...toastNotificationCookieData} />
                 )}
@@ -128,7 +128,6 @@ export default async function RootLayout({ params, children }: Props) {
             </NuqsAdapter>
           </NextIntlClientProvider>
           <VercelComponents />
-          <script src="https://cdn.quoteninja.com/storefront/quoteninja-headless.js?storeID=wlbjjbyoi5" />
         </body>
       </html>
     </MakeswiftProvider>
