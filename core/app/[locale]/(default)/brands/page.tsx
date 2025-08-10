@@ -104,15 +104,10 @@ export function PageNumberPagination({
               <ArrowLeft size={24} strokeWidth={1} />
             </PaginationLink>
           ) : (
-            <span className="opacity-50">
+            <SkeletonLink>
               <ArrowLeft size={24} strokeWidth={1} />
-            </span>
+            </SkeletonLink>
           )}
-        </li>
-        <li>
-          <span>
-            Page {currentPage} of {totalPages}
-          </span>
         </li>
         <li>
           {nextPage ? (
@@ -120,9 +115,9 @@ export function PageNumberPagination({
               <ArrowRight size={24} strokeWidth={1} />
             </PaginationLink>
           ) : (
-            <span className="opacity-50">
+            <SkeletonLink>
               <ArrowRight size={24} strokeWidth={1} />
-            </span>
+            </SkeletonLink>
           )}
         </li>
       </ul>
@@ -151,5 +146,13 @@ function PaginationLink({
     >
       {children}
     </Link>
+  );
+}
+
+function SkeletonLink({ children }: { children: React.ReactNode }) {
+  return (
+    <div className="flex h-12 w-12 cursor-not-allowed items-center justify-center rounded-full border border-contrast-100 text-foreground opacity-50 duration-300">
+      {children}
+    </div>
   );
 }
