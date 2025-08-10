@@ -7,8 +7,9 @@ import { parseAsInteger, parseAsString, SearchParams } from 'nuqs/server';
 import { createSearchParamsCache } from 'nuqs/server';
 import { notFound } from 'next/navigation';
 import { setRequestLocale } from 'next-intl/server';
-import { ArrowLeft, ArrowRight, Link } from 'lucide-react';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import clsx from 'clsx';
+import { Link } from '~/components/link';
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
