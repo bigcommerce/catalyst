@@ -6,8 +6,6 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const appClientId = searchParams.get('app_client_id');
 
-  console.log('Hello from JSWT');
-
   if (!appClientId) {
     return NextResponse.json({ error: 'Missing app_client_id' }, { status: 400 });
   }

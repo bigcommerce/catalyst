@@ -38,6 +38,9 @@ export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
     };
   }
 
+  console.log('REST brands result:', restResult);
+  console.log('REST result length:', restResult.brands.length);
+
   // 2. Extract entityIds (brand ids)
   const entityIds = restResult.brands.map((b) => b.id);
   if (!entityIds.length) {
@@ -47,6 +50,8 @@ export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
     };
   }
 
+  console.log('Entity IDs:', entityIds);
+
   // 3. Fetch entities by entityIds using GraphQL (if needed, e.g. for richer data)
   //    Here, we use getProductsByIds as an example; replace with actual brand GraphQL query if available
   //    If not needed, you can skip this step or adjust as needed
@@ -55,6 +60,8 @@ export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
   if (!brands) {
     return { brands: [], pageInfo: convertRestPageInfoIntoGraphQL(restResult.meta?.pagination) };
   }
+
+  console.log('GraphQL brands result:', removeEdgesAndNodes(brands).length);
 
   // 4. Return brands and pagination info
   return {
