@@ -38,8 +38,14 @@ export default async function BrandsPage(props: Props) {
   const { before, after, limit } = searchParamsParsed;
 
   // Fetch brands data
+  let pageParam: string | undefined = undefined;
+  if (after) {
+    pageParam = after;
+  } else if (before) {
+    pageParam = before;
+  }
   const { brands, pageInfo: paginationInfo } = await getBrandsData({
-    page: after ? after : undefined,
+    ...(pageParam ? { page: pageParam } : {}),
     limit,
   });
 

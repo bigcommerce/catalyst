@@ -38,9 +38,6 @@ export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
     };
   }
 
-  console.log('REST brands result:', restResult);
-  console.log('REST result length:', restResult.brands.length);
-
   // 2. Extract entityIds (brand ids)
   const entityIds = restResult.brands.map((b) => b.id);
   if (!entityIds.length) {
@@ -49,24 +46,30 @@ export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
       pageInfo: convertRestPageInfoIntoGraphQL(restResult.meta?.pagination),
     };
   }
+  // 3. Fetch entities by entityIds using GraphQL in parallel batches of 10
+  const chunkArray = <T>(arr: T[], size: number): T[][] => {
+    const res: T[][] = [];
+    for (let i = 0; i < arr.length; i += size) {
+      res.push(arr.slice(i, i + size));
+    }
+    return res;
+  };
 
-  console.log('Entity IDs:', entityIds);
-
-  // 3. Fetch entities by entityIds using GraphQL (if needed, e.g. for richer data)
-  //    Here, we use getProductsByIds as an example; replace with actual brand GraphQL query if available
-  //    If not needed, you can skip this step or adjust as needed
-  //    const gqlResult = await getBrandsByIds(entityIds); // If such a function exists
-  const brands = await getBrandsByEntityPageQuery(entityIds);
-  if (!brands) {
+  const entityIdChunks = chunkArray(entityIds, 10);
+  const brandsResults = await Promise.all(
+    entityIdChunks.map((chunk) => getBrandsByEntityPageQuery(chunk)),
+  );
+  // Flatten and filter out any null/undefined results, and merge all edges
+  const allBrandsEdges = brandsResults
+    .filter(Boolean)
+    .flatMap((result) => (Array.isArray(result.edges) ? result.edges : []));
+  if (!allBrandsEdges.length) {
     return { brands: [], pageInfo: convertRestPageInfoIntoGraphQL(restResult.meta?.pagination) };
   }
 
-  console.log('GraphQL brands result with edges:', brands.edges?.length);
-  console.log('GraphQL brands result:', removeEdgesAndNodes(brands).length);
-
   // 4. Return brands and pagination info
   return {
-    brands: removeEdgesAndNodes(brands).map((brand) => ({
+    brands: allBrandsEdges.map(({ node: brand }) => ({
       id: brand.id,
       name: brand.name,
       productsCount: brand.products?.collectionInfo?.totalItems || 0,
