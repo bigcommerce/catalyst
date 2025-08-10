@@ -18,10 +18,7 @@ const withCustomerJwtRewrite: MiddlewareFactory = (next) => {
   };
 };
 
-import { withBlockInterFont } from './middlewares/with-block-inter-font';
-
 export const middleware = composeMiddlewares(
-  withBlockInterFont,
   withCustomerJwtRewrite,
   withAuth,
   withMakeswift,
