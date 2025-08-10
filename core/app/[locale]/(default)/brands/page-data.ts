@@ -61,7 +61,7 @@ export const getBrandsData = cache(async ({ page = '1', limit = 20 } = {}) => {
     return { brands: [], pageInfo: convertRestPageInfoIntoGraphQL(restResult.meta?.pagination) };
   }
 
-  console.log('GraphQL brands result with edges:', brands.edges);
+  console.log('GraphQL brands result with edges:', brands.edges?.length);
   console.log('GraphQL brands result:', removeEdgesAndNodes(brands).length);
 
   // 4. Return brands and pagination info
