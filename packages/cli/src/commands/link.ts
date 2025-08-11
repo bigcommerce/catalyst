@@ -2,7 +2,7 @@ import { Command, Option } from 'commander';
 import consola from 'consola';
 import z from 'zod';
 
-import { ProjectConfig } from '../lib/project-config';
+import { getProjectConfig } from '../lib/project-config';
 import { Telemetry } from '../lib/telemetry';
 
 const telemetry = new Telemetry();
@@ -73,7 +73,7 @@ export const link = new Command('link')
   )
   .action(async (options) => {
     try {
-      const config = new ProjectConfig(options.rootDir);
+      const config = getProjectConfig(options.rootDir);
 
       const writeProjectConfig = (uuid: string) => {
         consola.start('Writing project UUID to .bigcommerce/project.json...');

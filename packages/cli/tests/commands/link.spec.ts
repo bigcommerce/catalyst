@@ -1,11 +1,12 @@
 import { Command } from 'commander';
+import Conf from 'conf';
 import consola from 'consola';
 import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, expect, MockInstance, test, vi } from 'vitest';
 
 import { link } from '../../src/commands/link';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
-import { ProjectConfig } from '../../src/lib/project-config';
+import { getProjectConfig, ProjectConfigSchema } from '../../src/lib/project-config';
 import { program } from '../../src/program';
 import { server } from '../mocks/node';
 
@@ -13,7 +14,7 @@ let exitMock: MockInstance;
 
 let tmpDir: string;
 let cleanup: () => Promise<void>;
-let config: ProjectConfig;
+let config: Conf<ProjectConfigSchema>;
 
 const { mockIdentify } = vi.hoisted(() => ({
   mockIdentify: vi.fn(),
@@ -47,7 +48,7 @@ beforeAll(async () => {
 
   [tmpDir, cleanup] = await mkTempDir();
 
-  config = new ProjectConfig(tmpDir);
+  config = getProjectConfig(tmpDir);
 });
 
 afterEach(() => {
