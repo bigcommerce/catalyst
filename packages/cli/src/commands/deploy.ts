@@ -6,7 +6,7 @@ import { join } from 'node:path';
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
-import { ProjectConfig } from '../lib/project-config';
+import { getProjectConfig } from '../lib/project-config';
 import { Telemetry } from '../lib/telemetry';
 
 const telemetry = new Telemetry();
@@ -291,11 +291,17 @@ export const deploy = new Command('deploy')
   )
   .action(async (opts) => {
     try {
-      const config = new ProjectConfig(opts.rootDir);
+      const config = getProjectConfig(opts.rootDir);
 
       await telemetry.identify(opts.storeHash);
 
       const projectUuid = opts.projectUuid ?? config.get('projectUuid');
+
+      if (!projectUuid) {
+        throw new Error(
+          'Project UUID is required. Please run either `bigcommerce link` or this command again with --project-uuid <uuid>.',
+        );
+      }
 
       await generateBundleZip(opts.rootDir);
 
