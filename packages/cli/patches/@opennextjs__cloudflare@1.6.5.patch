@@ -1,0 +1,52 @@
+diff --git a/dist/api/overrides/cache-purge/index.js b/dist/api/overrides/cache-purge/index.js
+index 236bbf727b3a3db25b5e9ad8e22549188735b77f..da1f49191fbb6232f0b83a35dbf3edfd286071f9 100644
+--- a/dist/api/overrides/cache-purge/index.js
++++ b/dist/api/overrides/cache-purge/index.js
+@@ -1,4 +1,4 @@
+-import { getCloudflareContext } from "../../cloudflare-context";
++import { getCloudflareContext } from "../../cloudflare-context.js";
+ import { debugCache, internalPurgeCacheByTags } from "../internal.js";
+ export const purgeCache = ({ type = "direct" }) => {
+     return {
+diff --git a/dist/api/overrides/queue/do-queue.js b/dist/api/overrides/queue/do-queue.js
+index f5804e27e873e0c7e24bfbefe39efb678fafa269..6bc5589656e9868b86bdb2812f4394af2d2735ed 100644
+--- a/dist/api/overrides/queue/do-queue.js
++++ b/dist/api/overrides/queue/do-queue.js
+@@ -1,5 +1,5 @@
+ import { IgnorableError } from "@opennextjs/aws/utils/error.js";
+-import { getCloudflareContext } from "../../cloudflare-context";
++import { getCloudflareContext } from "../../cloudflare-context.js";
+ export default {
+     name: "durable-queue",
+     send: async (msg) => {
+diff --git a/dist/api/overrides/tag-cache/do-sharded-tag-cache.js b/dist/api/overrides/tag-cache/do-sharded-tag-cache.js
+index 6a0a3786660ac219ddac598ed3cd6be166535dae..8dda36a894ee3684297c01fd5663677cd1babf0f 100644
+--- a/dist/api/overrides/tag-cache/do-sharded-tag-cache.js
++++ b/dist/api/overrides/tag-cache/do-sharded-tag-cache.js
+@@ -1,8 +1,8 @@
+ import { debug, error } from "@opennextjs/aws/adapters/logger.js";
+ import { generateShardId } from "@opennextjs/aws/core/routing/queue.js";
+ import { IgnorableError } from "@opennextjs/aws/utils/error.js";
+-import { getCloudflareContext } from "../../cloudflare-context";
+-import { debugCache, purgeCacheByTags } from "../internal";
++import { getCloudflareContext } from "../../cloudflare-context.js";
++import { debugCache, purgeCacheByTags } from "../internal.js";
+ export const DEFAULT_WRITE_RETRIES = 3;
+ export const DEFAULT_NUM_SHARDS = 4;
+ export const NAME = "do-sharded-tag-cache";
+diff --git a/package.json b/package.json
+index f157315e653839f8e68ed57ad2f24418cdc91f1b..a6d2377555f0929d86be54906b0c3640ac993f59 100644
+--- a/package.json
++++ b/package.json
+@@ -14,6 +14,11 @@
+       "types": "./dist/api/index.d.ts",
+       "default": "./dist/api/index.js"
+     },
++    "./cli/*": {
++      "import": "./dist/cli/*.js",
++      "types": "./dist/cli/*.d.ts",
++      "default": "./dist/cli/*.js"
++    },
+     "./*": {
+       "import": "./dist/api/*.js",
+       "types": "./dist/api/*.d.ts",

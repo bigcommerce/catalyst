@@ -29,5 +29,10 @@
     "turbo": "^2.5.4",
     "typescript": "^5.8.3",
     "unlighthouse": "^0.16.3"
+  },
+  "pnpm": {
+    "patchedDependencies": {
+      "@opennextjs/cloudflare@1.6.5": "packages/cli/patches/@opennextjs__cloudflare@1.6.5.patch"
+    }
   }
 }

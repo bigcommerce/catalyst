@@ -1,14 +1,7 @@
 packages:
   - core
   - packages/*
-publicHoistPattern:
-  - '@bigcommerce/eslint-*'
-  - '@bigcommerce/eslint-*'
-  - '@next/eslint-*'
-  - '@stylistic/eslint-*'
-  - '@typescript-eslint/*'
-  - 'eslint-config-*'
-  - 'eslint-plugin-*'
+
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@swc/core'
@@ -17,3 +10,15 @@ onlyBuiltDependencies:
   - msw
   - puppeteer
   - sharp
+
+patchedDependencies:
+  '@opennextjs/cloudflare@1.6.5': packages/cli/patches/@opennextjs__cloudflare@1.6.5.patch
+
+publicHoistPattern:
+  - '@bigcommerce/eslint-*'
+  - '@bigcommerce/eslint-*'
+  - '@next/eslint-*'
+  - '@stylistic/eslint-*'
+  - '@typescript-eslint/*'
+  - eslint-config-*
+  - eslint-plugin-*

@@ -50,3 +50,6 @@ messages/*.d.json.ts
 
 # Build config
 build-config.json
+
+# OpenNext
+.open-next
