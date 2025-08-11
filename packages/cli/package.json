@@ -22,6 +22,7 @@
     "node": "^20.0.0 || ^22.0.0"
   },
   "dependencies": {
+    "@segment/analytics-node": "^2.2.1",
     "adm-zip": "^0.5.16",
     "commander": "^14.0.0",
     "conf": "^13.1.0",

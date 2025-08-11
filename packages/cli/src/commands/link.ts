@@ -3,6 +3,9 @@ import consola from 'consola';
 import z from 'zod';
 
 import { ProjectConfig } from '../lib/project-config';
+import { Telemetry } from '../lib/telemetry';
+
+const telemetry = new Telemetry();
 
 const fetchProjectsSchema = z.object({
   data: z.array(
@@ -86,6 +89,8 @@ export const link = new Command('link')
       }
 
       if (options.storeHash && options.accessToken) {
+        await telemetry.identify(options.storeHash);
+
         consola.start('Fetching projects...');
 
         const projects = await fetchProjects(

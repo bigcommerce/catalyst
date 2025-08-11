@@ -4,6 +4,10 @@ import { join } from 'path';
 export interface ProjectConfigSchema {
   projectUuid: string;
   framework: 'catalyst' | 'nextjs';
+  telemetry: {
+    enabled: boolean;
+    anonymousId: string;
+  };
 }
 
 export class ProjectConfig {
@@ -21,11 +25,18 @@ export class ProjectConfig {
           enum: ['catalyst', 'nextjs'],
           default: 'catalyst',
         },
+        telemetry: {
+          type: 'object',
+          properties: {
+            enabled: { type: 'boolean' },
+            anonymousId: { type: 'string' },
+          },
+        },
       },
     });
   }
 
-  get(field: keyof ProjectConfigSchema): string {
+  get<T extends keyof ProjectConfigSchema>(field: T): ProjectConfigSchema[T] {
     const value = this.config.get(field);
 
     if (!value) {
@@ -35,7 +46,7 @@ export class ProjectConfig {
     return value;
   }
 
-  set(field: string, value: string): void {
+  set(field: string, value: string | boolean): void {
     this.config.set(field, value);
   }
 }

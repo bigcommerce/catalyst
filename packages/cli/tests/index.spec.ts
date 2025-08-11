@@ -1,6 +1,12 @@
 import { Command } from '@commander-js/extra-typings';
-import { describe, expect, test } from 'vitest';
+import { describe, expect, test, vi } from 'vitest';
 
+vi.mock('../src/hooks/telemetry', () => ({
+  telemetryPreHook: vi.fn().mockResolvedValue(undefined),
+  telemetryPostHook: vi.fn().mockResolvedValue(undefined),
+}));
+
+import { telemetryPostHook, telemetryPreHook } from '../src/hooks/telemetry';
 import { program } from '../src/program';
 
 describe('CLI program', () => {
@@ -20,5 +26,17 @@ describe('CLI program', () => {
     expect(commands).toContain('build');
     expect(commands).toContain('deploy');
     expect(commands).toContain('link');
+  });
+
+  test('telemetry hooks are called when executing version command', async () => {
+    vi.mocked(telemetryPreHook).mockClear();
+    vi.mocked(telemetryPostHook).mockClear();
+
+    await program.parseAsync(['version'], { from: 'user' });
+
+    expect(telemetryPreHook).toHaveBeenCalledTimes(1);
+    expect(telemetryPostHook).toHaveBeenCalledTimes(1);
+
+    expect(telemetryPreHook).toHaveBeenCalledWith(expect.any(Command), expect.any(Command));
   });
 });
