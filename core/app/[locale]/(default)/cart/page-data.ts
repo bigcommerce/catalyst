@@ -1,3 +1,4 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -295,3 +296,72 @@ export const getShippingCountries = cache(async () => {
 
   return data.site.settings?.shipping?.supportedShippingDestinations.countries ?? [];
 });
+
+const ProductsInventoryQuery = graphql(`
+  query GetProducts($productIds: [Int!]!, $variantIds: [Int!], $first: Int = 50, $after: String) {
+    site {
+      products(entityIds: $productIds, first: $first, after: $after) {
+        edges {
+          node {
+            entityId
+            variants(entityIds: $variantIds, first: 250) {
+              edges {
+                node {
+                  id
+                  entityId
+                  inventory {
+                    isInStock
+                  }
+                }
+              }
+            }
+          }
+        }
+        pageInfo {
+          endCursor
+          hasNextPage
+        }
+      }
+    }
+  }
+`);
+
+type ProductsInventoryVariables = VariablesOf<typeof ProductsInventoryQuery>;
+
+export const getProductsInventory = async (
+  variables: Omit<ProductsInventoryVariables, 'first' | 'after'>,
+) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const products = [];
+
+  let after: string | undefined;
+  let hasNextPage = true;
+
+  while (hasNextPage) {
+    // Justification: this loop performs paginated API requests that depend on the
+    // response of the previous request (specifically, the endCursor value).
+    // Therefore, requests must be made sequentially, not in parallel.
+    // eslint-disable-next-line no-await-in-loop
+    const { data } = await client.fetch({
+      document: ProductsInventoryQuery,
+      variables: { ...variables, after },
+      customerAccessToken,
+      fetchOptions: { cache: 'no-store' },
+    });
+
+    products.push(...removeEdgesAndNodes(data.site.products));
+    hasNextPage = data.site.products.pageInfo.hasNextPage;
+    after = data.site.products.pageInfo.endCursor ?? undefined;
+  }
+
+  const inventoryMap = new Map<number, boolean>();
+
+  products.forEach((product) => {
+    removeEdgesAndNodes(product.variants).forEach((variant) => {
+      inventoryMap.set(variant.entityId, variant.inventory?.isInStock ?? false);
+    });
+  });
+
+  return inventoryMap;
+};
