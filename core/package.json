@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "npm run generate && next dev",
     "generate": "dotenv -e .env.local -- node ./scripts/generate.cjs",
-    "build": "catalyst build",
+    "build": "npm run generate && catalyst build",
     "build:analyze": "ANALYZE=true npm run build",
     "start": "next start",
     "lint": "next lint",

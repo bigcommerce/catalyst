@@ -54,15 +54,6 @@ export function createExec(options: BuildCommandOptions, exec: Exec = _execa) {
   };
 }
 
-export async function generateGqlTadaTypes(
-  exec: Exec,
-  resolveBinary: (bin: string) => string = resolveLocalBinaryPath,
-) {
-  const dotenvBin = resolveBinary('dotenv');
-
-  await exec(dotenvBin, ['-e', '.env.local', '--', 'node', './scripts/generate.cjs']);
-}
-
 export async function buildNextjs(
   exec: Exec,
   resolveBinary: (bin: string) => string = resolveLocalBinaryPath,
@@ -97,10 +88,6 @@ export const action = async (options: BuildCommandOptions) => {
   logger.info(`Building application with framework: ${framework}`);
 
   if (framework === 'nextjs') {
-    logger.start('Generating gql.tada types...');
-    await generateGqlTadaTypes(exec);
-    logger.success('gql.tada types generated successfully');
-
     logger.start('Building application with `next build`...');
     await buildNextjs(exec);
     logger.success('Application built successfully');

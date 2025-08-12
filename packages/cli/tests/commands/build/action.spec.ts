@@ -1,12 +1,7 @@
 import consola, { LogLevels } from 'consola';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import {
-  buildNextjs,
-  createLogger,
-  generateGqlTadaTypes,
-  resolveFramework,
-} from '../../../src/commands/build/action';
+import { buildNextjs, createLogger, resolveFramework } from '../../../src/commands/build/action';
 
 describe('action', () => {
   beforeAll(() => {
@@ -60,22 +55,6 @@ describe('action', () => {
       const logger = createLogger({ verbose: false });
 
       expect(logger.level).toBe(LogLevels.info);
-    });
-  });
-
-  describe('generateGqlTadaTypes', () => {
-    test('invokes dotenv to generate gql.tada types', async () => {
-      const exec = vi.fn();
-
-      await generateGqlTadaTypes(exec, () => '/path/to/catalyst/core/node_modules/.bin/dotenv');
-
-      expect(exec).toHaveBeenCalledWith('/path/to/catalyst/core/node_modules/.bin/dotenv', [
-        '-e',
-        '.env.local',
-        '--',
-        'node',
-        './scripts/generate.cjs',
-      ]);
     });
   });
 
