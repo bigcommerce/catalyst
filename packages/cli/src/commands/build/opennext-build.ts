@@ -69,7 +69,7 @@ export async function opennextBuild() {
     };
 
     const wranglerConfig = {
-      main: '.open-next/worker.js',
+      main: '../.open-next/worker.js',
       name: 'store-hash-project-uuid',
       compatibility_date: '2025-07-15',
       compatibility_flags: ['nodejs_compat', 'global_fetch_strictly_public'],
@@ -83,7 +83,7 @@ export async function opennextBuild() {
         },
       },
       assets: {
-        directory: '.open-next/assets',
+        directory: '../.open-next/assets',
         binding: 'ASSETS',
       },
       services: [
@@ -126,7 +126,7 @@ export async function opennextBuild() {
       join(getModuleCliPath(), 'templates', 'open-next.config.ts'),
       join(process.cwd(), 'open-next.config.ts'),
     );
-    await writeFile(join(process.cwd(), 'wrangler.jsonc'), JSON.stringify(wranglerConfig, null, 2));
+    await writeFile(join(process.cwd(), '.bigcommerce', 'wrangler.jsonc'), JSON.stringify(wranglerConfig, null, 2));
 
     await esbuild({
       entryPoints: [join(process.cwd(), 'open-next.config.ts')],
@@ -183,7 +183,7 @@ export async function opennextBuild() {
         `wrangler@${WRANGLER_VERSION}`,
         'deploy',
         '--config',
-        join(process.cwd(), 'wrangler.jsonc'),
+        join(process.cwd(), '.bigcommerce', 'wrangler.jsonc'),
         '--keep-vars',
         '--outdir',
         join(process.cwd(), '.bigcommerce', 'dist'),
@@ -209,7 +209,6 @@ export async function opennextBuild() {
     process.exitCode = 1;
   } finally {
     await rm(join(process.cwd(), 'open-next.config.ts'));
-    await rm(join(process.cwd(), 'wrangler.jsonc'));
     await cleanup();
 
     process.exit();
