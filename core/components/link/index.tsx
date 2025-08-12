@@ -69,6 +69,8 @@ function computePrefetchProp({
   prefetch,
   prefetchKind,
 }: Required<PrefetchOptions>): boolean | undefined {
+  return true;
+  
   if (prefetch !== 'viewport') {
     return false;
   }
