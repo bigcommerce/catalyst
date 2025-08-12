@@ -34,7 +34,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ loca
   const cartId = req.nextUrl.searchParams.get('cartId') ?? (await getCartId());
   const customerAccessToken = await getSessionCustomerAccessToken();
   const channelId = getChannelIdFromLocale(locale);
-
+  console.log("CARTID")
+  console.log(cartId)
   if (!cartId) {
     return redirect({ href: '/cart', locale });
   }
@@ -50,6 +51,8 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ loca
       customerAccessToken,
       channelId,
     });
+
+    console.log(data)
 
     if (
       data.cart.createCartRedirectUrls.errors.length > 0 ||
