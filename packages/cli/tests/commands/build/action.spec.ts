@@ -1,7 +1,7 @@
 import consola, { LogLevels } from 'consola';
 import { afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 
-import { buildNextjs, createLogger, resolveFramework } from '../../../src/commands/build/action';
+import { buildNextjs, createLogger } from '../../../src/commands/build/action';
 
 describe('action', () => {
   beforeAll(() => {
@@ -14,34 +14,6 @@ describe('action', () => {
 
   afterEach(() => {
     vi.clearAllMocks();
-  });
-
-  describe('resolveFramework', () => {
-    test('uses framework from options if provided', () => {
-      const framework = resolveFramework(
-        { framework: 'nextjs', verbose: false },
-        () => ({
-          get: () => 'catalyst',
-          path: '',
-        }),
-        consola,
-      );
-
-      expect(framework).toBe('nextjs');
-    });
-
-    test('uses framework from config if not provided in options', () => {
-      const framework = resolveFramework(
-        { verbose: false },
-        () => ({
-          get: () => 'catalyst',
-          path: '',
-        }),
-        consola,
-      );
-
-      expect(framework).toBe('catalyst');
-    });
   });
 
   describe('createLogger', () => {

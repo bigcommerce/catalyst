@@ -1,40 +1,20 @@
-import { ConsolaInstance, createConsola, LogLevels } from 'consola';
+import { createConsola, LogLevels } from 'consola';
 import { execa as _execa, Options as ExecaOptions } from 'execa';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 import { getProjectConfig } from '../../lib/project-config';
+import { resolveFramework } from '../../lib/resolve-framework';
 
 import { opennextBuild } from './opennext-build';
 
 import { type Options as BuildCommandOptions } from './index';
 
-type Logger = Pick<ConsolaInstance, 'debug' | 'start' | 'success' | 'fail' | 'info' | 'error'>;
-type Config = () => {
-  get: (key: 'framework') => 'catalyst' | 'nextjs';
-  path: string;
-};
 export type Exec = (
   command: string,
   args?: string[],
   options?: ExecaOptions,
 ) => PromiseLike<unknown>;
-
-export function resolveFramework(options: BuildCommandOptions, getConfig: Config, logger: Logger) {
-  const config = getConfig();
-
-  if (options.verbose) {
-    logger.debug(`Reading config from ${config.path}`);
-
-    if (options.framework) {
-      logger.debug(`Using framework from --framework option: ${options.framework}`);
-    } else {
-      logger.debug(`Using framework from project configuration: ${config.get('framework')}`);
-    }
-  }
-
-  return options.framework ?? config.get('framework');
-}
 
 export function createLogger(options: BuildCommandOptions) {
   return createConsola({ level: options.verbose ? LogLevels.verbose : LogLevels.info });
