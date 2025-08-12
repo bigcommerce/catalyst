@@ -4,7 +4,7 @@ const encoder = new TextEncoder();
 
 export const handlers = [
   // Handler for generateUploadSignature
-  http.post('https://:apiHost/stores/:storeHash/v3/headless/deployments/uploads', () =>
+  http.post('https://:apiHost/stores/:storeHash/v3/infrastructure/deployments/uploads', () =>
     HttpResponse.json({
       data: {
         upload_url: 'https://mock-upload-url.com',
@@ -17,7 +17,7 @@ export const handlers = [
   http.put('https://mock-upload-url.com', () => new HttpResponse(null, { status: 200 })),
 
   // Handler for createDeployment
-  http.post('https://:apiHost/stores/:storeHash/v3/headless/deployments', () =>
+  http.post('https://:apiHost/stores/:storeHash/v3/infrastructure/deployments', () =>
     HttpResponse.json({
       data: {
         deployment_uuid: '5b29c3c0-5f68-44fe-99e5-06492babf7be',
@@ -26,7 +26,7 @@ export const handlers = [
   ),
 
   // Handler for fetchProjects
-  http.get('https://:apiHost/stores/:storeHash/v3/headless/projects', () =>
+  http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
     HttpResponse.json({
       data: [
         { uuid: 'a23f5785-fd99-4a94-9fb3-945551623923', name: 'Project One' },
@@ -37,7 +37,7 @@ export const handlers = [
 
   // Handler for getDeploymentStatus
   http.get(
-    'https://:apiHost/stores/:storeHash/v3/headless/deployments/:deploymentUuid/events',
+    'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments/:deploymentUuid/events',
     ({ params }) => {
       const stream = new ReadableStream({
         start(controller) {

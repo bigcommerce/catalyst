@@ -17,12 +17,15 @@ const fetchProjectsSchema = z.object({
 });
 
 async function fetchProjects(storeHash: string, accessToken: string, apiHost: string) {
-  const response = await fetch(`https://${apiHost}/stores/${storeHash}/v3/headless/projects`, {
-    method: 'GET',
-    headers: {
-      'X-Auth-Token': accessToken,
+  const response = await fetch(
+    `https://${apiHost}/stores/${storeHash}/v3/infrastructure/projects`,
+    {
+      method: 'GET',
+      headers: {
+        'X-Auth-Token': accessToken,
+      },
     },
-  });
+  );
 
   if (response.status === 404) {
     throw new Error(
@@ -64,7 +67,7 @@ export const link = new Command('link')
   )
   .option(
     '--project-uuid <uuid>',
-    'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/headless/projects). Use this to link directly without fetching projects.',
+    'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Use this to link directly without fetching projects.',
   )
   .option(
     '--root-dir <path>',
