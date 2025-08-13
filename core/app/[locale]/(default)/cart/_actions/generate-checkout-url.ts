@@ -55,7 +55,15 @@ export async function generateCheckoutUrl(
       return { url: null, error: 'Failed to generate checkout URL' };
     }
 
-    return { url: data.cart.createCartRedirectUrls.redirectUrls.redirectedCheckoutUrl };
+    const url = data.cart.createCartRedirectUrls.redirectUrls.redirectedCheckoutUrl
+
+    // TEST: Hardcoded URL for testing speculation rules
+    // let newUrl = new URL(url);
+    // newUrl.hostname = 'checkout-proxy-test.catalyst-canary.store';
+    
+    const testUrl = 'https://checkout.catalyst-canary.store/checkout?products=zz%3A1&order_source=buybutton&action=buy';
+
+    return { url: testUrl };
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error('Error generating checkout URL:', error);
