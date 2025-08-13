@@ -14,13 +14,12 @@ import { updateLineItem } from './_actions/update-line-item';
 import { updateShippingInfo } from './_actions/update-shipping-info';
 import { CartViewed } from './_components/cart-viewed';
 import { CheckoutPreconnect } from './_components/checkout-preconnect';
+import { CheckoutPrerender } from './_components/checkout-prerender';
 import { getCart, getShippingCountries } from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
 }
-
-const CHECKOUT_URL = process.env.TRAILING_SLASH !== 'false' ? '/checkout/' : '/checkout';
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -202,6 +201,7 @@ export default async function Cart({ params }: Props) {
     <>
       <CartAnalyticsProvider data={Streamable.from(() => getAnalyticsData(cartId))}>
         {checkoutUrl ? <CheckoutPreconnect url={checkoutUrl} /> : null}
+        <CheckoutPrerender locale={locale} />
         <CartComponent
           cart={{
             lineItems: formattedLineItems,
@@ -252,8 +252,8 @@ export default async function Cart({ params }: Props) {
               },
             ].filter(exists),
           }}
-          checkoutAction={CHECKOUT_URL}
           checkoutLabel={t('proceedToCheckout')}
+          checkoutHref="/checkout/"
           couponCode={{
             action: updateCouponCode,
             couponCodes: checkout?.coupons.map((coupon) => coupon.code) ?? [],
