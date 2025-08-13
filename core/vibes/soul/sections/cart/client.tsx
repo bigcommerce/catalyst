@@ -5,17 +5,15 @@ import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
 import { ArrowRight, GiftIcon, Minus, Plus, Trash2 } from 'lucide-react';
 import {
-  ComponentPropsWithoutRef,
   startTransition,
   useActionState,
   useEffect,
   useMemo,
   useOptimistic,
 } from 'react';
-import { useFormStatus } from 'react-dom';
 
-import { Button } from '@/vibes/soul/primitives/button';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
+import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import {
   GiftCertificateCodeForm,
@@ -149,7 +147,7 @@ export interface CartProps<LineItem extends CartLineItem> {
   summaryTitle?: string;
   emptyState?: CartEmptyState;
   lineItemAction: Action<CartState<LineItem>, FormData>;
-  checkoutAction: Action<SubmissionResult | null, FormData> | string;
+  checkoutHref?: string;
   checkoutLabel?: string;
   deleteLineItemLabel?: string;
   decrementLineItemLabel?: string;
@@ -202,7 +200,7 @@ export function CartClient<LineItem extends CartLineItem>({
   deleteLineItemLabel,
   lineItemAction,
   lineItemActionPendingLabel = 'You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.',
-  checkoutAction,
+  checkoutHref = '/checkout',
   checkoutLabel = 'Checkout',
   emptyState = defaultEmptyState,
   summaryTitle,
@@ -403,14 +401,12 @@ export function CartClient<LineItem extends CartLineItem>({
               )}
             </div>
           </dl>
-          <CheckoutButton
-            action={checkoutAction}
-            className="mt-4 w-full"
-            isCartUpdatePending={isLineItemActionPending}
-          >
-            {checkoutLabel}
-            <ArrowRight size={20} strokeWidth={1} />
-          </CheckoutButton>
+          <ButtonLink href={checkoutHref} className="mt-4 w-full">
+            <span className="flex items-center gap-2 whitespace-nowrap">
+              {checkoutLabel}
+              <ArrowRight size={20} strokeWidth={1} />
+            </span>
+          </ButtonLink>
         </div>
       }
       sidebarPosition="after"
@@ -620,61 +616,5 @@ function CounterForm({
         </button>
       </div>
     </form>
-  );
-}
-
-function CheckoutButton({
-  action,
-  isCartUpdatePending,
-  ...props
-}: {
-  action: Action<SubmissionResult | null, FormData> | string;
-  isCartUpdatePending: boolean;
-} & ComponentPropsWithoutRef<typeof Button>) {
-  const [lastResult, formAction] = useActionState(
-    async (state: SubmissionResult | null, formData: FormData) => {
-      if (typeof action === 'string') {
-        await new Promise<void>(() => {
-          window.location.assign(action);
-        });
-
-        return null;
-      }
-
-      return action(state, formData);
-    },
-    null,
-  );
-
-  const [form] = useForm({ lastResult });
-
-  useEffect(() => {
-    if (form.errors) {
-      form.errors.forEach((error) => {
-        toast.error(error);
-      });
-    }
-  }, [form.errors]);
-
-  return (
-    <form action={formAction}>
-      <SubmitButton {...props} isCartUpdatePending={isCartUpdatePending} />
-    </form>
-  );
-}
-
-function SubmitButton({
-  isCartUpdatePending,
-  ...props
-}: { isCartUpdatePending: boolean } & ComponentPropsWithoutRef<typeof Button>) {
-  const { pending } = useFormStatus();
-
-  return (
-    <Button
-      {...props}
-      disabled={pending || isCartUpdatePending}
-      loading={pending || isCartUpdatePending}
-      type="submit"
-    />
   );
 }
