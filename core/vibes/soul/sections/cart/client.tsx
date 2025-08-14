@@ -14,6 +14,7 @@ import {
 import { useFormStatus } from 'react-dom';
 
 import { Button } from '@/vibes/soul/primitives/button';
+import { ButtonLink } from '@/vibes/soul/primitives/button-link';
 import { toast } from '@/vibes/soul/primitives/toaster';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { useEvents } from '~/components/analytics/events';
@@ -119,7 +120,7 @@ export interface CartProps<LineItem extends CartLineItem> {
   summaryTitle?: string;
   emptyState?: CartEmptyState;
   lineItemAction: Action<CartState<LineItem>, FormData>;
-  checkoutAction: Action<SubmissionResult | null, FormData>;
+  checkoutHref?: string;
   checkoutLabel?: string;
   deleteLineItemLabel?: string;
   decrementLineItemLabel?: string;
@@ -168,7 +169,7 @@ export function CartClient<LineItem extends CartLineItem>({
   incrementLineItemLabel,
   deleteLineItemLabel,
   lineItemAction,
-  checkoutAction,
+  checkoutHref = '/checkout',
   checkoutLabel = 'Checkout',
   emptyState = defaultEmptyState,
   summaryTitle,
@@ -267,10 +268,10 @@ export function CartClient<LineItem extends CartLineItem>({
               <dl>{cart.total}</dl>
             </div>
           </dl>
-          <CheckoutButton action={checkoutAction} className="mt-4 w-full">
+          <ButtonLink href={checkoutHref} className="mt-4 w-full">
             {checkoutLabel}
             <ArrowRight size={20} strokeWidth={1} />
-          </CheckoutButton>
+          </ButtonLink>
         </div>
       }
       sidebarPosition="after"
@@ -444,35 +445,4 @@ function CounterForm({
       </div>
     </form>
   );
-}
-
-function CheckoutButton({
-  action,
-  ...props
-}: { action: Action<SubmissionResult | null, FormData> } & ComponentPropsWithoutRef<
-  typeof Button
->) {
-  const [lastResult, formAction] = useActionState(action, null);
-
-  const [form] = useForm({ lastResult });
-
-  useEffect(() => {
-    if (form.errors) {
-      form.errors.forEach((error) => {
-        toast.error(error);
-      });
-    }
-  }, [form.errors]);
-
-  return (
-    <form action={formAction}>
-      <SubmitButton {...props} />
-    </form>
-  );
-}
-
-function SubmitButton(props: ComponentPropsWithoutRef<typeof Button>) {
-  const { pending } = useFormStatus();
-
-  return <Button {...props} disabled={pending} loading={pending} type="submit" />;
 }
