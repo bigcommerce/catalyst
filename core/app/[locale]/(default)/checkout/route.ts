@@ -59,7 +59,7 @@ export async function GET(req: NextRequest, { params }: { params: Promise<{ loca
     }
 
     return redirect({
-      href: 'https://checkout-proxy-test.catalyst-canary.store/checkout?products=zz%3A1&order_source=buybutton&action=buy',
+      href: data.cart.createCartRedirectUrls.redirectUrls.redirectedCheckoutUrl,
       locale,
     });
   } catch (error) {
