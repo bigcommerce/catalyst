@@ -46,11 +46,11 @@ test('writes and reads field from .bigcommerce/project.json', async () => {
   expect(modifiedProjectUuid).toBe(projectUuid);
 });
 
-test('sets default framework to catalyst', async () => {
+test('sets default framework to nextjs', async () => {
   const projectJsonPath = join(tmpDir, '.bigcommerce/project.json');
 
   await mkdir(dirname(projectJsonPath), { recursive: true });
   await writeFile(projectJsonPath, JSON.stringify({}));
 
-  expect(config.get('framework')).toBe('catalyst');
+  expect(config.get('framework')).toBe('nextjs');
 });
