@@ -26,6 +26,7 @@ export interface ProductCardProps {
   showCompare?: boolean;
   imagePriority?: boolean;
   imageSizes?: string;
+  prefetch?: 'hover' | 'viewport' | 'guest' | 'none';
   compareLabel?: string;
   compareParamName?: string;
   product: Product;
@@ -61,6 +62,7 @@ export function ProductCard({
   compareParamName,
   imagePriority = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
+  prefetch = 'hover',
 }: ProductCardProps) {
   return (
     <article
@@ -161,6 +163,7 @@ export function ProductCard({
             )}
             href={href}
             id={id}
+            prefetch={prefetch}
           >
             <span className="sr-only">View product</span>
           </Link>
