@@ -1,24 +1,32 @@
 import { Command } from 'commander';
 import consola from 'consola';
 import { execa } from 'execa';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 export const start = new Command('start')
   .description('Start your Catalyst storefront in optimized production mode.')
-  .option('-p, --port <number>', 'Port to run the production server on (default: 3000).', '3000')
-  .option(
-    '--root-dir <path>',
-    'Path to the root directory of your Catalyst project (default: current working directory).',
-    process.cwd(),
+  // Proxy `--help` to the underlying `next start` command
+  .helpOption(false)
+  .allowUnknownOption(true)
+  .argument(
+    '[options...]',
+    'Next.js `start` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-start-options)',
   )
-  .action(async (opts) => {
+  .action(async (options) => {
     try {
-      const nextBin = join(opts.rootDir, 'node_modules', '.bin', 'next');
+      const nextBin = join('node_modules', '.bin', 'next');
+
+      if (!existsSync(nextBin)) {
+        throw new Error(
+          `Next.js is not installed in ${process.cwd()}. Are you in a valid Next.js project?`,
+        );
+      }
 
       // @todo conditionally run `next start` or `opennextjs-cloudflare preview` based on the framework type
-      await execa(nextBin, ['start', '-p', opts.port], {
+      await execa(nextBin, ['start', ...options], {
         stdio: 'inherit',
-        cwd: opts.rootDir,
+        cwd: process.cwd(),
       });
     } catch (error) {
       consola.error(error instanceof Error ? error.message : error);

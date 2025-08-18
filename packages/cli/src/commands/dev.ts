@@ -1,23 +1,31 @@
 import { Command } from 'commander';
 import consola from 'consola';
 import { execa } from 'execa';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 export const dev = new Command('dev')
   .description('Start the Catalyst development server.')
-  .option('-p, --port <number>', 'Port to run the development server on (default: 3000).', '3000')
-  .option(
-    '--root-dir <path>',
-    'Path to the root directory of your Catalyst project (default: current working directory).',
-    process.cwd(),
+  // Proxy `--help` to the underlying `next dev` command
+  .helpOption(false)
+  .allowUnknownOption(true)
+  .argument(
+    '[options...]',
+    'Next.js `dev` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-dev-options)',
   )
-  .action(async (opts) => {
+  .action(async (options) => {
     try {
-      const nextBin = join(opts.rootDir, 'node_modules', '.bin', 'next');
+      const nextBin = join('node_modules', '.bin', 'next');
 
-      await execa(nextBin, ['dev', '-p', opts.port], {
+      if (!existsSync(nextBin)) {
+        throw new Error(
+          `Next.js is not installed in ${process.cwd()}. Are you in a valid Next.js project?`,
+        );
+      }
+
+      await execa(nextBin, ['dev', ...options], {
         stdio: 'inherit',
-        cwd: opts.rootDir,
+        cwd: process.cwd(),
       });
     } catch (error) {
       consola.error(error instanceof Error ? error.message : error);
