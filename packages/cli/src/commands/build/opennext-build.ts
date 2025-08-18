@@ -44,7 +44,7 @@ export async function opennextBuild() {
 
   try {
     const openNextConfig = {
-      buildCommand: 'dotenv -e .env.local -- node ./scripts/generate.cjs && next build',
+      buildCommand: 'next build',
       ...defineCloudflareConfig({
         incrementalCache: kvIncrementalCache,
         queue: queueCache(doQueue, {
@@ -126,7 +126,10 @@ export async function opennextBuild() {
       join(getModuleCliPath(), 'templates', 'open-next.config.ts'),
       join(process.cwd(), 'open-next.config.ts'),
     );
-    await writeFile(join(process.cwd(), '.bigcommerce', 'wrangler.jsonc'), JSON.stringify(wranglerConfig, null, 2));
+    await writeFile(
+      join(process.cwd(), '.bigcommerce', 'wrangler.jsonc'),
+      JSON.stringify(wranglerConfig, null, 2),
+    );
 
     await esbuild({
       entryPoints: [join(process.cwd(), 'open-next.config.ts')],
