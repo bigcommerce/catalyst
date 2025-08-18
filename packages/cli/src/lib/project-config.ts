@@ -20,7 +20,7 @@ export function getProjectConfig(rootDir = process.cwd()) {
       framework: {
         type: 'string',
         enum: ['catalyst', 'nextjs'],
-        default: 'catalyst',
+        default: 'nextjs',
       },
       telemetry: {
         type: 'object',
