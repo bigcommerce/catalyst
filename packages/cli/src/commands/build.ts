@@ -1,4 +1,4 @@
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import consola from 'consola';
 import { execa } from 'execa';
 import { cp } from 'node:fs/promises';
@@ -34,6 +34,13 @@ export function createFilter(root: string, skipDirs: Set<string>) {
 
 export const build = new Command('build')
   .option('--keep-temp-dir', 'Keep the temporary directory after the build')
+  .option('--project-uuid <uuid>', 'Project UUID to be included in the deployment configuration.')
+  .addOption(
+    new Option('--framework <framework>', 'The framework to use for the build.').choices([
+      'nextjs',
+      'catalyst',
+    ]),
+  )
   .action(async (options) => {
     const [tmpDir, rmTempDir] = await mkTempDir('catalyst-build-');
 

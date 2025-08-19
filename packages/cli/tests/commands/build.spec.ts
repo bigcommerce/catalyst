@@ -48,7 +48,11 @@ test('properly configured Command instance', () => {
   expect(build).toBeInstanceOf(Command);
   expect(build.name()).toBe('build');
   expect(build.options).toEqual(
-    expect.arrayContaining([expect.objectContaining({ flags: '--keep-temp-dir' })]),
+    expect.arrayContaining([
+      expect.objectContaining({ long: '--keep-temp-dir' }),
+      expect.objectContaining({ long: '--framework' }),
+      expect.objectContaining({ long: '--project-uuid' }),
+    ]),
   );
 });
 
