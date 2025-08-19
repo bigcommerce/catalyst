@@ -10,45 +10,45 @@
     "logs": {
       "enabled": true,
       "head_sampling_rate": 1,
-      "invocation_logs": false,
-    },
+      "invocation_logs": false
+    }
   },
   "assets": {
     "directory": ".open-next/assets",
-    "binding": "ASSETS",
+    "binding": "ASSETS"
   },
   "services": [
     {
       "binding": "WORKER_SELF_REFERENCE",
-      "service": "store-hash-project-uuid",
-    },
+      "service": "store-hash-project-uuid"
+    }
   ],
   "kv_namespaces": [
     {
       "binding": "NEXT_INC_CACHE_KV",
-      "id": "placeholder-kv-id",
-    },
+      "id": "placeholder-kv-id"
+    }
   ],
   "durable_objects": {
     "bindings": [
       {
         "name": "NEXT_CACHE_DO_QUEUE",
-        "class_name": "DOQueueHandler",
+        "class_name": "DOQueueHandler"
       },
       {
         "name": "NEXT_TAG_CACHE_DO_SHARDED",
-        "class_name": "DOShardedTagCache",
+        "class_name": "DOShardedTagCache"
       },
       {
         "name": "NEXT_CACHE_DO_PURGE",
-        "class_name": "BucketCachePurge",
-      },
-    ],
+        "class_name": "BucketCachePurge"
+      }
+    ]
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["DOQueueHandler", "DOShardedTagCache", "BucketCachePurge"],
-    },
-  ],
+      "new_sqlite_classes": ["DOQueueHandler", "DOShardedTagCache", "BucketCachePurge"]
+    }
+  ]
 }
