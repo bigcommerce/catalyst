@@ -21,12 +21,6 @@ beforeAll(() => {
     cp: vi.fn(),
   }));
 
-  vi.mock('nypm', () => ({
-    installDependencies: vi.fn(),
-    addDevDependency: vi.fn(),
-    runScript: vi.fn(),
-  }));
-
   vi.mock('execa', () => ({
     execa: vi.fn(),
   }));
