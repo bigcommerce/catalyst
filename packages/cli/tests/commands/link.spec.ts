@@ -156,7 +156,7 @@ test('fetches projects and prompts user to select one', async () => {
 
 test('errors when no projects are found', async () => {
   server.use(
-    http.get('https://:apiHost/stores/:storeHash/v3/headless/projects', () =>
+    http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
       HttpResponse.json({
         data: [],
       }),
@@ -184,7 +184,7 @@ test('errors when no projects are found', async () => {
 
 test('errors when headless projects API is not found', async () => {
   server.use(
-    http.get('https://:apiHost/stores/:storeHash/v3/headless/projects', () =>
+    http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
       HttpResponse.json({}, { status: 404 }),
     ),
   );

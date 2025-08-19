@@ -98,7 +98,7 @@ export const generateUploadSignature = async (
   consola.info('Generating upload signature...');
 
   const response = await fetch(
-    `https://${apiHost}/stores/${storeHash}/v3/headless/deployments/uploads`,
+    `https://${apiHost}/stores/${storeHash}/v3/infrastructure/deployments/uploads`,
     {
       method: 'POST',
       headers: {
@@ -156,18 +156,21 @@ export const createDeployment = async (
 ) => {
   consola.info('Creating deployment...');
 
-  const response = await fetch(`https://${apiHost}/stores/${storeHash}/v3/headless/deployments`, {
-    method: 'POST',
-    headers: {
-      'X-Auth-Token': accessToken,
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
+  const response = await fetch(
+    `https://${apiHost}/stores/${storeHash}/v3/infrastructure/deployments`,
+    {
+      method: 'POST',
+      headers: {
+        'X-Auth-Token': accessToken,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+      body: JSON.stringify({
+        project_uuid: projectUuid,
+        upload_uuid: uploadUuid,
+      }),
     },
-    body: JSON.stringify({
-      project_uuid: projectUuid,
-      upload_uuid: uploadUuid,
-    }),
-  });
+  );
 
   if (!response.ok) {
     throw new Error(`Failed to create deployment: ${response.status} ${response.statusText}`);
@@ -192,7 +195,7 @@ export const getDeploymentStatus = async (
   const spinner = yoctoSpinner().start('Fetching...');
 
   const response = await fetch(
-    `https://${apiHost}/stores/${storeHash}/v3/headless/deployments/${deploymentUuid}/events`,
+    `https://${apiHost}/stores/${storeHash}/v3/infrastructure/deployments/${deploymentUuid}/events`,
     {
       method: 'GET',
       headers: {
@@ -281,7 +284,7 @@ export const deploy = new Command('deploy')
   .addOption(
     new Option(
       '--project-uuid <uuid>',
-      'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/headless/projects).',
+      'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
     ).env('BIGCOMMERCE_PROJECT_UUID'),
   )
   .option(

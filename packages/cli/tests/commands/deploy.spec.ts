@@ -160,7 +160,7 @@ describe('deployment and event streaming', () => {
 
     server.use(
       http.get(
-        'https://:apiHost/stores/:storeHash/v3/headless/deployments/:deploymentUuid/events',
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments/:deploymentUuid/events',
         () => {
           const stream = new ReadableStream({
             start(controller) {
@@ -214,7 +214,7 @@ describe('deployment and event streaming', () => {
 
     server.use(
       http.get(
-        'https://:apiHost/stores/:storeHash/v3/headless/deployments/:deploymentUuid/events',
+        'https://:apiHost/stores/:storeHash/v3/infrastructure/deployments/:deploymentUuid/events',
         () => {
           const stream = new ReadableStream({
             start(controller) {
