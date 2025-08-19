@@ -3,12 +3,10 @@ import consola from 'consola';
 import { execa } from 'execa';
 import { cp } from 'node:fs/promises';
 import { join, relative, sep } from 'node:path';
-import { addDevDependency, installDependencies, runScript } from 'nypm';
 
 import { getModuleCliPath } from '../lib/get-module-cli-path';
 import { mkTempDir } from '../lib/mk-temp-dir';
 
-const OPENNEXTJS_CLOUDFLARE_VERSION = '1.5.2';
 const WRANGLER_VERSION = '4.24.3';
 
 const SKIP_DIRS = new Set([
@@ -47,8 +45,6 @@ export const build = new Command('build')
     try {
       consola.start('Copying project to temp directory...');
 
-      const packageManager = 'pnpm';
-
       const cwd = process.cwd();
       const tmpCoreDir = join(tmpDir, 'core');
       const wranglerOutDir = join(tmpCoreDir, '.dist');
@@ -63,29 +59,6 @@ export const build = new Command('build')
       });
 
       consola.success(`Project copied to temp directory: ${tmpDir}`);
-
-      consola.start('Installing dependencies...');
-
-      await installDependencies({
-        cwd: tmpDir,
-        packageManager,
-      });
-
-      await addDevDependency(`@opennextjs/cloudflare@${OPENNEXTJS_CLOUDFLARE_VERSION}`, {
-        cwd: tmpCoreDir,
-        packageManager,
-      });
-
-      consola.success('Dependencies installed');
-
-      consola.start('Building dependencies...');
-
-      await runScript('build', {
-        cwd: join(tmpDir, 'packages', 'client'),
-        packageManager,
-      });
-
-      consola.success('Dependencies built');
 
       consola.start('Copying templates...');
 
