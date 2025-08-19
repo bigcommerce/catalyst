@@ -1,7 +1,7 @@
 import { Command, Option } from 'commander';
 import consola from 'consola';
 import { execa } from 'execa';
-import { cp } from 'node:fs/promises';
+import { copyFile, cp, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import { getModuleCliPath } from '../lib/get-module-cli-path';
@@ -17,17 +17,22 @@ export const build = new Command('build')
     ]),
   )
   .action(async () => {
+    const coreDir = process.cwd();
+
     try {
-      const coreDir = process.cwd();
       const openNextOutDir = join(coreDir, '.open-next');
       const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
 
       consola.start('Copying templates...');
 
-      await cp(join(getModuleCliPath(), 'templates'), coreDir, {
-        recursive: true,
-        force: true,
-      });
+      await copyFile(
+        join(getModuleCliPath(), 'templates', 'open-next.config.ts'),
+        join(coreDir, 'open-next.config.ts'),
+      );
+      await copyFile(
+        join(getModuleCliPath(), 'templates', 'wrangler.jsonc'),
+        join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
+      );
 
       consola.success('Templates copied');
 
@@ -63,6 +68,10 @@ export const build = new Command('build')
       });
     } catch (error) {
       consola.error(error);
-      process.exit(1);
+      process.exitCode = 1;
+    } finally {
+      await rm(join(coreDir, '.open-next.config.ts')).catch(() => null);
+
+      process.exit();
     }
   });
