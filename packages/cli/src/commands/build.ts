@@ -1,6 +1,7 @@
 import { Command, Option } from 'commander';
 import consola from 'consola';
 import { execa } from 'execa';
+import { existsSync } from 'node:fs';
 import { copyFile, cp, rm, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
@@ -11,6 +12,11 @@ import { getWranglerConfig } from '../lib/wrangler-config';
 const WRANGLER_VERSION = '4.24.3';
 
 export const build = new Command('build')
+  .allowUnknownOption()
+  .argument(
+    '[next-build-options...]',
+    'Next.js `build` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-build-options)',
+  )
   .option('--project-uuid <uuid>', 'Project UUID to be included in the deployment configuration.')
   .addOption(
     new Option('--framework <framework>', 'The framework to use for the build.').choices([
@@ -18,65 +24,86 @@ export const build = new Command('build')
       'catalyst',
     ]),
   )
-  .action(async (options) => {
+  .action(async (nextBuildOptions, options) => {
     const coreDir = process.cwd();
 
     try {
-      const openNextOutDir = join(coreDir, '.open-next');
-      const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
-
       const config = getProjectConfig();
-      const projectUuid = options.projectUuid ?? config.get('projectUuid');
+      const framework = options.framework ?? config.get('framework');
 
-      if (!projectUuid) {
-        throw new Error('Project UUID is required. Please run `link` or provide `--project-uuid`');
+      if (framework === 'nextjs') {
+        const nextBin = join('node_modules', '.bin', 'next');
+
+        if (!existsSync(nextBin)) {
+          throw new Error(
+            `Next.js is not installed in ${coreDir}. Are you in a valid Next.js project?`,
+          );
+        }
+
+        await execa(nextBin, ['build', ...nextBuildOptions], {
+          stdio: 'inherit',
+          cwd: coreDir,
+        });
       }
 
-      const wranglerConfig = getWranglerConfig(projectUuid, 'PLACEHOLDER_KV_ID');
+      if (framework === 'catalyst') {
+        const openNextOutDir = join(coreDir, '.open-next');
+        const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
 
-      consola.start('Copying templates...');
+        const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
-      await copyFile(
-        join(getModuleCliPath(), 'templates', 'open-next.config.ts'),
-        join(coreDir, 'open-next.config.ts'),
-      );
-      await writeFile(
-        join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
-        JSON.stringify(wranglerConfig, null, 2),
-      );
+        if (!projectUuid) {
+          throw new Error(
+            'Project UUID is required. Please run `link` or provide `--project-uuid`',
+          );
+        }
 
-      consola.success('Templates copied');
+        const wranglerConfig = getWranglerConfig(projectUuid, 'PLACEHOLDER_KV_ID');
 
-      consola.start('Building project...');
+        consola.start('Copying templates...');
 
-      await execa('pnpm', ['exec', 'opennextjs-cloudflare', 'build'], {
-        stdout: ['pipe', 'inherit'],
-        cwd: coreDir,
-      });
+        await copyFile(
+          join(getModuleCliPath(), 'templates', 'open-next.config.ts'),
+          join(coreDir, 'open-next.config.ts'),
+        );
+        await writeFile(
+          join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
+          JSON.stringify(wranglerConfig, null, 2),
+        );
 
-      await execa(
-        'pnpm',
-        [
-          'dlx',
-          `wrangler@${WRANGLER_VERSION}`,
-          'deploy',
-          '--keep-vars',
-          '--outdir',
-          bigcommerceDistDir,
-          '--dry-run',
-        ],
-        {
+        consola.success('Templates copied');
+
+        consola.start('Building project...');
+
+        await execa('pnpm', ['exec', 'opennextjs-cloudflare', 'build'], {
           stdout: ['pipe', 'inherit'],
           cwd: coreDir,
-        },
-      );
+        });
 
-      consola.success('Project built');
+        await execa(
+          'pnpm',
+          [
+            'dlx',
+            `wrangler@${WRANGLER_VERSION}`,
+            'deploy',
+            '--keep-vars',
+            '--outdir',
+            bigcommerceDistDir,
+            '--dry-run',
+          ],
+          {
+            stdout: ['pipe', 'inherit'],
+            cwd: coreDir,
+          },
+        );
 
-      await cp(join(openNextOutDir, 'assets'), join(bigcommerceDistDir, 'assets'), {
-        recursive: true,
-        force: true,
-      });
+        consola.success('Project built');
+
+        await cp(join(openNextOutDir, 'assets'), join(bigcommerceDistDir, 'assets'), {
+          recursive: true,
+          force: true,
+        });
+      }
     } catch (error) {
       consola.error(error);
       process.exitCode = 1;
