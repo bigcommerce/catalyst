@@ -22,8 +22,11 @@ test('properly configured Command instance', () => {
   expect(build.name()).toBe('build');
   expect(build.options).toEqual(
     expect.arrayContaining([
-      expect.objectContaining({ long: '--framework' }),
-      expect.objectContaining({ long: '--project-uuid' }),
+      expect.objectContaining({
+        flags: '--framework <framework>',
+        choices: ['nextjs', 'catalyst'],
+      }),
+      expect.objectContaining({ flags: '--project-uuid <uuid>' }),
     ]),
   );
 });
