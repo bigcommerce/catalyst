@@ -13,6 +13,7 @@ const WRANGLER_VERSION = '4.24.3';
 
 export const build = new Command('build')
   .allowUnknownOption()
+  // The unknown options end up in program.args, not in program.opts(). Commander does not take a guess at how to interpret the unknown options.
   .argument(
     '[next-build-options...]',
     'Next.js `build` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-build-options)',

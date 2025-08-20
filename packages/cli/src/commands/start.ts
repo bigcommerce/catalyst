@@ -8,12 +8,11 @@ import { getProjectConfig } from '../lib/project-config';
 
 export const start = new Command('start')
   .description('Start your Catalyst storefront in optimized production mode.')
-  // Proxy `--help` to the underlying `next start` command
-  .helpOption(false)
   .allowUnknownOption(true)
+  // The unknown options end up in program.args, not in program.opts(). Commander does not take a guess at how to interpret the unknown options.
   .argument(
-    '[buildOptions...]',
-    'Next.js `start` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-start-options)',
+    '[start-options...]',
+    'Pass additional options to the start command. If framework is Next.js, see https://nextjs.org/docs/api-reference/cli#start for available options.',
   )
   .addOption(
     new Option('--framework <framework>', 'The framework to use for the preview').choices([
@@ -21,7 +20,7 @@ export const start = new Command('start')
       'nextjs',
     ]),
   )
-  .action(async (buildOptions, options) => {
+  .action(async (startOptions, options) => {
     try {
       const config = getProjectConfig();
       const framework = options.framework ?? config.get('framework');
@@ -35,7 +34,7 @@ export const start = new Command('start')
           );
         }
 
-        await execa(nextBin, ['start', ...buildOptions], {
+        await execa(nextBin, ['start', ...startOptions], {
           stdio: 'inherit',
           cwd: process.cwd(),
         });
@@ -49,7 +48,7 @@ export const start = new Command('start')
           'preview',
           '--config',
           join('.bigcommerce', 'wrangler.jsonc'),
-          ...buildOptions,
+          ...startOptions,
         ],
         {
           stdio: 'inherit',

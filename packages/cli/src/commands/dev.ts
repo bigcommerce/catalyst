@@ -9,6 +9,7 @@ export const dev = new Command('dev')
   // Proxy `--help` to the underlying `next dev` command
   .helpOption(false)
   .allowUnknownOption(true)
+  // The unknown options end up in program.args, not in program.opts(). Commander does not take a guess at how to interpret the unknown options.
   .argument(
     '[options...]',
     'Next.js `dev` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-dev-options)',
