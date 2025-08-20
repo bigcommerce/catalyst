@@ -284,7 +284,7 @@ export const deploy = new Command('deploy')
   .addOption(
     new Option(
       '--project-uuid <uuid>',
-      'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
+      'BigCommerce intrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
     ).env('BIGCOMMERCE_PROJECT_UUID'),
   )
   .option(
