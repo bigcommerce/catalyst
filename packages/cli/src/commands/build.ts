@@ -75,10 +75,14 @@ export const build = new Command('build')
 
         consola.start('Building project...');
 
-        await execa('pnpm', ['exec', 'opennextjs-cloudflare', 'build'], {
-          stdout: ['pipe', 'inherit'],
-          cwd: coreDir,
-        });
+        await execa(
+          'pnpm',
+          ['exec', 'opennextjs-cloudflare', 'build', '--skipWranglerConfigCheck'],
+          {
+            stdout: ['pipe', 'inherit'],
+            cwd: coreDir,
+          },
+        );
 
         await execa(
           'pnpm',
@@ -86,6 +90,8 @@ export const build = new Command('build')
             'dlx',
             `wrangler@${WRANGLER_VERSION}`,
             'deploy',
+            '--config',
+            join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
             '--keep-vars',
             '--outdir',
             bigcommerceDistDir,

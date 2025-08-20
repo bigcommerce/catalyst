@@ -1,7 +1,7 @@
 export function getWranglerConfig(projectUuid: string, kvNamespaceId: string) {
   return {
     $schema: 'node_modules/wrangler/config-schema.json',
-    main: '.open-next/worker.js',
+    main: '../.open-next/worker.js',
     name: `project-${projectUuid}`,
     compatibility_date: '2025-07-15',
     compatibility_flags: ['nodejs_compat', 'global_fetch_strictly_public'],
@@ -15,7 +15,7 @@ export function getWranglerConfig(projectUuid: string, kvNamespaceId: string) {
       },
     },
     assets: {
-      directory: '.open-next/assets',
+      directory: '../.open-next/assets',
       binding: 'ASSETS',
     },
     services: [
