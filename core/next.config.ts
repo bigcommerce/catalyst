@@ -8,7 +8,9 @@ import { client } from './client';
 import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
 
-const withMakeswift = createWithMakeswift();
+const withMakeswift = createWithMakeswift({
+  appOrigin: process.env.NEXT_PUBLIC_MAKESWIFT_APP_ORIGIN,
+});
 const withNextIntl = createNextIntlPlugin({
   experimental: {
     createMessagesDeclaration: './messages/en.json',
