@@ -10,6 +10,7 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
 import { ReactNode, startTransition, useActionState, useCallback, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -28,6 +29,7 @@ import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button } from '@/vibes/soul/primitives/button';
 import { toast } from '@/vibes/soul/primitives/toaster';
+import { useAddToQuote, useAddToShoppingList } from '~/b2b/use-product-details';
 import { useEvents } from '~/components/analytics/events';
 import { usePathname, useRouter } from '~/i18n/routing';
 
@@ -122,20 +124,48 @@ export function ProductDetailForm<F extends Field>({
     }
   }, [lastResult, successMessage, router]);
 
+  const t = useTranslations('Product.ProductDetails');
+  const { isQuotesEnabled, isAddingToQuote, addProductsToQuote } = useAddToQuote();
+  const { isShoppingListEnabled, isAddingToShoppingList, addProductToShoppingList } =
+    useAddToShoppingList();
+
   const [form, formFields] = useForm({
     lastResult,
     constraint: getZodConstraint(schema(fields, minQuantity, maxQuantity)),
     onValidate({ formData }) {
       return parseWithZod(formData, { schema: schema(fields, minQuantity, maxQuantity) });
     },
-    onSubmit(event, { formData }) {
+    onSubmit: (event, { formData, submission }) => {
       event.preventDefault();
 
-      startTransition(() => {
-        formAction(formData);
+      if (submission?.status !== 'success' || !formData.has('intent')) {
+        startTransition(() => {
+          formAction(formData);
 
-        events.onAddToCart?.(formData);
-      });
+          events.onAddToCart?.(formData);
+        });
+
+        return;
+      }
+
+      const selectedOptions = fields.map((field) => ({
+        field,
+        value: submission.value[field.name],
+      }));
+
+      if (formData.get('intent') === 'add-to-quote') {
+        void addProductsToQuote({
+          productId,
+          quantity: Number(submission.value.quantity),
+          selectedOptions,
+        });
+      } else if (formData.get('intent') === 'add-to-shopping-list') {
+        void addProductToShoppingList({
+          productId,
+          quantity: Number(submission.value.quantity),
+          selectedOptions,
+        });
+      }
     },
     // @ts-expect-error: `defaultValue` types are conflicting with `onValidate`.
     defaultValue,
@@ -183,7 +213,38 @@ export function ProductDetailForm<F extends Field>({
               required
               value={quantityControl.value}
             />
-            <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+            <div className="flex flex-1 gap-x-3">
+              <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+
+              {isQuotesEnabled && (
+                <Button
+                  className="flex-1"
+                  loading={isAddingToQuote}
+                  name="intent"
+                  size="medium"
+                  type="submit"
+                  value="add-to-quote"
+                  variant="secondary"
+                >
+                  {t('addToQuote')}
+                </Button>
+              )}
+            </div>
+          </div>
+          <div className="flex flex-1 gap-x-3">
+            {isShoppingListEnabled && (
+              <Button
+                className="flex-1"
+                loading={isAddingToShoppingList}
+                name="intent"
+                size="medium"
+                type="submit"
+                value="add-to-shopping-list"
+                variant="tertiary"
+              >
+                {t('addToShoppingList')}
+              </Button>
+            )}
             {additionalActions}
           </div>
         </div>

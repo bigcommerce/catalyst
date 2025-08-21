@@ -9,6 +9,17 @@ import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
 
 const withMakeswift = createWithMakeswift();
+
+if (process.env.NODE_ENV !== 'production') {
+  const b2bApiHost = process.env.B2B_API_HOST;
+
+  if (b2bApiHost?.endsWith('/')) {
+    throw new Error(
+      `B2B_API_HOST should not end with a trailing slash. Please update your .env file.`,
+    );
+  }
+}
+
 const withNextIntl = createNextIntlPlugin({
   experimental: {
     createMessagesDeclaration: './messages/en.json',
