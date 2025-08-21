@@ -2,9 +2,19 @@ import AdmZip from 'adm-zip';
 import { Command } from 'commander';
 import consola from 'consola';
 import { http, HttpResponse } from 'msw';
-import { mkdir, stat, writeFile } from 'node:fs/promises';
+import { mkdir, realpath, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
-import { afterAll, afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
+import {
+  afterAll,
+  afterEach,
+  beforeAll,
+  beforeEach,
+  describe,
+  expect,
+  MockInstance,
+  test,
+  vi,
+} from 'vitest';
 
 import {
   createDeployment,
@@ -15,11 +25,14 @@ import {
   uploadBundleZip,
 } from '../../src/commands/deploy';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
+import { program } from '../../src/program';
 import { server } from '../mocks/node';
 import { textHistory } from '../mocks/spinner';
 
 // eslint-disable-next-line import/dynamic-import-chunkname
 vi.mock('yocto-spinner', () => import('../mocks/spinner'));
+
+let exitMock: MockInstance;
 
 let tmpDir: string;
 let cleanup: () => Promise<void>;
@@ -35,8 +48,13 @@ const deploymentUuid = '5b29c3c0-5f68-44fe-99e5-06492babf7be';
 
 beforeAll(async () => {
   consola.mockTypes(() => vi.fn());
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+  exitMock = vi.spyOn(process, 'exit').mockImplementation(() => null as never);
 
   [tmpDir, cleanup] = await mkTempDir();
+
+  // Normalize to /private/var to avoid /var vs /private/var mismatches
+  tmpDir = await realpath(tmpDir);
 
   const workerPath = join(tmpDir, '.bigcommerce/dist/worker.js');
   const assetsDir = join(tmpDir, '.bigcommerce/dist/assets');
@@ -47,6 +65,10 @@ beforeAll(async () => {
   await writeFile(workerPath, 'console.log("worker");');
   await mkdir(assetsDir, { recursive: true });
   await writeFile(join(assetsDir, 'test.txt'), 'asset file');
+});
+
+beforeEach(() => {
+  process.chdir(tmpDir);
 });
 
 afterEach(() => {
@@ -70,14 +92,14 @@ test('properly configured Command instance', () => {
       expect.objectContaining({ flags: '--access-token <token>' }),
       expect.objectContaining({ flags: '--api-host <host>', defaultValue: 'api.bigcommerce.com' }),
       expect.objectContaining({ flags: '--project-uuid <uuid>' }),
-      expect.objectContaining({ flags: '--root-dir <path>', defaultValue: process.cwd() }),
+      expect.objectContaining({ flags: '--dry-run' }),
     ]),
   );
 });
 
 describe('bundle zip generation and upload', () => {
   test('creates bundle.zip from build output', async () => {
-    await generateBundleZip(tmpDir);
+    await generateBundleZip();
 
     // Check file exists
     const stats = await stat(outputZip);
@@ -89,7 +111,7 @@ describe('bundle zip generation and upload', () => {
   });
 
   test('zip contains output folder with assets and worker.js', async () => {
-    await generateBundleZip(tmpDir);
+    await generateBundleZip();
 
     // Check file exists
     const stats = await stat(outputZip);
@@ -120,7 +142,7 @@ describe('bundle zip generation and upload', () => {
   });
 
   test('fetches upload signature and uploads bundle zip', async () => {
-    const uploadResult = await uploadBundleZip(uploadUrl, tmpDir);
+    const uploadResult = await uploadBundleZip(uploadUrl);
 
     expect(consola.info).toHaveBeenCalledWith('Uploading bundle...');
     expect(consola.success).toHaveBeenCalledWith('Bundle uploaded successfully.');
@@ -249,4 +271,32 @@ describe('deployment and event streaming', () => {
 
     expect(textHistory).toEqual(['Fetching...', 'Processing...']);
   });
+});
+
+test('--dry-run skips upload and deployment', async () => {
+  await program.parseAsync([
+    'node',
+    'catalyst',
+    'deploy',
+    '--store-hash',
+    storeHash,
+    '--access-token',
+    accessToken,
+    '--api-host',
+    apiHost,
+    '--project-uuid',
+    projectUuid,
+    '--dry-run',
+  ]);
+
+  expect(consola.info).toHaveBeenCalledWith('Generating bundle...');
+  expect(consola.success).toHaveBeenCalledWith(`Bundle created at: ${outputZip}`);
+  expect(consola.info).toHaveBeenCalledWith(
+    'Dry run enabled — skipping upload and deployment steps.',
+  );
+  expect(consola.info).toHaveBeenCalledWith('Next steps (skipped):');
+  expect(consola.info).toHaveBeenCalledWith('- Generate upload signature');
+  expect(consola.info).toHaveBeenCalledWith('- Upload bundle.zip');
+  expect(consola.info).toHaveBeenCalledWith('- Create deployment');
+  expect(exitMock).toHaveBeenCalledWith(0);
 });
