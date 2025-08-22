@@ -56,10 +56,10 @@ beforeAll(async () => {
   // Normalize to /private/var to avoid /var vs /private/var mismatches
   tmpDir = await realpath(tmpDir);
 
-  const workerPath = join(tmpDir, '.bigcommerce/dist/worker.js');
-  const assetsDir = join(tmpDir, '.bigcommerce/dist/assets');
+  const workerPath = join(tmpDir, '.bigcommerce', 'dist', 'worker.js');
+  const assetsDir = join(tmpDir, '.bigcommerce', 'dist', 'assets');
 
-  outputZip = join(tmpDir, '.bigcommerce/dist/bundle.zip');
+  outputZip = join(tmpDir, '.bigcommerce', 'bundle.zip');
 
   await mkdir(dirname(workerPath), { recursive: true });
   await writeFile(workerPath, 'console.log("worker");');
