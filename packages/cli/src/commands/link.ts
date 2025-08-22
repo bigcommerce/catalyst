@@ -16,6 +16,15 @@ const fetchProjectsSchema = z.object({
   ),
 });
 
+const createProjectSchema = z.object({
+  data: z.object({
+    uuid: z.string(),
+    name: z.string(),
+    date_created: z.coerce.date(),
+    date_modified: z.coerce.date(),
+  }),
+});
+
 async function fetchProjects(storeHash: string, accessToken: string, apiHost: string) {
   const response = await fetch(
     `https://${apiHost}/stores/${storeHash}/v3/infrastructure/projects`,
@@ -27,9 +36,9 @@ async function fetchProjects(storeHash: string, accessToken: string, apiHost: st
     },
   );
 
-  if (response.status === 404) {
+  if (response.status === 403) {
     throw new Error(
-      'Headless Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+      'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
     );
   }
 
@@ -44,9 +53,49 @@ async function fetchProjects(storeHash: string, accessToken: string, apiHost: st
   return data;
 }
 
+async function createProject(
+  name: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+) {
+  const response = await fetch(
+    `https://${apiHost}/stores/${storeHash}/v3/infrastructure/projects`,
+    {
+      method: 'POST',
+      headers: {
+        'X-Auth-Token': accessToken,
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ name }),
+    },
+  );
+
+  if (response.status === 502) {
+    throw new Error('Failed to create project, is the name already in use?');
+  }
+
+  if (response.status === 403) {
+    throw new Error(
+      'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+    );
+  }
+
+  if (!response.ok) {
+    throw new Error(`Failed to create project: ${response.statusText}`);
+  }
+
+  const res: unknown = await response.json();
+
+  const { data } = createProjectSchema.parse(res);
+
+  return data;
+}
+
 export const link = new Command('link')
   .description(
-    'Link your local Catalyst project to a BigCommerce headless project. You can provide a project UUID directly, or fetch and select from available projects using your store credentials.',
+    'Link your local Catalyst project to a BigCommerce infrastructure project. You can provide a project UUID directly, or fetch and select from available projects using your store credentials.',
   )
   .addOption(
     new Option(
@@ -67,7 +116,7 @@ export const link = new Command('link')
   )
   .option(
     '--project-uuid <uuid>',
-    'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Use this to link directly without fetching projects.',
+    'BigCommerce infrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects). Use this to link directly without fetching projects.',
   )
   .option(
     '--root-dir <path>',
@@ -104,19 +153,44 @@ export const link = new Command('link')
 
         consola.success('Projects fetched.');
 
-        if (!projects.length) {
-          throw new Error('No headless projects found for this store.');
-        }
-
-        const projectUuid = await consola.prompt('Select a project (Press <enter> to select).', {
-          type: 'select',
-          options: projects.map((project) => ({
+        const promptOptions = [
+          ...projects.map((project) => ({
             label: project.name,
             value: project.uuid,
             hint: project.uuid,
           })),
-          cancel: 'reject',
-        });
+          {
+            label: 'Create a new project',
+            value: 'create',
+            hint: 'Create a new infrastructure project for this BigCommerce store.',
+          },
+        ];
+
+        let projectUuid = await consola.prompt(
+          'Select a project or create a new project (Press <enter> to select).',
+          {
+            type: 'select',
+            options: promptOptions,
+            cancel: 'reject',
+          },
+        );
+
+        if (projectUuid === 'create') {
+          const newProjectName = await consola.prompt('Enter a name for the new project:', {
+            type: 'text',
+          });
+
+          const data = await createProject(
+            newProjectName,
+            options.storeHash,
+            options.accessToken,
+            options.apiHost,
+          );
+
+          projectUuid = data.uuid;
+
+          consola.success(`Project "${data.name}" created successfully.`);
+        }
 
         writeProjectConfig(projectUuid);
 

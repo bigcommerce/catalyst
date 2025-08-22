@@ -22,6 +22,7 @@ const { mockIdentify } = vi.hoisted(() => ({
 
 const projectUuid1 = 'a23f5785-fd99-4a94-9fb3-945551623923';
 const projectUuid2 = 'b23f5785-fd99-4a94-9fb3-945551623924';
+const projectUuid3 = 'c23f5785-fd99-4a94-9fb3-945551623925';
 const storeHash = 'test-store';
 const accessToken = 'test-token';
 
@@ -66,7 +67,7 @@ test('properly configured Command instance', () => {
   expect(link).toBeInstanceOf(Command);
   expect(link.name()).toBe('link');
   expect(link.description()).toBe(
-    'Link your local Catalyst project to a BigCommerce headless project. You can provide a project UUID directly, or fetch and select from available projects using your store credentials.',
+    'Link your local Catalyst project to a BigCommerce infrastructure project. You can provide a project UUID directly, or fetch and select from available projects using your store credentials.',
   );
   expect(link.options).toEqual(
     expect.arrayContaining([
@@ -106,17 +107,20 @@ test('fetches projects and prompts user to select one', async () => {
     .spyOn(consola, 'prompt')
     .mockImplementation(async (message, opts) => {
       // Assert the prompt message and options
-      expect(message).toContain('Select a project (Press <enter> to select).');
+      expect(message).toContain(
+        'Select a project or create a new project (Press <enter> to select).',
+      );
 
       // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
       const options = (opts as { options: Array<{ label: string; value: string }> }).options;
 
-      expect(options).toHaveLength(2);
+      expect(options).toHaveLength(3);
       expect(options[0]).toMatchObject({ label: 'Project One', value: projectUuid1 });
       expect(options[1]).toMatchObject({
         label: 'Project Two',
         value: projectUuid2,
       });
+      expect(options[2]).toMatchObject({ label: 'Create a new project', value: 'create' });
 
       // Simulate selecting the second option
       return new Promise((resolve) => resolve(projectUuid2));
@@ -154,14 +158,34 @@ test('fetches projects and prompts user to select one', async () => {
   consolaPromptMock.mockRestore();
 });
 
-test('errors when no projects are found', async () => {
-  server.use(
-    http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
-      HttpResponse.json({
-        data: [],
-      }),
-    ),
-  );
+test('prompts to create a new project', async () => {
+  const consolaPromptMock = vi
+    .spyOn(consola, 'prompt')
+    .mockImplementationOnce(async (message, opts) => {
+      // Assert the prompt message and options
+      expect(message).toContain(
+        'Select a project or create a new project (Press <enter> to select).',
+      );
+
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      const options = (opts as { options: Array<{ label: string; value: string }> }).options;
+
+      expect(options).toHaveLength(3);
+      expect(options[0]).toMatchObject({ label: 'Project One', value: projectUuid1 });
+      expect(options[1]).toMatchObject({
+        label: 'Project Two',
+        value: projectUuid2,
+      });
+      expect(options[2]).toMatchObject({ label: 'Create a new project', value: 'create' });
+
+      // Simulate selecting the create option
+      return new Promise((resolve) => resolve('create'));
+    })
+    .mockImplementationOnce(async (message) => {
+      expect(message).toBe('Enter a name for the new project:');
+
+      return new Promise((resolve) => resolve('New Project'));
+    });
 
   await program.parseAsync([
     'node',
@@ -178,16 +202,86 @@ test('errors when no projects are found', async () => {
   expect(mockIdentify).toHaveBeenCalledWith(storeHash);
 
   expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
-  expect(consola.error).toHaveBeenCalledWith('No headless projects found for this store.');
-  expect(exitMock).toHaveBeenCalledWith(1);
+  expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
+
+  expect(consola.success).toHaveBeenCalledWith('Project "New Project" created successfully.');
+
+  expect(exitMock).toHaveBeenCalledWith(0);
+
+  expect(config.get('projectUuid')).toBe(projectUuid3);
+  expect(config.get('framework')).toBe('catalyst');
+
+  consolaPromptMock.mockRestore();
 });
 
-test('errors when headless projects API is not found', async () => {
+test('prompts to create a new project', async () => {
   server.use(
-    http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
-      HttpResponse.json({}, { status: 404 }),
+    http.post('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+      HttpResponse.json({}, { status: 502 }),
     ),
   );
+
+  const consolaPromptMock = vi
+    .spyOn(consola, 'prompt')
+    .mockImplementationOnce(async (message, opts) => {
+      // Assert the prompt message and options
+      expect(message).toContain(
+        'Select a project or create a new project (Press <enter> to select).',
+      );
+
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      const options = (opts as { options: Array<{ label: string; value: string }> }).options;
+
+      expect(options).toHaveLength(3);
+      expect(options[0]).toMatchObject({ label: 'Project One', value: projectUuid1 });
+      expect(options[1]).toMatchObject({
+        label: 'Project Two',
+        value: projectUuid2,
+      });
+      expect(options[2]).toMatchObject({ label: 'Create a new project', value: 'create' });
+
+      // Simulate selecting the create option
+      return new Promise((resolve) => resolve('create'));
+    })
+    .mockImplementationOnce(async (message) => {
+      expect(message).toBe('Enter a name for the new project:');
+
+      return new Promise((resolve) => resolve('New Project'));
+    });
+
+  await program.parseAsync([
+    'node',
+    'catalyst',
+    'link',
+    '--store-hash',
+    storeHash,
+    '--access-token',
+    accessToken,
+    '--root-dir',
+    tmpDir,
+  ]);
+
+  expect(mockIdentify).toHaveBeenCalledWith(storeHash);
+
+  expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
+  expect(consola.success).toHaveBeenCalledWith('Projects fetched.');
+
+  expect(consola.error).toHaveBeenCalledWith(
+    'Failed to create project, is the name already in use?',
+  );
+
+  expect(exitMock).toHaveBeenCalledWith(1);
+
+  consolaPromptMock.mockRestore();
+});
+
+test('errors when infrastructure projects API is not found', async () => {
+  server.use(
+    http.get('https://:apiHost/stores/:storeHash/v3/infrastructure/projects', () =>
+      HttpResponse.json({}, { status: 403 }),
+    ),
+  );
+
   await program.parseAsync([
     'node',
     'catalyst',
@@ -204,7 +298,7 @@ test('errors when headless projects API is not found', async () => {
 
   expect(consola.start).toHaveBeenCalledWith('Fetching projects...');
   expect(consola.error).toHaveBeenCalledWith(
-    'Headless Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
+    'Infrastructure Projects API not enabled. If you are part of the alpha, contact support@bigcommerce.com to enable it.',
   );
 });
 
