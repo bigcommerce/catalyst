@@ -60,10 +60,10 @@ const DeploymentStatusSchema = z.object({
     .optional(),
 });
 
-export const generateBundleZip = async (rootDir: string) => {
+export const generateBundleZip = async () => {
   consola.info('Generating bundle...');
 
-  const distDir = join(rootDir, '.bigcommerce/dist');
+  const distDir = join(process.cwd(), '.bigcommerce', 'dist');
 
   // Check if .bigcommerce/dist exists
   try {
@@ -122,10 +122,10 @@ export const generateUploadSignature = async (
   return data;
 };
 
-export const uploadBundleZip = async (uploadUrl: string, rootDir: string) => {
+export const uploadBundleZip = async (uploadUrl: string) => {
   consola.info('Uploading bundle...');
 
-  const zipPath = join(rootDir, '.bigcommerce/dist/bundle.zip');
+  const zipPath = join(process.cwd(), '.bigcommerce', 'dist', 'bundle.zip');
 
   // Read the zip file as a buffer
   const fileBuffer = await readFile(zipPath);
@@ -287,18 +287,15 @@ export const deploy = new Command('deploy')
       'BigCommerce headless project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
     ).env('BIGCOMMERCE_PROJECT_UUID'),
   )
-  .option(
-    '--root-dir <path>',
-    'Path to the root directory of your Catalyst project (default: current working directory).',
-    process.cwd(),
-  )
-  .action(async (opts) => {
+  .option('--dry-run', 'Run the command to generate the bundle without uploading or deploying.')
+
+  .action(async (options) => {
     try {
-      const config = getProjectConfig(opts.rootDir);
+      const config = getProjectConfig();
 
-      await telemetry.identify(opts.storeHash);
+      await telemetry.identify(options.storeHash);
 
-      const projectUuid = opts.projectUuid ?? config.get('projectUuid');
+      const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
       if (!projectUuid) {
         throw new Error(
@@ -306,25 +303,40 @@ export const deploy = new Command('deploy')
         );
       }
 
-      await generateBundleZip(opts.rootDir);
+      await generateBundleZip();
+
+      if (options.dryRun) {
+        consola.info('Dry run enabled — skipping upload and deployment steps.');
+        consola.info('Next steps (skipped):');
+        consola.info('- Generate upload signature');
+        consola.info('- Upload bundle.zip');
+        consola.info('- Create deployment');
+
+        process.exit(0);
+      }
 
       const uploadSignature = await generateUploadSignature(
-        opts.storeHash,
-        opts.accessToken,
-        opts.apiHost,
+        options.storeHash,
+        options.accessToken,
+        options.apiHost,
       );
 
-      await uploadBundleZip(uploadSignature.upload_url, opts.rootDir);
+      await uploadBundleZip(uploadSignature.upload_url);
 
       const { deployment_uuid: deploymentUuid } = await createDeployment(
         projectUuid,
         uploadSignature.upload_uuid,
-        opts.storeHash,
-        opts.accessToken,
-        opts.apiHost,
+        options.storeHash,
+        options.accessToken,
+        options.apiHost,
       );
 
-      await getDeploymentStatus(deploymentUuid, opts.storeHash, opts.accessToken, opts.apiHost);
+      await getDeploymentStatus(
+        deploymentUuid,
+        options.storeHash,
+        options.accessToken,
+        options.apiHost,
+      );
     } catch (error) {
       consola.error(error);
       process.exit(1);
