@@ -125,7 +125,7 @@ export const generateUploadSignature = async (
 export const uploadBundleZip = async (uploadUrl: string) => {
   consola.info('Uploading bundle...');
 
-  const zipPath = join(process.cwd(), '.bigcommerce/dist/bundle.zip');
+  const zipPath = join(process.cwd(), '.bigcommerce', 'dist', 'bundle.zip');
 
   // Read the zip file as a buffer
   const fileBuffer = await readFile(zipPath);
