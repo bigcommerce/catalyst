@@ -183,7 +183,7 @@ const updateRouteCache = async (
 ): Promise<RouteCache> => {
   const routeCache: RouteCache = {
     route: await getRoute(pathname, channelId),
-    expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
+    expiryTime: Date.now() + 1000 * 60 * 60 * 24, // 24 hours
   };
 
   event.waitUntil(kv.set(kvKey(pathname, channelId), routeCache));
