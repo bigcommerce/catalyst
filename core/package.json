@@ -4,10 +4,10 @@
   "version": "1.1.0",
   "private": true,
   "scripts": {
-    "dev": "npm run generate && next dev",
+    "dev": "npm run generate && next dev --turbopack",
     "generate": "dotenv -e .env.local -- node ./scripts/generate.cjs",
-    "build": "npm run generate && next build",
-    "build:analyze": "ANALYZE=true npm run build",
+    "build": "npm run generate && next build --turbopack",
+    "build:analyze": "ANALYZE=true npm run build --turbopack",
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
