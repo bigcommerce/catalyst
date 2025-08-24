@@ -49,8 +49,6 @@ export function SignInForm({
     }
   }, [lastResult]);
 
-  console.log({ lastResult });
-
   return (
     <form {...getFormProps(form)} action={formAction} className="flex flex-grow flex-col gap-5">
       <Input
