@@ -32,7 +32,7 @@ export const login = async (_lastResult: SubmissionResult | null, formData: Form
       redirect: false,
     });
 
-    return redirect({ href: '/account/orders', locale });
+    return submission.reply({});
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error(error);

@@ -2,7 +2,7 @@
 
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { useActionState } from 'react';
+import { useActionState, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { FormStatus } from '@/vibes/soul/form/form-status';
@@ -10,6 +10,7 @@ import { Input } from '@/vibes/soul/form/input';
 import { Button } from '@/vibes/soul/primitives/button';
 
 import { schema } from './schema';
+import { useRouter } from 'next/navigation';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
@@ -28,6 +29,8 @@ export function SignInForm({
   passwordLabel = 'Password',
   submitLabel = 'Sign in',
 }: Props) {
+  const router = useRouter();
+
   const [lastResult, formAction] = useActionState(action, null);
   const [form, fields] = useForm({
     lastResult,
@@ -39,6 +42,14 @@ export function SignInForm({
       return parseWithZod(formData, { schema });
     },
   });
+
+  useEffect(() => {
+    if (lastResult?.status === 'success') {
+      router.refresh();
+    }
+  }, [lastResult]);
+
+  console.log({ lastResult });
 
   return (
     <form {...getFormProps(form)} action={formAction} className="flex flex-grow flex-col gap-5">

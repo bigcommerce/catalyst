@@ -23,6 +23,7 @@ export default async function Login() {
     <>
       <ForceRefresh />
       <SignInSection
+        // @ts-ignore
         action={login}
         forgotPasswordHref="/login/forgot-password"
         forgotPasswordLabel={t('Form.forgotPassword')}
