@@ -10,9 +10,11 @@ type Props = {
 
 export function QuoteNinjaCustomerSyncLoader({ customer }: Props) {
   const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [scriptError, setScriptError] = useState(false);
 
   useEffect(() => {
-    if (document.getElementById('quoteninja-headless-script')) {
+    const existingScript = document.getElementById('quoteninja-headless-script');
+    if (existingScript) {
       setScriptLoaded(true);
       return;
     }
@@ -21,12 +23,18 @@ export function QuoteNinjaCustomerSyncLoader({ customer }: Props) {
     script.async = true;
     script.id = 'quoteninja-headless-script';
     script.onload = () => setScriptLoaded(true);
+    script.onerror = () => setScriptError(true);
     document.body.appendChild(script);
     return () => {
       script.onload = null;
+      script.onerror = null;
+      if (script.parentNode) {
+        script.parentNode.removeChild(script);
+      }
     };
   }, []);
 
+  if (scriptError) return <div>Failed to load QuoteNinja script.</div>;
   if (!scriptLoaded) return null;
   return <QuoteNinjaCustomerSync customer={customer} />;
 }
