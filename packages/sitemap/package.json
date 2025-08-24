@@ -1,0 +1,27 @@
+{
+  "name": "@bigcommerce/catalyst-sitemap",
+  "description": "Sitemap route handler for BigCommerce Catalyst.",
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0",
+    "lint-fix": "eslint . --ext .ts,.js,.cjs --fix"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {},
+  "devDependencies": {
+    "@bigcommerce/eslint-config": "^2.11.0",
+    "@bigcommerce/eslint-config-catalyst": "workspace:^",
+    "@types/node": "^22.15.30",
+    "eslint": "^8.57.1",
+    "prettier": "^3.6.2",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}
