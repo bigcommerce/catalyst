@@ -1,5 +1,5 @@
 export default {
-  SHOP_ALL: '/shop-all',
+  SHOP_ALL: '/shop',
   SAMPLE_ABLE_BREWING_SYSTEM: '/sample-able-brewing-system',
   ORBIT_TERRARIUM_LARGE: '/orbit-terrarium-large',
   BLOG: '/blog',

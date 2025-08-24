@@ -31,7 +31,7 @@ export default async function Cart() {
     <>
       <Slot label="Cart top content" snapshotId="cart-top-content" />
       <CartEmptyState
-        cta={{ label: t('Empty.cta'), href: '/shop-all' }}
+        cta={{ label: t('Empty.cta'), href: '/shop' }}
         subtitle={t('Empty.subtitle')}
         title={t('Empty.title')}
       />
@@ -176,7 +176,7 @@ export default async function Cart() {
         emptyState={{
           title: t('Empty.title'),
           subtitle: t('Empty.subtitle'),
-          cta: { label: t('Empty.cta'), href: '/shop-all' },
+          cta: { label: t('Empty.cta'), href: '/' },
         }}
         incrementLineItemLabel={t('increment')}
         key={`${cart.entityId}-${cart.version}`}

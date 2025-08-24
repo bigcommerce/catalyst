@@ -264,7 +264,7 @@ export default async function Product(props: Props) {
       />
 
       <FeaturedProductCarousel
-        cta={{ label: t('RelatedProducts.cta'), href: '/shop-all' }}
+        cta={{ label: t('RelatedProducts.cta'), href: '/shop' }}
         emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
         emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
         nextLabel={t('RelatedProducts.nextProducts')}
