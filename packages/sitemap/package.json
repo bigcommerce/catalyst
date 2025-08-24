@@ -14,9 +14,7 @@
   "files": [
     "dist"
   ],
-  "dependencies": {
-    "@bigcommerce/catalyst-client": "workspace:^"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",

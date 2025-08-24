@@ -1,17 +1,21 @@
-import type { createClient } from '@bigcommerce/catalyst-client';
-
-type Client = ReturnType<typeof createClient>;
+interface SitemapClient {
+  fetchSitemapIndex(channelId?: string): Promise<string>;
+  fetchSitemapResponse(
+    params: { type?: string | null; page?: string | number | null },
+    channelId?: string,
+  ): Promise<Response>;
+}
 
 export interface SitemapConfig {
   /**
    * BigCommerce client instance configured with store hash, storefront token, etc.
    */
-  client: Client;
+  client: SitemapClient;
   
   /**
    * Function to get the channel ID, either from configuration or from locale/request context
    */
-  getChannelId: (request: Request) => Promise<string> | string;
+  getChannelId: (request?: Request) => Promise<string> | string;
   
   /**
    * Optional hostname override. If not provided, will use the host from the request headers

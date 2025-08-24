@@ -40,11 +40,33 @@ export const GET = createSitemapHandler({
   client,
   getChannelId: async (request) => {
     // Extract channel ID from request context, headers, etc.
-    const locale = request.headers.get('accept-language');
+    const locale = request?.headers.get('accept-language');
     return getChannelIdFromLocale(locale) ?? 'default-channel-id';
   },
   hostname: 'example.com', // Optional: override hostname
   protocol: 'https', // Optional: override protocol
+});
+```
+
+### Environment-specific Configuration
+
+```typescript
+// app/sitemap.xml/route.ts
+import { createSitemapHandler } from '@bigcommerce/catalyst-sitemap';
+import { createClient } from '@bigcommerce/catalyst-client';
+
+// Create client with environment-specific configuration
+const client = createClient({
+  storeHash: process.env.BIGCOMMERCE_STORE_HASH!,
+  storefrontToken: process.env.BIGCOMMERCE_STOREFRONT_TOKEN!,
+  channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
+});
+
+export const GET = createSitemapHandler({
+  client,
+  getChannelId: async () => process.env.BIGCOMMERCE_CHANNEL_ID!,
+  hostname: process.env.PUBLIC_HOSTNAME,
+  protocol: process.env.NODE_ENV === 'production' ? 'https' : 'http',
 });
 ```
 
@@ -55,7 +77,7 @@ export const GET = createSitemapHandler({
 | Property | Type | Required | Description |
 |----------|------|----------|-------------|
 | `client` | `BigCommerceClient` | Yes | Configured BigCommerce client instance |
-| `getChannelId` | `(request: Request) => Promise<string> \| string` | Yes | Function to determine channel ID for the request |
+| `getChannelId` | `(request?: Request) => Promise<string> \| string` | Yes | Function to determine channel ID for the request |
 | `hostname` | `string` | No | Override hostname for sitemap URLs (defaults to request host) |
 | `protocol` | `'http' \| 'https'` | No | Override protocol for sitemap URLs (defaults to request protocol) |
 
@@ -66,6 +88,7 @@ export const GET = createSitemapHandler({
 - **URL Normalization**: Rewrites BigCommerce sitemap URLs to use your application's hostname and protocol
 - **Error Handling**: Validates required parameters and handles upstream errors gracefully
 - **Configurable**: Accepts configuration for different environments and use cases
+- **Framework Agnostic**: Works with any environment that supports Web API Request/Response
 
 ## How it Works
 
@@ -73,6 +96,32 @@ export const GET = createSitemapHandler({
 2. If both parameters are present, it fetches the specific sitemap from BigCommerce
 3. If no parameters are provided, it fetches the sitemap index and rewrites internal URLs to match your domain
 4. All responses are returned with proper XML content-type headers
+
+## Migration from Built-in Route
+
+If you're migrating from a built-in sitemap route, the process is straightforward:
+
+**Before:**
+```typescript
+// app/sitemap.xml/route.ts
+export const GET = async (request: Request) => {
+  // 70+ lines of sitemap handling logic
+};
+```
+
+**After:**
+```typescript
+// app/sitemap.xml/route.ts
+import { createSitemapHandler } from '@bigcommerce/catalyst-sitemap';
+import { client } from '~/client';
+import { getChannelIdFromLocale } from '~/channels.config';
+import { defaultLocale } from '~/i18n/locales';
+
+export const GET = createSitemapHandler({
+  client,
+  getChannelId: async () => getChannelIdFromLocale(defaultLocale),
+});
+```
 
 ## Requirements
 
