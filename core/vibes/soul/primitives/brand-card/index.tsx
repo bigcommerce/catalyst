@@ -21,9 +21,9 @@ export function BrandCard({ imageUrl, title, productCount, href }: BrandProps): 
             <div className="h-24 w-24 rounded bg-blue-900" />
           )}
         </div>
+        <h3 className="mt-4 text-left text-base font-semibold text-gray-900">{title}</h3>
+        <p className="text-left text-sm text-gray-500">{productCount} products</p>
       </Link>
-      <h3 className="mt-4 text-center text-base font-semibold text-gray-900">{title}</h3>
-      <p className="text-center text-sm text-gray-500">{productCount} products</p>
     </div>
   );
 }
