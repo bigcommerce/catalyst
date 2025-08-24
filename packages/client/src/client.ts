@@ -4,9 +4,9 @@ import { BigCommerceGQLError } from './gql-error';
 import { parseGraphQLError } from './lib/error';
 import { DocumentDecoration } from './types';
 import { getOperationInfo } from './utils/getOperationName';
+import { ImageTransformOptions, transformImageUrls } from './utils/imageTransforms';
 import { normalizeQuery } from './utils/normalizeQuery';
 import { getBackendUserAgent } from './utils/userAgent';
-import { transformImageUrls, ImageTransformOptions } from './utils/imageTransforms';
 
 export const graphqlApiDomain: string =
   process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
@@ -166,9 +166,13 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const result = (await response.json()) as BigCommerceResponse<TResult>;
 
     // Apply image transformations if configured
-    const transformedResult = this.config.imageTransforms && result.data
-      ? { ...result, data: transformImageUrls(result.data, this.config.imageTransforms) }
-      : result;
+    const transformedResult =
+      this.config.imageTransforms && result.data
+        ? {
+            ...result,
+            data: transformImageUrls(result.data, this.config.imageTransforms) as TResult,
+          }
+        : result;
 
     const { errors, ...data } = transformedResult;
 
@@ -197,7 +201,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     }
 
     // If errorPolicy is 'all', we return the errors with the data
-    return { ...data, errors };
+    return transformedResult;
   }
 
   async fetchSitemapIndex(channelId?: string): Promise<string> {

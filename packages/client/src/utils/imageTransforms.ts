@@ -26,10 +26,10 @@ export const DEFAULT_IMAGE_TRANSFORM_OPTIONS: Required<ImageTransformOptions> = 
 
 /**
  * Transform a BigCommerce image URL to include lossy parameters for LQIP
- * 
- * @param url - The original image URL
- * @param options - Transform options
- * @returns The transformed URL with lossy parameters
+ *
+ * @param {string} url - The original image URL
+ * @param {ImageTransformOptions} options - Transform options
+ * @returns {string} The transformed URL with lossy parameters
  */
 export function transformImageUrl(url: string, options: ImageTransformOptions = {}): string {
   if (!url || typeof url !== 'string') {
@@ -54,18 +54,19 @@ export function transformImageUrl(url: string, options: ImageTransformOptions = 
 
   // Add lossy parameter to the URL
   const separator = url.includes('?') ? '&' : '?';
+
   return `${url}${separator}lossy=true&quality=${config.lossyQuality}`;
 }
 
 /**
  * Check if a URL is from the BigCommerce CDN and can be transformed
- * 
- * @param url - The URL to check
- * @returns True if the URL can be transformed
+ *
+ * @param {string} url - The URL to check
+ * @returns {boolean} True if the URL can be transformed
  */
 function isBigCommerceCdnUrl(url: string): boolean {
   if (!url) return false;
-  
+
   // Check for BigCommerce CDN patterns
   const cdnPatterns = [
     /cdn\d*\.bigcommerce\.com/,
@@ -73,42 +74,44 @@ function isBigCommerceCdnUrl(url: string): boolean {
     /store-.*\.mybigcommerce\.com/,
   ];
 
-  return cdnPatterns.some(pattern => pattern.test(url));
+  return cdnPatterns.some((pattern) => pattern.test(url));
 }
 
 /**
  * Transform image objects in API responses to include LQIP URLs
- * 
- * @param data - The API response data
- * @param options - Transform options
- * @returns Transformed data with LQIP URLs
+ *
+ * @param {unknown} data - The API response data
+ * @param {ImageTransformOptions} options - Transform options
+ * @returns {unknown} Transformed data with LQIP URLs
  */
-export function transformImageUrls(data: any, options: ImageTransformOptions = {}): any {
+export function transformImageUrls(data: unknown, options: ImageTransformOptions = {}): unknown {
   if (!data || typeof data !== 'object') {
     return data;
   }
 
   if (Array.isArray(data)) {
-    return data.map(item => transformImageUrls(item, options));
+    return data.map((item: unknown) => transformImageUrls(item, options));
   }
 
-  const result = { ...data };
+  const result = { ...(data as Record<string, unknown>) };
 
   // Transform specific image URL fields
   const imageUrlFields = ['url', 'src', 'urlOriginal', 'urlStandard', 'urlThumbnail'];
-  
-  for (const field of imageUrlFields) {
-    if (result[field] && typeof result[field] === 'string') {
-      result[field] = transformImageUrl(result[field], options);
+
+  imageUrlFields.forEach((field) => {
+    const fieldValue = result[field];
+
+    if (fieldValue && typeof fieldValue === 'string') {
+      result[field] = transformImageUrl(fieldValue, options);
     }
-  }
+  });
 
   // Transform nested objects
-  for (const [key, value] of Object.entries(result)) {
+  Object.entries(result).forEach(([key, value]) => {
     if (value && typeof value === 'object') {
       result[key] = transformImageUrls(value, options);
     }
-  }
+  });
 
   return result;
 }
