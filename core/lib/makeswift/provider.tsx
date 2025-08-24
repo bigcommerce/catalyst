@@ -1,7 +1,6 @@
 'use client';
 
-import { ReactRuntimeProvider, RootStyleRegistry } from '@makeswift/runtime/next';
-import { type SiteVersion } from '@makeswift/runtime/next';
+import { ReactRuntimeProvider, RootStyleRegistry, type SiteVersion } from '@makeswift/runtime/next';
 
 import { runtime } from '~/lib/makeswift/runtime';
 import '~/lib/makeswift/components';
