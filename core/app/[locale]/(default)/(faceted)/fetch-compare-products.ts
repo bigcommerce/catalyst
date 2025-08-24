@@ -29,7 +29,7 @@ const CompareProductsQuery = graphql(`
             entityId
             name
             defaultImage {
-              url: urlTemplate(lossy: true)
+              url: urlTemplate
               altText
             }
             path

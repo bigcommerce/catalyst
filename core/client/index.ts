@@ -33,6 +33,10 @@ export const client = createClient({
   logger:
     (process.env.NODE_ENV !== 'production' && process.env.CLIENT_LOGGER !== 'false') ||
     process.env.CLIENT_LOGGER === 'true',
+  imageTransforms: {
+    enableLossy: true,
+    lossyQuality: 30,
+  },
   getChannelId: async (defaultChannelId: string) => {
     const locale = await getLocale();
 

@@ -25,13 +25,13 @@ const MultipleChoiceFieldFragment = graphql(`
           ... on SwatchOptionValue {
             __typename
             hexColors
-            imageUrl(lossy: true, width: 40)
+            imageUrl(width: 40)
           }
           ... on ProductPickListOptionValue {
             __typename
             defaultImage {
               altText
-              url: urlTemplate(lossy: true)
+              url: urlTemplate
             }
           }
         }
@@ -140,7 +140,7 @@ const ProductPageMetadataQuery = graphql(`
         name
         defaultImage {
           altText
-          url: urlTemplate(lossy: true)
+          url: urlTemplate
         }
         seo {
           pageTitle
@@ -218,14 +218,14 @@ const StreamableProductQuery = graphql(
             edges {
               node {
                 altText
-                url: urlTemplate(lossy: true)
+                url: urlTemplate
                 isDefault
               }
             }
           }
           defaultImage {
             altText
-            url: urlTemplate(lossy: true)
+            url: urlTemplate
           }
           sku
           weight {

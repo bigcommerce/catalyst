@@ -165,12 +165,12 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     const result = (await response.json()) as BigCommerceResponse<TResult>;
 
-    const { errors, ...data } = result;
-
     // Apply image transformations if configured
-    const transformedData = this.config.imageTransforms 
-      ? { ...data, data: transformImageUrls(data.data, this.config.imageTransforms) }
-      : data;
+    const transformedResult = this.config.imageTransforms && result.data
+      ? { ...result, data: transformImageUrls(result.data, this.config.imageTransforms) }
+      : result;
+
+    const { errors, ...data } = transformedResult;
 
     // If errorPolicy is 'none', we throw an error if there are any errors
     if (errorPolicy === 'none' && errors) {
@@ -193,11 +193,11 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     // If errorPolicy is 'ignore', we return the data and ignore the errors
     if (errorPolicy === 'ignore') {
-      return transformedData;
+      return data;
     }
 
     // If errorPolicy is 'all', we return the errors with the data
-    return { ...transformedData, errors };
+    return { ...data, errors };
   }
 
   async fetchSitemapIndex(channelId?: string): Promise<string> {
