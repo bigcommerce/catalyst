@@ -53,6 +53,14 @@ export default async (): Promise<NextConfig> => {
     },
     // default URL generation in BigCommerce uses trailing slash
     trailingSlash: process.env.TRAILING_SLASH !== 'false',
+    async rewrites() {
+      return [
+        {
+          source: '/login.php',
+          destination: '/login',
+        },
+      ];
+    },
     // eslint-disable-next-line @typescript-eslint/require-await
     async headers() {
       return [
