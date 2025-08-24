@@ -8,11 +8,9 @@ import '~/lib/makeswift/components';
 
 export function MakeswiftProvider({
   children,
-  previewMode,
   siteVersion,
 }: {
   children: React.ReactNode;
-  previewMode: boolean;
   siteVersion: SiteVersion | null;
 }) {
   return (

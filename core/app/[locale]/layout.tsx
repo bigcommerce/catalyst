@@ -120,10 +120,7 @@ export default async function RootLayout({ params, children }: Props) {
   setRequestLocale(locale);
 
   return (
-    <MakeswiftProvider 
-      previewMode={(await draftMode()).isEnabled}
-      siteVersion={siteVersion}
-    >
+    <MakeswiftProvider siteVersion={siteVersion}>
       <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
         <head>
           <SiteTheme />
