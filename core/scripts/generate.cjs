@@ -7,11 +7,7 @@ const graphqlApiDomain = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcom
 const getStoreHash = () => {
   const storeHash = process.env.BIGCOMMERCE_STORE_HASH;
 
-  if (!storeHash) {
-    throw new Error('Missing store hash');
-  }
-
-  return storeHash;
+  return storeHash || null;
 };
 
 const getChannelId = () => {
@@ -23,16 +19,17 @@ const getChannelId = () => {
 const getToken = () => {
   const token = process.env.BIGCOMMERCE_STOREFRONT_TOKEN;
 
-  if (!token) {
-    throw new Error('Missing storefront token');
-  }
-
-  return token;
+  return token || null;
 };
 
 const getEndpoint = () => {
   const storeHash = getStoreHash();
   const channelId = getChannelId();
+
+  // If no store hash is available, use the public fallback endpoint
+  if (!storeHash) {
+    return 'https://cxm-prd.bigcommerceapp.com/api/graphql-schema';
+  }
 
   // Not all sites have the channel-specific canonical URL backfilled.
   // Wait till MSF-2643 is resolved before removing and simplifying the endpoint logic.
@@ -45,9 +42,15 @@ const getEndpoint = () => {
 
 const generate = async () => {
   try {
+    const endpoint = getEndpoint();
+    const token = getToken();
+    
+    // Only include authorization header if we have a token (i.e., not using fallback endpoint)
+    const headers = token ? { Authorization: `Bearer ${token}` } : {};
+    
     await generateSchema({
-      input: getEndpoint(),
-      headers: { Authorization: `Bearer ${getToken()}` },
+      input: endpoint,
+      headers,
       output: join(__dirname, '../bigcommerce.graphql'),
       tsconfig: undefined,
     });
