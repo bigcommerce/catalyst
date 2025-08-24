@@ -19,7 +19,7 @@ export const FooterFragment = graphql(`
         }
         ... on StoreImageLogo {
           image {
-            url: urlTemplate(lossy: true)
+            url: urlTemplate
             altText
           }
         }

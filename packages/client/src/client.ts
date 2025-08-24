@@ -4,6 +4,7 @@ import { BigCommerceGQLError } from './gql-error';
 import { parseGraphQLError } from './lib/error';
 import { DocumentDecoration } from './types';
 import { getOperationInfo } from './utils/getOperationName';
+import { ImageTransformOptions, transformImageUrls } from './utils/imageTransforms';
 import { normalizeQuery } from './utils/normalizeQuery';
 import { getBackendUserAgent } from './utils/userAgent';
 
@@ -28,6 +29,10 @@ interface Config<FetcherRequestInit extends RequestInit = RequestInit> {
     error: BigCommerceGQLError,
     queryType: 'query' | 'mutation' | 'subscription',
   ) => Promise<void> | void;
+  /**
+   * Configuration for automatic image transformations including LQIP
+   */
+  imageTransforms?: ImageTransformOptions;
 }
 
 interface BigCommerceResponseError {
@@ -160,7 +165,16 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     const result = (await response.json()) as BigCommerceResponse<TResult>;
 
-    const { errors, ...data } = result;
+    // Apply image transformations if configured
+    const transformedResult =
+      this.config.imageTransforms && result.data
+        ? {
+            ...result,
+            data: transformImageUrls(result.data, this.config.imageTransforms) as TResult,
+          }
+        : result;
+
+    const { errors, ...data } = transformedResult;
 
     // If errorPolicy is 'none', we throw an error if there are any errors
     if (errorPolicy === 'none' && errors) {
@@ -187,7 +201,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     }
 
     // If errorPolicy is 'all', we return the errors with the data
-    return result;
+    return transformedResult;
   }
 
   async fetchSitemapIndex(channelId?: string): Promise<string> {

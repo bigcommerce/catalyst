@@ -11,7 +11,7 @@ export const OrderItemFragment = graphql(`
       path
     }
     image {
-      url: urlTemplate(lossy: true)
+      url: urlTemplate
       altText
     }
     subTotalListPrice {

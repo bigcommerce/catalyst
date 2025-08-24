@@ -17,7 +17,7 @@ export const ProductSchemaFragment = graphql(`
       numberOfReviews
     }
     defaultImage {
-      url: urlTemplate(lossy: true)
+      url: urlTemplate
     }
     condition
     availabilityV2 {

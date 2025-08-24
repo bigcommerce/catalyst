@@ -45,7 +45,7 @@ const BlogPostsPageQuery = graphql(
                     utc
                   }
                   thumbnailImage {
-                    url: urlTemplate(lossy: true)
+                    url: urlTemplate
                     altText
                   }
                 }

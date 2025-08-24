@@ -11,7 +11,7 @@ export const HeaderFragment = graphql(`
         }
         ... on StoreImageLogo {
           image {
-            url: urlTemplate(lossy: true)
+            url: urlTemplate
             altText
           }
         }
