@@ -12,25 +12,21 @@ interface BrandProps {
 
 export function BrandCard({ imageUrl, title, productCount, href }: BrandProps): JSX.Element {
   return (
-    <div>
-      <Link href={`${href}`}>
-        <div className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md shadow-md">
+    <div className="flex h-64 w-full flex-col items-center justify-center rounded-lg bg-white p-6 shadow-md">
+      <Link href={href} className="flex h-full w-full flex-col items-center">
+        <div className="mb-4 flex h-24 w-24 items-center justify-center">
           {imageUrl ? (
             <img
               alt={`${title} brand image`}
-              className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
+              className="h-full w-full object-contain"
               src={imageUrl}
             />
           ) : (
-            <div className="h-full w-full" style={{ backgroundColor: '#304A7A' }} />
+            <div className="h-full w-full rounded bg-blue-900" />
           )}
-
-          <div className="absolute inset-0 bg-black bg-opacity-40 transition duration-300 group-hover:bg-opacity-50" />
-          <div className="z-1 absolute bottom-4 left-4 text-white">
-            <h3 className="text-lg font-semibold">{title}</h3>
-            <p className="text-sm">{productCount} products</p>
-          </div>
         </div>
+        <h3 className="mb-1 text-center text-base font-semibold text-gray-900">{title}</h3>
+        <p className="text-center text-sm text-gray-500">{productCount} products</p>
       </Link>
     </div>
   );
