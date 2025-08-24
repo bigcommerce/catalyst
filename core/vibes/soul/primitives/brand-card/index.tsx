@@ -16,9 +16,9 @@ export function BrandCard({ imageUrl, title, productCount, href }: BrandProps): 
       <Link href={href} className="w-full">
         <div className="flex h-40 w-full items-center justify-center rounded-lg bg-white shadow-md">
           {imageUrl ? (
-            <img alt={`${title} brand image`} className="h-24 w-24 object-contain" src={imageUrl} />
+            <img alt={`${title} brand image`} className="h-40 w-40 object-contain" src={imageUrl} />
           ) : (
-            <div className="h-24 w-24 rounded bg-blue-900" />
+            <div className="h-40 w-40 rounded bg-blue-900" />
           )}
         </div>
         <h3 className="mt-4 text-left text-base font-semibold text-gray-900">{title}</h3>
