@@ -44,10 +44,10 @@ const generate = async () => {
   try {
     const endpoint = getEndpoint();
     const token = getToken();
-    
+
     // Only include authorization header if we have a token (i.e., not using fallback endpoint)
     const headers = token ? { Authorization: `Bearer ${token}` } : {};
-    
+
     await generateSchema({
       input: endpoint,
       headers,
