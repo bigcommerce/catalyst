@@ -24,6 +24,7 @@ import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
 import { SiteTheme } from '~/lib/makeswift/components/site-theme';
 import { MakeswiftProvider } from '~/lib/makeswift/provider';
+import { getSiteVersion } from '@makeswift/runtime/next/server';
 
 import { getToastNotification } from '../../lib/server-toast';
 
@@ -108,6 +109,7 @@ export default async function RootLayout({ params, children }: Props) {
 
   const { data } = await fetchRootLayoutMetadata();
   const toastNotificationCookieData = await getToastNotification();
+  const siteVersion = await getSiteVersion();
 
   if (!routing.locales.includes(locale)) {
     notFound();
@@ -118,7 +120,10 @@ export default async function RootLayout({ params, children }: Props) {
   setRequestLocale(locale);
 
   return (
-    <MakeswiftProvider previewMode={(await draftMode()).isEnabled}>
+    <MakeswiftProvider 
+      previewMode={(await draftMode()).isEnabled}
+      siteVersion={siteVersion}
+    >
       <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
         <head>
           <SiteTheme />
