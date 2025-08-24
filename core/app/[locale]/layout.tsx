@@ -119,7 +119,7 @@ export default async function RootLayout({ params, children }: Props) {
           <NextIntlClientProvider locale={locale} messages={messages}>
             <NuqsAdapter>
               <Providers>
-                {user ? <QuoteNinjaCustomerSyncLoader customer={v2CustomerRecord} /> : null}
+                <QuoteNinjaCustomerSyncLoader customer={v2CustomerRecord} />
                 {toastNotificationCookieData && (
                   <CookieNotifications {...toastNotificationCookieData} />
                 )}

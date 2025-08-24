@@ -2,7 +2,6 @@
 import { useEffect, useState } from 'react';
 
 import type { ComponentProps } from 'react';
-import type { QuoteNinjaCustomerSync as QuoteNinjaCustomerSyncType } from '~/components/QuoteNinjaCustomerSync';
 import { QuoteNinjaCustomerSync } from '~/components/QuoteNinjaCustomerSync';
 
 type Props = {
