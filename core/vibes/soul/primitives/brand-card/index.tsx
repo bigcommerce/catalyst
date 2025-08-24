@@ -13,12 +13,16 @@ interface BrandProps {
 export function BrandCard({ imageUrl, title, productCount, href }: BrandProps): JSX.Element {
   return (
     <div className="flex w-full flex-col items-center">
-      <Link href={href} className="w-full">
+      <Link href={href} className="w-full no-underline hover:no-underline focus:no-underline">
         <div className="flex h-40 w-full items-center justify-center rounded-lg bg-white shadow-md">
           {imageUrl ? (
-            <img alt={`${title} brand image`} className="h-40 w-40 object-contain" src={imageUrl} />
+            <img
+              alt={`${title} brand image`}
+              className="h-full w-full object-contain"
+              src={imageUrl}
+            />
           ) : (
-            <div className="h-40 w-40 rounded bg-blue-900" />
+            <div className="h-full w-full rounded bg-blue-900" />
           )}
         </div>
         <h3 className="mt-4 text-left text-base font-semibold text-gray-900">{title}</h3>
