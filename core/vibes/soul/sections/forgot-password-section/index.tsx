@@ -11,7 +11,7 @@ interface Props {
 
 export function ForgotPasswordSection({
   title = 'Forgot your password?',
-  subtitle = 'Enter the email associated with your account below. We'll send you instructions to reset your password.',
+  subtitle = 'Enter the email associated with your account below. We\'ll send you instructions to reset your password.',
   emailLabel,
   submitLabel,
   action,
