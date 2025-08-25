@@ -26,6 +26,9 @@ import { resetPassword } from './_actions/reset-password';
 
 interface Props {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{
+    email?: string;
+  }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -40,6 +43,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function Reset(props: Props) {
   const { locale } = await props.params;
+  const { email: defaultEmail } = await props.searchParams;
 
   setRequestLocale(locale);
 
@@ -53,6 +57,11 @@ export default async function Reset(props: Props) {
   // const recaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
 
   return (
-    <ForgotPasswordSection action={resetPassword} subtitle={t('subtitle')} title={t('title')} />
+    <ForgotPasswordSection 
+      action={resetPassword} 
+      subtitle={t('subtitle')} 
+      title={t('title')} 
+      defaultEmail={defaultEmail}
+    />
   );
 }

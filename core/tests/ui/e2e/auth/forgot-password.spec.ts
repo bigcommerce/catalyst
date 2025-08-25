@@ -29,3 +29,24 @@ test('Forgot password form displays error if email is not valid', async ({ page 
   // TODO: Forgot password form error message needs to be translated
   await expect(page.getByText('Please enter a valid email.')).toBeVisible();
 });
+
+test('Forgot password form pre-fills email from URL query parameter', async ({ page }) => {
+  const t = await getTranslations('Auth.Login.ForgotPassword');
+  const testEmail = 'prefilled@example.com';
+
+  await page.goto(`/login/forgot-password?email=${encodeURIComponent(testEmail)}`);
+  await page.getByRole('heading', { name: t('title') }).waitFor();
+
+  // Check that the email field is pre-filled with the query parameter value
+  await expect(page.getByLabel('Email')).toHaveValue(testEmail);
+});
+
+test('Forgot password form works with empty email query parameter', async ({ page }) => {
+  const t = await getTranslations('Auth.Login.ForgotPassword');
+
+  await page.goto('/login/forgot-password?email=');
+  await page.getByRole('heading', { name: t('title') }).waitFor();
+
+  // Check that the email field is empty when query parameter is empty
+  await expect(page.getByLabel('Email')).toHaveValue('');
+});

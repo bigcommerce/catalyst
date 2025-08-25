@@ -6,6 +6,7 @@ interface Props {
   action: ForgotPasswordAction;
   emailLabel?: string;
   submitLabel?: string;
+  defaultEmail?: string;
 }
 
 export function ForgotPasswordSection({
@@ -14,6 +15,7 @@ export function ForgotPasswordSection({
   emailLabel,
   submitLabel,
   action,
+  defaultEmail,
 }: Props) {
   return (
     <div className="@container">
@@ -21,7 +23,12 @@ export function ForgotPasswordSection({
         <div className="flex w-full flex-col @xl:max-w-md @xl:pr-10 @4xl:pr-20">
           <h1 className="mb-5 text-4xl font-medium leading-none @xl:text-5xl">{title}</h1>
           <p className="mb-10 text-base font-light leading-none @xl:text-lg">{subtitle}</p>
-          <ForgotPasswordForm action={action} emailLabel={emailLabel} submitLabel={submitLabel} />
+          <ForgotPasswordForm 
+            action={action} 
+            emailLabel={emailLabel} 
+            submitLabel={submitLabel} 
+            defaultEmail={defaultEmail}
+          />
         </div>
       </div>
     </div>
