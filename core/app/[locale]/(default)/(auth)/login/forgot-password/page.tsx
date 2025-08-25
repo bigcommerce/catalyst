@@ -57,10 +57,10 @@ export default async function Reset(props: Props) {
   // const recaptchaSettings = await bypassReCaptcha(data.site.settings?.reCaptcha);
 
   return (
-    <ForgotPasswordSection 
-      action={resetPassword} 
-      subtitle={t('subtitle')} 
-      title={t('title')} 
+    <ForgotPasswordSection
+      action={resetPassword}
+      subtitle={t('subtitle')}
+      title={t('title')}
       defaultEmail={defaultEmail}
     />
   );
