@@ -18,7 +18,12 @@ export const build = new Command('build')
     '[next-build-options...]',
     'Next.js `build` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-build-options)',
   )
-  .option('--project-uuid <uuid>', 'Project UUID to be included in the deployment configuration.')
+  .addOption(
+    new Option(
+      '--project-uuid <uuid>',
+      'Project UUID to be included in the deployment configuration.',
+    ).env('BIGCOMMERCE_PROJECT_UUID'),
+  )
   .addOption(
     new Option('--framework <framework>', 'The framework to use for the build.').choices([
       'nextjs',
