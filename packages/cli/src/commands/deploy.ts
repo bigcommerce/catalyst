@@ -63,6 +63,7 @@ const DeploymentStatusSchema = z.object({
 export const generateBundleZip = async () => {
   consola.info('Generating bundle...');
 
+  const bigcommerceDir = join(process.cwd(), '.bigcommerce');
   const distDir = join(process.cwd(), '.bigcommerce', 'dist');
 
   // Check if .bigcommerce/dist exists
@@ -79,7 +80,7 @@ export const generateBundleZip = async () => {
     throw new Error(`Dist directory is empty: ${distDir}`);
   }
 
-  const outputZip = join(distDir, 'bundle.zip');
+  const outputZip = join(bigcommerceDir, 'bundle.zip');
 
   // Use AdmZip to create the zip
   const zip = new AdmZip();
@@ -125,7 +126,7 @@ export const generateUploadSignature = async (
 export const uploadBundleZip = async (uploadUrl: string) => {
   consola.info('Uploading bundle...');
 
-  const zipPath = join(process.cwd(), '.bigcommerce', 'dist', 'bundle.zip');
+  const zipPath = join(process.cwd(), '.bigcommerce', 'bundle.zip');
 
   // Read the zip file as a buffer
   const fileBuffer = await readFile(zipPath);
