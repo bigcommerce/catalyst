@@ -22,16 +22,19 @@ interface Props {
   action: ForgotPasswordAction;
   emailLabel?: string;
   submitLabel?: string;
+  defaultEmail?: string;
 }
 
 export function ForgotPasswordForm({
   action,
   emailLabel = 'Email',
   submitLabel = 'Reset password',
+  defaultEmail,
 }: Props) {
   const [{ lastResult, successMessage }, formAction] = useActionState(action, { lastResult: null });
   const [form, fields] = useForm({
     lastResult,
+    defaultValue: { email: defaultEmail || '' },
     constraint: getZodConstraint(schema),
     shouldValidate: 'onBlur',
     shouldRevalidate: 'onInput',
