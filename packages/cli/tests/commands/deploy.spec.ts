@@ -22,7 +22,7 @@ import {
   generateBundleZip,
   generateUploadSignature,
   getDeploymentStatus,
-  getEnvironmentVariables,
+  parseEnvironmentVariables,
   uploadBundleZip,
 } from '../../src/commands/deploy';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
@@ -304,17 +304,14 @@ test('--dry-run skips upload and deployment', async () => {
 });
 
 test('reads from env options', () => {
-  process.env.BIGCOMMERCE_STORE_HASH = storeHash;
-  process.env.BIGCOMMERCE_STOREFRONT_TOKEN = accessToken;
-
-  const envVariables = getEnvironmentVariables(
-    'BIGCOMMERCE_THEME_ID=123,BIGCOMMERCE_STOREFRONT_TOKEN=456',
+  const envVariables = parseEnvironmentVariables(
+    'BIGCOMMERCE_STORE_HASH=123,BIGCOMMERCE_STOREFRONT_TOKEN=456',
   );
 
   expect(envVariables).toEqual([
     {
       type: 'secret',
-      key: 'BIGCOMMERCE_THEME_ID',
+      key: 'BIGCOMMERCE_STORE_HASH',
       value: '123',
     },
     {
@@ -322,14 +319,9 @@ test('reads from env options', () => {
       key: 'BIGCOMMERCE_STOREFRONT_TOKEN',
       value: '456',
     },
-    {
-      type: 'secret',
-      key: 'BIGCOMMERCE_STORE_HASH',
-      value: storeHash,
-    },
   ]);
 
-  expect(() => getEnvironmentVariables('foo_bar')).toThrow(
+  expect(() => parseEnvironmentVariables('foo_bar')).toThrow(
     'Failed to parse environment variables: Invalid environment variable format: foo_bar. Expected format: KEY=VALUE',
   );
 });
