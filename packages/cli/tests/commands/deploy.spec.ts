@@ -93,7 +93,7 @@ test('properly configured Command instance', () => {
       expect.objectContaining({ flags: '--access-token <token>' }),
       expect.objectContaining({ flags: '--api-host <host>', defaultValue: 'api.bigcommerce.com' }),
       expect.objectContaining({ flags: '--project-uuid <uuid>' }),
-      expect.objectContaining({ flags: '--secret <secrets>' }),
+      expect.objectContaining({ flags: '--secret <secrets...>' }),
       expect.objectContaining({ flags: '--dry-run' }),
     ]),
   );
@@ -304,9 +304,10 @@ test('--dry-run skips upload and deployment', async () => {
 });
 
 test('reads from env options', () => {
-  const envVariables = parseEnvironmentVariables(
-    'BIGCOMMERCE_STORE_HASH=123,BIGCOMMERCE_STOREFRONT_TOKEN=456',
-  );
+  const envVariables = parseEnvironmentVariables([
+    'BIGCOMMERCE_STORE_HASH=123',
+    'BIGCOMMERCE_STOREFRONT_TOKEN=456',
+  ]);
 
   expect(envVariables).toEqual([
     {
@@ -321,7 +322,7 @@ test('reads from env options', () => {
     },
   ]);
 
-  expect(() => parseEnvironmentVariables('foo_bar')).toThrow(
+  expect(() => parseEnvironmentVariables(['foo_bar'])).toThrow(
     'Invalid secret format: foo_bar. Expected format: KEY=VALUE',
   );
 });

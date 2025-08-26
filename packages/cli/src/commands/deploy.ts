@@ -148,8 +148,8 @@ export const uploadBundleZip = async (uploadUrl: string) => {
   return true;
 };
 
-export const parseEnvironmentVariables = (secretOption?: string) => {
-  return secretOption?.split(',').map((envVar) => {
+export const parseEnvironmentVariables = (secretOption?: string[]) => {
+  return secretOption?.map((envVar) => {
     const [key, value] = envVar.split('=');
 
     if (!key || !value) {
@@ -308,7 +308,7 @@ export const deploy = new Command('deploy')
   )
   .addOption(
     new Option(
-      '--secret <secrets>',
+      '--secret <secrets...>',
       'Secrets to set for the deployment. Format: SECRET_1=FOO,SECRET_2=BAR',
     ),
   )
