@@ -93,7 +93,7 @@ test('properly configured Command instance', () => {
       expect.objectContaining({ flags: '--access-token <token>' }),
       expect.objectContaining({ flags: '--api-host <host>', defaultValue: 'api.bigcommerce.com' }),
       expect.objectContaining({ flags: '--project-uuid <uuid>' }),
-      expect.objectContaining({ flags: '--env <variables>' }),
+      expect.objectContaining({ flags: '--secret <secrets>' }),
       expect.objectContaining({ flags: '--dry-run' }),
     ]),
   );
@@ -322,6 +322,6 @@ test('reads from env options', () => {
   ]);
 
   expect(() => parseEnvironmentVariables('foo_bar')).toThrow(
-    'Invalid environment variable format: foo_bar. Expected format: KEY=VALUE',
+    'Invalid secret format: foo_bar. Expected format: KEY=VALUE',
   );
 });

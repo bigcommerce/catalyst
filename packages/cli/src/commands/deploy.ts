@@ -148,31 +148,20 @@ export const uploadBundleZip = async (uploadUrl: string) => {
   return true;
 };
 
-export const parseEnvironmentVariables = (envOption?: string) => {
-  // Parse environment variables if provided
-  let environmentVariables:
-    | Array<{ type: 'secret' | 'plain_text'; key: string; value: string }>
-    | undefined;
+export const parseEnvironmentVariables = (secretOption?: string) => {
+  return secretOption?.split(',').map((envVar) => {
+    const [key, value] = envVar.split('=');
 
-  if (envOption) {
-    environmentVariables = envOption.split(',').map((envVar) => {
-      const [key, value] = envVar.split('=');
+    if (!key || !value) {
+      throw new Error(`Invalid secret format: ${envVar}. Expected format: KEY=VALUE`);
+    }
 
-      if (!key || !value) {
-        throw new Error(
-          `Invalid environment variable format: ${envVar}. Expected format: KEY=VALUE`,
-        );
-      }
-
-      return {
-        type: 'secret' as const,
-        key: key.trim(),
-        value: value.trim(),
-      };
-    });
-  }
-
-  return environmentVariables;
+    return {
+      type: 'secret' as const,
+      key: key.trim(),
+      value: value.trim(),
+    };
+  });
 };
 
 export const createDeployment = async (
@@ -319,8 +308,8 @@ export const deploy = new Command('deploy')
   )
   .addOption(
     new Option(
-      '--env <variables>',
-      'Environment variables to set for the deployment. Format: ENV_VAR_1=FOO,ENV_VAR_2=BAR',
+      '--secret <secrets>',
+      'Secrets to set for the deployment. Format: SECRET_1=FOO,SECRET_2=BAR',
     ),
   )
   .option('--dry-run', 'Run the command to generate the bundle without uploading or deploying.')
@@ -359,7 +348,7 @@ export const deploy = new Command('deploy')
 
       await uploadBundleZip(uploadSignature.upload_url);
 
-      const environmentVariables = parseEnvironmentVariables(options.env);
+      const environmentVariables = parseEnvironmentVariables(options.secret);
 
       const { deployment_uuid: deploymentUuid } = await createDeployment(
         projectUuid,
