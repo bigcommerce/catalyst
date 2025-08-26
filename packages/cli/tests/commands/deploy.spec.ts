@@ -22,6 +22,7 @@ import {
   generateBundleZip,
   generateUploadSignature,
   getDeploymentStatus,
+  getEnvironmentVariables,
   uploadBundleZip,
 } from '../../src/commands/deploy';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
@@ -92,6 +93,7 @@ test('properly configured Command instance', () => {
       expect.objectContaining({ flags: '--access-token <token>' }),
       expect.objectContaining({ flags: '--api-host <host>', defaultValue: 'api.bigcommerce.com' }),
       expect.objectContaining({ flags: '--project-uuid <uuid>' }),
+      expect.objectContaining({ flags: '--env <variables>' }),
       expect.objectContaining({ flags: '--dry-run' }),
     ]),
   );
@@ -299,4 +301,35 @@ test('--dry-run skips upload and deployment', async () => {
   expect(consola.info).toHaveBeenCalledWith('- Upload bundle.zip');
   expect(consola.info).toHaveBeenCalledWith('- Create deployment');
   expect(exitMock).toHaveBeenCalledWith(0);
+});
+
+test('reads from env options', () => {
+  process.env.BIGCOMMERCE_STORE_HASH = storeHash;
+  process.env.BIGCOMMERCE_STOREFRONT_TOKEN = accessToken;
+
+  const envVariables = getEnvironmentVariables(
+    'BIGCOMMERCE_THEME_ID=123,BIGCOMMERCE_STOREFRONT_TOKEN=456',
+  );
+
+  expect(envVariables).toEqual([
+    {
+      type: 'secret',
+      key: 'BIGCOMMERCE_THEME_ID',
+      value: '123',
+    },
+    {
+      type: 'secret',
+      key: 'BIGCOMMERCE_STOREFRONT_TOKEN',
+      value: '456',
+    },
+    {
+      type: 'secret',
+      key: 'BIGCOMMERCE_STORE_HASH',
+      value: storeHash,
+    },
+  ]);
+
+  expect(() => getEnvironmentVariables('foo_bar')).toThrow(
+    'Failed to parse environment variables: Invalid environment variable format: foo_bar. Expected format: KEY=VALUE',
+  );
 });

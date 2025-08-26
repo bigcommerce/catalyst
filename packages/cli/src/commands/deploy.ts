@@ -148,12 +148,67 @@ export const uploadBundleZip = async (uploadUrl: string) => {
   return true;
 };
 
+export const getEnvironmentVariables = (envOption?: string) => {
+  // Parse environment variables if provided
+  let environmentVariables:
+    | Array<{ type: 'secret' | 'plain_text'; key: string; value: string }>
+    | undefined;
+
+  if (envOption) {
+    try {
+      environmentVariables = envOption.split(',').map((envVar) => {
+        const [key, value] = envVar.split('=');
+
+        if (!key || !value) {
+          throw new Error(
+            `Invalid environment variable format: ${envVar}. Expected format: KEY=VALUE`,
+          );
+        }
+
+        return {
+          type: 'secret' as const,
+          key: key.trim(),
+          value: value.trim(),
+        };
+      });
+    } catch (error) {
+      throw new Error(
+        `Failed to parse environment variables: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      );
+    }
+  }
+
+  // Add required environment variables if not already provided
+  const requiredEnvVars = [
+    { key: 'BIGCOMMERCE_STORE_HASH', value: process.env.BIGCOMMERCE_STORE_HASH },
+    { key: 'BIGCOMMERCE_STOREFRONT_TOKEN', value: process.env.BIGCOMMERCE_STOREFRONT_TOKEN },
+    { key: 'BIGCOMMERCE_CHANNEL_ID', value: process.env.BIGCOMMERCE_CHANNEL_ID },
+  ];
+
+  environmentVariables ??= [];
+
+  const existingKeys = new Set(environmentVariables.map((env) => env.key));
+
+  requiredEnvVars.forEach(({ key, value }) => {
+    if (!existingKeys.has(key) && value) {
+      environmentVariables.push({
+        type: 'secret' as const,
+        key,
+        value,
+      });
+    }
+  });
+
+  return environmentVariables;
+};
+
 export const createDeployment = async (
   projectUuid: string,
   uploadUuid: string,
   storeHash: string,
   accessToken: string,
   apiHost: string,
+  environmentVariables?: Array<{ type: 'secret' | 'plain_text'; key: string; value: string }>,
 ) => {
   consola.info('Creating deployment...');
 
@@ -169,6 +224,7 @@ export const createDeployment = async (
       body: JSON.stringify({
         project_uuid: projectUuid,
         upload_uuid: uploadUuid,
+        environment_variables: environmentVariables,
       }),
     },
   );
@@ -288,6 +344,12 @@ export const deploy = new Command('deploy')
       'BigCommerce intrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
     ).env('BIGCOMMERCE_PROJECT_UUID'),
   )
+  .addOption(
+    new Option(
+      '--env <variables>',
+      'Environment variables to set for the deployment. Format: ENV_VAR_1=FOO,ENV_VAR_2=BAR',
+    ),
+  )
   .option('--dry-run', 'Run the command to generate the bundle without uploading or deploying.')
 
   .action(async (options) => {
@@ -324,12 +386,15 @@ export const deploy = new Command('deploy')
 
       await uploadBundleZip(uploadSignature.upload_url);
 
+      const environmentVariables = getEnvironmentVariables(options.env);
+
       const { deployment_uuid: deploymentUuid } = await createDeployment(
         projectUuid,
         uploadSignature.upload_uuid,
         options.storeHash,
         options.accessToken,
         options.apiHost,
+        environmentVariables,
       );
 
       await getDeploymentStatus(
