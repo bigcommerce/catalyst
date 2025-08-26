@@ -148,12 +148,29 @@ export const uploadBundleZip = async (uploadUrl: string) => {
   return true;
 };
 
+export const parseEnvironmentVariables = (secretOption?: string[]) => {
+  return secretOption?.map((envVar) => {
+    const [key, value] = envVar.split('=');
+
+    if (!key || !value) {
+      throw new Error(`Invalid secret format: ${envVar}. Expected format: KEY=VALUE`);
+    }
+
+    return {
+      type: 'secret' as const,
+      key: key.trim(),
+      value: value.trim(),
+    };
+  });
+};
+
 export const createDeployment = async (
   projectUuid: string,
   uploadUuid: string,
   storeHash: string,
   accessToken: string,
   apiHost: string,
+  environmentVariables?: Array<{ type: 'secret' | 'plain_text'; key: string; value: string }>,
 ) => {
   consola.info('Creating deployment...');
 
@@ -169,6 +186,7 @@ export const createDeployment = async (
       body: JSON.stringify({
         project_uuid: projectUuid,
         upload_uuid: uploadUuid,
+        environment_variables: environmentVariables,
       }),
     },
   );
@@ -288,6 +306,12 @@ export const deploy = new Command('deploy')
       'BigCommerce intrastructure project UUID. Can be found via the BigCommerce API (GET /v3/infrastructure/projects).',
     ).env('BIGCOMMERCE_PROJECT_UUID'),
   )
+  .addOption(
+    new Option(
+      '--secret <secrets...>',
+      'Secrets to set for the deployment. Format: SECRET_1=FOO,SECRET_2=BAR',
+    ),
+  )
   .option('--dry-run', 'Run the command to generate the bundle without uploading or deploying.')
 
   .action(async (options) => {
@@ -324,12 +348,15 @@ export const deploy = new Command('deploy')
 
       await uploadBundleZip(uploadSignature.upload_url);
 
+      const environmentVariables = parseEnvironmentVariables(options.secret);
+
       const { deployment_uuid: deploymentUuid } = await createDeployment(
         projectUuid,
         uploadSignature.upload_uuid,
         options.storeHash,
         options.accessToken,
         options.apiHost,
+        environmentVariables,
       );
 
       await getDeploymentStatus(
