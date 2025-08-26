@@ -10,13 +10,18 @@
     "build:analyze": "ANALYZE=true npm run build",
     "start": "next start",
     "lint": "next lint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "preview": "opennextjs-cloudflare build && opennextjs-cloudflare preview",
+    "deploy": "opennextjs-cloudflare build && opennextjs-cloudflare deploy",
+    "upload": "opennextjs-cloudflare build && opennextjs-cloudflare upload",
+    "cf-typegen": "wrangler types --env-interface CloudflareEnv cloudflare-env.d.ts"
   },
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",
     "@conform-to/react": "^1.6.1",
     "@conform-to/zod": "^1.6.1",
     "@icons-pack/react-simple-icons": "^11.2.0",
+    "@opennextjs/cloudflare": "^1.6.5",
     "@radix-ui/react-accordion": "^1.2.11",
     "@radix-ui/react-checkbox": "^1.3.2",
     "@radix-ui/react-dialog": "^1.1.14",
@@ -97,6 +102,7 @@
     "prettier-plugin-tailwindcss": "^0.6.12",
     "tailwindcss": "^3.4.17",
     "tailwindcss-animate": "1.0.7",
-    "typescript": "^5.8.3"
+    "typescript": "^5.8.3",
+    "wrangler": "^4.33.0"
   }
 }
