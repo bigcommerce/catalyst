@@ -155,27 +155,21 @@ export const parseEnvironmentVariables = (envOption?: string) => {
     | undefined;
 
   if (envOption) {
-    try {
-      environmentVariables = envOption.split(',').map((envVar) => {
-        const [key, value] = envVar.split('=');
+    environmentVariables = envOption.split(',').map((envVar) => {
+      const [key, value] = envVar.split('=');
 
-        if (!key || !value) {
-          throw new Error(
-            `Invalid environment variable format: ${envVar}. Expected format: KEY=VALUE`,
-          );
-        }
+      if (!key || !value) {
+        throw new Error(
+          `Invalid environment variable format: ${envVar}. Expected format: KEY=VALUE`,
+        );
+      }
 
-        return {
-          type: 'secret' as const,
-          key: key.trim(),
-          value: value.trim(),
-        };
-      });
-    } catch (error) {
-      throw new Error(
-        `Failed to parse environment variables: ${error instanceof Error ? error.message : 'Unknown error'}`,
-      );
-    }
+      return {
+        type: 'secret' as const,
+        key: key.trim(),
+        value: value.trim(),
+      };
+    });
   }
 
   return environmentVariables;

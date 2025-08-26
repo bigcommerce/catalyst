@@ -322,6 +322,6 @@ test('reads from env options', () => {
   ]);
 
   expect(() => parseEnvironmentVariables('foo_bar')).toThrow(
-    'Failed to parse environment variables: Invalid environment variable format: foo_bar. Expected format: KEY=VALUE',
+    'Invalid environment variable format: foo_bar. Expected format: KEY=VALUE',
   );
 });
