@@ -12,6 +12,7 @@ import { productCardTransformer } from '~/data-transformers/product-card-transfo
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { ProductDetail } from '~/lib/makeswift/components/product-detail';
+import { Slot } from '~/lib/makeswift/slot';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
@@ -297,6 +298,10 @@ export default async function Product({ params, searchParams }: Props) {
 
   return (
     <>
+      <Slot
+        label={`${baseProduct.name} top content`}
+        snapshotId={`product-${productId}-top-content`}
+      />
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
         <ProductDetail
           action={addToCart}
@@ -370,6 +375,10 @@ export default async function Product({ params, searchParams }: Props) {
         productId={productId}
         productSku={streamableProductSku}
         searchParams={searchParams}
+      />
+      <Slot
+        label={`${baseProduct.name} bottom content`}
+        snapshotId={`product-${productId}-bottom-content`}
       />
     </>
   );
