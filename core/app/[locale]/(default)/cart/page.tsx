@@ -221,6 +221,7 @@ export default async function Cart({ params }: Props) {
           incrementLineItemLabel={t('increment')}
           key={`${cart.entityId}-${cart.version}`}
           lineItemAction={updateLineItem}
+          lineItemActionPendingLabel={t('cartUpdateInProgress')}
           shipping={{
             action: updateShippingInfo,
             countries,
