@@ -6,9 +6,7 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
-import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
-
-import { kv } from '../lib/kv';
+import { fetch as cachedFetch } from '~/lib/fetch';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
@@ -63,14 +61,83 @@ const GetRouteQuery = graphql(`
 `);
 
 const getRoute = async (path: string, channelId?: string) => {
-  const response = await client.fetch({
-    document: GetRouteQuery,
-    variables: { path },
-    fetchOptions: { next: { revalidate } },
-    channelId,
+  // Create a custom GraphQL request that can be cached by our fetch adapters
+  const graphqlUrl = `https://store-${process.env.BIGCOMMERCE_STORE_HASH}.mybigcommerce.com/graphql`;
+  
+  // Extract the query string from the GraphQL document
+  const query = `
+    query GetRouteQuery($path: String!) {
+      site {
+        route(path: $path, redirectBehavior: FOLLOW) {
+          redirect {
+            to {
+              __typename
+              ... on BlogPostRedirect {
+                path
+              }
+              ... on BrandRedirect {
+                path
+              }
+              ... on CategoryRedirect {
+                path
+              }
+              ... on PageRedirect {
+                path
+              }
+              ... on ProductRedirect {
+                path
+              }
+              ... on ManualRedirect {
+                url
+              }
+            }
+            fromPath
+            toUrl
+          }
+          node {
+            __typename
+            id
+            ... on Product {
+              entityId
+            }
+            ... on Category {
+              entityId
+            }
+            ... on Brand {
+              entityId
+            }
+            ... on BlogPost {
+              entityId
+            }
+          }
+        }
+      }
+    }
+  `;
+  
+  const response = await cachedFetch.fetch(graphqlUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.BIGCOMMERCE_STOREFRONT_TOKEN}`,
+    },
+    body: JSON.stringify({
+      query,
+      variables: { path },
+    }),
+    next: {
+      revalidate: revalidate,
+      tags: ['route'],
+      fetchCacheKeyPrefix: channelId ? `route-${channelId}` : 'route',
+    },
   });
 
-  return response.data.site.route;
+  if (!response.ok) {
+    throw new Error(`Failed to fetch route: ${response.status}`);
+  }
+
+  const result = await response.json();
+  return result.data.site.route;
 };
 
 const getRawWebPageContentQuery = graphql(`
@@ -110,37 +177,54 @@ const GetStoreStatusQuery = graphql(`
 `);
 
 const getStoreStatus = async (channelId?: string) => {
-  const { data } = await client.fetch({
-    document: GetStoreStatusQuery,
-    fetchOptions: { next: { revalidate: 300 } },
-    channelId,
+  // Create a custom GraphQL request that can be cached by our fetch adapters
+  const graphqlUrl = `https://store-${process.env.BIGCOMMERCE_STORE_HASH}.mybigcommerce.com/graphql`;
+  
+  // Extract the query string from the GraphQL document
+  const query = `
+    query getStoreStatus {
+      site {
+        settings {
+          status
+        }
+      }
+    }
+  `;
+  
+  const response = await cachedFetch.fetch(graphqlUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${process.env.BIGCOMMERCE_STOREFRONT_TOKEN}`,
+    },
+    body: JSON.stringify({
+      query,
+      variables: {},
+    }),
+    next: {
+      revalidate: 300, // 5 minutes
+      tags: ['store-status'],
+      fetchCacheKeyPrefix: channelId ? `status-${channelId}` : 'status',
+    },
   });
 
-  return data.site.settings?.status;
+  if (!response.ok) {
+    throw new Error(`Failed to fetch store status: ${response.status}`);
+  }
+
+  const result = await response.json();
+  return result.data.site.settings?.status;
 };
 
 type Route = Awaited<ReturnType<typeof getRoute>>;
 type StorefrontStatusType = ReturnType<typeof graphql.scalar<'StorefrontStatusType'>>;
 
-interface RouteCache {
-  route: Route;
-  expiryTime: number;
-}
-
-interface StorefrontStatusCache {
-  status: StorefrontStatusType;
-  expiryTime: number;
-}
-
-const StorefrontStatusCacheSchema = z.object({
-  status: z.union([
-    z.literal('HIBERNATION'),
-    z.literal('LAUNCHED'),
-    z.literal('MAINTENANCE'),
-    z.literal('PRE_LAUNCH'),
-  ]),
-  expiryTime: z.number(),
-});
+const StorefrontStatusSchema = z.union([
+  z.literal('HIBERNATION'),
+  z.literal('LAUNCHED'),
+  z.literal('MAINTENANCE'),
+  z.literal('PRE_LAUNCH'),
+]);
 
 const RedirectSchema = z.object({
   to: z.union([
@@ -171,46 +255,6 @@ const RouteSchema = z.object({
   node: z.nullable(NodeSchema),
 });
 
-const RouteCacheSchema = z.object({
-  route: z.nullable(RouteSchema),
-  expiryTime: z.number(),
-});
-
-const updateRouteCache = async (
-  pathname: string,
-  channelId: string,
-  event: NextFetchEvent,
-): Promise<RouteCache> => {
-  const routeCache: RouteCache = {
-    route: await getRoute(pathname, channelId),
-    expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
-  };
-
-  event.waitUntil(kv.set(kvKey(pathname, channelId), routeCache));
-
-  return routeCache;
-};
-
-const updateStatusCache = async (
-  channelId: string,
-  event: NextFetchEvent,
-): Promise<StorefrontStatusCache> => {
-  const status = await getStoreStatus(channelId);
-
-  if (status === undefined) {
-    throw new Error('Failed to fetch new storefront status');
-  }
-
-  const statusCache: StorefrontStatusCache = {
-    status,
-    expiryTime: Date.now() + 1000 * 60 * 5, // 5 minutes
-  };
-
-  event.waitUntil(kv.set(kvKey(STORE_STATUS_KEY, channelId), statusCache));
-
-  return statusCache;
-};
-
 const clearLocaleFromPath = (path: string, locale: string) => {
   if (path === `/${locale}` || path === `/${locale}/`) {
     return '/';
@@ -231,31 +275,19 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
     // For route resolution parity, we need to also include query params, otherwise certain redirects will not work.
     const pathname = clearLocaleFromPath(request.nextUrl.pathname + request.nextUrl.search, locale);
 
-    let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
-      kvKey(pathname, channelId),
-      kvKey(STORE_STATUS_KEY, channelId),
-    );
+    // Fetch route and status using our cached fetch adapters
+    // The caching is now handled by the fetch adapters automatically
+    const [route, status] = await Promise.all([
+      getRoute(pathname, channelId),
+      getStoreStatus(channelId),
+    ]);
 
-    // If caches are old, update them in the background and return the old data (SWR-like behavior)
-    // If cache is missing, update it and return the new data, but write to KV in the background
-    if (statusCache && statusCache.expiryTime < Date.now()) {
-      event.waitUntil(updateStatusCache(channelId, event));
-    } else if (!statusCache) {
-      statusCache = await updateStatusCache(channelId, event);
-    }
-
-    if (routeCache && routeCache.expiryTime < Date.now()) {
-      event.waitUntil(updateRouteCache(pathname, channelId, event));
-    } else if (!routeCache) {
-      routeCache = await updateRouteCache(pathname, channelId, event);
-    }
-
-    const parsedRoute = RouteCacheSchema.safeParse(routeCache);
-    const parsedStatus = StorefrontStatusCacheSchema.safeParse(statusCache);
+    const parsedRoute = RouteSchema.safeParse(route);
+    const parsedStatus = StorefrontStatusSchema.safeParse(status);
 
     return {
-      route: parsedRoute.success ? parsedRoute.data.route : undefined,
-      status: parsedStatus.success ? parsedStatus.data.status : undefined,
+      route: parsedRoute.success ? parsedRoute.data : undefined,
+      status: parsedStatus.success ? parsedStatus.data : undefined,
     };
   } catch (error) {
     // eslint-disable-next-line no-console
