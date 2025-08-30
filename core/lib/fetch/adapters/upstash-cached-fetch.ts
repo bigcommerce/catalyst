@@ -82,12 +82,15 @@ export class UpstashCachedFetchAdapter implements FetchAdapter {
     }
     
     try {
-      const body = await response.text();
+      // Clone the response to read the body without consuming the original
+      const responseClone = response.clone();
+      const body = await responseClone.text();
+      
       const cached: CachedResponse = {
         data: body,
         status: response.status,
         statusText: response.statusText,
-        headers: Object.fromEntries(response.headers.entries()),
+        headers: Object.fromEntries(Array.from(response.headers.entries())),
         timestamp: Date.now(),
       };
       
