@@ -28,6 +28,7 @@ interface Config<FetcherRequestInit extends RequestInit = RequestInit> {
     error: BigCommerceGQLError,
     queryType: 'query' | 'mutation' | 'subscription',
   ) => Promise<void> | void;
+  fetch?: (url: string | URL | Request, init?: FetcherRequestInit) => Promise<Response>;
 }
 
 interface BigCommerceResponseError {
@@ -57,6 +58,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     error: BigCommerceGQLError,
     queryType: 'query' | 'mutation' | 'subscription',
   ) => Promise<void> | void;
+  private customFetch?: (url: string | URL | Request, init?: FetcherRequestInit) => Promise<Response>;
 
   private trustedProxySecret = process.env.BIGCOMMERCE_TRUSTED_PROXY_SECRET;
 
@@ -76,6 +78,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     this.beforeRequest = config.beforeRequest;
     this.onError = config.onError;
+    this.customFetch = config.fetch;
   }
 
   // Overload for documents that require variables
@@ -130,7 +133,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
       (await this.beforeRequest?.(fetchOptions)) ?? {};
 
-    const response = await fetch(graphqlUrl, {
+    const response = await (this.customFetch ?? fetch)(graphqlUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -193,7 +196,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   async fetchSitemapIndex(channelId?: string): Promise<string> {
     const sitemapIndexUrl = `${await this.getCanonicalUrl(channelId)}/xmlsitemap.php`;
 
-    const response = await fetch(sitemapIndexUrl, {
+    const response = await (this.customFetch ?? fetch)(sitemapIndexUrl, {
       method: 'GET',
       headers: {
         Accept: 'application/xml',

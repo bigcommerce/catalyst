@@ -6,7 +6,7 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
-import { fetch as cachedFetch } from '~/lib/fetch';
+import { createMiddlewareClient } from '~/lib/middleware-client';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
@@ -61,83 +61,21 @@ const GetRouteQuery = graphql(`
 `);
 
 const getRoute = async (path: string, channelId?: string) => {
-  // Create a custom GraphQL request that can be cached by our fetch adapters
-  const graphqlUrl = `https://store-${process.env.BIGCOMMERCE_STORE_HASH}.mybigcommerce.com/graphql`;
+  const middlewareClient = createMiddlewareClient();
   
-  // Extract the query string from the GraphQL document
-  const query = `
-    query GetRouteQuery($path: String!) {
-      site {
-        route(path: $path, redirectBehavior: FOLLOW) {
-          redirect {
-            to {
-              __typename
-              ... on BlogPostRedirect {
-                path
-              }
-              ... on BrandRedirect {
-                path
-              }
-              ... on CategoryRedirect {
-                path
-              }
-              ... on PageRedirect {
-                path
-              }
-              ... on ProductRedirect {
-                path
-              }
-              ... on ManualRedirect {
-                url
-              }
-            }
-            fromPath
-            toUrl
-          }
-          node {
-            __typename
-            id
-            ... on Product {
-              entityId
-            }
-            ... on Category {
-              entityId
-            }
-            ... on Brand {
-              entityId
-            }
-            ... on BlogPost {
-              entityId
-            }
-          }
-        }
-      }
-    }
-  `;
-  
-  const response = await cachedFetch.fetch(graphqlUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.BIGCOMMERCE_STOREFRONT_TOKEN}`,
-    },
-    body: JSON.stringify({
-      query,
-      variables: { path },
-    }),
-    next: {
-      revalidate: revalidate,
-      tags: ['route'],
-      fetchCacheKeyPrefix: channelId ? `route-${channelId}` : 'route',
+  const response = await middlewareClient.fetch({
+    document: GetRouteQuery,
+    variables: { path },
+    channelId,
+    fetchOptions: {
+      next: {
+        revalidate: revalidate,
+        tags: ['route'],
+      },
     },
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch route: ${response.status}`);
-  }
-
-  const result = await response.json();
-  return result.data.site.route;
+  return response.data.site.route;
 };
 
 const getRawWebPageContentQuery = graphql(`
@@ -177,43 +115,20 @@ const GetStoreStatusQuery = graphql(`
 `);
 
 const getStoreStatus = async (channelId?: string) => {
-  // Create a custom GraphQL request that can be cached by our fetch adapters
-  const graphqlUrl = `https://store-${process.env.BIGCOMMERCE_STORE_HASH}.mybigcommerce.com/graphql`;
+  const middlewareClient = createMiddlewareClient();
   
-  // Extract the query string from the GraphQL document
-  const query = `
-    query getStoreStatus {
-      site {
-        settings {
-          status
-        }
-      }
-    }
-  `;
-  
-  const response = await cachedFetch.fetch(graphqlUrl, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${process.env.BIGCOMMERCE_STOREFRONT_TOKEN}`,
-    },
-    body: JSON.stringify({
-      query,
-      variables: {},
-    }),
-    next: {
-      revalidate: 300, // 5 minutes
-      tags: ['store-status'],
-      fetchCacheKeyPrefix: channelId ? `status-${channelId}` : 'status',
+  const response = await middlewareClient.fetch({
+    document: GetStoreStatusQuery,
+    channelId,
+    fetchOptions: {
+      next: {
+        revalidate: 300, // 5 minutes
+        tags: ['store-status'],
+      },
     },
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to fetch store status: ${response.status}`);
-  }
-
-  const result = await response.json();
-  return result.data.site.settings?.status;
+  return response.data.site.settings?.status;
 };
 
 type Route = Awaited<ReturnType<typeof getRoute>>;
