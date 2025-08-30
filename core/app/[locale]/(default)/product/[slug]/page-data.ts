@@ -11,6 +11,7 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
 import { ProductViewedFragment } from './_components/product-viewed/fragment';
+import axios from 'axios';
 
 const MultipleChoiceFieldFragment = graphql(`
   fragment MultipleChoiceFieldFragment on MultipleChoiceOption {
@@ -284,5 +285,34 @@ export const getProductData = cache(async (variables: Variables) => {
     return notFound();
   }
 
-  return product;
+  const productRest = await getProductDataRest(product.sku);
+
+  return {
+    ...product,
+    inventory_tracking: productRest ? (productRest.inventory_tracking as string) : null,
+  };
 });
+
+export const getProductDataRest = async (sku: string) => {
+  try {
+    const response = await axios.get(
+      `https://api.bigcommerce.com/stores/${process.env.BIGCOMMERCE_STORE_HASH}/v3/catalog/products?sku=${encodeURIComponent(sku)}`,
+      {
+        headers: {
+          'X-Auth-Token': process.env.BIGCOMMERCE_API_ACCESS_TOKEN,
+        },
+      },
+    );
+
+    const product = response.data.data[0];
+
+    if (!product) {
+      return null;
+    }
+
+    return product;
+  } catch (error) {
+    console.error('Error fetching product data from BigCommerce API:', error);
+    return null;
+  }
+};

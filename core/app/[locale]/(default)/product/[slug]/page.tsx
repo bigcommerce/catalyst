@@ -127,6 +127,7 @@ const getProduct = async (props: Props) => {
     subtitle: product.brand?.name,
     rating: product.reviewSummary.averageRating,
     accordions,
+    inventory_tracking: product.inventory_tracking,
   };
 };
 
@@ -261,6 +262,9 @@ export default async function Product(props: Props) {
         productId={productId}
         quantityLabel={t('ProductDetails.quantity')}
         thumbnailLabel={t('ProductDetails.thumbnail')}
+        inventoryTracking={Streamable.from(() =>
+          getProduct(props).then((p) => p.inventory_tracking),
+        )}
       />
 
       <FeaturedProductCarousel

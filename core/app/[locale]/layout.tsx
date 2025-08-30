@@ -107,7 +107,6 @@ export default async function RootLayout({ params, children }: Props) {
 
   if (user?.email) {
     v2CustomerRecord = await getCustomerV2RecordByEmail(user.email);
-    console.log('v2 customer record', v2CustomerRecord);
   }
 
   return (

@@ -2,8 +2,9 @@ import { Component } from '~/lib/makeswift/component';
 
 import { type Props as ClientProps, PropsContextProvider } from './client';
 import { COMPONENT_TYPE } from './register';
+import { type Streamable } from '@/vibes/soul/lib/streamable';
 
-type Props = ClientProps & { productId: number };
+type Props = ClientProps & { productId: number; inventoryTracking: Streamable<string | null> };
 
 export const ProductDetail = ({ productId, ...props }: Props) => (
   <PropsContextProvider value={props}>

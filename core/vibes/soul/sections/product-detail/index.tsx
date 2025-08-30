@@ -41,6 +41,7 @@ interface Props<F extends Field> {
   prefetch?: boolean;
   thumbnailLabel?: string;
   additionaInformationTitle?: string;
+  inventoryTracking: Streamable<string | null>;
 }
 
 export function ProductDetail<F extends Field>({
@@ -56,6 +57,7 @@ export function ProductDetail<F extends Field>({
   prefetch,
   thumbnailLabel,
   additionaInformationTitle = 'Additional information',
+  inventoryTracking,
 }: Props<F>) {
   return (
     <section className="@container">
@@ -87,6 +89,17 @@ export function ProductDetail<F extends Field>({
                     {(price) => (
                       <PriceLabel className="my-3 text-xl @xl:text-2xl" price={price ?? ''} />
                     )}
+                  </Stream>
+                  <Stream fallback={<InventoryTrackingSkeleton />} value={inventoryTracking}>
+                    {(tracking) =>
+                      tracking !== undefined &&
+                      tracking !== '' &&
+                      tracking === 'none' && (
+                        <p className="border-l pl-2 text-lg italic text-black underline">
+                          This product will ship in 7-10 days
+                        </p>
+                      )
+                    }
                   </Stream>
                   <div className="mb-8 @2xl:hidden">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
@@ -199,6 +212,10 @@ function ProductGallerySkeleton() {
 }
 
 function PriceLabelSkeleton() {
+  return <div className="my-4 h-4 w-20 animate-pulse rounded-md bg-contrast-100" />;
+}
+
+function InventoryTrackingSkeleton() {
   return <div className="my-4 h-4 w-20 animate-pulse rounded-md bg-contrast-100" />;
 }
 
