@@ -54,3 +54,6 @@ build-config.json
 # OpenNext
 .open-next
 .wrangler
+
+# sst
+.sst
