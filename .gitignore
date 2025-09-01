@@ -21,3 +21,4 @@ coverage/
 .history
 .unlighthouse
 .bigcommerce
+.vercel

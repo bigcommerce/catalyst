@@ -29,3 +29,4 @@ publicHoistPattern:
   - '@typescript-eslint/*'
   - eslint-config-*
   - eslint-plugin-*
+  
