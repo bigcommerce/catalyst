@@ -1,5 +1,5 @@
 import packageInfo from './package.json';
-const commitSha = process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA;
+const commitSha = process.env.NEXT_PUBLIC__GIT_COMMIT_SHA;
 
 const { name, version } = packageInfo;
 

@@ -8,10 +8,10 @@ import 'server-only';
  * Returns the reCaptcha settings if the test is not running.
  */
 export const bypassReCaptcha = async <T>(reCaptchaSettings: T) => {
-  const vercelBypassKey = (await headers()).get('X-Vercel-Protection-Bypass');
-  const vercelSetBypassCookie = (await headers()).get('X-Vercel-Set-Bypass-Cookie');
+  const BypassKey = (await headers()).get('X--Protection-Bypass');
+  const SetBypassCookie = (await headers()).get('X--Set-Bypass-Cookie');
 
-  const shouldBypassreCaptcha = vercelBypassKey && vercelSetBypassCookie === 'true';
+  const shouldBypassreCaptcha = BypassKey && SetBypassCookie === 'true';
 
   if (shouldBypassreCaptcha) {
     return;

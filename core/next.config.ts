@@ -43,8 +43,9 @@ async function writeSettingsToBuildConfig() {
   ).filter((url): url is string => !!url);
 
   if (!cdnUrls.length) {
+    const newLocal = 'No CDN URLs found. Please ensure that NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME is set correctly.';
     throw new Error(
-      'No CDN URLs found. Please ensure that NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME is set correctly.',
+      newLocal,
     );
   }
 

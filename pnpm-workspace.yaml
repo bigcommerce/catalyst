@@ -12,8 +12,20 @@ publicHoistPattern:
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@swc/core'
+  - '@tailwindcss/oxide'
   - '@vercel/speed-insights'
   - esbuild
   - msw
   - puppeteer
   - sharp
+  - vue-demi
+  - workerd
+
+publicHoistPattern:
+  - '@bigcommerce/eslint-*'
+  - '@bigcommerce/eslint-*'
+  - '@next/eslint-*'
+  - '@stylistic/eslint-*'
+  - '@typescript-eslint/*'
+  - eslint-config-*
+  - eslint-plugin-*
