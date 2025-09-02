@@ -333,7 +333,7 @@ export function CartClient<LineItem extends CartLineItem>({
                 <div className="flex justify-between py-4" key={index}>
                   <dt>{summaryItem.label}</dt>
                   {isLineItemActionPending ? (
-                    <Skeleton.Text characterCount={8} className="rounded-md" />
+                    <Skeleton.Text characterCount={8} className="animate-pulse rounded-md" />
                   ) : (
                     <dd>{summaryItem.value}</dd>
                   )}
@@ -356,7 +356,7 @@ export function CartClient<LineItem extends CartLineItem>({
             <div className="flex justify-between border-t border-[var(--cart-border,hsl(var(--contrast-100)))] py-6 text-xl font-bold">
               <dt>{cart.totalLabel ?? 'Total'}</dt>
               {isLineItemActionPending ? (
-                <Skeleton.Text characterCount={8} className="rounded-md" />
+                <Skeleton.Text characterCount={8} className="animate-pulse rounded-md" />
               ) : (
                 <dd>{cart.total}</dd>
               )}
