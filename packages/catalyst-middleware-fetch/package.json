@@ -1,0 +1,37 @@
+{
+  "name": "@bigcommerce/catalyst-middleware-fetch",
+  "description": "BigCommerce Fetch middleware for Catalyst that enables caching of API responses in Next.js middleware across several hosting providers.",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint . --ext .ts,.js,.cjs --max-warnings 0",
+    "lint-fix": "eslint . --ext .ts,.js,.cjs --fix"
+  },
+  "files": [
+    "dist"
+  ],
+  "dependencies": {
+    "cached-middleware-fetch-next": "^0.7.0"
+  },
+  "devDependencies": {
+    "@bigcommerce/eslint-config": "^2.11.0",
+    "@bigcommerce/eslint-config-catalyst": "workspace:^",
+    "@types/node": "^22.15.30",
+    "dotenv-cli": "^8.0.0",
+    "eslint": "^8.57.1",
+    "prettier": "^3.6.2",
+    "tsup": "^8.5.0",
+    "typescript": "^5.8.3"
+  }
+}
