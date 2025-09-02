@@ -22,7 +22,9 @@
     "dist"
   ],
   "dependencies": {
-    "cached-middleware-fetch-next": "^0.7.0"
+    "cached-middleware-fetch-next": "^0.7.0",
+    "lru-cache": "^11.0.2",
+    "@vercel/functions": "^2.2.12"
   },
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",

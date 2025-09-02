@@ -28,7 +28,7 @@ export interface CacheEntry {
 // Module will be imported dynamically, no need for module augmentation here
 
 /**
- * Ensure Node.js process is available
+ * Ensure Node.js process is available and waitUntil for background tasks
  */
 declare global {
   namespace NodeJS {
@@ -37,6 +37,11 @@ declare global {
       NODE_ENV?: string;
     }
   }
+
+  /**
+   * waitUntil function from Vercel Functions for background task processing
+   */
+  function waitUntil(promise: Promise<unknown>): void;
 }
 
 export {};

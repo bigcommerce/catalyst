@@ -2,9 +2,10 @@
  * Catalyst Middleware Fetch
  *
  * A router that selects the appropriate fetch implementation based on the hosting environment.
- * Supports Vercel with cached-middleware-fetch-next and falls back to standard fetch.
+ * Supports Vercel with cached-middleware-fetch-next and falls back to memory-cached fetch.
  */
 
+import { cachedFetch as memoryCachedFetch } from './memory-cached-fetch';
 import { type CachedFetchOptions } from './types';
 
 /**
@@ -91,17 +92,33 @@ export const getFetchImplementation = async (): Promise<FetchImplementation> => 
         name: 'cached-middleware-fetch-next',
       };
     } catch {
-      // Fallback to standard fetch if cached-middleware-fetch-next fails to load
+      // Fallback to memory cached fetch if cached-middleware-fetch-next fails to load
+      const wrappedMemoryFetch: FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => {
+        const cachedInit: CachedFetchOptions | undefined = init ? {
+          ...init,
+          cache: mapCacheValue(init.cache),
+        } : undefined;
+        return memoryCachedFetch(input, cachedInit);
+      };
+      
       fetchImpl = {
-        fetch,
-        name: 'standard-fetch-fallback',
+        fetch: wrappedMemoryFetch,
+        name: 'memory-cached-fetch-fallback',
       };
     }
   } else {
-    // Use standard fetch for non-Vercel environments
+    // Use memory cached fetch for non-Vercel environments
+    const wrappedMemoryFetch: FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => {
+      const cachedInit: CachedFetchOptions | undefined = init ? {
+        ...init,
+        cache: mapCacheValue(init.cache),
+      } : undefined;
+      return memoryCachedFetch(input, cachedInit);
+    };
+    
     fetchImpl = {
-      fetch,
-      name: 'standard-fetch',
+      fetch: wrappedMemoryFetch,
+      name: 'memory-cached-fetch',
     };
   }
 
@@ -168,3 +185,7 @@ export const resetCache = (): void => {
   cachedFetchImplementation = null;
   defaultFetch = null;
 };
+
+// Re-export memory cached fetch utilities
+export { memoryCachedFetch, MemoryCachedFetch } from './memory-cached-fetch';
+export type { CachedFetchOptions } from './types';
