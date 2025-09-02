@@ -12,7 +12,7 @@
     "lint": "next lint",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
+  "dependencies": { 
     "@bigcommerce/catalyst-client": "workspace:^",
     "@conform-to/react": "^1.6.1",
     "@conform-to/zod": "^1.6.1",

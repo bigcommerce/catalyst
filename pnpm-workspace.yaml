@@ -1,14 +1,15 @@
-packages:
+﻿packages:
   - core
   - packages/*
+
 publicHoistPattern:
-  - '@bigcommerce/eslint-*'
   - '@bigcommerce/eslint-*'
   - '@next/eslint-*'
   - '@stylistic/eslint-*'
   - '@typescript-eslint/*'
   - 'eslint-config-*'
   - 'eslint-plugin-*'
+
 onlyBuiltDependencies:
   - '@parcel/watcher'
   - '@swc/core'
@@ -20,13 +21,3 @@ onlyBuiltDependencies:
   - sharp
   - vue-demi
   - workerd
-
-publicHoistPattern:
-  - '@bigcommerce/eslint-*'
-  - '@bigcommerce/eslint-*'
-  - '@next/eslint-*'
-  - '@stylistic/eslint-*'
-  - '@typescript-eslint/*'
-  - eslint-config-*
-  - eslint-plugin-*
-  
