@@ -28,6 +28,10 @@
     "prettier-plugin-tailwindcss": "^0.6.12",
     "turbo": "^2.5.4",
     "typescript": "^5.8.3",
-    "unlighthouse": "^0.16.3"
+    "unlighthouse": "^0.17.2"
+  },
+  "dependencies": {
+    "@makeswift/runtime": "^0.25.1",
+    "quick-lru": "^7.1.0"
   }
 }

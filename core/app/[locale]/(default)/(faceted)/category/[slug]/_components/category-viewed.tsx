@@ -31,7 +31,7 @@ export const CategoryViewed = ({ category, products }: Props) => {
     analytics?.navigation.categoryViewed({
       id: category.entityId,
       name: category.name,
-      currency: products[0]?.prices?.price.currencyCode || 'USD',
+      currency: products[0]?.prices?.price.currencyCode || 'MXN',
       items: products.map((p) => {
         return {
           id: p.entityId.toString(),
