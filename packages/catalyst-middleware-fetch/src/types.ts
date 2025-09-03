@@ -2,13 +2,10 @@
  * Type definitions for external modules and globals
  */
 
-export interface CachedFetchOptions extends Omit<RequestInit, 'cache'> {
-  cache?: 'auto no cache' | 'no-store' | 'force-cache';
+export interface CachedFetchOptions extends RequestInit {
   next?: {
-    revalidate?: false | number;
-    expires?: number;
+    revalidate?: false | 0 | number;
     tags?: string[];
-    fetchCacheKeyPrefix?: string;
   };
 }
 

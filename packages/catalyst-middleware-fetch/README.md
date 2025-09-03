@@ -128,26 +128,47 @@ const response = await fetch.fetch('https://api.example.com/data', {
 
 ### Cache Control
 
+The library supports standard Next.js cache directives:
+
 ```typescript
-// Force cache (serve stale if available)
+// Default caching behavior
+await cachedFetch(url, { cache: 'default' });
+
+// Force cache (serve stale if available, even if expired)
 await cachedFetch(url, { cache: 'force-cache' });
 
 // No store (bypass cache completely)
 await cachedFetch(url, { cache: 'no-store' });
 
-// Auto (default behavior)
-await cachedFetch(url, { cache: 'auto no cache' });
+// Reload (always fetch fresh, but cache the result)
+await cachedFetch(url, { cache: 'reload' });
+
+// No cache (validate with server before using cache)
+await cachedFetch(url, { cache: 'no-cache' });
 ```
 
 ### Background Revalidation
 
-The library supports background revalidation similar to Next.js:
+The library supports Next.js-style background revalidation:
 
 ```typescript
 await cachedFetch(url, {
   next: {
     revalidate: 60, // Serve from cache, revalidate after 60 seconds
     tags: ['user-data'], // Tags for selective cache invalidation
+  }
+});
+
+// Special revalidate values:
+await cachedFetch(url, {
+  next: {
+    revalidate: false, // Cache indefinitely (no revalidation)
+  }
+});
+
+await cachedFetch(url, {
+  next: {
+    revalidate: 0, // Same as false - cache indefinitely
   }
 });
 ```

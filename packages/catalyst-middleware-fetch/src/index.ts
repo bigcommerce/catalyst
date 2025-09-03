@@ -130,13 +130,21 @@ export class CatalystFetch {
     const cacheKey = generateCacheKey(input, init);
     const now = Date.now();
 
-    // Handle no-store cache directive
-    if (init?.cache === 'no-store') {
+    // Handle standard Next.js cache directives
+    const cacheMode = init?.cache || 'default';
+    
+    // no-store: Skip cache entirely
+    if (cacheMode && (cacheMode as string) === 'no-store') {
       return this.performFetch(input, init);
     }
 
     // Try to get from cache
     const cachedEntry = await this.getCachedResponse(cacheKey);
+
+    // force-cache: Return cached version if available, even if stale
+    if (cacheMode && (cacheMode as string) === 'force-cache' && cachedEntry) {
+      return this.createResponseFromCache(cachedEntry);
+    }
 
     // Check if we have a valid cached entry
     if (cachedEntry && this.isCacheEntryValid(cachedEntry, now)) {
@@ -148,14 +156,14 @@ export class CatalystFetch {
       return this.createResponseFromCache(cachedEntry);
     }
 
-    // For force-cache, return stale if available
-    if (init?.cache === 'force-cache' && cachedEntry) {
-      return this.createResponseFromCache(cachedEntry);
-    }
-
-    // Perform fresh fetch and cache the result
+    // For reload: Always fetch fresh, but cache the result
+    // For default: Fetch if not cached or expired
     const response = await this.performFetch(input, init);
-    await this.cacheResponse(cacheKey, response, init);
+    
+    // Only cache if not no-store
+    if (!cacheMode || (cacheMode as string) !== 'no-store') {
+      await this.cacheResponse(cacheKey, response, init);
+    }
 
     return response;
   }
@@ -271,22 +279,26 @@ export class CatalystFetch {
     const arrayBuffer = await clonedResponse.arrayBuffer();
     const data = Buffer.from(arrayBuffer).toString('base64');
 
-    // Calculate expiration and revalidation times
+    // Calculate expiration and revalidation times based on Next.js conventions
     const revalidateTime = init?.next?.revalidate;
-    const expiresTime = init?.next?.expires;
 
     let revalidateAfter: number | undefined;
     let expiresAt: number | undefined;
 
-    if (typeof revalidateTime === 'number' && revalidateTime > 0) {
-      revalidateAfter = now + revalidateTime * 1000;
-    }
-
-    if (typeof expiresTime === 'number' && expiresTime > 0) {
-      expiresAt = now + expiresTime * 1000;
+    // Handle Next.js revalidate values
+    if (revalidateTime === false || revalidateTime === 0) {
+      // revalidate: false or 0 means cache indefinitely (no revalidation)
+      // Set a very long expiration (1 year)
+      expiresAt = now + 365 * 24 * 60 * 60 * 1000;
     } else if (typeof revalidateTime === 'number' && revalidateTime > 0) {
-      // Default expires to 24 hours if only revalidate is set
-      expiresAt = now + 24 * 60 * 60 * 1000;
+      // revalidate: N means revalidate after N seconds
+      revalidateAfter = now + revalidateTime * 1000;
+      // Set expiration to 24 hours or revalidate time * 10, whichever is longer
+      expiresAt = now + Math.max(24 * 60 * 60 * 1000, revalidateTime * 1000 * 10);
+    } else {
+      // No revalidate specified, use default behavior (1 hour revalidation, 24 hour expiration)
+      revalidateAfter = now + 60 * 60 * 1000; // 1 hour
+      expiresAt = now + 24 * 60 * 60 * 1000; // 24 hours
     }
 
     const cacheEntry: CachedResponse = {
@@ -320,13 +332,20 @@ export class CatalystFetch {
   private createResponseFromCache(entry: CachedResponse): Response {
     const headers = new Headers(entry.headers);
 
-    // Add cache status headers
-    headers.set('X-Cache-Status', this.shouldRevalidate(entry, Date.now()) ? 'STALE' : 'HIT');
-    headers.set('X-Cache-Age', Math.floor((Date.now() - entry.timestamp) / 1000).toString());
+    // Add standard cache status headers matching cached-middleware-fetch-next
+    const now = Date.now();
+    const isStale = this.shouldRevalidate(entry, now);
+    
+    headers.set('X-Cache-Status', isStale ? 'STALE' : 'HIT');
+    headers.set('X-Cache-Age', Math.floor((now - entry.timestamp) / 1000).toString());
 
     if (entry.expiresAt) {
-      const expiresIn = Math.max(0, Math.floor((entry.expiresAt - Date.now()) / 1000));
-      headers.set('X-Cache-Expires-In', expiresIn.toString());
+      const expiresIn = Math.max(0, Math.floor((entry.expiresAt - now) / 1000));
+      headers.set('X-Cache-TTL', expiresIn.toString());
+      
+      // Add expiration date in RFC 7231 format
+      const expiresDate = new Date(entry.expiresAt);
+      headers.set('X-Cache-Expires', expiresDate.toUTCString());
     }
 
     // Decode base64 data back to ArrayBuffer
