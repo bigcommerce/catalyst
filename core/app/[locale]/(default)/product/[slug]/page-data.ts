@@ -5,6 +5,7 @@ import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
+import { withGraphQLSpan, addSpanAttributes } from '~/lib/otel';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
 import { ProductViewedFragment } from './_components/product-viewed/fragment';
@@ -155,14 +156,32 @@ const ProductPageMetadataQuery = graphql(`
 
 export const getProductPageMetadata = cache(
   async (entityId: number, customerAccessToken?: string) => {
-    const { data } = await client.fetch({
-      document: ProductPageMetadataQuery,
-      variables: { entityId },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+    return await withGraphQLSpan('getProductPageMetadata', async () => {
+      addSpanAttributes({
+        'product.entity_id': entityId,
+        'product.metadata_type': 'page_metadata',
+        'user.authenticated': !!customerAccessToken,
+      });
 
-    return data.site.product;
+      const { data } = await client.fetch({
+        document: ProductPageMetadataQuery,
+        variables: { entityId },
+        customerAccessToken,
+        fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      });
+
+      const product = data.site.product;
+      
+      if (product) {
+        addSpanAttributes({
+          'product.name': product.name,
+          'product.has_seo': !!product.seo,
+          'product.has_image': !!product.defaultImage,
+        });
+      }
+
+      return product;
+    });
   },
 );
 
@@ -191,14 +210,33 @@ const ProductQuery = graphql(
 );
 
 export const getProduct = cache(async (entityId: number, customerAccessToken?: string) => {
-  const { data } = await client.fetch({
-    document: ProductQuery,
-    variables: { entityId },
-    customerAccessToken,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+  return await withGraphQLSpan('getProduct', async () => {
+    addSpanAttributes({
+      'product.entity_id': entityId,
+      'product.query_type': 'base_product',
+      'user.authenticated': !!customerAccessToken,
+    });
 
-  return data.site.product;
+    const { data } = await client.fetch({
+      document: ProductQuery,
+      variables: { entityId },
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    const product = data.site.product;
+    
+    if (product) {
+      addSpanAttributes({
+        'product.name': product.name,
+        'product.has_brand': !!product.brand,
+        'product.has_reviews': !!product.reviewSummary,
+        'product.options_count': product.productOptions?.edges?.length || 0,
+      });
+    }
+
+    return product;
+  });
 });
 
 const StreamableProductQuery = graphql(
@@ -264,14 +302,36 @@ type Variables = VariablesOf<typeof StreamableProductQuery>;
 
 export const getStreamableProduct = cache(
   async (variables: Variables, customerAccessToken?: string) => {
-    const { data } = await client.fetch({
-      document: StreamableProductQuery,
-      variables,
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+    return await withGraphQLSpan('getStreamableProduct', async () => {
+      addSpanAttributes({
+        'product.entity_id': variables.entityId,
+        'product.query_type': 'streamable_product',
+        'product.has_options': (variables.optionValueIds?.length || 0) > 0,
+        'product.use_default_selections': variables.useDefaultOptionSelections || false,
+        'user.authenticated': !!customerAccessToken,
+      });
 
-    return data.site.product;
+      const { data } = await client.fetch({
+        document: StreamableProductQuery,
+        variables,
+        customerAccessToken,
+        fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      });
+
+      const product = data.site.product;
+      
+      if (product) {
+        addSpanAttributes({
+          'product.sku': product.sku || 'unknown',
+          'product.images_count': product.images?.edges?.length || 0,
+          'product.custom_fields_count': product.customFields?.edges?.length || 0,
+          'product.inventory_status': product.inventory?.isInStock ? 'in_stock' : 'out_of_stock',
+          'product.availability_status': product.availabilityV2?.status || 'unknown',
+        });
+      }
+
+      return product;
+    });
   },
 );
 
@@ -308,13 +368,35 @@ const ProductPricingAndRelatedProductsQuery = graphql(
 
 export const getProductPricingAndRelatedProducts = cache(
   async (variables: Variables, customerAccessToken?: string) => {
-    const { data } = await client.fetch({
-      document: ProductPricingAndRelatedProductsQuery,
-      variables,
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-    });
+    return await withGraphQLSpan('getProductPricingAndRelatedProducts', async () => {
+      addSpanAttributes({
+        'product.entity_id': variables.entityId,
+        'product.query_type': 'pricing_and_related',
+        'product.has_options': (variables.optionValueIds?.length || 0) > 0,
+        'product.use_default_selections': variables.useDefaultOptionSelections || false,
+        'product.currency_code': (variables as any).currencyCode || 'default',
+        'user.authenticated': !!customerAccessToken,
+      });
 
-    return data.site.product;
+      const { data } = await client.fetch({
+        document: ProductPricingAndRelatedProductsQuery,
+        variables,
+        customerAccessToken,
+        fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      });
+
+      const product = data.site.product;
+      
+      if (product) {
+        addSpanAttributes({
+          'product.has_pricing': !!product.prices,
+          'product.related_products_count': product.relatedProducts?.edges?.length || 0,
+          'product.price_value': product.prices?.price?.value || 0,
+          'product.price_currency': product.prices?.price?.currencyCode || 'unknown',
+        });
+      }
+
+      return product;
+    });
   },
 );
