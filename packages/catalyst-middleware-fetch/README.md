@@ -9,6 +9,7 @@ A custom fetch implementation powered by [unstorage](https://unstorage.unjs.io/)
 - 🎯 **Multiple Storage Adapters**: LRU memory cache, Vercel Runtime Cache, Upstash Redis, Cloudflare Cache API
 - 📦 **Dynamic Imports**: Only loads the storage driver needed for your environment
 - 🔧 **Next.js Compatible**: Supports Next.js cache configuration (`revalidate`, `tags`, etc.)
+- 📝 **Verbose Logging**: Optional detailed logging for debugging cache operations
 
 ## Installation
 
@@ -407,6 +408,50 @@ export function detectExtendedStorageAdapter(): ExtendedStorageAdapter {
 ```
 
 For more information on available drivers and their configuration options, see the [unstorage drivers documentation](https://unstorage.unjs.io/drivers).
+
+## Debugging & Logging
+
+Enable verbose logging by setting the `CACHED_MIDDLEWARE_FETCH_LOGGER` environment variable to `1`:
+
+```bash
+CACHED_MIDDLEWARE_FETCH_LOGGER=1
+```
+
+When enabled, the library will log detailed information about:
+
+- Environment detection and adapter selection
+- Cache hits, misses, and stale responses
+- Fetch operations and their outcomes
+- Background revalidation processes
+- Storage operations (get, set, clear)
+- Cache timing information (age, TTL, expiration)
+
+Example log output:
+```
+[catalyst-fetch] Detecting storage adapter...
+[catalyst-fetch] No specific environment detected, using memory adapter
+[catalyst-fetch] Creating cache storage with adapter: memory
+[catalyst-fetch] Loading LRU Cache driver (maxSize: 500)
+[catalyst-fetch] LRU Cache storage created successfully
+[catalyst-fetch] Fetching: GET https://api.example.com/data
+[catalyst-fetch] Cache key: fetch:eyJ1cmwiOiJodHRwczovL2FwaS5leGFtcGxlLmNvbS9kYXRhIiwibWV0aG9kIjoiR0VUIiwiaGVhZGVycyI6e30sImJvZHkiOiIifQ==
+[catalyst-fetch] Cache mode: default
+[catalyst-fetch] Getting cached response for key: fetch:eyJ1cmwiOiJodHRwczovL2FwaS5leGFtcGxlLmNvbS9kYXRhIiwibWV0aG9kIjoiR0VUIiwiaGVhZGVycyI6e30sImJvZHkiOiIifQ==
+[catalyst-fetch] No cached response found for key: fetch:eyJ1cmwiOiJodHRwczovL2FwaS5leGFtcGxlLmNvbS9kYXRhIiwibWV0aG9kIjoiR0VUIiwiaGVhZGVycyI6e30sImJvZHkiOiIifQ==
+[catalyst-fetch] Cache MISS for https://api.example.com/data, fetching fresh data
+[catalyst-fetch] Performing fetch: GET https://api.example.com/data
+[catalyst-fetch] Fetch completed: GET https://api.example.com/data - Status: 200 OK
+[catalyst-fetch] Caching response for https://api.example.com/data
+[catalyst-fetch] Caching with default timing (1h revalidate, 24h expire)
+[catalyst-fetch] Storing cache entry with key: fetch:eyJ1cmwiOiJodHRwczovL2FwaS5leGFtcGxlLmNvbS9kYXRhIiwibWV0aG9kIjoiR0VUIiwiaGVhZGVycyI6e30sImJvZHkiOiIifQ==, TTL: 86400s
+[catalyst-fetch] Successfully cached response for https://api.example.com/data
+```
+
+This logging is particularly useful for:
+- Debugging cache behavior in different environments
+- Understanding why certain requests are cached or not cached
+- Monitoring background revalidation processes
+- Troubleshooting performance issues
 
 ## License
 

@@ -78,6 +78,7 @@ declare global {
       VERCEL?: string;
       NODE_ENV?: string;
       WORKER_ENV?: string;
+      CACHED_MIDDLEWARE_FETCH_LOGGER?: string;
     }
   }
 

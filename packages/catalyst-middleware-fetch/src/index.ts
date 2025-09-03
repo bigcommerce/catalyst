@@ -10,6 +10,31 @@ import type { Storage } from 'unstorage';
 import type { CachedFetchOptions, StorageOptions, StorageAdapter, CloudflareContext } from './types';
 
 /**
+ * Logger utility for verbose logging when CACHED_MIDDLEWARE_FETCH_LOGGER=1
+ */
+const isLoggingEnabled = (): boolean => {
+  return typeof process !== 'undefined' && process.env.CACHED_MIDDLEWARE_FETCH_LOGGER === '1';
+};
+
+const logger = {
+  log: (...args: unknown[]) => {
+    if (isLoggingEnabled()) {
+      console.log('[catalyst-fetch]', ...args);
+    }
+  },
+  warn: (...args: unknown[]) => {
+    if (isLoggingEnabled()) {
+      console.warn('[catalyst-fetch]', ...args);
+    }
+  },
+  error: (...args: unknown[]) => {
+    if (isLoggingEnabled()) {
+      console.error('[catalyst-fetch]', ...args);
+    }
+  },
+};
+
+/**
  * Environment detection utilities
  * TODO: These detection methods can be refined based on specific deployment needs
  */
@@ -37,15 +62,22 @@ export const isUpstashEnvironment = (): boolean => {
  * Detect the best storage adapter for the current environment
  */
 export const detectStorageAdapter = (): StorageAdapter => {
+  logger.log('Detecting storage adapter...');
+  
   if (isVercelEnvironment()) {
+    logger.log('Detected Vercel environment, using vercel-runtime adapter');
     return 'vercel-runtime';
   }
   if (isUpstashEnvironment()) {
+    logger.log('Detected Upstash environment, using upstash adapter');
     return 'upstash';
   }
   if (isCloudflareEnvironment()) {
+    logger.log('Detected Cloudflare environment, using cloudflare adapter');
     return 'cloudflare';
   }
+  
+  logger.log('No specific environment detected, using memory adapter');
   return 'memory';
 };
 
@@ -129,12 +161,18 @@ export class CatalystFetch {
   async fetch(input: RequestInfo | URL, init?: CachedFetchOptions): Promise<Response> {
     const cacheKey = generateCacheKey(input, init);
     const now = Date.now();
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+
+    logger.log(`Fetching: ${init?.method || 'GET'} ${url}`);
+    logger.log(`Cache key: ${cacheKey}`);
 
     // Handle standard Next.js cache directives
     const cacheMode = init?.cache || 'default';
+    logger.log(`Cache mode: ${cacheMode}`);
     
     // no-store: Skip cache entirely
     if (cacheMode && (cacheMode as string) === 'no-store') {
+      logger.log('Cache mode is no-store, skipping cache entirely');
       return this.performFetch(input, init);
     }
 
@@ -143,17 +181,35 @@ export class CatalystFetch {
 
     // force-cache: Return cached version if available, even if stale
     if (cacheMode && (cacheMode as string) === 'force-cache' && cachedEntry) {
+      logger.log('Cache mode is force-cache, returning cached entry regardless of staleness');
       return this.createResponseFromCache(cachedEntry);
     }
 
     // Check if we have a valid cached entry
     if (cachedEntry && this.isCacheEntryValid(cachedEntry, now)) {
-      // Check if we need background revalidation
-      if (this.shouldRevalidate(cachedEntry, now) && !this.revalidationQueue.has(cacheKey)) {
-        this.scheduleBackgroundRevalidation(input, init, cacheKey);
+      const isStale = this.shouldRevalidate(cachedEntry, now);
+      const age = Math.floor((now - cachedEntry.timestamp) / 1000);
+      
+      if (isStale) {
+        logger.log(`Cache STALE for ${url} (age: ${age}s)`);
+        // Check if we need background revalidation
+        if (!this.revalidationQueue.has(cacheKey)) {
+          logger.log(`Scheduling background revalidation for ${url}`);
+          this.scheduleBackgroundRevalidation(input, init, cacheKey);
+        } else {
+          logger.log(`Background revalidation already scheduled for ${url}`);
+        }
+      } else {
+        logger.log(`Cache HIT for ${url} (age: ${age}s)`);
       }
 
       return this.createResponseFromCache(cachedEntry);
+    }
+
+    if (cachedEntry) {
+      logger.log(`Cache EXPIRED for ${url}, fetching fresh data`);
+    } else {
+      logger.log(`Cache MISS for ${url}, fetching fresh data`);
     }
 
     // For reload: Always fetch fresh, but cache the result
@@ -172,8 +228,10 @@ export class CatalystFetch {
    * Clear the cache
    */
   async clear(): Promise<void> {
+    logger.log('Clearing cache storage');
     await this.storage.clear();
     this.revalidationQueue.clear();
+    logger.log('Cache cleared successfully');
   }
 
   /**
@@ -181,9 +239,16 @@ export class CatalystFetch {
    */
   private async getCachedResponse(cacheKey: string): Promise<CachedResponse | null> {
     try {
+      logger.log(`Getting cached response for key: ${cacheKey}`);
       const cached = await this.storage.getItem<CachedResponse>(cacheKey);
+      if (cached) {
+        logger.log(`Found cached response for key: ${cacheKey}`);
+      } else {
+        logger.log(`No cached response found for key: ${cacheKey}`);
+      }
       return cached;
-    } catch {
+    } catch (error) {
+      logger.error(`Error getting cached response for key ${cacheKey}:`, error);
       return null;
     }
   }
@@ -238,11 +303,18 @@ export class CatalystFetch {
     init: CachedFetchOptions | undefined,
     cacheKey: string,
   ): Promise<void> {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    
     try {
+      logger.log(`Starting background revalidation for ${url}`);
       const response = await this.performFetch(input, init);
       await this.cacheResponse(cacheKey, response, init);
+      logger.log(`Background revalidation completed for ${url}`);
+    } catch (error) {
+      logger.error(`Background revalidation failed for ${url}:`, error);
     } finally {
       this.revalidationQueue.delete(cacheKey);
+      logger.log(`Removed ${url} from revalidation queue`);
     }
   }
 
@@ -253,9 +325,22 @@ export class CatalystFetch {
     input: RequestInfo | URL,
     init?: CachedFetchOptions,
   ): Promise<Response> {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    const method = init?.method || 'GET';
+    
+    logger.log(`Performing fetch: ${method} ${url}`);
+    
     // Remove our custom cache options before making the request
     const { cache: _cache, next: _next, ...fetchInit } = init ?? {};
-    return fetch(input, fetchInit);
+    
+    try {
+      const response = await fetch(input, fetchInit);
+      logger.log(`Fetch completed: ${method} ${url} - Status: ${response.status} ${response.statusText}`);
+      return response;
+    } catch (error) {
+      logger.error(`Fetch failed: ${method} ${url}:`, error);
+      throw error;
+    }
   }
 
   /**
@@ -268,8 +353,11 @@ export class CatalystFetch {
   ): Promise<void> {
     // Only cache successful responses
     if (!response.ok) {
+      logger.log(`Not caching response with status ${response.status} for ${response.url}`);
       return;
     }
+
+    logger.log(`Caching response for ${response.url}`);
 
     const now = Date.now();
     const headers = headersToObject(response.headers);
@@ -290,15 +378,18 @@ export class CatalystFetch {
       // revalidate: false or 0 means cache indefinitely (no revalidation)
       // Set a very long expiration (1 year)
       expiresAt = now + 365 * 24 * 60 * 60 * 1000;
+      logger.log(`Caching indefinitely (revalidate: ${revalidateTime})`);
     } else if (typeof revalidateTime === 'number' && revalidateTime > 0) {
       // revalidate: N means revalidate after N seconds
       revalidateAfter = now + revalidateTime * 1000;
       // Set expiration to 24 hours or revalidate time * 10, whichever is longer
       expiresAt = now + Math.max(24 * 60 * 60 * 1000, revalidateTime * 1000 * 10);
+      logger.log(`Caching with revalidate: ${revalidateTime}s, expires: ${Math.floor((expiresAt - now) / 1000)}s`);
     } else {
       // No revalidate specified, use default behavior (1 hour revalidation, 24 hour expiration)
       revalidateAfter = now + 60 * 60 * 1000; // 1 hour
       expiresAt = now + 24 * 60 * 60 * 1000; // 24 hours
+      logger.log('Caching with default timing (1h revalidate, 24h expire)');
     }
 
     const cacheEntry: CachedResponse = {
@@ -320,9 +411,11 @@ export class CatalystFetch {
         ttl = Math.max(1, Math.floor((expiresAt - now) / 1000));
       }
 
+      logger.log(`Storing cache entry with key: ${cacheKey}, TTL: ${ttl}s`);
       await this.storage.setItem(cacheKey, cacheEntry, { ttl });
-    } catch {
-      // Silently handle cache errors
+      logger.log(`Successfully cached response for ${response.url}`);
+    } catch (error) {
+      logger.error(`Failed to cache response for ${response.url}:`, error);
     }
   }
 
@@ -370,20 +463,32 @@ export class CatalystFetch {
 export const createCacheStorage = async (options: StorageOptions = {}): Promise<Storage> => {
   const adapter = options.adapter ?? detectStorageAdapter();
 
+  logger.log(`Creating cache storage with adapter: ${adapter}`);
+  if (options.base) {
+    logger.log(`Using base prefix: ${options.base}`);
+  }
+  if (options.ttl) {
+    logger.log(`Using TTL: ${options.ttl}s`);
+  }
+
   switch (adapter) {
     case 'vercel-runtime': {
+      logger.log('Loading Vercel Runtime Cache driver');
       const { default: vercelRuntimeCacheDriver } = await import('unstorage/drivers/vercel-runtime-cache');
-      return createStorage({
+      const storage = createStorage({
         driver: vercelRuntimeCacheDriver({
           base: options.base,
           ttl: options.ttl,
         }),
       });
+      logger.log('Vercel Runtime Cache storage created successfully');
+      return storage;
     }
 
     case 'upstash': {
+      logger.log('Loading Upstash Redis driver');
       const { default: upstashDriver } = await import('unstorage/drivers/upstash');
-      return createStorage({
+      const storage = createStorage({
         driver: upstashDriver({
           base: options.base,
           url: options.upstash?.url ?? process.env.UPSTASH_REDIS_REST_URL,
@@ -391,21 +496,27 @@ export const createCacheStorage = async (options: StorageOptions = {}): Promise<
           ttl: options.ttl,
         }),
       });
+      logger.log('Upstash Redis storage created successfully');
+      return storage;
     }
 
     case 'cloudflare': {
+      logger.log('Loading Cloudflare Cache driver');
       const { default: cloudflareCacheDriver } = await import('./drivers/cloudflare-cache');
-      return createStorage({
+      const storage = createStorage({
         driver: cloudflareCacheDriver({
           base: options.base,
           ttl: options.ttl,
           ctx: options.cloudflare?.ctx,
         }),
       });
+      logger.log('Cloudflare Cache storage created successfully');
+      return storage;
     }
 
     case 'memory':
     default: {
+      logger.log(`Loading LRU Cache driver (maxSize: ${options.maxSize ?? 500})`);
       const { default: lruCacheDriver } = await import('unstorage/drivers/lru-cache');
       const storage = createStorage({
         driver: lruCacheDriver({
@@ -416,14 +527,17 @@ export const createCacheStorage = async (options: StorageOptions = {}): Promise<
 
       // If base is provided, mount the driver at the base path
       if (options.base) {
+        logger.log(`Mounting LRU Cache driver at base path: ${options.base}`);
         const baseStorage = createStorage({});
         baseStorage.mount(options.base, lruCacheDriver({
           max: options.maxSize ?? 500,
           ttl: options.ttl ? options.ttl * 1000 : 24 * 60 * 60 * 1000,
         }));
+        logger.log('LRU Cache storage with base path created successfully');
         return baseStorage;
       }
 
+      logger.log('LRU Cache storage created successfully');
       return storage;
     }
   }
