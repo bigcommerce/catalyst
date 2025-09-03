@@ -22,10 +22,12 @@ const traceExporter = new OTLPTraceExporter({
 
 const sdk = new NodeSDK({
   resource,
-  spanProcessor: new SimpleSpanProcessor(traceExporter),
+  spanProcessors: [new SimpleSpanProcessor(traceExporter)],
   instrumentations: [
     getNodeAutoInstrumentations({
-      // example: disable noisy ones if needed
+      // Disable optional instrumentations that require additional dependencies
+      '@opentelemetry/instrumentation-winston': { enabled: false },
+      // example: disable other noisy ones if needed
       // '@opentelemetry/instrumentation-fs': { enabled: false },
     }),
   ],
