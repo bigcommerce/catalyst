@@ -66,6 +66,8 @@ export default async (): Promise<NextConfig> => {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
       ppr: 'incremental',
     },
+    // Enable instrumentation hook for OpenTelemetry
+    instrumentationHook: true,
     typescript: {
       ignoreBuildErrors: !!process.env.CI,
     },

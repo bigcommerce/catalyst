@@ -13,6 +13,7 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { searchResultsTransformer } from '~/data-transformers/search-results-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { withGraphQLSpan, addSpanAttributes } from '~/lib/otel';
 
 import { SearchProductFragment } from './fragment';
 
@@ -84,14 +85,28 @@ export async function search(
   const currencyCode = await getPreferredCurrencyCode();
 
   try {
-    const response = await client.fetch({
-      document: GetQuickSearchResultsQuery,
-      variables: { filters: { searchTerm: submission.value.term }, currencyCode },
-      customerAccessToken,
-      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    // Add search term to span attributes
+    addSpanAttributes({
+      'search.term': submission.value.term,
+      'search.term.length': submission.value.term.length,
+      'user.authenticated': !!customerAccessToken,
+    });
+
+    const response = await withGraphQLSpan('getQuickSearchResults', async () => {
+      return await client.fetch({
+        document: GetQuickSearchResultsQuery,
+        variables: { filters: { searchTerm: submission.value.term }, currencyCode },
+        customerAccessToken,
+        fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+      });
     });
 
     const { products } = response.data.site.search.searchProducts;
+
+    // Add result count to span attributes
+    addSpanAttributes({
+      'search.results.count': products.edges.length,
+    });
 
     return {
       lastResult: submission.reply(),
