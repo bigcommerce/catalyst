@@ -20,6 +20,7 @@ interface Config<FetcherRequestInit extends RequestInit = RequestInit> {
   platform?: string;
   backendUserAgentExtensions?: string;
   logger?: boolean;
+  customFetch?: (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
   getChannelId?: (defaultChannelId: string) => Promise<string> | string;
   beforeRequest?: (
     fetchOptions?: FetcherRequestInit,
@@ -49,6 +50,7 @@ type GraphQLErrorPolicy = 'none' | 'all' | 'auth' | 'ignore';
 class Client<FetcherRequestInit extends RequestInit = RequestInit> {
   private backendUserAgent: string;
   private readonly defaultChannelId: string;
+  private customFetch?: (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
   private getChannelId: (defaultChannelId: string) => Promise<string> | string;
   private beforeRequest?: (
     fetchOptions?: FetcherRequestInit,
@@ -67,6 +69,7 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     this.defaultChannelId = config.channelId;
     this.backendUserAgent = getBackendUserAgent(config.platform, config.backendUserAgentExtensions);
+    this.customFetch = config.customFetch;
 
     this.getChannelId =
       config.getChannelId ??
@@ -130,7 +133,8 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
       (await this.beforeRequest?.(fetchOptions)) ?? {};
 
-    const response = await fetch(graphqlUrl, {
+    const fetchFn = this.customFetch ?? fetch;
+    const response = await fetchFn(graphqlUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1,14 +1,11 @@
-import { NextFetchEvent, NextRequest, NextResponse } from 'next/server';
-import { z } from 'zod';
+import { createClient } from '@bigcommerce/catalyst-client';
+import { getDefaultFetch } from '@bigcommerce/catalyst-middleware-fetch';
+import { NextRequest, NextResponse } from 'next/server';
 
-import { client } from '~/client';
 import { graphql } from '~/client/graphql';
-import { revalidate } from '~/client/revalidate-target';
 import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
-import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
-
-import { kv } from '../lib/kv';
+import { backendUserAgent } from '~/userAgent';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
@@ -62,11 +59,28 @@ const GetRouteQuery = graphql(`
   }
 `);
 
+// Create a client instance with catalyst-middleware-fetch for caching
+const createCachedClient = async () => {
+  const catalystFetch = await getDefaultFetch();
+
+  return createClient({
+    storefrontToken: process.env.BIGCOMMERCE_STOREFRONT_TOKEN ?? '',
+    storeHash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
+    channelId: process.env.BIGCOMMERCE_CHANNEL_ID ?? '1',
+    backendUserAgentExtensions: backendUserAgent,
+    customFetch: catalystFetch.fetch.bind(catalystFetch),
+  });
+};
+
 const getRoute = async (path: string, channelId?: string) => {
+  const client = await createCachedClient();
+
   const response = await client.fetch({
     document: GetRouteQuery,
     variables: { path },
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: {
+      next: { revalidate: 1800 }, // 30 minutes
+    },
     channelId,
   });
 
@@ -85,9 +99,14 @@ const getRawWebPageContentQuery = graphql(`
 `);
 
 const getRawWebPageContent = async (id: string) => {
+  const client = await createCachedClient();
+
   const response = await client.fetch({
     document: getRawWebPageContentQuery,
     variables: { id },
+    fetchOptions: {
+      next: { revalidate: 1800 }, // 30 minutes
+    },
   });
 
   const node = response.data.node;
@@ -110,106 +129,22 @@ const GetStoreStatusQuery = graphql(`
 `);
 
 const getStoreStatus = async (channelId?: string) => {
+  const client = await createCachedClient();
+
   const { data } = await client.fetch({
     document: GetStoreStatusQuery,
-    fetchOptions: { next: { revalidate: 300 } },
+    fetchOptions: {
+      next: { revalidate: 300 }, // 5 minutes
+    },
     channelId,
   });
 
   return data.site.settings?.status;
 };
 
-type Route = Awaited<ReturnType<typeof getRoute>>;
-type StorefrontStatusType = ReturnType<typeof graphql.scalar<'StorefrontStatusType'>>;
-
-interface RouteCache {
-  route: Route;
-  expiryTime: number;
-}
-
-interface StorefrontStatusCache {
-  status: StorefrontStatusType;
-  expiryTime: number;
-}
-
-const StorefrontStatusCacheSchema = z.object({
-  status: z.union([
-    z.literal('HIBERNATION'),
-    z.literal('LAUNCHED'),
-    z.literal('MAINTENANCE'),
-    z.literal('PRE_LAUNCH'),
-  ]),
-  expiryTime: z.number(),
-});
-
-const RedirectSchema = z.object({
-  to: z.union([
-    z.object({ __typename: z.literal('BlogPostRedirect'), path: z.string() }),
-    z.object({ __typename: z.literal('BrandRedirect'), path: z.string() }),
-    z.object({ __typename: z.literal('CategoryRedirect'), path: z.string() }),
-    z.object({ __typename: z.literal('PageRedirect'), path: z.string() }),
-    z.object({ __typename: z.literal('ProductRedirect'), path: z.string() }),
-    z.object({ __typename: z.literal('ManualRedirect'), url: z.string() }),
-  ]),
-  fromPath: z.string(),
-  toUrl: z.string(),
-});
-
-const NodeSchema = z.union([
-  z.object({ __typename: z.literal('Product'), entityId: z.number() }),
-  z.object({ __typename: z.literal('Category'), entityId: z.number() }),
-  z.object({ __typename: z.literal('Brand'), entityId: z.number() }),
-  z.object({ __typename: z.literal('ContactPage'), id: z.string() }),
-  z.object({ __typename: z.literal('NormalPage'), id: z.string() }),
-  z.object({ __typename: z.literal('RawHtmlPage'), id: z.string() }),
-  z.object({ __typename: z.literal('Blog'), id: z.string() }),
-  z.object({ __typename: z.literal('BlogPost'), entityId: z.number() }),
-]);
-
-const RouteSchema = z.object({
-  redirect: z.nullable(RedirectSchema),
-  node: z.nullable(NodeSchema),
-});
-
-const RouteCacheSchema = z.object({
-  route: z.nullable(RouteSchema),
-  expiryTime: z.number(),
-});
-
-const updateRouteCache = async (
-  pathname: string,
-  channelId: string,
-  event: NextFetchEvent,
-): Promise<RouteCache> => {
-  const routeCache: RouteCache = {
-    route: await getRoute(pathname, channelId),
-    expiryTime: Date.now() + 1000 * 60 * 30, // 30 minutes
-  };
-
-  event.waitUntil(kv.set(kvKey(pathname, channelId), routeCache));
-
-  return routeCache;
-};
-
-const updateStatusCache = async (
-  channelId: string,
-  event: NextFetchEvent,
-): Promise<StorefrontStatusCache> => {
-  const status = await getStoreStatus(channelId);
-
-  if (status === undefined) {
-    throw new Error('Failed to fetch new storefront status');
-  }
-
-  const statusCache: StorefrontStatusCache = {
-    status,
-    expiryTime: Date.now() + 1000 * 60 * 5, // 5 minutes
-  };
-
-  event.waitUntil(kv.set(kvKey(STORE_STATUS_KEY, channelId), statusCache));
-
-  return statusCache;
-};
+// Types for route and status data
+// type Route = Awaited<ReturnType<typeof getRoute>>;
+// type StorefrontStatusType = ReturnType<typeof graphql.scalar<'StorefrontStatusType'>>;
 
 const clearLocaleFromPath = (path: string, locale: string) => {
   if (path === `/${locale}` || path === `/${locale}/`) {
@@ -223,7 +158,7 @@ const clearLocaleFromPath = (path: string, locale: string) => {
   return path;
 };
 
-const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
+const getRouteInfo = async (request: NextRequest) => {
   const locale = request.headers.get('x-bc-locale') ?? '';
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
 
@@ -231,31 +166,15 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
     // For route resolution parity, we need to also include query params, otherwise certain redirects will not work.
     const pathname = clearLocaleFromPath(request.nextUrl.pathname + request.nextUrl.search, locale);
 
-    let [routeCache, statusCache] = await kv.mget<RouteCache | StorefrontStatusCache>(
-      kvKey(pathname, channelId),
-      kvKey(STORE_STATUS_KEY, channelId),
-    );
-
-    // If caches are old, update them in the background and return the old data (SWR-like behavior)
-    // If cache is missing, update it and return the new data, but write to KV in the background
-    if (statusCache && statusCache.expiryTime < Date.now()) {
-      event.waitUntil(updateStatusCache(channelId, event));
-    } else if (!statusCache) {
-      statusCache = await updateStatusCache(channelId, event);
-    }
-
-    if (routeCache && routeCache.expiryTime < Date.now()) {
-      event.waitUntil(updateRouteCache(pathname, channelId, event));
-    } else if (!routeCache) {
-      routeCache = await updateRouteCache(pathname, channelId, event);
-    }
-
-    const parsedRoute = RouteCacheSchema.safeParse(routeCache);
-    const parsedStatus = StorefrontStatusCacheSchema.safeParse(statusCache);
+    // Fetch both route and status concurrently - caching is handled by catalyst-middleware-fetch
+    const [route, status] = await Promise.all([
+      getRoute(pathname, channelId),
+      getStoreStatus(channelId),
+    ]);
 
     return {
-      route: parsedRoute.success ? parsedRoute.data.route : undefined,
-      status: parsedStatus.success ? parsedStatus.data.status : undefined,
+      route,
+      status,
     };
   } catch (error) {
     // eslint-disable-next-line no-console
@@ -272,7 +191,7 @@ export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
     const locale = request.headers.get('x-bc-locale') ?? '';
 
-    const { route, status } = await getRouteInfo(request, event);
+    const { route, status } = await getRouteInfo(request);
 
     if (status === 'MAINTENANCE') {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155

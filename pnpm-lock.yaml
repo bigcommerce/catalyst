@@ -38,6 +38,9 @@ importers:
       '@bigcommerce/catalyst-client':
         specifier: workspace:^
         version: link:../packages/client
+      '@bigcommerce/catalyst-middleware-fetch':
+        specifier: workspace:^
+        version: link:../packages/catalyst-middleware-fetch
       '@conform-to/react':
         specifier: ^1.6.1
         version: 1.6.1(react@19.1.0)
