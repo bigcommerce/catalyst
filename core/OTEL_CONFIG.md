@@ -28,12 +28,29 @@ OTEL_EXPORTER_OTLP_ENDPOINT=https://ingest.lightstep.com:443/v1/traces
 
 ### Automatic Instrumentation
 
-The project uses `@vercel/otel` with `@opentelemetry/exporter-trace-otlp-http` which provides automatic instrumentation for:
+The project uses `@vercel/otel` with environment variable configuration for Lightstep, which provides automatic instrumentation for:
 
 - **Next.js**: Page requests, API routes, middleware
 - **HTTP**: Outgoing HTTP requests
 - **Database**: Database queries (if using supported drivers)
+- **GraphQL**: All BigCommerce GraphQL queries are automatically instrumented
 - **Custom spans**: Manual instrumentation for business logic
+
+### GraphQL Auto-Instrumentation
+
+All GraphQL queries through the BigCommerce client are automatically wrapped with OpenTelemetry spans. This includes:
+
+- **Operation tracking**: Each GraphQL operation gets its own span with operation name and type
+- **Variable tracking**: Safe variable values are added as span attributes
+- **Response analysis**: Response data is analyzed to add relevant attributes
+- **Error handling**: GraphQL errors are automatically recorded in spans
+- **Performance monitoring**: Request duration and complexity tracking
+
+The automatic instrumentation provides rich metadata for:
+- Product queries (entity ID, SKU, inventory status, pricing)
+- Search queries (search terms, result counts, filters)
+- Category queries (category ID, product counts)
+- Route queries (redirect information, node types)
 
 ### Lightstep Integration
 

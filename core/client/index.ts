@@ -25,7 +25,8 @@ const getLocale = async () => {
   }
 };
 
-export const client = createClient({
+// Create the base client configuration
+const clientConfig = {
   storefrontToken: process.env.BIGCOMMERCE_STOREFRONT_TOKEN ?? '',
   storeHash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
   channelId: process.env.BIGCOMMERCE_CHANNEL_ID,
@@ -66,4 +67,7 @@ export const client = createClient({
       redirect('/api/auth/signout');
     }
   },
-});
+};
+
+// Use regular client - @vercel/otel provides automatic instrumentation
+export const client = createClient(clientConfig);

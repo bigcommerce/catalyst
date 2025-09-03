@@ -7,7 +7,6 @@ import { revalidate } from '~/client/revalidate-target';
 import { getVisitIdCookie, getVisitorIdCookie } from '~/lib/analytics/bigcommerce';
 import { sendProductViewedEvent } from '~/lib/analytics/bigcommerce/data-events';
 import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
-import { withGraphQLSpan, withBigCommerceSpan, addSpanAttributes } from '~/lib/otel';
 
 import { kv } from '../lib/kv';
 
@@ -64,31 +63,14 @@ const GetRouteQuery = graphql(`
 `);
 
 const getRoute = async (path: string, channelId?: string) => {
-  return await withGraphQLSpan('getRoute', async () => {
-    addSpanAttributes({
-      'route.path': path,
-      'route.channel_id': channelId || 'default',
-    });
-
-    const response = await client.fetch({
-      document: GetRouteQuery,
-      variables: { path },
-      fetchOptions: { next: { revalidate } },
-      channelId,
-    });
-
-    const route = response.data.site.route;
-    
-    // Add route information to span
-    if (route?.node) {
-      addSpanAttributes({
-        'route.node_type': route.node.__typename,
-        'route.has_redirect': !!route.redirect,
-      });
-    }
-
-    return route;
+  const response = await client.fetch({
+    document: GetRouteQuery,
+    variables: { path },
+    fetchOptions: { next: { revalidate } },
+    channelId,
   });
+
+  return response.data.site.route;
 };
 
 const getRawWebPageContentQuery = graphql(`
@@ -103,30 +85,18 @@ const getRawWebPageContentQuery = graphql(`
 `);
 
 const getRawWebPageContent = async (id: string) => {
-  return await withGraphQLSpan('getRawWebPageContent', async () => {
-    addSpanAttributes({
-      'webpage.id': id,
-      'webpage.type': 'raw_html',
-    });
-
-    const response = await client.fetch({
-      document: getRawWebPageContentQuery,
-      variables: { id },
-    });
-
-    const node = response.data.node;
-
-    if (node?.__typename !== 'RawHtmlPage') {
-      throw new Error('Failed to fetch raw web page content');
-    }
-
-    // Add content size information
-    addSpanAttributes({
-      'webpage.content_size': node.htmlBody?.length || 0,
-    });
-
-    return node;
+  const response = await client.fetch({
+    document: getRawWebPageContentQuery,
+    variables: { id },
   });
+
+  const node = response.data.node;
+
+  if (node?.__typename !== 'RawHtmlPage') {
+    throw new Error('Failed to fetch raw web page content');
+  }
+
+  return node;
 };
 
 const GetStoreStatusQuery = graphql(`
@@ -140,26 +110,13 @@ const GetStoreStatusQuery = graphql(`
 `);
 
 const getStoreStatus = async (channelId?: string) => {
-  return await withGraphQLSpan('getStoreStatus', async () => {
-    addSpanAttributes({
-      'store.channel_id': channelId || 'default',
-    });
-
-    const { data } = await client.fetch({
-      document: GetStoreStatusQuery,
-      fetchOptions: { next: { revalidate: 300 } },
-      channelId,
-    });
-
-    const status = data.site.settings?.status;
-    
-    // Add store status to span
-    addSpanAttributes({
-      'store.status': status || 'unknown',
-    });
-
-    return status;
+  const { data } = await client.fetch({
+    document: GetStoreStatusQuery,
+    fetchOptions: { next: { revalidate: 300 } },
+    channelId,
   });
+
+  return data.site.settings?.status;
 };
 
 type Route = Awaited<ReturnType<typeof getRoute>>;
@@ -315,22 +272,10 @@ export const withRoutes: MiddlewareFactory = () => {
   return async (request, event) => {
     const locale = request.headers.get('x-bc-locale') ?? '';
 
-    // Add middleware-level attributes
-    addSpanAttributes({
-      'middleware.name': 'withRoutes',
-      'request.locale': locale,
-      'request.path': request.nextUrl.pathname,
-      'request.method': request.method,
-    });
-
     const { route, status } = await getRouteInfo(request, event);
 
     if (status === 'MAINTENANCE') {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
-      addSpanAttributes({
-        'response.type': 'maintenance_redirect',
-        'response.status': 503,
-      });
       return NextResponse.rewrite(new URL(`/${locale}/maintenance`, request.url), { status: 503 });
     }
 
@@ -345,13 +290,6 @@ export const withRoutes: MiddlewareFactory = () => {
     };
 
     if (route?.redirect) {
-      // Add redirect information to span
-      addSpanAttributes({
-        'response.type': 'redirect',
-        'redirect.from_path': route.redirect.fromPath,
-        'redirect.to_type': route.redirect.to.__typename,
-      });
-
       // Only carry over query params if the fromPath does not have any, as Bigcommerce 301 redirects support matching by specific query params.
       const fromPathSearchParams = new URL(route.redirect.fromPath, request.url).search;
       const searchParams = fromPathSearchParams.length > 0 ? '' : request.nextUrl.search;
@@ -451,51 +389,23 @@ export const withRoutes: MiddlewareFactory = () => {
 
     rewriteUrl.search = request.nextUrl.search;
 
-    // Add rewrite information to span
-    addSpanAttributes({
-      'response.type': 'rewrite',
-      'rewrite.target_url': rewriteUrl.toString(),
-      'rewrite.node_type': node?.__typename || 'unknown',
-    });
-
     return NextResponse.rewrite(rewriteUrl);
   };
 };
 
 async function recordProductVisit(request: Request, productId: number) {
-  return await withBigCommerceSpan('recordProductVisit', async () => {
-    addSpanAttributes({
-      'product.id': productId,
-      'analytics.event_type': 'product_viewed',
+  const visitId = await getVisitIdCookie();
+  const visitorId = await getVisitorIdCookie();
+
+  if (visitId && visitorId) {
+    await sendProductViewedEvent({
+      productId,
+      initiator: { visitId, visitorId },
+      request: {
+        url: request.url,
+        refererUrl: request.headers.get('referer') || '',
+        userAgent: request.headers.get('user-agent') || '',
+      },
     });
-
-    const visitId = await getVisitIdCookie();
-    const visitorId = await getVisitorIdCookie();
-
-    addSpanAttributes({
-      'analytics.has_visit_id': !!visitId,
-      'analytics.has_visitor_id': !!visitorId,
-    });
-
-    if (visitId && visitorId) {
-      await sendProductViewedEvent({
-        productId,
-        initiator: { visitId, visitorId },
-        request: {
-          url: request.url,
-          refererUrl: request.headers.get('referer') || '',
-          userAgent: request.headers.get('user-agent') || '',
-        },
-      });
-      
-      addSpanAttributes({
-        'analytics.event_sent': true,
-      });
-    } else {
-      addSpanAttributes({
-        'analytics.event_sent': false,
-        'analytics.skip_reason': 'missing_analytics_ids',
-      });
-    }
-  });
+  }
 }
