@@ -304,6 +304,9 @@ importers:
       '@bigcommerce/eslint-config-catalyst':
         specifier: workspace:^
         version: link:../eslint-config-catalyst
+      '@cloudflare/workers-types':
+        specifier: ^4.20250115.0
+        version: 4.20250902.0
       '@types/node':
         specifier: ^22.15.30
         version: 22.15.30
@@ -327,7 +330,7 @@ importers:
     dependencies:
       '@opennextjs/cloudflare':
         specifier: ^1.6.5
-        version: 1.6.5(encoding@0.1.13)(wrangler@4.31.0)
+        version: 1.6.5(encoding@0.1.13)(wrangler@4.31.0(@cloudflare/workers-types@4.20250902.0))
       '@segment/analytics-node':
         specifier: ^2.2.1
         version: 2.2.1(encoding@0.1.13)
@@ -1239,6 +1242,9 @@ packages:
     engines: {node: '>=16'}
     cpu: [x64]
     os: [win32]
+
+  '@cloudflare/workers-types@4.20250902.0':
+    resolution: {integrity: sha512-V4GJTvaqoMvctCIkdx+Joq9uQsaOQ1PPsar783bUYL8+VNWJyK2me6ab1uDXeeFHmhb+26KT0hOrWHg80zC6DA==}
 
   '@commander-js/extra-typings@14.0.0':
     resolution: {integrity: sha512-hIn0ncNaJRLkZrxBIp5AsW/eXEHNKYQBh0aPdoUqNgD+Io3NIykQqpKFyKcuasZhicGaEZJX/JBSIkZ4e5x8Dg==}
@@ -10794,6 +10800,8 @@ snapshots:
   '@cloudflare/workerd-windows-64@1.20250816.0':
     optional: true
 
+  '@cloudflare/workers-types@4.20250902.0': {}
+
   '@commander-js/extra-typings@14.0.0(commander@14.0.0)':
     dependencies:
       commander: 14.0.0
@@ -12037,7 +12045,7 @@ snapshots:
       - aws-crt
       - supports-color
 
-  '@opennextjs/cloudflare@1.6.5(encoding@0.1.13)(wrangler@4.31.0)':
+  '@opennextjs/cloudflare@1.6.5(encoding@0.1.13)(wrangler@4.31.0(@cloudflare/workers-types@4.20250902.0))':
     dependencies:
       '@dotenvx/dotenvx': 1.31.0
       '@opennextjs/aws': 3.7.4
@@ -12045,7 +12053,7 @@ snapshots:
       enquirer: 2.4.1
       glob: 11.0.3
       ts-tqdm: 0.8.6
-      wrangler: 4.31.0
+      wrangler: 4.31.0(@cloudflare/workers-types@4.20250902.0)
       yargs: 18.0.0
     transitivePeerDependencies:
       - aws-crt
@@ -19786,7 +19794,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20250816.0
       '@cloudflare/workerd-windows-64': 1.20250816.0
 
-  wrangler@4.31.0:
+  wrangler@4.31.0(@cloudflare/workers-types@4.20250902.0):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
       '@cloudflare/unenv-preset': 2.6.2(unenv@2.0.0-rc.19)(workerd@1.20250816.0)
@@ -19797,6 +19805,7 @@ snapshots:
       unenv: 2.0.0-rc.19
       workerd: 1.20250816.0
     optionalDependencies:
+      '@cloudflare/workers-types': 4.20250902.0
       fsevents: 2.3.3
     transitivePeerDependencies:
       - bufferutil

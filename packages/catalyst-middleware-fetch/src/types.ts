@@ -35,6 +35,7 @@ declare global {
     interface ProcessEnv {
       VERCEL?: string;
       NODE_ENV?: string;
+      WORKER_ENV?: string;
     }
   }
 
@@ -42,6 +43,14 @@ declare global {
    * waitUntil function from Vercel Functions for background task processing
    */
   function waitUntil(promise: Promise<unknown>): void;
+}
+
+/**
+ * Cloudflare Workers execution context
+ */
+export interface CloudflareContext {
+  waitUntil(promise: Promise<unknown>): void;
+  passThroughOnException(): void;
 }
 
 export {};

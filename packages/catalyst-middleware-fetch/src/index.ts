@@ -2,7 +2,7 @@
  * Catalyst Middleware Fetch
  *
  * A router that selects the appropriate fetch implementation based on the hosting environment.
- * Supports Vercel with cached-middleware-fetch-next and falls back to memory-cached fetch.
+ * Supports Vercel with cached-middleware-fetch-next, Cloudflare Workers with Cache API, and falls back to memory-cached fetch.
  */
 
 import { cachedFetch as memoryCachedFetch } from './memory-cached-fetch';
@@ -14,6 +14,22 @@ import { type CachedFetchOptions } from './types';
  */
 export const isVercelEnvironment = (): boolean => {
   return process.env.VERCEL === '1';
+};
+
+/**
+ * Cloudflare Workers environment detection utilities using feature detection
+ * @returns {boolean} True if running in Cloudflare Workers environment
+ */
+export const isCloudflareEnvironment = (): boolean => {
+  // Feature detection for Cloudflare Workers Cache API
+  // Reference: https://developers.cloudflare.com/workers/runtime-apis/cache/
+  return (
+    typeof caches !== 'undefined' &&
+    typeof (caches as unknown as { default?: Cache }).default !== 'undefined' &&
+    typeof globalThis !== 'undefined' &&
+    // Additional check for Workers-specific globals
+    typeof globalThis.fetch !== 'undefined'
+  );
 };
 
 /**
@@ -94,28 +110,82 @@ export const getFetchImplementation = async (): Promise<FetchImplementation> => 
     } catch {
       // Fallback to memory cached fetch if cached-middleware-fetch-next fails to load
       const wrappedMemoryFetch: FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => {
-        const cachedInit: CachedFetchOptions | undefined = init ? {
-          ...init,
-          cache: mapCacheValue(init.cache),
-        } : undefined;
+        const cachedInit: CachedFetchOptions | undefined = init
+          ? {
+              ...init,
+              cache: mapCacheValue(init.cache),
+            }
+          : undefined;
+
         return memoryCachedFetch(input, cachedInit);
       };
-      
+
+      fetchImpl = {
+        fetch: wrappedMemoryFetch,
+        name: 'memory-cached-fetch-fallback',
+      };
+    }
+  } else if (isCloudflareEnvironment()) {
+    try {
+      // Dynamic import for Cloudflare Workers environment
+      /* webpackChunkName: "cloudflare-cached-fetch" */
+      const cloudflareModule = await import(
+        /* webpackChunkName: "cloudflare-cached-fetch" */ './cloudflare-cached-fetch'
+      );
+      const cloudflareCachedFetch = cloudflareModule.cachedFetch;
+
+      // Use Cloudflare Workers Cache API
+      const wrappedCloudflareFetch: FetchFunction = (
+        input: RequestInfo | URL,
+        init?: RequestInit,
+      ) => {
+        const cachedInit: CachedFetchOptions | undefined = init
+          ? {
+              ...init,
+              cache: mapCacheValue(init.cache),
+            }
+          : undefined;
+
+        // Note: CloudflareContext is not available in this context
+        // Individual implementations should pass ctx when available
+        return cloudflareCachedFetch(input, cachedInit);
+      };
+
+      fetchImpl = {
+        fetch: wrappedCloudflareFetch,
+        name: 'cloudflare-cache-api',
+      };
+    } catch {
+      // Fallback to memory cached fetch if Cloudflare module fails to load
+      const wrappedMemoryFetch: FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => {
+        const cachedInit: CachedFetchOptions | undefined = init
+          ? {
+              ...init,
+              cache: mapCacheValue(init.cache),
+            }
+          : undefined;
+
+        return memoryCachedFetch(input, cachedInit);
+      };
+
       fetchImpl = {
         fetch: wrappedMemoryFetch,
         name: 'memory-cached-fetch-fallback',
       };
     }
   } else {
-    // Use memory cached fetch for non-Vercel environments
+    // Use memory cached fetch for other environments
     const wrappedMemoryFetch: FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => {
-      const cachedInit: CachedFetchOptions | undefined = init ? {
-        ...init,
-        cache: mapCacheValue(init.cache),
-      } : undefined;
+      const cachedInit: CachedFetchOptions | undefined = init
+        ? {
+            ...init,
+            cache: mapCacheValue(init.cache),
+          }
+        : undefined;
+
       return memoryCachedFetch(input, cachedInit);
     };
-    
+
     fetchImpl = {
       fetch: wrappedMemoryFetch,
       name: 'memory-cached-fetch',
@@ -188,4 +258,43 @@ export const resetCache = (): void => {
 
 // Re-export memory cached fetch utilities
 export { memoryCachedFetch, MemoryCachedFetch } from './memory-cached-fetch';
-export type { CachedFetchOptions } from './types';
+
+// Dynamic Cloudflare cached fetch utilities
+/**
+ * Get Cloudflare cached fetch function (dynamic import)
+ * @returns {Promise<Function>} Cloudflare cached fetch function
+ */
+export const getCloudflareCachedFetch = async () => {
+  const cloudflareModule = await import(
+    /* webpackChunkName: "cloudflare-cached-fetch" */ './cloudflare-cached-fetch'
+  );
+
+  return cloudflareModule.cachedFetch;
+};
+
+/**
+ * Get Cloudflare cached fetch class (dynamic import)
+ * @returns {Promise<Function>} Cloudflare cached fetch class
+ */
+export const getCloudflareCachedFetchClass = async () => {
+  const cloudflareModule = await import(
+    /* webpackChunkName: "cloudflare-cached-fetch" */ './cloudflare-cached-fetch'
+  );
+
+  return cloudflareModule.CloudflareCachedFetch;
+};
+
+/**
+ * Get Cloudflare singleton instance (dynamic import)
+ * @returns {Promise<object>} Cloudflare cached fetch instance
+ */
+export const getCloudflareCachedFetchInstance = async () => {
+  const cloudflareModule = await import(
+    /* webpackChunkName: "cloudflare-cached-fetch" */ './cloudflare-cached-fetch'
+  );
+
+  return cloudflareModule.cloudflareCachedFetch;
+};
+
+// Re-export types
+export type { CachedFetchOptions, CloudflareContext } from './types';

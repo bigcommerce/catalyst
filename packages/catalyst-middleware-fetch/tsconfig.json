@@ -20,7 +20,7 @@
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
     "resolveJsonModule": true,
     "lib": ["esnext", "dom"],
-    "types": ["node"],
+    "types": ["node", "@cloudflare/workers-types"],
     "target": "es2020",
     "module": "esnext"
   },
