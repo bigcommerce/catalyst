@@ -25,6 +25,46 @@ export interface CacheEntry {
   contentType?: string;
 }
 
+/**
+ * Storage adapter types
+ */
+export type StorageAdapter = 'memory' | 'vercel-runtime' | 'upstash' | 'cloudflare';
+
+export interface StorageOptions {
+  /**
+   * Storage adapter to use
+   */
+  adapter?: StorageAdapter;
+  /**
+   * Base prefix for all cache keys
+   */
+  base?: string;
+  /**
+   * Default TTL for cache entries in seconds
+   */
+  ttl?: number;
+  /**
+   * Maximum number of entries for LRU cache (memory adapter only)
+   */
+  maxSize?: number;
+  /**
+   * Upstash Redis configuration (upstash adapter only)
+   */
+  upstash?: {
+    url?: string;
+    token?: string;
+  };
+  /**
+   * Cloudflare context (cloudflare adapter only)
+   */
+  cloudflare?: {
+    ctx?: {
+      waitUntil(promise: Promise<unknown>): void;
+      passThroughOnException(): void;
+    };
+  };
+}
+
 // Module will be imported dynamically, no need for module augmentation here
 
 /**

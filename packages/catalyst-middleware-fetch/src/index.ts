@@ -1,300 +1,487 @@
 /**
  * Catalyst Middleware Fetch
  *
- * A router that selects the appropriate fetch implementation based on the hosting environment.
- * Supports Vercel with cached-middleware-fetch-next, Cloudflare Workers with Cache API, and falls back to memory-cached fetch.
+ * A fetch implementation that uses unstorage for caching across different hosting environments.
+ * Supports LRU memory cache (default), Vercel Runtime Cache, Upstash Redis, and Cloudflare Cache API.
  */
 
-import { cachedFetch as memoryCachedFetch } from './memory-cached-fetch';
-import { type CachedFetchOptions } from './types';
+import { createStorage } from 'unstorage';
+import type { Storage } from 'unstorage';
+import type { CachedFetchOptions, StorageOptions, StorageAdapter, CloudflareContext } from './types';
 
 /**
  * Environment detection utilities
- * @returns {boolean} True if running in Vercel environment
+ * TODO: These detection methods can be refined based on specific deployment needs
  */
 export const isVercelEnvironment = (): boolean => {
-  return process.env.VERCEL === '1';
+  return typeof process !== 'undefined' && process.env.VERCEL === '1';
 };
 
-/**
- * Cloudflare Workers environment detection utilities using feature detection
- * @returns {boolean} True if running in Cloudflare Workers environment
- */
 export const isCloudflareEnvironment = (): boolean => {
-  // Feature detection for Cloudflare Workers Cache API
-  // Reference: https://developers.cloudflare.com/workers/runtime-apis/cache/
   return (
     typeof caches !== 'undefined' &&
     typeof (caches as unknown as { default?: Cache }).default !== 'undefined' &&
     typeof globalThis !== 'undefined' &&
-    // Additional check for Workers-specific globals
     typeof globalThis.fetch !== 'undefined'
   );
 };
 
-/**
- * Type definitions for fetch implementations
- */
-export type FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => Promise<Response>;
+export const isUpstashEnvironment = (): boolean => {
+  return (
+    typeof process !== 'undefined' &&
+    !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN)
+  );
+};
 
-export interface FetchImplementation {
-  fetch: FetchFunction;
-  name: string;
+/**
+ * Detect the best storage adapter for the current environment
+ */
+export const detectStorageAdapter = (): StorageAdapter => {
+  if (isVercelEnvironment()) {
+    return 'vercel-runtime';
+  }
+  if (isUpstashEnvironment()) {
+    return 'upstash';
+  }
+  if (isCloudflareEnvironment()) {
+    return 'cloudflare';
+  }
+  return 'memory';
+};
+
+/**
+ * Generate cache key for requests
+ */
+const generateCacheKey = (input: RequestInfo | URL, init?: CachedFetchOptions): string => {
+  let url: string;
+
+  if (typeof input === 'string') {
+    url = input;
+  } else if (input instanceof URL) {
+    url = input.href;
+  } else {
+    url = input.url;
+  }
+
+  const method = init?.method ?? 'GET';
+  const headers = init?.headers ?? {};
+  const body = init?.body ?? '';
+
+  // Create a normalized key that includes URL, method, headers, and body
+  const normalizedHeaders = Object.keys(headers)
+    .sort()
+    .reduce<Record<string, string>>((acc, key) => {
+      const headerValue = (headers as Record<string, string>)[key];
+      acc[key.toLowerCase()] = headerValue;
+      return acc;
+    }, {});
+
+  const keyData = {
+    url,
+    method: method.toUpperCase(),
+    headers: normalizedHeaders,
+    body: typeof body === 'string' ? body : '',
+  };
+
+  return `fetch:${Buffer.from(JSON.stringify(keyData)).toString('base64')}`;
+};
+
+/**
+ * Convert Headers object to plain object for serialization
+ */
+const headersToObject = (headers: Headers): Record<string, string> => {
+  const obj: Record<string, string> = {};
+  headers.forEach((value, key) => {
+    obj[key] = value;
+  });
+  return obj;
+};
+
+/**
+ * Create a cached response entry
+ */
+interface CachedResponse {
+  data: string; // base64 encoded response body
+  headers: Record<string, string>;
+  status: number;
+  statusText: string;
+  timestamp: number;
+  revalidateAfter?: number;
+  expiresAt?: number;
+  tags?: string[];
+  url: string;
 }
 
 /**
- * Cached fetch implementations to avoid repeated dynamic imports
+ * Cached fetch implementation using unstorage
  */
-let cachedFetchImplementation: FetchImplementation | null = null;
+export class CatalystFetch {
+  private storage: Storage;
+  private revalidationQueue = new Set<string>();
 
-/**
- * Map standard cache values to cached-middleware-fetch-next values
- * @param {RequestCache | undefined} cache - Standard cache value
- * @returns {'auto no cache' | 'no-store' | 'force-cache'} Mapped cache value
- */
-const mapCacheValue = (
-  cache: RequestCache | undefined,
-): 'auto no cache' | 'no-store' | 'force-cache' => {
-  if (cache === 'no-store') {
-    return 'no-store';
+  constructor(storage: Storage) {
+    this.storage = storage;
   }
 
-  if (cache === 'force-cache') {
-    return 'force-cache';
-  }
+  /**
+   * Main fetch method with caching
+   */
+  async fetch(input: RequestInfo | URL, init?: CachedFetchOptions): Promise<Response> {
+    const cacheKey = generateCacheKey(input, init);
+    const now = Date.now();
 
-  return 'auto no cache';
-};
-
-/**
- * Get the appropriate fetch implementation based on the environment
- * @returns {Promise<FetchImplementation>} Promise resolving to the fetch implementation
- */
-export const getFetchImplementation = async (): Promise<FetchImplementation> => {
-  // Return cached implementation if available
-  if (cachedFetchImplementation) {
-    return cachedFetchImplementation;
-  }
-
-  let fetchImpl: FetchImplementation;
-
-  if (isVercelEnvironment()) {
-    try {
-      // Dynamic import for Vercel environment
-      const cachedModule = await import(
-        /* webpackChunkName: "cached-middleware-fetch-next" */ 'cached-middleware-fetch-next'
-      );
-      const vercelFetch = cachedModule.fetch as (
-        input: RequestInfo | URL,
-        init?: CachedFetchOptions,
-      ) => Promise<Response>;
-
-      // Create a wrapper to normalize the interface to standard fetch
-      const normalizedFetch: FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => {
-        // Convert standard RequestInit to CachedFetchOptions if needed
-        const cachedInit: CachedFetchOptions | undefined = init
-          ? {
-              ...init,
-              // Map standard cache values to cached-middleware-fetch-next values
-              cache: mapCacheValue(init.cache),
-            }
-          : undefined;
-
-        return vercelFetch(input, cachedInit);
-      };
-
-      fetchImpl = {
-        fetch: normalizedFetch,
-        name: 'cached-middleware-fetch-next',
-      };
-    } catch {
-      // Fallback to memory cached fetch if cached-middleware-fetch-next fails to load
-      const wrappedMemoryFetch: FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => {
-        const cachedInit: CachedFetchOptions | undefined = init
-          ? {
-              ...init,
-              cache: mapCacheValue(init.cache),
-            }
-          : undefined;
-
-        return memoryCachedFetch(input, cachedInit);
-      };
-
-      fetchImpl = {
-        fetch: wrappedMemoryFetch,
-        name: 'memory-cached-fetch-fallback',
-      };
+    // Handle no-store cache directive
+    if (init?.cache === 'no-store') {
+      return this.performFetch(input, init);
     }
-  } else if (isCloudflareEnvironment()) {
-    try {
-      // Dynamic import for Cloudflare Workers environment
-      /* webpackChunkName: "cloudflare-cached-fetch" */
-      const cloudflareModule = await import(
-        /* webpackChunkName: "cloudflare-cached-fetch" */ './cloudflare-cached-fetch'
-      );
-      const cloudflareCachedFetch = cloudflareModule.cachedFetch;
 
-      // Use Cloudflare Workers Cache API
-      const wrappedCloudflareFetch: FetchFunction = (
-        input: RequestInfo | URL,
-        init?: RequestInit,
-      ) => {
-        const cachedInit: CachedFetchOptions | undefined = init
-          ? {
-              ...init,
-              cache: mapCacheValue(init.cache),
-            }
-          : undefined;
+    // Try to get from cache
+    const cachedEntry = await this.getCachedResponse(cacheKey);
 
-        // Note: CloudflareContext is not available in this context
-        // Individual implementations should pass ctx when available
-        return cloudflareCachedFetch(input, cachedInit);
-      };
+    // Check if we have a valid cached entry
+    if (cachedEntry && this.isCacheEntryValid(cachedEntry, now)) {
+      // Check if we need background revalidation
+      if (this.shouldRevalidate(cachedEntry, now) && !this.revalidationQueue.has(cacheKey)) {
+        this.scheduleBackgroundRevalidation(input, init, cacheKey);
+      }
 
-      fetchImpl = {
-        fetch: wrappedCloudflareFetch,
-        name: 'cloudflare-cache-api',
-      };
-    } catch {
-      // Fallback to memory cached fetch if Cloudflare module fails to load
-      const wrappedMemoryFetch: FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => {
-        const cachedInit: CachedFetchOptions | undefined = init
-          ? {
-              ...init,
-              cache: mapCacheValue(init.cache),
-            }
-          : undefined;
-
-        return memoryCachedFetch(input, cachedInit);
-      };
-
-      fetchImpl = {
-        fetch: wrappedMemoryFetch,
-        name: 'memory-cached-fetch-fallback',
-      };
+      return this.createResponseFromCache(cachedEntry);
     }
-  } else {
-    // Use memory cached fetch for other environments
-    const wrappedMemoryFetch: FetchFunction = (input: RequestInfo | URL, init?: RequestInit) => {
-      const cachedInit: CachedFetchOptions | undefined = init
-        ? {
-            ...init,
-            cache: mapCacheValue(init.cache),
-          }
-        : undefined;
 
-      return memoryCachedFetch(input, cachedInit);
+    // For force-cache, return stale if available
+    if (init?.cache === 'force-cache' && cachedEntry) {
+      return this.createResponseFromCache(cachedEntry);
+    }
+
+    // Perform fresh fetch and cache the result
+    const response = await this.performFetch(input, init);
+    await this.cacheResponse(cacheKey, response, init);
+
+    return response;
+  }
+
+  /**
+   * Clear the cache
+   */
+  async clear(): Promise<void> {
+    await this.storage.clear();
+    this.revalidationQueue.clear();
+  }
+
+  /**
+   * Get cached response from storage
+   */
+  private async getCachedResponse(cacheKey: string): Promise<CachedResponse | null> {
+    try {
+      const cached = await this.storage.getItem<CachedResponse>(cacheKey);
+      return cached;
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * Check if cache entry is still valid
+   */
+  private isCacheEntryValid(entry: CachedResponse, now: number): boolean {
+    return !entry.expiresAt || entry.expiresAt > now;
+  }
+
+  /**
+   * Check if cache entry should be revalidated
+   */
+  private shouldRevalidate(entry: CachedResponse, now: number): boolean {
+    return !!entry.revalidateAfter && entry.revalidateAfter <= now;
+  }
+
+  /**
+   * Schedule background revalidation
+   */
+  private scheduleBackgroundRevalidation(
+    input: RequestInfo | URL,
+    init: CachedFetchOptions | undefined,
+    cacheKey: string,
+  ): void {
+    this.revalidationQueue.add(cacheKey);
+
+    const revalidatePromise = this.performBackgroundRevalidation(input, init, cacheKey);
+
+    // Use waitUntil if available
+    if (typeof globalThis !== 'undefined' && 'waitUntil' in globalThis) {
+      try {
+        globalThis.waitUntil(revalidatePromise);
+      } catch {
+        revalidatePromise.catch(() => {
+          // Silently handle revalidation errors
+        });
+      }
+    } else {
+      revalidatePromise.catch(() => {
+        // Silently handle revalidation errors
+      });
+    }
+  }
+
+  /**
+   * Perform background revalidation
+   */
+  private async performBackgroundRevalidation(
+    input: RequestInfo | URL,
+    init: CachedFetchOptions | undefined,
+    cacheKey: string,
+  ): Promise<void> {
+    try {
+      const response = await this.performFetch(input, init);
+      await this.cacheResponse(cacheKey, response, init);
+    } finally {
+      this.revalidationQueue.delete(cacheKey);
+    }
+  }
+
+  /**
+   * Perform the actual fetch request
+   */
+  private async performFetch(
+    input: RequestInfo | URL,
+    init?: CachedFetchOptions,
+  ): Promise<Response> {
+    // Remove our custom cache options before making the request
+    const { cache: _cache, next: _next, ...fetchInit } = init ?? {};
+    return fetch(input, fetchInit);
+  }
+
+  /**
+   * Cache the response
+   */
+  private async cacheResponse(
+    cacheKey: string,
+    response: Response,
+    init?: CachedFetchOptions,
+  ): Promise<void> {
+    // Only cache successful responses
+    if (!response.ok) {
+      return;
+    }
+
+    const now = Date.now();
+    const headers = headersToObject(response.headers);
+
+    // Read the response body
+    const clonedResponse = response.clone();
+    const arrayBuffer = await clonedResponse.arrayBuffer();
+    const data = Buffer.from(arrayBuffer).toString('base64');
+
+    // Calculate expiration and revalidation times
+    const revalidateTime = init?.next?.revalidate;
+    const expiresTime = init?.next?.expires;
+
+    let revalidateAfter: number | undefined;
+    let expiresAt: number | undefined;
+
+    if (typeof revalidateTime === 'number' && revalidateTime > 0) {
+      revalidateAfter = now + revalidateTime * 1000;
+    }
+
+    if (typeof expiresTime === 'number' && expiresTime > 0) {
+      expiresAt = now + expiresTime * 1000;
+    } else if (typeof revalidateTime === 'number' && revalidateTime > 0) {
+      // Default expires to 24 hours if only revalidate is set
+      expiresAt = now + 24 * 60 * 60 * 1000;
+    }
+
+    const cacheEntry: CachedResponse = {
+      data,
+      headers,
+      status: response.status,
+      statusText: response.statusText,
+      timestamp: now,
+      revalidateAfter,
+      expiresAt,
+      tags: init?.next?.tags,
+      url: response.url,
     };
 
-    fetchImpl = {
-      fetch: wrappedMemoryFetch,
-      name: 'memory-cached-fetch',
-    };
+    try {
+      // Calculate TTL for storage adapters that support it
+      let ttl: number | undefined;
+      if (expiresAt) {
+        ttl = Math.max(1, Math.floor((expiresAt - now) / 1000));
+      }
+
+      await this.storage.setItem(cacheKey, cacheEntry, { ttl });
+    } catch {
+      // Silently handle cache errors
+    }
   }
 
-  // Cache the implementation
-  cachedFetchImplementation = fetchImpl;
+  /**
+   * Create a Response object from cached entry
+   */
+  private createResponseFromCache(entry: CachedResponse): Response {
+    const headers = new Headers(entry.headers);
 
-  return fetchImpl;
+    // Add cache status headers
+    headers.set('X-Cache-Status', this.shouldRevalidate(entry, Date.now()) ? 'STALE' : 'HIT');
+    headers.set('X-Cache-Age', Math.floor((Date.now() - entry.timestamp) / 1000).toString());
+
+    if (entry.expiresAt) {
+      const expiresIn = Math.max(0, Math.floor((entry.expiresAt - Date.now()) / 1000));
+      headers.set('X-Cache-Expires-In', expiresIn.toString());
+    }
+
+    // Decode base64 data back to ArrayBuffer
+    const buffer = Buffer.from(entry.data, 'base64');
+
+    return new Response(buffer, {
+      status: entry.status,
+      statusText: entry.statusText,
+      headers,
+    });
+  }
+}
+
+/**
+ * Create storage with dynamic driver loading
+ */
+export const createCacheStorage = async (options: StorageOptions = {}): Promise<Storage> => {
+  const adapter = options.adapter ?? detectStorageAdapter();
+
+  switch (adapter) {
+    case 'vercel-runtime': {
+      const { default: vercelRuntimeCacheDriver } = await import('unstorage/drivers/vercel-runtime-cache');
+      return createStorage({
+        driver: vercelRuntimeCacheDriver({
+          base: options.base,
+          ttl: options.ttl,
+        }),
+      });
+    }
+
+    case 'upstash': {
+      const { default: upstashDriver } = await import('unstorage/drivers/upstash');
+      return createStorage({
+        driver: upstashDriver({
+          base: options.base,
+          url: options.upstash?.url ?? process.env.UPSTASH_REDIS_REST_URL,
+          token: options.upstash?.token ?? process.env.UPSTASH_REDIS_REST_TOKEN,
+          ttl: options.ttl,
+        }),
+      });
+    }
+
+    case 'cloudflare': {
+      const { default: cloudflareCacheDriver } = await import('./drivers/cloudflare-cache');
+      return createStorage({
+        driver: cloudflareCacheDriver({
+          base: options.base,
+          ttl: options.ttl,
+          ctx: options.cloudflare?.ctx,
+        }),
+      });
+    }
+
+    case 'memory':
+    default: {
+      const { default: lruCacheDriver } = await import('unstorage/drivers/lru-cache');
+      const storage = createStorage({
+        driver: lruCacheDriver({
+          max: options.maxSize ?? 500,
+          ttl: options.ttl ? options.ttl * 1000 : 24 * 60 * 60 * 1000, // Convert to milliseconds for LRU
+        }),
+      });
+
+      // If base is provided, mount the driver at the base path
+      if (options.base) {
+        const baseStorage = createStorage({});
+        baseStorage.mount(options.base, lruCacheDriver({
+          max: options.maxSize ?? 500,
+          ttl: options.ttl ? options.ttl * 1000 : 24 * 60 * 60 * 1000,
+        }));
+        return baseStorage;
+      }
+
+      return storage;
+    }
+  }
 };
 
 /**
- * Get the fetch function directly
- * @returns {Promise<FetchFunction>} Promise resolving to the fetch function
+ * Global fetch instances
  */
-export const getfetch = async (): Promise<FetchFunction> => {
-  const implementation = await getFetchImplementation();
+let defaultCatalystFetch: CatalystFetch | null = null;
 
-  return implementation.fetch;
+/**
+ * Get or create the default fetch implementation
+ */
+export const getDefaultFetch = async (options?: StorageOptions): Promise<CatalystFetch> => {
+  if (!defaultCatalystFetch) {
+    const storage = await createCacheStorage(options);
+    defaultCatalystFetch = new CatalystFetch(storage);
+  }
+  return defaultCatalystFetch;
 };
 
 /**
- * Create a configured fetch instance
- * This function returns a fetch implementation that can be used throughout the application
- * @returns {Promise<FetchFunction>} Promise resolving to the fetch function
+ * Create a new fetch instance with custom options
  */
-export const createFetch = async (): Promise<FetchFunction> => {
-  return await getfetch();
+export const createFetch = async (options?: StorageOptions): Promise<CatalystFetch> => {
+  const storage = await createCacheStorage(options);
+  return new CatalystFetch(storage);
+};
+
+/**
+ * Convenience fetch function using default instance
+ */
+export const cachedFetch = async (
+  input: RequestInfo | URL,
+  init?: CachedFetchOptions,
+  options?: StorageOptions,
+): Promise<Response> => {
+  const catalystFetch = await getDefaultFetch(options);
+  return catalystFetch.fetch(input, init);
 };
 
 /**
  * Environment information for debugging
- * @returns {Promise<object>} Promise resolving to environment information
  */
 export const getEnvironmentInfo = async () => {
-  const implementation = await getFetchImplementation();
-
+  const adapter = detectStorageAdapter();
+  
   return {
+    adapter,
     isVercel: isVercelEnvironment(),
-    fetchImplementation: implementation.name,
+    isCloudflare: isCloudflareEnvironment(),
+    isUpstash: isUpstashEnvironment(),
     environment: {
-      VERCEL: process.env.VERCEL,
-      NODE_ENV: process.env.NODE_ENV,
+      VERCEL: typeof process !== 'undefined' ? process.env.VERCEL : undefined,
+      NODE_ENV: typeof process !== 'undefined' ? process.env.NODE_ENV : undefined,
+      UPSTASH_REDIS_REST_URL: typeof process !== 'undefined' ? !!process.env.UPSTASH_REDIS_REST_URL : undefined,
     },
   };
 };
 
-// Export a default fetch function for convenience
-let defaultFetch: FetchFunction | null = null;
-
 /**
- * Get the default fetch implementation (cached)
- * @returns {Promise<FetchFunction>} Promise resolving to the cached fetch function
- */
-export const getDefaultFetch = async (): Promise<FetchFunction> => {
-  defaultFetch ??= await getfetch();
-
-  return defaultFetch;
-};
-
-/**
- * Reset the cached implementations (useful for testing)
- * @returns {void} void
+ * Reset cached instances (useful for testing)
  */
 export const resetCache = (): void => {
-  cachedFetchImplementation = null;
-  defaultFetch = null;
-};
-
-// Re-export memory cached fetch utilities
-export { memoryCachedFetch, MemoryCachedFetch } from './memory-cached-fetch';
-
-// Dynamic Cloudflare cached fetch utilities
-/**
- * Get Cloudflare cached fetch function (dynamic import)
- * @returns {Promise<Function>} Cloudflare cached fetch function
- */
-export const getCloudflareCachedFetch = async () => {
-  const cloudflareModule = await import(
-    /* webpackChunkName: "cloudflare-cached-fetch" */ './cloudflare-cached-fetch'
-  );
-
-  return cloudflareModule.cachedFetch;
-};
-
-/**
- * Get Cloudflare cached fetch class (dynamic import)
- * @returns {Promise<Function>} Cloudflare cached fetch class
- */
-export const getCloudflareCachedFetchClass = async () => {
-  const cloudflareModule = await import(
-    /* webpackChunkName: "cloudflare-cached-fetch" */ './cloudflare-cached-fetch'
-  );
-
-  return cloudflareModule.CloudflareCachedFetch;
-};
-
-/**
- * Get Cloudflare singleton instance (dynamic import)
- * @returns {Promise<object>} Cloudflare cached fetch instance
- */
-export const getCloudflareCachedFetchInstance = async () => {
-  const cloudflareModule = await import(
-    /* webpackChunkName: "cloudflare-cached-fetch" */ './cloudflare-cached-fetch'
-  );
-
-  return cloudflareModule.cloudflareCachedFetch;
+  defaultCatalystFetch = null;
 };
 
 // Re-export types
-export type { CachedFetchOptions, CloudflareContext } from './types';
+export type { CachedFetchOptions, StorageOptions, StorageAdapter, CloudflareContext } from './types';
+
+// CatalystFetch is already exported above
+
+// Legacy compatibility exports
+export const getFetchImplementation = async (options?: StorageOptions) => {
+  const catalystFetch = await getDefaultFetch(options);
+  return {
+    fetch: catalystFetch.fetch.bind(catalystFetch),
+    name: `catalyst-fetch-${detectStorageAdapter()}`,
+  };
+};
+
+export const getfetch = async (options?: StorageOptions) => {
+  const catalystFetch = await getDefaultFetch(options);
+  return catalystFetch.fetch.bind(catalystFetch);
+};
