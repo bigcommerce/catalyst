@@ -1,6 +1,6 @@
 {
   "name": "@bigcommerce/catalyst-middleware-fetch",
-  "description": "BigCommerce Fetch middleware for Catalyst that enables caching of API responses in Next.js middleware across several hosting providers.",
+  "description": "BigCommerce Fetch middleware for Catalyst powered by unstorage. Provides caching across multiple hosting providers with support for LRU memory, Vercel Runtime Cache, Upstash, and Cloudflare Cache API. Easily extensible with additional unstorage drivers.",
   "version": "0.0.1",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

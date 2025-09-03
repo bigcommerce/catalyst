@@ -342,6 +342,11 @@ export class CatalystFetch {
 
 /**
  * Create storage with dynamic driver loading
+ * 
+ * Note: To extend with additional unstorage drivers (Redis, MongoDB, etc.),
+ * customers can create their own factory function that handles additional
+ * adapter types and falls back to this function for built-in adapters.
+ * See README.md for examples.
  */
 export const createCacheStorage = async (options: StorageOptions = {}): Promise<Storage> => {
   const adapter = options.adapter ?? detectStorageAdapter();

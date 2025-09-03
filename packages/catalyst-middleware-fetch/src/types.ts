@@ -27,6 +27,11 @@ export interface CacheEntry {
 
 /**
  * Storage adapter types
+ * 
+ * Note: To extend with additional adapters, customers can create their own
+ * union type that includes these base adapters plus custom ones:
+ * 
+ * type ExtendedStorageAdapter = StorageAdapter | 'redis' | 'mongodb' | 'filesystem';
  */
 export type StorageAdapter = 'memory' | 'vercel-runtime' | 'upstash' | 'cloudflare';
 
