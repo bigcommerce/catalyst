@@ -17,12 +17,9 @@ import { getCartId } from '~/lib/cart';
 import { ADDRESS_FIELDS_NAME_PREFIX, CUSTOMER_FIELDS_NAME_PREFIX } from './prefixes';
 
 const RegisterCustomerMutation = graphql(`
-  mutation RegisterCustomerMutation(
-    $input: RegisterCustomerInput!
-    $reCaptchaV2: ReCaptchaV2Input
-  ) {
+  mutation RegisterCustomerMutation($input: RegisterCustomerInput!) {
     customer {
-      registerCustomer(input: $input, reCaptchaV2: $reCaptchaV2) {
+      registerCustomer(input: $input) {
         customer {
           firstName
           lastName
@@ -360,7 +357,6 @@ export async function registerCustomer<F extends Field>(
       document: RegisterCustomerMutation,
       variables: {
         input,
-        // ...(recaptchaToken && { reCaptchaV2: { token: recaptchaToken } }),
       },
       fetchOptions: { cache: 'no-store' },
     });
