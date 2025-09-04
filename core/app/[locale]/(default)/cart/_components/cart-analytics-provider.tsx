@@ -32,7 +32,7 @@ export function CartAnalyticsProvider(
   );
 }
 
-export function CartAnalyticsProviderResolved({
+function CartAnalyticsProviderResolved({
   children,
   data,
 }: PropsWithChildren<{ data: Streamable<AddToCartContext[]> }>) {

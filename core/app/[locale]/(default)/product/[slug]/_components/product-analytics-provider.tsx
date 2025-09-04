@@ -30,7 +30,7 @@ export function ProductAnalyticsProvider(
   );
 }
 
-export function ProductAnalyticsProviderResolved({
+function ProductAnalyticsProviderResolved({
   children,
   data,
 }: PropsWithChildren<{ data: Streamable<AddToCartContext> }>) {
