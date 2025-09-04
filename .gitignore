@@ -5,7 +5,7 @@ dist
 !.vscode/settings.example.json
 !.vscode/launch.example.json
 .idea
-.vercel
+.
 .catalyst
 .env
 .env*.local
@@ -21,3 +21,4 @@ coverage/
 .history
 .unlighthouse
 .bigcommerce
+.vercel
