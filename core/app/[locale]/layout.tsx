@@ -18,6 +18,7 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
 import { AnalyticsProvider } from '~/components/analytics/provider';
+import { HighlightWrapper } from '~/components/highlight-wrapper';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
@@ -120,18 +121,20 @@ export default async function RootLayout({ params, children }: Props) {
         />
       </head>
       <body className="flex min-h-screen flex-col">
-        <NextIntlClientProvider>
-          <NuqsAdapter>
-            <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
-              <Providers>
-                {toastNotificationCookieData && (
-                  <CookieNotifications {...toastNotificationCookieData} />
-                )}
-                {children}
-              </Providers>
-            </AnalyticsProvider>
-          </NuqsAdapter>
-        </NextIntlClientProvider>
+        <HighlightWrapper>
+          <NextIntlClientProvider>
+            <NuqsAdapter>
+              <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
+                <Providers>
+                  {toastNotificationCookieData && (
+                    <CookieNotifications {...toastNotificationCookieData} />
+                  )}
+                  {children}
+                </Providers>
+              </AnalyticsProvider>
+            </NuqsAdapter>
+          </NextIntlClientProvider>
+        </HighlightWrapper>
         <VercelComponents />
         <ContainerQueryPolyfill />
         <ScriptManagerScripts scripts={data.site.content.footerScripts} strategy="lazyOnload" />
