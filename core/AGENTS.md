@@ -50,7 +50,7 @@ A custom `Streamable` utility provides suspense-friendly data fetching that work
 
 ### Centralized Client Configuration
 
-All interactions with the BigCommerce API should use the centralized GraphQL client. This client provides:
+All interactions with the BigCommerce Storefront GraphQL API should use the centralized GraphQL client. This client provides:
 
 - Automatic channel ID resolution based on locale
 - Proper authentication token handling  
