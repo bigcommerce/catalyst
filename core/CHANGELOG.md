@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.2.0
+
+### Minor Changes
+
+- [#2546](https://github.com/bigcommerce/catalyst/pull/2546) [`63d2dd7`](https://github.com/bigcommerce/catalyst/commit/63d2dd70d8054344d8ad35bafc0e38661ea2d247) Thanks [@bookernath](https://github.com/bookernath)! - Bump Makeswift runtime to 0.25.0 for Next v15.5 compatibility
+
+- [#2568](https://github.com/bigcommerce/catalyst/pull/2568) [`4145846`](https://github.com/bigcommerce/catalyst/commit/4145846667bfe8c3976271e6e50b5c3ec462dc1c) Thanks [@hunterbecton](https://github.com/hunterbecton)! - Now have the ability to make footer links open in new tabs
+
+- [#2582](https://github.com/bigcommerce/catalyst/pull/2582) [`b3c7bbf`](https://github.com/bigcommerce/catalyst/commit/b3c7bbfcda943332fd6d8488289b7d7f417ff38c) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Includes all changes included in the [1.2.0 release](https://github.com/bigcommerce/catalyst/blob/bb7940cedd169f053d55b787cc2b7183f737edba/core/CHANGELOG.md?plain=1#L3) of `@bigcommerce/catalyst-core`
+
 ## 1.0.1
 
 ### Patch Changes
