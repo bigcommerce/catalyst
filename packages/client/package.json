@@ -19,6 +19,9 @@
     "@0no-co/graphql.web": "^1.1.2",
     "std-env": "^3.9.0"
   },
+  "optionalDependencies": {
+    "@opentelemetry/api": "^1.9.0"
+  },
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",

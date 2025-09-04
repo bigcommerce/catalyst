@@ -7,6 +7,17 @@ import { getOperationInfo } from './utils/getOperationName';
 import { normalizeQuery } from './utils/normalizeQuery';
 import { getBackendUserAgent } from './utils/userAgent';
 
+// Edge-compatible OpenTelemetry imports
+let trace: any = null;
+let context: any = null;
+try {
+  const otel = require('@opentelemetry/api');
+  trace = otel.trace;
+  context = otel.context;
+} catch {
+  // OpenTelemetry not available - continue without tracing
+}
+
 export const graphqlApiDomain: string =
   process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
 
@@ -130,27 +141,63 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
     const { headers: additionalFetchHeaders = {}, ...additionalFetchOptions } =
       (await this.beforeRequest?.(fetchOptions)) ?? {};
 
-    const response = await fetch(graphqlUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${this.config.storefrontToken}`,
-        'User-Agent': this.backendUserAgent,
-        ...(customerAccessToken && { 'X-Bc-Customer-Access-Token': customerAccessToken }),
-        ...(validateCustomerAccessToken && {
-          'X-Bc-Error-On-Invalid-Customer-Access-Token': 'true',
+    const resolvedChannelId = channelId ?? (await this.getChannelId(this.defaultChannelId));
+
+    // Create span for GraphQL operation if tracing is available
+    const spanName = `GraphQL ${operationInfo.type}: ${operationInfo.name || 'anonymous'}`;
+    const tracer = trace?.getTracer('@bigcommerce/catalyst-client');
+    
+    const executeRequest = async () => {
+      return fetch(graphqlUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.config.storefrontToken}`,
+          'User-Agent': this.backendUserAgent,
+          ...(customerAccessToken && { 'X-Bc-Customer-Access-Token': customerAccessToken }),
+          ...(validateCustomerAccessToken && {
+            'X-Bc-Error-On-Invalid-Customer-Access-Token': 'true',
+          }),
+          ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
+          ...Object.fromEntries(new Headers(additionalFetchHeaders).entries()),
+          ...Object.fromEntries(new Headers(headers).entries()),
+        },
+        body: JSON.stringify({
+          query,
+          ...(variables && { variables }),
         }),
-        ...(this.trustedProxySecret && { 'X-BC-Trusted-Proxy-Secret': this.trustedProxySecret }),
-        ...Object.fromEntries(new Headers(additionalFetchHeaders).entries()),
-        ...Object.fromEntries(new Headers(headers).entries()),
-      },
-      body: JSON.stringify({
-        query,
-        ...(variables && { variables }),
-      }),
-      ...additionalFetchOptions,
-      ...rest,
-    });
+        ...additionalFetchOptions,
+        ...rest,
+      });
+    };
+
+    const response = tracer
+      ? await tracer.startActiveSpan(spanName, {
+          attributes: {
+            'graphql.operation.type': operationInfo.type,
+            'graphql.operation.name': operationInfo.name || 'anonymous',
+            'bigcommerce.channel.id': resolvedChannelId,
+            'bigcommerce.store.hash': this.config.storeHash,
+            'http.method': 'POST',
+            'http.url': graphqlUrl,
+          },
+        }, async (span: any) => {
+          try {
+            const result = await executeRequest();
+            span.setAttributes({
+              'http.status_code': result.status,
+              'http.response.size': result.headers.get('content-length') || undefined,
+            });
+            return result;
+          } catch (error) {
+            span.recordException(error as Error);
+            span.setStatus({ code: 2, message: (error as Error).message }); // ERROR status
+            throw error;
+          } finally {
+            span.end();
+          }
+        })
+      : await executeRequest();
 
     if (!response.ok) {
       throw await BigCommerceAPIError.createFromResponse(response);
