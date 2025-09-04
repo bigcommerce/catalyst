@@ -11,7 +11,7 @@ export interface Breadcrumb {
   href: string;
 }
 
-export interface BreadcrumbsProps {
+interface BreadcrumbsProps {
   breadcrumbs: Streamable<Breadcrumb[]>;
   className?: string;
 }

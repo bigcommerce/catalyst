@@ -19,12 +19,12 @@ export interface Order {
   lineItems: OrderLineItem[];
 }
 
-export interface OrderLineItem extends Product {
+interface OrderLineItem extends Product {
   price: string;
   totalPrice: string;
 }
 
-export interface OrderListProps {
+interface OrderListProps {
   className?: string;
   title?: string;
   orders: Streamable<Order[]>;

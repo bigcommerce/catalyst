@@ -321,11 +321,4 @@ function CarouselScrollbar({
   );
 }
 
-export {
-  type CarouselApi,
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselButtons,
-  CarouselScrollbar,
-};
+export { Carousel, CarouselContent, CarouselItem, CarouselButtons, CarouselScrollbar };

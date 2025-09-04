@@ -1,7 +1,7 @@
 import { clsx } from 'clsx';
 import { ReactNode } from 'react';
 
-export interface SectionLayoutProps {
+interface SectionLayoutProps {
   className?: string;
   children: ReactNode;
   containerSize?: 'md' | 'lg' | 'xl' | '2xl' | 'full';

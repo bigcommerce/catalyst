@@ -109,7 +109,7 @@ interface CompareDrawerItem {
   title: string;
 }
 
-export interface CompareDrawerProps {
+interface CompareDrawerProps {
   href?: string;
   paramName?: string;
   submitLabel?: string;

@@ -16,7 +16,7 @@ interface Link {
   label: string;
 }
 
-export interface Section {
+interface Section {
   title?: string;
   links: Link[];
 }
@@ -31,7 +31,7 @@ interface ContactInformation {
   phone?: string;
 }
 
-export interface FooterProps {
+interface FooterProps {
   logo: Streamable<string | Image>;
   sections: Streamable<Section[]>;
   copyright?: Streamable<string>;

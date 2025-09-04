@@ -1,7 +1,7 @@
 import { ChangePasswordAction, ChangePasswordForm } from './change-password-form';
 import { Account, UpdateAccountAction, UpdateAccountForm } from './update-account-form';
 
-export interface AccountSettingsSectionProps {
+interface AccountSettingsSectionProps {
   title?: string;
   account: Account;
   updateAccountAction: UpdateAccountAction;

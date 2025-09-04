@@ -38,12 +38,12 @@ export interface CartLineItem {
   price: string;
 }
 
-export interface CartSummaryItem {
+interface CartSummaryItem {
   label: string;
   value: string;
 }
 
-export interface CartState<LineItem extends CartLineItem> {
+interface CartState<LineItem extends CartLineItem> {
   lineItems: LineItem[];
   lastResult: SubmissionResult | null;
 }

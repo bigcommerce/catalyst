@@ -7,7 +7,7 @@ const components = {
   Chevron: () => <ChevronLeftIcon className="h-5 w-5" strokeWidth={1} />,
 };
 
-export type CalendarProps = ComponentPropsWithoutRef<typeof DayPicker> & {
+type CalendarProps = ComponentPropsWithoutRef<typeof DayPicker> & {
   colorScheme?: 'light' | 'dark';
 };
 

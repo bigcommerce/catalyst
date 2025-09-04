@@ -4,7 +4,7 @@ import * as AccordionPrimitive from '@radix-ui/react-accordion';
 import { clsx } from 'clsx';
 import { ComponentPropsWithoutRef, useEffect, useState } from 'react';
 
-export interface AccordionProps extends ComponentPropsWithoutRef<typeof AccordionPrimitive.Item> {
+interface AccordionProps extends ComponentPropsWithoutRef<typeof AccordionPrimitive.Item> {
   colorScheme?: 'light' | 'dark';
 }
 

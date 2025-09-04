@@ -4,7 +4,7 @@ import { Button } from '@/vibes/soul/primitives/button';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
 import { useSearch } from '~/lib/search';
 
-export interface NotFoundProps {
+interface NotFoundProps {
   title?: string;
   subtitle?: string;
   ctaLabel?: string;

@@ -1,6 +1,6 @@
 import { clsx } from 'clsx';
 
-export interface BadgeProps {
+interface BadgeProps {
   children: string;
   shape?: 'pill' | 'rounded';
   variant?: 'primary' | 'warning' | 'error' | 'success' | 'info';

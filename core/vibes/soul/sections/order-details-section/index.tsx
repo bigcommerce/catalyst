@@ -74,7 +74,7 @@ export interface Order {
   summary: Summary;
 }
 
-export interface OrderDetailsSectionProps {
+interface OrderDetailsSectionProps {
   order: Streamable<Order>;
   title?: string;
   orderSummaryLabel?: string;

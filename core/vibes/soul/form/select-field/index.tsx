@@ -7,7 +7,7 @@ import { FieldError } from '@/vibes/soul/form/field-error';
 import { Label } from '@/vibes/soul/form/label';
 import { Select, type SelectProps } from '@/vibes/soul/primitives/select';
 
-export interface SelectFieldProps extends SelectProps {
+interface SelectFieldProps extends SelectProps {
   label: string;
   name: string;
   value: string;

@@ -1,6 +1,6 @@
 import { clsx } from 'clsx';
 
-export interface AnimatedUnderlineProps {
+interface AnimatedUnderlineProps {
   children: string;
   className?: string;
 }

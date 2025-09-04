@@ -2,7 +2,7 @@ import * as Toggle from '@radix-ui/react-toggle';
 
 import { Heart } from '@/vibes/soul/primitives/favorite/heart';
 
-export interface FavoriteProps {
+interface FavoriteProps {
   label?: string;
   checked?: boolean;
   setChecked?: (liked: boolean) => void;

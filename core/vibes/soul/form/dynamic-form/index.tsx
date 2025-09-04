@@ -40,7 +40,7 @@ interface State<F extends Field> {
 
 export type DynamicFormAction<F extends Field> = Action<State<F>, FormData>;
 
-export interface DynamicFormProps<F extends Field> {
+interface DynamicFormProps<F extends Field> {
   fields: Array<F | FieldGroup<F>>;
   action: DynamicFormAction<F>;
   buttonSize?: ButtonProps['size'];

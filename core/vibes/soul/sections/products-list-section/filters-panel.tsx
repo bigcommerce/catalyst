@@ -20,27 +20,27 @@ import { Link } from '~/components/link';
 
 import { getFilterParsers } from './filter-parsers';
 
-export interface LinkGroupFilter {
+interface LinkGroupFilter {
   type: 'link-group';
   label: string;
   links: Array<{ label: string; href: string }>;
 }
 
-export interface ToggleGroupFilter {
+interface ToggleGroupFilter {
   type: 'toggle-group';
   paramName: string;
   label: string;
   options: Array<{ label: string; value: string; disabled?: boolean }>;
 }
 
-export interface RatingFilter {
+interface RatingFilter {
   type: 'rating';
   paramName: string;
   label: string;
   disabled?: boolean;
 }
 
-export interface RangeFilter {
+interface RangeFilter {
   type: 'range';
   label: string;
   minParamName: string;

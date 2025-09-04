@@ -23,7 +23,7 @@ interface State {
   lastResult: SubmissionResult | null;
 }
 
-export interface UpdateAccountFormProps {
+interface UpdateAccountFormProps {
   action: UpdateAccountAction;
   account: Account;
   firstNameLabel?: string;

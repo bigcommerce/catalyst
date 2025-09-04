@@ -38,7 +38,7 @@ interface State<A extends Address, F extends Field> {
   fields: Array<F | FieldGroup<F>>;
 }
 
-export interface AddressListSectionProps<A extends Address, F extends Field> {
+interface AddressListSectionProps<A extends Address, F extends Field> {
   title?: string;
   addresses: A[];
   fields: Array<F | FieldGroup<F>>;

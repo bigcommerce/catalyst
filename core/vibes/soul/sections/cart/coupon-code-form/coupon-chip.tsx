@@ -5,7 +5,7 @@ import { Chip } from '@/vibes/soul/primitives/chip';
 
 import { couponCodeActionFormDataSchema } from '../schema';
 
-export interface CouponChipProps {
+interface CouponChipProps {
   action: (payload: FormData) => void;
   onSubmit: (formData: FormData) => void;
   couponCode: string;

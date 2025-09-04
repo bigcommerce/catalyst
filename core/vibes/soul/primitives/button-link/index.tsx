@@ -3,7 +3,7 @@ import { ComponentPropsWithoutRef } from 'react';
 
 import { Link } from '~/components/link';
 
-export interface ButtonLinkProps extends ComponentPropsWithoutRef<typeof Link> {
+interface ButtonLinkProps extends ComponentPropsWithoutRef<typeof Link> {
   variant?: 'primary' | 'secondary' | 'tertiary' | 'ghost';
   size?: 'large' | 'medium' | 'small' | 'x-small';
   shape?: 'pill' | 'rounded' | 'square' | 'circle';

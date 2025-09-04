@@ -21,7 +21,7 @@ export interface CompareProduct extends Product {
   isPreorder?: boolean;
 }
 
-export interface CompareCardProps {
+interface CompareCardProps {
   className?: string;
   product: CompareProduct;
   addToCartLabel?: string;

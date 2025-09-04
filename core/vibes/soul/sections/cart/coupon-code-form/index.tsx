@@ -20,7 +20,7 @@ export interface CouponCodeFormState {
   lastResult: SubmissionResult | null;
 }
 
-export interface CouponCodeFormProps {
+interface CouponCodeFormProps {
   action: Action<CouponCodeFormState, FormData>;
   couponCodes?: string[];
   ctaLabel?: string;

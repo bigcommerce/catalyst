@@ -8,7 +8,7 @@ import { ComponentPropsWithoutRef, ReactNode, useId } from 'react';
 
 import { FieldError } from '@/vibes/soul/form/field-error';
 
-export interface CheckboxProps extends ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> {
+interface CheckboxProps extends ComponentPropsWithoutRef<typeof CheckboxPrimitive.Root> {
   label?: ReactNode;
   errors?: string[];
   colorScheme?: 'light' | 'dark';

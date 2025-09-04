@@ -18,7 +18,7 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 
 export type CarouselProduct = Product;
 
-export interface ProductCarouselProps {
+interface ProductCarouselProps {
   products: Streamable<CarouselProduct[]>;
   className?: string;
   colorScheme?: 'light' | 'dark';

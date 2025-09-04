@@ -139,7 +139,7 @@ export type Field =
 
 export type FieldGroup<F> = F[];
 
-export type SchemaRawShape = Record<
+type SchemaRawShape = Record<
   string,
   | z.ZodString
   | z.ZodOptional<z.ZodString>

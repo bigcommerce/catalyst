@@ -32,7 +32,7 @@ interface ProductDetailProduct {
   maxQuantity?: Streamable<number | null>;
 }
 
-export interface ProductDetailProps<F extends Field> {
+interface ProductDetailProps<F extends Field> {
   breadcrumbs?: Streamable<Breadcrumb[]>;
   product: Streamable<ProductDetailProduct | null>;
   action: ProductDetailFormAction<F>;

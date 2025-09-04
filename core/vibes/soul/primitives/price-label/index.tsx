@@ -1,12 +1,12 @@
 import { clsx } from 'clsx';
 
-export interface PriceRange {
+interface PriceRange {
   type: 'range';
   minValue: string;
   maxValue: string;
 }
 
-export interface PriceSale {
+interface PriceSale {
   type: 'sale';
   previousValue: string;
   currentValue: string;

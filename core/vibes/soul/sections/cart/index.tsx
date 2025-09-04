@@ -27,7 +27,7 @@ export function Cart<LineItem extends CartLineItem>({
   );
 }
 
-export interface CartSkeletonProps {
+interface CartSkeletonProps {
   className?: string;
   placeholderCount?: number;
   summaryPlaceholderCount?: number;

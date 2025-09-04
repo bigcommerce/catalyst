@@ -44,7 +44,7 @@ interface State<F extends Field> {
 
 export type ProductDetailFormAction<F extends Field> = Action<State<F>, FormData>;
 
-export interface ProductDetailFormProps<F extends Field> {
+interface ProductDetailFormProps<F extends Field> {
   fields: F[];
   action: ProductDetailFormAction<F>;
   productId: string;

@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 import { Image } from '~/components/image';
 
-export interface ProductGalleryProps {
+interface ProductGalleryProps {
   images: Array<{ alt: string; src: string }>;
   className?: string;
   thumbnailLabel?: string;

@@ -9,7 +9,7 @@ interface Link {
   href: string;
 }
 
-export interface FeaturedProductCarouselProps {
+interface FeaturedProductCarouselProps {
   title: string;
   description?: string;
   cta?: Link;

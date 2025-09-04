@@ -6,7 +6,7 @@ import { ReactNode, useEffect, useRef, useState } from 'react';
 import { AnimatedUnderline } from '@/vibes/soul/primitives/animated-underline';
 import { Button } from '@/vibes/soul/primitives/button';
 
-export interface RevealProps {
+interface RevealProps {
   variant?: 'underline' | 'button';
   showLabel?: string;
   hideLabel?: string;

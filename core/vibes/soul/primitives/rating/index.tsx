@@ -1,6 +1,6 @@
 import { clsx } from 'clsx';
 
-export interface Props {
+interface Props {
   showRating?: boolean;
   rating: number;
   className?: string;

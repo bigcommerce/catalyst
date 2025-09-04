@@ -20,7 +20,7 @@ interface State {
 
 export type ChangePasswordAction = Action<State, FormData>;
 
-export interface ChangePasswordFormProps {
+interface ChangePasswordFormProps {
   action: ChangePasswordAction;
   currentPasswordLabel?: string;
   newPasswordLabel?: string;
