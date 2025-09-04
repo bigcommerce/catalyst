@@ -2,7 +2,9 @@
   "name": "@bigcommerce/catalyst",
   "version": "0.1.0",
   "type": "module",
-  "bin": "dist/index.js",
+  "bin": {
+    "catalyst": "dist/index.js"
+  },
   "files": [
     "dist",
     "templates"
@@ -22,11 +24,13 @@
     "node": "^20.0.0 || ^22.0.0"
   },
   "dependencies": {
+    "@segment/analytics-node": "^2.2.1",
     "adm-zip": "^0.5.16",
-    "chalk": "^5.3.0",
     "commander": "^14.0.0",
+    "conf": "^13.1.0",
     "consola": "^3.4.2",
-    "nypm": "^0.6.0",
+    "execa": "^9.6.0",
+    "yocto-spinner": "^1.0.0",
     "zod": "^4.0.5"
   },
   "devDependencies": {
@@ -43,5 +47,8 @@
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
+  },
+  "peerDependencies": {
+    "@opennextjs/cloudflare": "^1.6.5"
   }
 }

@@ -1,93 +1,126 @@
-import { Command } from 'commander';
+import { Command, Option } from 'commander';
 import consola from 'consola';
-import { cp } from 'node:fs/promises';
-import { join, relative, sep } from 'node:path';
-import { addDevDependency, installDependencies, runScript } from 'nypm';
+import { execa } from 'execa';
+import { existsSync } from 'node:fs';
+import { copyFile, cp, rm, writeFile } from 'node:fs/promises';
+import { join } from 'node:path';
 
 import { getModuleCliPath } from '../lib/get-module-cli-path';
-import { mkTempDir } from '../lib/mk-temp-dir';
+import { getProjectConfig } from '../lib/project-config';
+import { getWranglerConfig } from '../lib/wrangler-config';
 
-const OPENNEXTJS_CLOUDFLARE_VERSION = '1.5.2';
-
-const SKIP_DIRS = new Set([
-  'node_modules',
-  '.bigcommerce',
-  '.git',
-  '.turbo',
-  '.next',
-  '.vscode',
-  '.github',
-  '.changeset',
-  'dist',
-]);
-
-export function createFilter(root: string, skipDirs: Set<string>) {
-  return (src: string) => {
-    const rel = relative(root, src);
-    const parts = rel.split(sep);
-
-    return !parts.some((part) => skipDirs.has(part));
-  };
-}
+const WRANGLER_VERSION = '4.24.3';
 
 export const build = new Command('build')
-  .option('--keep-temp-dir', 'Keep the temporary directory after the build')
-  .action(async (options) => {
-    const [tmpDir, rmTempDir] = await mkTempDir('catalyst-build-');
+  .allowUnknownOption()
+  // The unknown options end up in program.args, not in program.opts(). Commander does not take a guess at how to interpret the unknown options.
+  .argument(
+    '[next-build-options...]',
+    'Next.js `build` options (see: https://nextjs.org/docs/app/api-reference/cli/next#next-build-options)',
+  )
+  .addOption(
+    new Option(
+      '--project-uuid <uuid>',
+      'Project UUID to be included in the deployment configuration.',
+    ).env('BIGCOMMERCE_PROJECT_UUID'),
+  )
+  .addOption(
+    new Option('--framework <framework>', 'The framework to use for the build.').choices([
+      'nextjs',
+      'catalyst',
+    ]),
+  )
+  .action(async (nextBuildOptions, options) => {
+    const coreDir = process.cwd();
 
     try {
-      consola.start('Copying project to temp directory...');
+      const config = getProjectConfig();
+      const framework = options.framework ?? config.get('framework');
 
-      const cwd = process.cwd();
-      const packageManager = 'pnpm';
+      if (framework === 'nextjs') {
+        const nextBin = join('node_modules', '.bin', 'next');
 
-      await cp(cwd, tmpDir, {
-        recursive: true,
-        force: true,
-        preserveTimestamps: true,
-        filter: createFilter(cwd, SKIP_DIRS),
-      });
+        if (!existsSync(nextBin)) {
+          throw new Error(
+            `Next.js is not installed in ${coreDir}. Are you in a valid Next.js project?`,
+          );
+        }
 
-      consola.success(`Project copied to temp directory: ${tmpDir}`);
+        await execa(nextBin, ['build', ...nextBuildOptions], {
+          stdio: 'inherit',
+          cwd: coreDir,
+        });
+      }
 
-      consola.start('Installing dependencies...');
+      if (framework === 'catalyst') {
+        const openNextOutDir = join(coreDir, '.open-next');
+        const bigcommerceDistDir = join(coreDir, '.bigcommerce', 'dist');
 
-      await installDependencies({
-        cwd: tmpDir,
-        packageManager,
-      });
+        const projectUuid = options.projectUuid ?? config.get('projectUuid');
 
-      await addDevDependency(`@opennextjs/cloudflare@${OPENNEXTJS_CLOUDFLARE_VERSION}`, {
-        cwd: join(tmpDir, 'core'),
-        packageManager,
-      });
+        if (!projectUuid) {
+          throw new Error(
+            'Project UUID is required. Please run `link` or provide `--project-uuid`',
+          );
+        }
 
-      consola.success('Dependencies installed');
+        const wranglerConfig = getWranglerConfig(projectUuid, 'PLACEHOLDER_KV_ID');
 
-      consola.start('Building dependencies...');
+        consola.start('Copying templates...');
 
-      await runScript('build', {
-        cwd: join(tmpDir, 'packages', 'client'),
-        packageManager,
-      });
+        await copyFile(
+          join(getModuleCliPath(), 'templates', 'open-next.config.ts'),
+          join(coreDir, 'open-next.config.ts'),
+        );
+        await writeFile(
+          join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
+          JSON.stringify(wranglerConfig, null, 2),
+        );
 
-      consola.success('Dependencies built');
+        consola.success('Templates copied');
 
-      consola.start('Copying templates...');
+        consola.start('Building project...');
 
-      await cp(join(getModuleCliPath(), 'templates'), join(tmpDir, 'core'), {
-        recursive: true,
-        force: true,
-      });
+        await execa(
+          'pnpm',
+          ['exec', 'opennextjs-cloudflare', 'build', '--skipWranglerConfigCheck'],
+          {
+            stdout: ['pipe', 'inherit'],
+            cwd: coreDir,
+          },
+        );
 
-      consola.success('Templates copied');
+        await execa(
+          'pnpm',
+          [
+            'dlx',
+            `wrangler@${WRANGLER_VERSION}`,
+            'deploy',
+            '--config',
+            join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
+            '--keep-vars',
+            '--outdir',
+            bigcommerceDistDir,
+            '--dry-run',
+          ],
+          {
+            stdout: ['pipe', 'inherit'],
+            cwd: coreDir,
+          },
+        );
+
+        consola.success('Project built');
+
+        await cp(join(openNextOutDir, 'assets'), join(bigcommerceDistDir, 'assets'), {
+          recursive: true,
+          force: true,
+        });
+      }
     } catch (error) {
       consola.error(error);
       process.exitCode = 1;
     } finally {
-      if (!options.keepTempDir) {
-        await rmTempDir();
-      }
+      await rm(join(coreDir, '.open-next.config.ts')).catch(() => null);
 
       process.exit();
     }

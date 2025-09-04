@@ -13,6 +13,7 @@ import { updateCouponCode } from './_actions/update-coupon-code';
 import { updateLineItem } from './_actions/update-line-item';
 import { updateShippingInfo } from './_actions/update-shipping-info';
 import { CartViewed } from './_components/cart-viewed';
+import { CheckoutPreconnect } from './_components/checkout-preconnect';
 import { getCart, getShippingCountries } from './page-data';
 
 interface Props {
@@ -153,10 +154,13 @@ export default async function Cart({ params }: Props) {
   const showShippingForm =
     shippingConsignment?.address && !shippingConsignment.selectedShippingOption;
 
+  const checkoutUrl = data.site.settings?.url.checkoutUrl;
+
   return (
     <>
       <Slot label="Cart top content" snapshotId="cart-top-content" />
       <CartAnalyticsProvider data={Streamable.from(() => getAnalyticsData(cartId))}>
+        {checkoutUrl ? <CheckoutPreconnect url={checkoutUrl} /> : null}
         <CartComponent
           cart={{
             lineItems: formattedLineItems,
@@ -219,6 +223,7 @@ export default async function Cart({ params }: Props) {
           incrementLineItemLabel={t('increment')}
           key={`${cart.entityId}-${cart.version}`}
           lineItemAction={updateLineItem}
+          lineItemActionPendingLabel={t('cartUpdateInProgress')}
           shipping={{
             action: updateShippingInfo,
             countries,
