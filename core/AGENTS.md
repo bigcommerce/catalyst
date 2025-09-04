@@ -40,7 +40,7 @@ A custom `Streamable` utility provides suspense-friendly data fetching that work
 
 ### Data Fetching Best Practices
 
-1. **Use React's `cache()` function** for server-side data fetching to ensure deduplication.
+1. **Use React's `cache()` function** for server-side data fetching to memoize function results and prevent repeated fetches or computations **per request** (React will invalidate the cache for all memoized functions for each server request).
 
 2. **Implement proper cache strategies** based on whether user authentication is present.
 
