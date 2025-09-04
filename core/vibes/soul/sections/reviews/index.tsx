@@ -112,7 +112,7 @@ export function Reviews({
   );
 }
 
-export function ReviewsEmptyState({
+function ReviewsEmptyState({
   message = 'No reviews have been added for this product',
   reviewsLabel = 'Reviews',
 }: {
@@ -141,7 +141,7 @@ export function ReviewsEmptyState({
   );
 }
 
-export function ReviewsSkeleton({ reviewsLabel = 'Reviews' }: { reviewsLabel?: string }) {
+function ReviewsSkeleton({ reviewsLabel = 'Reviews' }: { reviewsLabel?: string }) {
   return (
     <StickySidebarLayout
       sidebar={

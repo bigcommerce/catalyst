@@ -97,7 +97,7 @@ export function BreadcrumbsSkeleton({ className }: Pick<BreadcrumbsProps, 'class
   );
 }
 
-export function BreadCrumbEmptyState({ className }: Pick<BreadcrumbsProps, 'className'>) {
+function BreadCrumbEmptyState({ className }: Pick<BreadcrumbsProps, 'className'>) {
   return (
     <Skeleton.Root className={className}>
       <div className={clsx('min-h-[1lh]', className)} />
