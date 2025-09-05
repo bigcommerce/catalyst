@@ -332,7 +332,7 @@ function ProductAccordionsSkeleton() {
   );
 }
 
-export function ProductDetailSkeleton() {
+function ProductDetailSkeleton() {
   return (
     <Skeleton.Root
       className="grid grid-cols-1 items-stretch gap-x-6 gap-y-8 group-has-[[data-pending]]/product-detail:animate-pulse @2xl:grid-cols-2 @5xl:gap-x-12"

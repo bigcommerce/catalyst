@@ -131,7 +131,7 @@ function SkeletonLink({ children }: { children: React.ReactNode }) {
   );
 }
 
-export function CursorPaginationSkeleton() {
+function CursorPaginationSkeleton() {
   return (
     <div className="flex w-full justify-center bg-background py-10 text-xs">
       <div className="flex gap-2">

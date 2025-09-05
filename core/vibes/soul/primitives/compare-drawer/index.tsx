@@ -30,7 +30,7 @@ interface CompareDrawerContext {
   maxItems?: number;
 }
 
-export const CompareDrawerContext = createContext<CompareDrawerContext>({
+const CompareDrawerContext = createContext<CompareDrawerContext>({
   optimisticItems: [],
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   setOptimisticItems: () => {},

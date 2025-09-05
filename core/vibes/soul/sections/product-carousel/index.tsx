@@ -129,7 +129,7 @@ export function ProductCarousel({
   );
 }
 
-export function ProductsCarouselSkeleton({
+function ProductsCarouselSkeleton({
   className,
   placeholderCount = 8,
   hideOverflow,
@@ -163,7 +163,7 @@ export function ProductsCarouselSkeleton({
   );
 }
 
-export function ProductsCarouselEmptyState({
+function ProductsCarouselEmptyState({
   className,
   placeholderCount = 8,
   emptyStateTitle,
