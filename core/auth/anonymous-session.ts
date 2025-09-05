@@ -77,19 +77,18 @@ export const getAnonymousSession = async () => {
     return session;
   } catch (err) {
     // eslint-disable-next-line no-console
-    console.error('Failed to decode anonymous session cookie, clearing invalid cookie', err);
+    console.error('Failed to decode anonymous session cookie', err);
 
-    // Clear the invalid cookie
-    await clearAnonymousSession();
-
-    return null;
+    // Return a special error indicator so the middleware can handle clearing the invalid cookie
+    return { invalid: true };
   }
 };
 
 export const updateAnonymousSession = async (user: AnonymousUser) => {
   const session = await getAnonymousSession();
 
-  if (!session) {
+  // If session is null or invalid, don't update
+  if (!session || (typeof session === 'object' && 'invalid' in session)) {
     return null;
   }
 

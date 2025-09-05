@@ -13,11 +13,21 @@ function redirectToLogin(url: string) {
 
 export const withAuth: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    // @ts-expect-error: The `auth` function doesn't have the correct type to support it as a MiddlewareFactory.
     const authWithCallback = auth(async (req) => {
-      const anonymousSession = await getAnonymousSession();
+      let anonymousSession = await getAnonymousSession();
       const isProtectedRoute = protectedPathPattern.test(req.nextUrl.toString().toLowerCase());
       const isGetRequest = req.method === 'GET';
+
+      // Check if the anonymous session is invalid and clear it if so
+      if (
+        anonymousSession &&
+        typeof anonymousSession === 'object' &&
+        'invalid' in anonymousSession
+      ) {
+        await clearAnonymousSession();
+        // Set to null so we treat it as no session
+        anonymousSession = null;
+      }
 
       // Create the anonymous session if it doesn't exist
       if (!req.auth && !anonymousSession) {
@@ -47,7 +57,6 @@ export const withAuth: MiddlewareFactory = (next) => {
       return next(req, event);
     });
 
-    // @ts-expect-error: The `auth` function doesn't have the correct type to support it as a MiddlewareFactory.
     return authWithCallback(request, event);
   };
 };
