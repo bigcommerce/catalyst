@@ -10,19 +10,6 @@ const shouldUseSecureCookie = async () => {
   return headersList.get('x-forwarded-proto') === 'https';
 };
 
-export const clearAnonymousSession = async () => {
-  const cookieJar = await cookies();
-  const useSecureCookies = await shouldUseSecureCookie();
-  const cookiePrefix = useSecureCookies ? '__Secure-' : '';
-
-  cookieJar.delete({
-    name: `${cookiePrefix}${anonymousCookieName}`,
-    secure: useSecureCookies,
-    sameSite: 'lax',
-    httpOnly: true,
-  });
-};
-
 export const anonymousSignIn = async (user: Partial<AnonymousUser> = { cartId: null }) => {
   const secret = process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET;
   const useSecureCookies = await shouldUseSecureCookie();
@@ -76,8 +63,24 @@ export const getAnonymousSession = async () => {
 
     return session;
   } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to decode anonymous session cookie', err);
+
     return null;
   }
+};
+
+export const clearAnonymousSession = async () => {
+  const cookieJar = await cookies();
+  const useSecureCookies = await shouldUseSecureCookie();
+  const cookiePrefix = useSecureCookies ? '__Secure-' : '';
+
+  cookieJar.delete({
+    name: `${cookiePrefix}${anonymousCookieName}`,
+    secure: useSecureCookies,
+    sameSite: 'lax',
+    httpOnly: true,
+  });
 };
 
 export const updateAnonymousSession = async (user: AnonymousUser) => {
