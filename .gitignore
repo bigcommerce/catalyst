@@ -1,6 +1,7 @@
 node_modules
 dist
 .turbo
+package-lock.json
 .vscode/**/*
 !.vscode/settings.example.json
 !.vscode/launch.example.json
