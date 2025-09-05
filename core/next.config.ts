@@ -1,6 +1,12 @@
 import bundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
+import createWithMakeswift from "@makeswift/runtime/next/plugin";
+const withMakeswift = createWithMakeswift();
+
+nextConfig = withNextIntl(nextConfig);
+nextConfig = withMakeswift(nextConfig);
+
 
 import { writeBuildConfig } from './build-config/writer';
 import { client } from './client';
