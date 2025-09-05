@@ -1,0 +1,8 @@
+*** EDITA core/app/[locale]/layout.tsx ***
+1) Agrega imports:
+   import { getSiteVersion } from "@makeswift/runtime/next/server";
+   import { MakeswiftProvider } from "~/makeswift/provider";
+   import "~/makeswift/components";
+
+2) Envuelve {children} con:
+   <MakeswiftProvider siteVersion={await getSiteVersion()}>{children}</MakeswiftProvider>
