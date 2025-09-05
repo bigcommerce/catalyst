@@ -14,20 +14,9 @@ function redirectToLogin(url: string) {
 export const withAuth: MiddlewareFactory = (next) => {
   return async (request, event) => {
     const authWithCallback = auth(async (req) => {
-      let anonymousSession = await getAnonymousSession();
+      const anonymousSession = await getAnonymousSession();
       const isProtectedRoute = protectedPathPattern.test(req.nextUrl.toString().toLowerCase());
       const isGetRequest = req.method === 'GET';
-
-      // Check if the anonymous session is invalid and clear it if so
-      if (
-        anonymousSession &&
-        typeof anonymousSession === 'object' &&
-        'invalid' in anonymousSession
-      ) {
-        await clearAnonymousSession();
-        // Set to null so we treat it as no session
-        anonymousSession = null;
-      }
 
       // Create the anonymous session if it doesn't exist
       if (!req.auth && !anonymousSession) {
