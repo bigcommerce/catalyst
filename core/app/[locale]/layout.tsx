@@ -22,6 +22,13 @@ import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
 import { getToastNotification } from '~/lib/server-toast';
+import { getSiteVersion } from "@makeswift/runtime/next/server";
+import { MakeswiftProvider } from "~/makeswift/provider";
+import "~/makeswift/components";
+
+import GA4 from '~/components/analytics/GA4';
+import CookieGate from '~/components/consent/CookieGate';
+
 
 const RootLayoutMetadataQuery = graphql(
   `
@@ -45,7 +52,6 @@ const RootLayoutMetadataQuery = graphql(
       }
     }
   `,
-  [WebAnalyticsFragment, ScriptsFragment],
 );
 
 const fetchRootLayoutMetadata = cache(async () => {
@@ -87,8 +93,8 @@ const Components = () => {
 
   return (
     <>
-      {process.env.DISABLE__ANALYTICS !== 'true' && <Analytics />}
-      {process.env.DISABLE__SPEED_INSIGHTS !== 'true' && <SpeedInsights />}
+      import { Analytics } from '@vercel/analytics/react';
+      import { SpeedInsights } from '@vercel/speed-insights/next';
     </>
   );
 };
@@ -120,7 +126,12 @@ export default async function RootLayout({ params, children }: Props) {
         />
       </head>
       <body className="flex min-h-screen flex-col">
-        <NextIntlClientProvider>
+        <GA4 />
+<CookieGate />
+<MakeswiftProvider siteVersion={await getSiteVersion()}>
+  {children}
+</MakeswiftProvider
+          <NextIntlClientProvider>
           <NuqsAdapter>
             <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
               <Providers>
