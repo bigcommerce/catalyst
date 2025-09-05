@@ -11,6 +11,7 @@ import { redirectToCheckout } from './_actions/redirect-to-checkout';
 import { updateCouponCode } from './_actions/update-coupon-code';
 import { updateLineItem } from './_actions/update-line-item';
 import { updateShippingInfo } from './_actions/update-shipping-info';
+import { generateSessionSyncUrl } from './_actions/generate-session-sync-url';
 import { CartViewed } from './_components/cart-viewed';
 import { CheckoutPreconnect } from './_components/checkout-preconnect';
 import { getCart, getShippingCountries } from './page-data';
@@ -155,6 +156,13 @@ export default async function Cart({ params }: Props) {
 
   const checkoutUrl = data.site.settings?.url.checkoutUrl;
 
+  // Generate session sync URL for the iframe
+  const relativePath = '/account.php?action=add_payment_method&provider=stripeupe&method_type=CARD';
+  const sessionSyncUrl = await generateSessionSyncUrl(relativePath, locale);
+  const iframeURL = new URL(sessionSyncUrl || relativePath);
+  // iframeURL.hostname = 'remove-security-lol.njb-prototypes.workers.dev';
+  const iframeSrc = iframeURL.toString();
+
   return (
     <>
       <CartAnalyticsProvider data={Streamable.from(() => getAnalyticsData(cartId))}>
@@ -289,6 +297,11 @@ export default async function Cart({ params }: Props) {
         lineItems={lineItems}
         subtotal={checkout?.subtotal?.value}
       />
+      <iframe
+       height="1000"
+       width="1000"
+       src={iframeSrc}
+       />
     </>
   );
 }
