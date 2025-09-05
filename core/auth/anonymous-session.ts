@@ -76,9 +76,6 @@ export const getAnonymousSession = async () => {
 
     return session;
   } catch (err) {
-    // eslint-disable-next-line no-console
-    console.error('Failed to decode anonymous session cookie, clearing invalid cookie', err);
-
     return null;
   }
 };
