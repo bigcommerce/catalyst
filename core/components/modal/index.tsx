@@ -33,7 +33,7 @@ export interface ModalFormState {
 
 export type ModalFormAction = Action<ModalFormState, FormData>;
 
-export interface ModalFormProps {
+interface ModalFormProps {
   action: ModalFormAction;
   onSuccess?: (state: ModalFormState) => void;
   onError?: (state: ModalFormState) => void;

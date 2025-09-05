@@ -23,16 +23,6 @@ export enum FieldNameToFieldId {
   exclusiveOffers = 25,
 }
 
-export enum FieldTypeToFieldInput {
-  'CheckboxesFormField' = 'checkboxes',
-  'DateFormField' = 'dates',
-  'NumberFormField' = 'numbers',
-  'PasswordFormField' = 'passwords',
-  'TextFormField' = 'texts',
-  'RadioButtonsFormField' = 'multipleChoices',
-  'MultilineTextFormField' = 'multilineTexts',
-}
-
 export const CUSTOMER_FIELDS_TO_EXCLUDE = [FieldNameToFieldId.currentPassword];
 
 export const REGISTER_CUSTOMER_FORM_LAYOUT = [

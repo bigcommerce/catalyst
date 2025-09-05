@@ -1,5 +1,5 @@
-export type WebPageType = 'page' | 'link' | 'contact_form' | 'raw';
-export type ContactFieldType = 'fullname' | 'companyname' | 'phone' | 'orderno' | 'rma';
+type WebPageType = 'page' | 'link' | 'contact_form' | 'raw';
+type ContactFieldType = 'fullname' | 'companyname' | 'phone' | 'orderno' | 'rma';
 
 export interface WebPage {
   readonly id: number;
