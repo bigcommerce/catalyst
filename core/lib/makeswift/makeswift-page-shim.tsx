@@ -12,5 +12,8 @@ import { Page as MakeswiftPage } from '@makeswift/runtime/next';
 import { ComponentPropsWithoutRef } from 'react';
 
 export function MakeswiftPageShim(props: ComponentPropsWithoutRef<typeof MakeswiftPage>) {
-  return <MakeswiftPage {...props} />;
+  // Explicitly disable favicon to use the favicon from /favicon.ico route instead
+  const metadata = props.metadata === false ? false : { ...props.metadata, favicon: false };
+  
+  return <MakeswiftPage {...props} metadata={metadata} />;
 }
