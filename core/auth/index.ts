@@ -1,7 +1,6 @@
+import { betterAuth } from 'better-auth';
+import { headers } from 'next/headers';
 import { decodeJwt } from 'jose';
-import NextAuth, { type NextAuthConfig, User } from 'next-auth';
-import 'next-auth/jwt';
-import CredentialsProvider from 'next-auth/providers/credentials';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
