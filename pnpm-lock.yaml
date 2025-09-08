@@ -407,15 +407,15 @@ importers:
       ansi-escapes:
         specifier: ^7.0.0
         version: 7.0.0
-      chalk:
-        specifier: 5.4.1
-        version: 5.4.1
       commander:
         specifier: ^14.0.0
         version: 14.0.0
       conf:
         specifier: ^13.1.0
         version: 13.1.0
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       cross-spawn:
         specifier: ^7.0.6
         version: 7.0.6

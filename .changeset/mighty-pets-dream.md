@@ -1,5 +1,5 @@
 ---
-"@bigcommerce/create-catalyst": patch
+'@bigcommerce/create-catalyst': patch
 ---
 
-Lock `chalk` dependency to `5.4.1`
+Removes `chalk` dependency in favor of `consola` "colorize" utility function (which only depends on `node:tty`)
