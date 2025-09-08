@@ -20,7 +20,7 @@ const colorGroup = (
     props: {
       background: Color({ label: 'Background', defaultValue: defaults.background }),
       backgroundHover: Color({ label: 'Background hover', defaultValue: defaults.backgroundHover }),
-      foreground: Color({ label: 'Foreground', defaultValue: defaults.foreground }),
+      foreground: Color({ label: 'Text', defaultValue: defaults.foreground }),
       border: Color({ label: 'Border', defaultValue: defaults.border }),
     },
   });
