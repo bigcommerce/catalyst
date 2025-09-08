@@ -11,64 +11,73 @@
 import { Page as MakeswiftPage } from '@makeswift/runtime/next';
 import { ComponentPropsWithoutRef } from 'react';
 
+type MetadataValue = string | number | boolean | MetadataObject | MetadataValue[] | null | undefined;
+type MetadataObject = { [key: string]: MetadataValue };
+
 /**
  * Filters metadata to only include meaningful values while preserving structure.
  * - Always disables favicon to prefer the store favicon from /favicon.ico
  * - Removes falsy values (empty strings, null, undefined) to use BigCommerce defaults
  * - Preserves nested objects and meaningful boolean values
+ * @param metadata - The metadata object to filter
+ * @returns The filtered metadata object with meaningful values only
  */
-function filterMetadata(metadata: any): any {
+function filterMetadata(metadata: MetadataValue): MetadataObject | false {
   if (metadata === false) {
     return false;
   }
-  
-  if (!metadata || typeof metadata !== 'object') {
+
+  if (!metadata || typeof metadata !== 'object' || Array.isArray(metadata)) {
     return { favicon: false };
   }
 
-  const filtered: any = { favicon: false };
+  const filtered: MetadataObject = { favicon: false };
+  const entries = Object.entries(metadata);
 
-  for (const [key, value] of Object.entries(metadata)) {
+  const processedEntries = entries.reduce<MetadataObject>((acc, [key, value]) => {
+    // Always disable favicon to use store favicon
     if (key === 'favicon') {
-      // Always disable favicon to use store favicon
-      continue;
+      return acc;
     }
 
+    // Skip null/undefined values to use BigCommerce defaults
     if (value === null || value === undefined) {
-      // Skip null/undefined values to use BigCommerce defaults
-      continue;
+      return acc;
     }
 
+    // Skip empty strings to use BigCommerce defaults
     if (typeof value === 'string' && value.trim() === '') {
-      // Skip empty strings to use BigCommerce defaults
-      continue;
+      return acc;
     }
 
+    // Preserve arrays as-is
     if (Array.isArray(value)) {
-      // Preserve arrays as-is
-      filtered[key] = value;
-      continue;
+      acc[key] = value;
+      return acc;
     }
 
+    // Recursively filter nested objects (but not arrays)
     if (typeof value === 'object' && value !== null) {
-      // Recursively filter nested objects (but not arrays)
       const filteredNested = filterMetadata(value);
+
       if (filteredNested !== false && Object.keys(filteredNested).length > 1) {
         // Only include nested objects if they have more than just the favicon property
-        filtered[key] = filteredNested;
+        acc[key] = filteredNested;
       }
-      continue;
+
+      return acc;
     }
 
     // Include all other meaningful values (non-empty strings, numbers, booleans)
-    filtered[key] = value;
-  }
+    acc[key] = value;
+    return acc;
+  }, {});
 
-  return filtered;
+  return { ...filtered, ...processedEntries };
 }
 
 export function MakeswiftPageShim(props: ComponentPropsWithoutRef<typeof MakeswiftPage>) {
   const metadata = filterMetadata(props.metadata);
-  
+
   return <MakeswiftPage {...props} metadata={metadata} />;
 }
