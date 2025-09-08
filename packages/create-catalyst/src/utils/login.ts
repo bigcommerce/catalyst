@@ -1,4 +1,4 @@
-import ansis from 'ansis';
+import { bold, yellow } from 'ansis';
 import open from 'open';
 import { createInterface } from 'readline';
 
@@ -82,9 +82,7 @@ export async function login(baseUrl: string): Promise<LoginResult> {
 
   const deviceCode = await auth.getDeviceCode();
 
-  console.log(
-    ansis.yellow('\n! First copy your one-time code: ') + ansis.bold(deviceCode.user_code),
-  );
+  console.log(yellow('\n! First copy your one-time code: ') + bold(deviceCode.user_code));
   console.log(`Press Enter to open ${deviceCode.verification_uri} in your browser...`);
 
   const shouldOpenUrl = await waitForKeyPress('');

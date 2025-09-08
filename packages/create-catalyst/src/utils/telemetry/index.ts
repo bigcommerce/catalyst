@@ -1,4 +1,4 @@
-import ansis from 'ansis';
+import { bold, green, red } from 'ansis';
 
 import { Telemetry } from './telemetry';
 
@@ -30,9 +30,7 @@ const catalystTelemetry = (options: CatalystTelemetryOptions, arg: string | unde
     console.log('Catalyst CLI Telemetry');
   }
 
-  console.log(
-    `\nStatus: ${ansis.bold(isEnabled ? ansis.green('Enabled') : ansis.red('Disabled'))}`,
-  );
+  console.log(`\nStatus: ${bold(isEnabled ? green('Enabled') : red('Disabled'))}`);
 
   if (!isEnabled) {
     console.log(

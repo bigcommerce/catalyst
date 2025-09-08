@@ -1,6 +1,6 @@
 import { Command, Option } from '@commander-js/extra-typings';
 import { input, select } from '@inquirer/prompts';
-import ansis from 'ansis';
+import { dim, green, red, yellow } from 'ansis';
 import { execSync } from 'child_process';
 import { pathExistsSync } from 'fs-extra/esm';
 import kebabCase from 'lodash.kebabcase';
@@ -68,7 +68,7 @@ async function handleChannelCreation(bc: Https, cliApi: CliApi) {
     availableLocales = await getAvailableLocales(bc);
   } catch (error) {
     if (error instanceof Error) {
-      console.error(ansis.red(error.message));
+      console.error(red(error.message));
     }
 
     process.exit(1);
@@ -80,7 +80,7 @@ async function handleChannelCreation(bc: Https, cliApi: CliApi) {
     choices: availableLocales,
     theme: {
       style: {
-        help: () => ansis.dim('(Select locale from the list or start typing the name)'),
+        help: () => dim('(Select locale from the list or start typing the name)'),
       },
     },
   });
@@ -101,7 +101,7 @@ async function handleChannelCreation(bc: Https, cliApi: CliApi) {
       message: 'Which additional languages would you like to add to your channel?',
       theme: {
         style: {
-          help: () => ansis.dim('(Select locale from the list or start typing the name)'),
+          help: () => dim('(Select locale from the list or start typing the name)'),
         },
       },
       validate: (selections) => {
@@ -131,7 +131,7 @@ async function handleChannelCreation(bc: Https, cliApi: CliApi) {
 
   if (!response.ok) {
     console.error(
-      ansis.red(`\nPOST /channels/catalyst failed: ${response.status} ${response.statusText}\n`),
+      red(`\nPOST /channels/catalyst failed: ${response.status} ${response.statusText}\n`),
     );
     process.exit(1);
   }
@@ -139,7 +139,7 @@ async function handleChannelCreation(bc: Https, cliApi: CliApi) {
   const channelData: unknown = await response.json();
 
   if (!isCreateChannelResponse(channelData)) {
-    console.error(ansis.red('\nUnexpected response format from create channel endpoint\n'));
+    console.error(red('\nUnexpected response format from create channel endpoint\n'));
     process.exit(1);
   }
 
@@ -156,9 +156,7 @@ async function handleChannelSelection(bc: Https) {
 
   if (!channelsResponse.ok) {
     console.error(
-      ansis.red(
-        `\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`,
-      ),
+      red(`\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`),
     );
     process.exit(1);
   }
@@ -166,7 +164,7 @@ async function handleChannelSelection(bc: Https) {
   const availableChannels: unknown = await channelsResponse.json();
 
   if (!isChannelsResponse(availableChannels)) {
-    console.error(ansis.red('\nUnexpected response format from channels endpoint\n'));
+    console.error(red('\nUnexpected response format from channels endpoint\n'));
     process.exit(1);
   }
 
@@ -208,7 +206,7 @@ async function getChannelInit(cliApi: CliApi, channelId: number) {
 
   if (!initResponse.ok) {
     console.error(
-      ansis.red(
+      red(
         `\nGET /channels/${channelId}/init failed: ${initResponse.status} ${initResponse.statusText}\n`,
       ),
     );
@@ -218,7 +216,7 @@ async function getChannelInit(cliApi: CliApi, channelId: number) {
   const initData: unknown = await initResponse.json();
 
   if (!isInitResponse(initData)) {
-    console.error(ansis.red('\nUnexpected response format from init endpoint\n'));
+    console.error(red('\nUnexpected response format from init endpoint\n'));
     process.exit(1);
   }
 
@@ -235,7 +233,7 @@ async function setupProject(options: {
   let { projectName, projectDir } = options;
 
   if (!pathExistsSync(projectDir)) {
-    console.error(ansis.red(`Error: --projectDir ${projectDir} is not a valid path\n`));
+    console.error(red(`Error: --projectDir ${projectDir} is not a valid path\n`));
     process.exit(1);
   }
 
@@ -244,7 +242,7 @@ async function setupProject(options: {
     projectDir = join(options.projectDir, projectName);
 
     if (pathExistsSync(projectDir)) {
-      console.error(ansis.red(`Error: ${projectDir} already exists\n`));
+      console.error(red(`Error: ${projectDir} already exists\n`));
       process.exit(1);
     }
   }
@@ -282,15 +280,15 @@ function checkRequiredTools() {
   try {
     execSync(getPlatformCheckCommand('git'), { stdio: 'ignore' });
   } catch {
-    console.error(ansis.red('Error: git is required to create a Catalyst project\n'));
+    console.error(red('Error: git is required to create a Catalyst project\n'));
     process.exit(1);
   }
 
   try {
     execSync(getPlatformCheckCommand('pnpm'), { stdio: 'ignore' });
   } catch {
-    console.error(ansis.red('Error: pnpm is required to create a Catalyst project\n'));
-    console.error(ansis.yellow('Tip: Enable it by running `corepack enable pnpm`\n'));
+    console.error(red('Error: pnpm is required to create a Catalyst project\n'));
+    console.error(yellow('Tip: Enable it by running `corepack enable pnpm`\n'));
     process.exit(1);
   }
 }
@@ -383,13 +381,13 @@ export const create = new Command('create')
 
         console.log(
           [
-            `\n${ansis.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
+            `\n${green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
             `Next steps:`,
             Object.keys(envVars).length > 0
-              ? ansis.yellow(`\n- cd ${projectName} && pnpm run dev\n`)
+              ? yellow(`\n- cd ${projectName} && pnpm run dev\n`)
               : [
-                  ansis.yellow(`\n- cd ${projectName} && cp .env.example .env.local`),
-                  ansis.yellow(`\n- Populate .env.local with your BigCommerce API credentials\n`),
+                  yellow(`\n- cd ${projectName} && cp .env.example .env.local`),
+                  yellow(`\n- Populate .env.local with your BigCommerce API credentials\n`),
                 ].join(''),
           ].join('\n'),
         );
@@ -423,7 +421,7 @@ export const create = new Command('create')
 
           if (!eligibilityResponse.ok) {
             console.error(
-              ansis.red(
+              red(
                 `\nGET /channels/catalyst/eligibility failed: ${eligibilityResponse.status} ${eligibilityResponse.statusText}\n`,
               ),
             );
@@ -433,12 +431,12 @@ export const create = new Command('create')
           const eligibilityData: unknown = await eligibilityResponse.json();
 
           if (!isEligibilityResponse(eligibilityData)) {
-            console.error(ansis.red('\nUnexpected response format from eligibility endpoint\n'));
+            console.error(red('\nUnexpected response format from eligibility endpoint\n'));
             process.exit(1);
           }
 
           if (!eligibilityData.data.eligible) {
-            console.warn(ansis.yellow(eligibilityData.data.message));
+            console.warn(yellow(eligibilityData.data.message));
           }
 
           let shouldCreateChannel;
@@ -460,9 +458,9 @@ export const create = new Command('create')
             storefrontToken = channelData.storefrontToken;
             envVars = { ...channelData.envVars };
 
-            console.log(ansis.green(`Channel created successfully`));
+            console.log(green(`Channel created successfully`));
             console.warn(
-              ansis.yellow(
+              yellow(
                 '\nNote: A preview storefront has been deployed in your BigCommerce control panel. This preview may look different from your local environment as it may be running different code.',
               ),
             );
@@ -525,9 +523,9 @@ export const create = new Command('create')
     }
 
     console.log(
-      `\n${ansis.green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
+      `\n${green('Success!')} Created '${projectName}' at '${projectDir}'\n`,
       '\nNext steps:\n',
-      ansis.yellow(`\ncd ${projectName} && pnpm run dev\n`),
+      yellow(`\ncd ${projectName} && pnpm run dev\n`),
     );
   });
 

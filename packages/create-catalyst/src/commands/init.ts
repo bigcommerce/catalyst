@@ -1,6 +1,6 @@
 import { Command, Option } from '@commander-js/extra-typings';
 import { select } from '@inquirer/prompts';
-import ansis from 'ansis';
+import { green, red, yellow } from 'ansis';
 
 import { CliApi } from '../utils/cli-api';
 import { Config } from '../utils/config';
@@ -116,7 +116,7 @@ export const init = new Command('init')
 
     if (!channelsResponse.ok) {
       console.error(
-        ansis.red(
+        red(
           `\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`,
         ),
       );
@@ -126,7 +126,7 @@ export const init = new Command('init')
     const availableChannels: unknown = await channelsResponse.json();
 
     if (!isChannelsResponse(availableChannels)) {
-      console.error(ansis.red('\nUnexpected response format from channels endpoint\n'));
+      console.error(red('\nUnexpected response format from channels endpoint\n'));
       process.exit(1);
     }
 
@@ -155,7 +155,7 @@ export const init = new Command('init')
 
     if (!initResponse.ok) {
       console.error(
-        ansis.red(
+        red(
           `\nGET /channels/${channelId}/init failed: ${initResponse.status} ${initResponse.statusText}\n`,
         ),
       );
@@ -165,7 +165,7 @@ export const init = new Command('init')
     const initData: unknown = await initResponse.json();
 
     if (!isInitResponse(initData)) {
-      console.error(ansis.red('\nUnexpected response format from init endpoint\n'));
+      console.error(red('\nUnexpected response format from init endpoint\n'));
       process.exit(1);
     }
 
@@ -188,7 +188,7 @@ export const init = new Command('init')
 
     writeEnv(projectDir, envVars);
 
-    console.log(ansis.green(`\n.env.local file created for channel ${existingChannel.name}!\n`));
-    console.log(ansis.green(`\nNext steps:\n`));
-    console.log(ansis.yellow(`\npnpm run dev\n`));
+    console.log(green(`\n.env.local file created for channel ${existingChannel.name}!\n`));
+    console.log(green(`\nNext steps:\n`));
+    console.log(yellow(`\npnpm run dev\n`));
   });
