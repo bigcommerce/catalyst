@@ -286,6 +286,7 @@
         "removeItem": "Artikel entfernen",
         "cartCombined": "Wir haben festgestellt, dass Sie Artikel in einem früheren Warenkorb gespeichert hatten, also haben wir diese Ihrem aktuellen Warenkorb hinzugefügt.",
         "cartRestored": "Sie haben einen Warenkorb auf einem anderen Gerät angelegt, und wir haben ihn hier wiederhergestellt, damit Sie dort weitermachen können, wo Sie aufgehört haben.",
+        "cartUpdateInProgress": "Sie führen derzeit eine Aktualisierung Ihres Warenkorbs durch. Sind Sie sicher, dass Sie diese Seite verlassen möchten? Ihre Änderungen könnten verloren gehen.",
         "CheckoutSummary": {
             "title": "Übersicht",
             "subTotal": "Zwischensumme",

@@ -286,6 +286,7 @@
         "removeItem": "Remover item",
         "cartCombined": "Percebemos que você tinha itens salvos em um carrinho anterior, então colocamos esses itens no carrinho atual para você.",
         "cartRestored": "Você iniciou um carrinho em outro dispositivo, e restauramos esse carrinho aqui para que você possa continuar de onde parou.",
+        "cartUpdateInProgress": "You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.",
         "CheckoutSummary": {
             "title": "Resumo",
             "subTotal": "Subtotal",
