@@ -5,14 +5,17 @@ import { AuthError } from 'next-auth';
 import { getTranslations } from 'next-intl/server';
 
 import { signIn } from '~/auth';
+import { getCartId } from '~/lib/cart';
 
 export const login = async (email: string, password: string) => {
   const t = await getTranslations('Auth.Login');
+  const cartId = await getCartId();
 
   try {
     await signIn('password', {
       email,
       password,
+      cartId,
       redirect: false,
     });
   } catch (error) {
