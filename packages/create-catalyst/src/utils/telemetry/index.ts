@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import ansis from 'ansis';
 
 import { Telemetry } from './telemetry';
 
@@ -31,7 +31,7 @@ const catalystTelemetry = (options: CatalystTelemetryOptions, arg: string | unde
   }
 
   console.log(
-    `\nStatus: ${chalk.bold(isEnabled ? chalk.green('Enabled') : chalk.red('Disabled'))}`,
+    `\nStatus: ${ansis.bold(isEnabled ? ansis.green('Enabled') : ansis.red('Disabled'))}`,
   );
 
   if (!isEnabled) {

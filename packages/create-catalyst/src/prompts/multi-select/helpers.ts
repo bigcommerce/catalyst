@@ -1,19 +1,19 @@
 import { Separator } from '@inquirer/core';
 import figures from '@inquirer/figures';
-import chalk from 'chalk';
+import ansis from 'ansis';
 
 import { Choice, Item, NormalizedChoice, SelectTheme } from './types';
 
 export const selectTheme: SelectTheme = {
   helpMode: 'auto',
   icon: {
-    checked: chalk.green(figures.circleFilled),
+    checked: ansis.green(figures.circleFilled),
     unchecked: figures.circle,
     cursor: figures.pointer,
   },
   style: {
-    description: (text: string) => chalk.cyan(text),
-    disabledChoice: (text: string) => chalk.dim(`- ${text}`),
+    description: (text: string) => ansis.cyan(text),
+    disabledChoice: (text: string) => ansis.dim(`- ${text}`),
     renderSelectedChoices: (selectedChoices) =>
       selectedChoices.map((choice) => choice.short).join(', '),
   },

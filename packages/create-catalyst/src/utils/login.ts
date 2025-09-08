@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import ansis from 'ansis';
 import open from 'open';
 import { createInterface } from 'readline';
 
@@ -83,7 +83,7 @@ export async function login(baseUrl: string): Promise<LoginResult> {
   const deviceCode = await auth.getDeviceCode();
 
   console.log(
-    chalk.yellow('\n! First copy your one-time code: ') + chalk.bold(deviceCode.user_code),
+    ansis.yellow('\n! First copy your one-time code: ') + ansis.bold(deviceCode.user_code),
   );
   console.log(`Press Enter to open ${deviceCode.verification_uri} in your browser...`);
 
