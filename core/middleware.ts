@@ -1,9 +1,24 @@
+import { createRoutesMiddleware } from '@bigcommerce/catalyst-middleware-routes';
+import { client } from '~/client';
 import { composeMiddlewares } from './middlewares/compose-middlewares';
 import { withAnalyticsCookies } from './middlewares/with-analytics-cookies';
 import { withAuth } from './middlewares/with-auth';
 import { withChannelId } from './middlewares/with-channel-id';
 import { withIntl } from './middlewares/with-intl';
-import { withRoutes } from './middlewares/with-routes';
+import { kvAdapter } from './lib/middleware-helpers';
+
+const withRoutes = createRoutesMiddleware({
+  client,
+  kvAdapter,
+  // All other functionality is built-in!
+  // You can still customize if needed:
+  // routeMappings: {
+  //   Product: { pathTemplate: '/${locale}/products/${entityId}' },
+  // },
+  // exemptRoutes: ['/api', '/custom-route'],
+  // redirects: { enabled: false },
+  // analytics: { enabled: false },
+});
 
 export const middleware = composeMiddlewares(
   withAuth,

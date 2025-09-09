@@ -1,0 +1,35 @@
+{
+  "name": "@bigcommerce/catalyst-middleware-routes",
+  "version": "1.0.0",
+  "description": "BigCommerce Catalyst middleware for handling dynamic routing and redirects",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "bigcommerce",
+    "catalyst",
+    "middleware",
+    "routing",
+    "nextjs"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "next": ">=13.0.0",
+    "zod": "^3.0.0"
+  },
+  "dependencies": {
+    "@bigcommerce/catalyst-client": "workspace:^"
+  },
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
