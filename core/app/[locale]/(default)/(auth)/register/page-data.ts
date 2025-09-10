@@ -4,7 +4,6 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { FormFieldsFragment } from '~/data-transformers/form-field-transformer/fragment';
-import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
 
 const RegisterCustomerQuery = graphql(
   `
@@ -23,12 +22,6 @@ const RegisterCustomerQuery = graphql(
             shippingAddress(filters: $addressFilters, sortBy: $addressSortBy) {
               ...FormFieldsFragment
             }
-          }
-        }
-        settings {
-          reCaptcha {
-            isEnabledOnStorefront
-            siteKey
           }
         }
       }
@@ -76,8 +69,6 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
   const customerFields = response.data.site.settings?.formFields.customer;
   const countries = response.data.geography.countries;
 
-  const reCaptchaSettings = await bypassReCaptcha(response.data.site.settings?.reCaptcha);
-
   if (!addressFields || !customerFields) {
     return null;
   }
@@ -85,7 +76,6 @@ export const getRegisterCustomerQuery = cache(async ({ address, customer }: Prop
   return {
     addressFields,
     customerFields,
-    reCaptchaSettings,
     countries,
   };
 });

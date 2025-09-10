@@ -2,7 +2,7 @@ import { Command, Option } from 'commander';
 import consola from 'consola';
 import { execa } from 'execa';
 import { existsSync } from 'node:fs';
-import { copyFile, cp, rm, writeFile } from 'node:fs/promises';
+import { copyFile, cp, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import { getModuleCliPath } from '../lib/get-module-cli-path';
@@ -70,7 +70,7 @@ export const build = new Command('build')
 
         await copyFile(
           join(getModuleCliPath(), 'templates', 'open-next.config.ts'),
-          join(coreDir, 'open-next.config.ts'),
+          join(coreDir, '.bigcommerce', 'open-next.config.ts'),
         );
         await writeFile(
           join(coreDir, '.bigcommerce', 'wrangler.jsonc'),
@@ -83,7 +83,14 @@ export const build = new Command('build')
 
         await execa(
           'pnpm',
-          ['exec', 'opennextjs-cloudflare', 'build', '--skipWranglerConfigCheck'],
+          [
+            'exec',
+            'opennextjs-cloudflare',
+            'build',
+            '--skipWranglerConfigCheck',
+            '--openNextConfigPath',
+            join(coreDir, '.bigcommerce', 'open-next.config.ts'),
+          ],
           {
             stdout: ['pipe', 'inherit'],
             cwd: coreDir,
@@ -118,10 +125,6 @@ export const build = new Command('build')
       }
     } catch (error) {
       consola.error(error);
-      process.exitCode = 1;
-    } finally {
-      await rm(join(coreDir, '.open-next.config.ts')).catch(() => null);
-
-      process.exit();
+      process.exit(1);
     }
   });

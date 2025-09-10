@@ -342,6 +342,7 @@
         "removeItem": "Fjern vare",
         "cartCombined": "Vi la merke til at du hadde varer lagret i en tidligere handlekurv, så vi har lagt dem til i din nåværende handlekurv for deg.",
         "cartRestored": "Du startet en handlekurv på en annen enhet, og vi har gjenopprettet den her, slik at du kan fortsette der du slapp.",
+        "cartUpdateInProgress": "You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.",
         "CheckoutSummary": {
             "title": "Sammendrag",
             "subTotal": "Delsum",

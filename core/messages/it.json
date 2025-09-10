@@ -342,6 +342,7 @@
         "removeItem": "Rimuovi articolo",
         "cartCombined": "Abbiamo notato che avevi salvato degli articoli in un carrello precedente, quindi li abbiamo aggiunti al carrello attuale.",
         "cartRestored": "Hai avviato un carrello su un altro dispositivo e lo abbiamo ripristinato qui, così puoi riprendere da dove avevi lasciato.",
+        "cartUpdateInProgress": "Hai un aggiornamento del carrello attivo in corso. Uscire dalla pagina? Le modifiche potrebbero andare perse.",
         "CheckoutSummary": {
             "title": "Riepilogo",
             "subTotal": "Subtotale",

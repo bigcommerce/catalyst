@@ -62,7 +62,7 @@ const BlogPostsPageQuery = graphql(
   [PaginationFragment],
 );
 
-export interface BlogPostsFiltersInput {
+interface BlogPostsFiltersInput {
   tag: string | null;
 }
 
