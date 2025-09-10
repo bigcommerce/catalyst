@@ -1,6 +1,7 @@
 import { BigCommerceAPIError, BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { parseWithZod } from '@conform-to/zod';
 import { unstable_expireTag as expireTag } from 'next/cache';
+import { unstable_rethrow } from 'next/navigation';
 import { getTranslations } from 'next-intl/server';
 import { z } from 'zod';
 
@@ -245,6 +246,8 @@ export async function createAddress(prevState: Awaited<State>, formData: FormDat
       fields: prevState.fields,
     };
   } catch (error) {
+    unstable_rethrow(error);
+
     // eslint-disable-next-line no-console
     console.error(error);
 
