@@ -1,6 +1,6 @@
 import { Command, Option } from '@commander-js/extra-typings';
 import { select } from '@inquirer/prompts';
-import chalk from 'chalk';
+import { colorize } from 'consola/utils';
 
 import { CliApi } from '../utils/cli-api';
 import { Config } from '../utils/config';
@@ -116,7 +116,8 @@ export const init = new Command('init')
 
     if (!channelsResponse.ok) {
       console.error(
-        chalk.red(
+        colorize(
+          'red',
           `\nGET /v3/channels failed: ${channelsResponse.status} ${channelsResponse.statusText}\n`,
         ),
       );
@@ -126,7 +127,7 @@ export const init = new Command('init')
     const availableChannels: unknown = await channelsResponse.json();
 
     if (!isChannelsResponse(availableChannels)) {
-      console.error(chalk.red('\nUnexpected response format from channels endpoint\n'));
+      console.error(colorize('red', '\nUnexpected response format from channels endpoint\n'));
       process.exit(1);
     }
 
@@ -155,7 +156,8 @@ export const init = new Command('init')
 
     if (!initResponse.ok) {
       console.error(
-        chalk.red(
+        colorize(
+          'red',
           `\nGET /channels/${channelId}/init failed: ${initResponse.status} ${initResponse.statusText}\n`,
         ),
       );
@@ -165,7 +167,7 @@ export const init = new Command('init')
     const initData: unknown = await initResponse.json();
 
     if (!isInitResponse(initData)) {
-      console.error(chalk.red('\nUnexpected response format from init endpoint\n'));
+      console.error(colorize('red', '\nUnexpected response format from init endpoint\n'));
       process.exit(1);
     }
 
@@ -188,7 +190,9 @@ export const init = new Command('init')
 
     writeEnv(projectDir, envVars);
 
-    console.log(chalk.green(`\n.env.local file created for channel ${existingChannel.name}!\n`));
-    console.log(chalk.green(`\nNext steps:\n`));
-    console.log(chalk.yellow(`\npnpm run dev\n`));
+    console.log(
+      colorize('green', `\n.env.local file created for channel ${existingChannel.name}!\n`),
+    );
+    console.log(colorize('green', `\nNext steps:\n`));
+    console.log(colorize('yellow', `\npnpm run dev\n`));
   });

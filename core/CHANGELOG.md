@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.2.0
+
+### Minor Changes
+
+- [#2475](https://github.com/bigcommerce/catalyst/pull/2475) [`33b574d`](https://github.com/bigcommerce/catalyst/commit/33b574d2fefe8514c4e512acf3f706058a6c8a2f) Thanks [@bookernath](https://github.com/bookernath)! - Implement Vercel Runtime Cache API as replacement for Vercel KV adapter
+
+### Patch Changes
+
+- [#2526](https://github.com/bigcommerce/catalyst/pull/2526) [`2089a58`](https://github.com/bigcommerce/catalyst/commit/2089a58f6bdaeab68a014ad66422932f392e6c46) Thanks [@chanceaclark](https://github.com/chanceaclark)! - The anonymous session cookie had `secure` always set to true regardless if we were prefixing it or not. This change updates the cookie to set `secure` to the same "value" if we prefix the cookie with `__Secure-`.
+
+- [#2564](https://github.com/bigcommerce/catalyst/pull/2564) [`69797a4`](https://github.com/bigcommerce/catalyst/commit/69797a4c9f0bfc8b27b7f144ded5545fdbb5e5cf) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add visual queues when the cart state is being updated in the Cart page. Will also warn about pending state when trying to navigate away from page.
+
+  ## Migration
+  1. Update `/core/vibes/soul/sections/cart/client.tsx` to include latest changes:
+  - Use `isLineItemActionPending` to track when we need to disable checkout button and add a loading state.
+  - Add skeletons to checkout summary fields that will update when the pending state is complete.
+  - Add side effects to handle when a user `beforeunload` and when user tries to navigate using a link.
+  - Add prop to `lineItemActionPendingLabel` to be able to pass in a translatable label to the window alert.
+  2. Add label to dictionary of choice.
+
+- [#2521](https://github.com/bigcommerce/catalyst/pull/2521) [`6f6a8af`](https://github.com/bigcommerce/catalyst/commit/6f6a8af4fd7a5754b9d08aef75c4e40ab3057318) Thanks [@bookernath](https://github.com/bookernath)! - Preconnect to checkout domain on cart page to improve checkout load time
+
+- Updated dependencies [[`707ec24`](https://github.com/bigcommerce/catalyst/commit/707ec24745b6a0040551328d64657ff40df4e252), [`a27054f`](https://github.com/bigcommerce/catalyst/commit/a27054f4f22013707d40a100b15122c22354c956)]:
+  - @bigcommerce/catalyst-client@1.0.1
+
 ## 1.1.0
 
 ### Minor Changes

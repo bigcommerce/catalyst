@@ -243,11 +243,11 @@ class Client<FetcherRequestInit extends RequestInit = RequestInit> {
 
     const { name, type } = getOperationInfo(document);
 
-    const timeStart = Date.now();
+    const timeStart = performance.now();
 
     return (response: Response) => {
-      const timeEnd = Date.now();
-      const duration = timeEnd - timeStart;
+      const timeEnd = performance.now();
+      const duration = (timeEnd - timeStart).toFixed(2);
 
       const complexity = response.headers.get('x-bc-graphql-complexity');
 

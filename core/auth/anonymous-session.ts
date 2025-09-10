@@ -29,7 +29,7 @@ export const anonymousSignIn = async (user: Partial<AnonymousUser> = { cartId: n
   });
 
   cookieJar.set(`${cookiePrefix}${anonymousCookieName}`, jwt, {
-    secure: true,
+    secure: useSecureCookies,
     sameSite: 'lax',
     // We set the maxAge to 7 days as a good default for anonymous sessions.
     // This can be adjusted based on your application's needs.
@@ -54,13 +54,20 @@ export const getAnonymousSession = async () => {
     throw new Error('AUTH_SECRET is not set');
   }
 
-  const session = await decode({
-    secret,
-    salt: `${cookiePrefix}${anonymousCookieName}`,
-    token: jwt.value,
-  });
+  try {
+    const session = await decode({
+      secret,
+      salt: `${cookiePrefix}${anonymousCookieName}`,
+      token: jwt.value,
+    });
 
-  return session;
+    return session;
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error('Failed to decode anonymous session cookie', err);
+
+    return null;
+  }
 };
 
 export const clearAnonymousSession = async () => {
@@ -70,7 +77,7 @@ export const clearAnonymousSession = async () => {
 
   cookieJar.delete({
     name: `${cookiePrefix}${anonymousCookieName}`,
-    secure: true,
+    secure: useSecureCookies,
     sameSite: 'lax',
     httpOnly: true,
   });

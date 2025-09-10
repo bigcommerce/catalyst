@@ -286,6 +286,7 @@
         "removeItem": "Supprimer l'article",
         "cartCombined": "Nous avons remarqué que votre panier précédent contenait des articles enregistrés. Nous avons donc ajouté ces articles à votre panier actuel.",
         "cartRestored": "Vous avez débuté vos achats sur un autre appareil. Nous avons restauré votre panier ici pour que vous puissiez reprendre là où vous en étiez.",
+        "cartUpdateInProgress": "You have a cart update in progress. Are you sure you want to leave this page? Your changes may be lost.",
         "CheckoutSummary": {
             "title": "Récapitulatif",
             "subTotal": "Sous-total",
