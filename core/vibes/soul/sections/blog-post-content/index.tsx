@@ -149,7 +149,7 @@ function BlogPostBodySkeleton() {
   );
 }
 
-function BlogPostContentSkeleton() {
+export function BlogPostContentSkeleton() {
   return (
     <div>
       <div className="mx-auto w-full max-w-4xl pb-8 @2xl:pb-12 @4xl:pb-16">

@@ -53,7 +53,7 @@ export function BlogPostList({
   );
 }
 
-function BlogPostListSkeleton({
+export function BlogPostListSkeleton({
   className,
   placeholderCount = 6,
 }: Pick<Props, 'className' | 'placeholderCount'>) {
@@ -68,7 +68,7 @@ function BlogPostListSkeleton({
   );
 }
 
-function BlogPostListEmptyState({
+export function BlogPostListEmptyState({
   className,
   placeholderCount = 6,
   emptyStateTitle,

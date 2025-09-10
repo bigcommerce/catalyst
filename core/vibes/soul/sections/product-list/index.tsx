@@ -127,7 +127,7 @@ export function ProductList({
   );
 }
 
-function ProductListSkeleton({
+export function ProductListSkeleton({
   className,
   placeholderCount = 8,
 }: Pick<ProductListProps, 'className' | 'placeholderCount'>) {
@@ -145,7 +145,7 @@ function ProductListSkeleton({
   );
 }
 
-function ProductListEmptyState({
+export function ProductListEmptyState({
   className,
   placeholderCount = 8,
   emptyStateTitle,
