@@ -143,7 +143,7 @@ export function CompareSection({
   );
 }
 
-function CompareSectionSkeleton({
+export function CompareSectionSkeleton({
   className,
   title = 'Compare products',
   placeholderCount = 4,
@@ -189,7 +189,7 @@ function CompareSectionSkeleton({
   );
 }
 
-function CompareSectionEmptyState({
+export function CompareSectionEmptyState({
   className,
   emptyStateTitle,
   emptyStateSubtitle,

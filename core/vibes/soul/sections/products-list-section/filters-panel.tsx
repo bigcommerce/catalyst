@@ -92,7 +92,7 @@ export function FiltersPanel({
   );
 }
 
-function FiltersPanelInner({
+export function FiltersPanelInner({
   className,
   filters: streamableFilters,
   resetFiltersLabel: streamableResetFiltersLabel,
@@ -301,7 +301,7 @@ function FiltersPanelInner({
   );
 }
 
-function FiltersSkeleton() {
+export function FiltersSkeleton() {
   return (
     <div className="space-y-5">
       <AccordionSkeleton>
