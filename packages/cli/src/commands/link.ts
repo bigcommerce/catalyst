@@ -1,7 +1,7 @@
 import { Command, Option } from 'commander';
-import consola from 'consola';
 import z from 'zod';
 
+import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { Telemetry } from '../lib/telemetry';
 

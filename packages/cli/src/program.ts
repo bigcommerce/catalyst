@@ -18,8 +18,13 @@ import { consola } from './lib/logger';
 export const program = new Command();
 
 config({
-  // Should we add any other .env paths here?
-  path: [resolve(process.cwd(), '.env'), resolve(process.cwd(), '.env.local')],
+  path: [
+    resolve(process.cwd(), '.env'),
+    resolve(process.cwd(), '.env.local'),
+    // Assumes the parent directory is the monorepo root:
+    resolve(process.cwd(), '..', '.env'),
+    resolve(process.cwd(), '..', '.env.local'),
+  ],
 });
 
 consola.log(colorize('cyanBright', `◢ ${PACKAGE_INFO.name} v${PACKAGE_INFO.version}\n`));

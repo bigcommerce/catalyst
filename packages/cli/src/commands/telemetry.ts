@@ -1,7 +1,7 @@
 import { Argument, Command, Option } from 'commander';
-import consola from 'consola';
 import { colorize } from 'consola/utils';
 
+import { consola } from '../lib/logger';
 import { Telemetry } from '../lib/telemetry';
 
 const telemetryService = new Telemetry();

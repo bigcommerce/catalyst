@@ -1,11 +1,11 @@
 import { Command, Option } from 'commander';
-import consola from 'consola';
 import { execa } from 'execa';
 import { existsSync } from 'node:fs';
 import { copyFile, cp, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 
 import { getModuleCliPath } from '../lib/get-module-cli-path';
+import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { getWranglerConfig } from '../lib/wrangler-config';
 

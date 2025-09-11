@@ -1,8 +1,9 @@
 import { Command } from 'commander';
-import consola from 'consola';
 import { execa } from 'execa';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
+
+import { consola } from '../lib/logger';
 
 export const dev = new Command('dev')
   .description('Start the Catalyst development server.')

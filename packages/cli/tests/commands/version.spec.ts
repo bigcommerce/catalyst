@@ -1,8 +1,8 @@
 import { Command } from '@commander-js/extra-typings';
-import consola from 'consola';
 import { beforeAll, expect, test, vi } from 'vitest';
 
 import { version } from '../../src/commands/version';
+import { consola } from '../../src/lib/logger';
 import { program } from '../../src/program';
 
 beforeAll(() => {
