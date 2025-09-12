@@ -269,6 +269,7 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
 };
 
 export const withRoutes: MiddlewareFactory = () => {
+  // eslint-disable-next-line complexity
   return async (request, event) => {
     const locale = request.headers.get('x-bc-locale') ?? '';
 
@@ -331,6 +332,14 @@ export const withRoutes: MiddlewareFactory = () => {
 
     switch (node?.__typename) {
       case 'Brand': {
+        // This is to redirect the /rolex route
+        // to the custom core/app/[locale]/(default)/(faceted)/rolex route
+        // instead of the default /brand/45 route
+        if (node.entityId === 45) {
+          url = `/${locale}/rolex`;
+          break;
+        }
+
         url = `/${locale}/brand/${node.entityId}`;
         break;
       }
