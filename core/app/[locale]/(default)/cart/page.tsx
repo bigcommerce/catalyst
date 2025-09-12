@@ -5,6 +5,7 @@ import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
 import { CartAnalyticsProvider } from '~/app/[locale]/(default)/cart/_components/cart-analytics-provider';
 import { getCartId } from '~/lib/cart';
+import { Slot } from '~/lib/makeswift/slot';
 import { exists } from '~/lib/utils';
 
 import { redirectToCheckout } from './_actions/redirect-to-checkout';
@@ -64,14 +65,20 @@ export default async function Cart({ params }: Props) {
   const format = await getFormatter();
   const cartId = await getCartId();
 
-  if (!cartId) {
-    return (
+  const emptyState = (
+    <>
+      <Slot label="Cart top content" snapshotId="cart-top-content" />
       <CartEmptyState
         cta={{ label: t('Empty.cta'), href: '/shop-all' }}
         subtitle={t('Empty.subtitle')}
         title={t('Empty.title')}
       />
-    );
+      <Slot label="Cart bottom content" snapshotId="cart-bottom-content" />
+    </>
+  );
+
+  if (!cartId) {
+    return emptyState;
   }
 
   const data = await getCart({ cartId });
@@ -80,13 +87,7 @@ export default async function Cart({ params }: Props) {
   const checkout = data.site.checkout;
 
   if (!cart) {
-    return (
-      <CartEmptyState
-        cta={{ label: t('Empty.cta'), href: '/shop-all' }}
-        subtitle={t('Empty.subtitle')}
-        title={t('Empty.title')}
-      />
-    );
+    return emptyState;
   }
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
@@ -157,6 +158,7 @@ export default async function Cart({ params }: Props) {
 
   return (
     <>
+      <Slot label="Cart top content" snapshotId="cart-top-content" />
       <CartAnalyticsProvider data={Streamable.from(() => getAnalyticsData(cartId))}>
         {checkoutUrl ? <CheckoutPreconnect url={checkoutUrl} /> : null}
         <CartComponent
@@ -221,6 +223,7 @@ export default async function Cart({ params }: Props) {
           incrementLineItemLabel={t('increment')}
           key={`${cart.entityId}-${cart.version}`}
           lineItemAction={updateLineItem}
+          lineItemActionPendingLabel={t('cartUpdateInProgress')}
           shipping={{
             action: updateShippingInfo,
             countries,
@@ -283,6 +286,7 @@ export default async function Cart({ params }: Props) {
           title={t('title')}
         />
       </CartAnalyticsProvider>
+      <Slot label="Cart bottom content" snapshotId="cart-bottom-content" />
       <CartViewed
         currencyCode={cart.currencyCode}
         lineItems={lineItems}

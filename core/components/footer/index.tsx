@@ -10,13 +10,13 @@ import { getTranslations } from 'next-intl/server';
 import { cache, JSX } from 'react';
 
 import { Streamable } from '@/vibes/soul/lib/streamable';
-import { Footer as FooterSection } from '@/vibes/soul/sections/footer';
 import { GetLinksAndSectionsQuery, LayoutQuery } from '~/app/[locale]/(default)/page-data';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
+import { SiteFooter as FooterSection } from '~/lib/makeswift/components/site-footer';
 
 import { FooterFragment, FooterSectionsFragment } from './fragment';
 import { AmazonIcon } from './payment-icons/amazon';
