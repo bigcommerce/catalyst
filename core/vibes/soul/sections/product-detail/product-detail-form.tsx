@@ -177,7 +177,7 @@ function SubmitButton({ children, disabled }: { children: React.ReactNode; disab
 
   return (
     <Button
-      className="w-auto @xl:w-56"
+      className="w-auto text-white @xl:w-56"
       disabled={disabled}
       loading={pending}
       size="medium"
