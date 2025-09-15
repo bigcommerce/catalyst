@@ -1,9 +1,9 @@
 import { Command, Option } from 'commander';
-import consola from 'consola';
 import { execa } from 'execa';
 import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 
+import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 
 export const start = new Command('start')

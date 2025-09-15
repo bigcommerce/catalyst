@@ -1,10 +1,10 @@
 import { Command } from 'commander';
 import Conf from 'conf';
-import consola from 'consola';
 import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, expect, MockInstance, test, vi } from 'vitest';
 
 import { link } from '../../src/commands/link';
+import { consola } from '../../src/lib/logger';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from '../../src/lib/project-config';
 import { program } from '../../src/program';

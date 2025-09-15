@@ -1,9 +1,9 @@
 import { Command } from 'commander';
-import consola from 'consola';
 import { execa } from 'execa';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { start } from '../../src/commands/start';
+import { consola } from '../../src/lib/logger';
 import { program } from '../../src/program';
 
 vi.mock('node:fs', () => ({

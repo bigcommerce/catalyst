@@ -1,7 +1,7 @@
 import { Command } from 'commander';
-import consola from 'consola';
 
 import PACKAGE_INFO from '../../package.json';
+import { consola } from '../lib/logger';
 
 export const version = new Command('version')
   .description('Display detailed version information.')

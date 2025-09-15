@@ -1,6 +1,7 @@
 import { Command } from 'commander';
-import consola from 'consola';
 import { colorize } from 'consola/utils';
+import { config } from 'dotenv';
+import { resolve } from 'node:path';
 
 import PACKAGE_INFO from '../package.json';
 
@@ -12,8 +13,19 @@ import { start } from './commands/start';
 import { telemetry } from './commands/telemetry';
 import { version } from './commands/version';
 import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
+import { consola } from './lib/logger';
 
 export const program = new Command();
+
+config({
+  path: [
+    resolve(process.cwd(), '.env'),
+    resolve(process.cwd(), '.env.local'),
+    // Assumes the parent directory is the monorepo root:
+    resolve(process.cwd(), '..', '.env'),
+    resolve(process.cwd(), '..', '.env.local'),
+  ],
+});
 
 consola.log(colorize('cyanBright', `◢ ${PACKAGE_INFO.name} v${PACKAGE_INFO.version}\n`));
 

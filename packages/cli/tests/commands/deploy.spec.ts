@@ -1,6 +1,5 @@
 import AdmZip from 'adm-zip';
 import { Command } from 'commander';
-import consola from 'consola';
 import { http, HttpResponse } from 'msw';
 import { mkdir, realpath, stat, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
@@ -25,6 +24,7 @@ import {
   parseEnvironmentVariables,
   uploadBundleZip,
 } from '../../src/commands/deploy';
+import { consola } from '../../src/lib/logger';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
 import { program } from '../../src/program';
 import { server } from '../mocks/node';

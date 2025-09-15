@@ -1,11 +1,11 @@
 import AdmZip from 'adm-zip';
 import { Command, Option } from 'commander';
-import { consola } from 'consola';
 import { access, readdir, readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import yoctoSpinner from 'yocto-spinner';
 import { z } from 'zod';
 
+import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { Telemetry } from '../lib/telemetry';
 

@@ -1,7 +1,8 @@
-import consola from 'consola';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
+
+import { consola } from '../lib/logger';
 
 export async function mkTempDir(prefix = '/') {
   const tmp = join(tmpdir(), prefix);
