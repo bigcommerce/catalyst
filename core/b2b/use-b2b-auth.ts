@@ -9,6 +9,12 @@ import { toast } from '@/vibes/soul/primitives/toaster';
 import { login } from './server-login';
 import { useSDK } from './use-b2b-sdk';
 
+enum LandingLocations {
+  Home = '0',
+  Orders = '1',
+  Checkout = '2',
+}
+
 const handleRegistered = ({ data: { email, password, landingLoginLocation } }: Data) => {
   void login(email, password).then((error) => {
     if (error) {
@@ -20,8 +26,10 @@ const handleRegistered = ({ data: { email, password, landingLoginLocation } }: D
       return;
     }
 
-    if (landingLoginLocation === '0') {
+    if (landingLoginLocation === LandingLocations.Home) {
       window.location.href = '/';
+    } else if (landingLoginLocation === LandingLocations.Checkout) {
+      window.location.href = '/checkout';
     } else {
       window.location.href = '/?section=orders';
     }
