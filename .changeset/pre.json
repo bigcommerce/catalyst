@@ -1,0 +1,10 @@
+{
+  "mode": "pre",
+  "tag": "alpha",
+  "initialVersions": {
+    "@bigcommerce/catalyst": "1.0.0"
+  },
+  "changesets": [
+    "itchy-lions-work"
+  ]
+}
