@@ -277,7 +277,7 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-  packages/cli:
+  packages/catalyst:
     dependencies:
       '@opennextjs/cloudflare':
         specifier: ^1.8.0

@@ -2,8 +2,9 @@ import { Command } from 'commander';
 import { execa } from 'execa';
 import { expect, test, vi } from 'vitest';
 
-import { build } from '../../src/commands/build';
-import { program } from '../../src/program';
+import { program } from '../program';
+
+import { build } from './build';
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
 vi.spyOn(process, 'exit').mockImplementation(() => null as never);

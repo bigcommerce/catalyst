@@ -2,8 +2,9 @@ import { Command } from 'commander';
 import { execa } from 'execa';
 import { expect, test, vi } from 'vitest';
 
-import { dev } from '../../src/commands/dev';
-import { program } from '../../src/program';
+import { program } from '../program';
+
+import { dev } from './dev';
 
 vi.mock('node:fs', () => ({
   existsSync: vi.fn(() => true),

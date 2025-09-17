@@ -3,7 +3,7 @@ import { colorize } from 'consola/utils';
 import { config } from 'dotenv';
 import { resolve } from 'node:path';
 
-import PACKAGE_INFO from '../package.json';
+import PACKAGE_INFO from '../../package.json';
 
 import { build } from './commands/build';
 import { deploy } from './commands/deploy';

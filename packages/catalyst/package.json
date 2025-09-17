@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "type": "module",
   "bin": {
-    "catalyst": "dist/index.js"
+    "catalyst": "dist/cli.js"
   },
   "files": [
     "dist",
@@ -12,7 +12,6 @@
   "private": true,
   "scripts": {
     "dev": "tsup --watch",
-    "dev:run": "node dist/index.js",
     "typecheck": "tsc --noEmit",
     "lint": "eslint . --max-warnings 0",
     "test": "vitest run",

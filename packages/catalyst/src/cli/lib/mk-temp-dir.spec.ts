@@ -2,7 +2,7 @@ import { access, mkdir, stat, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { expect, test } from 'vitest';
 
-import { mkTempDir } from '../../src/lib/mk-temp-dir';
+import { mkTempDir } from './mk-temp-dir';
 
 test('creates directory that actually exists', async () => {
   const [path, cleanup] = await mkTempDir('catalyst-build-');

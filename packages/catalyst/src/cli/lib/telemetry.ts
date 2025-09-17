@@ -2,7 +2,7 @@ import { Analytics } from '@segment/analytics-node';
 import Conf from 'conf';
 import { randomBytes } from 'node:crypto';
 
-import PACKAGE_INFO from '../../package.json';
+import PACKAGE_INFO from '../../../package.json';
 
 import { getProjectConfig, ProjectConfigSchema } from './project-config';
 

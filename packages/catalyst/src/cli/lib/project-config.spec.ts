@@ -3,8 +3,8 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { afterAll, beforeAll, expect, test } from 'vitest';
 
-import { mkTempDir } from '../../src/lib/mk-temp-dir';
-import { getProjectConfig, ProjectConfigSchema } from '../../src/lib/project-config';
+import { mkTempDir } from './mk-temp-dir';
+import { getProjectConfig, ProjectConfigSchema } from './project-config';
 
 let tmpDir: string;
 let cleanup: () => Promise<void>;

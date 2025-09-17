@@ -1,6 +1,6 @@
 import { Command } from 'commander';
 
-import PACKAGE_INFO from '../../package.json';
+import PACKAGE_INFO from '../../../package.json';
 import { consola } from '../lib/logger';
 
 export const version = new Command('version')
