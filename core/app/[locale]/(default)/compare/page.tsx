@@ -62,7 +62,11 @@ export default async function Compare(props: Props) {
     const parsed = CompareParamsSchema.parse(searchParams);
     const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
 
-    const products = await getComparedProducts(productIds, currencyCode, customerAccessToken);
+    const { products, settings } = await getComparedProducts(
+      productIds,
+      currencyCode,
+      customerAccessToken,
+    );
     const format = await getFormatter();
 
     return products.map((product) => ({
@@ -72,7 +76,14 @@ export default async function Compare(props: Props) {
       image: product.defaultImage
         ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
         : undefined,
-      price: pricesTransformer(product.prices, format),
+      price: pricesTransformer(
+        {
+          pricesIncTax: product.pricesIncTax,
+          pricesExcTax: product.pricesExcTax,
+        },
+        settings?.tax?.plp,
+        format,
+      ),
       subtitle: product.brand?.name ?? undefined,
       rating: product.reviewSummary.averageRating,
       description: <div dangerouslySetInnerHTML={{ __html: product.description }} />,
@@ -95,16 +106,18 @@ export default async function Compare(props: Props) {
     const parsed = CompareParamsSchema.parse(searchParams);
     const productIds = parsed.ids?.filter((id) => !Number.isNaN(id));
 
-    const products = await getComparedProducts(productIds, currencyCode, customerAccessToken);
+    const { products } = await getComparedProducts(productIds, currencyCode, customerAccessToken);
 
     return products.map((product) => {
+      const productPrice = product.pricesExcTax ?? product.pricesIncTax;
+
       return {
         id: product.entityId,
         name: product.name,
         sku: product.sku,
         brand: product.brand?.name ?? '',
-        price: product.prices?.price.value ?? 0,
-        currency: product.prices?.price.currencyCode ?? '',
+        price: productPrice?.price.value ?? 0,
+        currency: productPrice?.price.currencyCode ?? '',
       };
     });
   });

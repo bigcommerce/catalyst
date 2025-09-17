@@ -23,16 +23,18 @@ export const ProductViewed = ({ product }: Props) => {
 
     isMounted.current = true;
 
+    const productPrice = product.pricesExcTax ?? product.pricesIncTax;
+
     analytics?.navigation.productViewed({
-      value: product.prices?.price.value ?? 0,
-      currency: product.prices?.price.currencyCode ?? 'USD',
+      value: productPrice?.price.value ?? 0,
+      currency: productPrice?.price.currencyCode ?? 'USD',
       items: [
         {
           id: product.entityId.toString(),
           name: product.name,
           brand: product.brand?.name,
           sku: product.sku,
-          price: product.prices?.salePrice?.value,
+          price: productPrice?.salePrice?.value,
         },
       ],
     });

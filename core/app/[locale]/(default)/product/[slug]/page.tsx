@@ -136,13 +136,22 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streamablePrices = Streamable.from(async () => {
-    const product = await streamableProductPricingAndRelatedProducts;
+    const { product, settings } = await streamableProductPricingAndRelatedProducts;
 
     if (!product) {
       return null;
     }
 
-    return pricesTransformer(product.prices, format) ?? null;
+    return (
+      pricesTransformer(
+        {
+          pricesIncTax: product.pricesIncTax,
+          pricesExcTax: product.pricesExcTax,
+        },
+        settings?.tax?.pdp,
+        format,
+      ) ?? null
+    );
   });
 
   const streamableImages = Streamable.from(async () => {
@@ -256,7 +265,7 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streameableRelatedProducts = Streamable.from(async () => {
-    const product = await streamableProductPricingAndRelatedProducts;
+    const { product, settings } = await streamableProductPricingAndRelatedProducts;
 
     if (!product) {
       return [];
@@ -264,7 +273,7 @@ export default async function Product({ params, searchParams }: Props) {
 
     const relatedProducts = removeEdgesAndNodes(product.relatedProducts);
 
-    return productCardTransformer(relatedProducts, format);
+    return productCardTransformer(relatedProducts, settings?.tax?.pdp, format);
   });
 
   const streamableMinQuantity = Streamable.from(async () => {
@@ -280,7 +289,7 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streamableAnalyticsData = Streamable.from(async () => {
-    const [extendedProduct, pricingProduct] = await Streamable.all([
+    const [extendedProduct, { product: pricingProduct }] = await Streamable.all([
       streamableProduct,
       streamableProductPricingAndRelatedProducts,
     ]);
@@ -290,8 +299,8 @@ export default async function Product({ params, searchParams }: Props) {
       name: extendedProduct.name,
       sku: extendedProduct.sku,
       brand: extendedProduct.brand?.name ?? '',
-      price: pricingProduct?.prices?.price.value ?? 0,
-      currency: pricingProduct?.prices?.price.currencyCode ?? '',
+      price: pricingProduct?.pricesExcTax?.price.value ?? 0,
+      currency: pricingProduct?.pricesExcTax?.price.currencyCode ?? '',
     };
   });
 
@@ -355,10 +364,18 @@ export default async function Product({ params, searchParams }: Props) {
         {([extendedProduct, pricingProduct]) => (
           <>
             <ProductSchema
-              product={{ ...extendedProduct, prices: pricingProduct?.prices ?? null }}
+              product={{
+                ...extendedProduct,
+                pricesExcTax: pricingProduct.product?.pricesExcTax ?? null,
+                pricesIncTax: pricingProduct.product?.pricesIncTax ?? null,
+              }}
             />
             <ProductViewed
-              product={{ ...extendedProduct, prices: pricingProduct?.prices ?? null }}
+              product={{
+                ...extendedProduct,
+                pricesExcTax: pricingProduct.product?.pricesExcTax ?? null,
+                pricesIncTax: pricingProduct.product?.pricesIncTax ?? null,
+              }}
             />
           </>
         )}

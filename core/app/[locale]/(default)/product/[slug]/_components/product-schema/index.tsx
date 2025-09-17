@@ -34,15 +34,16 @@ export const ProductSchema = ({ product }: Props) => {
         }
       : null;
 
-  const priceSpecification = product.prices
+  const productPrice = product.pricesExcTax ?? product.pricesIncTax;
+  const priceSpecification = productPrice
     ? {
         '@type': 'PriceSpecification' as const,
-        price: product.prices.price.value,
-        priceCurrency: product.prices.price.currencyCode,
-        ...(product.prices.priceRange.min.value !== product.prices.priceRange.max.value
+        price: productPrice.price.value,
+        priceCurrency: productPrice.price.currencyCode,
+        ...(productPrice.priceRange.min.value !== productPrice.priceRange.max.value
           ? {
-              minPrice: product.prices.priceRange.min.value,
-              maxPrice: product.prices.priceRange.max.value,
+              minPrice: productPrice.priceRange.min.value,
+              maxPrice: productPrice.priceRange.max.value,
             }
           : null),
       }

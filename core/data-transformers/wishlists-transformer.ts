@@ -70,7 +70,7 @@ function wishlistItemsTransformer(
             disabled: getCtaDisabled(item.product),
           }
         : undefined,
-      product: singleProductCardTransformer(item.product, formatter),
+      product: singleProductCardTransformer(item.product, 'EX', formatter),
     }));
 }
 

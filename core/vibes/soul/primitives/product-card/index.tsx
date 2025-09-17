@@ -13,7 +13,7 @@ export interface Product {
   title: string;
   href: string;
   image?: { src: string; alt: string };
-  price?: Price;
+  price?: Price | [Price, Price];
   subtitle?: string;
   badge?: string;
   rating?: number;

@@ -28,16 +28,21 @@ export const CategoryViewed = ({ category, products }: Props) => {
 
     isMounted.current = true;
 
+    const firstProductPrice = products[0]?.pricesExcTax ?? products[0]?.pricesIncTax;
+    const currency = firstProductPrice?.price.currencyCode || 'USD';
+
     analytics?.navigation.categoryViewed({
       id: category.entityId,
       name: category.name,
-      currency: products[0]?.prices?.price.currencyCode || 'USD',
+      currency,
       items: products.map((p) => {
+        const productPrice = p.pricesExcTax ?? p.pricesIncTax;
+
         return {
           id: p.entityId.toString(),
           name: p.name,
           brand: p.brand?.name,
-          price: p.prices?.price.value,
+          price: productPrice?.price.value,
           categories: removeEdgesAndNodes(category.breadcrumbs).map(({ name }) => name),
         };
       }),

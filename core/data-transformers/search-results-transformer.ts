@@ -12,11 +12,18 @@ export async function searchResultsTransformer(
   const format = await getFormatter();
   const t = await getTranslations('Components.Header.Search');
 
-  const productResults: SearchResult = {
-    type: 'products',
+  const productResults = {
+    type: 'products' as const,
     title: t('products'),
     products: searchProducts.map((product) => {
-      const price = pricesTransformer(product.prices, format);
+      const price = pricesTransformer(
+        {
+          pricesIncTax: product.pricesIncTax,
+          pricesExcTax: product.pricesExcTax,
+        },
+        'EX', // Default to excluding tax for search results
+        format,
+      );
 
       return {
         id: product.entityId.toString(),

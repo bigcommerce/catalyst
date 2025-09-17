@@ -1,6 +1,7 @@
 import { cache } from 'react';
 
 import { client } from '~/client';
+import { TaxSettingsFragment } from '~/client/fragments/pricing';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { BreadcrumbsCategoryFragment } from '~/components/breadcrumbs/fragment';
@@ -35,6 +36,7 @@ const CategoryPageQuery = graphql(
           }
         }
         settings {
+          ...TaxSettingsFragment
           storefront {
             catalog {
               productComparisonsEnabled
@@ -44,7 +46,7 @@ const CategoryPageQuery = graphql(
       }
     }
   `,
-  [BreadcrumbsCategoryFragment],
+  [BreadcrumbsCategoryFragment, TaxSettingsFragment],
 );
 
 export const getCategoryPageData = cache(async (entityId: number, customerAccessToken?: string) => {

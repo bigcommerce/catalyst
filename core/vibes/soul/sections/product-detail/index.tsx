@@ -16,7 +16,7 @@ interface ProductDetailProduct {
   title: string;
   href: string;
   images: Streamable<Array<{ src: string; alt: string }>>;
-  price?: Streamable<Price | null>;
+  price?: Streamable<Price | [Price, Price] | null>;
   subtitle?: string;
   badge?: string;
   rating?: Streamable<number | null>;

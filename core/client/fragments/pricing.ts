@@ -1,34 +1,55 @@
 import { graphql } from '../graphql';
 
-export const PricingFragment = graphql(`
-  fragment PricingFragment on Product {
-    prices(currencyCode: $currencyCode) {
-      price {
+export const PricesFragment = graphql(`
+  fragment PricesFragment on Prices {
+    price {
+      value
+      currencyCode
+    }
+    basePrice {
+      value
+      currencyCode
+    }
+    retailPrice {
+      value
+      currencyCode
+    }
+    salePrice {
+      value
+      currencyCode
+    }
+    priceRange {
+      min {
         value
         currencyCode
       }
-      basePrice {
+      max {
         value
         currencyCode
       }
-      retailPrice {
-        value
-        currencyCode
+    }
+  }
+`);
+
+export const PricingFragment = graphql(
+  `
+    fragment PricingFragment on Product {
+      pricesExcTax: prices(currencyCode: $currencyCode, includeTax: false) {
+        ...PricesFragment
       }
-      salePrice {
-        value
-        currencyCode
+      pricesIncTax: prices(currencyCode: $currencyCode, includeTax: false) {
+        ...PricesFragment
       }
-      priceRange {
-        min {
-          value
-          currencyCode
-        }
-        max {
-          value
-          currencyCode
-        }
-      }
+    }
+  `,
+  [PricesFragment],
+);
+
+export const TaxSettingsFragment = graphql(`
+  fragment TaxSettingsFragment on Settings {
+    tax {
+      pdp
+      plp
     }
   }
 `);

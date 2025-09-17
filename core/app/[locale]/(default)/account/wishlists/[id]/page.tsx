@@ -70,8 +70,8 @@ const getAnalyticsData = async (id: string, searchParamsPromise: Promise<SearchP
         name: product.name,
         sku: product.sku,
         brand: product.brand?.name ?? '',
-        price: product.prices?.price.value ?? 0,
-        currency: product.prices?.price.currencyCode ?? '',
+        price: (product.pricesExcTax ?? product.pricesIncTax)?.price.value ?? 0,
+        currency: (product.pricesExcTax ?? product.pricesIncTax)?.price.currencyCode ?? '',
       };
     });
 };

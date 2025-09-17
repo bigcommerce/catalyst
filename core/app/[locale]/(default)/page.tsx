@@ -36,7 +36,7 @@ export default async function Home({ params }: Props) {
 
     const featuredProducts = removeEdgesAndNodes(data.site.featuredProducts);
 
-    return productCardTransformer(featuredProducts, format);
+    return productCardTransformer(featuredProducts, 'EX', format);
   });
 
   const streamableNewestProducts = Streamable.from(async () => {
@@ -44,7 +44,7 @@ export default async function Home({ params }: Props) {
 
     const newestProducts = removeEdgesAndNodes(data.site.newestProducts);
 
-    return productCardTransformer(newestProducts, format);
+    return productCardTransformer(newestProducts, 'EX', format);
   });
 
   return (

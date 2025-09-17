@@ -2,6 +2,7 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { client } from '~/client';
+import { TaxSettingsFragment } from '~/client/fragments/pricing';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { CurrencyCode } from '~/components/header/fragment';
@@ -49,16 +50,19 @@ const ComparedProductsQuery = graphql(
             }
           }
         }
+        settings {
+          ...TaxSettingsFragment
+        }
       }
     }
   `,
-  [ProductCardFragment],
+  [ProductCardFragment, TaxSettingsFragment],
 );
 
 export const getComparedProducts = cache(
   async (productIds: number[] = [], currencyCode?: CurrencyCode, customerAccessToken?: string) => {
     if (productIds.length === 0) {
-      return [];
+      return { products: [], settings: null };
     }
 
     const { data } = await client.fetch({
@@ -72,6 +76,9 @@ export const getComparedProducts = cache(
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
-    return removeEdgesAndNodes(data.site.products);
+    return {
+      products: removeEdgesAndNodes(data.site.products),
+      settings: data.site.settings,
+    };
   },
 );

@@ -2,50 +2,76 @@ import { ResultOf } from 'gql.tada';
 import { getFormatter } from 'next-intl/server';
 
 import { Price } from '@/vibes/soul/primitives/price-label';
-import { PricingFragment } from '~/client/fragments/pricing';
+import { PricesFragment, PricingFragment } from '~/client/fragments/pricing';
 import { ExistingResultType } from '~/client/util';
 
-export const pricesTransformer = (
-  prices: ResultOf<typeof PricingFragment>['prices'],
+const transformPrice = (
+  price: ResultOf<typeof PricesFragment> | null | undefined,
   format: ExistingResultType<typeof getFormatter>,
 ): Price | undefined => {
-  if (!prices) {
+  if (!price) {
     return undefined;
   }
 
-  const isPriceRange = prices.priceRange.min.value !== prices.priceRange.max.value;
-  const isSalePrice = prices.salePrice?.value !== prices.basePrice?.value;
+  const isPriceRange = price.priceRange.min.value !== price.priceRange.max.value;
+  const isSalePrice = price.salePrice?.value !== price.basePrice?.value;
 
   if (isPriceRange) {
     return {
       type: 'range',
-      minValue: format.number(prices.priceRange.min.value, {
+      minValue: format.number(price.priceRange.min.value, {
         style: 'currency',
-        currency: prices.price.currencyCode,
+        currency: price.price.currencyCode,
       }),
-      maxValue: format.number(prices.priceRange.max.value, {
+      maxValue: format.number(price.priceRange.max.value, {
         style: 'currency',
-        currency: prices.price.currencyCode,
+        currency: price.price.currencyCode,
       }),
     };
   }
 
-  if (isSalePrice && prices.salePrice && prices.basePrice) {
+  if (isSalePrice && price.salePrice && price.basePrice) {
     return {
       type: 'sale',
-      previousValue: format.number(prices.basePrice.value, {
+      previousValue: format.number(price.basePrice.value, {
         style: 'currency',
-        currency: prices.price.currencyCode,
+        currency: price.price.currencyCode,
       }),
-      currentValue: format.number(prices.price.value, {
+      currentValue: format.number(price.price.value, {
         style: 'currency',
-        currency: prices.price.currencyCode,
+        currency: price.price.currencyCode,
       }),
     };
   }
 
-  return format.number(prices.price.value, {
+  return format.number(price.price.value, {
     style: 'currency',
-    currency: prices.price.currencyCode,
+    currency: price.price.currencyCode,
   });
+};
+
+export const pricesTransformer = (
+  prices: ResultOf<typeof PricingFragment>,
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  tax: 'BOTH' | 'EX' | 'INC' = 'EX',
+  format: ExistingResultType<typeof getFormatter>,
+): Price | [Price, Price] | undefined => {
+  switch (tax) {
+    case 'BOTH': {
+      const priceExcTax = transformPrice(prices.pricesExcTax, format);
+      const priceIncTax = transformPrice(prices.pricesIncTax, format);
+
+      if (priceExcTax && priceIncTax) {
+        return [priceExcTax, priceIncTax];
+      }
+
+      return priceExcTax ?? priceIncTax;
+    }
+
+    default: {
+      const price = tax === 'EX' ? prices.pricesExcTax : prices.pricesIncTax;
+
+      return transformPrice(price, format);
+    }
+  }
 };

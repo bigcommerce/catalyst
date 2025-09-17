@@ -1,7 +1,7 @@
 import { cache } from 'react';
 
 import { client } from '~/client';
-import { PricingFragment } from '~/client/fragments/pricing';
+import { PricingFragment, TaxSettingsFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
@@ -300,10 +300,13 @@ const ProductPricingAndRelatedProductsQuery = graphql(
             }
           }
         }
+        settings {
+          ...TaxSettingsFragment
+        }
       }
     }
   `,
-  [PricingFragment, FeaturedProductsCarouselFragment],
+  [PricingFragment, FeaturedProductsCarouselFragment, TaxSettingsFragment],
 );
 
 export const getProductPricingAndRelatedProducts = cache(
@@ -315,6 +318,6 @@ export const getProductPricingAndRelatedProducts = cache(
       fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
     });
 
-    return data.site.product;
+    return data.site;
   },
 );

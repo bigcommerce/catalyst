@@ -66,7 +66,7 @@ export type SearchResult =
         id: string;
         title: string;
         href: string;
-        price?: Price;
+        price?: Price | [Price, Price];
         image?: { src: string; alt: string };
       }>;
     }

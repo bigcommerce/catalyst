@@ -139,7 +139,14 @@ export default async function Brand(props: Props) {
       image: product.defaultImage
         ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
         : undefined,
-      price: pricesTransformer(product.prices, format),
+      price: pricesTransformer(
+        {
+          pricesIncTax: product.pricesIncTax,
+          pricesExcTax: product.pricesExcTax,
+        },
+        settings?.tax?.plp,
+        format,
+      ),
       subtitle: product.brand?.name ?? undefined,
     }));
   });

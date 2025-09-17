@@ -9,6 +9,8 @@ import { pricesTransformer } from './prices-transformer';
 
 export const singleProductCardTransformer = (
   product: ResultOf<typeof ProductCardFragment>,
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  tax: 'BOTH' | 'EX' | 'INC' = 'EX',
   format: ExistingResultType<typeof getFormatter>,
 ): Product => {
   return {
@@ -18,7 +20,14 @@ export const singleProductCardTransformer = (
     image: product.defaultImage
       ? { src: product.defaultImage.url, alt: product.defaultImage.altText }
       : undefined,
-    price: pricesTransformer(product.prices, format),
+    price: pricesTransformer(
+      {
+        pricesExcTax: product.pricesExcTax,
+        pricesIncTax: product.pricesIncTax,
+      },
+      tax,
+      format,
+    ),
     subtitle: product.brand?.name ?? undefined,
     rating: product.reviewSummary.averageRating,
   };
@@ -26,7 +35,9 @@ export const singleProductCardTransformer = (
 
 export const productCardTransformer = (
   products: Array<ResultOf<typeof ProductCardFragment>>,
+  // eslint-disable-next-line @typescript-eslint/default-param-last
+  tax: 'BOTH' | 'EX' | 'INC' = 'EX',
   format: ExistingResultType<typeof getFormatter>,
 ): Product[] => {
-  return products.map((product) => singleProductCardTransformer(product, format));
+  return products.map((product) => singleProductCardTransformer(product, tax, format));
 };

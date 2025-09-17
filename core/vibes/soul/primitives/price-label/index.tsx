@@ -17,7 +17,7 @@ export type Price = string | PriceRange | PriceSale;
 interface Props {
   className?: string;
   colorScheme?: 'light' | 'dark';
-  price: Price;
+  price: Price | [Price, Price];
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -35,6 +35,15 @@ interface Props {
  * ```
  */
 export function PriceLabel({ className, colorScheme = 'light', price }: Props) {
+  if (Array.isArray(price)) {
+    return (
+      <>
+        <PriceLabel className={className} colorScheme={colorScheme} price={price[0]} />
+        <PriceLabel className={className} colorScheme={colorScheme} price={price[1]} />
+      </>
+    );
+  }
+
   if (typeof price === 'string') {
     return (
       <span
