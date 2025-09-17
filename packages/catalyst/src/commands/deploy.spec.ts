@@ -27,11 +27,11 @@ import {
 import { consola } from '../../src/lib/logger';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
 import { program } from '../../src/program';
-import { server } from '../mocks/node';
-import { textHistory } from '../mocks/spinner';
+import { server } from '../../tests/mocks/node';
+import { textHistory } from '../../tests/mocks/spinner';
 
 // eslint-disable-next-line import/dynamic-import-chunkname
-vi.mock('yocto-spinner', () => import('../mocks/spinner'));
+vi.mock('yocto-spinner', () => import('../../tests/mocks/spinner'));
 
 let exitMock: MockInstance;
 

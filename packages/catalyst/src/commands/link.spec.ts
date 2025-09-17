@@ -8,7 +8,7 @@ import { consola } from '../../src/lib/logger';
 import { mkTempDir } from '../../src/lib/mk-temp-dir';
 import { getProjectConfig, ProjectConfigSchema } from '../../src/lib/project-config';
 import { program } from '../../src/program';
-import { server } from '../mocks/node';
+import { server } from '../../tests/mocks/node';
 
 let exitMock: MockInstance;
 
@@ -29,7 +29,7 @@ const accessToken = 'test-token';
 beforeAll(async () => {
   consola.mockTypes(() => vi.fn());
 
-  vi.mock('../../src/lib/telemetry', () => {
+  vi.mock('../lib/telemetry', () => {
     return {
       Telemetry: vi.fn().mockImplementation(() => {
         return {
