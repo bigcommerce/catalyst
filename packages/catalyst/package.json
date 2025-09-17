@@ -9,7 +9,6 @@
     "dist",
     "templates"
   ],
-  "private": true,
   "scripts": {
     "dev": "tsup --watch",
     "typecheck": "tsc --noEmit",
