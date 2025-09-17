@@ -1,9 +1,10 @@
 import { Command } from '@commander-js/extra-typings';
 import { beforeAll, expect, test, vi } from 'vitest';
 
-import { version } from '../../src/commands/version';
-import { consola } from '../../src/lib/logger';
-import { program } from '../../src/program';
+import { consola } from '../lib/logger';
+import { program } from '../program';
+
+import { version } from './version';
 
 beforeAll(() => {
   consola.mockTypes(() => vi.fn());

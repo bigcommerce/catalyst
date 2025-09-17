@@ -1,13 +1,13 @@
 import { Command } from '@commander-js/extra-typings';
 import { describe, expect, test, vi } from 'vitest';
 
-vi.mock('../src/hooks/telemetry', () => ({
+vi.mock('./hooks/telemetry', () => ({
   telemetryPreHook: vi.fn().mockResolvedValue(undefined),
   telemetryPostHook: vi.fn().mockResolvedValue(undefined),
 }));
 
-import { telemetryPostHook, telemetryPreHook } from '../src/hooks/telemetry';
-import { program } from '../src/program';
+import { telemetryPostHook, telemetryPreHook } from './hooks/telemetry';
+import { program } from './program';
 
 describe('CLI program', () => {
   test('properly configured', () => {

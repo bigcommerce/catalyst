@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, vi } from 'vitest';
 
-import { server } from './mocks/node';
+import { server } from './tests/mocks/node';
 
 vi.mock('../src/lib/telemetry', () => ({
   Telemetry: vi.fn().mockImplementation(() => ({

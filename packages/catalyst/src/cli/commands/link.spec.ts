@@ -3,12 +3,13 @@ import Conf from 'conf';
 import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, expect, MockInstance, test, vi } from 'vitest';
 
-import { link } from '../../src/commands/link';
-import { consola } from '../../src/lib/logger';
-import { mkTempDir } from '../../src/lib/mk-temp-dir';
-import { getProjectConfig, ProjectConfigSchema } from '../../src/lib/project-config';
-import { program } from '../../src/program';
-import { server } from '../mocks/node';
+import { server } from '../../../tests/mocks/node';
+import { consola } from '../lib/logger';
+import { mkTempDir } from '../lib/mk-temp-dir';
+import { getProjectConfig, ProjectConfigSchema } from '../lib/project-config';
+import { program } from '../program';
+
+import { link } from './link';
 
 let exitMock: MockInstance;
 
@@ -29,7 +30,7 @@ const accessToken = 'test-token';
 beforeAll(async () => {
   consola.mockTypes(() => vi.fn());
 
-  vi.mock('../../src/lib/telemetry', () => {
+  vi.mock('../lib/telemetry', () => {
     return {
       Telemetry: vi.fn().mockImplementation(() => {
         return {

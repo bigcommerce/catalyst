@@ -1,5 +1,5 @@
 import { Command, Option } from 'commander';
-import z from 'zod';
+import { z } from 'zod';
 
 import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
