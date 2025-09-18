@@ -9,6 +9,13 @@
     "dist",
     "templates"
   ],
+  "exports": {
+    "./auth": {
+      "types": "./dist/auth.d.ts",
+      "import": "./dist/auth.js",
+      "require": "./dist/auth.cjs"
+    }
+  },
   "private": true,
   "scripts": {
     "dev": "tsup --watch",
@@ -43,12 +50,14 @@
     "@vitest/ui": "^3.2.4",
     "eslint": "^8.57.1",
     "msw": "^2.9.0",
+    "next-auth": "5.0.0-beta.25",
     "prettier": "^3.6.2",
     "tsup": "^8.5.0",
     "typescript": "^5.8.3",
     "vitest": "^3.2.4"
   },
   "peerDependencies": {
-    "@opennextjs/cloudflare": "^1.8.0"
+    "@opennextjs/cloudflare": "^1.8.0",
+    "next-auth": "5.0.0-beta.25"
   }
 }
