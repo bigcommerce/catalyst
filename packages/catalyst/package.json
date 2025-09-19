@@ -30,6 +30,7 @@
     "node": "^20.0.0 || ^22.0.0"
   },
   "dependencies": {
+    "@bigcommerce/catalyst-client": "workspace:^",
     "@segment/analytics-node": "^2.2.1",
     "adm-zip": "^0.5.16",
     "commander": "^14.0.0",
@@ -37,8 +38,10 @@
     "consola": "^3.4.2",
     "dotenv": "^16.5.0",
     "execa": "^9.6.0",
+    "gql.tada": "^1.8.10",
+    "jose": "^5.10.0",
     "yocto-spinner": "^1.0.0",
-    "zod": "^4.0.5"
+    "zod": "^3.25.51"
   },
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",
