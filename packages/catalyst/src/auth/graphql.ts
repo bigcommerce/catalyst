@@ -53,8 +53,22 @@ export function getLoginMutations(graphql: GraphQL) {
     }
   `);
 
+  const LogoutMutation = graphql(`
+    mutation LogoutMutation($cartEntityId: String) {
+      logout(cartEntityId: $cartEntityId) {
+        result
+        cartUnassignResult {
+          cart {
+            entityId
+          }
+        }
+      }
+    }
+  `);
+
   return {
     LoginMutation,
     LoginWithTokenMutation,
+    LogoutMutation,
   };
 }

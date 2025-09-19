@@ -1,8 +1,10 @@
 import { decodeJwt } from 'jose';
 import { type NextAuthConfig, type Session, type User } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
+import { type Adapter, type AdapterSession, type AdapterUser } from 'next-auth/adapters';
+import { type JWT, type JWTOptions } from 'next-auth/jwt';
 import CredentialsProvider from 'next-auth/providers/credentials';
 
+import { anonymousSignIn, updateAnonymousSession } from './anonymous';
 import { getLoginMutations } from './graphql';
 import {
   JwtCredentials,
@@ -199,6 +201,77 @@ function defaultJwtCallback({
   return token;
 }
 
+function defaultSessionCallback({
+  session,
+  token,
+}: {
+  session: {
+    user: AdapterUser;
+  } & AdapterSession &
+    Session;
+  token: JWT;
+}) {
+  if (token.user?.customerAccessToken) {
+    session.user.customerAccessToken = token.user.customerAccessToken;
+  }
+
+  if (token.user?.cartId !== undefined) {
+    session.user.cartId = token.user.cartId;
+  }
+
+  return session;
+}
+
+async function defaultSignOut(
+  client: Client,
+  graphql: GraphQL,
+  message:
+    | {
+        session: Awaited<ReturnType<Required<Adapter>['deleteSession']>>;
+      }
+    | {
+        token: Awaited<ReturnType<JWTOptions['decode']>>;
+      },
+) {
+  const { LogoutMutation } = getLoginMutations(graphql);
+  const cartEntityId = 'token' in message ? message.token?.user?.cartId : null;
+  const customerAccessToken = 'token' in message ? message.token?.user?.customerAccessToken : null;
+
+  if (customerAccessToken) {
+    try {
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      const logoutResponse = (await client.fetch({
+        document: LogoutMutation,
+        variables: {
+          cartEntityId,
+        },
+        customerAccessToken,
+        fetchOptions: {
+          cache: 'no-store',
+        },
+      })) as { data: { logout: { cartUnassignResult: { cart?: { entityId: string } } } } };
+
+      // If the logout is successful, we want to establish a new anonymous session.
+      // This will allow us to restore the cart if persistent cart is disabled.
+      await anonymousSignIn();
+
+      // If persistent cart is disabled, we can restore the cart back to the anonymous session.
+      if (logoutResponse.data.logout.cartUnassignResult.cart) {
+        await updateAnonymousSession({
+          cartId: logoutResponse.data.logout.cartUnassignResult.cart.entityId,
+        });
+
+        return;
+      }
+
+      await updateAnonymousSession({ cartId: null });
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error(error);
+    }
+  }
+}
+
 const partitionedCookie = (name?: string) =>
   ({
     ...(name !== undefined ? { name } : {}),
@@ -226,9 +299,18 @@ export function BigCommerceAuthConfig({
     ...restUserConfig
   } = userConfig;
 
-  const { jwt: userJwtCallback, ...restUserCallbacks } = userCallbacks ?? {};
+  const { signOut: userSignOut, ...restUserEvents } = userConfig.events ?? {};
+
+  const signOutCallback = userSignOut ?? defaultSignOut.bind(null, client, graphql);
+
+  const {
+    jwt: userJwtCallback,
+    session: userSessionCallback,
+    ...restUserCallbacks
+  } = userCallbacks ?? {};
 
   const jwtCallback = userJwtCallback ?? defaultJwtCallback;
+  const sessionCallback = userSessionCallback ?? defaultSessionCallback;
 
   const providers = [
     CredentialsProvider({
@@ -254,10 +336,15 @@ export function BigCommerceAuthConfig({
     callbacks: {
       // @ts-expect-error - @todo fix this
       jwt: userSession?.strategy === 'jwt' ? jwtCallback : undefined,
+      session: sessionCallback,
       ...restUserCallbacks,
     },
     session: {
       ...userSession,
+    },
+    events: {
+      signOut: signOutCallback,
+      ...restUserEvents,
     },
     // configure NextAuth cookies to work inside of the Makeswift Builder's canvas
     cookies: {
