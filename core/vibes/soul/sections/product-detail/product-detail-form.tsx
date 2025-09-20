@@ -147,9 +147,9 @@ export function ProductDetailForm<F extends Field>({
             </FormStatus>
           ))}
           <div className="flex gap-x-3 pt-3">
-            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-8 sm:gap-0">
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-8 sm:gap-3">
               {/* Quantity input: full width on mobile, 3/8 on desktop */}
-              <div className="col-span-1 w-full sm:col-span-3">
+              <div className="col-span-1 w-full sm:col-span-2">
                 <NumberInput
                   aria-label={quantityLabel}
                   decrementLabel={decrementLabel}
@@ -166,7 +166,7 @@ export function ProductDetailForm<F extends Field>({
                 />
               </div>
               {/* Buttons: stacked and full width on mobile, side by side on desktop */}
-              <div className="col-span-1 flex w-full flex-col gap-3 sm:col-span-5 sm:flex-row">
+              <div className="col-span-1 flex w-full flex-col gap-3 sm:col-span-6 sm:flex-row">
                 <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
                 <B2BNinjaAddToQuoteButton
                   disabled={ctaDisabled}
