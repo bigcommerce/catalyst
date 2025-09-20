@@ -164,7 +164,7 @@ export function ProductDetailForm<F extends Field>({
 
                     if (
                       !ctaDisabled &&
-                      parseInt(inventoryLevel?.value, 10) < Number(valueToChangeTo)
+                      parseInt(inventoryLevel?.value, 10) > Number(valueToChangeTo)
                     ) {
                       return quantityControl.change(valueToChangeTo);
                     } else {
