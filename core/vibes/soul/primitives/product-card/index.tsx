@@ -94,7 +94,7 @@ export function ProductCard({
             <Image
               alt={image.alt}
               className={clsx(
-                'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+                'w-full scale-100 select-none object-contain transition-transform duration-500 ease-out group-hover:scale-110',
                 {
                   light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
                   dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
