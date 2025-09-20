@@ -59,7 +59,7 @@ export function ProductDetail<F extends Field>({
   additionaInformationTitle = 'Additional information',
   inventoryTracking,
 }: Props<F>) {
-  console.log('inventoryTracking:', inventoryTracking);
+  console.log('streamableProduct:', streamableProduct);
   return (
     <section className="@container">
       <div className="mx-auto w-full max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-20">
