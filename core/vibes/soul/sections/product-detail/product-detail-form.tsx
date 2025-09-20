@@ -162,6 +162,7 @@ export function ProductDetailForm<F extends Field>({
                   required
                   value={quantityControl.value}
                   className="w-full"
+                  buttonClassName="w-full"
                 />
               </div>
               {/* Buttons: stacked and full width on mobile, side by side on desktop */}

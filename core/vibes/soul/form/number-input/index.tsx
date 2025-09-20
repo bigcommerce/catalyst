@@ -37,12 +37,14 @@ export const NumberInput = React.forwardRef<
     decrementLabel?: string;
     incrementLabel?: string;
     colorScheme?: 'light' | 'dark';
+    buttonClassName?: string;
   }
 >(
   (
     {
       label,
       className,
+      buttonClassName = '',
       required,
       errors,
       decrementLabel,
@@ -69,6 +71,7 @@ export const NumberInput = React.forwardRef<
               light: 'bg-[var(--number-input-light-background,hsl(var(--background)))]',
               dark: 'bg-[var(--number-input-dark-background,hsl(var(--foreground)))]',
             }[colorScheme],
+            buttonClassName,
           )}
         >
           <button
