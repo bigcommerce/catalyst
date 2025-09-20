@@ -22,15 +22,9 @@ export function DynamicFormSection<F extends Field>({
   action,
 }: Props<F>) {
   return (
-    <SectionLayout
-      className={clsx(
-        'mx-auto mb-24 mt-24 max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12',
-        className,
-      )}
-      containerSize="lg"
-    >
+    <SectionLayout className={clsx('mx-auto w-full max-w-4xl', className)} containerSize="lg">
       {title != null && title !== '' && (
-        <header className="pb-4 @2xl:pb-4 @4xl:pb-4">
+        <header className="pb-8 @2xl:pb-12 @4xl:pb-16">
           <h1 className="mb-5 font-heading text-4xl font-medium leading-none @xl:text-5xl">
             {title}
           </h1>
