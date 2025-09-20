@@ -342,6 +342,7 @@
         "removeItem": "Item verwijderen",
         "cartCombined": "We hebben gezien dat je artikelen in een eerder winkelmandje had opgeslagen, dus we hebben ze voor je aan je huidige winkelmandje toegevoegd.",
         "cartRestored": "Je bent een winkelmandje begonnen op een ander apparaat en we hebben het hier hersteld, zodat je verder kunt gaan waar je was gebleven.",
+        "cartUpdateInProgress": "Je winkelwagentje wordt bijgewerkt. Weet je zeker dat je deze pagina wilt verlaten? Je wijzigingen kunnen verloren gaan.",
         "CheckoutSummary": {
             "title": "Overzicht",
             "subTotal": "Subtotaal",

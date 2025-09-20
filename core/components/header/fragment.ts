@@ -46,7 +46,7 @@ export const HeaderLinksFragment = graphql(`
   }
 `);
 
-export type Currency = NonNullable<
+type Currency = NonNullable<
   NonNullable<FragmentOf<typeof HeaderFragment>>['currencies']['edges']
 >[number]['node'];
 export type CurrencyCode = Currency['code'];

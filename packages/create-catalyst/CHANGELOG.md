@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+### Patch Changes
+
+- [#2591](https://github.com/bigcommerce/catalyst/pull/2591) [`f791fef`](https://github.com/bigcommerce/catalyst/commit/f791fef1283e1d5a0fabf81fa64140317e99c84e) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Removes `chalk` dependency in favor of `consola` "colorize" utility function (which only depends on `node:tty`)
+
 ## 1.0.0
 
 ### Major Changes

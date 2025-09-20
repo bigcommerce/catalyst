@@ -21,23 +21,23 @@ const ProductViewedMutation = graphql(`
   }
 `);
 
-export interface AnalyticsInitiator {
+interface AnalyticsInitiator {
   visitId: string;
   visitorId: string;
 }
 
-export interface AnalyticsRequest {
+interface AnalyticsRequest {
   url: string;
   refererUrl: string;
   userAgent: string;
 }
 
-export interface VisitStartedEvent {
+interface VisitStartedEvent {
   initiator: AnalyticsInitiator;
   request: AnalyticsRequest;
 }
 
-export interface ProductViewedEvent {
+interface ProductViewedEvent {
   initiator: AnalyticsInitiator;
   request: AnalyticsRequest;
   productId: number;

@@ -59,12 +59,14 @@
     "react": "^19.1.0",
     "react-day-picker": "^9.7.0",
     "react-dom": "^19.1.0",
-    "react-google-recaptcha": "^3.1.0",
     "react-headroom": "^3.2.1",
     "schema-dts": "^1.1.5",
     "server-only": "^0.0.1",
+<<<<<<< HEAD
     "set-cookie-parser": "^2.7.1",
     "sharp": "^0.33.5",
+=======
+>>>>>>> e30002761ea45394d40b6a47ad4910c45b5e1e8f
     "sonner": "^1.7.4",
     "swr": "^2.2.5",
     "tailwindcss-radix": "^3.0.5",
@@ -86,7 +88,6 @@
     "@types/node": "^22.15.30",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.6",
-    "@types/react-google-recaptcha": "^2.1.9",
     "@types/react-headroom": "^3.2.3",
     "@types/set-cookie-parser": "^2.4.10",
     "@types/uuid": "^10.0.0",

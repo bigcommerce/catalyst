@@ -342,6 +342,7 @@
         "removeItem": "Ta bort vara",
         "cartCombined": "Vi märkte att du hade varor sparade i en tidigare kundvagn, så vi har lagt till dem i din nuvarande kundvagn åt dig.",
         "cartRestored": "Du startade en kundvagn på en annan enhet, och vi har återställt den här så att du kan fortsätta där du slutade.",
+        "cartUpdateInProgress": "Du har en pågående kundvagnsuppdatering. Är du säker på att du vill lämna den här sidan? Dina ändringar kan gå förlorade.",
         "CheckoutSummary": {
             "title": "Summering",
             "subTotal": "Delsumma",

@@ -342,6 +342,7 @@
         "removeItem": "Fjern vare",
         "cartCombined": "Vi bemærkede, at du havde gemt varer i en tidligere indkøbskurv, så vi har føjet dem til din nuværende indkøbskurv for dig.",
         "cartRestored": "Du startede en indkøbskurv på en anden enhed, og vi har gendannet den her, så du kan fortsætte, hvor du slap.",
+        "cartUpdateInProgress": "Du har en igangværende opdatering af din indkøbskurv. Er du sikker på, at du vil forlade denne side? Dine ændringer kan gå tabt.",
         "CheckoutSummary": {
             "title": "Oversigt",
             "subTotal": "Subtotal",

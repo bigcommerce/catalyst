@@ -2,9 +2,6 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 
-// TODO: Add recaptcha token
-// import { bypassReCaptcha } from '~/lib/bypass-recaptcha';
-
 import { DynamicFormSection } from '@/vibes/soul/sections/dynamic-form-section';
 import {
   formFieldTransformer,
@@ -52,7 +49,6 @@ export default async function Register({ params }: Props) {
   }
 
   const { addressFields, customerFields, countries } = registerCustomerData;
-  // const reCaptcha = await bypassReCaptcha(reCaptchaSettings);
 
   const fields = transformFieldsToLayout(
     [

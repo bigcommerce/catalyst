@@ -23,16 +23,6 @@ export enum FieldNameToFieldId {
   exclusiveOffers = 25,
 }
 
-export enum FieldTypeToFieldInput {
-  'CheckboxesFormField' = 'checkboxes',
-  'DateFormField' = 'dates',
-  'NumberFormField' = 'numbers',
-  'PasswordFormField' = 'passwords',
-  'TextFormField' = 'texts',
-  'RadioButtonsFormField' = 'multipleChoices',
-  'MultilineTextFormField' = 'multilineTexts',
-}
-
 export const CUSTOMER_FIELDS_TO_EXCLUDE = [FieldNameToFieldId.currentPassword];
 
 export const REGISTER_CUSTOMER_FORM_LAYOUT = [
@@ -57,35 +47,6 @@ export const ADDRESS_FORM_LAYOUT = [
   [FieldNameToFieldId.city, FieldNameToFieldId.stateOrProvince],
   [FieldNameToFieldId.postalCode, FieldNameToFieldId.countryCode],
 ];
-
-export const getPreviouslySubmittedValue = (fieldValue?: FormFieldValue) => {
-  if (!fieldValue) {
-    return {};
-  }
-
-  switch (fieldValue.__typename) {
-    case 'TextFormFieldValue':
-      return { TextFormField: fieldValue.text };
-
-    case 'NumberFormFieldValue':
-      return { NumberFormField: fieldValue.number };
-
-    case 'MultilineTextFormFieldValue':
-      return { MultilineTextFormField: fieldValue.multilineText };
-
-    case 'DateFormFieldValue':
-      return { DateFormField: fieldValue.date.utc };
-
-    case 'MultipleChoiceFormFieldValue':
-      return { MultipleChoiceFormField: fieldValue.valueEntityId.toString() };
-
-    case 'CheckboxesFormFieldValue':
-      return { CheckboxesFormField: fieldValue.valueEntityIds };
-
-    case 'PasswordFormFieldValue':
-      return { PasswordFormField: fieldValue.password };
-  }
-};
 
 export const mapFormFieldValueToName = (field: FormFieldValue): Record<string, unknown> => {
   switch (field.__typename) {

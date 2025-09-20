@@ -31,7 +31,7 @@ export function WishlistAnalyticsProvider(
   );
 }
 
-export function WishlistAnalyticsProviderResolved({
+function WishlistAnalyticsProviderResolved({
   children,
   data,
 }: PropsWithChildren<{ data: Streamable<AddToCartContext[]> }>) {
