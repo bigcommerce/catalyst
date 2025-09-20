@@ -146,25 +146,29 @@ export function ProductDetailForm<F extends Field>({
               {error}
             </FormStatus>
           ))}
-          <div className="flex gap-x-3 pt-3">
-            <NumberInput
-              aria-label={quantityLabel}
-              decrementLabel={decrementLabel}
-              incrementLabel={incrementLabel}
-              min={1}
-              name={formFields.quantity.name}
-              onBlur={quantityControl.blur}
-              onChange={(e) => quantityControl.change(e.currentTarget.value)}
-              onFocus={quantityControl.focus}
-              required
-              value={quantityControl.value}
-            />
-            <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
-            <B2BNinjaAddToQuoteButton
-              disabled={ctaDisabled}
-              productId={productId}
-              quantity={quantityControl.value}
-            />
+          <div className="pt-3">
+            <div className="mb-3 block w-full @sm:flex-1">
+              <NumberInput
+                aria-label={quantityLabel}
+                decrementLabel={decrementLabel}
+                incrementLabel={incrementLabel}
+                min={1}
+                name={formFields.quantity.name}
+                onBlur={quantityControl.blur}
+                onChange={(e) => quantityControl.change(e.currentTarget.value)}
+                onFocus={quantityControl.focus}
+                required
+                value={quantityControl.value}
+              />
+            </div>
+            <div className="flex w-full gap-x-3">
+              <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+              <B2BNinjaAddToQuoteButton
+                disabled={ctaDisabled}
+                productId={productId}
+                quantity={quantityControl.value}
+              />
+            </div>
           </div>
         </div>
       </form>
