@@ -150,7 +150,9 @@ export function ProductDetailForm<F extends Field>({
           ))}
           <div>
             {inventoryLevel?.value && (
-              <p className="text-sm text-gray-500">Available Inventory: {inventoryLevel?.value}</p>
+              <p className="text-lg text-gray-500">
+                Available Inventory: <span className="bold">{inventoryLevel?.value}</span>
+              </p>
             )}
           </div>
           <div className="flex gap-x-3 pt-3">
