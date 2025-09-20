@@ -54,6 +54,7 @@ export default async function Register() {
       ]}
       submitLabel={t('Form.submit')}
       title={t('heading')}
+      className="mb-12 mt-6"
     />
   );
 }

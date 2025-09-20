@@ -24,7 +24,7 @@ export function DynamicFormSection<F extends Field>({
   return (
     <SectionLayout className={clsx('mx-auto w-full max-w-4xl', className)} containerSize="lg">
       {title != null && title !== '' && (
-        <header className="pb-8 @2xl:pb-12 @4xl:pb-16">
+        <header className="pb-4 @2xl:pb-4 @4xl:pb-4">
           <h1 className="mb-5 font-heading text-4xl font-medium leading-none @xl:text-5xl">
             {title}
           </h1>
