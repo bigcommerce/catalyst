@@ -42,7 +42,7 @@ interface Props<F extends Field> {
   thumbnailLabel?: string;
   additionaInformationTitle?: string;
   inventoryTracking: Streamable<string | null>;
-  inventoryLevel: Streamable<number | null>;
+  inventoryLevel?: object;
 }
 
 export function ProductDetail<F extends Field>({
@@ -61,7 +61,6 @@ export function ProductDetail<F extends Field>({
   inventoryTracking,
   inventoryLevel,
 }: Props<F>) {
-  console.log('streamableProduct:', streamableProduct);
   console.log('inventoryLevel:', inventoryLevel);
   return (
     <section className="@container">
@@ -137,6 +136,7 @@ export function ProductDetail<F extends Field>({
                         prefetch={prefetch}
                         productId={product.id}
                         quantityLabel={quantityLabel}
+                        inventoryLevel={inventoryLevel}
                       />
                     )}
                   </Stream>

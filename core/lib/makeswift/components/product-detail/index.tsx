@@ -7,7 +7,7 @@ import { type Streamable } from '@/vibes/soul/lib/streamable';
 type Props = ClientProps & {
   productId: number;
   inventoryTracking: Streamable<string | null>;
-  inventoryLevel: Streamable<number | null>;
+  inventoryLevel: any;
 };
 
 export const ProductDetail = ({ productId, ...props }: Props) => (

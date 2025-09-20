@@ -290,7 +290,7 @@ export const getProductData = cache(async (variables: Variables) => {
   return {
     ...product,
     inventory_tracking: productRest ? (productRest.inventory_tracking as string) : null,
-    inventory_level: productRest ? (productRest.inventory_level as number) : null,
+    inventory_level: productRest ? (productRest.inventory_level as object) : null,
   };
 });
 

@@ -249,6 +249,7 @@ export default async function Product(props: Props) {
   return (
     // @ts-ignore
     <SectionLayout hideOverflow={true}>
+      {/* @ts-ignore */}
       <ProductDetail
         action={addToCart}
         additionaInformationTitle={t('ProductDetails.additionalInformation')}

@@ -50,6 +50,7 @@ interface Props<F extends Field> {
   decrementLabel?: string;
   ctaDisabled?: boolean;
   prefetch?: boolean;
+  inventoryLevel?: any;
 }
 
 export function ProductDetailForm<F extends Field>({
@@ -62,6 +63,7 @@ export function ProductDetailForm<F extends Field>({
   decrementLabel = 'Decrease quantity',
   ctaDisabled = false,
   prefetch = false,
+  inventoryLevel,
 }: Props<F>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -157,7 +159,20 @@ export function ProductDetailForm<F extends Field>({
                   min={1}
                   name={formFields.quantity.name}
                   onBlur={quantityControl.blur}
-                  onChange={(e) => quantityControl.change(e.currentTarget.value)}
+                  onChange={(e) => {
+                    const valueToChangeTo = e.currentTarget.value;
+
+                    if (
+                      !ctaDisabled &&
+                      parseInt(inventoryLevel?.value, 10) < Number(valueToChangeTo)
+                    ) {
+                      return quantityControl.change(valueToChangeTo);
+                    } else {
+                      toast.error(
+                        'Sorry, we do not have enough inventory to fulfill your request.',
+                      );
+                    }
+                  }}
                   onFocus={quantityControl.focus}
                   required
                   value={quantityControl.value}
