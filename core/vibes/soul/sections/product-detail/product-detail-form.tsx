@@ -169,7 +169,7 @@ export function ProductDetailForm<F extends Field>({
               <div className="col-span-1 flex w-full flex-col gap-3 sm:col-span-6 sm:flex-row">
                 <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
                 <B2BNinjaAddToQuoteButton
-                  disabled={false}
+                  disabled={ctaDisabled}
                   productId={productId}
                   quantity={quantityControl.value}
                 />
