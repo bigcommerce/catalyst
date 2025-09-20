@@ -148,6 +148,11 @@ export function ProductDetailForm<F extends Field>({
               {error}
             </FormStatus>
           ))}
+          <div>
+            {inventoryLevel?.value && (
+              <p className="text-sm text-gray-500">Available Inventory: {inventoryLevel?.value}</p>
+            )}
+          </div>
           <div className="flex gap-x-3 pt-3">
             <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-8 sm:gap-3">
               {/* Quantity input: full width on mobile, 3/8 on desktop */}
