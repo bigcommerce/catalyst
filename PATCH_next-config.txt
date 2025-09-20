@@ -1,0 +1,8 @@
+*** EDITA core/next.config.ts ***
+1) Agrega al inicio:
+   import createWithMakeswift from "@makeswift/runtime/next/plugin";
+   const withMakeswift = createWithMakeswift();
+
+2) Donde ya aplicas withNextIntl, agrega:
+   nextConfig = withNextIntl(nextConfig);
+   nextConfig = withMakeswift(nextConfig);

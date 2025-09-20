@@ -1,5 +1,5 @@
-import { Analytics } from '@vercel/analytics/react';
-import { SpeedInsights } from '@vercel/speed-insights/next';
+import { Analytics } from '@/analytics/react';
+import { SpeedInsights } from '@/speed-insights/next';
 import { clsx } from 'clsx';
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
@@ -22,6 +22,13 @@ import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
 import { getToastNotification } from '~/lib/server-toast';
+import { getSiteVersion } from "@makeswift/runtime/next/server";
+import { MakeswiftProvider } from "~/makeswift/provider";
+import "~/makeswift/components";
+
+import GA4 from '~/components/analytics/GA4';
+import CookieGate from '~/components/consent/CookieGate';
+
 
 const RootLayoutMetadataQuery = graphql(
   `
@@ -45,7 +52,6 @@ const RootLayoutMetadataQuery = graphql(
       }
     }
   `,
-  [WebAnalyticsFragment, ScriptsFragment],
 );
 
 const fetchRootLayoutMetadata = cache(async () => {
@@ -74,21 +80,21 @@ export async function generateMetadata(): Promise<Metadata> {
     keywords: metaKeywords ? metaKeywords.split(',') : null,
     other: {
       platform: 'bigcommerce.catalyst',
-      build_sha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? '',
+      build_sha: process.env.NEXT_PUBLIC__GIT_COMMIT_SHA ?? '',
       store_hash: process.env.BIGCOMMERCE_STORE_HASH ?? '',
     },
   };
 }
 
-const VercelComponents = () => {
-  if (process.env.VERCEL !== '1') {
+const Components = () => {
+  if (process.env. !== '1') {
     return null;
   }
 
   return (
     <>
-      {process.env.DISABLE_VERCEL_ANALYTICS !== 'true' && <Analytics />}
-      {process.env.DISABLE_VERCEL_SPEED_INSIGHTS !== 'true' && <SpeedInsights />}
+      import { Analytics } from '@vercel/analytics/react';
+      import { SpeedInsights } from '@vercel/speed-insights/next';
     </>
   );
 };
@@ -108,7 +114,7 @@ export default async function RootLayout({ params, children }: Props) {
   }
 
   // need to call this method everywhere where static rendering is enabled
-  // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
+  // https://next-intl-docs..app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
   setRequestLocale(locale);
 
   return (
@@ -120,7 +126,12 @@ export default async function RootLayout({ params, children }: Props) {
         />
       </head>
       <body className="flex min-h-screen flex-col">
-        <NextIntlClientProvider>
+        <GA4 />
+<CookieGate />
+<MakeswiftProvider siteVersion={await getSiteVersion()}>
+  {children}
+</MakeswiftProvider
+          <NextIntlClientProvider>
           <NuqsAdapter>
             <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
               <Providers>
@@ -132,7 +143,7 @@ export default async function RootLayout({ params, children }: Props) {
             </AnalyticsProvider>
           </NuqsAdapter>
         </NextIntlClientProvider>
-        <VercelComponents />
+        <Components />
         <ContainerQueryPolyfill />
         <ScriptManagerScripts scripts={data.site.content.footerScripts} strategy="lazyOnload" />
       </body>
