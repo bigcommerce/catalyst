@@ -157,6 +157,7 @@ export function ProductDetailForm<F extends Field>({
                   decrementLabel={decrementLabel}
                   incrementLabel={incrementLabel}
                   min={1}
+                  max={parseInt(inventoryLevel?.value, 10) ?? 9999}
                   name={formFields.quantity.name}
                   onBlur={quantityControl.blur}
                   onChange={(e) => {
