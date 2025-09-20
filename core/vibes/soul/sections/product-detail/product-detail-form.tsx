@@ -146,26 +146,27 @@ export function ProductDetailForm<F extends Field>({
               {error}
             </FormStatus>
           ))}
-          <div className="pt-3 @sm:flex @sm:flex-row @sm:items-stretch @sm:gap-x-3">
-            <div className="w-full @sm:w-auto">
-              <NumberInput
-                aria-label={quantityLabel}
-                decrementLabel={decrementLabel}
-                incrementLabel={incrementLabel}
-                min={1}
-                name={formFields.quantity.name}
-                onBlur={quantityControl.blur}
-                onChange={(e) => quantityControl.change(e.currentTarget.value)}
-                onFocus={quantityControl.focus}
-                required
-                value={quantityControl.value}
-              />
-            </div>
-            <div className="mt-3 flex w-full gap-x-3 @sm:mt-0 @sm:w-auto">
-              <div className="w-1/2 @sm:w-auto">
-                <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+          <div className="flex gap-x-3 pt-3">
+            <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-8 sm:gap-0">
+              {/* Quantity input: full width on mobile, 3/8 on desktop */}
+              <div className="col-span-1 w-full sm:col-span-3">
+                <NumberInput
+                  aria-label={quantityLabel}
+                  decrementLabel={decrementLabel}
+                  incrementLabel={incrementLabel}
+                  min={1}
+                  name={formFields.quantity.name}
+                  onBlur={quantityControl.blur}
+                  onChange={(e) => quantityControl.change(e.currentTarget.value)}
+                  onFocus={quantityControl.focus}
+                  required
+                  value={quantityControl.value}
+                  className="w-full"
+                />
               </div>
-              <div className="w-1/2 @sm:w-auto">
+              {/* Buttons: stacked and full width on mobile, side by side on desktop */}
+              <div className="col-span-1 flex w-full flex-col gap-3 sm:col-span-5 sm:flex-row">
+                <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
                 <B2BNinjaAddToQuoteButton
                   disabled={ctaDisabled}
                   productId={productId}
