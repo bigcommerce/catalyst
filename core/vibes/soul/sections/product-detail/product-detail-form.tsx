@@ -146,8 +146,8 @@ export function ProductDetailForm<F extends Field>({
               {error}
             </FormStatus>
           ))}
-          <div className="pt-3">
-            <div className="mb-3 block w-full @sm:flex-1">
+          <div className="flex flex-col pt-3 @sm:flex-row @sm:items-stretch @sm:gap-x-3">
+            <div className="mb-3 w-full @sm:mb-0 @sm:w-auto">
               <NumberInput
                 aria-label={quantityLabel}
                 decrementLabel={decrementLabel}
@@ -161,13 +161,17 @@ export function ProductDetailForm<F extends Field>({
                 value={quantityControl.value}
               />
             </div>
-            <div className="flex w-full gap-x-3">
-              <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
-              <B2BNinjaAddToQuoteButton
-                disabled={ctaDisabled}
-                productId={productId}
-                quantity={quantityControl.value}
-              />
+            <div className="flex w-full gap-x-3 @sm:w-auto">
+              <div className="w-1/2 @sm:w-auto">
+                <SubmitButton disabled={ctaDisabled}>{ctaLabel}</SubmitButton>
+              </div>
+              <div className="w-1/2 @sm:w-auto">
+                <B2BNinjaAddToQuoteButton
+                  disabled={ctaDisabled}
+                  productId={productId}
+                  quantity={quantityControl.value}
+                />
+              </div>
             </div>
           </div>
         </div>
