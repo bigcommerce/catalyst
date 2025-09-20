@@ -4,7 +4,11 @@ import { type Props as ClientProps, PropsContextProvider } from './client';
 import { COMPONENT_TYPE } from './register';
 import { type Streamable } from '@/vibes/soul/lib/streamable';
 
-type Props = ClientProps & { productId: number; inventoryTracking: Streamable<string | null> };
+type Props = ClientProps & {
+  productId: number;
+  inventoryTracking: Streamable<string | null>;
+  inventoryLevel: Streamable<number | null>;
+};
 
 export const ProductDetail = ({ productId, ...props }: Props) => (
   <PropsContextProvider value={props}>
