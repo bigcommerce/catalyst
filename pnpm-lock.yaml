@@ -96,6 +96,12 @@ importers:
       '@radix-ui/react-tooltip':
         specifier: ^1.2.7
         version: 1.2.7(@types/react-dom@19.1.6(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      '@statsig/react-bindings':
+        specifier: ^3.25.3
+        version: 3.25.3(react@19.1.0)
+      '@statsig/web-analytics':
+        specifier: ^3.25.3
+        version: 3.25.3
       '@t3-oss/env-core':
         specifier: ^0.13.6
         version: 0.13.6(typescript@5.8.3)(zod@3.25.51)
@@ -3792,6 +3798,20 @@ packages:
 
   '@standard-schema/utils@0.3.0':
     resolution: {integrity: sha512-e7Mew686owMaPJVNNLs55PUvgz371nKgwsc4vxE49zsODpJEnxgxRo2y/OKrqueavXgZNMDVj3DdHFlaSAeU8g==}
+
+  '@statsig/client-core@3.25.3':
+    resolution: {integrity: sha512-QmLigHO4aN9NHQLVvoP8bYFbuFFWaNJVm6RM59yQDAaW8AynMHjrmWtValpSD/sRjwEUUZBpQty0ciJCg56e9Q==}
+
+  '@statsig/js-client@3.25.3':
+    resolution: {integrity: sha512-yySqWNONM/fHIUgTtF5QEYJqrnLaoBstPLCfJlCAbrTAzX+QnPYBzGcHBPlIFdRI4txP76RWCTnb9hRxyLZbsg==}
+
+  '@statsig/react-bindings@3.25.3':
+    resolution: {integrity: sha512-Mi+lWGaqBnQQ8ptJzTLa4EPxyEaGg3jkB7Q6mwiE+9QGPgyLJd/HlDPJJx1R8riwoJ1mKDfD6Uq2unHy/KpfSw==}
+    peerDependencies:
+      react: ^16.6.3 || ^17.0.0 || ^18.0.0 || ^19.0.0
+
+  '@statsig/web-analytics@3.25.3':
+    resolution: {integrity: sha512-M2W/8Ea7HGxAEX6ujUDOMfkyaBJ7jKab67LIoc/GG+7zKLSDxGI5iTB++V51MeMWsB0XUCYa3iGV4tu0T3AAmw==}
 
   '@stylistic/eslint-plugin@2.7.2':
     resolution: {integrity: sha512-3DVLU5HEuk2pQoBmXJlzvrxbKNpu2mJ0SRqz5O/CJjyNCr12ZiPcYMEtuArTyPOk5i7bsAU44nywh1rGfe3gKQ==}
@@ -9472,6 +9492,9 @@ packages:
     resolution: {integrity: sha512-QW95TCTaHmsYfHDybGMwO5IJIM93I/6vTRk+daHTWFPhwh+C8Cg7j7XyKrwrj8Ib6vYXe0ocYNrmzY4xAAN6ug==}
     engines: {node: '>= 14'}
 
+  web-vitals@5.0.3:
+    resolution: {integrity: sha512-4KmOFYxj7qT6RAdCH0SWwq8eKeXNhAFXR4PmgF6nrWFmrJ41n7lq3UCA6UK0GebQ4uu+XP8e8zGjaDO3wZlqTg==}
+
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
 
@@ -14019,6 +14042,24 @@ snapshots:
   '@standard-schema/spec@1.0.0': {}
 
   '@standard-schema/utils@0.3.0': {}
+
+  '@statsig/client-core@3.25.3': {}
+
+  '@statsig/js-client@3.25.3':
+    dependencies:
+      '@statsig/client-core': 3.25.3
+
+  '@statsig/react-bindings@3.25.3(react@19.1.0)':
+    dependencies:
+      '@statsig/client-core': 3.25.3
+      '@statsig/js-client': 3.25.3
+      react: 19.1.0
+
+  '@statsig/web-analytics@3.25.3':
+    dependencies:
+      '@statsig/client-core': 3.25.3
+      '@statsig/js-client': 3.25.3
+      web-vitals: 5.0.3
 
   '@stylistic/eslint-plugin@2.7.2(eslint@8.57.1)(typescript@5.8.3)':
     dependencies:
@@ -20575,6 +20616,8 @@ snapshots:
       makeerror: 1.0.12
 
   web-streams-polyfill@4.0.0-beta.3: {}
+
+  web-vitals@5.0.3: {}
 
   webidl-conversions@3.0.1: {}
 
