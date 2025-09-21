@@ -19,6 +19,8 @@ import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
 import { AnalyticsProvider } from '~/components/analytics/provider';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
+import { statsigAdapter } from '@flags-sdk/statsig';
+import { DynamicStatsigProvider } from '~/dynamic-statsig-provider';
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
 import { getToastNotification } from '~/lib/server-toast';
@@ -111,6 +113,9 @@ export default async function RootLayout({ params, children }: Props) {
   // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
   setRequestLocale(locale);
 
+  const Statsig = await statsigAdapter.initialize();
+  const datafile = await Statsig.getClientInitializeResponse({ userID: '1234' }, { hash: 'djb2' });
+
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
       <head>
@@ -120,7 +125,8 @@ export default async function RootLayout({ params, children }: Props) {
         />
       </head>
       <body className="flex min-h-screen flex-col">
-        <NextIntlClientProvider>
+        <DynamicStatsigProvider datafile={datafile}>
+          <NextIntlClientProvider>
           <NuqsAdapter>
             <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
               <Providers>
@@ -131,7 +137,8 @@ export default async function RootLayout({ params, children }: Props) {
               </Providers>
             </AnalyticsProvider>
           </NuqsAdapter>
-        </NextIntlClientProvider>
+          </NextIntlClientProvider>
+        </DynamicStatsigProvider>
         <VercelComponents />
         <ContainerQueryPolyfill />
         <ScriptManagerScripts scripts={data.site.content.footerScripts} strategy="lazyOnload" />
@@ -145,3 +152,10 @@ export function generateStaticParams() {
 }
 
 export const fetchCache = 'default-cache';
+
+
+
+
+
+
+
