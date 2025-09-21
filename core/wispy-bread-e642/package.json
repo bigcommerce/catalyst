@@ -1,0 +1,13 @@
+{
+	"name": "wispy-bread-e642",
+	"version": "0.0.0",
+	"private": true,
+	"scripts": {
+		"deploy": "wrangler deploy",
+		"start": "wrangler dev",
+		"dev": "wrangler dev"
+	},
+	"devDependencies": {
+		"wrangler": "^4.38.0"
+	}
+}

@@ -12,17 +12,25 @@ export function DynamicStatsigProvider({
   children: ReactNode;
   datafile: Awaited<ReturnType<typeof Statsig.getClientInitializeResponse>>;
 }) {
-  if (!datafile) throw new Error('Missing datafile');
+  if (!datafile) {
+    throw new Error('Missing datafile');
+  }
+
+  const clientKey = process.env.NEXT_PUBLIC_STATSIG_CLIENT_KEY;
+
+  if (!clientKey) {
+    throw new Error('Missing NEXT_PUBLIC_STATSIG_CLIENT_KEY environment variable');
+  }
 
   const client = useClientBootstrapInit(
-    process.env.NEXT_PUBLIC_STATSIG_CLIENT_KEY as string,
+    clientKey,
     datafile.user,
     JSON.stringify(datafile),
     { plugins: [new StatsigAutoCapturePlugin()] }, // Optional, will add autocaptured web analytics events to Statsig
   );
 
   return (
-    <StatsigProvider user={datafile.user} client={client}>
+    <StatsigProvider client={client} user={datafile.user}>
       {children}
     </StatsigProvider>
   );
