@@ -8,6 +8,7 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { Subscribe } from '~/components/subscribe';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { createFeatureFlag } from '~/flags';
 
 import { Slideshow } from './_components/slideshow';
 import { getPageData } from './page-data';
@@ -20,6 +21,8 @@ export default async function Home({ params }: Props) {
   const { locale } = await params;
 
   setRequestLocale(locale);
+
+  const showSubscribeSection = await createFeatureFlag('my_feature_flag')();
 
   const t = await getTranslations('Home');
   const format = await getFormatter();
@@ -71,7 +74,7 @@ export default async function Home({ params }: Props) {
         title={t('NewestProducts.title')}
       />
 
-      <Subscribe />
+      {showSubscribeSection && <Subscribe />}
     </>
   );
 }
