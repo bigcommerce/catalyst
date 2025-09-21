@@ -108,6 +108,17 @@ export default async (): Promise<NextConfig> => {
         },
       ];
     },
+    async redirects() {
+      return [
+        {
+          source: '/:path*',
+          has: [{ type: 'host', value: 'www.mxplantae.com' }],
+          destination: 'https://mxplantae.com/:path*',
+          permanent: true,
+        },
+      ];
+    },
+
   };
 
   // Apply withNextIntl to the config
