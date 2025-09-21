@@ -9,7 +9,7 @@ import { consola } from '../lib/logger';
 import { getProjectConfig } from '../lib/project-config';
 import { getWranglerConfig } from '../lib/wrangler-config';
 
-const WRANGLER_VERSION = '4.24.3';
+const WRANGLER_VERSION = '4.31.0';
 
 export const build = new Command('build')
   .allowUnknownOption()

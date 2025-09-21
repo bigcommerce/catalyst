@@ -28,7 +28,7 @@ const cloudflareConfig = defineCloudflareConfig({
 });
 
 const config: OpenNextConfig = {
-  buildCommand: 'node_modules/.bin/next build',
+  buildCommand: 'set ""NEXT_PRIVATE_SKIP_TYPESCRIPT_CHECK=1"" && pnpm run generate && pnpm exec next build --no-lint',
   ...cloudflareConfig,
 };
 

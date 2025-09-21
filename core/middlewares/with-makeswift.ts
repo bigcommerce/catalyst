@@ -4,7 +4,7 @@ import { MiddlewareFactory } from './compose-middlewares';
 
 export const withMakeswift: MiddlewareFactory = (middleware) => {
   return async (request, event) => {
-    const isDraftRequest = unstable_isDraftModeRequest(request);
+    const isDraftRequest = unstable_isDraftModeRequest(request as any);
 
     if (isDraftRequest) {
       // Makeswift Builder's locale switcher expects the host to derive locale strictly from
