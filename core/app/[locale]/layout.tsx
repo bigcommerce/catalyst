@@ -1,3 +1,4 @@
+import { statsigAdapter } from '@flags-sdk/statsig';
 import { Analytics } from '@vercel/analytics/react';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { clsx } from 'clsx';
@@ -19,9 +20,6 @@ import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
 import { AnalyticsProvider } from '~/components/analytics/provider';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
-
-import { statsigAdapter } from '@flags-sdk/statsig';
-
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { DynamicStatsigProvider } from '~/dynamic-statsig-provider';
 import { routing } from '~/i18n/routing';
@@ -116,7 +114,7 @@ export default async function RootLayout({ params, children }: Props) {
   setRequestLocale(locale);
 
   const Statsig = await statsigAdapter.initialize();
-  const datafile = await Statsig.getClientInitializeResponse({ userID: '1234' }, { hash: 'djb2' });
+  const datafile = Statsig.getClientInitializeResponse({ userID: '1234' }, { hash: 'djb2' });
 
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>

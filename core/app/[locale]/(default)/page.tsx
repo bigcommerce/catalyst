@@ -5,7 +5,10 @@ import { Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
 import { FeaturedProductList } from '@/vibes/soul/sections/featured-product-list';
 import { getSessionCustomerAccessToken } from '~/auth';
-import { Subscribe } from '~/components/subscribe';\nimport { productCardTransformer } from '~/data-transformers/product-card-transformer';\nimport { createFeatureFlag } from '~/flags';\nimport { getPreferredCurrencyCode } from '~/lib/currency';
+import { Subscribe } from '~/components/subscribe';
+import { productCardTransformer } from '~/data-transformers/product-card-transformer';
+import { createFeatureFlag } from '~/flags';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { Slideshow } from './_components/slideshow';
 import { getPageData } from './page-data';
@@ -19,7 +22,7 @@ export default async function Home({ params }: Props) {
 
   setRequestLocale(locale);
 
-  const showSubscribeSection = await (createFeatureFlag('my_feature_flag')() as Promise<boolean>);
+  const showSubscribeSection = await createFeatureFlag('my_feature_flag')();
 
   const t = await getTranslations('Home');
   const format = await getFormatter();
@@ -75,4 +78,3 @@ export default async function Home({ params }: Props) {
     </>
   );
 }
-
