@@ -1,5 +1,6 @@
 import { Command } from 'commander';
 import { execa } from 'execa';
+import { join } from 'node:path';
 import { afterEach, beforeAll, beforeEach, expect, test, vi } from 'vitest';
 
 import { consola } from '../lib/logger';
@@ -65,8 +66,10 @@ test('calls execa with Next.js production optimized server', async () => {
     'nextjs',
   ]);
 
+  const expectedNextBin = join('node_modules', '.bin', 'next');
+
   expect(execa).toHaveBeenCalledWith(
-    'node_modules/.bin/next',
+    expectedNextBin,
     ['start', '--port', '3001'],
     expect.objectContaining({
       stdio: 'inherit',
@@ -86,17 +89,11 @@ test('calls execa with OpenNext production optimized server', async () => {
     'catalyst',
   ]);
 
+  const expectedConfigPath = join('.bigcommerce', 'wrangler.jsonc');
+
   expect(execa).toHaveBeenCalledWith(
     'pnpm',
-    [
-      'exec',
-      'opennextjs-cloudflare',
-      'preview',
-      '--config',
-      '.bigcommerce/wrangler.jsonc',
-      '--port',
-      '3001',
-    ],
+    ['exec', 'opennextjs-cloudflare', 'preview', '--config', expectedConfigPath, '--port', '3001'],
     expect.objectContaining({
       stdio: 'inherit',
       cwd: process.cwd(),

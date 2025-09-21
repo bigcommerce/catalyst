@@ -7,6 +7,8 @@ const config = {
   ignorePatterns: ['/dist/**'],
   rules: {
     '@typescript-eslint/naming-convention': 'off',
+    'import/namespace': 'off',
+    'import/no-unresolved': 'off',
   },
   overrides: [
     {

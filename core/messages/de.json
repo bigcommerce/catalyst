@@ -1,474 +1,474 @@
 {
-    "Home": {
-        "Slideshow": {
-            "Slide01": {
-                "title": "Frische Entdeckungen für jeden Anlass",
-                "description": "Entdecken Sie unsere neuesten Produkte, die Sie mit Stil, Funktionalität und Inspiration begeistern werden. Kaufen Sie jetzt ein und entdecken Sie Ihren neuesten Lieblingsartikel.",
-                "alt": "Fünf kleine Topfpflanzen auf beigefarbenen, gestapelten Blöcken mit einer Vielzahl von grünen Blättern in dunkelgrauen Töpfen vor einem neutralen Hintergrund.",
-                "cta": "Jetzt shoppen"
-            },
-            "Slide02": {
-                "title": "Neues entdecken",
-                "description": "Entdecken Sie unsere neuesten Produkte und finden Sie etwas Originelles und Aufregendes für Ihr Zuhause.",
-                "alt": "Hände, die ausgestreckt sind, um einen grünen Farn in einem geflochtenen Korb mit einer dekorativen Schleife zu halten, vor einem beigefarbenen Hintergrund mit weichen Schatten.",
-                "cta": "Jetzt shoppen"
-            },
-            "Slide03": {
-                "title": "Etwas für jeden Geschmack",
-                "description": "Verpassen Sie nicht die exklusiven Angebote für unsere Bestseller-Produkte. Kaufen Sie noch heute und sparen Sie bei Ihren Lieblingsartikeln.",
-                "alt": "Nahaufnahme eines leuchtend grünen Blattes mit Perforationen, das seine glatte Struktur und natürlichen Details zur Geltung bringt.",
-                "cta": "Jetzt shoppen"
-            }
-        },
-        "FeaturedProducts": {
-            "title": "Vorgestellte Kollektion",
-            "description": "Entdecken Sie unsere Top-Auswahl in dieser vorgestellten Kollektion. Finden Sie das perfekte Geschenk oder gönnen Sie sich selbst etwas!",
-            "cta": "Mehr anzeigen",
-            "emptyStateTitle": "Keine Produkte gefunden",
-            "emptyStateSubtitle": "Entdecken Sie unseren kompletten Produktkatalog."
-        },
-        "NewestProducts": {
-            "title": "Neu eingetroffen",
-            "description": "Unsere neuesten Produkte sind hier. Entdecken Sie unsere neuesten Produkte.",
-            "cta": "Alle anzeigen",
-            "emptyStateTitle": "Keine Produkte gefunden",
-            "emptyStateSubtitle": "Entdecken Sie unseren kompletten Produktkatalog.",
-            "previousProducts": "Vorherige Produkte",
-            "nextProducts": "Nächste Produkte"
-        }
+  "Home": {
+    "Slideshow": {
+      "Slide01": {
+        "title": "Frische Entdeckungen für jeden Anlass",
+        "description": "Entdecken Sie unsere neuesten Produkte, die Sie mit Stil, Funktionalität und Inspiration begeistern werden. Kaufen Sie jetzt ein und entdecken Sie Ihren neuesten Lieblingsartikel.",
+        "alt": "Fünf kleine Topfpflanzen auf beigefarbenen, gestapelten Blöcken mit einer Vielzahl von grünen Blättern in dunkelgrauen Töpfen vor einem neutralen Hintergrund.",
+        "cta": "Jetzt shoppen"
+      },
+      "Slide02": {
+        "title": "Neues entdecken",
+        "description": "Entdecken Sie unsere neuesten Produkte und finden Sie etwas Originelles und Aufregendes für Ihr Zuhause.",
+        "alt": "Hände, die ausgestreckt sind, um einen grünen Farn in einem geflochtenen Korb mit einer dekorativen Schleife zu halten, vor einem beigefarbenen Hintergrund mit weichen Schatten.",
+        "cta": "Jetzt shoppen"
+      },
+      "Slide03": {
+        "title": "Etwas für jeden Geschmack",
+        "description": "Verpassen Sie nicht die exklusiven Angebote für unsere Bestseller-Produkte. Kaufen Sie noch heute und sparen Sie bei Ihren Lieblingsartikeln.",
+        "alt": "Nahaufnahme eines leuchtend grünen Blattes mit Perforationen, das seine glatte Struktur und natürlichen Details zur Geltung bringt.",
+        "cta": "Jetzt shoppen"
+      }
     },
-    "Auth": {
-        "ChangePassword": {
-            "title": "Passwort ändern",
-            "newPassword": "Neues Passwort",
-            "confirmPassword": "Passwort bestätigen",
-            "passwordUpdated": "Passwort wurde erfolgreich aktualisiert!",
-            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
-        },
-        "Login": {
-            "title": "Anmelden",
-            "heading": "Anmelden",
-            "forgotPassword": "Passwort vergessen?",
-            "cta": "Anmelden",
-            "email": "E-Mail",
-            "password": "Passwort",
-            "invalidCredentials": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
-            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
-            "CreateAccount": {
-                "title": "Neuer Kunde?",
-                "accountBenefits": "Wenn Sie ein Konto bei uns erstellen, haben Sie folgende Möglichkeiten:",
-                "fastCheckout": "Schnellerer Bezahlvorgang",
-                "multipleAddresses": "Speicherung mehrerer Lieferadressen",
-                "ordersHistory": "Zugang zu Ihrem Bestellverlauf",
-                "ordersTracking": "Tracking von neuen Bestellungen",
-                "wishlists": "Hinzufügen von Artikeln zu Ihrer Wunschliste",
-                "cta": "Konto erstellen"
-            },
-            "ForgotPassword": {
-                "title": "Passwort vergessen",
-                "subtitle": "Geben Sie unten die mit Ihrem Konto verknüpfte E-Mail-Adresse ein. Wir senden Ihnen Anweisungen zum Zurücksetzen Ihres Passworts.",
-                "confirmResetPassword": "Wenn die E-Mail-Adresse {email} mit einem Konto in unserem Geschäft verknüpft ist, haben wir Ihnen eine E-Mail zum Zurücksetzen des Passworts gesendet. Bitte überprüfen Sie Ihren Posteingang und Spam-Ordner, wenn Sie sie nicht sehen.",
-                "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
-            }
-        },
-        "Register": {
-            "title": "Konto registrieren",
-            "heading": "Neues Konto",
-            "cta": "Konto erstellen",
-            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
-        }
+    "FeaturedProducts": {
+      "title": "Vorgestellte Kollektion",
+      "description": "Entdecken Sie unsere Top-Auswahl in dieser vorgestellten Kollektion. Finden Sie das perfekte Geschenk oder gönnen Sie sich selbst etwas!",
+      "cta": "Mehr anzeigen",
+      "emptyStateTitle": "Keine Produkte gefunden",
+      "emptyStateSubtitle": "Entdecken Sie unseren kompletten Produktkatalog."
     },
-    "Faceted": {
-        "Brand": {
-            "Empty": {
-                "title": "Keine Produkte für diese Marke",
-                "subtitle": "Verwenden Sie verschiedene Filter."
-            }
-        },
-        "Category": {
-            "subCategories": "Kategorien",
-            "Empty": {
-                "title": "Keine Produkte in dieser Kategorie",
-                "subtitle": "Verwenden Sie verschiedene Filter."
-            }
-        },
-        "Search": {
-            "title": "Suchergebnisse",
-            "searchResults": "Suchergebnisse für",
-            "subCategories": "Kategorien",
-            "Breadcrumbs": {
-                "home": "Startseite",
-                "search": "Suchen"
-            },
-            "Empty": {
-                "title": "Leider gibt es keine Ergebnisse für „{term}“.",
-                "subtitle": "Bitte versuchen Sie es mit einer anderen Suchanfrage."
-            }
-        },
-        "FacetedSearch": {
-            "filters": "Filter",
-            "resetFilters": "Filter zurücksetzen",
-            "Range": {
-                "apply": "Anwenden"
-            },
-            "Facets": {
-                "freeShippingLabel": "Kostenloser Versand",
-                "isFeaturedLabel": "Wird empfohlen",
-                "inStockLabel": "Auf Lager"
-            }
-        },
-        "SortBy": {
-            "sortBy": "Sortieren nach:",
-            "featuredItems": "Empfohlene Artikel",
-            "bestSellingItems": "Meistverkaufte Artikel",
-            "newestItems": "Neueste Artikel",
-            "aToZ": "A bis Z",
-            "zToA": "Z bis A",
-            "byReview": "Nach Bewertung",
-            "priceAscending": "Preis: Aufsteigend",
-            "priceDescending": "Preis: Absteigend",
-            "relevance": "Relevanz"
-        },
-        "Compare": {
-            "compare": "Vergleichen",
-            "remove": "Entfernen",
-            "maxCompareLimit": "Sie haben die maximale Anzahl an Produkten zum Vergleich erreicht. Entfernen Sie ein Produkt, um ein neues hinzuzufügen."
-        }
+    "NewestProducts": {
+      "title": "Neu eingetroffen",
+      "description": "Unsere neuesten Produkte sind hier. Entdecken Sie unsere neuesten Produkte.",
+      "cta": "Alle anzeigen",
+      "emptyStateTitle": "Keine Produkte gefunden",
+      "emptyStateSubtitle": "Entdecken Sie unseren kompletten Produktkatalog.",
+      "previousProducts": "Vorherige Produkte",
+      "nextProducts": "Nächste Produkte"
+    }
+  },
+  "Auth": {
+    "ChangePassword": {
+      "title": "Passwort ändern",
+      "newPassword": "Neues Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "passwordUpdated": "Passwort wurde erfolgreich aktualisiert!",
+      "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
     },
-    "Account": {
-        "Layout": {
-            "addresses": "Adressen",
-            "logout": "Abmelden",
-            "orders": "Bestellungen",
-            "settings": "Konto",
-            "wishlists": "Wunschlisten"
-        },
-        "Orders": {
-            "title": "Bestellungen",
-            "orderNumber": "Bestellnr.",
-            "totalPrice": "Summe",
-            "viewDetails": "Details anzeigen",
-            "EmptyState": {
-                "title": "Sie haben keine Bestellungen",
-                "cta": "Jetzt shoppen"
-            },
-            "Details": {
-                "title": "Bestellung #{orderNumber}",
-                "shippingAddress": "Versandadresse",
-                "shippingMethod": "Versandmethode",
-                "summaryTotal": "Summe",
-                "destination": "Zielort",
-                "destinationWithCount": "Zielort {Nummer, Nummer}/{Gesamt, Nummer}",
-                "subtotal": "Zwischensumme",
-                "shipping": "Versand",
-                "tax": "Steuern",
-                "orderSummary": "Bestellübersicht"
-            }
-        },
-        "Addresses": {
-            "title": "Adressen",
-            "cta": "Adresse hinzufügen",
-            "edit": "Bearbeiten",
-            "delete": "Löschen",
-            "cancel": "Abbrechen",
-            "create": "erstellen",
-            "update": "Update",
-            "setDefault": "Als Standard festlegen",
-            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
-            "EmptyState": {
-                "title": "Sie haben keine Adressen"
-            }
-        },
-        "Settings": {
-            "title": "Kontoeinstellungen",
-            "changePassword": "Passwort ändern",
-            "passwordUpdated": "Passwort wurde erfolgreich aktualisiert!",
-            "settingsUpdated": "Die Kontoeinstellungen wurden erfolgreich aktualisiert!",
-            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
-            "currentPassword": "Aktuelles Passwort",
-            "newPassword": "Neues Passwort",
-            "confirmPassword": "Passwort bestätigen",
-            "cta": "Update"
-        }
+    "Login": {
+      "title": "Anmelden",
+      "heading": "Anmelden",
+      "forgotPassword": "Passwort vergessen?",
+      "cta": "Anmelden",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "invalidCredentials": "Ihre E-Mail-Adresse oder Ihr Passwort ist falsch. Versuchen Sie, sich erneut anzumelden, oder setzen Sie Ihr Passwort zurück",
+      "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+      "CreateAccount": {
+        "title": "Neuer Kunde?",
+        "accountBenefits": "Wenn Sie ein Konto bei uns erstellen, haben Sie folgende Möglichkeiten:",
+        "fastCheckout": "Schnellerer Bezahlvorgang",
+        "multipleAddresses": "Speicherung mehrerer Lieferadressen",
+        "ordersHistory": "Zugang zu Ihrem Bestellverlauf",
+        "ordersTracking": "Tracking von neuen Bestellungen",
+        "wishlists": "Hinzufügen von Artikeln zu Ihrer Wunschliste",
+        "cta": "Konto erstellen"
+      },
+      "ForgotPassword": {
+        "title": "Passwort vergessen",
+        "subtitle": "Geben Sie unten die mit Ihrem Konto verknüpfte E-Mail-Adresse ein. Wir senden Ihnen Anweisungen zum Zurücksetzen Ihres Passworts.",
+        "confirmResetPassword": "Wenn die E-Mail-Adresse {email} mit einem Konto in unserem Geschäft verknüpft ist, haben wir Ihnen eine E-Mail zum Zurücksetzen des Passworts gesendet. Bitte überprüfen Sie Ihren Posteingang und Spam-Ordner, wenn Sie sie nicht sehen.",
+        "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+      }
     },
-    "Wishlist": {
-        "actionsTitle": "Wunschlistenaktionen",
-        "title": "Wunschlisten",
-        "new": "Neue Wunschliste",
-        "items": "{count, plural, =1 {1 Artikel} other {# Artikel}}",
-        "viewWishlist": "Liste anzeigen",
-        "noWishlists": "Sie haben keine Wunschlisten.",
-        "noWishlistsCallToAction": "Eine Wunschliste erstellen",
-        "emptyWishlist": "Sie haben keine Produkte zu dieser Wunschliste hinzugefügt.",
-        "share": "Freigeben",
-        "shareSuccess": "Die Wunschliste wurde erfolgreich geteilt.",
-        "shareCopied": "Die öffentliche URL der Wunschliste wurde in Ihre Zwischenablage kopiert.",
-        "shareDisabled": "Um Ihre Wunschliste teilen zu können, muss sie öffentlich sein.",
-        "makePublic": "Öffentlich machen",
-        "makePrivate": "Privat machen",
-        "rename": "Umbenennen",
-        "delete": "Löschen",
-        "removeButtonTitle": "Produkt von der Wunschliste entfernen",
-        "Visibility": {
-            "public": "Öffentlich",
-            "private": "Privat"
-        },
-        "Modal": {
-            "cancel": "Abbrechen",
-            "close": "Schließen",
-            "copy": "Kopieren",
-            "create": "erstellen",
-            "save": "Speichern",
-            "delete": "Löschen",
-            "newTitle": "Eine neue Wunschliste erstellen",
-            "shareTitle": "Teilen Sie {name}",
-            "renameTitle": "{name} umbenennen",
-            "deleteTitle": "{name} löschen",
-            "changeVisibilityPublicTitle": "Möchten Sie {name} öffentlich machen?",
-            "changeVisibilityPrivateTitle": "Soll {name} auf privat gesetzt werden?",
-            "makePublicContent": "Möchten Sie <bold>{name}</bold> wirklich auf öffentlich setzen? Dadurch können andere Ihre Wunschliste sehen, wenn sie den Link haben.",
-            "makePrivateContent": "Möchten Sie <bold>{name}</bold> wirklich auf privat setzen? Wenn Sie Ihre Wunschliste mit anderen geteilt haben, können diese sie nicht mehr sehen.",
-            "deleteContent": "Möchten Sie <bold>{name}</bold> wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
-        },
-        "Form": {
-            "nameLabel": "Name"
-        },
-        "Errors": {
-            "nameRequired": "Der Wunschlistenname darf nicht leer sein.",
-            "updateFailed": "Die Aktualisierung Ihrer Wunschliste ist fehlgeschlagen. Bitte versuchen Sie es erneut.",
-            "deleteFailed": "Das Löschen Ihrer Wunschliste konnte nicht durchgeführt werden. Bitte versuchen Sie es erneut.",
-            "removeProductFailed": "Das Produkt konnte nicht von Ihrer Wunschliste entfernt werden. Bitte versuchen Sie es erneut.",
-            "unauthorized": "Sie sind nicht berechtigt, diese Aktion auszuführen, bitte melden Sie sich an und versuchen Sie es erneut.",
-            "unexpected": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
-        },
-        "Result": {
-            "createSuccess": "Die Wunschliste wurde erfolgreich erstellt.",
-            "updateSuccess": "Die Wunschliste wurde erfolgreich aktualisiert.",
-            "deleteSuccess": "Die Wunschliste wurde erfolgreich gelöscht.",
-            "removeItemSuccess": "Der Artikel wurde von Ihrer Wunschliste entfernt."
-        },
-        "Button": {
-            "label": "Zur Wunschliste hinzufügen",
-            "addToNewWishlist": "Zu neuer Wunschliste hinzufügen",
-            "defaultWishlistName": "Meine Wunschliste",
-            "addSuccessMessage": "Das Produkt wurde Ihrer Wunschliste hinzugefügt.",
-            "removeSuccessMessage": "Das Produkt wurde von Ihrer Wunschliste entfernt",
-            "Errors": {
-                "addProductFailed": "Das Produkt konnte nicht zu Ihrer Wunschliste hinzugefügt werden. Bitte versuchen Sie es erneut.",
-                "removeProductFailed": "Das Produkt konnte nicht von Ihrer Wunschliste entfernt werden, bitte versuchen Sie es erneut."
-            }
-        }
+    "Register": {
+      "title": "Konto registrieren",
+      "heading": "Neues Konto",
+      "cta": "Konto erstellen",
+      "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+    }
+  },
+  "Faceted": {
+    "Brand": {
+      "Empty": {
+        "title": "Keine Produkte für diese Marke",
+        "subtitle": "Verwenden Sie verschiedene Filter."
+      }
     },
-    "PublicWishlist": {
-        "title": "Öffentliche Wunschliste",
-        "defaultName": "Öffentliche Wunschliste",
-        "emptyWishlist": "Diese Wunschliste enthält noch keine Produkte."
+    "Category": {
+      "subCategories": "Kategorien",
+      "Empty": {
+        "title": "Keine Produkte in dieser Kategorie",
+        "subtitle": "Verwenden Sie verschiedene Filter."
+      }
     },
-    "Blog": {
-        "title": "Blog",
+    "Search": {
+      "title": "Suchergebnisse",
+      "searchResults": "Suchergebnisse für",
+      "subCategories": "Kategorien",
+      "Breadcrumbs": {
         "home": "Startseite",
-        "Empty": {
-            "title": "Keine Blog-Beiträge gefunden",
-            "subtitle": "Kommen Sie später wieder, um mehr Inhalte zu sehen."
-        },
-        "SharingLinks": {
-            "share": "Freigeben",
-            "email": "E-Mail",
-            "print": "Drucken"
-        }
+        "search": "Suchen"
+      },
+      "Empty": {
+        "title": "Leider gibt es keine Ergebnisse für „{term}“.",
+        "subtitle": "Bitte versuchen Sie es mit einer anderen Suchanfrage."
+      }
     },
-    "Cart": {
-        "title": "Warenkorb",
-        "heading": "Ihr Warenkorb",
-        "proceedToCheckout": "Weiter zur Kasse",
-        "increment": "Menge erhöhen",
-        "decrement": "Menge verringern",
-        "removeItem": "Artikel entfernen",
-        "cartCombined": "Wir haben festgestellt, dass Sie Artikel in einem früheren Warenkorb gespeichert hatten, also haben wir diese Ihrem aktuellen Warenkorb hinzugefügt.",
-        "cartRestored": "Sie haben einen Warenkorb auf einem anderen Gerät angelegt, und wir haben ihn hier wiederhergestellt, damit Sie dort weitermachen können, wo Sie aufgehört haben.",
-        "cartUpdateInProgress": "Sie führen derzeit eine Aktualisierung Ihres Warenkorbs durch. Sind Sie sicher, dass Sie diese Seite verlassen möchten? Ihre Änderungen könnten verloren gehen.",
-        "CheckoutSummary": {
-            "title": "Übersicht",
-            "subTotal": "Zwischensumme",
-            "discounts": "Rabatte",
-            "tax": "Steuern",
-            "total": "Summe",
-            "CouponCode": {
-                "apply": "Anwenden",
-                "couponCode": "Gutschein-Code",
-                "removeCouponCode": "Gutschein-Code entfernen",
-                "invalidCouponCode": "Bitte geben Sie einen gültigen Coupon-Code ein",
-                "cartNotFound": "Kein cartId-Cookie gefunden."
-            },
-            "Shipping": {
-                "shipping": "Versand",
-                "add": "Hinzufügen",
-                "change": "Ändern",
-                "cancel": "Abbrechen",
-                "country": "Land",
-                "city": "Ort",
-                "state": "Bundesstaat/Provinz",
-                "postalCode": "Postleitzahl",
-                "updatedShippingOptions": "Versandoptionen aktualisieren",
-                "viewShippingOptions": "Versandoptionen anzeigen",
-                "editAddress": "Adresse bearbeiten",
-                "shippingOptions": "Versandoptionen",
-                "updateShipping": "Versand aktualisieren",
-                "addShipping": "Versand hinzufügen",
-                "cartNotFound": "Kein cartId-Cookie gefunden.",
-                "noShippingOptions": "Für Ihre Adresse sind keine Versandoptionen verfügbar"
-            }
-        },
-        "Empty": {
-            "title": "Ihr Warenkorb ist leer.",
-            "subtitle": "Fügen Sie einige Produkte hinzu, um zu beginnen.",
-            "cta": "Weiter einkaufen"
-        },
-        "Errors": {
-            "cartNotFound": "Kein cartId-Cookie gefunden.",
-            "lineItemNotFound": "Einzelposten nicht gefunden.",
-            "failedToUpdateQuantity": "Menge konnte nicht aktualisiert werden.",
-            "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
-        }
+    "FacetedSearch": {
+      "filters": "Filter",
+      "resetFilters": "Filter zurücksetzen",
+      "Range": {
+        "apply": "Anwenden"
+      },
+      "Facets": {
+        "freeShippingLabel": "Kostenloser Versand",
+        "isFeaturedLabel": "Wird empfohlen",
+        "inStockLabel": "Auf Lager"
+      }
+    },
+    "SortBy": {
+      "sortBy": "Sortieren nach:",
+      "featuredItems": "Empfohlene Artikel",
+      "bestSellingItems": "Meistverkaufte Artikel",
+      "newestItems": "Neueste Artikel",
+      "aToZ": "A bis Z",
+      "zToA": "Z bis A",
+      "byReview": "Nach Bewertung",
+      "priceAscending": "Preis: Aufsteigend",
+      "priceDescending": "Preis: Absteigend",
+      "relevance": "Relevanz"
     },
     "Compare": {
-        "title": "Produkte vergleichen",
+      "compare": "Vergleichen",
+      "remove": "Entfernen",
+      "maxCompareLimit": "Sie haben die maximale Anzahl an Produkten zum Vergleich erreicht. Entfernen Sie ein Produkt, um ein neues hinzuzufügen."
+    }
+  },
+  "Account": {
+    "Layout": {
+      "addresses": "Adressen",
+      "logout": "Abmelden",
+      "orders": "Bestellungen",
+      "settings": "Konto",
+      "wishlists": "Wunschlisten"
+    },
+    "Orders": {
+      "title": "Bestellungen",
+      "orderNumber": "Bestellnr.",
+      "totalPrice": "Summe",
+      "viewDetails": "Details anzeigen",
+      "EmptyState": {
+        "title": "Sie haben keine Bestellungen",
+        "cta": "Jetzt shoppen"
+      },
+      "Details": {
+        "title": "Bestellung #{orderNumber}",
+        "shippingAddress": "Versandadresse",
+        "shippingMethod": "Versandmethode",
+        "summaryTotal": "Summe",
+        "destination": "Zielort",
+        "destinationWithCount": "Zielort {Nummer, Nummer}/{Gesamt, Nummer}",
+        "subtotal": "Zwischensumme",
+        "shipping": "Versand",
+        "tax": "Steuern",
+        "orderSummary": "Bestellübersicht"
+      }
+    },
+    "Addresses": {
+      "title": "Adressen",
+      "cta": "Adresse hinzufügen",
+      "edit": "Bearbeiten",
+      "delete": "Löschen",
+      "cancel": "Abbrechen",
+      "create": "erstellen",
+      "update": "Update",
+      "setDefault": "Als Standard festlegen",
+      "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+      "EmptyState": {
+        "title": "Sie haben keine Adressen"
+      }
+    },
+    "Settings": {
+      "title": "Kontoeinstellungen",
+      "changePassword": "Passwort ändern",
+      "passwordUpdated": "Passwort wurde erfolgreich aktualisiert!",
+      "settingsUpdated": "Die Kontoeinstellungen wurden erfolgreich aktualisiert!",
+      "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut.",
+      "currentPassword": "Aktuelles Passwort",
+      "newPassword": "Neues Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "cta": "Update"
+    }
+  },
+  "Wishlist": {
+    "actionsTitle": "Wunschlistenaktionen",
+    "title": "Wunschlisten",
+    "new": "Neue Wunschliste",
+    "items": "{count, plural, =1 {1 Artikel} other {# Artikel}}",
+    "viewWishlist": "Liste anzeigen",
+    "noWishlists": "Sie haben keine Wunschlisten.",
+    "noWishlistsCallToAction": "Eine Wunschliste erstellen",
+    "emptyWishlist": "Sie haben keine Produkte zu dieser Wunschliste hinzugefügt.",
+    "share": "Freigeben",
+    "shareSuccess": "Die Wunschliste wurde erfolgreich geteilt.",
+    "shareCopied": "Die öffentliche URL der Wunschliste wurde in Ihre Zwischenablage kopiert.",
+    "shareDisabled": "Um Ihre Wunschliste teilen zu können, muss sie öffentlich sein.",
+    "makePublic": "Öffentlich machen",
+    "makePrivate": "Privat machen",
+    "rename": "Umbenennen",
+    "delete": "Löschen",
+    "removeButtonTitle": "Produkt von der Wunschliste entfernen",
+    "Visibility": {
+      "public": "Öffentlich",
+      "private": "Privat"
+    },
+    "Modal": {
+      "cancel": "Abbrechen",
+      "close": "Schließen",
+      "copy": "Kopieren",
+      "create": "erstellen",
+      "save": "Speichern",
+      "delete": "Löschen",
+      "newTitle": "Eine neue Wunschliste erstellen",
+      "shareTitle": "Teilen Sie {name}",
+      "renameTitle": "{name} umbenennen",
+      "deleteTitle": "{name} löschen",
+      "changeVisibilityPublicTitle": "Möchten Sie {name} öffentlich machen?",
+      "changeVisibilityPrivateTitle": "Soll {name} auf privat gesetzt werden?",
+      "makePublicContent": "Möchten Sie <bold>{name}</bold> wirklich auf öffentlich setzen? Dadurch können andere Ihre Wunschliste sehen, wenn sie den Link haben.",
+      "makePrivateContent": "Möchten Sie <bold>{name}</bold> wirklich auf privat setzen? Wenn Sie Ihre Wunschliste mit anderen geteilt haben, können diese sie nicht mehr sehen.",
+      "deleteContent": "Möchten Sie <bold>{name}</bold> wirklich löschen? Diese Aktion kann nicht rückgängig gemacht werden."
+    },
+    "Form": {
+      "nameLabel": "Name"
+    },
+    "Errors": {
+      "nameRequired": "Der Wunschlistenname darf nicht leer sein.",
+      "updateFailed": "Die Aktualisierung Ihrer Wunschliste ist fehlgeschlagen. Bitte versuchen Sie es erneut.",
+      "deleteFailed": "Das Löschen Ihrer Wunschliste konnte nicht durchgeführt werden. Bitte versuchen Sie es erneut.",
+      "removeProductFailed": "Das Produkt konnte nicht von Ihrer Wunschliste entfernt werden. Bitte versuchen Sie es erneut.",
+      "unauthorized": "Sie sind nicht berechtigt, diese Aktion auszuführen, bitte melden Sie sich an und versuchen Sie es erneut.",
+      "unexpected": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
+    },
+    "Result": {
+      "createSuccess": "Die Wunschliste wurde erfolgreich erstellt.",
+      "updateSuccess": "Die Wunschliste wurde erfolgreich aktualisiert.",
+      "deleteSuccess": "Die Wunschliste wurde erfolgreich gelöscht.",
+      "removeItemSuccess": "Der Artikel wurde von Ihrer Wunschliste entfernt."
+    },
+    "Button": {
+      "label": "Zur Wunschliste hinzufügen",
+      "addToNewWishlist": "Zu neuer Wunschliste hinzufügen",
+      "defaultWishlistName": "Meine Wunschliste",
+      "addSuccessMessage": "Das Produkt wurde Ihrer Wunschliste hinzugefügt.",
+      "removeSuccessMessage": "Das Produkt wurde von Ihrer Wunschliste entfernt",
+      "Errors": {
+        "addProductFailed": "Das Produkt konnte nicht zu Ihrer Wunschliste hinzugefügt werden. Bitte versuchen Sie es erneut.",
+        "removeProductFailed": "Das Produkt konnte nicht von Ihrer Wunschliste entfernt werden, bitte versuchen Sie es erneut."
+      }
+    }
+  },
+  "PublicWishlist": {
+    "title": "Öffentliche Wunschliste",
+    "defaultName": "Öffentliche Wunschliste",
+    "emptyWishlist": "Diese Wunschliste enthält noch keine Produkte."
+  },
+  "Blog": {
+    "title": "Blog",
+    "home": "Startseite",
+    "Empty": {
+      "title": "Keine Blog-Beiträge gefunden",
+      "subtitle": "Kommen Sie später wieder, um mehr Inhalte zu sehen."
+    },
+    "SharingLinks": {
+      "share": "Freigeben",
+      "email": "E-Mail",
+      "print": "Drucken"
+    }
+  },
+  "Cart": {
+    "title": "Warenkorb",
+    "heading": "Ihr Warenkorb",
+    "proceedToCheckout": "Weiter zur Kasse",
+    "increment": "Menge erhöhen",
+    "decrement": "Menge verringern",
+    "removeItem": "Artikel entfernen",
+    "cartCombined": "Wir haben festgestellt, dass Sie Artikel in einem früheren Warenkorb gespeichert hatten, also haben wir diese Ihrem aktuellen Warenkorb hinzugefügt.",
+    "cartRestored": "Sie haben einen Warenkorb auf einem anderen Gerät angelegt, und wir haben ihn hier wiederhergestellt, damit Sie dort weitermachen können, wo Sie aufgehört haben.",
+    "cartUpdateInProgress": "Sie führen derzeit eine Aktualisierung Ihres Warenkorbs durch. Sind Sie sicher, dass Sie diese Seite verlassen möchten? Ihre Änderungen könnten verloren gehen.",
+    "CheckoutSummary": {
+      "title": "Übersicht",
+      "subTotal": "Zwischensumme",
+      "discounts": "Rabatte",
+      "tax": "Steuern",
+      "total": "Summe",
+      "CouponCode": {
+        "apply": "Anwenden",
+        "couponCode": "Gutschein-Code",
+        "removeCouponCode": "Gutschein-Code entfernen",
+        "invalidCouponCode": "Bitte geben Sie einen gültigen Coupon-Code ein",
+        "cartNotFound": "Kein cartId-Cookie gefunden."
+      },
+      "Shipping": {
+        "shipping": "Versand",
+        "add": "Hinzufügen",
+        "change": "Ändern",
+        "cancel": "Abbrechen",
+        "country": "Land",
+        "city": "Ort",
+        "state": "Bundesstaat/Provinz",
+        "postalCode": "Postleitzahl",
+        "updatedShippingOptions": "Versandoptionen aktualisieren",
+        "viewShippingOptions": "Versandoptionen anzeigen",
+        "editAddress": "Adresse bearbeiten",
+        "shippingOptions": "Versandoptionen",
+        "updateShipping": "Versand aktualisieren",
+        "addShipping": "Versand hinzufügen",
+        "cartNotFound": "Kein cartId-Cookie gefunden.",
+        "noShippingOptions": "Für Ihre Adresse sind keine Versandoptionen verfügbar"
+      }
+    },
+    "Empty": {
+      "title": "Ihr Warenkorb ist leer.",
+      "subtitle": "Fügen Sie einige Produkte hinzu, um zu beginnen.",
+      "cta": "Weiter einkaufen"
+    },
+    "Errors": {
+      "cartNotFound": "Kein cartId-Cookie gefunden.",
+      "lineItemNotFound": "Einzelposten nicht gefunden.",
+      "failedToUpdateQuantity": "Menge konnte nicht aktualisiert werden.",
+      "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+    }
+  },
+  "Compare": {
+    "title": "Produkte vergleichen",
+    "addToCart": "Zum Warenkorb hinzufügen",
+    "next": "Nächste Produkte",
+    "previous": "Vorherige Produkte",
+    "noProductsToCompare": "Keine Produkte zum Vergleichen",
+    "sku": "SKU",
+    "weight": "Gewicht",
+    "description": "Beschreibung",
+    "noDescription": "Es ist keine Beschreibung verfügbar.",
+    "rating": "Bewertung",
+    "noRatings": "Es gibt keine Bewertungen.",
+    "otherDetails": "Weitere Angaben",
+    "noOtherDetails": "Es gibt keine weiteren Details.",
+    "viewOptions": "Optionen anzeigen",
+    "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
+    "missingCart": "Warenkorb nicht gefunden. Bitte versuchen Sie es später erneut.",
+    "unknownError": "Unbekannter Fehler. Bitte versuchen Sie es später erneut."
+  },
+  "Product": {
+    "ProductDetails": {
+      "quantity": "Menge",
+      "increaseQuantity": "Menge erhöhen",
+      "decreaseQuantity": "Menge verringern",
+      "emptySelectPlaceholder": "Eine Option auswählen",
+      "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
+      "missingCart": "Warenkorb nicht gefunden. Bitte versuchen Sie es später erneut!",
+      "unknownError": "Unbekannter Fehler. Bitte versuchen Sie es später erneut.",
+      "variantRequiredError": "Für dieses Produkt müssen Optionen ausgewählt werden, um es in den Warenkorb zu legen.",
+      "increaseNumber": "Anzahl erhöhen",
+      "decreaseNumber": "Anzahl verringern",
+      "thumbnail": "Bildnummer anzeigen",
+      "additionalInformation": "Weitere Informationen",
+      "Submit": {
         "addToCart": "Zum Warenkorb hinzufügen",
-        "next": "Nächste Produkte",
-        "previous": "Vorherige Produkte",
-        "noProductsToCompare": "Keine Produkte zum Vergleichen",
+        "outOfStock": "Kein Lagerbestand",
+        "preorder": "Vorbestellung",
+        "unavailable": "Nicht verfügbar"
+      },
+      "Accordions": {
+        "specifications": "Produktdetails",
+        "warranty": "Garantie",
         "sku": "SKU",
         "weight": "Gewicht",
-        "description": "Beschreibung",
-        "noDescription": "Es ist keine Beschreibung verfügbar.",
-        "rating": "Bewertung",
-        "noRatings": "Es gibt keine Bewertungen.",
-        "otherDetails": "Weitere Angaben",
-        "noOtherDetails": "Es gibt keine weiteren Details.",
-        "viewOptions": "Optionen anzeigen",
-        "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
-        "missingCart": "Warenkorb nicht gefunden. Bitte versuchen Sie es später erneut.",
-        "unknownError": "Unbekannter Fehler. Bitte versuchen Sie es später erneut."
+        "condition": "Zustand"
+      }
     },
-    "Product": {
-        "ProductDetails": {
-            "quantity": "Menge",
-            "increaseQuantity": "Menge erhöhen",
-            "decreaseQuantity": "Menge verringern",
-            "emptySelectPlaceholder": "Eine Option auswählen",
-            "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} wurde zu<cartLink> Ihrem Warenkorb</cartLink> hinzugefügt",
-            "missingCart": "Warenkorb nicht gefunden. Bitte versuchen Sie es später erneut!",
-            "unknownError": "Unbekannter Fehler. Bitte versuchen Sie es später erneut.",
-            "variantRequiredError": "Für dieses Produkt müssen Optionen ausgewählt werden, um es in den Warenkorb zu legen.",
-            "increaseNumber": "Anzahl erhöhen",
-            "decreaseNumber": "Anzahl verringern",
-            "thumbnail": "Bildnummer anzeigen",
-            "additionalInformation": "Weitere Informationen",
-            "Submit": {
-                "addToCart": "Zum Warenkorb hinzufügen",
-                "outOfStock": "Kein Lagerbestand",
-                "preorder": "Vorbestellung",
-                "unavailable": "Nicht verfügbar"
-            },
-            "Accordions": {
-                "specifications": "Produktdetails",
-                "warranty": "Garantie",
-                "sku": "SKU",
-                "weight": "Gewicht",
-                "condition": "Zustand"
-            }
-        },
-        "RelatedProducts": {
-            "title": "Verwandte Produkte",
-            "noRelatedProducts": "Keine zugehörigen Produkte gefunden",
-            "browseCatalog": "Entdecken Sie unseren kompletten Produktkatalog.",
-            "cta": "Alles shoppen",
-            "previousProducts": "Vorherige Produkte",
-            "nextProducts": "Nächste Produkte",
-            "scrollbar": "Bildlaufleiste für verwandte Produkte"
-        },
-        "Reviews": {
-            "title": "Bewertungen",
-            "empty": "Für dieses Produkt wurden keine Bewertungen hinzugefügt.",
-            "previous": "Vorherige Bewertungen",
-            "next": "Nächste Bewertungen"
-        }
+    "RelatedProducts": {
+      "title": "Verwandte Produkte",
+      "noRelatedProducts": "Keine zugehörigen Produkte gefunden",
+      "browseCatalog": "Entdecken Sie unseren kompletten Produktkatalog.",
+      "cta": "Alles shoppen",
+      "previousProducts": "Vorherige Produkte",
+      "nextProducts": "Nächste Produkte",
+      "scrollbar": "Bildlaufleiste für verwandte Produkte"
     },
-    "WebPages": {
-        "Normal": {
-            "home": "Startseite"
-        },
-        "ContactUs": {
-            "home": "Startseite",
-            "Form": {
-                "success": "Vielen Dank für Ihre Kontaktaufnahme. Wir melden uns bald bei Ihnen.",
-                "successCta": "Weiter einkaufen",
-                "fullName": "Vollständiger Name",
-                "companyName": "Firmenname",
-                "phone": "Telefon",
-                "orderNo": "Bestellnummer",
-                "rma": "RMA-Nummer",
-                "email": "E-Mail",
-                "comments": "Kommentare/Fragen",
-                "cta": "Formular einreichen",
-                "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
-            }
-        }
-    },
-    "Maintenance": {
-        "title": "WARTUNG",
-        "message": "Wir sind wegen Wartungsarbeiten nicht erreichbar",
-        "contactUs": "Sie können uns kontaktieren unter:"
-    },
-    "Error": {
-        "title": "Es ist ein Serverfehler aufgetreten!",
-        "subtitle": "Bitte versuchen Sie es später erneut.",
-        "cta": "Erneut versuchen"
-    },
-    "NotFound": {
-        "title": "Wir konnten diese Seite nicht finden!",
-        "subtitle": "Versuchen Sie, nach etwas anderem zu suchen oder zur Startseite zurückzukehren.",
-        "featuredProducts": "Empfohlene Produkte",
-        "search": "Suchen"
-    },
-    "Components": {
-        "Header": {
-            "home": "Startseite",
-            "toggleNavigation": "Navigation ein-/ausschalten",
-            "Icons": {
-                "account": "Profil",
-                "cart": "Warenkorb",
-                "search": "Popup-Fenster zur Suche öffnen"
-            },
-            "SwitchCurrency": {
-                "label": "Währung ändern",
-                "invalidCurrency": "Ungültige Währung",
-                "errorUpdatingCurrency": "Fehler beim Aktualisieren der Währung für Ihren Warenkorb. Bitte versuchen Sie es erneut."
-            },
-            "Search": {
-                "products": "Produkte",
-                "categories": "Kategorien",
-                "brands": "Marken",
-                "noSearchResultsTitle": "Leider gibt es keine Ergebnisse für „{term}“.",
-                "noSearchResultsSubtitle": "Bitte versuchen Sie es mit einer anderen Suchanfrage.",
-                "somethingWentWrong": "Es ist etwas schiefgegangen. Bitte versuchen Sie es erneut.",
-                "inputPlaceholder": "Produkte, Kategorien, Marken suchen ...",
-                "submitLabel": "Suchen"
-            }
-        },
-        "Footer": {
-            "home": "Startseite",
-            "contactUs": "Kontakt",
-            "socialMediaLinks": "Social-Media-Links",
-            "categories": "Kategorien",
-            "brands": "Marken",
-            "navigate": "Navigieren"
-        },
-        "Subscribe": {
-            "title": "Melden Sie sich für unseren Newsletter an",
-            "placeholder": "Geben Sie Ihre E-Mail-Adresse ein",
-            "description": "Bleiben Sie auf dem Laufenden über die aktuellen Neuigkeiten und Angebote in unserem Shop.",
-            "success": "Vielen Dank für Ihr Interesse! Die Newsletter-Funktion wird in Kürze verfügbar sein!"
-        }
+    "Reviews": {
+      "title": "Bewertungen",
+      "empty": "Für dieses Produkt wurden keine Bewertungen hinzugefügt.",
+      "previous": "Vorherige Bewertungen",
+      "next": "Nächste Bewertungen"
     }
+  },
+  "WebPages": {
+    "Normal": {
+      "home": "Startseite"
+    },
+    "ContactUs": {
+      "home": "Startseite",
+      "Form": {
+        "success": "Vielen Dank für Ihre Kontaktaufnahme. Wir melden uns bald bei Ihnen.",
+        "successCta": "Weiter einkaufen",
+        "fullName": "Vollständiger Name",
+        "companyName": "Firmenname",
+        "phone": "Telefon",
+        "orderNo": "Bestellnummer",
+        "rma": "RMA-Nummer",
+        "email": "E-Mail",
+        "comments": "Kommentare/Fragen",
+        "cta": "Formular einreichen",
+        "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
+      }
+    }
+  },
+  "Maintenance": {
+    "title": "WARTUNG",
+    "message": "Wir sind wegen Wartungsarbeiten nicht erreichbar",
+    "contactUs": "Sie können uns kontaktieren unter:"
+  },
+  "Error": {
+    "title": "Es ist ein Serverfehler aufgetreten!",
+    "subtitle": "Bitte versuchen Sie es später erneut.",
+    "cta": "Erneut versuchen"
+  },
+  "NotFound": {
+    "title": "Wir konnten diese Seite nicht finden!",
+    "subtitle": "Versuchen Sie, nach etwas anderem zu suchen oder zur Startseite zurückzukehren.",
+    "featuredProducts": "Empfohlene Produkte",
+    "search": "Suchen"
+  },
+  "Components": {
+    "Header": {
+      "home": "Startseite",
+      "toggleNavigation": "Navigation ein-/ausschalten",
+      "Icons": {
+        "account": "Profil",
+        "cart": "Warenkorb",
+        "search": "Popup-Fenster zur Suche öffnen"
+      },
+      "SwitchCurrency": {
+        "label": "Währung ändern",
+        "invalidCurrency": "Ungültige Währung",
+        "errorUpdatingCurrency": "Fehler beim Aktualisieren der Währung für Ihren Warenkorb. Bitte versuchen Sie es erneut."
+      },
+      "Search": {
+        "products": "Produkte",
+        "categories": "Kategorien",
+        "brands": "Marken",
+        "noSearchResultsTitle": "Leider gibt es keine Ergebnisse für „{term}“.",
+        "noSearchResultsSubtitle": "Bitte versuchen Sie es mit einer anderen Suchanfrage.",
+        "somethingWentWrong": "Es ist etwas schiefgegangen. Bitte versuchen Sie es erneut.",
+        "inputPlaceholder": "Produkte, Kategorien, Marken suchen ...",
+        "submitLabel": "Suchen"
+      }
+    },
+    "Footer": {
+      "home": "Startseite",
+      "contactUs": "Kontakt",
+      "socialMediaLinks": "Social-Media-Links",
+      "categories": "Kategorien",
+      "brands": "Marken",
+      "navigate": "Navigieren"
+    },
+    "Subscribe": {
+      "title": "Melden Sie sich für unseren Newsletter an",
+      "placeholder": "Geben Sie Ihre E-Mail-Adresse ein",
+      "description": "Bleiben Sie auf dem Laufenden über die aktuellen Neuigkeiten und Angebote in unserem Shop.",
+      "success": "Vielen Dank für Ihr Interesse! Die Newsletter-Funktion wird in Kürze verfügbar sein!"
+    }
+  }
 }

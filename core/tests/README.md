@@ -3,11 +3,13 @@
 This document provides an overview of how to run tests for your Catalyst storefront. This includes the requirements, environment setup, folder structure, and best practices. This README assumes that you already have a Catalyst storefront set up and all of the dependencies installed.
 
 ## Table of Contents
+
 - [Prerequisites](#prerequisites)
 - [Environment setup](#environment-setup)
 - [Running tests](#running-tests)
 
 ## Prerequisites
+
 - Ensure that you have already installed and set up Playwright. (See the [Playwright documentation](https://playwright.dev/docs/intro) for more information.)
 - **Recommended**: Install the Playwright VSCode extension for easier test management and execution.
 
@@ -28,6 +30,7 @@ When running tests against a live deployment, ensure that you have set the `PLAY
 **NOTE:** The examples use `pnpm`, but you can also use `npx` if you prefer. Additionally, you can leverage the Playwright VSCode extension to run your tests.
 
 ### CLI commands
+
 To run all of the tests, use the following command:
 
 ```bash

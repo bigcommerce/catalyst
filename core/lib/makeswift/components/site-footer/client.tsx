@@ -81,6 +81,3 @@ export const MakeswiftFooter = ({ logo, sections, copyright }: Props) => {
     />
   );
 };
-
-
-

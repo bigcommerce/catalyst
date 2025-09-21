@@ -16,9 +16,9 @@
   "scripts": {
     "dev": "dotenv -e .env.local -- turbo run dev",
     "build": "dotenv -e .env.local -- turbo run build",
-    "lint": "dotenv -e .env.local -- turbo lint",
-    "test": "turbo run test",
-    "typecheck": "turbo typecheck"
+    "lint": "pnpm -r lint",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.1",
@@ -29,5 +29,8 @@
     "turbo": "^2.5.4",
     "typescript": "^5.8.3",
     "unlighthouse": "^0.16.3"
+  },
+  "dependencies": {
+    "@makeswift/runtime": "^0.25.1"
   }
 }

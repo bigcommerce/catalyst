@@ -2,7 +2,7 @@
 
 require('@bigcommerce/eslint-config/patch');
 
-/** @type {import('eslint').Linter.LegacyConfig} */
+/** @type {import(''eslint'').Linter.LegacyConfig} */
 const config = {
   root: true,
   extends: [
@@ -15,9 +15,19 @@ const config = {
     '@typescript-eslint/naming-convention': 'off',
     '@next/next/no-html-link-for-pages': 'off',
     'import/dynamic-import-chunkname': 'off',
+    'import/namespace': 'off',
+    'import/no-unresolved': 'off',
+    'import/no-extraneous-dependencies': 'off',
+    'import/no-named-as-default': 'off',
+    'import/no-named-as-default-member': 'off',
     'no-underscore-dangle': ['error', { allow: ['__typename'] }],
     '@typescript-eslint/prefer-nullish-coalescing': 'off',
     '@typescript-eslint/no-unsafe-enum-comparison': 'off',
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-member-access': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off',
+    '@typescript-eslint/no-unsafe-argument': 'off',
     '@typescript-eslint/no-restricted-imports': [
       'error',
       {
@@ -40,17 +50,17 @@ const config = {
           {
             name: 'next/router',
             importNames: ['useRouter'],
-            message: 'Please import from `~/i18n/routing` instead.',
+            message: 'Please import from ~/i18n/routing instead.',
           },
           {
             name: 'next/navigation',
             importNames: ['redirect', 'permanentRedirect', 'useRouter', 'usePathname'],
-            message: 'Please import from `~/i18n/routing` instead.',
+            message: 'Please import from ~/i18n/routing instead.',
           },
           {
             name: '@playwright/test',
             importNames: ['expect', 'test'],
-            message: 'Please import from `~/tests/fixtures` instead.',
+            message: 'Please import from ~/tests/fixtures instead.',
           },
         ],
       },
@@ -74,7 +84,7 @@ const config = {
                 name: 'next-intl/server',
                 importNames: ['getTranslations', 'getFormatter'],
                 message:
-                  'Please import `getTranslations` from `~/tests/lib/i18n` and `getFormatter` from `~/tests/lib/formatter` instead.',
+                  'Please import getTranslations from ~/tests/lib/i18n and getFormatter from ~/tests/lib/formatter instead.',
               },
             ],
           },

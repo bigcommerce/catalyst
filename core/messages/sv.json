@@ -1,474 +1,474 @@
 {
-    "Home": {
-        "Slideshow": {
-            "Slide01": {
-                "title": "Fräscha fynd för varje tillfälle",
-                "description": "Utforska våra senaste produkter, noggrant utvalda för sin stil, funktionalitet och inspiration. Köp nu och upptäck din nästa favorit.",
-                "alt": "Fem små krukväxter på beige staplade block, med en mängd olika gröna växter i mörkgrå krukor mot en neutral bakgrund.",
-                "cta": "Köp nu"
-            },
-            "Slide02": {
-                "title": "Upptäck vad som är nytt",
-                "description": "Shoppa våra senaste produkter och hitta något fräscht och spännande till ditt hem.",
-                "alt": "Händer som sträcks ut för att hålla en grön ormbunke i en flätad korg med en dekorativ rosett, mot en beige bakgrund med mjuka skuggor.",
-                "cta": "Köp nu"
-            },
-            "Slide03": {
-                "title": "Något för alla",
-                "description": "Missa inte de exklusiva erbjudandena på våra bästsäljande produkter. Handla idag och spara stort på dina favoritvaror.",
-                "alt": "Närbild av ett livfullt grönt blad med perforeringar, som framhäver dess släta struktur och naturliga detaljer.",
-                "cta": "Köp nu"
-            }
-        },
-        "FeaturedProducts": {
-            "title": "Utvald kollektion",
-            "description": "Utforska våra toppval i denna utvalda kollektion. Hitta den perfekta presenten eller skäm bort dig själv!",
-            "cta": "Visa mer",
-            "emptyStateTitle": "Inga produkter hittades",
-            "emptyStateSubtitle": "Prova att bläddra i vår kompletta produktkatalog."
-        },
-        "NewestProducts": {
-            "title": "Nyinkomna",
-            "description": "Våra senaste produkter finns här. Kolla in vad som är nytt i butiken.",
-            "cta": "Visa alla",
-            "emptyStateTitle": "Inga produkter hittades",
-            "emptyStateSubtitle": "Prova att bläddra i vår kompletta produktkatalog.",
-            "previousProducts": "Tidigare produkter",
-            "nextProducts": "Nästa produkter"
-        }
+  "Home": {
+    "Slideshow": {
+      "Slide01": {
+        "title": "Fräscha fynd för varje tillfälle",
+        "description": "Utforska våra senaste produkter, noggrant utvalda för sin stil, funktionalitet och inspiration. Köp nu och upptäck din nästa favorit.",
+        "alt": "Fem små krukväxter på beige staplade block, med en mängd olika gröna växter i mörkgrå krukor mot en neutral bakgrund.",
+        "cta": "Köp nu"
+      },
+      "Slide02": {
+        "title": "Upptäck vad som är nytt",
+        "description": "Shoppa våra senaste produkter och hitta något fräscht och spännande till ditt hem.",
+        "alt": "Händer som sträcks ut för att hålla en grön ormbunke i en flätad korg med en dekorativ rosett, mot en beige bakgrund med mjuka skuggor.",
+        "cta": "Köp nu"
+      },
+      "Slide03": {
+        "title": "Något för alla",
+        "description": "Missa inte de exklusiva erbjudandena på våra bästsäljande produkter. Handla idag och spara stort på dina favoritvaror.",
+        "alt": "Närbild av ett livfullt grönt blad med perforeringar, som framhäver dess släta struktur och naturliga detaljer.",
+        "cta": "Köp nu"
+      }
     },
-    "Auth": {
-        "ChangePassword": {
-            "title": "Ändra lösenor",
-            "newPassword": "Nytt lösenord",
-            "confirmPassword": "Bekräfta lösenord",
-            "passwordUpdated": "Lösenordet har uppdaterats!",
-            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
-        },
-        "Login": {
-            "title": "Logga in",
-            "heading": "Logga in",
-            "forgotPassword": "Glömt ditt lösenord?",
-            "cta": "Logga in",
-            "email": "E-post",
-            "password": "Lösenord",
-            "invalidCredentials": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
-            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
-            "CreateAccount": {
-                "title": "Nya kunder?",
-                "accountBenefits": "Skapa ett konto hos oss, så kan du:",
-                "fastCheckout": "Kolla snabbare",
-                "multipleAddresses": "Spara flera leveransadresser",
-                "ordersHistory": "Gå till din orderhistorik",
-                "ordersTracking": "Spåra nya beställningar",
-                "wishlists": "Spara objekt i din önskelista",
-                "cta": "Skapa konto"
-            },
-            "ForgotPassword": {
-                "title": "Glömt ditt lösenord",
-                "subtitle": "Ange e-postadressen som är kopplad till ditt konto nedan. Vi skickar instruktioner för att återställa ditt lösenord.",
-                "confirmResetPassword": "Om e-postadressen {email} är kopplad till ett konto i vår butik har vi skickat ett e-postmeddelande om återställning av lösenord. Kontrollera din inkorg och skräppostmapp om du inte ser meddelandet.",
-                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
-            }
-        },
-        "Register": {
-            "title": "Registrera konto",
-            "heading": "Nytt konto",
-            "cta": "Skapa konto",
-            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
-        }
+    "FeaturedProducts": {
+      "title": "Utvald kollektion",
+      "description": "Utforska våra toppval i denna utvalda kollektion. Hitta den perfekta presenten eller skäm bort dig själv!",
+      "cta": "Visa mer",
+      "emptyStateTitle": "Inga produkter hittades",
+      "emptyStateSubtitle": "Prova att bläddra i vår kompletta produktkatalog."
     },
-    "Faceted": {
-        "Brand": {
-            "Empty": {
-                "title": "Inga produkter i detta varumärke",
-                "subtitle": "Prova att använda olika filter."
-            }
-        },
-        "Category": {
-            "subCategories": "Kategorier",
-            "Empty": {
-                "title": "Inga produkter i denna kategori",
-                "subtitle": "Prova att använda olika filter."
-            }
-        },
-        "Search": {
-            "title": "Sökresultat",
-            "searchResults": "Sökresultat för",
-            "subCategories": "Kategorier",
-            "Breadcrumbs": {
-                "home": "Hem",
-                "search": "Sök"
-            },
-            "Empty": {
-                "title": "Tyvärr finns inga resultat för ”{term}”.",
-                "subtitle": "Försök med en ny sökning."
-            }
-        },
-        "FacetedSearch": {
-            "filters": "Filter",
-            "resetFilters": "Återställ filtren",
-            "Range": {
-                "apply": "Tillämpa"
-            },
-            "Facets": {
-                "freeShippingLabel": "Gratis frakt",
-                "isFeaturedLabel": "Är utvald",
-                "inStockLabel": "I lager"
-            }
-        },
-        "SortBy": {
-            "sortBy": "Sortera efter:",
-            "featuredItems": "Erbjudna artiklar",
-            "bestSellingItems": "Bästsäljande artiklar",
-            "newestItems": "Nyaste artiklarna",
-            "aToZ": "A till Z",
-            "zToA": "Z till A",
-            "byReview": "Genom granskning",
-            "priceAscending": "Pris: stigande",
-            "priceDescending": "Pris: fallande",
-            "relevance": "Relevans"
-        },
-        "Compare": {
-            "compare": "Jämför",
-            "remove": "Ta bort",
-            "maxCompareLimit": "Du har nått det maximala antalet produkter att jämföra. Ta bort en produkt för att lägga till en ny."
-        }
+    "NewestProducts": {
+      "title": "Nyinkomna",
+      "description": "Våra senaste produkter finns här. Kolla in vad som är nytt i butiken.",
+      "cta": "Visa alla",
+      "emptyStateTitle": "Inga produkter hittades",
+      "emptyStateSubtitle": "Prova att bläddra i vår kompletta produktkatalog.",
+      "previousProducts": "Tidigare produkter",
+      "nextProducts": "Nästa produkter"
+    }
+  },
+  "Auth": {
+    "ChangePassword": {
+      "title": "Ändra lösenor",
+      "newPassword": "Nytt lösenord",
+      "confirmPassword": "Bekräfta lösenord",
+      "passwordUpdated": "Lösenordet har uppdaterats!",
+      "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
     },
-    "Account": {
-        "Layout": {
-            "addresses": "Adresser",
-            "logout": "Logga ut",
-            "orders": "Beställningar",
-            "settings": "Konto",
-            "wishlists": "Önskelistor"
-        },
-        "Orders": {
-            "title": "Beställningar",
-            "orderNumber": "Beställningsnummer",
-            "totalPrice": "Total",
-            "viewDetails": "Visa detaljer",
-            "EmptyState": {
-                "title": "Du har inga beställningar",
-                "cta": "Köp nu"
-            },
-            "Details": {
-                "title": "Beställningsnummer {orderNumber}",
-                "shippingAddress": "Leveransadress",
-                "shippingMethod": "Fraktmetod:",
-                "summaryTotal": "Total",
-                "destination": "Destination",
-                "destinationWithCount": "Destination {number, number}/{total, number}",
-                "subtotal": "Delsumma",
-                "shipping": "Frakt",
-                "tax": "Beskatta",
-                "orderSummary": "Beställningssammanfattning"
-            }
-        },
-        "Addresses": {
-            "title": "Adresser",
-            "cta": "Lägg till adress",
-            "edit": "Redigera",
-            "delete": "Radera",
-            "cancel": "Annullera",
-            "create": "skapa",
-            "update": "Uppdatering",
-            "setDefault": "Ange som standard",
-            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
-            "EmptyState": {
-                "title": "Du har inga adresser"
-            }
-        },
-        "Settings": {
-            "title": "Kontoinställningar",
-            "changePassword": "Ändra lösenor",
-            "passwordUpdated": "Lösenordet har uppdaterats!",
-            "settingsUpdated": "Kontoinställningarna har uppdaterats!",
-            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
-            "currentPassword": "Nuvarande lösenord",
-            "newPassword": "Nytt lösenord",
-            "confirmPassword": "Bekräfta lösenord",
-            "cta": "Uppdatering"
-        }
+    "Login": {
+      "title": "Logga in",
+      "heading": "Logga in",
+      "forgotPassword": "Glömt ditt lösenord?",
+      "cta": "Logga in",
+      "email": "E-post",
+      "password": "Lösenord",
+      "invalidCredentials": "Din e-postadress eller ditt lösenord är felaktigt. Försök att logga in igen eller återställ ditt lösenord",
+      "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
+      "CreateAccount": {
+        "title": "Nya kunder?",
+        "accountBenefits": "Skapa ett konto hos oss, så kan du:",
+        "fastCheckout": "Kolla snabbare",
+        "multipleAddresses": "Spara flera leveransadresser",
+        "ordersHistory": "Gå till din orderhistorik",
+        "ordersTracking": "Spåra nya beställningar",
+        "wishlists": "Spara objekt i din önskelista",
+        "cta": "Skapa konto"
+      },
+      "ForgotPassword": {
+        "title": "Glömt ditt lösenord",
+        "subtitle": "Ange e-postadressen som är kopplad till ditt konto nedan. Vi skickar instruktioner för att återställa ditt lösenord.",
+        "confirmResetPassword": "Om e-postadressen {email} är kopplad till ett konto i vår butik har vi skickat ett e-postmeddelande om återställning av lösenord. Kontrollera din inkorg och skräppostmapp om du inte ser meddelandet.",
+        "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+      }
     },
-    "Wishlist": {
-        "actionsTitle": "Åtgärder för önskelista",
-        "title": "Önskelistor",
-        "new": "Ny önskelista",
-        "items": "{count, plural, =1 {1 objekt} other {# objekt}}",
-        "viewWishlist": "Visa lista",
-        "noWishlists": "Du har inga önskelistor",
-        "noWishlistsCallToAction": "Skapa en önskelista",
-        "emptyWishlist": "Du har inte lagt till några produkter på den här önskelistan.",
-        "share": "Dela med sig",
-        "shareSuccess": "Önskelistan har delats.",
-        "shareCopied": "Önskelistans offentliga URL har kopierats till urklipp.",
-        "shareDisabled": "Din önskelista måste vara offentlig för att kunna delas.",
-        "makePublic": "Gör offentlig",
-        "makePrivate": "Gör privat",
-        "rename": "Döp om",
-        "delete": "Radera",
-        "removeButtonTitle": "Radera produkten från önskelistan",
-        "Visibility": {
-            "public": "Offentlig",
-            "private": "Privat"
-        },
-        "Modal": {
-            "cancel": "Annullera",
-            "close": "Stäng",
-            "copy": "Kopiera",
-            "create": "skapa",
-            "save": "Spara",
-            "delete": "Radera",
-            "newTitle": "Skapa en ny önskelista",
-            "shareTitle": "Dela {name}",
-            "renameTitle": "Byt namn på {name}",
-            "deleteTitle": "Radera {name}",
-            "changeVisibilityPublicTitle": "Vill du göra {name} offentlig?",
-            "changeVisibilityPrivateTitle": "Vill du göra {name} privat?",
-            "makePublicContent": "Är du säker på att du vill göra <bold>{name}</bold> offentlig? Då kommer andra att kunna se din önskelista om de har länken.",
-            "makePrivateContent": "Är du säker på att du vill göra <bold>{name}</bold> privat? Om du har delat din önskelista med andra kommer de inte längre att kunna se den.",
-            "deleteContent": "Är du säker på att du vill radera <bold>{name}</bold>? Denna åtgärd kan inte ångras."
-        },
-        "Form": {
-            "nameLabel": "Namn"
-        },
-        "Errors": {
-            "nameRequired": "Namnet på önskelistan får inte vara tomt.",
-            "updateFailed": "Det gick inte att uppdatera din önskelista. Försök igen.",
-            "deleteFailed": "Det gick inte att radera din önskelista. Försök igen.",
-            "removeProductFailed": "Det gick inte att ta bort produkten från din önskelista. Försök igen.",
-            "unauthorized": "Du har inte behörighet att utföra den här åtgärden. Logga in och försök igen.",
-            "unexpected": "Ett oväntat fel inträffade. Försök igen."
-        },
-        "Result": {
-            "createSuccess": "Önskelistan har skapats.",
-            "updateSuccess": "Önskelistan har uppdaterats.",
-            "deleteSuccess": "Önskelistan har tagits bort.",
-            "removeItemSuccess": "Objektet har tagits bort från din önskelista."
-        },
-        "Button": {
-            "label": "Lägg till i önskelista",
-            "addToNewWishlist": "Lägg till i en ny önskelista",
-            "defaultWishlistName": "Min önskelista",
-            "addSuccessMessage": "Produkten har lagts till i din önskelista.",
-            "removeSuccessMessage": "Produkten har tagits bort från din önskelista.",
-            "Errors": {
-                "addProductFailed": "Det gick inte att lägga till produkten från din önskelista. Försök igen.",
-                "removeProductFailed": "Det gick inte att ta bort produkten från din önskelista. Försök igen."
-            }
-        }
+    "Register": {
+      "title": "Registrera konto",
+      "heading": "Nytt konto",
+      "cta": "Skapa konto",
+      "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+    }
+  },
+  "Faceted": {
+    "Brand": {
+      "Empty": {
+        "title": "Inga produkter i detta varumärke",
+        "subtitle": "Prova att använda olika filter."
+      }
     },
-    "PublicWishlist": {
-        "title": "Offentlig önskelista",
-        "defaultName": "Offentlig önskelista",
-        "emptyWishlist": "Det finns inga produkter i den här önskelistan ännu."
+    "Category": {
+      "subCategories": "Kategorier",
+      "Empty": {
+        "title": "Inga produkter i denna kategori",
+        "subtitle": "Prova att använda olika filter."
+      }
     },
-    "Blog": {
-        "title": "Blogg",
+    "Search": {
+      "title": "Sökresultat",
+      "searchResults": "Sökresultat för",
+      "subCategories": "Kategorier",
+      "Breadcrumbs": {
         "home": "Hem",
-        "Empty": {
-            "title": "Inga blogginlägg hittades",
-            "subtitle": "Kom tillbaka senare för mer innehåll"
-        },
-        "SharingLinks": {
-            "share": "Dela med sig",
-            "email": "E-post",
-            "print": "Skriva ut"
-        }
+        "search": "Sök"
+      },
+      "Empty": {
+        "title": "Tyvärr finns inga resultat för ”{term}”.",
+        "subtitle": "Försök med en ny sökning."
+      }
     },
-    "Cart": {
-        "title": "Kundvagn",
-        "heading": "Din vagn",
-        "proceedToCheckout": "Fortsätt till utcheckningen",
-        "increment": "Öka kvantiteten",
-        "decrement": "Minska kvantitet",
-        "removeItem": "Ta bort vara",
-        "cartCombined": "Vi märkte att du hade varor sparade i en tidigare kundvagn, så vi har lagt till dem i din nuvarande kundvagn åt dig.",
-        "cartRestored": "Du startade en kundvagn på en annan enhet, och vi har återställt den här så att du kan fortsätta där du slutade.",
-        "cartUpdateInProgress": "Du har en pågående kundvagnsuppdatering. Är du säker på att du vill lämna den här sidan? Dina ändringar kan gå förlorade.",
-        "CheckoutSummary": {
-            "title": "Summering",
-            "subTotal": "Delsumma",
-            "discounts": "Rabatter",
-            "tax": "Beskatta",
-            "total": "Total",
-            "CouponCode": {
-                "apply": "Tillämpa",
-                "couponCode": "Kupongkod",
-                "removeCouponCode": "Ta bort kupongkod",
-                "invalidCouponCode": "Ange en giltig kupongkod",
-                "cartNotFound": "Ingen cartId-kaka hittades."
-            },
-            "Shipping": {
-                "shipping": "Frakt",
-                "add": "Lägg till",
-                "change": "Ändra",
-                "cancel": "Annullera",
-                "country": "Land",
-                "city": "Stad",
-                "state": "Stat/provins",
-                "postalCode": "Postnummer",
-                "updatedShippingOptions": "Uppdatera fraktalternativ",
-                "viewShippingOptions": "Visa fraktalternativ",
-                "editAddress": "Redigera adress",
-                "shippingOptions": "Frakt alternativ",
-                "updateShipping": "Uppdatera frakt",
-                "addShipping": "Lägg till frakt",
-                "cartNotFound": "Ingen cartId-kaka hittades.",
-                "noShippingOptions": "Det finns inga tillgängliga fraktalternativ för din adress"
-            }
-        },
-        "Empty": {
-            "title": "Din kundvagn är tom.",
-            "subtitle": "Lägg till några produkter för att komma igång.",
-            "cta": "Fortsätt att handla"
-        },
-        "Errors": {
-            "cartNotFound": "Ingen cartId-kaka hittades.",
-            "lineItemNotFound": "Radartikeln hittades inte.",
-            "failedToUpdateQuantity": "Det gick inte att uppdatera antalet.",
-            "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
-        }
+    "FacetedSearch": {
+      "filters": "Filter",
+      "resetFilters": "Återställ filtren",
+      "Range": {
+        "apply": "Tillämpa"
+      },
+      "Facets": {
+        "freeShippingLabel": "Gratis frakt",
+        "isFeaturedLabel": "Är utvald",
+        "inStockLabel": "I lager"
+      }
+    },
+    "SortBy": {
+      "sortBy": "Sortera efter:",
+      "featuredItems": "Erbjudna artiklar",
+      "bestSellingItems": "Bästsäljande artiklar",
+      "newestItems": "Nyaste artiklarna",
+      "aToZ": "A till Z",
+      "zToA": "Z till A",
+      "byReview": "Genom granskning",
+      "priceAscending": "Pris: stigande",
+      "priceDescending": "Pris: fallande",
+      "relevance": "Relevans"
     },
     "Compare": {
-        "title": "Jämför produkter",
+      "compare": "Jämför",
+      "remove": "Ta bort",
+      "maxCompareLimit": "Du har nått det maximala antalet produkter att jämföra. Ta bort en produkt för att lägga till en ny."
+    }
+  },
+  "Account": {
+    "Layout": {
+      "addresses": "Adresser",
+      "logout": "Logga ut",
+      "orders": "Beställningar",
+      "settings": "Konto",
+      "wishlists": "Önskelistor"
+    },
+    "Orders": {
+      "title": "Beställningar",
+      "orderNumber": "Beställningsnummer",
+      "totalPrice": "Total",
+      "viewDetails": "Visa detaljer",
+      "EmptyState": {
+        "title": "Du har inga beställningar",
+        "cta": "Köp nu"
+      },
+      "Details": {
+        "title": "Beställningsnummer {orderNumber}",
+        "shippingAddress": "Leveransadress",
+        "shippingMethod": "Fraktmetod:",
+        "summaryTotal": "Total",
+        "destination": "Destination",
+        "destinationWithCount": "Destination {number, number}/{total, number}",
+        "subtotal": "Delsumma",
+        "shipping": "Frakt",
+        "tax": "Beskatta",
+        "orderSummary": "Beställningssammanfattning"
+      }
+    },
+    "Addresses": {
+      "title": "Adresser",
+      "cta": "Lägg till adress",
+      "edit": "Redigera",
+      "delete": "Radera",
+      "cancel": "Annullera",
+      "create": "skapa",
+      "update": "Uppdatering",
+      "setDefault": "Ange som standard",
+      "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
+      "EmptyState": {
+        "title": "Du har inga adresser"
+      }
+    },
+    "Settings": {
+      "title": "Kontoinställningar",
+      "changePassword": "Ändra lösenor",
+      "passwordUpdated": "Lösenordet har uppdaterats!",
+      "settingsUpdated": "Kontoinställningarna har uppdaterats!",
+      "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare.",
+      "currentPassword": "Nuvarande lösenord",
+      "newPassword": "Nytt lösenord",
+      "confirmPassword": "Bekräfta lösenord",
+      "cta": "Uppdatering"
+    }
+  },
+  "Wishlist": {
+    "actionsTitle": "Åtgärder för önskelista",
+    "title": "Önskelistor",
+    "new": "Ny önskelista",
+    "items": "{count, plural, =1 {1 objekt} other {# objekt}}",
+    "viewWishlist": "Visa lista",
+    "noWishlists": "Du har inga önskelistor",
+    "noWishlistsCallToAction": "Skapa en önskelista",
+    "emptyWishlist": "Du har inte lagt till några produkter på den här önskelistan.",
+    "share": "Dela med sig",
+    "shareSuccess": "Önskelistan har delats.",
+    "shareCopied": "Önskelistans offentliga URL har kopierats till urklipp.",
+    "shareDisabled": "Din önskelista måste vara offentlig för att kunna delas.",
+    "makePublic": "Gör offentlig",
+    "makePrivate": "Gör privat",
+    "rename": "Döp om",
+    "delete": "Radera",
+    "removeButtonTitle": "Radera produkten från önskelistan",
+    "Visibility": {
+      "public": "Offentlig",
+      "private": "Privat"
+    },
+    "Modal": {
+      "cancel": "Annullera",
+      "close": "Stäng",
+      "copy": "Kopiera",
+      "create": "skapa",
+      "save": "Spara",
+      "delete": "Radera",
+      "newTitle": "Skapa en ny önskelista",
+      "shareTitle": "Dela {name}",
+      "renameTitle": "Byt namn på {name}",
+      "deleteTitle": "Radera {name}",
+      "changeVisibilityPublicTitle": "Vill du göra {name} offentlig?",
+      "changeVisibilityPrivateTitle": "Vill du göra {name} privat?",
+      "makePublicContent": "Är du säker på att du vill göra <bold>{name}</bold> offentlig? Då kommer andra att kunna se din önskelista om de har länken.",
+      "makePrivateContent": "Är du säker på att du vill göra <bold>{name}</bold> privat? Om du har delat din önskelista med andra kommer de inte längre att kunna se den.",
+      "deleteContent": "Är du säker på att du vill radera <bold>{name}</bold>? Denna åtgärd kan inte ångras."
+    },
+    "Form": {
+      "nameLabel": "Namn"
+    },
+    "Errors": {
+      "nameRequired": "Namnet på önskelistan får inte vara tomt.",
+      "updateFailed": "Det gick inte att uppdatera din önskelista. Försök igen.",
+      "deleteFailed": "Det gick inte att radera din önskelista. Försök igen.",
+      "removeProductFailed": "Det gick inte att ta bort produkten från din önskelista. Försök igen.",
+      "unauthorized": "Du har inte behörighet att utföra den här åtgärden. Logga in och försök igen.",
+      "unexpected": "Ett oväntat fel inträffade. Försök igen."
+    },
+    "Result": {
+      "createSuccess": "Önskelistan har skapats.",
+      "updateSuccess": "Önskelistan har uppdaterats.",
+      "deleteSuccess": "Önskelistan har tagits bort.",
+      "removeItemSuccess": "Objektet har tagits bort från din önskelista."
+    },
+    "Button": {
+      "label": "Lägg till i önskelista",
+      "addToNewWishlist": "Lägg till i en ny önskelista",
+      "defaultWishlistName": "Min önskelista",
+      "addSuccessMessage": "Produkten har lagts till i din önskelista.",
+      "removeSuccessMessage": "Produkten har tagits bort från din önskelista.",
+      "Errors": {
+        "addProductFailed": "Det gick inte att lägga till produkten från din önskelista. Försök igen.",
+        "removeProductFailed": "Det gick inte att ta bort produkten från din önskelista. Försök igen."
+      }
+    }
+  },
+  "PublicWishlist": {
+    "title": "Offentlig önskelista",
+    "defaultName": "Offentlig önskelista",
+    "emptyWishlist": "Det finns inga produkter i den här önskelistan ännu."
+  },
+  "Blog": {
+    "title": "Blogg",
+    "home": "Hem",
+    "Empty": {
+      "title": "Inga blogginlägg hittades",
+      "subtitle": "Kom tillbaka senare för mer innehåll"
+    },
+    "SharingLinks": {
+      "share": "Dela med sig",
+      "email": "E-post",
+      "print": "Skriva ut"
+    }
+  },
+  "Cart": {
+    "title": "Kundvagn",
+    "heading": "Din vagn",
+    "proceedToCheckout": "Fortsätt till utcheckningen",
+    "increment": "Öka kvantiteten",
+    "decrement": "Minska kvantitet",
+    "removeItem": "Ta bort vara",
+    "cartCombined": "Vi märkte att du hade varor sparade i en tidigare kundvagn, så vi har lagt till dem i din nuvarande kundvagn åt dig.",
+    "cartRestored": "Du startade en kundvagn på en annan enhet, och vi har återställt den här så att du kan fortsätta där du slutade.",
+    "cartUpdateInProgress": "Du har en pågående kundvagnsuppdatering. Är du säker på att du vill lämna den här sidan? Dina ändringar kan gå förlorade.",
+    "CheckoutSummary": {
+      "title": "Summering",
+      "subTotal": "Delsumma",
+      "discounts": "Rabatter",
+      "tax": "Beskatta",
+      "total": "Total",
+      "CouponCode": {
+        "apply": "Tillämpa",
+        "couponCode": "Kupongkod",
+        "removeCouponCode": "Ta bort kupongkod",
+        "invalidCouponCode": "Ange en giltig kupongkod",
+        "cartNotFound": "Ingen cartId-kaka hittades."
+      },
+      "Shipping": {
+        "shipping": "Frakt",
+        "add": "Lägg till",
+        "change": "Ändra",
+        "cancel": "Annullera",
+        "country": "Land",
+        "city": "Stad",
+        "state": "Stat/provins",
+        "postalCode": "Postnummer",
+        "updatedShippingOptions": "Uppdatera fraktalternativ",
+        "viewShippingOptions": "Visa fraktalternativ",
+        "editAddress": "Redigera adress",
+        "shippingOptions": "Frakt alternativ",
+        "updateShipping": "Uppdatera frakt",
+        "addShipping": "Lägg till frakt",
+        "cartNotFound": "Ingen cartId-kaka hittades.",
+        "noShippingOptions": "Det finns inga tillgängliga fraktalternativ för din adress"
+      }
+    },
+    "Empty": {
+      "title": "Din kundvagn är tom.",
+      "subtitle": "Lägg till några produkter för att komma igång.",
+      "cta": "Fortsätt att handla"
+    },
+    "Errors": {
+      "cartNotFound": "Ingen cartId-kaka hittades.",
+      "lineItemNotFound": "Radartikeln hittades inte.",
+      "failedToUpdateQuantity": "Det gick inte att uppdatera antalet.",
+      "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+    }
+  },
+  "Compare": {
+    "title": "Jämför produkter",
+    "addToCart": "Lägg till i kundvagn",
+    "next": "Nästa produkter",
+    "previous": "Tidigare produkter",
+    "noProductsToCompare": "Inga produkter att jämföra",
+    "sku": "SKU",
+    "weight": "Vikt",
+    "description": "Beskrivning",
+    "noDescription": "Det finns ingen beskrivning tillgänglig.",
+    "rating": "Bedömning",
+    "noRatings": "Det finns inga recensioner.",
+    "otherDetails": "Övrig information",
+    "noOtherDetails": "Det finns inga övriga detaljer.",
+    "viewOptions": "Visa alternativ",
+    "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
+    "missingCart": "Kundvagnen hittades inte. Försök igen senare.",
+    "unknownError": "Okänt fel. Försök igen senare."
+  },
+  "Product": {
+    "ProductDetails": {
+      "quantity": "Kvantitet",
+      "increaseQuantity": "Öka kvantiteten",
+      "decreaseQuantity": "Minska kvantitet",
+      "emptySelectPlaceholder": "Välj ett alternativ",
+      "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
+      "missingCart": "Kundvagnen hittades inte. Försök igen senare!",
+      "unknownError": "Okänt fel. Försök igen senare.",
+      "variantRequiredError": "Denna produkt kräver att alternativ väljs för att kunna läggas till i kundvagnen.",
+      "increaseNumber": "Öka antalet",
+      "decreaseNumber": "Minska antalet",
+      "thumbnail": "Visa bildnummer",
+      "additionalInformation": "Ytterligare information",
+      "Submit": {
         "addToCart": "Lägg till i kundvagn",
-        "next": "Nästa produkter",
-        "previous": "Tidigare produkter",
-        "noProductsToCompare": "Inga produkter att jämföra",
+        "outOfStock": "Ej i lager",
+        "preorder": "Förboka",
+        "unavailable": "Inte tillgänglig"
+      },
+      "Accordions": {
+        "specifications": "Specifikationer",
+        "warranty": "Garanti",
         "sku": "SKU",
         "weight": "Vikt",
-        "description": "Beskrivning",
-        "noDescription": "Det finns ingen beskrivning tillgänglig.",
-        "rating": "Bedömning",
-        "noRatings": "Det finns inga recensioner.",
-        "otherDetails": "Övrig information",
-        "noOtherDetails": "Det finns inga övriga detaljer.",
-        "viewOptions": "Visa alternativ",
-        "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
-        "missingCart": "Kundvagnen hittades inte. Försök igen senare.",
-        "unknownError": "Okänt fel. Försök igen senare."
+        "condition": "Skick"
+      }
     },
-    "Product": {
-        "ProductDetails": {
-            "quantity": "Kvantitet",
-            "increaseQuantity": "Öka kvantiteten",
-            "decreaseQuantity": "Minska kvantitet",
-            "emptySelectPlaceholder": "Välj ett alternativ",
-            "successMessage": "{cartItems, plural, =1 {1 Item} other {# Items}} har lagts till <cartLink> i kundvagnen</cartLink>",
-            "missingCart": "Kundvagnen hittades inte. Försök igen senare!",
-            "unknownError": "Okänt fel. Försök igen senare.",
-            "variantRequiredError": "Denna produkt kräver att alternativ väljs för att kunna läggas till i kundvagnen.",
-            "increaseNumber": "Öka antalet",
-            "decreaseNumber": "Minska antalet",
-            "thumbnail": "Visa bildnummer",
-            "additionalInformation": "Ytterligare information",
-            "Submit": {
-                "addToCart": "Lägg till i kundvagn",
-                "outOfStock": "Ej i lager",
-                "preorder": "Förboka",
-                "unavailable": "Inte tillgänglig"
-            },
-            "Accordions": {
-                "specifications": "Specifikationer",
-                "warranty": "Garanti",
-                "sku": "SKU",
-                "weight": "Vikt",
-                "condition": "Skick"
-            }
-        },
-        "RelatedProducts": {
-            "title": "Relaterade produkter",
-            "noRelatedProducts": "Inga relaterade produkter hittades",
-            "browseCatalog": "Prova att bläddra i vår kompletta produktkatalog.",
-            "cta": "Handla alla",
-            "previousProducts": "Tidigare produkter",
-            "nextProducts": "Nästa produkter",
-            "scrollbar": "Rullningslist med relaterade produkter"
-        },
-        "Reviews": {
-            "title": "Recensioner",
-            "empty": "Inga recensioner har lagts till för denna produkt.",
-            "previous": "Tidigare recensioner",
-            "next": "Kommande recensioner"
-        }
+    "RelatedProducts": {
+      "title": "Relaterade produkter",
+      "noRelatedProducts": "Inga relaterade produkter hittades",
+      "browseCatalog": "Prova att bläddra i vår kompletta produktkatalog.",
+      "cta": "Handla alla",
+      "previousProducts": "Tidigare produkter",
+      "nextProducts": "Nästa produkter",
+      "scrollbar": "Rullningslist med relaterade produkter"
     },
-    "WebPages": {
-        "Normal": {
-            "home": "Hem"
-        },
-        "ContactUs": {
-            "home": "Hem",
-            "Form": {
-                "success": "Tack för att du hörde av dig. Vi återkommer till dig inom kort.",
-                "successCta": "Fortsätt att handla",
-                "fullName": "Fullständigt namn",
-                "companyName": "Företagsnamn",
-                "phone": "Telefon",
-                "orderNo": "Beställningsnummer:",
-                "rma": "RMA-nummer",
-                "email": "E-post",
-                "comments": "Kommentarer/frågor",
-                "cta": "Skicka formulär",
-                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
-            }
-        }
-    },
-    "Maintenance": {
-        "title": "Underhåll",
-        "message": "Vi är nere för underhåll",
-        "contactUs": "Kontakta oss på:"
-    },
-    "Error": {
-        "title": "Det uppstod ett serverfel!",
-        "subtitle": "Försök igen senare.",
-        "cta": "Försök igen"
-    },
-    "NotFound": {
-        "title": "Vi kunde inte hitta den sidan!",
-        "subtitle": "Prova att söka efter något annat eller gå tillbaka till startsidan.",
-        "featuredProducts": "Utvalda produkter",
-        "search": "Sök"
-    },
-    "Components": {
-        "Header": {
-            "home": "Hem",
-            "toggleNavigation": "Växla navigering",
-            "Icons": {
-                "account": "Profil",
-                "cart": "Kundvagn",
-                "search": "Öppna popup-fönstret för sökning"
-            },
-            "SwitchCurrency": {
-                "label": "Byt valuta",
-                "invalidCurrency": "Ogiltig valuta",
-                "errorUpdatingCurrency": "Det gick inte att uppdatera valutan för din kundvagn. Försök igen."
-            },
-            "Search": {
-                "products": "Produkter",
-                "categories": "Kategorier",
-                "brands": "Varumärke",
-                "noSearchResultsTitle": "Tyvärr finns inga resultat för ”{term}”.",
-                "noSearchResultsSubtitle": "Försök med en ny sökning.",
-                "somethingWentWrong": "Något gick fel. Var god försök igen.",
-                "inputPlaceholder": "Sök efter produkter, kategorier, varumärken...",
-                "submitLabel": "Sök"
-            }
-        },
-        "Footer": {
-            "home": "Hem",
-            "contactUs": "Kontakta oss",
-            "socialMediaLinks": "Sociala Media-länkar",
-            "categories": "Kategorier",
-            "brands": "Varumärke",
-            "navigate": "Navigera"
-        },
-        "Subscribe": {
-            "title": "Anmäl dig till vårt nyhetsbrev",
-            "placeholder": "Ange din e-postadress",
-            "description": "Håll dig uppdaterad med de senaste nyheterna och erbjudandena från vår butik.",
-            "success": "Tack för ditt intresse! Funktionen för nyhetsbrev kommer snart!"
-        }
+    "Reviews": {
+      "title": "Recensioner",
+      "empty": "Inga recensioner har lagts till för denna produkt.",
+      "previous": "Tidigare recensioner",
+      "next": "Kommande recensioner"
     }
+  },
+  "WebPages": {
+    "Normal": {
+      "home": "Hem"
+    },
+    "ContactUs": {
+      "home": "Hem",
+      "Form": {
+        "success": "Tack för att du hörde av dig. Vi återkommer till dig inom kort.",
+        "successCta": "Fortsätt att handla",
+        "fullName": "Fullständigt namn",
+        "companyName": "Företagsnamn",
+        "phone": "Telefon",
+        "orderNo": "Beställningsnummer:",
+        "rma": "RMA-nummer",
+        "email": "E-post",
+        "comments": "Kommentarer/frågor",
+        "cta": "Skicka formulär",
+        "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+      }
+    }
+  },
+  "Maintenance": {
+    "title": "Underhåll",
+    "message": "Vi är nere för underhåll",
+    "contactUs": "Kontakta oss på:"
+  },
+  "Error": {
+    "title": "Det uppstod ett serverfel!",
+    "subtitle": "Försök igen senare.",
+    "cta": "Försök igen"
+  },
+  "NotFound": {
+    "title": "Vi kunde inte hitta den sidan!",
+    "subtitle": "Prova att söka efter något annat eller gå tillbaka till startsidan.",
+    "featuredProducts": "Utvalda produkter",
+    "search": "Sök"
+  },
+  "Components": {
+    "Header": {
+      "home": "Hem",
+      "toggleNavigation": "Växla navigering",
+      "Icons": {
+        "account": "Profil",
+        "cart": "Kundvagn",
+        "search": "Öppna popup-fönstret för sökning"
+      },
+      "SwitchCurrency": {
+        "label": "Byt valuta",
+        "invalidCurrency": "Ogiltig valuta",
+        "errorUpdatingCurrency": "Det gick inte att uppdatera valutan för din kundvagn. Försök igen."
+      },
+      "Search": {
+        "products": "Produkter",
+        "categories": "Kategorier",
+        "brands": "Varumärke",
+        "noSearchResultsTitle": "Tyvärr finns inga resultat för ”{term}”.",
+        "noSearchResultsSubtitle": "Försök med en ny sökning.",
+        "somethingWentWrong": "Något gick fel. Var god försök igen.",
+        "inputPlaceholder": "Sök efter produkter, kategorier, varumärken...",
+        "submitLabel": "Sök"
+      }
+    },
+    "Footer": {
+      "home": "Hem",
+      "contactUs": "Kontakta oss",
+      "socialMediaLinks": "Sociala Media-länkar",
+      "categories": "Kategorier",
+      "brands": "Varumärke",
+      "navigate": "Navigera"
+    },
+    "Subscribe": {
+      "title": "Anmäl dig till vårt nyhetsbrev",
+      "placeholder": "Ange din e-postadress",
+      "description": "Håll dig uppdaterad med de senaste nyheterna och erbjudandena från vår butik.",
+      "success": "Tack för ditt intresse! Funktionen för nyhetsbrev kommer snart!"
+    }
+  }
 }

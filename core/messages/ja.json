@@ -1,474 +1,474 @@
 {
-    "Home": {
-        "Slideshow": {
-            "Slide01": {
-                "title": "あらゆる場面にぴったりの新商品",
-                "description": "スタイル、機能性、インスピレーションをお届けするために厳選された最新商品をご覧ください。今すぐお買い物をして、お気に入りを見つけましょう。",
-                "alt": "ニュートラルな背景の前に積み重ねられたベージュ色のブロックの上に、5つの小さな鉢植えの植物が飾られており、ダーク グレーの鉢にはさまざまな緑色の植物が美しく植わっている。",
-                "cta": "今すぐ購入する"
-            },
-            "Slide02": {
-                "title": "最新情報を見る",
-                "description": "最新入荷の商品をチェックして、暮らしに新しいワクワクをプラスしましょう。",
-                "alt": "淡い陰影のあるベージュ色の背景を背に、リボン付きの編みかごに入った緑色のシダを取ろうと誰かが手を伸ばしている。",
-                "cta": "今すぐ購入する"
-            },
-            "Slide03": {
-                "title": "誰でもきっとお気に入りが見つかるはず",
-                "description": "当社のベストセラー商品に関する限定オファーをお見逃しなく。今すぐお買い物して、お気に入りの商品をお得にゲットしましょう。",
-                "alt": "滑らかな質感と自然なディテールを持つ、穴の開いた鮮やかな緑の葉のクローズアップ。",
-                "cta": "今すぐ購入する"
-            }
-        },
-        "FeaturedProducts": {
-            "title": "注目のコレクション",
-            "description": "この特集コレクションで、当店のおすすめ商品をご覧ください。パーフェクトなギフトや、自分へのご褒美に！",
-            "cta": "もっと見る",
-            "emptyStateTitle": "商品が見つかりません",
-            "emptyStateSubtitle": "当社の製品カタログをぜひご覧ください。"
-        },
-        "NewestProducts": {
-            "title": "新着商品",
-            "description": "新商品が到着しました。ストアの最新情報をチェックしてください。",
-            "cta": "すべてを見る",
-            "emptyStateTitle": "商品が見つかりません",
-            "emptyStateSubtitle": "当社の製品カタログをぜひご覧ください。",
-            "previousProducts": "前の商品",
-            "nextProducts": "次の商品"
-        }
+  "Home": {
+    "Slideshow": {
+      "Slide01": {
+        "title": "あらゆる場面にぴったりの新商品",
+        "description": "スタイル、機能性、インスピレーションをお届けするために厳選された最新商品をご覧ください。今すぐお買い物をして、お気に入りを見つけましょう。",
+        "alt": "ニュートラルな背景の前に積み重ねられたベージュ色のブロックの上に、5つの小さな鉢植えの植物が飾られており、ダーク グレーの鉢にはさまざまな緑色の植物が美しく植わっている。",
+        "cta": "今すぐ購入する"
+      },
+      "Slide02": {
+        "title": "最新情報を見る",
+        "description": "最新入荷の商品をチェックして、暮らしに新しいワクワクをプラスしましょう。",
+        "alt": "淡い陰影のあるベージュ色の背景を背に、リボン付きの編みかごに入った緑色のシダを取ろうと誰かが手を伸ばしている。",
+        "cta": "今すぐ購入する"
+      },
+      "Slide03": {
+        "title": "誰でもきっとお気に入りが見つかるはず",
+        "description": "当社のベストセラー商品に関する限定オファーをお見逃しなく。今すぐお買い物して、お気に入りの商品をお得にゲットしましょう。",
+        "alt": "滑らかな質感と自然なディテールを持つ、穴の開いた鮮やかな緑の葉のクローズアップ。",
+        "cta": "今すぐ購入する"
+      }
     },
-    "Auth": {
-        "ChangePassword": {
-            "title": "パスワード変更",
-            "newPassword": "新しいパスワード",
-            "confirmPassword": "パスワード確認",
-            "passwordUpdated": "パスワードが正常に更新されました！",
-            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
-        },
-        "Login": {
-            "title": "ログイン",
-            "heading": "ログイン",
-            "forgotPassword": "パスワードをお忘れですか?",
-            "cta": "ログイン",
-            "email": "Eメール",
-            "password": "パスワード",
-            "invalidCredentials": "メールアドレスまたはパスワードが間違っています。もう一度サインインするか、パスワードをリセットしてください",
-            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
-            "CreateAccount": {
-                "title": "新規のお客様ですか？",
-                "accountBenefits": "アカウントを作成すると、次のことができるようになります:",
-                "fastCheckout": "スムーズにお支払い",
-                "multipleAddresses": "複数の配送先住所を保存する",
-                "ordersHistory": "注文履歴にアクセスする",
-                "ordersTracking": "新規注文の追跡",
-                "wishlists": "ウィッシュリストにアイテムを保存",
-                "cta": "アカウント作成"
-            },
-            "ForgotPassword": {
-                "title": "パスワードをお忘れですか",
-                "subtitle": "アカウントに関連付けられたメールアドレスを以下に入力してください。パスワードをリセットするための手順をお送りいたします。",
-                "confirmResetPassword": "メールアドレス {email} が当社のアカウントにリンクされている場合、パスワードリセットのメールが送信されました。受信トレイをご確認ください。見つからない場合は、スパムフォルダもご確認ください。",
-                "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
-            }
-        },
-        "Register": {
-            "title": "アカウントを登録",
-            "heading": "新しいアカウント",
-            "cta": "アカウント作成",
-            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
-        }
+    "FeaturedProducts": {
+      "title": "注目のコレクション",
+      "description": "この特集コレクションで、当店のおすすめ商品をご覧ください。パーフェクトなギフトや、自分へのご褒美に！",
+      "cta": "もっと見る",
+      "emptyStateTitle": "商品が見つかりません",
+      "emptyStateSubtitle": "当社の製品カタログをぜひご覧ください。"
     },
-    "Faceted": {
-        "Brand": {
-            "Empty": {
-                "title": "このブランドの商品はありません",
-                "subtitle": "別のフィルターをお試しください。"
-            }
-        },
-        "Category": {
-            "subCategories": "カテゴリー",
-            "Empty": {
-                "title": "このカテゴリーの商品はありません",
-                "subtitle": "別のフィルターをお試しください。"
-            }
-        },
-        "Search": {
-            "title": "検索結果",
-            "searchResults": "検索結果表示",
-            "subCategories": "カテゴリー",
-            "Breadcrumbs": {
-                "home": "ホーム",
-                "search": "検索"
-            },
-            "Empty": {
-                "title": "申し訳ございません。「{term}」に該当する結果は見つかりませんでした。",
-                "subtitle": "別の検索をお試しください。"
-            }
-        },
-        "FacetedSearch": {
-            "filters": "フィルター",
-            "resetFilters": "フィルターをリセット",
-            "Range": {
-                "apply": "適用"
-            },
-            "Facets": {
-                "freeShippingLabel": "送料無料",
-                "isFeaturedLabel": "特集されています",
-                "inStockLabel": "在庫あり"
-            }
-        },
-        "SortBy": {
-            "sortBy": "並べ替え：",
-            "featuredItems": "おすすめ商品",
-            "bestSellingItems": "ベストセラー商品",
-            "newestItems": "最新商品",
-            "aToZ": "AからZ",
-            "zToA": "ZからA",
-            "byReview": "レビュー別",
-            "priceAscending": "価格：昇順",
-            "priceDescending": "価格：降順",
-            "relevance": "関連性"
-        },
-        "Compare": {
-            "compare": "価格比較",
-            "remove": "削除",
-            "maxCompareLimit": "比較対象の商品が最大数に達しました。新しい商品を追加するには、1つ商品を削除してください。"
-        }
+    "NewestProducts": {
+      "title": "新着商品",
+      "description": "新商品が到着しました。ストアの最新情報をチェックしてください。",
+      "cta": "すべてを見る",
+      "emptyStateTitle": "商品が見つかりません",
+      "emptyStateSubtitle": "当社の製品カタログをぜひご覧ください。",
+      "previousProducts": "前の商品",
+      "nextProducts": "次の商品"
+    }
+  },
+  "Auth": {
+    "ChangePassword": {
+      "title": "パスワード変更",
+      "newPassword": "新しいパスワード",
+      "confirmPassword": "パスワード確認",
+      "passwordUpdated": "パスワードが正常に更新されました！",
+      "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
     },
-    "Account": {
-        "Layout": {
-            "addresses": "住所",
-            "logout": "ログアウト",
-            "orders": "注文",
-            "settings": "アカウント",
-            "wishlists": "ウィッシュリスト"
-        },
-        "Orders": {
-            "title": "注文",
-            "orderNumber": "注文 #",
-            "totalPrice": "合計",
-            "viewDetails": "詳細一覧",
-            "EmptyState": {
-                "title": "注文がありません",
-                "cta": "今すぐ購入する"
-            },
-            "Details": {
-                "title": "注文番号 {orderNumber}",
-                "shippingAddress": "配送先住所",
-                "shippingMethod": "配送方法",
-                "summaryTotal": "合計",
-                "destination": "目的地",
-                "destinationWithCount": "目的地 {number, number}／{total, number}",
-                "subtotal": "小計",
-                "shipping": "配送",
-                "tax": "税金",
-                "orderSummary": "注文概要"
-            }
-        },
-        "Addresses": {
-            "title": "住所",
-            "cta": "アドレスを追加",
-            "edit": "編集",
-            "delete": "削除する",
-            "cancel": "キャンセル",
-            "create": "作成",
-            "update": "アップデート",
-            "setDefault": "デフォルトとして設定",
-            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
-            "EmptyState": {
-                "title": "アドレスがありません"
-            }
-        },
-        "Settings": {
-            "title": "アカウント設定",
-            "changePassword": "パスワード変更",
-            "passwordUpdated": "パスワードが正常に更新されました！",
-            "settingsUpdated": "アカウント設定が正常に更新されました！",
-            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
-            "currentPassword": "現在のパスワード",
-            "newPassword": "新しいパスワード",
-            "confirmPassword": "パスワード確認",
-            "cta": "アップデート"
-        }
+    "Login": {
+      "title": "ログイン",
+      "heading": "ログイン",
+      "forgotPassword": "パスワードをお忘れですか?",
+      "cta": "ログイン",
+      "email": "Eメール",
+      "password": "パスワード",
+      "invalidCredentials": "メールアドレスまたはパスワードが間違っています。もう一度サインインするか、パスワードをリセットしてください",
+      "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
+      "CreateAccount": {
+        "title": "新規のお客様ですか？",
+        "accountBenefits": "アカウントを作成すると、次のことができるようになります:",
+        "fastCheckout": "スムーズにお支払い",
+        "multipleAddresses": "複数の配送先住所を保存する",
+        "ordersHistory": "注文履歴にアクセスする",
+        "ordersTracking": "新規注文の追跡",
+        "wishlists": "ウィッシュリストにアイテムを保存",
+        "cta": "アカウント作成"
+      },
+      "ForgotPassword": {
+        "title": "パスワードをお忘れですか",
+        "subtitle": "アカウントに関連付けられたメールアドレスを以下に入力してください。パスワードをリセットするための手順をお送りいたします。",
+        "confirmResetPassword": "メールアドレス {email} が当社のアカウントにリンクされている場合、パスワードリセットのメールが送信されました。受信トレイをご確認ください。見つからない場合は、スパムフォルダもご確認ください。",
+        "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+      }
     },
-    "Wishlist": {
-        "actionsTitle": "ウィッシュリストアクション",
-        "title": "ウィッシュリスト",
-        "new": "新しいウィッシュリスト",
-        "items": "{count, plural, =1 {1 item} other {# items}}",
-        "viewWishlist": "リストを表示",
-        "noWishlists": "ウィッシュリストがありません",
-        "noWishlistsCallToAction": "ウィッシュリストを作成",
-        "emptyWishlist": "このウィッシュリストには商品を追加していません。",
-        "share": "共有",
-        "shareSuccess": "ウィッシュリストが正常に共有されました。",
-        "shareCopied": "ウィッシュリストの公開 URL がクリップボードにコピーされました。",
-        "shareDisabled": "欲しいものリストを共有するには、公開する必要があります。",
-        "makePublic": "公開する",
-        "makePrivate": "非公開にする",
-        "rename": "名前の変更",
-        "delete": "削除する",
-        "removeButtonTitle": "ウィッシュリストから商品を削除する",
-        "Visibility": {
-            "public": "公式",
-            "private": "プライベート"
-        },
-        "Modal": {
-            "cancel": "キャンセル",
-            "close": "閉じる",
-            "copy": "コピー",
-            "create": "作成",
-            "save": "保存",
-            "delete": "削除する",
-            "newTitle": "新しいウィッシュリストを作成",
-            "shareTitle": "{name}を共有",
-            "renameTitle": "{name}の名前を変更",
-            "deleteTitle": "{name}を削除",
-            "changeVisibilityPublicTitle": "{name} をしますか？",
-            "changeVisibilityPrivateTitle": "{name}を非公開にしますか？",
-            "makePublicContent": "<bold>{name}</bold>を公開してもよろしいですか？これにより、リンクを知っている他のユーザーがあなたのウィッシュリストを閲覧できるようになります。",
-            "makePrivateContent": "<bold>{name}</bold>を非公開にしてもよろしいですか？ウィッシュリストを他のユーザーと共有している場合、他のユーザーはそのリストを閲覧できなくなります。",
-            "deleteContent": "<bold>{name}</bold>を削除してもよろしいですか？この操作は元に戻せません。"
-        },
-        "Form": {
-            "nameLabel": "名前"
-        },
-        "Errors": {
-            "nameRequired": "ウィッシュリスト名は空欄にできません。",
-            "updateFailed": "ウィッシュリストの更新に失敗しました。再度お試しください。",
-            "deleteFailed": "ウィッシュリストを削除できませんでした。再度お試しください。",
-            "removeProductFailed": "ウィッシュリストから商品を削除することができませんでした。再度お試しください。",
-            "unauthorized": "この操作を実行する権限がありません。サインインして、もう一度お試しください",
-            "unexpected": "予期しないエラーが発生しました。もう一度お試しください"
-        },
-        "Result": {
-            "createSuccess": "ウィッシュリストが正常に作成されました。",
-            "updateSuccess": "ウィッシュリストが正常に更新されました。",
-            "deleteSuccess": "ウィッシュリストは正常に削除されました。",
-            "removeItemSuccess": "アイテムがウィッシュリストから削除されました。"
-        },
-        "Button": {
-            "label": "ウィッシュリストに追加",
-            "addToNewWishlist": "新しいウィッシュリストに追加",
-            "defaultWishlistName": "私のウィッシュリスト",
-            "addSuccessMessage": "商品がウィッシュリストに追加されました",
-            "removeSuccessMessage": "商品がウィッシュリストから削除されました",
-            "Errors": {
-                "addProductFailed": "ウィッシュリストから商品を追加できませんでした。もう一度お試しください。",
-                "removeProductFailed": "ウィッシュリストから商品を削除できませんでした。再度お試しください"
-            }
-        }
+    "Register": {
+      "title": "アカウントを登録",
+      "heading": "新しいアカウント",
+      "cta": "アカウント作成",
+      "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+    }
+  },
+  "Faceted": {
+    "Brand": {
+      "Empty": {
+        "title": "このブランドの商品はありません",
+        "subtitle": "別のフィルターをお試しください。"
+      }
     },
-    "PublicWishlist": {
-        "title": "公開ウィッシュリスト",
-        "defaultName": "公開ウィッシュリスト",
-        "emptyWishlist": "このウィッシュリストにはまだ商品がありません。"
+    "Category": {
+      "subCategories": "カテゴリー",
+      "Empty": {
+        "title": "このカテゴリーの商品はありません",
+        "subtitle": "別のフィルターをお試しください。"
+      }
     },
-    "Blog": {
-        "title": "ブログ",
+    "Search": {
+      "title": "検索結果",
+      "searchResults": "検索結果表示",
+      "subCategories": "カテゴリー",
+      "Breadcrumbs": {
         "home": "ホーム",
-        "Empty": {
-            "title": "ブログ記事が見つかりません",
-            "subtitle": "後ほど、さらにコンテンツをご確認ください"
-        },
-        "SharingLinks": {
-            "share": "共有",
-            "email": "Eメール",
-            "print": "印刷"
-        }
+        "search": "検索"
+      },
+      "Empty": {
+        "title": "申し訳ございません。「{term}」に該当する結果は見つかりませんでした。",
+        "subtitle": "別の検索をお試しください。"
+      }
     },
-    "Cart": {
-        "title": "ショッピングカート",
-        "heading": "カート",
-        "proceedToCheckout": "支払いに進む",
-        "increment": "数量を増やす",
-        "decrement": "数量を減らす",
-        "removeItem": "アイテムを削除",
-        "cartCombined": "以前のカートに商品が保存されていたので、それを現在のカートに追加しました。",
-        "cartRestored": "別のデバイスでカートに商品が追加されていたため、中断されたところからお買い物を再開できるよう、こちらにカートの内容を復元しました。",
-        "cartUpdateInProgress": "カートの更新が進行中です。このページを離れてもよろしいですか?変更内容が失われる可能性があります。",
-        "CheckoutSummary": {
-            "title": "要約",
-            "subTotal": "小計",
-            "discounts": "割引",
-            "tax": "税金",
-            "total": "合計",
-            "CouponCode": {
-                "apply": "適用",
-                "couponCode": "クーポンコード",
-                "removeCouponCode": "クーポンコードを削除",
-                "invalidCouponCode": "有効なクーポンコードを入力してください。",
-                "cartNotFound": "CartId Cookie が見つかりませんでした。"
-            },
-            "Shipping": {
-                "shipping": "配送",
-                "add": "追加",
-                "change": "変更する",
-                "cancel": "キャンセル",
-                "country": "国",
-                "city": "市区町村",
-                "state": "都道府県",
-                "postalCode": "郵便番号",
-                "updatedShippingOptions": "配送オプションを更新",
-                "viewShippingOptions": "配送オプションを表示",
-                "editAddress": "住所を編集",
-                "shippingOptions": "配送オプション",
-                "updateShipping": "配送情報を更新",
-                "addShipping": "配送を追加",
-                "cartNotFound": "CartId Cookie が見つかりませんでした。",
-                "noShippingOptions": "ご指定の住所で利用できる配送オプションはありません"
-            }
-        },
-        "Empty": {
-            "title": "お客様のカートは空です。",
-            "subtitle": "開始するには、商品をいくつか追加してください。",
-            "cta": "買い物を続ける"
-        },
-        "Errors": {
-            "cartNotFound": "CartId Cookie が見つかりませんでした。",
-            "lineItemNotFound": "行項目が見つかりませんでした。",
-            "failedToUpdateQuantity": "数量の更新に失敗しました。",
-            "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
-        }
+    "FacetedSearch": {
+      "filters": "フィルター",
+      "resetFilters": "フィルターをリセット",
+      "Range": {
+        "apply": "適用"
+      },
+      "Facets": {
+        "freeShippingLabel": "送料無料",
+        "isFeaturedLabel": "特集されています",
+        "inStockLabel": "在庫あり"
+      }
+    },
+    "SortBy": {
+      "sortBy": "並べ替え：",
+      "featuredItems": "おすすめ商品",
+      "bestSellingItems": "ベストセラー商品",
+      "newestItems": "最新商品",
+      "aToZ": "AからZ",
+      "zToA": "ZからA",
+      "byReview": "レビュー別",
+      "priceAscending": "価格：昇順",
+      "priceDescending": "価格：降順",
+      "relevance": "関連性"
     },
     "Compare": {
-        "title": "商品を比較",
+      "compare": "価格比較",
+      "remove": "削除",
+      "maxCompareLimit": "比較対象の商品が最大数に達しました。新しい商品を追加するには、1つ商品を削除してください。"
+    }
+  },
+  "Account": {
+    "Layout": {
+      "addresses": "住所",
+      "logout": "ログアウト",
+      "orders": "注文",
+      "settings": "アカウント",
+      "wishlists": "ウィッシュリスト"
+    },
+    "Orders": {
+      "title": "注文",
+      "orderNumber": "注文 #",
+      "totalPrice": "合計",
+      "viewDetails": "詳細一覧",
+      "EmptyState": {
+        "title": "注文がありません",
+        "cta": "今すぐ購入する"
+      },
+      "Details": {
+        "title": "注文番号 {orderNumber}",
+        "shippingAddress": "配送先住所",
+        "shippingMethod": "配送方法",
+        "summaryTotal": "合計",
+        "destination": "目的地",
+        "destinationWithCount": "目的地 {number, number}／{total, number}",
+        "subtotal": "小計",
+        "shipping": "配送",
+        "tax": "税金",
+        "orderSummary": "注文概要"
+      }
+    },
+    "Addresses": {
+      "title": "住所",
+      "cta": "アドレスを追加",
+      "edit": "編集",
+      "delete": "削除する",
+      "cancel": "キャンセル",
+      "create": "作成",
+      "update": "アップデート",
+      "setDefault": "デフォルトとして設定",
+      "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
+      "EmptyState": {
+        "title": "アドレスがありません"
+      }
+    },
+    "Settings": {
+      "title": "アカウント設定",
+      "changePassword": "パスワード変更",
+      "passwordUpdated": "パスワードが正常に更新されました！",
+      "settingsUpdated": "アカウント設定が正常に更新されました！",
+      "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。",
+      "currentPassword": "現在のパスワード",
+      "newPassword": "新しいパスワード",
+      "confirmPassword": "パスワード確認",
+      "cta": "アップデート"
+    }
+  },
+  "Wishlist": {
+    "actionsTitle": "ウィッシュリストアクション",
+    "title": "ウィッシュリスト",
+    "new": "新しいウィッシュリスト",
+    "items": "{count, plural, =1 {1 item} other {# items}}",
+    "viewWishlist": "リストを表示",
+    "noWishlists": "ウィッシュリストがありません",
+    "noWishlistsCallToAction": "ウィッシュリストを作成",
+    "emptyWishlist": "このウィッシュリストには商品を追加していません。",
+    "share": "共有",
+    "shareSuccess": "ウィッシュリストが正常に共有されました。",
+    "shareCopied": "ウィッシュリストの公開 URL がクリップボードにコピーされました。",
+    "shareDisabled": "欲しいものリストを共有するには、公開する必要があります。",
+    "makePublic": "公開する",
+    "makePrivate": "非公開にする",
+    "rename": "名前の変更",
+    "delete": "削除する",
+    "removeButtonTitle": "ウィッシュリストから商品を削除する",
+    "Visibility": {
+      "public": "公式",
+      "private": "プライベート"
+    },
+    "Modal": {
+      "cancel": "キャンセル",
+      "close": "閉じる",
+      "copy": "コピー",
+      "create": "作成",
+      "save": "保存",
+      "delete": "削除する",
+      "newTitle": "新しいウィッシュリストを作成",
+      "shareTitle": "{name}を共有",
+      "renameTitle": "{name}の名前を変更",
+      "deleteTitle": "{name}を削除",
+      "changeVisibilityPublicTitle": "{name} をしますか？",
+      "changeVisibilityPrivateTitle": "{name}を非公開にしますか？",
+      "makePublicContent": "<bold>{name}</bold>を公開してもよろしいですか？これにより、リンクを知っている他のユーザーがあなたのウィッシュリストを閲覧できるようになります。",
+      "makePrivateContent": "<bold>{name}</bold>を非公開にしてもよろしいですか？ウィッシュリストを他のユーザーと共有している場合、他のユーザーはそのリストを閲覧できなくなります。",
+      "deleteContent": "<bold>{name}</bold>を削除してもよろしいですか？この操作は元に戻せません。"
+    },
+    "Form": {
+      "nameLabel": "名前"
+    },
+    "Errors": {
+      "nameRequired": "ウィッシュリスト名は空欄にできません。",
+      "updateFailed": "ウィッシュリストの更新に失敗しました。再度お試しください。",
+      "deleteFailed": "ウィッシュリストを削除できませんでした。再度お試しください。",
+      "removeProductFailed": "ウィッシュリストから商品を削除することができませんでした。再度お試しください。",
+      "unauthorized": "この操作を実行する権限がありません。サインインして、もう一度お試しください",
+      "unexpected": "予期しないエラーが発生しました。もう一度お試しください"
+    },
+    "Result": {
+      "createSuccess": "ウィッシュリストが正常に作成されました。",
+      "updateSuccess": "ウィッシュリストが正常に更新されました。",
+      "deleteSuccess": "ウィッシュリストは正常に削除されました。",
+      "removeItemSuccess": "アイテムがウィッシュリストから削除されました。"
+    },
+    "Button": {
+      "label": "ウィッシュリストに追加",
+      "addToNewWishlist": "新しいウィッシュリストに追加",
+      "defaultWishlistName": "私のウィッシュリスト",
+      "addSuccessMessage": "商品がウィッシュリストに追加されました",
+      "removeSuccessMessage": "商品がウィッシュリストから削除されました",
+      "Errors": {
+        "addProductFailed": "ウィッシュリストから商品を追加できませんでした。もう一度お試しください。",
+        "removeProductFailed": "ウィッシュリストから商品を削除できませんでした。再度お試しください"
+      }
+    }
+  },
+  "PublicWishlist": {
+    "title": "公開ウィッシュリスト",
+    "defaultName": "公開ウィッシュリスト",
+    "emptyWishlist": "このウィッシュリストにはまだ商品がありません。"
+  },
+  "Blog": {
+    "title": "ブログ",
+    "home": "ホーム",
+    "Empty": {
+      "title": "ブログ記事が見つかりません",
+      "subtitle": "後ほど、さらにコンテンツをご確認ください"
+    },
+    "SharingLinks": {
+      "share": "共有",
+      "email": "Eメール",
+      "print": "印刷"
+    }
+  },
+  "Cart": {
+    "title": "ショッピングカート",
+    "heading": "カート",
+    "proceedToCheckout": "支払いに進む",
+    "increment": "数量を増やす",
+    "decrement": "数量を減らす",
+    "removeItem": "アイテムを削除",
+    "cartCombined": "以前のカートに商品が保存されていたので、それを現在のカートに追加しました。",
+    "cartRestored": "別のデバイスでカートに商品が追加されていたため、中断されたところからお買い物を再開できるよう、こちらにカートの内容を復元しました。",
+    "cartUpdateInProgress": "カートの更新が進行中です。このページを離れてもよろしいですか?変更内容が失われる可能性があります。",
+    "CheckoutSummary": {
+      "title": "要約",
+      "subTotal": "小計",
+      "discounts": "割引",
+      "tax": "税金",
+      "total": "合計",
+      "CouponCode": {
+        "apply": "適用",
+        "couponCode": "クーポンコード",
+        "removeCouponCode": "クーポンコードを削除",
+        "invalidCouponCode": "有効なクーポンコードを入力してください。",
+        "cartNotFound": "CartId Cookie が見つかりませんでした。"
+      },
+      "Shipping": {
+        "shipping": "配送",
+        "add": "追加",
+        "change": "変更する",
+        "cancel": "キャンセル",
+        "country": "国",
+        "city": "市区町村",
+        "state": "都道府県",
+        "postalCode": "郵便番号",
+        "updatedShippingOptions": "配送オプションを更新",
+        "viewShippingOptions": "配送オプションを表示",
+        "editAddress": "住所を編集",
+        "shippingOptions": "配送オプション",
+        "updateShipping": "配送情報を更新",
+        "addShipping": "配送を追加",
+        "cartNotFound": "CartId Cookie が見つかりませんでした。",
+        "noShippingOptions": "ご指定の住所で利用できる配送オプションはありません"
+      }
+    },
+    "Empty": {
+      "title": "お客様のカートは空です。",
+      "subtitle": "開始するには、商品をいくつか追加してください。",
+      "cta": "買い物を続ける"
+    },
+    "Errors": {
+      "cartNotFound": "CartId Cookie が見つかりませんでした。",
+      "lineItemNotFound": "行項目が見つかりませんでした。",
+      "failedToUpdateQuantity": "数量の更新に失敗しました。",
+      "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+    }
+  },
+  "Compare": {
+    "title": "商品を比較",
+    "addToCart": "カートに追加",
+    "next": "次の商品",
+    "previous": "前の商品",
+    "noProductsToCompare": "比較する商品はありません",
+    "sku": "SKU",
+    "weight": "重さ",
+    "description": "説明",
+    "noDescription": "説明はありません。",
+    "rating": "評価",
+    "noRatings": "レビューがありません。",
+    "otherDetails": "その他の詳細",
+    "noOtherDetails": "他に詳細はありません。",
+    "viewOptions": "表示オプション",
+    "successMessage": "{cartItems, plural, =1 {1個の商品} other {#個の商品}}が<cartLink>カート</cartLink>に追加されました",
+    "missingCart": "カートが見つかりません。しばらくしてから再度お試しください。",
+    "unknownError": "不明なエラーです。しばらくしてから再度お試しください。"
+  },
+  "Product": {
+    "ProductDetails": {
+      "quantity": "数量",
+      "increaseQuantity": "数量を増やす",
+      "decreaseQuantity": "数量を減らす",
+      "emptySelectPlaceholder": "オプション選択",
+      "successMessage": "{cartItems, plural, =1 {1個の商品} other {#個の商品}}が<cartLink>カート</cartLink>に追加されました",
+      "missingCart": "カートが見つかりません。しばらくしてからもう一度お試しください！",
+      "unknownError": "不明なエラーです。しばらくしてから再度お試しください。",
+      "variantRequiredError": "この商品をカートに追加するには、オプションを選択する必要があります。",
+      "increaseNumber": "数を増やす",
+      "decreaseNumber": "数を減らす",
+      "thumbnail": "画像番号を表示",
+      "additionalInformation": "追加情報",
+      "Submit": {
         "addToCart": "カートに追加",
-        "next": "次の商品",
-        "previous": "前の商品",
-        "noProductsToCompare": "比較する商品はありません",
+        "outOfStock": "品切れ",
+        "preorder": "予約注文",
+        "unavailable": "利用不可"
+      },
+      "Accordions": {
+        "specifications": "仕様",
+        "warranty": "保証",
         "sku": "SKU",
         "weight": "重さ",
-        "description": "説明",
-        "noDescription": "説明はありません。",
-        "rating": "評価",
-        "noRatings": "レビューがありません。",
-        "otherDetails": "その他の詳細",
-        "noOtherDetails": "他に詳細はありません。",
-        "viewOptions": "表示オプション",
-        "successMessage": "{cartItems, plural, =1 {1個の商品} other {#個の商品}}が<cartLink>カート</cartLink>に追加されました",
-        "missingCart": "カートが見つかりません。しばらくしてから再度お試しください。",
-        "unknownError": "不明なエラーです。しばらくしてから再度お試しください。"
+        "condition": "条件"
+      }
     },
-    "Product": {
-        "ProductDetails": {
-            "quantity": "数量",
-            "increaseQuantity": "数量を増やす",
-            "decreaseQuantity": "数量を減らす",
-            "emptySelectPlaceholder": "オプション選択",
-            "successMessage": "{cartItems, plural, =1 {1個の商品} other {#個の商品}}が<cartLink>カート</cartLink>に追加されました",
-            "missingCart": "カートが見つかりません。しばらくしてからもう一度お試しください！",
-            "unknownError": "不明なエラーです。しばらくしてから再度お試しください。",
-            "variantRequiredError": "この商品をカートに追加するには、オプションを選択する必要があります。",
-            "increaseNumber": "数を増やす",
-            "decreaseNumber": "数を減らす",
-            "thumbnail": "画像番号を表示",
-            "additionalInformation": "追加情報",
-            "Submit": {
-                "addToCart": "カートに追加",
-                "outOfStock": "品切れ",
-                "preorder": "予約注文",
-                "unavailable": "利用不可"
-            },
-            "Accordions": {
-                "specifications": "仕様",
-                "warranty": "保証",
-                "sku": "SKU",
-                "weight": "重さ",
-                "condition": "条件"
-            }
-        },
-        "RelatedProducts": {
-            "title": "関連商品",
-            "noRelatedProducts": "関連する商品は見つかりませんでした",
-            "browseCatalog": "当社の製品カタログをぜひご覧ください。",
-            "cta": "すべての商品",
-            "previousProducts": "前の商品",
-            "nextProducts": "次の商品",
-            "scrollbar": "関連商品のスクロールバー"
-        },
-        "Reviews": {
-            "title": "レビュー",
-            "empty": "この商品にはまだレビューがありません",
-            "previous": "過去のレビュー",
-            "next": "次のレビュー"
-        }
+    "RelatedProducts": {
+      "title": "関連商品",
+      "noRelatedProducts": "関連する商品は見つかりませんでした",
+      "browseCatalog": "当社の製品カタログをぜひご覧ください。",
+      "cta": "すべての商品",
+      "previousProducts": "前の商品",
+      "nextProducts": "次の商品",
+      "scrollbar": "関連商品のスクロールバー"
     },
-    "WebPages": {
-        "Normal": {
-            "home": "ホーム"
-        },
-        "ContactUs": {
-            "home": "ホーム",
-            "Form": {
-                "success": "お問い合わせありがとうございます。近日中に返信させていただきます。",
-                "successCta": "買い物を続ける",
-                "fullName": "氏名",
-                "companyName": "会社名",
-                "phone": "電話",
-                "orderNo": "注文番号",
-                "rma": "RMA 番号",
-                "email": "Eメール",
-                "comments": "コメント/質問",
-                "cta": "フォームを送信",
-                "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
-            }
-        }
-    },
-    "Maintenance": {
-        "title": "メンテナンス",
-        "message": "メンテナンスのため停止中です",
-        "contactUs": "お問い合わせ先："
-    },
-    "Error": {
-        "title": "サーバーエラーが発生しました！",
-        "subtitle": "しばらくしてから再度お試しください。",
-        "cta": "もう一度お試しください"
-    },
-    "NotFound": {
-        "title": "そのページは見つかりませんでした！",
-        "subtitle": "他のものを検索するか、ホームページに戻ってください。",
-        "featuredProducts": "おすすめ商品",
-        "search": "検索"
-    },
-    "Components": {
-        "Header": {
-            "home": "ホーム",
-            "toggleNavigation": "トグルナビゲーション",
-            "Icons": {
-                "account": "プロフィール",
-                "cart": "ショッピングカート",
-                "search": "検索ポップアップを開く"
-            },
-            "SwitchCurrency": {
-                "label": "通貨を切り替える",
-                "invalidCurrency": "無効な通貨",
-                "errorUpdatingCurrency": "カートの通貨を更新する際にエラーが発生しました。再度お試しください。"
-            },
-            "Search": {
-                "products": "商品",
-                "categories": "カテゴリー",
-                "brands": "ブランド",
-                "noSearchResultsTitle": "申し訳ございません。「{term}」に該当する結果は見つかりませんでした。",
-                "noSearchResultsSubtitle": "別の検索をお試しください。",
-                "somethingWentWrong": "問題が発生しました。 もう一度お試しください。",
-                "inputPlaceholder": "商品、カテゴリ、ブランドを検索...",
-                "submitLabel": "検索"
-            }
-        },
-        "Footer": {
-            "home": "ホーム",
-            "contactUs": "問い合わせる",
-            "socialMediaLinks": "ソーシャル·メディア·リンク",
-            "categories": "カテゴリー",
-            "brands": "ブランド",
-            "navigate": "ナビゲート"
-        },
-        "Subscribe": {
-            "title": "ニュースレターにご登録ください",
-            "placeholder": "メールアドレスを入力してください",
-            "description": "当店の最新ニュースやオファーをぜひチェックしてください。",
-            "success": "ご関心をお寄せいただきありがとうございます！ニュースレター機能は近日開始予定です！"
-        }
+    "Reviews": {
+      "title": "レビュー",
+      "empty": "この商品にはまだレビューがありません",
+      "previous": "過去のレビュー",
+      "next": "次のレビュー"
     }
+  },
+  "WebPages": {
+    "Normal": {
+      "home": "ホーム"
+    },
+    "ContactUs": {
+      "home": "ホーム",
+      "Form": {
+        "success": "お問い合わせありがとうございます。近日中に返信させていただきます。",
+        "successCta": "買い物を続ける",
+        "fullName": "氏名",
+        "companyName": "会社名",
+        "phone": "電話",
+        "orderNo": "注文番号",
+        "rma": "RMA 番号",
+        "email": "Eメール",
+        "comments": "コメント/質問",
+        "cta": "フォームを送信",
+        "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+      }
+    }
+  },
+  "Maintenance": {
+    "title": "メンテナンス",
+    "message": "メンテナンスのため停止中です",
+    "contactUs": "お問い合わせ先："
+  },
+  "Error": {
+    "title": "サーバーエラーが発生しました！",
+    "subtitle": "しばらくしてから再度お試しください。",
+    "cta": "もう一度お試しください"
+  },
+  "NotFound": {
+    "title": "そのページは見つかりませんでした！",
+    "subtitle": "他のものを検索するか、ホームページに戻ってください。",
+    "featuredProducts": "おすすめ商品",
+    "search": "検索"
+  },
+  "Components": {
+    "Header": {
+      "home": "ホーム",
+      "toggleNavigation": "トグルナビゲーション",
+      "Icons": {
+        "account": "プロフィール",
+        "cart": "ショッピングカート",
+        "search": "検索ポップアップを開く"
+      },
+      "SwitchCurrency": {
+        "label": "通貨を切り替える",
+        "invalidCurrency": "無効な通貨",
+        "errorUpdatingCurrency": "カートの通貨を更新する際にエラーが発生しました。再度お試しください。"
+      },
+      "Search": {
+        "products": "商品",
+        "categories": "カテゴリー",
+        "brands": "ブランド",
+        "noSearchResultsTitle": "申し訳ございません。「{term}」に該当する結果は見つかりませんでした。",
+        "noSearchResultsSubtitle": "別の検索をお試しください。",
+        "somethingWentWrong": "問題が発生しました。 もう一度お試しください。",
+        "inputPlaceholder": "商品、カテゴリ、ブランドを検索...",
+        "submitLabel": "検索"
+      }
+    },
+    "Footer": {
+      "home": "ホーム",
+      "contactUs": "問い合わせる",
+      "socialMediaLinks": "ソーシャル·メディア·リンク",
+      "categories": "カテゴリー",
+      "brands": "ブランド",
+      "navigate": "ナビゲート"
+    },
+    "Subscribe": {
+      "title": "ニュースレターにご登録ください",
+      "placeholder": "メールアドレスを入力してください",
+      "description": "当店の最新ニュースやオファーをぜひチェックしてください。",
+      "success": "ご関心をお寄せいただきありがとうございます！ニュースレター機能は近日開始予定です！"
+    }
+  }
 }

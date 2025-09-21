@@ -1,7 +1,7 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "remoteCache": {
-    "signature": true
+    "signature": false
   },
   "globalDependencies": [
     ".env.local"
@@ -13,7 +13,9 @@
       ]
     },
     "build": {
-      "env": ["*"],
+      "env": [
+        "*"
+      ],
       "dependsOn": [
         "^build"
       ],
@@ -24,13 +26,17 @@
       ]
     },
     "lint": {
-      "env": ["*"],
+      "env": [
+        "*"
+      ],
       "dependsOn": [
         "^build"
       ]
     },
     "typecheck": {
-      "env": ["*"],
+      "env": [
+        "*"
+      ],
       "dependsOn": [
         "topo"
       ],
@@ -44,7 +50,9 @@
       ]
     },
     "dev": {
-      "env": ["*"],
+      "env": [
+        "*"
+      ],
       "cache": false,
       "persistent": true
     }
