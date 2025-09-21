@@ -25,6 +25,12 @@ export const build = new Command('build')
     ).env('BIGCOMMERCE_PROJECT_UUID'),
   )
   .addOption(
+    new Option(
+      '--kv-namespace-id <id>',
+      'Cloudflare KV namespace ID to be included in the deployment configuration.',
+    ).env('BIGCOMMERCE_KV_NAMESPACE_ID'),
+  )
+  .addOption(
     new Option('--framework <framework>', 'The framework to use for the build.').choices([
       'nextjs',
       'catalyst',
@@ -64,7 +70,15 @@ export const build = new Command('build')
           );
         }
 
-        const wranglerConfig = getWranglerConfig(projectUuid, 'PLACEHOLDER_KV_ID');
+        const kvNamespaceId = options.kvNamespaceId ?? config.get('kvNamespaceId');
+
+        if (!kvNamespaceId) {
+          throw new Error(
+            'KV namespace ID is required. Please run `link` or provide `--kv-namespace-id`',
+          );
+        }
+
+        const wranglerConfig = getWranglerConfig(projectUuid, kvNamespaceId);
 
         consola.start('Copying templates...');
 

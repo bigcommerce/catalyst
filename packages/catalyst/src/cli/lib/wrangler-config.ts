@@ -1,8 +1,16 @@
 export function getWranglerConfig(projectUuid: string, kvNamespaceId: string) {
+  const sanitizedProjectId = projectUuid
+    .toLowerCase()
+    .replace(/[^a-z0-9-]/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+
+  const workerName = sanitizedProjectId ? `project-${sanitizedProjectId}` : "project";
+
   return {
     $schema: 'node_modules/wrangler/config-schema.json',
     main: '../.open-next/worker.js',
-    name: `project-${projectUuid}`,
+    name: workerName,
     compatibility_date: '2025-07-15',
     compatibility_flags: ['nodejs_compat', 'global_fetch_strictly_public'],
     observability: {
@@ -21,7 +29,7 @@ export function getWranglerConfig(projectUuid: string, kvNamespaceId: string) {
     services: [
       {
         binding: 'WORKER_SELF_REFERENCE',
-        service: `project-${projectUuid}`,
+        service: workerName,
       },
     ],
     kv_namespaces: [
