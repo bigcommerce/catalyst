@@ -127,16 +127,16 @@ export default async function RootLayout({ params, children }: Props) {
       <body className="flex min-h-screen flex-col">
         <DynamicStatsigProvider datafile={datafile}>
           <NextIntlClientProvider>
-          <NuqsAdapter>
-            <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
-              <Providers>
-                {toastNotificationCookieData && (
-                  <CookieNotifications {...toastNotificationCookieData} />
-                )}
-                {children}
-              </Providers>
-            </AnalyticsProvider>
-          </NuqsAdapter>
+            <NuqsAdapter>
+              <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
+                <Providers>
+                  {toastNotificationCookieData && (
+                    <CookieNotifications {...toastNotificationCookieData} />
+                  )}
+                  {children}
+                </Providers>
+              </AnalyticsProvider>
+            </NuqsAdapter>
           </NextIntlClientProvider>
         </DynamicStatsigProvider>
         <VercelComponents />
