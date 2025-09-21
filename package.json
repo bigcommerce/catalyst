@@ -14,11 +14,13 @@
   "private": true,
   "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184",
   "scripts": {
-    "dev": "dotenv -e .env.local -- turbo run dev",
-    "build": "dotenv -e .env.local -- turbo run build",
+    "dev": "dotenv -e .env.local -- pnpm --filter @bigcommerce/catalyst-core run dev",
+    "build": "dotenv -e .env.local -- pnpm -r --workspace-root=false run build",
     "lint": "pnpm -r lint",
     "test": "pnpm -r test",
-    "typecheck": "pnpm -r typecheck"
+    "typecheck": "pnpm -r typecheck",
+    "dev:turbo": "dotenv -e .env.local -- turbo run dev",
+    "build:turbo": "dotenv -e .env.local -- turbo run build"
   },
   "devDependencies": {
     "@changesets/changelog-github": "^0.5.1",
