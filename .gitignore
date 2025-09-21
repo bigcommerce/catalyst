@@ -22,3 +22,5 @@ coverage/
 .unlighthouse
 .bigcommerce
 .vercel
+
+.vercel/

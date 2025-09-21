@@ -10,7 +10,7 @@ importers:
     dependencies:
       '@makeswift/runtime':
         specifier: ^0.25.1
-        version: 0.25.1(@types/react-dom@19.1.6(@types/react@19.1.6))(@types/react@19.1.6)(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+        version: 0.25.1(@types/react-dom@19.1.6(@types/react@19.1.6))(@types/react@19.1.6)(next@15.5.1-canary.4(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
     devDependencies:
       '@changesets/changelog-github':
         specifier: ^0.5.1
@@ -35,19 +35,10 @@ importers:
         version: 5.8.3
       unlighthouse:
         specifier: ^0.17.2
-        version: 0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(puppeteer@24.10.0(typescript@5.8.3))(rollup@4.44.2)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))(zod@4.0.5)
+        version: 0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(puppeteer@24.10.0(typescript@5.8.3))(rollup@4.44.2)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))(zod@4.0.5)
 
   core:
     dependencies:
-      '@/analytics':
-        specifier: ^1.5.0
-        version: 1.5.0(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(svelte@5.1.15)(vue@3.5.20(typescript@5.8.3))
-      '@/functions':
-        specifier: ^2.2.12
-        version: 2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0)
-      '@/speed-insights':
-        specifier: ^1.2.0
-        version: 1.2.0(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(svelte@5.1.15)(vue@3.5.20(typescript@5.8.3))
       '@bigcommerce/catalyst-client':
         specifier: workspace:^
         version: link:../packages/client
@@ -60,6 +51,9 @@ importers:
       '@icons-pack/react-simple-icons':
         specifier: ^11.2.0
         version: 11.2.0(react@19.1.0)
+      '@makeswift/runtime':
+        specifier: ~0.25.1
+        version: 0.25.1(@types/react-dom@19.1.6(@types/react@19.1.6))(@types/react@19.1.6)(next@15.5.1-canary.4(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
       '@radix-ui/react-accordion':
         specifier: ^1.2.11
         version: 1.2.11(@types/react-dom@19.1.6(@types/react@19.1.6))(@types/react@19.1.6)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
@@ -108,6 +102,15 @@ importers:
       '@upstash/redis':
         specifier: ^1.35.0
         version: 1.35.0
+      '@vercel/analytics':
+        specifier: ^1.5.0
+        version: 1.5.0(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(svelte@5.1.15)(vue@3.5.20(typescript@5.8.3))
+      '@vercel/functions':
+        specifier: ^2.2.12
+        version: 2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0)
+      '@vercel/speed-insights':
+        specifier: ^1.2.0
+        version: 1.2.0(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(svelte@5.1.15)(vue@3.5.20(typescript@5.8.3))
       clsx:
         specifier: ^2.1.1
         version: 2.1.1
@@ -281,26 +284,7 @@ importers:
         specifier: ^5.8.3
         version: 5.8.3
 
-<<<<<<< HEAD
-  demo:
-    dependencies:
-      '@types/node':
-        specifier: ^22.15.30
-        version: 22.15.30
-      ai:
-        specifier: ^5.0.28
-        version: 5.0.28(zod@4.0.5)
-      dotenv:
-        specifier: ^16.5.0
-        version: 16.5.0
-      tsx:
-        specifier: ^4.20.5
-        version: 4.20.5
-
-  packages/cli:
-=======
   packages/catalyst:
->>>>>>> e30002761ea45394d40b6a47ad4910c45b5e1e8f
     dependencies:
       '@opennextjs/cloudflare':
         specifier: ^1.8.0
@@ -365,13 +349,13 @@ importers:
         version: 3.6.2
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(@swc/core@1.11.31)(jiti@2.5.1)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.1)
+        version: 8.5.0(@swc/core@1.11.31)(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(typescript@5.8.3)(yaml@2.8.1)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
       vitest:
         specifier: ^3.2.4
-        version: 3.2.4(@types/node@22.15.30)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(terser@5.16.9)(yaml@2.8.1)
+        version: 3.2.4(@types/node@22.15.30)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1)
 
   packages/client:
     dependencies:
@@ -402,7 +386,7 @@ importers:
         version: 3.6.2
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(@swc/core@1.11.31)(jiti@2.5.1)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.1)
+        version: 8.5.0(@swc/core@1.11.31)(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(typescript@5.8.3)(yaml@2.8.1)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -526,7 +510,7 @@ importers:
         version: 3.6.2
       tsup:
         specifier: ^8.5.0
-        version: 8.5.0(@swc/core@1.11.31)(jiti@2.5.1)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.1)
+        version: 8.5.0(@swc/core@1.11.31)(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(typescript@5.8.3)(yaml@2.8.1)
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
@@ -558,68 +542,6 @@ importers:
 
 packages:
 
-  '@/analytics@1.5.0':
-    resolution: {integrity: sha512-MYsBzfPki4gthY5HnYN7jgInhAZ7Ac1cYDoRWFomwGHWEX7odTEzbtg9kf/QSo7XEsEAqlQugA6gJ2WS2DEa3g==}
-    peerDependencies:
-      '@remix-run/react': ^2
-      '@sveltejs/kit': ^1 || ^2
-      next: '>= 13'
-      react: ^18 || ^19 || ^19.0.0-rc
-      svelte: '>= 4'
-      vue: ^3
-      vue-router: ^4
-    peerDependenciesMeta:
-      '@remix-run/react':
-        optional: true
-      '@sveltejs/kit':
-        optional: true
-      next:
-        optional: true
-      react:
-        optional: true
-      svelte:
-        optional: true
-      vue:
-        optional: true
-      vue-router:
-        optional: true
-
-  '@/functions@2.2.12':
-    resolution: {integrity: sha512-WGGqro/Rg00Epj+t2l6lr68q6ZkFt5+Q4F4Ok8sJbYrpu5pniDay09ihJqUoz81NI9PIfIahGEjaKpucUhEIrg==}
-    engines: {node: '>= 18'}
-    peerDependencies:
-      '@aws-sdk/credential-provider-web-identity': '*'
-    peerDependenciesMeta:
-      '@aws-sdk/credential-provider-web-identity':
-        optional: true
-
-  '@/oidc@2.0.1':
-    resolution: {integrity: sha512-p/rFk8vz+AggU0bHXjwtRUyXNxboLvfCjwN0KH5xhBJ5wGS+n/psLJP1c69QPdWIZM4aVVIrTqdjUuDwuJGYzQ==}
-    engines: {node: '>= 18'}
-
-  '@/speed-insights@1.2.0':
-    resolution: {integrity: sha512-y9GVzrUJ2xmgtQlzFP2KhVRoCglwfRQgjyfY607aU0hh0Un6d0OUyrJkjuAlsV18qR4zfoFPs/BiIj9YDS6Wzw==}
-    peerDependencies:
-      '@sveltejs/kit': ^1 || ^2
-      next: '>= 13'
-      react: ^18 || ^19 || ^19.0.0-rc
-      svelte: '>= 4'
-      vue: ^3
-      vue-router: ^4
-    peerDependenciesMeta:
-      '@sveltejs/kit':
-        optional: true
-      next:
-        optional: true
-      react:
-        optional: true
-      svelte:
-        optional: true
-      vue:
-        optional: true
-      vue-router:
-        optional: true
-
   '@0no-co/graphql.web@1.1.2':
     resolution: {integrity: sha512-N2NGsU5FLBhT8NZ+3l2YrzZSHITjNXNuDhC4iDiikv0IujaJ0Xc6xIxQZ/Ek3Cb+rgPjnLHYyJm11tInuJn+cw==}
     peerDependencies:
@@ -633,22 +555,6 @@ packages:
     peerDependencies:
       graphql: ^15.5.0 || ^16.0.0 || ^17.0.0
       typescript: ^5.0.0
-
-  '@ai-sdk/gateway@1.0.15':
-    resolution: {integrity: sha512-xySXoQ29+KbGuGfmDnABx+O6vc7Gj7qugmj1kGpn0rW0rQNn6UKUuvscKMzWyv1Uv05GyC1vqHq8ZhEOLfXscQ==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4
-
-  '@ai-sdk/provider-utils@3.0.7':
-    resolution: {integrity: sha512-o3BS5/t8KnBL3ubP8k3w77AByOypLm+pkIL/DCw0qKkhDbvhCy+L3hRTGPikpdb8WHcylAeKsjgwOxhj4cqTUA==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4
-
-  '@ai-sdk/provider@2.0.0':
-    resolution: {integrity: sha512-6o7Y2SeO9vFKB8lArHXehNuusnpddKPk7xqL7T2/b+OvXMRIXUO1rR4wcv1hAFUAT9avGZshty3Wlua/XA7TvA==}
-    engines: {node: '>=18'}
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -4781,6 +4687,68 @@ packages:
     peerDependencies:
       react: '>= 16.8.0'
 
+  '@vercel/analytics@1.5.0':
+    resolution: {integrity: sha512-MYsBzfPki4gthY5HnYN7jgInhAZ7Ac1cYDoRWFomwGHWEX7odTEzbtg9kf/QSo7XEsEAqlQugA6gJ2WS2DEa3g==}
+    peerDependencies:
+      '@remix-run/react': ^2
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@remix-run/react':
+        optional: true
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
+
+  '@vercel/functions@2.2.13':
+    resolution: {integrity: sha512-14ArBSIIcOBx9nrEgaJb4Bw+en1gl6eSoJWh8qjifLl5G3E4dRXCFOT8HP+w66vb9Wqyd1lAQBrmRhRwOj9X9A==}
+    engines: {node: '>= 18'}
+    peerDependencies:
+      '@aws-sdk/credential-provider-web-identity': '*'
+    peerDependenciesMeta:
+      '@aws-sdk/credential-provider-web-identity':
+        optional: true
+
+  '@vercel/oidc@2.0.2':
+    resolution: {integrity: sha512-59PBFx3T+k5hLTEWa3ggiMpGRz1OVvl9eN8SUai+A43IsqiOuAe7qPBf+cray/Fj6mkgnxm/D7IAtjc8zSHi7g==}
+    engines: {node: '>= 18'}
+
+  '@vercel/speed-insights@1.2.0':
+    resolution: {integrity: sha512-y9GVzrUJ2xmgtQlzFP2KhVRoCglwfRQgjyfY607aU0hh0Un6d0OUyrJkjuAlsV18qR4zfoFPs/BiIj9YDS6Wzw==}
+    peerDependencies:
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      react: ^18 || ^19 || ^19.0.0-rc
+      svelte: '>= 4'
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
+
   '@vitest/coverage-v8@3.2.4':
     resolution: {integrity: sha512-EyF9SXU6kS5Ku/U82E259WSnvg6c8KTjppUncuNdm5QHpe17mwREHnjDzozC8x9MZ0xfBUFSaLkRv4TMA75ALQ==}
     peerDependencies:
@@ -4978,12 +4946,6 @@ packages:
   agentkeepalive@4.6.0:
     resolution: {integrity: sha512-kja8j7PjmncONqaTsB8fQ+wE2mSU2DJ9D4XKoJ5PFWIdRMa6SLSN1ff4mOr4jCbfRSsxR4keIiySJU0N9T5hIQ==}
     engines: {node: '>= 8.0.0'}
-
-  ai@5.0.28:
-    resolution: {integrity: sha512-tnybAqoDFzuK6O1NOMHX1d/wH7Eug8y0H4l/Gl6swi8BYGtlTPDjniKnGYzgTpLTdpj7SI3qjZuomz7evph9+w==}
-    engines: {node: '>=18'}
-    peerDependencies:
-      zod: ^3.25.76 || ^4
 
   ajv-formats@3.0.1:
     resolution: {integrity: sha512-8iUql50EUR+uUcdRQ3HDqa6EVyo3docL8g5WJ3FNcWmu62IbkGUue/pEyLBW8VGKKucTPgqeks4fIU1DA4yowQ==}
@@ -6405,10 +6367,6 @@ packages:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
 
-  eventsource-parser@3.0.6:
-    resolution: {integrity: sha512-Vo1ab+QXPzZ4tCa8SwIHJFaSzy4R6SHf7BY79rFBDf0idraZWAkYrDjDj8uWaSm3S2TK+hJ7/t1CEmZ7jXw+pg==}
-    engines: {node: '>=18.0.0'}
-
   execa@5.1.1:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
     engines: {node: '>=10'}
@@ -6853,15 +6811,12 @@ packages:
   headers-polyfill@4.0.3:
     resolution: {integrity: sha512-IScLbePpkvO846sIwOtOTDjutRMWdXdJmXdMvk6gCBHxFO8d+QKOQedyZSxFTTFYRSmlgSTDtXqqq4pcenBXLQ==}
 
-<<<<<<< HEAD
   hey-listen@1.0.8:
     resolution: {integrity: sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==}
 
   hoist-non-react-statics@3.3.2:
     resolution: {integrity: sha512-/gGivxi8JPKWNm/W0jSmzcMPpfpPLc3dY/6GxhX2hQ9iGj3aDfklV4ET7NjKpSinLpJ5vafa9iiGIEZg10SfBw==}
 
-=======
->>>>>>> e30002761ea45394d40b6a47ad4910c45b5e1e8f
   hookable@5.5.3:
     resolution: {integrity: sha512-Yc+BQe8SvoXH1643Qez1zqLRmbA5rCL+sSmk6TVos0LWVfNIB7PGncdlId77WzLGSIB5KaWgTaNTs2lNVEI6VQ==}
 
@@ -7498,9 +7453,6 @@ packages:
 
   json-schema-typed@8.0.1:
     resolution: {integrity: sha512-XQmWYj2Sm4kn4WeTYvmpKEbyPsL7nBsb647c7pMe6l02/yx2+Jfc4dT6UZkEXnIUb5LhD55r2HPsJ1milQ4rDg==}
-
-  json-schema@0.4.0:
-    resolution: {integrity: sha512-es94M3nTIfsEPisRafak+HDLfHXnKBhV3vU5eqPcS3flIWqcxJWgXHXiey3YrpaNsanY5ei1VoYEbOzijuq9BA==}
 
   json-stable-stringify-without-jsonify@1.0.1:
     resolution: {integrity: sha512-Bdboy+l7tA3OGW6FjyFHWkP5LuByj1Tk33Ljyq0axyzdk9//JSi2u3fP1QSmd1KNwq6VOKYGlAu87CisVir6Pw==}
@@ -8918,20 +8870,12 @@ packages:
     peerDependencies:
       react: ^19.1.0
 
-<<<<<<< HEAD
   react-fast-compare@2.0.4:
     resolution: {integrity: sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==}
 
   react-fast-compare@3.2.2:
     resolution: {integrity: sha512-nsO+KSNgo1SbJqJEYRE9ERzo7YtYbou/OqjSQKxV7jcKox7+usiUVZOAC+XnDOABXggQTno0Y1CpVnuWEc1boQ==}
 
-  react-google-recaptcha@3.1.0:
-    resolution: {integrity: sha512-cYW2/DWas8nEKZGD7SCu9BSuVz8iOcOLHChHyi7upUuVhkpkhYG/6N3KDiTQ3XAiZ2UAZkfvYKMfAHOzBOcGEg==}
-    peerDependencies:
-      react: '>=16.4.1'
-
-=======
->>>>>>> e30002761ea45394d40b6a47ad4910c45b5e1e8f
   react-headroom@3.2.1:
     resolution: {integrity: sha512-C+7bmTwmHWIOjU1r5aSLm4tAQKjmqW4PB65tHllE/D6h+If1+V3gy83BOvp46OCo25LtJJlLa/HDs7Eq5OPFgA==}
     peerDependencies:
@@ -10059,9 +10003,6 @@ packages:
   unstorage@1.17.0:
     resolution: {integrity: sha512-l9Z7lBiwtNp8ZmcoZ/dmPkFXFdtEdZtTZafCSnEIj3YvtkXeGAtL2rN8MQFy/0cs4eOLpuRJMp9ivdug7TCvww==}
     peerDependencies:
-      '@/blob': '>=0.27.1'
-      '@/functions': ^2.2.12
-      '@/kv': ^1.0.1
       '@azure/app-configuration': ^1.8.0
       '@azure/cosmos': ^4.2.0
       '@azure/data-tables': ^13.3.0
@@ -10073,18 +10014,15 @@ packages:
       '@netlify/blobs': ^6.5.0 || ^7.0.0 || ^8.1.0 || ^9.0.0 || ^10.0.0
       '@planetscale/database': ^1.19.0
       '@upstash/redis': ^1.34.3
+      '@vercel/blob': '>=0.27.1'
+      '@vercel/functions': ^2.2.12
+      '@vercel/kv': ^1.0.1
       aws4fetch: ^1.0.20
       db0: '>=0.2.1'
       idb-keyval: ^6.2.1
       ioredis: ^5.4.2
       uploadthing: ^7.4.4
     peerDependenciesMeta:
-      '@/blob':
-        optional: true
-      '@/functions':
-        optional: true
-      '@/kv':
-        optional: true
       '@azure/app-configuration':
         optional: true
       '@azure/cosmos':
@@ -10106,6 +10044,12 @@ packages:
       '@planetscale/database':
         optional: true
       '@upstash/redis':
+        optional: true
+      '@vercel/blob':
+        optional: true
+      '@vercel/functions':
+        optional: true
+      '@vercel/kv':
         optional: true
       aws4fetch:
         optional: true
@@ -10604,31 +10548,6 @@ packages:
 
 snapshots:
 
-  '@/analytics@1.5.0(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(svelte@5.1.15)(vue@3.5.20(typescript@5.8.3))':
-    optionalDependencies:
-      next: 15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react: 19.1.0
-      svelte: 5.1.15
-      vue: 3.5.20(typescript@5.8.3)
-
-  '@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0)':
-    dependencies:
-      '@/oidc': 2.0.1
-    optionalDependencies:
-      '@aws-sdk/credential-provider-web-identity': 3.864.0
-
-  '@/oidc@2.0.1':
-    dependencies:
-      '@types/ms': 2.1.0
-      ms: 2.1.3
-
-  '@/speed-insights@1.2.0(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(svelte@5.1.15)(vue@3.5.20(typescript@5.8.3))':
-    optionalDependencies:
-      next: 15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
-      react: 19.1.0
-      svelte: 5.1.15
-      vue: 3.5.20(typescript@5.8.3)
-
   '@0no-co/graphql.web@1.1.2(graphql@16.11.0)':
     optionalDependencies:
       graphql: 16.11.0
@@ -10638,23 +10557,6 @@ snapshots:
       '@gql.tada/internal': 1.0.8(graphql@16.11.0)(typescript@5.8.3)
       graphql: 16.11.0
       typescript: 5.8.3
-
-  '@ai-sdk/gateway@1.0.15(zod@4.0.5)':
-    dependencies:
-      '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.7(zod@4.0.5)
-      zod: 4.0.5
-
-  '@ai-sdk/provider-utils@3.0.7(zod@4.0.5)':
-    dependencies:
-      '@ai-sdk/provider': 2.0.0
-      '@standard-schema/spec': 1.0.0
-      eventsource-parser: 3.0.6
-      zod: 4.0.5
-
-  '@ai-sdk/provider@2.0.0':
-    dependencies:
-      json-schema: 0.4.0
 
   '@alloc/quick-lru@5.2.0': {}
 
@@ -11746,7 +11648,7 @@ snapshots:
   '@babel/helper-module-imports@7.27.1':
     dependencies:
       '@babel/traverse': 7.27.4
-      '@babel/types': 7.28.0
+      '@babel/types': 7.28.2
     transitivePeerDependencies:
       - supports-color
 
@@ -11770,7 +11672,7 @@ snapshots:
   '@babel/helpers@7.27.4':
     dependencies:
       '@babel/template': 7.27.2
-      '@babel/types': 7.28.0
+      '@babel/types': 7.28.2
 
   '@babel/parser@7.28.0':
     dependencies:
@@ -11860,15 +11762,15 @@ snapshots:
     dependencies:
       '@babel/code-frame': 7.27.1
       '@babel/parser': 7.28.0
-      '@babel/types': 7.28.0
+      '@babel/types': 7.28.2
 
   '@babel/traverse@7.27.4':
     dependencies:
       '@babel/code-frame': 7.27.1
       '@babel/generator': 7.27.5
-      '@babel/parser': 7.28.0
+      '@babel/parser': 7.28.3
       '@babel/template': 7.27.2
-      '@babel/types': 7.28.0
+      '@babel/types': 7.28.2
       debug: 4.4.1
       globals: 11.12.0
     transitivePeerDependencies:
@@ -13389,7 +13291,7 @@ snapshots:
       uuid: 9.0.1
       zod: 3.25.51
 
-  '@makeswift/next-plugin@0.5.0(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))':
+  '@makeswift/next-plugin@0.5.0(next@15.5.1-canary.4(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))':
     dependencies:
       enhanced-resolve: 5.10.0
       escalade: 3.1.1
@@ -13402,7 +13304,7 @@ snapshots:
       ts-pattern: 5.8.0
       zod: 3.25.51
 
-  '@makeswift/runtime@0.25.1(@types/react-dom@19.1.6(@types/react@19.1.6))(@types/react@19.1.6)(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
+  '@makeswift/runtime@0.25.1(@types/react-dom@19.1.6(@types/react@19.1.6))(@types/react@19.1.6)(next@15.5.1-canary.4(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)':
     dependencies:
       '@emotion/cache': 11.14.0
       '@emotion/css': 11.13.5
@@ -13411,7 +13313,7 @@ snapshots:
       '@emotion/sheet': 1.4.0
       '@emotion/utils': 1.4.2
       '@makeswift/controls': 0.1.12
-      '@makeswift/next-plugin': 0.5.0(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
+      '@makeswift/next-plugin': 0.5.0(next@15.5.1-canary.4(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))
       '@makeswift/prop-controllers': 0.4.6
       '@popmotion/popcorn': 0.4.4
       '@reduxjs/toolkit': 2.8.2(react@19.1.0)
@@ -13569,17 +13471,17 @@ snapshots:
 
   '@nolyfill/is-core-module@1.0.39': {}
 
-  '@nuxt/devtools-kit@2.6.3(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))':
+  '@nuxt/devtools-kit@2.6.3(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))':
     dependencies:
       '@nuxt/kit': 3.18.1(magicast@0.3.5)
       execa: 8.0.1
-      vite: 7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1)
+      vite: 7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1)
     transitivePeerDependencies:
       - magicast
 
-  '@nuxt/fonts@0.11.4(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(encoding@0.1.13)(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))':
+  '@nuxt/fonts@0.11.4(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(encoding@0.1.13)(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))':
     dependencies:
-      '@nuxt/devtools-kit': 2.6.3(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))
+      '@nuxt/devtools-kit': 2.6.3(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))
       '@nuxt/kit': 3.18.1(magicast@0.3.5)
       consola: 3.4.2
       css-tree: 3.1.0
@@ -13598,7 +13500,7 @@ snapshots:
       ufo: 1.6.1
       unifont: 0.4.1
       unplugin: 2.3.5
-      unstorage: 1.17.0(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)
+      unstorage: 1.17.0(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -13611,9 +13513,9 @@ snapshots:
       - '@netlify/blobs'
       - '@planetscale/database'
       - '@upstash/redis'
-      - '@/blob'
-      - '@/functions'
-      - '@/kv'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
       - aws4fetch
       - db0
       - encoding
@@ -13623,13 +13525,13 @@ snapshots:
       - uploadthing
       - vite
 
-  '@nuxt/icon@1.15.0(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))':
+  '@nuxt/icon@1.15.0(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))':
     dependencies:
       '@iconify/collections': 1.0.590
       '@iconify/types': 2.0.0
       '@iconify/utils': 2.3.0
       '@iconify/vue': 5.0.0(vue@3.5.20(typescript@5.8.3))
-      '@nuxt/devtools-kit': 2.6.3(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))
+      '@nuxt/devtools-kit': 2.6.3(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))
       '@nuxt/kit': 3.18.1(magicast@0.3.5)
       consola: 3.4.2
       local-pkg: 1.1.1
@@ -13707,19 +13609,19 @@ snapshots:
       std-env: 3.9.0
       ufo: 1.6.1
 
-  '@nuxt/ui@3.3.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))(zod@4.0.5)':
+  '@nuxt/ui@3.3.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))(zod@4.0.5)':
     dependencies:
       '@iconify/vue': 5.0.0(vue@3.5.20(typescript@5.8.3))
       '@internationalized/date': 3.9.0
       '@internationalized/number': 3.6.5
-      '@nuxt/fonts': 0.11.4(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(encoding@0.1.13)(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))
-      '@nuxt/icon': 1.15.0(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))
+      '@nuxt/fonts': 0.11.4(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(encoding@0.1.13)(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))
+      '@nuxt/icon': 1.15.0(magicast@0.3.5)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))
       '@nuxt/kit': 4.0.3(magicast@0.3.5)
       '@nuxt/schema': 4.0.3
       '@nuxtjs/color-mode': 3.5.2(magicast@0.3.5)
       '@standard-schema/spec': 1.0.0
       '@tailwindcss/postcss': 4.1.12
-      '@tailwindcss/vite': 4.1.12(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))
+      '@tailwindcss/vite': 4.1.12(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))
       '@tanstack/vue-table': 8.21.3(vue@3.5.20(typescript@5.8.3))
       '@unhead/vue': 2.0.14(vue@3.5.20(typescript@5.8.3))
       '@vueuse/core': 13.8.0(vue@3.5.20(typescript@5.8.3))
@@ -13768,9 +13670,9 @@ snapshots:
       - '@netlify/blobs'
       - '@planetscale/database'
       - '@upstash/redis'
-      - '@/blob'
-      - '@/functions'
-      - '@/kv'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
       - '@vue/composition-api'
       - async-validator
       - aws4fetch
@@ -15696,12 +15598,12 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.17(ts-node@10.9.2(@swc/core@1.11.31)(@types/node@22.15.30)(typescript@5.8.3))
 
-  '@tailwindcss/vite@4.1.12(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))':
+  '@tailwindcss/vite@4.1.12(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))':
     dependencies:
       '@tailwindcss/node': 4.1.12
       '@tailwindcss/oxide': 4.1.12
       tailwindcss: 4.1.12
-      vite: 7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1)
+      vite: 7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1)
 
   '@tanstack/table-core@8.21.3': {}
 
@@ -15745,23 +15647,23 @@ snapshots:
   '@types/babel__core@7.20.5':
     dependencies:
       '@babel/parser': 7.28.0
-      '@babel/types': 7.28.0
+      '@babel/types': 7.28.2
       '@types/babel__generator': 7.6.8
       '@types/babel__template': 7.4.4
       '@types/babel__traverse': 7.20.6
 
   '@types/babel__generator@7.6.8':
     dependencies:
-      '@babel/types': 7.28.0
+      '@babel/types': 7.28.2
 
   '@types/babel__template@7.4.4':
     dependencies:
       '@babel/parser': 7.28.0
-      '@babel/types': 7.28.0
+      '@babel/types': 7.28.2
 
   '@types/babel__traverse@7.20.6':
     dependencies:
-      '@babel/types': 7.28.0
+      '@babel/types': 7.28.2
 
   '@types/cacheable-request@6.0.3':
     dependencies:
@@ -16027,10 +15929,10 @@ snapshots:
       unhead: 2.0.14
       vue: 3.5.20(typescript@5.8.3)
 
-  '@unlighthouse/cli@0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(puppeteer@24.10.0(typescript@5.8.3))(rollup@4.44.2)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))(zod@4.0.5)':
+  '@unlighthouse/cli@0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(puppeteer@24.10.0(typescript@5.8.3))(rollup@4.44.2)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))(zod@4.0.5)':
     dependencies:
       '@lhci/utils': 0.15.1(encoding@0.1.13)
-      '@unlighthouse/client': 0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))(zod@4.0.5)
+      '@unlighthouse/client': 0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))(zod@4.0.5)
       '@unlighthouse/core': 0.17.2(magicast@0.3.5)(puppeteer@24.10.0(typescript@5.8.3))(rollup@4.44.2)
       '@unlighthouse/server': 0.17.2(magicast@0.3.5)(puppeteer@24.10.0(typescript@5.8.3))(rollup@4.44.2)
       better-opn: 3.0.2
@@ -16056,9 +15958,9 @@ snapshots:
       - '@netlify/blobs'
       - '@planetscale/database'
       - '@upstash/redis'
-      - '@/blob'
-      - '@/functions'
-      - '@/kv'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
       - '@vue/composition-api'
       - async-validator
       - aws4fetch
@@ -16094,11 +15996,11 @@ snapshots:
       - yup
       - zod
 
-  '@unlighthouse/client@0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))(zod@4.0.5)':
+  '@unlighthouse/client@0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))(zod@4.0.5)':
     dependencies:
       '@headlessui/vue': 1.7.23(vue@3.5.20(typescript@5.8.3))
-      '@nuxt/ui': 3.3.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))(zod@4.0.5)
-      '@tailwindcss/vite': 4.1.12(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))
+      '@nuxt/ui': 3.3.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))(zod@4.0.5)
+      '@tailwindcss/vite': 4.1.12(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))
       dayjs: 1.11.13
       defu: 6.1.4
       fuse.js: 7.1.0
@@ -16120,9 +16022,9 @@ snapshots:
       - '@netlify/blobs'
       - '@planetscale/database'
       - '@upstash/redis'
-      - '@/blob'
-      - '@/functions'
-      - '@/kv'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
       - '@vue/composition-api'
       - async-validator
       - aws4fetch
@@ -16314,6 +16216,31 @@ snapshots:
       '@use-gesture/core': 10.3.1
       react: 19.1.0
 
+  '@vercel/analytics@1.5.0(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(svelte@5.1.15)(vue@3.5.20(typescript@5.8.3))':
+    optionalDependencies:
+      next: 15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react: 19.1.0
+      svelte: 5.1.15
+      vue: 3.5.20(typescript@5.8.3)
+
+  '@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0)':
+    dependencies:
+      '@vercel/oidc': 2.0.2
+    optionalDependencies:
+      '@aws-sdk/credential-provider-web-identity': 3.864.0
+
+  '@vercel/oidc@2.0.2':
+    dependencies:
+      '@types/ms': 2.1.0
+      ms: 2.1.3
+
+  '@vercel/speed-insights@1.2.0(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react@19.1.0)(svelte@5.1.15)(vue@3.5.20(typescript@5.8.3))':
+    optionalDependencies:
+      next: 15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0)
+      react: 19.1.0
+      svelte: 5.1.15
+      vue: 3.5.20(typescript@5.8.3)
+
   '@vitest/coverage-v8@3.2.4(vitest@3.2.4)':
     dependencies:
       '@ampproject/remapping': 2.3.0
@@ -16329,7 +16256,7 @@ snapshots:
       std-env: 3.9.0
       test-exclude: 7.0.1
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@22.15.30)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(terser@5.16.9)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@22.15.30)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1)
     transitivePeerDependencies:
       - supports-color
 
@@ -16341,14 +16268,14 @@ snapshots:
       chai: 5.2.0
       tinyrainbow: 2.0.0
 
-  '@vitest/mocker@3.2.4(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))':
+  '@vitest/mocker@3.2.4(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))':
     dependencies:
       '@vitest/spy': 3.2.4
       estree-walker: 3.0.3
       magic-string: 0.30.17
     optionalDependencies:
       msw: 2.9.0(@types/node@22.15.30)(typescript@5.8.3)
-      vite: 7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1)
+      vite: 7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1)
 
   '@vitest/pretty-format@3.2.4':
     dependencies:
@@ -16379,7 +16306,7 @@ snapshots:
       sirv: 3.0.1
       tinyglobby: 0.2.14
       tinyrainbow: 2.0.0
-      vitest: 3.2.4(@types/node@22.15.30)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(terser@5.16.9)(yaml@2.8.1)
+      vitest: 3.2.4(@types/node@22.15.30)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1)
 
   '@vitest/utils@3.2.4':
     dependencies:
@@ -16539,14 +16466,6 @@ snapshots:
   agentkeepalive@4.6.0:
     dependencies:
       humanize-ms: 1.2.1
-
-  ai@5.0.28(zod@4.0.5):
-    dependencies:
-      '@ai-sdk/gateway': 1.0.15(zod@4.0.5)
-      '@ai-sdk/provider': 2.0.0
-      '@ai-sdk/provider-utils': 3.0.7(zod@4.0.5)
-      '@opentelemetry/api': 1.9.0
-      zod: 4.0.5
 
   ajv-formats@3.0.1(ajv@8.17.1):
     optionalDependencies:
@@ -16760,7 +16679,7 @@ snapshots:
   babel-plugin-jest-hoist@29.6.3:
     dependencies:
       '@babel/template': 7.27.2
-      '@babel/types': 7.28.0
+      '@babel/types': 7.28.2
       '@types/babel__core': 7.20.5
       '@types/babel__traverse': 7.20.6
 
@@ -17911,7 +17830,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.9.1)(eslint@8.57.1):
+  eslint-module-utils@2.12.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.9.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1):
     dependencies:
       debug: 3.2.7
     optionalDependencies:
@@ -17943,7 +17862,7 @@ snapshots:
       doctrine: 2.1.0
       eslint: 8.57.1
       eslint-import-resolver-node: 0.3.9
-      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.9.1)(eslint@8.57.1)
+      eslint-module-utils: 2.12.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint-import-resolver-node@0.3.9)(eslint-import-resolver-typescript@3.9.1(eslint-plugin-import@2.31.0(@typescript-eslint/parser@8.28.0(eslint@8.57.1)(typescript@5.8.3))(eslint@8.57.1))(eslint@8.57.1))(eslint@8.57.1)
       hasown: 2.0.2
       is-core-module: 2.16.1
       is-glob: 4.0.3
@@ -18173,8 +18092,6 @@ snapshots:
   etag@1.8.1: {}
 
   event-target-shim@5.0.1: {}
-
-  eventsource-parser@3.0.6: {}
 
   execa@5.1.1:
     dependencies:
@@ -18778,15 +18695,12 @@ snapshots:
 
   headers-polyfill@4.0.3: {}
 
-<<<<<<< HEAD
   hey-listen@1.0.8: {}
 
   hoist-non-react-statics@3.3.2:
     dependencies:
       react-is: 16.13.1
 
-=======
->>>>>>> e30002761ea45394d40b6a47ad4910c45b5e1e8f
   hookable@5.5.3: {}
 
   html-dom-parser@5.1.1:
@@ -19603,8 +19517,6 @@ snapshots:
   json-schema-traverse@1.0.0: {}
 
   json-schema-typed@8.0.1: {}
-
-  json-schema@0.4.0: {}
 
   json-stable-stringify-without-jsonify@1.0.1: {}
 
@@ -20689,12 +20601,13 @@ snapshots:
       postcss: 8.5.6
       ts-node: 10.9.2(@swc/core@1.11.31)(@types/node@22.15.30)(typescript@5.8.3)
 
-  postcss-load-config@6.0.1(jiti@2.5.1)(postcss@8.5.6)(yaml@2.8.1):
+  postcss-load-config@6.0.1(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(yaml@2.8.1):
     dependencies:
       lilconfig: 3.1.3
     optionalDependencies:
       jiti: 2.5.1
       postcss: 8.5.6
+      tsx: 4.20.5
       yaml: 2.8.1
 
   postcss-logical@8.1.0(postcss@8.5.6):
@@ -21032,19 +20945,10 @@ snapshots:
       react: 19.1.0
       scheduler: 0.26.0
 
-<<<<<<< HEAD
   react-fast-compare@2.0.4: {}
 
   react-fast-compare@3.2.2: {}
 
-  react-google-recaptcha@3.1.0(react@19.1.0):
-    dependencies:
-      prop-types: 15.8.1
-      react: 19.1.0
-      react-async-script: 1.2.0(react@19.1.0)
-
-=======
->>>>>>> e30002761ea45394d40b6a47ad4910c45b5e1e8f
   react-headroom@3.2.1(react@19.1.0):
     dependencies:
       prop-types: 15.8.1
@@ -22111,7 +22015,7 @@ snapshots:
 
   tslib@2.8.1: {}
 
-  tsup@8.5.0(@swc/core@1.11.31)(jiti@2.5.1)(postcss@8.5.6)(typescript@5.8.3)(yaml@2.8.1):
+  tsup@8.5.0(@swc/core@1.11.31)(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(typescript@5.8.3)(yaml@2.8.1):
     dependencies:
       bundle-require: 5.1.0(esbuild@0.25.6)
       cac: 6.7.14
@@ -22122,7 +22026,7 @@ snapshots:
       fix-dts-default-cjs-exports: 1.0.1
       joycon: 3.1.1
       picocolors: 1.1.1
-      postcss-load-config: 6.0.1(jiti@2.5.1)(postcss@8.5.6)(yaml@2.8.1)
+      postcss-load-config: 6.0.1(jiti@2.5.1)(postcss@8.5.6)(tsx@4.20.5)(yaml@2.8.1)
       resolve-from: 5.0.0
       rollup: 4.44.2
       source-map: 0.8.0-beta.0
@@ -22151,6 +22055,7 @@ snapshots:
       get-tsconfig: 4.10.0
     optionalDependencies:
       fsevents: 2.3.3
+    optional: true
 
   turbo-darwin-64@2.5.4:
     optional: true
@@ -22365,10 +22270,10 @@ snapshots:
 
   universalify@2.0.1: {}
 
-  unlighthouse@0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(puppeteer@24.10.0(typescript@5.8.3))(rollup@4.44.2)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))(zod@4.0.5):
+  unlighthouse@0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(puppeteer@24.10.0(typescript@5.8.3))(rollup@4.44.2)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))(vue@3.5.20(typescript@5.8.3))(zod@4.0.5):
     dependencies:
-      '@unlighthouse/cli': 0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(puppeteer@24.10.0(typescript@5.8.3))(rollup@4.44.2)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))(zod@4.0.5)
-      '@unlighthouse/client': 0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))(zod@4.0.5)
+      '@unlighthouse/cli': 0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(puppeteer@24.10.0(typescript@5.8.3))(rollup@4.44.2)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))(zod@4.0.5)
+      '@unlighthouse/client': 0.17.2(@babel/parser@7.28.3)(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20)(axios@1.11.0)(embla-carousel@8.6.0)(encoding@0.1.13)(jwt-decode@4.0.0)(magicast@0.3.5)(typescript@5.8.3)(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))(zod@4.0.5)
       '@unlighthouse/core': 0.17.2(magicast@0.3.5)(puppeteer@24.10.0(typescript@5.8.3))(rollup@4.44.2)
     optionalDependencies:
       puppeteer: 24.10.0(typescript@5.8.3)
@@ -22387,9 +22292,9 @@ snapshots:
       - '@netlify/blobs'
       - '@planetscale/database'
       - '@upstash/redis'
-      - '@/blob'
-      - '@/functions'
-      - '@/kv'
+      - '@vercel/blob'
+      - '@vercel/functions'
+      - '@vercel/kv'
       - '@vue/composition-api'
       - async-validator
       - aws4fetch
@@ -22471,7 +22376,7 @@ snapshots:
       picomatch: 4.0.2
       webpack-virtual-modules: 0.6.2
 
-  unstorage@1.17.0(@upstash/redis@1.35.0)(@/functions@2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20):
+  unstorage@1.17.0(@upstash/redis@1.35.0)(@vercel/functions@2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0))(aws4fetch@1.0.20):
     dependencies:
       anymatch: 3.1.3
       chokidar: 4.0.3
@@ -22482,8 +22387,8 @@ snapshots:
       ofetch: 1.4.1
       ufo: 1.6.1
     optionalDependencies:
-      '@/functions': 2.2.12(@aws-sdk/credential-provider-web-identity@3.864.0)
       '@upstash/redis': 1.35.0
+      '@vercel/functions': 2.2.13(@aws-sdk/credential-provider-web-identity@3.864.0)
       aws4fetch: 1.0.20
 
   untun@0.1.3:
@@ -22587,13 +22492,13 @@ snapshots:
     transitivePeerDependencies:
       - '@vue/composition-api'
 
-  vite-node@3.2.4(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1):
+  vite-node@3.2.4(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1):
     dependencies:
       cac: 6.7.14
       debug: 4.4.1
       es-module-lexer: 1.7.0
       pathe: 2.0.3
-      vite: 7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1)
+      vite: 7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1)
     transitivePeerDependencies:
       - '@types/node'
       - jiti
@@ -22608,7 +22513,7 @@ snapshots:
       - tsx
       - yaml
 
-  vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1):
+  vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1):
     dependencies:
       esbuild: 0.25.6
       fdir: 6.4.6(picomatch@4.0.2)
@@ -22622,13 +22527,14 @@ snapshots:
       jiti: 2.5.1
       lightningcss: 1.30.1
       terser: 5.16.9
+      tsx: 4.20.5
       yaml: 2.8.1
 
-  vitest@3.2.4(@types/node@22.15.30)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(terser@5.16.9)(yaml@2.8.1):
+  vitest@3.2.4(@types/node@22.15.30)(@vitest/ui@3.2.4)(jiti@2.5.1)(jsdom@26.1.0)(lightningcss@1.30.1)(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1):
     dependencies:
       '@types/chai': 5.2.2
       '@vitest/expect': 3.2.4
-      '@vitest/mocker': 3.2.4(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1))
+      '@vitest/mocker': 3.2.4(msw@2.9.0(@types/node@22.15.30)(typescript@5.8.3))(vite@7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1))
       '@vitest/pretty-format': 3.2.4
       '@vitest/runner': 3.2.4
       '@vitest/snapshot': 3.2.4
@@ -22646,8 +22552,8 @@ snapshots:
       tinyglobby: 0.2.14
       tinypool: 1.1.1
       tinyrainbow: 2.0.0
-      vite: 7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1)
-      vite-node: 3.2.4(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(yaml@2.8.1)
+      vite: 7.0.3(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1)
+      vite-node: 3.2.4(@types/node@22.15.30)(jiti@2.5.1)(lightningcss@1.30.1)(terser@5.16.9)(tsx@4.20.5)(yaml@2.8.1)
       why-is-node-running: 2.3.0
     optionalDependencies:
       '@types/node': 22.15.30
