@@ -17,7 +17,7 @@ export default getRequestConfig(async ({ requestLocale }) => {
   if (locale === fallbackLocale) {
     return {
       locale,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
+
       messages: (await import(`../messages/${locale}.json`)).default,
     };
   }
@@ -25,9 +25,8 @@ export default getRequestConfig(async ({ requestLocale }) => {
   return {
     locale,
     messages: deepmerge(
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
       (await import(`../messages/${fallbackLocale}.json`)).default,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument,@typescript-eslint/no-unsafe-member-access
+
       (await import(`../messages/${locale}.json`)).default,
     ),
   };

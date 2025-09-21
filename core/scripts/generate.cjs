@@ -65,4 +65,3 @@ const generate = async () => {
 };
 
 generate();
-

@@ -19,9 +19,11 @@ import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
 import { AnalyticsProvider } from '~/components/analytics/provider';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
+
 import { statsigAdapter } from '@flags-sdk/statsig';
-import { DynamicStatsigProvider } from '~/dynamic-statsig-provider';
+
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
+import { DynamicStatsigProvider } from '~/dynamic-statsig-provider';
 import { routing } from '~/i18n/routing';
 import { getToastNotification } from '~/lib/server-toast';
 
@@ -152,10 +154,3 @@ export function generateStaticParams() {
 }
 
 export const fetchCache = 'default-cache';
-
-
-
-
-
-
-

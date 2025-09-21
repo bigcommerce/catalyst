@@ -7,7 +7,7 @@ const { TESTS_LOCALE: locale, TESTS_FALLBACK_LOCALE: fallbackLocale } = testEnv;
 
 async function loadMessages(): Promise<Messages> {
   const importJson = (path: string) => import(path, { with: { type: 'json' } });
-  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-member-access
+  // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
   const messages = (await importJson(`~/messages/${locale}.json`)).default as Messages;
 
   if (locale === fallbackLocale) {
@@ -15,7 +15,7 @@ async function loadMessages(): Promise<Messages> {
   }
 
   return deepmerge(
-    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions, @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
     (await importJson(`~/messages/${fallbackLocale}.json`)).default as Messages,
     messages,
   );
