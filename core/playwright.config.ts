@@ -22,8 +22,8 @@ export default defineConfig({
     video: 'retain-on-failure',
     trace: 'retain-on-failure',
     extraHTTPHeaders: {
-      'x--protection-bypass': testEnv._PROTECTION_BYPASS,
-      'x--set-bypass-cookie': testEnv.CI.toString(),
+      'x-vercel-protection-bypass': testEnv.VERCEL_PROTECTION_BYPASS,
+      'x-vercel-set-bypass-cookie': testEnv.CI.toString(),
     },
   },
   projects: [

@@ -257,62 +257,6 @@
                 "addProductFailed": "Das Produkt konnte nicht zu Ihrer Wunschliste hinzugefügt werden. Bitte versuchen Sie es erneut.",
                 "removeProductFailed": "Das Produkt konnte nicht von Ihrer Wunschliste entfernt werden, bitte versuchen Sie es erneut."
             }
-        },
-        "Wishlists": {
-            "title": "Wish Lists",
-            "new": "New wish list",
-            "items": "{count, plural, =1 {1 item} other {# items}}",
-            "viewWishlist": "View list",
-            "noWishlists": "You don't have any wish lists",
-            "noWishlistsSubtitle": "Create a wishlist to save your favorite products.",
-            "noWishlistsCallToAction": "Create a wishlist",
-            "emptyWishlist": "You haven't added products to this wish list.",
-            "share": "Freigeben",
-            "shareSuccess": "Wish list has been shared successfully.",
-            "shareCopied": "Wish list public URL has been copied to your clipboard.",
-            "shareDisabled": "Your wish list must be public in order to share it.",
-            "makePublic": "Make public",
-            "makePrivate": "Make private",
-            "rename": "Rename",
-            "delete": "Löschen",
-            "Visibility": {
-                "public": "Public",
-                "private": "Private"
-            },
-            "Modal": {
-                "cancel": "Abbrechen",
-                "close": "Close",
-                "copy": "Copy",
-                "create": "erstellen",
-                "save": "Save",
-                "delete": "Löschen",
-                "newTitle": "Create a new wish list",
-                "shareTitle": "Share {name}",
-                "renameTitle": "Rename {name}",
-                "deleteTitle": "Delete {name}",
-                "changeVisibilityPublicTitle": "Make {name} public?",
-                "changeVisibilityPrivateTitle": "Make {name} private?",
-                "makePublicContent": "Are you sure you want to make <bold>{name}</bold> public? This will allow others to see your wish list if they have the link.",
-                "makePrivateContent": "Are you sure you want to make <bold>{name}</bold> private? If you've shared your wish list with others, they will no longer be able to see it.",
-                "deleteContent": "Are you sure you want to delete <bold>{name}</bold>? This action cannot be undone."
-            },
-            "Form": {
-                "nameLabel": "Name"
-            },
-            "Errors": {
-                "nameRequired": "Wish list name cannot be empty.",
-                "updateFailed": "Failed to update your wish list. Please try again.",
-                "deleteFailed": "Failed to delete your wish list. Please try again.",
-                "removeProductFailed": "Failed to remove the product from your wish list. Please try again.",
-                "unauthorized": "You are not authorized to perform this action. Please sign in and try again.",
-                "unexpected": "An unexpected error occurred. Please try again."
-            },
-            "Result": {
-                "createSuccess": "Wish list has been created successfully.",
-                "updateSuccess": "Wish list has been updated successfully.",
-                "deleteSuccess": "Wish list has been deleted successfully.",
-                "removeItemSuccess": "Item has been removed from your wish list."
-            }
         }
     },
     "PublicWishlist": {

@@ -136,7 +136,7 @@ export function ProductCard({
             {subtitle != null && subtitle !== '' && (
               <span
                 className={clsx(
-                  'block text-sm font-normal',
+                  'mb-2 block text-sm font-normal',
                   {
                     light: 'text-[var(--product-card-light-subtitle,hsl(var(--foreground)/75%))]',
                     dark: 'text-[var(--product-card-dark-subtitle,hsl(var(--background)/75%))]',
@@ -183,12 +183,15 @@ export function ProductCard({
 export function ProductCardSkeleton({
   className,
   aspectRatio = '5:6',
-}: Pick<ProductCardProps, 'className' | 'aspectRatio'>) {
+}: {
+  aspectRatio?: '5:6' | '3:4' | '1:1';
+  className?: string;
+}) {
   return (
-    <Skeleton.Root className={clsx(className)}>
+    <div className={clsx('@container', className)}>
       <Skeleton.Box
         className={clsx(
-          'rounded-[var(--product-card-border-radius,1rem)]',
+          'rounded-xl @md:rounded-2xl',
           {
             '5:6': 'aspect-[5/6]',
             '3:4': 'aspect-[3/4]',
@@ -203,6 +206,6 @@ export function ProductCardSkeleton({
           <Skeleton.Text characterCount={6} className="rounded" />
         </div>
       </div>
-    </Skeleton.Root>
+    </div>
   );
 }

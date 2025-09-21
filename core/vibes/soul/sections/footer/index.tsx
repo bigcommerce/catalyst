@@ -14,7 +14,6 @@ interface Image {
 interface Link {
   href: string;
   label: string;
-  target?: string;
 }
 
 export interface Section {
@@ -33,7 +32,7 @@ interface ContactInformation {
 }
 
 export interface FooterProps {
-  logo: Streamable<string | Image | null>;
+  logo: Streamable<string | Image>;
   sections: Streamable<Section[]>;
   copyright?: Streamable<string>;
   contactInformation?: Streamable<ContactInformation>;
@@ -176,8 +175,6 @@ export const Footer = ({
                                 <Link
                                   className="block rounded-lg py-2 text-sm font-medium text-[var(--footer-link,hsl(var(--contrast-500)))] ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 hover:text-[var(--footer-link-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
                                   href={link.href}
-                                  rel={link.target === '_blank' ? 'noopener noreferrer' : undefined}
-                                  target={link.target}
                                 >
                                   {link.label}
                                 </Link>

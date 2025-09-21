@@ -10,13 +10,13 @@ import { ForwardedRef, forwardRef, ReactNode, useCallback, useEffect, useState }
  *
  * ```css
  * :root {
- *   --banner-focus: hsl(var(--foreground));
+ *   --banner-focus: hsl(var(--primary));
  *   --banner-background: hsl(var(--primary));
  *   --banner-text: hdl(var(--foreground));
- *   --banner-close-icon: hsl(var(--foreground)/50%);
+ *   --banner-close-icon: hdl(var(--foreground));
  *   --banner-close-icon-hover: hdl(var(--foreground));
- *   --banner-close-background: transparent;
- *   --banner-close-background-hover: hsl(var(--background)/40%);
+ *   --banner-close-background: hdl(var(--foreground));
+ *   --banner-close-background-hover: hdl(var(--foreground));
  * }
  * ```
  */

@@ -15,7 +15,7 @@ type Props = NextLinkProps & PrefetchOptions;
 
 /**
  * This custom `Link` is based on  Next-Intl's `Link` component
- * https://next-intl-docs..app/docs/routing/navigation#link
+ * https://next-intl-docs.vercel.app/docs/routing/navigation#link
  * which adds automatically prefixes for the href with the current locale as necessary
  * and extends with additional prefetching controls, making navigation
  * prefetching more adaptable to different use cases. By offering `prefetch` and `prefetchKind`

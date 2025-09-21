@@ -14,7 +14,6 @@ import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
-import { Slot } from '~/lib/makeswift/slot';
 
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts } from '../../fetch-compare-products';
@@ -241,10 +240,6 @@ export default async function Category(props: Props) {
 
   return (
     <>
-      <Slot
-        label={`${category.name} top content`}
-        snapshotId={`category-${categoryId}-top-content`}
-      />
       <ProductsListSection
         breadcrumbs={breadcrumbs}
         compareLabel={t('Compare.compare')}
@@ -278,10 +273,6 @@ export default async function Category(props: Props) {
         sortParamName="sort"
         title={category.name}
         totalCount={streamableTotalCount}
-      />
-      <Slot
-        label={`${category.name} bottom content`}
-        snapshotId={`category-${categoryId}-bottom-content`}
       />
       <Stream value={streamableFacetedSearch}>
         {(search) => <CategoryViewed category={category} products={search.products.items} />}

@@ -1,20 +1,12 @@
-import createWithMakeswift from '@makeswift/runtime/next/plugin';
 import bundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
-import createWithMakeswift from "@makeswift/runtime/next/plugin";
-const withMakeswift = createWithMakeswift();
-
-nextConfig = withNextIntl(nextConfig);
-nextConfig = withMakeswift(nextConfig);
-
 
 import { writeBuildConfig } from './build-config/writer';
 import { client } from './client';
 import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
 
-const withMakeswift = createWithMakeswift();
 const withNextIntl = createNextIntlPlugin({
   experimental: {
     createMessagesDeclaration: './messages/en.json',
@@ -51,9 +43,8 @@ async function writeSettingsToBuildConfig() {
   ).filter((url): url is string => !!url);
 
   if (!cdnUrls.length) {
-    const newLocal = 'No CDN URLs found. Please ensure that NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME is set correctly.';
     throw new Error(
-      newLocal,
+      'No CDN URLs found. Please ensure that NEXT_PUBLIC_BIGCOMMERCE_CDN_HOSTNAME is set correctly.',
     );
   }
 
@@ -121,9 +112,6 @@ export default async (): Promise<NextConfig> => {
 
   // Apply withNextIntl to the config
   nextConfig = withNextIntl(nextConfig);
-
-  // Apply withMakeswift to the config
-  nextConfig = withMakeswift(nextConfig);
 
   if (process.env.ANALYZE === 'true') {
     const withBundleAnalyzer = bundleAnalyzer();

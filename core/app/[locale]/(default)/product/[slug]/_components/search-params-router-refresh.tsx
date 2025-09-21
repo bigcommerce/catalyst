@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 
 import { useRouter } from '~/i18n/routing';
 
-// Not-so-great workaround for https://github.com/js/issues/59407
+// Not-so-great workaround for https://github.com/vercel/next.js/issues/59407
 export const SearchParamsRouterRefresh = ({
   searchParamsServer,
 }: {

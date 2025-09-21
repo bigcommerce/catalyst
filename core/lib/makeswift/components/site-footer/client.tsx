@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import {
   type ComponentPropsWithoutRef,
@@ -15,7 +15,7 @@ type FooterProps = ComponentPropsWithoutRef<typeof Footer>;
 
 // MakeswiftFooter does not support streamable sections
 type ContextProps = Omit<FooterProps, 'sections' | 'logo'> & {
-  logo: Awaited<FooterProps['logo']>;
+  logo: Awaited<FooterProps['logo']> | null;
   sections: Awaited<FooterProps['sections']>;
 };
 
@@ -66,15 +66,21 @@ function combineSections(
 export const MakeswiftFooter = ({ logo, sections, copyright }: Props) => {
   const passedProps = useContext(PropsContext);
   const logoObject = logo.src ? { src: logo.src, alt: logo.alt } : passedProps.logo;
+  const resolvedLogo: FooterProps['logo'] = logo.show
+    ? (logoObject ?? '')
+    : (passedProps.logo ?? '');
 
   return (
     <Footer
       {...passedProps}
       copyright={copyright ?? passedProps.copyright}
-      logo={logo.show ? logoObject : null}
+      logo={resolvedLogo}
       logoHeight={logo.show ? logo.height : 0}
       logoWidth={logo.show ? logo.width : 0}
       sections={combineSections(passedProps.sections, sections)}
     />
   );
 };
+
+
+

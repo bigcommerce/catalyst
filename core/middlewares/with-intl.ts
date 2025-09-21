@@ -4,15 +4,10 @@ import { routing } from '~/i18n/routing';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
+const intlMiddleware = createMiddleware(routing);
+
 export const withIntl: MiddlewareFactory = (next) => {
   return async (request, event) => {
-    const disableLocaleDetection = request.headers.get('x-bc-disable-locale-detection') === 'true';
-
-    const intlMiddleware = createMiddleware({
-      ...routing,
-      ...(disableLocaleDetection ? { localeDetection: false } : {}),
-    });
-
     const intlResponse = intlMiddleware(request);
 
     // If intlMiddleware redirects, or returns a non-200 return it immediately
