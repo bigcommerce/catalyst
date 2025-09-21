@@ -118,7 +118,6 @@ export default async (): Promise<NextConfig> => {
         },
       ];
     },
-
   };
 
   // Apply withNextIntl to the config
