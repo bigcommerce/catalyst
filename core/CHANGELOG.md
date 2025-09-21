@@ -1,30 +1,5 @@
 # Changelog
 
-## 1.2.0
-
-### Minor Changes
-
-- [#2475](https://github.com/bigcommerce/catalyst/pull/2475) [`33b574d`](https://github.com/bigcommerce/catalyst/commit/33b574d2fefe8514c4e512acf3f706058a6c8a2f) Thanks [@bookernath](https://github.com/bookernath)! - Implement Vercel Runtime Cache API as replacement for Vercel KV adapter
-
-### Patch Changes
-
-- [#2526](https://github.com/bigcommerce/catalyst/pull/2526) [`2089a58`](https://github.com/bigcommerce/catalyst/commit/2089a58f6bdaeab68a014ad66422932f392e6c46) Thanks [@chanceaclark](https://github.com/chanceaclark)! - The anonymous session cookie had `secure` always set to true regardless if we were prefixing it or not. This change updates the cookie to set `secure` to the same "value" if we prefix the cookie with `__Secure-`.
-
-- [#2564](https://github.com/bigcommerce/catalyst/pull/2564) [`69797a4`](https://github.com/bigcommerce/catalyst/commit/69797a4c9f0bfc8b27b7f144ded5545fdbb5e5cf) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Add visual queues when the cart state is being updated in the Cart page. Will also warn about pending state when trying to navigate away from page.
-
-  ## Migration
-  1. Update `/core/vibes/soul/sections/cart/client.tsx` to include latest changes:
-  - Use `isLineItemActionPending` to track when we need to disable checkout button and add a loading state.
-  - Add skeletons to checkout summary fields that will update when the pending state is complete.
-  - Add side effects to handle when a user `beforeunload` and when user tries to navigate using a link.
-  - Add prop to `lineItemActionPendingLabel` to be able to pass in a translatable label to the window alert.
-  2. Add label to dictionary of choice.
-
-- [#2521](https://github.com/bigcommerce/catalyst/pull/2521) [`6f6a8af`](https://github.com/bigcommerce/catalyst/commit/6f6a8af4fd7a5754b9d08aef75c4e40ab3057318) Thanks [@bookernath](https://github.com/bookernath)! - Preconnect to checkout domain on cart page to improve checkout load time
-
-- Updated dependencies [[`707ec24`](https://github.com/bigcommerce/catalyst/commit/707ec24745b6a0040551328d64657ff40df4e252), [`a27054f`](https://github.com/bigcommerce/catalyst/commit/a27054f4f22013707d40a100b15122c22354c956)]:
-  - @bigcommerce/catalyst-client@1.0.1
-
 ## 1.1.0
 
 ### Minor Changes
@@ -866,7 +841,7 @@ export const changePassword: ChangePasswordAction = async (prevState, formData) 
 
 - [`11ecddf`](https://github.com/bigcommerce/catalyst/commit/11ecddf) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Update translations.
 
-- [`7668774`](https://github.com/bigcommerce/catalyst/commit/7668774) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Disable PPR in Compare page due to an issue of Next.js and PPR, which causes the products to be removed once one is added to cart. More info: https://github.com/vercel/next.js/issues/59407.
+- [`7668774`](https://github.com/bigcommerce/catalyst/commit/7668774) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Disable PPR in Compare page due to an issue of Next.js and PPR, which causes the products to be removed once one is added to cart. More info: https://github.com//next.js/issues/59407.
 
 - [`11ecddf`](https://github.com/bigcommerce/catalyst/commit/11ecddf) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Update translations.
 
@@ -1102,7 +1077,7 @@ dark:
 
 ### Minor Changes
 
-- [#1491](https://github.com/bigcommerce/catalyst/pull/1491) [`313a591`](https://github.com/bigcommerce/catalyst/commit/313a5913181a144b53cb12208132f4a9924e2256) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Bump `next-intl` which includes [some minor changes and updated APIs](<(https://next-intl-docs.vercel.app/blog/next-intl-3-22)>):
+- [#1491](https://github.com/bigcommerce/catalyst/pull/1491) [`313a591`](https://github.com/bigcommerce/catalyst/commit/313a5913181a144b53cb12208132f4a9924e2256) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Bump `next-intl` which includes [some minor changes and updated APIs](<(https://next-intl-docs..app/blog/next-intl-3-22)>):
   - Use new `createNavigation` api.
   - Pass `locale` to redirects.
   - `setRequestLocale` is no longer unstable.
@@ -1195,11 +1170,11 @@ dark:
 
 ### Minor Changes
 
-- [#1362](https://github.com/bigcommerce/catalyst/pull/1362) [`0814afe`](https://github.com/bigcommerce/catalyst/commit/0814afefca00b2497dddb0622df45f4d50865882) Thanks [@deini](https://github.com/deini)! - If app is not running on Vercel's infra, `<Analytics />` and `<SpeedInsights />` are not rendered.
+- [#1362](https://github.com/bigcommerce/catalyst/pull/1362) [`0814afe`](https://github.com/bigcommerce/catalyst/commit/0814afefca00b2497dddb0622df45f4d50865882) Thanks [@deini](https://github.com/deini)! - If app is not running on 's infra, `<Analytics />` and `<SpeedInsights />` are not rendered.
 
-  Opt-out of vercel analytics and speed insights by setting the following env vars to `true`
-  - `DISABLE_VERCEL_ANALYTICS`
-  - `DISABLE_VERCEL_SPEED_INSIGHTS`
+  Opt-out of  analytics and speed insights by setting the following env vars to `true`
+  - `DISABLE__ANALYTICS`
+  - `DISABLE__SPEED_INSIGHTS`
 
 - [#1354](https://github.com/bigcommerce/catalyst/pull/1354) [`3d298c7`](https://github.com/bigcommerce/catalyst/commit/3d298c7190e01309ee706c0b9696f8851071e73c) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Move address forms in account to their own /add and /edit pages.
 
@@ -1213,7 +1188,7 @@ dark:
 
 - [#1360](https://github.com/bigcommerce/catalyst/pull/1360) [`00f72dd`](https://github.com/bigcommerce/catalyst/commit/00f72ddc7e3c2cff780430e074341ee72bc0c893) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Change LocalePrefix mode to `as-needed`, since there's an issue that is causing caching problems when using `never`.
 
-  More info about LocalePrefixes: https://next-intl-docs.vercel.app/docs/routing#shared-configuration
+  More info about LocalePrefixes: https://next-intl-docs..app/docs/routing#shared-configuration
   Open issue: https://github.com/amannn/next-intl/issues/786
 
 - [#1338](https://github.com/bigcommerce/catalyst/pull/1338) [`d50613a`](https://github.com/bigcommerce/catalyst/commit/d50613a669696f34a695bc35b9d40099eeea0660) Thanks [@bc-yevhenii-buliuk](https://github.com/bc-yevhenii-buliuk)! - improve redirect behavior after change password on account page
@@ -1608,7 +1583,7 @@ dark:
 
 - [#779](https://github.com/bigcommerce/catalyst/pull/779) [`fe34b3e`](https://github.com/bigcommerce/catalyst/commit/fe34b3ed79992f73084214b369b7750141a17c39) Thanks [@deini](https://github.com/deini)! - use LRU cache for DevKvAdapter
 
-- [#789](https://github.com/bigcommerce/catalyst/pull/789) [`86403a6`](https://github.com/bigcommerce/catalyst/commit/86403a6fc66f52f93ace611631614c2844af5a87) Thanks [@deini](https://github.com/deini)! - best-effort in memory cache for vercel kv adapter
+- [#789](https://github.com/bigcommerce/catalyst/pull/789) [`86403a6`](https://github.com/bigcommerce/catalyst/commit/86403a6fc66f52f93ace611631614c2844af5a87) Thanks [@deini](https://github.com/deini)! - best-effort in memory cache for  kv adapter
 
 - [#815](https://github.com/bigcommerce/catalyst/pull/815) [`984c30c`](https://github.com/bigcommerce/catalyst/commit/984c30ca51601fb8f1c0f6c83bce40c3650f9b23) Thanks [@deini](https://github.com/deini)! - pin nextjs version
 

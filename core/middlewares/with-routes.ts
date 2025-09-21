@@ -274,7 +274,8 @@ export const withRoutes: MiddlewareFactory = () => {
 
     const { route, status } = await getRouteInfo(request, event);
 
-    if (status === 'MAINTENANCE') {
+    const newLocal = 'MAINTENANCE';
+    if (status === newLocal) {
       // 503 status code not working - https://github.com/vercel/next.js/issues/50155
       return NextResponse.rewrite(new URL(`/${locale}/maintenance`, request.url), { status: 503 });
     }

@@ -6,12 +6,12 @@ import { SearchParams } from 'nuqs/server';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { FeaturedProductCarousel } from '@/vibes/soul/sections/featured-product-carousel';
-import { ProductDetail } from '@/vibes/soul/sections/product-detail';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { productOptionsTransformer } from '~/data-transformers/product-options-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { ProductDetail } from '~/lib/makeswift/components/product-detail';
 
 import { addToCart } from './_actions/add-to-cart';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
@@ -328,6 +328,7 @@ export default async function Product({ params, searchParams }: Props) {
             minQuantity: streamableMinQuantity,
             maxQuantity: streamableMaxQuantity,
           }}
+          productId={baseProduct.entityId}
           quantityLabel={t('ProductDetails.quantity')}
           thumbnailLabel={t('ProductDetails.thumbnail')}
         />

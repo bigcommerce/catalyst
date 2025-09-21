@@ -13,7 +13,7 @@ export default {
   }, 
   lighthouseOptions: {
     // Disabling performance tests because lighthouse utilizes hardware throttling. This affects concurrently running tests which might lead to false positives.
-    // The best way to truly measure performance is to use real user metrics – Vercel's Speed Insights is a great tool for that.
+    // The best way to truly measure performance is to use real user metrics – 's Speed Insights is a great tool for that.
     onlyCategories: ['best-practices', 'accessibility', 'seo'],
     skipAudits: [
       // Disabling `is-crawlable` as it's more relevant for production sites.
