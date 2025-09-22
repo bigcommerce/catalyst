@@ -89,7 +89,7 @@ export function BlogPostContent({
                 )}
 
                 <article
-                  className="prose mx-auto w-full max-w-4xl space-y-4 [&_h2]:font-heading [&_h2]:text-3xl [&_h2]:font-normal [&_h2]:leading-none [&_h2]:@xl:text-4xl [&_img]:mx-auto [&_img]:max-h-[600px] [&_img]:w-fit [&_img]:rounded-2xl [&_img]:object-cover"
+                  className="prose mx-auto w-full max-w-4xl space-y-4 [&_a]:font-bold [&_a]:text-black [&_a]:underline [&_h2]:font-heading [&_h2]:text-3xl [&_h2]:font-normal [&_h2]:leading-none [&_h2]:@xl:text-4xl [&_img]:mx-auto [&_img]:max-h-[600px] [&_img]:w-fit [&_img]:rounded-2xl [&_img]:object-cover"
                   dangerouslySetInnerHTML={{ __html: content }}
                 />
               </>

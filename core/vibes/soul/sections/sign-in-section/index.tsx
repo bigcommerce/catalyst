@@ -27,7 +27,12 @@ export function SignInSection({
     <div className="@container">
       <div className="flex flex-col justify-center gap-y-24 px-3 py-10 @xl:flex-row @xl:px-6 @4xl:py-20 @5xl:px-20">
         <div className="flex w-full flex-col @xl:max-w-md @xl:border-r @xl:pr-10 @4xl:pr-20">
-          <h1 className="mb-10 text-4xl font-medium leading-none @xl:text-5xl">{title}</h1>
+          <h1
+            className="mb-10 text-4xl font-medium leading-none @xl:text-5xl"
+            style={{ fontFamily: 'Inter' }}
+          >
+            {title}
+          </h1>
           <SignInForm
             action={action}
             emailLabel={emailLabel}
