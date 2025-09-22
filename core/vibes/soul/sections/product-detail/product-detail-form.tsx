@@ -96,9 +96,7 @@ export function ProductDetailForm<F extends Field>({
 
   const [{ lastResult, successMessage }, formAction] = useActionState(action, {
     fields,
-    lastResult: {
-      status: 'success',
-    },
+    lastResult: null,
     successMessage: 'Product added to cart successfully!',
   });
 
