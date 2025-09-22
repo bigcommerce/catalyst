@@ -101,6 +101,7 @@ const config = {
     '**/google_analytics4.js',
     'messages/**/*.ts',
     'blue-haze-65bb/**',
+    'next-env.d.ts',
   ],
 };
 

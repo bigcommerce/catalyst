@@ -12,6 +12,121 @@ import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
+const buildNormalizedUrl = (locale: string, path: string) => {
+  const prefix = locale ? `/${locale}` : '';
+  const normalizedPath = path.startsWith('/') ? path : `/${path}`;
+  const combined = `${prefix}${normalizedPath}`;
+
+  return combined === '' ? '/' : combined;
+};
+
+interface RedirectConfig {
+  status: number;
+  nextConfig: {
+    trailingSlash: boolean;
+  };
+}
+
+interface ResolveNodeOptions {
+  locale: string;
+  node: ParsedRouteNode | undefined;
+  request: NextRequest;
+  event: NextFetchEvent;
+}
+
+interface HandleRouteRedirectOptions {
+  request: NextRequest;
+  route: ParsedRoute | null | undefined;
+  redirectConfig: RedirectConfig;
+}
+
+const handleRouteRedirect = ({
+  request,
+  route,
+  redirectConfig,
+}: HandleRouteRedirectOptions): NextResponse | null => {
+  if (!route?.redirect) {
+    return null;
+  }
+
+  const fromPathSearchParams = new URL(route.redirect.fromPath, request.url).search;
+  const searchParams = fromPathSearchParams.length > 0 ? '' : request.nextUrl.search;
+
+  switch (route.redirect.to.__typename) {
+    case 'BlogPostRedirect':
+    case 'BrandRedirect':
+    case 'CategoryRedirect':
+    case 'PageRedirect':
+    case 'ProductRedirect': {
+      const redirectUrl = new URL(route.redirect.to.path + searchParams, request.url);
+
+      return NextResponse.redirect(redirectUrl, redirectConfig);
+    }
+
+    case 'ManualRedirect': {
+      const redirectUrl = new URL(route.redirect.to.url, request.url);
+
+      if (redirectUrl.origin === request.nextUrl.origin) {
+        redirectUrl.search = searchParams;
+      }
+
+      return NextResponse.redirect(redirectUrl, redirectConfig);
+    }
+
+    default: {
+      return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
+    }
+  }
+};
+
+const resolveNode = async ({
+  locale,
+  node,
+  request,
+  event,
+}: ResolveNodeOptions): Promise<NextResponse | string> => {
+  switch (node?.__typename) {
+    case 'Brand':
+      return `/${locale}/brand/${node.entityId}`;
+
+    case 'Category':
+      return `/${locale}/category/${node.entityId}`;
+
+    case 'Product': {
+      event.waitUntil(recordProductVisit(request, node.entityId));
+
+      return `/${locale}/product/${node.entityId}`;
+    }
+
+    case 'NormalPage':
+      return `/${locale}/webpages/${node.id}/normal/`;
+
+    case 'ContactPage':
+      return `/${locale}/webpages/${node.id}/contact/`;
+
+    case 'RawHtmlPage': {
+      const { htmlBody } = await getRawWebPageContent(node.id);
+
+      return new NextResponse(htmlBody, {
+        headers: { 'content-type': 'text/html' },
+      });
+    }
+
+    case 'Blog':
+      return `/${locale}/blog`;
+
+    case 'BlogPost':
+      return `/${locale}/blog/${node.entityId}`;
+
+    default: {
+      const { pathname } = new URL(request.url);
+      const cleanPathName = clearLocaleFromPath(pathname, locale);
+
+      return buildNormalizedUrl(locale, cleanPathName);
+    }
+  }
+};
+
 const GetRouteQuery = graphql(`
   query GetRouteQuery($path: String!) {
     site {
@@ -84,7 +199,7 @@ const getRawWebPageContentQuery = graphql(`
   }
 `);
 
-const getRawWebPageContent = async (id: string) => {
+async function getRawWebPageContent(id: string) {
   const response = await client.fetch({
     document: getRawWebPageContentQuery,
     variables: { id },
@@ -97,7 +212,7 @@ const getRawWebPageContent = async (id: string) => {
   }
 
   return node;
-};
+}
 
 const GetStoreStatusQuery = graphql(`
   query getStoreStatus {
@@ -171,6 +286,9 @@ const RouteSchema = z.object({
   node: z.nullable(NodeSchema),
 });
 
+type ParsedRoute = z.infer<typeof RouteSchema>;
+type ParsedRouteNode = ParsedRoute['node'];
+
 const RouteCacheSchema = z.object({
   route: z.nullable(RouteSchema),
   expiryTime: z.number(),
@@ -211,7 +329,7 @@ const updateStatusCache = async (
   return statusCache;
 };
 
-const clearLocaleFromPath = (path: string, locale: string) => {
+function clearLocaleFromPath(path: string, locale: string) {
   if (path === `/${locale}` || path === `/${locale}/`) {
     return '/';
   }
@@ -221,7 +339,7 @@ const clearLocaleFromPath = (path: string, locale: string) => {
   }
 
   return path;
-};
+}
 
 const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   const locale = request.headers.get('x-bc-locale') ?? '';
@@ -289,103 +407,30 @@ export const withRoutes: MiddlewareFactory = () => {
       },
     };
 
-    if (route?.redirect) {
-      // Only carry over query params if the fromPath does not have any, as Bigcommerce 301 redirects support matching by specific query params.
-      const fromPathSearchParams = new URL(route.redirect.fromPath, request.url).search;
-      const searchParams = fromPathSearchParams.length > 0 ? '' : request.nextUrl.search;
+    const redirectResponse = handleRouteRedirect({
+      request,
+      route,
+      redirectConfig,
+    });
 
-      switch (route.redirect.to.__typename) {
-        case 'BlogPostRedirect':
-        case 'BrandRedirect':
-        case 'CategoryRedirect':
-        case 'PageRedirect':
-        case 'ProductRedirect': {
-          // For dynamic redirects, assume an internal redirect and construct the URL from the path
-          const redirectUrl = new URL(route.redirect.to.path + searchParams, request.url);
-
-          return NextResponse.redirect(redirectUrl, redirectConfig);
-        }
-
-        case 'ManualRedirect': {
-          // For manual redirects, to.url will be a relative path if it is an internal redirect and an absolute URL if it is an external redirect.
-          // URL constructor will correctly handle both cases.
-          // If the manual redirect is an external URL, we should not carry query params.
-          const redirectUrl = new URL(route.redirect.to.url, request.url);
-
-          if (redirectUrl.origin === request.nextUrl.origin) {
-            redirectUrl.search = searchParams;
-          }
-
-          return NextResponse.redirect(redirectUrl, redirectConfig);
-        }
-
-        default: {
-          // If for some reason the redirect type is not recognized, use the toUrl as a fallback
-          return NextResponse.redirect(route.redirect.toUrl, redirectConfig);
-        }
-      }
+    if (redirectResponse) {
+      return redirectResponse;
     }
 
     const node = route?.node;
-    let url: string;
 
-    switch (node?.__typename) {
-      case 'Brand': {
-        url = `/${locale}/brand/${node.entityId}`;
-        break;
-      }
+    const resolvedNode = await resolveNode({
+      locale,
+      node,
+      request,
+      event,
+    });
 
-      case 'Category': {
-        url = `/${locale}/category/${node.entityId}`;
-        break;
-      }
-
-      case 'Product': {
-        url = `/${locale}/product/${node.entityId}`;
-
-        event.waitUntil(recordProductVisit(request, node.entityId));
-
-        break;
-      }
-
-      case 'NormalPage': {
-        url = `/${locale}/webpages/${node.id}/normal/`;
-        break;
-      }
-
-      case 'ContactPage': {
-        url = `/${locale}/webpages/${node.id}/contact/`;
-        break;
-      }
-
-      case 'RawHtmlPage': {
-        const { htmlBody } = await getRawWebPageContent(node.id);
-
-        return new NextResponse(htmlBody, {
-          headers: { 'content-type': 'text/html' },
-        });
-      }
-
-      case 'Blog': {
-        url = `/${locale}/blog`;
-        break;
-      }
-
-      case 'BlogPost': {
-        url = `/${locale}/blog/${node.entityId}`;
-        break;
-      }
-
-      default: {
-        const { pathname } = new URL(request.url);
-
-        const cleanPathName = clearLocaleFromPath(pathname, locale);
-
-        url = `/${locale}${cleanPathName}`;
-      }
+    if (resolvedNode instanceof NextResponse) {
+      return resolvedNode;
     }
 
-    const rewriteUrl = new URL(url, request.url);
+    const rewriteUrl = new URL(resolvedNode, request.url);
 
     rewriteUrl.search = request.nextUrl.search;
 
