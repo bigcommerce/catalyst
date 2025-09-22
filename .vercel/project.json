@@ -1,1 +1,16 @@
-{"projectId":"prj_INaaQWb5emmBctoGCmyFyLGj7BPH","orgId":"team_2w0fAz2sFN9SYuZyItcUDCtV","projectName":"catalyst"}
+{
+  "projectId": "prj_FGo9wVgJtXrBBJTZRSYyMuDAZ0wT",
+  "orgId": "team_mRNpXyvd2xF1mWCZ4Bg3trd2",
+  "projectName": "catalyst-core",
+  "settings": {
+    "createdAt": 1758447685244,
+    "framework": "nextjs",
+    "devCommand": null,
+    "installCommand": null,
+    "buildCommand": null,
+    "outputDirectory": null,
+    "rootDirectory": "core",
+    "directoryListing": false,
+    "nodeVersion": "22.x"
+  }
+}

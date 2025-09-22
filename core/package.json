@@ -4,13 +4,14 @@
   "version": "1.2.0",
   "private": true,
   "scripts": {
-    "dev": "npm run generate && next dev",
+    "dev": "next dev",
     "generate": "dotenv -e .env.local -- node ./scripts/generate.cjs",
-    "build": "npm run generate && next build",
+    "build": "next build",
     "build:analyze": "ANALYZE=true npm run build",
     "start": "next start",
     "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prebuild": "node scripts/generate.cjs"
   },
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",

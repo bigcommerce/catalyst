@@ -1,6 +1,18 @@
 // @ts-check
 const { generateSchema, generateOutput } = require('@gql.tada/cli-utils');
+const { config } = require('dotenv');
+const { existsSync } = require('fs');
 const { join } = require('path');
+
+const loadEnvIfPresent = (relativePath) => {
+  const filePath = join(__dirname, relativePath);
+
+  if (existsSync(filePath)) {
+    config({ path: filePath, override: false });
+  }
+};
+
+['../.env.local', '../.env'].forEach(loadEnvIfPresent);
 
 const graphqlApiDomain = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
 
