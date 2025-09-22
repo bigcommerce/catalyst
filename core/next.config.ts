@@ -1,4 +1,5 @@
 import path from 'path';
+import createWithMakeswift from '@makeswift/runtime/next/plugin';
 import bundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
@@ -7,6 +8,16 @@ import { writeBuildConfig } from './build-config/writer';
 import { client } from './client';
 import { graphql } from './client/graphql';
 import { cspHeader } from './lib/content-security-policy';
+
+const withMakeswift = createWithMakeswift();
+
+if (process.env.NODE_ENV !== 'production') {
+  const b2bApiHost = process.env.B2B_API_HOST;
+
+  if (b2bApiHost?.endsWith('/')) {
+    throw new Error('B2B_API_HOST should not end with a trailing slash. Please update your .env file.');
+  }
+}
 
 const withNextIntl = createNextIntlPlugin({
   experimental: {
@@ -130,8 +141,8 @@ export default async (): Promise<NextConfig> => {
     },
   };
 
-  // Apply withNextIntl to the config
   nextConfig = withNextIntl(nextConfig);
+  nextConfig = withMakeswift(nextConfig);
 
   if (process.env.ANALYZE === 'true') {
     const withBundleAnalyzer = bundleAnalyzer();
@@ -141,11 +152,3 @@ export default async (): Promise<NextConfig> => {
 
   return nextConfig;
 };
-
-
-
-
-
-
-
-
