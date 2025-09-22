@@ -139,7 +139,7 @@ export function ProductCard({
           )}
         </div>
 
-        <div className="mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
+        <div className="mx-4 mb-2 mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
           <div className="flex-1 text-sm @[16rem]:text-base">
             <span
               className={clsx(
