@@ -97,10 +97,9 @@ export const ProductCard = ({
           </Badge>
         )}
       </div>
-      <div className="flex flex-1 flex-col justify-between p-4">
+      <div className="flex flex-1 flex-col p-4">
         <h2 className="mb-1 text-xl font-bold text-gray-800">{name}</h2>
-
-        <div>
+        <div className="flex flex-1 flex-col justify-start">
           {showReviews && (
             <div className="mb-2 flex items-center">
               <div className="text-yellow-400">
@@ -123,7 +122,6 @@ export const ProductCard = ({
             </div>
           )}
         </div>
-
         <button
           className={clsx(
             'relative mt-4 w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
