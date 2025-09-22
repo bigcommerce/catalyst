@@ -4,6 +4,10 @@ const { config } = require('dotenv');
 const { existsSync } = require('fs');
 const { join } = require('path');
 
+/**
+ * Load environment variables from the given file if present.
+ * @param {string} relativePath
+ */
 const loadEnvIfPresent = (relativePath) => {
   const filePath = join(__dirname, relativePath);
 
@@ -16,6 +20,9 @@ const loadEnvIfPresent = (relativePath) => {
 
 const graphqlApiDomain = process.env.BIGCOMMERCE_GRAPHQL_API_DOMAIN ?? 'mybigcommerce.com';
 
+/**
+ * @returns {string}
+ */
 const getStoreHash = () => {
   const storeHash = process.env.BIGCOMMERCE_STORE_HASH;
 
@@ -26,12 +33,18 @@ const getStoreHash = () => {
   return storeHash;
 };
 
+/**
+ * @returns {string | undefined}
+ */
 const getChannelId = () => {
   const channelId = process.env.BIGCOMMERCE_CHANNEL_ID;
 
   return channelId;
 };
 
+/**
+ * @returns {string}
+ */
 const getToken = () => {
   const token = process.env.BIGCOMMERCE_STOREFRONT_TOKEN;
 
@@ -42,6 +55,9 @@ const getToken = () => {
   return token;
 };
 
+/**
+ * @returns {string}
+ */
 const getEndpoint = () => {
   const storeHash = getStoreHash();
   const channelId = getChannelId();
@@ -55,6 +71,9 @@ const getEndpoint = () => {
   return `https://store-${storeHash}-${channelId}.${graphqlApiDomain}/graphql`;
 };
 
+/**
+ * @returns {Promise<void>}
+ */
 const generate = async () => {
   try {
     await generateSchema({
