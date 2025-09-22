@@ -1,4 +1,4 @@
-﻿import path from 'path';
+import path from 'path';
 import bundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
@@ -116,8 +116,8 @@ export default async (): Promise<NextConfig> => {
     redirects: async () => {
       const destination =
         process.env.NODE_ENV === 'production'
-          ? 'https://www.mxplantae.com/:path*'
-          : 'http://localhost:3000/:path*';
+          ? 'https://mxplantae.com/:path*'
+          : 'http://localhost:3001/:path*';
 
       return [
         {
