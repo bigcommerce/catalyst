@@ -42,97 +42,99 @@ export const ProductCard = ({
   href,
 }: ProductCardProps) => {
   return (
-    <Link
-      aria-label={name}
-      href={href}
-      id={id}
-      className={clsx(
-        'max-w group flex h-full flex-col overflow-hidden rounded-lg bg-white no-underline shadow-lg',
-        className,
-      )}
-      style={{ display: 'block' }}
-    >
-      <div
+    <div className="relative">
+      <Link
+        aria-label={name}
+        href={href}
+        id={id}
         className={clsx(
-          'relative max-h-[480px] overflow-hidden rounded-xl bg-[var(--product-card-light-background,hsl(var(--contrast-100)))] @md:rounded-2xl',
-          {
-            '5:6': 'aspect-[5/6]',
-            '3:4': 'aspect-[3/4]',
-            '1:1': 'aspect-square',
-          }[aspectRatio],
+          'max-w group flex h-full flex-col overflow-hidden rounded-lg bg-white no-underline shadow-lg',
+          className,
         )}
+        style={{ display: 'block' }}
       >
-        {image != null ? (
-          <Image
-            alt={image.alt}
-            className={clsx(
-              'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
-            )}
-            fill
-            priority={imagePriority}
-            sizes={imageSizes}
-            src={image.src}
-            loading={imagePriority ? 'eager' : 'lazy'}
-          />
-        ) : (
-          <Image
-            alt={`${name} image`}
-            className={clsx(
-              'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
-            )}
-            fill
-            priority={imagePriority}
-            sizes={imageSizes}
-            src={DEFAULT_PRODUCT_IMAGE_URL}
-            loading={imagePriority ? 'eager' : 'lazy'}
-          />
-        )}
-        {badge.show && badge.text !== '' && (
-          <Badge
-            className={`absolute ${badge.location}-4 top-4`}
-            shape={badge.shape as 'pill' | 'rounded'}
-            variant={badge.theme as 'primary' | 'warning' | 'error' | 'success' | 'info'}
-          >
-            {badge.text}
-          </Badge>
-        )}
-      </div>
-      <div className="flex flex-1 flex-col p-4">
-        <div className="flex flex-1 flex-col">
-          <h2 className="mb-1 text-xl font-bold text-gray-800">{name}</h2>
-          {showReviews && (
-            <div className="mb-2 flex items-center">
-              <div className="text-yellow-400">
-                {'★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating))}
-              </div>
-              <span className="ml-2 text-sm text-gray-600">
-                {rating} ({reviewCount} reviews)
-              </span>
-            </div>
+        <div
+          className={clsx(
+            'relative max-h-[480px] overflow-hidden rounded-xl bg-[var(--product-card-light-background,hsl(var(--contrast-100)))] @md:rounded-2xl',
+            {
+              '5:6': 'aspect-[5/6]',
+              '3:4': 'aspect-[3/4]',
+              '1:1': 'aspect-square',
+            }[aspectRatio],
           )}
-
-          {salePrice ? (
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold">{salePrice}</span>
-              <span className="text-gray-400 line-through">{price}</span>
-            </div>
+        >
+          {image != null ? (
+            <Image
+              alt={image.alt}
+              className={clsx(
+                'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+              )}
+              fill
+              priority={imagePriority}
+              sizes={imageSizes}
+              src={image.src}
+              loading={imagePriority ? 'eager' : 'lazy'}
+            />
           ) : (
-            <div className="flex items-center gap-2">
-              <span className="text-2xl font-bold">{price}</span>
-            </div>
+            <Image
+              alt={`${name} image`}
+              className={clsx(
+                'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+              )}
+              fill
+              priority={imagePriority}
+              sizes={imageSizes}
+              src={DEFAULT_PRODUCT_IMAGE_URL}
+              loading={imagePriority ? 'eager' : 'lazy'}
+            />
+          )}
+          {badge.show && badge.text !== '' && (
+            <Badge
+              className={`absolute ${badge.location}-4 top-4`}
+              shape={badge.shape as 'pill' | 'rounded'}
+              variant={badge.theme as 'primary' | 'warning' | 'error' | 'success' | 'info'}
+            >
+              {badge.text}
+            </Badge>
           )}
         </div>
-        <button
-          className={clsx(
-            'relative mt-4 w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
-          )}
-          type="button"
-          tabIndex={-1}
-          aria-disabled="true"
-        >
-          {buttonText}
-        </button>
-      </div>
-    </Link>
+        <div className="flex flex-1 flex-col p-4">
+          <div className="flex flex-1 flex-col">
+            <h2 className="mb-1 text-xl font-bold text-gray-800">{name}</h2>
+            {showReviews && (
+              <div className="mb-2 flex items-center">
+                <div className="text-yellow-400">
+                  {'★'.repeat(Math.floor(rating)) + '☆'.repeat(5 - Math.floor(rating))}
+                </div>
+                <span className="ml-2 text-sm text-gray-600">
+                  {rating} ({reviewCount} reviews)
+                </span>
+              </div>
+            )}
+
+            {salePrice ? (
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold">{salePrice}</span>
+                <span className="text-gray-400 line-through">{price}</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="text-2xl font-bold">{price}</span>
+              </div>
+            )}
+          </div>
+          <button
+            className={clsx(
+              'relative mt-4 w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
+            )}
+            type="button"
+            tabIndex={-1}
+            aria-disabled="true"
+          >
+            {buttonText}
+          </button>
+        </div>
+      </Link>
+    </div>
   );
 };
