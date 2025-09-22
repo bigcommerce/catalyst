@@ -3,9 +3,9 @@ import React from 'react';
 export const LinkedInIcon: React.FC<React.ComponentPropsWithoutRef<'svg'>> = ({ ...props }) => (
   <svg
     fill="currentColor"
-    height="32"
-    viewBox="0 0 32 32"
-    width="32"
+    height="24"
+    viewBox="0 0 24 24"
+    width="24"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
