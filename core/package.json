@@ -11,7 +11,7 @@
     "start": "next start",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
-    "prebuild": "node scripts/generate.cjs"
+    "prebuild": "pnpm --dir .. --filter @bigcommerce/catalyst-client build && node scripts/generate.cjs"
   },
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",
