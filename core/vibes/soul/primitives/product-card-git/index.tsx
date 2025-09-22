@@ -124,16 +124,18 @@ export const ProductCard = ({
             )}
           </div>
         </div>
-        <button
-          className={clsx(
-            'relative mt-4 w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
-          )}
-          type="button"
-          tabIndex={-1}
-          aria-disabled="true"
-        >
-          {buttonText}
-        </button>
+        <div className="p-4">
+          <button
+            className={clsx(
+              'relative mt-4 w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
+            )}
+            type="button"
+            tabIndex={-1}
+            aria-disabled="true"
+          >
+            {buttonText}
+          </button>
+        </div>
       </Link>
     </div>
   );
