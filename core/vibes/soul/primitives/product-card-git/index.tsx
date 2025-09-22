@@ -42,7 +42,7 @@ export const ProductCard = ({
   href,
 }: ProductCardProps) => {
   return (
-    <div className="relative">
+    <div className="relative h-full">
       <Link
         aria-label={name}
         href={href}
@@ -51,7 +51,7 @@ export const ProductCard = ({
           'max-w group flex h-full flex-col overflow-hidden rounded-lg bg-white no-underline shadow-lg',
           className,
         )}
-        style={{ display: 'block' }}
+        style={{ display: 'flex', flexDirection: 'column', height: '100%' }}
       >
         <div
           className={clsx(
@@ -124,10 +124,10 @@ export const ProductCard = ({
             )}
           </div>
         </div>
-        <div className="p-4">
+        <div className="mt-auto p-4 pt-0">
           <button
             className={clsx(
-              'relative mt-4 w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
+              'relative w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
             )}
             type="button"
             tabIndex={-1}
