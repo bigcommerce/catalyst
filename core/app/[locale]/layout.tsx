@@ -113,8 +113,34 @@ export default async function RootLayout({ params, children }: Props) {
   // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
   setRequestLocale(locale);
 
-  const Statsig = await statsigAdapter.initialize();
-  const datafile = Statsig.getClientInitializeResponse({ userID: '1234' }, { hash: 'djb2' });
+  let appTree = (
+    <NextIntlClientProvider>
+      <NuqsAdapter>
+        <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
+          <Providers>
+            {toastNotificationCookieData && (
+              <CookieNotifications {...toastNotificationCookieData} />
+            )}
+            {children}
+          </Providers>
+        </AnalyticsProvider>
+      </NuqsAdapter>
+    </NextIntlClientProvider>
+  );
+
+  const statsigSecret = process.env.STATSIG_SERVER_SECRET;
+
+  if (statsigSecret && statsigSecret !== 'disabled') {
+    try {
+      const Statsig = await statsigAdapter.initialize();
+      const datafile = Statsig.getClientInitializeResponse({ userID: '1234' }, { hash: 'djb2' });
+
+      appTree = <DynamicStatsigProvider datafile={datafile}>{appTree}</DynamicStatsigProvider>;
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Statsig initialization failed', error);
+    }
+  }
 
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
@@ -125,20 +151,7 @@ export default async function RootLayout({ params, children }: Props) {
         />
       </head>
       <body className="flex min-h-screen flex-col">
-        <DynamicStatsigProvider datafile={datafile}>
-          <NextIntlClientProvider>
-            <NuqsAdapter>
-              <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
-                <Providers>
-                  {toastNotificationCookieData && (
-                    <CookieNotifications {...toastNotificationCookieData} />
-                  )}
-                  {children}
-                </Providers>
-              </AnalyticsProvider>
-            </NuqsAdapter>
-          </NextIntlClientProvider>
-        </DynamicStatsigProvider>
+        {appTree}
         <VercelComponents />
         <ContainerQueryPolyfill />
         <ScriptManagerScripts scripts={data.site.content.footerScripts} strategy="lazyOnload" />

@@ -1,3 +1,4 @@
+﻿import path from 'path';
 import bundleAnalyzer from '@next/bundle-analyzer';
 import type { NextConfig } from 'next';
 import createNextIntlPlugin from 'next-intl/plugin';
@@ -22,7 +23,6 @@ const SettingsQuery = graphql(`
           cdnUrl
           checkoutUrl
         }
-    rewrites: async () => [{ source: '/', destination: '/home' }],
         locales {
           code
           isDefault
@@ -63,6 +63,7 @@ export default async (): Promise<NextConfig> => {
 
   let nextConfig: NextConfig = {
     reactStrictMode: true,
+    outputFileTracingRoot: path.join(__dirname, '..'),
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
       ppr: 'incremental',
@@ -109,10 +110,13 @@ export default async (): Promise<NextConfig> => {
         },
       ];
     },
+    rewrites: async () => [
+      { source: '/', destination: '/en' },
+    ],
     redirects: async () => {
       const destination =
         process.env.NODE_ENV === 'production'
-          ? 'https://mxplantae.com/:path*'
+          ? 'https://www.mxplantae.com/:path*'
           : 'http://localhost:3000/:path*';
 
       return [
@@ -137,4 +141,11 @@ export default async (): Promise<NextConfig> => {
 
   return nextConfig;
 };
-    rewrites: async () => [{ source: '/', destination: '/home' }],
+
+
+
+
+
+
+
+
