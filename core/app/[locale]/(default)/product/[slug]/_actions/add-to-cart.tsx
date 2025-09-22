@@ -162,6 +162,8 @@ export const addToCart = async (
       ],
     });
 
+    console.log(submission);
+
     return {
       lastResult: submission.reply(),
       fields: prevState.fields,
