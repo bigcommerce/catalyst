@@ -71,7 +71,7 @@ export function ProductCard({
   return (
     <article
       className={clsx(
-        'group flex min-w-0 max-w-md flex-col gap-2 overflow-hidden font-[family-name:var(--card-font-family,var(--font-family-body))] @container',
+        'group flex min-w-0 max-w-md flex-col gap-2 overflow-hidden border font-[family-name:var(--card-font-family,var(--font-family-body))] shadow-lg @container',
         className,
       )}
     >
