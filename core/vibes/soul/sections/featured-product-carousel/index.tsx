@@ -63,7 +63,7 @@ export function FeaturedProductCarousel({
           )}
         </header>
         {cta != null && cta.href !== '' && cta.label !== '' && (
-          <AnimatedLink className="mr-3" href={cta.href}>
+          <AnimatedLink className="mr-3" href={'/brands'}>
             {cta.label}
           </AnimatedLink>
         )}

@@ -100,6 +100,8 @@ export function ProductDetailForm<F extends Field>({
   });
 
   useEffect(() => {
+    console.log('Last Result Changed: ', lastResult);
+    console.log('Success Message: ', successMessage);
     if (lastResult?.status === 'success') {
       toast.success(successMessage);
 
