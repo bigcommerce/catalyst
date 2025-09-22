@@ -122,6 +122,7 @@ export function ProductDetailForm<F extends Field>({
     shouldRevalidate: 'onInput',
     onSubmit: () => {
       // The actual submission is handled by `useActionState` above.
+      toast.success('Product added to cart successfully!');
     },
   });
 

@@ -33,7 +33,7 @@ export async function addToOrCreateCart(
   if (cart) {
     const response = await addCartLineItem(cart.entityId, data);
 
-    console.log('cart response: ', response);
+    console.log('cart response: ', response.data.cart.addCartLineItems?.cart?.entityId);
 
     if (!response.data.cart.addCartLineItems?.cart?.entityId) {
       throw new MissingCartError();
