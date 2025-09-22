@@ -150,12 +150,12 @@ export interface CartEmptyState {
 
 export function CartEmptyState({ title, subtitle, cta }: CartEmptyState) {
   return (
-    <SectionLayout className="text-center">
+    <SectionLayout className="mb-44 mt-44 text-center">
       <h1 className="mb-3 text-center font-heading text-3xl leading-none text-foreground @xl:text-4xl">
         {title}
       </h1>
       <p className="mb-6 text-center leading-normal text-contrast-500 @3xl:text-lg">{subtitle}</p>
-      <ButtonLink href={cta.href}>{cta.label}</ButtonLink>
+      <ButtonLink href={'/brands'}>{cta.label}</ButtonLink>
     </SectionLayout>
   );
 }
