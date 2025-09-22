@@ -21,20 +21,22 @@ export class MyWorkflow extends WorkflowEntrypoint<Env, Params> {
     // Can access bindings on `this.env`
     // Can access params on `event.payload`
 
-    await step.do('my first step', () => ({
-      // Fetch a list of files from $SOME_SERVICE
-      inputParams: event,
-      files: [
-        'doc_7392_rev3.pdf',
-        'report_x29_final.pdf',
-        'memo_2024_05_12.pdf',
-        'file_089_update.pdf',
-        'proj_alpha_v2.pdf',
-        'data_analysis_q2.pdf',
-        'notes_meeting_52.pdf',
-        'summary_fy24_draft.pdf',
-      ],
-    }));
+    await step.do('my first step', () =>
+      Promise.resolve({
+        // Fetch a list of files from $SOME_SERVICE
+        inputParams: event.payload,
+        files: [
+          'doc_7392_rev3.pdf',
+          'report_x29_final.pdf',
+          'memo_2024_05_12.pdf',
+          'file_089_update.pdf',
+          'proj_alpha_v2.pdf',
+          'data_analysis_q2.pdf',
+          'notes_meeting_52.pdf',
+          'summary_fy24_draft.pdf',
+        ],
+      }),
+    );
 
     // You can optionally have a Workflow wait for additional data,
     // human approval or an external webhook or HTTP request, before progressing.
@@ -43,9 +45,13 @@ export class MyWorkflow extends WorkflowEntrypoint<Env, Params> {
       timeout: '1 minute', // keep it short for the example!
     });
 
+    // eslint-disable-next-line @stylistic/padding-line-between-statements
     await step.do('some other step', async () => {
       const resp = await fetch('https://api.cloudflare.com/client/v4/ips');
-      return resp.json<Record<string, unknown>>();
+
+      await resp.json<Record<string, unknown>>();
+
+      return null;
     });
 
     await step.sleep('wait on something', '1 minute');
@@ -66,6 +72,8 @@ export class MyWorkflow extends WorkflowEntrypoint<Env, Params> {
         if (Math.random() > 0.5) {
           throw new Error('API call to $STORAGE_SYSTEM failed');
         }
+
+        return Promise.resolve(null);
       },
     );
   }

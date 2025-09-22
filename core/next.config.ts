@@ -108,15 +108,15 @@ export default async (): Promise<NextConfig> => {
         },
       ];
     },
-    async redirects() {
-      return [
+    redirects() {
+      return Promise.resolve([
         {
           source: '/:path*',
           has: [{ type: 'host', value: 'www.mxplantae.com' }],
           destination: 'https://mxplantae.com/:path*',
           permanent: true,
         },
-      ];
+      ]);
     },
   };
 

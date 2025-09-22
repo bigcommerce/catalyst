@@ -2,7 +2,7 @@
 
 require('@bigcommerce/eslint-config/patch');
 
-/** @type {import(''eslint'').Linter.LegacyConfig} */
+/** @type {import('eslint').Linter.LegacyConfig} */
 const config = {
   root: true,
   extends: [
@@ -10,6 +10,7 @@ const config = {
     '@bigcommerce/catalyst/react',
     '@bigcommerce/catalyst/next',
     '@bigcommerce/catalyst/prettier',
+    'prettier',
   ],
   rules: {
     '@typescript-eslint/naming-convention': 'off',
@@ -98,6 +99,8 @@ const config = {
     'test-results/**',
     '.tests/**',
     '**/google_analytics4.js',
+    'messages/**/*.ts',
+    'blue-haze-65bb/**',
   ],
 };
 
