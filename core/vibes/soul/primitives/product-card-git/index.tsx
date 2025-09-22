@@ -98,8 +98,8 @@ export const ProductCard = ({
         )}
       </div>
       <div className="flex flex-1 flex-col p-4">
-        <h2 className="mb-1 text-xl font-bold text-gray-800">{name}</h2>
-        <div className="flex flex-1 flex-col justify-start">
+        <div className="flex flex-1 flex-col">
+          <h2 className="mb-1 text-xl font-bold text-gray-800">{name}</h2>
           {showReviews && (
             <div className="mb-2 flex items-center">
               <div className="text-yellow-400">
