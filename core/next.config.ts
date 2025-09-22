@@ -22,6 +22,7 @@ const SettingsQuery = graphql(`
           cdnUrl
           checkoutUrl
         }
+    rewrites: async () => [{ source: '/', destination: '/home' }],
         locales {
           code
           isDefault
@@ -108,15 +109,20 @@ export default async (): Promise<NextConfig> => {
         },
       ];
     },
-    redirects() {
-      return Promise.resolve([
+    redirects: async () => {
+      const destination =
+        process.env.NODE_ENV === 'production'
+          ? 'https://mxplantae.com/:path*'
+          : 'http://localhost:3000/:path*';
+
+      return [
         {
           source: '/:path*',
           has: [{ type: 'host', value: 'www.mxplantae.com' }],
-          destination: 'https://mxplantae.com/:path*',
+          destination,
           permanent: true,
         },
-      ]);
+      ];
     },
   };
 
@@ -131,3 +137,4 @@ export default async (): Promise<NextConfig> => {
 
   return nextConfig;
 };
+    rewrites: async () => [{ source: '/', destination: '/home' }],
