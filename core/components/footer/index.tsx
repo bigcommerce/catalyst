@@ -25,6 +25,7 @@ import { ApplePayIcon } from './payment-icons/apple-pay';
 import { MastercardIcon } from './payment-icons/mastercard';
 import { PayPalIcon } from './payment-icons/paypal';
 import { VisaIcon } from './payment-icons/visa';
+import { LinkedInIcon } from './custom-icons/linkedin';
 
 const paymentIcons = [
   <AmazonIcon key="amazon" />,
@@ -43,7 +44,9 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   Pinterest: { icon: <SiPinterest title="Pinterest" /> },
   Instagram: { icon: <SiInstagram title="Instagram" /> },
   YouTube: { icon: <SiYoutube title="YouTube" /> },
-  LinkedIn: { icon: <SiLinkerd title="LinkedIn" /> }, // Using X icon as placeholder
+  LinkedIn: {
+    icon: <LinkedInIcon key={'linkedin'} />,
+  }, // Using X icon as placeholder
 };
 
 const getLayoutData = cache(async () => {

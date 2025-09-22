@@ -170,6 +170,7 @@ export const Footer = forwardRef(function Footer(
                             className="flex items-center justify-center rounded-lg fill-[var(--footer-social-icon,hsl(var(--contrast-400)))] p-1 ring-[var(--footer-focus,hsl(var(--primary)))] transition-colors duration-300 ease-out hover:fill-[var(--footer-social-icon-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2"
                             href={href}
                             key={i}
+                            target="_blank"
                           >
                             {icon}
                           </Link>
