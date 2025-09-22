@@ -13,7 +13,6 @@ interface QuoteNinjaCustomerSyncProps {
 
 export const QuoteNinjaCustomerSync = ({ customer }: QuoteNinjaCustomerSyncProps) => {
   useEffect(() => {
-    console.log(window.BN);
     if (typeof window !== 'undefined' && window.BN && customer) {
       window.BN.log_in_customer({
         ...customer,
