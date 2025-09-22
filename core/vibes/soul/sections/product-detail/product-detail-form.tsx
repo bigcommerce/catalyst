@@ -96,7 +96,10 @@ export function ProductDetailForm<F extends Field>({
 
   const [{ lastResult, successMessage }, formAction] = useActionState(action, {
     fields,
-    lastResult: null,
+    lastResult: {
+      status: 'success',
+    },
+    successMessage: 'Product added to cart successfully!',
   });
 
   useEffect(() => {
@@ -121,6 +124,9 @@ export function ProductDetailForm<F extends Field>({
     defaultValue,
     shouldValidate: 'onSubmit',
     shouldRevalidate: 'onInput',
+    onSubmit: () => {
+      // The actual submission is handled by `useActionState` above.
+    },
   });
 
   const quantityControl = useInputControl(formFields.quantity);
