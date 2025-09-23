@@ -1,0 +1,20 @@
+{
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "host", "value": "store-1d8l3jduoc-1787705.catalyst-sandbox-vercel.store" }
+      ],
+      "destination": "https://www.mxplantae.com/$1",
+      "permanent": true
+    },
+    {
+      "source": "/(.*)",
+      "has": [
+        { "type": "host", "value": "mxplantae.com" }
+      ],
+      "destination": "https://www.mxplantae.com/$1",
+      "permanent": true
+    }
+  ]
+}
