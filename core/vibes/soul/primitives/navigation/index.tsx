@@ -30,6 +30,8 @@ import { Link } from '~/components/link';
 import { usePathname, useRouter } from '~/i18n/routing';
 import { useSearch } from '~/lib/search';
 
+import { getLocalizedPathname } from './_actions/localized-pathname';
+
 interface Link {
   label: string;
   href: string;
@@ -862,22 +864,36 @@ function SearchResults({
   );
 }
 
-const useSwitchLocale = () => {
+const useSwitchLocale = ({ activeLocale }: { activeLocale: Locale | undefined }) => {
   const pathname = usePathname();
   const router = useRouter();
   const params = useParams();
   const searchParams = useSearchParams();
 
   return useCallback(
-    (locale: string) =>
+    async (locale: string) => {
+      const localizedPathname = await getLocalizedPathname({
+        pathname,
+        activeLocale: activeLocale?.id,
+        targetLocale: locale,
+      });
+
+      // the Next.js App Router guarantees a `startTransition` call on `router.push`,
+      // so we don’t need to wrap it in an explicit nested call as set out in
+      // https://react.dev/reference/react/useTransition#react-doesnt-treat-my-state-update-after-await-as-a-transition
       router.push(
-        // @ts-expect-error -- TypeScript will validate that only known `params`
-        // are used in combination with a given `pathname`. Since the two will
-        // always match for the current route, we can skip runtime checks.
-        { pathname, params, query: Object.fromEntries(searchParams.entries()) },
+        {
+          pathname: localizedPathname,
+          // @ts-expect-error -- TypeScript will validate that only known `params`
+          // are used in combination with a given `pathname`. Since the two will
+          // always match for the current route, we can skip runtime checks.
+          params,
+          query: Object.fromEntries(searchParams.entries()),
+        },
         { locale },
-      ),
-    [pathname, params, router, searchParams],
+      );
+    },
+    [pathname, activeLocale?.id, params, router, searchParams],
   );
 };
 
@@ -892,7 +908,7 @@ function LocaleSwitcher({
 }) {
   const activeLocale = locales.find((locale) => locale.id === activeLocaleId);
   const [isPending, startTransition] = useTransition();
-  const switchLocale = useSwitchLocale();
+  const switchLocale = useSwitchLocale({ activeLocale });
 
   return (
     <div className={className}>
