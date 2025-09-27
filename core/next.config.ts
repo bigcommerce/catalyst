@@ -61,6 +61,15 @@ export default async (): Promise<NextConfig> => {
         },
       ];
     },
+    async redirects() {
+      return [
+        {
+          source: '/shop',
+          destination: '/categories',
+          permanent: true, // or false for temporary redirect
+        },
+      ];
+    },
     // eslint-disable-next-line @typescript-eslint/require-await
     async headers() {
       return [
