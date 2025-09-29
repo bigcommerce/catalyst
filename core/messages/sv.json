@@ -364,6 +364,7 @@
             "decreaseNumber": "Minska antalet",
             "thumbnail": "Visa bildnummer",
             "additionalInformation": "Ytterligare information",
+            "currentStock": "Current stock: {quantity, number}",
             "Submit": {
                 "addToCart": "Lägg till i kundvagn",
                 "outOfStock": "Ej i lager",

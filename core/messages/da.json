@@ -364,6 +364,7 @@
             "decreaseNumber": "Reducer antallet",
             "thumbnail": "Vis billednummer",
             "additionalInformation": "Yderligere oplysninger",
+            "currentStock": "Current stock: {quantity, number}",
             "Submit": {
                 "addToCart": "Føj til kurv",
                 "outOfStock": "Udsolgt",

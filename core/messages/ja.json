@@ -364,6 +364,7 @@
             "decreaseNumber": "数を減らす",
             "thumbnail": "画像番号を表示",
             "additionalInformation": "追加情報",
+            "currentStock": "Current stock: {quantity, number}",
             "Submit": {
                 "addToCart": "カートに追加",
                 "outOfStock": "品切れ",
