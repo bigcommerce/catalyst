@@ -21,6 +21,7 @@ import { Reviews } from './_components/reviews';
 import { WishlistButton } from './_components/wishlist-button';
 import { WishlistButtonForm } from './_components/wishlist-button/form';
 import {
+  getInventorySettingsQuery,
   getProduct,
   getProductPageMetadata,
   getProductPricingAndRelatedProducts,
@@ -196,6 +197,47 @@ export default async function Product({ params, searchParams }: Props) {
     return false;
   });
 
+  const streamableStockLevelMessage = Streamable.from(async () => {
+    const inventorySetting = await getInventorySettingsQuery(customerAccessToken);
+
+    if (!inventorySetting) {
+      return null;
+    }
+
+    const { showOutOfStockMessage, stockLevelDisplay, defaultOutOfStockMessage } = inventorySetting;
+
+    const product = await streamableProduct;
+
+    if (!product.inventory.isInStock) {
+      return showOutOfStockMessage ? defaultOutOfStockMessage : null;
+    }
+
+    if (stockLevelDisplay === 'DONT_SHOW') {
+      return null;
+    }
+
+    const { availableToSell, warningLevel } = product.inventory.aggregated ?? {};
+
+    // availableToSell can be 0 while the product is in stock if backorderLimit is UNLIMITED
+    if (!availableToSell) {
+      return null;
+    }
+
+    if (stockLevelDisplay === 'SHOW_WHEN_LOW') {
+      if (!warningLevel) {
+        return null;
+      }
+
+      if (availableToSell && availableToSell > warningLevel) {
+        return null;
+      }
+    }
+
+    return t('ProductDetails.currentStock', {
+      quantity: availableToSell,
+    });
+  });
+
   const streameableAccordions = Streamable.from(async () => {
     const product = await streamableProduct;
 
@@ -327,6 +369,7 @@ export default async function Product({ params, searchParams }: Props) {
             accordions: streameableAccordions,
             minQuantity: streamableMinQuantity,
             maxQuantity: streamableMaxQuantity,
+            stockLevelMessage: streamableStockLevelMessage,
           }}
           quantityLabel={t('ProductDetails.quantity')}
           thumbnailLabel={t('ProductDetails.thumbnail')}
