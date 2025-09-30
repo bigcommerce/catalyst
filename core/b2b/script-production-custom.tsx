@@ -8,9 +8,9 @@ import { useB2BCart } from './use-b2b-cart';
 /**
  * Use these vars if using build hashes in B2B Buyer Portal files.
  */
-const hashIndex = undefined;
-const hashIndexLegacy = undefined;
-const hashPolyfills = undefined;
+const hashIndex = null;
+const hashIndexLegacy = null;
+const hashPolyfills = null;
 
 interface Props {
   storeHash: string;

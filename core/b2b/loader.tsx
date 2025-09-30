@@ -10,7 +10,7 @@ const EnvironmentSchema = z.object({
   BIGCOMMERCE_STORE_HASH: z.string({ message: 'BIGCOMMERCE_STORE_HASH is required' }),
   BIGCOMMERCE_CHANNEL_ID: z.string({ message: 'BIGCOMMERCE_CHANNEL_ID is required' }),
   LOCAL_BUYER_PORTAL_HOST: z.string().url().optional(),
-  PROD_BUYER_PORTAL_URL: z.string().url().optional(),
+  PROD_BUYER_PORTAL_HOST: z.string().url().optional(),
   STAGING_B2B_CDN_ORIGIN: z.string().optional(),
 });
 
@@ -19,7 +19,7 @@ export async function B2BLoader() {
     BIGCOMMERCE_STORE_HASH,
     BIGCOMMERCE_CHANNEL_ID,
     LOCAL_BUYER_PORTAL_HOST,
-    PROD_BUYER_PORTAL_URL,
+    PROD_BUYER_PORTAL_HOST,
     STAGING_B2B_CDN_ORIGIN,
   } = EnvironmentSchema.parse(process.env);
 
@@ -37,14 +37,14 @@ export async function B2BLoader() {
     );
   }
   
-  if (PROD_BUYER_PORTAL_URL) {
+  if (PROD_BUYER_PORTAL_HOST) {
     return (
       <ScriptProductionCustom
         cartId={session?.user?.cartId}
         channelId={BIGCOMMERCE_CHANNEL_ID}
         storeHash={BIGCOMMERCE_STORE_HASH}
         token={session?.b2bToken}
-        prodUrl={PROD_BUYER_PORTAL_URL}
+        prodUrl={PROD_BUYER_PORTAL_HOST}
       />
     );
   }
