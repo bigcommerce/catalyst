@@ -12,6 +12,9 @@ const EnvironmentSchema = z.object({
   LOCAL_BUYER_PORTAL_HOST: z.string().url().optional(),
   PROD_BUYER_PORTAL_URL: z.string().url().optional(),
   STAGING_B2B_CDN_ORIGIN: z.string().optional(),
+  PROD_BUYER_PORTAL_HASH_INDEX: z.string().optional(),
+  PROD_BUYER_PORTAL_HASH_INDEX_LEGACY: z.string().optional(),
+  PROD_BUYER_PORTAL_HASH_POLYFILLS: z.string().optional(),
 });
 
 export async function B2BLoader() {
@@ -21,6 +24,9 @@ export async function B2BLoader() {
     LOCAL_BUYER_PORTAL_HOST,
     PROD_BUYER_PORTAL_URL,
     STAGING_B2B_CDN_ORIGIN,
+    PROD_BUYER_PORTAL_HASH_INDEX,
+    PROD_BUYER_PORTAL_HASH_INDEX_LEGACY,
+    PROD_BUYER_PORTAL_HASH_POLYFILLS,
   } = EnvironmentSchema.parse(process.env);
 
   const session = await auth();
@@ -45,6 +51,9 @@ export async function B2BLoader() {
         storeHash={BIGCOMMERCE_STORE_HASH}
         token={session?.b2bToken}
         prodUrl={PROD_BUYER_PORTAL_URL}
+        hashIndex={PROD_BUYER_PORTAL_HASH_INDEX}
+        hashIndexLegacy={PROD_BUYER_PORTAL_HASH_INDEX_LEGACY}
+        hashPolyfills={PROD_BUYER_PORTAL_HASH_POLYFILLS}
       />
     );
   }
