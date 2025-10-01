@@ -1,5 +1,5 @@
-import { MakeswiftComponentType } from '@makeswift/runtime';
 import { Link, Select, Style, TextInput } from '@makeswift/runtime/controls';
+import { MakeswiftComponentType } from '@makeswift/runtime/react/builtins';
 
 import { runtime } from '~/lib/makeswift/runtime';
 
