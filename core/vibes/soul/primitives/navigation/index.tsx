@@ -506,7 +506,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               <NavigationMenu.Trigger onMouseEnter={() => SetHiddenCategoryBar(false)} asChild>
                 <Link
                   className="hidden items-center whitespace-nowrap rounded-xl bg-[var(--nav-link-background,transparent)] p-2.5 font-[family-name:var(--nav-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors duration-200 hover:bg-[#011F4B] hover:text-white focus-visible:bg-[#011F4B] focus-visible:text-white focus-visible:outline-0 focus-visible:ring-2 @4xl:inline-flex"
-                  href={'/shop'}
+                  href={'/categories'}
                 >
                   All Products <ChevronDownIcon className="inline" strokeWidth={3} size={20} />
                 </Link>
