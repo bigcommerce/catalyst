@@ -106,6 +106,42 @@ export function ProductsListSection({
               breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
             }
           </Stream>
+          {/** OLD PLACE FOR THE SORT_BY_FILTERS **/}
+        </div>
+
+        {description && (
+          <Stream value={description}>
+            {(resolvedDescription) =>
+              resolvedDescription && resolvedDescription !== undefined ? (
+                <div
+                  className="mb-8 max-w-7xl"
+                  // @ts-ignore
+                  dangerouslySetInnerHTML={{ __html: resolvedDescription.split('|||')[0] }}
+                />
+              ) : null
+            }
+          </Stream>
+        )}
+
+        {/**
+         * GRID OF ITEMS FOR THE SUB CATEGORIES
+         */}
+        <div className="hidden @3xl:block @4xl:w-full">
+          <FiltersPanel
+            className="sticky top-4 mb-4"
+            filters={filters}
+            paginationInfo={paginationInfo}
+            rangeFilterApplyLabel={rangeFilterApplyLabel}
+            resetFiltersLabel={resetFiltersLabel}
+          />
+        </div>
+
+        <div>
+          <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
+            {(breadcrumbs) =>
+              breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
+            }
+          </Stream>
           <div className="flex flex-wrap items-center justify-between gap-4 pb-4 pt-6 text-foreground">
             <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
               <Suspense
@@ -113,7 +149,7 @@ export function ProductsListSection({
                   <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
                 }
               >
-                {title}
+                Sort By
               </Suspense>
               {/* <Suspense
                 fallback={
@@ -173,33 +209,6 @@ export function ProductsListSection({
               </div> */}
             </div>
           </div>
-        </div>
-
-        {description && (
-          <Stream value={description}>
-            {(resolvedDescription) =>
-              resolvedDescription && resolvedDescription !== undefined ? (
-                <div
-                  className="mb-8 max-w-7xl"
-                  // @ts-ignore
-                  dangerouslySetInnerHTML={{ __html: resolvedDescription.split('|||')[0] }}
-                />
-              ) : null
-            }
-          </Stream>
-        )}
-
-        {/**
-         * GRID OF ITEMS FOR THE SUB CATEGORIES
-         */}
-        <div className="hidden @3xl:block @4xl:w-full">
-          <FiltersPanel
-            className="sticky top-4 mb-4"
-            filters={filters}
-            paginationInfo={paginationInfo}
-            rangeFilterApplyLabel={rangeFilterApplyLabel}
-            resetFiltersLabel={resetFiltersLabel}
-          />
         </div>
 
         <div className="mt-6 flex items-stretch gap-8 @4xl:gap-10">
