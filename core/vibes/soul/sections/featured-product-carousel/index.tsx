@@ -78,6 +78,7 @@ export function FeaturedProductCarousel({
           previousLabel={previousLabel}
           products={products}
           scrollbarLabel={scrollbarLabel}
+          showButtons={true}
         />
       </div>
     </SectionLayout>

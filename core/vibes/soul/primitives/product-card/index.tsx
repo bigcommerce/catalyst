@@ -30,6 +30,7 @@ export interface ProductCardProps {
   compareLabel?: string;
   compareParamName?: string;
   product: Product;
+  showButton?: boolean;
   onClick?: () => void;
 }
 
@@ -67,6 +68,7 @@ export function ProductCard({
   compareParamName,
   imagePriority = false,
   imageSizes = '(min-width: 80rem) 20vw, (min-width: 64rem) 25vw, (min-width: 42rem) 33vw, (min-width: 24rem) 50vw, 100vw',
+  showButton = false,
 }: ProductCardProps) {
   return (
     <article
@@ -169,18 +171,20 @@ export function ProductCard({
             {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
           </div>
         </div>
-        <div className="mt-auto p-4 pt-0">
-          <button
-            className={clsx(
-              'relative w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
-            )}
-            type="button"
-            tabIndex={-1}
-            aria-disabled="true"
-          >
-            Shop Now →
-          </button>
-        </div>
+        {showButton && (
+          <div className="mt-auto p-4 pt-0">
+            <button
+              className={clsx(
+                'relative w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
+              )}
+              type="button"
+              tabIndex={-1}
+              aria-disabled="true"
+            >
+              Shop Now →
+            </button>
+          </div>
+        )}
         <Link
           aria-label={title}
           className={clsx(
