@@ -355,102 +355,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             : 'shadow-none ring-0',
         )}
       >
-        {/* Mobile Menu */}
-        <Popover.Root onOpenChange={setIsMobileMenuOpen} open={isMobileMenuOpen}>
-          <Popover.Anchor className="absolute left-0 right-0 top-full" />
-          <Popover.Trigger asChild>
-            <MobileMenuButton
-              aria-label={mobileMenuTriggerLabel}
-              className="mr-1 @4xl:hidden"
-              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
-              open={isMobileMenuOpen}
-            />
-          </Popover.Trigger>
-          <Popover.Portal>
-            <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popper-anchor-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
-              <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
-                {/* Static Links on Mobile */}
-
-                <ul className="flex flex-col p-2 @4xl:gap-2 @4xl:p-5">
-                  <li>
-                    <button
-                      className="flex w-full items-center justify-between rounded-lg px-3 py-2 font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] focus:outline-none"
-                      onClick={() => setIsAllProductsOpen((open) => !open)}
-                      aria-expanded={isAllProductsOpen}
-                    >
-                      All Products
-                      <ChevronDownIcon
-                        className={clsx('transition-transform', isAllProductsOpen && 'rotate-180')}
-                        size={20}
-                        strokeWidth={3}
-                      />
-                    </button>
-                    {isAllProductsOpen && (
-                      <ul className="pl-4">
-                        {categoryLinks.map((category, idx) => (
-                          <MobileItem category={category} idx={idx} />
-                        ))}
-                      </ul>
-                    )}
-                  </li>
-                </ul>
-
-                {/**
-                 * Dynamic Links on Mobile
-                 */}
-                <Stream
-                  fallback={
-                    <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
-                      <li>
-                        <span className="block h-4 w-10 rounded-md bg-contrast-100" />
-                      </li>
-                      <li>
-                        <span className="block h-4 w-14 rounded-md bg-contrast-100" />
-                      </li>
-                      <li>
-                        <span className="block h-4 w-24 rounded-md bg-contrast-100" />
-                      </li>
-                      <li>
-                        <span className="block h-4 w-16 rounded-md bg-contrast-100" />
-                      </li>
-                    </ul>
-                  }
-                  value={streamableLinks}
-                >
-                  {(links) =>
-                    links.map((item, i) => (
-                      <ul className="flex flex-col p-2 @4xl:gap-2 @4xl:p-5" key={i}>
-                        {item.label !== '' && (
-                          <li>
-                            <Link
-                              className="block rounded-lg bg-[var(--nav-mobile-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
-                              href={item.href}
-                            >
-                              {item.label}
-                            </Link>
-                          </li>
-                        )}
-                        {item.groups
-                          ?.flatMap((group) => group.links)
-                          .map((link, j) => (
-                            <li key={j}>
-                              <Link
-                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
-                                href={link.href}
-                              >
-                                {link.label}
-                              </Link>
-                            </li>
-                          ))}
-                      </ul>
-                    ))
-                  }
-                </Stream>
-              </div>
-            </Popover.Content>
-          </Popover.Portal>
-        </Popover.Root>
-
         {/* Logo */}
         <div
           className={clsx(
@@ -702,7 +606,7 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
           </div>
           <Link
             href={`tel:${phoneNumber}`}
-            className="text-md mt-1 flex items-center whitespace-nowrap font-bold text-[#011F4B] hover:underline"
+            className="text-md mt-1 flex hidden items-center whitespace-nowrap font-bold text-[#011F4B] hover:underline @4xl:flex"
             style={{ lineHeight: 1 }}
             aria-label={`Call ${phoneNumber}`}
           >
@@ -710,6 +614,103 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
             {phoneNumber}
           </Link>
         </div>
+        {/** MOBILE BUTTON */}
+
+        {/* Mobile Menu */}
+        <Popover.Root onOpenChange={setIsMobileMenuOpen} open={isMobileMenuOpen}>
+          <Popover.Anchor className="absolute left-0 right-0 top-full" />
+          <Popover.Trigger asChild>
+            <MobileMenuButton
+              aria-label={mobileMenuTriggerLabel}
+              className="mr-1 @4xl:hidden"
+              onClick={() => setIsMobileMenuOpen((prev) => !prev)}
+              open={isMobileMenuOpen}
+            />
+          </Popover.Trigger>
+          <Popover.Portal>
+            <Popover.Content className="max-h-[calc(var(--radix-popover-content-available-height)-8px)] w-[var(--radix-popper-anchor-width)] @container data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95">
+              <div className="max-h-[inherit] divide-y divide-[var(--nav-mobile-divider,hsl(var(--contrast-100)))] overflow-y-auto bg-[var(--nav-mobile-background,hsl(var(--background)))]">
+                {/* Static Links on Mobile */}
+
+                <ul className="flex flex-col p-2 @4xl:gap-2 @4xl:p-5">
+                  <li>
+                    <button
+                      className="flex w-full items-center justify-between rounded-lg px-3 py-2 font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] focus:outline-none"
+                      onClick={() => setIsAllProductsOpen((open) => !open)}
+                      aria-expanded={isAllProductsOpen}
+                    >
+                      All Products
+                      <ChevronDownIcon
+                        className={clsx('transition-transform', isAllProductsOpen && 'rotate-180')}
+                        size={20}
+                        strokeWidth={3}
+                      />
+                    </button>
+                    {isAllProductsOpen && (
+                      <ul className="pl-4">
+                        {categoryLinks.map((category, idx) => (
+                          <MobileItem category={category} idx={idx} />
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                </ul>
+
+                {/**
+                 * Dynamic Links on Mobile
+                 */}
+                <Stream
+                  fallback={
+                    <ul className="flex animate-pulse flex-col gap-4 p-5 @4xl:gap-2 @4xl:p-5">
+                      <li>
+                        <span className="block h-4 w-10 rounded-md bg-contrast-100" />
+                      </li>
+                      <li>
+                        <span className="block h-4 w-14 rounded-md bg-contrast-100" />
+                      </li>
+                      <li>
+                        <span className="block h-4 w-24 rounded-md bg-contrast-100" />
+                      </li>
+                      <li>
+                        <span className="block h-4 w-16 rounded-md bg-contrast-100" />
+                      </li>
+                    </ul>
+                  }
+                  value={streamableLinks}
+                >
+                  {(links) =>
+                    links.map((item, i) => (
+                      <ul className="flex flex-col p-2 @4xl:gap-2 @4xl:p-5" key={i}>
+                        {item.label !== '' && (
+                          <li>
+                            <Link
+                              className="block rounded-lg bg-[var(--nav-mobile-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-link-font-family,var(--font-family-body))] font-semibold text-[var(--nav-mobile-link-text,hsl(var(--foreground)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
+                              href={item.href}
+                            >
+                              {item.label}
+                            </Link>
+                          </li>
+                        )}
+                        {item.groups
+                          ?.flatMap((group) => group.links)
+                          .map((link, j) => (
+                            <li key={j}>
+                              <Link
+                                className="block rounded-lg bg-[var(--nav-mobile-sub-link-background,transparent)] px-3 py-2 font-[family-name:var(--nav-mobile-sub-link-font-family,var(--font-family-body))] text-sm font-medium text-[var(--nav-mobile-sub-link-text,hsl(var(--contrast-500)))] ring-[var(--nav-focus,hsl(var(--primary)))] transition-colors hover:bg-[var(--nav-mobile-sub-link-background-hover,hsl(var(--contrast-100)))] hover:text-[var(--nav-mobile-sub-link-text-hover,hsl(var(--foreground)))] focus-visible:outline-0 focus-visible:ring-2 @4xl:py-4"
+                                href={link.href}
+                              >
+                                {link.label}
+                              </Link>
+                            </li>
+                          ))}
+                      </ul>
+                    ))
+                  }
+                </Stream>
+              </div>
+            </Popover.Content>
+          </Popover.Portal>
+        </Popover.Root>
       </div>
 
       <div className="perspective-[2000px] absolute left-0 right-0 top-full z-50 flex w-full justify-center">
