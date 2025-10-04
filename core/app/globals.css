@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --font-variation-settings-body: 'slnt' 0;
-  --font-variation-settings-heading: 'slnt' 0;
+  --font-variation-settings-body: 'Inter' 0;
+  --font-variation-settings-heading: 'Inter' 0;
   --font-family-heading: 'Inter', system-ui, sans-serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
