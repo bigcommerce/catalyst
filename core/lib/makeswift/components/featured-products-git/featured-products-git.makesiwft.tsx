@@ -122,11 +122,13 @@ function MakeswiftFeaturedProductsGridGIT({
 
   const hasCategory = props.categoryItem && props.categoryItem.entityId;
 
+  console.log('category', category);
+
   return (
     <div className="grid gap-5 xl:grid-cols-5">
       {hasCategory && category ? (
         <div className="col-span-5 sm:col-span-5 md:col-span-5 lg:col-span-1 xl:col-span-1">
-          {/* Category Card Placeholder */}
+          {/* Category Card */}
           <div className="flex h-full w-full items-center justify-center rounded-lg border border-gray-300 bg-gray-100">
             <CategoryGridCard
               key={category.id}
