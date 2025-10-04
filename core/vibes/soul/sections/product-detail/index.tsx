@@ -43,6 +43,7 @@ interface Props<F extends Field> {
   additionaInformationTitle?: string;
   inventoryTracking: Streamable<string | null>;
   inventoryLevel?: object;
+  sku: Streamable<string>;
 }
 
 export function ProductDetail<F extends Field>({
@@ -60,6 +61,7 @@ export function ProductDetail<F extends Field>({
   additionaInformationTitle = 'Additional information',
   inventoryTracking,
   inventoryLevel,
+  sku,
 }: Props<F>) {
   return (
     <section className="@container">
@@ -84,6 +86,16 @@ export function ProductDetail<F extends Field>({
                   <h1 className="mb-3 mt-2 font-heading text-2xl font-medium leading-none @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
                     {product.title}
                   </h1>
+                  <Stream fallback={<RatingSkeleton />} value={sku}>
+                    {(sku) => (
+                      <h3 className="mb-3 mt-2 font-heading text-xl font-medium leading-none">
+                        SKU: {sku}
+                      </h3>
+                    )}
+                  </Stream>
+                  <h3 className="mb-3 mt-2 font-heading text-xl font-medium leading-none">
+                    SKU: {sku}
+                  </h3>
                   <Stream fallback={<RatingSkeleton />} value={product.rating}>
                     {(rating) => <Rating rating={rating ?? 0} />}
                   </Stream>

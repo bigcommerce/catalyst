@@ -128,6 +128,7 @@ const getProduct = async (props: Props) => {
     rating: product.reviewSummary.averageRating,
     accordions,
     inventory_tracking: product.inventory_tracking,
+    sku: product.sku,
   };
 };
 
@@ -269,6 +270,7 @@ export default async function Product(props: Props) {
         inventoryLevel={Streamable.from(() =>
           getProductData(variables).then((p) => p.inventory_level),
         )}
+        sku={Streamable.from(() => getProduct(props).then((p) => p.sku))}
       />
 
       <FeaturedProductCarousel

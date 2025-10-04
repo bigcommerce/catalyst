@@ -8,6 +8,7 @@ type Props = ClientProps & {
   productId: number;
   inventoryTracking: Streamable<string | null>;
   inventoryLevel: any;
+  sku: Streamable<string>;
 };
 
 export const ProductDetail = ({ productId, ...props }: Props) => (
