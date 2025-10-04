@@ -20,6 +20,8 @@ import { Price } from '@/vibes/soul/primitives/price-label';
 import clsx from 'clsx';
 import { FeaturedProductCard } from '@/vibes/soul/primitives/featured-product-card-git';
 import { searchCategories } from '../../utils/search-categories';
+import { useCategoriesByIds } from '../../utils/fetch-categories';
+import { CategoryGridCard } from '../category-grid-git/category-grid-git.makeswift';
 
 interface CategoryInterface {
   entityId?: string;
@@ -69,11 +71,18 @@ function MakeswiftFeaturedProductsGridGIT({
     );
   }
 
-  const { products, isLoading } = useProductsByIds({
+  const { products, isLoading: isLoadingProducts } = useProductsByIds({
     productIds: additionalProductIds,
   });
+  let category = null;
+  const { categories, isLoading: isLoadingCategories } = useCategoriesByIds({
+    categoryIds: [props.categoryItem!.entityId!],
+  });
+  if (categories && categories.length > 0) {
+    category = categories[0];
+  }
 
-  if (isLoading) {
+  if (isLoadingProducts || isLoadingCategories) {
     return (
       <div
         className={clsx(
@@ -115,11 +124,18 @@ function MakeswiftFeaturedProductsGridGIT({
 
   return (
     <div className="grid gap-5 xl:grid-cols-5">
-      {hasCategory ? (
+      {hasCategory && category ? (
         <div className="col-span-5 sm:col-span-5 md:col-span-5 lg:col-span-1 xl:col-span-1">
           {/* Category Card Placeholder */}
           <div className="flex h-full w-full items-center justify-center rounded-lg border border-gray-300 bg-gray-100">
-            <span className="text-gray-500">Category Card Placeholder</span>
+            <CategoryGridCard
+              key={category.id}
+              id={category.id.toString()}
+              name={category.name}
+              href={category.path}
+              imageUrl={category.image}
+              productCount={category.productCount}
+            />
           </div>
         </div>
       ) : null}
