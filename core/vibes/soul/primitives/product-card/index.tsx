@@ -169,6 +169,18 @@ export function ProductCard({
             {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
           </div>
         </div>
+        <div className="mt-auto p-4 pt-0">
+          <button
+            className={clsx(
+              'relative w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
+            )}
+            type="button"
+            tabIndex={-1}
+            aria-disabled="true"
+          >
+            Shop Now →
+          </button>
+        </div>
         <Link
           aria-label={title}
           className={clsx(
