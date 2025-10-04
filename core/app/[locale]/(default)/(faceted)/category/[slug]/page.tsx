@@ -349,48 +349,89 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function Category(props: Props) {
   const { locale } = await props.params;
-
   setRequestLocale(locale);
+
+  // Fetch all data server-side in parallel
+  const [
+    breadcrumbs,
+    compareLabel,
+    categoryImage,
+    compareProducts,
+    emptyStateSubtitle,
+    description,
+    emptyStateTitle,
+    filterLabel,
+    filters,
+    filtersPanelTitle,
+    maxCompareLimitMessage,
+    paginationInfo,
+    products,
+    rangeFilterApplyLabel,
+    removeLabel,
+    resetFiltersLabel,
+    showCompare,
+    sortLabel,
+    sortOptions,
+    title,
+    totalCount,
+    category,
+    rawProducts,
+  ] = await Promise.all([
+    getBreadcrumbs(props),
+    getCompareLabel(),
+    getCategoryFeaturedImage(props),
+    getCompareProducts(props),
+    getEmptyStateSubtitle(),
+    getCategoryDescription(props),
+    getEmptyStateTitle(),
+    getFilterLabel(),
+    getFilters(props),
+    getFiltersPanelTitle(),
+    getMaxCompareLimitMessage(),
+    getPaginationInfo(props),
+    getListProducts(props),
+    getRangeFilterApplyLabel(),
+    getRemoveLabel(),
+    getResetFiltersLabel(),
+    getShowCompare(props),
+    getSortLabel(),
+    getSortOptions(),
+    getTitle(props),
+    getTotalCount(props),
+    getCategory(props),
+    getProducts(props),
+  ]);
 
   return (
     <>
       <ProductsListSection
-        breadcrumbs={Streamable.from(() => getBreadcrumbs(props))}
-        compareLabel={Streamable.from(getCompareLabel)}
-        categoryImage={Streamable.from(() => getCategoryFeaturedImage(props))}
+        breadcrumbs={breadcrumbs}
+        compareLabel={compareLabel}
+        categoryImage={categoryImage}
         // @ts-ignore
-        compareProducts={Streamable.from(() => getCompareProducts(props))}
-        emptyStateSubtitle={Streamable.from(getEmptyStateSubtitle)}
-        description={Streamable.from(() => getCategoryDescription(props))}
-        emptyStateTitle={Streamable.from(getEmptyStateTitle)}
-        filterLabel={await getFilterLabel()}
-        filters={Streamable.from(() => getFilters(props))}
-        filtersPanelTitle={Streamable.from(getFiltersPanelTitle)}
-        maxCompareLimitMessage={Streamable.from(getMaxCompareLimitMessage)}
+        compareProducts={compareProducts}
+        emptyStateSubtitle={emptyStateSubtitle}
+        description={description}
+        emptyStateTitle={emptyStateTitle}
+        filterLabel={filterLabel}
+        filters={filters}
+        filtersPanelTitle={filtersPanelTitle}
+        maxCompareLimitMessage={maxCompareLimitMessage}
         maxItems={MAX_COMPARE_LIMIT}
-        paginationInfo={Streamable.from(() => getPaginationInfo(props))}
-        products={Streamable.from(() => getListProducts(props))}
-        rangeFilterApplyLabel={Streamable.from(getRangeFilterApplyLabel)}
-        removeLabel={Streamable.from(getRemoveLabel)}
-        resetFiltersLabel={Streamable.from(getResetFiltersLabel)}
-        showCompare={Streamable.from(() => getShowCompare(props))}
+        paginationInfo={paginationInfo}
+        products={products}
+        rangeFilterApplyLabel={rangeFilterApplyLabel}
+        removeLabel={removeLabel}
+        resetFiltersLabel={resetFiltersLabel}
+        showCompare={showCompare}
         sortDefaultValue="featured"
-        sortLabel={Streamable.from(getSortLabel)}
-        sortOptions={Streamable.from(getSortOptions)}
+        sortLabel={sortLabel}
+        sortOptions={sortOptions}
         sortParamName="sort"
-        title={Streamable.from(() => getTitle(props))}
-        totalCount={Streamable.from(() => getTotalCount(props))}
+        title={title}
+        totalCount={totalCount}
       />
-      <Stream
-        value={Streamable.all([
-          Streamable.from(() => getCategory(props)),
-          Streamable.from(() => getProducts(props)),
-        ])}
-      >
-        {([category, products]) => (
-          <CategoryViewed category={category} categoryId={category.entityId} products={products} />
-        )}
-      </Stream>
+      <CategoryViewed category={category} categoryId={category.entityId} products={rawProducts} />
     </>
   );
 }
