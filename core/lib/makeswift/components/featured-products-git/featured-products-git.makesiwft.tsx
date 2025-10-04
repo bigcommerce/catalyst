@@ -129,7 +129,7 @@ function MakeswiftFeaturedProductsGridGIT({
       {hasCategory && category ? (
         <div className="col-span-5 sm:col-span-5 md:col-span-5 lg:col-span-1 xl:col-span-1">
           {/* Category Card */}
-          <div className="flex h-full w-full items-center justify-center rounded-lg border border-gray-300 bg-gray-100">
+          <div className="h-full w-full">
             <CategoryGridCard
               key={category.id}
               id={category.id.toString()}
@@ -137,6 +137,7 @@ function MakeswiftFeaturedProductsGridGIT({
               href={category.path}
               imageUrl={category.image}
               productCount={category.productCount}
+              fullHeight={true}
             />
           </div>
         </div>
