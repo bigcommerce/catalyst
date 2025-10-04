@@ -131,11 +131,11 @@ export const FeaturedProductCard = ({
                   </div>
                 )}
               </div>
-              <div>
+              {/* <div>
                 <p className="text-sm font-normal text-gray-500">
                   {categories.length > 0 ? categories[0] : ''}
                 </p>
-              </div>
+              </div> */}
             </div>
 
             <Link
@@ -146,7 +146,7 @@ export const FeaturedProductCard = ({
               href={href}
               id={id}
             >
-              Add to Cart
+              Shop Now →
             </Link>
           </div>
         </div>
