@@ -5,6 +5,7 @@
 :root {
   --font-variation-settings-body: 'slnt' 0;
   --font-variation-settings-heading: 'slnt' 0;
+  --font-family-heading: 'Inter', system-ui, sans-serif;
   --font-size-xs: 0.75rem;
   --font-size-sm: 0.875rem;
   --font-size-base: 1rem;
@@ -40,7 +41,7 @@ main ol {
   @apply mt-2;
   @apply list-decimal;
 }
-main nav ul{
+main nav ul {
   @apply list-none;
 }
 
