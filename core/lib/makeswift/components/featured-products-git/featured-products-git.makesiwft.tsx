@@ -19,10 +19,16 @@ import { useProductsByIds } from '../../utils/fetch-products';
 import { Price } from '@/vibes/soul/primitives/price-label';
 import clsx from 'clsx';
 import { FeaturedProductCard } from '@/vibes/soul/primitives/featured-product-card-git';
+import { searchCategories } from '../../utils/search-categories';
+
+interface CategoryInterface {
+  entityId?: string;
+}
 
 interface Props {
   className?: string;
   additionalProducts: ProductInterface[];
+  categoryItem?: CategoryInterface;
   itemsPerRowSuperDesktop: string;
   itemsPerRowDesktop: string;
   itemsPerRowTablet: string;
@@ -105,43 +111,58 @@ function MakeswiftFeaturedProductsGridGIT({
     );
   }
 
-  return (
-    <div
-      className={clsx(
-        'grid gap-5',
-        `grid-cols-${itemsPerRowMobile}`, // mobile: 2 columns
-        `sm:grid-cols-${itemsPerRowTablet}`, // tablet: 4 columns
-        `lg:grid-cols-${itemsPerRowDesktop}`, // desktop: 6 columns
-        `xl:grid-cols-${itemsPerRowSuperDesktop}`, // super desktop: 8 columns
-        className,
-      )}
-    >
-      {products.map(async (product, index) => {
-        const { price, salePrice } = handlePrice(product.price);
+  const hasCategory = props.categoryItem && props.categoryItem.entityId;
 
-        return (
-          <FeaturedProductCard
-            key={product.id}
-            className={className}
-            image={product.image}
-            name={product.title}
-            // @ts-ignore
-            rating={product.rating as number}
-            // @ts-ignore
-            reviewCount={product.reviewCount as number}
-            description={product.description}
-            price={price}
-            categories={product.categories}
-            salePrice={salePrice}
-            titleExcerptLength={titleExcerptLength}
-            descriptionExcerptLength={descriptionExcerptLength}
-            aspectRatio={aspectRatio}
-            href={product.href}
-            id={product.id}
-            {...props}
-          />
-        );
-      })}
+  return (
+    <div className="grid gap-5 xl:grid-cols-5">
+      {hasCategory ? (
+        <div className="col-span-5 sm:col-span-5 md:col-span-5 lg:col-span-1 xl:col-span-1">
+          {/* Category Card Placeholder */}
+          <div className="flex h-full w-full items-center justify-center rounded-lg border border-gray-300 bg-gray-100">
+            <span className="text-gray-500">Category Card Placeholder</span>
+          </div>
+        </div>
+      ) : null}
+      <div
+        className={clsx(
+          hasCategory
+            ? 'col-span-5 sm:col-span-5 md:col-span-5 lg:col-span-4 xl:col-span-4'
+            : 'col-span-5',
+          'grid gap-5',
+          `grid-cols-${itemsPerRowMobile}`, // mobile: 2 columns
+          `sm:grid-cols-${itemsPerRowTablet}`, // tablet: 4 columns
+          `lg:grid-cols-${itemsPerRowDesktop}`, // desktop: 6 columns
+          `xl:grid-cols-${itemsPerRowSuperDesktop}`, // super desktop: 8 columns
+          className,
+        )}
+      >
+        {products.map(async (product, index) => {
+          const { price, salePrice } = handlePrice(product.price);
+
+          return (
+            <FeaturedProductCard
+              key={product.id}
+              className={className}
+              image={product.image}
+              name={product.title}
+              // @ts-ignore
+              rating={product.rating as number}
+              // @ts-ignore
+              reviewCount={product.reviewCount as number}
+              description={product.description}
+              price={price}
+              categories={product.categories}
+              salePrice={salePrice}
+              titleExcerptLength={titleExcerptLength}
+              descriptionExcerptLength={descriptionExcerptLength}
+              aspectRatio={aspectRatio}
+              href={product.href}
+              id={product.id}
+              {...props}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -179,6 +200,23 @@ runtime.registerComponent(MakeswiftFeaturedProductsGridGIT, {
   label: 'GIT / Featured Products (GIT)',
   props: {
     className: Style(),
+    categoryItem: Group({
+      label: 'Category',
+      props: {
+        entityId: Combobox({
+          label: 'Category',
+          async getOptions(query) {
+            const categories = await searchCategories(query);
+
+            return categories.map((category) => ({
+              id: category.category_id.toString(),
+              label: category.name,
+              value: category.category_id.toString(),
+            }));
+          },
+        }),
+      },
+    }),
     additionalProducts: List({
       label: 'Products',
       type: Group({
