@@ -114,12 +114,12 @@ export const ProductCard = ({
 
             {salePrice ? (
               <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold">{salePrice}</span>
+                <span className="text-lg font-bold">{salePrice}</span>
                 <span className="text-gray-400 line-through">{price}</span>
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <span className="text-2xl font-bold">{price}</span>
+                <span className="text-lg font-bold">{price}</span>
               </div>
             )}
           </div>
