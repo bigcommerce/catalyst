@@ -4,7 +4,7 @@ export const fontFamilyTokens = {
   heading: Font({
     label: 'Heading',
     variant: false,
-    defaultValue: { fontFamily: 'var(--font-family-dm-serif-text)' },
+    defaultValue: { fontFamily: 'var(--font-family-inter)' },
   }),
   body: Font({
     label: 'Body',
