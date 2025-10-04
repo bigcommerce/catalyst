@@ -106,7 +106,31 @@ export function ProductsListSection({
               breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
             }
           </Stream>
-          {/** OLD PLACE FOR THE SORT_BY_FILTERS **/}
+          <div>
+            <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
+              {(breadcrumbs) =>
+                breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
+              }
+            </Stream>
+            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 pt-6 text-foreground">
+              <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
+                <Suspense
+                  fallback={
+                    <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
+                  }
+                >
+                  {title}
+                </Suspense>
+                {/* <Suspense
+                fallback={
+                  <span className="inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg bg-contrast-100" />
+                }
+              >
+                <span className="text-contrast-300">{totalCount}</span>
+              </Suspense> */}
+              </h1>
+            </div>
+          </div>
         </div>
 
         {description && (
@@ -143,7 +167,7 @@ export function ProductsListSection({
             }
           </Stream>
           <div className="flex flex-wrap items-center justify-between gap-4 pb-4 pt-6 text-foreground">
-            <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
+            <h3 className="flex items-center gap-2 font-heading text-xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
               <Suspense
                 fallback={
                   <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
@@ -158,7 +182,7 @@ export function ProductsListSection({
               >
                 <span className="text-contrast-300">{totalCount}</span>
               </Suspense> */}
-            </h1>
+            </h3>
 
             {/**
              * Section to add category description that comes before the three pipes "|||"
