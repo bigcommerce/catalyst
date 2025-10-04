@@ -92,17 +92,20 @@ export function ProductDetail<F extends Field>({
                       <PriceLabel className="my-3 text-xl @xl:text-2xl" price={price ?? ''} />
                     )}
                   </Stream>
-                  <Stream fallback={<InventoryTrackingSkeleton />} value={inventoryTracking}>
+                  <p className="border-l pl-2 text-lg italic text-black underline">
+                    Ships in 7 to 10 Business Days
+                  </p>
+                  {/* <Stream fallback={<InventoryTrackingSkeleton />} value={inventoryTracking}>
                     {(tracking) =>
                       tracking !== undefined &&
                       tracking !== '' &&
                       tracking === 'none' && (
                         <p className="border-l pl-2 text-lg italic text-black underline">
-                          This product will ship in 7-10 days
+                          Ships in 7 to 10 Business Days
                         </p>
                       )
                     }
-                  </Stream>
+                  </Stream> */}
                   <div className="mb-8 @2xl:hidden">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
                       {(images) => (
