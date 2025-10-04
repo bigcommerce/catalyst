@@ -277,32 +277,73 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
 export default async function Brand(props: Props) {
   const { locale } = await props.params;
-
   setRequestLocale(locale);
+
+  // Fetch all data server-side in parallel
+  const [
+    compareLabel,
+    compareProducts,
+    emptyStateSubtitle,
+    emptyStateTitle,
+    filterLabel,
+    filters,
+    filtersPanelTitle,
+    maxCompareLimitMessage,
+    paginationInfo,
+    products,
+    rangeFilterApplyLabel,
+    removeLabel,
+    resetFiltersLabel,
+    showCompare,
+    sortLabel,
+    sortOptions,
+    title,
+    totalCount,
+  ] = await Promise.all([
+    getCompareLabel(),
+    getCompareProducts(props),
+    getEmptyStateSubtitle(),
+    getEmptyStateTitle(),
+    getFilterLabel(),
+    getFilters(props),
+    getFiltersPanelTitle(),
+    getMaxCompareLimitMessage(),
+    getPaginationInfo(props),
+    getListProducts(props),
+    getRangeFilterApplyLabel(),
+    getRemoveLabel(),
+    getResetFiltersLabel(),
+    getShowCompare(props),
+    getSortLabel(),
+    getSortOptions(),
+    getTitle(props),
+    getTotalCount(props),
+  ]);
 
   return (
     <ProductsListSection
-      compareLabel={Streamable.from(getCompareLabel)}
-      compareProducts={Streamable.from(() => getCompareProducts(props))}
-      emptyStateSubtitle={Streamable.from(getEmptyStateSubtitle)}
-      emptyStateTitle={Streamable.from(getEmptyStateTitle)}
-      filterLabel={await getFilterLabel()}
-      filters={Streamable.from(() => getFilters(props))}
-      filtersPanelTitle={Streamable.from(getFiltersPanelTitle)}
-      maxCompareLimitMessage={Streamable.from(getMaxCompareLimitMessage)}
+      compareLabel={compareLabel}
+      // @ts-ignore
+      compareProducts={compareProducts}
+      emptyStateSubtitle={emptyStateSubtitle}
+      emptyStateTitle={emptyStateTitle}
+      filterLabel={filterLabel}
+      filters={filters}
+      filtersPanelTitle={filtersPanelTitle}
+      maxCompareLimitMessage={maxCompareLimitMessage}
       maxItems={MAX_COMPARE_LIMIT}
-      paginationInfo={Streamable.from(() => getPaginationInfo(props))}
-      products={Streamable.from(() => getListProducts(props))}
-      rangeFilterApplyLabel={Streamable.from(getRangeFilterApplyLabel)}
-      removeLabel={Streamable.from(getRemoveLabel)}
-      resetFiltersLabel={Streamable.from(getResetFiltersLabel)}
-      showCompare={Streamable.from(() => getShowCompare(props))}
+      paginationInfo={paginationInfo}
+      products={products}
+      rangeFilterApplyLabel={rangeFilterApplyLabel}
+      removeLabel={removeLabel}
+      resetFiltersLabel={resetFiltersLabel}
+      showCompare={showCompare}
       sortDefaultValue="featured"
-      sortLabel={Streamable.from(getSortLabel)}
-      sortOptions={Streamable.from(getSortOptions)}
+      sortLabel={sortLabel}
+      sortOptions={sortOptions}
       sortParamName="sort"
-      title={Streamable.from(() => getTitle(props))}
-      totalCount={Streamable.from(() => getTotalCount(props))}
+      title={title}
+      totalCount={totalCount}
     />
   );
 }
