@@ -289,16 +289,18 @@ export default async function Product(props: Props) {
         sku={Streamable.from(() => getProduct(props).then((p) => p.sku))}
       />
 
-      <FeaturedProductCarousel
-        cta={{ label: t('RelatedProducts.cta'), href: '/shop' }}
-        emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
-        emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
-        nextLabel={t('RelatedProducts.nextProducts')}
-        previousLabel={t('RelatedProducts.previousProducts')}
-        products={Streamable.from(() => getRelatedProducts(props))}
-        scrollbarLabel={t('RelatedProducts.scrollbar')}
-        title={t('RelatedProducts.title')}
-      />
+      <div className="mb-20">
+        <FeaturedProductCarousel
+          cta={{ label: t('RelatedProducts.cta'), href: '/shop' }}
+          emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
+          emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
+          nextLabel={t('RelatedProducts.nextProducts')}
+          previousLabel={t('RelatedProducts.previousProducts')}
+          products={Streamable.from(() => getRelatedProducts(props))}
+          scrollbarLabel={t('RelatedProducts.scrollbar')}
+          title={t('RelatedProducts.title')}
+        />
+      </div>
       {/* <Reviews productId={productId} searchParams={parsedSearchParams} /> */}
 
       <Stream fallback={null} value={Streamable.from(() => getProductData(variables))}>
