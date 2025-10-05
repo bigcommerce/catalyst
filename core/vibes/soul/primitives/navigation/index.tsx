@@ -716,6 +716,22 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
       <div className="perspective-[2000px] absolute left-0 right-0 top-full z-50 flex w-full justify-center">
         <NavigationMenu.Viewport className="relative mt-2 w-full data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95" />
       </div>
+
+      {/* Search Form on Mobile */}
+      <div className={clsx('@4xl:flex @4xl:flex-1 @4xl:flex-col @4xl:gap-1')}>
+        {/* Show only on mobile and tablet, full width */}
+        <div className={clsx('w-full @4xl:hidden')}>
+          <SearchFormNew
+            // @ts-ignore
+            searchAction={searchAction}
+            searchCtaLabel={searchCtaLabel}
+            searchHref={searchHref}
+            searchInputPlaceholder={'Search'}
+            searchParamName={searchParamName}
+            isMobile={true}
+          />
+        </div>
+      </div>
     </NavigationMenu.Root>
   );
 });
@@ -803,6 +819,7 @@ function SearchFormNew<S extends SearchResult>({
   searchInputPlaceholder = 'Search Products',
   searchCtaLabel = 'View more',
   submitLabel = 'Submit',
+  isMobile = false,
 }: {
   searchAction: SearchAction<S>;
   searchParamName?: string;
@@ -810,6 +827,7 @@ function SearchFormNew<S extends SearchResult>({
   searchCtaLabel?: string;
   searchInputPlaceholder?: string;
   submitLabel?: string;
+  isMobile?: boolean;
 }) {
   const [query, setQuery] = useState('');
   const [isOpen, setIsOpen] = useState(false);
@@ -863,20 +881,24 @@ function SearchFormNew<S extends SearchResult>({
     setIsSubmitting(true);
   }, []);
 
+  const formClasses = isMobile
+    ? 'flex items-center gap-2 px-3 py-3 bg-[#EBEBEB]'
+    : 'border-1 flex items-center gap-3 rounded-md border px-3 py-3 @4xl:px-3 @4xl:py-3';
+
+  const inputClasses = isMobile
+    ? 'flex-grow bg-transparent pl-2 text-lg font-medium outline-0 focus-visible:outline-none pl-0'
+    : 'flex-grow bg-transparent pl-2 text-lg font-medium outline-0 focus-visible:outline-none @xl:pl-0';
+
   return (
     <>
-      <form
-        action={searchHref}
-        className="border-1 flex items-center gap-3 rounded-md border px-3 py-3 @4xl:px-3 @4xl:py-3"
-        onSubmit={handleSubmit}
-      >
+      <form action={searchHref} className={clsx(formClasses)} onSubmit={handleSubmit}>
         <SearchIcon
-          className="hidden shrink-0 text-[var(--nav-search-icon,hsl(var(--contrast-500)))] @xl:block"
+          className="shrink-0 text-[var(--nav-search-icon,hsl(var(--contrast-500)))] @xl:block"
           size={20}
           strokeWidth={1}
         />
         <input
-          className="flex-grow bg-transparent pl-2 text-lg font-medium outline-0 focus-visible:outline-none @xl:pl-0"
+          className={clsx(inputClasses)}
           name={searchParamName}
           onChange={(e) => {
             setQuery(e.currentTarget.value);
