@@ -237,6 +237,15 @@ const ProductPageQuery = graphql(
           categories {
             edges {
               node {
+                breadcrumbs(depth: 5) {
+                  edges {
+                    node {
+                      name
+                      path
+                      entityId
+                    }
+                  }
+                }
                 products(first: 8) {
                   edges {
                     node {

@@ -18,6 +18,7 @@ import { ProductViewed } from './_components/product-viewed';
 import { PaginationSearchParamNames, Reviews } from './_components/reviews';
 import { getProductData } from './page-data';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
+import { Breadcrumb } from '@/vibes/soul/sections/breadcrumbs';
 
 const cachedProductDataVariables = cache(
   async (productId: string, searchParams: Props['searchParams']) => {
@@ -200,6 +201,19 @@ const getRelatedProducts = async (props: Props) => {
   );
 };
 
+async function getBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
+  const { slug } = await props.params;
+  const variables = await cachedProductDataVariables(slug, props.searchParams);
+  const product = await getProductData(variables);
+
+  const category = removeEdgesAndNodes(product.categories)[0];
+
+  return removeEdgesAndNodes(category!.breadcrumbs).map(({ name, path }) => ({
+    label: name,
+    href: path ?? '#',
+  }));
+}
+
 interface Props {
   params: Promise<{ slug: string; locale: string }>;
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -254,6 +268,7 @@ export default async function Product(props: Props) {
       {/* @ts-ignore */}
       <ProductDetail
         action={addToCart}
+        breadcrumbs={Streamable.from(() => getBreadcrumbs(props))}
         additionaInformationTitle={t('ProductDetails.additionalInformation')}
         ctaDisabled={Streamable.from(() => getCtaDisabled(props))}
         ctaLabel={Streamable.from(() => getCtaLabel(props))}
