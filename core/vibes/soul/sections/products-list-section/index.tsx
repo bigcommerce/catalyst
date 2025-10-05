@@ -106,30 +106,23 @@ export function ProductsListSection({
               breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
             }
           </Stream>
-          <div>
-            <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
-              {(breadcrumbs) =>
-                breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
-              }
-            </Stream>
-            <div className="flex flex-wrap items-center justify-between gap-4 pb-4 pt-6 text-foreground">
-              <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
-                <Suspense
-                  fallback={
-                    <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
-                  }
-                >
-                  {title}
-                </Suspense>
-                {/* <Suspense
+          <div className="flex flex-wrap items-center justify-between gap-4 pb-4 pt-6 text-foreground">
+            <h1 className="flex items-center gap-2 font-heading text-3xl font-medium leading-none @lg:text-4xl @2xl:text-5xl">
+              <Suspense
+                fallback={
+                  <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
+                }
+              >
+                {title}
+              </Suspense>
+              {/* <Suspense
                 fallback={
                   <span className="inline-flex h-[1lh] w-[2ch] animate-pulse rounded-lg bg-contrast-100" />
                 }
               >
                 <span className="text-contrast-300">{totalCount}</span>
               </Suspense> */}
-              </h1>
-            </div>
+            </h1>
           </div>
         </div>
 
@@ -161,11 +154,6 @@ export function ProductsListSection({
         </div>
 
         <div>
-          <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
-            {(breadcrumbs) =>
-              breadcrumbs && breadcrumbs.length > 1 && <Breadcrumbs breadcrumbs={breadcrumbs} />
-            }
-          </Stream>
           <div className="flex flex-wrap items-center justify-between gap-4 pb-4 pt-6 text-foreground">
             <h3 className="flex items-center gap-2 font-heading text-2xl font-medium leading-none @lg:text-2xl @2xl:text-2xl">
               <Suspense
