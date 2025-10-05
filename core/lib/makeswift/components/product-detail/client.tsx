@@ -20,6 +20,7 @@ type VibesProductDetail = Exclude<Awaited<VibesProductDetailProps['product']>, n
 
 export type ProductDetail = VibesProductDetail & {
   plainTextDescription?: string;
+  subtitleHref?: string;
 };
 
 export type Props = Omit<VibesProductDetailProps, 'product'> & {

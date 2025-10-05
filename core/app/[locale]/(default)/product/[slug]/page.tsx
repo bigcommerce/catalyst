@@ -125,6 +125,7 @@ const getProduct = async (props: Props) => {
       : images,
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name,
+    subtitleHref: product.brand?.path,
     rating: product.reviewSummary.averageRating,
     accordions,
     inventory_tracking: product.inventory_tracking,

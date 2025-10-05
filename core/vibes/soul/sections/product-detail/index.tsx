@@ -16,6 +16,7 @@ interface ProductDetailProduct {
   images: Streamable<Array<{ src: string; alt: string }>>;
   price?: Streamable<Price | null>;
   subtitle?: string;
+  subtitleHref?: string;
   badge?: string;
   rating?: Streamable<number | null>;
   summary?: Streamable<string>;
@@ -80,9 +81,13 @@ export function ProductDetail<F extends Field>({
 
                 {/* Product Details */}
                 <div className="text-foreground">
-                  {product.subtitle != null && product.subtitle !== '' && (
-                    <p className="font-mono text-sm uppercase">{product.subtitle}</p>
-                  )}
+                  {product.subtitle != null &&
+                    product.subtitle !== '' &&
+                    product.subtitleHref !== null && (
+                      <Link href={product.subtitleHref as string}>
+                        <p className="font-mono text-sm uppercase">{product.subtitle}</p>
+                      </Link>
+                    )}
                   <h1 className="mb-3 mt-2 font-heading text-2xl font-medium leading-none @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
                     {product.title}
                   </h1>
