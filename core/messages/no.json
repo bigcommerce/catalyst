@@ -364,6 +364,7 @@
             "decreaseNumber": "Reduser tall",
             "thumbnail": "Vis bildets nummer",
             "additionalInformation": "Mer informasjon",
+            "currentStock": "Nåværende lagerbeholdning: {mengde, antall}",
             "Submit": {
                 "addToCart": "Legg i handlekurv",
                 "outOfStock": "Utsolgt",

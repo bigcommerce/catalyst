@@ -364,6 +364,7 @@
             "decreaseNumber": "Aantal verlagen",
             "thumbnail": "Bekijk het nummer van de afbeelding",
             "additionalInformation": "Aanvullende informatie",
+            "currentStock": "Huidige voorraad: {quantity, number}",
             "Submit": {
                 "addToCart": "Toevoegen aan winkelmandje",
                 "outOfStock": "Niet op voorraad",
