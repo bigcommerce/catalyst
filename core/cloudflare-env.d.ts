@@ -4,23 +4,6 @@
 declare namespace Cloudflare {
 	interface Env {
 		MIDDLEWARE_CACHE_KV: KVNamespace;
-		AUTH_SECRET: string;
-		CLI_SEGMENT_WRITE_KEY: string;
-		CLIENT_LOGGER: string;
-		KV_LOGGER: string;
-		ENABLE_ADMIN_ROUTE: string;
-		DEFAULT_REVALIDATE_TARGET: string;
-		DISABLE_VERCEL_ANALYTICS: string;
-		DISABLE_VERCEL_SPEED_INSIGHTS: string;
-		AUTH_TRUST_HOST: string;
-		BIGCOMMERCE_ACCESS_TOKEN: string;
-		BIGCOMMERCE_CHANNEL_ID: string;
-		BIGCOMMERCE_CLIENT_ID: string;
-		BIGCOMMERCE_CLIENT_SECRET: string;
-		BIGCOMMERCE_STOREFRONT_TOKEN: string;
-		BIGCOMMERCE_STORE_HASH: string;
-		BIGCOMMERCE_GRAPHQL_API_DOMAIN: string;
-		BIGCOMMERCE_API_HOST: string;
 		NEXT_CACHE_DO_QUEUE: DurableObjectNamespace /* DOQueueHandler */;
 		NEXT_TAG_CACHE_DO_SHARDED: DurableObjectNamespace /* DOShardedTagCache */;
 		NEXT_CACHE_DO_PURGE: DurableObjectNamespace /* BucketCachePurge */;
@@ -34,7 +17,7 @@ type StringifyValues<EnvType extends Record<string, unknown>> = {
 	[Binding in keyof EnvType]: EnvType[Binding] extends string ? EnvType[Binding] : string;
 };
 declare namespace NodeJS {
-	interface ProcessEnv extends StringifyValues<Pick<Cloudflare.Env, "AUTH_SECRET" | "CLI_SEGMENT_WRITE_KEY" | "CLIENT_LOGGER" | "KV_LOGGER" | "ENABLE_ADMIN_ROUTE" | "DEFAULT_REVALIDATE_TARGET" | "DISABLE_VERCEL_ANALYTICS" | "DISABLE_VERCEL_SPEED_INSIGHTS" | "AUTH_TRUST_HOST" | "BIGCOMMERCE_ACCESS_TOKEN" | "BIGCOMMERCE_CHANNEL_ID" | "BIGCOMMERCE_CLIENT_ID" | "BIGCOMMERCE_CLIENT_SECRET" | "BIGCOMMERCE_STOREFRONT_TOKEN" | "BIGCOMMERCE_STORE_HASH" | "BIGCOMMERCE_GRAPHQL_API_DOMAIN" | "BIGCOMMERCE_API_HOST">> {}
+	interface ProcessEnv extends StringifyValues<Cloudflare.Env> {}
 }
 
 // Begin runtime types
@@ -6209,7 +6192,7 @@ type AIGatewayHeaders = {
     [key: string]: string | number | boolean | object;
 };
 type AIGatewayUniversalRequest = {
-    provider: AIGatewayProviders | string; // eslint-disable-line
+    provider: AIGatewayProviders | string;  
     endpoint: string;
     headers: Partial<AIGatewayHeaders>;
     query: unknown;
@@ -6225,7 +6208,7 @@ declare abstract class AiGateway {
         gateway?: UniversalGatewayOptions;
         extraHeaders?: object;
     }): Promise<Response>;
-    getUrl(provider?: AIGatewayProviders | string): Promise<string>; // eslint-disable-line
+    getUrl(provider?: AIGatewayProviders | string): Promise<string>;  
 }
 interface AutoRAGInternalError extends Error {
 }

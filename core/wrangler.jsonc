@@ -28,13 +28,13 @@
   "kv_namespaces": [
     {
       "binding": "MIDDLEWARE_CACHE_KV",
-      "id": "changeme",
+      "id": "4cf49b9f5f814f5a85b684e16801c612",
     }
   ],
   "r2_buckets": [
     {
       "binding": "NEXT_INC_CACHE_R2_BUCKET",
-      "bucket_name": "changeme",
+      "bucket_name": "catalyst-inc-cache",
     },
   ],
   // DO Queue and DO Sharded Tag Cache

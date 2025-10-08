@@ -68,7 +68,7 @@ const getRoute = async (path: string, channelId?: string) => {
   const response = await client.fetch({
     document: GetRouteQuery,
     variables: { path },
-    fetchOptions: { 
+    fetchOptions: {
       next: { revalidate },
       cf: {
         cacheTtl: 600, // 10 minutes
@@ -120,7 +120,7 @@ const GetStoreStatusQuery = graphql(`
 const getStoreStatus = async (channelId?: string) => {
   const { data } = await client.fetch({
     document: GetStoreStatusQuery,
-    fetchOptions: { 
+    fetchOptions: {
       next: { revalidate: 300 },
       cf: {
         cacheTtl: 600, // 10 minutes
