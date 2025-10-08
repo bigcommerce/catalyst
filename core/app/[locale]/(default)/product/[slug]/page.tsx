@@ -14,6 +14,7 @@ import { productOptionsTransformer } from '~/data-transformers/product-options-t
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { addToCart } from './_actions/add-to-cart';
+import { getBackorderQuantityMessage } from './_actions/get-backordered-quantity-message';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
@@ -238,6 +239,18 @@ export default async function Product({ params, searchParams }: Props) {
     });
   });
 
+  const streamableGetBackorderQuantityMessage = Streamable.from(async () => {
+    const product = await streamableProduct;
+
+    const { availableToSell } = product.inventory.aggregated ?? {};
+
+    const availableForBackorder = 4;
+    const availableOnHand = Math.min(availableToSell ?? 0, 2);
+
+    return (quantity: number) =>
+      getBackorderQuantityMessage(quantity, availableOnHand, availableForBackorder);
+  });
+
   const streameableAccordions = Streamable.from(async () => {
     const product = await streamableProduct;
 
@@ -355,6 +368,7 @@ export default async function Product({ params, searchParams }: Props) {
           decrementLabel={t('ProductDetails.decreaseQuantity')}
           emptySelectPlaceholder={t('ProductDetails.emptySelectPlaceholder')}
           fields={productOptionsTransformer(baseProduct.productOptions)}
+          getBackorderQuantityMessage={getBackorderQuantityMessage}
           incrementLabel={t('ProductDetails.increaseQuantity')}
           prefetch={true}
           product={{
@@ -370,6 +384,9 @@ export default async function Product({ params, searchParams }: Props) {
             minQuantity: streamableMinQuantity,
             maxQuantity: streamableMaxQuantity,
             stockLevelMessage: streamableStockLevelMessage,
+            // backorderQtyMessage: streamableBackorderQuantityMessage,
+            onHandQty: 2,
+            backorderableQty: 4,
           }}
           quantityLabel={t('ProductDetails.quantity')}
           thumbnailLabel={t('ProductDetails.thumbnail')}

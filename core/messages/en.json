@@ -365,6 +365,7 @@
       "thumbnail": "View image number",
       "additionalInformation": "Additional information",
       "currentStock": "Current stock: {quantity, number}",
+      "backorderQuantity": "{quantity, number} will be on backorder",
       "Submit": {
         "addToCart": "Add to cart",
         "outOfStock": "Out of stock",

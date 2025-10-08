@@ -31,6 +31,9 @@ interface ProductDetailProduct {
   minQuantity?: Streamable<number | null>;
   maxQuantity?: Streamable<number | null>;
   stockLevelMessage?: Streamable<string | null>;
+  // backorderQtyMessage?: Streamable<string | null>;
+  onHandQty?: number;
+  backorderableQty?: number;
 }
 
 export interface ProductDetailProps<F extends Field> {
@@ -48,6 +51,11 @@ export interface ProductDetailProps<F extends Field> {
   thumbnailLabel?: string;
   additionalInformationTitle?: string;
   additionalActions?: ReactNode;
+  getBackorderQuantityMessage: (
+    orderQuantity: number,
+    onHandQty: number,
+    backorderableQty: number,
+  ) => Promise<string | undefined>;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -80,6 +88,7 @@ export function ProductDetail<F extends Field>({
   thumbnailLabel,
   additionalInformationTitle = 'Additional information',
   additionalActions,
+  getBackorderQuantityMessage,
 }: ProductDetailProps<F>) {
   return (
     <section className="@container">
@@ -169,12 +178,15 @@ export function ProductDetail<F extends Field>({
                           decrementLabel={decrementLabel}
                           emptySelectPlaceholder={emptySelectPlaceholder}
                           fields={fields}
+                          getBackorderQuantityMessage={getBackorderQuantityMessage}
                           incrementLabel={incrementLabel}
                           maxQuantity={maxQuantity ?? undefined}
                           minQuantity={minQuantity ?? undefined}
                           prefetch={prefetch}
                           productId={product.id}
                           quantityLabel={quantityLabel}
+                          backorderableQty={product.backorderableQty}
+                          onHandQty={product.onHandQty}
                         />
                       )}
                     </Stream>

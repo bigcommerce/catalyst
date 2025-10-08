@@ -11,7 +11,14 @@ import {
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
-import { ReactNode, startTransition, useActionState, useCallback, useEffect } from 'react';
+import {
+  ReactNode,
+  startTransition,
+  useActionState,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
@@ -58,6 +65,13 @@ export interface ProductDetailFormProps<F extends Field> {
   additionalActions?: ReactNode;
   minQuantity?: number;
   maxQuantity?: number;
+  onHandQty?: number;
+  backorderableQty?: number;
+  getBackorderQuantityMessage: (
+    orderQuantity: number,
+    onHandQty: number,
+    backorderableQty: number,
+  ) => Promise<string | undefined>;
 }
 
 export function ProductDetailForm<F extends Field>({
@@ -74,6 +88,9 @@ export function ProductDetailForm<F extends Field>({
   additionalActions,
   minQuantity,
   maxQuantity,
+  onHandQty,
+  backorderableQty,
+  getBackorderQuantityMessage,
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -110,18 +127,6 @@ export function ProductDetailForm<F extends Field>({
     lastResult: null,
   });
 
-  useEffect(() => {
-    if (lastResult?.status === 'success') {
-      toast.success(successMessage);
-
-      startTransition(async () => {
-        // This is needed to refresh the Data Cache after the product has been added to the cart.
-        // The cart id is not picked up after the first time the cart is created/updated.
-        await revalidateCart();
-      });
-    }
-  }, [lastResult, successMessage, router]);
-
   const [form, formFields] = useForm({
     lastResult,
     constraint: getZodConstraint(schema(fields, minQuantity, maxQuantity)),
@@ -143,7 +148,52 @@ export function ProductDetailForm<F extends Field>({
     shouldRevalidate: 'onInput',
   });
 
+  const [backorderQuantityMessage, setBackorderQuantityMessage] = useState<string>('');
+
+  useEffect(() => {
+    void (async () => {
+      setBackorderQuantityMessage(
+        await getBackorderQuantityMessage(
+          Number(formFields.quantity.value),
+          onHandQty ?? 0,
+          backorderableQty ?? 0,
+        ) ?? '',
+      );
+    })();
+
+    if (lastResult?.status === 'success') {
+      toast.success(successMessage);
+
+      startTransition(async () => {
+        // This is needed to refresh the Data Cache after the product has been added to the cart.
+        // The cart id is not picked up after the first time the cart is created/updated.
+        await revalidateCart();
+      });
+    }
+  }, [
+    lastResult,
+    successMessage,
+    router,
+    getBackorderQuantityMessage,
+    formFields.quantity.value,
+    onHandQty,
+    backorderableQty,
+  ]);
+
   const quantityControl = useInputControl(formFields.quantity);
+
+  console.log('ProductDetailForm: ', formFields.quantity.value, backorderQuantityMessage);
+
+  // const backorderQtyMessage =
+  //   backorderableQty && onHandQty && Number(formFields.quantity.value) > onHandQty
+  //     ? `${Math.min(Number(formFields.quantity.value) - onHandQty, backorderableQty)} items will be backordered`
+  //     : null;
+
+  // const backorderQtyMessage = getBackorderQuantityMessage(
+  //   Number(formFields.quantity.value),
+  //   onHandQty ?? 0,
+  //   backorderableQty ?? 0,
+  // );
 
   return (
     <FormProvider context={form.context}>
@@ -169,6 +219,8 @@ export function ProductDetailForm<F extends Field>({
               {error}
             </FormStatus>
           ))}
+          <p>{backorderQuantityMessage}</p>
+
           <div className="flex gap-x-3 pt-3">
             <NumberInput
               aria-label={quantityLabel}
