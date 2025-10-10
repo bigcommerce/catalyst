@@ -45,7 +45,7 @@ export const removeCouponCode = async ({ checkoutEntityId, couponCode }: Props) 
 
   const checkout = response.data.checkout.unapplyCheckoutCoupon?.checkout;
 
-  revalidateTag(TAGS.checkout);
+  revalidateTag(TAGS.checkout, 'max');
 
   return checkout;
 };

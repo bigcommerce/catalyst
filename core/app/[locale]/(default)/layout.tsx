@@ -23,5 +23,3 @@ export default async function DefaultLayout({ params, children }: Props) {
     </>
   );
 }
-
-export const experimental_ppr = true;

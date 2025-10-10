@@ -63,7 +63,7 @@ export async function toggleWishlistVisibility(
       };
     }
 
-    revalidateTag(TAGS.customer);
+    revalidateTag(TAGS.customer, 'max');
 
     return {
       lastResult: submission.reply(),

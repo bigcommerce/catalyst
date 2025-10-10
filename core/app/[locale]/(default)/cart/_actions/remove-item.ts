@@ -1,6 +1,6 @@
 'use server';
 
-import { unstable_expireTag } from 'next/cache';
+import { updateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -62,7 +62,7 @@ export async function removeItem({
     await clearCartId();
   }
 
-  unstable_expireTag(TAGS.cart);
+  updateTag(TAGS.cart);
 
   return cart;
 }
