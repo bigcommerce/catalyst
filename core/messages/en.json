@@ -470,6 +470,24 @@
       "placeholder": "Enter your email",
       "description": "Stay up to date with the latest news and offers from our store.",
       "success": "Thank you for your interest! Newsletter feature is coming soon!"
+    },
+    "ConsentManager": {
+      "CookieBanner": {
+        "title": "We use cookies",
+        "description": "We use cookies to enhance your browsing experience, serve personalized content, and analyze our traffic. By clicking \"Accept All\", you consent to our use of cookies.",
+        "declineAll": "Decline All",
+        "acceptAll": "Accept All",
+        "customize": "Customize"
+      },
+      "Dialog": {
+        "title": "Privacy Settings",
+        "description": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you would like to allow."
+      },
+      "Widget": {
+        "rejectAll": "Reject All",
+        "acceptAll": "Accept All",
+        "save": "Save"
+      }
     }
   }
 }

@@ -469,6 +469,28 @@
             "placeholder": "Ingresa tu correo electrónico",
             "description": "Mantente al día con las últimas noticias y ofertas de nuestra tienda.",
             "success": "¡Gracias por tu interés! ¡La función de boletín llegará pronto!"
+        },
+
+        "// TRANSLATIONS INCLUDED BELOW FOR TESTING ONLY": {},
+        "// DELETE BEFORE MERGING": {},
+
+        "ConsentManager": {
+            "CookieBanner": {
+                "title": "Usamos cookies",
+                "description": "Usamos cookies para mejorar tu experiencia de navegación, servir contenido personalizado y analizar nuestro tráfico. Al hacer clic en \"Aceptar todo\", aceptas nuestro uso de cookies.",
+                "declineAll": "Rechazar todo",
+                "acceptAll": "Aceptar todo",
+                "customize": "Personalizar"
+            },
+            "Dialog": {
+                "title": "Configuración de privacidad",
+                "description": "Personaliza tus configuraciones de privacidad aquí. Puedes elegir qué tipos de cookies y tecnologías de seguimiento te gustaría permitir."
+            },
+            "Widget": {
+                "rejectAll": "Rechazar todo",
+                "acceptAll": "Aceptar todo",
+                "save": "Guardar"
+            }
         }
     }
 }
