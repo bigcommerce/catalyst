@@ -16,6 +16,7 @@ const CategoryPageQuery = graphql(
           description
           defaultImage {
             urlOriginal
+            altText
           }
           ...BreadcrumbsFragment
           seo {
@@ -35,6 +36,7 @@ const CategoryPageQuery = graphql(
             productCount
             image {
               urlOriginal
+              altText
             }
             children {
               entityId

@@ -94,7 +94,7 @@ export function ProductCard({
         >
           {image != null ? (
             <Image
-              alt={image.alt}
+              alt={image.alt || `${title} image`}
               className={clsx(
                 'w-full scale-100 select-none object-fill transition-transform duration-500 ease-out group-hover:scale-110',
                 {

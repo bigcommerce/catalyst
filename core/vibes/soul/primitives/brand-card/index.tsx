@@ -8,19 +8,22 @@ interface BrandProps {
   title: string;
   productCount: string;
   imageUrl?: string;
+  imageAlt: string;
 }
 
-export function BrandCard({ imageUrl, title, productCount, href }: BrandProps): JSX.Element {
+export function BrandCard({
+  imageUrl,
+  title,
+  productCount,
+  href,
+  imageAlt,
+}: BrandProps): JSX.Element {
   return (
     <div className="flex w-full flex-col items-center">
       <Link href={href} className="w-full no-underline hover:no-underline focus:no-underline">
         <div className="flex h-40 w-full items-center justify-center rounded-lg bg-white shadow-md">
           {imageUrl ? (
-            <img
-              alt={`${title} brand image`}
-              className="h-full w-full object-contain"
-              src={imageUrl}
-            />
+            <img alt={imageAlt} className="h-full w-full object-contain" src={imageUrl} />
           ) : (
             <div className="h-full w-full rounded bg-blue-900" />
           )}

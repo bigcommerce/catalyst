@@ -120,7 +120,10 @@ async function getSubCategoriesFilters(props: Props): Promise<Filter[]> {
         href: category.path,
         id: category.entityId.toString(),
         productCount: category.productCount,
-        image: category.image ? category.image.urlOriginal : null,
+        image: {
+          src: category.image?.urlOriginal ?? undefined,
+          alt: category.image?.altText ?? undefined,
+        },
       })),
     },
   ];

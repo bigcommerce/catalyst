@@ -65,6 +65,7 @@ export default async function BrandsPage(props: Props) {
             title={brand.name}
             productCount={brand.productsCount.toString()}
             imageUrl={brand.defaultImage?.urlOriginal}
+            imageAlt={brand.defaultImage?.altText || `${brand.name} brand image`}
             key={brand.path}
           />
         ))}
