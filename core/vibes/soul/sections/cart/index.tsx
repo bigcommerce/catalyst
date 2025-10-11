@@ -155,7 +155,7 @@ export function CartEmptyState({ title, subtitle, cta }: CartEmptyState) {
         {title}
       </h1>
       <p className="mb-6 text-center leading-normal text-contrast-500 @3xl:text-lg">{subtitle}</p>
-      <ButtonLink href={'/brands'}>{cta.label}</ButtonLink>
+      <ButtonLink href={'/categories'}>{cta.label}</ButtonLink>
     </SectionLayout>
   );
 }
