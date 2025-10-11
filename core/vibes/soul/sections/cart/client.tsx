@@ -21,6 +21,9 @@ import { getCartId } from '~/lib/cart';
 
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
+const DEFAULT_PRODUCT_IMAGE_URL =
+  'https://betterineraction.nyc3.cdn.digitaloceanspaces.com/product-placeholder.svg';
+
 export interface CartLineItem {
   id: string;
   image: { alt: string; src: string };
@@ -258,7 +261,7 @@ export function CartClient<LineItem extends CartLineItem>({
                   className="object-cover"
                   fill
                   sizes="(min-width: 28rem) 9rem, (min-width: 24rem) 6rem, 100vw"
-                  src={lineItem.image.src}
+                  src={lineItem.image.src || DEFAULT_PRODUCT_IMAGE_URL}
                 />
               </div>
               <div className="flex flex-grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
