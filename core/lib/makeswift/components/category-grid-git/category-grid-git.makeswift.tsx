@@ -108,6 +108,7 @@ function MakeswiftCategoryGridGIT({
             name={category.name}
             href={category.path}
             imageUrl={category.image}
+            imageAlt={category.name}
             productCount={category.productCount}
           />
         );
@@ -121,6 +122,7 @@ interface CategoryGridCardProps {
   href: string;
   id: string;
   imageUrl?: string;
+  imageAlt: string;
   productCount: number;
   imagePriority?: boolean;
   imageSizes?: string;
@@ -131,6 +133,7 @@ export function CategoryGridCard({
   href,
   id,
   imageUrl,
+  imageAlt,
   name,
   productCount,
   imagePriority = false,
@@ -145,7 +148,6 @@ export function CategoryGridCard({
       >
         {imageUrl ? (
           <Image
-            alt={name}
             className={clsx(
               'bg-[var(--product-card-light-background,hsl(var(--contrast-100))] w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
             )}
@@ -153,6 +155,7 @@ export function CategoryGridCard({
             priority={imagePriority}
             sizes={imageSizes}
             src={imageUrl}
+            alt={imageAlt}
           />
         ) : (
           <div className="h-full w-full" style={{ backgroundColor: '#304A7A' }} />

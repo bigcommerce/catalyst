@@ -135,6 +135,7 @@ function MakeswiftFeaturedProductsGridGIT({
               id={category.id.toString()}
               name={category.name}
               href={category.path}
+              imageAlt={category.name}
               imageUrl={category.image}
               productCount={category.productCount}
               fullHeight={true}
