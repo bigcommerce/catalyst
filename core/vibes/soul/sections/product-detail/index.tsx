@@ -91,9 +91,9 @@ export function ProductDetail<F extends Field>({
                   <h1 className="mb-3 mt-2 font-heading text-2xl font-medium leading-none @xl:mb-4 @xl:text-3xl @4xl:text-4xl">
                     {product.title}
                   </h1>
-                  <h3 className="mb-3 mt-2 font-heading text-xl font-medium leading-none">
+                  <p className="mb-3 mt-2 font-heading text-base font-medium leading-none">
                     SKU: {sku}
-                  </h3>
+                  </p>
                   <Stream fallback={<RatingSkeleton />} value={product.rating}>
                     {(rating) => <Rating rating={rating ?? 0} />}
                   </Stream>

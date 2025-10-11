@@ -60,10 +60,10 @@ const getProduct = async (props: Props) => {
   const customFields = removeEdgesAndNodes(product.customFields);
 
   const specifications = [
-    {
-      name: t('sku'),
-      value: product.sku,
-    },
+    // {
+    //   name: t('sku'),
+    //   value: product.sku,
+    // },
     {
       name: t('weight'),
       value: `${product.weight?.value} ${product.weight?.unit}`,
