@@ -77,6 +77,7 @@ export function ProductGallery({
               alt={image.alt || `${productName} image ${index + 1}`}
               className="bg-contrast-100 object-contain"
               fill
+              priority={index === 0}
               sizes="(min-width: 28rem) 4rem, 3rem"
               src={image.src}
             />

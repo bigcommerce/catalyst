@@ -2,6 +2,7 @@ import { Streamable } from '@/vibes/soul/lib/streamable';
 import { AnimatedLink } from '@/vibes/soul/primitives/animated-link';
 import { CarouselProduct, ProductCarousel } from '@/vibes/soul/sections/product-carousel';
 import { SectionLayout } from '@/vibes/soul/sections/section-layout';
+import { Link } from '~/i18n/routing';
 
 interface Link {
   label: string;
@@ -63,9 +64,9 @@ export function FeaturedProductCarousel({
           )}
         </header>
         {cta != null && cta.href !== '' && cta.label !== '' && (
-          <AnimatedLink className="mr-3" href={'/brands'}>
+          <Link className="mr-3" href={'/categories'}>
             {cta.label}
-          </AnimatedLink>
+          </Link>
         )}
       </div>
       <div className="group/product-carousel">
