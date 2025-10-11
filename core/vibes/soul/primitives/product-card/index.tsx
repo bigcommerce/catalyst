@@ -77,7 +77,7 @@ export function ProductCard({
         className,
       )}
     >
-      <div className="relative">
+      <div className="relative flex h-full flex-col">
         <div
           className={clsx(
             'relative overflow-hidden rounded-xl @md:rounded-2xl',
@@ -122,83 +122,72 @@ export function ProductCard({
               sizes={imageSizes}
               src={DEFAULT_PRODUCT_IMAGE_URL}
             />
-            // <div
-            //   className={clsx(
-            //     'break-words pl-5 pt-5 text-4xl font-bold leading-[0.8] tracking-tighter opacity-25 transition-transform duration-500 ease-out group-hover:scale-105 @xs:text-7xl',
-            //     {
-            //       light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
-            //       dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
-            //     }[colorScheme],
-            //   )}
-            // >
-            //   {title}
-            // </div>
           )}
           {badge != null && badge !== '' && (
             <Badge className="absolute left-3 top-3" shape="rounded">
               {badge}
             </Badge>
           )}
+          <Link
+            aria-label={title}
+            className={clsx(
+              'absolute inset-0 rounded-b-lg rounded-t-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
+              {
+                light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
+                dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
+              }[colorScheme],
+            )}
+            href={href}
+            id={id}
+          >
+            <span className="sr-only">View product</span>
+          </Link>
         </div>
-
-        <div className="mx-4 mb-2 mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
-          <div className="flex-1 text-sm @[16rem]:text-base">
-            <span
-              className={clsx(
-                'line-clamp-2 block break-words font-semibold',
-                {
-                  light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
-                  dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
-                }[colorScheme],
-              )}
-            >
-              {title}
-            </span>
-
-            {subtitle != null && subtitle !== '' && (
+        <div className="flex flex-1 flex-col justify-end">
+          <div className="mx-4 mb-2 mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
+            <div className="flex-1 text-sm @[16rem]:text-base">
               <span
                 className={clsx(
-                  'block text-sm font-normal',
+                  'line-clamp-2 block break-words font-semibold',
                   {
-                    light: 'text-[var(--product-card-light-subtitle,hsl(var(--foreground)/75%))]',
-                    dark: 'text-[var(--product-card-dark-subtitle,hsl(var(--background)/75%))]',
+                    light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
+                    dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
                   }[colorScheme],
                 )}
               >
-                {subtitle}
+                {title}
               </span>
-            )}
-            {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
-          </div>
-        </div>
-        {showButton && (
-          <div className="mt-auto p-4 pt-0">
-            <button
-              className={clsx(
-                'relative w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
+              {subtitle != null && subtitle !== '' && (
+                <span
+                  className={clsx(
+                    'block text-sm font-normal',
+                    {
+                      light: 'text-[var(--product-card-light-subtitle,hsl(var(--foreground)/75%))]',
+                      dark: 'text-[var(--product-card-dark-subtitle,hsl(var(--background)/75%))]',
+                    }[colorScheme],
+                  )}
+                >
+                  {subtitle}
+                </span>
               )}
-              type="button"
-              tabIndex={-1}
-              aria-disabled="true"
-            >
-              Shop Now →
-            </button>
+              {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
+            </div>
           </div>
-        )}
-        <Link
-          aria-label={title}
-          className={clsx(
-            'absolute inset-0 rounded-b-lg rounded-t-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
-            {
-              light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
-              dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
-            }[colorScheme],
+          {showButton && (
+            <div className="mt-auto p-4 pt-0">
+              <button
+                className={clsx(
+                  'relative w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
+                )}
+                type="button"
+                tabIndex={-1}
+                aria-disabled="true"
+              >
+                Shop Now →
+              </button>
+            </div>
           )}
-          href={href}
-          id={id}
-        >
-          <span className="sr-only">View product</span>
-        </Link>
+        </div>
       </div>
       {showCompare && (
         <div className="mt-0.5 shrink-0">
