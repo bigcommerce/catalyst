@@ -49,7 +49,7 @@ export function Breadcrumbs({ breadcrumbs: streamableBreadcrumbs, className }: B
                   return (
                     <li className="inline-flex items-center gap-x-1.5" key={href}>
                       <a
-                        className="font-[family-name:var(--breadcrumbs-font-family,var(--font-family-body))] text-[var(--breadcrumbs-primary-text,hsl(var(--foreground)))] [background:linear-gradient(0deg,var(--breadcrumbs-hover,hsl(var(--primary))),var(--breadcrumbs-hover,hsl(var(--primary))))_no-repeat_left_bottom_/_0_2px]"
+                        className="font-[family-name:var(--breadcrumbs-font-family,var(--font-family-body))] font-bold text-[var(--breadcrumbs-primary-text,hsl(var(--foreground)))] [background:linear-gradient(0deg,var(--breadcrumbs-hover,hsl(var(--primary))),var(--breadcrumbs-hover,hsl(var(--primary))))_no-repeat_left_bottom_/_0_2px]"
                         href={href}
                       >
                         {label}
