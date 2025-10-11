@@ -148,7 +148,7 @@ export function ProductCard({
             <div className="flex-1 text-sm @[16rem]:text-base">
               <span
                 className={clsx(
-                  'line-clamp-2 block break-words font-semibold',
+                  'mb-2 line-clamp-2 block break-words font-semibold',
                   {
                     light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
                     dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
@@ -160,7 +160,7 @@ export function ProductCard({
               {subtitle != null && subtitle !== '' && (
                 <span
                   className={clsx(
-                    'block text-sm font-normal',
+                    'mb-1 block text-sm font-normal',
                     {
                       light: 'text-[var(--product-card-light-subtitle,hsl(var(--foreground)/75%))]',
                       dark: 'text-[var(--product-card-dark-subtitle,hsl(var(--background)/75%))]',
@@ -170,7 +170,9 @@ export function ProductCard({
                   {subtitle}
                 </span>
               )}
-              {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
+              {price != null && (
+                <PriceLabel className="mb-4" colorScheme={colorScheme} price={price} />
+              )}
             </div>
           </div>
           {showButton && (

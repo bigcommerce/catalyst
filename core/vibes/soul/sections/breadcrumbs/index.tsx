@@ -40,17 +40,20 @@ export function Breadcrumbs({ breadcrumbs: streamableBreadcrumbs, className }: B
 
         return (
           <nav aria-label="breadcrumb" className={clsx(className)}>
-            <ol className="flex flex-wrap items-center gap-x-1.5 text-sm @xl:text-base">
+            <ol
+              className="flex flex-wrap items-center gap-x-1.5 text-sm @xl:text-base"
+              style={{ marginLeft: '0px' }}
+            >
               {breadcrumbs.map(({ label, href }, index) => {
                 if (index < breadcrumbs.length - 1) {
                   return (
                     <li className="inline-flex items-center gap-x-1.5" key={href}>
-                      <AnimatedLink
+                      <a
                         className="font-[family-name:var(--breadcrumbs-font-family,var(--font-family-body))] text-[var(--breadcrumbs-primary-text,hsl(var(--foreground)))] [background:linear-gradient(0deg,var(--breadcrumbs-hover,hsl(var(--primary))),var(--breadcrumbs-hover,hsl(var(--primary))))_no-repeat_left_bottom_/_0_2px]"
                         href={href}
                       >
                         {label}
-                      </AnimatedLink>
+                      </a>
                       <ChevronRight
                         aria-hidden="true"
                         className="text-[var(--breadcrumbs-icon,hsl(var(--contrast-500)))]"
