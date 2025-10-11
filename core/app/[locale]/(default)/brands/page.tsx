@@ -57,7 +57,7 @@ export default async function BrandsPage(props: Props) {
       paddingOptionsTablet="px-4"
       paddingOptionsMobile="px-2"
     >
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-6">
+      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-6">
         {brands.map((brand) => (
           <BrandCard
             href={brand.path}
@@ -96,6 +96,10 @@ export function PageNumberPagination({
 }: PageNumberPaginationProps) {
   const prevPage = currentPage > 1 ? currentPage - 1 : null;
   const nextPage = currentPage < totalPages ? currentPage + 1 : null;
+
+  if (totalPages <= 1) {
+    return null;
+  }
 
   return (
     <nav aria-label="pagination" className="py-10" role="navigation">

@@ -54,6 +54,10 @@ function CursorPaginationResolved({
   const previousLabel = useStreamable(streamablePreviousLabel) ?? 'Go to previous page';
   const nextLabel = useStreamable(streamableNextLabel) ?? 'Go to next page';
 
+  // If both startCursor and endCursor are null, there is only one page
+  if (startCursor == null && endCursor == null) {
+    return null;
+  }
   return (
     <nav aria-label={label} className="py-10" role="navigation">
       <ul className="flex items-center justify-center gap-3">

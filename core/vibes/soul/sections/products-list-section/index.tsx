@@ -99,7 +99,7 @@ export function ProductsListSection({
         </Suspense>
       </div> */}
 
-      <div className="mx-auto max-w-screen-2xl px-4 py-10 @xl:px-6 @xl:py-14 @4xl:px-8 @4xl:py-12">
+      <div className="mx-auto max-w-screen-2xl px-4 py-5">
         <div>
           <Stream fallback={<BreadcrumbsSkeleton />} value={streamableBreadcrumbs}>
             {(breadcrumbs) =>
@@ -155,7 +155,7 @@ export function ProductsListSection({
 
         <div>
           <div className="flex flex-wrap items-center justify-between gap-4 pb-4 pt-6 text-foreground">
-            <h3 className="flex items-center gap-2 font-heading text-2xl font-medium leading-none @lg:text-2xl @2xl:text-2xl">
+            <p className="flex items-center gap-2 font-heading text-2xl font-medium leading-none @lg:text-2xl @2xl:text-2xl">
               <Suspense
                 fallback={
                   <span className="inline-flex h-[1lh] w-[6ch] animate-pulse rounded-lg bg-contrast-100" />
@@ -170,7 +170,7 @@ export function ProductsListSection({
               >
                 <span className="text-contrast-300">{totalCount}</span>
               </Suspense> */}
-            </h3>
+            </p>
 
             {/**
              * Section to add category description that comes before the three pipes "|||"
