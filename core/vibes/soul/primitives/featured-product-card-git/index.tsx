@@ -106,9 +106,9 @@ export const FeaturedProductCard = ({
           )}
         </div>
         <div className="flex flex-1 flex-col p-4">
-          <h2 className="mb-1 text-lg font-bold text-gray-800">
+          <p className="mb-1 text-lg font-bold text-gray-800">
             {name.length > titleExcerptLength ? name.slice(0, titleExcerptLength) + '...' : name}
-          </h2>
+          </p>
           <p className="mb-1 mt-0.5 text-sm font-normal text-gray-500">
             <span
               dangerouslySetInnerHTML={{
