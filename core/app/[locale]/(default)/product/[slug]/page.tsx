@@ -91,7 +91,7 @@ const getProduct = async (props: Props) => {
                       <dt>
                         <strong>{field.name}</strong>
                       </dt>
-                      <dd>{field.value}</dd>
+                      <dd className="mt-5 pl-0">{field.value}</dd>
                     </div>
                   ))}
                 </dl>
