@@ -54,16 +54,37 @@ export async function generateMetadata(): Promise<Metadata> {
 
   const { pageTitle, metaDescription, metaKeywords } = data.site.settings?.seo || {};
 
+  const defaultTitle =
+    pageTitle && pageTitle.length >= 10 && pageTitle.length <= 60
+      ? pageTitle
+      : `${storeName} - Quality Products & Service`;
+  const defaultDescription =
+    metaDescription && metaDescription.length <= 160
+      ? metaDescription
+      : `${storeName} offers a curated selection of quality products and outstanding service. Discover our range today!`;
+
   return {
     title: {
       template: `%s - ${storeName}`,
-      default: pageTitle || storeName,
+      default: defaultTitle,
     },
+    description: defaultDescription,
     icons: {
-      icon: '/favicon.ico', // app/favicon.ico/route.ts
+      icon: '/favicon.ico',
     },
-    description: metaDescription,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
+    openGraph: {
+      title: defaultTitle,
+      description: defaultDescription,
+      url: process.env.NEXT_PUBLIC_SITE_URL || 'https://gitool.com',
+      siteName: storeName,
+      images: [
+        {
+          url: process.env.NEXT_PUBLIC_OG_IMAGE || '/favicon.ico',
+          alt: `${storeName} Logo`,
+        },
+      ],
+    },
     other: {
       platform: 'bigcommerce.catalyst',
       build_sha: process.env.NEXT_PUBLIC_VERCEL_GIT_COMMIT_SHA ?? '',
@@ -97,14 +118,24 @@ export default async function RootLayout({ params, children }: Props) {
     notFound();
   }
 
+  // SEO values for Schema.org injection
+  const { data } = await client.fetch({
+    document: RootLayoutMetadataQuery,
+    fetchOptions: { next: { revalidate } },
+  });
+  const storeName = data.site.settings?.storeName ?? '';
+  const metaDescription = data.site.settings?.seo?.metaDescription;
+  const defaultDescription =
+    metaDescription && metaDescription.length <= 160
+      ? metaDescription
+      : `${storeName} offers a curated selection of quality products and outstanding service. Discover our range today!`;
+
   // need to call this method everywhere where static rendering is enabled
-  // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
   setRequestLocale(locale);
 
   const [messages, user] = await Promise.all([getMessages(), getUser()]);
 
   let v2CustomerRecord = null;
-
   if (user?.email) {
     v2CustomerRecord = await getCustomerV2RecordByEmail(user.email);
   }
@@ -115,6 +146,20 @@ export default async function RootLayout({ params, children }: Props) {
         <head>
           <SiteTheme />
           <DraftModeScript appOrigin={process.env.MAKESWIFT_APP_ORIGIN} />
+          {/* Schema.org Organization structured data for SEO */}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{
+              __html: JSON.stringify({
+                '@context': 'https://schema.org',
+                '@type': 'Organization',
+                name: storeName,
+                url: process.env.NEXT_PUBLIC_SITE_URL || 'https://example.com',
+                logo: process.env.NEXT_PUBLIC_OG_IMAGE || '/favicon.ico',
+                description: defaultDescription,
+              }),
+            }}
+          />
         </head>
         <body>
           <NextIntlClientProvider locale={locale} messages={messages}>

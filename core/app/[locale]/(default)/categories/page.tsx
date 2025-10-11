@@ -29,25 +29,43 @@ export default async function BrandsPage(props: Props) {
   }
 
   return (
-    <SectionLayout
-      hideOverflow={true}
-      paddingOptionsLargeDesktop="px-8 py-8"
-      paddingOptionsDesktop="px-6  py-6"
-      paddingOptionsTablet="px-4 py-4"
-      paddingOptionsMobile="px-2 py-2"
-    >
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-6">
-        {categories.map((category) => (
-          <CategoryCard
-            href={category.path}
-            key={category.path}
-            title={category.name}
-            imageUrl={category.image?.url || ''}
-            imageAlt={category.image?.altText || category.name}
-            productCount={category.productCount}
-          />
-        ))}
-      </div>
-    </SectionLayout>
+    <>
+      {/* Schema.org WebPage structured data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: 'Categories',
+            description:
+              'Browse our diverse product categories to find quality items for every need. Discover new arrivals and best sellers in every category!',
+            url: process.env.NEXT_PUBLIC_SITE_URL
+              ? `${process.env.NEXT_PUBLIC_SITE_URL}/categories`
+              : 'https://gitool.com/categories',
+          }),
+        }}
+      />
+      <SectionLayout
+        hideOverflow={true}
+        paddingOptionsLargeDesktop="px-8 py-8"
+        paddingOptionsDesktop="px-6  py-6"
+        paddingOptionsTablet="px-4 py-4"
+        paddingOptionsMobile="px-2 py-2"
+      >
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-6">
+          {categories.map((category) => (
+            <CategoryCard
+              href={category.path}
+              key={category.path}
+              title={category.name}
+              imageUrl={category.image?.url || ''}
+              imageAlt={category.image?.altText || category.name}
+              productCount={category.productCount}
+            />
+          ))}
+        </div>
+      </SectionLayout>
+    </>
   );
 }

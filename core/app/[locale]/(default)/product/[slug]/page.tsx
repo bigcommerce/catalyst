@@ -229,20 +229,41 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
   const { pageTitle, metaDescription, metaKeywords } = product.seo;
   const { url, altText: alt } = product.defaultImage || {};
 
+  const title =
+    pageTitle && pageTitle.length >= 10 && pageTitle.length <= 60
+      ? pageTitle
+      : `${product.name} | Buy Online - Quality & Value`;
+  const description =
+    metaDescription && metaDescription.length <= 160
+      ? metaDescription
+      : `${product.plainTextDescription.slice(0, 150)}...`;
+  const siteName = process.env.NEXT_PUBLIC_STORE_NAME || 'Catalyst Store';
+  const pageUrl = process.env.NEXT_PUBLIC_SITE_URL
+    ? `${process.env.NEXT_PUBLIC_SITE_URL}/product/${slug}`
+    : `https://gitool.com/product/${slug}`;
   return {
-    title: pageTitle || product.name,
-    description: metaDescription || `${product.plainTextDescription.slice(0, 150)}...`,
+    title,
+    description,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
-    openGraph: url
-      ? {
-          images: [
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      siteName,
+      images: url
+        ? [
             {
               url,
               alt,
             },
+          ]
+        : [
+            {
+              url: process.env.NEXT_PUBLIC_OG_IMAGE || '/favicon.ico',
+              alt: `${siteName} Logo`,
+            },
           ],
-        }
-      : null,
+    },
   };
 }
 
@@ -263,54 +284,70 @@ export default async function Product(props: Props) {
   const parsedSearchParams = searchParamsCache.parse(props.searchParams);
 
   return (
-    // @ts-ignore
-    <SectionLayout hideOverflow={true}>
-      {/* @ts-ignore */}
-      <ProductDetail
-        action={addToCart}
-        breadcrumbs={Streamable.from(() => getBreadcrumbs(props))}
-        additionaInformationTitle={t('ProductDetails.additionalInformation')}
-        ctaDisabled={Streamable.from(() => getCtaDisabled(props))}
-        ctaLabel={Streamable.from(() => getCtaLabel(props))}
-        decrementLabel={t('ProductDetails.decreaseQuantity')}
-        fields={Streamable.from(() => getFields(props))}
-        incrementLabel={t('ProductDetails.increaseQuantity')}
-        prefetch={true}
-        product={Streamable.from(() => getProduct(props))}
-        productId={productId}
-        quantityLabel={t('ProductDetails.quantity')}
-        thumbnailLabel={t('ProductDetails.thumbnail')}
-        inventoryTracking={Streamable.from(() =>
-          getProduct(props).then((p) => p.inventory_tracking),
-        )}
-        inventoryLevel={Streamable.from(() =>
-          getProductData(variables).then((p) => p.inventory_level),
-        )}
-        sku={Streamable.from(() => getProduct(props).then((p) => p.sku))}
+    <>
+      {/* Schema.org WebPage structured data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: t('title'),
+            description: t('description'),
+            url: process.env.NEXT_PUBLIC_SITE_URL
+              ? `${process.env.NEXT_PUBLIC_SITE_URL}/product/${slug}`
+              : `https://example.com/product/${slug}`,
+          }),
+        }}
       />
-
-      <div className="mb-20">
-        <FeaturedProductCarousel
-          cta={{ label: t('RelatedProducts.cta'), href: '/shop' }}
-          emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
-          emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
-          nextLabel={t('RelatedProducts.nextProducts')}
-          previousLabel={t('RelatedProducts.previousProducts')}
-          products={Streamable.from(() => getRelatedProducts(props))}
-          scrollbarLabel={t('RelatedProducts.scrollbar')}
-          title={t('RelatedProducts.title')}
+      {/* ...existing code... */}
+      <SectionLayout hideOverflow={true}>
+        <ProductDetail
+          action={addToCart}
+          breadcrumbs={Streamable.from(() => getBreadcrumbs(props))}
+          additionaInformationTitle={t('ProductDetails.additionalInformation')}
+          ctaDisabled={Streamable.from(() => getCtaDisabled(props))}
+          ctaLabel={Streamable.from(() => getCtaLabel(props))}
+          decrementLabel={t('ProductDetails.decreaseQuantity')}
+          fields={Streamable.from(() => getFields(props))}
+          incrementLabel={t('ProductDetails.increaseQuantity')}
+          prefetch={true}
+          product={Streamable.from(() => getProduct(props))}
+          productId={productId}
+          quantityLabel={t('ProductDetails.quantity')}
+          thumbnailLabel={t('ProductDetails.thumbnail')}
+          inventoryTracking={Streamable.from(() =>
+            getProduct(props).then((p) => p.inventory_tracking),
+          )}
+          inventoryLevel={Streamable.from(() =>
+            getProductData(variables).then((p) => p.inventory_level),
+          )}
+          sku={Streamable.from(() => getProduct(props).then((p) => p.sku))}
         />
-      </div>
-      {/* <Reviews productId={productId} searchParams={parsedSearchParams} /> */}
 
-      <Stream fallback={null} value={Streamable.from(() => getProductData(variables))}>
-        {(product) => (
-          <>
-            <ProductSchema product={product} />
-            <ProductViewed product={product} />
-          </>
-        )}
-      </Stream>
-    </SectionLayout>
+        <div className="mb-20">
+          <FeaturedProductCarousel
+            cta={{ label: t('RelatedProducts.cta'), href: '/shop' }}
+            emptyStateSubtitle={t('RelatedProducts.browseCatalog')}
+            emptyStateTitle={t('RelatedProducts.noRelatedProducts')}
+            nextLabel={t('RelatedProducts.nextProducts')}
+            previousLabel={t('RelatedProducts.previousProducts')}
+            products={Streamable.from(() => getRelatedProducts(props))}
+            scrollbarLabel={t('RelatedProducts.scrollbar')}
+            title={t('RelatedProducts.title')}
+          />
+        </div>
+        {/* <Reviews productId={productId} searchParams={parsedSearchParams} /> */}
+
+        <Stream fallback={null} value={Streamable.from(() => getProductData(variables))}>
+          {(product) => (
+            <>
+              <ProductSchema product={product} />
+              <ProductViewed product={product} />
+            </>
+          )}
+        </Stream>
+      </SectionLayout>
+    </>
   );
 }

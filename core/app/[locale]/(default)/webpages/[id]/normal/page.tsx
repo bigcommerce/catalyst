@@ -58,10 +58,34 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const webpage = await getWebPage(id);
   const { pageTitle, metaDescription, metaKeywords } = webpage.seo;
 
+  const title =
+    pageTitle && pageTitle.length >= 10 && pageTitle.length <= 60
+      ? pageTitle
+      : `${webpage.title} | Information & Details`;
+  const description =
+    metaDescription && metaDescription.length <= 160
+      ? metaDescription
+      : `${webpage.title} - Learn more about this page.`;
+  const siteName = process.env.NEXT_PUBLIC_STORE_NAME || 'GI Tool Store';
+  const pageUrl = process.env.NEXT_PUBLIC_SITE_URL
+    ? `${process.env.NEXT_PUBLIC_SITE_URL}/webpages/${webpage.title}`
+    : `https://gitool.com/webpages/${webpage.title}`;
   return {
-    title: pageTitle || webpage.title,
-    description: metaDescription,
+    title,
+    description,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
+    openGraph: {
+      title,
+      description,
+      url: pageUrl,
+      siteName,
+      images: [
+        {
+          url: process.env.NEXT_PUBLIC_OG_IMAGE || '/favicon.ico',
+          alt: `${siteName} Logo`,
+        },
+      ],
+    },
   };
 }
 
@@ -69,9 +93,26 @@ export default async function WebPage({ params }: Props) {
   const { id } = await params;
 
   return (
-    <WebPageContent
-      breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id))}
-      webPage={Streamable.from(() => getWebPage(id))}
-    />
+    <>
+      {/* Schema.org WebPage structured data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: id,
+            description: 'Information and details about this page.',
+            url: process.env.NEXT_PUBLIC_SITE_URL
+              ? `${process.env.NEXT_PUBLIC_SITE_URL}/webpages/${id}`
+              : `https://example.com/webpages/${id}`,
+          }),
+        }}
+      />
+      <WebPageContent
+        breadcrumbs={Streamable.from(() => getWebPageBreadcrumbs(id))}
+        webPage={Streamable.from(() => getWebPage(id))}
+      />
+    </>
   );
 }

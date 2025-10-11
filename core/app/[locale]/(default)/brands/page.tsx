@@ -50,34 +50,52 @@ export default async function BrandsPage(props: Props) {
   }
 
   return (
-    <SectionLayout
-      hideOverflow={true}
-      paddingOptionsLargeDesktop="px-8"
-      paddingOptionsDesktop="px-6"
-      paddingOptionsTablet="px-4"
-      paddingOptionsMobile="px-2"
-    >
-      <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-6">
-        {brands.map((brand) => (
-          <BrandCard
-            href={brand.path}
-            name={brand.name}
-            title={brand.name}
-            productCount={brand.productsCount.toString()}
-            imageUrl={brand.defaultImage?.urlOriginal}
-            imageAlt={brand.defaultImage?.altText || `${brand.name} brand image`}
-            key={brand.path}
-          />
-        ))}
-      </div>
-
-      {/* Pagination Controls */}
-      <PageNumberPagination
-        currentPage={parseInt(page, 10)}
-        totalPages={paginationInfo?.total_pages || 1}
-        basePath={`/brands`}
+    <>
+      {/* Schema.org WebPage structured data for SEO */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: 'Brands',
+            description:
+              'Discover and shop from a curated selection of top brands offering quality products and trusted service. Find your favorite brands today!',
+            url: process.env.NEXT_PUBLIC_SITE_URL
+              ? `${process.env.NEXT_PUBLIC_SITE_URL}/brands`
+              : 'https://gitool.com/brands',
+          }),
+        }}
       />
-    </SectionLayout>
+      <SectionLayout
+        hideOverflow={true}
+        paddingOptionsLargeDesktop="px-8"
+        paddingOptionsDesktop="px-6"
+        paddingOptionsTablet="px-4"
+        paddingOptionsMobile="px-2"
+      >
+        <div className="mt-10 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-6">
+          {brands.map((brand) => (
+            <BrandCard
+              href={brand.path}
+              name={brand.name}
+              title={brand.name}
+              productCount={brand.productsCount.toString()}
+              imageUrl={brand.defaultImage?.urlOriginal}
+              imageAlt={brand.defaultImage?.altText || `${brand.name} brand image`}
+              key={brand.path}
+            />
+          ))}
+        </div>
+
+        {/* Pagination Controls */}
+        <PageNumberPagination
+          currentPage={parseInt(page, 10)}
+          totalPages={paginationInfo?.total_pages || 1}
+          basePath={`/brands`}
+        />
+      </SectionLayout>
+    </>
   );
 }
 
