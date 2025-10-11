@@ -15,6 +15,9 @@ import { Link } from '~/components/link';
 import { getFilterParsers } from './filter-parsers';
 import { Image } from '~/components/image';
 
+const DEFAULT_PRODUCT_IMAGE_URL =
+  'https://betterineraction.nyc3.cdn.digitaloceanspaces.com/product-placeholder.svg';
+
 export interface LinkGroupFilter {
   type: 'link-group';
   label: string;
@@ -101,7 +104,7 @@ export function CategoryCard({ imageUrl, title, productCount, href, imageAlt }: 
       <Link href={href}>
         {/* Image */}
         <div className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md shadow-md">
-          {imageUrl ? (
+          {imageUrl && imageUrl.length > 0 ? (
             <img
               alt={imageAlt}
               className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
@@ -192,7 +195,7 @@ export function FiltersPanelInner({
         <CategoryCard
           key={index.toString()}
           href={category.href}
-          imageUrl={category.image ? category.image : null}
+          imageUrl={category.image ? category.image : DEFAULT_PRODUCT_IMAGE_URL}
           imageAlt={category.image?.altText || category.label}
           title={category.label}
           productCount={category.productCount}
