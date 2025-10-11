@@ -10,9 +10,15 @@ interface Props {
   images: Array<{ alt: string; src: string }>;
   className?: string;
   thumbnailLabel?: string;
+  productName: string;
 }
 
-export function ProductGallery({ images, className, thumbnailLabel = 'View image number' }: Props) {
+export function ProductGallery({
+  images,
+  className,
+  thumbnailLabel = 'View image number',
+  productName,
+}: Props) {
   const [previewImage, setPreviewImage] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel();
 
@@ -43,7 +49,7 @@ export function ProductGallery({ images, className, thumbnailLabel = 'View image
           {images.map((image, idx) => (
             <div className="relative aspect-square w-full shrink-0 grow-0 basis-full" key={idx}>
               <Image
-                alt={image.alt}
+                alt={image.alt || `${productName} image ${idx + 1}`}
                 className="object-contain"
                 fill
                 priority={idx === 0}
@@ -68,7 +74,7 @@ export function ProductGallery({ images, className, thumbnailLabel = 'View image
             onClick={() => selectImage(index)}
           >
             <Image
-              alt={image.alt}
+              alt={image.alt || `${productName} image ${index + 1}`}
               className="bg-contrast-100 object-contain"
               fill
               sizes="(min-width: 28rem) 4rem, 3rem"

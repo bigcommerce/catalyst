@@ -89,12 +89,13 @@ export function FiltersPanel({
 
 interface CategoryCardProps {
   imageUrl: string;
+  imageAlt: string;
   title: string;
   productCount: number;
   href: string;
 }
 
-export function CategoryCard({ imageUrl, title, productCount, href }: CategoryCardProps) {
+export function CategoryCard({ imageUrl, title, productCount, href, imageAlt }: CategoryCardProps) {
   return (
     <Suspense fallback={<CardSkeleton />}>
       <Link href={href}>
@@ -102,7 +103,7 @@ export function CategoryCard({ imageUrl, title, productCount, href }: CategoryCa
         <div className="group relative h-48 w-full cursor-pointer overflow-hidden rounded-md shadow-md">
           {imageUrl ? (
             <img
-              alt={`${title} category image`}
+              alt={imageAlt}
               className="h-full w-full object-cover transition duration-300 group-hover:scale-105"
               src={imageUrl}
             />
@@ -192,6 +193,7 @@ export function FiltersPanelInner({
           key={index.toString()}
           href={category.href}
           imageUrl={category.image ? category.image : null}
+          imageAlt={category.image?.altText || category.label}
           title={category.label}
           productCount={category.productCount}
         />

@@ -43,6 +43,7 @@ export default async function BrandsPage(props: Props) {
             key={category.path}
             title={category.name}
             imageUrl={category.image?.url || ''}
+            imageAlt={category.image?.altText || category.name}
             productCount={category.productCount}
           />
         ))}
