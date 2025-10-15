@@ -7,10 +7,12 @@ import {
   ConsentManagerDialogProps,
   ConsentManagerWidgetProps,
   CookieBannerProps,
+  useConsentManager,
 } from '@c15t/nextjs';
 import { useTranslations } from 'next-intl';
-import { PropsWithChildren } from 'react';
+import { PropsWithChildren, useCallback } from 'react';
 
+import { Checkbox } from '@/vibes/soul/form/checkbox';
 import { Button } from '@/vibes/soul/primitives/button';
 
 function CookieBannerTitle() {
@@ -80,7 +82,7 @@ function CookieBannerCustomizeButton() {
 export function CookieBanner(props: CookieBannerProps) {
   return (
     <C15TCookieBanner.Root {...props} asChild>
-      <C15TCookieBanner.Card>
+      <C15TCookieBanner.Card className="!max-w-lg">
         <C15TCookieBanner.Header>
           <CookieBannerTitle />
           <CookieBannerDescription />
@@ -169,11 +171,60 @@ function ConsentManagerWidgetSaveButton() {
   );
 }
 
+type AllConsentNames = 'experience' | 'functionality' | 'marketing' | 'measurement' | 'necessary';
+
+interface ConsentType {
+  defaultValue: boolean;
+  description: string;
+  disabled?: boolean;
+  display: boolean;
+  gdprType: number;
+  name: AllConsentNames;
+}
+
+function ConsentManagerAccordionItems() {
+  const { selectedConsents, setSelectedConsent, getDisplayedConsents } = useConsentManager();
+
+  const handleConsentChange = useCallback(
+    (name: AllConsentNames, checked: boolean) => {
+      setSelectedConsent(name, checked);
+    },
+    [setSelectedConsent],
+  );
+
+  return getDisplayedConsents().map((consent: ConsentType) => (
+    <C15TConsentManagerWidget.AccordionItem
+      key={consent.name}
+      themeKey="widget.accordion.item"
+      value={consent.name}
+    >
+      <C15TConsentManagerWidget.AccordionTrigger themeKey="widget.accordion.trigger">
+        <C15TConsentManagerWidget.AccordionTriggerInner themeKey="widget.accordion.trigger.inner">
+          <C15TConsentManagerWidget.AccordionArrow />
+          {consent.name}
+        </C15TConsentManagerWidget.AccordionTriggerInner>
+
+        <Checkbox
+          checked={selectedConsents[consent.name]}
+          disabled={consent.disabled}
+          onCheckedChange={(checked: boolean) => handleConsentChange(consent.name, checked)}
+          onClick={(e: React.MouseEvent<HTMLButtonElement>) => e.stopPropagation()}
+          onKeyDown={(e: React.KeyboardEvent<HTMLButtonElement>) => e.stopPropagation()}
+          onKeyUp={(e: React.KeyboardEvent<HTMLButtonElement>) => e.stopPropagation()}
+        />
+      </C15TConsentManagerWidget.AccordionTrigger>
+      <C15TConsentManagerWidget.AccordionContent>
+        {consent.description}
+      </C15TConsentManagerWidget.AccordionContent>
+    </C15TConsentManagerWidget.AccordionItem>
+  ));
+}
+
 function ConsentManagerWidget(props: ConsentManagerWidgetProps) {
   return (
     <C15TConsentManagerWidget.Root {...props}>
       <C15TConsentManagerWidget.Accordion>
-        <C15TConsentManagerWidget.AccordionItems />
+        <ConsentManagerAccordionItems />
       </C15TConsentManagerWidget.Accordion>
       <C15TConsentManagerWidget.Footer>
         <C15TConsentManagerWidget.FooterSubGroup themeKey="widget.footer.sub-group">

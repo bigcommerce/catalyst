@@ -17,7 +17,6 @@ export async function setC15tConsentCookie(consent: SetC15tConsentCookie) {
   const cookieStore = await cookies();
 
   cookieStore.set(COOKIE_NAME, JSON.stringify(consent), {
-    httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     path: '/',
