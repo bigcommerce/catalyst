@@ -69,6 +69,31 @@ function getConsentCookieValue(): string | null {
   return cookieValue;
 }
 
+function clearLocalStorageConsent(): void {
+  console.log('[clearLocalStorageConsent] Clearing localStorage consent data');
+
+  if (typeof window === 'undefined') {
+    console.log('[clearLocalStorageConsent] Window is undefined (SSR), skipping');
+
+    return;
+  }
+
+  const storageKey = 'privacy-consent-storage';
+  const existingData = localStorage.getItem(storageKey);
+
+  console.log(
+    '[clearLocalStorageConsent] Existing localStorage data:',
+    existingData ? 'Present' : 'None',
+  );
+
+  if (existingData) {
+    localStorage.removeItem(storageKey);
+    console.log('[clearLocalStorageConsent] Successfully removed localStorage consent data');
+  } else {
+    console.log('[clearLocalStorageConsent] No localStorage consent data to clear');
+  }
+}
+
 /**
  * Helper function to parse consent cookie data using Zod schema validation
  * @internal
@@ -131,6 +156,9 @@ function createCustomHandlers() {
      */
     showConsentBanner() {
       console.log('[showConsentBanner] Handler invoked');
+
+      // Clear any existing localStorage consent data to prevent conflicts
+      clearLocalStorageConsent();
 
       const consentData = parseConsentCookie();
 
@@ -354,6 +382,9 @@ function createCustomHandlers() {
 
         console.log('[setConsent] Successfully set consent cookie');
 
+        // Clear localStorage to prevent conflicts with cookie-based approach
+        clearLocalStorageConsent();
+
         // Return a mock response that matches the expected interface
         const mockResponse = {
           id: `consent_${Date.now()}`,
@@ -416,6 +447,9 @@ function createCustomHandlers() {
      */
     verifyConsent(options?: { body?: { type?: string; preferences?: string[] } }) {
       console.log('[verifyConsent] Handler invoked with options:', options);
+
+      // Clear any existing localStorage consent data to prevent conflicts
+      clearLocalStorageConsent();
 
       if (!options?.body) {
         console.log('[verifyConsent] No request body provided, returning error');
