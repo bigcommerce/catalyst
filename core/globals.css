@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 /* Lazysizes blur effect for LQIP (Low Quality Image Placeholder) */
-img.lazyload,
+/* img.lazyload,
 img.lazyloading {
   filter: blur(20px);
   transition: filter 0.1s ease-out;
@@ -11,7 +11,7 @@ img.lazyloading {
 
 img.lazyloaded {
   filter: blur(0);
-}
+} */
 
 :root {
   --primary: 96 100% 68%;

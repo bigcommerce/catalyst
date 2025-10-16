@@ -125,13 +125,13 @@ export default async function RootLayout({ params, children }: Props) {
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
       <head>
+        <LazySizesScript />
         <ScriptManagerScripts
           scripts={rootData.data.site.content.headerScripts}
           strategy="afterInteractive"
         />
       </head>
       <body className="flex min-h-screen flex-col">
-        <LazySizesScript />
         <NextIntlClientProvider>
           <NuqsAdapter>
             <StreamableAnalyticsProvider data={streamableAnalyticsData} />
