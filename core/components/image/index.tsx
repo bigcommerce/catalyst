@@ -35,9 +35,10 @@ function isCdnTemplateUrl(src: unknown): src is string {
  */
 export const Image = ({ useLazySizes = true, ...props }: ExtendedImageProps) => {
   const imgRef = useRef<HTMLImageElement>(null);
+  const isPriority = props.priority === true;
 
-  // If useLazySizes is enabled and src is a template URL, use native img with lazysizes
-  if (useLazySizes && isCdnTemplateUrl(props.src)) {
+  // If useLazySizes is enabled, src is a template URL, and NOT priority, use native img with lazysizes
+  if (useLazySizes && isCdnTemplateUrl(props.src) && !isPriority) {
     const templateUrl = props.src;
     const lqipSrc = generateLQIP(templateUrl);
     const srcSet = generateSrcSet(templateUrl);
@@ -56,6 +57,28 @@ export const Image = ({ useLazySizes = true, ...props }: ExtendedImageProps) => 
           ...props.style,
         }}
         suppressHydrationWarning
+      />
+    );
+  }
+
+  // For priority images with template URLs, load eagerly with fetchpriority="high"
+  if (isPriority && isCdnTemplateUrl(props.src)) {
+    const templateUrl = props.src;
+    const srcSet = generateSrcSet(templateUrl);
+
+    return (
+      <img
+        ref={imgRef}
+        srcSet={srcSet}
+        sizes={props.sizes}
+        className={props.className}
+        alt={props.alt}
+        style={{
+          width: props.width ? `${props.width}px` : undefined,
+          height: props.height ? `${props.height}px` : undefined,
+          ...props.style,
+        }}
+        fetchPriority="high"
       />
     );
   }
