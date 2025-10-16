@@ -2,7 +2,7 @@
 
 // eslint-disable-next-line @typescript-eslint/no-restricted-imports
 import NextImage, { ImageProps } from 'next/image';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import { buildConfig } from '~/build-config/reader';
 import bcCdnImageLoader from '~/lib/cdn-image-loader';
@@ -36,15 +36,6 @@ function isCdnTemplateUrl(src: unknown): src is string {
 export const Image = ({ useLazySizes = true, ...props }: ExtendedImageProps) => {
   const imgRef = useRef<HTMLImageElement>(null);
 
-  useEffect(() => {
-    if (useLazySizes && typeof window !== 'undefined') {
-      // Dynamically import lazysizes on the client side
-      import('lazysizes').catch((error) => {
-        console.error('Failed to load lazysizes:', error);
-      });
-    }
-  }, [useLazySizes]);
-
   // If useLazySizes is enabled and src is a template URL, use native img with lazysizes
   if (useLazySizes && isCdnTemplateUrl(props.src)) {
     const templateUrl = props.src;
@@ -64,6 +55,7 @@ export const Image = ({ useLazySizes = true, ...props }: ExtendedImageProps) => 
           height: props.height ? `${props.height}px` : undefined,
           ...props.style,
         }}
+        suppressHydrationWarning
       />
     );
   }

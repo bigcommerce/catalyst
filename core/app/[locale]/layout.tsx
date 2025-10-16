@@ -19,6 +19,7 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
 import { StreamableAnalyticsProvider } from '~/components/analytics/streamable-provider';
+import { LazySizesScript } from '~/components/lazysizes-script';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
@@ -130,6 +131,7 @@ export default async function RootLayout({ params, children }: Props) {
         />
       </head>
       <body className="flex min-h-screen flex-col">
+        <LazySizesScript />
         <NextIntlClientProvider>
           <NuqsAdapter>
             <StreamableAnalyticsProvider data={streamableAnalyticsData} />

@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Lazysizes blur effect for LQIP (Low Quality Image Placeholder) */
+img.lazyload,
+img.lazyloading {
+  filter: blur(20px);
+  transition: filter 0.1s ease-out;
+}
+
+img.lazyloaded {
+  filter: blur(0);
+}
+
 :root {
   --primary: 96 100% 68%;
   --accent: 96 100% 88%;
