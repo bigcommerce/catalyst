@@ -208,6 +208,10 @@ async function getBreadcrumbs(props: Props): Promise<Breadcrumb[]> {
 
   const category = removeEdgesAndNodes(product.categories)[0];
 
+  if (!category || !category.breadcrumbs || category.breadcrumbs.edges === null) {
+    return [];
+  }
+
   return removeEdgesAndNodes(category!.breadcrumbs).map(({ name, path }) => ({
     label: name,
     href: path ?? '#',
@@ -292,8 +296,8 @@ export default async function Product(props: Props) {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: t('title'),
-            description: t('description'),
+            name: t('title') || '',
+            description: t('description') || '',
             url: process.env.NEXT_PUBLIC_SITE_URL
               ? `${process.env.NEXT_PUBLIC_SITE_URL}/product/${slug}`
               : `https://example.com/product/${slug}`,
