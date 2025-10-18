@@ -294,8 +294,15 @@ interface Props {
 export async function generateMetadata(): Promise<Metadata> {
   const t = await getTranslations('Search');
 
+  const canonicalUrl = process.env.NEXT_PUBLIC_SITE_URL
+    ? `${process.env.NEXT_PUBLIC_SITE_URL}/search`
+    : `https://gitool.com/search`;
+
   return {
     title: t('title'),
+    alternates: {
+      canonical: canonicalUrl,
+    },
   };
 }
 
