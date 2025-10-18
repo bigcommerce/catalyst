@@ -143,6 +143,7 @@ async function getListProducts(props: Props): Promise<Product[]> {
   const refinedSearch = await getRefinedSearch(props);
   const format = await getFormatter();
 
+  // @ts-ignore
   return refinedSearch.products.items.map((product) => ({
     id: product.entityId.toString(),
     title: product.name,
@@ -268,10 +269,17 @@ export async function generateMetadata(props: Props): Promise<Metadata> {
 
   const { pageTitle, metaDescription, metaKeywords } = brand.seo;
 
+  const canonicalUrl = process.env.NEXT_PUBLIC_SITE_URL
+    ? `${process.env.NEXT_PUBLIC_SITE_URL}${brand.path}`
+    : `https://gitool.com${brand.path}`;
+
   return {
     title: pageTitle || brand.name,
     description: metaDescription,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
+    alternates: {
+      canonical: canonicalUrl,
+    },
   };
 }
 

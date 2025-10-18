@@ -339,7 +339,6 @@ interface Props {
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
-  const params = await props.params;
   const category = await getCategory(props);
 
   const { pageTitle, metaDescription, metaKeywords } = category.seo;
