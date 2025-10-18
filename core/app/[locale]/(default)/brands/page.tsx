@@ -12,9 +12,16 @@ import clsx from 'clsx';
 import { Link } from '~/components/link';
 
 export async function generateMetadata(): Promise<Metadata> {
+  const canonicalUrl = process.env.NEXT_PUBLIC_SITE_URL
+    ? `${process.env.NEXT_PUBLIC_SITE_URL}/brands`
+    : 'https://gitool.com/brands';
+
   return {
     title: 'Brands',
     description: 'Explore our diverse range of brands offering quality products.',
+    alternates: {
+      canonical: canonicalUrl,
+    },
   };
 }
 

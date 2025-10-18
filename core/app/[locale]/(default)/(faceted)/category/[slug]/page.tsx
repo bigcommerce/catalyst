@@ -339,14 +339,22 @@ interface Props {
 }
 
 export async function generateMetadata(props: Props): Promise<Metadata> {
+  const { params } = props;
   const category = await getCategory(props);
 
   const { pageTitle, metaDescription, metaKeywords } = category.seo;
+
+  const canonicalUrl = process.env.NEXT_PUBLIC_SITE_URL
+    ? `${process.env.NEXT_PUBLIC_SITE_URL}/category/${(await params).slug}`
+    : `https://gitool.com/category/${(await params).slug}`;
 
   return {
     title: pageTitle || category.name,
     description: metaDescription,
     keywords: metaKeywords ? metaKeywords.split(',') : null,
+    alternates: {
+      canonical: canonicalUrl,
+    },
   };
 }
 
