@@ -14,6 +14,7 @@ const CategoryPageQuery = graphql(
           entityId
           name
           description
+          path
           defaultImage {
             urlOriginal
             altText
