@@ -78,118 +78,121 @@ export function ProductCard({
       )}
     >
       <div className="relative flex h-full flex-col">
-        <div
-          className={clsx(
-            'relative overflow-hidden rounded-xl @md:rounded-2xl',
-            {
-              '5:6': 'aspect-[5/6]',
-              '3:4': 'aspect-[3/4]',
-              '1:1': 'aspect-square',
-            }[aspectRatio],
-            {
-              light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100)))]',
-              dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500)))]',
-            }[colorScheme],
-          )}
-        >
-          {image != null ? (
-            <Image
-              alt={image.alt || `${title} image`}
-              className={clsx(
-                'w-full scale-100 select-none object-fill transition-transform duration-500 ease-out group-hover:scale-110',
-                {
-                  light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
-                  dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
-                }[colorScheme],
-              )}
-              fill
-              priority={imagePriority}
-              sizes={imageSizes}
-              src={image.src}
-            />
-          ) : (
-            <Image
-              alt={`${title} image`}
-              className={clsx(
-                'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
-                {
-                  light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
-                  dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
-                }[colorScheme],
-              )}
-              fill
-              priority={imagePriority}
-              sizes={imageSizes}
-              src={DEFAULT_PRODUCT_IMAGE_URL}
-            />
-          )}
-          {badge != null && badge !== '' && (
-            <Badge className="absolute left-3 top-3" shape="rounded">
-              {badge}
-            </Badge>
-          )}
-          <Link
-            aria-label={title}
+        <Link href={href} id={id} className="absolute inset-0">
+          <div
             className={clsx(
-              'absolute inset-0 rounded-b-lg rounded-t-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
+              'relative overflow-hidden rounded-xl @md:rounded-2xl',
               {
-                light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
-                dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
+                '5:6': 'aspect-[5/6]',
+                '3:4': 'aspect-[3/4]',
+                '1:1': 'aspect-square',
+              }[aspectRatio],
+              {
+                light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100)))]',
+                dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500)))]',
               }[colorScheme],
             )}
-            href={href}
-            id={id}
           >
-            <span className="sr-only">View product</span>
-          </Link>
-        </div>
-        <div className="flex flex-1 flex-col justify-end">
-          <div className="mx-4 mb-2 mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
-            <div className="flex-1 text-sm @[16rem]:text-base">
-              <span
+            {image != null ? (
+              <Image
+                alt={image.alt || `${title} image`}
                 className={clsx(
-                  'mb-2 line-clamp-2 block break-words font-semibold',
+                  'w-full scale-100 select-none object-fill transition-transform duration-500 ease-out group-hover:scale-110',
                   {
-                    light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
-                    dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
+                    light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
+                    dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
                   }[colorScheme],
                 )}
-              >
-                {title}
-              </span>
-              {subtitle != null && subtitle !== '' && (
+                fill
+                priority={imagePriority}
+                sizes={imageSizes}
+                src={image.src}
+              />
+            ) : (
+              <Image
+                alt={`${title} image`}
+                className={clsx(
+                  'w-full scale-100 select-none object-cover transition-transform duration-500 ease-out group-hover:scale-110',
+                  {
+                    light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100))]',
+                    dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500))]',
+                  }[colorScheme],
+                )}
+                fill
+                priority={imagePriority}
+                sizes={imageSizes}
+                src={DEFAULT_PRODUCT_IMAGE_URL}
+              />
+            )}
+            {badge != null && badge !== '' && (
+              <Badge className="absolute left-3 top-3" shape="rounded">
+                {badge}
+              </Badge>
+            )}
+            <Link
+              aria-label={title}
+              className={clsx(
+                'absolute inset-0 rounded-b-lg rounded-t-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
+                {
+                  light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
+                  dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
+                }[colorScheme],
+              )}
+              href={href}
+              id={id}
+            >
+              <span className="sr-only">View product</span>
+            </Link>
+          </div>
+          <div className="flex flex-1 flex-col justify-end">
+            <div className="mx-4 mb-2 mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
+              <div className="flex-1 text-sm @[16rem]:text-base">
                 <span
                   className={clsx(
-                    'mb-1 block text-sm font-normal',
+                    'mb-2 line-clamp-2 block break-words font-semibold',
                     {
-                      light: 'text-[var(--product-card-light-subtitle,hsl(var(--foreground)/75%))]',
-                      dark: 'text-[var(--product-card-dark-subtitle,hsl(var(--background)/75%))]',
+                      light: 'text-[var(--product-card-light-title,hsl(var(--foreground)))]',
+                      dark: 'text-[var(--product-card-dark-title,hsl(var(--background)))]',
                     }[colorScheme],
                   )}
                 >
-                  {subtitle}
+                  {title}
                 </span>
-              )}
-              {price != null && (
-                <PriceLabel className="mb-4" colorScheme={colorScheme} price={price} />
-              )}
-            </div>
-          </div>
-          {showButton && (
-            <div className="mt-auto p-4 pt-0">
-              <button
-                className={clsx(
-                  'relative w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
+                {subtitle != null && subtitle !== '' && (
+                  <span
+                    className={clsx(
+                      'mb-1 block text-sm font-normal',
+                      {
+                        light:
+                          'text-[var(--product-card-light-subtitle,hsl(var(--foreground)/75%))]',
+                        dark: 'text-[var(--product-card-dark-subtitle,hsl(var(--background)/75%))]',
+                      }[colorScheme],
+                    )}
+                  >
+                    {subtitle}
+                  </span>
                 )}
-                type="button"
-                tabIndex={-1}
-                aria-disabled="true"
-              >
-                Shop Now →
-              </button>
+                {price != null && (
+                  <PriceLabel className="mb-4" colorScheme={colorScheme} price={price} />
+                )}
+              </div>
             </div>
-          )}
-        </div>
+            {showButton && (
+              <div className="mt-auto p-4 pt-0">
+                <button
+                  className={clsx(
+                    'relative w-full rounded bg-gray-900 py-2 text-center text-white transition hover:bg-gray-800',
+                  )}
+                  type="button"
+                  tabIndex={-1}
+                  aria-disabled="true"
+                >
+                  Shop Now →
+                </button>
+              </div>
+            )}
+          </div>
+        </Link>
       </div>
       {showCompare && (
         <div className="mt-0.5 shrink-0">
