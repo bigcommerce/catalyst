@@ -78,7 +78,7 @@ export function ProductCard({
       )}
     >
       <div className="relative flex h-full flex-col">
-        <Link href={href} id={id} className="absolute inset-0">
+        <Link href={href} id={id}>
           <div
             className={clsx(
               'relative overflow-hidden rounded-xl @md:rounded-2xl',
