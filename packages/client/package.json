@@ -16,17 +16,17 @@
     "dist"
   ],
   "dependencies": {
-    "@0no-co/graphql.web": "^1.1.2",
-    "std-env": "^3.9.0"
+    "@0no-co/graphql.web": "^1.2.0",
+    "std-env": "^3.10.0"
   },
   "devDependencies": {
     "@bigcommerce/eslint-config": "^2.11.0",
     "@bigcommerce/eslint-config-catalyst": "workspace:^",
-    "@types/node": "^22.15.30",
-    "dotenv-cli": "^8.0.0",
+    "@types/node": "^22.18.11",
+    "dotenv-cli": "^10.0.0",
     "eslint": "^8.57.1",
     "prettier": "^3.6.2",
     "tsup": "^8.5.0",
-    "typescript": "^5.8.3"
+    "typescript": "^5.9.3"
   }
 }
