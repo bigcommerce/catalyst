@@ -44,14 +44,14 @@ export const handlers = [
           controller.enqueue(
             encoder.encode(
               // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-              `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"processing","progress":75}}`,
+              `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"processing","progress":75},"deployment_url":null}`,
             ),
           );
           setTimeout(() => {
             controller.enqueue(
               encoder.encode(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"finalizing","progress":99}}`,
+                `data: {"deployment_status":"in_progress","deployment_uuid":"${params.deploymentUuid}","event":{"step":"finalizing","progress":99},"deployment_url":null}`,
               ),
             );
           }, 10);
@@ -59,7 +59,7 @@ export const handlers = [
             controller.enqueue(
               encoder.encode(
                 // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-                `data: {"deployment_status":"completed","deployment_uuid":"${params.deploymentUuid}","event":null}`,
+                `data: {"deployment_status":"completed","deployment_uuid":"${params.deploymentUuid}","event":null,"deployment_url":"https://example.com"}`,
               ),
             );
             controller.close();
