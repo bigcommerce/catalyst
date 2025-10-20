@@ -1,9 +1,9 @@
-export function getWranglerConfig(projectUuid: string, kvNamespaceId: string) {
+export function getWranglerConfig(projectUuid: string) {
   return {
     $schema: 'node_modules/wrangler/config-schema.json',
     main: '../.open-next/worker.js',
     name: `project-${projectUuid}`,
-    compatibility_date: '2025-07-15',
+    compatibility_date: '2025-09-15',
     compatibility_flags: ['nodejs_compat', 'global_fetch_strictly_public'],
     observability: {
       enabled: true,
@@ -24,10 +24,10 @@ export function getWranglerConfig(projectUuid: string, kvNamespaceId: string) {
         service: `project-${projectUuid}`,
       },
     ],
-    kv_namespaces: [
+    r2_buckets: [
       {
-        binding: 'NEXT_INC_CACHE_KV',
-        id: kvNamespaceId,
+        binding: 'NEXT_INC_CACHE_R2_BUCKET',
+        bucket_name: `project-${projectUuid}`,
       },
     ],
     durable_objects: {
