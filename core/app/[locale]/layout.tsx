@@ -18,6 +18,13 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
 import { AnalyticsProvider } from '~/components/analytics/provider';
+import {
+  ConsentManagerDialog,
+  ConsentManagerProvider,
+  CookieBanner,
+  mapC15tToBigCommerceConsent,
+} from '~/components/consent-manager';
+import { getC15tConsentCookie } from '~/components/consent-manager/server';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
@@ -25,7 +32,7 @@ import { getToastNotification } from '~/lib/server-toast';
 
 const RootLayoutMetadataQuery = graphql(
   `
-    query RootLayoutMetadataQuery {
+    query RootLayoutMetadataQuery($consentCategories: [ScriptConsentCategory!]) {
       site {
         settings {
           storeName
@@ -49,8 +56,14 @@ const RootLayoutMetadataQuery = graphql(
 );
 
 const fetchRootLayoutMetadata = cache(async () => {
+  const consent = await getC15tConsentCookie();
+  const consentCategories = mapC15tToBigCommerceConsent(consent?.preferences ?? null);
+
   return await client.fetch({
     document: RootLayoutMetadataQuery,
+    variables: {
+      consentCategories,
+    },
     fetchOptions: { next: { revalidate } },
   });
 });
@@ -121,16 +134,20 @@ export default async function RootLayout({ params, children }: Props) {
       </head>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
-          <NuqsAdapter>
-            <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
-              <Providers>
-                {toastNotificationCookieData && (
-                  <CookieNotifications {...toastNotificationCookieData} />
-                )}
-                {children}
-              </Providers>
-            </AnalyticsProvider>
-          </NuqsAdapter>
+          <ConsentManagerProvider>
+            <NuqsAdapter>
+              <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
+                <Providers>
+                  {toastNotificationCookieData && (
+                    <CookieNotifications {...toastNotificationCookieData} />
+                  )}
+                  <CookieBanner />
+                  <ConsentManagerDialog />
+                  {children}
+                </Providers>
+              </AnalyticsProvider>
+            </NuqsAdapter>
+          </ConsentManagerProvider>
         </NextIntlClientProvider>
         <VercelComponents />
         <ContainerQueryPolyfill />
