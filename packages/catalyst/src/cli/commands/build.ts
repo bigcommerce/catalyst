@@ -64,7 +64,7 @@ export const build = new Command('build')
           );
         }
 
-        const wranglerConfig = getWranglerConfig(projectUuid, 'PLACEHOLDER_KV_ID');
+        const wranglerConfig = getWranglerConfig(projectUuid);
 
         consola.start('Copying templates...');
 
@@ -122,6 +122,11 @@ export const build = new Command('build')
           recursive: true,
           force: true,
         });
+
+        await copyFile(
+          join(getModuleCliPath(), 'templates', 'public_headers'),
+          join(coreDir, '.bigcommerce', 'dist', 'assets', '_headers'),
+        );
       }
     } catch (error) {
       consola.error(error);

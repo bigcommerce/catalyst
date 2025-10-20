@@ -44,6 +44,15 @@ const CreateDeploymentSchema = z.object({
   }),
 });
 
+const ProjectSchema = z.object({
+  data: z.array(
+    z.object({
+      uuid: z.uuid(),
+      name: z.string(),
+    }),
+  ),
+});
+
 const DeploymentStatusSchema = z.object({
   deployment_uuid: z.uuid(),
   deployment_status: z.enum(['queued', 'in_progress', 'failed', 'completed']),
@@ -53,6 +62,7 @@ const DeploymentStatusSchema = z.object({
       progress: z.number(),
     })
     .nullable(),
+  deployment_url: z.string().nullable(),
   error: z
     .object({
       code: z.number(),
@@ -237,6 +247,7 @@ export const getDeploymentStatus = async (
 
   const decoder = new TextDecoder();
   let done = false;
+  let deploymentUrl: string | undefined;
 
   while (!done) {
     // eslint-disable-next-line no-await-in-loop
@@ -250,6 +261,7 @@ export const getDeploymentStatus = async (
         .map((s) => s.replace('data:', '').trim())
         .filter(Boolean);
 
+      // eslint-disable-next-line no-loop-func
       split.forEach((event) => {
         try {
           json = JSON.parse(event);
@@ -268,13 +280,50 @@ export const getDeploymentStatus = async (
         if (data.event && STEPS[data.event.step] !== spinner.text) {
           spinner.text = STEPS[data.event.step];
         }
+
+        if (data.deployment_url) {
+          console.log(data.deployment_url);
+          deploymentUrl = data.deployment_url;
+        }
       });
     }
 
     done = streamDone;
   }
 
-  spinner.success('Deployment completed successfully.');
+  spinner.success('Deployment completed successfully.\n');
+
+  if (deploymentUrl) {
+    consola.success(`View your deployment at: ${deploymentUrl}`);
+  }
+};
+
+export const fetchProject = async (
+  projectUuid: string,
+  storeHash: string,
+  accessToken: string,
+  apiHost: string,
+) => {
+  const response = await fetch(
+    `https://${apiHost}/stores/${storeHash}/v3/infrastructure/projects`,
+    {
+      method: 'GET',
+      headers: {
+        'X-Auth-Token': accessToken,
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+      },
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch projects: ${response.status} ${response.statusText}`);
+  }
+
+  const res: unknown = await response.json();
+  const { data } = ProjectSchema.parse(res);
+
+  return data.find((project) => project.uuid === projectUuid);
 };
 
 export const deploy = new Command('deploy')
@@ -326,6 +375,24 @@ export const deploy = new Command('deploy')
         throw new Error(
           'Project UUID is required. Please run either `bigcommerce link` or this command again with --project-uuid <uuid>.',
         );
+      }
+
+      const project = await fetchProject(
+        projectUuid,
+        options.storeHash,
+        options.accessToken,
+        options.apiHost,
+      );
+
+      if (!project) {
+        throw new Error(`Project with UUID ${projectUuid} not found.`);
+      }
+
+      if (process.env.CI !== 'true') {
+        await consola.prompt(`Are you sure you want to deploy to the project: ${project.name}?`, {
+          type: 'confirm',
+          cancel: 'reject',
+        });
       }
 
       await generateBundleZip();
