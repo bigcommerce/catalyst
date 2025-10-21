@@ -48,8 +48,8 @@ importers:
         specifier: ^11.2.0
         version: 11.2.0(react@19.2.0)
       '@makeswift/runtime':
-        specifier: ^0.26.0
-        version: 0.26.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(next@16.0.0-beta.0(@babel/core@7.27.4)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+        specifier: 0.0.0-snapshot-20251020095301
+        version: 0.0.0-snapshot-20251020095301(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(next@16.0.0-beta.0(@babel/core@7.27.4)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       '@radix-ui/react-accordion':
         specifier: ^1.2.11
         version: 1.2.11(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -2486,19 +2486,19 @@ packages:
     resolution: {integrity: sha512-qC72D4+CDdjGqJvkFMMEAtancHUQ7/d/tAiHf64z8MopFDmcrtbcJuerDtFceuAfQJ2pDSfCKCtbqoGBNnwg0w==}
     engines: {node: '>=8'}
 
-  '@makeswift/controls@0.1.14':
-    resolution: {integrity: sha512-37gLlq4eb3QQMGwD8UEwDIl+Qp+PJREyzY4w1RNb+9N5kuFmh7QKTSi1a7HZZB3Bxzw0YFs9BXSV1LYBNdtGGQ==}
+  '@makeswift/controls@0.0.0-snapshot-20251020095301':
+    resolution: {integrity: sha512-JU7J54DioBKVgCoSwexVqjG5pf4cv9Ve2VBd2MJtXlbxSBvIFYuCdc38JxSqeNFCc+/1qzfw94eUGeK1cWE4kA==}
 
   '@makeswift/next-plugin@0.6.0':
     resolution: {integrity: sha512-yXWdzAkJvF5YC6VxpQ2+kdBY/oyWKl4MdWCWgEFqXrGIHIekobKOunExZ5NwZfrIdTUP681+hmeDWXfFnq6zrw==}
     peerDependencies:
       next: ^13.4.0 || ^14.0.0 || ^15.0.0
 
-  '@makeswift/prop-controllers@0.4.8':
-    resolution: {integrity: sha512-T9meN5PNnuZLiLoROUzYWMPsZOaUtsUzLFSB1O7277czW7WVwWJ19lavuKonp2+g62DAIh4bMV6hgIdRAxoCtw==}
+  '@makeswift/prop-controllers@0.0.0-snapshot-20251020095301':
+    resolution: {integrity: sha512-dFbLGtoKepoxqKUd+UlHgQLxey9fpxHlLDCvS4wk8wsTRrdTr8T0goTM3XjmkBeLiRDXUOsnRes3MumRwcv1lQ==}
 
-  '@makeswift/runtime@0.26.0':
-    resolution: {integrity: sha512-DFnzsoQFnbCCLY/gl+kOoEp9SPBD6AW6rk4x62Ollx/RvP9fNlL8IndufSXUqsP2A4bnhipEa+hUEYwoe9R9YQ==}
+  '@makeswift/runtime@0.0.0-snapshot-20251020095301':
+    resolution: {integrity: sha512-hD5giDd6toLJGYGvJD8bJA9QQPtbk5sDiKRkZ9wxheIPcG9ShNhEphLUcqK1SCvCQvizpGGc7GIhE20iiWJhvg==}
     engines: {node: '>=20.0.0'}
     peerDependencies:
       '@types/react': ^18.0.0 || ^19.0.0
@@ -12436,7 +12436,7 @@ snapshots:
     dependencies:
       '@lukeed/csprng': 1.1.0
 
-  '@makeswift/controls@0.1.14':
+  '@makeswift/controls@0.0.0-snapshot-20251020095301':
     dependencies:
       color: 3.2.1
       css-box-model: 1.2.1
@@ -12444,7 +12444,7 @@ snapshots:
       slate: 0.91.4
       ts-pattern: 5.8.0
       uuid: 9.0.1
-      zod: 3.25.51
+      zod: 3.25.76
 
   '@makeswift/next-plugin@0.6.0(next@16.0.0-beta.0(@babel/core@7.27.4)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))':
     dependencies:
@@ -12453,13 +12453,13 @@ snapshots:
       next: 16.0.0-beta.0(@babel/core@7.27.4)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
       semver: 7.7.3
 
-  '@makeswift/prop-controllers@0.4.8':
+  '@makeswift/prop-controllers@0.0.0-snapshot-20251020095301':
     dependencies:
-      '@makeswift/controls': 0.1.14
+      '@makeswift/controls': 0.0.0-snapshot-20251020095301
       ts-pattern: 5.8.0
-      zod: 3.25.51
+      zod: 3.25.76
 
-  '@makeswift/runtime@0.26.0(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(next@16.0.0-beta.0(@babel/core@7.27.4)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
+  '@makeswift/runtime@0.0.0-snapshot-20251020095301(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(next@16.0.0-beta.0(@babel/core@7.27.4)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))(react-dom@19.2.0(react@19.2.0))(react@19.2.0)':
     dependencies:
       '@emotion/cache': 11.14.0
       '@emotion/css': 11.13.5
@@ -12467,9 +12467,9 @@ snapshots:
       '@emotion/server': 11.11.0(@emotion/css@11.13.5)
       '@emotion/sheet': 1.4.0
       '@emotion/utils': 1.4.2
-      '@makeswift/controls': 0.1.14
+      '@makeswift/controls': 0.0.0-snapshot-20251020095301
       '@makeswift/next-plugin': 0.6.0(next@16.0.0-beta.0(@babel/core@7.27.4)(@playwright/test@1.52.0)(babel-plugin-macros@3.1.0)(react-dom@19.2.0(react@19.2.0))(react@19.2.0))
-      '@makeswift/prop-controllers': 0.4.8
+      '@makeswift/prop-controllers': 0.0.0-snapshot-20251020095301
       '@reduxjs/toolkit': 2.9.1(react@19.2.0)
       '@use-gesture/react': 10.3.1(react@19.2.0)
       color: 3.2.1
@@ -12504,7 +12504,7 @@ snapshots:
       ts-pattern: 5.8.0
       use-sync-external-store: 1.6.0(react@19.2.0)
       uuid: 9.0.1
-      zod: 3.25.51
+      zod: 3.25.76
     optionalDependencies:
       '@types/react': 19.2.2
       '@types/react-dom': 19.2.2(@types/react@19.2.2)
