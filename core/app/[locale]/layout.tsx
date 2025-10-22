@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation';
 import { NextIntlClientProvider } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
 import { NuqsAdapter } from 'nuqs/adapters/next/app';
-import { cache, PropsWithChildren } from 'react';
+import { Activity, cache, PropsWithChildren, version } from 'react';
 
 import '../../globals.css';
 
@@ -103,6 +103,8 @@ interface Props extends PropsWithChildren {
   params: Promise<{ locale: string }>;
 }
 
+console.log({ Activity, version });
+
 export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
 
@@ -129,6 +131,9 @@ export default async function RootLayout({ params, children }: Props) {
           />
         </head>
         <body className="flex min-h-screen flex-col">
+          <Activity>
+            <p>Hello</p>
+          </Activity>
           <NextIntlClientProvider>
             <NuqsAdapter>
               <AnalyticsProvider channelId={data.channel.entityId} settings={data.site.settings}>
