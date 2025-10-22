@@ -159,6 +159,7 @@
         "summaryTotal": "Total",
         "destination": "Destination",
         "destinationWithCount": "Destination {number, number}/{total, number}",
+        "digitalDelivery": "Digital delivery to {email}",
         "subtotal": "Subtotal",
         "shipping": "Shipping",
         "tax": "Tax",

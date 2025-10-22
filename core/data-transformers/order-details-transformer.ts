@@ -104,6 +104,24 @@ export const orderDetailsTransformer = (
           }),
         };
       }) ?? [],
+    emailDestinations:
+      order.consignments.email?.map(({ email, lineItems }) => ({
+        title: t('digitalDelivery', { email }),
+        email,
+        lineItems: lineItems.map((item) => ({
+          id: String(item.entityId),
+          title: item.name,
+          price: format.number(item.salePrice.value, {
+            style: 'currency',
+            currency: item.salePrice.currencyCode,
+          }),
+          totalPrice: format.number(item.salePrice.value, {
+            style: 'currency',
+            currency: item.salePrice.currencyCode,
+          }),
+          quantity: 1,
+        })),
+      })) ?? [],
     summary: {
       total: format.number(order.totalIncTax.value, {
         style: 'currency',
