@@ -13,7 +13,13 @@ import { updateLineItem } from './_actions/update-line-item';
 import { updateShippingInfo } from './_actions/update-shipping-info';
 import { CartViewed } from './_components/cart-viewed';
 import { CheckoutPreconnect } from './_components/checkout-preconnect';
-import { getCart, getShippingCountries } from './page-data';
+import {
+  getCart,
+  getCurrencyData,
+  getPaymentWallets,
+  getPaymentWalletWithInitializationData,
+  getShippingCountries,
+} from './page-data';
 
 interface Props {
   params: Promise<{ locale: string }>;
@@ -28,6 +34,40 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     title: t('title'),
   };
 }
+
+const createWalletButtonsInitOptions = async (
+  walletButtons: string[],
+  cart: {
+    entityId: string;
+    currencyCode: string;
+    amount: {
+      value: number;
+    };
+  },
+) => {
+  const currencyData = await getCurrencyData(cart.currencyCode);
+
+  return Streamable.all(
+    walletButtons.map(async (entityId) => {
+      const initData = await getPaymentWalletWithInitializationData(entityId, cart.entityId);
+      const methodId = entityId.split('.').join('');
+
+      return {
+        methodId,
+        containerId: `${methodId}-button`,
+        [methodId]: {
+          cartId: cart.entityId,
+          currency: {
+            code: currencyData?.code,
+            decimalPlaces: currencyData?.display.decimalPlaces,
+          },
+          amount: cart.amount.value,
+          ...initData,
+        },
+      };
+    }),
+  );
+};
 
 const getAnalyticsData = async (cartId: string) => {
   const data = await getCart({ cartId });
@@ -88,6 +128,16 @@ export default async function Cart({ params }: Props) {
       />
     );
   }
+
+  const walletButtons = await getPaymentWallets({
+    filters: {
+      cartEntityId: cartId,
+    },
+  });
+
+  const walletButtonsInitOptions = Streamable.from(() =>
+    createWalletButtonsInitOptions(walletButtons, cart),
+  );
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
 
@@ -282,6 +332,7 @@ export default async function Cart({ params }: Props) {
           }}
           summaryTitle={t('CheckoutSummary.title')}
           title={t('title')}
+          walletButtonsInitOptions={walletButtonsInitOptions}
         />
       </CartAnalyticsProvider>
       <CartViewed
