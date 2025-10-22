@@ -3,12 +3,13 @@ import { clsx } from 'clsx';
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Badge } from '@/vibes/soul/primitives/badge';
 import { GiftCertificateCardLogo } from '@/vibes/soul/primitives/gift-certificate-card/gift-certificate-card-logo';
+import { GiftCertificateStatus } from '@/vibes/soul/sections/gift-certificate-balance-section';
 
 interface Props {
   balance?: Streamable<string>;
   expiresAt?: Streamable<string | null>;
   expiresAtLabel?: string;
-  status?: Streamable<'ACTIVE' | 'EXPIRED' | 'PENDING' | 'DISABLED'>;
+  status?: Streamable<GiftCertificateStatus>;
   logo?: Streamable<string | { src: string; alt: string } | null>;
   logoLabel?: string;
   className?: string;

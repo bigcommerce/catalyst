@@ -477,6 +477,20 @@
     "title": "Gift certificates",
     "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
     "purchaseLabel": "Shop now",
-    "checkBalanceLabel": "Check balance"
+    "checkBalanceLabel": "Check balance",
+    "CheckBalance": {
+      "title": "Check balance",
+      "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
+      "inputLabel": "Code",
+      "inputPlaceholder": "Enter code",
+      "expiresAtLabel": "Valid thru",
+      "purchasedDateLabel": "Purchased",
+      "senderLabel": "From",
+      "Errors": {
+        "invalidCode": "The gift certificate code you entered is invalid. Please check the code and try again.",
+        "codeRequired": "Please enter a gift certificate code.",
+        "somethingWentWrong": "Something went wrong. Please try again later."
+      }
+    }
   }
 }
