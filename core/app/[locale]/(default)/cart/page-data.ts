@@ -1,3 +1,4 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { cache } from 'react';
 
 import { getSessionCustomerAccessToken } from '~/auth';
@@ -5,6 +6,7 @@ import { client } from '~/client';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { TAGS } from '~/client/tags';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 export const PhysicalItemFragment = graphql(`
   fragment PhysicalItemFragment on CartPhysicalItem {
@@ -202,6 +204,9 @@ const CartPageQuery = graphql(
           discountedAmount {
             ...MoneyFieldsFragment
           }
+          amount {
+            value
+          }
           lineItems {
             physicalItems {
               ...PhysicalItemFragment
@@ -291,6 +296,101 @@ const SupportedShippingDestinationsQuery = graphql(`
     }
   }
 `);
+const PaymentWalletsQuery = graphql(`
+  query PaymentWalletsQuery($filters: PaymentWalletsFilterInput) {
+    site {
+      paymentWallets(filter: $filters) {
+        edges {
+          node {
+            entityId
+            methodName
+            id
+          }
+        }
+      }
+    }
+  }
+`);
+
+type PaymentWalletsVariables = VariablesOf<typeof PaymentWalletsQuery>;
+
+export const getPaymentWallets = async (variables: PaymentWalletsVariables) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const { data } = await client.fetch({
+    document: PaymentWalletsQuery,
+    customerAccessToken,
+    fetchOptions: { cache: 'no-store' },
+    variables,
+  });
+
+  console.log(data.site.paymentWallets, 'data.site.paymentWallets');
+
+  return removeEdgesAndNodes(data.site.paymentWallets).map(({ entityId }) => entityId);
+};
+
+const PaymentWalletWithInitializationDataQuery = graphql(`
+  query PaymentWalletWithInitializationDataQuery($entityId: String!, $cartId: String!) {
+    site {
+      paymentWalletWithInitializationData(
+        filter: { paymentWalletEntityId: $entityId, cartEntityId: $cartId }
+      ) {
+        clientToken
+        initializationData
+      }
+    }
+  }
+`);
+
+export const getPaymentWalletWithInitializationData = async (entityId: string, cartId: string) => {
+  const { data } = await client.fetch({
+    document: PaymentWalletWithInitializationDataQuery,
+    variables: {
+      entityId,
+      cartId,
+    },
+    customerAccessToken: await getSessionCustomerAccessToken(),
+    fetchOptions: { cache: 'no-store' },
+  });
+
+  return data.site.paymentWalletWithInitializationData;
+};
+
+const CurrencyQuery = graphql(`
+  query Currency($currencyCode: currencyCode!) {
+    site {
+      currency(currencyCode: $currencyCode) {
+        display {
+          decimalPlaces
+          symbol
+        }
+        name
+        code
+      }
+    }
+  }
+`);
+
+export const getCurrencyData = async (currencyCode?: string) => {
+  const code = await getPreferredCurrencyCode(currencyCode);
+
+  if (!code) {
+    throw new Error('Could not get currency code');
+  }
+
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
+  const { data } = await client.fetch({
+    document: CurrencyQuery,
+    fetchOptions: { cache: 'no-store' },
+    variables: {
+      currencyCode: code,
+    },
+    customerAccessToken,
+  });
+
+  return data.site.currency;
+};
 
 export const getShippingCountries = cache(async () => {
   const { data } = await client.fetch({
