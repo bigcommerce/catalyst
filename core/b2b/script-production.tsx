@@ -9,13 +9,21 @@ interface Props {
   storeHash: string;
   channelId: string;
   token?: string;
-  environment: 'staging' | 'production';
+  environment: 'staging' | 'production' | 'integration';
   cartId?: string | null;
 }
+
+const CDN_BY_ENV: Record<Props['environment'], string> = {
+  production: 'https://microapps.bigcommerce.com',
+  staging: 'https://microapps.staging.zone',
+  integration: 'https://microapps.integration.zone',
+};
 
 export function ScriptProduction({ cartId, storeHash, channelId, token, environment }: Props) {
   useB2BAuth(token);
   useB2BCart(cartId);
+
+  const src = `${CDN_BY_ENV[environment]}/b2b-buyer-portal/headless.js`;
 
   return (
     <>
@@ -35,7 +43,7 @@ export function ScriptProduction({ cartId, storeHash, channelId, token, environm
         data-channelid={channelId}
         data-environment={environment}
         data-storehash={storeHash}
-        src={'https://microapps.bigcommerce.com/b2b-buyer-portal/headless.js'}
+        src={src}
         type="module"
       />
     </>
