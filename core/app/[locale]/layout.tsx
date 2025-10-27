@@ -19,9 +19,12 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
 import { StreamableAnalyticsProvider } from '~/components/analytics/streamable-provider';
+import { ConsentManagerDialog } from '~/components/consent-manager/consent-manager-dialog';
+import { CookieBanner } from '~/components/consent-manager/cookie-banner';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
+import { ConsentManagerProvider } from '~/lib/consent-manager';
 import { getToastNotification } from '~/lib/server-toast';
 
 const RootLayoutMetadataQuery = graphql(
@@ -131,15 +134,19 @@ export default async function RootLayout({ params, children }: Props) {
       </head>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
-          <NuqsAdapter>
-            <StreamableAnalyticsProvider data={streamableAnalyticsData} />
-            <Providers>
-              {toastNotificationCookieData && (
-                <CookieNotifications {...toastNotificationCookieData} />
-              )}
-              {children}
-            </Providers>
-          </NuqsAdapter>
+          <ConsentManagerProvider>
+            <NuqsAdapter>
+              <StreamableAnalyticsProvider data={streamableAnalyticsData} />
+              <Providers>
+                {toastNotificationCookieData && (
+                  <CookieNotifications {...toastNotificationCookieData} />
+                )}
+                <ConsentManagerDialog />
+                <CookieBanner />
+                {children}
+              </Providers>
+            </NuqsAdapter>
+          </ConsentManagerProvider>
         </NextIntlClientProvider>
         <VercelComponents />
         <ContainerQueryPolyfill />
