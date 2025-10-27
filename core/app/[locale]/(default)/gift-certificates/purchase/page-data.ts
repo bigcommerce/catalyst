@@ -7,35 +7,39 @@ import { CurrencyCode } from '~/components/header/fragment';
 import { StoreLogoFragment } from '~/components/store-logo/fragment';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
 
-const GiftCertificatesRootQuery = graphql(
+import { GiftCertificateSettingsFragment } from './fragment';
+
+const GiftCertificatePurchaseSettingsQuery = graphql(
   `
-    query GiftCertificatesRootQuery($currencyCode: currencyCode) {
+    query GiftCertificatePurchaseSettingsQuery($currencyCode: currencyCode) {
       site {
         settings {
           giftCertificates(currencyCode: $currencyCode) {
-            isEnabled
+            ...GiftCertificateSettingsFragment
           }
           currency {
             defaultCurrency
           }
+          storeName
           ...StoreLogoFragment
         }
       }
     }
   `,
-  [StoreLogoFragment],
+  [GiftCertificateSettingsFragment, StoreLogoFragment],
 );
 
-export const getGiftCertificatesData = cache(async (currencyCode?: CurrencyCode) => {
+export const getGiftCertificatePurchaseData = cache(async (currencyCode?: CurrencyCode) => {
   const response = await client.fetch({
-    document: GiftCertificatesRootQuery,
+    document: GiftCertificatePurchaseSettingsQuery,
     variables: { currencyCode },
     fetchOptions: { next: { revalidate } },
   });
 
   return {
-    giftCertificatesEnabled: response.data.site.settings?.giftCertificates?.isEnabled ?? false,
-    defaultCurrency: response.data.site.settings?.currency.defaultCurrency ?? undefined,
+    giftCertificateSettings: response.data.site.settings?.giftCertificates ?? null,
     logo: response.data.site.settings ? logoTransformer(response.data.site.settings) : '',
+    storeName: response.data.site.settings?.storeName ?? undefined,
+    defaultCurrency: response.data.site.settings?.currency.defaultCurrency ?? undefined,
   };
 });
