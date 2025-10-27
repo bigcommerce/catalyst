@@ -1,3 +1,5 @@
+import 'urlpattern-polyfill';
+
 import { composeMiddlewares } from './middlewares/compose-middlewares';
 import { withAnalyticsCookies } from './middlewares/with-analytics-cookies';
 import { withAuth } from './middlewares/with-auth';
@@ -29,4 +31,5 @@ export const config = {
      */
     '/((?!api|admin|_next/static|_next/image|_vercel|favicon.ico|xmlsitemap.php|sitemap.xml|robots.txt).*)',
   ],
+  runtime: 'nodejs',
 };

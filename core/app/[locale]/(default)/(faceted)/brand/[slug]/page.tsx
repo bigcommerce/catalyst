@@ -8,15 +8,19 @@ import { Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
+import type { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
+import { isVertexRetailEnabled } from '~/lib/vertex-retail/client';
+
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts as getCompareProductsData } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
+import { fetchVertexBrowseByBrand } from '../../fetch-vertex-browse';
 
 import { getBrandPageData } from './page-data';
 
@@ -97,19 +101,48 @@ export default async function Brand(props: Props) {
 
   const brandId = Number(slug);
 
-  const { brand, settings } = await getBrandPageData(brandId, customerAccessToken);
+  // Wrap page data in Streamable to enable progressive rendering
+  const streamablePageData = Streamable.from(async () => {
+    return getBrandPageData(brandId, customerAccessToken);
+  });
 
-  if (!brand) {
+  // Early 404 check - need to await brand to verify existence
+  const pageData = await streamablePageData;
+
+  if (!pageData.brand) {
     return notFound();
   }
 
-  const productComparisonsEnabled =
-    settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+  // Create streamables for independent data that can load in parallel
+  const streamableTitle = Streamable.from(async () => {
+    const { brand } = await streamablePageData;
+
+    return brand?.name ?? '';
+  });
+
+  const streamableProductComparisonsEnabled = Streamable.from(async () => {
+    const { settings } = await streamablePageData;
+
+    return settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+  });
 
   const streamableFacetedSearch = Streamable.from(async () => {
     const searchParams = await props.searchParams;
     const currencyCode = await getPreferredCurrencyCode();
 
+    // Use Vertex AI Browse if enabled, otherwise use BigCommerce search
+    if (isVertexRetailEnabled()) {
+      return fetchVertexBrowseByBrand(
+        brandId,
+        {
+          ...searchParams,
+        },
+        currencyCode,
+        customerAccessToken,
+      );
+    }
+
+    // BigCommerce fallback
     const loadSearchParams = await createBrandSearchParamsLoader(slug, customerAccessToken);
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
 
@@ -157,13 +190,32 @@ export default async function Brand(props: Props) {
     return pageInfoTransformer(search.products.pageInfo);
   });
 
-  const streamableFilters = Streamable.from(async () => {
+  const streamableFilters = Streamable.from(async (): Promise<Filter[]> => {
     const searchParams = await props.searchParams;
+
+    // If using Vertex AI, return facets directly (already transformed)
+    if (isVertexRetailEnabled()) {
+      const vertexSearch = await streamableFacetedSearch;
+
+      return vertexSearch.facets.items as Filter[];
+    }
+
+    // BigCommerce fallback
     const loadSearchParams = await createBrandSearchParamsLoader(slug, customerAccessToken);
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
     const cachedBrand = getCachedBrand(slug);
     const categorySearch = await fetchFacetedSearch(cachedBrand, undefined, customerAccessToken);
-    const refinedSearch = await streamableFacetedSearch;
+
+    const currencyCode = await getPreferredCurrencyCode();
+    const refinedSearch = await fetchFacetedSearch(
+      {
+        ...searchParams,
+        ...parsedSearchParams,
+        brand: [slug],
+      },
+      currencyCode,
+      customerAccessToken,
+    );
 
     const allFacets = categorySearch.facets.items.filter(
       (facet) => facet.__typename !== 'BrandSearchFilter',
@@ -183,6 +235,7 @@ export default async function Brand(props: Props) {
 
   const streamableCompareProducts = Streamable.from(async () => {
     const searchParams = await props.searchParams;
+    const productComparisonsEnabled = await streamableProductComparisonsEnabled;
 
     if (!productComparisonsEnabled) {
       return [];
@@ -220,7 +273,7 @@ export default async function Brand(props: Props) {
       rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
       removeLabel={t('Compare.remove')}
       resetFiltersLabel={t('FacetedSearch.resetFilters')}
-      showCompare={productComparisonsEnabled}
+      showCompare={streamableProductComparisonsEnabled}
       sortDefaultValue="featured"
       sortLabel={t('Search.title')}
       sortOptions={[
@@ -235,7 +288,7 @@ export default async function Brand(props: Props) {
         { value: 'relevance', label: t('SortBy.relevance') },
       ]}
       sortParamName="sort"
-      title={brand.name}
+      title={streamableTitle}
       totalCount={streamableTotalCount}
     />
   );

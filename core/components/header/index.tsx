@@ -13,9 +13,11 @@ import { logoTransformer } from '~/data-transformers/logo-transformer';
 import { routing } from '~/i18n/routing';
 import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { isVertexRetailEnabled } from '~/lib/vertex-retail/client';
 
 import { search } from './_actions/search';
 import { switchCurrency } from './_actions/switch-currency';
+import { vertexSearch } from './_actions/vertex-search';
 import { CurrencyCode, HeaderFragment, HeaderLinksFragment } from './fragment';
 
 const GetCartCountQuery = graphql(`
@@ -75,6 +77,9 @@ export const Header = async () => {
   const locale = await getLocale();
 
   const data = await getHeaderData();
+
+  // Determine which search action to use
+  const searchAction = isVertexRetailEnabled() ? vertexSearch : search;
 
   const logo = data.settings ? logoTransformer(data.settings) : '';
 
@@ -165,7 +170,7 @@ export const Header = async () => {
         giftCertificatesEnabled: streamableGiftCertificatesEnabled,
         searchHref: '/search',
         searchParamName: 'term',
-        searchAction: search,
+        searchAction,
         searchInputPlaceholder: t('Search.inputPlaceholder'),
         searchSubmitLabel: t('Search.submitLabel'),
         links: streamableLinks,

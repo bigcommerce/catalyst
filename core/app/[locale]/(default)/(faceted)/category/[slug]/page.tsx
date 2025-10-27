@@ -9,15 +9,19 @@ import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
+import type { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
+import { isVertexRetailEnabled } from '~/lib/vertex-retail/client';
+
 import { MAX_COMPARE_LIMIT } from '../../../compare/page-data';
 import { getCompareProducts } from '../../fetch-compare-products';
 import { fetchFacetedSearch } from '../../fetch-faceted-search';
+import { fetchVertexBrowseByCategory } from '../../fetch-vertex-browse';
 
 import { CategoryViewed } from './_components/category-viewed';
 import { getCategoryPageData } from './page-data';
@@ -99,27 +103,77 @@ export default async function Category(props: Props) {
 
   const categoryId = Number(slug);
 
-  const { category, settings, categoryTree } = await getCategoryPageData(
-    categoryId,
-    customerAccessToken,
-  );
+  // Wrap page data in Streamable to enable progressive rendering
+  const streamablePageData = Streamable.from(async () => {
+    return getCategoryPageData(categoryId, customerAccessToken);
+  });
 
-  if (!category) {
+  // Early 404 check - need to await category to verify existence
+  const pageData = await streamablePageData;
+
+  if (!pageData.category) {
     return notFound();
   }
 
-  const breadcrumbs = removeEdgesAndNodes(category.breadcrumbs).map(({ name, path }) => ({
-    label: name,
-    href: path ?? '#',
-  }));
+  // Create streamables for independent data that can load in parallel
+  const streamableBreadcrumbs = Streamable.from(async () => {
+    const { category } = await streamablePageData;
 
-  const productComparisonsEnabled =
-    settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+    if (!category) return [];
+
+    return removeEdgesAndNodes(category.breadcrumbs).map(({ name, path }) => ({
+      label: name,
+      href: path ?? '#',
+    }));
+  });
+
+  const streamableTitle = Streamable.from(async () => {
+    const { category } = await streamablePageData;
+
+    return category?.name ?? '';
+  });
+
+  const streamableProductComparisonsEnabled = Streamable.from(async () => {
+    const { settings } = await streamablePageData;
+
+    return settings?.storefront.catalog?.productComparisonsEnabled ?? false;
+  });
+
+  const streamableCategoryTree = Streamable.from(async () => {
+    const { categoryTree } = await streamablePageData;
+
+    return categoryTree;
+  });
 
   const streamableFacetedSearch = Streamable.from(async () => {
     const searchParams = await props.searchParams;
     const currencyCode = await getPreferredCurrencyCode();
 
+    // Use Vertex AI Browse if enabled, otherwise use BigCommerce search
+    if (isVertexRetailEnabled()) {
+      // Get category name for Vertex AI analytics and filtering
+      const { category } = await streamablePageData;
+      const categoryName = category?.name;
+
+      // eslint-disable-next-line no-console
+      console.log('[Category Page] Category name for Vertex:', categoryName);
+
+      if (!categoryName) {
+        throw new Error('Category name is required for Vertex AI browse');
+      }
+
+      return fetchVertexBrowseByCategory(
+        categoryId,
+        {
+          ...searchParams,
+        },
+        categoryName,
+        currencyCode,
+        customerAccessToken,
+      );
+    }
+
+    // BigCommerce fallback
     const loadSearchParams = await createCategorySearchParamsLoader(
       categoryId,
       customerAccessToken,
@@ -141,7 +195,6 @@ export default async function Category(props: Props) {
 
   const streamableProducts = Streamable.from(async () => {
     const format = await getFormatter();
-
     const search = await streamableFacetedSearch;
     const products = search.products.items;
 
@@ -170,9 +223,32 @@ export default async function Category(props: Props) {
     return pageInfoTransformer(search.products.pageInfo);
   });
 
-  const streamableFilters = Streamable.from(async () => {
+  const streamableFilters = Streamable.from(async (): Promise<Filter[]> => {
     const searchParams = await props.searchParams;
+    const categoryTree = await streamableCategoryTree;
+    const tree = categoryTree[0];
+    const subCategoriesFilters =
+      tree == null || tree.children.length === 0
+        ? []
+        : [
+            {
+              type: 'link-group' as const,
+              label: t('Category.subCategories'),
+              links: tree.children.map((child) => ({
+                label: child.name,
+                href: child.path,
+              })),
+            },
+          ];
 
+    // If using Vertex AI, return facets directly (already transformed)
+    if (isVertexRetailEnabled()) {
+      const vertexSearch = await streamableFacetedSearch;
+
+      return [...subCategoriesFilters, ...vertexSearch.facets.items] as Filter[];
+    }
+
+    // BigCommerce fallback
     const loadSearchParams = await createCategorySearchParamsLoader(
       categoryId,
       customerAccessToken,
@@ -180,7 +256,17 @@ export default async function Category(props: Props) {
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
     const cachedCategory = getCachedCategory(categoryId);
     const categorySearch = await fetchFacetedSearch(cachedCategory, undefined, customerAccessToken);
-    const refinedSearch = await streamableFacetedSearch;
+
+    const currencyCode = await getPreferredCurrencyCode();
+    const refinedSearch = await fetchFacetedSearch(
+      {
+        ...searchParams,
+        ...parsedSearchParams,
+        category: categoryId,
+      },
+      currencyCode,
+      customerAccessToken,
+    );
 
     const allFacets = categorySearch.facets.items.filter(
       (facet) => facet.__typename !== 'CategorySearchFilter',
@@ -197,26 +283,12 @@ export default async function Category(props: Props) {
 
     const filters = transformedFacets.filter((facet) => facet != null);
 
-    const tree = categoryTree[0];
-    const subCategoriesFilters =
-      tree == null || tree.children.length === 0
-        ? []
-        : [
-            {
-              type: 'link-group' as const,
-              label: t('Category.subCategories'),
-              links: tree.children.map((child) => ({
-                label: child.name,
-                href: child.path,
-              })),
-            },
-          ];
-
     return [...subCategoriesFilters, ...filters];
   });
 
   const streamableCompareProducts = Streamable.from(async () => {
     const searchParams = await props.searchParams;
+    const productComparisonsEnabled = await streamableProductComparisonsEnabled;
 
     if (!productComparisonsEnabled) {
       return [];
@@ -241,7 +313,7 @@ export default async function Category(props: Props) {
   return (
     <>
       <ProductsListSection
-        breadcrumbs={breadcrumbs}
+        breadcrumbs={streamableBreadcrumbs}
         compareLabel={t('Compare.compare')}
         compareProducts={streamableCompareProducts}
         emptyStateSubtitle={t('Category.Empty.subtitle')}
@@ -256,7 +328,7 @@ export default async function Category(props: Props) {
         rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
         removeLabel={t('Compare.remove')}
         resetFiltersLabel={t('FacetedSearch.resetFilters')}
-        showCompare={productComparisonsEnabled}
+        showCompare={streamableProductComparisonsEnabled}
         sortDefaultValue="featured"
         sortLabel={t('SortBy.sortBy')}
         sortOptions={[
@@ -271,11 +343,15 @@ export default async function Category(props: Props) {
           { value: 'relevance', label: t('SortBy.relevance') },
         ]}
         sortParamName="sort"
-        title={category.name}
+        title={streamableTitle}
         totalCount={streamableTotalCount}
       />
-      <Stream value={streamableFacetedSearch}>
-        {(search) => <CategoryViewed category={category} products={search.products.items} />}
+      <Stream
+        value={Streamable.all([streamableFacetedSearch, streamablePageData])}
+      >
+        {([search, { category }]) =>
+          category && <CategoryViewed category={category} products={search.products.items} />
+        }
       </Stream>
     </>
   );

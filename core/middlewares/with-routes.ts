@@ -424,6 +424,7 @@ async function recordProductVisit(request: Request, productId: number) {
   const visitorId = await getVisitorIdCookie();
 
   if (visitId && visitorId) {
+    // Send to BigCommerce analytics
     await sendProductViewedEvent({
       productId,
       initiator: { visitId, visitorId },

@@ -22,6 +22,7 @@ import { ConsentManager } from '~/components/consent-manager';
 import { ScriptsFragment } from '~/components/consent-manager/scripts-fragment';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { scriptsTransformer } from '~/data-transformers/scripts-transformer';
+import { VertexGA4Script } from '~/components/vertex-ga4-script';
 import { routing } from '~/i18n/routing';
 import { getToastNotification } from '~/lib/server-toast';
 
@@ -142,6 +143,7 @@ export default async function RootLayout({ params, children }: Props) {
           </ConsentManager>
         </NextIntlClientProvider>
         <VercelComponents />
+        <VertexGA4Script settings={rootData.data.site.settings} />
         <ContainerQueryPolyfill />
       </body>
     </html>

@@ -16,6 +16,7 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 import { addToCart } from './_actions/add-to-cart';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
 import { ProductSchema } from './_components/product-schema';
+import { ProductVertexTracker } from './_components/product-vertex-tracker';
 import { ProductViewed } from './_components/product-viewed';
 import { Reviews } from './_components/reviews';
 import { WishlistButton } from './_components/wishlist-button';
@@ -339,6 +340,7 @@ export default async function Product({ params, searchParams }: Props) {
 
   return (
     <>
+      <ProductVertexTracker productId={productId} />
       <ProductAnalyticsProvider data={streamableAnalyticsData}>
         <ProductDetail
           action={addToCart}

@@ -7,15 +7,18 @@ import { Streamable } from '@/vibes/soul/lib/streamable';
 import { createCompareLoader } from '@/vibes/soul/primitives/compare-drawer/loader';
 import { ProductsListSection } from '@/vibes/soul/sections/products-list-section';
 import { getFilterParsers } from '@/vibes/soul/sections/products-list-section/filter-parsers';
+import { Filter } from '@/vibes/soul/sections/products-list-section/filters-panel';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { facetsTransformer } from '~/data-transformers/facets-transformer';
 import { pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 import { pricesTransformer } from '~/data-transformers/prices-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { isVertexRetailEnabled } from '~/lib/vertex-retail/client';
 
 import { MAX_COMPARE_LIMIT } from '../../compare/page-data';
 import { getCompareProducts as getCompareProductsData } from '../fetch-compare-products';
 import { fetchFacetedSearch } from '../fetch-faceted-search';
+import { fetchVertexSearch } from '../fetch-vertex-search';
 
 import { getSearchPageData } from './page-data';
 
@@ -26,6 +29,12 @@ const createSearchSearchParamsLoader = cache(
     const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : '';
 
     if (!searchTerm) {
+      return null;
+    }
+
+    // Skip BigCommerce facets loader when using Vertex AI
+    // Vertex uses different parameter types (e.g., category as string vs number)
+    if (isVertexRetailEnabled()) {
       return null;
     }
 
@@ -92,14 +101,24 @@ export default async function Search(props: Props) {
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
 
-    const search = await fetchFacetedSearch(
-      {
-        ...searchParams,
-        ...parsedSearchParams,
-      },
-      currencyCode,
-      customerAccessToken,
-    );
+    // Use Vertex AI Search if enabled, otherwise use BigCommerce search
+    const search = isVertexRetailEnabled()
+      ? await fetchVertexSearch(
+          {
+            ...searchParams,
+            ...parsedSearchParams,
+          },
+          currencyCode,
+          customerAccessToken,
+        )
+      : await fetchFacetedSearch(
+          {
+            ...searchParams,
+            ...parsedSearchParams,
+          },
+          currencyCode,
+          customerAccessToken,
+        );
 
     return search;
   });
@@ -146,8 +165,11 @@ export default async function Search(props: Props) {
     }
 
     const search = await streamableFacetedSearch;
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    const totalItems = search.products.collectionInfo?.totalItems ?? 0;
 
-    return format.number(search.products.collectionInfo?.totalItems ?? 0);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    return format.number(totalItems);
   });
 
   const streamableEmptyStateTitle = Streamable.from(async () => {
@@ -175,7 +197,7 @@ export default async function Search(props: Props) {
     return pageInfoTransformer(search.products.pageInfo);
   });
 
-  const streamableFilters = Streamable.from(async () => {
+  const streamableFilters = Streamable.from(async (): Promise<Filter[]> => {
     const searchParams = await props.searchParams;
     const searchTerm = typeof searchParams.term === 'string' ? searchParams.term : '';
     const customerAccessToken = await getSessionCustomerAccessToken();
@@ -184,18 +206,35 @@ export default async function Search(props: Props) {
       return [];
     }
 
+    // If using Vertex AI, return facets directly (already transformed)
+    if (isVertexRetailEnabled()) {
+      const vertexSearch = await streamableFacetedSearch;
+
+      // Vertex facets are already in UI filter format
+      // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+      return vertexSearch.facets.items as Filter[];
+    }
+
+    // Otherwise use BigCommerce facets with transformer
     const loadSearchParams = await createSearchSearchParamsLoader(
       searchParams,
       customerAccessToken,
     );
     const parsedSearchParams = loadSearchParams?.(searchParams) ?? {};
     const categorySearch = await fetchFacetedSearch({}, undefined, customerAccessToken);
-    const refinedSearch = await streamableFacetedSearch;
+    const bcSearch = await fetchFacetedSearch(
+      {
+        ...searchParams,
+        ...parsedSearchParams,
+      },
+      undefined,
+      customerAccessToken,
+    );
 
     const allFacets = categorySearch.facets.items.filter(
       (facet) => facet.__typename !== 'CategorySearchFilter',
     );
-    const refinedFacets = refinedSearch.facets.items.filter(
+    const refinedFacets = bcSearch.facets.items.filter(
       (facet) => facet.__typename !== 'CategorySearchFilter',
     );
 

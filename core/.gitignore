@@ -48,6 +48,10 @@ messages/*.d.json.ts
 # secrets
 .catalyst
 
+# Google Cloud credentials
+*-key.json
+service-account*.json
+
 # Build config
 build-config.json
 

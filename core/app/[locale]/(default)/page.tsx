@@ -9,6 +9,7 @@ import { Subscribe } from '~/components/subscribe';
 import { productCardTransformer } from '~/data-transformers/product-card-transformer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
+import { HomePageTracker } from './_components/home-page-tracker';
 import { Slideshow } from './_components/slideshow';
 import { getPageData } from './page-data';
 
@@ -49,6 +50,7 @@ export default async function Home({ params }: Props) {
 
   return (
     <>
+      <HomePageTracker />
       <Slideshow />
 
       <FeaturedProductList

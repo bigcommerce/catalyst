@@ -43,6 +43,45 @@ function extractScriptInfo(scriptTag: string): ScriptInfo {
   return null;
 }
 
+// Wraps inline script content to handle missing global variables gracefully
+// (e.g., paypal SDK that may not be loaded yet). Scripts execute in global scope
+// by default when injected as <script> tags, so we only add error handling.
+function wrapInlineScriptContent(content: string): string {
+  // Check if the script already appears to be wrapped or is a function/IIFE
+  const trimmed = content.trim();
+  if (
+    trimmed.startsWith('(function') ||
+    trimmed.startsWith('(async function') ||
+    trimmed.startsWith('function') ||
+    trimmed.startsWith('try') ||
+    trimmed.startsWith('var ') ||
+    trimmed.startsWith('let ') ||
+    trimmed.startsWith('const ')
+  ) {
+    // Script appears to already be structured, wrap in try-catch for error handling
+    return `try {
+${content}
+} catch (error) {
+  if (error instanceof ReferenceError && error.message.includes('is not defined')) {
+    console.warn('Script execution skipped due to missing global:', error.message);
+  } else {
+    throw error;
+  }
+}`;
+  }
+
+  // For simple scripts, wrap in try-catch to handle missing globals
+  return `try {
+${content}
+} catch (error) {
+  if (error instanceof ReferenceError && error.message.includes('is not defined')) {
+    console.warn('Script execution skipped due to missing global:', error.message);
+  } else {
+    throw error;
+  }
+}`;
+}
+
 function isValidConsentCategory(key: string): key is keyof typeof BC_TO_C15T_CONSENT_CATEGORY_MAP {
   return key in BC_TO_C15T_CONSENT_CATEGORY_MAP;
 }
@@ -62,34 +101,38 @@ export function scriptsTransformer(scripts: BigCommerceScripts): C15tScripts {
 
   const scriptNodes = removeEdgesAndNodes(scripts);
 
-  return scriptNodes.map((script) => {
-    const baseConfig: C15tScript = {
-      category: mapConsentCategory(script.consentCategory),
-      id: script.entityId,
-    };
+  return scriptNodes
+    .map((script) => {
+      const baseConfig: C15tScript = {
+        category: mapConsentCategory(script.consentCategory),
+        id: script.entityId,
+      };
 
-    const integrityHashes = script.integrityHashes.map((h) => h.hash).filter(Boolean);
-    const attributes = integrityHashes.length
-      ? { integrity: integrityHashes.join(' ') }
-      : undefined;
+      const integrityHashes = script.integrityHashes.map((h) => h.hash).filter(Boolean);
+      const attributes = integrityHashes.length
+        ? { integrity: integrityHashes.join(' ') }
+        : undefined;
 
-    if (script.__typename === 'InlineScript' && script.scriptTag) {
-      const scriptInfo = extractScriptInfo(script.scriptTag);
+      if (script.__typename === 'InlineScript' && script.scriptTag) {
+        const scriptInfo = extractScriptInfo(script.scriptTag);
 
-      // Prefer textContent if available (true inline script)
-      if (scriptInfo !== null && 'textContent' in scriptInfo) {
-        return { ...baseConfig, textContent: scriptInfo.textContent, attributes };
+        // Prefer textContent if available (true inline script)
+        if (scriptInfo !== null && 'textContent' in scriptInfo) {
+          return { ...baseConfig, textContent: wrapInlineScriptContent(scriptInfo.textContent), attributes };
+        }
+
+        if (scriptInfo !== null && 'src' in scriptInfo) {
+          return { ...baseConfig, src: scriptInfo.src, attributes };
+        }
       }
 
-      if (scriptInfo !== null && 'src' in scriptInfo) {
-        return { ...baseConfig, src: scriptInfo.src, attributes };
+      if (script.__typename === 'SrcScript' && script.src) {
+        return { ...baseConfig, src: script.src, attributes };
       }
-    }
 
-    if (script.__typename === 'SrcScript' && script.src) {
-      return { ...baseConfig, src: script.src, attributes };
-    }
-
-    return { ...baseConfig, attributes };
-  });
+      // Return null for scripts that don't have valid src or textContent
+      // These will be filtered out below
+      return null;
+    })
+    .filter((script): script is C15tScript => script !== null);
 }
