@@ -364,6 +364,7 @@
             "decreaseNumber": "Anzahl verringern",
             "thumbnail": "Bildnummer anzeigen",
             "additionalInformation": "Weitere Informationen",
+            "currentStock": "Aktueller Bestand: {quantity, number}",
             "Submit": {
                 "addToCart": "Zum Warenkorb hinzufügen",
                 "outOfStock": "Kein Lagerbestand",
