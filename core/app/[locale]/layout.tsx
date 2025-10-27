@@ -10,7 +10,7 @@ import { cache, PropsWithChildren } from 'react';
 
 import '../../globals.css';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { fonts } from '~/app/fonts';
 import { CookieNotifications } from '~/app/notifications';
 import { Providers } from '~/app/providers';
@@ -25,6 +25,8 @@ import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
 import { ConsentManagerProvider } from '~/lib/consent-manager';
+import { getConsentCookie } from '~/lib/consent-manager/cookies/server';
+import { getConsentCategoriesFromCookie } from '~/lib/consent-manager/cookies/utils';
 import { getToastNotification } from '~/lib/server-toast';
 
 const RootLayoutMetadataQuery = graphql(
@@ -40,16 +42,26 @@ const RootLayoutMetadataQuery = graphql(
           }
           ...WebAnalyticsFragment
         }
-        content {
-          ...ScriptsFragment
-        }
       }
       channel {
         entityId
       }
     }
   `,
-  [WebAnalyticsFragment, ScriptsFragment],
+  [WebAnalyticsFragment],
+);
+
+const ScriptsQuery = graphql(
+  `
+    query ScriptsQuery($consentCategories: [ScriptConsentCategory!]) {
+      site {
+        content {
+          ...ScriptsFragment
+        }
+      }
+    }
+  `,
+  [ScriptsFragment],
 );
 
 const fetchRootLayoutMetadata = cache(async () => {
@@ -104,7 +116,6 @@ interface Props extends PropsWithChildren {
 export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
 
-  const rootData = await fetchRootLayoutMetadata();
   const toastNotificationCookieData = await getToastNotification();
 
   if (!routing.locales.includes(locale)) {
@@ -124,13 +135,32 @@ export default async function RootLayout({ params, children }: Props) {
     };
   });
 
+  const streamableScripts = Streamable.from(async () => {
+    const consentCookie = await getConsentCookie();
+    const consentCategories = getConsentCategoriesFromCookie(consentCookie);
+
+    const { data } = await client.fetch({
+      document: ScriptsQuery,
+      fetchOptions: { next: { revalidate, tags: ['scripts'] } },
+      variables: {
+        consentCategories,
+      },
+    });
+
+    return {
+      headerScripts: data.site.content.headerScripts,
+      footerScripts: data.site.content.footerScripts,
+    };
+  });
+
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
       <head>
-        <ScriptManagerScripts
-          scripts={rootData.data.site.content.headerScripts}
-          strategy="afterInteractive"
-        />
+        <Stream fallback={null} value={streamableScripts}>
+          {(scripts) => (
+            <ScriptManagerScripts scripts={scripts.headerScripts} strategy="afterInteractive" />
+          )}
+        </Stream>
       </head>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
@@ -150,10 +180,11 @@ export default async function RootLayout({ params, children }: Props) {
         </NextIntlClientProvider>
         <VercelComponents />
         <ContainerQueryPolyfill />
-        <ScriptManagerScripts
-          scripts={rootData.data.site.content.footerScripts}
-          strategy="lazyOnload"
-        />
+        <Stream fallback={null} value={streamableScripts}>
+          {(scripts) => (
+            <ScriptManagerScripts scripts={scripts.footerScripts} strategy="lazyOnload" />
+          )}
+        </Stream>
       </body>
     </html>
   );

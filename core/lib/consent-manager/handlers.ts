@@ -1,4 +1,6 @@
-import { getConsentCookie, setConsentCookie } from './cookies/client';
+import { setConsentAction } from './action';
+import { getConsentCookie } from './cookies/client';
+import { ConsentStateSchema } from './schema';
 
 const ok = <T>(data: T | null = null) => ({
   data,
@@ -32,13 +34,12 @@ export function showConsentBanner() {
   });
 }
 
-export function setConsent(options?: { body?: { preferences?: Record<string, boolean> } }) {
+export async function setConsent(options?: { body?: { preferences?: Record<string, boolean> } }) {
   const { preferences } = options?.body ?? {};
 
-  setConsentCookie({
-    preferences: preferences ?? {},
-    timestamp: new Date().toISOString(),
-  });
+  const validatedPreferences = ConsentStateSchema.parse(preferences);
+
+  await setConsentAction(validatedPreferences);
 
   return ok();
 }

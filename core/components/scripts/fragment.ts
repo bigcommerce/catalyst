@@ -4,13 +4,21 @@ export const ScriptsFragment = graphql(`
   fragment ScriptsFragment on Content {
     headerScripts: scripts(
       first: 50
-      filters: { visibilities: [ALL_PAGES, STOREFRONT], location: HEAD }
+      filters: {
+        visibilities: [ALL_PAGES, STOREFRONT]
+        location: HEAD
+        consentCategories: $consentCategories
+      }
     ) {
       ...ScriptTypeConnectionFragment
     }
     footerScripts: scripts(
       first: 50
-      filters: { visibilities: [ALL_PAGES, STOREFRONT], location: FOOTER }
+      filters: {
+        visibilities: [ALL_PAGES, STOREFRONT]
+        location: FOOTER
+        consentCategories: $consentCategories
+      }
     ) {
       ...ScriptTypeConnectionFragment
     }
