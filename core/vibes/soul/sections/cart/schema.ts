@@ -31,6 +31,22 @@ export const couponCodeActionFormDataSchema = ({
     }),
   ]);
 
+export const giftCertificateCodeActionFormDataSchema = ({
+  required_error = 'Please enter a valid gift certificate code',
+}: {
+  required_error?: string;
+}) =>
+  z.discriminatedUnion('intent', [
+    z.object({
+      intent: z.literal('apply'),
+      giftCertificateCode: z.string({ required_error }),
+    }),
+    z.object({
+      intent: z.literal('delete'),
+      giftCertificateCode: z.string(),
+    }),
+  ]);
+
 export const shippingActionFormDataSchema = z.discriminatedUnion('intent', [
   z.object({
     intent: z.literal('add-address'),
