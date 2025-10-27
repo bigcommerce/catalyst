@@ -5,7 +5,7 @@ import * as React from 'react';
 
 import { FieldError } from '@/vibes/soul/form/field-error';
 import { Label } from '@/vibes/soul/form/label';
-import { Select, type SelectProps } from '@/vibes/soul/primitives/select';
+import { Select, type Props as SelectProps } from '@/vibes/soul/form/select';
 
 export interface SelectFieldProps extends SelectProps {
   label: string;
