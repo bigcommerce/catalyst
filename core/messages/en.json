@@ -472,11 +472,5 @@
       "description": "Stay up to date with the latest news and offers from our store.",
       "success": "Thank you for your interest! Newsletter feature is coming soon!"
     }
-  },
-  "GiftCertificates": {
-    "title": "Gift certificates",
-    "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
-    "purchaseLabel": "Shop now",
-    "checkBalanceLabel": "Check balance"
   }
 }
