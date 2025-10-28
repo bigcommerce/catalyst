@@ -6,15 +6,7 @@ import * as NavigationMenu from '@radix-ui/react-navigation-menu';
 import * as Popover from '@radix-ui/react-popover';
 import { clsx } from 'clsx';
 import debounce from 'lodash.debounce';
-import {
-  ArrowRight,
-  ChevronDown,
-  GiftIcon,
-  Search,
-  SearchIcon,
-  ShoppingBag,
-  User,
-} from 'lucide-react';
+import { ArrowRight, ChevronDown, Search, SearchIcon, ShoppingBag, User } from 'lucide-react';
 import { useParams, useSearchParams } from 'next/navigation';
 import React, {
   forwardRef,
@@ -127,9 +119,6 @@ interface Props<S extends SearchResult> {
   searchLabel?: string;
   mobileMenuTriggerLabel?: string;
   switchCurrencyLabel?: string;
-  giftCertificatesLabel?: string;
-  giftCertificatesHref: string;
-  giftCertificatesEnabled?: Streamable<boolean>;
 }
 
 const MobileMenuButton = forwardRef<
@@ -297,9 +286,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
     searchLabel = 'Search',
     mobileMenuTriggerLabel = 'Toggle navigation',
     switchCurrencyLabel,
-    giftCertificatesLabel = 'Gift Certificates',
-    giftCertificatesHref,
-    giftCertificatesEnabled: streamableGiftCertificatesEnabled,
   }: Props<S>,
   ref: Ref<HTMLDivElement>,
 ) {
@@ -608,20 +594,6 @@ export const Navigation = forwardRef(function Navigation<S extends SearchResult>
               }
             </Stream>
           </Link>
-
-          <Stream fallback={null} value={streamableGiftCertificatesEnabled}>
-            {(giftCertificatesEnabled) =>
-              giftCertificatesEnabled && (
-                <Link
-                  aria-label={giftCertificatesLabel}
-                  className={navButtonClassName}
-                  href={giftCertificatesHref}
-                >
-                  <GiftIcon size={20} strokeWidth={1} />
-                </Link>
-              )
-            }
-          </Stream>
 
           {/* Locale / Language Dropdown */}
           {locales && locales.length > 1 ? (
