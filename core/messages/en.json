@@ -319,16 +319,6 @@
         "noShippingOptions": "There are no shipping options available for your address"
       }
     },
-    "GiftCertificate": {
-      "giftCertificate": "Gift certificate",
-      "giftCertificateCode": "Gift certificate code",
-      "removeGiftCertificate": "Remove gift certificate",
-      "apply": "Apply",
-      "to": "To",
-      "message": "Message",
-      "invalidGiftCertificate": "Please enter a valid gift certificate code",
-      "cartNotFound": "No cartId cookie found."
-    },
     "Empty": {
       "title": "Your cart is empty.",
       "subtitle": "Add some products to get started.",
