@@ -3,7 +3,7 @@
 import { getFormProps, getInputProps, SubmissionResult, useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 import { clsx } from 'clsx';
-import { ArrowRight, GiftIcon, Minus, Plus, Trash2 } from 'lucide-react';
+import { ArrowRight, Minus, Plus, Trash2 } from 'lucide-react';
 import {
   ComponentPropsWithoutRef,
   startTransition,
@@ -17,10 +17,6 @@ import { useFormStatus } from 'react-dom';
 import { Button } from '@/vibes/soul/primitives/button';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { toast } from '@/vibes/soul/primitives/toaster';
-import {
-  GiftCertificateCodeForm,
-  GiftCertificateCodeFormState,
-} from '@/vibes/soul/sections/cart/gift-certificate-code-form';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 import { useEvents } from '~/components/analytics/events';
 import { Image } from '~/components/image';
@@ -34,26 +30,12 @@ import { CartEmptyState } from '.';
 type Action<State, Payload> = (state: Awaited<State>, payload: Payload) => State | Promise<State>;
 
 export interface CartLineItem {
-  typename: string;
   id: string;
+  image: { alt: string; src: string };
   title: string;
-  image?: { alt: string; src: string };
   subtitle: string;
   quantity: number;
   price: string;
-  href?: string;
-}
-
-export interface CartGiftCertificateLineItem extends CartLineItem {
-  sender: {
-    name: string;
-    email: string;
-  };
-  recipient: {
-    name: string;
-    email: string;
-  };
-  message?: string;
 }
 
 export interface CartSummaryItem {
@@ -76,16 +58,6 @@ export interface Cart<LineItem extends CartLineItem> {
 interface CouponCode {
   action: Action<CouponCodeFormState, FormData>;
   couponCodes?: string[];
-  ctaLabel?: string;
-  disabled?: boolean;
-  label?: string;
-  placeholder?: string;
-  removeLabel?: string;
-}
-
-interface GiftCertificate {
-  action: Action<GiftCertificateCodeFormState, FormData>;
-  giftCertificateCodes?: string[];
   ctaLabel?: string;
   disabled?: boolean;
   label?: string;
@@ -156,7 +128,6 @@ export interface CartProps<LineItem extends CartLineItem> {
   incrementLineItemLabel?: string;
   cart: Cart<LineItem>;
   couponCode?: CouponCode;
-  giftCertificate?: GiftCertificate;
   shipping?: Shipping;
   lineItemActionPendingLabel?: string;
 }
@@ -196,7 +167,6 @@ export function CartClient<LineItem extends CartLineItem>({
   title,
   cart,
   couponCode,
-  giftCertificate,
   decrementLineItemLabel,
   incrementLineItemLabel,
   deleteLineItemLabel,
@@ -383,17 +353,6 @@ export function CartClient<LineItem extends CartLineItem>({
                 removeLabel={couponCode.removeLabel}
               />
             )}
-            {giftCertificate && (
-              <GiftCertificateCodeForm
-                action={giftCertificate.action}
-                ctaLabel={giftCertificate.ctaLabel}
-                disabled={giftCertificate.disabled}
-                giftCertificateCodes={giftCertificate.giftCertificateCodes}
-                label={giftCertificate.label}
-                placeholder={giftCertificate.placeholder}
-                removeLabel={giftCertificate.removeLabel}
-              />
-            )}
             <div className="flex justify-between border-t border-[var(--cart-border,hsl(var(--contrast-100)))] py-6 text-xl font-bold">
               <dt>{cart.totalLabel ?? 'Total'}</dt>
               {isLineItemActionPending ? (
@@ -431,21 +390,13 @@ export function CartClient<LineItem extends CartLineItem>({
               key={lineItem.id}
             >
               <div className="relative aspect-square w-full max-w-24 overflow-hidden rounded-xl bg-[var(--cart-image-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4">
-                {lineItem.typename === 'CartGiftCertificate' ? (
-                  <div className="flex h-full w-full flex-col items-center justify-center p-4 text-center">
-                    <GiftIcon className="h-full w-full text-[var(--cart-icon,hsl(var(--contrast-300)))]" />
-                  </div>
-                ) : (
-                  lineItem.image != null && (
-                    <Image
-                      alt={lineItem.image.alt}
-                      className="object-cover"
-                      fill
-                      sizes="(min-width: 28rem) 9rem, (min-width: 24rem) 6rem, 100vw"
-                      src={lineItem.image.src}
-                    />
-                  )
-                )}
+                <Image
+                  alt={lineItem.image.alt}
+                  className="object-cover"
+                  fill
+                  sizes="(min-width: 28rem) 9rem, (min-width: 24rem) 6rem, 100vw"
+                  src={lineItem.image.src}
+                />
               </div>
               <div className="flex grow flex-col flex-wrap justify-between gap-y-2 @xl:flex-row">
                 <div className="flex w-full flex-1 flex-col @xl:w-1/2 @xl:pr-4">
@@ -524,35 +475,6 @@ function CounterForm({
       onSubmit(formData);
     },
   });
-
-  if (lineItem.typename === 'CartGiftCertificate') {
-    return (
-      <form {...getFormProps(form)} action={action}>
-        <input {...getInputProps(fields.id, { type: 'hidden' })} key={fields.id.id} />
-        <div className="flex w-full flex-wrap items-center gap-x-5 gap-y-2">
-          <span className="font-medium @xl:ml-auto">{lineItem.price}</span>
-
-          <span className="flex flex-1 select-none justify-center px-14 py-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))]">
-            {lineItem.quantity}
-          </span>
-
-          <button
-            aria-label={deleteLabel}
-            className="group -ml-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-full transition-colors duration-300 hover:bg-[var(--cart-button-background,hsl(var(--contrast-100)))] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--cart-focus,hsl(var(--primary)))] focus-visible:ring-offset-4"
-            name="intent"
-            type="submit"
-            value="delete"
-          >
-            <Trash2
-              className="text-[var(--cart-icon,hsl(var(--contrast-300)))] group-hover:text-[var(--cart-icon-hover,hsl(var(--foreground)))]"
-              size={20}
-              strokeWidth={1}
-            />
-          </button>
-        </div>
-      </form>
-    );
-  }
 
   return (
     <form {...getFormProps(form)} action={action}>

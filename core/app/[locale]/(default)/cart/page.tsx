@@ -5,12 +5,10 @@ import { Streamable } from '@/vibes/soul/lib/streamable';
 import { Cart as CartComponent, CartEmptyState } from '@/vibes/soul/sections/cart';
 import { CartAnalyticsProvider } from '~/app/[locale]/(default)/cart/_components/cart-analytics-provider';
 import { getCartId } from '~/lib/cart';
-import { getPreferredCurrencyCode } from '~/lib/currency';
 import { exists } from '~/lib/utils';
 
 import { redirectToCheckout } from './_actions/redirect-to-checkout';
 import { updateCouponCode } from './_actions/update-coupon-code';
-import { updateGiftCertificate } from './_actions/update-gift-certificate';
 import { updateLineItem } from './_actions/update-line-item';
 import { updateShippingInfo } from './_actions/update-shipping-info';
 import { CartViewed } from './_components/cart-viewed';
@@ -76,12 +74,10 @@ export default async function Cart({ params }: Props) {
     );
   }
 
-  const currencyCode = await getPreferredCurrencyCode();
-  const data = await getCart({ cartId, currencyCode });
+  const data = await getCart({ cartId });
 
   const cart = data.site.cart;
   const checkout = data.site.checkout;
-  const giftCertificatesEnabled = data.site.settings?.giftCertificates?.isEnabled ?? false;
 
   if (!cart) {
     return (
@@ -93,85 +89,47 @@ export default async function Cart({ params }: Props) {
     );
   }
 
-  const lineItems = [
-    ...cart.lineItems.giftCertificates,
-    ...cart.lineItems.physicalItems,
-    ...cart.lineItems.digitalItems,
-  ];
+  const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
 
-  const formattedLineItems = lineItems.map((item) => {
-    if (item.__typename === 'CartGiftCertificate') {
-      return {
-        typename: item.__typename,
-        id: item.entityId,
-        title: item.name,
-        subtitle: `${t('GiftCertificate.to')}: ${item.recipient.name} (${item.recipient.email})${item.message ? `, ${t('GiftCertificate.message')}: ${item.message}` : ''}`,
-        quantity: 1,
-        price: format.number(item.amount.value, {
-          style: 'currency',
-          currency: item.amount.currencyCode,
-        }),
-        sender: item.sender,
-        recipient: item.recipient,
-        message: item.message,
-        href: undefined,
-        selectedOptions: [],
-        productEntityId: 0,
-        variantEntityId: 0,
-      };
-    }
+  const formattedLineItems = lineItems.map((item) => ({
+    id: item.entityId,
+    quantity: item.quantity,
+    price: format.number(item.listPrice.value, {
+      style: 'currency',
+      currency: item.listPrice.currencyCode,
+    }),
+    subtitle: item.selectedOptions
+      .map((option) => {
+        switch (option.__typename) {
+          case 'CartSelectedMultipleChoiceOption':
+          case 'CartSelectedCheckboxOption':
+            return `${option.name}: ${option.value}`;
 
-    return {
-      typename: item.__typename,
-      id: item.entityId,
-      quantity: item.quantity,
-      price: format.number(item.listPrice.value, {
-        style: 'currency',
-        currency: item.listPrice.currencyCode,
-      }),
-      subtitle: item.selectedOptions
-        .map((option) => {
-          switch (option.__typename) {
-            case 'CartSelectedMultipleChoiceOption':
-            case 'CartSelectedCheckboxOption':
-              return `${option.name}: ${option.value}`;
+          case 'CartSelectedNumberFieldOption':
+            return `${option.name}: ${option.number}`;
 
-            case 'CartSelectedNumberFieldOption':
-              return `${option.name}: ${option.number}`;
+          case 'CartSelectedMultiLineTextFieldOption':
+          case 'CartSelectedTextFieldOption':
+            return `${option.name}: ${option.text}`;
 
-            case 'CartSelectedMultiLineTextFieldOption':
-            case 'CartSelectedTextFieldOption':
-              return `${option.name}: ${option.text}`;
+          case 'CartSelectedDateFieldOption':
+            return `${option.name}: ${format.dateTime(new Date(option.date.utc))}`;
 
-            case 'CartSelectedDateFieldOption':
-              return `${option.name}: ${format.dateTime(new Date(option.date.utc))}`;
-
-            default:
-              return '';
-          }
-        })
-        .join(', '),
-      title: item.name,
-      image: item.image?.url ? { src: item.image.url, alt: item.name } : undefined,
-      href: new URL(item.url).pathname,
-      selectedOptions: item.selectedOptions,
-      productEntityId: item.productEntityId,
-      variantEntityId: item.variantEntityId,
-    };
-  });
+          default:
+            return '';
+        }
+      })
+      .join(', '),
+    title: item.name,
+    image: { src: item.image?.url || '', alt: item.name },
+    href: new URL(item.url).pathname,
+    selectedOptions: item.selectedOptions,
+    productEntityId: item.productEntityId,
+    variantEntityId: item.variantEntityId,
+  }));
 
   const totalCouponDiscount =
     checkout?.coupons.reduce((sum, coupon) => sum + coupon.discountedAmount.value, 0) ?? 0;
-
-  const giftCertificatesSummary =
-    checkout?.giftCertificates.reduce<Array<{ code: string; used: number }>>((acc, c) => {
-      acc.push({
-        code: c.code,
-        used: c.used.value,
-      });
-
-      return acc;
-    }, []) ?? [];
 
   const shippingConsignment =
     checkout?.shippingConsignments?.find((consignment) => consignment.selectedShippingOption) ||
@@ -235,13 +193,6 @@ export default async function Cart({ params }: Props) {
                     })}`,
                   }
                 : null,
-              ...giftCertificatesSummary.map((gc) => ({
-                label: `${t('GiftCertificate.giftCertificate')} (${gc.code})`,
-                value: `-${format.number(gc.used, {
-                  style: 'currency',
-                  currency: cart.currencyCode,
-                })}`,
-              })),
               checkout?.taxTotal && {
                 label: t('CheckoutSummary.tax'),
                 value: format.number(checkout.taxTotal.value, {
@@ -267,17 +218,6 @@ export default async function Cart({ params }: Props) {
             subtitle: t('Empty.subtitle'),
             cta: { label: t('Empty.cta'), href: '/shop-all' },
           }}
-          giftCertificate={
-            giftCertificatesEnabled
-              ? {
-                  action: updateGiftCertificate,
-                  giftCertificateCodes: checkout?.giftCertificates.map((gc) => gc.code) ?? [],
-                  ctaLabel: t('GiftCertificate.apply'),
-                  label: t('GiftCertificate.giftCertificateCode'),
-                  removeLabel: t('GiftCertificate.removeGiftCertificate'),
-                }
-              : undefined
-          }
           incrementLineItemLabel={t('increment')}
           key={`${cart.entityId}-${cart.version}`}
           lineItemAction={updateLineItem}
