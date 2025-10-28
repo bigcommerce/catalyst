@@ -6,7 +6,7 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { TAGS } from '~/client/tags';
 
-import { OrderGiftCertificateItemFragment, OrderItemFragment } from '../fragment';
+import { OrderItemFragment } from '../fragment';
 
 const CustomerOrderDetails = graphql(
   `
@@ -109,28 +109,12 @@ const CustomerOrderDetails = graphql(
                 }
               }
             }
-            email {
-              giftCertificates {
-                edges {
-                  node {
-                    recipientEmail
-                    lineItems {
-                      edges {
-                        node {
-                          ...OrderGiftCertificateItemFragment
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
           }
         }
       }
     }
   `,
-  [OrderItemFragment, OrderGiftCertificateItemFragment],
+  [OrderItemFragment],
 );
 
 export const getCustomerOrderDetails = cache(async (id: number) => {
@@ -166,20 +150,6 @@ export const getCustomerOrderDetails = cache(async (id: number) => {
             shipments: removeEdgesAndNodes(consignment.shipments),
           };
         }),
-      email:
-        order.consignments?.email &&
-        removeEdgesAndNodes(order.consignments.email.giftCertificates).map(
-          ({ recipientEmail, lineItems }) => {
-            return {
-              email: recipientEmail,
-              lineItems: removeEdgesAndNodes(lineItems).map(({ entityId, name, salePrice }) => ({
-                entityId,
-                name,
-                salePrice,
-              })),
-            };
-          },
-        ),
     },
   };
 });

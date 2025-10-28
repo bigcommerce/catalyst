@@ -33,15 +33,3 @@ export const OrderItemFragment = graphql(`
     }
   }
 `);
-
-export const OrderGiftCertificateItemFragment = graphql(`
-  fragment OrderGiftCertificateItemFragment on OrderGiftCertificateLineItem {
-    entityId
-    name
-    salePrice {
-      value
-      formattedV2
-      currencyCode
-    }
-  }
-`);
