@@ -16,7 +16,7 @@ import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { search } from './_actions/search';
 import { switchCurrency } from './_actions/switch-currency';
-import { CurrencyCode, HeaderFragment, HeaderLinksFragment } from './fragment';
+import { HeaderFragment, HeaderLinksFragment } from './fragment';
 
 const GetCartCountQuery = graphql(`
   query GetCartCountQuery($cartId: String) {
@@ -47,18 +47,17 @@ const getCartCount = cache(async (cartId: string, customerAccessToken?: string) 
   return response.data.site.cart?.lineItems.totalQuantity ?? null;
 });
 
-const getHeaderLinks = cache(async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
+const getHeaderLinks = cache(async (customerAccessToken?: string) => {
   const { data: response } = await client.fetch({
     document: GetLinksAndSectionsQuery,
     customerAccessToken,
-    variables: { currencyCode },
     // Since this query is needed on every page, it's a good idea not to validate the customer access token.
     // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
     validateCustomerAccessToken: false,
     fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
   });
 
-  return readFragment(HeaderLinksFragment, response).site;
+  return readFragment(HeaderLinksFragment, response).site.categoryTree;
 });
 
 const getHeaderData = cache(async () => {
@@ -96,8 +95,8 @@ export const Header = async () => {
 
   const streamableLinks = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
-    const currencyCode = await getPreferredCurrencyCode();
-    const categoryTree = (await getHeaderLinks(customerAccessToken, currencyCode)).categoryTree;
+
+    const categoryTree = await getHeaderLinks(customerAccessToken);
 
     /**  To prevent the navigation menu from overflowing, we limit the number of categories to 6.
    To show a full list of categories, modify the `slice` method to remove the limit.
@@ -117,15 +116,6 @@ export const Header = async () => {
         })),
       })),
     }));
-  });
-
-  const streamableGiftCertificatesEnabled = Streamable.from(async () => {
-    const currencyCode = await getPreferredCurrencyCode();
-    const customerAccessToken = await getSessionCustomerAccessToken();
-    const giftCertificateSettings = (await getHeaderLinks(customerAccessToken, currencyCode))
-      .settings?.giftCertificates;
-
-    return giftCertificateSettings?.isEnabled ?? false;
   });
 
   const streamableCartCount = Streamable.from(async () => {
@@ -154,9 +144,6 @@ export const Header = async () => {
         accountLabel: t('Icons.account'),
         cartHref: '/cart',
         cartLabel: t('Icons.cart'),
-        giftCertificatesLabel: t('Icons.giftCertificates'),
-        giftCertificatesHref: '/gift-certificates',
-        giftCertificatesEnabled: streamableGiftCertificatesEnabled,
         searchHref: '/search',
         searchParamName: 'term',
         searchAction: search,
