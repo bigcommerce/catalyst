@@ -51,7 +51,7 @@ export default async function GiftCertificates(props: Props) {
       ]}
       checkBalanceLabel={t('checkBalanceLabel')}
       description={t('CheckBalance.description')}
-      expiresAtLabel={t('expiresAtLabel')}
+      expiresAtLabel={t('CheckBalance.expiresAtLabel')}
       inputLabel={t('CheckBalance.inputLabel')}
       inputPlaceholder={t('CheckBalance.inputPlaceholder')}
       logo={data.logo}

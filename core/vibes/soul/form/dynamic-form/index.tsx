@@ -11,14 +11,7 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import {
-  FormEvent,
-  MouseEvent,
-  ReactNode,
-  startTransition,
-  useActionState,
-  useEffect,
-} from 'react';
+import { MouseEvent, ReactNode, startTransition, useActionState } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
@@ -31,7 +24,7 @@ import { FormStatus } from '@/vibes/soul/form/form-status';
 import { Input } from '@/vibes/soul/form/input';
 import { NumberInput } from '@/vibes/soul/form/number-input';
 import { RadioGroup } from '@/vibes/soul/form/radio-group';
-import { Select } from '@/vibes/soul/form/select';
+import { SelectField } from '@/vibes/soul/form/select-field';
 import { SwatchRadioGroup } from '@/vibes/soul/form/swatch-radio-group';
 import { Textarea } from '@/vibes/soul/form/textarea';
 import { Button, ButtonProps } from '@/vibes/soul/primitives/button';
@@ -43,7 +36,6 @@ type Action<S, P> = (state: Awaited<S>, payload: P) => S | Promise<S>;
 interface State<F extends Field> {
   fields: Array<F | FieldGroup<F>>;
   lastResult: SubmissionResult | null;
-  successMessage?: ReactNode;
 }
 
 export type DynamicFormAction<F extends Field> = Action<State<F>, FormData>;
@@ -57,8 +49,6 @@ export interface DynamicFormProps<F extends Field> {
   submitName?: string;
   submitValue?: string;
   onCancel?: (e: MouseEvent<HTMLButtonElement>) => void;
-  onChange?: (e: FormEvent<HTMLFormElement>) => void;
-  onSuccess?: (lastResult: SubmissionResult, successMessage: ReactNode) => void;
 }
 
 export function DynamicForm<F extends Field>({
@@ -70,14 +60,11 @@ export function DynamicForm<F extends Field>({
   submitName,
   submitValue,
   onCancel,
-  onChange,
-  onSuccess,
 }: DynamicFormProps<F>) {
-  const [{ lastResult, fields, successMessage }, formAction] = useActionState(action, {
+  const [{ lastResult, fields }, formAction] = useActionState(action, {
     fields: defaultFields,
     lastResult: null,
   });
-
   const dynamicSchema = schema(fields);
   const defaultValue = fields
     .flatMap((f) => (Array.isArray(f) ? f : [f]))
@@ -106,20 +93,14 @@ export function DynamicForm<F extends Field>({
     },
   });
 
-  useEffect(() => {
-    if (lastResult && lastResult.status === 'success' && successMessage) {
-      onSuccess?.(lastResult, successMessage);
-    }
-  }, [lastResult, successMessage, onSuccess]);
-
   return (
     <FormProvider context={form.context}>
-      <form {...getFormProps(form)} action={formAction} onChange={onChange}>
+      <form {...getFormProps(form)} action={formAction}>
         <div className="space-y-6">
           {fields.map((field, index) => {
             if (Array.isArray(field)) {
               return (
-                <div className="flex flex-col gap-4 @sm:flex-row" key={index}>
+                <div className="flex gap-4" key={index}>
                   {field.map((f) => {
                     const groupFormField = formFields[f.name];
 
@@ -204,23 +185,20 @@ function DynamicFormField({
         <NumberInput
           {...getInputProps(formField, { type: 'number' })}
           decrementLabel={field.decrementLabel}
-          defaultValue={field.defaultValue}
           errors={formField.errors}
           incrementLabel={field.incrementLabel}
           key={field.name}
           label={field.label}
-          placeholder={field.placeholder}
         />
       );
 
     case 'text':
       return (
         <Input
-          {...getInputProps(formField, { type: 'text', pattern: field.pattern })}
+          {...getInputProps(formField, { type: 'text' })}
           errors={formField.errors}
           key={field.name}
           label={field.label}
-          placeholder={field.placeholder}
         />
       );
 
@@ -231,7 +209,6 @@ function DynamicFormField({
           errors={formField.errors}
           key={field.name}
           label={field.label}
-          placeholder={field.placeholder}
         />
       );
 
@@ -243,7 +220,6 @@ function DynamicFormField({
           errors={formField.errors}
           key={field.name}
           label={field.label}
-          placeholder={field.placeholder}
         />
       );
 
@@ -254,14 +230,12 @@ function DynamicFormField({
           errors={formField.errors}
           key={field.name}
           label={field.label}
-          placeholder={field.placeholder}
         />
       );
 
     case 'checkbox':
       return (
         <Checkbox
-          defaultValue={field.defaultValue}
           errors={formField.errors}
           key={field.name}
           label={field.label}
@@ -289,7 +263,7 @@ function DynamicFormField({
 
     case 'select':
       return (
-        <Select
+        <SelectField
           errors={formField.errors}
           key={field.name}
           label={field.label}
@@ -298,7 +272,6 @@ function DynamicFormField({
           onFocus={controls.focus}
           onValueChange={controls.change}
           options={field.options}
-          placeholder={field.placeholder}
           required={formField.required}
           value={typeof controls.value === 'string' ? controls.value : ''}
         />
@@ -374,7 +347,6 @@ function DynamicFormField({
     case 'date':
       return (
         <DatePicker
-          defaultValue={field.defaultValue}
           disabledDays={
             field.minDate != null && field.maxDate != null
               ? {

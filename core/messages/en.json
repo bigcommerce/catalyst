@@ -478,49 +478,18 @@
     "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
     "purchaseLabel": "Shop now",
     "checkBalanceLabel": "Check balance",
-    "expiresAtLabel": "Valid thru",
     "CheckBalance": {
       "title": "Check balance",
       "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
       "inputLabel": "Code",
       "inputPlaceholder": "Enter code",
+      "expiresAtLabel": "Valid thru",
       "purchasedDateLabel": "Purchased",
       "senderLabel": "From",
       "Errors": {
         "invalidCode": "The gift certificate code you entered is invalid. Please check the code and try again.",
         "codeRequired": "Please enter a gift certificate code.",
         "somethingWentWrong": "Something went wrong. Please try again later."
-      }
-    },
-    "Purchase": {
-      "breadcrumbTitle": "Purchase a gift certificate",
-      "title": "Digital gift certificate",
-      "description": "Explore our gift certificates, perfect for any occasion. Choose the amount and personalize your message.",
-      "successMessage": "Gift certificate has been added to <cartLink> your cart</cartLink>",
-      "missingCart": "Cart not found. Please try again later.",
-      "unknownError": "Unknown error. Please try again later.",
-      "Form": {
-        "amountLabel": "Amount",
-        "customAmountLabel": "Amount (between {minAmount} and {maxAmount})",
-        "selectAmountPlaceholder": "Select an amount",
-        "customAmountPlaceholder": "Enter custom amount",
-        "senderNameLabel": "Your name",
-        "senderEmailLabel": "Your email",
-        "recipientNameLabel": "Recipient's name",
-        "recipientEmailLabel": "Recipient's email",
-        "namePlaceholder": "Enter name",
-        "emailPlaceholder": "Enter email",
-        "messageLabel": "Message",
-        "messagePlaceholder": "Enter your message (optional)",
-        "nonRefundableCheckboxLabel": "I agree that Gift Certificates are non-refundable",
-        "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
-        "ctaLabel": "Add to cart",
-        "Errors": {
-          "amountRequired": "Please select or enter a gift certificate amount.",
-          "amountInvalid": "Please select a valid gift certificate amount.",
-          "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
-          "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
-        }
       }
     }
   }
