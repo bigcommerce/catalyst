@@ -37,7 +37,7 @@ export default async function GiftCertificates(props: Props) {
 
   const exampleBalance = format.number(25.0, {
     style: 'currency',
-    currency: currencyCode ?? data.defaultCurrency,
+    currency: currencyCode,
   });
 
   return (

@@ -15,9 +15,6 @@ const GiftCertificatesRootQuery = graphql(
           giftCertificates(currencyCode: $currencyCode) {
             isEnabled
           }
-          currency {
-            defaultCurrency
-          }
           ...StoreLogoFragment
         }
       }
@@ -35,7 +32,6 @@ export const getGiftCertificatesData = cache(async (currencyCode?: CurrencyCode)
 
   return {
     giftCertificatesEnabled: response.data.site.settings?.giftCertificates?.isEnabled ?? false,
-    defaultCurrency: response.data.site.settings?.currency.defaultCurrency ?? undefined,
     logo: response.data.site.settings ? logoTransformer(response.data.site.settings) : '',
   };
 });
