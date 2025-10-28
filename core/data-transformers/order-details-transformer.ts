@@ -1,3 +1,4 @@
+import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
 
 import { Order } from '@/vibes/soul/sections/order-details-section';
@@ -39,6 +40,44 @@ export const orderDetailsTransformer = (
   t: ExistingResultType<typeof getTranslations<'Account.Orders.Details'>>,
   format: ExistingResultType<typeof getFormatter>,
 ): Order => {
+  const paymentMethods = removeEdgesAndNodes(order.payments).map((payment) => {
+    if (payment.detail?.__typename === 'CreditCardPaymentInstrument') {
+      return {
+        title: t('PaymentMethods.creditCard'),
+        subtitle: `${payment.detail.brand} ${t('paymentEndingInLabel')} ${payment.detail.last4}`,
+        amount: format.number(payment.amount.value, {
+          style: 'currency',
+          currency: payment.amount.currencyCode,
+        }),
+      };
+    }
+
+    let paymentMethod: string;
+
+    // Attempt to use translated names for known payment methods
+    if (payment.detail?.__typename === 'GiftCertificatePaymentInstrument') {
+      paymentMethod = t('PaymentMethods.giftCertificate');
+    } else if (payment.paymentMethodName === 'Store Credit') {
+      paymentMethod = t('PaymentMethods.storeCredit');
+    } else if (payment.paymentMethodName !== '') {
+      paymentMethod = payment.paymentMethodName;
+    } else {
+      paymentMethod = t('PaymentMethods.other');
+    }
+
+    return {
+      title: paymentMethod,
+      subtitle:
+        payment.detail?.__typename === 'GiftCertificatePaymentInstrument'
+          ? payment.detail.code
+          : undefined,
+      amount: format.number(payment.amount.value, {
+        style: 'currency',
+        currency: payment.amount.currencyCode,
+      }),
+    };
+  });
+
   return {
     date: format.dateTime(new Date(order.orderedAt.utc)),
     id: String(order.entityId),
@@ -159,6 +198,10 @@ export const orderDetailsTransformer = (
           }),
         },
       ],
+    },
+    paymentsSummary: {
+      title: t('paymentMethodsLabel', { count: paymentMethods.length }),
+      payments: paymentMethods,
     },
   };
 };

@@ -163,7 +163,15 @@
         "subtotal": "Subtotal",
         "shipping": "Shipping",
         "tax": "Tax",
-        "orderSummary": "Order summary"
+        "orderSummary": "Order summary",
+        "paymentMethodsLabel": "{count, plural, =1 {Payment method} other {Payment methods}}",
+        "paymentEndingInLabel": "ending in",
+        "PaymentMethods": {
+          "creditCard": "Credit card",
+          "giftCertificate": "Gift certificate",
+          "storeCredit": "Store credit",
+          "other": "Other"
+        }
       }
     },
     "Addresses": {

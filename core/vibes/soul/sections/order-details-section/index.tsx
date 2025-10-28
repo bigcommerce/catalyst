@@ -7,6 +7,17 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { Image } from '~/components/image';
 import { Link } from '~/components/link';
 
+interface OrderPayment {
+  title: string;
+  subtitle?: string;
+  amount: string;
+}
+
+interface PaymentsSummary {
+  title: string;
+  payments: OrderPayment[];
+}
+
 interface Summary {
   lineItems: Array<{
     label: string;
@@ -79,6 +90,7 @@ export interface Order {
   destinations: Destination[];
   emailDestinations: EmailDestination[];
   summary: Summary;
+  paymentsSummary: PaymentsSummary;
 }
 
 export interface OrderDetailsSectionProps {
@@ -164,10 +176,20 @@ export function OrderDetailsSection({
                 ))}
               </div>
               <div className="order-1 basis-72 pt-8 @3xl:order-2">
-                <div className="font-[family-name:var(--order-details-section-title-font-family,var(--font-family-heading))] text-2xl font-medium">
-                  {orderSummaryLabel}
+                <div className="flex flex-col gap-8">
+                  <div className="flex-1">
+                    <div className="font-[family-name:var(--order-details-section-title-font-family,var(--font-family-heading))] text-2xl font-medium">
+                      {orderSummaryLabel}
+                    </div>
+                    <Summary summary={order.summary} totalLabel={summaryTotalLabel} />
+                  </div>
+                  <div className="flex-1">
+                    <div className="font-[family-name:var(--order-details-section-title-font-family,var(--font-family-heading))] text-2xl font-medium">
+                      {order.paymentsSummary.title || 'Payment methods'}
+                    </div>
+                    <PaymentsSummary payments={order.paymentsSummary.payments} />
+                  </div>
                 </div>
-                <Summary summary={order.summary} totalLabel={summaryTotalLabel} />
               </div>
             </div>
           </>
@@ -462,6 +484,48 @@ function SummarySkeleton({ placeholderCount = 2 }: { placeholderCount?: number }
   );
 }
 
+function PaymentsSummary({ payments }: { payments: OrderPayment[] }) {
+  return (
+    <div>
+      <div className="space-y-2 pb-3 pt-5">
+        {payments.map((payment, index) => (
+          <div className="flex justify-between" key={index}>
+            <div>
+              <div className="text-sm">{payment.title}</div>
+              {payment.subtitle != null && (
+                <div className="text-xs text-[var(--order-details-section-line-item-subtext,hsl(var(--contrast-400)))]">
+                  {payment.subtitle}
+                </div>
+              )}
+            </div>
+
+            <span className="text-sm">{payment.amount}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PaymentsSummarySkeleton({ placeholderCount = 2 }: { placeholderCount?: number }) {
+  return (
+    <div>
+      <div className="space-y-2 pb-3 pt-5">
+        {Array.from({ length: placeholderCount }).map((_, index) => (
+          <div className="flex justify-between" key={index}>
+            <div>
+              <Skeleton.Text characterCount={6} className="rounded text-sm" />
+              <Skeleton.Text characterCount={12} className="rounded text-xs" />
+            </div>
+
+            <Skeleton.Text characterCount={6} className="rounded text-sm" />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function OrderDetailsSectionSkeleton({
   prevHref,
   placeholderCount = 1,
@@ -494,8 +558,16 @@ function OrderDetailsSectionSkeleton({
           ))}
         </div>
         <div className="order-1 basis-72 pt-8 @3xl:order-2">
-          <Skeleton.Text characterCount={10} className="rounded text-2xl" />
-          <SummarySkeleton placeholderCount={3} />
+          <div className="flex flex-col gap-8">
+            <div className="flex-1">
+              <Skeleton.Text characterCount={10} className="rounded text-2xl" />
+              <SummarySkeleton placeholderCount={3} />
+            </div>
+            <div className="flex-1">
+              <Skeleton.Text characterCount={10} className="rounded text-2xl" />
+              <PaymentsSummarySkeleton placeholderCount={3} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
