@@ -15,7 +15,7 @@ export const getConsentCategoriesFromCookie = (
   consent: ConsentCookie | null,
 ): BigCommerceScriptConsentCategory[] => {
   if (!consent) {
-    return ['ESSENTIAL'];
+    return ['ESSENTIAL', 'TARGETING', 'UNKNOWN'];
   }
 
   const categories: BigCommerceScriptConsentCategory[] = [];
@@ -37,9 +37,9 @@ export const getConsentCategoriesFromCookie = (
 
   categories.push(...enabledCategories);
 
-  const allTruthy = entries.every(([, value]) => value);
+  const anyTruthy = entries.some(([, value]) => value);
 
-  if (allTruthy) {
+  if (anyTruthy) {
     categories.push('UNKNOWN');
   }
 

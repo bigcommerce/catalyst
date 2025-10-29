@@ -19,12 +19,10 @@ import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
 import { StreamableAnalyticsProvider } from '~/components/analytics/streamable-provider';
-import { ConsentManagerDialog } from '~/components/consent-manager/consent-manager-dialog';
-import { CookieBanner } from '~/components/consent-manager/cookie-banner';
+import { ConsentManager } from '~/components/consent-manager';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
 import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
 import { routing } from '~/i18n/routing';
-import { ConsentManagerProvider } from '~/lib/consent-manager';
 import { getConsentCookie } from '~/lib/consent-manager/cookies/server';
 import { getConsentCategoriesFromCookie } from '~/lib/consent-manager/cookies/utils';
 import { getToastNotification } from '~/lib/server-toast';
@@ -34,6 +32,9 @@ const RootLayoutMetadataQuery = graphql(
     query RootLayoutMetadataQuery {
       site {
         settings {
+          privacy {
+            cookieConsentEnabled
+          }
           storeName
           seo {
             pageTitle
@@ -116,6 +117,8 @@ interface Props extends PropsWithChildren {
 export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
 
+  const rootData = await fetchRootLayoutMetadata();
+  const cookieConsentEnabled = rootData.data.site.settings?.privacy?.cookieConsentEnabled;
   const toastNotificationCookieData = await getToastNotification();
 
   if (!routing.locales.includes(locale)) {
@@ -143,7 +146,9 @@ export default async function RootLayout({ params, children }: Props) {
       document: ScriptsQuery,
       fetchOptions: { next: { revalidate, tags: ['scripts'] } },
       variables: {
-        consentCategories,
+        consentCategories: cookieConsentEnabled
+          ? consentCategories
+          : ['ESSENTIAL', 'FUNCTIONAL', 'TARGETING', 'ANALYTICS', 'UNKNOWN'],
       },
     });
 
@@ -164,19 +169,17 @@ export default async function RootLayout({ params, children }: Props) {
       </head>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
-          <ConsentManagerProvider>
+          <ConsentManager cookieConsentEnabled={cookieConsentEnabled}>
             <NuqsAdapter>
               <StreamableAnalyticsProvider data={streamableAnalyticsData} />
               <Providers>
                 {toastNotificationCookieData && (
                   <CookieNotifications {...toastNotificationCookieData} />
                 )}
-                <ConsentManagerDialog />
-                <CookieBanner />
                 {children}
               </Providers>
             </NuqsAdapter>
-          </ConsentManagerProvider>
+          </ConsentManager>
         </NextIntlClientProvider>
         <VercelComponents />
         <ContainerQueryPolyfill />
