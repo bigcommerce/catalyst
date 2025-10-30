@@ -30,6 +30,7 @@ interface ProductDetailProduct {
   >;
   minQuantity?: Streamable<number | null>;
   maxQuantity?: Streamable<number | null>;
+  stockLevelMessage?: Streamable<string | null>;
 }
 
 export interface ProductDetailProps<F extends Field> {
@@ -117,6 +118,17 @@ export function ProductDetail<F extends Field>({
                       {(price) => (
                         <PriceLabel className="my-3 text-xl @xl:text-2xl" price={price ?? ''} />
                       )}
+                    </Stream>
+                  </div>
+                  <div className="group/product-stock-level mb-8 sm:mb-2 md:mb-0">
+                    <Stream fallback={<ProductStockSkeleton />} value={product.stockLevelMessage}>
+                      {(stockLevelMessage) =>
+                        Boolean(stockLevelMessage) && (
+                          <p className="text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
+                            {stockLevelMessage}
+                          </p>
+                        )
+                      }
                     </Stream>
                   </div>
                   <div className="group/product-gallery mb-8 @2xl:hidden">
@@ -230,6 +242,10 @@ function ProductGallerySkeleton() {
 
 function PriceLabelSkeleton() {
   return <Skeleton.Box className="my-5 h-4 w-20 rounded-md" />;
+}
+
+function ProductStockSkeleton() {
+  return <Skeleton.Box className="my-3 h-2 w-20 rounded-md" />;
 }
 
 function RatingSkeleton() {

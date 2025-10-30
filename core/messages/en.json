@@ -159,6 +159,7 @@
         "summaryTotal": "Total",
         "destination": "Destination",
         "destinationWithCount": "Destination {number, number}/{total, number}",
+        "digitalDelivery": "Digital delivery to {email}",
         "subtotal": "Subtotal",
         "shipping": "Shipping",
         "tax": "Tax",
@@ -375,6 +376,16 @@
         "noShippingOptions": "There are no shipping options available for your address"
       }
     },
+    "GiftCertificate": {
+      "giftCertificate": "Gift certificate",
+      "giftCertificateCode": "Gift certificate code",
+      "removeGiftCertificate": "Remove gift certificate",
+      "apply": "Apply",
+      "to": "To",
+      "message": "Message",
+      "invalidGiftCertificate": "Please enter a valid gift certificate code",
+      "cartNotFound": "No cartId cookie found."
+    },
     "Empty": {
       "title": "Your cart is empty.",
       "subtitle": "Add some products to get started.",
@@ -420,6 +431,7 @@
       "decreaseNumber": "Decrease number",
       "thumbnail": "View image number",
       "additionalInformation": "Additional information",
+      "currentStock": "Current stock: {quantity, number}",
       "Submit": {
         "addToCart": "Add to cart",
         "outOfStock": "Out of stock",
@@ -525,6 +537,95 @@
       "placeholder": "Enter your email",
       "description": "Stay up to date with the latest news and offers from our store.",
       "success": "Thank you for your interest! Newsletter feature is coming soon!"
+    },
+    "ConsentManager": {
+      "Common": {
+        "rejectAll": "Reject All",
+        "acceptAll": "Accept All",
+        "customize": "Customize",
+        "save": "Save Settings"
+      },
+      "CookieBanner": {
+        "title": "We value your privacy",
+        "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+      },
+      "Dialog": {
+        "title": "Privacy Settings",
+        "description": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you would like to allow."
+      },
+      "ConsentTypes": {
+        "necessary": {
+          "title": "Strictly Necessary",
+          "description": "These cookies are essential for the website to function properly and cannot be disabled."
+        },
+        "functionality": {
+          "title": "Functionality",
+          "description": "These cookies enable enhanced functionality and personalization of the website."
+        },
+        "marketing": {
+          "title": "Marketing",
+          "description": "These cookies are used to deliver relevant advertisements and track their effectiveness."
+        },
+        "measurement": {
+          "title": "Analytics",
+          "description": "These cookies help us understand how visitors interact with the website and improve its performance."
+        },
+        "experience": {
+          "title": "Experience",
+          "description": "These cookies help us provide a better user experience and test new features."
+        }
+      }
+    }
+  },
+  "GiftCertificates": {
+    "title": "Gift certificates",
+    "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
+    "purchaseLabel": "Shop now",
+    "checkBalanceLabel": "Check balance",
+    "expiresAtLabel": "Valid thru",
+    "CheckBalance": {
+      "title": "Check balance",
+      "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
+      "inputLabel": "Code",
+      "inputPlaceholder": "Enter code",
+      "purchasedDateLabel": "Purchased",
+      "senderLabel": "From",
+      "Errors": {
+        "invalidCode": "The gift certificate code you entered is invalid. Please check the code and try again.",
+        "codeRequired": "Please enter a gift certificate code.",
+        "somethingWentWrong": "Something went wrong. Please try again later."
+      }
+    },
+    "Purchase": {
+      "breadcrumbTitle": "Purchase a gift certificate",
+      "title": "Digital gift certificate",
+      "description": "Explore our gift certificates, perfect for any occasion. Choose the amount and personalize your message.",
+      "successMessage": "Gift certificate has been added to <cartLink> your cart</cartLink>",
+      "missingCart": "Cart not found. Please try again later.",
+      "unknownError": "Unknown error. Please try again later.",
+      "Form": {
+        "amountLabel": "Amount",
+        "customAmountLabel": "Amount (between {minAmount} and {maxAmount})",
+        "selectAmountPlaceholder": "Select an amount",
+        "customAmountPlaceholder": "Enter custom amount",
+        "senderNameLabel": "Your name",
+        "senderEmailLabel": "Your email",
+        "recipientNameLabel": "Recipient's name",
+        "recipientEmailLabel": "Recipient's email",
+        "namePlaceholder": "Enter name",
+        "emailPlaceholder": "Enter email",
+        "messageLabel": "Message",
+        "messagePlaceholder": "Enter your message (optional)",
+        "nonRefundableCheckboxLabel": "I agree that Gift Certificates are non-refundable",
+        "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
+        "ctaLabel": "Add to cart",
+        "Errors": {
+          "amountRequired": "Please select or enter a gift certificate amount.",
+          "amountInvalid": "Please select a valid gift certificate amount.",
+          "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
+          "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
+        }
+      }
     }
   }
 }

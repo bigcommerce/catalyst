@@ -247,6 +247,10 @@ const StreamableProductQuery = graphql(
           warranty
           inventory {
             isInStock
+            aggregated {
+              availableToSell
+              warningLevel
+            }
           }
           availabilityV2 {
             status
@@ -318,3 +322,27 @@ export const getProductPricingAndRelatedProducts = cache(
     return data.site.product;
   },
 );
+
+const InventorySettingsQuery = graphql(`
+  query InventorySettingsQuery {
+    site {
+      settings {
+        inventory {
+          defaultOutOfStockMessage
+          showOutOfStockMessage
+          stockLevelDisplay
+        }
+      }
+    }
+  }
+`);
+
+export const getInventorySettingsQuery = cache(async (customerAccessToken?: string) => {
+  const { data } = await client.fetch({
+    document: InventorySettingsQuery,
+    customerAccessToken,
+    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+  });
+
+  return data.site.settings?.inventory;
+});

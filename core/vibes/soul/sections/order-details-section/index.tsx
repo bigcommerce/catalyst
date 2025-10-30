@@ -65,12 +65,19 @@ interface Destination {
   lineItems: ShipmentLineItem[];
 }
 
+interface EmailDestination {
+  title: string;
+  email: string;
+  lineItems: ShipmentLineItem[];
+}
+
 export interface Order {
   id: string;
   status: string;
   statusColor?: 'success' | 'warning' | 'error' | 'info';
   date: string;
   destinations: Destination[];
+  emailDestinations: EmailDestination[];
   summary: Summary;
 }
 
@@ -152,6 +159,9 @@ export function OrderDetailsSection({
                     methodLabel={shipmentMethodLabel}
                   />
                 ))}
+                {order.emailDestinations.map((destination, index) => (
+                  <EmailDestination destination={destination} key={`email-destination-${index}`} />
+                ))}
               </div>
               <div className="order-1 basis-72 pt-8 @3xl:order-2">
                 <div className="font-[family-name:var(--order-details-section-title-font-family,var(--font-family-heading))] text-2xl font-medium">
@@ -205,6 +215,21 @@ function Shipment({
               </div>
             </div>
           ))}
+        </div>
+        {destination.lineItems.map((lineItem) => (
+          <ShipmentLineItem key={lineItem.id} lineItem={lineItem} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EmailDestination({ destination }: { destination: EmailDestination }) {
+  return (
+    <div className="border-b border-[var(--order-details-section-border,hsl(var(--contrast-100)))] py-8 @container">
+      <div className="space-y-6">
+        <div className="font-[family-name:var(--order-details-section-title-font-family,var(--font-family-heading))] text-2xl font-medium">
+          {destination.title}
         </div>
         {destination.lineItems.map((lineItem) => (
           <ShipmentLineItem key={lineItem.id} lineItem={lineItem} />
