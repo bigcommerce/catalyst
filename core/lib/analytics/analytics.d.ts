@@ -86,4 +86,17 @@ declare namespace Analytics {
       productRemoved: (payload: ProductRemovedPayload) => void;
     }
   }
+
+  export namespace Consent {
+    type ConsentNames = 'necessary' | 'functionality' | 'marketing' | 'measurement';
+    type ConsentValues = Record<ConsentNames, boolean>;
+
+    interface ProviderEvents {
+      consentUpdated: (consent: ConsentValues, metadata: Metadata) => void;
+    }
+
+    export interface Events {
+      consentUpdated: (consent: ConsentValues) => void;
+    }
+  }
 }
