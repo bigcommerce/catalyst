@@ -128,6 +128,7 @@ export default async function RootLayout({ params, children }: Props) {
             <NuqsAdapter>
               <AnalyticsProvider
                 channelId={rootData.data.channel.entityId}
+                isCookieConsentEnabled={isCookieConsentEnabled}
                 settings={rootData.data.site.settings}
               >
                 <Providers>
