@@ -1,8 +1,7 @@
 'use client';
 
-import { Suspense } from 'react';
+import { PropsWithChildren } from 'react';
 
-import { Streamable, useStreamable } from '@/vibes/soul/lib/streamable';
 import { FragmentOf } from '~/client/graphql';
 import { Analytics } from '~/lib/analytics';
 import { GoogleAnalyticsProvider } from '~/lib/analytics/providers/google-analytics';
@@ -37,17 +36,8 @@ const getAnalytics = (
   return null;
 };
 
-export function StreamableAnalyticsProvider({ data }: { data: Streamable<Props> }) {
-  return (
-    <Suspense fallback={null}>
-      <StreamableAnalyticsProviderResolved data={data} />
-    </Suspense>
-  );
-}
-
-function StreamableAnalyticsProviderResolved({ data }: { data: Streamable<Props> }) {
-  const { channelId, settings } = useStreamable(data);
+export function AnalyticsProvider({ channelId, settings, children }: PropsWithChildren<Props>) {
   const analytics = getAnalytics(channelId, settings);
 
-  return <AnalyticsProviderLib analytics={analytics ?? null} />;
+  return <AnalyticsProviderLib analytics={analytics ?? null}>{children}</AnalyticsProviderLib>;
 }

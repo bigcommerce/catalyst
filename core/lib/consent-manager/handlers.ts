@@ -7,7 +7,7 @@ const ok = <T>(data: T | null = null) => ({
   response: null,
 });
 
-export function showConsentBanner() {
+export function showConsentBanner(isCookieConsentEnabled: boolean) {
   let show = true;
   let language = 'en';
 
@@ -21,6 +21,17 @@ export function showConsentBanner() {
     show = !consent;
   } catch {
     show = false;
+  }
+
+  if (!isCookieConsentEnabled) {
+    return ok({
+      showConsentBanner: false,
+      jurisdiction: { code: 'NONE' },
+      translations: {
+        language,
+      },
+      branding: 'none',
+    });
   }
 
   return ok({

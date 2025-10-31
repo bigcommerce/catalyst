@@ -11,7 +11,6 @@ import { cache, PropsWithChildren } from 'react';
 
 import '../../globals.css';
 
-import { Streamable } from '@/vibes/soul/lib/streamable';
 import { fonts } from '~/app/fonts';
 import { CookieNotifications } from '~/app/notifications';
 import { Providers } from '~/app/providers';
@@ -19,17 +18,15 @@ import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { WebAnalyticsFragment } from '~/components/analytics/fragment';
-import { StreamableAnalyticsProvider } from '~/components/analytics/streamable-provider';
-import { ConsentManagerDialog } from '~/components/consent-manager/consent-manager-dialog';
-import { CookieBanner } from '~/components/consent-manager/cookie-banner';
+import { AnalyticsProvider } from '~/components/analytics/provider';
+import { ConsentManager } from '~/components/consent-manager';
+import { ScriptsFragment } from '~/components/consent-manager/scripts-fragment';
 import { ContainerQueryPolyfill } from '~/components/polyfills/container-query';
-import { ScriptManagerScripts, ScriptsFragment } from '~/components/scripts';
+import { scriptsTransformer } from '~/data-transformers/scripts-transformer';
 import { routing } from '~/i18n/routing';
-import { ConsentManagerProvider } from '~/lib/consent-manager';
 import { SiteTheme } from '~/lib/makeswift/components/site-theme';
 import { MakeswiftProvider } from '~/lib/makeswift/provider';
-
-import { getToastNotification } from '../../lib/server-toast';
+import { getToastNotification } from '~/lib/server-toast';
 
 import '~/lib/makeswift/components';
 
@@ -38,6 +35,9 @@ const RootLayoutMetadataQuery = graphql(
     query RootLayoutMetadataQuery {
       site {
         settings {
+          privacy {
+            cookieConsentEnabled
+          }
           storeName
           seo {
             pageTitle
@@ -122,47 +122,36 @@ export default async function RootLayout({ params, children }: Props) {
   // https://next-intl-docs.vercel.app/docs/getting-started/app-router#add-setRequestLocale-to-all-layouts-and-pages
   setRequestLocale(locale);
 
-  const streamableAnalyticsData = Streamable.from(async () => {
-    const { data } = await fetchRootLayoutMetadata();
-
-    return {
-      channelId: data.channel.entityId,
-      settings: data.site.settings,
-    };
-  });
+  const scripts = scriptsTransformer(rootData.data.site.content.scripts);
+  const isCookieConsentEnabled =
+    rootData.data.site.settings?.privacy?.cookieConsentEnabled ?? false;
 
   return (
     <MakeswiftProvider siteVersion={siteVersion}>
       <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
         <head>
           <SiteTheme />
-          <ScriptManagerScripts
-            scripts={rootData.data.site.content.headerScripts}
-            strategy="afterInteractive"
-          />
         </head>
         <body className="flex min-h-screen flex-col">
           <NextIntlClientProvider>
-            <ConsentManagerProvider>
+            <ConsentManager isCookieConsentEnabled={isCookieConsentEnabled} scripts={scripts}>
               <NuqsAdapter>
-                <StreamableAnalyticsProvider data={streamableAnalyticsData} />
-                <Providers>
-                  {toastNotificationCookieData && (
-                    <CookieNotifications {...toastNotificationCookieData} />
-                  )}
-                  <ConsentManagerDialog />
-                  <CookieBanner />
-                  {children}
-                </Providers>
+                <AnalyticsProvider
+                  channelId={rootData.data.channel.entityId}
+                  settings={rootData.data.site.settings}
+                >
+                  <Providers>
+                    {toastNotificationCookieData && (
+                      <CookieNotifications {...toastNotificationCookieData} />
+                    )}
+                    {children}
+                  </Providers>
+                </AnalyticsProvider>
               </NuqsAdapter>
-            </ConsentManagerProvider>
+            </ConsentManager>
           </NextIntlClientProvider>
           <VercelComponents />
           <ContainerQueryPolyfill />
-          <ScriptManagerScripts
-            scripts={rootData.data.site.content.footerScripts}
-            strategy="lazyOnload"
-          />
         </body>
       </html>
     </MakeswiftProvider>
