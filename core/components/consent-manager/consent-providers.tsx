@@ -10,9 +10,14 @@ export type C15tScripts = NonNullable<ComponentProps<typeof ClientSideOptionsPro
 
 interface ConsentManagerProviderProps extends PropsWithChildren {
   scripts: C15tScripts;
+  isCookieConsentEnabled: boolean;
 }
 
-export function ConsentManagerProvider({ children, scripts }: ConsentManagerProviderProps) {
+export function ConsentManagerProvider({
+  children,
+  scripts,
+  isCookieConsentEnabled,
+}: ConsentManagerProviderProps) {
   return (
     <C15TConsentManagerProvider
       options={{
@@ -21,7 +26,7 @@ export function ConsentManagerProvider({ children, scripts }: ConsentManagerProv
 
         // @ts-expect-error endpointHandlers type is not yet exposed by the package
         endpointHandlers: {
-          showConsentBanner,
+          showConsentBanner: () => showConsentBanner(isCookieConsentEnabled),
           setConsent,
           verifyConsent,
         },

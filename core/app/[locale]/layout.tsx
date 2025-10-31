@@ -30,6 +30,9 @@ const RootLayoutMetadataQuery = graphql(
     query RootLayoutMetadataQuery {
       site {
         settings {
+          privacy {
+            cookieConsentEnabled
+          }
           storeName
           seo {
             pageTitle
@@ -114,12 +117,14 @@ export default async function RootLayout({ params, children }: Props) {
   setRequestLocale(locale);
 
   const scripts = scriptsTransformer(rootData.data.site.content.scripts);
+  const isCookieConsentEnabled =
+    rootData.data.site.settings?.privacy?.cookieConsentEnabled ?? false;
 
   return (
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
-          <ConsentManager scripts={scripts}>
+          <ConsentManager isCookieConsentEnabled={isCookieConsentEnabled} scripts={scripts}>
             <NuqsAdapter>
               <AnalyticsProvider
                 channelId={rootData.data.channel.entityId}

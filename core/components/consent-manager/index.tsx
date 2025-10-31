@@ -8,11 +8,12 @@ import { CookieBanner } from './cookie-banner';
 
 interface ConsentManagerProps extends PropsWithChildren {
   scripts: C15tScripts;
+  isCookieConsentEnabled: boolean;
 }
 
-export function ConsentManager({ children, scripts }: ConsentManagerProps) {
+export function ConsentManager({ children, scripts, isCookieConsentEnabled }: ConsentManagerProps) {
   return (
-    <ConsentManagerProvider scripts={scripts}>
+    <ConsentManagerProvider isCookieConsentEnabled={isCookieConsentEnabled} scripts={scripts}>
       <ConsentManagerDialog />
       <CookieBanner />
       {children}
