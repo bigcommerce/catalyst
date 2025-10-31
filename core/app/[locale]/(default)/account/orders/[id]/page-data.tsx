@@ -59,6 +59,28 @@ const CustomerOrderDetails = graphql(
             postalCode
             country
           }
+          payments {
+            edges {
+              node {
+                paymentMethodId
+                paymentMethodName
+                detail {
+                  __typename
+                  ... on CreditCardPaymentInstrument {
+                    brand
+                    last4
+                  }
+                  ... on GiftCertificatePaymentInstrument {
+                    code
+                  }
+                }
+                amount {
+                  value
+                  currencyCode
+                }
+              }
+            }
+          }
           consignments {
             shipping {
               edges {
