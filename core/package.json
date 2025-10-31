@@ -15,6 +15,7 @@
   "dependencies": {
     "@bigcommerce/catalyst-client": "workspace:^",
     "@c15t/nextjs": "^1.7.0",
+    "@c15t/scripts": "^1.0.0",
     "@conform-to/react": "^1.6.1",
     "@conform-to/zod": "^1.6.1",
     "@icons-pack/react-simple-icons": "^11.2.0",

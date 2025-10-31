@@ -119,7 +119,12 @@ export default async function RootLayout({ params, children }: Props) {
     <html className={clsx(fonts.map((f) => f.variable))} lang={locale}>
       <body className="flex min-h-screen flex-col">
         <NextIntlClientProvider>
-          <ConsentManager scripts={scripts}>
+          <ConsentManager
+            gtagConfig={{
+              gaId: rootData.data.site.settings?.webAnalytics?.ga4?.tagId,
+            }}
+            scripts={scripts}
+          >
             <NuqsAdapter>
               <AnalyticsProvider
                 channelId={rootData.data.channel.entityId}

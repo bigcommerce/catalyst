@@ -2,11 +2,8 @@ import { AnalyticsProvider } from '~/lib/analytics/types';
 
 interface GoogleAnalyticsConfig {
   gaId: string;
-  consentModeEnabled?: boolean;
   developerId?: string;
-  dataLayerName?: string;
   debugMode?: boolean;
-  nonce?: string;
 }
 
 export class GoogleAnalyticsProvider implements AnalyticsProvider {
@@ -15,12 +12,7 @@ export class GoogleAnalyticsProvider implements AnalyticsProvider {
   readonly cart = this.getCartEvents();
   readonly navigation = this.getNavigationEvents();
 
-  private readonly dataLayerScriptId = 'data-layer-script';
-  private readonly gtagScriptId = 'gtag-script';
-
   constructor(private readonly config: GoogleAnalyticsConfig) {
-    this.validateConfig();
-
     if (GoogleAnalyticsProvider.#instance) {
       return GoogleAnalyticsProvider.#instance;
     }
@@ -33,58 +25,64 @@ export class GoogleAnalyticsProvider implements AnalyticsProvider {
       throw new Error('Google Analytics is only available in the browser environment');
     }
 
-    this.initializeDataLayer();
-    this.initializeGTM();
+    // Wait for gtag to be available (loaded by c15t)
+    void this.waitForGtag().then(() => {
+      this.configureGA();
+    });
   }
 
-  private validateConfig() {
-    if (!this.config.gaId) {
-      throw new Error('Google Analytics requires a Google Analytics ID');
-    }
+  private async waitForGtag(): Promise<void> {
+    // Wait for gtag to be loaded by c15t
+    return new Promise((resolve) => {
+      // Check if gtag is already available
+      if (typeof window !== 'undefined' && typeof gtag !== 'undefined') {
+        resolve();
 
-    if (!this.config.dataLayerName) {
-      this.config.dataLayerName = 'dataLayer';
-    }
+        return;
+      }
+
+      let resolved = false;
+      let timeout: NodeJS.Timeout;
+
+      // Poll for gtag availability
+      const checkGtag = setInterval(() => {
+        if (typeof gtag !== 'undefined') {
+          clearInterval(checkGtag);
+          clearTimeout(timeout);
+          resolved = true;
+          resolve();
+        }
+      }, 100);
+
+      // Timeout after 10 seconds
+      timeout = setTimeout(() => {
+        if (!resolved) {
+          clearInterval(checkGtag);
+          // eslint-disable-next-line no-console
+          console.warn('gtag did not load within 10 seconds');
+          resolve();
+        }
+      }, 10000);
+    });
   }
 
-  private initializeDataLayer() {
-    const existingScript = document.getElementById(this.dataLayerScriptId);
+  private configureGA() {
+    if (typeof gtag === 'undefined') {
+      // eslint-disable-next-line no-console
+      console.warn('gtag is not available');
 
-    if (existingScript) {
       return;
     }
 
-    const script = document.createElement('script');
-
-    script.id = this.dataLayerScriptId;
-    script.type = 'text/javascript';
-    script.nonce = this.config.nonce;
-    script.innerHTML = `
-      window['${this.config.dataLayerName}'] = window['${this.config.dataLayerName}'] || [];
-      function gtag(){window['${this.config.dataLayerName}'].push(arguments);}
-      gtag('js', new Date());
-
-      ${this.config.developerId ? `gtag('set', 'developer_id.${this.config.developerId}', true)` : ''};
-      gtag('config', '${this.config.gaId}' ${this.config.debugMode ? ",{ 'debug_mode': true }" : ''});
-    `;
-
-    document.body.appendChild(script);
-  }
-
-  private initializeGTM() {
-    const existingScript = document.getElementById(this.gtagScriptId);
-
-    if (existingScript) {
-      return;
+    // Optional: Set developer ID if provided
+    if (this.config.developerId) {
+      gtag('set', `developer_id.${this.config.developerId}`, true);
     }
 
-    const script = document.createElement('script');
-
-    script.id = this.gtagScriptId;
-    script.nonce = this.config.nonce;
-    script.src = `https://www.googletagmanager.com/gtag/js?id=${this.config.gaId}`;
-
-    document.head.appendChild(script);
+    // Optional: Enable debug mode
+    if (this.config.debugMode) {
+      gtag('config', this.config.gaId, { debug_mode: true });
+    }
   }
 
   private getCartEvents() {

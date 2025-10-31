@@ -41,6 +41,9 @@ importers:
       '@c15t/nextjs':
         specifier: ^1.7.0
         version: 1.7.0(@opentelemetry/api@1.9.0)(@opentelemetry/instrumentation@0.203.0(@opentelemetry/api@1.9.0))(@types/react-dom@19.1.6(@types/react@19.1.6))(@types/react@19.1.6)(crossws@0.3.5)(next@15.5.1-canary.4(@babel/core@7.27.4)(@opentelemetry/api@1.9.0)(@playwright/test@1.52.0)(react-dom@19.1.0(react@19.1.0))(react@19.1.0))(react-dom@19.1.0(react@19.1.0))(react@19.1.0)(typeorm@0.3.27(reflect-metadata@0.2.2)(ts-node@10.9.2(@swc/core@1.11.31)(@types/node@22.15.30)(typescript@5.8.3)))(ws@8.18.2)
+      '@c15t/scripts':
+        specifier: ^1.0.0
+        version: 1.0.0
       '@conform-to/react':
         specifier: ^1.6.1
         version: 1.6.1(react@19.1.0)
@@ -1114,6 +1117,9 @@ packages:
     peerDependencies:
       react: ^19.0.0 || ^19.0.0-rc || ^18.0.0 || ^17.0.0 || ^16.8.0
       react-dom: ^19.0.0 || ^19.0.0-rc || ^18.0.0 || ^17.0.0 || ^16.8.0
+
+  '@c15t/scripts@1.0.0':
+    resolution: {integrity: sha512-mMV9BC5HqRvMm1sLzMk3B7XOfaihTfPg1eZr6XJNml5XsKtyrQgbTPHNK5bFH0HBK4jAZYKLGI87qaCJtuQURQ==}
 
   '@c15t/translations@1.7.0':
     resolution: {integrity: sha512-irrJAni2Cei56wHLmGoIoPHoXk/ygXllWs4dBF9LL0D/Ns7bvcBi/CAPCnCD1hw4FnoJ9amPqYtVKQ3sT++JaQ==}
@@ -11439,6 +11445,8 @@ snapshots:
       - typeorm
       - use-sync-external-store
       - ws
+
+  '@c15t/scripts@1.0.0': {}
 
   '@c15t/translations@1.7.0': {}
 

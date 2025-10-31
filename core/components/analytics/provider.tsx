@@ -21,9 +21,6 @@ const getAnalytics = (
   if (settings?.webAnalytics?.ga4?.tagId && channelId) {
     const googleAnalytics = new GoogleAnalyticsProvider({
       gaId: settings.webAnalytics.ga4.tagId,
-      // TODO: Need to implement consent mode
-      // https://github.com/bigcommerce/catalyst/issues/2066
-      consentModeEnabled: false,
       developerId: 'dMjk3Nj',
     });
 
