@@ -1,12 +1,13 @@
 import { AnalyticsProvider } from '~/lib/analytics/types';
 
-interface GoogleAnalyticsConfig {
+export interface GoogleAnalyticsConfig {
   gaId: string;
   consentModeEnabled?: boolean;
   developerId?: string;
   dataLayerName?: string;
   debugMode?: boolean;
   nonce?: string;
+  getConsent?: () => Analytics.Consent.ConsentValues | null;
 }
 
 export class GoogleAnalyticsProvider implements AnalyticsProvider {
@@ -14,6 +15,7 @@ export class GoogleAnalyticsProvider implements AnalyticsProvider {
 
   readonly cart = this.getCartEvents();
   readonly navigation = this.getNavigationEvents();
+  readonly consent = this.getConsentEvents();
 
   private readonly dataLayerScriptId = 'data-layer-script';
   private readonly gtagScriptId = 'gtag-script';
@@ -34,6 +36,7 @@ export class GoogleAnalyticsProvider implements AnalyticsProvider {
     }
 
     this.initializeDataLayer();
+    this.initializeConsent();
     this.initializeGTM();
   }
 
@@ -69,6 +72,35 @@ export class GoogleAnalyticsProvider implements AnalyticsProvider {
     `;
 
     document.body.appendChild(script);
+  }
+
+  private initializeConsent() {
+    if (!this.config.consentModeEnabled || !this.config.getConsent) {
+      return;
+    }
+
+    const consent = this.config.getConsent();
+
+    if (!consent) {
+      // Set default consent to denied if no consent is available
+      gtag('consent', 'default', {
+        ad_storage: 'denied',
+        ad_user_data: 'denied',
+        ad_personalization: 'denied',
+        analytics_storage: 'denied',
+        wait_for_update: 500,
+      });
+
+      return;
+    }
+
+    gtag('consent', 'default', {
+      ad_storage: consent.marketing ? 'granted' : 'denied',
+      ad_user_data: consent.marketing ? 'granted' : 'denied',
+      ad_personalization: consent.marketing ? 'granted' : 'denied',
+      analytics_storage: consent.measurement ? 'granted' : 'denied',
+      wait_for_update: 500,
+    });
   }
 
   private initializeGTM() {
@@ -215,5 +247,18 @@ export class GoogleAnalyticsProvider implements AnalyticsProvider {
         });
       },
     } satisfies Analytics.Navigation.ProviderEvents;
+  }
+
+  private getConsentEvents() {
+    return {
+      consentUpdated: (consent) => {
+        gtag('consent', 'update', {
+          ad_storage: consent.marketing ? 'granted' : 'denied',
+          ad_user_data: consent.marketing ? 'granted' : 'denied',
+          ad_personalization: consent.marketing ? 'granted' : 'denied',
+          analytics_storage: consent.measurement ? 'granted' : 'denied',
+        });
+      },
+    } satisfies Analytics.Consent.ProviderEvents;
   }
 }
