@@ -159,10 +159,19 @@
                 "summaryTotal": "Totaal",
                 "destination": "Bestemming",
                 "destinationWithCount": "Bestemming {number, number}/{total, number}",
+                "digitalDelivery": "Digital delivery to {email}",
                 "subtotal": "Subtotaal",
                 "shipping": "Verzending",
                 "tax": "Belasting",
-                "orderSummary": "Besteloverzicht"
+                "orderSummary": "Besteloverzicht",
+                "paymentMethodsLabel": "{count, plural, =1 {Payment method} other {Payment methods}}",
+                "paymentEndingInLabel": "ending in",
+                "PaymentMethods": {
+                    "creditCard": "Creditcard",
+                    "giftCertificate": "Cadeaubon",
+                    "storeCredit": "Winkeltegoed",
+                    "other": "Overig"
+                }
             }
         },
         "Addresses": {
@@ -319,6 +328,16 @@
                 "noShippingOptions": "Er zijn geen verzendopties beschikbaar voor je adres"
             }
         },
+        "GiftCertificate": {
+            "giftCertificate": "Cadeaubon",
+            "giftCertificateCode": "Code cadeaubon",
+            "removeGiftCertificate": "Remove gift certificate",
+            "apply": "Toepassen",
+            "to": "Naar",
+            "message": "Bericht",
+            "invalidGiftCertificate": "Please enter a valid gift certificate code",
+            "cartNotFound": "Geen cartId-cookie gevonden."
+        },
         "Empty": {
             "title": "Uw winkelmandje is leeg.",
             "subtitle": "Voeg producten toe om te beginnen.",
@@ -470,6 +489,95 @@
             "placeholder": "Voer uw e-mail in",
             "description": "Blijf op de hoogte van het laatste nieuws en aanbiedingen van onze winkel.",
             "success": "Bedankt voor je interesse! De nieuwsbrieffunctie komt binnenkort!"
+        },
+        "ConsentManager": {
+            "Common": {
+                "rejectAll": "Reject All",
+                "acceptAll": "Accept All",
+                "customize": "Aanpassen",
+                "save": "Instellingen opslaan"
+            },
+            "CookieBanner": {
+                "title": "We value your privacy",
+                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+            },
+            "Dialog": {
+                "title": "Privacy Settings",
+                "description": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you would like to allow."
+            },
+            "ConsentTypes": {
+                "necessary": {
+                    "title": "Strictly Necessary",
+                    "description": "These cookies are essential for the website to function properly and cannot be disabled."
+                },
+                "functionality": {
+                    "title": "Functionality",
+                    "description": "These cookies enable enhanced functionality and personalization of the website."
+                },
+                "marketing": {
+                    "title": "Marketing",
+                    "description": "These cookies are used to deliver relevant advertisements and track their effectiveness."
+                },
+                "measurement": {
+                    "title": "Analyses",
+                    "description": "These cookies help us understand how visitors interact with the website and improve its performance."
+                },
+                "experience": {
+                    "title": "Ervaring",
+                    "description": "These cookies help us provide a better user experience and test new features."
+                }
+            }
+        }
+    },
+    "GiftCertificates": {
+        "title": "Cadeaubonnen",
+        "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
+        "purchaseLabel": "Nu winkelen",
+        "checkBalanceLabel": "Check balance",
+        "expiresAtLabel": "Valid thru",
+        "CheckBalance": {
+            "title": "Check balance",
+            "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
+            "inputLabel": "Code",
+            "inputPlaceholder": "Code invoeren",
+            "purchasedDateLabel": "Gekocht",
+            "senderLabel": "Van",
+            "Errors": {
+                "invalidCode": "The gift certificate code you entered is invalid. Please check the code and try again.",
+                "codeRequired": "Voer een cadeauboncode in.",
+                "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+            }
+        },
+        "Purchase": {
+            "breadcrumbTitle": "Purchase a gift certificate",
+            "title": "Digital gift certificate",
+            "description": "Explore our gift certificates, perfect for any occasion. Choose the amount and personalize your message.",
+            "successMessage": "Gift certificate has been added to <cartLink> your cart</cartLink>",
+            "missingCart": "Winkelmandje niet gevonden. Probeer het later opnieuw.",
+            "unknownError": "Onbekende fout. Probeer het later opnieuw.",
+            "Form": {
+                "amountLabel": "Bedrag",
+                "customAmountLabel": "Amount (between {minAmount} and {maxAmount})",
+                "selectAmountPlaceholder": "Select an amount",
+                "customAmountPlaceholder": "Enter custom amount",
+                "senderNameLabel": "Your name",
+                "senderEmailLabel": "Your email",
+                "recipientNameLabel": "Recipient's name",
+                "recipientEmailLabel": "Recipient's email",
+                "namePlaceholder": "Enter name",
+                "emailPlaceholder": "Voer het e-mailadres in",
+                "messageLabel": "Bericht",
+                "messagePlaceholder": "Enter your message (optional)",
+                "nonRefundableCheckboxLabel": "I agree that Gift Certificates are non-refundable",
+                "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
+                "ctaLabel": "Toevoegen aan winkelmandje",
+                "Errors": {
+                    "amountRequired": "Please select or enter a gift certificate amount.",
+                    "amountInvalid": "Please select a valid gift certificate amount.",
+                    "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
+                    "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
+                }
+            }
         }
     }
 }
