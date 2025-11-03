@@ -159,10 +159,19 @@
                 "summaryTotal": "Totalbeløp",
                 "destination": "Mål",
                 "destinationWithCount": "Destinasjon {number, number}/{total, number}",
+                "digitalDelivery": "Digital delivery to {email}",
                 "subtotal": "Delsum",
                 "shipping": "Frakt",
                 "tax": "Avgift",
-                "orderSummary": "Bestillingssammendrag"
+                "orderSummary": "Bestillingssammendrag",
+                "paymentMethodsLabel": "{count, plural, =1 {Payment method} other {Payment methods}}",
+                "paymentEndingInLabel": "ending in",
+                "PaymentMethods": {
+                    "creditCard": "Kredittkort",
+                    "giftCertificate": "Gavekort",
+                    "storeCredit": "Butikkreditt",
+                    "other": "Annet"
+                }
             }
         },
         "Addresses": {
@@ -319,6 +328,16 @@
                 "noShippingOptions": "Det finnes ingen tilgjengelige forsendelsesalternativer for adressen din"
             }
         },
+        "GiftCertificate": {
+            "giftCertificate": "Gavekort",
+            "giftCertificateCode": "Gavekortkode",
+            "removeGiftCertificate": "Remove gift certificate",
+            "apply": "Bruk",
+            "to": "Til",
+            "message": "Melding",
+            "invalidGiftCertificate": "Please enter a valid gift certificate code",
+            "cartNotFound": "Ingen cartId-informasjonskapsel ble funnet."
+        },
         "Empty": {
             "title": "Handlekurven din er tom.",
             "subtitle": "Legg til noen produkter for å komme i gang.",
@@ -470,6 +489,95 @@
             "placeholder": "Skriv inn epostadressen din",
             "description": "Hold deg oppdatert med de siste nyhetene og tilbudene fra butikken vår.",
             "success": "Takk for interessen! Nyhetsbrevfunksjonen kommer snart!"
+        },
+        "ConsentManager": {
+            "Common": {
+                "rejectAll": "Reject All",
+                "acceptAll": "Accept All",
+                "customize": "Tilpass",
+                "save": "Lagre innstillinger"
+            },
+            "CookieBanner": {
+                "title": "We value your privacy",
+                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+            },
+            "Dialog": {
+                "title": "Privacy Settings",
+                "description": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you would like to allow."
+            },
+            "ConsentTypes": {
+                "necessary": {
+                    "title": "Strictly Necessary",
+                    "description": "These cookies are essential for the website to function properly and cannot be disabled."
+                },
+                "functionality": {
+                    "title": "Functionality",
+                    "description": "These cookies enable enhanced functionality and personalization of the website."
+                },
+                "marketing": {
+                    "title": "Markedsføring",
+                    "description": "These cookies are used to deliver relevant advertisements and track their effectiveness."
+                },
+                "measurement": {
+                    "title": "Analyse",
+                    "description": "These cookies help us understand how visitors interact with the website and improve its performance."
+                },
+                "experience": {
+                    "title": "Løsning",
+                    "description": "These cookies help us provide a better user experience and test new features."
+                }
+            }
+        }
+    },
+    "GiftCertificates": {
+        "title": "Gavekort",
+        "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
+        "purchaseLabel": "Kjøp nå",
+        "checkBalanceLabel": "Check balance",
+        "expiresAtLabel": "Valid thru",
+        "CheckBalance": {
+            "title": "Check balance",
+            "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
+            "inputLabel": "Kode",
+            "inputPlaceholder": "Skriv inn kode",
+            "purchasedDateLabel": "Kjøpt",
+            "senderLabel": "Fra",
+            "Errors": {
+                "invalidCode": "The gift certificate code you entered is invalid. Please check the code and try again.",
+                "codeRequired": "Vennligst skriv inn en gavekortkode.",
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
+            }
+        },
+        "Purchase": {
+            "breadcrumbTitle": "Purchase a gift certificate",
+            "title": "Digital gift certificate",
+            "description": "Explore our gift certificates, perfect for any occasion. Choose the amount and personalize your message.",
+            "successMessage": "Gift certificate has been added to <cartLink> your cart</cartLink>",
+            "missingCart": "Handlekurv ikke funnet. Prøv på nytt senere.",
+            "unknownError": "Ukjent feil. Prøv på nytt senere.",
+            "Form": {
+                "amountLabel": "Beløp",
+                "customAmountLabel": "Amount (between {minAmount} and {maxAmount})",
+                "selectAmountPlaceholder": "Select an amount",
+                "customAmountPlaceholder": "Enter custom amount",
+                "senderNameLabel": "Your name",
+                "senderEmailLabel": "Your email",
+                "recipientNameLabel": "Recipient's name",
+                "recipientEmailLabel": "Recipient's email",
+                "namePlaceholder": "Enter name",
+                "emailPlaceholder": "Skriv inn e-post",
+                "messageLabel": "Melding",
+                "messagePlaceholder": "Enter your message (optional)",
+                "nonRefundableCheckboxLabel": "I agree that Gift Certificates are non-refundable",
+                "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
+                "ctaLabel": "Legg i handlekurv",
+                "Errors": {
+                    "amountRequired": "Please select or enter a gift certificate amount.",
+                    "amountInvalid": "Please select a valid gift certificate amount.",
+                    "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
+                    "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
+                }
+            }
         }
     }
 }

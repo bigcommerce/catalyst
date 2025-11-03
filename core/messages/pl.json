@@ -159,10 +159,19 @@
                 "summaryTotal": "Razem",
                 "destination": "Miejsce docelowe",
                 "destinationWithCount": "Miejsce docelowe {number, number}/{total, number}",
+                "digitalDelivery": "Digital delivery to {email}",
                 "subtotal": "Suma cząstkowa",
                 "shipping": "Wysyłka",
                 "tax": "Podatek",
-                "orderSummary": "Podsumowanie zamówienia"
+                "orderSummary": "Podsumowanie zamówienia",
+                "paymentMethodsLabel": "{count, plural, =1 {Payment method} other {Payment methods}}",
+                "paymentEndingInLabel": "ending in",
+                "PaymentMethods": {
+                    "creditCard": "Karta kredytowa",
+                    "giftCertificate": "Bon podarunkowy",
+                    "storeCredit": "Kredyt sklepowy",
+                    "other": "Inne"
+                }
             }
         },
         "Addresses": {
@@ -319,6 +328,16 @@
                 "noShippingOptions": "Brak dostępnych opcji wysyłki dla Państwa adresu"
             }
         },
+        "GiftCertificate": {
+            "giftCertificate": "Bon podarunkowy",
+            "giftCertificateCode": "Kod bonu upominkowego",
+            "removeGiftCertificate": "Remove gift certificate",
+            "apply": "Zgłoś się na",
+            "to": "Do",
+            "message": "Wiadomość",
+            "invalidGiftCertificate": "Please enter a valid gift certificate code",
+            "cartNotFound": "Nie znaleziono pliku cookie cartId."
+        },
         "Empty": {
             "title": "Twój koszyk jest pusty.",
             "subtitle": "Dodaj kilka produktów, aby rozpocząć.",
@@ -470,6 +489,95 @@
             "placeholder": "Wpisz swój adres e-mail",
             "description": "Bądź na bieżąco z najnowszymi informacjami i ofertami naszego sklepu.",
             "success": "Dziękujemy za Państwa zainteresowanie! Funkcja newslettera wkrótce będzie dostępna!"
+        },
+        "ConsentManager": {
+            "Common": {
+                "rejectAll": "Reject All",
+                "acceptAll": "Accept All",
+                "customize": "Dostosuj",
+                "save": "Zapisz ustawienia"
+            },
+            "CookieBanner": {
+                "title": "We value your privacy",
+                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+            },
+            "Dialog": {
+                "title": "Privacy Settings",
+                "description": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you would like to allow."
+            },
+            "ConsentTypes": {
+                "necessary": {
+                    "title": "Strictly Necessary",
+                    "description": "These cookies are essential for the website to function properly and cannot be disabled."
+                },
+                "functionality": {
+                    "title": "Functionality",
+                    "description": "These cookies enable enhanced functionality and personalization of the website."
+                },
+                "marketing": {
+                    "title": "Marketing",
+                    "description": "These cookies are used to deliver relevant advertisements and track their effectiveness."
+                },
+                "measurement": {
+                    "title": "Analityka",
+                    "description": "These cookies help us understand how visitors interact with the website and improve its performance."
+                },
+                "experience": {
+                    "title": "Doświadczenie",
+                    "description": "These cookies help us provide a better user experience and test new features."
+                }
+            }
+        }
+    },
+    "GiftCertificates": {
+        "title": "Bony upominkowe",
+        "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
+        "purchaseLabel": "Kup teraz",
+        "checkBalanceLabel": "Check balance",
+        "expiresAtLabel": "Valid thru",
+        "CheckBalance": {
+            "title": "Check balance",
+            "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
+            "inputLabel": "Kod",
+            "inputPlaceholder": "Wprowadź kod",
+            "purchasedDateLabel": "Zakupione",
+            "senderLabel": "Ze strony",
+            "Errors": {
+                "invalidCode": "The gift certificate code you entered is invalid. Please check the code and try again.",
+                "codeRequired": "Wpisz kod bonu upominkowego.",
+                "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
+            }
+        },
+        "Purchase": {
+            "breadcrumbTitle": "Purchase a gift certificate",
+            "title": "Digital gift certificate",
+            "description": "Explore our gift certificates, perfect for any occasion. Choose the amount and personalize your message.",
+            "successMessage": "Gift certificate has been added to <cartLink> your cart</cartLink>",
+            "missingCart": "Nie znaleziono koszyka. Spróbuj ponownie później.",
+            "unknownError": "Nieznany błąd. Spróbuj ponownie później.",
+            "Form": {
+                "amountLabel": "Kwota",
+                "customAmountLabel": "Amount (between {minAmount} and {maxAmount})",
+                "selectAmountPlaceholder": "Select an amount",
+                "customAmountPlaceholder": "Enter custom amount",
+                "senderNameLabel": "Your name",
+                "senderEmailLabel": "Your email",
+                "recipientNameLabel": "Recipient's name",
+                "recipientEmailLabel": "Recipient's email",
+                "namePlaceholder": "Enter name",
+                "emailPlaceholder": "Wprowadź adres e-mail",
+                "messageLabel": "Wiadomość",
+                "messagePlaceholder": "Enter your message (optional)",
+                "nonRefundableCheckboxLabel": "I agree that Gift Certificates are non-refundable",
+                "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
+                "ctaLabel": "Dodaj do koszyka",
+                "Errors": {
+                    "amountRequired": "Please select or enter a gift certificate amount.",
+                    "amountInvalid": "Please select a valid gift certificate amount.",
+                    "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
+                    "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
+                }
+            }
         }
     }
 }
