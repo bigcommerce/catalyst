@@ -8,7 +8,12 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
 
-import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
+import {
+  BackorderMessages,
+  OrderQuantitiesData,
+  ProductDetailForm,
+  ProductDetailFormAction,
+} from './product-detail-form';
 import { Field } from './schema';
 
 interface ProductDetailProduct {
@@ -31,6 +36,11 @@ interface ProductDetailProduct {
   minQuantity?: Streamable<number | null>;
   maxQuantity?: Streamable<number | null>;
   stockLevelMessage?: Streamable<string | null>;
+  backorderAvailabilityPrompt?: Streamable<string | null>;
+  availableOnHand?: Streamable<number>;
+  availableForBackorder?: Streamable<number>;
+  unlimitedBackorder: Streamable<boolean>;
+  backorderMessage?: Streamable<string | null>;
 }
 
 export interface ProductDetailProps<F extends Field> {
@@ -38,6 +48,10 @@ export interface ProductDetailProps<F extends Field> {
   product: Streamable<ProductDetailProduct | null>;
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
+  showQuantityOnBackorder: Streamable<boolean>;
+  getBackorderMessages: (
+    orderQuantitiesData: OrderQuantitiesData,
+  ) => Promise<BackorderMessages | undefined>;
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;
@@ -69,6 +83,8 @@ export function ProductDetail<F extends Field>({
   product: streamableProduct,
   action,
   fields: streamableFields,
+  getBackorderMessages,
+  showQuantityOnBackorder: streamableShowQuantityOnBackorder,
   breadcrumbs,
   quantityLabel,
   incrementLabel,
@@ -120,13 +136,23 @@ export function ProductDetail<F extends Field>({
                       )}
                     </Stream>
                   </div>
-                  <div className="group/product-stock-level mb-8 sm:mb-2 md:mb-0">
+                  <div className="group/product-stock-level flex flex-wrap justify-start gap-x-6 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
                     <Stream fallback={<ProductStockSkeleton />} value={product.stockLevelMessage}>
                       {(stockLevelMessage) =>
                         Boolean(stockLevelMessage) && (
-                          <p className="text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
-                            {stockLevelMessage}
-                          </p>
+                          <div className="flex-none whitespace-nowrap">{stockLevelMessage}</div>
+                        )
+                      }
+                    </Stream>
+                    <Stream
+                      fallback={<ProductStockSkeleton />}
+                      value={product.backorderAvailabilityPrompt}
+                    >
+                      {(backorderAvailabilityPrompt) =>
+                        Boolean(backorderAvailabilityPrompt) && (
+                          <div className="flex-none whitespace-nowrap">
+                            {backorderAvailabilityPrompt}
+                          </div>
                         )
                       }
                     </Stream>
@@ -158,23 +184,49 @@ export function ProductDetail<F extends Field>({
                         streamableCtaDisabled,
                         product.minQuantity,
                         product.maxQuantity,
+                        product.backorderMessage,
+                        streamableShowQuantityOnBackorder,
+                        product.availableOnHand,
+                        product.availableForBackorder,
+                        product.unlimitedBackorder,
                       ])}
                     >
-                      {([fields, ctaLabel, ctaDisabled, minQuantity, maxQuantity]) => (
+                      {([
+                        fields,
+                        ctaLabel,
+                        ctaDisabled,
+                        minQuantity,
+                        maxQuantity,
+                        backorderMessage,
+                        showQuantityOnBackorder,
+                        availableOnHand,
+                        availableForBackorder,
+                        unlimitedBackorder,
+                      ]) => (
                         <ProductDetailForm
                           action={action}
                           additionalActions={additionalActions}
+                          availableForBackorder={availableForBackorder}
+                          availableOnHand={availableOnHand}
+                          backorderMessage={backorderMessage ?? undefined}
                           ctaDisabled={ctaDisabled ?? undefined}
                           ctaLabel={ctaLabel ?? undefined}
                           decrementLabel={decrementLabel}
                           emptySelectPlaceholder={emptySelectPlaceholder}
                           fields={fields}
+                          getBackorderMessages={
+                            showQuantityOnBackorder || backorderMessage
+                              ? getBackorderMessages
+                              : undefined
+                          }
                           incrementLabel={incrementLabel}
                           maxQuantity={maxQuantity ?? undefined}
                           minQuantity={minQuantity ?? undefined}
                           prefetch={prefetch}
                           productId={product.id}
                           quantityLabel={quantityLabel}
+                          showQuantityOnBackorder={showQuantityOnBackorder}
+                          unlimitedBackorder={unlimitedBackorder}
                         />
                       )}
                     </Stream>

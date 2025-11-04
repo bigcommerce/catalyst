@@ -250,6 +250,9 @@ const StreamableProductQuery = graphql(
             aggregated {
               availableToSell
               warningLevel
+              availableOnHand
+              availableForBackorder
+              unlimitedBackorder
             }
           }
           availabilityV2 {
@@ -331,6 +334,10 @@ const InventorySettingsQuery = graphql(`
           defaultOutOfStockMessage
           showOutOfStockMessage
           stockLevelDisplay
+          showBackorderAvailabilityPrompt
+          backorderAvailabilityPrompt
+          showQuantityOnBackorder
+          showBackorderMessage
         }
       }
     }
