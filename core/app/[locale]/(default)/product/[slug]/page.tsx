@@ -14,6 +14,7 @@ import { productOptionsTransformer } from '~/data-transformers/product-options-t
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { addToCart } from './_actions/add-to-cart';
+import { getBackorderMessages } from './_actions/get-backorder-messages';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
@@ -204,7 +205,14 @@ export default async function Product({ params, searchParams }: Props) {
       return null;
     }
 
-    const { showOutOfStockMessage, stockLevelDisplay, defaultOutOfStockMessage } = inventorySetting;
+    const {
+      showOutOfStockMessage,
+      stockLevelDisplay,
+      defaultOutOfStockMessage,
+      showBackorderAvailabilityPrompt,
+      showBackorderMessage,
+      showQuantityOnBackorder,
+    } = inventorySetting;
 
     const product = await streamableProduct;
 
@@ -216,26 +224,135 @@ export default async function Product({ params, searchParams }: Props) {
       return null;
     }
 
-    const { availableToSell, warningLevel } = product.inventory.aggregated ?? {};
+    const { availableToSell, warningLevel, availableOnHand } = product.inventory.aggregated ?? {};
 
-    // availableToSell can be 0 while the product is in stock if backorderLimit is UNLIMITED
-    if (!availableToSell) {
-      return null;
-    }
-
-    if (stockLevelDisplay === 'SHOW_WHEN_LOW') {
-      if (!warningLevel) {
+    // if no backorder info is to be displayed, then availableToSell is the stock quantity to be used
+    if (!showBackorderAvailabilityPrompt && !showBackorderMessage && !showQuantityOnBackorder) {
+      // availableToSell can be 0 or undefined while the product is in stock if backorder is UNLIMITED
+      if (!availableToSell) {
         return null;
       }
 
-      if (availableToSell && availableToSell > warningLevel) {
-        return null;
+      if (stockLevelDisplay === 'SHOW_WHEN_LOW') {
+        if (!warningLevel) {
+          return null;
+        }
+
+        if (availableToSell && availableToSell > warningLevel) {
+          return null;
+        }
       }
+
+      return t('ProductDetails.currentStock', {
+        quantity: availableToSell,
+      });
     }
 
     return t('ProductDetails.currentStock', {
-      quantity: availableToSell,
+      quantity: availableOnHand ?? 0,
     });
+  });
+
+  const streamableAvailabilityPrompt = Streamable.from(async () => {
+    const inventorySetting = await getInventorySettingsQuery(customerAccessToken);
+
+    if (!inventorySetting) {
+      return null;
+    }
+
+    const { showBackorderAvailabilityPrompt, backorderAvailabilityPrompt } = inventorySetting;
+
+    if (!showBackorderAvailabilityPrompt) {
+      return null;
+    }
+
+    const product = await streamableProduct;
+
+    if (!product.inventory.isInStock) {
+      return null;
+    }
+
+    const { availableForBackorder, unlimitedBackorder } = product.inventory.aggregated ?? {};
+
+    if (!availableForBackorder && !unlimitedBackorder) {
+      return null;
+    }
+
+    return backorderAvailabilityPrompt;
+  });
+
+  const streamableAvailableOnHand = Streamable.from(async () => {
+    const product = await streamableProduct;
+
+    return product.inventory.aggregated?.availableOnHand ?? 0;
+  });
+
+  const streamableAvailableForBackorder = Streamable.from(async () => {
+    const product = await streamableProduct;
+
+    return product.inventory.aggregated?.availableForBackorder ?? 0;
+  });
+
+  const streamableUnlimitedBackorder = Streamable.from(async () => {
+    const product = await streamableProduct;
+
+    return !!product.inventory.aggregated?.unlimitedBackorder;
+  });
+
+  const streamableShowQuantityOnBackorder = Streamable.from(async () => {
+    const inventorySetting = await getInventorySettingsQuery(customerAccessToken);
+
+    if (!inventorySetting) {
+      return false;
+    }
+
+    const backorderableQuantity = await streamableAvailableForBackorder;
+    const unlimitedBackorder = await streamableUnlimitedBackorder;
+
+    if (backorderableQuantity === 0 && !unlimitedBackorder) {
+      return false;
+    }
+
+    return inventorySetting.showQuantityOnBackorder;
+  });
+
+  const streamableBackorderMessage = Streamable.from(async () => {
+    const inventorySetting = await getInventorySettingsQuery(customerAccessToken);
+
+    if (!inventorySetting) {
+      return null;
+    }
+
+    const { showBackorderMessage } = inventorySetting;
+
+    if (!showBackorderMessage) {
+      return null;
+    }
+
+    const product = await streamableProduct;
+
+    const { availableForBackorder, unlimitedBackorder } = product.inventory.aggregated ?? {};
+
+    if (availableForBackorder === 0 && !unlimitedBackorder) {
+      return null;
+    }
+
+    if (!product.variants.edges || product.variants.edges.length === 0) {
+      return null;
+    }
+
+    // Currently, supporting backorder messages for simple products only
+    if (product.variants.edges.length > 1) {
+      return null;
+    }
+
+    if (!product.variants.edges[0]?.node?.inventory?.byLocation?.edges) {
+      return null;
+    }
+
+    return (
+      product.variants.edges[0].node.inventory.byLocation.edges[0]?.node.backorderMessage || null
+    );
   });
 
   const streameableAccordions = Streamable.from(async () => {
@@ -355,6 +472,7 @@ export default async function Product({ params, searchParams }: Props) {
           decrementLabel={t('ProductDetails.decreaseQuantity')}
           emptySelectPlaceholder={t('ProductDetails.emptySelectPlaceholder')}
           fields={productOptionsTransformer(baseProduct.productOptions)}
+          getBackorderMessages={getBackorderMessages}
           incrementLabel={t('ProductDetails.increaseQuantity')}
           prefetch={true}
           product={{
@@ -370,8 +488,14 @@ export default async function Product({ params, searchParams }: Props) {
             minQuantity: streamableMinQuantity,
             maxQuantity: streamableMaxQuantity,
             stockLevelMessage: streamableStockLevelMessage,
+            availableOnHand: streamableAvailableOnHand,
+            availableForBackorder: streamableAvailableForBackorder,
+            unlimitedBackorder: streamableUnlimitedBackorder,
+            backorderAvailabilityPrompt: streamableAvailabilityPrompt,
+            backorderMessage: streamableBackorderMessage,
           }}
           quantityLabel={t('ProductDetails.quantity')}
+          showQuantityOnBackorder={streamableShowQuantityOnBackorder}
           thumbnailLabel={t('ProductDetails.thumbnail')}
         />
       </ProductAnalyticsProvider>
