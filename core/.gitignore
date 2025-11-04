@@ -54,3 +54,6 @@ build-config.json
 # OpenNext
 .open-next
 .wrangler
+
+# Sentry Config File
+.env.sentry-build-plugin

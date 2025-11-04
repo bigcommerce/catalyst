@@ -119,5 +119,27 @@ export default async (): Promise<NextConfig> => {
     nextConfig = withBundleAnalyzer(nextConfig);
   }
 
+  if (process.env.SENTRY_AUTH_TOKEN) {
+    const { withSentryConfig } = await import('@sentry/nextjs');
+
+    nextConfig = withSentryConfig(
+      {
+        ...nextConfig,
+        experimental: {
+          ...nextConfig.experimental,
+          instrumentationHook: true,
+        },
+      },
+      {
+        org: process.env.SENTRY_ORGANIZATION,
+        project: process.env.SENTRY_PROJECT,
+        silent: !process.env.CI,
+        widenClientFileUpload: true,
+        disableLogger: true,
+        automaticVercelMonitors: false,
+      },
+    );
+  }
+
   return nextConfig;
 };
