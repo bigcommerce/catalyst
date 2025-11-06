@@ -103,7 +103,7 @@ export function ProductGallery({
                   }[fit],
                 )}
                 fill
-                priority={idx === 0}
+                preload={idx === 0}
                 sizes="(min-width: 42rem) 50vw, 100vw"
                 src={image.src}
               />

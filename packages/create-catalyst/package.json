@@ -15,7 +15,7 @@
     "build": "tsup"
   },
   "engines": {
-    "node": "^20.0.0 || ^22.0.0"
+    "node": "^20.0.0 || ^22.0.0 || ^24.0.0"
   },
   "dependencies": {
     "@commander-js/extra-typings": "^14.0.0",
@@ -51,7 +51,7 @@
     "@types/fs-extra": "^11.0.4",
     "@types/jest": "^29.5.14",
     "@types/lodash.kebabcase": "^4.1.9",
-    "@types/node": "^22.15.30",
+    "@types/node": "^24.10.00",
     "@types/prompts": "^2.4.9",
     "@types/semver": "^7.7.0",
     "eslint": "^8.57.1",

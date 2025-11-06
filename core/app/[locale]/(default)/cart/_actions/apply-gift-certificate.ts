@@ -47,7 +47,7 @@ export const applyGiftCertificate = async ({ checkoutEntityId, giftCertificateCo
 
   const checkout = response.data.checkout.applyCheckoutGiftCertificate?.checkout;
 
-  revalidateTag(TAGS.checkout);
+  revalidateTag(TAGS.checkout, 'max');
 
   return checkout;
 };
