@@ -12,6 +12,8 @@ import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
 
+const trailingSlashDisabled = process.env.TRAILING_SLASH === 'false';
+
 const GetRouteQuery = graphql(`
   query GetRouteQuery($path: String!) {
     site {
@@ -223,6 +225,21 @@ const clearLocaleFromPath = (path: string, locale: string) => {
   return path;
 };
 
+function normalizeForCompare(url: URL): string {
+  if (trailingSlashDisabled && url.pathname !== '/' && url.pathname.endsWith('/')) {
+    return `${url.pathname.replace(/\/+$/, '')}${url.search}`;
+  }
+
+  if (!trailingSlashDisabled && !url.pathname.endsWith('/')) {
+    return `${url.pathname}/${url.search}`;
+  }
+
+  return `${url.pathname}${url.search}`;
+}
+
+const sameInternalUrl = (a: URL, b: URL) =>
+  a.origin === b.origin && normalizeForCompare(a) === normalizeForCompare(b);
+
 const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
   const locale = request.headers.get('x-bc-locale') ?? '';
   const channelId = request.headers.get('x-bc-channel-id') ?? '';
@@ -269,6 +286,7 @@ const getRouteInfo = async (request: NextRequest, event: NextFetchEvent) => {
 };
 
 export const withRoutes: MiddlewareFactory = () => {
+  // eslint-disable-next-line complexity
   return async (request, event) => {
     const locale = request.headers.get('x-bc-locale') ?? '';
 
@@ -303,6 +321,10 @@ export const withRoutes: MiddlewareFactory = () => {
           // For dynamic redirects, assume an internal redirect and construct the URL from the path
           const redirectUrl = new URL(route.redirect.to.path + searchParams, request.url);
 
+          if (sameInternalUrl(request.nextUrl, redirectUrl)) {
+            break;
+          }
+
           return NextResponse.redirect(redirectUrl, redirectConfig);
         }
 
@@ -314,6 +336,10 @@ export const withRoutes: MiddlewareFactory = () => {
 
           if (redirectUrl.origin === request.nextUrl.origin) {
             redirectUrl.search = searchParams;
+
+            if (sameInternalUrl(request.nextUrl, redirectUrl)) {
+              break;
+            }
           }
 
           return NextResponse.redirect(redirectUrl, redirectConfig);
