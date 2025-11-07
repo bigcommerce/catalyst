@@ -33,22 +33,22 @@ const config = {
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
     {
-      pattern: /^bottom-\[.*\]$/,
+      pattern: /^bottom-\[.+\]$/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
     {
-      pattern: /^bg-\[.*\]$/,
+      pattern: /^bg-\[.+\]$/,
     },
     {
-      pattern: /^text-\[.*\]$/,
+      pattern: /^text-\[.+\]$/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
     {
-      pattern: /^right-\[.*\]$/,
+      pattern: /^right-\[.+\]$/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
     {
-      pattern: /^left-\[.*\]$/,
+      pattern: /^left-\[.+\]$/,
       variants: ['sm', 'md', 'lg', 'xl', '2xl'],
     },
   ],

@@ -1,7 +1,14 @@
+'use client';
+
+import { Plus } from 'lucide-react';
+import { useState } from 'react';
+
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/cursor-pagination';
 import { Rating } from '@/vibes/soul/primitives/rating';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
+
+import { ReviewForm, ReviewFormData } from './review-form';
 
 interface Review {
   id: string;
@@ -12,6 +19,7 @@ interface Review {
 }
 
 interface Props {
+  productId: number;
   reviews: Streamable<Review[]>;
   averageRating: Streamable<number>;
   totalCount?: Streamable<number>;
@@ -20,9 +28,28 @@ interface Props {
   previousLabel?: Streamable<string>;
   emptyStateMessage?: string;
   reviewsLabel?: string;
+  writeReviewLabel?: string;
+  requireEmail?: boolean;
+  formLabels: {
+    title: string;
+    ratingLabel: string;
+    titleLabel: string;
+    titlePlaceholder: string;
+    reviewLabel: string;
+    reviewPlaceholder: string;
+    nameLabel: string;
+    namePlaceholder: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    submitButton: string;
+    submittingButton: string;
+    cancelButton: string;
+  };
+  onSubmitReview: (data: ReviewFormData) => Promise<{ status: 'success' | 'error'; message: string }>;
 }
 
-export function Reviews({
+export function ReviewsWithForm({
+  productId,
   reviews: streamableReviews,
   averageRating: streamableAverageRating,
   totalCount: streamableTotalCount,
@@ -31,14 +58,17 @@ export function Reviews({
   previousLabel,
   emptyStateMessage,
   reviewsLabel = 'Reviews',
+  writeReviewLabel = 'Write a Review',
+  requireEmail = false,
+  formLabels,
+  onSubmitReview,
 }: Readonly<Props>) {
-  return (
-    <Stream fallback={<ReviewsSkeleton reviewsLabel={reviewsLabel} />} value={streamableReviews}>
-      {(reviews) => {
-        if (reviews.length === 0)
-          return <ReviewsEmptyState message={emptyStateMessage} reviewsLabel={reviewsLabel} />;
+  const [showForm, setShowForm] = useState(false);
 
-        return (
+  return (
+    <div className="@container">
+      <Stream fallback={<ReviewsSkeleton reviewsLabel={reviewsLabel} />} value={streamableReviews}>
+        {(reviews) => (
           <StickySidebarLayout
             sidebar={
               <>
@@ -76,75 +106,74 @@ export function Reviews({
                     </>
                   )}
                 </Stream>
+
+                {/* Write Review Button */}
+                <button
+                  onClick={() => setShowForm(!showForm)}
+                  className="mt-6 flex w-full items-center justify-center gap-2 rounded-full border border-foreground bg-foreground px-6 py-3 font-medium text-background transition-colors hover:bg-background hover:text-foreground focus:outline-none focus:ring-2 focus:ring-foreground/20"
+                >
+                  <Plus size={20} />
+                  {writeReviewLabel}
+                </button>
               </>
             }
             sidebarSize="medium"
           >
-            <div className="flex-1 border-t border-contrast-100">
-              {reviews.map(({ id, rating, review, name, date }) => {
-                return (
-                  <div className="border-b border-contrast-100 py-6" key={id}>
-                    <Rating rating={rating} />
-                    <p className="mt-5 text-lg font-semibold text-foreground">{name}</p>
-                    <p className="mb-8 mt-2 leading-normal text-contrast-500">{review}</p>
-                    <p className="text-sm text-contrast-500">{date}</p>
-                  </div>
-                );
-              })}
+            <div className="flex-1">
+              {/* Review Form */}
+              {showForm && (
+                <div className="mb-8 border-b border-contrast-100 pb-8">
+                  <ReviewForm
+                    productId={productId}
+                    onSubmit={onSubmitReview}
+                    requireEmail={requireEmail}
+                    labels={formLabels}
+                    onCancel={() => setShowForm(false)}
+                  />
+                </div>
+              )}
 
-              <Stream value={streamablePaginationInfo}>
-                {(paginationInfo) =>
-                  paginationInfo && (
-                    <CursorPagination
-                      info={paginationInfo}
-                      nextLabel={nextLabel}
-                      previousLabel={previousLabel}
-                      scroll={false}
-                    />
-                  )
-                }
-              </Stream>
+              {/* Reviews List */}
+              {reviews.length === 0 ? (
+                <div className="border-t border-contrast-100 py-12">
+                  <p className="text-center">{emptyStateMessage}</p>
+                </div>
+              ) : (
+                <div className="border-t border-contrast-100">
+                  {reviews.map(({ id, rating, review, name, date }) => {
+                    return (
+                      <div className="border-b border-contrast-100 py-6" key={id}>
+                        <Rating rating={rating} />
+                        <p className="mt-5 text-lg font-semibold text-foreground">{name}</p>
+                        <p className="mb-8 mt-2 leading-normal text-contrast-500">{review}</p>
+                        <p className="text-sm text-contrast-500">{date}</p>
+                      </div>
+                    );
+                  })}
+
+                  <Stream value={streamablePaginationInfo}>
+                    {(paginationInfo) =>
+                      paginationInfo && (
+                        <CursorPagination
+                          info={paginationInfo}
+                          nextLabel={nextLabel}
+                          previousLabel={previousLabel}
+                          scroll={false}
+                        />
+                      )
+                    }
+                  </Stream>
+                </div>
+              )}
             </div>
           </StickySidebarLayout>
-        );
-      }}
-    </Stream>
+        )}
+      </Stream>
+    </div>
   );
 }
 
-export { ReviewsWithForm } from './reviews-with-form';
-export { ReviewForm } from './review-form';
-
-export function ReviewsEmptyState({
-  message = 'No reviews have been added for this product',
-  reviewsLabel = 'Reviews',
-}: {
-  message?: string;
-  reviewsLabel?: string;
-}) {
-  return (
-    <StickySidebarLayout
-      sidebar={
-        <>
-          <h2 className="mb-4 mt-0 text-xl font-medium @xl:my-5 @xl:text-2xl">
-            {reviewsLabel} <span className="text-contrast-300">0</span>
-          </h2>
-          <div className="mb-2 font-heading text-5xl leading-none tracking-tighter @2xl:text-6xl">
-            0
-          </div>
-          <Rating rating={0} />
-        </>
-      }
-      sidebarSize="medium"
-    >
-      <div className="flex-1 border-t border-contrast-100 py-12">
-        <p className="text-center">{message}</p>
-      </div>
-    </StickySidebarLayout>
-  );
-}
-
-export function ReviewsSkeleton({ reviewsLabel = 'Reviews' }: { reviewsLabel?: string }) {
+function ReviewsSkeleton({ reviewsLabel = 'Reviews' }: { reviewsLabel?: string }) {
   return (
     <StickySidebarLayout
       sidebar={

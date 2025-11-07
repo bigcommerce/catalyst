@@ -466,6 +466,8 @@
     "successMessage": "{cartItems, plural, =1 {1 item} other {# items}} added to <cartLink> your cart</cartLink>"
   },
   "Product": {
+    "title": "Product",
+    "description": "Product details and information",
     "ProductDetails": {
       "quantity": "Quantity",
       "increaseQuantity": "Increase quantity",
@@ -512,6 +514,36 @@
       "Pagination": {
         "previous": "Previous reviews",
         "next": "Next reviews"
+      },
+      "Form": {
+        "writeReview": "Write a Review",
+        "title": "Write a Review",
+        "rating": "Rating",
+        "reviewTitle": "Review Title",
+        "titlePlaceholder": "Summarize your experience",
+        "reviewText": "Your Review",
+        "reviewPlaceholder": "Tell us what you think about this product",
+        "name": "Your Name",
+        "namePlaceholder": "Enter your name",
+        "email": "Email",
+        "emailPlaceholder": "Enter your email",
+        "submit": "Submit Review",
+        "submitting": "Submitting...",
+        "cancel": "Cancel",
+        "success": "Thank you! Your review has been submitted and will appear shortly.",
+        "errors": {
+          "authorRequired": "Please enter your name",
+          "titleRequired": "Please enter a review title",
+          "textRequired": "Please enter your review",
+          "ratingRequired": "Please select a rating",
+          "emailRequired": "Please enter your email address",
+          "alreadyReviewed": "You have already reviewed this product",
+          "notAuthorized": "You must be a verified customer to submit a review",
+          "productNotFound": "Product not found",
+          "invalidFields": "Please check your input and try again",
+          "network": "Network error. Please check your connection and try again",
+          "unknown": "An error occurred. Please try again later"
+        }
       }
     }
   },

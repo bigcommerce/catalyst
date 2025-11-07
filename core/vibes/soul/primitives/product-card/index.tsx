@@ -78,21 +78,20 @@ export function ProductCard({
       )}
     >
       <div className="relative flex h-full flex-col">
-        <Link href={href} id={id}>
-          <div
-            className={clsx(
-              'relative overflow-hidden rounded-xl @md:rounded-2xl',
-              {
-                '5:6': 'aspect-[5/6]',
-                '3:4': 'aspect-[3/4]',
-                '1:1': 'aspect-square',
-              }[aspectRatio],
-              {
-                light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100)))]',
-                dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500)))]',
-              }[colorScheme],
-            )}
-          >
+        <div
+          className={clsx(
+            'relative overflow-hidden rounded-xl @md:rounded-2xl',
+            {
+              '5:6': 'aspect-[5/6]',
+              '3:4': 'aspect-[3/4]',
+              '1:1': 'aspect-square',
+            }[aspectRatio],
+            {
+              light: 'bg-[var(--product-card-light-background,hsl(var(--contrast-100)))]',
+              dark: 'bg-[var(--product-card-dark-background,hsl(var(--contrast-500)))]',
+            }[colorScheme],
+          )}
+        >
             {image != null ? (
               <Image
                 alt={image.alt || `${title} image`}
@@ -129,22 +128,22 @@ export function ProductCard({
                 {badge}
               </Badge>
             )}
-            <Link
-              aria-label={title}
-              className={clsx(
-                'absolute inset-0 rounded-b-lg rounded-t-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
-                {
-                  light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
-                  dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
-                }[colorScheme],
-              )}
-              href={href}
-              id={id}
-            >
-              <span className="sr-only">View product</span>
-            </Link>
-          </div>
-          <div className="flex flex-1 flex-col justify-end">
+          <Link
+            aria-label={title}
+            className={clsx(
+              'absolute inset-0 rounded-b-lg rounded-t-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--product-card-focus,hsl(var(--primary)))] focus-visible:ring-offset-4',
+              {
+                light: 'ring-offset-[var(--product-card-light-offset,hsl(var(--background)))]',
+                dark: 'ring-offset-[var(--product-card-dark-offset,hsl(var(--foreground)))]',
+              }[colorScheme],
+            )}
+            href={href}
+            id={id}
+          >
+            <span className="sr-only">View product</span>
+          </Link>
+        </div>
+        <div className="flex flex-1 flex-col justify-end">
             <div className="mx-4 mb-2 mt-2 flex flex-col items-start gap-x-4 gap-y-3 px-1 @xs:mt-3 @2xl:flex-row">
               <div className="flex-1 text-sm @[16rem]:text-base">
                 <span
@@ -192,7 +191,6 @@ export function ProductCard({
               </div>
             )}
           </div>
-        </Link>
       </div>
       {showCompare && (
         <div className="mt-0.5 shrink-0">

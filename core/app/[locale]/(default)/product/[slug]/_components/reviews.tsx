@@ -2,14 +2,15 @@ import { removeEdgesAndNodes } from '@bigcommerce/catalyst-client';
 import { getFormatter, getTranslations } from 'next-intl/server';
 import { cache } from 'react';
 
-import { Stream } from '@/vibes/soul/lib/streamable';
-import { Reviews as ReviewsSection } from '@/vibes/soul/sections/reviews';
+import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
+import { ReviewsWithForm } from '@/vibes/soul/sections/reviews/reviews-with-form';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
+import { addReview } from '../_actions/add-review';
 import { ProductReviewSchemaFragment } from './product-review-schema/fragment';
 import { ProductReviewSchema } from './product-review-schema/product-review-schema';
 
@@ -128,16 +129,35 @@ export const Reviews = async ({ productId, searchParams }: Props) => {
 
   return (
     <>
-      <ReviewsSection
-        averageRating={getAverageRating(productId)}
+      <ReviewsWithForm
+        productId={productId}
+        averageRating={Streamable.from(() => getAverageRating(productId))}
         emptyStateMessage={t('empty')}
-        nextLabel={t('Pagination.next')}
-        paginationInfo={getPaginationInfo(productId, searchParams)}
-        previousLabel={t('Pagination.previous')}
-        reviews={getFormattedReviews(productId, searchParams)}
+        nextLabel={Streamable.from(async () => t('Pagination.next'))}
+        paginationInfo={Streamable.from(() => getPaginationInfo(productId, searchParams))}
+        previousLabel={Streamable.from(async () => t('Pagination.previous'))}
+        reviews={Streamable.from(() => getFormattedReviews(productId, searchParams))}
         reviewsLabel={t('title')}
+        writeReviewLabel={t('Form.writeReview')}
+        requireEmail={true}
+        formLabels={{
+          title: t('Form.title'),
+          ratingLabel: t('Form.rating'),
+          titleLabel: t('Form.reviewTitle'),
+          titlePlaceholder: t('Form.titlePlaceholder'),
+          reviewLabel: t('Form.reviewText'),
+          reviewPlaceholder: t('Form.reviewPlaceholder'),
+          nameLabel: t('Form.name'),
+          namePlaceholder: t('Form.namePlaceholder'),
+          emailLabel: t('Form.email'),
+          emailPlaceholder: t('Form.emailPlaceholder'),
+          submitButton: t('Form.submit'),
+          submittingButton: t('Form.submitting'),
+          cancelButton: t('Form.cancel'),
+        }}
+        onSubmitReview={addReview}
       />
-      <Stream fallback={null} value={getReviews(productId, searchParams)}>
+      <Stream fallback={null} value={Streamable.from(() => getReviews(productId, searchParams))}>
         {(reviews) =>
           reviews.length > 0 && <ProductReviewSchema productId={productId} reviews={reviews} />
         }

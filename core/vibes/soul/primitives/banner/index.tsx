@@ -19,14 +19,9 @@ import { ForwardedRef, forwardRef, ReactNode, useCallback, useEffect, useState }
  * }
  * ```
  */
-export const Banner = forwardRef(
-  ({
-    className,
-    centerText,
-    rightText,
-    links,
-    show,
-  }: {
+export const Banner = forwardRef<
+  HTMLDivElement,
+  {
     show?: boolean;
     className?: string;
     centerText?: string;
@@ -38,9 +33,11 @@ export const Banner = forwardRef(
       label: string;
       link: { href: string; target?: string };
     }>;
-  }) => {
+  }
+>(({ className, centerText, rightText, links, show }, ref) => {
     return (
       <div
+        ref={ref}
         className={clsx(
           'relative w-full overflow-hidden bg-[#0a2656] transition-all duration-300 ease-in @container',
           !show ? 'max-h-0' : 'max-h-16',

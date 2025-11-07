@@ -7,7 +7,7 @@ import { type Streamable } from '@/vibes/soul/lib/streamable';
 type Props = ClientProps & {
   productId: number;
   inventoryTracking: Streamable<string | null>;
-  inventoryLevel: any;
+  inventoryLevel?: Streamable<number | null>;
   sku: Streamable<string>;
 };
 

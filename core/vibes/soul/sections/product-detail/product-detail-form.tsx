@@ -153,13 +153,6 @@ export function ProductDetailForm<F extends Field>({
               {error}
             </FormStatus>
           ))}
-          {/* <div>
-            {inventoryLevel?.value && (
-              <p className="text-lg italic text-gray-500">
-                Available Inventory: <span className="bold">{inventoryLevel?.value}</span>
-              </p>
-            )}
-          </div> */}
           <div className="flex gap-x-3 pt-3">
             <div className="grid w-full grid-cols-1 gap-3 sm:grid-cols-8 sm:gap-3">
               {/* Quantity input: full width on mobile, 3/8 on desktop */}
@@ -215,11 +208,12 @@ function SubmitButton({ children, disabled }: { children: React.ReactNode; disab
 
   return (
     <Button
-      className="w-auto text-white @xl:w-56"
+      className="w-auto @xl:w-56"
       disabled={disabled}
       loading={pending}
       size="medium"
       type="submit"
+      variant="secondary"
     >
       {children}
     </Button>

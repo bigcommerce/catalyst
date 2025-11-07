@@ -9,6 +9,22 @@ import { ProductDetailForm, ProductDetailFormAction } from './product-detail-for
 import { Field } from './schema';
 import { Link } from '~/components/link';
 
+// Calculate delivery date accounting for business days (Mon-Fri only)
+function addBusinessDays(date: Date, days: number): Date {
+  const result = new Date(date);
+  let addedDays = 0;
+
+  while (addedDays < days) {
+    result.setDate(result.getDate() + 1);
+    // Skip weekends (0 = Sunday, 6 = Saturday)
+    if (result.getDay() !== 0 && result.getDay() !== 6) {
+      addedDays++;
+    }
+  }
+
+  return result;
+}
+
 interface ProductDetailProduct {
   id: string;
   title: string;
@@ -43,7 +59,7 @@ interface Props<F extends Field> {
   thumbnailLabel?: string;
   additionaInformationTitle?: string;
   inventoryTracking: Streamable<string | null>;
-  inventoryLevel?: object;
+  inventoryLevel?: Streamable<number | null>;
   sku: Streamable<string>;
 }
 
@@ -102,20 +118,34 @@ export function ProductDetail<F extends Field>({
                       <PriceLabel className="my-3 text-xl @xl:text-2xl" price={price ?? ''} />
                     )}
                   </Stream>
-                  <p className="border-l pl-2 text-lg italic text-black underline">
-                    Ships in 7 to 10 Business Days
-                  </p>
-                  {/* <Stream fallback={<InventoryTrackingSkeleton />} value={inventoryTracking}>
-                    {(tracking) =>
-                      tracking !== undefined &&
-                      tracking !== '' &&
-                      tracking === 'none' && (
-                        <p className="border-l pl-2 text-lg italic text-black underline">
-                          Ships in 7 to 10 Business Days
+                  <Stream fallback={null} value={inventoryLevel}>
+                    {(invLevel) => {
+                      // Type guard: ensure invLevel is a valid number
+                      const hasStock = typeof invLevel === 'number' && invLevel > 0;
+
+                      if (!hasStock) {
+                        // Calculate delivery date using business days (Mon-Fri only)
+                        const deliveryDate = addBusinessDays(new Date(), 10);
+                        const formattedDate = deliveryDate.toLocaleDateString(undefined, {
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric',
+                        });
+
+                        return (
+                          <p className="text-base text-gray-700">
+                            Delivery by {formattedDate}
+                          </p>
+                        );
+                      }
+
+                      return (
+                        <p className="text-base font-semibold text-green-700">
+                          ✓ In Stock
                         </p>
-                      )
-                    }
-                  </Stream> */}
+                      );
+                    }}
+                  </Stream>
                   <div className="mb-8 @2xl:hidden">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
                       {(images) => (
@@ -156,10 +186,6 @@ export function ProductDetail<F extends Field>({
                       />
                     )}
                   </Stream>
-
-                  <p className="text-md mb-6 font-bold underline">
-                    <Link href={'/contact'}>Need a quote on a big project? Click Here</Link>
-                  </p>
 
                   <Stream fallback={<ProductDescriptionSkeleton />} value={product.description}>
                     {(description) =>

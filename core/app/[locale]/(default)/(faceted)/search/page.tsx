@@ -132,6 +132,8 @@ async function getListProducts(props: Props): Promise<Product[]> {
       : undefined,
     price: pricesTransformer(product.prices, format),
     subtitle: product.brand?.name ?? undefined,
+    description: product.description ?? '',
+    categories: product.categories?.edges?.map((edge) => edge.node.name) ?? [],
   }));
 }
 

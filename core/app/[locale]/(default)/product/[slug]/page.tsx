@@ -341,7 +341,7 @@ export default async function Product(props: Props) {
             title={t('RelatedProducts.title')}
           />
         </div>
-        {/* <Reviews productId={productId} searchParams={parsedSearchParams} /> */}
+        <Reviews productId={productId} searchParams={parsedSearchParams} />
 
         <Stream fallback={null} value={Streamable.from(() => getProductData(variables))}>
           {(product) => (

@@ -2,7 +2,7 @@
 
 import { clsx } from 'clsx';
 import useEmblaCarousel from 'embla-carousel-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 
 import { Image } from '~/components/image';
 
@@ -21,6 +21,9 @@ export function ProductGallery({
 }: Props) {
   const [previewImage, setPreviewImage] = useState(0);
   const [emblaRef, emblaApi] = useEmblaCarousel();
+  const [isZoomed, setIsZoomed] = useState(false);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const imageContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!emblaApi) return;
@@ -39,6 +42,17 @@ export function ProductGallery({
     if (emblaApi) emblaApi.scrollTo(index);
   };
 
+  // Throttle mouse move updates for better performance (~60fps)
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+    if (!imageContainerRef.current) return;
+
+    const rect = imageContainerRef.current.getBoundingClientRect();
+    const x = ((e.clientX - rect.left) / rect.width) * 100;
+    const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+    setMousePosition({ x, y });
+  }, []);
+
   return (
     <div className={clsx('sticky top-4 flex flex-col gap-2 @2xl:flex-row', className)}>
       <div
@@ -47,14 +61,33 @@ export function ProductGallery({
       >
         <div className="flex">
           {images.map((image, idx) => (
-            <div className="relative aspect-square w-full shrink-0 grow-0 basis-full" key={idx}>
+            <div
+              className="relative aspect-square w-full shrink-0 grow-0 basis-full cursor-zoom-in"
+              key={idx}
+              ref={idx === previewImage ? imageContainerRef : null}
+              onMouseEnter={() => setIsZoomed(true)}
+              onMouseLeave={() => setIsZoomed(false)}
+              onMouseMove={handleMouseMove}
+              role="img"
+              aria-label={`${image.alt || `${productName} image ${idx + 1}`} - Hover to zoom`}
+            >
               <Image
                 alt={image.alt || `${productName} image ${idx + 1}`}
-                className="object-contain"
+                className={clsx(
+                  'object-contain transition-transform duration-200',
+                  isZoomed && idx === previewImage ? 'scale-150' : 'scale-100'
+                )}
                 fill
                 priority={idx === 0}
                 sizes="(min-width: 42rem) 50vw, 100vw"
                 src={image.src}
+                style={
+                  isZoomed && idx === previewImage
+                    ? {
+                        transformOrigin: `${mousePosition.x}% ${mousePosition.y}%`,
+                      }
+                    : undefined
+                }
               />
             </div>
           ))}
