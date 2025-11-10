@@ -1,5 +1,5 @@
 ---
-"@bigcommerce/catalyst-core": major
+"@bigcommerce/catalyst-core": minor
 ---
 
 Add current stock message to product details page based on the store/product inventory settings.
