@@ -1,5 +1,82 @@
 # Changelog
 
+## 1.3.0
+
+### Minor Changes
+
+- [#2659](https://github.com/bigcommerce/catalyst/pull/2659) [`abaa461`](https://github.com/bigcommerce/catalyst/commit/abaa46102d1024b99d6a3fca116ac910c104b719) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Adds consent-aware script loading to Catalyst's consent manager, achieving parity with Stencil's behavior where scripts are conditionally rendered based on user consent preferences. BigCommerce scripts from the Store Scripts API are now transformed and loaded via C15T's ClientSideOptionsProvider, with ESSENTIAL/UNKNOWN scripts rendering by default, all scripts rendering when consent is fully granted, and specific scripts loading based on granular consent selections.
+
+- [#2643](https://github.com/bigcommerce/catalyst/pull/2643) [`391e20d`](https://github.com/bigcommerce/catalyst/commit/391e20d2c03e8f607f6f6c80d294565e79546693) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Adds a new consent manager provider using the `@c15t/nextjs` package to handle cookie consent management with support for multiple consent categories and cookie-based persistence.
+
+- [#2666](https://github.com/bigcommerce/catalyst/pull/2666) [`ed1f615`](https://github.com/bigcommerce/catalyst/commit/ed1f615a9b84a70e24fd7015fbd17bd5abe47695) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Passes the shoppers consent to the checkout redirect mutation
+
+- [#2619](https://github.com/bigcommerce/catalyst/pull/2619) [`19077cd`](https://github.com/bigcommerce/catalyst/commit/19077cd294c5c710dfdeae54f29f13a76401bfa4) Thanks [@Tharaae](https://github.com/Tharaae)! - Add current stock message to product details page based on the store/product inventory settings.
+
+  ## Migration
+
+  For existing Catalyst stores, to get the newly added feature, simply rebase the existing code with the new release code. The files to be rebased for this change to be applied are:
+  - core/messages/en.json
+  - core/app/[locale]/(default)/product/[slug]/page-data.ts
+  - core/app/[locale]/(default)/product/[slug]/page.tsx
+
+- [#2664](https://github.com/bigcommerce/catalyst/pull/2664) [`71cfd62`](https://github.com/bigcommerce/catalyst/commit/71cfd62e99c223391e77d20198e9cf673bc61dd9) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Provides a way to track analytics consent updates within the analytics provider. This also enables a the Google Analytics provider to be able to get the initial consent values so it can initialize the default consent values.
+
+- [#2661](https://github.com/bigcommerce/catalyst/pull/2661) [`be00b44`](https://github.com/bigcommerce/catalyst/commit/be00b44cd3afd82dff84dfa1104eccbcb6df946f) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Integrates Catalyst's consent manager with the BigCommerce Control Panel's Cookie Consent setting, allowing merchants to centrally control whether the consent banner displays on the storefront. When disabled in the Control Panel, the consent banner is suppressed and all script categories are consented implicitly, matching Stencil behavior.
+
+- [#2650](https://github.com/bigcommerce/catalyst/pull/2650) [`416796f`](https://github.com/bigcommerce/catalyst/commit/416796fa4143d28ce41ba89a3f176f3b7fba552c) Thanks [@matthewvolk](https://github.com/matthewvolk)! - Added consent manager UI components with Catalyst styling and next-intl integration. The `CookieBanner` and `ConsentManagerDialog` provide a customizable banner and preference dialog for cookie consent.
+
+### Patch Changes
+
+- [#2577](https://github.com/bigcommerce/catalyst/pull/2577) [`baf07ca`](https://github.com/bigcommerce/catalyst/commit/baf07ca89fdbb65bebf5926738b72690e4e6db60) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove unused exports from core
+
+- [#2551](https://github.com/bigcommerce/catalyst/pull/2551) [`be23108`](https://github.com/bigcommerce/catalyst/commit/be2310809342d83cfc1a3619a537d2abf66dfe79) Thanks [@jkanive](https://github.com/jkanive)! - fix: resolve maintenance page width issues
+  - Add w-full classes to ensure proper width expansion
+  - Remove flex-1 in favor of w-full for column layout
+
+- [#2574](https://github.com/bigcommerce/catalyst/pull/2574) [`be80d14`](https://github.com/bigcommerce/catalyst/commit/be80d14c1c1051189e629d182dfd46fc60c363b1) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove unused dependencies.
+
+- [#2609](https://github.com/bigcommerce/catalyst/pull/2609) [`4e6f58d`](https://github.com/bigcommerce/catalyst/commit/4e6f58dfda649571c56ec57b642e7addfb92a4aa) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Adds the product count to the facet label if the facet provides the count. This also fixes an issue where the facets weren't respecting the collapse by default setting.
+
+- [#2572](https://github.com/bigcommerce/catalyst/pull/2572) [`337b7ce`](https://github.com/bigcommerce/catalyst/commit/337b7ce05ee71ec3d937c3aa373aec8516896254) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove unused UI files.
+
+- [#2580](https://github.com/bigcommerce/catalyst/pull/2580) [`f790cd6`](https://github.com/bigcommerce/catalyst/commit/f790cd67a4b632ecb4f3dfd5e7d416859cbcb042) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove unused export types from core.
+
+- [#2670](https://github.com/bigcommerce/catalyst/pull/2670) [`d5fbb73`](https://github.com/bigcommerce/catalyst/commit/d5fbb7394696dc77da5cf9b615a2b73eba28e8e5) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Fixed issue with 301 redirect loops when `TRAILING_SLASH` is set to `false`, or when 301 redirects exist targeting the same path but with different capitalization.
+
+- [#2585](https://github.com/bigcommerce/catalyst/pull/2585) [`a40b96f`](https://github.com/bigcommerce/catalyst/commit/a40b96f743ce5462cba4615026cbc6951aa87104) Thanks [@copilot-swe-agent](https://github.com/apps/copilot-swe-agent)! - Add graceful error handling for invalid anonymous JWT cookies
+
+- [#2578](https://github.com/bigcommerce/catalyst/pull/2578) [`bb7940c`](https://github.com/bigcommerce/catalyst/commit/bb7940cedd169f053d55b787cc2b7183f737edba) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Remove recpatcha code until we're ready to add it at a later point (if needed).
+
+  ## Migration
+  - A lot of the code removed was just old commented out blocks.
+  - Remove any recaptcha mention from graphql mutation and queries
+
+- [#2656](https://github.com/bigcommerce/catalyst/pull/2656) [`ff9aa17`](https://github.com/bigcommerce/catalyst/commit/ff9aa17a78c4731af02ebb4d220f86960c0e9169) Thanks [@dependabot](https://github.com/apps/dependabot)! - Updates next-auth to the latest beta version
+
+  ## Migration
+
+  Delete the `@ts-expect-error` comments within the `with-auth.ts` middleware.
+
+- [#2662](https://github.com/bigcommerce/catalyst/pull/2662) [`8c6626e`](https://github.com/bigcommerce/catalyst/commit/8c6626e104d81dce09ecc623cdec949a23224ee8) Thanks [@jorgemoya](https://github.com/jorgemoya)! - Replace `StreamableAnalyticsProvider`with simplified `AnalyticsProvider` component.
+  - Removed `StreamableAnalyticsProvider` that used `Streamable.from()` for async data loading.
+  - Added new `AnalyticsProvider` component that accepts `channelId` and `settings` as direct props.
+  - Simplifies analytics initialization by removing unnecessary streaming complexity.
+  - Maintains same functionality with cleaner, more straightforward implementation.
+  - Fixes issue of events not triggering by properly wrapping `children` inside the provider.
+
+  ## Migration
+  - Use new `AnalyticsProvider` component in `core/app/[locale]/layout.tsx`, instead of `StreamableAnalyticsProvider`.
+
+- [#2667](https://github.com/bigcommerce/catalyst/pull/2667) [`c8dbba6`](https://github.com/bigcommerce/catalyst/commit/c8dbba6de4aa70dbe7c4ced3ce29375aea214d1f) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#2589](https://github.com/bigcommerce/catalyst/pull/2589) [`d3391ee`](https://github.com/bigcommerce/catalyst/commit/d3391eea6c87d05629e15f4f47bb5ad54c47f081) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#2675](https://github.com/bigcommerce/catalyst/pull/2675) [`ab9f11e`](https://github.com/bigcommerce/catalyst/commit/ab9f11ed0d75a0f6cd6f3abc039c1652415057a2) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#2608](https://github.com/bigcommerce/catalyst/pull/2608) [`3d47825`](https://github.com/bigcommerce/catalyst/commit/3d4782536022e1f9a33237963c4f013558108cf3) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
+- [#2648](https://github.com/bigcommerce/catalyst/pull/2648) [`7914650`](https://github.com/bigcommerce/catalyst/commit/791465079b8abaeae7662745c28e99f67876393c) Thanks [@bc-svc-local](https://github.com/bc-svc-local)! - Update translations.
+
 ## 1.2.0
 
 ### Minor Changes
