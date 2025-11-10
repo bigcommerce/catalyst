@@ -81,7 +81,6 @@ export const ProductReviewButton = ({
       return parseWithZod(formData, { schema });
     },
     onSubmit(event, { formData }) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       event.preventDefault();
 
       startTransition(() => {
@@ -157,7 +156,6 @@ export const ProductReviewButton = ({
               name={fields.rating.name}
               onBlur={ratingControl.blur}
               onFocus={ratingControl.focus}
-              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
               onValueChange={ratingControl.change}
               required={fields.rating.required}
               value={typeof ratingControl.value === 'string' ? ratingControl.value : ''}
