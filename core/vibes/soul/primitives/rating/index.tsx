@@ -10,7 +10,7 @@ interface StarType {
   type: 'empty' | 'half' | 'full';
 }
 
-const Star = ({ type }: StarType) => {
+export const Star = ({ type }: StarType) => {
   const paths = {
     empty: (
       <path
