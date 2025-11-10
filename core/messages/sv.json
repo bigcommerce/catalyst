@@ -159,13 +159,13 @@
                 "summaryTotal": "Total",
                 "destination": "Destination",
                 "destinationWithCount": "Destination {number, number}/{total, number}",
-                "digitalDelivery": "Digital delivery to {email}",
+                "digitalDelivery": "Digital leverans till {email}",
                 "subtotal": "Delsumma",
                 "shipping": "Frakt",
                 "tax": "Beskatta",
                 "orderSummary": "Beställningssammanfattning",
-                "paymentMethodsLabel": "{count, plural, =1 {Payment method} other {Payment methods}}",
-                "paymentEndingInLabel": "ending in",
+                "paymentMethodsLabel": "{antal, plural, =1 {Betalningsmetod} other {Betalningsmetoder}}",
+                "paymentEndingInLabel": "Slutar på",
                 "PaymentMethods": {
                     "creditCard": "Kreditkort",
                     "giftCertificate": "Presentkort",
@@ -331,11 +331,11 @@
         "GiftCertificate": {
             "giftCertificate": "Presentkort",
             "giftCertificateCode": "Presentkort kod",
-            "removeGiftCertificate": "Remove gift certificate",
+            "removeGiftCertificate": "Ta bort presentkortet",
             "apply": "Tillämpa",
             "to": "Till",
             "message": "Meddelande",
-            "invalidGiftCertificate": "Please enter a valid gift certificate code",
+            "invalidGiftCertificate": "Ange en giltig presentkortskod",
             "cartNotFound": "Ingen cartId-kaka hittades."
         },
         "Empty": {
@@ -492,90 +492,90 @@
         },
         "ConsentManager": {
             "Common": {
-                "rejectAll": "Reject All",
-                "acceptAll": "Accept All",
+                "rejectAll": "Avvisa allt",
+                "acceptAll": "Godkänn alla",
                 "customize": "Anpassa",
                 "save": "Spara inställningar"
             },
             "CookieBanner": {
-                "title": "We value your privacy",
-                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+                "title": "Vi värdesätter din integritet",
+                "description": "Denna webbplats använder cookies för att förbättra din surfupplevelse, analysera webbplatstrafik och visa personligt innehåll."
             },
             "Dialog": {
-                "title": "Privacy Settings",
-                "description": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you would like to allow."
+                "title": "Sekretessinställningar",
+                "description": "Anpassa dina sekretessinställningar här. Du kan välja vilka typer av cookies och spårningstekniker du vill tillåta."
             },
             "ConsentTypes": {
                 "necessary": {
-                    "title": "Strictly Necessary",
-                    "description": "These cookies are essential for the website to function properly and cannot be disabled."
+                    "title": "Strikt nödvändigt",
+                    "description": "Dessa cookies är viktiga för att webbplatsen ska fungera korrekt och kan inte inaktiveras."
                 },
                 "functionality": {
-                    "title": "Functionality",
-                    "description": "These cookies enable enhanced functionality and personalization of the website."
+                    "title": "Funktionalitet",
+                    "description": "Dessa cookies möjliggör förbättrad funktionalitet och personalisering av webbplatsen."
                 },
                 "marketing": {
                     "title": "Marknadsföring",
-                    "description": "These cookies are used to deliver relevant advertisements and track their effectiveness."
+                    "description": "Dessa cookies används för att leverera relevanta annonser och spåra deras effektivitet."
                 },
                 "measurement": {
                     "title": "Analytics",
-                    "description": "These cookies help us understand how visitors interact with the website and improve its performance."
+                    "description": "Dessa cookies hjälper oss att förstå hur besökare interagerar med webbplatsen och förbättra dess prestanda."
                 },
                 "experience": {
                     "title": "Erfarenhet",
-                    "description": "These cookies help us provide a better user experience and test new features."
+                    "description": "Dessa cookies hjälper oss att ge en bättre användarupplevelse och testa nya funktioner."
                 }
             }
         }
     },
     "GiftCertificates": {
         "title": "Presentkort",
-        "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
+        "description": "Ge den perfekta gåvan som aldrig går ur stil. Låt vänner och nära och kära välja exakt vad de vill ha från hela vår kollektion.",
         "purchaseLabel": "Köp nu",
-        "checkBalanceLabel": "Check balance",
-        "expiresAtLabel": "Valid thru",
+        "checkBalanceLabel": "Kontrollera saldot",
+        "expiresAtLabel": "Giltigt till och med",
         "CheckBalance": {
-            "title": "Check balance",
-            "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
+            "title": "Kontrollera saldot",
+            "description": "Du kan kontrollera saldot och få information om ditt presentkort genom att skriva in koden i rutan nedan.",
             "inputLabel": "Kod",
             "inputPlaceholder": "Ange kod",
             "purchasedDateLabel": "Köpt",
             "senderLabel": "Från",
             "Errors": {
-                "invalidCode": "The gift certificate code you entered is invalid. Please check the code and try again.",
+                "invalidCode": "Presentkortskoden du angav är ogiltig. Var god kontrollera koden och försök igen.",
                 "codeRequired": "Ange en presentkortskod.",
                 "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
             }
         },
         "Purchase": {
-            "breadcrumbTitle": "Purchase a gift certificate",
-            "title": "Digital gift certificate",
-            "description": "Explore our gift certificates, perfect for any occasion. Choose the amount and personalize your message.",
-            "successMessage": "Gift certificate has been added to <cartLink> your cart</cartLink>",
+            "breadcrumbTitle": "Köp presentkort",
+            "title": "Digitalt presentkort",
+            "description": "Utforska våra presentkort, perfekta för alla tillfällen. Välj ett belopp och anpassa ditt meddelande.",
+            "successMessage": "Presentkortet har lagts till i <cartLink> er varukorg</cartLink>",
             "missingCart": "Kundvagnen hittades inte. Försök igen senare.",
             "unknownError": "Okänt fel. Försök igen senare.",
             "Form": {
                 "amountLabel": "Belopp",
-                "customAmountLabel": "Amount (between {minAmount} and {maxAmount})",
-                "selectAmountPlaceholder": "Select an amount",
-                "customAmountPlaceholder": "Enter custom amount",
-                "senderNameLabel": "Your name",
-                "senderEmailLabel": "Your email",
-                "recipientNameLabel": "Recipient's name",
-                "recipientEmailLabel": "Recipient's email",
-                "namePlaceholder": "Enter name",
+                "customAmountLabel": "Belopp (mellan {minAmount} och {maxAmount})",
+                "selectAmountPlaceholder": "Välj ett belopp",
+                "customAmountPlaceholder": "Ange ett anpassat belopp",
+                "senderNameLabel": "Ditt namn",
+                "senderEmailLabel": "Din E-post",
+                "recipientNameLabel": "Mottagarens namn",
+                "recipientEmailLabel": "Mottagarens e-postadress",
+                "namePlaceholder": "Ange ett namn",
                 "emailPlaceholder": "Ange e-postadress",
                 "messageLabel": "Meddelande",
-                "messagePlaceholder": "Enter your message (optional)",
-                "nonRefundableCheckboxLabel": "I agree that Gift Certificates are non-refundable",
-                "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
+                "messagePlaceholder": "Ange ert meddelande (valfritt)",
+                "nonRefundableCheckboxLabel": "Jag godkänner att presentkort inte återbetalas",
+                "expiryCheckboxLabel": "Jag bekräftar att detta presentkort kommer att upphöra att gälla den {expiryDate}",
                 "ctaLabel": "Lägg till i kundvagn",
                 "Errors": {
-                    "amountRequired": "Please select or enter a gift certificate amount.",
-                    "amountInvalid": "Please select a valid gift certificate amount.",
-                    "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
-                    "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
+                    "amountRequired": "Var god välj eller ange ett presentkortsbelopp.",
+                    "amountInvalid": "Var god välj ett giltigt presentkortsbelopp.",
+                    "amountOutOfRange": "Ange ett belopp mellan {minAmount} och {maxAmount}.",
+                    "unexpectedSettingsError": "Ett oväntat fel inträffade när presentkortets inställningar hämtades. Försök igen senare."
                 }
             }
         }

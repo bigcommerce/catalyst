@@ -159,13 +159,13 @@
                 "summaryTotal": "Summe",
                 "destination": "Zielort",
                 "destinationWithCount": "Zielort {Nummer, Nummer}/{Gesamt, Nummer}",
-                "digitalDelivery": "Digital delivery to {email}",
+                "digitalDelivery": "Digitale Lieferung an {email}",
                 "subtotal": "Zwischensumme",
                 "shipping": "Versand",
                 "tax": "Steuern",
                 "orderSummary": "Bestellübersicht",
-                "paymentMethodsLabel": "{count, plural, =1 {Payment method} other {Payment methods}}",
-                "paymentEndingInLabel": "ending in",
+                "paymentMethodsLabel": "{count, plural, =1 {Zahlungsmethode} other {Zahlungsmethoden}}",
+                "paymentEndingInLabel": "Endet auf",
                 "PaymentMethods": {
                     "creditCard": "Kreditkarte",
                     "giftCertificate": "Geschenkgutschein",
@@ -331,11 +331,11 @@
         "GiftCertificate": {
             "giftCertificate": "Geschenkgutschein",
             "giftCertificateCode": "Geschenkgutscheincode",
-            "removeGiftCertificate": "Remove gift certificate",
+            "removeGiftCertificate": "Geschenkgutschein entfernen",
             "apply": "Anwenden",
             "to": "Nach",
             "message": "Nachricht",
-            "invalidGiftCertificate": "Please enter a valid gift certificate code",
+            "invalidGiftCertificate": "Bitte geben Sie einen gültigen Geschenkgutscheincode ein.",
             "cartNotFound": "Kein cartId-Cookie gefunden."
         },
         "Empty": {
@@ -492,90 +492,90 @@
         },
         "ConsentManager": {
             "Common": {
-                "rejectAll": "Reject All",
-                "acceptAll": "Accept All",
+                "rejectAll": "Alle ablehnen",
+                "acceptAll": "Alle akzeptieren",
                 "customize": "Benutzerdefiniert anpassen",
                 "save": "Einstellungen speichern"
             },
             "CookieBanner": {
-                "title": "We value your privacy",
-                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+                "title": "Wir respektieren Ihre Privatsphäre.",
+                "description": "Diese Website verwendet Cookies, um Ihr Surferlebnis zu verbessern, den Website-Traffic zu analysieren und personalisierte Inhalte anzuzeigen."
             },
             "Dialog": {
-                "title": "Privacy Settings",
-                "description": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you would like to allow."
+                "title": "Datenschutzeinstellungen",
+                "description": "Passen Sie hier Ihre Datenschutzeinstellungen an. Sie können auswählen, welche Arten von Cookies und Tracking-Technologien Sie zulassen möchten."
             },
             "ConsentTypes": {
                 "necessary": {
-                    "title": "Strictly Necessary",
-                    "description": "These cookies are essential for the website to function properly and cannot be disabled."
+                    "title": "Unbedingt notwendig",
+                    "description": "Diese Cookies sind für die ordnungsgemäße Funktion der Website unbedingt erforderlich und können nicht deaktiviert werden."
                 },
                 "functionality": {
-                    "title": "Functionality",
-                    "description": "These cookies enable enhanced functionality and personalization of the website."
+                    "title": "Funktionalität",
+                    "description": "Diese Cookies ermöglichen erweiterte Funktionalität und Personalisierung der Website."
                 },
                 "marketing": {
                     "title": "Marketing",
-                    "description": "These cookies are used to deliver relevant advertisements and track their effectiveness."
+                    "description": "Diese Cookies werden verwendet, um relevante Werbung zu liefern und deren Wirksamkeit zu verfolgen."
                 },
                 "measurement": {
                     "title": "Analysen",
-                    "description": "These cookies help us understand how visitors interact with the website and improve its performance."
+                    "description": "Diese Cookies helfen uns zu verstehen, wie Besucher mit der Website interagieren und ihre Leistung zu verbessern."
                 },
                 "experience": {
                     "title": "Erlebnis",
-                    "description": "These cookies help us provide a better user experience and test new features."
+                    "description": "Diese Cookies helfen uns, eine bessere Benutzererfahrung zu bieten und neue Funktionen zu testen."
                 }
             }
         }
     },
     "GiftCertificates": {
         "title": "Geschenkgutscheine",
-        "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
+        "description": "Verschenken Sie das perfekte Geschenk, das nie aus der Mode kommt. Lassen Sie Freunde und Bekannte aus unserer gesamten Kollektion genau das auswählen, was sie wollen.",
         "purchaseLabel": "Jetzt shoppen",
-        "checkBalanceLabel": "Check balance",
-        "expiresAtLabel": "Valid thru",
+        "checkBalanceLabel": "Guthaben abfragen",
+        "expiresAtLabel": "Gültig bis",
         "CheckBalance": {
-            "title": "Check balance",
-            "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
+            "title": "Guthaben abfragen",
+            "description": "Sie können das Guthaben überprüfen und Informationen zu Ihrem Geschenkgutschein erhalten, indem Sie den Code in das Feld unten eingeben.",
             "inputLabel": "Code",
             "inputPlaceholder": "Code eingeben",
             "purchasedDateLabel": "Gekauft",
             "senderLabel": "Von",
             "Errors": {
-                "invalidCode": "The gift certificate code you entered is invalid. Please check the code and try again.",
+                "invalidCode": "Der von Ihnen eingegebene Geschenkgutscheincode ist ungültig. Bitte überprüfen Sie den Code und versuchen Sie es erneut.",
                 "codeRequired": "Bitte geben Sie einen Geschenkgutscheincode ein.",
                 "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
             }
         },
         "Purchase": {
-            "breadcrumbTitle": "Purchase a gift certificate",
-            "title": "Digital gift certificate",
-            "description": "Explore our gift certificates, perfect for any occasion. Choose the amount and personalize your message.",
-            "successMessage": "Gift certificate has been added to <cartLink> your cart</cartLink>",
+            "breadcrumbTitle": "Einen Geschenkgutschein kaufen",
+            "title": "Digitaler Geschenkgutschein",
+            "description": "Entdecken Sie unsere Geschenkgutscheine – perfekt für jeden Anlass. Wählen Sie den Betrag und personalisieren Sie Ihre Nachricht.",
+            "successMessage": "Der Geschenkgutschein wurde <cartLink> Ihrem Warenkorb</cartLink> hinzugefügt.",
             "missingCart": "Warenkorb nicht gefunden. Bitte versuchen Sie es später erneut.",
             "unknownError": "Unbekannter Fehler. Bitte versuchen Sie es später erneut.",
             "Form": {
                 "amountLabel": "Betrag",
-                "customAmountLabel": "Amount (between {minAmount} and {maxAmount})",
-                "selectAmountPlaceholder": "Select an amount",
-                "customAmountPlaceholder": "Enter custom amount",
-                "senderNameLabel": "Your name",
-                "senderEmailLabel": "Your email",
-                "recipientNameLabel": "Recipient's name",
-                "recipientEmailLabel": "Recipient's email",
-                "namePlaceholder": "Enter name",
+                "customAmountLabel": "Betrag (zwischen {minAmount} und {maxAmount})",
+                "selectAmountPlaceholder": "Wählen Sie einen Betrag aus",
+                "customAmountPlaceholder": "Geben Sie einen Benutzer: innen definierten Betrag ein",
+                "senderNameLabel": "Ihr Name",
+                "senderEmailLabel": "Ihre E-Mail-Adresse",
+                "recipientNameLabel": "Name des Empfängers",
+                "recipientEmailLabel": "E-Mail-Adresse des Empfängers",
+                "namePlaceholder": "Geben Sie den Namen ein",
                 "emailPlaceholder": "E-Mail-Adresse eingeben",
                 "messageLabel": "Nachricht",
-                "messagePlaceholder": "Enter your message (optional)",
-                "nonRefundableCheckboxLabel": "I agree that Gift Certificates are non-refundable",
-                "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
+                "messagePlaceholder": "Geben Sie Ihre Nachricht ein (optional)",
+                "nonRefundableCheckboxLabel": "Ich erkläre mich damit einverstanden, dass Geschenkgutscheine nicht erstattungsfähig sind",
+                "expiryCheckboxLabel": "Ich bestätige, dass dieser Geschenkgutschein am {expiryDate} abläuft.",
                 "ctaLabel": "Zum Warenkorb hinzufügen",
                 "Errors": {
-                    "amountRequired": "Please select or enter a gift certificate amount.",
-                    "amountInvalid": "Please select a valid gift certificate amount.",
-                    "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
-                    "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
+                    "amountRequired": "Bitte wählen Sie einen Geschenkgutscheinbetrag aus oder geben Sie ihn ein.",
+                    "amountInvalid": "Bitte wählen Sie einen gültigen Betrag für diesen Geschenkgutschein aus.",
+                    "amountOutOfRange": "Bitte geben Sie einen Betrag zwischen {minAmount} und {maxAmount} ein.",
+                    "unexpectedSettingsError": "Beim Abrufen der Geschenkgutscheineinstellungen ist ein unerwarteter Fehler aufgetreten. Bitte versuchen Sie es später erneut."
                 }
             }
         }
