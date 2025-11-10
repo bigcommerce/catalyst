@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.3.0
+
+### Minor Changes
+
+- [#2678](https://github.com/bigcommerce/catalyst/pull/2678) [`f121097`](https://github.com/bigcommerce/catalyst/commit/f1210973265b481ec964a71848304f2ca1931162) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Synced the changes made on `canary`. See the 1.3.0 changelog for more details: https://github.com/bigcommerce/catalyst/releases/tag/%40bigcommerce%2Fcatalyst-core%401.3.0
+
+- [#2593](https://github.com/bigcommerce/catalyst/pull/2593) [`9e2f992`](https://github.com/bigcommerce/catalyst/commit/9e2f992a3f6b6e3fcd45a823343859403cda9542) Thanks [@hunterbecton](https://github.com/hunterbecton)! - Create alias for variables for button and button-link components
+
+### Patch Changes
+
+- [#2628](https://github.com/bigcommerce/catalyst/pull/2628) [`d52d6f6`](https://github.com/bigcommerce/catalyst/commit/d52d6f67deef8b957040ee40ee16ca6563510f7c) Thanks [@arvinpoddar](https://github.com/arvinpoddar)! - Switch to using `ReactRuntimeCore` instead of `ReactRuntime`, avoiding the bundling of unused dependencies from some Makeswift builtin components. Also bumps to latest `@makeswift/runtime`.
+
+- [#2621](https://github.com/bigcommerce/catalyst/pull/2621) [`eb2d4e1`](https://github.com/bigcommerce/catalyst/commit/eb2d4e16e61c5822111fa50d8bc27db86cd5e9c4) Thanks [@agurtovoy](https://github.com/agurtovoy)! - Fix locale switcher on localized Makeswift pages with different paths
+
 ## 1.2.0
 
 ### Minor Changes
