@@ -159,10 +159,19 @@
                 "summaryTotal": "Total",
                 "destination": "Destination",
                 "destinationWithCount": "Destination {number, number}/{total, number}",
+                "digitalDelivery": "Livraison numérique à {email}",
                 "subtotal": "Sous-total",
                 "shipping": "Livraison",
                 "tax": "Taxes",
-                "orderSummary": "Récapitulatif de la commande"
+                "orderSummary": "Récapitulatif de la commande",
+                "paymentMethodsLabel": "{count, plural, =1 {Payment method} other {Payment methods}}",
+                "paymentEndingInLabel": "Se terminant par",
+                "PaymentMethods": {
+                    "creditCard": "Carte de crédit",
+                    "giftCertificate": "Chèque-cadeau",
+                    "storeCredit": "Avoir",
+                    "other": "Autre"
+                }
             }
         },
         "Addresses": {
@@ -375,6 +384,16 @@
                 "noShippingOptions": "Aucune option de livraison n'est disponible pour votre adresse"
             }
         },
+        "GiftCertificate": {
+            "giftCertificate": "Chèque-cadeau",
+            "giftCertificateCode": "Code du chèque-cadeau",
+            "removeGiftCertificate": "Supprimer le chèque-cadeau",
+            "apply": "Appliquer",
+            "to": "À",
+            "message": "Message",
+            "invalidGiftCertificate": "Veuillez saisir un code de chèque-cadeau valide",
+            "cartNotFound": "Aucun cookie cartId n’a été trouvé."
+        },
         "Empty": {
             "title": "Votre panier est vide.",
             "subtitle": "Ajoutez quelques produits pour commencer.",
@@ -526,6 +545,95 @@
             "placeholder": "Saisissez votre adresse e-mail",
             "description": "Restez informé des dernières nouvelles et offres de notre magasin.",
             "success": "Merci de l’intérêt que vous nous portez ! La fonctionnalité Newsletter sera bientôt disponible !"
+        },
+        "ConsentManager": {
+            "Common": {
+                "rejectAll": "Tout rejeter",
+                "acceptAll": "Accepter tout",
+                "customize": "Personnaliser",
+                "save": "Enregistrer les paramètres"
+            },
+            "CookieBanner": {
+                "title": "Nous respectons votre vie privée",
+                "description": "Ce site utilise des cookies pour améliorer votre expérience de navigation, analyser le trafic du site et afficher du contenu personnalisé."
+            },
+            "Dialog": {
+                "title": "Paramètres de confidentialité",
+                "description": "Personnalisez vos paramètres de confidentialité ici. Vous pouvez choisir les types de cookies et de technologies de suivi que vous souhaitez autoriser."
+            },
+            "ConsentTypes": {
+                "necessary": {
+                    "title": "Strictement nécessaire",
+                    "description": "Ces cookies sont essentiels au bon fonctionnement du site web et ne peuvent pas être désactivés."
+                },
+                "functionality": {
+                    "title": "Fonctionnalité",
+                    "description": "Ces cookies permettent d’améliorer la fonctionnalité et la personnalisation du site Web."
+                },
+                "marketing": {
+                    "title": "Marketing",
+                    "description": "Ces cookies sont utilisés pour diffuser des publicités pertinentes et évaluer leur efficacité."
+                },
+                "measurement": {
+                    "title": "Statistiques",
+                    "description": "Ces cookies nous aident à comprendre comment les visiteurs interagissent avec le site Web et à améliorer ses performances."
+                },
+                "experience": {
+                    "title": "Expérience",
+                    "description": "Ces cookies nous aident à offrir une meilleure expérience utilisateur et à tester de nouvelles fonctionnalités."
+                }
+            }
+        }
+    },
+    "GiftCertificates": {
+        "title": "Chèques-cadeaux",
+        "description": "Offrez le cadeau idéal qui ne se démode jamais. Laissez vos amis et vos proches choisir exactement ce qu’ils veulent parmi toute notre collection.",
+        "purchaseLabel": "Acheter",
+        "checkBalanceLabel": "Vérifier le solde",
+        "expiresAtLabel": "Valable jusqu’au",
+        "CheckBalance": {
+            "title": "Vérifier le solde",
+            "description": "Vous pouvez vérifier le solde et obtenir des informations sur votre chèque-cadeau en saisissant le code dans la case ci-dessous.",
+            "inputLabel": "Code",
+            "inputPlaceholder": "Saisir le code",
+            "purchasedDateLabel": "Acheté(s",
+            "senderLabel": "De",
+            "Errors": {
+                "invalidCode": "Le code du chèque-cadeau que vous avez saisi n’est pas valide. Veuillez vérifier le code et réessayer.",
+                "codeRequired": "Veuillez saisir un code de chèque-cadeau.",
+                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
+            }
+        },
+        "Purchase": {
+            "breadcrumbTitle": "Acheter un chèque-cadeau",
+            "title": "Chèque-cadeau numérique",
+            "description": "Découvrez nos chèques-cadeaux, parfaits pour toutes les occasions. Choisissez le montant et personnalisez votre message.",
+            "successMessage": "Le chèque-cadeau a été ajouté à <cartLink> votre panier</cartLink>",
+            "missingCart": "Panier introuvable. Veuillez réessayer plus tard.",
+            "unknownError": "Erreur inconnue. Veuillez réessayer plus tard.",
+            "Form": {
+                "amountLabel": "Montant",
+                "customAmountLabel": "Montant (entre {minAmount} et {maxAmount})",
+                "selectAmountPlaceholder": "Sélectionnez un montant",
+                "customAmountPlaceholder": "Entrez un montant personnalisé",
+                "senderNameLabel": "Votre nom",
+                "senderEmailLabel": "Votre adresse e-mail",
+                "recipientNameLabel": "Nom du destinataire",
+                "recipientEmailLabel": "Adresse e-mail du destinataire",
+                "namePlaceholder": "Saisissez un nom",
+                "emailPlaceholder": "Saisir l'adresse e-mail",
+                "messageLabel": "Message",
+                "messagePlaceholder": "Veuillez saisir votre message (facultatif)",
+                "nonRefundableCheckboxLabel": "Je reconnais que les chèques-cadeaux ne sont pas remboursables",
+                "expiryCheckboxLabel": "Je reconnais que ce chèque-cadeau expirera le {expiryDate}",
+                "ctaLabel": "Ajouter au panier",
+                "Errors": {
+                    "amountRequired": "Veuillez sélectionner ou saisir un montant de chèque-cadeau.",
+                    "amountInvalid": "Veuillez sélectionner un montant de chèque-cadeau valide.",
+                    "amountOutOfRange": "Veuillez saisir un montant entre {minAmount} et {maxAmount}.",
+                    "unexpectedSettingsError": "Une erreur inattendue s’est produite lors de la récupération des paramètres du chèque-cadeau. Veuillez réessayer plus tard."
+                }
+            }
         }
     }
 }

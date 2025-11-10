@@ -28,6 +28,9 @@ export interface Product {
   readonly inventoryLevel?: number;
   readonly inventoryWarningLevel?: number;
   readonly inventoryTracking?: 'none' | 'product' | 'variant';
+  readonly customUrl: {
+    url: string;
+  };
 }
 
 export interface CreateVariantData {
@@ -58,6 +61,11 @@ export interface CreateProductData {
   inventoryLevel?: number;
   inventoryWarningLevel?: number;
   inventoryTracking?: 'none' | 'product' | 'variant';
+  customUrl?: {
+    url: string;
+    isCustomized?: boolean;
+    createRedirect?: boolean;
+  };
 }
 
 export interface Category {

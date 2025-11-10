@@ -159,10 +159,19 @@
                 "summaryTotal": "Total",
                 "destination": "Destino",
                 "destinationWithCount": "Destino {número, número}/{total, número}",
+                "digitalDelivery": "Entrega digital a {email}",
                 "subtotal": "Subtotal",
                 "shipping": "Envío",
                 "tax": "Impuesto",
-                "orderSummary": "Resumen del pedido"
+                "orderSummary": "Resumen del pedido",
+                "paymentMethodsLabel": "{count, plural, =1 {Método de pago} other {Métodos de pago}}",
+                "paymentEndingInLabel": "Con terminación en",
+                "PaymentMethods": {
+                    "creditCard": "Tarjeta de crédito",
+                    "giftCertificate": "Certificado de regalo",
+                    "storeCredit": "Crédito de la tienda",
+                    "other": "Otro"
+                }
             }
         },
         "Addresses": {
@@ -375,6 +384,16 @@
                 "noShippingOptions": "No hay opciones de envío disponibles para tu dirección"
             }
         },
+        "GiftCertificate": {
+            "giftCertificate": "Certificado de regalo",
+            "giftCertificateCode": "Código del certificado de regalo",
+            "removeGiftCertificate": "Eliminar certificado de regalo",
+            "apply": "Aplicar",
+            "to": "De",
+            "message": "Mensaje",
+            "invalidGiftCertificate": "Ingrese un código de certificado de regalo válido",
+            "cartNotFound": "No se encontró ninguna cookie de cartId."
+        },
         "Empty": {
             "title": "Su carrito está vacío.",
             "subtitle": "Agrega algunos productos para comenzar.",
@@ -526,6 +545,95 @@
             "placeholder": "Ingresa tu correo electrónico",
             "description": "Mantente al día con las últimas noticias y ofertas de nuestra tienda.",
             "success": "¡Gracias por tu interés! ¡La función de boletín llegará pronto!"
+        },
+        "ConsentManager": {
+            "Common": {
+                "rejectAll": "Rechazar todo",
+                "acceptAll": "Aceptar todo",
+                "customize": "Personalizar",
+                "save": "Guardar la configuración"
+            },
+            "CookieBanner": {
+                "title": "Valoramos su privacidad",
+                "description": "Este sitio emplea cookies para mejorar su experiencia de navegación, analizar el tráfico del sitio y mostrar contenido personalizado."
+            },
+            "Dialog": {
+                "title": "Configuración de privacidad",
+                "description": "Personaliza tu configuración de privacidad aquí. Puede elegir qué tipos de cookies y tecnologías de seguimiento le gustaría permitir."
+            },
+            "ConsentTypes": {
+                "necessary": {
+                    "title": "Estrictamente necesario",
+                    "description": "Estas cookies son Essentials para que el sitio web funcione correctamente y no se pueden desactivar."
+                },
+                "functionality": {
+                    "title": "Funcionalidad",
+                    "description": "Estas cookies permiten mejorar la funcionalidad y la personalización del sitio web."
+                },
+                "marketing": {
+                    "title": "Marketing",
+                    "description": "Estas cookies se emplean para ofrecer anuncios relevantes y realizar un seguimiento de su efectividad."
+                },
+                "measurement": {
+                    "title": "DATOS ANALÍTICOS",
+                    "description": "Estas cookies nos ayudan a comprender cómo interactúan los visitantes con el sitio web y mejorar su rendimiento."
+                },
+                "experience": {
+                    "title": "Experiencia",
+                    "description": "Estas cookies nos ayudan a brindar una mejor experiencia de usuario y probar nuevas funciones."
+                }
+            }
+        }
+    },
+    "GiftCertificates": {
+        "title": "Certificados de regalo",
+        "description": "Regala el regalo perfecto que nunca pasa de moda. Deja que tus colegas y seres queridos elijan exactamente lo que quieren de toda nuestra colección.",
+        "purchaseLabel": "Comprar ahora",
+        "checkBalanceLabel": "Consultar saldo",
+        "expiresAtLabel": "Válido hasta",
+        "CheckBalance": {
+            "title": "Consultar saldo",
+            "description": "Puede consultar el saldo y obtener la información sobre su certificado de regalo escribiendo el código en el cuadro a continuación.",
+            "inputLabel": "Código",
+            "inputPlaceholder": "Ingresar el código",
+            "purchasedDateLabel": "Comprado",
+            "senderLabel": "Para",
+            "Errors": {
+                "invalidCode": "El código del certificado de regalo que ingresó no es válido. Verifique el código e inténtelo de nuevo.",
+                "codeRequired": "Ingresa el código del certificado de regalo.",
+                "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
+            }
+        },
+        "Purchase": {
+            "breadcrumbTitle": "Comprar certificado de regalo",
+            "title": "Certificado de regalo digital",
+            "description": "Explore nuestros certificados de regalo, perfectos para cualquier ocasión. Elige la cantidad y personaliza tu mensaje.",
+            "successMessage": "Se ha agregado un certificado de regalo a <cartLink> su carrito</cartLink>",
+            "missingCart": "Carrito no encontrado. Vuelva a intentarlo más tarde.",
+            "unknownError": "Error desconocido. Vuelva a intentarlo más tarde.",
+            "Form": {
+                "amountLabel": "Monto",
+                "customAmountLabel": "Importe (entre {minAmount} y {maxAmount})",
+                "selectAmountPlaceholder": "Selecciona una cantidad",
+                "customAmountPlaceholder": "Ingrese la cantidad personalizada",
+                "senderNameLabel": "Tu nombre",
+                "senderEmailLabel": "Tu correo electrónico",
+                "recipientNameLabel": "Nombre del destinatario",
+                "recipientEmailLabel": "Correo electrónico del destinatario",
+                "namePlaceholder": "Ingrese el nombre",
+                "emailPlaceholder": "Ingresa el correo electrónico",
+                "messageLabel": "Mensaje",
+                "messagePlaceholder": "Ingrese su mensaje (opcional)",
+                "nonRefundableCheckboxLabel": "Acepto que los certificados de regalo no son reembolsables",
+                "expiryCheckboxLabel": "Reconozco que este Certificado de Regalo caducará el {expiryDate}",
+                "ctaLabel": "Agregar al carrito",
+                "Errors": {
+                    "amountRequired": "Seleccione o ingrese el monto de un certificado de regalo.",
+                    "amountInvalid": "Seleccione un monto de certificado de regalo válido.",
+                    "amountOutOfRange": "Ingrese una cantidad entre {minAmount} y {maxAmount}.",
+                    "unexpectedSettingsError": "Se produjo un error inesperado al recuperar la configuración del certificado de regalo. Intente de nuevo más tarde."
+                }
+            }
         }
     }
 }

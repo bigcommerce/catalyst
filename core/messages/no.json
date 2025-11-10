@@ -159,10 +159,19 @@
                 "summaryTotal": "Totalbeløp",
                 "destination": "Mål",
                 "destinationWithCount": "Destinasjon {number, number}/{total, number}",
+                "digitalDelivery": "Digital levering til {email}",
                 "subtotal": "Delsum",
                 "shipping": "Frakt",
                 "tax": "Avgift",
-                "orderSummary": "Bestillingssammendrag"
+                "orderSummary": "Bestillingssammendrag",
+                "paymentMethodsLabel": "{count, plural, =1 {Betalingsmåte} other {Betalingsmåter}}",
+                "paymentEndingInLabel": "Slutter på",
+                "PaymentMethods": {
+                    "creditCard": "Kredittkort",
+                    "giftCertificate": "Gavekort",
+                    "storeCredit": "Butikkreditt",
+                    "other": "Annet"
+                }
             }
         },
         "Addresses": {
@@ -375,6 +384,16 @@
                 "noShippingOptions": "Det finnes ingen tilgjengelige forsendelsesalternativer for adressen din"
             }
         },
+        "GiftCertificate": {
+            "giftCertificate": "Gavekort",
+            "giftCertificateCode": "Gavekortkode",
+            "removeGiftCertificate": "Fjern gavekortet",
+            "apply": "Bruk",
+            "to": "Til",
+            "message": "Melding",
+            "invalidGiftCertificate": "Skriv inn en gyldig gavekortkode",
+            "cartNotFound": "Ingen cartId-informasjonskapsel ble funnet."
+        },
         "Empty": {
             "title": "Handlekurven din er tom.",
             "subtitle": "Legg til noen produkter for å komme i gang.",
@@ -526,6 +545,95 @@
             "placeholder": "Skriv inn epostadressen din",
             "description": "Hold deg oppdatert med de siste nyhetene og tilbudene fra butikken vår.",
             "success": "Takk for interessen! Nyhetsbrevfunksjonen kommer snart!"
+        },
+        "ConsentManager": {
+            "Common": {
+                "rejectAll": "Avvis alle",
+                "acceptAll": "Aksepter alle",
+                "customize": "Tilpass",
+                "save": "Lagre innstillinger"
+            },
+            "CookieBanner": {
+                "title": "Vi verdsetter personvernet ditt",
+                "description": "Dette nettstedet bruker informasjonskapsler for å forbedre nettopplevelsen, analysere trafikken på nettstedet, og vise personlig tilpasset innhold."
+            },
+            "Dialog": {
+                "title": "Personverninnstillinger",
+                "description": "Tilpass personverninnstillingene dine her. Du kan velge hvilke typer informasjonskapsler og sporingsteknologier du ønsker å tillate."
+            },
+            "ConsentTypes": {
+                "necessary": {
+                    "title": "Strengt nødvendig",
+                    "description": "Disse informasjonskapslene er avgjørende for at nettsiden skal fungere skikkelig og kan ikke deaktiveres."
+                },
+                "functionality": {
+                    "title": "Funksjonalitet",
+                    "description": "Disse informasjonskapslene muliggjør forbedret funksjonalitet og personalisering av nettstedet."
+                },
+                "marketing": {
+                    "title": "Markedsføring",
+                    "description": "Disse informasjonskapslene brukes til å levere relevante annonser og spore effektiviteten deres."
+                },
+                "measurement": {
+                    "title": "Analyse",
+                    "description": "Disse informasjonskapslene hjelper oss med å forstå hvordan besøkende samhandler med nettstedet og forbedre ytelsen."
+                },
+                "experience": {
+                    "title": "Løsning",
+                    "description": "Disse informasjonskapslene hjelper oss med å gi en bedre brukeropplevelse og teste nye funksjoner."
+                }
+            }
+        }
+    },
+    "GiftCertificates": {
+        "title": "Gavekort",
+        "description": "Gi den perfekte gaven som aldri går av moten. La venner og kjære velge akkurat det de ønsker fra hele kolleksjonen vår.",
+        "purchaseLabel": "Kjøp nå",
+        "checkBalanceLabel": "Sjekk saldo",
+        "expiresAtLabel": "Gyldig til og med",
+        "CheckBalance": {
+            "title": "Sjekk saldo",
+            "description": "Du kan sjekke saldoen og få informasjon om gavekortet ved å skrive inn koden i boksen nedenfor.",
+            "inputLabel": "Kode",
+            "inputPlaceholder": "Skriv inn kode",
+            "purchasedDateLabel": "Kjøpt",
+            "senderLabel": "Fra",
+            "Errors": {
+                "invalidCode": "Gavekortkoden du skrev inn er ugyldig. Sjekk koden og prøv igjen.",
+                "codeRequired": "Vennligst skriv inn en gavekortkode.",
+                "somethingWentWrong": "Noe gikk galt. Prøv igjen senere."
+            }
+        },
+        "Purchase": {
+            "breadcrumbTitle": "Kjøp et gavekort",
+            "title": "Digitalt gavekort",
+            "description": "Utforsk gavekortene våre, perfekte for enhver anledning. Velg beløpet og tilpass meldingen.",
+            "successMessage": "Gavekort ble lagt til <cartLink> i handlekurven</cartLink>",
+            "missingCart": "Handlekurv ikke funnet. Prøv på nytt senere.",
+            "unknownError": "Ukjent feil. Prøv på nytt senere.",
+            "Form": {
+                "amountLabel": "Beløp",
+                "customAmountLabel": "Beløp (mellom {minAmount} og {maxAmount})",
+                "selectAmountPlaceholder": "Velg et beløp",
+                "customAmountPlaceholder": "Skriv inn egendefinert beløp",
+                "senderNameLabel": "Navnet ditt",
+                "senderEmailLabel": "E-postadressen din",
+                "recipientNameLabel": "Mottakers navn",
+                "recipientEmailLabel": "Mottakers e-postadresse",
+                "namePlaceholder": "Skriv inn et navn",
+                "emailPlaceholder": "Skriv inn e-post",
+                "messageLabel": "Melding",
+                "messagePlaceholder": "Skriv inn melding (valgfritt)",
+                "nonRefundableCheckboxLabel": "Jeg godtar at gavekort ikke kan refunderes",
+                "expiryCheckboxLabel": "Jeg erkjenner at dette gavekortet utløper {expiryDate}",
+                "ctaLabel": "Legg i handlekurv",
+                "Errors": {
+                    "amountRequired": "Velg eller skriv inn et beløp for gavekortet.",
+                    "amountInvalid": "Velg et gyldig gavekortbeløp.",
+                    "amountOutOfRange": "Skriv inn et beløp mellom {minAmount} og {maxAmount}.",
+                    "unexpectedSettingsError": "Det oppstod en uventet feil under henting av innstillinger for gavekort. Prøv på nytt senere."
+                }
+            }
         }
     }
 }

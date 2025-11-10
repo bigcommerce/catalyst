@@ -159,10 +159,19 @@
                 "summaryTotal": "Total",
                 "destination": "Destino",
                 "destinationWithCount": "Destino {número, número}/{total, número}",
+                "digitalDelivery": "Digital delivery to {email}",
                 "subtotal": "Subtotal",
                 "shipping": "Envio",
                 "tax": "Imposto",
-                "orderSummary": "Resumo do pedido"
+                "orderSummary": "Resumo do pedido",
+                "paymentMethodsLabel": "{count, plural, =1 {Payment method} other {Payment methods}}",
+                "paymentEndingInLabel": "ending in",
+                "PaymentMethods": {
+                    "creditCard": "Cartão de crédito",
+                    "giftCertificate": "Vale-presente",
+                    "storeCredit": "Crédito na loja",
+                    "other": "Outro"
+                }
             }
         },
         "Addresses": {
@@ -375,6 +384,16 @@
                 "noShippingOptions": "Não há opções de envio disponíveis para o seu endereço"
             }
         },
+        "GiftCertificate": {
+            "giftCertificate": "Vale-presente",
+            "giftCertificateCode": "Código do vale-presente",
+            "removeGiftCertificate": "Remove gift certificate",
+            "apply": "Aplicar",
+            "to": "para",
+            "message": "Mensagem",
+            "invalidGiftCertificate": "Please enter a valid gift certificate code",
+            "cartNotFound": "Nenhum cookie cartId foi encontrado."
+        },
         "Empty": {
             "title": "Seu carrinho está vazio.",
             "subtitle": "Adicione alguns produtos para começar.",
@@ -526,6 +545,95 @@
             "placeholder": "Digite seu email",
             "description": "Fique por dentro das últimas novidades e ofertas da nossa loja.",
             "success": "Agradecemos o seu interesse! O recurso de newsletter estará disponível em breve!"
+        },
+        "ConsentManager": {
+            "Common": {
+                "rejectAll": "Reject All",
+                "acceptAll": "Accept All",
+                "customize": "Personalizar",
+                "save": "Salvar configurações"
+            },
+            "CookieBanner": {
+                "title": "We value your privacy",
+                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+            },
+            "Dialog": {
+                "title": "Privacy Settings",
+                "description": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you would like to allow."
+            },
+            "ConsentTypes": {
+                "necessary": {
+                    "title": "Strictly Necessary",
+                    "description": "These cookies are essential for the website to function properly and cannot be disabled."
+                },
+                "functionality": {
+                    "title": "Functionality",
+                    "description": "These cookies enable enhanced functionality and personalization of the website."
+                },
+                "marketing": {
+                    "title": "Marketing",
+                    "description": "These cookies are used to deliver relevant advertisements and track their effectiveness."
+                },
+                "measurement": {
+                    "title": "Análise",
+                    "description": "These cookies help us understand how visitors interact with the website and improve its performance."
+                },
+                "experience": {
+                    "title": "Experiência",
+                    "description": "These cookies help us provide a better user experience and test new features."
+                }
+            }
+        }
+    },
+    "GiftCertificates": {
+        "title": "Vales-presente",
+        "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
+        "purchaseLabel": "Comprar agora",
+        "checkBalanceLabel": "Check balance",
+        "expiresAtLabel": "Valid thru",
+        "CheckBalance": {
+            "title": "Check balance",
+            "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
+            "inputLabel": "Código",
+            "inputPlaceholder": "Informe o código",
+            "purchasedDateLabel": "Comprados",
+            "senderLabel": "De",
+            "Errors": {
+                "invalidCode": "The gift certificate code you entered is invalid. Please check the code and try again.",
+                "codeRequired": "Insira um código de vale-presente.",
+                "somethingWentWrong": "Ocorreu um erro. Tente novamente mais tarde."
+            }
+        },
+        "Purchase": {
+            "breadcrumbTitle": "Purchase a gift certificate",
+            "title": "Digital gift certificate",
+            "description": "Explore our gift certificates, perfect for any occasion. Choose the amount and personalize your message.",
+            "successMessage": "Gift certificate has been added to <cartLink> your cart</cartLink>",
+            "missingCart": "Carrinho não encontrado. Tente novamente mais tarde.",
+            "unknownError": "Erro desconhecido. Tente novamente mais tarde.",
+            "Form": {
+                "amountLabel": "Quantidade",
+                "customAmountLabel": "Amount (between {minAmount} and {maxAmount})",
+                "selectAmountPlaceholder": "Select an amount",
+                "customAmountPlaceholder": "Enter custom amount",
+                "senderNameLabel": "Your name",
+                "senderEmailLabel": "Your email",
+                "recipientNameLabel": "Recipient's name",
+                "recipientEmailLabel": "Recipient's email",
+                "namePlaceholder": "Enter name",
+                "emailPlaceholder": "Informe o e-mail",
+                "messageLabel": "Mensagem",
+                "messagePlaceholder": "Enter your message (optional)",
+                "nonRefundableCheckboxLabel": "I agree that Gift Certificates are non-refundable",
+                "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
+                "ctaLabel": "Adicionar ao carrinho",
+                "Errors": {
+                    "amountRequired": "Please select or enter a gift certificate amount.",
+                    "amountInvalid": "Please select a valid gift certificate amount.",
+                    "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
+                    "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
+                }
+            }
         }
     }
 }

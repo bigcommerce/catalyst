@@ -159,10 +159,19 @@
                 "summaryTotal": "合計",
                 "destination": "目的地",
                 "destinationWithCount": "目的地 {number, number}／{total, number}",
+                "digitalDelivery": "{email}へのデジタル配信",
                 "subtotal": "小計",
                 "shipping": "配送",
                 "tax": "税金",
-                "orderSummary": "注文概要"
+                "orderSummary": "注文概要",
+                "paymentMethodsLabel": "{count, plural, =1 {支払い方法} other {支払い方法}}",
+                "paymentEndingInLabel": "終了",
+                "PaymentMethods": {
+                    "creditCard": "クレジットカード",
+                    "giftCertificate": "ギフト券",
+                    "storeCredit": "ストアクレジット",
+                    "other": "その他"
+                }
             }
         },
         "Addresses": {
@@ -375,6 +384,16 @@
                 "noShippingOptions": "ご指定の住所で利用できる配送オプションはありません"
             }
         },
+        "GiftCertificate": {
+            "giftCertificate": "ギフト券",
+            "giftCertificateCode": "ギフト券コード",
+            "removeGiftCertificate": "デモ ギフト証明書",
+            "apply": "適用",
+            "to": "送信先",
+            "message": "メッセージ",
+            "invalidGiftCertificate": "有効なギフト券コードを入力してください",
+            "cartNotFound": "CartId Cookie が見つかりませんでした。"
+        },
         "Empty": {
             "title": "お客様のカートは空です。",
             "subtitle": "開始するには、商品をいくつか追加してください。",
@@ -526,6 +545,95 @@
             "placeholder": "メールアドレスを入力してください",
             "description": "当店の最新ニュースやオファーをぜひチェックしてください。",
             "success": "ご関心をお寄せいただきありがとうございます！ニュースレター機能は近日開始予定です！"
+        },
+        "ConsentManager": {
+            "Common": {
+                "rejectAll": "すべて拒否",
+                "acceptAll": "すべて受け入れる",
+                "customize": "カスタム",
+                "save": "設定を保存"
+            },
+            "CookieBanner": {
+                "title": "私たちはあなたのプライバシーを大切にしています",
+                "description": "このサイトでは、ブラウジング体験の向上、サイトトラフィックの分析、パーソナライズされたコンテンツの表示のために Cookie を使用しています。"
+            },
+            "Dialog": {
+                "title": "プライバシー設定",
+                "description": "ここでプライバシー設定をカスタマイズします。許可する Cookie と追跡テクノロジーの種類を選択できます。"
+            },
+            "ConsentTypes": {
+                "necessary": {
+                    "title": "厳密に必要な",
+                    "description": "これらの Cookie は Web サイトが適切に機能するために不可欠であり、無効にすることはできません。"
+                },
+                "functionality": {
+                    "title": "機能性",
+                    "description": "これらの Cookie により、Web サイトの機能性とパーソナライズが向上します。"
+                },
+                "marketing": {
+                    "title": "マーケティング",
+                    "description": "これらの Cookie は、関連性の高い広告を配信し、その効果を追跡するために使用されます。"
+                },
+                "measurement": {
+                    "title": "分析",
+                    "description": "これらの Cookie は、訪問者が Web サイトとどのようにやり取りしているかを理解し、そのパフォーマンスを向上させるのに役立ちます。"
+                },
+                "experience": {
+                    "title": "環境",
+                    "description": "これらの Cookie は、より良いユーザー エクスペリエンスを提供し、新しい機能をテストするのに役立ちます。"
+                }
+            }
+        }
+    },
+    "GiftCertificates": {
+        "title": "ギフト券",
+        "description": "流行遅れにならない完璧なギフトを贈りましょう。友人や大切な人に、当社の全コレクションから欲しいものを選んでもらいましょう。",
+        "purchaseLabel": "今すぐ購入する",
+        "checkBalanceLabel": "残高を確認する",
+        "expiresAtLabel": "有効期限",
+        "CheckBalance": {
+            "title": "残高を確認する",
+            "description": "下のボックスにコードを入力すると、残高を確認したり、ギフト券に関する情報を取得したりできます。",
+            "inputLabel": "コード",
+            "inputPlaceholder": "コードを入力",
+            "purchasedDateLabel": "購入済み",
+            "senderLabel": "から",
+            "Errors": {
+                "invalidCode": "入力したギフト券コードが無効です。コードを確認してもう一度お試しください。",
+                "codeRequired": "ギフト券コードを入力してください。",
+                "somethingWentWrong": "何か問題が発生しました。後でもう一度やり直してください。"
+            }
+        },
+        "Purchase": {
+            "breadcrumbTitle": "ギフト券を購入する",
+            "title": "デジタルギフト券",
+            "description": "あらゆる機会に最適なギフト券をご覧ください。金額を選択し、メッセージをカスタマイズします。",
+            "successMessage": "ギフト券が追加されました<cartLink>カート</cartLink>",
+            "missingCart": "カートが見つかりません。しばらくしてから再度お試しください。",
+            "unknownError": "不明なエラーです。しばらくしてから再度お試しください。",
+            "Form": {
+                "amountLabel": "金額",
+                "customAmountLabel": "金額（ {minAmount}から{maxAmount}の間）",
+                "selectAmountPlaceholder": "金額を選択",
+                "customAmountPlaceholder": "カスタム金額を入力",
+                "senderNameLabel": "あなたの名前",
+                "senderEmailLabel": "あなたのメールアドレス",
+                "recipientNameLabel": "受取人の名前",
+                "recipientEmailLabel": "受信者のメールアドレス",
+                "namePlaceholder": "名前を入力",
+                "emailPlaceholder": "Eメールを入力してください",
+                "messageLabel": "メッセージ",
+                "messagePlaceholder": "メッセージを入力してください（オプション）",
+                "nonRefundableCheckboxLabel": "ギフト券は返金不可であることに同意します",
+                "expiryCheckboxLabel": "このギフト券は{expiryDate}に有効期限が切れることに同意します。",
+                "ctaLabel": "カートに追加",
+                "Errors": {
+                    "amountRequired": "ギフト券の金額を選択または入力してください。",
+                    "amountInvalid": "有効なギフト券の金額を選択してください。",
+                    "amountOutOfRange": "{minAmount}から{maxAmount}の間の金額を入力してください。",
+                    "unexpectedSettingsError": "ギフト券設定の取得中に予期しないエラーが発生しました。しばらくしてから再度お試しください"
+                }
+            }
         }
     }
 }

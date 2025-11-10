@@ -159,10 +159,19 @@
                 "summaryTotal": "Total",
                 "destination": "Destination",
                 "destinationWithCount": "Destination {number, number}/{total, number}",
+                "digitalDelivery": "Digital leverans till {email}",
                 "subtotal": "Delsumma",
                 "shipping": "Frakt",
                 "tax": "Beskatta",
-                "orderSummary": "Beställningssammanfattning"
+                "orderSummary": "Beställningssammanfattning",
+                "paymentMethodsLabel": "{antal, plural, =1 {Betalningsmetod} other {Betalningsmetoder}}",
+                "paymentEndingInLabel": "Slutar på",
+                "PaymentMethods": {
+                    "creditCard": "Kreditkort",
+                    "giftCertificate": "Presentkort",
+                    "storeCredit": "Butikskredit",
+                    "other": "Övrigt"
+                }
             }
         },
         "Addresses": {
@@ -375,6 +384,16 @@
                 "noShippingOptions": "Det finns inga tillgängliga fraktalternativ för din adress"
             }
         },
+        "GiftCertificate": {
+            "giftCertificate": "Presentkort",
+            "giftCertificateCode": "Presentkort kod",
+            "removeGiftCertificate": "Ta bort presentkortet",
+            "apply": "Tillämpa",
+            "to": "Till",
+            "message": "Meddelande",
+            "invalidGiftCertificate": "Ange en giltig presentkortskod",
+            "cartNotFound": "Ingen cartId-kaka hittades."
+        },
         "Empty": {
             "title": "Din kundvagn är tom.",
             "subtitle": "Lägg till några produkter för att komma igång.",
@@ -526,6 +545,95 @@
             "placeholder": "Ange din e-postadress",
             "description": "Håll dig uppdaterad med de senaste nyheterna och erbjudandena från vår butik.",
             "success": "Tack för ditt intresse! Funktionen för nyhetsbrev kommer snart!"
+        },
+        "ConsentManager": {
+            "Common": {
+                "rejectAll": "Avvisa allt",
+                "acceptAll": "Godkänn alla",
+                "customize": "Anpassa",
+                "save": "Spara inställningar"
+            },
+            "CookieBanner": {
+                "title": "Vi värdesätter din integritet",
+                "description": "Denna webbplats använder cookies för att förbättra din surfupplevelse, analysera webbplatstrafik och visa personligt innehåll."
+            },
+            "Dialog": {
+                "title": "Sekretessinställningar",
+                "description": "Anpassa dina sekretessinställningar här. Du kan välja vilka typer av cookies och spårningstekniker du vill tillåta."
+            },
+            "ConsentTypes": {
+                "necessary": {
+                    "title": "Strikt nödvändigt",
+                    "description": "Dessa cookies är viktiga för att webbplatsen ska fungera korrekt och kan inte inaktiveras."
+                },
+                "functionality": {
+                    "title": "Funktionalitet",
+                    "description": "Dessa cookies möjliggör förbättrad funktionalitet och personalisering av webbplatsen."
+                },
+                "marketing": {
+                    "title": "Marknadsföring",
+                    "description": "Dessa cookies används för att leverera relevanta annonser och spåra deras effektivitet."
+                },
+                "measurement": {
+                    "title": "Analytics",
+                    "description": "Dessa cookies hjälper oss att förstå hur besökare interagerar med webbplatsen och förbättra dess prestanda."
+                },
+                "experience": {
+                    "title": "Erfarenhet",
+                    "description": "Dessa cookies hjälper oss att ge en bättre användarupplevelse och testa nya funktioner."
+                }
+            }
+        }
+    },
+    "GiftCertificates": {
+        "title": "Presentkort",
+        "description": "Ge den perfekta gåvan som aldrig går ur stil. Låt vänner och nära och kära välja exakt vad de vill ha från hela vår kollektion.",
+        "purchaseLabel": "Köp nu",
+        "checkBalanceLabel": "Kontrollera saldot",
+        "expiresAtLabel": "Giltigt till och med",
+        "CheckBalance": {
+            "title": "Kontrollera saldot",
+            "description": "Du kan kontrollera saldot och få information om ditt presentkort genom att skriva in koden i rutan nedan.",
+            "inputLabel": "Kod",
+            "inputPlaceholder": "Ange kod",
+            "purchasedDateLabel": "Köpt",
+            "senderLabel": "Från",
+            "Errors": {
+                "invalidCode": "Presentkortskoden du angav är ogiltig. Var god kontrollera koden och försök igen.",
+                "codeRequired": "Ange en presentkortskod.",
+                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+            }
+        },
+        "Purchase": {
+            "breadcrumbTitle": "Köp presentkort",
+            "title": "Digitalt presentkort",
+            "description": "Utforska våra presentkort, perfekta för alla tillfällen. Välj ett belopp och anpassa ditt meddelande.",
+            "successMessage": "Presentkortet har lagts till i <cartLink> er varukorg</cartLink>",
+            "missingCart": "Kundvagnen hittades inte. Försök igen senare.",
+            "unknownError": "Okänt fel. Försök igen senare.",
+            "Form": {
+                "amountLabel": "Belopp",
+                "customAmountLabel": "Belopp (mellan {minAmount} och {maxAmount})",
+                "selectAmountPlaceholder": "Välj ett belopp",
+                "customAmountPlaceholder": "Ange ett anpassat belopp",
+                "senderNameLabel": "Ditt namn",
+                "senderEmailLabel": "Din E-post",
+                "recipientNameLabel": "Mottagarens namn",
+                "recipientEmailLabel": "Mottagarens e-postadress",
+                "namePlaceholder": "Ange ett namn",
+                "emailPlaceholder": "Ange e-postadress",
+                "messageLabel": "Meddelande",
+                "messagePlaceholder": "Ange ert meddelande (valfritt)",
+                "nonRefundableCheckboxLabel": "Jag godkänner att presentkort inte återbetalas",
+                "expiryCheckboxLabel": "Jag bekräftar att detta presentkort kommer att upphöra att gälla den {expiryDate}",
+                "ctaLabel": "Lägg till i kundvagn",
+                "Errors": {
+                    "amountRequired": "Var god välj eller ange ett presentkortsbelopp.",
+                    "amountInvalid": "Var god välj ett giltigt presentkortsbelopp.",
+                    "amountOutOfRange": "Ange ett belopp mellan {minAmount} och {maxAmount}.",
+                    "unexpectedSettingsError": "Ett oväntat fel inträffade när presentkortets inställningar hämtades. Försök igen senare."
+                }
+            }
         }
     }
 }

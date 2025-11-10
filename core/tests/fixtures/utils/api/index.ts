@@ -4,6 +4,7 @@ import { CurrenciesApi, currenciesHttpClient } from '~/tests/fixtures/utils/api/
 import { CustomersApi, customersHttpClient } from '~/tests/fixtures/utils/api/customers';
 import { OrdersApi, ordersHttpClient } from '~/tests/fixtures/utils/api/orders';
 import { PromotionsApi, promotionsHttpClient } from '~/tests/fixtures/utils/api/promotions';
+import { RedirectsApi, redirectsHttpClient } from '~/tests/fixtures/utils/api/redirects';
 import { SettingsApi, settingsHttpClient } from '~/tests/fixtures/utils/api/settings';
 import { WebPagesApi, webPagesHttpClient } from '~/tests/fixtures/utils/api/webpages';
 
@@ -16,6 +17,7 @@ export interface ApiClient {
   promotions: PromotionsApi;
   settings: SettingsApi;
   webPages: WebPagesApi;
+  redirects: RedirectsApi;
 }
 
 export const httpApiClient: ApiClient = {
@@ -27,4 +29,5 @@ export const httpApiClient: ApiClient = {
   promotions: promotionsHttpClient,
   settings: settingsHttpClient,
   webPages: webPagesHttpClient,
+  redirects: redirectsHttpClient,
 };

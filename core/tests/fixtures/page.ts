@@ -28,6 +28,24 @@ export function extendedPage(page: Page) {
   return pageWithOverrides;
 }
 
+function normalizeForTrailingSlashEnvVar(url: string): string {
+  const [pathname = '/', searchAndHash = ''] = url.split(/([?#].*)/);
+
+  if (!testEnv.TRAILING_SLASH) {
+    if (pathname !== '/' && pathname.endsWith('/')) {
+      return pathname.slice(0, -1) + searchAndHash;
+    }
+
+    return pathname + searchAndHash;
+  }
+
+  if (pathname !== '/' && !pathname.endsWith('/')) {
+    return `${pathname}/${searchAndHash}`;
+  }
+
+  return pathname + searchAndHash;
+}
+
 // Override expect(page).toHaveURL assertion to ensure we are also checking locale-specific URLs when using relative paths.
 // e.g. expect(page).toHaveURL('/account/orders/') will expect /de/account/orders/ if the locale is set to 'de' and is not the default locale.
 export async function toHaveURL(
@@ -46,7 +64,18 @@ export async function toHaveURL(
   try {
     const expectation = this.isNot ? expect(page).not : expect(page);
     const urlsToCheck = isRelativeLocaleUrl ? [url, `/${testEnv.TESTS_LOCALE}${url}`] : [url];
-    const checks = urlsToCheck.map((u) => expectation.toHaveURL(u, options));
+
+    // This ensures that if you call expect(page).toHaveURL('/my-url/') when TRAILING_SLASH=false, it asserts `/my-url`, and vice-versa.
+    // Trailing slash assertions are updated to respect the TRAILING_SLASH env var.
+    const updatedUrlsToCheck = urlsToCheck.map((urlToCheck) => {
+      if (typeof urlToCheck === 'string') {
+        return normalizeForTrailingSlashEnvVar(urlToCheck);
+      }
+
+      return urlToCheck;
+    });
+
+    const checks = updatedUrlsToCheck.map((u) => expectation.toHaveURL(u, options));
 
     if (this.isNot) {
       // if we are negating the assertion, all checks must be executed
