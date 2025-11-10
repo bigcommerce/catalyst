@@ -159,13 +159,13 @@
                 "summaryTotal": "Total",
                 "destination": "Destination",
                 "destinationWithCount": "Destination {number, number}/{total, number}",
-                "digitalDelivery": "Digital delivery to {email}",
+                "digitalDelivery": "Livraison numérique à {email}",
                 "subtotal": "Sous-total",
                 "shipping": "Livraison",
                 "tax": "Taxes",
                 "orderSummary": "Récapitulatif de la commande",
                 "paymentMethodsLabel": "{count, plural, =1 {Payment method} other {Payment methods}}",
-                "paymentEndingInLabel": "ending in",
+                "paymentEndingInLabel": "Se terminant par",
                 "PaymentMethods": {
                     "creditCard": "Carte de crédit",
                     "giftCertificate": "Chèque-cadeau",
@@ -331,11 +331,11 @@
         "GiftCertificate": {
             "giftCertificate": "Chèque-cadeau",
             "giftCertificateCode": "Code du chèque-cadeau",
-            "removeGiftCertificate": "Remove gift certificate",
+            "removeGiftCertificate": "Supprimer le chèque-cadeau",
             "apply": "Appliquer",
             "to": "À",
             "message": "Message",
-            "invalidGiftCertificate": "Please enter a valid gift certificate code",
+            "invalidGiftCertificate": "Veuillez saisir un code de chèque-cadeau valide",
             "cartNotFound": "Aucun cookie cartId n’a été trouvé."
         },
         "Empty": {
@@ -492,90 +492,90 @@
         },
         "ConsentManager": {
             "Common": {
-                "rejectAll": "Reject All",
-                "acceptAll": "Accept All",
+                "rejectAll": "Tout rejeter",
+                "acceptAll": "Accepter tout",
                 "customize": "Personnaliser",
                 "save": "Enregistrer les paramètres"
             },
             "CookieBanner": {
-                "title": "We value your privacy",
-                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+                "title": "Nous respectons votre vie privée",
+                "description": "Ce site utilise des cookies pour améliorer votre expérience de navigation, analyser le trafic du site et afficher du contenu personnalisé."
             },
             "Dialog": {
-                "title": "Privacy Settings",
-                "description": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you would like to allow."
+                "title": "Paramètres de confidentialité",
+                "description": "Personnalisez vos paramètres de confidentialité ici. Vous pouvez choisir les types de cookies et de technologies de suivi que vous souhaitez autoriser."
             },
             "ConsentTypes": {
                 "necessary": {
-                    "title": "Strictly Necessary",
-                    "description": "These cookies are essential for the website to function properly and cannot be disabled."
+                    "title": "Strictement nécessaire",
+                    "description": "Ces cookies sont essentiels au bon fonctionnement du site web et ne peuvent pas être désactivés."
                 },
                 "functionality": {
-                    "title": "Functionality",
-                    "description": "These cookies enable enhanced functionality and personalization of the website."
+                    "title": "Fonctionnalité",
+                    "description": "Ces cookies permettent d’améliorer la fonctionnalité et la personnalisation du site Web."
                 },
                 "marketing": {
                     "title": "Marketing",
-                    "description": "These cookies are used to deliver relevant advertisements and track their effectiveness."
+                    "description": "Ces cookies sont utilisés pour diffuser des publicités pertinentes et évaluer leur efficacité."
                 },
                 "measurement": {
                     "title": "Statistiques",
-                    "description": "These cookies help us understand how visitors interact with the website and improve its performance."
+                    "description": "Ces cookies nous aident à comprendre comment les visiteurs interagissent avec le site Web et à améliorer ses performances."
                 },
                 "experience": {
                     "title": "Expérience",
-                    "description": "These cookies help us provide a better user experience and test new features."
+                    "description": "Ces cookies nous aident à offrir une meilleure expérience utilisateur et à tester de nouvelles fonctionnalités."
                 }
             }
         }
     },
     "GiftCertificates": {
         "title": "Chèques-cadeaux",
-        "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
+        "description": "Offrez le cadeau idéal qui ne se démode jamais. Laissez vos amis et vos proches choisir exactement ce qu’ils veulent parmi toute notre collection.",
         "purchaseLabel": "Acheter",
-        "checkBalanceLabel": "Check balance",
-        "expiresAtLabel": "Valid thru",
+        "checkBalanceLabel": "Vérifier le solde",
+        "expiresAtLabel": "Valable jusqu’au",
         "CheckBalance": {
-            "title": "Check balance",
-            "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
+            "title": "Vérifier le solde",
+            "description": "Vous pouvez vérifier le solde et obtenir des informations sur votre chèque-cadeau en saisissant le code dans la case ci-dessous.",
             "inputLabel": "Code",
             "inputPlaceholder": "Saisir le code",
             "purchasedDateLabel": "Acheté(s",
             "senderLabel": "De",
             "Errors": {
-                "invalidCode": "The gift certificate code you entered is invalid. Please check the code and try again.",
+                "invalidCode": "Le code du chèque-cadeau que vous avez saisi n’est pas valide. Veuillez vérifier le code et réessayer.",
                 "codeRequired": "Veuillez saisir un code de chèque-cadeau.",
                 "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
             }
         },
         "Purchase": {
-            "breadcrumbTitle": "Purchase a gift certificate",
-            "title": "Digital gift certificate",
-            "description": "Explore our gift certificates, perfect for any occasion. Choose the amount and personalize your message.",
-            "successMessage": "Gift certificate has been added to <cartLink> your cart</cartLink>",
+            "breadcrumbTitle": "Acheter un chèque-cadeau",
+            "title": "Chèque-cadeau numérique",
+            "description": "Découvrez nos chèques-cadeaux, parfaits pour toutes les occasions. Choisissez le montant et personnalisez votre message.",
+            "successMessage": "Le chèque-cadeau a été ajouté à <cartLink> votre panier</cartLink>",
             "missingCart": "Panier introuvable. Veuillez réessayer plus tard.",
             "unknownError": "Erreur inconnue. Veuillez réessayer plus tard.",
             "Form": {
                 "amountLabel": "Montant",
-                "customAmountLabel": "Amount (between {minAmount} and {maxAmount})",
-                "selectAmountPlaceholder": "Select an amount",
-                "customAmountPlaceholder": "Enter custom amount",
-                "senderNameLabel": "Your name",
-                "senderEmailLabel": "Your email",
-                "recipientNameLabel": "Recipient's name",
-                "recipientEmailLabel": "Recipient's email",
-                "namePlaceholder": "Enter name",
+                "customAmountLabel": "Montant (entre {minAmount} et {maxAmount})",
+                "selectAmountPlaceholder": "Sélectionnez un montant",
+                "customAmountPlaceholder": "Entrez un montant personnalisé",
+                "senderNameLabel": "Votre nom",
+                "senderEmailLabel": "Votre adresse e-mail",
+                "recipientNameLabel": "Nom du destinataire",
+                "recipientEmailLabel": "Adresse e-mail du destinataire",
+                "namePlaceholder": "Saisissez un nom",
                 "emailPlaceholder": "Saisir l'adresse e-mail",
                 "messageLabel": "Message",
-                "messagePlaceholder": "Enter your message (optional)",
-                "nonRefundableCheckboxLabel": "I agree that Gift Certificates are non-refundable",
-                "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
+                "messagePlaceholder": "Veuillez saisir votre message (facultatif)",
+                "nonRefundableCheckboxLabel": "Je reconnais que les chèques-cadeaux ne sont pas remboursables",
+                "expiryCheckboxLabel": "Je reconnais que ce chèque-cadeau expirera le {expiryDate}",
                 "ctaLabel": "Ajouter au panier",
                 "Errors": {
-                    "amountRequired": "Please select or enter a gift certificate amount.",
-                    "amountInvalid": "Please select a valid gift certificate amount.",
-                    "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
-                    "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
+                    "amountRequired": "Veuillez sélectionner ou saisir un montant de chèque-cadeau.",
+                    "amountInvalid": "Veuillez sélectionner un montant de chèque-cadeau valide.",
+                    "amountOutOfRange": "Veuillez saisir un montant entre {minAmount} et {maxAmount}.",
+                    "unexpectedSettingsError": "Une erreur inattendue s’est produite lors de la récupération des paramètres du chèque-cadeau. Veuillez réessayer plus tard."
                 }
             }
         }

@@ -159,13 +159,13 @@
                 "summaryTotal": "Totale",
                 "destination": "Destinazione",
                 "destinationWithCount": "Destinazione {number, number}/{total, number}",
-                "digitalDelivery": "Digital delivery to {email}",
+                "digitalDelivery": "Consegna digitale a {email}",
                 "subtotal": "Subtotale",
                 "shipping": "Spedizioni",
                 "tax": "Tasse",
                 "orderSummary": "Riepilogo ordine",
-                "paymentMethodsLabel": "{count, plural, =1 {Payment method} other {Payment methods}}",
-                "paymentEndingInLabel": "ending in",
+                "paymentMethodsLabel": "{count, plural, =1 {Metodo di pagamento} other {Metodi di pagamento}}",
+                "paymentEndingInLabel": "Che termina con",
                 "PaymentMethods": {
                     "creditCard": "Carta di credito",
                     "giftCertificate": "Buono regalo",
@@ -331,11 +331,11 @@
         "GiftCertificate": {
             "giftCertificate": "Buono regalo",
             "giftCertificateCode": "Codice del buono regalo",
-            "removeGiftCertificate": "Remove gift certificate",
+            "removeGiftCertificate": "Rimuovi buono regalo",
             "apply": "Applica",
             "to": "a",
             "message": "Messaggio",
-            "invalidGiftCertificate": "Please enter a valid gift certificate code",
+            "invalidGiftCertificate": "Inserisci un codice del buono regalo valido",
             "cartNotFound": "Nessun cookie cartId trovato."
         },
         "Empty": {
@@ -492,90 +492,90 @@
         },
         "ConsentManager": {
             "Common": {
-                "rejectAll": "Reject All",
-                "acceptAll": "Accept All",
+                "rejectAll": "Rifiuta tutto",
+                "acceptAll": "Accetta tutto",
                 "customize": "Personalizza",
                 "save": "Salva impostazioni"
             },
             "CookieBanner": {
-                "title": "We value your privacy",
-                "description": "This site uses cookies to improve your browsing experience, analyze site traffic, and show personalized content."
+                "title": "Rispettiamo la tua privacy",
+                "description": "Questo sito utilizza i cookie per migliorare la tua esperienza di navigazione, analizzare il traffico del sito e mostrare contenuti personalizzati."
             },
             "Dialog": {
-                "title": "Privacy Settings",
-                "description": "Customize your privacy settings here. You can choose which types of cookies and tracking technologies you would like to allow."
+                "title": "Impostazioni privacy",
+                "description": "Personalizza le impostazioni sulla privacy qui. Puoi scegliere quali tipi di cookie e tecnologie di tracciamento desideri consentire."
             },
             "ConsentTypes": {
                 "necessary": {
-                    "title": "Strictly Necessary",
-                    "description": "These cookies are essential for the website to function properly and cannot be disabled."
+                    "title": "Strettamente necessario",
+                    "description": "Questi cookie sono essenziali per il corretto funzionamento del sito web e non possono essere disattivati."
                 },
                 "functionality": {
-                    "title": "Functionality",
-                    "description": "These cookies enable enhanced functionality and personalization of the website."
+                    "title": "Funzionalità",
+                    "description": "Questi cookie consentono di migliorare la funzionalità e la personalizzazione del sito web."
                 },
                 "marketing": {
                     "title": "Marketing",
-                    "description": "These cookies are used to deliver relevant advertisements and track their effectiveness."
+                    "description": "Questi cookie vengono utilizzati per fornire annunci pubblicitari pertinenti e monitorarne l'efficacia."
                 },
                 "measurement": {
                     "title": "Analisi",
-                    "description": "These cookies help us understand how visitors interact with the website and improve its performance."
+                    "description": "Questi cookie ci aiutano a capire come i visitatori interagiscono con il sito web e a migliorarne le prestazioni."
                 },
                 "experience": {
                     "title": "Esperienza",
-                    "description": "These cookies help us provide a better user experience and test new features."
+                    "description": "Questi cookie ci aiutano a fornire un'esperienza utente migliore e a testare nuove funzionalità."
                 }
             }
         }
     },
     "GiftCertificates": {
         "title": "Buoni regalo",
-        "description": "Give the perfect gift that never goes out of style. Let friends and loved ones choose exactly what they want from our entire collection.",
+        "description": "Fai il regalo perfetto che non passa mai di moda. Lascia che amici e persone care scelgano esattamente ciò che vogliono da tutta la nostra collezione.",
         "purchaseLabel": "Acquista ora",
-        "checkBalanceLabel": "Check balance",
-        "expiresAtLabel": "Valid thru",
+        "checkBalanceLabel": "Controlla il saldo",
+        "expiresAtLabel": "Valido fino a",
         "CheckBalance": {
-            "title": "Check balance",
-            "description": "You can check the balance and get the information about your gift certificate by typing the code in the box below.",
+            "title": "Controlla il saldo",
+            "description": "Puoi controllare il saldo e ottenere informazioni sul tuo buono regalo inserendo il codice nella casella sottostante.",
             "inputLabel": "Codice",
             "inputPlaceholder": "Inserisci codice",
             "purchasedDateLabel": "Acquistato",
             "senderLabel": "Da",
             "Errors": {
-                "invalidCode": "The gift certificate code you entered is invalid. Please check the code and try again.",
+                "invalidCode": "Il codice del buono regalo che hai inserito non è valido. Controlla il codice e riprova.",
                 "codeRequired": "Inserisci un buono regalo.",
                 "somethingWentWrong": "Si è verificato un errore. Riprova più tardi."
             }
         },
         "Purchase": {
-            "breadcrumbTitle": "Purchase a gift certificate",
-            "title": "Digital gift certificate",
-            "description": "Explore our gift certificates, perfect for any occasion. Choose the amount and personalize your message.",
-            "successMessage": "Gift certificate has been added to <cartLink> your cart</cartLink>",
+            "breadcrumbTitle": "Acquista un buono regalo",
+            "title": "Buono regalo digitale",
+            "description": "Scopri i nostri buoni regalo, perfetti per ogni occasione. Scegli l'importo e personalizza il tuo messaggio.",
+            "successMessage": "Il buono regalo è stato aggiunto al <cartLink> tuo carrello</cartLink>",
             "missingCart": "Carrello non trovato. Riprova più tardi.",
             "unknownError": "Errore sconosciuto. Riprova più tardi.",
             "Form": {
                 "amountLabel": "Importo",
-                "customAmountLabel": "Amount (between {minAmount} and {maxAmount})",
-                "selectAmountPlaceholder": "Select an amount",
-                "customAmountPlaceholder": "Enter custom amount",
-                "senderNameLabel": "Your name",
-                "senderEmailLabel": "Your email",
-                "recipientNameLabel": "Recipient's name",
-                "recipientEmailLabel": "Recipient's email",
-                "namePlaceholder": "Enter name",
+                "customAmountLabel": "Importo (tra {minAmount} e {maxAmount})",
+                "selectAmountPlaceholder": "Seleziona un importo",
+                "customAmountPlaceholder": "Inserisci un importo personalizzato",
+                "senderNameLabel": "Il tuo nome",
+                "senderEmailLabel": "La tua e-mail",
+                "recipientNameLabel": "Nome del destinatario",
+                "recipientEmailLabel": "E-mail del destinatario",
+                "namePlaceholder": "Inserisci il nome",
                 "emailPlaceholder": "Inserisci e-mail",
                 "messageLabel": "Messaggio",
-                "messagePlaceholder": "Enter your message (optional)",
-                "nonRefundableCheckboxLabel": "I agree that Gift Certificates are non-refundable",
-                "expiryCheckboxLabel": "I acknowledge that this Gift Certificate will expire on {expiryDate}",
+                "messagePlaceholder": "Inserisci il tuo messaggio (facoltativo)",
+                "nonRefundableCheckboxLabel": "Accetto che i buoni regalo non sono rimborsabili",
+                "expiryCheckboxLabel": "Riconosco che questo buono regalo scadrà il {expiryDate}",
                 "ctaLabel": "Aggiungi al carrello",
                 "Errors": {
-                    "amountRequired": "Please select or enter a gift certificate amount.",
-                    "amountInvalid": "Please select a valid gift certificate amount.",
-                    "amountOutOfRange": "Please enter an amount between {minAmount} and {maxAmount}.",
-                    "unexpectedSettingsError": "An unexpected error occurred while retrieving gift certificate settings. Please try again later."
+                    "amountRequired": "Seleziona o inserisci un importo del buono regalo.",
+                    "amountInvalid": "Seleziona un importo valido per il buono regalo.",
+                    "amountOutOfRange": "Inserisci un importo compreso tra {minAmount} e {maxAmount}.",
+                    "unexpectedSettingsError": "Si è verificato un errore imprevisto durante il recupero delle impostazioni del buono regalo. Riprova più tardi."
                 }
             }
         }
