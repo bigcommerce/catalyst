@@ -25,7 +25,7 @@ import { Star } from '@/vibes/soul/primitives/rating';
 export const RatingRadioGroup = React.forwardRef<
   React.ComponentRef<typeof RadioGroupPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root> & {
-    label?: string;
+    label: string;
     max?: number;
     errors?: string[];
     onOptionMouseEnter?: (value: string) => void;
@@ -74,11 +74,10 @@ export const RatingRadioGroup = React.forwardRef<
 
     return (
       <div className={clsx('rating-radio-group space-y-2', className)}>
-        {label !== undefined && label !== '' && (
-          <Label colorScheme={colorScheme} id={groupId}>
-            {label}
-          </Label>
-        )}
+        <Label colorScheme={colorScheme} id={groupId}>
+          {label}
+        </Label>
+
         <RadioGroupPrimitive.Root
           {...rest}
           aria-labelledby={groupId}
