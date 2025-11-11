@@ -8,12 +8,7 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
 
-import {
-  BackorderMessages,
-  OrderQuantitiesData,
-  ProductDetailForm,
-  ProductDetailFormAction,
-} from './product-detail-form';
+import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
 import { Field } from './schema';
 
 interface ProductDetailProduct {
@@ -49,9 +44,6 @@ export interface ProductDetailProps<F extends Field> {
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
   showQuantityOnBackorder: Streamable<boolean>;
-  getBackorderMessages: (
-    orderQuantitiesData: OrderQuantitiesData,
-  ) => Promise<BackorderMessages | undefined>;
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;
@@ -83,7 +75,6 @@ export function ProductDetail<F extends Field>({
   product: streamableProduct,
   action,
   fields: streamableFields,
-  getBackorderMessages,
   showQuantityOnBackorder: streamableShowQuantityOnBackorder,
   breadcrumbs,
   quantityLabel,
@@ -136,11 +127,13 @@ export function ProductDetail<F extends Field>({
                       )}
                     </Stream>
                   </div>
-                  <div className="group/product-stock-level flex flex-wrap justify-start gap-x-6 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
+                  <div className="group/product-stock-level flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
                     <Stream fallback={<ProductStockSkeleton />} value={product.stockLevelMessage}>
                       {(stockLevelMessage) =>
                         Boolean(stockLevelMessage) && (
-                          <div className="flex-none whitespace-nowrap">{stockLevelMessage}</div>
+                          <div className="flex-none whitespace-nowrap font-semibold text-black">
+                            {stockLevelMessage}
+                          </div>
                         )
                       }
                     </Stream>
@@ -150,7 +143,7 @@ export function ProductDetail<F extends Field>({
                     >
                       {(backorderAvailabilityPrompt) =>
                         Boolean(backorderAvailabilityPrompt) && (
-                          <div className="flex-none whitespace-nowrap">
+                          <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
                             {backorderAvailabilityPrompt}
                           </div>
                         )
@@ -214,11 +207,6 @@ export function ProductDetail<F extends Field>({
                           decrementLabel={decrementLabel}
                           emptySelectPlaceholder={emptySelectPlaceholder}
                           fields={fields}
-                          getBackorderMessages={
-                            showQuantityOnBackorder || backorderMessage
-                              ? getBackorderMessages
-                              : undefined
-                          }
                           incrementLabel={incrementLabel}
                           maxQuantity={maxQuantity ?? undefined}
                           minQuantity={minQuantity ?? undefined}
