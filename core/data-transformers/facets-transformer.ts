@@ -22,7 +22,7 @@ export const facetsTransformer = async ({
   const { filters } = PublicToPrivateParams.parse(searchParams);
 
   return allFacets.map((facet) => {
-    const refinedFacet = refinedFacets.find((f) => f.name === facet.name);
+    const refinedFacet = refinedFacets.find((f) => f.displayName === facet.displayName);
 
     if (facet.__typename === 'CategorySearchFilter') {
       const refinedCategorySearchFilter =
@@ -31,7 +31,7 @@ export const facetsTransformer = async ({
       return {
         type: 'toggle-group' as const,
         paramName: 'categoryIn',
-        label: facet.name,
+        label: facet.displayName,
         defaultCollapsed: facet.isCollapsedByDefault,
         options: facet.categories.map((category) => {
           const refinedCategory = refinedCategorySearchFilter?.categories.find(
@@ -57,7 +57,7 @@ export const facetsTransformer = async ({
       return {
         type: 'toggle-group' as const,
         paramName: 'brand',
-        label: facet.name,
+        label: facet.displayName,
         defaultCollapsed: facet.isCollapsedByDefault,
         options: facet.brands.map((brand) => {
           const refinedBrand = refinedBrandSearchFilter?.brands.find(
@@ -80,8 +80,8 @@ export const facetsTransformer = async ({
 
       return {
         type: 'toggle-group' as const,
-        paramName: `attr_${facet.filterName}`,
-        label: facet.filterName,
+        paramName: `attr_${facet.filterKey}`,
+        label: facet.displayName ?? facet.filterName,
         defaultCollapsed: facet.isCollapsedByDefault,
         options: facet.attributes.map((attribute) => {
           const refinedAttribute = refinedProductAttributeSearchFilter?.attributes.find(
@@ -111,7 +111,7 @@ export const facetsTransformer = async ({
       return {
         type: 'rating' as const,
         paramName: 'minRating',
-        label: facet.name,
+        label: facet.displayName,
         disabled: refinedRatingSearchFilter == null && !isSelected,
         defaultCollapsed: facet.isCollapsedByDefault,
       };
@@ -126,7 +126,7 @@ export const facetsTransformer = async ({
         type: 'range' as const,
         minParamName: 'minPrice',
         maxParamName: 'maxPrice',
-        label: facet.name,
+        label: facet.displayName,
         min: facet.selected?.minPrice ?? undefined,
         max: facet.selected?.maxPrice ?? undefined,
         disabled: refinedPriceSearchFilter == null && !isSelected,
