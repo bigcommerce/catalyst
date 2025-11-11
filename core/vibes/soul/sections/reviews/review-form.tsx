@@ -2,7 +2,7 @@
 
 import { getFormProps, SubmissionResult, useForm, useInputControl } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { startTransition, useActionState, useEffect, useState } from 'react';
+import { startTransition, useActionState, useEffect, useRef, useState } from 'react';
 import { useFormStatus } from 'react-dom';
 
 import { FormStatus } from '@/vibes/soul/form/form-status';
@@ -59,6 +59,7 @@ export const ReviewForm = ({
   const [{ lastResult, successMessage }, formAction] = useActionState(action, {
     lastResult: null,
   });
+  const formRef = useRef<HTMLFormElement>(null);
 
   const user = useStreamable(streamableUser);
 
@@ -96,6 +97,7 @@ export const ReviewForm = ({
     if (lastResult?.status === 'success' && successMessage) {
       toast.success(successMessage);
       setIsOpen(false);
+      formRef.current?.reset();
     }
   }, [lastResult, successMessage]);
 
@@ -145,7 +147,12 @@ export const ReviewForm = ({
           </Stream>
         </div>
         <div className="min-w-0 flex-1">
-          <form {...getFormProps(form)} action={formAction} className="flex w-full flex-col gap-5">
+          <form
+            {...getFormProps(form)}
+            action={formAction}
+            className="flex w-full flex-col gap-5"
+            ref={formRef}
+          >
             <input name="productEntityId" type="hidden" value={productId} />
             <RatingRadioGroup
               errors={fields.rating.errors}
