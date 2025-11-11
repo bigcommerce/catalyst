@@ -127,29 +127,6 @@ export function ProductDetail<F extends Field>({
                       )}
                     </Stream>
                   </div>
-                  <div className="group/product-stock-level flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
-                    <Stream fallback={<ProductStockSkeleton />} value={product.stockLevelMessage}>
-                      {(stockLevelMessage) =>
-                        Boolean(stockLevelMessage) && (
-                          <div className="flex-none whitespace-nowrap font-semibold text-black">
-                            {stockLevelMessage}
-                          </div>
-                        )
-                      }
-                    </Stream>
-                    <Stream
-                      fallback={<ProductStockSkeleton />}
-                      value={product.backorderAvailabilityPrompt}
-                    >
-                      {(backorderAvailabilityPrompt) =>
-                        Boolean(backorderAvailabilityPrompt) && (
-                          <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
-                            {backorderAvailabilityPrompt}
-                          </div>
-                        )
-                      }
-                    </Stream>
-                  </div>
                   <div className="group/product-gallery mb-8 @2xl:hidden">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
                       {(images) => (
@@ -182,6 +159,8 @@ export function ProductDetail<F extends Field>({
                         product.availableOnHand,
                         product.availableForBackorder,
                         product.unlimitedBackorder,
+                        product.stockLevelMessage,
+                        product.backorderAvailabilityPrompt,
                       ])}
                     >
                       {([
@@ -195,12 +174,15 @@ export function ProductDetail<F extends Field>({
                         availableOnHand,
                         availableForBackorder,
                         unlimitedBackorder,
+                        stockLevelMessage,
+                        backorderAvailabilityPrompt,
                       ]) => (
                         <ProductDetailForm
                           action={action}
                           additionalActions={additionalActions}
                           availableForBackorder={availableForBackorder}
                           availableOnHand={availableOnHand}
+                          backorderAvailabilityPrompt={backorderAvailabilityPrompt ?? undefined}
                           backorderMessage={backorderMessage ?? undefined}
                           ctaDisabled={ctaDisabled ?? undefined}
                           ctaLabel={ctaLabel ?? undefined}
@@ -214,6 +196,7 @@ export function ProductDetail<F extends Field>({
                           productId={product.id}
                           quantityLabel={quantityLabel}
                           showQuantityOnBackorder={showQuantityOnBackorder}
+                          stockLevelMessage={stockLevelMessage ?? undefined}
                           unlimitedBackorder={unlimitedBackorder}
                         />
                       )}
@@ -282,10 +265,6 @@ function ProductGallerySkeleton() {
 
 function PriceLabelSkeleton() {
   return <Skeleton.Box className="my-5 h-4 w-20 rounded-md" />;
-}
-
-function ProductStockSkeleton() {
-  return <Skeleton.Box className="my-3 h-2 w-20 rounded-md" />;
 }
 
 function RatingSkeleton() {
