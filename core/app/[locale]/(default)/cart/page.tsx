@@ -8,7 +8,6 @@ import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { exists } from '~/lib/utils';
 
-import { redirectToCheckout } from './_actions/redirect-to-checkout';
 import { updateCouponCode } from './_actions/update-coupon-code';
 import { updateGiftCertificate } from './_actions/update-gift-certificate';
 import { updateLineItem } from './_actions/update-line-item';
@@ -251,7 +250,7 @@ export default async function Cart({ params }: Props) {
               },
             ].filter(exists),
           }}
-          checkoutAction={redirectToCheckout}
+          checkoutAction="/checkout"
           checkoutLabel={t('proceedToCheckout')}
           couponCode={{
             action: updateCouponCode,

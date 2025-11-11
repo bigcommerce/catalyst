@@ -307,7 +307,7 @@
         "couponCode": "Coupon code",
         "removeCouponCode": "Remove coupon code",
         "invalidCouponCode": "Please enter a valid coupon code",
-        "cartNotFound": "No cartId cookie found."
+        "cartNotFound": "An error occurred when retrieving your cart"
       },
       "Shipping": {
         "shipping": "Shipping",
@@ -324,7 +324,7 @@
         "shippingOptions": "Shipping options",
         "updateShipping": "Update shipping",
         "addShipping": "Add shipping",
-        "cartNotFound": "No cartId cookie found.",
+        "cartNotFound": "An error occurred when retrieving your cart",
         "noShippingOptions": "There are no shipping options available for your address"
       }
     },
@@ -336,7 +336,7 @@
       "to": "To",
       "message": "Message",
       "invalidGiftCertificate": "Please enter a valid gift certificate code",
-      "cartNotFound": "No cartId cookie found."
+      "cartNotFound": "An error occurred when retrieving your cart"
     },
     "Empty": {
       "title": "Your cart is empty.",
@@ -344,7 +344,7 @@
       "cta": "Continue shopping"
     },
     "Errors": {
-      "cartNotFound": "No cartId cookie found.",
+      "cartNotFound": "An error occurred when retrieving your cart",
       "lineItemNotFound": "Line item not found.",
       "failedToUpdateQuantity": "Failed to update quantity.",
       "somethingWentWrong": "Something went wrong. Please try again later."
