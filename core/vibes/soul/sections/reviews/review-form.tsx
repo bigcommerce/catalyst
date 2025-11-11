@@ -1,12 +1,6 @@
 'use client';
 
-import {
-  getFormProps,
-  getInputProps,
-  SubmissionResult,
-  useForm,
-  useInputControl,
-} from '@conform-to/react';
+import { getFormProps, SubmissionResult, useForm, useInputControl } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
 import { startTransition, useActionState, useEffect, useState } from 'react';
 import { useFormStatus } from 'react-dom';
@@ -90,6 +84,10 @@ export const ReviewForm = ({
   });
 
   const ratingControl = useInputControl(fields.rating);
+  const titleControl = useInputControl(fields.title);
+  const textControl = useInputControl(fields.text);
+  const authorControl = useInputControl(fields.author);
+  const emailControl = useInputControl(fields.email);
 
   const isEmailDisabled = user.email !== '';
   const isAuthorDisabled = user.name !== '';
@@ -161,26 +159,49 @@ export const ReviewForm = ({
               value={typeof ratingControl.value === 'string' ? ratingControl.value : ''}
             />
             <Input
-              {...getInputProps(fields.title, { type: 'text' })}
               errors={fields.title.errors}
               label={formTitleLabel}
+              name={fields.title.name}
+              onBlur={titleControl.blur}
+              onChange={(e) => titleControl.change(e.currentTarget.value)}
+              onFocus={titleControl.focus}
+              required={fields.title.required}
+              type="text"
+              value={typeof titleControl.value === 'string' ? titleControl.value : ''}
             />
             <Textarea
-              {...getInputProps(fields.text, { type: 'text' })}
               errors={fields.text.errors}
               label={formReviewLabel}
+              name={fields.text.name}
+              onBlur={textControl.blur}
+              onChange={(e) => textControl.change(e.currentTarget.value)}
+              onFocus={textControl.focus}
+              required={fields.text.required}
+              value={typeof textControl.value === 'string' ? textControl.value : ''}
             />
             <Input
-              {...getInputProps(fields.author, { type: 'text' })}
               disabled={isAuthorDisabled}
               errors={fields.author.errors}
               label={formNameLabel}
+              name={fields.author.name}
+              onBlur={authorControl.blur}
+              onChange={(e) => authorControl.change(e.currentTarget.value)}
+              onFocus={authorControl.focus}
+              required={fields.author.required}
+              type="text"
+              value={typeof authorControl.value === 'string' ? authorControl.value : ''}
             />
             <Input
-              {...getInputProps(fields.email, { type: 'email' })}
               disabled={isEmailDisabled}
               errors={fields.email.errors}
               label={formEmailLabel}
+              name={fields.email.name}
+              onBlur={emailControl.blur}
+              onChange={(e) => emailControl.change(e.currentTarget.value)}
+              onFocus={emailControl.focus}
+              required={fields.email.required}
+              type="email"
+              value={typeof emailControl.value === 'string' ? emailControl.value : ''}
             />
             {form.errors?.map((error, index) => (
               <FormStatus key={index} type="error">
