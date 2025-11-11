@@ -64,6 +64,8 @@ export interface ProductDetailFormProps<F extends Field> {
   additionalActions?: ReactNode;
   minQuantity?: number;
   maxQuantity?: number;
+  stockLevelMessage?: string;
+  backorderAvailabilityPrompt?: string;
   availableOnHand?: number;
   availableForBackorder?: number;
   backorderMessage?: string;
@@ -85,6 +87,8 @@ export function ProductDetailForm<F extends Field>({
   additionalActions,
   minQuantity,
   maxQuantity,
+  stockLevelMessage,
+  backorderAvailabilityPrompt,
   availableOnHand = 0,
   availableForBackorder = 0,
   backorderMessage,
@@ -204,9 +208,9 @@ export function ProductDetailForm<F extends Field>({
   return (
     <FormProvider context={form.context}>
       <FormStateInput />
-      <form {...getFormProps(form)} action={formAction} className="py-2">
+      <form {...getFormProps(form)} action={formAction}>
         <input name="id" type="hidden" value={productId} />
-        <div className="space-y-6">
+        <div className="space-y-6 pb-8">
           {fields.map((field) => {
             return (
               <FormField
@@ -226,18 +230,36 @@ export function ProductDetailForm<F extends Field>({
             </FormStatus>
           ))}
 
-          {!!backorderMessages && (
-            <div className="flex min-h-[1.3rem] flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
-              <div className="flex-none whitespace-nowrap font-semibold text-black">
-                {backorderMessages.backorderQuantityMessage}
-              </div>
-              {!!backorderMessages.backorderInfoMessage && (
-                <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
-                  {backorderMessages.backorderInfoMessage}
+          <div className="h-[3.2rem] sm:h-[2.6rem]">
+            {!!stockLevelMessage && (
+              <div
+                className={`flex ${backorderMessages?.backorderQuantityMessage || backorderMessages?.backorderInfoMessage ? 'translate-y-0' : 'translate-y-[calc(100%+4px)]'} flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))] transition-transform duration-200 ease-in-out`}
+              >
+                <div className="flex-none whitespace-nowrap font-semibold text-black">
+                  {stockLevelMessage}
                 </div>
-              )}
-            </div>
-          )}
+                {!!backorderAvailabilityPrompt && (
+                  <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
+                    {backorderAvailabilityPrompt}
+                  </div>
+                )}
+              </div>
+            )}
+            {!!backorderMessages && (
+              <div
+                className={`ease-initial mt-1 flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))] transition-opacity ${backorderMessages.backorderQuantityMessage || backorderMessages.backorderInfoMessage ? 'duration-400 opacity-100' : 'opacity-0 delay-0 duration-100'}`}
+              >
+                <div className="flex-none whitespace-nowrap font-semibold text-black">
+                  {backorderMessages.backorderQuantityMessage}
+                </div>
+                {!!backorderMessages.backorderInfoMessage && (
+                  <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
+                    {backorderMessages.backorderInfoMessage}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
 
           <div className="flex gap-x-3">
             <NumberInput
