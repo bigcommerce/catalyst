@@ -14,7 +14,6 @@ import { productOptionsTransformer } from '~/data-transformers/product-options-t
 import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { addToCart } from './_actions/add-to-cart';
-import { getBackorderMessages } from './_actions/get-backorder-messages';
 import { ProductAnalyticsProvider } from './_components/product-analytics-provider';
 import { ProductSchema } from './_components/product-schema';
 import { ProductViewed } from './_components/product-viewed';
@@ -337,22 +336,22 @@ export default async function Product({ params, searchParams }: Props) {
       return null;
     }
 
-    if (!product.variants.edges || product.variants.edges.length === 0) {
-      return null;
-    }
+    const variants = removeEdgesAndNodes(product.variants);
 
     // Currently, supporting backorder messages for simple products only
-    if (product.variants.edges.length > 1) {
+    if (variants.length !== 1) {
       return null;
     }
 
-    if (!product.variants.edges[0]?.node?.inventory?.byLocation?.edges) {
+    const mainVariant = variants[0];
+
+    if (!mainVariant?.inventory?.byLocation) {
       return null;
     }
 
-    return (
-      product.variants.edges[0].node.inventory.byLocation.edges[0]?.node.backorderMessage || null
-    );
+    const inventoryByLocation = removeEdgesAndNodes(mainVariant.inventory.byLocation);
+
+    return inventoryByLocation[0]?.backorderMessage || null;
   });
 
   const streameableAccordions = Streamable.from(async () => {
@@ -472,7 +471,6 @@ export default async function Product({ params, searchParams }: Props) {
           decrementLabel={t('ProductDetails.decreaseQuantity')}
           emptySelectPlaceholder={t('ProductDetails.emptySelectPlaceholder')}
           fields={productOptionsTransformer(baseProduct.productOptions)}
-          getBackorderMessages={getBackorderMessages}
           incrementLabel={t('ProductDetails.increaseQuantity')}
           prefetch={true}
           product={{

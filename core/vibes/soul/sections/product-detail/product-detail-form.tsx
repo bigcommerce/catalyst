@@ -10,15 +10,9 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { useTranslations } from 'next-intl';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
-import {
-  ReactNode,
-  startTransition,
-  useActionState,
-  useCallback,
-  useEffect,
-  useState,
-} from 'react';
+import { ReactNode, startTransition, useActionState, useCallback, useEffect, useMemo } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
@@ -51,16 +45,7 @@ interface State<F extends Field> {
 
 export type ProductDetailFormAction<F extends Field> = Action<State<F>, FormData>;
 
-export interface OrderQuantitiesData {
-  orderQuantity: number;
-  availableOnHand: number;
-  availableForBackorder: number;
-  unlimitedBackorder: boolean;
-  backorderMessage?: string;
-  showQuantityOnBackorder: boolean;
-}
-
-export interface BackorderMessages {
+interface BackorderMessages {
   backorderQuantityMessage?: string;
   backorderInfoMessage?: string;
 }
@@ -84,9 +69,6 @@ export interface ProductDetailFormProps<F extends Field> {
   backorderMessage?: string;
   unlimitedBackorder: boolean;
   showQuantityOnBackorder: boolean;
-  getBackorderMessages?: (
-    orderQuantitiesData: OrderQuantitiesData,
-  ) => Promise<BackorderMessages | undefined>;
 }
 
 export function ProductDetailForm<F extends Field>({
@@ -108,11 +90,11 @@ export function ProductDetailForm<F extends Field>({
   backorderMessage,
   unlimitedBackorder,
   showQuantityOnBackorder,
-  getBackorderMessages,
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
   const events = useEvents();
+  const t = useTranslations('Product.ProductDetails');
 
   const searchParams = fields.reduce<Record<string, typeof parseAsString>>((acc, field) => {
     return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;
@@ -178,40 +160,43 @@ export function ProductDetailForm<F extends Field>({
     shouldRevalidate: 'onInput',
   });
 
-  const [backorderQuantityMessage, setBackorderQuantityMessage] = useState<string | undefined>(
-    undefined,
-  );
-  const [backorderInfoMessage, setBackorderInfoMessage] = useState<string | undefined>(undefined);
+  const backorderMessages = useMemo<BackorderMessages | undefined>(() => {
+    if (!showQuantityOnBackorder && !backorderMessage) {
+      return undefined;
+    }
 
-  useEffect(() => {
-    const fetchBackorderMessages = async () => {
-      if (getBackorderMessages) {
-        const messages = await getBackorderMessages({
-          orderQuantity: Number(formFields.quantity.value),
-          availableOnHand,
-          availableForBackorder,
-          unlimitedBackorder,
-          backorderMessage,
-          showQuantityOnBackorder,
-        });
+    const orderQuantity = Number(formFields.quantity.value);
 
-        setBackorderQuantityMessage(messages?.backorderQuantityMessage);
-        setBackorderInfoMessage(messages?.backorderInfoMessage);
-      } else {
-        setBackorderQuantityMessage(undefined);
-        setBackorderInfoMessage(undefined);
-      }
+    if (Number.isNaN(orderQuantity) || orderQuantity <= availableOnHand) {
+      return {
+        backorderQuantityMessage: undefined,
+        backorderInfoMessage: undefined,
+      };
+    }
+
+    if (!showQuantityOnBackorder) {
+      return {
+        backorderQuantityMessage: undefined,
+        backorderInfoMessage: backorderMessage,
+      };
+    }
+
+    return {
+      backorderQuantityMessage: t('backorderQuantity', {
+        quantity: unlimitedBackorder
+          ? orderQuantity - availableOnHand
+          : Math.min(orderQuantity - availableOnHand, availableForBackorder),
+      }),
+      backorderInfoMessage: backorderMessage,
     };
-
-    void fetchBackorderMessages();
   }, [
-    getBackorderMessages,
     formFields.quantity.value,
     availableOnHand,
+    showQuantityOnBackorder,
+    t,
+    unlimitedBackorder,
     availableForBackorder,
     backorderMessage,
-    unlimitedBackorder,
-    showQuantityOnBackorder,
   ]);
 
   const quantityControl = useInputControl(formFields.quantity);
@@ -219,7 +204,7 @@ export function ProductDetailForm<F extends Field>({
   return (
     <FormProvider context={form.context}>
       <FormStateInput />
-      <form {...getFormProps(form)} action={formAction} className="py-4">
+      <form {...getFormProps(form)} action={formAction} className="py-2">
         <input name="id" type="hidden" value={productId} />
         <div className="space-y-6">
           {fields.map((field) => {
@@ -241,14 +226,18 @@ export function ProductDetailForm<F extends Field>({
             </FormStatus>
           ))}
 
-          <div className="flex flex-wrap justify-start gap-x-6 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
-            {!!backorderQuantityMessage && (
-              <div className="flex-none whitespace-nowrap">{backorderQuantityMessage}</div>
-            )}
-            {!!backorderInfoMessage && (
-              <div className="flex-none whitespace-nowrap">{backorderInfoMessage}</div>
-            )}
-          </div>
+          {!!backorderMessages && (
+            <div className="flex min-h-[1.3rem] flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
+              <div className="flex-none whitespace-nowrap font-semibold text-black">
+                {backorderMessages.backorderQuantityMessage}
+              </div>
+              {!!backorderMessages.backorderInfoMessage && (
+                <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
+                  {backorderMessages.backorderInfoMessage}
+                </div>
+              )}
+            </div>
+          )}
 
           <div className="flex gap-x-3">
             <NumberInput
