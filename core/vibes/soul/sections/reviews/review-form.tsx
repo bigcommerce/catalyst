@@ -46,7 +46,7 @@ interface Props {
   streamableUser: Streamable<{ email: string; name: string }>;
 }
 
-export const ProductReviewButton = ({
+export const ReviewForm = ({
   productId,
   action,
   formButtonLabel = 'Write a review',

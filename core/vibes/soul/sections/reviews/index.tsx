@@ -3,7 +3,7 @@ import { CursorPagination, CursorPaginationInfo } from '@/vibes/soul/primitives/
 import { Rating } from '@/vibes/soul/primitives/rating';
 import { StickySidebarLayout } from '@/vibes/soul/sections/sticky-sidebar-layout';
 
-import { ProductReviewButton, SubmitReviewAction } from './product-review-button';
+import { ReviewForm, SubmitReviewAction } from './review-form';
 
 interface Review {
   id: string;
@@ -122,7 +122,7 @@ export function Reviews({
                     </>
                   )}
                 </Stream>
-                <ProductReviewButton
+                <ReviewForm
                   action={action}
                   formButtonLabel={formButtonLabel}
                   formEmailLabel={formEmailLabel}
@@ -223,7 +223,7 @@ export function ReviewsEmptyState({
     >
       <div className="flex flex-1 flex-col border-t border-contrast-100 py-12">
         <p className="text-center">{message}</p>
-        <ProductReviewButton
+        <ReviewForm
           action={action}
           formButtonLabel={formButtonLabel}
           formEmailLabel={formEmailLabel}
