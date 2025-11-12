@@ -20,6 +20,8 @@ interface Props {
   params: Promise<{ locale: string }>;
 }
 
+const CHECKOUT_URL = process.env.TRAILING_SLASH !== 'false' ? '/checkout/' : '/checkout';
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
 
@@ -250,7 +252,7 @@ export default async function Cart({ params }: Props) {
               },
             ].filter(exists),
           }}
-          checkoutAction="/checkout"
+          checkoutAction={CHECKOUT_URL}
           checkoutLabel={t('proceedToCheckout')}
           couponCode={{
             action: updateCouponCode,

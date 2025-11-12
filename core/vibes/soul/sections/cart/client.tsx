@@ -633,7 +633,11 @@ function CheckoutButton({
 } & ComponentPropsWithoutRef<typeof Button>) {
   const [lastResult, formAction] = useActionState(
     async (state: SubmissionResult | null, formData: FormData) => {
-      if (typeof action !== 'function') {
+      if (typeof action === 'string') {
+        await new Promise<void>(() => {
+          window.location.assign(action);
+        });
+
         return null;
       }
 
@@ -653,7 +657,7 @@ function CheckoutButton({
   }, [form.errors]);
 
   return (
-    <form action={typeof action === 'string' ? action : formAction}>
+    <form action={formAction}>
       <SubmitButton {...props} isCartUpdatePending={isCartUpdatePending} />
     </form>
   );
