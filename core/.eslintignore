@@ -1,0 +1,24 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+.wrangler/
+.open-next/
+out/
+dist/
+build/
+
+# Generated files
+.turbo/
+messages/*.d.json.ts
+next-env.d.ts
+*-graphql.d.ts
+
+# Test outputs
+playwright-report/
+test-results/
+.tests/
+
+# Cache
+.eslintcache
