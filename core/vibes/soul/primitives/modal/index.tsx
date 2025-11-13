@@ -60,7 +60,7 @@ export const Modal = ({
             <div className="flex flex-col">
               <div
                 className={clsx(
-                  'mb-5 flex min-h-10 flex-row items-center border-b border-b-contrast-200 py-3 pl-5',
+                  'flex min-h-10 flex-row items-center py-3 pl-5',
                   hideHeader ? 'sr-only' : '',
                 )}
               >
