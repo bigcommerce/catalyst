@@ -148,34 +148,17 @@ export const Reviews = async ({
 
   const streamableUser = Streamable.from(async () => {
     const session = await auth();
-    const fullName = session?.user?.name ?? '';
-    let obfuscatedName = '';
+    const firstName = session?.user?.firstName ?? '';
+    const lastName = session?.user?.lastName ?? '';
 
-    if (fullName === '') {
-      obfuscatedName = '';
-    } else {
-      const parts = fullName.trim().split(/\s+/);
-
-      if (parts.length < 2) {
-        obfuscatedName = fullName;
-      } else {
-        const firstName = parts[0];
-        const lastName = parts[parts.length - 1];
-
-        if (!lastName) {
-          obfuscatedName = fullName;
-        } else {
-          const lastInitial = lastName.charAt(0).toUpperCase();
-
-          obfuscatedName = `${firstName} ${lastInitial}.`;
-        }
-      }
+    if (!firstName || !lastName) {
+      return { email: session?.user?.email ?? '', name: '' };
     }
 
-    return {
-      email: session?.user?.email ?? '',
-      name: obfuscatedName,
-    };
+    const lastInitial = lastName.charAt(0).toUpperCase();
+    const obfuscatedName = `${firstName} ${lastInitial}.`;
+
+    return { email: session?.user?.email ?? '', name: obfuscatedName };
   });
 
   return (
