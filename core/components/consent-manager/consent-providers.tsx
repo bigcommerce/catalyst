@@ -4,7 +4,7 @@ import { ConsentManagerProvider as C15TConsentManagerProvider } from '@c15t/next
 import { ClientSideOptionsProvider } from '@c15t/nextjs/client';
 import type { ComponentProps, PropsWithChildren } from 'react';
 
-import { setConsent, showConsentBanner, verifyConsent } from '~/lib/consent-manager/handlers';
+import { CONSENT_COOKIE_NAME } from '~/lib/consent-manager/cookies/constants';
 
 export type C15tScripts = NonNullable<ComponentProps<typeof ClientSideOptionsProvider>['scripts']>;
 
@@ -21,14 +21,14 @@ export function ConsentManagerProvider({
   return (
     <C15TConsentManagerProvider
       options={{
-        mode: 'custom',
+        mode: 'offline',
         consentCategories: ['necessary', 'functionality', 'marketing', 'measurement'],
-
-        // @ts-expect-error endpointHandlers type is not yet exposed by the package
-        endpointHandlers: {
-          showConsentBanner: () => showConsentBanner(isCookieConsentEnabled),
-          setConsent,
-          verifyConsent,
+        storageConfig: {
+          storageKey: CONSENT_COOKIE_NAME,
+          crossSubdomain: true,
+        },
+        legalLinks: {
+          privacyPolicy: { href: '' }, // @todo add privacy policy URL from gql API
         },
       }}
     >
