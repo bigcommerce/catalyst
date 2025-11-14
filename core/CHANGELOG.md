@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.2
+
+### Patch Changes
+
+- [`ce1731f`](https://github.com/bigcommerce/catalyst/commit/ce1731f0cb0f0e411c3ffa4734b0256dbdacafbb) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Updates the scripts transformer to account for inline scripts having a `src` attribute with empty content.
+
 ## 1.3.1
 
 ### Patch Changes
