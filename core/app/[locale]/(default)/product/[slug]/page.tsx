@@ -387,7 +387,12 @@ export default async function Product({ params, searchParams }: Props) {
         title={t('RelatedProducts.title')}
       />
 
-      <Reviews productId={productId} searchParams={searchParams} />
+      <Reviews
+        productId={productId}
+        searchParams={searchParams}
+        streamableImages={streamableImages}
+        streamableProduct={streamableProduct}
+      />
 
       <Stream
         fallback={null}
