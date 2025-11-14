@@ -411,19 +411,7 @@
       "title": "Reviews",
       "empty": "No reviews have been added for this product.",
       "previous": "Previous reviews",
-      "next": "Next reviews",
-      "Form": {
-        "button": "Write a review",
-        "title": "Write a review",
-        "submit": "Submit",
-        "ratingLabel": "Rating",
-        "titleLabel": "Title",
-        "reviewLabel": "Review",
-        "nameLabel": "Name",
-        "emailLabel": "Email",
-        "successMessage": "Your review has been submitted successfully!",
-        "somethingWentWrong": "Something went wrong. Please try again later."
-      }
+      "next": "Next reviews"
     }
   },
   "WebPages": {

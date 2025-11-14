@@ -5,15 +5,11 @@ import { cache } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Reviews as ReviewsSection } from '@/vibes/soul/sections/reviews';
-import { auth } from '~/auth';
 import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
-
-import { submitReview } from '../_actions/submit-review';
-import { getStreamableProduct } from '../page-data';
 
 import { ProductReviewSchemaFragment } from './product-review-schema/fragment';
 import { ProductReviewSchema } from './product-review-schema/product-review-schema';
@@ -76,16 +72,9 @@ const getReviews = cache(async (productId: number, paginationArgs: object) => {
 interface Props {
   productId: number;
   searchParams: Promise<SearchParams>;
-  streamableImages: Streamable<Array<{ src: string; alt: string }>>;
-  streamableProduct: Streamable<Awaited<ReturnType<typeof getStreamableProduct>>>;
 }
 
-export const Reviews = async ({
-  productId,
-  searchParams,
-  streamableProduct,
-  streamableImages,
-}: Props) => {
+export const Reviews = async ({ productId, searchParams }: Props) => {
   const t = await getTranslations('Product.Reviews');
 
   const streamableReviewsData = Streamable.from(async () => {
@@ -140,50 +129,16 @@ export const Reviews = async ({
     });
   });
 
-  const streamableProductName = Streamable.from(async () => {
-    const product = await streamableProduct;
-
-    return { name: product?.name ?? '' };
-  });
-
-  const streamableUser = Streamable.from(async () => {
-    const session = await auth();
-    const firstName = session?.user?.firstName ?? '';
-    const lastName = session?.user?.lastName ?? '';
-
-    if (!firstName || !lastName) {
-      return { email: session?.user?.email ?? '', name: '' };
-    }
-
-    const lastInitial = lastName.charAt(0).toUpperCase();
-    const obfuscatedName = `${firstName} ${lastInitial}.`;
-
-    return { email: session?.user?.email ?? '', name: obfuscatedName };
-  });
-
   return (
     <>
       <ReviewsSection
-        action={submitReview}
         averageRating={streamableAvergeRating}
         emptyStateMessage={t('empty')}
-        formButtonLabel={t('Form.button')}
-        formEmailLabel={t('Form.emailLabel')}
-        formModalTitle={t('Form.title')}
-        formNameLabel={t('Form.nameLabel')}
-        formRatingLabel={t('Form.ratingLabel')}
-        formReviewLabel={t('Form.reviewLabel')}
-        formSubmitLabel={t('Form.submit')}
-        formTitleLabel={t('Form.titleLabel')}
         nextLabel={t('next')}
         paginationInfo={streamablePaginationInfo}
         previousLabel={t('previous')}
-        productId={productId}
         reviews={streamableReviews}
         reviewsLabel={t('title')}
-        streamableImages={streamableImages}
-        streamableProduct={streamableProductName}
-        streamableUser={streamableUser}
       />
       <Stream fallback={null} value={streamableReviewsData}>
         {(product) =>
