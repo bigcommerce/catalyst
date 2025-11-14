@@ -17,13 +17,30 @@ const BC_TO_C15T_CONSENT_CATEGORY_MAP = {
   TARGETING: 'marketing',
 } as const;
 
+type ScriptInfo = { textContent: string } | { src: string } | null;
+
 // C15T's ClientSideOptionsProvider creates the <script> element at runtime. BigCommerce's API
 // returns inline scripts wrapped in <script> tags, which would result in nested <script> elements
-// and cause errors.
-function extractInlineScriptContent(scriptTag: string): string | undefined {
+// and cause errors. This function extracts both inline content and src attributes to handle cases
+// where InlineScript types may contain external script references.
+function extractScriptInfo(scriptTag: string): ScriptInfo {
+  // Extract text content (for inline scripts)
   const scriptMatch = /<script[^>]*>([\s\S]*?)<\/script>/i.exec(scriptTag);
+  const textContent = scriptMatch?.[1]?.trim();
 
-  return scriptMatch?.[1];
+  if (textContent) {
+    return { textContent };
+  }
+
+  // Extract src attribute (for external scripts that may be misclassified as inline)
+  const srcMatch = /<script[^>]*\ssrc=["']([^"']+)["']/i.exec(scriptTag);
+  const src = srcMatch?.[1];
+
+  if (src) {
+    return { src };
+  }
+
+  return null;
 }
 
 function isValidConsentCategory(key: string): key is keyof typeof BC_TO_C15T_CONSENT_CATEGORY_MAP {
@@ -57,10 +74,15 @@ export function scriptsTransformer(scripts: BigCommerceScripts): C15tScripts {
       : undefined;
 
     if (script.__typename === 'InlineScript' && script.scriptTag) {
-      const textContent = extractInlineScriptContent(script.scriptTag);
+      const scriptInfo = extractScriptInfo(script.scriptTag);
 
-      if (textContent) {
-        return { ...baseConfig, textContent, attributes };
+      // Prefer textContent if available (true inline script)
+      if (scriptInfo !== null && 'textContent' in scriptInfo) {
+        return { ...baseConfig, textContent: scriptInfo.textContent, attributes };
+      }
+
+      if (scriptInfo !== null && 'src' in scriptInfo) {
+        return { ...baseConfig, src: scriptInfo.src, attributes };
       }
     }
 
