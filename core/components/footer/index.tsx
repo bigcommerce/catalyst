@@ -16,7 +16,9 @@ import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { CurrencyCode } from '~/components/header/fragment';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
+import { getPreferredCurrencyCode } from '~/lib/currency';
 
 import { FooterFragment, FooterSectionsFragment } from './fragment';
 import { AmazonIcon } from './payment-icons/amazon';
@@ -44,18 +46,21 @@ const socialIcons: Record<string, { icon: JSX.Element }> = {
   YouTube: { icon: <SiYoutube title="YouTube" /> },
 };
 
-const getFooterSections = cache(async (customerAccessToken?: string) => {
-  const { data: response } = await client.fetch({
-    document: GetLinksAndSectionsQuery,
-    customerAccessToken,
-    // Since this query is needed on every page, it's a good idea not to validate the customer access token.
-    // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
-    validateCustomerAccessToken: false,
-    fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
-  });
+const getFooterSections = cache(
+  async (customerAccessToken?: string, currencyCode?: CurrencyCode) => {
+    const { data: response } = await client.fetch({
+      document: GetLinksAndSectionsQuery,
+      customerAccessToken,
+      variables: { currencyCode },
+      // Since this query is needed on every page, it's a good idea not to validate the customer access token.
+      // The 'cache' function also caches errors, so we might get caught in a redirect loop if the cache saves an invalid token error response.
+      validateCustomerAccessToken: false,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
 
-  return readFragment(FooterSectionsFragment, response).site;
-});
+    return readFragment(FooterSectionsFragment, response).site;
+  },
+);
 
 const getFooterData = cache(async () => {
   const { data: response } = await client.fetch({
@@ -68,7 +73,6 @@ const getFooterData = cache(async () => {
 
 export const Footer = async () => {
   const t = await getTranslations('Components.Footer');
-
   const data = await getFooterData();
 
   const logo = data.settings ? logoTransformer(data.settings) : '';
@@ -91,8 +95,8 @@ export const Footer = async () => {
 
   const streamableSections = Streamable.from(async () => {
     const customerAccessToken = await getSessionCustomerAccessToken();
-
-    const sectionsData = await getFooterSections(customerAccessToken);
+    const currencyCode = await getPreferredCurrencyCode();
+    const sectionsData = await getFooterSections(customerAccessToken, currencyCode);
 
     return [
       {
@@ -111,10 +115,20 @@ export const Footer = async () => {
       },
       {
         title: t('navigate'),
-        links: removeEdgesAndNodes(sectionsData.content.pages).map((page) => ({
-          label: page.name,
-          href: page.__typename === 'ExternalLinkPage' ? page.link : page.path,
-        })),
+        links: [
+          ...(sectionsData.settings?.giftCertificates?.isEnabled
+            ? [
+                {
+                  label: t('giftCertificates'),
+                  href: '/gift-certificates',
+                },
+              ]
+            : []),
+          ...removeEdgesAndNodes(sectionsData.content.pages).map((page) => ({
+            label: page.name,
+            href: page.__typename === 'ExternalLinkPage' ? page.link : page.path,
+          })),
+        ],
       },
     ];
   });

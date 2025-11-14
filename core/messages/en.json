@@ -458,7 +458,8 @@
       "Icons": {
         "account": "Profile",
         "cart": "Cart",
-        "search": "Open search popup"
+        "search": "Open search popup",
+        "giftCertificates": "Gift certificates"
       },
       "SwitchCurrency": {
         "label": "Switch currency",
@@ -482,7 +483,8 @@
       "socialMediaLinks": "Social media links",
       "categories": "Categories",
       "brands": "Brands",
-      "navigate": "Navigate"
+      "navigate": "Navigate",
+      "giftCertificates": "Gift certificates"
     },
     "Subscribe": {
       "title": "Sign up for our newsletter",
