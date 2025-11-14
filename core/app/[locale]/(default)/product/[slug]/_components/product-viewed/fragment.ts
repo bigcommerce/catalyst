@@ -11,23 +11,5 @@ export const ProductViewedFragment = graphql(`
     description
     plainTextDescription(characterLimit: 1200)
     path
-    variants {
-      edges {
-        node {
-          entityId
-          sku
-          inventory {
-            byLocation {
-              edges {
-                node {
-                  locationEntityId
-                  backorderMessage
-                }
-              }
-            }
-          }
-        }
-      }
-    }
   }
 `);

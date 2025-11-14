@@ -10,9 +10,8 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { useTranslations } from 'next-intl';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
-import { ReactNode, startTransition, useActionState, useCallback, useEffect, useMemo } from 'react';
+import { ReactNode, startTransition, useActionState, useCallback, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
@@ -46,21 +45,13 @@ interface State<F extends Field> {
 export type ProductDetailFormAction<F extends Field> = Action<State<F>, FormData>;
 
 export interface StockDisplayData {
-  stockLevelMessage?: string | null;
-  backorderAvailabilityPrompt?: string | null;
+  stockLevelMessage: string | null;
+  backorderAvailabilityPrompt: string | null;
 }
 
 export interface BackorderDisplayData {
-  availableOnHand: number;
-  availableForBackorder: number;
-  unlimitedBackorder: boolean;
-  showQuantityOnBackorder: boolean;
-  backorderMessage?: string | null;
-}
-
-interface BackorderMessages {
-  backorderQuantityMessage?: string;
-  backorderInfoMessage?: string;
+  backorderQuantityMessage: string | null;
+  backorderInfoMessage: string | null;
 }
 
 export interface ProductDetailFormProps<F extends Field> {
@@ -101,7 +92,6 @@ export function ProductDetailForm<F extends Field>({
   const router = useRouter();
   const pathname = usePathname();
   const events = useEvents();
-  const t = useTranslations('Product.ProductDetails');
 
   const searchParams = fields.reduce<Record<string, typeof parseAsString>>((acc, field) => {
     return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;
@@ -167,45 +157,6 @@ export function ProductDetailForm<F extends Field>({
     shouldRevalidate: 'onInput',
   });
 
-  const backorderMessages = useMemo<BackorderMessages | undefined>(() => {
-    const {
-      availableForBackorder,
-      availableOnHand,
-      backorderMessage,
-      showQuantityOnBackorder,
-      unlimitedBackorder,
-    } = backorderDisplayData || { availableForBackorder: 0, availableOnHand: 0 };
-
-    if (!showQuantityOnBackorder && !backorderMessage) {
-      return undefined;
-    }
-
-    const orderQuantity = Number(formFields.quantity.value);
-
-    if (Number.isNaN(orderQuantity) || orderQuantity <= availableOnHand) {
-      return {
-        backorderQuantityMessage: undefined,
-        backorderInfoMessage: undefined,
-      };
-    }
-
-    if (!showQuantityOnBackorder) {
-      return {
-        backorderQuantityMessage: undefined,
-        backorderInfoMessage: backorderMessage ?? undefined,
-      };
-    }
-
-    return {
-      backorderQuantityMessage: t('backorderQuantity', {
-        quantity: unlimitedBackorder
-          ? orderQuantity - availableOnHand
-          : Math.min(orderQuantity - availableOnHand, availableForBackorder),
-      }),
-      backorderInfoMessage: backorderMessage ?? undefined,
-    };
-  }, [backorderDisplayData, formFields.quantity.value, t]);
-
   const quantityControl = useInputControl(formFields.quantity);
 
   return (
@@ -236,7 +187,7 @@ export function ProductDetailForm<F extends Field>({
           <div className="h-[3.2rem] sm:h-[2.6rem]">
             {!!stockDisplayData?.stockLevelMessage && (
               <div
-                className={`flex ${backorderMessages?.backorderQuantityMessage || backorderMessages?.backorderInfoMessage ? 'translate-y-0' : 'translate-y-[calc(100%+4px)]'} flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))] transition-transform duration-200 ease-in-out`}
+                className={`flex ${backorderDisplayData?.backorderQuantityMessage || backorderDisplayData?.backorderInfoMessage ? 'translate-y-0' : 'translate-y-[calc(100%+4px)]'} flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))] transition-transform duration-200 ease-in-out`}
               >
                 <div className="flex-none whitespace-nowrap font-semibold text-black">
                   {stockDisplayData.stockLevelMessage}
@@ -248,16 +199,16 @@ export function ProductDetailForm<F extends Field>({
                 )}
               </div>
             )}
-            {!!backorderMessages && (
+            {!!backorderDisplayData && (
               <div
-                className={`ease-initial mt-1 flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))] transition-opacity ${backorderMessages.backorderQuantityMessage || backorderMessages.backorderInfoMessage ? 'duration-400 opacity-100' : 'opacity-0 delay-0 duration-100'}`}
+                className={`ease-initial mt-1 flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))] transition-opacity ${backorderDisplayData.backorderQuantityMessage || backorderDisplayData.backorderInfoMessage ? 'duration-400 opacity-100' : 'opacity-0 delay-0 duration-100'}`}
               >
                 <div className="flex-none whitespace-nowrap font-semibold text-black">
-                  {backorderMessages.backorderQuantityMessage}
+                  {backorderDisplayData.backorderQuantityMessage}
                 </div>
-                {!!backorderMessages.backorderInfoMessage && (
+                {!!backorderDisplayData.backorderInfoMessage && (
                   <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
-                    {backorderMessages.backorderInfoMessage}
+                    {backorderDisplayData.backorderInfoMessage}
                   </div>
                 )}
               </div>

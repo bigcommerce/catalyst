@@ -201,6 +201,33 @@ export const getProduct = cache(async (entityId: number, customerAccessToken?: s
   return data.site.product;
 });
 
+const ProductVariantsInventoryFragment = graphql(`
+  fragment ProductVariantsInventoryFragment on Product {
+    variants {
+      edges {
+        node {
+          # The product-viewed fragment needs entityId however typescript
+          # can't merge the types properly. Because inventory needs variants
+          # here as well we include it in this fragment to ensure it's always
+          # available when needed.
+          entityId
+          sku
+          inventory {
+            byLocation {
+              edges {
+                node {
+                  locationEntityId
+                  backorderMessage
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`);
+
 const StreamableProductQuery = graphql(
   `
     query StreamableProductQuery(
@@ -258,13 +285,14 @@ const StreamableProductQuery = graphql(
           availabilityV2 {
             status
           }
+          ...ProductVariantsInventoryFragment
           ...ProductViewedFragment
           ...ProductSchemaFragment
         }
       }
     }
   `,
-  [ProductViewedFragment, ProductSchemaFragment],
+  [ProductViewedFragment, ProductSchemaFragment, ProductVariantsInventoryFragment],
 );
 
 type Variables = VariablesOf<typeof StreamableProductQuery>;
@@ -344,7 +372,7 @@ const InventorySettingsQuery = graphql(`
   }
 `);
 
-export const getInventorySettingsQuery = cache(async (customerAccessToken?: string) => {
+export const getStreamableInventorySettingsQuery = cache(async (customerAccessToken?: string) => {
   const { data } = await client.fetch({
     document: InventorySettingsQuery,
     customerAccessToken,
