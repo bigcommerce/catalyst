@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.2
+
+### Patch Changes
+
+- [`6c94dec`](https://github.com/bigcommerce/catalyst/commit/6c94dece0f72f2bc74ef67b456f2522475e2f129) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Pulls in changes from the `@bigcommerce/catalyst-core@1.3.2` patch.
+
 ## 1.3.1
 
 ### Patch Changes
