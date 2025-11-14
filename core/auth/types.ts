@@ -6,7 +6,8 @@ declare module 'next-auth' {
   }
 
   interface User {
-    name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
     email?: string | null;
     cartId?: string | null;
     customerAccessToken?: string;

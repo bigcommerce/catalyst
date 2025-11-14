@@ -127,7 +127,8 @@ async function loginWithPassword(credentials: unknown): Promise<User | null> {
   await clearAnonymousSession();
 
   return {
-    name: `${result.customer.firstName} ${result.customer.lastName}`,
+    firstName: result.customer.firstName,
+    lastName: result.customer.lastName,
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
     cartId: result.cart?.entityId,
@@ -163,7 +164,8 @@ async function loginWithJwt(credentials: unknown): Promise<User | null> {
   await clearAnonymousSession();
 
   return {
-    name: `${result.customer.firstName} ${result.customer.lastName}`,
+    firstName: result.customer.firstName,
+    lastName: result.customer.lastName,
     email: result.customer.email,
     customerAccessToken: result.customerAccessToken.value,
     impersonatorId,
@@ -206,6 +208,24 @@ const config = {
         };
       }
 
+      // user can actually be undefined
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (user?.firstName !== undefined) {
+        token.user = {
+          ...token.user,
+          firstName: user.firstName,
+        };
+      }
+
+      // user can actually be undefined
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      if (user?.lastName !== undefined) {
+        token.user = {
+          ...token.user,
+          lastName: user.lastName,
+        };
+      }
+
       if (trigger === 'update') {
         const parsedSession = SessionUpdate.safeParse(session);
 
@@ -226,6 +246,14 @@ const config = {
 
       if (token.user?.cartId !== undefined) {
         session.user.cartId = token.user.cartId;
+      }
+
+      if (token.user?.firstName !== undefined) {
+        session.user.firstName = token.user.firstName;
+      }
+
+      if (token.user?.lastName !== undefined) {
+        session.user.lastName = token.user.lastName;
       }
 
       return session;
