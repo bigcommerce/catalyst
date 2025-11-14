@@ -3,12 +3,14 @@
 import { BigCommerceGQLError } from '@bigcommerce/catalyst-client';
 import { SubmissionResult } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
+import { revalidateTag } from 'next/cache';
 import { getTranslations } from 'next-intl/server';
 
 import { schema } from '@/vibes/soul/sections/reviews/schema';
 import { getSessionCustomerAccessToken } from '~/auth';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
+import { TAGS } from '~/client/tags';
 
 const AddProductReviewMutation = graphql(`
   mutation AddProductReviewMutation($input: AddProductReviewInput!) {
@@ -63,6 +65,8 @@ export async function submitReview(
         lastResult: submission.reply({ formErrors: result.errors.map(({ message }) => message) }),
       };
     }
+
+    revalidateTag(TAGS.reviews);
 
     return {
       ...prevState,

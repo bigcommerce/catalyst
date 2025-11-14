@@ -10,6 +10,7 @@ import { client } from '~/client';
 import { PaginationFragment } from '~/client/fragments/pagination';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
+import { TAGS } from '~/client/tags';
 import { defaultPageInfo, pageInfoTransformer } from '~/data-transformers/page-info-transformer';
 
 import { submitReview } from '../_actions/submit-review';
@@ -67,7 +68,7 @@ const getReviews = cache(async (productId: number, paginationArgs: object) => {
   const { data } = await client.fetch({
     document: ReviewsQuery,
     variables: { ...paginationArgs, entityId: productId },
-    fetchOptions: { next: { revalidate } },
+    fetchOptions: { next: { revalidate, tags: [TAGS.reviews] } },
   });
 
   return data.site.product;
