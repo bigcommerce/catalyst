@@ -11,6 +11,7 @@ import { kvKey, STORE_STATUS_KEY } from '~/lib/kv/keys';
 import { kv } from '../lib/kv';
 
 import { type MiddlewareFactory } from './compose-middlewares';
+import {getSessionCustomerAccessToken} from "~/auth";
 
 const trailingSlashDisabled = process.env.TRAILING_SLASH === 'false';
 
@@ -65,10 +66,13 @@ const GetRouteQuery = graphql(`
 `);
 
 const getRoute = async (path: string, channelId?: string) => {
+  const customerAccessToken = await getSessionCustomerAccessToken();
+
   const response = await client.fetch({
     document: GetRouteQuery,
     variables: { path },
     fetchOptions: { next: { revalidate } },
+    customerAccessToken,
     channelId,
   });
 
