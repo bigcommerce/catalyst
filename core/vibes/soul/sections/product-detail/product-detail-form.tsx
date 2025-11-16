@@ -45,6 +45,19 @@ interface State<F extends Field> {
 
 export type ProductDetailFormAction<F extends Field> = Action<State<F>, FormData>;
 
+export interface StockDisplayData {
+  stockLevelMessage?: string | null;
+  backorderAvailabilityPrompt?: string | null;
+}
+
+export interface BackorderDisplayData {
+  availableOnHand: number;
+  availableForBackorder: number;
+  unlimitedBackorder: boolean;
+  showQuantityOnBackorder: boolean;
+  backorderMessage?: string | null;
+}
+
 interface BackorderMessages {
   backorderQuantityMessage?: string;
   backorderInfoMessage?: string;
@@ -64,13 +77,8 @@ export interface ProductDetailFormProps<F extends Field> {
   additionalActions?: ReactNode;
   minQuantity?: number;
   maxQuantity?: number;
-  stockLevelMessage?: string;
-  backorderAvailabilityPrompt?: string;
-  availableOnHand?: number;
-  availableForBackorder?: number;
-  backorderMessage?: string;
-  unlimitedBackorder: boolean;
-  showQuantityOnBackorder: boolean;
+  stockDisplayData?: StockDisplayData;
+  backorderDisplayData?: BackorderDisplayData;
 }
 
 export function ProductDetailForm<F extends Field>({
@@ -87,13 +95,8 @@ export function ProductDetailForm<F extends Field>({
   additionalActions,
   minQuantity,
   maxQuantity,
-  stockLevelMessage,
-  backorderAvailabilityPrompt,
-  availableOnHand = 0,
-  availableForBackorder = 0,
-  backorderMessage,
-  unlimitedBackorder,
-  showQuantityOnBackorder,
+  stockDisplayData,
+  backorderDisplayData,
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -165,6 +168,14 @@ export function ProductDetailForm<F extends Field>({
   });
 
   const backorderMessages = useMemo<BackorderMessages | undefined>(() => {
+    const {
+      availableForBackorder,
+      availableOnHand,
+      backorderMessage,
+      showQuantityOnBackorder,
+      unlimitedBackorder,
+    } = backorderDisplayData || { availableForBackorder: 0, availableOnHand: 0 };
+
     if (!showQuantityOnBackorder && !backorderMessage) {
       return undefined;
     }
@@ -181,7 +192,7 @@ export function ProductDetailForm<F extends Field>({
     if (!showQuantityOnBackorder) {
       return {
         backorderQuantityMessage: undefined,
-        backorderInfoMessage: backorderMessage,
+        backorderInfoMessage: backorderMessage ?? undefined,
       };
     }
 
@@ -191,17 +202,9 @@ export function ProductDetailForm<F extends Field>({
           ? orderQuantity - availableOnHand
           : Math.min(orderQuantity - availableOnHand, availableForBackorder),
       }),
-      backorderInfoMessage: backorderMessage,
+      backorderInfoMessage: backorderMessage ?? undefined,
     };
-  }, [
-    formFields.quantity.value,
-    availableOnHand,
-    showQuantityOnBackorder,
-    t,
-    unlimitedBackorder,
-    availableForBackorder,
-    backorderMessage,
-  ]);
+  }, [backorderDisplayData, formFields.quantity.value, t]);
 
   const quantityControl = useInputControl(formFields.quantity);
 
@@ -231,16 +234,16 @@ export function ProductDetailForm<F extends Field>({
           ))}
 
           <div className="h-[3.2rem] sm:h-[2.6rem]">
-            {!!stockLevelMessage && (
+            {!!stockDisplayData?.stockLevelMessage && (
               <div
                 className={`flex ${backorderMessages?.backorderQuantityMessage || backorderMessages?.backorderInfoMessage ? 'translate-y-0' : 'translate-y-[calc(100%+4px)]'} flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))] transition-transform duration-200 ease-in-out`}
               >
                 <div className="flex-none whitespace-nowrap font-semibold text-black">
-                  {stockLevelMessage}
+                  {stockDisplayData.stockLevelMessage}
                 </div>
-                {!!backorderAvailabilityPrompt && (
+                {!!stockDisplayData.backorderAvailabilityPrompt && (
                   <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
-                    {backorderAvailabilityPrompt}
+                    {stockDisplayData.backorderAvailabilityPrompt}
                   </div>
                 )}
               </div>
