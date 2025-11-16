@@ -55,12 +55,7 @@ export interface BackorderDisplayData {
   availableForBackorder: number;
   unlimitedBackorder: boolean;
   showQuantityOnBackorder: boolean;
-  backorderMessage?: string | null;
-}
-
-interface BackorderMessages {
-  backorderQuantityMessage?: string;
-  backorderInfoMessage?: string;
+  backorderMessage: string | null;
 }
 
 export interface ProductDetailFormProps<F extends Field> {
@@ -167,7 +162,7 @@ export function ProductDetailForm<F extends Field>({
     shouldRevalidate: 'onInput',
   });
 
-  const backorderMessages = useMemo<BackorderMessages | undefined>(() => {
+  const backorderMessages = useMemo(() => {
     const {
       availableForBackorder,
       availableOnHand,

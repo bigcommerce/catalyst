@@ -21,10 +21,10 @@ import { Reviews } from './_components/reviews';
 import { WishlistButton } from './_components/wishlist-button';
 import { WishlistButtonForm } from './_components/wishlist-button/form';
 import {
-  getInventorySettingsQuery,
   getProduct,
   getProductPageMetadata,
   getProductPricingAndRelatedProducts,
+  getStreamableInventorySettingsQuery,
   getStreamableProduct,
 } from './page-data';
 
@@ -197,8 +197,15 @@ export default async function Product({ params, searchParams }: Props) {
     return false;
   });
 
+  const streamableInventorySettings = Streamable.from(async () => {
+    return await getStreamableInventorySettingsQuery(customerAccessToken);
+  });
+
   const streamableStockLevelMessage = Streamable.from(async () => {
-    const inventorySetting = await getInventorySettingsQuery(customerAccessToken);
+    const [product, inventorySetting] = await Streamable.all([
+      streamableProduct,
+      streamableInventorySettings,
+    ]);
 
     if (!inventorySetting) {
       return null;
@@ -213,8 +220,6 @@ export default async function Product({ params, searchParams }: Props) {
       showQuantityOnBackorder,
     } = inventorySetting;
 
-    const product = await streamableProduct;
-
     if (!product.inventory.isInStock) {
       return showOutOfStockMessage ? defaultOutOfStockMessage : null;
     }
@@ -225,26 +230,14 @@ export default async function Product({ params, searchParams }: Props) {
 
     const { availableToSell, warningLevel, availableOnHand } = product.inventory.aggregated ?? {};
 
+    const showsBackorderInfo =
+      showBackorderAvailabilityPrompt || showBackorderMessage || showQuantityOnBackorder;
+
     // if no backorder info is to be displayed, then availableToSell is the stock quantity to be used
-    if (!showBackorderAvailabilityPrompt && !showBackorderMessage && !showQuantityOnBackorder) {
-      // availableToSell can be 0 or undefined while the product is in stock if backorder is UNLIMITED
-      if (!availableToSell) {
-        return null;
-      }
+    const stockQuantity = showsBackorderInfo ? availableOnHand : availableToSell;
 
-      if (stockLevelDisplay === 'SHOW_WHEN_LOW') {
-        if (!warningLevel) {
-          return null;
-        }
-
-        if (availableToSell && availableToSell > warningLevel) {
-          return null;
-        }
-      }
-
-      return t('ProductDetails.currentStock', {
-        quantity: availableToSell,
-      });
+    if (!showsBackorderInfo && !stockQuantity) {
+      return null;
     }
 
     if (stockLevelDisplay === 'SHOW_WHEN_LOW') {
@@ -252,53 +245,37 @@ export default async function Product({ params, searchParams }: Props) {
         return null;
       }
 
-      if (availableOnHand && availableOnHand > warningLevel) {
+      if (stockQuantity && stockQuantity > warningLevel) {
         return null;
       }
     }
 
     return t('ProductDetails.currentStock', {
-      quantity: availableOnHand ?? 0,
+      quantity: stockQuantity ?? 0,
     });
   });
 
   const streamableStockDisplayData = Streamable.from(async () => {
-    const stockLevelMessage = await streamableStockLevelMessage;
+    const [stockLevelMessage, product, inventorySetting] = await Streamable.all([
+      streamableStockLevelMessage,
+      streamableProduct,
+      streamableInventorySettings,
+    ]);
 
     if (!stockLevelMessage) {
       return null;
     }
 
-    const inventorySetting = await getInventorySettingsQuery(customerAccessToken);
-
-    if (!inventorySetting) {
-      return {
-        stockLevelMessage,
-        backorderAvailabilityPrompt: null,
-      };
-    }
-
-    const { showBackorderAvailabilityPrompt, backorderAvailabilityPrompt } = inventorySetting;
-
-    if (!showBackorderAvailabilityPrompt) {
-      return {
-        stockLevelMessage,
-        backorderAvailabilityPrompt: null,
-      };
-    }
-
-    const product = await streamableProduct;
-
-    if (!product.inventory.isInStock) {
-      return {
-        stockLevelMessage,
-        backorderAvailabilityPrompt: null,
-      };
-    }
-
+    const { showBackorderAvailabilityPrompt, backorderAvailabilityPrompt } = inventorySetting ?? {};
     const { availableForBackorder, unlimitedBackorder } = product.inventory.aggregated ?? {};
+    const hasBackorderAvailablity = !!availableForBackorder || unlimitedBackorder;
 
-    if (!availableForBackorder && !unlimitedBackorder) {
+    if (
+      !showBackorderAvailabilityPrompt ||
+      !backorderAvailabilityPrompt ||
+      !product.inventory.isInStock ||
+      !hasBackorderAvailablity
+    ) {
       return {
         stockLevelMessage,
         backorderAvailabilityPrompt: null,
@@ -312,15 +289,16 @@ export default async function Product({ params, searchParams }: Props) {
   });
 
   const streamableBackorderDisplayData = Streamable.from(async () => {
-    const product = await streamableProduct;
+    const [product, inventorySetting] = await Streamable.all([
+      streamableProduct,
+      streamableInventorySettings,
+    ]);
 
     const inventoryData = {
       availableOnHand: product.inventory.aggregated?.availableOnHand ?? 0,
       availableForBackorder: product.inventory.aggregated?.availableForBackorder ?? 0,
       unlimitedBackorder: !!product.inventory.aggregated?.unlimitedBackorder,
     };
-
-    const inventorySetting = await getInventorySettingsQuery(customerAccessToken);
 
     if (!inventorySetting) {
       return {
@@ -332,18 +310,13 @@ export default async function Product({ params, searchParams }: Props) {
 
     const { showQuantityOnBackorder, showBackorderMessage } = inventorySetting;
 
-    if (inventoryData.availableForBackorder === 0 && !inventoryData.unlimitedBackorder) {
-      return {
-        ...inventoryData,
-        showQuantityOnBackorder: false,
-        backorderMessage: null,
-      };
-    }
+    const hasBackorderAvailablity =
+      inventoryData.availableForBackorder > 0 || inventoryData.unlimitedBackorder;
 
-    if (!showBackorderMessage) {
+    if (!hasBackorderAvailablity || !showBackorderMessage) {
       return {
         ...inventoryData,
-        showQuantityOnBackorder,
+        showQuantityOnBackorder: showQuantityOnBackorder && hasBackorderAvailablity,
         backorderMessage: null,
       };
     }
@@ -359,9 +332,9 @@ export default async function Product({ params, searchParams }: Props) {
       };
     }
 
-    const mainVariant = variants[0];
+    const baseVariant = variants.find((variant) => variant.sku === product.sku);
 
-    if (!mainVariant?.inventory?.byLocation) {
+    if (!baseVariant?.inventory?.byLocation) {
       return {
         ...inventoryData,
         showQuantityOnBackorder,
@@ -369,12 +342,12 @@ export default async function Product({ params, searchParams }: Props) {
       };
     }
 
-    const inventoryByLocation = removeEdgesAndNodes(mainVariant.inventory.byLocation);
+    const inventoryByLocation = removeEdgesAndNodes(baseVariant.inventory.byLocation).at(0);
 
     return {
       ...inventoryData,
       showQuantityOnBackorder,
-      backorderMessage: inventoryByLocation[0]?.backorderMessage || null,
+      backorderMessage: inventoryByLocation?.backorderMessage || null,
     };
   });
 

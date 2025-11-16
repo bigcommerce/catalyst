@@ -15,17 +15,6 @@ export const ProductViewedFragment = graphql(`
       edges {
         node {
           entityId
-          sku
-          inventory {
-            byLocation {
-              edges {
-                node {
-                  locationEntityId
-                  backorderMessage
-                }
-              }
-            }
-          }
         }
       }
     }
