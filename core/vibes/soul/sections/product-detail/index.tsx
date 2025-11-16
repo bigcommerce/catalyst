@@ -8,7 +8,12 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
 
-import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
+import {
+  BackorderDisplayData,
+  ProductDetailForm,
+  ProductDetailFormAction,
+  StockDisplayData,
+} from './product-detail-form';
 import { Field } from './schema';
 
 interface ProductDetailProduct {
@@ -30,12 +35,8 @@ interface ProductDetailProduct {
   >;
   minQuantity?: Streamable<number | null>;
   maxQuantity?: Streamable<number | null>;
-  stockLevelMessage?: Streamable<string | null>;
-  backorderAvailabilityPrompt?: Streamable<string | null>;
-  availableOnHand?: Streamable<number>;
-  availableForBackorder?: Streamable<number>;
-  unlimitedBackorder: Streamable<boolean>;
-  backorderMessage?: Streamable<string | null>;
+  stockDisplayData?: Streamable<StockDisplayData | null>;
+  backorderDisplayData?: Streamable<BackorderDisplayData | null>;
 }
 
 export interface ProductDetailProps<F extends Field> {
@@ -43,7 +44,6 @@ export interface ProductDetailProps<F extends Field> {
   product: Streamable<ProductDetailProduct | null>;
   action: ProductDetailFormAction<F>;
   fields: Streamable<F[]>;
-  showQuantityOnBackorder: Streamable<boolean>;
   quantityLabel?: string;
   incrementLabel?: string;
   decrementLabel?: string;
@@ -75,7 +75,6 @@ export function ProductDetail<F extends Field>({
   product: streamableProduct,
   action,
   fields: streamableFields,
-  showQuantityOnBackorder: streamableShowQuantityOnBackorder,
   breadcrumbs,
   quantityLabel,
   incrementLabel,
@@ -154,13 +153,8 @@ export function ProductDetail<F extends Field>({
                         streamableCtaDisabled,
                         product.minQuantity,
                         product.maxQuantity,
-                        product.backorderMessage,
-                        streamableShowQuantityOnBackorder,
-                        product.availableOnHand,
-                        product.availableForBackorder,
-                        product.unlimitedBackorder,
-                        product.stockLevelMessage,
-                        product.backorderAvailabilityPrompt,
+                        product.stockDisplayData,
+                        product.backorderDisplayData,
                       ])}
                     >
                       {([
@@ -169,21 +163,13 @@ export function ProductDetail<F extends Field>({
                         ctaDisabled,
                         minQuantity,
                         maxQuantity,
-                        backorderMessage,
-                        showQuantityOnBackorder,
-                        availableOnHand,
-                        availableForBackorder,
-                        unlimitedBackorder,
-                        stockLevelMessage,
-                        backorderAvailabilityPrompt,
+                        stockDisplayData,
+                        backorderDisplayData,
                       ]) => (
                         <ProductDetailForm
                           action={action}
                           additionalActions={additionalActions}
-                          availableForBackorder={availableForBackorder}
-                          availableOnHand={availableOnHand}
-                          backorderAvailabilityPrompt={backorderAvailabilityPrompt ?? undefined}
-                          backorderMessage={backorderMessage ?? undefined}
+                          backorderDisplayData={backorderDisplayData ?? undefined}
                           ctaDisabled={ctaDisabled ?? undefined}
                           ctaLabel={ctaLabel ?? undefined}
                           decrementLabel={decrementLabel}
@@ -195,9 +181,7 @@ export function ProductDetail<F extends Field>({
                           prefetch={prefetch}
                           productId={product.id}
                           quantityLabel={quantityLabel}
-                          showQuantityOnBackorder={showQuantityOnBackorder}
-                          stockLevelMessage={stockLevelMessage ?? undefined}
-                          unlimitedBackorder={unlimitedBackorder}
+                          stockDisplayData={stockDisplayData ?? undefined}
                         />
                       )}
                     </Stream>
