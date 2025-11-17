@@ -307,7 +307,7 @@
                 "couponCode": "Código de cupón",
                 "removeCouponCode": "Elimina el código de cupón",
                 "invalidCouponCode": "Ingresa un código de cupón válido",
-                "cartNotFound": "No se encontró ninguna cookie de cartId."
+                "cartNotFound": "An error occurred when retrieving your cart"
             },
             "Shipping": {
                 "shipping": "Envío",
@@ -324,7 +324,7 @@
                 "shippingOptions": "Opciones de envío",
                 "updateShipping": "Actualizar envío",
                 "addShipping": "Agregar envío",
-                "cartNotFound": "No se encontró ninguna cookie de cartId.",
+                "cartNotFound": "An error occurred when retrieving your cart",
                 "noShippingOptions": "No hay opciones de envío disponibles para tu dirección"
             }
         },
@@ -336,7 +336,7 @@
             "to": "De",
             "message": "Mensaje",
             "invalidGiftCertificate": "Ingrese un código de certificado de regalo válido",
-            "cartNotFound": "No se encontró ninguna cookie de cartId."
+            "cartNotFound": "An error occurred when retrieving your cart"
         },
         "Empty": {
             "title": "Su carrito está vacío.",
@@ -344,7 +344,7 @@
             "cta": "Seguir comprando"
         },
         "Errors": {
-            "cartNotFound": "No se encontró ninguna cookie de cartId.",
+            "cartNotFound": "An error occurred when retrieving your cart",
             "lineItemNotFound": "Artículo no encontrado.",
             "failedToUpdateQuantity": "No se pudo actualizar la cantidad.",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
@@ -458,7 +458,8 @@
             "Icons": {
                 "account": "Perfil",
                 "cart": "Carrito",
-                "search": "Abrir ventana emergente de búsqueda"
+                "search": "Abrir ventana emergente de búsqueda",
+                "giftCertificates": "Certificados de regalo"
             },
             "SwitchCurrency": {
                 "label": "Cambiar moneda",
@@ -482,7 +483,8 @@
             "socialMediaLinks": "Enlaces a redes sociales",
             "categories": "Categorías",
             "brands": "Marcas",
-            "navigate": "Navegar"
+            "navigate": "Navegar",
+            "giftCertificates": "Certificados de regalo"
         },
         "Subscribe": {
             "title": "Suscríbete a nuestro boletín informativo",

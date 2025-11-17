@@ -307,7 +307,7 @@
                 "couponCode": "Couponcode",
                 "removeCouponCode": "Couponcode verwijderen",
                 "invalidCouponCode": "Voer een geldige couponcode in",
-                "cartNotFound": "Geen cartId-cookie gevonden."
+                "cartNotFound": "An error occurred when retrieving your cart"
             },
             "Shipping": {
                 "shipping": "Verzending",
@@ -324,7 +324,7 @@
                 "shippingOptions": "Verzendopties",
                 "updateShipping": "Verzending bijwerken",
                 "addShipping": "Verzending toevoegen",
-                "cartNotFound": "Geen cartId-cookie gevonden.",
+                "cartNotFound": "An error occurred when retrieving your cart",
                 "noShippingOptions": "Er zijn geen verzendopties beschikbaar voor je adres"
             }
         },
@@ -336,7 +336,7 @@
             "to": "Naar",
             "message": "Bericht",
             "invalidGiftCertificate": "Voer een geldige cadeauboncode in",
-            "cartNotFound": "Geen cartId-cookie gevonden."
+            "cartNotFound": "An error occurred when retrieving your cart"
         },
         "Empty": {
             "title": "Uw winkelmandje is leeg.",
@@ -344,7 +344,7 @@
             "cta": "Verdergaan met winkelen"
         },
         "Errors": {
-            "cartNotFound": "Geen cartId-cookie gevonden.",
+            "cartNotFound": "An error occurred when retrieving your cart",
             "lineItemNotFound": "Regelitem niet gevonden.",
             "failedToUpdateQuantity": "Hoeveelheid bijwerken is mislukt.",
             "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
@@ -458,7 +458,8 @@
             "Icons": {
                 "account": "Profiel",
                 "cart": "Winkelmandje",
-                "search": "Popup voor zoeken openen"
+                "search": "Popup voor zoeken openen",
+                "giftCertificates": "Cadeaubonnen"
             },
             "SwitchCurrency": {
                 "label": "Valuta wisselen",
@@ -482,7 +483,8 @@
             "socialMediaLinks": "Links naar sociale media",
             "categories": "Categorieën",
             "brands": "Merken",
-            "navigate": "Navigeren"
+            "navigate": "Navigeren",
+            "giftCertificates": "Cadeaubonnen"
         },
         "Subscribe": {
             "title": "Aanmelden voor onze nieuwsbrief",

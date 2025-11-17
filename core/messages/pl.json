@@ -307,7 +307,7 @@
                 "couponCode": "Kod kuponu",
                 "removeCouponCode": "Usuń kod kuponu",
                 "invalidCouponCode": "Wprowadź prawidłowy kod kuponu",
-                "cartNotFound": "Nie znaleziono pliku cookie cartId."
+                "cartNotFound": "An error occurred when retrieving your cart"
             },
             "Shipping": {
                 "shipping": "Wysyłka",
@@ -324,7 +324,7 @@
                 "shippingOptions": "Opcje wysyłki",
                 "updateShipping": "Zaktualizuj wysyłkę",
                 "addShipping": "Dodaj wysyłkę",
-                "cartNotFound": "Nie znaleziono pliku cookie cartId.",
+                "cartNotFound": "An error occurred when retrieving your cart",
                 "noShippingOptions": "Brak dostępnych opcji wysyłki dla Państwa adresu"
             }
         },
@@ -336,7 +336,7 @@
             "to": "Do",
             "message": "Wiadomość",
             "invalidGiftCertificate": "Please enter a valid gift certificate code",
-            "cartNotFound": "Nie znaleziono pliku cookie cartId."
+            "cartNotFound": "An error occurred when retrieving your cart"
         },
         "Empty": {
             "title": "Twój koszyk jest pusty.",
@@ -344,7 +344,7 @@
             "cta": "Kontynuuj zakupy"
         },
         "Errors": {
-            "cartNotFound": "Nie znaleziono pliku cookie cartId.",
+            "cartNotFound": "An error occurred when retrieving your cart",
             "lineItemNotFound": "Nie znaleziono pozycji.",
             "failedToUpdateQuantity": "Nie udało się zaktualizować liczby sztuk.",
             "somethingWentWrong": "Coś poszło nie tak. Proszę spróbować później."
@@ -458,7 +458,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Koszyk",
-                "search": "Otwórz wyskakujące okienko wyszukiwania"
+                "search": "Otwórz wyskakujące okienko wyszukiwania",
+                "giftCertificates": "Bony upominkowe"
             },
             "SwitchCurrency": {
                 "label": "Switch currency",
@@ -482,7 +483,8 @@
             "socialMediaLinks": "Linki do mediów społecznościowych",
             "categories": "Kategorie",
             "brands": "Marki",
-            "navigate": "Nawiguj po stronie"
+            "navigate": "Nawiguj po stronie",
+            "giftCertificates": "Bony upominkowe"
         },
         "Subscribe": {
             "title": "Zapisz się do naszego newslettera",

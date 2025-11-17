@@ -307,7 +307,7 @@
                 "couponCode": "Code promotionnel",
                 "removeCouponCode": "Supprimez le code promotionnel",
                 "invalidCouponCode": "Veuillez saisir un code promotionnel valide",
-                "cartNotFound": "Aucun cookie cartId n’a été trouvé."
+                "cartNotFound": "An error occurred when retrieving your cart"
             },
             "Shipping": {
                 "shipping": "Livraison",
@@ -324,7 +324,7 @@
                 "shippingOptions": "Options de livraison",
                 "updateShipping": "Mettre à jour l’expédition",
                 "addShipping": "Ajouter l’expédition",
-                "cartNotFound": "Aucun cookie cartId n’a été trouvé.",
+                "cartNotFound": "An error occurred when retrieving your cart",
                 "noShippingOptions": "Aucune option de livraison n'est disponible pour votre adresse"
             }
         },
@@ -336,7 +336,7 @@
             "to": "À",
             "message": "Message",
             "invalidGiftCertificate": "Veuillez saisir un code de chèque-cadeau valide",
-            "cartNotFound": "Aucun cookie cartId n’a été trouvé."
+            "cartNotFound": "An error occurred when retrieving your cart"
         },
         "Empty": {
             "title": "Votre panier est vide.",
@@ -344,7 +344,7 @@
             "cta": "Continuer mes achats"
         },
         "Errors": {
-            "cartNotFound": "Aucun cookie cartId n’a été trouvé.",
+            "cartNotFound": "An error occurred when retrieving your cart",
             "lineItemNotFound": "Ligne introuvable.",
             "failedToUpdateQuantity": "Échec de la mise à jour de la quantité.",
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
@@ -458,7 +458,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Panier",
-                "search": "Ouvrir la fenêtre contextuelle de recherche"
+                "search": "Ouvrir la fenêtre contextuelle de recherche",
+                "giftCertificates": "Chèques-cadeaux"
             },
             "SwitchCurrency": {
                 "label": "Changer de devise",
@@ -482,7 +483,8 @@
             "socialMediaLinks": "Lien vers les médias sociaux",
             "categories": "Catégories",
             "brands": "Marques",
-            "navigate": "Parcourir"
+            "navigate": "Parcourir",
+            "giftCertificates": "Chèques-cadeaux"
         },
         "Subscribe": {
             "title": "Abonnez-vous à notre newsletter",

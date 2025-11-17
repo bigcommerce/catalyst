@@ -307,7 +307,7 @@
                 "couponCode": "Kuponkode",
                 "removeCouponCode": "Fjern kuponkode",
                 "invalidCouponCode": "Indtast en gyldig kuponkode",
-                "cartNotFound": "Der blev ikke fundet cartId-cookie."
+                "cartNotFound": "An error occurred when retrieving your cart"
             },
             "Shipping": {
                 "shipping": "Forsendelse",
@@ -324,7 +324,7 @@
                 "shippingOptions": "Forsendelsesmuligheder",
                 "updateShipping": "Opdater forsendelse",
                 "addShipping": "Tilføj forsendelse",
-                "cartNotFound": "Der blev ikke fundet cartId-cookie.",
+                "cartNotFound": "An error occurred when retrieving your cart",
                 "noShippingOptions": "Der er ingen tilgængelige forsendelsesmuligheder for din adresse"
             }
         },
@@ -336,7 +336,7 @@
             "to": "Til",
             "message": "Meddelelse",
             "invalidGiftCertificate": "Indtast en gyldig gavekortkode",
-            "cartNotFound": "Der blev ikke fundet cartId-cookie."
+            "cartNotFound": "An error occurred when retrieving your cart"
         },
         "Empty": {
             "title": "Din indkøbskurv er tom.",
@@ -344,7 +344,7 @@
             "cta": "Fortsæt med at handle"
         },
         "Errors": {
-            "cartNotFound": "Der blev ikke fundet cartId-cookie.",
+            "cartNotFound": "An error occurred when retrieving your cart",
             "lineItemNotFound": "Linjeelement ikke fundet.",
             "failedToUpdateQuantity": "Antallet kunne ikke opdateres.",
             "somethingWentWrong": "Noget gik galt. Prøv igen senere."
@@ -458,7 +458,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Indkøbskurv",
-                "search": "Åbn søge-pop op"
+                "search": "Åbn søge-pop op",
+                "giftCertificates": "Gavekort"
             },
             "SwitchCurrency": {
                 "label": "Skift valuta",
@@ -482,7 +483,8 @@
             "socialMediaLinks": "Links til sociale medier",
             "categories": "Kategorier",
             "brands": "mærker",
-            "navigate": "Navigér"
+            "navigate": "Navigér",
+            "giftCertificates": "Gavekort"
         },
         "Subscribe": {
             "title": "Tilmeld dig vores nyhedsbrev",
