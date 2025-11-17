@@ -17,8 +17,8 @@ import { readFragment } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { CurrencyCode } from '~/components/header/fragment';
 import { logoTransformer } from '~/data-transformers/logo-transformer';
-import { SiteFooter as FooterSection } from '~/lib/makeswift/components/site-footer';
 import { getPreferredCurrencyCode } from '~/lib/currency';
+import { SiteFooter as FooterSection } from '~/lib/makeswift/components/site-footer';
 
 import { FooterFragment, FooterSectionsFragment } from './fragment';
 import { AmazonIcon } from './payment-icons/amazon';
