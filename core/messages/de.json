@@ -307,7 +307,7 @@
                 "couponCode": "Gutschein-Code",
                 "removeCouponCode": "Gutschein-Code entfernen",
                 "invalidCouponCode": "Bitte geben Sie einen gültigen Coupon-Code ein",
-                "cartNotFound": "Kein cartId-Cookie gefunden."
+                "cartNotFound": "An error occurred when retrieving your cart"
             },
             "Shipping": {
                 "shipping": "Versand",
@@ -324,7 +324,7 @@
                 "shippingOptions": "Versandoptionen",
                 "updateShipping": "Versand aktualisieren",
                 "addShipping": "Versand hinzufügen",
-                "cartNotFound": "Kein cartId-Cookie gefunden.",
+                "cartNotFound": "An error occurred when retrieving your cart",
                 "noShippingOptions": "Für Ihre Adresse sind keine Versandoptionen verfügbar"
             }
         },
@@ -336,7 +336,7 @@
             "to": "Nach",
             "message": "Nachricht",
             "invalidGiftCertificate": "Bitte geben Sie einen gültigen Geschenkgutscheincode ein.",
-            "cartNotFound": "Kein cartId-Cookie gefunden."
+            "cartNotFound": "An error occurred when retrieving your cart"
         },
         "Empty": {
             "title": "Ihr Warenkorb ist leer.",
@@ -344,7 +344,7 @@
             "cta": "Weiter einkaufen"
         },
         "Errors": {
-            "cartNotFound": "Kein cartId-Cookie gefunden.",
+            "cartNotFound": "An error occurred when retrieving your cart",
             "lineItemNotFound": "Einzelposten nicht gefunden.",
             "failedToUpdateQuantity": "Menge konnte nicht aktualisiert werden.",
             "somethingWentWrong": "Es ist etwas schiefgegangen Bitte versuchen Sie es später erneut."
@@ -458,7 +458,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Warenkorb",
-                "search": "Popup-Fenster zur Suche öffnen"
+                "search": "Popup-Fenster zur Suche öffnen",
+                "giftCertificates": "Geschenkgutscheine"
             },
             "SwitchCurrency": {
                 "label": "Währung ändern",
@@ -482,7 +483,8 @@
             "socialMediaLinks": "Social-Media-Links",
             "categories": "Kategorien",
             "brands": "Marken",
-            "navigate": "Navigieren"
+            "navigate": "Navigieren",
+            "giftCertificates": "Geschenkgutscheine"
         },
         "Subscribe": {
             "title": "Melden Sie sich für unseren Newsletter an",
