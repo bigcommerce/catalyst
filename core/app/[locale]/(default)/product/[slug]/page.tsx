@@ -283,16 +283,22 @@ export default async function Product({ params, searchParams }: Props) {
       }
     }
 
+    const availabilityMessage = getBackorderAvailabilityPrompt({
+      showBackorderAvailabilityPrompt,
+      backorderAvailabilityPrompt,
+      availableForBackorder,
+      unlimitedBackorder,
+    });
+
+    if (!availabilityMessage && stockQuantity === undefined) {
+      return null;
+    }
+
     return {
       stockLevelMessage: t('ProductDetails.currentStock', {
         quantity: stockQuantity ?? 0,
       }),
-      backorderAvailabilityPrompt: getBackorderAvailabilityPrompt({
-        showBackorderAvailabilityPrompt,
-        backorderAvailabilityPrompt,
-        availableForBackorder,
-        unlimitedBackorder,
-      }),
+      backorderAvailabilityPrompt: availabilityMessage,
     };
   });
 
