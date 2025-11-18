@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.3.4
+
+### Patch Changes
+
+- [#2723](https://github.com/bigcommerce/catalyst/pull/2723) [`dbafb31`](https://github.com/bigcommerce/catalyst/commit/dbafb317fc27c976ae48f23ee4645c9980253a3a) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Noop release to account for typecheck issue.
+
 ## 1.3.3
 
 ### Patch Changes
