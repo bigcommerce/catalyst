@@ -10,6 +10,7 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
+import { clsx } from 'clsx';
 import { useTranslations } from 'next-intl';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
 import { ReactNode, startTransition, useActionState, useCallback, useEffect, useMemo } from 'react';
@@ -231,7 +232,14 @@ export function ProductDetailForm<F extends Field>({
           <div className="h-[3.2rem] sm:h-[2.6rem]">
             {!!stockDisplayData?.stockLevelMessage && (
               <div
-                className={`flex ${backorderMessages?.backorderQuantityMessage || backorderMessages?.backorderInfoMessage ? 'translate-y-0' : 'translate-y-[calc(100%+4px)]'} flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))] transition-transform duration-200 ease-in-out`}
+                className={clsx(
+                  'flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]',
+                  'transition-transform duration-200 ease-in-out',
+                  backorderMessages?.backorderQuantityMessage ||
+                    backorderMessages?.backorderInfoMessage
+                    ? 'translate-y-0'
+                    : 'translate-y-[calc(100%+4px)]',
+                )}
               >
                 <div className="flex-none whitespace-nowrap font-semibold text-black">
                   {stockDisplayData.stockLevelMessage}
@@ -245,7 +253,14 @@ export function ProductDetailForm<F extends Field>({
             )}
             {!!backorderMessages && (
               <div
-                className={`ease-initial mt-1 flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))] transition-opacity ${backorderMessages.backorderQuantityMessage || backorderMessages.backorderInfoMessage ? 'duration-400 opacity-100' : 'opacity-0 delay-0 duration-100'}`}
+                className={clsx(
+                  'mt-1 flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]',
+                  'ease-initial transition-opacity',
+                  backorderMessages.backorderQuantityMessage ||
+                    backorderMessages.backorderInfoMessage
+                    ? 'duration-400 opacity-100'
+                    : 'opacity-0 delay-0 duration-100',
+                )}
               >
                 <div className="flex-none whitespace-nowrap font-semibold text-black">
                   {backorderMessages.backorderQuantityMessage}
