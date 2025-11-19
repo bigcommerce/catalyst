@@ -42,6 +42,7 @@ export interface CartLineItem {
   quantity: number;
   price: string;
   href?: string;
+  children?: CartLineItem[];
 }
 
 export interface CartGiftCertificateLineItem extends CartLineItem {
@@ -453,6 +454,25 @@ export function CartClient<LineItem extends CartLineItem>({
                   <span className="text-[var(--cart-subtext-text,hsl(var(--contrast-300)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
                     {lineItem.subtitle}
                   </span>
+                  {lineItem.children && lineItem.children.length > 0 && (
+                    <ul
+                      className="mt-3 ml-4 space-y-2 border-l-2 border-[var(--cart-border,hsl(var(--contrast-100)))] pl-4"
+                      aria-label="Included items"
+                    >
+                      {lineItem.children.map((child) => (
+                        <li key={child.id} aria-label="Included item">
+                          <div className="text-sm text-[var(--cart-text,hsl(var(--foreground)))]">
+                            {child.title} × {child.quantity}
+                          </div>
+                          {child.subtitle && (
+                            <div className="text-xs text-[var(--cart-subtext-text,hsl(var(--contrast-300)))] contrast-more:text-[var(--cart-subtitle-text,hsl(var(--contrast-500)))]">
+                              {child.subtitle}
+                            </div>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
                 <CounterForm
                   action={formAction}

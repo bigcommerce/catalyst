@@ -100,11 +100,44 @@ export default async function Cart({ params }: Props) {
     ...cart.lineItems.digitalItems,
   ];
 
-  const formattedLineItems = lineItems.map((item) => {
+  // Group picklist children under their parents
+  // Create a map of all items by their entityId
+  const itemMap = new Map(lineItems.map((item) => [item.entityId, item]));
+
+  // Separate parents from children
+  // Gift certificates are always parents (they don't have parentEntityId)
+  const parentItems: typeof lineItems = [];
+  for (const item of lineItems) {
+    // If this is a child item (has parentEntityId and parent exists), skip adding it as a root
+    if (
+      'parentEntityId' in item &&
+      item.parentEntityId != null &&
+      itemMap.has(item.parentEntityId)
+    ) {
+      continue;
+    }
+    // If this is a parent item, add it
+    parentItems.push(item);
+  }
+
+  // Format parent items and attach children
+  const formattedLineItems = parentItems.map((item) => {
+    // Find children for this parent (only physical/digital items can have children)
+    const children =
+      item.__typename !== 'CartGiftCertificate'
+        ? lineItems.filter(
+            (child) =>
+              child.__typename !== 'CartGiftCertificate' &&
+              'parentEntityId' in child &&
+              child.parentEntityId === item.entityId &&
+              child.entityId !== item.entityId,
+          )
+        : [];
+
     if (item.__typename === 'CartGiftCertificate') {
       return {
         typename: item.__typename,
-        id: item.entityId,
+        id: item.entityId.toString(),
         title: item.name,
         subtitle: `${t('GiftCertificate.to')}: ${item.recipient.name} (${item.recipient.email})${item.message ? `, ${t('GiftCertificate.message')}: ${item.message}` : ''}`,
         quantity: 1,
@@ -122,9 +155,62 @@ export default async function Cart({ params }: Props) {
       };
     }
 
+    // Format children for physical/digital items
+    // Children can only be physical or digital items (not gift certificates)
+    const formattedChildren =
+      children.length > 0
+        ? children
+            .filter(
+              (child): child is
+                | typeof cart.lineItems.physicalItems[number]
+                | typeof cart.lineItems.digitalItems[number] =>
+                child.__typename === 'CartPhysicalItem' ||
+                child.__typename === 'CartDigitalItem',
+            )
+            .map((child) => ({
+              typename: child.__typename,
+              id: child.entityId.toString(),
+              quantity: child.quantity,
+              price: format.number(child.listPrice.value, {
+                style: 'currency',
+                currency: child.listPrice.currencyCode,
+              }),
+              subtitle: child.selectedOptions
+                .map((option) => {
+                  switch (option.__typename) {
+                    case 'CartSelectedMultipleChoiceOption':
+                    case 'CartSelectedCheckboxOption':
+                      return `${option.name}: ${option.value}`;
+
+                    case 'CartSelectedNumberFieldOption':
+                      return `${option.name}: ${option.number}`;
+
+                    case 'CartSelectedMultiLineTextFieldOption':
+                    case 'CartSelectedTextFieldOption':
+                      return `${option.name}: ${option.text}`;
+
+                    case 'CartSelectedDateFieldOption':
+                      return `${option.name}: ${format.dateTime(new Date(option.date.utc))}`;
+
+                    default:
+                      return '';
+                  }
+                })
+                .join(', '),
+              title: child.name,
+              image: child.image?.url
+                ? { src: child.image.url, alt: child.name }
+                : undefined,
+              href: new URL(child.url).pathname,
+              selectedOptions: child.selectedOptions,
+              productEntityId: child.productEntityId,
+              variantEntityId: child.variantEntityId,
+            }))
+        : [];
+
     return {
       typename: item.__typename,
-      id: item.entityId,
+      id: item.entityId.toString(),
       quantity: item.quantity,
       price: format.number(item.listPrice.value, {
         style: 'currency',
@@ -158,6 +244,8 @@ export default async function Cart({ params }: Props) {
       selectedOptions: item.selectedOptions,
       productEntityId: item.productEntityId,
       variantEntityId: item.variantEntityId,
+      children:
+        formattedChildren.length > 0 ? formattedChildren : undefined,
     };
   });
 
