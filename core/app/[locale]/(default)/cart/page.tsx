@@ -43,7 +43,21 @@ const getAnalyticsData = async (cartId: string) => {
 
   const lineItems = [...cart.lineItems.physicalItems, ...cart.lineItems.digitalItems];
 
-  return lineItems.map((item) => {
+  // Filter out picklist children to avoid double-counting in analytics
+  const itemMap = new Map(lineItems.map((item) => [item.entityId, item]));
+  const parentItems = lineItems.filter((item) => {
+    // Exclude items that are children (have parentEntityId and parent exists)
+    if (
+      'parentEntityId' in item &&
+      item.parentEntityId != null &&
+      itemMap.has(item.parentEntityId)
+    ) {
+      return false;
+    }
+    return true;
+  });
+
+  return parentItems.map((item) => {
     return {
       entityId: item.entityId,
       id: item.productEntityId,
@@ -435,7 +449,7 @@ export default async function Cart({ params }: Props) {
       </CartAnalyticsProvider>
       <CartViewed
         currencyCode={cart.currencyCode}
-        lineItems={lineItems}
+        lineItems={parentItems}
         subtotal={checkout?.subtotal?.value}
       />
     </>
