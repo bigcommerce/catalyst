@@ -10,10 +10,8 @@ import {
   useInputControl,
 } from '@conform-to/react';
 import { getZodConstraint, parseWithZod } from '@conform-to/zod';
-import { clsx } from 'clsx';
-import { useTranslations } from 'next-intl';
 import { createSerializer, parseAsString, useQueryStates } from 'nuqs';
-import { ReactNode, startTransition, useActionState, useCallback, useEffect, useMemo } from 'react';
+import { ReactNode, startTransition, useActionState, useCallback, useEffect } from 'react';
 import { useFormStatus } from 'react-dom';
 import { z } from 'zod';
 
@@ -46,19 +44,6 @@ interface State<F extends Field> {
 
 export type ProductDetailFormAction<F extends Field> = Action<State<F>, FormData>;
 
-export interface StockDisplayData {
-  stockLevelMessage?: string | null;
-  backorderAvailabilityPrompt?: string | null;
-}
-
-export interface BackorderDisplayData {
-  availableOnHand: number;
-  availableForBackorder: number;
-  unlimitedBackorder: boolean;
-  showQuantityOnBackorder: boolean;
-  backorderMessage: string | null;
-}
-
 export interface ProductDetailFormProps<F extends Field> {
   fields: F[];
   action: ProductDetailFormAction<F>;
@@ -73,8 +58,6 @@ export interface ProductDetailFormProps<F extends Field> {
   additionalActions?: ReactNode;
   minQuantity?: number;
   maxQuantity?: number;
-  stockDisplayData?: StockDisplayData;
-  backorderDisplayData?: BackorderDisplayData;
 }
 
 export function ProductDetailForm<F extends Field>({
@@ -91,13 +74,10 @@ export function ProductDetailForm<F extends Field>({
   additionalActions,
   minQuantity,
   maxQuantity,
-  stockDisplayData,
-  backorderDisplayData,
 }: ProductDetailFormProps<F>) {
   const router = useRouter();
   const pathname = usePathname();
   const events = useEvents();
-  const t = useTranslations('Product.ProductDetails');
 
   const searchParams = fields.reduce<Record<string, typeof parseAsString>>((acc, field) => {
     return field.persist === true ? { ...acc, [field.name]: parseAsString } : acc;
@@ -163,53 +143,14 @@ export function ProductDetailForm<F extends Field>({
     shouldRevalidate: 'onInput',
   });
 
-  const backorderMessages = useMemo(() => {
-    const {
-      availableForBackorder,
-      availableOnHand,
-      backorderMessage,
-      showQuantityOnBackorder,
-      unlimitedBackorder,
-    } = backorderDisplayData || { availableForBackorder: 0, availableOnHand: 0 };
-
-    if (!showQuantityOnBackorder && !backorderMessage) {
-      return undefined;
-    }
-
-    const orderQuantity = Number(formFields.quantity.value);
-
-    if (Number.isNaN(orderQuantity) || orderQuantity <= availableOnHand) {
-      return {
-        backorderQuantityMessage: undefined,
-        backorderInfoMessage: undefined,
-      };
-    }
-
-    if (!showQuantityOnBackorder) {
-      return {
-        backorderQuantityMessage: undefined,
-        backorderInfoMessage: backorderMessage ?? undefined,
-      };
-    }
-
-    return {
-      backorderQuantityMessage: t('backorderQuantity', {
-        quantity: unlimitedBackorder
-          ? orderQuantity - availableOnHand
-          : Math.min(orderQuantity - availableOnHand, availableForBackorder),
-      }),
-      backorderInfoMessage: backorderMessage ?? undefined,
-    };
-  }, [backorderDisplayData, formFields.quantity.value, t]);
-
   const quantityControl = useInputControl(formFields.quantity);
 
   return (
     <FormProvider context={form.context}>
       <FormStateInput />
-      <form {...getFormProps(form)} action={formAction}>
+      <form {...getFormProps(form)} action={formAction} className="py-8">
         <input name="id" type="hidden" value={productId} />
-        <div className="space-y-6 pb-8">
+        <div className="space-y-6">
           {fields.map((field) => {
             return (
               <FormField
@@ -228,53 +169,7 @@ export function ProductDetailForm<F extends Field>({
               {error}
             </FormStatus>
           ))}
-
-          <div className="h-[3.2rem] sm:h-[2.6rem]">
-            {!!stockDisplayData?.stockLevelMessage && (
-              <div
-                className={clsx(
-                  'flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]',
-                  'transition-transform duration-200 ease-in-out',
-                  backorderMessages?.backorderQuantityMessage ||
-                    backorderMessages?.backorderInfoMessage
-                    ? 'translate-y-0'
-                    : 'translate-y-[calc(100%+4px)]',
-                )}
-              >
-                <div className="flex-none whitespace-nowrap font-semibold text-black">
-                  {stockDisplayData.stockLevelMessage}
-                </div>
-                {!!stockDisplayData.backorderAvailabilityPrompt && (
-                  <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
-                    {stockDisplayData.backorderAvailabilityPrompt}
-                  </div>
-                )}
-              </div>
-            )}
-            {!!backorderMessages && (
-              <div
-                className={clsx(
-                  'mt-1 flex flex-wrap justify-start gap-x-2.5 gap-y-2 text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]',
-                  'ease-initial transition-opacity',
-                  backorderMessages.backorderQuantityMessage ||
-                    backorderMessages.backorderInfoMessage
-                    ? 'duration-400 opacity-100'
-                    : 'opacity-0 delay-0 duration-100',
-                )}
-              >
-                <div className="flex-none whitespace-nowrap font-semibold text-black">
-                  {backorderMessages.backorderQuantityMessage}
-                </div>
-                {!!backorderMessages.backorderInfoMessage && (
-                  <div className="flex-none whitespace-nowrap border-s border-gray-300 pl-2.5">
-                    {backorderMessages.backorderInfoMessage}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          <div className="flex gap-x-3">
+          <div className="flex gap-x-3 pt-3">
             <NumberInput
               aria-label={quantityLabel}
               decrementLabel={decrementLabel}

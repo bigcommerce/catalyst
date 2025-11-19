@@ -383,8 +383,7 @@
       "decreaseNumber": "Decrease number",
       "thumbnail": "View image number",
       "additionalInformation": "Additional information",
-      "currentStock": "{quantity, number} in stock",
-      "backorderQuantity": "{quantity, number} will be on backorder",
+      "currentStock": "Current stock: {quantity, number}",
       "Submit": {
         "addToCart": "Add to cart",
         "outOfStock": "Out of stock",

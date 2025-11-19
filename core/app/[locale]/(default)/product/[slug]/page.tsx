@@ -21,10 +21,10 @@ import { Reviews } from './_components/reviews';
 import { WishlistButton } from './_components/wishlist-button';
 import { WishlistButtonForm } from './_components/wishlist-button/form';
 import {
+  getInventorySettingsQuery,
   getProduct,
   getProductPageMetadata,
   getProductPricingAndRelatedProducts,
-  getStreamableInventorySettingsQuery,
   getStreamableProduct,
 } from './page-data';
 
@@ -197,79 +197,29 @@ export default async function Product({ params, searchParams }: Props) {
     return false;
   });
 
-  const streamableInventorySettings = Streamable.from(async () => {
-    return await getStreamableInventorySettingsQuery(customerAccessToken);
-  });
-
-  const getBackorderAvailabilityPrompt = ({
-    showBackorderAvailabilityPrompt,
-    backorderAvailabilityPrompt,
-    availableForBackorder,
-    unlimitedBackorder,
-  }: {
-    showBackorderAvailabilityPrompt: boolean;
-    backorderAvailabilityPrompt: string | null;
-    availableForBackorder?: number | null;
-    unlimitedBackorder?: boolean;
-  }) => {
-    if (!showBackorderAvailabilityPrompt || !backorderAvailabilityPrompt) {
-      return null;
-    }
-
-    const hasBackorderAvailablity = !!availableForBackorder || unlimitedBackorder;
-
-    if (!hasBackorderAvailablity) {
-      return null;
-    }
-
-    return backorderAvailabilityPrompt;
-  };
-
-  const streamableStockDisplayData = Streamable.from(async () => {
-    const [product, inventorySetting] = await Streamable.all([
-      streamableProduct,
-      streamableInventorySettings,
-    ]);
+  const streamableStockLevelMessage = Streamable.from(async () => {
+    const inventorySetting = await getInventorySettingsQuery(customerAccessToken);
 
     if (!inventorySetting) {
       return null;
     }
 
-    const {
-      showOutOfStockMessage,
-      stockLevelDisplay,
-      defaultOutOfStockMessage,
-      showBackorderAvailabilityPrompt,
-      showBackorderMessage,
-      showQuantityOnBackorder,
-      backorderAvailabilityPrompt,
-    } = inventorySetting;
+    const { showOutOfStockMessage, stockLevelDisplay, defaultOutOfStockMessage } = inventorySetting;
+
+    const product = await streamableProduct;
 
     if (!product.inventory.isInStock) {
-      return showOutOfStockMessage
-        ? { stockLevelMessage: defaultOutOfStockMessage, backorderAvailabilityPrompt: null }
-        : null;
+      return showOutOfStockMessage ? defaultOutOfStockMessage : null;
     }
 
     if (stockLevelDisplay === 'DONT_SHOW') {
       return null;
     }
 
-    const {
-      availableToSell,
-      warningLevel,
-      availableOnHand,
-      availableForBackorder,
-      unlimitedBackorder,
-    } = product.inventory.aggregated ?? {};
+    const { availableToSell, warningLevel } = product.inventory.aggregated ?? {};
 
-    const showsBackorderInfo =
-      showBackorderAvailabilityPrompt || showBackorderMessage || showQuantityOnBackorder;
-
-    // if no backorder info is to be displayed, then availableToSell is the stock quantity to be used
-    const stockQuantity = showsBackorderInfo ? availableOnHand : availableToSell;
-
-    if (!showsBackorderInfo && !stockQuantity) {
+    // availableToSell can be 0 while the product is in stock if backorderLimit is UNLIMITED
+    if (!availableToSell) {
       return null;
     }
 
@@ -278,91 +228,14 @@ export default async function Product({ params, searchParams }: Props) {
         return null;
       }
 
-      if (stockQuantity && stockQuantity > warningLevel) {
+      if (availableToSell && availableToSell > warningLevel) {
         return null;
       }
     }
 
-    const availabilityMessage = getBackorderAvailabilityPrompt({
-      showBackorderAvailabilityPrompt,
-      backorderAvailabilityPrompt,
-      availableForBackorder,
-      unlimitedBackorder,
+    return t('ProductDetails.currentStock', {
+      quantity: availableToSell,
     });
-
-    if (!availabilityMessage && stockQuantity === undefined) {
-      return null;
-    }
-
-    return {
-      stockLevelMessage: t('ProductDetails.currentStock', {
-        quantity: stockQuantity ?? 0,
-      }),
-      backorderAvailabilityPrompt: availabilityMessage,
-    };
-  });
-
-  const streamableBackorderDisplayData = Streamable.from(async () => {
-    const [product, inventorySetting] = await Streamable.all([
-      streamableProduct,
-      streamableInventorySettings,
-    ]);
-
-    const inventoryData = {
-      availableOnHand: product.inventory.aggregated?.availableOnHand ?? 0,
-      availableForBackorder: product.inventory.aggregated?.availableForBackorder ?? 0,
-      unlimitedBackorder: !!product.inventory.aggregated?.unlimitedBackorder,
-    };
-
-    if (!inventorySetting) {
-      return {
-        ...inventoryData,
-        showQuantityOnBackorder: false,
-        backorderMessage: null,
-      };
-    }
-
-    const { showQuantityOnBackorder, showBackorderMessage } = inventorySetting;
-
-    const hasBackorderAvailablity =
-      inventoryData.availableForBackorder > 0 || inventoryData.unlimitedBackorder;
-
-    if (!hasBackorderAvailablity || !showBackorderMessage) {
-      return {
-        ...inventoryData,
-        showQuantityOnBackorder: showQuantityOnBackorder && hasBackorderAvailablity,
-        backorderMessage: null,
-      };
-    }
-
-    const variants = removeEdgesAndNodes(product.variants);
-
-    // Currently, supporting backorder messages for simple products only
-    if (variants.length !== 1) {
-      return {
-        ...inventoryData,
-        showQuantityOnBackorder,
-        backorderMessage: null,
-      };
-    }
-
-    const baseVariant = variants.find((variant) => variant.sku === product.sku);
-
-    if (!baseVariant?.inventory?.byLocation) {
-      return {
-        ...inventoryData,
-        showQuantityOnBackorder,
-        backorderMessage: null,
-      };
-    }
-
-    const inventoryByLocation = removeEdgesAndNodes(baseVariant.inventory.byLocation).at(0);
-
-    return {
-      ...inventoryData,
-      showQuantityOnBackorder,
-      backorderMessage: inventoryByLocation?.backorderMessage || null,
-    };
   });
 
   const streameableAccordions = Streamable.from(async () => {
@@ -496,8 +369,7 @@ export default async function Product({ params, searchParams }: Props) {
             accordions: streameableAccordions,
             minQuantity: streamableMinQuantity,
             maxQuantity: streamableMaxQuantity,
-            stockDisplayData: streamableStockDisplayData,
-            backorderDisplayData: streamableBackorderDisplayData,
+            stockLevelMessage: streamableStockLevelMessage,
           }}
           quantityLabel={t('ProductDetails.quantity')}
           thumbnailLabel={t('ProductDetails.thumbnail')}
