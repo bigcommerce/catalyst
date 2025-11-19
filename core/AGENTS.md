@@ -106,7 +106,7 @@ function MyComponent({ data }: { data: Streamable<Product[]> }) {
 All interactions with the BigCommerce Storefront GraphQL API should use the centralized GraphQL client. This client provides:
 
 - Automatic channel ID resolution based on locale
-- Proper authentication token handling  
+- Proper authentication token handling
 - Request/response logging in development
 - Error handling with automatic auth redirects
 - IP address forwarding for personalization
@@ -231,7 +231,7 @@ app/[locale]/(default)/
 ├── product/[slug]/
 │   ├── page.tsx          # Product detail page
 │   └── page-data.ts      # Product data fetching logic
-├── category/[slug]/
+├── (faceted)/category/[slug]/
 │   └── page.tsx          # Category page
 └── cart/
     └── page.tsx          # Cart page
