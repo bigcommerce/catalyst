@@ -8,12 +8,7 @@ import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
 
-import {
-  BackorderDisplayData,
-  ProductDetailForm,
-  ProductDetailFormAction,
-  StockDisplayData,
-} from './product-detail-form';
+import { ProductDetailForm, ProductDetailFormAction } from './product-detail-form';
 import { Field } from './schema';
 
 interface ProductDetailProduct {
@@ -35,8 +30,7 @@ interface ProductDetailProduct {
   >;
   minQuantity?: Streamable<number | null>;
   maxQuantity?: Streamable<number | null>;
-  stockDisplayData?: Streamable<StockDisplayData | null>;
-  backorderDisplayData?: Streamable<BackorderDisplayData | null>;
+  stockLevelMessage?: Streamable<string | null>;
 }
 
 export interface ProductDetailProps<F extends Field> {
@@ -126,6 +120,17 @@ export function ProductDetail<F extends Field>({
                       )}
                     </Stream>
                   </div>
+                  <div className="group/product-stock-level mb-8 sm:mb-2 md:mb-0">
+                    <Stream fallback={<ProductStockSkeleton />} value={product.stockLevelMessage}>
+                      {(stockLevelMessage) =>
+                        Boolean(stockLevelMessage) && (
+                          <p className="text-sm text-[var(--product-detail-secondary-text,hsl(var(--contrast-500)))]">
+                            {stockLevelMessage}
+                          </p>
+                        )
+                      }
+                    </Stream>
+                  </div>
                   <div className="group/product-gallery mb-8 @2xl:hidden">
                     <Stream fallback={<ProductGallerySkeleton />} value={product.images}>
                       {(images) => (
@@ -153,23 +158,12 @@ export function ProductDetail<F extends Field>({
                         streamableCtaDisabled,
                         product.minQuantity,
                         product.maxQuantity,
-                        product.stockDisplayData,
-                        product.backorderDisplayData,
                       ])}
                     >
-                      {([
-                        fields,
-                        ctaLabel,
-                        ctaDisabled,
-                        minQuantity,
-                        maxQuantity,
-                        stockDisplayData,
-                        backorderDisplayData,
-                      ]) => (
+                      {([fields, ctaLabel, ctaDisabled, minQuantity, maxQuantity]) => (
                         <ProductDetailForm
                           action={action}
                           additionalActions={additionalActions}
-                          backorderDisplayData={backorderDisplayData ?? undefined}
                           ctaDisabled={ctaDisabled ?? undefined}
                           ctaLabel={ctaLabel ?? undefined}
                           decrementLabel={decrementLabel}
@@ -181,7 +175,6 @@ export function ProductDetail<F extends Field>({
                           prefetch={prefetch}
                           productId={product.id}
                           quantityLabel={quantityLabel}
-                          stockDisplayData={stockDisplayData ?? undefined}
                         />
                       )}
                     </Stream>
@@ -249,6 +242,10 @@ function ProductGallerySkeleton() {
 
 function PriceLabelSkeleton() {
   return <Skeleton.Box className="my-5 h-4 w-20 rounded-md" />;
+}
+
+function ProductStockSkeleton() {
+  return <Skeleton.Box className="my-3 h-2 w-20 rounded-md" />;
 }
 
 function RatingSkeleton() {

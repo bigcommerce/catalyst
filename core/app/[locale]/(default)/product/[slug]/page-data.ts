@@ -201,29 +201,6 @@ export const getProduct = cache(async (entityId: number, customerAccessToken?: s
   return data.site.product;
 });
 
-const ProductVariantsInventoryFragment = graphql(`
-  fragment ProductVariantsInventoryFragment on Product {
-    variants {
-      edges {
-        node {
-          entityId
-          sku
-          inventory {
-            byLocation {
-              edges {
-                node {
-                  locationEntityId
-                  backorderMessage
-                }
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-`);
-
 const StreamableProductQuery = graphql(
   `
     query StreamableProductQuery(
@@ -273,22 +250,18 @@ const StreamableProductQuery = graphql(
             aggregated {
               availableToSell
               warningLevel
-              availableOnHand
-              availableForBackorder
-              unlimitedBackorder
             }
           }
           availabilityV2 {
             status
           }
           ...ProductViewedFragment
-          ...ProductVariantsInventoryFragment
           ...ProductSchemaFragment
         }
       }
     }
   `,
-  [ProductViewedFragment, ProductSchemaFragment, ProductVariantsInventoryFragment],
+  [ProductViewedFragment, ProductSchemaFragment],
 );
 
 type Variables = VariablesOf<typeof StreamableProductQuery>;
@@ -358,17 +331,13 @@ const InventorySettingsQuery = graphql(`
           defaultOutOfStockMessage
           showOutOfStockMessage
           stockLevelDisplay
-          showBackorderAvailabilityPrompt
-          backorderAvailabilityPrompt
-          showQuantityOnBackorder
-          showBackorderMessage
         }
       }
     }
   }
 `);
 
-export const getStreamableInventorySettingsQuery = cache(async (customerAccessToken?: string) => {
+export const getInventorySettingsQuery = cache(async (customerAccessToken?: string) => {
   const { data } = await client.fetch({
     document: InventorySettingsQuery,
     customerAccessToken,
