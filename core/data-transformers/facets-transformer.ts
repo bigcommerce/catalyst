@@ -81,7 +81,7 @@ export const facetsTransformer = async ({
       return {
         type: 'toggle-group' as const,
         paramName: `attr_${facet.filterKey}`,
-        label: facet.displayName ?? facet.filterName,
+        label: facet.displayName,
         defaultCollapsed: facet.isCollapsedByDefault,
         options: facet.attributes.map((attribute) => {
           const refinedAttribute = refinedProductAttributeSearchFilter?.attributes.find(

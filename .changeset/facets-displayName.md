@@ -1,9 +1,7 @@
 ---
-"@bigcommerce/catalyst-core": patch
+"@bigcommerce/catalyst-core": minor
 ---
 
-feat(search):ES-5892 Introduce displayName and displayKey fields to facets
+Introduce displayName and displayKey fields to facets for improved labeling and filtering
 
-- Added `displayName` field to all facet filter types in GraphQL query
-- Updated facet transformer to use `displayName` instead of deprecated `name` field
-- Added `filterKey` field support for product attribute facets
+Facet filters now use the `displayName` field for more descriptive labels in the UI, replacing the deprecated `name` field. Product attribute facets now support the `filterKey` field for consistent parameter naming. The facet transformer has been updated to use `displayName` with a fallback to `filterName` when `displayName` is not available.

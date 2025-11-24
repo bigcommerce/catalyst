@@ -39,7 +39,6 @@ const GetProductSearchResultsQuery = graphql(
               edges {
                 node {
                   __typename
-                  name
                   displayName
                   isCollapsedByDefault
                   ... on BrandSearchFilter {
