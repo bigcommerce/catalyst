@@ -307,7 +307,7 @@
                 "couponCode": "Kuponkode",
                 "removeCouponCode": "Fjern kuponkode",
                 "invalidCouponCode": "Indtast en gyldig kuponkode",
-                "cartNotFound": "Der blev ikke fundet cartId-cookie."
+                "cartNotFound": "Der opstod en fejl ved hentning af din indkøbskurv"
             },
             "Shipping": {
                 "shipping": "Forsendelse",
@@ -324,7 +324,7 @@
                 "shippingOptions": "Forsendelsesmuligheder",
                 "updateShipping": "Opdater forsendelse",
                 "addShipping": "Tilføj forsendelse",
-                "cartNotFound": "Der blev ikke fundet cartId-cookie.",
+                "cartNotFound": "Der opstod en fejl ved hentning af din indkøbskurv",
                 "noShippingOptions": "Der er ingen tilgængelige forsendelsesmuligheder for din adresse"
             }
         },
@@ -336,7 +336,7 @@
             "to": "Til",
             "message": "Meddelelse",
             "invalidGiftCertificate": "Indtast en gyldig gavekortkode",
-            "cartNotFound": "Der blev ikke fundet cartId-cookie."
+            "cartNotFound": "Der opstod en fejl ved hentning af din indkøbskurv"
         },
         "Empty": {
             "title": "Din indkøbskurv er tom.",
@@ -344,7 +344,7 @@
             "cta": "Fortsæt med at handle"
         },
         "Errors": {
-            "cartNotFound": "Der blev ikke fundet cartId-cookie.",
+            "cartNotFound": "Der opstod en fejl ved hentning af din indkøbskurv",
             "lineItemNotFound": "Linjeelement ikke fundet.",
             "failedToUpdateQuantity": "Antallet kunne ikke opdateres.",
             "somethingWentWrong": "Noget gik galt. Prøv igen senere."
@@ -411,7 +411,19 @@
             "title": "Anmeldelser",
             "empty": "Der er ikke tilføjet nogen anmeldelser for dette produkt.",
             "previous": "Foregående anmeldelser",
-            "next": "Næste anmeldelser"
+            "next": "Næste anmeldelser",
+            "Form": {
+                "button": "Skriv en anmeldelse",
+                "title": "Skriv en anmeldelse",
+                "submit": "Indsend",
+                "ratingLabel": "Bedømmelse",
+                "titleLabel": "Titel",
+                "reviewLabel": "Anmeldelse",
+                "nameLabel": "Navn",
+                "emailLabel": "E-mail",
+                "successMessage": "Din anmeldelse er blevet indsendt!",
+                "somethingWentWrong": "Noget gik galt. Prøv igen senere."
+            }
         }
     },
     "WebPages": {
@@ -458,7 +470,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Indkøbskurv",
-                "search": "Åbn søge-pop op"
+                "search": "Åbn søge-pop op",
+                "giftCertificates": "Gavekort"
             },
             "SwitchCurrency": {
                 "label": "Skift valuta",
@@ -482,7 +495,8 @@
             "socialMediaLinks": "Links til sociale medier",
             "categories": "Kategorier",
             "brands": "mærker",
-            "navigate": "Navigér"
+            "navigate": "Navigér",
+            "giftCertificates": "Gavekort"
         },
         "Subscribe": {
             "title": "Tilmeld dig vores nyhedsbrev",
