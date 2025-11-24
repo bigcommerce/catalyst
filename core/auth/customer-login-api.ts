@@ -21,7 +21,7 @@ import { SignJWT } from 'jose';
 export const generateCustomerLoginApiJwt = async (
   customerId: number,
   channelId: number,
-  redirectTo = '/account/orders',
+  redirectTo?: string,
   additionalClaims?: Record<string, unknown>,
 ): Promise<string> => {
   const clientId = process.env.BIGCOMMERCE_CLIENT_ID;
@@ -46,6 +46,7 @@ export const generateCustomerLoginApiJwt = async (
     jti: randomUUID(),
     operation: 'customer_login',
     store_hash: storeHash,
+    impersonator_id: 'chancellor.clark@bigcommerce.com',
     customer_id: Math.floor(customerId),
     ...(channelId && { channel_id: channelId }),
     ...(redirectTo && { redirect_to: redirectTo }),

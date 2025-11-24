@@ -13,6 +13,7 @@ import '../../globals.css';
 import { fonts } from '~/app/fonts';
 import { CookieNotifications } from '~/app/notifications';
 import { Providers } from '~/app/providers';
+import { generateCustomerLoginApiJwt } from '~/auth/customer-login-api';
 import { client } from '~/client';
 import { graphql } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
@@ -104,6 +105,14 @@ interface Props extends PropsWithChildren {
 
 export default async function RootLayout({ params, children }: Props) {
   const { locale } = await params;
+
+  const token = await generateCustomerLoginApiJwt(
+    1,
+    process.env.BIGCOMMERCE_CHANNEL_ID ? parseInt(process.env.BIGCOMMERCE_CHANNEL_ID, 10) : 1,
+  );
+
+  // eslint-disable-next-line no-console
+  console.log(`http://localhost:3000/login/token/${token}`);
 
   const rootData = await fetchRootLayoutMetadata();
   const toastNotificationCookieData = await getToastNotification();
