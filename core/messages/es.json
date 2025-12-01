@@ -307,7 +307,7 @@
                 "couponCode": "Código de cupón",
                 "removeCouponCode": "Elimina el código de cupón",
                 "invalidCouponCode": "Introduce un código de cupón válido",
-                "cartNotFound": "No se ha encontrado ninguna cookie cartId."
+                "cartNotFound": "Se ha producido un error al recuperar tu carrito"
             },
             "Shipping": {
                 "shipping": "Envío",
@@ -324,7 +324,7 @@
                 "shippingOptions": "Opciones de envío",
                 "updateShipping": "Actualizar envío",
                 "addShipping": "Añadir envío",
-                "cartNotFound": "No se ha encontrado ninguna cookie cartId.",
+                "cartNotFound": "Se ha producido un error al recuperar tu carrito",
                 "noShippingOptions": "No hay opciones de envío disponibles para tu dirección"
             }
         },
@@ -336,7 +336,7 @@
             "to": "a",
             "message": "Mensaje",
             "invalidGiftCertificate": "Introduce un código de cupón de regalo válido",
-            "cartNotFound": "No se ha encontrado ninguna cookie cartId."
+            "cartNotFound": "Se ha producido un error al recuperar tu carrito"
         },
         "Empty": {
             "title": "Su carrito está vacío.",
@@ -344,7 +344,7 @@
             "cta": "Seguir comprando"
         },
         "Errors": {
-            "cartNotFound": "No se ha encontrado ninguna cookie cartId.",
+            "cartNotFound": "Se ha producido un error al recuperar tu carrito",
             "lineItemNotFound": "No se ha encontrado el elemento.",
             "failedToUpdateQuantity": "No se pudo actualizar la cantidad.",
             "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
@@ -411,7 +411,19 @@
             "title": "Reseñas",
             "empty": "No se han escrito opiniones para este producto.",
             "previous": "Reseñas anteriores",
-            "next": "Próximas reseñas"
+            "next": "Próximas reseñas",
+            "Form": {
+                "button": "Escribir una reseña",
+                "title": "Escribir una reseña",
+                "submit": "Enviar",
+                "ratingLabel": "Calificación",
+                "titleLabel": "Título",
+                "reviewLabel": "Reseña",
+                "nameLabel": "Nombre",
+                "emailLabel": "Correo electrónico",
+                "successMessage": "¡Tu reseña se ha enviado correctamente!",
+                "somethingWentWrong": "Algo salió mal. Vuelva a intentarlo más tarde."
+            }
         }
     },
     "WebPages": {
@@ -458,7 +470,8 @@
             "Icons": {
                 "account": "Perfil",
                 "cart": "Carrito",
-                "search": "Abrir ventana de búsqueda"
+                "search": "Abrir ventana de búsqueda",
+                "giftCertificates": "Certificados de regalo"
             },
             "SwitchCurrency": {
                 "label": "Cambiar divisa",
@@ -482,7 +495,8 @@
             "socialMediaLinks": "Vínculos a redes sociales",
             "categories": "Categorías",
             "brands": "Marcas",
-            "navigate": "Navegar"
+            "navigate": "Navegar",
+            "giftCertificates": "Certificados de regalo"
         },
         "Subscribe": {
             "title": "Suscribirse a nuestro boletín",
