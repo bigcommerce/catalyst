@@ -307,7 +307,7 @@
                 "couponCode": "Couponcode",
                 "removeCouponCode": "Couponcode verwijderen",
                 "invalidCouponCode": "Voer een geldige couponcode in",
-                "cartNotFound": "Geen cartId-cookie gevonden."
+                "cartNotFound": "Er is een fout opgetreden bij het ophalen van je winkelwagen"
             },
             "Shipping": {
                 "shipping": "Verzending",
@@ -324,7 +324,7 @@
                 "shippingOptions": "Verzendopties",
                 "updateShipping": "Verzending bijwerken",
                 "addShipping": "Verzending toevoegen",
-                "cartNotFound": "Geen cartId-cookie gevonden.",
+                "cartNotFound": "Er is een fout opgetreden bij het ophalen van je winkelwagen",
                 "noShippingOptions": "Er zijn geen verzendopties beschikbaar voor je adres"
             }
         },
@@ -336,7 +336,7 @@
             "to": "Naar",
             "message": "Bericht",
             "invalidGiftCertificate": "Voer een geldige cadeauboncode in",
-            "cartNotFound": "Geen cartId-cookie gevonden."
+            "cartNotFound": "Er is een fout opgetreden bij het ophalen van je winkelwagen"
         },
         "Empty": {
             "title": "Uw winkelmandje is leeg.",
@@ -344,7 +344,7 @@
             "cta": "Verdergaan met winkelen"
         },
         "Errors": {
-            "cartNotFound": "Geen cartId-cookie gevonden.",
+            "cartNotFound": "Er is een fout opgetreden bij het ophalen van je winkelwagen",
             "lineItemNotFound": "Regelitem niet gevonden.",
             "failedToUpdateQuantity": "Hoeveelheid bijwerken is mislukt.",
             "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
@@ -411,7 +411,19 @@
             "title": "Beoordelingen",
             "empty": "Er zijn geen beoordelingen toegevoegd voor dit product.",
             "previous": "Vorige beoordelingen",
-            "next": "Volgende beoordelingen"
+            "next": "Volgende beoordelingen",
+            "Form": {
+                "button": "Schrijf een beoordeling",
+                "title": "Schrijf een beoordeling",
+                "submit": "Verzenden",
+                "ratingLabel": "Beoordeling",
+                "titleLabel": "Titel",
+                "reviewLabel": "Beoordelen",
+                "nameLabel": "Naam",
+                "emailLabel": "E-mailadres",
+                "successMessage": "Je beoordeling is succesvol ingediend!",
+                "somethingWentWrong": "Er is iets fout gegaan. Probeer het later opnieuw."
+            }
         }
     },
     "WebPages": {
@@ -458,7 +470,8 @@
             "Icons": {
                 "account": "Profiel",
                 "cart": "Winkelmandje",
-                "search": "Popup voor zoeken openen"
+                "search": "Popup voor zoeken openen",
+                "giftCertificates": "Cadeaubonnen"
             },
             "SwitchCurrency": {
                 "label": "Valuta wisselen",
@@ -482,7 +495,8 @@
             "socialMediaLinks": "Links naar sociale media",
             "categories": "Categorieën",
             "brands": "Merken",
-            "navigate": "Navigeren"
+            "navigate": "Navigeren",
+            "giftCertificates": "Cadeaubonnen"
         },
         "Subscribe": {
             "title": "Aanmelden voor onze nieuwsbrief",

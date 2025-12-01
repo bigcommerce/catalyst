@@ -307,7 +307,7 @@
                 "couponCode": "Kupongkod",
                 "removeCouponCode": "Ta bort kupongkod",
                 "invalidCouponCode": "Ange en giltig kupongkod",
-                "cartNotFound": "Ingen cartId-kaka hittades."
+                "cartNotFound": "Ett fel uppstod när er varukorg hämtades"
             },
             "Shipping": {
                 "shipping": "Frakt",
@@ -324,7 +324,7 @@
                 "shippingOptions": "Frakt alternativ",
                 "updateShipping": "Uppdatera frakt",
                 "addShipping": "Lägg till frakt",
-                "cartNotFound": "Ingen cartId-kaka hittades.",
+                "cartNotFound": "Ett fel uppstod när er varukorg hämtades",
                 "noShippingOptions": "Det finns inga tillgängliga fraktalternativ för din adress"
             }
         },
@@ -336,7 +336,7 @@
             "to": "Till",
             "message": "Meddelande",
             "invalidGiftCertificate": "Ange en giltig presentkortskod",
-            "cartNotFound": "Ingen cartId-kaka hittades."
+            "cartNotFound": "Ett fel uppstod när er varukorg hämtades"
         },
         "Empty": {
             "title": "Din kundvagn är tom.",
@@ -344,7 +344,7 @@
             "cta": "Fortsätt att handla"
         },
         "Errors": {
-            "cartNotFound": "Ingen cartId-kaka hittades.",
+            "cartNotFound": "Ett fel uppstod när er varukorg hämtades",
             "lineItemNotFound": "Radartikeln hittades inte.",
             "failedToUpdateQuantity": "Det gick inte att uppdatera antalet.",
             "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
@@ -411,7 +411,19 @@
             "title": "Recensioner",
             "empty": "Inga recensioner har lagts till för denna produkt.",
             "previous": "Tidigare recensioner",
-            "next": "Kommande recensioner"
+            "next": "Kommande recensioner",
+            "Form": {
+                "button": "Skriva en recension",
+                "title": "Skriva en recension",
+                "submit": "Skicka in",
+                "ratingLabel": "Bedömning",
+                "titleLabel": "Rubrik",
+                "reviewLabel": "Recension",
+                "nameLabel": "Namn",
+                "emailLabel": "E-post",
+                "successMessage": "Din recension har skickats in!",
+                "somethingWentWrong": "Någonting gick fel. Vänligen försök igen senare."
+            }
         }
     },
     "WebPages": {
@@ -458,7 +470,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Kundvagn",
-                "search": "Öppna popup-fönstret för sökning"
+                "search": "Öppna popup-fönstret för sökning",
+                "giftCertificates": "Presentkort"
             },
             "SwitchCurrency": {
                 "label": "Byt valuta",
@@ -482,7 +495,8 @@
             "socialMediaLinks": "Sociala Media-länkar",
             "categories": "Kategorier",
             "brands": "Varumärke",
-            "navigate": "Navigera"
+            "navigate": "Navigera",
+            "giftCertificates": "Presentkort"
         },
         "Subscribe": {
             "title": "Anmäl dig till vårt nyhetsbrev",
