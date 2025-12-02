@@ -5,6 +5,7 @@ import { PricingFragment } from '~/client/fragments/pricing';
 import { graphql, VariablesOf } from '~/client/graphql';
 import { revalidate } from '~/client/revalidate-target';
 import { FeaturedProductsCarouselFragment } from '~/components/featured-products-carousel/fragment';
+import { ProductVariantsInventoryFragment } from '~/components/product-variants-inventory/fragment';
 
 import { ProductSchemaFragment } from './_components/product-schema/fragment';
 import { ProductViewedFragment } from './_components/product-viewed/fragment';
@@ -201,20 +202,33 @@ export const getProduct = cache(async (entityId: number, customerAccessToken?: s
   return data.site.product;
 });
 
-const ProductVariantsInventoryFragment = graphql(`
-  fragment ProductVariantsInventoryFragment on Product {
-    variants {
-      edges {
-        node {
-          entityId
-          sku
-          inventory {
-            byLocation {
-              edges {
-                node {
-                  locationEntityId
-                  backorderMessage
+const StreamableProductVariantBySkuQuery = graphql(`
+  query ProductVariantBySkuQuery($productId: Int!, $sku: String!) {
+    site {
+      product(entityId: $productId) {
+        variants(skus: [$sku]) {
+          edges {
+            node {
+              id
+              entityId
+              sku
+              inventory {
+                aggregated {
+                  availableToSell
+                  warningLevel
+                  availableOnHand
+                  availableForBackorder
+                  unlimitedBackorder
                 }
+                byLocation {
+                  edges {
+                    node {
+                      locationEntityId
+                      backorderMessage
+                    }
+                  }
+                }
+                isInStock
               }
             }
           }
@@ -223,6 +237,21 @@ const ProductVariantsInventoryFragment = graphql(`
     }
   }
 `);
+
+type VariantVariables = VariablesOf<typeof StreamableProductVariantBySkuQuery>;
+
+export const getStreamableProductVariant = cache(
+  async (variables: VariantVariables, customerAccessToken?: string) => {
+    const { data } = await client.fetch({
+      document: StreamableProductVariantBySkuQuery,
+      variables,
+      customerAccessToken,
+      fetchOptions: customerAccessToken ? { cache: 'no-store' } : { next: { revalidate } },
+    });
+
+    return data.site.product?.variants;
+  },
+);
 
 const StreamableProductQuery = graphql(
   `
@@ -269,6 +298,7 @@ const StreamableProductQuery = graphql(
           maxPurchaseQuantity
           warranty
           inventory {
+            hasVariantInventory
             isInStock
             aggregated {
               availableToSell
