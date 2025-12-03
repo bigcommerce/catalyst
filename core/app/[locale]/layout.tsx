@@ -151,3 +151,5 @@ export default async function RootLayout({ params, children }: Props) {
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
+
+export const fetchCache = 'default-cache';

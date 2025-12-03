@@ -32,3 +32,5 @@ export async function GET(_: Request, { params }: { params: Promise<{ token: str
     redirect(`/login?error=InvalidToken`);
   }
 }
+
+export const dynamic = 'force-dynamic';
