@@ -88,7 +88,11 @@ Remove or comment out eslint config
 
 ### Step 3: Replace instances of `unstable_expireTag` and `unstable_expirePath` 
 
-Use `revalidatePath` and `revalidateTag` instead.
+Use `revalidatePath` and `revalidateTag` instead. To use the new API, utilize the `max` cache life argument:
+```typescript
+// Include the 'max' revalidation behavior
+revalidateTag(TAGS.checkout, 'max');
+```
 
 ### Step 4: 
 
@@ -103,11 +107,6 @@ Rename `priority` prop in `<Image>` for `preload`:
   sizes="100vw"
   src={image.src}
 />
-```
-
-```typescript
-// Include the 'max' revalidation behavior
-revalidateTag(TAGS.checkout, 'max');
 ```
 
 ## What's Coming Next
