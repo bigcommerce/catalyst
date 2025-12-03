@@ -67,6 +67,11 @@ Remove or comment out PPR configuration:
 
 Use `revalidatePath` and `revalidateTag` instead.
 
+```typescript
+// Include the 'max' revalidation behavior
+revalidateTag(TAGS.checkout, 'max');
+```
+
 ## What's Coming Next
 
 🚧 **Future Enhancements** (planned for upcoming releases):
