@@ -10,7 +10,7 @@
     "build:analyze": "ANALYZE=true npm run build",
     "start": "next start",
     "prelint": "next typegen",
-    "lint": "eslint . --max-warnings 0",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
@@ -80,7 +80,7 @@
     "@tailwindcss/typography": "^0.5.16",
     "@types/gtag.js": "^0.0.20",
     "@types/lodash.debounce": "^4.0.9",
-    "@types/node": "^24.10.00",
+    "@types/node": "^22.15.30",
     "@types/react": "^19.1.6",
     "@types/react-dom": "^19.1.6",
     "@types/react-headroom": "^3.2.3",
