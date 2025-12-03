@@ -66,27 +66,9 @@ export default async (): Promise<NextConfig> => {
     reactStrictMode: true,
     experimental: {
       optimizePackageImports: ['@icons-pack/react-simple-icons'],
-      ppr: 'incremental',
     },
     typescript: {
       ignoreBuildErrors: !!process.env.CI,
-    },
-    eslint: {
-      ignoreDuringBuilds: !!process.env.CI,
-      dirs: [
-        'app',
-        'auth',
-        'build-config',
-        'client',
-        'components',
-        'data-transformers',
-        'i18n',
-        'lib',
-        'middlewares',
-        'scripts',
-        'tests',
-        'vibes',
-      ],
     },
     // default URL generation in BigCommerce uses trailing slash
     trailingSlash: process.env.TRAILING_SLASH !== 'false',
