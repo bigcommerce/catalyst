@@ -9,6 +9,7 @@
     "build": "npm run generate && next build",
     "build:analyze": "ANALYZE=true npm run build",
     "start": "next start",
+    "prelint": "next typegen",
     "lint": "eslint . --max-warnings 0",
     "typecheck": "tsc --noEmit"
   },
