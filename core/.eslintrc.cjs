@@ -82,22 +82,6 @@ const config = {
       },
     },
   ],
-  ignorePatterns: [
-    'client/generated/**/*.ts',
-    'playwright-report/**',
-    'test-results/**',
-    '.tests/**',
-    '.open-next/**',
-    '.next/**',
-    'out/**',
-    'coverage/**',
-    'node_modules/**',
-    '.turbo/**',
-    '.wrangler/**',
-    '.bigcommerce/**',
-    'next-env.d.ts',
-    'messages/*.d.json.ts',
-  ],
 };
 
 module.exports = config;
