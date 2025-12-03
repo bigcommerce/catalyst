@@ -52,6 +52,8 @@ Then run:
 pnpm install
 ```
 
+Note, `next` will automatically update your `tsconfig.json` file.
+
 ### Step 2: Update next.config.ts
 
 Remove or comment out PPR configuration:
@@ -87,6 +89,21 @@ Remove or comment out eslint config
 ### Step 3: Replace instances of `unstable_expireTag` and `unstable_expirePath` 
 
 Use `revalidatePath` and `revalidateTag` instead.
+
+### Step 4: 
+
+Rename `priority` prop in `<Image>` for `preload`:
+
+```typescript
+<Image
+  alt={image.alt}
+  className="block h-20 w-full object-cover"
+  fill
+  preload={idx === 0}
+  sizes="100vw"
+  src={image.src}
+/>
+```
 
 ```typescript
 // Include the 'max' revalidation behavior
