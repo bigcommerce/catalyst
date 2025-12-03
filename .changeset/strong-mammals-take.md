@@ -63,6 +63,27 @@ Remove or comment out PPR configuration:
 // }
 ```
 
+Remove or comment out eslint config
+```typescript
+// eslint: {
+//     ignoreDuringBuilds: !!process.env.CI,
+//     dirs: [
+//     'app',
+//     'auth',
+//     'build-config',
+//     'client',
+//     'components',
+//     'data-transformers',
+//     'i18n',
+//     'lib',
+//     'middlewares',
+//     'scripts',
+//     'tests',
+//     'vibes',
+//     ],
+// },
+```
+
 ### Step 3: Replace instances of `unstable_expireTag` and `unstable_expirePath` 
 
 Use `revalidatePath` and `revalidateTag` instead.
