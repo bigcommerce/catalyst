@@ -307,7 +307,7 @@
         "couponCode": "Coupon code",
         "removeCouponCode": "Remove coupon code",
         "invalidCouponCode": "Please enter a valid coupon code",
-        "cartNotFound": "No cartId cookie found."
+        "cartNotFound": "An error occurred when retrieving your cart"
       },
       "Shipping": {
         "shipping": "Shipping",
@@ -324,7 +324,7 @@
         "shippingOptions": "Shipping options",
         "updateShipping": "Update shipping",
         "addShipping": "Add shipping",
-        "cartNotFound": "No cartId cookie found.",
+        "cartNotFound": "An error occurred when retrieving your cart",
         "noShippingOptions": "There are no shipping options available for your address"
       }
     },
@@ -336,7 +336,7 @@
       "to": "To",
       "message": "Message",
       "invalidGiftCertificate": "Please enter a valid gift certificate code",
-      "cartNotFound": "No cartId cookie found."
+      "cartNotFound": "An error occurred when retrieving your cart"
     },
     "Empty": {
       "title": "Your cart is empty.",
@@ -344,7 +344,7 @@
       "cta": "Continue shopping"
     },
     "Errors": {
-      "cartNotFound": "No cartId cookie found.",
+      "cartNotFound": "An error occurred when retrieving your cart",
       "lineItemNotFound": "Line item not found.",
       "failedToUpdateQuantity": "Failed to update quantity.",
       "somethingWentWrong": "Something went wrong. Please try again later."
@@ -411,7 +411,19 @@
       "title": "Reviews",
       "empty": "No reviews have been added for this product.",
       "previous": "Previous reviews",
-      "next": "Next reviews"
+      "next": "Next reviews",
+      "Form": {
+        "button": "Write a review",
+        "title": "Write a review",
+        "submit": "Submit",
+        "ratingLabel": "Rating",
+        "titleLabel": "Title",
+        "reviewLabel": "Review",
+        "nameLabel": "Name",
+        "emailLabel": "Email",
+        "successMessage": "Your review has been submitted successfully!",
+        "somethingWentWrong": "Something went wrong. Please try again later."
+      }
     }
   },
   "WebPages": {
@@ -458,7 +470,8 @@
       "Icons": {
         "account": "Profile",
         "cart": "Cart",
-        "search": "Open search popup"
+        "search": "Open search popup",
+        "giftCertificates": "Gift certificates"
       },
       "SwitchCurrency": {
         "label": "Switch currency",
@@ -482,7 +495,8 @@
       "socialMediaLinks": "Social media links",
       "categories": "Categories",
       "brands": "Brands",
-      "navigate": "Navigate"
+      "navigate": "Navigate",
+      "giftCertificates": "Gift certificates"
     },
     "Subscribe": {
       "title": "Sign up for our newsletter",

@@ -1,5 +1,45 @@
 # Changelog
 
+## 1.3.4
+
+### Patch Changes
+
+- [#2720](https://github.com/bigcommerce/catalyst/pull/2720) [`ebd5993`](https://github.com/bigcommerce/catalyst/commit/ebd5993cfbb507da1d2341fb6f1a7276eee50795) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Noop release to account for typecheck issue.
+
+## 1.3.3
+
+### Patch Changes
+
+- [#2695](https://github.com/bigcommerce/catalyst/pull/2695) [`6d565c2`](https://github.com/bigcommerce/catalyst/commit/6d565c2cbf98e3fa0c2b0142734fc68a5d48bd2c) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Add Gift Certificates link to the header/footer.
+
+- [#2694](https://github.com/bigcommerce/catalyst/pull/2694) [`fdedcaa`](https://github.com/bigcommerce/catalyst/commit/fdedcaa99c83d5c32c54dec0974962b7d17447cf) Thanks [@BC-AdamWard](https://github.com/BC-AdamWard)! - Fix anonymous session cookie maxAge calculation to correctly set 7 days instead of 7 hours.
+
+## 1.3.2
+
+### Patch Changes
+
+- [`ce1731f`](https://github.com/bigcommerce/catalyst/commit/ce1731f0cb0f0e411c3ffa4734b0256dbdacafbb) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Updates the scripts transformer to account for inline scripts having a `src` attribute with empty content.
+
+## 1.3.1
+
+### Patch Changes
+
+- [#2679](https://github.com/bigcommerce/catalyst/pull/2679) [`323483a`](https://github.com/bigcommerce/catalyst/commit/323483adfdd7dc1bf925034ae360d7a803d76ab9) Thanks [@chanceaclark](https://github.com/chanceaclark)! - Update the `lint` command to utilize `eslint` CLI directly. `next lint` is deprecated in Next.js version 16 and this provides a lower migration impact when the time comes.
+
+- [#2681](https://github.com/bigcommerce/catalyst/pull/2681) [`cacfb55`](https://github.com/bigcommerce/catalyst/commit/cacfb55b89d7de64c80eb66b671d279898a43a1e) Thanks [@jordanarldt](https://github.com/jordanarldt)! - Minor refactor to improve the performance when navigating from the cart to the checkout.
+  - [#2680](https://github.com/bigcommerce/catalyst/pull/2680)
+  - [#2681](https://github.com/bigcommerce/catalyst/pull/2681)
+
+  ### Migration
+
+  Use the above PR diffs as a reference.
+  1. Remove `core/app/[locale]/(default)/cart/_actions/redirect-to-checkout.ts`
+  2. Update `checkoutAction` in `core/app/[locale]/(default)/cart/page.tsx` to `"/checkout"`
+  3. Copy changes to `core/app/[locale]/(default)/checkout/route.ts`
+  4. Update `core/lib/server-toast.ts` and set the cookie `maxAge` to `1` - this ensures any toast errors live through the redirect back to the `/cart` page
+  5. Copy changes in `core/vibes/soul/sections/cart/client.tsx`
+  6. Update `en.json` with the updated translation values (optional)
+
 ## 1.3.0
 
 ### Minor Changes

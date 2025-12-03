@@ -8,7 +8,6 @@ import { getCartId } from '~/lib/cart';
 import { getPreferredCurrencyCode } from '~/lib/currency';
 import { exists } from '~/lib/utils';
 
-import { redirectToCheckout } from './_actions/redirect-to-checkout';
 import { updateCouponCode } from './_actions/update-coupon-code';
 import { updateGiftCertificate } from './_actions/update-gift-certificate';
 import { updateLineItem } from './_actions/update-line-item';
@@ -20,6 +19,8 @@ import { getCart, getShippingCountries } from './page-data';
 interface Props {
   params: Promise<{ locale: string }>;
 }
+
+const CHECKOUT_URL = process.env.TRAILING_SLASH !== 'false' ? '/checkout/' : '/checkout';
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params;
@@ -251,7 +252,7 @@ export default async function Cart({ params }: Props) {
               },
             ].filter(exists),
           }}
-          checkoutAction={redirectToCheckout}
+          checkoutAction={CHECKOUT_URL}
           checkoutLabel={t('proceedToCheckout')}
           couponCode={{
             action: updateCouponCode,

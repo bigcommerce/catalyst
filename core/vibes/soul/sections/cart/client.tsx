@@ -149,7 +149,7 @@ export interface CartProps<LineItem extends CartLineItem> {
   summaryTitle?: string;
   emptyState?: CartEmptyState;
   lineItemAction: Action<CartState<LineItem>, FormData>;
-  checkoutAction: Action<SubmissionResult | null, FormData>;
+  checkoutAction: Action<SubmissionResult | null, FormData> | string;
   checkoutLabel?: string;
   deleteLineItemLabel?: string;
   decrementLineItemLabel?: string;
@@ -628,10 +628,23 @@ function CheckoutButton({
   isCartUpdatePending,
   ...props
 }: {
-  action: Action<SubmissionResult | null, FormData>;
+  action: Action<SubmissionResult | null, FormData> | string;
   isCartUpdatePending: boolean;
 } & ComponentPropsWithoutRef<typeof Button>) {
-  const [lastResult, formAction] = useActionState(action, null);
+  const [lastResult, formAction] = useActionState(
+    async (state: SubmissionResult | null, formData: FormData) => {
+      if (typeof action === 'string') {
+        await new Promise<void>(() => {
+          window.location.assign(action);
+        });
+
+        return null;
+      }
+
+      return action(state, formData);
+    },
+    null,
+  );
 
   const [form] = useForm({ lastResult });
 
