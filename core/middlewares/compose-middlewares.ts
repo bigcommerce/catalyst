@@ -1,11 +1,12 @@
-import { type NextProxy, NextResponse } from 'next/server';
+import { type NextMiddleware, NextResponse } from 'next/server';
 
-export type MiddlewareFactory = (middleware: NextProxy) => NextProxy;
+export type MiddlewareFactory = (middleware: NextMiddleware) => NextMiddleware;
 
 export const composeMiddlewares = (
   firstMiddlewareWrapper: MiddlewareFactory,
   ...otherMiddlewareWrappers: MiddlewareFactory[]
-): NextProxy => {
+  // eslint-disable-next-line @typescript-eslint/no-deprecated
+): NextMiddleware => {
   const middlewares = otherMiddlewareWrappers.reduce(
     (accumulatedMiddlewares, nextMiddleware) => (middleware) =>
       accumulatedMiddlewares(nextMiddleware(middleware)),
