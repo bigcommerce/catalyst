@@ -208,6 +208,10 @@ export const fetchVertexSearch = cache(
           orderBy,
           filter: filter || undefined,
           visitorId: 'catalyst-search', // TODO: unique visitor ID per user
+          queryExpansionSpec: {
+            condition: 'AUTO',
+            pinUnexpandedResults: false,
+          },
           // Request specific facets that might be available in the catalog
           facetSpecs: [
             {

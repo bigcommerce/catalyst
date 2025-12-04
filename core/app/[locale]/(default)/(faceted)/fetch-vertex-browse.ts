@@ -254,6 +254,10 @@ export const fetchVertexBrowseByCategory = cache(
           pageToken,
           orderBy,
           visitorId: 'catalyst-browse', // TODO: unique visitor ID per user
+          queryExpansionSpec: {
+            condition: 'AUTO',
+            pinUnexpandedResults: false,
+          },
           // Include page category for browse analytics and improved recommendations
           ...(pageCategory && { pageCategories: [pageCategory] }),
           // Request facets with dynamic positioning enabled
@@ -499,6 +503,10 @@ export const fetchVertexBrowseByBrand = cache(
           pageToken,
           orderBy,
           visitorId: 'catalyst-browse', // TODO: unique visitor ID per user
+          queryExpansionSpec: {
+            condition: 'AUTO',
+            pinUnexpandedResults: false,
+          },
           // Request facets with dynamic positioning (excluding brands since we're filtering by brand)
           // Note: Dynamic faceting must be enabled in the serving config
           facetSpecs: [

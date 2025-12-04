@@ -106,6 +106,10 @@ export async function vertexSearch(
       query: submission.value.term,
       pageSize: 10,
       visitorId: 'catalyst-search',
+      queryExpansionSpec: {
+        condition: 'AUTO',
+        pinUnexpandedResults: false,
+      },
     };
 
     // eslint-disable-next-line no-console
