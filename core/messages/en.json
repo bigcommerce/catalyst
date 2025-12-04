@@ -54,6 +54,7 @@
       "password": "Password",
       "invalidCredentials": "Your email address or password is incorrect. Try signing in again or reset your password",
       "somethingWentWrong": "Something went wrong. Please try again later.",
+      "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
       "CreateAccount": {
         "title": "New customer?",
         "accountBenefits": "Create an account with us and you'll be able to:",
