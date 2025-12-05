@@ -39,10 +39,11 @@ const GetProductSearchResultsQuery = graphql(
               edges {
                 node {
                   __typename
-                  name
+                  displayName
                   isCollapsedByDefault
                   ... on BrandSearchFilter {
                     displayProductCount
+                    displayName
                     brands {
                       pageInfo {
                         ...PaginationFragment
@@ -60,6 +61,7 @@ const GetProductSearchResultsQuery = graphql(
                   }
                   ... on CategorySearchFilter {
                     displayProductCount
+                    displayName
                     categories {
                       pageInfo {
                         ...PaginationFragment
@@ -92,6 +94,8 @@ const GetProductSearchResultsQuery = graphql(
                   ... on ProductAttributeSearchFilter {
                     displayProductCount
                     filterName
+                    filterKey
+                    displayName
                     attributes {
                       pageInfo {
                         ...PaginationFragment
@@ -107,6 +111,7 @@ const GetProductSearchResultsQuery = graphql(
                     }
                   }
                   ... on RatingSearchFilter {
+                    displayName
                     ratings {
                       pageInfo {
                         ...PaginationFragment
@@ -122,6 +127,7 @@ const GetProductSearchResultsQuery = graphql(
                     }
                   }
                   ... on PriceSearchFilter {
+                    displayName
                     selected {
                       minPrice
                       maxPrice
