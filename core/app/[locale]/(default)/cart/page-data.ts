@@ -16,6 +16,7 @@ export const PhysicalItemFragment = graphql(`
       url: urlTemplate(lossy: true)
     }
     entityId
+    parentEntityId
     quantity
     productEntityId
     variantEntityId
@@ -76,6 +77,7 @@ export const DigitalItemFragment = graphql(`
       url: urlTemplate(lossy: true)
     }
     entityId
+    parentEntityId
     quantity
     productEntityId
     variantEntityId
