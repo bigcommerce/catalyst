@@ -54,6 +54,7 @@
             "password": "Mot de passe",
             "invalidCredentials": "Votre adresse e-mail ou votre mot de passe est incorrect. Essayez de vous reconnecter ou réinitialisez votre mot de passe",
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard.",
+            "passwordResetRequired": "Password reset required. Please check your email for instructions to reset your password.",
             "CreateAccount": {
                 "title": "Nouveau client ?",
                 "accountBenefits": "Créez un compte sur notre site et vous pourrez :",
@@ -307,7 +308,7 @@
                 "couponCode": "Code promotionnel",
                 "removeCouponCode": "Supprimez le code promotionnel",
                 "invalidCouponCode": "Veuillez saisir un code promotionnel valide",
-                "cartNotFound": "Aucun cookie cartId n’a été trouvé."
+                "cartNotFound": "Une erreur s’est produite lors de la récupération de votre panier"
             },
             "Shipping": {
                 "shipping": "Livraison",
@@ -324,7 +325,7 @@
                 "shippingOptions": "Options de livraison",
                 "updateShipping": "Mettre à jour l’expédition",
                 "addShipping": "Ajouter l’expédition",
-                "cartNotFound": "Aucun cookie cartId n’a été trouvé.",
+                "cartNotFound": "Une erreur s’est produite lors de la récupération de votre panier",
                 "noShippingOptions": "Aucune option de livraison n'est disponible pour votre adresse"
             }
         },
@@ -336,7 +337,7 @@
             "to": "À",
             "message": "Message",
             "invalidGiftCertificate": "Veuillez saisir un code de chèque-cadeau valide",
-            "cartNotFound": "Aucun cookie cartId n’a été trouvé."
+            "cartNotFound": "Une erreur s’est produite lors de la récupération de votre panier"
         },
         "Empty": {
             "title": "Votre panier est vide.",
@@ -344,7 +345,7 @@
             "cta": "Continuer mes achats"
         },
         "Errors": {
-            "cartNotFound": "Aucun cookie cartId n’a été trouvé.",
+            "cartNotFound": "Une erreur s’est produite lors de la récupération de votre panier",
             "lineItemNotFound": "Ligne introuvable.",
             "failedToUpdateQuantity": "Échec de la mise à jour de la quantité.",
             "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
@@ -411,7 +412,19 @@
             "title": "Avis",
             "empty": "Aucun avis n’a été ajouté pour ce produit.",
             "previous": "Avis précédents",
-            "next": "Avis suivants"
+            "next": "Avis suivants",
+            "Form": {
+                "button": "Rédiger un avis",
+                "title": "Rédiger un avis",
+                "submit": "Envoyer",
+                "ratingLabel": "Note",
+                "titleLabel": "Titre",
+                "reviewLabel": "Avis",
+                "nameLabel": "Nom",
+                "emailLabel": "E-mail",
+                "successMessage": "Votre avis a bien été envoyé !",
+                "somethingWentWrong": "Une erreur s'est produite. Veuillez réessayer plus tard."
+            }
         }
     },
     "WebPages": {
@@ -458,7 +471,8 @@
             "Icons": {
                 "account": "Profil",
                 "cart": "Panier",
-                "search": "Ouvrir la fenêtre contextuelle de recherche"
+                "search": "Ouvrir la fenêtre contextuelle de recherche",
+                "giftCertificates": "Chèques-cadeaux"
             },
             "SwitchCurrency": {
                 "label": "Changer de devise",
@@ -482,7 +496,8 @@
             "socialMediaLinks": "Lien vers les médias sociaux",
             "categories": "Catégories",
             "brands": "Marques",
-            "navigate": "Parcourir"
+            "navigate": "Parcourir",
+            "giftCertificates": "Chèques-cadeaux"
         },
         "Subscribe": {
             "title": "Abonnez-vous à notre newsletter",
