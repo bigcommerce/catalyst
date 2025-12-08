@@ -30,6 +30,7 @@ interface Props {
   filterLabel?: string;
   filtersPanelTitle?: Streamable<string>;
   resetFiltersLabel?: Streamable<string>;
+  reviewsEnabled?: boolean;
   rangeFilterApplyLabel?: Streamable<string>;
   sortLabel?: Streamable<string | null>;
   sortPlaceholder?: Streamable<string | null>;
@@ -49,6 +50,7 @@ export function ProductsListSection({
   title = 'Products',
   totalCount,
   products,
+  reviewsEnabled,
   compareProducts,
   sortOptions: streamableSortOptions,
   sortDefaultValue,
@@ -171,6 +173,7 @@ export function ProductsListSection({
               placeholderCount={placeholderCount}
               products={products}
               removeLabel={removeLabel}
+              reviewsEnabled={reviewsEnabled}
               showCompare={showCompare}
             />
 

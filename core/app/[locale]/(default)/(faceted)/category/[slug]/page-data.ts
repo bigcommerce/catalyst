@@ -45,6 +45,9 @@ const CategoryPageQuery = graphql(
               productComparisonsEnabled
             }
           }
+          reviews {
+            enabled
+          }
         }
       }
     }

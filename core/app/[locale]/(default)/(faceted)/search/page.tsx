@@ -78,6 +78,8 @@ export default async function Search(props: Props) {
 
   const { settings } = await getSearchPageData();
 
+  const reviewsEnabled = settings?.reviews.enabled ?? false;
+
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
 
@@ -251,6 +253,7 @@ export default async function Search(props: Props) {
       rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
       removeLabel={t('Compare.remove')}
       resetFiltersLabel={t('FacetedSearch.resetFilters')}
+      reviewsEnabled={reviewsEnabled}
       showCompare={productComparisonsEnabled}
       sortDefaultValue="featured"
       sortLabel={t('SortBy.sortBy')}
