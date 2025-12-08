@@ -2,11 +2,13 @@ import { ReactNode } from 'react';
 
 import { Stream, Streamable } from '@/vibes/soul/lib/streamable';
 import { Accordion, AccordionItem } from '@/vibes/soul/primitives/accordion';
+import { AnimatedUnderline } from '@/vibes/soul/primitives/animated-underline';
 import { Price, PriceLabel } from '@/vibes/soul/primitives/price-label';
 import { Rating } from '@/vibes/soul/primitives/rating';
 import * as Skeleton from '@/vibes/soul/primitives/skeleton';
 import { type Breadcrumb, Breadcrumbs } from '@/vibes/soul/sections/breadcrumbs';
 import { ProductGallery } from '@/vibes/soul/sections/product-detail/product-gallery';
+import { ReviewForm, SubmitReviewAction } from '@/vibes/soul/sections/reviews/review-form';
 
 import {
   BackorderDisplayData,
@@ -26,6 +28,7 @@ interface ProductDetailProduct {
   badge?: string;
   rating?: Streamable<number | null>;
   reviewsEnabled?: boolean;
+  showRating?: boolean;
   summary?: Streamable<string>;
   description?: Streamable<string | ReactNode | null>;
   accordions?: Streamable<
@@ -55,6 +58,15 @@ export interface ProductDetailProps<F extends Field> {
   thumbnailLabel?: string;
   additionalInformationTitle?: string;
   additionalActions?: ReactNode;
+  reviewFormEmailLabel?: string;
+  reviewFormModalTitle?: string;
+  reviewFormNameLabel?: string;
+  reviewFormRatingLabel?: string;
+  reviewFormReviewLabel?: string;
+  reviewFormSubmitLabel?: string;
+  reviewFormTitleLabel?: string;
+  reviewFormAction: SubmitReviewAction;
+  user: Streamable<{ email: string; name: string }>;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -87,6 +99,15 @@ export function ProductDetail<F extends Field>({
   thumbnailLabel,
   additionalInformationTitle = 'Additional information',
   additionalActions,
+  reviewFormEmailLabel,
+  reviewFormModalTitle,
+  reviewFormNameLabel,
+  reviewFormRatingLabel,
+  reviewFormReviewLabel,
+  reviewFormSubmitLabel,
+  reviewFormTitleLabel,
+  reviewFormAction,
+  user,
 }: ProductDetailProps<F>) {
   return (
     <section className="@container">
@@ -116,6 +137,29 @@ export function ProductDetail<F extends Field>({
                     {product.title}
                   </h1>
                   {product.reviewsEnabled && (
+                    <div className="group/product-rating">
+                      <ReviewForm
+                        action={reviewFormAction}
+                        formEmailLabel={reviewFormEmailLabel}
+                        formModalTitle={reviewFormModalTitle}
+                        formNameLabel={reviewFormNameLabel}
+                        formRatingLabel={reviewFormRatingLabel}
+                        formReviewLabel={reviewFormReviewLabel}
+                        formSubmitLabel={reviewFormSubmitLabel}
+                        formTitleLabel={reviewFormTitleLabel}
+                        productId={Number(product.id)}
+                        streamableImages={product.images}
+                        streamableProduct={{ name: product.title }}
+                        streamableUser={user}
+                        trigger={
+                          <AnimatedUnderline className="cursor-pointer">
+                            Write a review
+                          </AnimatedUnderline>
+                        }
+                      />
+                    </div>
+                  )}
+                  {product.showRating && (
                     <div className="group/product-rating">
                       <Stream fallback={<RatingSkeleton />} value={product.rating}>
                         {(rating) => <Rating rating={rating ?? 0} />}

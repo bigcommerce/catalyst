@@ -32,7 +32,7 @@ export interface ProductCardProps {
   compareLabel?: string;
   compareParamName?: string;
   product: Product;
-  reviewsEnabled?: boolean;
+  showRating?: boolean;
 }
 
 // eslint-disable-next-line valid-jsdoc
@@ -59,7 +59,7 @@ export interface ProductCardProps {
  */
 export function ProductCard({
   product: { id, title, subtitle, badge, price, image, href, inventoryMessage, rating },
-  reviewsEnabled = false,
+  showRating = false,
   colorScheme = 'light',
   className,
   showCompare = false,
@@ -153,9 +153,7 @@ export function ProductCard({
               </span>
             )}
             {price != null && <PriceLabel colorScheme={colorScheme} price={price} />}
-            {reviewsEnabled && typeof rating === 'number' && rating > 0 && (
-              <Rating rating={rating} />
-            )}
+            {showRating && typeof rating === 'number' && rating > 0 && <Rating rating={rating} />}
             <span
               className={clsx(
                 'block text-sm font-normal',

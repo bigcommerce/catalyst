@@ -103,7 +103,7 @@ export default async function Brand(props: Props) {
     return notFound();
   }
 
-  const reviewsEnabled = settings?.reviews.enabled ?? false;
+  const showRating = Boolean(settings?.reviews.enabled && settings.display.showProductRating);
 
   const productComparisonsEnabled =
     settings?.storefront.catalog?.productComparisonsEnabled ?? false;
@@ -221,8 +221,8 @@ export default async function Brand(props: Props) {
       rangeFilterApplyLabel={t('FacetedSearch.Range.apply')}
       removeLabel={t('Compare.remove')}
       resetFiltersLabel={t('FacetedSearch.resetFilters')}
-      reviewsEnabled={reviewsEnabled}
       showCompare={productComparisonsEnabled}
+      showRating={showRating}
       sortDefaultValue="featured"
       sortLabel={t('Search.title')}
       sortOptions={[
